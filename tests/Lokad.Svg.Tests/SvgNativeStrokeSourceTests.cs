@@ -97,8 +97,6 @@ public sealed class SvgNativeStrokeSourceTests
         SvgException memory = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, memory.ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
-        RenderBudget workBudget = new(1_000_000);
-        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
     }
 
     private static byte[] Input() => TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='80' height='60' viewBox='0 0 160 120'>"

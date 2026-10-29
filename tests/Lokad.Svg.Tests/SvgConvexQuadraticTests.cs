@@ -16,12 +16,12 @@ public sealed class SvgConvexQuadraticTests
         SvgAnalyticClipContext? construction = clipped ? new(new(0, 0, 16, 16)) : null;
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 16, 0, 16, new(0, 16), construction, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 16, 0, 16, new(0, 16), construction, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(true, preparation.Convex);
             foreach (int row in new[] { 8, 11, 7, 10, 9, 8 })
             {
-                walker.PrepareRow(row, out long _, CancellationToken.None);
+                walker.PrepareRow(row, CancellationToken.None);
                 if (row != 8) continue;
                 // These alpha bytes come from the unchanged quadratic-solid-16x16
                 // browser reference, including the formerly overpainted tip fringe.

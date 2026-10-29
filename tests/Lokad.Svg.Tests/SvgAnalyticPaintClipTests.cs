@@ -53,13 +53,12 @@ public sealed class SvgAnalyticPaintClipTests
         SvgAnalyticContourPreparation preparation = new(Triangle, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(0, 0, 32, 32), 96, 80);
         RenderBudget budget = new(1_000_000);
         long binaryBytes;
-        long binaryWork;
         {
-            using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
         }
         {
-            using SvgAnalyticCoverage binary = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out binaryWork, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage binary = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(SvgAnalyticPaintKind.Pair, binary.PairPaintKind);
             binaryBytes = budget.Snapshot().CurrentBytes;
@@ -67,19 +66,17 @@ public sealed class SvgAnalyticPaintClipTests
         bool? cachedConvex = preparation.Convex;
         long? cachedCount = preparation.NativePointCount;
         {
-            using SvgAnalyticCoverage aa = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, 1_000_000, budget, out long aaWork, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage aa = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(SvgAnalyticPaintKind.Direct, aa.PairPaintKind);
             Assert.Equal(binaryBytes + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(32), budget.Snapshot().CurrentBytes);
-            Assert.Equal(binaryWork + 32, aaWork);
             Assert.False(preparation.UsesRunBlitter);
         }
         Assert.Equal(cachedConvex, preparation.Convex);
         Assert.Equal(cachedCount, preparation.NativePointCount);
         {
-            using SvgAnalyticCoverage binary = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Binary, binaryWork, budget, out long work, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage binary = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            Assert.Equal(binaryWork, work);
             Assert.Equal(SvgAnalyticPaintKind.Pair, binary.PairPaintKind);
             Assert.Equal(binaryBytes, budget.Snapshot().CurrentBytes);
         }
@@ -87,35 +84,28 @@ public sealed class SvgAnalyticPaintClipTests
     }
 
     [Fact]
-    public void Forced_run_link_memory_and_work_denials_release_prepared_owners()
+    public void Forced_run_link_memory_refusal_releases_prepared_owners()
     {
         SvgAnalyticContourPreparation preparation = new(Triangle, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(0, 0, 32, 32), 96, 80);
         RenderBudget budget = new(1_000_000);
         long bytes;
-        long work;
         {
-            using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, 1_000_000, budget, out long _, out bool _, CancellationToken.None);
+            using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, budget, out bool _, CancellationToken.None);
         }
         {
-            using SvgAnalyticCoverage measured = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, 1_000_000, budget, out work, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage measured = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             bytes = budget.Snapshot().CurrentBytes;
         }
         RenderBudget denied = new(bytes - 1);
         try
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, work, denied, out long _, out bool _, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, denied, out bool _, CancellationToken.None);
             Assert.Fail("AA run links must fit together with existing row/edge ownership.");
         }
         catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
         Assert.Equal(1, denied.Snapshot().DeniedReservationCount);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        try
-        {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, work - 1, budget, out long _, out bool _, CancellationToken.None);
-            Assert.Fail("The new run initialization must respect remaining work before allocation.");
-        }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -137,9 +127,9 @@ public sealed class SvgAnalyticPaintClipTests
         static void PaintTiny(RenderBudget budget, CancellationToken token)
         {
             SvgAnalyticContourPreparation preparation = new(Triangle, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(0, 0, 32, 32), 96, 80);
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, 1_000_000, budget, out long _, out bool eligible, token);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 96), null, SvgAnalyticPaintClip.Antialiased, budget, out bool eligible, token);
             Assert.True(eligible);
-            walker.PrepareRow(10, out long _, token);
+            walker.PrepareRow(10, token);
             byte[] pixel = new byte[4];
             for (int x = 0; x < 32; x++) walker.PaintPixel(x, pixel, SvgAnalyticPaint.Solid(new(0, 52, 120, 255)), SvgAnalyticClipCoverage.Full);
         }

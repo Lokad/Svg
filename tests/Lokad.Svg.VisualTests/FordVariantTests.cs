@@ -101,7 +101,7 @@ public sealed class FordVariantTests
             SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(0, 0, 1000, 400), 1000, 400);
             RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
             {
-                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 1000, 0, 400, new(0, 1000), new(new(0, 0, 1000, 400)), SvgAnalyticPaintClip.Binary, options.Limits.MaximumWorkUnits, budget, out long _, out bool eligible, CancellationToken.None);
+                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 1000, 0, 400, new(0, 1000), new(new(0, 0, 1000, 400)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
                 Assert.True(eligible);
                 Assert.Equal((long)rawPoints, preparation.NativePointCount);
             }
@@ -202,15 +202,15 @@ public sealed class FordVariantTests
         RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "inventory", "inv-002-1000x400-transparent.png")), 400_000);
         RgbaImage rendered = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None), 400_000);
         {
-            using SvgAnalyticCoverage whole = SvgAnalyticCoverage.Prepare(points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, [], cubics, left, right, top, bottom, 1000, 400, new(0, 1000), null, options.Limits.MaximumWorkUnits, budget, out long _, out bool wholeEligible, CancellationToken.None);
+            using SvgAnalyticCoverage whole = SvgAnalyticCoverage.Prepare(points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, [], cubics, left, right, top, bottom, 1000, 400, new(0, 1000), null, budget, out bool wholeEligible, CancellationToken.None);
             // The pinned Chrome trace records the bitmap rectangle (254,0,256,256).
             // Its construction clip changes the native LowerRight X at this row;
             // merely clipping the already prepared whole-canvas row cannot do so.
-            using SvgAnalyticCoverage tile = SvgAnalyticCoverage.Prepare(points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, [], cubics, left, right, top, bottom, 1000, 400, new(constructionBounds.Left, constructionBounds.Right), new(constructionBounds), options.Limits.MaximumWorkUnits, budget, out long _, out bool tileEligible, CancellationToken.None);
+            using SvgAnalyticCoverage tile = SvgAnalyticCoverage.Prepare(points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, [], cubics, left, right, top, bottom, 1000, 400, new(constructionBounds.Left, constructionBounds.Right), new(constructionBounds), budget, out bool tileEligible, CancellationToken.None);
             Assert.True(wholeEligible);
             Assert.True(tileEligible);
-            whole.PrepareRow(row, out long _, CancellationToken.None);
-            tile.PrepareRow(row, out long _, CancellationToken.None);
+            whole.PrepareRow(row, CancellationToken.None);
+            tile.PrepareRow(row, CancellationToken.None);
             byte[] pixel = new byte[4];
             whole.PaintPixel(witness.GetProperty("x").GetInt32() - left, pixel, SvgAnalyticPaint.Solid(polygon.Color), SvgAnalyticClipCoverage.Full);
             Assert.Equal(witness.GetProperty("wholeCanvasAlpha").GetByte(), pixel[3]);

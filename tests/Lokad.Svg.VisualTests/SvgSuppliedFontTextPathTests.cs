@@ -201,8 +201,6 @@ public sealed class SvgSuppliedFontTextPathTests
         RenderBudget denied = new(peak - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, snapshot, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        RenderBudget workDenied = new(long.MaxValue);
-        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancelled = new();
         cancelled.Cancel();
         RenderBudget cancelledBudget = new(long.MaxValue);

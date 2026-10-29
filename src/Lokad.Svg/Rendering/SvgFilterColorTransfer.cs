@@ -5,7 +5,7 @@ using Lokad.Svg.Parsing;
 namespace Lokad.Svg.Rendering;
 
 /// <summary>Converts a borrowed premultiplied shader sample without intermediate byte quantization.</summary>
-/// <remarks>Immutable and allocation-free; callers own storage, charge pixel work and observe cancellation.</remarks>
+/// <remarks>Immutable and allocation-free; callers own storage and observe cancellation.</remarks>
 internal static class SvgFilterColorTransfer
 {
     private const float SrgbA = (float)(1 / 1.055), SrgbB = (float)(.055 / 1.055), SrgbC = (float)(1 / 12.92);

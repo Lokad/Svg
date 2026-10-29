@@ -383,12 +383,12 @@ internal static class SvgReferenceResolver
                 cancellationToken.ThrowIfCancellationRequested();
                 ends.Add(mapped.Count);
             }
-            SvgOrthogonalGeometryLowering.ChargePairs((long)ends.Count * (ends.Count - 1) / 2, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             SvgDevicePoint[] retainedOutlines = mapped.AsSpan().ToArray();
             int[] outlineEnds = ends.AsSpan().ToArray();
             SvgContourNesting.MergeIdenticalContours(retainedOutlines, outlineEnds, out SvgDevicePoint[] mergedOutlines, out int[] mergedEnds, cancellationToken);
             int[] roles = new int[mergedEnds.Length];
-            SvgOrthogonalGeometryLowering.ChargePairs((long)mergedEnds.Length * (mergedEnds.Length - 1) / 2, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             SvgContourNesting.ComputeWindingRoles(mergedOutlines, mergedEnds, roles, false, cancellationToken);
             for (int contour = 0; contour < mergedEnds.Length; contour++)
             {

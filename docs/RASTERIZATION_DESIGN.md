@@ -172,7 +172,7 @@ state. [Font qualification](../tests/README.md#qualification) owns the evidence.
 ## Limits and cancellation
 
 [RenderBudget](../src/Lokad.Svg/Rendering/RenderBudget.cs) reserves dominant storage
-before allocation. Parser, scene, glyph, tile, filter and encoder work share the
+before allocation. Parser, scene, glyph, tile, filter and encoder storage share the
 conversion allowance; font discovery has its documented acquisition lifetime.
 Growth/copy loops also observe cancellation. Failure releases private owners and
 leaves borrowed inputs unchanged. Caller streams remain open and can contain

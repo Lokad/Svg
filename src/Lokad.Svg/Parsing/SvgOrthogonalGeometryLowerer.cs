@@ -1722,7 +1722,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             }
         }
 
-        ChargePairs((long)loopTotal * (loopTotal - 1) / 2, _cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         bool[] keepLoop = new bool[loopTotal];
         for (int loop = 0; loop < loopTotal; loop++) keepLoop[loop] = true;
         long comparedPairs = 0;
@@ -1830,7 +1830,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             ends[contour] = mapped.Count;
         }
 
-        ChargePairs((long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         SvgDevicePoint[] retainedOutlines = mapped.AsSpan().ToArray();
         SvgContourNesting.MergeIdenticalContours(retainedOutlines, ends, out SvgDevicePoint[] mergedOutlines, out int[] mergedEnds, _cancellationToken);
         retainedOutlines = mergedOutlines;
@@ -1872,7 +1872,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (conicKept != conics.Length) Array.Resize(ref conics, conicKept);
             ValidateDeviceRange(retainedOutlines);
             int[] roles = new int[ends.Length];
-            ChargePairs((long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             SvgContourNesting.ComputeWindingRoles(retainedOutlines, ends, roles, false, _cancellationToken);
             for (int contour = 0; contour < ends.Length; contour++)
             {
@@ -2033,8 +2033,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 retained = tightPoints;
                 ends = weldedEnds;
             }
-            ChargePairs((long)weldedTotal * (weldedTotal - 1) / 2, _cancellationToken);
-            ChargePairs((long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             if (SvgContourNesting.MergeIdenticalContours(retained, ends, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, _cancellationToken))
             {
                 quadSpans = Array.Empty<SvgQuadSpan>();
@@ -2095,7 +2094,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 }
             }
             int[] signs = new int[ends.Length];
-            ChargePairs((long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             bool skipSharedVertices = touchResolved || interLoopResolved || unionResolved || mixedResolved;
             if (_isEvenOdd) SvgContourNesting.ComputeParitySigns(retained, ends, signs, skipSharedVertices, _cancellationToken);
             else SvgContourNesting.ComputeWindingRoles(retained, ends, signs, skipSharedVertices, _cancellationToken);
@@ -2170,7 +2169,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             cursor += 2;
             int count = end - start;
             if (count < 3) return false;
-            ChargePairs((long)count * (count - 1) / 2, _cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             SvgContourFlags loop = SvgContourStructure.ClassifyContour(workPoints.AsSpan(), start, end, _cancellationToken);
             if (loop == SvgContourFlags.None)
             {
@@ -2225,8 +2224,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             splitDone = true;
         }
 
-        long totalPoints = splitPoints.Count;
-        ChargePairs(totalPoints * totalPoints, _cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         if (SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken)) return true;
         if (isEvenOdd) return false;
         if (!TrySplitInterLoopCrossings(splitPoints, splitEnds)) return false;
@@ -2257,7 +2255,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         while (true)
         {
             if (++rounds > maximumRounds) return false;
-            ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             if (!SvgContourStructure.TryFindInterLoopProperCrossing(workPoints, workEnds, out int firstLoop, out int firstEdge, out int secondLoop, out int secondEdge, out SvgDevicePoint crossing, _cancellationToken)) break;
             InsertSplitVertex(ref workPoints, workEnds, firstLoop, firstEdge, crossing);
             InsertSplitVertex(ref workPoints, workEnds, secondLoop, secondEdge, crossing);
@@ -2274,7 +2272,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             _cancellationToken.ThrowIfCancellationRequested();
             splitEnds.Add(workEnds[index]);
         }
-        ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         return SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken);
     }
 
@@ -2320,7 +2318,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         bool singleEvenOdd = false;
         if (_isEvenOdd && (structure & SvgContourFlags.SelfTouch) == SvgContourFlags.None)
         {
-            ChargePairs((long)points.Length * points.Length, _cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             singleEvenOdd = !SvgContourStructure.TryFindInterLoopProperCrossing(points, ends, out _, out _, out _, out _, out _, _cancellationToken);
         }
         if ((structure & SvgContourFlags.CoincidentOverlap) == SvgContourFlags.None) return false;
@@ -2344,7 +2342,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         while (true)
         {
             if (++sweeps > maximumSweeps) return false;
-            ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             if (SubdivideCoincidentOverlapEndpoints(ref workPoints, ref workEnds)) continue;
             if (nonzeroOnly && allowContainedDrop && TryDropContainedUnionLoop(ref workPoints, ref workEnds)) continue;
             if (nonzeroOnly && TrySpliceSharedUnionEdge(ref workPoints, ref workEnds, false)) continue;
@@ -2363,7 +2361,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             _cancellationToken.ThrowIfCancellationRequested();
             splitEnds.Add(workEnds[index]);
         }
-        ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         if (!SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken)) return false;
         unionResolved = true;
         return true;
@@ -3471,7 +3469,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (++sweeps > maximumSweeps) return false;
             if (!_isEvenOdd || allowEvenOddCrossings)
             {
-                ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 if (SvgContourStructure.TryFindInterLoopProperCrossing(workPoints, workEnds, out int crossingFirstLoop, out int crossingFirstEdge, out int crossingSecondLoop, out int crossingSecondEdge, out SvgDevicePoint crossing, _cancellationToken))
                 {
                     InsertSplitVertex(ref workPoints, workEnds, crossingFirstLoop, crossingFirstEdge, crossing);
@@ -3504,7 +3502,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             _cancellationToken.ThrowIfCancellationRequested();
             splitEnds.Add(workEnds[index]);
         }
-        ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         return SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken);
     }
     /// <summary>Unions nonzero loops mixing crossings, coincident spans and touches through one subdivision sweep.</summary>
@@ -3542,7 +3540,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             if (++sweeps > maximumSweeps) return false;
             if (workPoints.Length > points.Length + maximumInsertions) return false;
-            ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             if (SubdivideCoincidentOverlapEndpoints(ref workPoints, ref workEnds)) continue;
             if (SvgContourStructure.TryFindInterLoopProperCrossing(workPoints, workEnds, out int crossingFirstLoop, out int crossingFirstEdge, out int crossingSecondLoop, out int crossingSecondEdge, out SvgDevicePoint crossing, _cancellationToken))
             {
@@ -3577,7 +3575,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             _cancellationToken.ThrowIfCancellationRequested();
             splitEnds.Add(workEnds[index]);
         }
-        ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         if (!SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken)) return false;
         mixedResolved = true;
         return true;
@@ -3798,10 +3796,6 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
 
-    internal static void ChargePairs(long pairs, CancellationToken cancellationToken)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-    }
 
     private static void ValidateDeviceRange(SvgDevicePoint[] retained)
     {

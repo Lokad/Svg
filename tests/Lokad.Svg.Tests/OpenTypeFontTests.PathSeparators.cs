@@ -9,7 +9,7 @@ public sealed partial class OpenTypeFontTests
     {
         SvgRenderLimits standard = SvgRenderLimits.Default;
         SvgRenderLimits limits = new(standard.MaximumAccountedBytes, standard.MaximumInputBytes, standard.MaximumDimension,
-            standard.MaximumPixels, standard.MaximumEncodedPngBytes, standard.MaximumNodes, 5, standard.MaximumWorkUnits);
+            standard.MaximumPixels, standard.MaximumEncodedPngBytes, standard.MaximumNodes, 5);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         (var catalog, var provider, _) = CreateExamplePack(CreateTriangleFont());
         string valid = "M0 0H8V8H0Z";

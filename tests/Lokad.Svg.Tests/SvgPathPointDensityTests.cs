@@ -15,22 +15,20 @@ public sealed class SvgPathPointDensityTests
     {
         SvgAnalyticContourPreparation preparation = new(Points, [7], [], false, null, SvgPolygonMapping.FlattenedCurves, [], Cubics, new(0, 0, 64, 64), 64, 64);
         RenderBudget budget = new(1_000_000);
-        long firstWork;
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out firstWork, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(6L, preparation.NativePointCount);
         }
         // The second uncut context reuses the charged classification/count;
         // a construction clip still uses that same whole-path point count.
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long cachedWork, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            Assert.True(cachedWork < firstWork);
             Assert.Equal(6L, preparation.NativePointCount);
         }
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), new(new(0, 8, 64, 40)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), new(new(0, 8, 64, 40)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(6L, preparation.NativePointCount);
         }
@@ -38,26 +36,32 @@ public sealed class SvgPathPointDensityTests
     }
 
     [Fact]
-    public void Count_validation_is_denied_before_storage_and_does_not_cache_partial_work()
+    public void Cancelled_preparation_preserves_the_uncached_count_and_allows_retry()
     {
         SvgAnalyticContourPreparation preparation = new(Points, [7], [], false, null, SvgPolygonMapping.FlattenedCurves, [], Cubics, new(0, 0, 64, 64), 64, 64);
         RenderBudget success = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, success, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, success, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
         }
         preparation.NativePointCount = null;
         RenderBudget denied = new(1_000_000);
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
         try
         {
-            // One contour and one span require three charged visits. All other
-            // classifications are cached; denial must precede count/storage.
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 2, denied, out long _, out bool _, CancellationToken.None);
-            Assert.Fail("Count validation must observe the remaining work limit.");
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, denied, out bool _, cancellation.Token);
+            Assert.Fail("Canceled preparation must leave the uncached count unchanged.");
         }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
+        catch (OperationCanceledException exception) { Assert.Equal(cancellation.Token, exception.CancellationToken); }
         Assert.Null(preparation.NativePointCount);
         Assert.Equal(0, denied.Snapshot().PeakBytes);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        using (SvgAnalyticCoverage retry = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, denied, out bool eligible, CancellationToken.None))
+        {
+            Assert.True(eligible);
+            Assert.Equal(6L, preparation.NativePointCount);
+        }
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
     }
 
@@ -78,7 +82,7 @@ public sealed class SvgPathPointDensityTests
         SvgAnalyticContourPreparation preparation = new(Points, [7], parity ? [1] : [], parity, null, reason == "mapping" ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.FlattenedCurves, [], spans, new(0, 0, 64, 64), 64, 64);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(7L, preparation.NativePointCount);
         }

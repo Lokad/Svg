@@ -15,10 +15,10 @@ public sealed class SvgDirectPaintSpillTests
         using SvgRoot root = SvgRootParser.Parse(Source, SvgRenderLimits.Default, CancellationToken.None);
         SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans,
-            18, 66, 14, 62, 85, 79, new(0, 85), budget, out long _, out bool eligible, CancellationToken.None))
+            18, 66, 14, 62, 85, 79, new(0, 85), budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
-            walker.PrepareRow(38, 1_000_000, out long _, CancellationToken.None);
+            walker.PrepareRow(38, CancellationToken.None);
             Assert.Equal(48, walker.Row.Length);
             Assert.Equal(new(18, 67), walker.GetPaintWindow(new(18, 66)));
             byte[] pixel = new byte[4];
@@ -86,8 +86,8 @@ public sealed class SvgDirectPaintSpillTests
         using SvgRoot root = SvgRootParser.Parse(Source, SvgRenderLimits.Default, CancellationToken.None);
         SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
         using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans,
-            18, 66, 14, 62, 85, 79, new(0, 85), budget, out long _, out bool eligible, CancellationToken.None);
+            18, 66, 14, 62, 85, 79, new(0, 85), budget, out bool eligible, CancellationToken.None);
         Assert.True(eligible);
-        walker.PrepareRow(38, 1_000_000, out long _, CancellationToken.None);
+        walker.PrepareRow(38, CancellationToken.None);
     }
 }

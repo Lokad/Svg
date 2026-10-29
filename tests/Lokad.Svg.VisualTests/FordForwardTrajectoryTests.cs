@@ -55,8 +55,8 @@ public sealed class FordForwardTrajectoryTests
             Assert.Equal(8, polygon.CubicSpans.Length);
             RenderBudget walkBudget = new(10_000_000);
             ReadOnlySpan<int> votes = polygon.Signs is int[] roles ? roles : Array.Empty<int>();
-            using SvgAnalyticCoverage live = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 100, 0, 100, 100, 100, walkBudget, out long _, out bool liveEligible, CancellationToken.None);
-            using SvgAnalyticCoverage flat = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 0, 100, 0, 100, 100, 100, walkBudget, out long _, out bool flatEligible, CancellationToken.None);
+            using SvgAnalyticCoverage live = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 100, 0, 100, 100, 100, walkBudget, out bool liveEligible, CancellationToken.None);
+            using SvgAnalyticCoverage flat = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 0, 100, 0, 100, 100, 100, walkBudget, out bool flatEligible, CancellationToken.None);
             Assert.True(liveEligible);
             Assert.True(flatEligible);
             long differing = 0;
@@ -69,8 +69,8 @@ public sealed class FordForwardTrajectoryTests
             int firstDiffer = -1;
             for (int y = 0; y < 100; y++)
             {
-                live.PrepareRow(y, out long _, CancellationToken.None);
-                flat.PrepareRow(y, out long _, CancellationToken.None);
+                live.PrepareRow(y, CancellationToken.None);
+                flat.PrepareRow(y, CancellationToken.None);
                 byte[] liveRow = SamplePaintedAlpha(live, 100, polygon.Color);
                 byte[] flatRow = SamplePaintedAlpha(flat, 100, polygon.Color);
                 long rowLiveErr = 0;
@@ -184,8 +184,8 @@ public sealed class FordForwardTrajectoryTests
     {
         RenderBudget budget = new(10_000_000);
         ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
-        using SvgAnalyticCoverage live = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, quadSpans, cubicSpans, 0, width, 0, height, width, height, budget, out long _, out bool liveEligible, CancellationToken.None);
-        using SvgAnalyticCoverage flat = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 0, width, 0, height, width, height, budget, out long _, out bool flatEligible, CancellationToken.None);
+        using SvgAnalyticCoverage live = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, quadSpans, cubicSpans, 0, width, 0, height, width, height, budget, out bool liveEligible, CancellationToken.None);
+        using SvgAnalyticCoverage flat = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 0, width, 0, height, width, height, budget, out bool flatEligible, CancellationToken.None);
         int firstRow = -1;
         long differingBytes = 0;
         long liveMass = 0;
@@ -194,8 +194,8 @@ public sealed class FordForwardTrajectoryTests
         {
             for (int y = 0; y < height; y++)
             {
-                live.PrepareRow(y, out long _, CancellationToken.None);
-                flat.PrepareRow(y, out long _, CancellationToken.None);
+                live.PrepareRow(y, CancellationToken.None);
+                flat.PrepareRow(y, CancellationToken.None);
                 byte[] liveRow = SamplePaintedAlpha(live, width, paint);
                 byte[] flatRow = SamplePaintedAlpha(flat, width, paint);
                 foreach (byte value in liveRow) liveMass += value;
@@ -259,13 +259,13 @@ public sealed class FordForwardTrajectoryTests
     {
         RenderBudget walkBudget = new(10_000_000);
         ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
-        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, quadSpans, cubicSpans, 0, width, 0, height, width, height, walkBudget, out long _, out bool eligible, CancellationToken.None);
+        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, quadSpans, cubicSpans, 0, width, 0, height, width, height, walkBudget, out bool eligible, CancellationToken.None);
         List<byte> rows = new(width * height);
         if (eligible)
         {
             for (int y = 0; y < height; y++)
             {
-                walker.PrepareRow(y, out long _, CancellationToken.None);
+                walker.PrepareRow(y, CancellationToken.None);
                 rows.AddRange(SamplePaintedAlpha(walker, width, paint));
             }
         }

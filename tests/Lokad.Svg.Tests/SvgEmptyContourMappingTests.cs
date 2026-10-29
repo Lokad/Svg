@@ -115,7 +115,7 @@ public sealed class SvgEmptyContourMappingTests
         {
             SvgRenderLimits tight = new(normal.MaximumAccountedBytes, inputLimit ? input.Length - 1 : normal.MaximumInputBytes,
                 normal.MaximumDimension, normal.MaximumPixels, normal.MaximumEncodedPngBytes, inputLimit ? normal.MaximumNodes : 1,
-                normal.MaximumPathCommands, normal.MaximumWorkUnits, normal.MaximumXmlDepth, normal.MaximumAttributesPerElement);
+                normal.MaximumPathCommands, normal.MaximumXmlDepth, normal.MaximumAttributesPerElement);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, tight, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
@@ -127,8 +127,7 @@ public sealed class SvgEmptyContourMappingTests
     {
         SvgRenderLimits normal = SvgRenderLimits.Default;
         SvgRenderLimits tight = new(normal.MaximumAccountedBytes, normal.MaximumInputBytes, normal.MaximumDimension,
-            normal.MaximumPixels, normal.MaximumEncodedPngBytes, normal.MaximumNodes, 1, normal.MaximumWorkUnits,
-            normal.MaximumXmlDepth, normal.MaximumAttributesPerElement);
+            normal.MaximumPixels, normal.MaximumEncodedPngBytes, normal.MaximumNodes, 1, normal.MaximumXmlDepth, normal.MaximumAttributesPerElement);
         RenderBudget budget = new(1_000_000);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(Document("<path d='M0 0L0 0'/>"), tight, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

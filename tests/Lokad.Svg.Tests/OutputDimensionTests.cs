@@ -24,7 +24,7 @@ public sealed class OutputDimensionTests
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(useViewport
             ? "<svg xmlns='http://www.w3.org/2000/svg' width='1000' height='1000'/>"
             : FormattableString.Invariant($"<svg xmlns='http://www.w3.org/2000/svg' width='{width}' height='{height}'/>"));
-        SvgRenderLimits limits = new(200_000, 1_024, maximumDimension, 64, 1_024, 16, 16, 1_000);
+        SvgRenderLimits limits = new(200_000, 1_024, maximumDimension, 64, 1_024, 16, 16);
         SvgRenderOptions options = new(useViewport ? new SvgViewport(width, height) : null, scale, SvgColor.Transparent, limits);
 
         foreach (OutputForm form in Enum.GetValues<OutputForm>())
@@ -93,7 +93,7 @@ public sealed class OutputDimensionTests
     public async Task Oversized_integral_dimensions_fail_before_integer_conversion()
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
-        SvgRenderLimits limits = new(200_000, 1_024, int.MaxValue, 64, 1_024, 16, 16, 1_000);
+        SvgRenderLimits limits = new(200_000, 1_024, int.MaxValue, 64, 1_024, 16, 16);
         SvgRenderOptions options = new(new SvgViewport((double)int.MaxValue + 1, 1), 1, SvgColor.Transparent, limits);
 
         foreach (OutputForm form in Enum.GetValues<OutputForm>())

@@ -137,7 +137,7 @@ public sealed class SvgDoctypeTests
     public void Inert_declaration_preserves_input_and_structure_limits(string limit)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<!DOCTYPE svg><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><g><rect width='2' height='2'/></g></svg>");
-        SvgRenderLimits limits = new(1_048_576, limit == "input" ? input.Length - 1 : 1024, 16, 256, 1024, limit == "nodes" ? 1 : 16, 16, 1000, limit == "depth" ? 1 : 16, limit == "attributes" ? 1 : 16);
+        SvgRenderLimits limits = new(1_048_576, limit == "input" ? input.Length - 1 : 1024, 16, 256, 1024, limit == "nodes" ? 1 : 16, 16, limit == "depth" ? 1 : 16, limit == "attributes" ? 1 : 16);
         RenderBudget budget = new(limits.MaximumAccountedBytes);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, limits, budget, CancellationToken.None)).ErrorCode);

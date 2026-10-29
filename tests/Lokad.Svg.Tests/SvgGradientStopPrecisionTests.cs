@@ -119,24 +119,6 @@ public sealed class SvgGradientStopPrecisionTests
     [InlineData("linear")]
     [InlineData("radial")]
     [InlineData("pattern")]
-    public void Polygon_work_denial_releases_replay_storage(string paint)
-    {
-        using SvgRoot root = SvgRootParser.Parse(Polygon(paint), SvgRenderLimits.Default, CancellationToken.None);
-        RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        long work;
-        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None)) work = surface.WorkUnits;
-        Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        SvgRenderLimits limits = new(SvgRenderLimits.Default.MaximumAccountedBytes, 1_000_000, 1000, 1_000_000, 1_000_000, 1000, 1000, checked((int)work - 1));
-        RenderBudget denied = new(limits.MaximumAccountedBytes);
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, limits), denied, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Equal(0, denied.Snapshot().CurrentBytes);
-    }
-
-    [Theory]
-    [InlineData("linear")]
-    [InlineData("radial")]
-    [InlineData("pattern")]
     public void Cancellation_between_shader_events_releases_replay_storage(string paint)
     {
         using SvgRoot root = SvgRootParser.Parse(Polygon(paint), SvgRenderLimits.Default, CancellationToken.None);

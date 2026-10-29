@@ -122,7 +122,7 @@ internal static class SvgNativePathStroke
         static (int Index, bool HasTangent) FindFutureTangent(ReadOnlySpan<SvgAuthoredPathCommand> commands, int start, SvgAffineTransform map,
             SvgDevicePoint current, CancellationToken token)
         {
-            // Charge each inspected verb, including the cached range's boundary.
+            // Check cancellation for each inspected verb, including the cached range's boundary.
             for (int index = start; index < commands.Length; index++)
             {
                 token.ThrowIfCancellationRequested();
@@ -270,7 +270,7 @@ internal static class SvgNativePathStroke
         internal Stroker(float radius, float limit, SvgStrokeCap cap, SvgStrokeJoin join, float scale,
             BudgetedParserList<SvgStrokeOutlineCommand> outer, BudgetedParserList<SvgStrokeOutlineCommand> inner,
             BudgetedParserList<SvgStrokeOutlineCommand> cusps, BudgetedParserList<SvgStrokeCurveSegment> fitted,
-CancellationToken token)
+            CancellationToken token)
         {
             _radius = radius; _scale = scale; _inverseScale = 1 / (scale * 4); _inverseMiter = join == SvgStrokeJoin.Miter && limit > 1 ? 1 / limit : 0;
             _join = join == SvgStrokeJoin.Miter && limit <= 1 ? SvgStrokeJoin.Bevel : join;
@@ -521,7 +521,7 @@ CancellationToken token)
                 if (MathF.Abs(y) <= 1f / 4096 && x > 0 && (reverse ? y <= 0 : y >= 0)) return 0;
                 if (reverse) y = -y;
                 int quadrant = y == 0 ? 2 : x == 0 ? y > 0 ? 1 : 3 : (y < 0 ? 2 : 0) + ((x < 0) != (y < 0) ? 1 : 0);
-                ReadOnlySpan<Point> unit = stackalloc Point[] { new(1,0),new(1,1),new(0,1),new(-1,1),new(-1,0),new(-1,-1),new(0,-1),new(1,-1) };
+                ReadOnlySpan<Point> unit = stackalloc Point[] { new(1, 0),new(1, 1),new(0, 1),new(-1, 1),new(-1, 0),new(-1, -1),new(0, -1),new(1, -1) };
                 float scaleX = radius * from.X, scaleY = radius * from.Y;
                 int count = quadrant;
                 for (int index = 0; index < count; index++)
@@ -539,7 +539,7 @@ CancellationToken token)
                     Point control = last + new Point(x, y);
                     _ = control.SetLength(1 / weight, out control);
                     if (CanNormalize(control - last))
-                    { controls[count] = Map(control, pivot, scaleX, scaleY, reverse); ends[count] = Map(new(x,y), pivot, scaleX, scaleY, reverse); weights[count++] = weight; }
+                    { controls[count] = Map(control, pivot, scaleX, scaleY, reverse); ends[count] = Map(new(x, y), pivot, scaleX, scaleY, reverse); weights[count++] = weight; }
                 }
                 return count;
 
@@ -553,11 +553,11 @@ CancellationToken token)
             float left = pivot.X - _radius, right = pivot.X + _radius, top = pivot.Y - _radius, bottom = pivot.Y + _radius;
             float x = (float)(.5 * ((double)left + right)), y = (float)(.5 * ((double)top + bottom));
             Add(_cusps, SvgStrokeOutlineVerb.Move, default, new(right, y), 1);
-            Add(_cusps, SvgStrokeOutlineVerb.Conic, new(right,bottom), new(x,bottom), SvgRationalQuadratic.QuarterCircleWeight);
-            Add(_cusps, SvgStrokeOutlineVerb.Conic, new(left,bottom), new(left,y), SvgRationalQuadratic.QuarterCircleWeight);
-            Add(_cusps, SvgStrokeOutlineVerb.Conic, new(left,top), new(x,top), SvgRationalQuadratic.QuarterCircleWeight);
-            Add(_cusps, SvgStrokeOutlineVerb.Conic, new(right,top), new(right,y), SvgRationalQuadratic.QuarterCircleWeight);
-            Add(_cusps, SvgStrokeOutlineVerb.Close, default, new(right,y), 1);
+            Add(_cusps, SvgStrokeOutlineVerb.Conic, new(right, bottom), new(x, bottom), SvgRationalQuadratic.QuarterCircleWeight);
+            Add(_cusps, SvgStrokeOutlineVerb.Conic, new(left, bottom), new(left, y), SvgRationalQuadratic.QuarterCircleWeight);
+            Add(_cusps, SvgStrokeOutlineVerb.Conic, new(left, top), new(x, top), SvgRationalQuadratic.QuarterCircleWeight);
+            Add(_cusps, SvgStrokeOutlineVerb.Conic, new(right, top), new(right, y), SvgRationalQuadratic.QuarterCircleWeight);
+            Add(_cusps, SvgStrokeOutlineVerb.Close, default, new(right, y), 1);
         }
 
         private void Add(BudgetedParserList<SvgStrokeOutlineCommand> sink, SvgStrokeOutlineVerb verb, Point control, Point end, float weight)

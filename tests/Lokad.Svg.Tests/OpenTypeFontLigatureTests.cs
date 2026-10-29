@@ -136,13 +136,13 @@ public sealed partial class OpenTypeFontTests
         RenderBudget denied = new(128);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(font, "AAA", 20, 0, 0, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        for (int maximumWork = 0; maximumWork < 120; maximumWork++)
+        RenderBudget budget = new(1_024);
+        using (SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(font, "AAAAAA", 20, 0, 0, SvgTextAnchor.Start, budget, CancellationToken.None))
         {
-            RenderBudget budget = new(1_024);
-            try { using SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(font, "AAAAAA", 20, 0, 0, SvgTextAnchor.Start, budget, CancellationToken.None); }
-            catch (SvgException failure) { Assert.Equal(SvgErrorCode.LimitExceeded, failure.ErrorCode); }
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            Assert.NotEmpty(positions.Glyphs.ToArray());
+            Assert.True(budget.Snapshot().CurrentBytes > 0);
         }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         RenderBudget canceled = new(1_024);

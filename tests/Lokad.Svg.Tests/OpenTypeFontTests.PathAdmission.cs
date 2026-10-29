@@ -69,7 +69,7 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         SvgRenderLimits d = SvgRenderLimits.Default;
         SvgRenderLimits limits = new(d.MaximumAccountedBytes, d.MaximumInputBytes, d.MaximumDimension, d.MaximumPixels,
-            d.MaximumEncodedPngBytes, d.MaximumNodes, 8, d.MaximumWorkUnits, d.MaximumXmlDepth, d.MaximumAttributesPerElement);
+            d.MaximumEncodedPngBytes, d.MaximumNodes, 8, d.MaximumXmlDepth, d.MaximumAttributesPerElement);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, measured, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new(); cancellation.Cancel();

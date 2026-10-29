@@ -141,21 +141,6 @@ public sealed class SvgRectanglePaintTests
     }
 
     [Fact]
-    public void Raster_work_denial_releases_the_surface()
-    {
-        using SvgRoot root = SvgRootParser.Parse(Input("solid"), SvgRenderLimits.Default, CancellationToken.None);
-        RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        long work;
-        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
-            work = surface.WorkUnits;
-        SvgRenderLimits limits = new(SvgRenderLimits.Default.MaximumAccountedBytes, 1_000_000, 1000, 1_000_000, 1_000_000, 1000, 1000, checked((int)work - 1));
-        RenderBudget denied = new(limits.MaximumAccountedBytes);
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, limits), denied, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Equal(0, denied.Snapshot().CurrentBytes);
-    }
-
-    [Fact]
     public void Raster_memory_denial_retains_no_surface_storage()
     {
         using SvgRoot root = SvgRootParser.Parse(Input("solid"), SvgRenderLimits.Default, CancellationToken.None);

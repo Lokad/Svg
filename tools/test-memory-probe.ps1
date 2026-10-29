@@ -142,9 +142,9 @@ $pattern = Invoke-Probe -Name 'pattern' -InputPath $patternInput -Output $patter
 if ($pattern['outcome'] -ne 'success' -or $pattern['inputBytes'] -ne $patternBytes.ToString() -or -not (Test-Path -LiteralPath $patternOutput)) { throw 'The pattern tile probe did not convert its tiled fill.' }
 if (-not $pattern.ContainsKey('conversionManagedAllocatedBytes') -or [long]$pattern['conversionManagedAllocatedBytes'] -le 0) { throw 'The pattern tile probe did not report managed conversion allocation.' }
 
-$patternDeniedOutput = Join-Path $ResultsDirectory "$runId-pattern-work-denied.png"
-$patternDenied = Invoke-Probe -Name 'pattern-work-denied' -InputPath $patternInput -Output $patternDeniedOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-work-units', '10000')
-if ($patternDenied['outcome'] -ne 'svg-error' -or $patternDenied['svgErrorCode'] -ne 'LimitExceeded' -or $patternDenied['inputBytes'] -ne $patternBytes.ToString() -or (Test-Path -LiteralPath $patternDeniedOutput)) { throw 'The work-denied pattern tile probe did not reject before output.' }
+$patternDeniedOutput = Join-Path $ResultsDirectory "$runId-pattern-memory-denied.png"
+$patternDenied = Invoke-Probe -Name 'pattern-memory-denied' -InputPath $patternInput -Output $patternDeniedOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', '200000')
+if ($patternDenied['outcome'] -ne 'svg-error' -or $patternDenied['svgErrorCode'] -ne 'LimitExceeded' -or $patternDenied['inputBytes'] -ne $patternBytes.ToString() -or (Test-Path -LiteralPath $patternDeniedOutput)) { throw 'The memory-denied pattern tile probe did not reject before output.' }
 
 $xmlWorkspaceInput = Join-Path $ResultsDirectory "$runId-xml-workspace.svg"
 $xmlWorkspacePayload = New-Object string('x', 64KB)

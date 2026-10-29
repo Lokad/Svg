@@ -149,17 +149,12 @@ public sealed class SvgDefinitionDisplayTests
             {
                 RenderBudget measured = new(1_000_000);
                 byte[] reference;
-                long work;
                 using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
-                { reference = surface.Pixels.ToArray(); work = surface.WorkUnits; }
+                { reference = surface.Pixels.ToArray(); }
                 Assert.Equal(0, measured.Snapshot().CurrentBytes);
                 RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, denied.Snapshot().CurrentBytes);
-                SvgRenderOptions shortWork = new(null, 1, SvgColor.Transparent,
-                    new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                        limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)work - 1)));
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, shortWork, measured, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, measured.Snapshot().CurrentBytes);
                 using CancellationTokenSource cancellation = new();
                 cancellation.Cancel();

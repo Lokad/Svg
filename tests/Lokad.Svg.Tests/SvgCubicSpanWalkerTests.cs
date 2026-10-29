@@ -11,7 +11,7 @@ public sealed class SvgCubicSpanWalkerTests
         SvgDevicePoint[] points = [new(8, 48), new(32, 8), new(56, 48)];
         SvgCubicSpan[] spans = [new(0, 0, 2, new(8, 0), new(56, 0))];
         RenderBudget budget = new(1_000_000);
-        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [3], [], false, null, SvgPolygonMapping.FlattenedCurves, [], spans, 0, 64, 0, 64, 64, 64, budget, out long _, out bool eligible, CancellationToken.None);
+        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [3], [], false, null, SvgPolygonMapping.FlattenedCurves, [], spans, 0, 64, 0, 64, 64, 64, budget, out bool eligible, CancellationToken.None);
 
         Assert.True(eligible);
         Assert.Equal(2, walker.EdgeCount);
@@ -36,14 +36,14 @@ public sealed class SvgCubicSpanWalkerTests
         RenderBudget budget = new(1_000_000);
         ReadOnlySpan<int> votes = polygon.Signs is int[] roles ? roles : Array.Empty<int>();
         SvgAnalyticClipContext? clip = clipped ? new(new(10, 0, 48, 64)) : null;
-        using SvgAnalyticCoverage sequential = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 64, 0, 64, 64, 64, new(0, 64), clip, 1_000_000, budget, out long _, out bool sequentialEligible, CancellationToken.None);
-        using SvgAnalyticCoverage skipped = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 64, 0, 64, 64, 64, new(0, 64), clip, 1_000_000, budget, out long _, out bool skippedEligible, CancellationToken.None);
+        using SvgAnalyticCoverage sequential = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 64, 0, 64, 64, 64, new(0, 64), clip, budget, out bool sequentialEligible, CancellationToken.None);
+        using SvgAnalyticCoverage skipped = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 64, 0, 64, 64, 64, new(0, 64), clip, budget, out bool skippedEligible, CancellationToken.None);
         Assert.True(sequentialEligible);
         Assert.True(skippedEligible);
 
-        sequential.PrepareRow(12, out long _, CancellationToken.None);
-        sequential.PrepareRow(24, out long sequentialWork, CancellationToken.None);
-        skipped.PrepareRow(24, out long skippedWork, CancellationToken.None);
+        sequential.PrepareRow(12, CancellationToken.None);
+        sequential.PrepareRow(24, CancellationToken.None);
+        skipped.PrepareRow(24, CancellationToken.None);
 
         byte[] sequentialPixels = new byte[64 * 4];
         byte[] skippedPixels = new byte[64 * 4];
@@ -54,19 +54,16 @@ public sealed class SvgCubicSpanWalkerTests
             skipped.PaintPixel(x, skippedPixels.AsSpan(x * 4, 4), paint, SvgAnalyticClipCoverage.Full);
         }
         Assert.Equal(skippedPixels, sequentialPixels);
-        sequential.PrepareRow(24, out long _, CancellationToken.None);
+        sequential.PrepareRow(24, CancellationToken.None);
         byte[] repeatedPixels = new byte[64 * 4];
         for (int x = 0; x < 64; x++)
             sequential.PaintPixel(x, repeatedPixels.AsSpan(x * 4, 4), paint, SvgAnalyticClipCoverage.Full);
         Assert.Equal(skippedPixels, repeatedPixels);
-        // Skipping earlier rows may require growing the operation buffer here.
-        Assert.True(skippedWork >= sequentialWork);
         Assert.Contains(Enumerable.Range(0, 64).Select(x => sequentialPixels[x * 4 + 3]), alpha => alpha > 0 && alpha < 255);
     }
 
     [Theory]
     [InlineData("storage")]
-    [InlineData("work")]
     [InlineData("cancel")]
     public void Convex_cubic_denial_releases_storage_and_allows_retry(string deniedPhase)
     {
@@ -78,7 +75,7 @@ public sealed class SvgCubicSpanWalkerTests
         if (deniedPhase == "cancel") cancellation.Cancel();
         try
         {
-            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, deniedPhase == "work" ? 0 : 1_000_000, budget, out long _, out bool _, cancellation.Token);
+            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool _, cancellation.Token);
             Assert.Fail("Preparation must honor the denied resource.");
         }
         catch (SvgException exception)
@@ -90,11 +87,10 @@ public sealed class SvgCubicSpanWalkerTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget retryBudget = new(1_000_000);
         {
-            using SvgAnalyticCoverage retry = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, retryBudget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage retry = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, retryBudget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(2, retry.EdgeCount);
-            retry.PrepareRow(24, out long work, CancellationToken.None);
-            Assert.True(work > 0);
+            retry.PrepareRow(24, CancellationToken.None);
         }
         Assert.Equal(0, retryBudget.Snapshot().CurrentBytes);
     }
@@ -112,13 +108,13 @@ public sealed class SvgCubicSpanWalkerTests
     {
         RenderBudget budget = new(10_000_000);
         ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
-        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, SvgPolygonMapping.FlattenedCurves, quadSpans, cubicSpans, 0, 64, 0, 64, 64, 64, budget, out long _, out eligible, CancellationToken.None);
+        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, SvgPolygonMapping.FlattenedCurves, quadSpans, cubicSpans, 0, 64, 0, 64, 64, 64, budget, out eligible, CancellationToken.None);
         List<byte> rows = new();
         if (eligible)
         {
             for (int y = firstRow; y < pastLastRow; y++)
             {
-                walker.PrepareRow(y, out long _, CancellationToken.None);
+                walker.PrepareRow(y, CancellationToken.None);
                 byte[] pixels = new byte[64 * 4];
                 for (int x = 0; x < 64; x++)
                 {

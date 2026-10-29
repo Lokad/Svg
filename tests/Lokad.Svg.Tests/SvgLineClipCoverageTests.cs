@@ -84,8 +84,6 @@ public sealed class SvgLineClipCoverageTests
         RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        RenderBudget workDenied = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         RenderBudget cancelled = new(SvgRenderLimits.Default.MaximumAccountedBytes);

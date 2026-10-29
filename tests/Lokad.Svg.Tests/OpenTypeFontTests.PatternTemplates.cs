@@ -114,8 +114,6 @@ public sealed partial class OpenTypeFontTests
         RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        RenderBudget workDenied = new(1_000_000);
-        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         (SvgFontPackCatalog catalog, CountingFontProvider provider, _) = PatternFontPack(false);
         using CancellationTokenSource cancellation = new();
         using (FontIntegrityProbe.Arm(cancellation.Cancel))

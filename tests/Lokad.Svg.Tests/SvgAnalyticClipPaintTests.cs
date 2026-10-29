@@ -31,7 +31,7 @@ public sealed class SvgAnalyticClipPaintTests
             // A concave contour retains the independently supplied raw bounds;
             // clipping changes paint routing before any row is walked.
             SvgDevicePoint[] points = [new(left, top), new(right, top), new(right, bottom), new(left + 12, bottom), new(left + 6, top + 12), new(left, bottom)];
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [6], [], false, null, SvgPolygonMapping.FlattenedCurves, [], [], 508, 764, Math.Max(0, top), Math.Min(400, bottom), 1000, 400, new(508, 764), new(new(508, 0, 764, 256)), 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [6], [], false, null, SvgPolygonMapping.FlattenedCurves, [], [], 508, 764, Math.Max(0, top), Math.Min(400, bottom), 1000, 400, new(508, 764), new(new(508, 0, 764, 256)), budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             for (int index = id * 768; index < (id + 1) * 768; index++)
             {

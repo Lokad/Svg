@@ -121,7 +121,6 @@ public sealed class SvgPatternTileCacheTests
         using (SvgConverter.RasterizedSurface original = SvgConverter.Rasterize(root, SvgRenderOptions.Default, tight, CancellationToken.None))
         {
             Assert.Equal(original.Pixels, current.Pixels);
-            Assert.Equal(original.WorkUnits, current.WorkUnits);
             Assert.Equal(tight.Snapshot().PeakBytes, normal.Snapshot().PeakBytes);
         }
         Assert.Equal(0, normal.Snapshot().CurrentBytes);
@@ -152,7 +151,7 @@ public sealed class SvgPatternTileCacheTests
     }
 
     private static SvgConverter.RasterizedSurface Surface(RenderBudget budget)
-        => new(4, 4, new byte[64], budget.Reserve(64, SvgMemoryCategory.Surface), 0);
+        => new(4, 4, new byte[64], budget.Reserve(64, SvgMemoryCategory.Surface));
 
     private static SvgPatternGeometry Pattern(SvgRectangle fill, string change)
         => new(new SvgRectangle(0, 0, 2, 2, change == "content" ? new(0, 0, 255, 255) : new(255, 0, 0, 255), true, null), change == "origin" ? 1 : 0, 0, change == "width" ? 8 : 4, change == "height" ? 8 : 4, fill, change == "opacity" ? (byte)128 : (byte)255, null)

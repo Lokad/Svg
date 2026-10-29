@@ -35,11 +35,9 @@ public sealed class SvgViewportClipStorageTests
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             {
                 byte[] expected;
-                long work;
                 using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
                 {
                     expected = surface.Pixels.ToArray();
-                    work = surface.WorkUnits;
                 }
                 long retained = budget.Snapshot().CurrentBytes;
                 foreach (long available in new[] { 1L, 1024, 2048, 4096, 8192 })
@@ -51,14 +49,6 @@ public sealed class SvgViewportClipStorageTests
                         catch (SvgException error) { Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode); }
                         Assert.Equal(held, budget.Snapshot().CurrentBytes);
                     }
-                    Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-                }
-                foreach (long limit in new[] { 1L, work / 4, work / 2, work - 1 })
-                {
-                    SvgRenderLimits limits = SvgRenderLimits.Default;
-                    SvgRenderLimits denied = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                        limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)limit), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-                    Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, denied), budget, CancellationToken.None)).ErrorCode);
                     Assert.Equal(retained, budget.Snapshot().CurrentBytes);
                 }
                 using SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);

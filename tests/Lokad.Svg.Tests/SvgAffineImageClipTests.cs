@@ -67,26 +67,19 @@ public sealed class SvgAffineImageClipTests
     [InlineData(true, "symbol")]
     [InlineData(false, "use")]
     [InlineData(true, "use")]
-    public void Image_coverage_releases_scratch_after_denied_memory_work_and_cancellation(bool uniform, string consumer)
+    public void Image_coverage_releases_scratch_after_memory_refusal_and_cancellation(bool uniform, string consumer)
     {
         byte[] input = Document(Image(191, uniform), "rotate(15 16 16)", consumer, ".75", true);
         byte[] unchanged = input.ToArray();
         RenderBudget budget = new(1_000_000);
-        long work;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             {
                 using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
                 {
-                    work = surface.WorkUnits;
                 }
-                SvgRenderLimits limits = SvgRenderLimits.Default;
-                SvgRenderLimits denied = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                    limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)work - 1), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-                SvgRenderOptions options = new(null, 1, SvgColor.Transparent, denied);
                 long retained = budget.Snapshot().CurrentBytes;
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, options, budget, CancellationToken.None)).ErrorCode);
                 Assert.Equal(retained, budget.Snapshot().CurrentBytes);
                 using CancellationTokenSource cancellation = new(); cancellation.Cancel();
                 Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, cancellation.Token)).CancellationToken);

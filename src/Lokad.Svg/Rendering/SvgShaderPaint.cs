@@ -8,7 +8,7 @@ using Lokad.Svg.Parsing;
 namespace Lokad.Svg.Rendering;
 
 /// <summary>Retains a constant shader's packed premultiplied lanes for bounded low-precision replay.</summary>
-/// <remarks>Immutable and allocation-free. The caller owns pixels, charges raster work and checks row cancellation.</remarks>
+/// <remarks>Immutable and allocation-free. The caller owns pixels and checks row cancellation.</remarks>
 internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byte Blue, byte Alpha)
 {
     /// <summary>Samples a packed affine bitmap with native signed Q15 bilinear fractions.</summary>
@@ -56,7 +56,7 @@ internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byt
 
     /// <summary>Interpolates four premultiplied pixels with native four-bit bitmap fractions.</summary>
     /// <remarks>Fractions are in [0,15]. Allocation-free bounded arithmetic; callers own samples,
-    /// charge pixel work and observe cancellation. Opacity and coverage are applied after interpolation.</remarks>
+    /// observe cancellation. Opacity and coverage are applied after interpolation.</remarks>
     internal static SvgConstantShaderPaint Interpolate(SvgConstantShaderPaint a, SvgConstantShaderPaint b,
         SvgConstantShaderPaint c, SvgConstantShaderPaint d, int fractionX, int fractionY)
     {
@@ -70,7 +70,7 @@ internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byt
 
     /// <summary>Interpolates four packed pixels with the raster pipeline's signed Q15 fractions.</summary>
     /// <remarks>Fractions encode [0,1] as [-32768,32767]. The caller prepares native fixed coordinates,
-    /// owns the samples and charges bounded sampling work. Legacy bitmap fractions remain separate.</remarks>
+    /// owns the samples and checks cancellation during sampling. Legacy bitmap fractions remain separate.</remarks>
     internal static SvgConstantShaderPaint InterpolatePipeline(SvgConstantShaderPaint a, SvgConstantShaderPaint b,
         SvgConstantShaderPaint c, SvgConstantShaderPaint d, int fractionX, int fractionY)
     {
@@ -139,12 +139,12 @@ internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byt
 
 /// <summary>Retains a shader sample as premultiplied floats until pixel storage.</summary>
 /// <remarks>Immutable, allocation-free and safe to share. Callers own the destination,
-/// charge raster work and check cancellation between rows. Samples retain no input storage.</remarks>
+/// check cancellation between rows. Samples retain no input storage.</remarks>
 internal readonly record struct SvgShaderPaint(float Red, float Green, float Blue, float Alpha)
 {
     /// <summary>Samples a filtered bitmap while retaining floating interpolation through the final store.</summary>
     /// <remarks>Pixels are borrowed premultiplied RGBA8. Dimensions and coordinates are caller-validated;
-    /// transparent borders belong to filter surfaces. The caller charges sampling work and cancellation.</remarks>
+    /// transparent borders belong to filter surfaces. The caller checks cancellation during sampling.</remarks>
     internal static SvgShaderPaint SampleAffine(ReadOnlySpan<byte> pixels, int width, int height,
         float x, float y, SvgCpuBitmapOrigin pixelOffset, float opacity)
     {

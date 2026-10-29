@@ -164,7 +164,7 @@ public sealed class SvgFilterPlaybackTests
             }
         };
         RenderBudget rasterBudget = new(1_000_000);
-        using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, width, height, resource, map, rasterBudget, long.MaxValue, CancellationToken.None))
+        using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, width, height, resource, map, rasterBudget, CancellationToken.None))
             Assert.True(result.Pixels[(48 * width) * 4 + 3] > 0);
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
     }
@@ -284,35 +284,28 @@ public sealed class SvgFilterPlaybackTests
         RenderBudget accepted = new(8_000_000);
         int replayCount = 0;
         byte[] expected;
-        long work;
         using (SvgAnalyticPaintProbe.Arm((phase, _) => { if (phase == SvgAnalyticPaintPhase.BeforeReplay) replayCount++; }))
-            expected = Run(accepted, SvgRenderLimits.Default, CancellationToken.None, out work);
+            expected = Run(accepted, SvgRenderLimits.Default, CancellationToken.None);
         Assert.True(replayCount > 2);
         Assert.Contains(expected, value => value != 0);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         RenderBudget denied = new(accepted.Snapshot().PeakBytes - 1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, SvgRenderLimits.Default, CancellationToken.None, out _)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, SvgRenderLimits.Default, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        // Optional preparation can adapt to the remaining work; exercise a material shortfall.
-        SvgRenderLimits shortWork = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-            limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)(work / 2)), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(accepted, shortWork, CancellationToken.None, out _)).ErrorCode);
-        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         int observed = 0;
         using CancellationTokenSource cancellation = new();
         using (SvgAnalyticPaintProbe.Arm((phase, _) => { if (phase == SvgAnalyticPaintPhase.BeforeReplay && ++observed == replayCount - 1) cancellation.Cancel(); }))
-            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => Run(accepted, limits, cancellation.Token, out _)).CancellationToken);
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => Run(accepted, limits, cancellation.Token)).CancellationToken);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        Assert.Equal(expected, Run(accepted, limits, CancellationToken.None, out _));
+        Assert.Equal(expected, Run(accepted, limits, CancellationToken.None));
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, input);
 
-        byte[] Run(RenderBudget budget, SvgRenderLimits configured, CancellationToken token, out long used)
+        byte[] Run(RenderBudget budget, SvgRenderLimits configured, CancellationToken token)
         {
             using SvgRoot root = SvgRootParser.Parse(input, configured, budget, token);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, configured, null), budget, token);
-            used = surface.WorkUnits;
             return surface.Pixels.ToArray();
         }
     }
@@ -329,34 +322,28 @@ public sealed class SvgFilterPlaybackTests
         RenderBudget accepted = new(8_000_000);
         int replayCount = 0;
         byte[] expected;
-        long work;
         using (SvgAnalyticPaintProbe.Arm((phase, _) => { if (phase == SvgAnalyticPaintPhase.BeforeReplay) replayCount++; }))
-            expected = Run(accepted, SvgRenderLimits.Default, CancellationToken.None, out work);
+            expected = Run(accepted, SvgRenderLimits.Default, CancellationToken.None);
         Assert.True(replayCount > 2);
         Assert.Contains(expected, value => value != 0);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         RenderBudget denied = new(Math.Max(1024, accepted.Snapshot().PeakBytes / 2));
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, SvgRenderLimits.Default, CancellationToken.None, out _)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, SvgRenderLimits.Default, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        SvgRenderLimits shortWork = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-            limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)(work / 2)), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(accepted, shortWork, CancellationToken.None, out _)).ErrorCode);
-        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         int observed = 0;
         using CancellationTokenSource cancellation = new();
         using (SvgAnalyticPaintProbe.Arm((phase, _) => { if (phase == SvgAnalyticPaintPhase.BeforeReplay && ++observed == replayCount - 1) cancellation.Cancel(); }))
-            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => Run(accepted, limits, cancellation.Token, out _)).CancellationToken);
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => Run(accepted, limits, cancellation.Token)).CancellationToken);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        Assert.Equal(expected, Run(accepted, limits, CancellationToken.None, out _));
+        Assert.Equal(expected, Run(accepted, limits, CancellationToken.None));
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, input);
 
-        byte[] Run(RenderBudget budget, SvgRenderLimits configured, CancellationToken token, out long used)
+        byte[] Run(RenderBudget budget, SvgRenderLimits configured, CancellationToken token)
         {
             using SvgRoot root = SvgRootParser.Parse(input, configured, budget, token);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, configured, null), budget, token);
-            used = surface.WorkUnits;
             return surface.Pixels.ToArray();
         }
     }
@@ -484,29 +471,22 @@ public sealed class SvgFilterPlaybackTests
         byte[] before = (byte[])source.Clone();
         RenderBudget accepted = new(1_000_000);
         byte[] expected;
-        long work;
-        using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 13, 9, resource, new(1, 1), accepted, long.MaxValue, CancellationToken.None))
-        { expected = (byte[])result.Pixels.Clone(); work = result.WorkUnits; }
+        using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 13, 9, resource, new(1, 1), accepted, CancellationToken.None))
+        { expected = (byte[])result.Pixels.Clone(); }
         long peak = accepted.Snapshot().PeakBytes;
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        foreach (long allowedWork in new[] { 0, 1, work / 2, work - 1 })
-        {
-            RenderBudget budget = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFilterPlayback.ApplyFullFrame(source, 13, 9, resource, new(1, 1), budget, allowedWork, CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        }
         foreach (long allowedBytes in new[] { 1, 256, peak / 2, peak - 1 })
         {
             RenderBudget budget = new(allowedBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFilterPlayback.ApplyFullFrame(source, 13, 9, resource, new(1, 1), budget, work, CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFilterPlayback.ApplyFullFrame(source, 13, 9, resource, new(1, 1), budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
-        using (SvgFilterResult retry = SvgFilterPlayback.ApplyFullFrame(source, 13, 9, resource, new(1, 1), accepted, work, CancellationToken.None)) Assert.Equal(expected, retry.Pixels);
+        using (SvgFilterResult retry = SvgFilterPlayback.ApplyFullFrame(source, 13, 9, resource, new(1, 1), accepted, CancellationToken.None)) Assert.Equal(expected, retry.Pixels);
         Assert.Equal(before, source);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Throws<OperationCanceledException>(() => SvgFilterPlayback.ApplyFullFrame(source, 13, 9, resource, new(1, 1), accepted, work, cancellation.Token));
+        Assert.Throws<OperationCanceledException>(() => SvgFilterPlayback.ApplyFullFrame(source, 13, 9, resource, new(1, 1), accepted, cancellation.Token));
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
     }
 
@@ -680,24 +660,11 @@ public sealed class SvgFilterPlaybackTests
             }
             Assert.True(reached);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            long work;
             byte[] pixels;
             using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
             {
                 Assert.Contains(retry.Pixels, value => value != 0);
-                work = retry.WorkUnits;
                 pixels = retry.Pixels.ToArray();
-            }
-            foreach (long allowedWork in new[] { work / 2, work - 1 })
-            {
-                SvgRenderLimits limits = SvgRenderLimits.Default;
-                limits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                    limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)allowedWork), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                {
-                    using SvgConverter.RasterizedSurface denied = SvgConverter.Rasterize(scene, new(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
-                }).ErrorCode);
-                Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             }
             RenderBudget tight = new(budget.Snapshot().PeakBytes - retained - 1_024);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
@@ -721,7 +688,7 @@ public sealed class SvgFilterPlaybackTests
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
             SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
             RenderBudget rasterBudget = new(1_000_000);
-            using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, width, 1, resource, new(1, 1), rasterBudget, 1_000_000, CancellationToken.None)) pixels = result.Pixels.ToArray();
+            using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, width, 1, resource, new(1, 1), rasterBudget, CancellationToken.None)) pixels = result.Pixels.ToArray();
             Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, parserBudget.Snapshot().CurrentBytes);

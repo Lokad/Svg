@@ -36,18 +36,17 @@ public sealed class SvgAnalyticPaintTests
     }
 
     [Fact]
-    public void Full_span_keeps_one_descriptor_and_bounded_pixel_index_work()
+    public void Full_span_keeps_one_descriptor_and_preserves_indexed_paint()
     {
         const int width = 4096;
         long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, width, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(width);
         long spanBufferBytes = 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintSpan>(16);
         RenderBudget budget = new(preparedBytes + spanBufferBytes);
         SvgDevicePoint[] points = [new(0, 0), new(width, 0), new(width, 4), new(0, 4)];
-        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], 0, width, 0, 4, width, 4, budget, out long _, out bool eligible, CancellationToken.None))
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], 0, width, 0, 4, width, 4, budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
-            walker.PrepareRow(0, width * 3, out long rowWork, CancellationToken.None);
-            Assert.InRange(rowWork, width, width * 3);
+            walker.PrepareRow(0, CancellationToken.None);
             Assert.Equal(preparedBytes + spanBufferBytes, budget.Snapshot().CurrentBytes);
             byte[] destination = new byte[4];
             walker.PaintPixel(width / 2, destination, SvgAnalyticPaint.Solid(new(195, 78, 151, 64)), SvgAnalyticClipCoverage.Full);
@@ -65,7 +64,7 @@ public sealed class SvgAnalyticPaintTests
         {
             if (phase == SvgAnalyticPaintPhase.BeforeSpanBufferGrowth) source.Cancel();
         });
-        OperationCanceledException exception = Assert.Throws<OperationCanceledException>(() => PrepareOneRow(budget, long.MaxValue, source.Token));
+        OperationCanceledException exception = Assert.Throws<OperationCanceledException>(() => PrepareOneRow(budget, source.Token));
         Assert.Equal(source.Token, exception.CancellationToken);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -81,7 +80,7 @@ public sealed class SvgAnalyticPaintTests
         {
             if (phase == SvgAnalyticPaintPhase.BeforeSpanBufferGrowth) growthCalls++;
         });
-        SvgException exception = Assert.Throws<SvgException>(() => PrepareOneRow(budget, long.MaxValue, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => PrepareOneRow(budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(1, growthCalls);
         Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
@@ -100,25 +99,10 @@ public sealed class SvgAnalyticPaintTests
         {
             if (phase == SvgAnalyticPaintPhase.BeforeBufferGrowth) deniedGrowthCount = count;
         });
-        SvgException exception = Assert.Throws<SvgException>(() => PrepareOneRow(budget, long.MaxValue, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => PrepareOneRow(budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(16, deniedGrowthCount);
         Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-    }
-
-    [Fact]
-    public void Operation_work_denial_precedes_buffer_growth()
-    {
-        RenderBudget budget = new(1_000_000);
-        int growthCalls = 0;
-        using IDisposable probe = SvgAnalyticPaintProbe.Arm((phase, _) =>
-        {
-            if (phase == SvgAnalyticPaintPhase.BeforeBufferGrowth) growthCalls++;
-        });
-        SvgException exception = Assert.Throws<SvgException>(() => PrepareOneRow(budget, 135, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Equal(0, growthCalls);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -134,7 +118,7 @@ public sealed class SvgAnalyticPaintTests
             lastGrowth = count;
             if (count == 16) source.Cancel();
         });
-        OperationCanceledException exception = Assert.Throws<OperationCanceledException>(() => PrepareOneRow(budget, long.MaxValue, source.Token));
+        OperationCanceledException exception = Assert.Throws<OperationCanceledException>(() => PrepareOneRow(budget, source.Token));
         Assert.Equal(source.Token, exception.CancellationToken);
         Assert.Equal(16, lastGrowth);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -161,11 +145,11 @@ public sealed class SvgAnalyticPaintTests
         Assert.Equal(preparedBytes, budget.Snapshot().CurrentBytes);
     }
 
-    private static void PrepareOneRow(RenderBudget budget, long maximumRowWork, CancellationToken cancellationToken)
+    private static void PrepareOneRow(RenderBudget budget, CancellationToken cancellationToken)
     {
         SvgDevicePoint[] points = [new(0, 0), new(64, 0), new(32, 1), new(0, 2)];
-        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], 0, 64, 0, 4, 64, 4, budget, out long _, out bool eligible, cancellationToken);
+        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], 0, 64, 0, 4, 64, 4, budget, out bool eligible, cancellationToken);
         Assert.True(eligible);
-        walker.PrepareRow(0, maximumRowWork, out long _, cancellationToken);
+        walker.PrepareRow(0, cancellationToken);
     }
 }

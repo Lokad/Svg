@@ -19,9 +19,9 @@ public sealed class SvgOneChordCubicTests
         foreach (SvgCubicSpan span in polygon.CubicSpans) Assert.Equal(1, span.EndIndex - span.StartIndex);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 8, pair ? 48 : 16, 8, 24, 64, 64, new(0, 64), budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 8, pair ? 48 : 16, 8, 24, 64, 64, new(0, 64), budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            walker.PrepareRow(8, out long _, CancellationToken.None);
+            walker.PrepareRow(8, CancellationToken.None);
             byte[] pixel = new byte[4];
             walker.PaintPixel(1, pixel, SvgAnalyticPaint.Solid(polygon.Color), SvgAnalyticClipCoverage.Full);
             // Pinned native shoulder capture is fully covered at (9,8).

@@ -21,7 +21,7 @@ public sealed class SvgAnalyticClipperTests
     {
         Assert.NotEmpty(identity);
         Span<SvgAnalyticClipPiece> pieces = stackalloc SvgAnalyticClipPiece[SvgAnalyticCoverage.Clipper.MaximumPieces];
-        SvgAnalyticCoverage.Clipper clipper = new(new(bounds[0], bounds[1], bounds[2], bounds[3]), cull, pieces, 100_000, CancellationToken.None);
+        SvgAnalyticCoverage.Clipper clipper = new(new(bounds[0], bounds[1], bounds[2], bounds[3]), cull, pieces, CancellationToken.None);
         SvgAnalyticClipPoint p0 = new(coordinates[0], coordinates[1]), p1 = new(coordinates[2], coordinates[3]);
         if (kind == 2) clipper.ClipLine(p0, p1);
         else if (kind == 3) clipper.ClipQuad(p0, p1, new(coordinates[4], coordinates[5]));
@@ -39,38 +39,6 @@ public sealed class SvgAnalyticClipperTests
                 Assert.Equal(expected[index][2 + at * 2], BitConverter.SingleToUInt32Bits(points[at].Y));
             }
         }
-        Assert.InRange(clipper.WorkUnits, 1, 100_000);
-    }
-
-    [Fact]
-    public void Clipping_denies_work_during_root_construction_before_emitting_all_pieces()
-    {
-        Span<SvgAnalyticClipPiece> pieces = stackalloc SvgAnalyticClipPiece[SvgAnalyticCoverage.Clipper.MaximumPieces];
-        SvgAnalyticCoverage.Clipper clipper = new(new(8, 8, 56, 56), false, pieces, 50, CancellationToken.None);
-        try
-        {
-            clipper.ClipCubic(new(-20, -20), new(80, 70), new(-20, 70), new(80, -20));
-            Assert.Fail("Clipping must enforce the work limit during construction.");
-        }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
-        Assert.InRange(clipper.WorkUnits, 4, 50);
-    }
-
-    [Fact]
-    public void Binary_root_search_retains_consumed_work_when_its_limit_denies_an_iteration()
-    {
-        Span<SvgAnalyticClipPiece> pieces = stackalloc SvgAnalyticClipPiece[SvgAnalyticCoverage.Clipper.MaximumPieces];
-        SvgAnalyticCoverage.Clipper clipper = new(new(8, 10_000, 56, 11_000), false, pieces, 100, CancellationToken.None);
-        try
-        {
-            // The small cubic coefficient triggers native quadratic reduction;
-            // its inaccurate root then enters the verified binary-search fallback.
-            clipper.ClipCubic(new(10, 0), new(10, 0), new(10, 10_000), new(10, 30_000.001953125f));
-            Assert.Fail("Binary root search must enforce its iteration work limit.");
-        }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
-        Assert.Equal(100, clipper.WorkUnits);
-        Assert.Equal(0, clipper.Count);
     }
 
     [Fact]
@@ -80,14 +48,13 @@ public sealed class SvgAnalyticClipperTests
         cancellation.Cancel();
         Span<SvgAnalyticClipPiece> pieces = stackalloc SvgAnalyticClipPiece[SvgAnalyticCoverage.Clipper.MaximumPieces];
         pieces.Clear();
-        SvgAnalyticCoverage.Clipper clipper = new(new(8, 8, 56, 56), false, pieces, 100_000, cancellation.Token);
+        SvgAnalyticCoverage.Clipper clipper = new(new(8, 8, 56, 56), false, pieces, cancellation.Token);
         try
         {
             clipper.ClipCubic(new(4, 12), new(30, 2), new(62, 28), new(58, 48));
             Assert.Fail("Clipping must observe the caller's cancellation.");
         }
         catch (OperationCanceledException exception) { Assert.Equal(cancellation.Token, exception.CancellationToken); }
-        Assert.Equal(0, clipper.WorkUnits);
         Assert.Equal(0, clipper.Count);
         foreach (SvgAnalyticClipPiece piece in pieces) Assert.Equal(default, piece);
     }

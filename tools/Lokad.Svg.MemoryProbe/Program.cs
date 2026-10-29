@@ -10,7 +10,7 @@ internal static class Program
     {
         if (!TryParseArguments(arguments, out ProbeOptions? options) || options is null)
         {
-            Console.Error.WriteLine("Usage: Lokad.Svg.MemoryProbe <input.svg> <output.png> [--mode conversion|xml-reader|font-discovery] [--maximum-accounted-bytes <positive-int64>] [--background-color <r,g,b,a>] [--cancel-after-ms <positive-int32>] [--cancel-after-conversion-start-ms <positive-int32>] [--cancel-after-background-start-ms <nonnegative-int32; 0 cancels synchronously>] [--maximum-work-units <positive-int32>]");
+            Console.Error.WriteLine("Usage: Lokad.Svg.MemoryProbe <input.svg> <output.png> [--mode conversion|xml-reader|font-discovery] [--maximum-accounted-bytes <positive-int64>] [--background-color <r,g,b,a>] [--cancel-after-ms <positive-int32>] [--cancel-after-conversion-start-ms <positive-int32>] [--cancel-after-background-start-ms <nonnegative-int32; 0 cancels synchronously>]");
             return 2;
         }
 
@@ -39,7 +39,7 @@ internal static class Program
             }
             if (options.Mode == ProbeMode.FontDiscovery)
             {
-                FontDiscoveryMeasurement measurement = await FontDiscoveryProbe.MeasureAsync(svg, CreateLimits(options.MaximumAccountedBytes, null), cancellation?.Token ?? CancellationToken.None).ConfigureAwait(false);
+                FontDiscoveryMeasurement measurement = await FontDiscoveryProbe.MeasureAsync(svg, CreateLimits(options.MaximumAccountedBytes), cancellation?.Token ?? CancellationToken.None).ConfigureAwait(false);
                 return WriteFontDiscoveryReport(measurement);
             }
             conversionCancellation = options.CancelAfterConversionStartMilliseconds is int conversionDelay ? new CancellationTokenSource(conversionDelay) : null;
@@ -59,7 +59,7 @@ internal static class Program
             CancellationToken cancellationToken = backgroundCancellation?.Token ?? conversionCancellation?.Token ?? cancellation?.Token ?? CancellationToken.None;
             long allocationStart = GC.GetTotalAllocatedBytes(precise: true);
             ReadOnlyMemory<byte> png;
-            try { png = SvgConverter.ConvertToPng(svg, CreateOptions(options.MaximumAccountedBytes, options.MaximumWorkUnits, options.BackgroundColor), cancellationToken); }
+            try { png = SvgConverter.ConvertToPng(svg, CreateOptions(options.MaximumAccountedBytes, options.BackgroundColor), cancellationToken); }
             finally { conversionManagedAllocatedBytes = GC.GetTotalAllocatedBytes(precise: true) - allocationStart; }
             File.WriteAllBytes(options.OutputPath, png.Span);
             WriteReportHeader("success", png.Length, null);
@@ -138,7 +138,6 @@ internal static class Program
         options = null;
         if (arguments.Length < 2) return false;
         long? maximumAccountedBytes = null;
-        int? maximumWorkUnits = null;
         SvgColor backgroundColor = SvgColor.Transparent;
         int? cancelAfterMilliseconds = null;
         int? cancelAfterConversionStartMilliseconds = null;
@@ -152,10 +151,6 @@ internal static class Program
             if (option == "--maximum-accounted-bytes" && long.TryParse(value, out long parsedMaximum) && parsedMaximum > 0)
             {
                 maximumAccountedBytes = parsedMaximum;
-            }
-            else if (option == "--maximum-work-units" && int.TryParse(value, out int parsedWork) && parsedWork > 0)
-            {
-                maximumWorkUnits = parsedWork;
             }
             else if (option == "--background-color" && TryParseColor(value, out SvgColor parsedColor))
             {
@@ -185,9 +180,9 @@ internal static class Program
                 return false;
             }
         }
-        if (mode == ProbeMode.XmlReader && (maximumAccountedBytes is not null || maximumWorkUnits is not null || backgroundColor != SvgColor.Transparent || cancelAfterMilliseconds is not null || cancelAfterConversionStartMilliseconds is not null || cancelAfterBackgroundStartMilliseconds is not null)) return false;
-        if (mode == ProbeMode.FontDiscovery && (backgroundColor != SvgColor.Transparent || maximumWorkUnits is not null || cancelAfterConversionStartMilliseconds is not null || cancelAfterBackgroundStartMilliseconds is not null)) return false;
-        options = new ProbeOptions(arguments[0], arguments[1], maximumAccountedBytes, backgroundColor, cancelAfterMilliseconds, cancelAfterConversionStartMilliseconds, cancelAfterBackgroundStartMilliseconds, maximumWorkUnits, mode);
+        if (mode == ProbeMode.XmlReader && (maximumAccountedBytes is not null || backgroundColor != SvgColor.Transparent || cancelAfterMilliseconds is not null || cancelAfterConversionStartMilliseconds is not null || cancelAfterBackgroundStartMilliseconds is not null)) return false;
+        if (mode == ProbeMode.FontDiscovery && (backgroundColor != SvgColor.Transparent || cancelAfterConversionStartMilliseconds is not null || cancelAfterBackgroundStartMilliseconds is not null)) return false;
+        options = new ProbeOptions(arguments[0], arguments[1], maximumAccountedBytes, backgroundColor, cancelAfterMilliseconds, cancelAfterConversionStartMilliseconds, cancelAfterBackgroundStartMilliseconds, mode);
         return true;
     }
 
@@ -200,19 +195,19 @@ internal static class Program
         return true;
     }
 
-    private static SvgRenderOptions CreateOptions(long? maximumAccountedBytes, int? maximumWorkUnits, SvgColor backgroundColor)
+    private static SvgRenderOptions CreateOptions(long? maximumAccountedBytes, SvgColor backgroundColor)
     {
-        return new SvgRenderOptions(null, 1, backgroundColor, CreateLimits(maximumAccountedBytes, maximumWorkUnits));
+        return new SvgRenderOptions(null, 1, backgroundColor, CreateLimits(maximumAccountedBytes));
     }
 
-    private static SvgRenderLimits CreateLimits(long? maximumAccountedBytes, int? maximumWorkUnits)
+    private static SvgRenderLimits CreateLimits(long? maximumAccountedBytes)
     {
-        if (maximumAccountedBytes is null && maximumWorkUnits is null) return SvgRenderLimits.Default;
+        if (maximumAccountedBytes is null) return SvgRenderLimits.Default;
         SvgRenderLimits defaults = SvgRenderLimits.Default;
-        return new SvgRenderLimits(maximumAccountedBytes ?? defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension, defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands, maximumWorkUnits ?? defaults.MaximumWorkUnits, defaults.MaximumXmlDepth);
+        return new SvgRenderLimits(maximumAccountedBytes ?? defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension, defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands, defaults.MaximumXmlDepth);
     }
 
-    private sealed record ProbeOptions(string InputPath, string OutputPath, long? MaximumAccountedBytes, SvgColor BackgroundColor, int? CancelAfterMilliseconds, int? CancelAfterConversionStartMilliseconds, int? CancelAfterBackgroundStartMilliseconds, int? MaximumWorkUnits, ProbeMode Mode);
+    private sealed record ProbeOptions(string InputPath, string OutputPath, long? MaximumAccountedBytes, SvgColor BackgroundColor, int? CancelAfterMilliseconds, int? CancelAfterConversionStartMilliseconds, int? CancelAfterBackgroundStartMilliseconds, ProbeMode Mode);
 
     private enum ProbeMode { Conversion, XmlReader, FontDiscovery }
 }

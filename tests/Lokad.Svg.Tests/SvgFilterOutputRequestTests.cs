@@ -43,7 +43,7 @@ public sealed class SvgFilterOutputRequestTests
             for (int column = 2; column < 6; column++) source[(row * 8 + column) * 4 + 3] = 128;
             byte[] unchanged = source.AsSpan().ToArray();
             using (SvgFilterResult result = SvgFilterPlayback.Apply(source, 8, 8, resource, map,
-                new(left, top, right, bottom), scratch, long.MaxValue, CancellationToken.None))
+                new(left, top, right, bottom), scratch, CancellationToken.None))
             {
                 SvgFilterDeferredImage image = Assert.IsType<SvgFilterDeferredImage>(result.DeferredImage);
                 Assert.Equal(new SvgPaintBounds(imageLeft, imageTop, imageRight, imageBottom), image.SourceBounds);
@@ -82,7 +82,7 @@ public sealed class SvgFilterOutputRequestTests
                 { SourceBounds = new(2, 2, 6, 6), DeferFinalOffset = true }
             };
             using (SvgFilterResult result = SvgFilterPlayback.Apply(new byte[8 * 8 * 4], 8, 8, resource, map,
-                new(left, top, right, bottom), scratch, long.MaxValue, CancellationToken.None))
+                new(left, top, right, bottom), scratch, CancellationToken.None))
             {
                 SvgFilterDeferredImage image = Assert.IsType<SvgFilterDeferredImage>(result.DeferredImage);
                 SvgShaderPaint paint = image.Constant ?? throw new InvalidOperationException();
@@ -129,7 +129,7 @@ public sealed class SvgFilterOutputRequestTests
         using (SvgRoot scene = Parse(offset, parser))
         {
             using (SvgFilterResult result = SvgFilterPlayback.Apply(source, 8, 8, Resource(scene), map,
-                new(0, 0, 8, 8), scratch, long.MaxValue, CancellationToken.None))
+                new(0, 0, 8, 8), scratch, CancellationToken.None))
                 Assert.Equal(native[alpha * 256 + drawCoverage], result.Pixels[(row * 8 + column) * 4 + 3]);
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
         }
@@ -137,7 +137,7 @@ public sealed class SvgFilterOutputRequestTests
             + "<feComposite in='f' in2='b' operator='in'/>", parser))
         {
             using (SvgFilterResult result = SvgFilterPlayback.Apply(source, 8, 8, Resource(scene), map,
-                new(0, 0, 8, 8), scratch, long.MaxValue, CancellationToken.None))
+                new(0, 0, 8, 8), scratch, CancellationToken.None))
                 Assert.Equal(sampledAlpha, result.Pixels[(row * 8 + column) * 4 + 3]);
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
         }

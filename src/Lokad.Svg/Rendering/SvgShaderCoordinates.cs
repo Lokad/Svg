@@ -15,7 +15,7 @@ internal readonly record struct SvgRadialShaderSample(double Position, bool IsVi
 
 /// <summary>Prepares native float gradient or image coordinates for one raster draw.</summary>
 /// <remarks>Draw-local mutable state caches the owning bitmap's matrix without
-/// allocating storage. Callers retain raster work accounting and cancellation.
+/// allocating storage. Callers retain cancellation.
 /// Native centered radial, contained focal circles and foci on the circle use float unit matrices.
 /// Other conical maps and non-finite float maps keep the existing evaluator.
 /// Instances must not be shared between concurrent raster draws.</remarks>

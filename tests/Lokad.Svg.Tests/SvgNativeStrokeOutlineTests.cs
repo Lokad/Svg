@@ -74,12 +74,12 @@ public sealed class SvgNativeStrokeOutlineTests
         SvgAnalyticContourPreparation preparation = new(points, [points.Length], [], false, null, SvgPolygonMapping.NativeStrokeEdges, [], [], new(4, 1, 60, 43), 64, 64);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(SvgContourFlags.ProperCrossing, preparation.Structure);
             Assert.Equal(false, preparation.Convex);
             byte[] pixel = new byte[4];
-            walker.PrepareRow(20, 1_000_000, out long _, CancellationToken.None);
+            walker.PrepareRow(20, CancellationToken.None);
             walker.PaintPixel(20, pixel, SvgAnalyticPaint.Solid(new(0, 0, 0, 255)), SvgAnalyticClipCoverage.Full);
             Assert.Equal(255, pixel[3]);
             Array.Clear(pixel);
@@ -98,7 +98,7 @@ public sealed class SvgNativeStrokeOutlineTests
         SvgDevicePoint[] points = [new(8, 4), new(14, 12), new(2, 12), new(12, 4), new(4, 12)];
         SvgAnalyticContourPreparation preparation = new(points, [5], [], false, null, mapping, [], [], new(0, 0, 16, 16), 16, 16);
         RenderBudget budget = new(1_000_000);
-        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 16, 0, 16, new(0, 16), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 16, 0, 16, new(0, 16), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
         Assert.False(eligible);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -130,36 +130,29 @@ public sealed class SvgNativeStrokeOutlineTests
     }
 
     [Fact]
-    public void Cached_native_stroke_setup_releases_storage_on_work_memory_and_cancellation_denial()
+    public void Cached_native_stroke_setup_releases_storage_on_memory_refusal_and_cancellation()
     {
         SvgContourBuilder builder = new(32, 1);
         SvgStrokeOutline.StrokeNativeOpenPolyline([new(8, 40), new(32, 8), new(56, 40)], 8, 10, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
         SvgDevicePoint[] points = builder.GetContour(0).ToArray();
         SvgAnalyticContourPreparation preparation = new(points, [points.Length], [], false, null, SvgPolygonMapping.NativeStrokeEdges, [], [], new(4, 1, 60, 43), 64, 64);
         RenderBudget budget = new(1_000_000);
-        long setup;
         long storage;
         {
-            using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
         }
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out setup, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             storage = budget.Snapshot().CurrentBytes;
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        try
-        {
-            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, setup - 1, budget, out long _, out bool _, CancellationToken.None);
-            Assert.Fail("Native stroke construction must fit the remaining setup work.");
-        }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget tight = new(storage - 1);
         try
         {
-            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, tight, out long _, out bool _, CancellationToken.None);
+            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, tight, out bool _, CancellationToken.None);
             Assert.Fail("Native stroke setup must release earlier storage when a later reservation fails.");
         }
         catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
@@ -168,7 +161,7 @@ public sealed class SvgNativeStrokeOutlineTests
         cancellation.Cancel();
         try
         {
-            using SvgAnalyticCoverage canceled = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool _, cancellation.Token);
+            using SvgAnalyticCoverage canceled = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool _, cancellation.Token);
             Assert.Fail("Cached native stroke setup must still observe the caller's cancellation.");
         }
         catch (OperationCanceledException exception) { Assert.Equal(cancellation.Token, exception.CancellationToken); }
@@ -178,7 +171,7 @@ public sealed class SvgNativeStrokeOutlineTests
     [Theory]
     [InlineData(4)]
     [InlineData(16)]
-    public void Many_directed_stroke_rings_keep_holes_with_bounded_setup_work(int gridSize)
+    public void Many_directed_stroke_rings_keep_holes_with_owned_scratch(int gridSize)
     {
         (SvgDevicePoint[] points, int[] ends, int width) = RingGrid(gridSize);
         SvgAnalyticContourPreparation preparation = new(points, ends, [], false, null,
@@ -186,15 +179,14 @@ public sealed class SvgNativeStrokeOutlineTests
         RenderBudget budget = new(1_000_000);
         {
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, width, 0, width,
-                new(0, width), null, SvgAnalyticPaintClip.Binary, points.Length * 16L, budget,
-                out long setup, out bool eligible, CancellationToken.None);
+                new(0, width), null, SvgAnalyticPaintClip.Binary, budget,
+                out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            Assert.InRange(setup, 1, points.Length * 16L);
             SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(new(224, 64, 32, 255));
             byte[] pixel = new byte[4];
             for (int row = 0; row < gridSize; row++)
             {
-                walker.PrepareRow(row * 8 + 3, 100_000, out long _, CancellationToken.None);
+                walker.PrepareRow(row * 8 + 3, CancellationToken.None);
                 for (int column = 0; column < gridSize; column++)
                 {
                     Array.Clear(pixel);
@@ -213,21 +205,27 @@ public sealed class SvgNativeStrokeOutlineTests
     [InlineData(nameof(SvgPolygonMapping.NativeStrokeEdges), true)]
     [InlineData(nameof(SvgPolygonMapping.QuarterEdges), false)]
     [InlineData(nameof(SvgPolygonMapping.FlattenedCurves), false)]
-    public void Other_multi_contour_routes_keep_their_contact_classification_work(string mappingName, bool evenOdd)
+    public void Other_multi_contour_routes_preserve_bands_and_holes(string mappingName, bool evenOdd)
     {
         (SvgDevicePoint[] points, int[] ends, int width) = RingGrid(4);
         int[] signs = evenOdd ? Enumerable.Repeat(1, ends.Length).ToArray() : [];
         SvgAnalyticContourPreparation preparation = new(points, ends, signs, evenOdd, null,
             Enum.Parse<SvgPolygonMapping>(mappingName), [], [], new(0, 0, width, width), width, width);
         RenderBudget budget = new(1_000_000);
-        try
         {
-            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, width, 0, width,
-                new(0, width), null, SvgAnalyticPaintClip.Binary, points.Length * 16L, budget,
-                out long _, out bool _, CancellationToken.None);
-            Assert.Fail("This route still requires its contact classification before admission.");
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, width, 0, width,
+                new(0, width), null, SvgAnalyticPaintClip.Binary, budget,
+                out bool eligible, CancellationToken.None);
+            Assert.True(eligible);
+            walker.PrepareRow(3, CancellationToken.None);
+            SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(new(224, 64, 32, 255));
+            byte[] pixel = new byte[4];
+            walker.PaintPixel(1, pixel, paint, SvgAnalyticClipCoverage.Full);
+            Assert.Equal(255, pixel[3]);
+            Array.Clear(pixel);
+            walker.PaintPixel(3, pixel, paint, SvgAnalyticClipCoverage.Full);
+            Assert.Equal(0, pixel[3]);
         }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

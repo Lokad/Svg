@@ -6,7 +6,7 @@ namespace Lokad.Svg.Rendering;
 
 /// <summary>Rasterizes transformed rectangular contours with native binary line edges.</summary>
 /// <remarks>Source, destination and clip coverage remain caller-owned. One rectangle uses stack storage;
-/// compound contours reserve bounded scratch arrays. Bitmap and edge traversal charge work and cancellation.</remarks>
+/// compound contours reserve bounded scratch arrays. Bitmap and edge traversal observe cancellation.</remarks>
 internal static class SvgBinaryViewportCoverage
 {
     /// <summary>Largest absolute bitmap coordinate accepted by native 26.6 edge conversion.</summary>
@@ -15,12 +15,11 @@ internal static class SvgBinaryViewportCoverage
     private readonly record struct Edge(long X, long Step, int First, int Last, int Winding);
 
     /// <summary>Consumes a complete source-to-device map prepared by the shared viewport mapper.</summary>
-    internal static long Rasterize(SvgAuthoredPath source, SvgAffineTransform map, SvgCpuRasterGrid grid,
+    internal static void Rasterize(SvgAuthoredPath source, SvgAffineTransform map, SvgCpuRasterGrid grid,
         SvgAnalyticClipBounds bounds, byte[] destination, int width, SvgCpuClipCoverage coverage,
-        bool evenOdd, bool inverse, RenderBudget budget, long maximumWork, CancellationToken token)
+        bool evenOdd, bool inverse, RenderBudget budget, CancellationToken token)
     {
-        long work = 0;
-        Charge(source.Commands.Length);
+        token.ThrowIfCancellationRequested();
         int cornerCount = 0, contourSize = 0;
         foreach (SvgAuthoredPathCommand command in source.Commands)
         {
@@ -39,19 +38,27 @@ internal static class SvgBinaryViewportCoverage
         Span<Edge> edges = cornerCount <= 4 ? stackalloc Edge[4] : new Edge[cornerCount];
         Span<Edge> active = cornerCount <= 4 ? stackalloc Edge[4] : new Edge[cornerCount];
         Span<SvgDevicePoint> placed = cornerCount <= 4 ? stackalloc SvgDevicePoint[4] : new SvgDevicePoint[cornerCount];
-        Charge(cornerCount);
+        token.ThrowIfCancellationRequested();
         int count = 0;
         foreach (SvgAuthoredPathCommand command in source.Commands)
+        {
+            if ((count & 1023) == 0) token.ThrowIfCancellationRequested();
             if (command.Verb is SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.Line) corners[count++] = command.First;
+        }
         foreach (SvgCpuRasterContext context in grid.GetContexts(bounds))
         {
-            Charge(1 + 2L * cornerCount);
+            token.ThrowIfCancellationRequested();
             SvgAnalyticClipBounds bitmap = context.BitmapClip;
             SvgCpuBitmapOrigin origin = new(bitmap.Left, bitmap.Top);
-            for (int index = 0; index < cornerCount; index++) placed[index] = SvgAuthoredPath.MapPoint(map, corners[index], origin);
+            for (int index = 0; index < cornerCount; index++)
+            {
+                if ((index & 1023) == 0) token.ThrowIfCancellationRequested();
+                placed[index] = SvgAuthoredPath.MapPoint(map, corners[index], origin);
+            }
             int edgeCount = 0;
             for (int index = 0; index < cornerCount; index++)
             {
+                if ((index & 1023) == 0) token.ThrowIfCancellationRequested();
                 SvgDevicePoint first = placed[index], last = placed[(index & ~3) + ((index + 1) & 3)];
                 long x0 = Dot6(first.X), y0 = Dot6(first.Y), x1 = Dot6(last.X), y1 = Dot6(last.Y);
                 int winding = 1;
@@ -67,20 +74,22 @@ internal static class SvgBinaryViewportCoverage
             int keptLeft = right, keptTop = bottomRow, keptRight = left, keptBottom = topRow;
             for (int y = topRow; y < bottomRow; y++)
             {
-                Charge(1L + edgeCount);
+                token.ThrowIfCancellationRequested();
                 int localY = y - origin.Y, activeCount = 0;
                 for (int index = 0; index < edgeCount; index++)
                 {
+                    if ((index & 1023) == 0) token.ThrowIfCancellationRequested();
                     Edge edge = edges[index];
                     if (localY < edge.First || localY >= edge.Last) continue;
                     Edge current = edge with { X = edge.X + edge.Step * ((long)localY - edge.First) };
                     int at = activeCount++;
-                    while (at > 0 && active[at - 1].X > current.X) { Charge(1); active[at] = active[at - 1]; at--; }
+                    while (at > 0 && active[at - 1].X > current.X) { token.ThrowIfCancellationRequested(); active[at] = active[at - 1]; at--; }
                     active[at] = current;
                 }
                 int winding = inverse ? 1 : 0, start = left;
                 for (int index = 0; index < activeCount; index++)
                 {
+                    if ((index & 1023) == 0) token.ThrowIfCancellationRequested();
                     int x = (int)Math.Clamp(((active[index].X + 32768) >> 16) + origin.X, left, right);
                     if (winding == 0) start = x;
                     winding = evenOdd ? winding ^ 1 : winding + active[index].Winding;
@@ -91,7 +100,7 @@ internal static class SvgBinaryViewportCoverage
 
                 void Fill(int first, int end)
                 {
-                    Charge(end - first);
+                    token.ThrowIfCancellationRequested();
                     for (int pixel = first; pixel < end; pixel++)
                     {
                         coverage.SetBorderAlpha(bitmap, pixel, y, 255);
@@ -104,14 +113,7 @@ internal static class SvgBinaryViewportCoverage
             coverage.SetBounds(bitmap, keptRight > keptLeft && keptBottom > keptTop
                 ? new(keptLeft, keptTop, keptRight, keptBottom) : new(left, topRow, left, topRow));
         }
-        return work;
-
-        void Charge(long amount)
-        {
-            token.ThrowIfCancellationRequested();
-            if (amount > maximumWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Binary viewport construction exceeds the configured work limit.");
-            work += amount;
-        }
+        return;
         static long Dot6(double value)
         {
             if (Math.Abs(value) > MaximumCoordinate) throw new SvgException(SvgErrorCode.LimitExceeded, "Binary viewport coordinates exceed the native fixed range.");

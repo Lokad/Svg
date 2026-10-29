@@ -44,10 +44,9 @@ public sealed class SvgUseStrokeSourceTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'><defs><path id='p' d='M4 5 H35 V29 H4 Z'/></defs><use href='#p' fill='none' stroke='#5689c1' stroke-width='2' stroke-linejoin='" + join + "'/></svg>");
         RenderBudget measured = new(1_000_000);
-        long totalWork;
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
-            totalWork = surface.WorkUnits;
+            {}
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 4096)
@@ -68,26 +67,6 @@ public sealed class SvgUseStrokeSourceTests
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, edge, CancellationToken.None);
         }).ErrorCode);
         Assert.Equal(0, edge.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { totalWork - 1, totalWork, totalWork + 1 })
-        {
-            SvgRenderLimits defaults = SvgRenderLimits.Default;
-            SvgRenderLimits limits = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
-                defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-                checked((int)limit), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
-            RenderBudget budget = new(1_000_000);
-            using (SvgRoot scene = SvgRootParser.Parse(input, limits, budget, null, CancellationToken.None))
-            {
-                SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
-                if (limit < totalWork)
-                    Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, options, budget, CancellationToken.None)).ErrorCode);
-                else
-                {
-                    using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, budget, CancellationToken.None);
-                    Assert.Equal(totalWork, surface.WorkUnits);
-                }
-            }
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        }
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         RenderBudget canceledBudget = new(1_000_000);

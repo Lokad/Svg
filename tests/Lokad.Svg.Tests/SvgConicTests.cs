@@ -44,9 +44,8 @@ public sealed class SvgConicTests
         string[][] rows = File.ReadAllLines(Path.Combine(directory, "conic-native.csv")).Skip(1)
             .Select(line => line.Split(',')).Where(row => row[0] == id).ToArray();
         Span<SvgDevicePoint> output = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
-        int count = SvgRationalQuadratic.Convert(new(p[0], p[1]), new(p[2], p[3]), new(p[4], p[5]), (float)p[6], (float)p[7], output, out int work, CancellationToken.None);
+        int count = SvgRationalQuadratic.Convert(new(p[0], p[1]), new(p[2], p[3]), new(p[4], p[5]), (float)p[6], (float)p[7], output, CancellationToken.None);
         Assert.Equal(2 * count + 1, rows.Length);
-        Assert.InRange(work, 1, SvgRationalQuadratic.MaximumConversionWork);
         for (int index = 0; index < rows.Length; index++)
         {
             Assert.Equal(count, int.Parse(rows[index][2], CultureInfo.InvariantCulture));
@@ -101,29 +100,20 @@ public sealed class SvgConicTests
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, [], new(8, 16, 56, 48), 64, 64);
         RenderBudget budget = new(1_000_000);
         SvgAnalyticClipContext? clip = clipped ? new(new(0, 0, 64, 64)) : null;
-        long firstWork;
-        using (SvgAnalyticCoverage first = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out firstWork, out bool eligible, CancellationToken.None))
+        using (SvgAnalyticCoverage first = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
             Assert.True(preparation.Convex);
             Assert.Equal(9L, preparation.NativePointCount);
-            first.PrepareRow(31, out long rowWork, CancellationToken.None);
-            Assert.True(rowWork > 0);
+            first.PrepareRow(31, CancellationToken.None);
         }
-        long setup;
-        using (SvgAnalyticCoverage cached = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out setup, out bool eligible, CancellationToken.None))
-        { Assert.True(eligible); Assert.True(setup < firstWork); }
+        using (SvgAnalyticCoverage cached = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
+        { Assert.True(eligible); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        try
-        {
-            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, setup - 1, budget, out long _, out bool _, CancellationToken.None);
-            Assert.Fail("Conic setup must respect its remaining work allowance.");
-        }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
         RenderBudget tight = new(1);
         try
         {
-            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, 1_000_000, tight, out long _, out bool _, CancellationToken.None);
+            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, tight, out bool _, CancellationToken.None);
             Assert.Fail("Conic edge storage must be reserved before allocation.");
         }
         catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
@@ -132,7 +122,7 @@ public sealed class SvgConicTests
         cancellation.Cancel();
         try
         {
-            using SvgAnalyticCoverage canceled = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool _, cancellation.Token);
+            using SvgAnalyticCoverage canceled = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip, SvgAnalyticPaintClip.Binary, budget, out bool _, cancellation.Token);
             Assert.Fail("Cached conics must still observe cancellation.");
         }
         catch (OperationCanceledException exception) { Assert.Equal(cancellation.Token, exception.CancellationToken); }
@@ -144,9 +134,9 @@ public sealed class SvgConicTests
     {
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        OperationCanceledException canceled = Assert.Throws<OperationCanceledException>(() => SvgRationalQuadratic.Convert(new(1, 0), new(1, 1), new(0, 1), SvgRationalQuadratic.QuarterCircleWeight, .25f, new SvgDevicePoint[65], out int _, cancellation.Token));
+        OperationCanceledException canceled = Assert.Throws<OperationCanceledException>(() => SvgRationalQuadratic.Convert(new(1, 0), new(1, 1), new(0, 1), SvgRationalQuadratic.QuarterCircleWeight, .25f, new SvgDevicePoint[65], cancellation.Token));
         Assert.Equal(cancellation.Token, canceled.CancellationToken);
-        SvgException denied = Assert.Throws<SvgException>(() => SvgRationalQuadratic.Convert(new(1, 0), new(1, 1), new(0, 1), SvgRationalQuadratic.QuarterCircleWeight, .25f, new SvgDevicePoint[2], out int _, CancellationToken.None));
+        SvgException denied = Assert.Throws<SvgException>(() => SvgRationalQuadratic.Convert(new(1, 0), new(1, 1), new(0, 1), SvgRationalQuadratic.QuarterCircleWeight, .25f, new SvgDevicePoint[2], CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
     }
 

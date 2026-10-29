@@ -39,7 +39,7 @@ public sealed class SvgRawContourConvexityTests
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(0, 0, 64, 64), 64, 64);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), new(new(0, 0, 64, 64)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), new(new(0, 0, 64, 64)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.True(preparation.UseCurveSpans);
             Assert.Equal(true, preparation.Convex);
@@ -53,24 +53,22 @@ public sealed class SvgRawContourConvexityTests
         SvgAnalyticContourPreparation preparation = new(SampledRing, [6], [], false, null, SvgPolygonMapping.FlattenedCurves, [], Cubics, new(0, 0, 64, 64), 64, 64);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(false, preparation.Convex);
             Assert.True(preparation.UseCurveSpans);
         }
-        long cachedWork;
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out cachedWork, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
         }
         preparation.Convex = null;
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long repeatedWork, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            Assert.Equal(SampledRing.Length * 2L + Cubics.Length * 2L + 2, repeatedWork - cachedWork);
         }
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), new(new(0, 8, 64, 40)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), new(new(0, 8, 64, 40)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(false, preparation.Convex);
         }
@@ -78,25 +76,32 @@ public sealed class SvgRawContourConvexityTests
     }
 
     [Fact]
-    public void Raw_classification_denial_precedes_storage_and_leaves_the_cache_unset()
+    public void Cancelled_preparation_leaves_raw_classification_uncached_and_allows_retry()
     {
         SvgAnalyticContourPreparation preparation = new(SampledRing, [6], [], false, null, SvgPolygonMapping.FlattenedCurves, [], Cubics, new(0, 0, 64, 64), 64, 64);
         RenderBudget success = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, success, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, success, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
         }
         preparation.Convex = null;
         RenderBudget denied = new(1_000_000);
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
         try
         {
-            long classificationWork = SampledRing.Length * 2L + Cubics.Length * 2L + 2;
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, classificationWork - 1, denied, out long _, out bool _, CancellationToken.None);
-            Assert.Fail("The raw-control traversal must observe its remaining work limit.");
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, denied, out bool _, cancellation.Token);
+            Assert.Fail("Canceled preparation must leave raw classification uncached.");
         }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
+        catch (OperationCanceledException exception) { Assert.Equal(cancellation.Token, exception.CancellationToken); }
         Assert.Null(preparation.Convex);
         Assert.Equal(0, denied.Snapshot().PeakBytes);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        using (SvgAnalyticCoverage retry = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, denied, out bool eligible, CancellationToken.None))
+        {
+            Assert.True(eligible);
+            Assert.Equal(false, preparation.Convex);
+        }
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
     }
 

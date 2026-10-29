@@ -33,7 +33,7 @@ public sealed class SvgFilterAlphaStageMechanismTests
         SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
         SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
         RenderBudget raster = new(1_000_000);
-        using SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame([32, 64, 96, 160], 1, 1, resource, new(1, 1), raster, long.MaxValue, CancellationToken.None);
+        using SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame([32, 64, 96, 160], 1, 1, resource, new(1, 1), raster, CancellationToken.None);
         Assert.Equal(retained ? SvgFilterDeferredColorFilter.SourceAlpha : SvgFilterDeferredColorFilter.None, result.SamplingColorFilter);
     }
 }

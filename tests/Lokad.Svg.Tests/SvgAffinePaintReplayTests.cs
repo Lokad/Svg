@@ -55,8 +55,6 @@ public sealed class SvgAffinePaintReplayTests
             Assert.Equal(expected, retry.Pixels);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget deniedWork = new(8_000_000);
-        Assert.Equal(0, deniedWork.Snapshot().CurrentBytes);
         RenderBudget deniedMemory = new(Math.Max(1, budget.Snapshot().PeakBytes - 1_024));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {

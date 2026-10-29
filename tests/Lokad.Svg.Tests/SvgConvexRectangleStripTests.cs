@@ -18,10 +18,10 @@ public sealed class SvgConvexRectangleStripTests
         SvgAnalyticContourPreparation preparation = new(points, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(457, 228, 755, 572), 1144, 800);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 457, 510, 254, 510, new(254, 510), new(new(254, 254, 510, 510)), paintClip, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 457, 510, 254, 510, new(254, 510), new(new(254, 254, 510, 510)), paintClip, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.False(preparation.DesnapBox);
-            walker.PrepareRow(258, 1_000_000, out long _, CancellationToken.None);
+            walker.PrepareRow(258, CancellationToken.None);
             Assert.Equal((byte)96, walker.Row[0]);
             byte[] pixel = [128, 128, 128, 255];
             walker.PaintPixel(0, pixel, SvgAnalyticPaint.Solid(new(255, 255, 255, 255)), SvgAnalyticClipCoverage.Full);
@@ -37,11 +37,11 @@ public sealed class SvgConvexRectangleStripTests
         SvgAnalyticContourPreparation preparation = new(points, [4], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(3, 2, 29, 31), 32, 32);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 3, 29, 2, 31, new(0, 32), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 3, 29, 2, 31, new(0, 32), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.True(preparation.DesnapBox);
             Assert.False(preparation.UsesRunBlitter);
-            walker.PrepareRow(10, 1_000_000, out long _, CancellationToken.None);
+            walker.PrepareRow(10, CancellationToken.None);
             Assert.Equal((byte)99, walker.Row[0]);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

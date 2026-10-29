@@ -65,90 +65,60 @@ public sealed class SvgCpuRasterContextTests
     }
 
     [Fact]
-    public void Cached_classification_charges_once_and_storage_does_not_change_native_dispatch()
+    public void Cached_classification_and_storage_preserve_native_dispatch()
     {
         using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(Input), SvgRenderLimits.Default, CancellationToken.None);
         var polygon = Assert.Single(root.Geometries).Polygon;
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(24, 24, 612, 278), 640, 320);
         RenderBudget budget = new(1_000_000);
-        long firstSetup;
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out firstSetup, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(256, walker.Row.Length);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        long secondSetup;
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, firstSetup, budget, out secondSetup, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
         }
-        Assert.True(secondSetup < firstSetup);
         // Reusing classification removes work once, independently of its internal algorithm.
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, secondSetup, budget, out long repeatedSetup, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            Assert.Equal(secondSetup, repeatedSetup);
         }
         SvgAnalyticContourPreparation fresh = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(24, 24, 612, 278), 640, 320);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref fresh, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, firstSetup, budget, out long freshSetup, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref fresh, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            Assert.Equal(firstSetup, freshSetup);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         // A narrow storage interval still uses the whole path's run dispatch.
-        using SvgAnalyticCoverage narrow = SvgAnalyticCoverage.Prepare(ref preparation, 254, 270, 24, 278, new(254, 270), new(new(254, 0, 270, 256)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool narrowEligible, CancellationToken.None);
+        using SvgAnalyticCoverage narrow = SvgAnalyticCoverage.Prepare(ref preparation, 254, 270, 24, 278, new(254, 270), new(new(254, 0, 270, 256)), SvgAnalyticPaintClip.Binary, budget, out bool narrowEligible, CancellationToken.None);
         Assert.True(narrowEligible);
         Assert.True(preparation.UsesRunBlitter);
     }
 
     [Fact]
-    public void Complete_control_bounds_are_charged_before_classification_or_allocation()
-    {
-        using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(Input), SvgRenderLimits.Default, CancellationToken.None);
-        var polygon = Assert.Single(root.Geometries).Polygon;
-        SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(24, 24, 612, 278), 640, 320);
-        RenderBudget budget = new(1_000_000);
-        long oldPointAllowance = polygon.Points.Length + polygon.ContourEnds.Length;
-        try
-        {
-            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, oldPointAllowance, budget, out long _, out bool _, CancellationToken.None);
-            Assert.Fail("The old point-only allowance cannot cover retained control classification.");
-        }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
-        Assert.False(preparation.BasicChecked);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-    }
-
-    [Fact]
-    public void Cached_context_work_denial_and_cancellation_release_every_owner()
+    public void Cached_context_memory_refusal_and_cancellation_release_every_owner()
     {
         using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(Input), SvgRenderLimits.Default, CancellationToken.None);
         var polygon = Assert.Single(root.Geometries).Polygon;
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(24, 24, 612, 278), 640, 320);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
         }
-        long setup;
         long storage;
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out setup, out bool _, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, budget, out bool _, CancellationToken.None);
             storage = budget.Snapshot().CurrentBytes;
         }
-        try
-        {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, setup - 1, budget, out long _, out bool _, CancellationToken.None);
-            Assert.Fail("The subsequent context must respect its remaining setup work.");
-        }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget denied = new(storage - 1);
         try
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, 1_000_000, denied, out long _, out bool _, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, denied, out bool _, CancellationToken.None);
             Assert.Fail("Edge and run-link reservations must fit together.");
         }
         catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
@@ -158,7 +128,7 @@ public sealed class SvgCpuRasterContextTests
         source.Cancel();
         try
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool _, source.Token);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), SvgAnalyticPaintClip.Binary, budget, out bool _, source.Token);
             Assert.Fail("Cached geometry must still observe cancellation.");
         }
         catch (OperationCanceledException exception) { Assert.Equal(source.Token, exception.CancellationToken); }

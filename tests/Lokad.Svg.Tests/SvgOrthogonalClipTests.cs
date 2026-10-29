@@ -71,11 +71,11 @@ public sealed class SvgOrthogonalClipTests
         using CancellationTokenSource source = new();
         {
             SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(-2, -2, 43, 35), 40, 32);
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 40, 0, 32, new(0, 40), new(new(0, 0, 36, 28)), SvgAnalyticPaintClip.Antialiased, 1_000_000, budget, out long _, out bool eligible, source.Token);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 40, 0, 32, new(0, 40), new(new(0, 0, 36, 28)), SvgAnalyticPaintClip.Antialiased, budget, out bool eligible, source.Token);
             Assert.True(eligible);
             Assert.True(budget.Snapshot().CurrentBytes > 0);
             source.Cancel();
-            try { walker.PrepareRow(0, out long _, source.Token); Assert.Fail("Cancelled row preparation must not complete."); }
+            try { walker.PrepareRow(0, source.Token); Assert.Fail("Cancelled row preparation must not complete."); }
             catch (OperationCanceledException exception) { Assert.Equal(source.Token, exception.CancellationToken); }
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

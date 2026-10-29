@@ -18,13 +18,13 @@ public sealed class SvgQuadSpanWalkerTests
     {
         RenderBudget budget = new(10_000_000);
         ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
-        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, SvgPolygonMapping.FlattenedCurves, spans, 0, 64, 0, 64, 64, 64, budget, out long _, out eligible, CancellationToken.None);
+        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, SvgPolygonMapping.FlattenedCurves, spans, 0, 64, 0, 64, 64, 64, budget, out eligible, CancellationToken.None);
         List<byte> rows = new();
         if (eligible)
         {
             for (int y = firstRow; y < pastLastRow; y++)
             {
-                walker.PrepareRow(y, out long _, CancellationToken.None);
+                walker.PrepareRow(y, CancellationToken.None);
                 byte[] pixels = new byte[64 * 4];
                 for (int x = 0; x < 64; x++)
                 {

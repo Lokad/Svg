@@ -90,7 +90,7 @@ public sealed class RenderBudgetTests
         static void PrepareTriangle(RenderBudget budget)
         {
             SvgDevicePoint[] points = [new(0, 0), new(16, 0), new(0, 16)];
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [3], [], false, null, SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out long _, out bool _, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [3], [], false, null, SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out bool _, CancellationToken.None);
         }
     }
 
@@ -154,21 +154,10 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
-    public void Glyph_rasterization_charges_bounds_all_samples_and_pixel_dispatch()
-    {
-        RenderBudget budget = new(8);
-
-        using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits(517)), budget, CancellationToken.None);
-
-        Assert.Equal(517, surface.WorkUnits);
-        Assert.Equal(4, budget.Snapshot().CurrentBytes);
-    }
-
-    [Fact]
     public void Prepared_glyph_releases_storage_after_rendering()
     {
         RenderBudget budget = new(10_000);
-        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PreparedGlyphLimits(10_000)), budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PreparedGlyphLimits()), budget, CancellationToken.None))
         {
             Assert.Equal(new byte[] { 0, 0, 0, 255 }, surface.Pixels);
             Assert.Equal(4, budget.Snapshot().CurrentBytes);
@@ -189,7 +178,7 @@ public sealed class RenderBudgetTests
             contour.Segments[index] = new(new(segment.Start.X + 2, segment.Start.Y + 2), new(segment.Control.X + 2, segment.Control.Y + 2), new(segment.End.X + 2, segment.End.Y + 2));
         }
         RenderBudget budget = new(10_000);
-        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, PreparedGlyphLimits(549)), budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, PreparedGlyphLimits()), budget, CancellationToken.None))
         {
             Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels);
             Assert.Equal(4, budget.Snapshot().PeakBytes);
@@ -204,34 +193,20 @@ public sealed class RenderBudgetTests
         using CancellationTokenSource cancellation = new();
         bool started = false;
         using IDisposable probe = GlyphCoverageProbe.Arm(() => { started = true; cancellation.Cancel(); });
-        Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PreparedGlyphLimits(549)), budget, cancellation.Token));
+        Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PreparedGlyphLimits()), budget, cancellation.Token));
         Assert.True(started);
         AssertBudgetReleased(budget);
     }
 
     [Fact]
-    public void Glyph_rasterization_denies_before_bounds_or_coverage_work_exceeds_the_limit()
-    {
-        RenderBudget boundsBudget = new(8);
-        SvgException bounds = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits(3)), boundsBudget, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, bounds.ErrorCode);
-        AssertBudgetReleased(boundsBudget);
-
-        RenderBudget coverageBudget = new(8);
-        SvgException coverage = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits(516)), coverageBudget, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, coverage.ErrorCode);
-        AssertBudgetReleased(coverageBudget);
-    }
-
-    [Fact]
     public void Glyph_rasterization_observes_cancellation_at_coverage_entry()
     {
-        RenderBudget budget = new(8);
+        RenderBudget budget = new(10_000);
         using CancellationTokenSource cancellation = new();
         bool coverageStarted = false;
         using IDisposable probe = GlyphCoverageProbe.Arm(() => { coverageStarted = true; cancellation.Cancel(); });
 
-        Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits(517)), budget, cancellation.Token));
+        Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits()), budget, cancellation.Token));
 
         Assert.True(coverageStarted);
         AssertBudgetReleased(budget);
@@ -298,35 +273,20 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
-    public void Pattern_tile_blit_charges_content_pixels()
+    public void Pattern_tile_blit_preserves_content_pixels_and_retained_surface()
     {
         RenderBudget budget = new(1_000);
 
-        using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(PatternRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits(28)), budget, CancellationToken.None);
-
-        Assert.Equal(28, surface.WorkUnits);
+        using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(PatternRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits()), budget, CancellationToken.None);
         Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels[0..4]);
         Assert.Equal(16, budget.Snapshot().CurrentBytes);
-    }
-
-    [Fact]
-    public void Pattern_tile_blit_denies_before_content_work_exceeds_the_limit()
-    {
-        RenderBudget budget = new(1_000);
-        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits(15));
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(PatternRoot(), options, budget, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Contains("Pattern tile", exception.Message);
-        AssertBudgetReleased(budget);
     }
 
     [Fact]
     public void Pattern_tile_blit_observes_cancellation()
     {
         RenderBudget budget = new(1_000);
-        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits(20));
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits());
 
         Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(PatternRoot(), options, budget, new CancellationToken(true)));
 
@@ -341,7 +301,7 @@ public sealed class RenderBudgetTests
         return new SvgRoot(new SvgRootLength(2, false), new SvgRootLength(2, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
     }
 
-    private static SvgRenderLimits PatternLimits(int maximumWorkUnits) => new(1_000, 1_000, 64, 4_096, 1_000, 64, 64, maximumWorkUnits);
+    private static SvgRenderLimits PatternLimits() => new(1_000, 1_000, 64, 4_096, 1_000, 64, 64);
     private static SvgRoot GlyphRoot()
     {
         SvgGlyphQuadraticContour contour = new([
@@ -483,7 +443,7 @@ public sealed class RenderBudgetTests
         RenderBudget probe = new(limits.MaximumAccountedBytes);
         using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
         long peak = probe.Snapshot().PeakBytes;
-        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumWorkUnits, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
         RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
@@ -543,7 +503,7 @@ public sealed class RenderBudgetTests
         RenderBudget probe = new(limits.MaximumAccountedBytes);
         using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
         long peak = probe.Snapshot().PeakBytes;
-        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumWorkUnits, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
         RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
@@ -574,7 +534,7 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
-    public void Polygon_rasterization_charges_mapped_vertices_and_coverage_pixels()
+    public void Polygon_rasterization_releases_geometry_and_surface_storage()
     {
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
@@ -584,30 +544,8 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 375);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
-            // The single CPU raster context adds one charged visit.
-            Assert.Equal(251, surface.WorkUnits);
-        }
-        finally { fill.Dispose(); }
-        AssertBudgetReleased(budget);
-    }
-
-    [Fact]
-    public void Polygon_rasterization_denies_before_vertex_weighted_coverage_exceeds_the_limit()
-    {
-        RenderBudget budget = new(100_000);
-        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
-        int[] ends = [3];
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
-        try
-        {
-            SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
-            using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 80);
-            SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-            Assert.Contains("raster work", exception.Message);
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);
@@ -694,7 +632,7 @@ public sealed class RenderBudgetTests
         RenderBudget probe = new(limits.MaximumAccountedBytes);
         using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
         long peak = probe.Snapshot().PeakBytes;
-        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumWorkUnits, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
         RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
@@ -712,7 +650,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100_000);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
             Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, cancellation.Token));
@@ -732,7 +670,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100_000);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -754,7 +692,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100_000);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -776,31 +714,11 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100_000);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
             Assert.Equal(0, fanEvaluations);
-        }
-        finally { fill.Dispose(); }
-        AssertBudgetReleased(budget);
-    }
-
-    [Fact]
-    public void Polygon_rasterization_denies_before_mapping_work_exceeds_the_limit()
-    {
-        RenderBudget budget = new(100_000);
-        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
-        int[] ends = [3];
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
-        try
-        {
-            SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
-            using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 2);
-            SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-            Assert.Contains("vertex mapping", exception.Message);
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);
@@ -814,7 +732,7 @@ public sealed class RenderBudgetTests
         RenderBudget probe = new(limits.MaximumAccountedBytes);
         using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
         long peak = probe.Snapshot().PeakBytes;
-        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumWorkUnits, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
         RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
@@ -832,7 +750,7 @@ public sealed class RenderBudgetTests
         RenderBudget probe = new(limits.MaximumAccountedBytes);
         using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
         long peak = probe.Snapshot().PeakBytes;
-        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumWorkUnits, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
         RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
@@ -902,11 +820,9 @@ public sealed class RenderBudgetTests
 
     private static string EightStopGradientSvg() => "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"0.15\" stop-color=\"#ff8000\"/><stop offset=\"0.3\" stop-color=\"#ffff00\"/><stop offset=\"0.45\" stop-color=\"#00ff00\"/><stop offset=\"0.6\" stop-color=\"#00ffff\"/><stop offset=\"0.75\" stop-color=\"#0000ff\"/><stop offset=\"0.9\" stop-color=\"#8000ff\"/><stop offset=\"1\" stop-color=\"#ff00ff\"/></linearGradient></defs><rect x=\"0\" y=\"0\" width=\"16\" height=\"16\" fill=\"url(#g)\"/></svg>";
 
-    private static SvgRenderLimits Limits() => Limits(8);
+    private static SvgRenderLimits Limits() => new(8, 8, 1, 1, 8, 8, 8);
 
-    private static SvgRenderLimits Limits(int maximumWorkUnits) => new(8, 8, 1, 1, 8, 8, 8, maximumWorkUnits);
-
-    private static SvgRenderLimits PreparedGlyphLimits(int maximumWorkUnits) => new(8, 8, 1, 1, 10_000, 8, 8, maximumWorkUnits);
+    private static SvgRenderLimits PreparedGlyphLimits() => new(8, 8, 1, 1, 10_000, 8, 8);
 
     private static void AssertBudgetReleased(RenderBudget budget)
     {
@@ -1108,7 +1024,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100_000);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -1130,7 +1046,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100_000);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -1152,7 +1068,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100_000);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -1174,7 +1090,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100_000);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -1196,7 +1112,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100_000);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
@@ -1211,18 +1127,17 @@ public sealed class RenderBudgetTests
     {
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] twin = [new(0, 0), new(8, 0), new(0, 8), new(8, 8), new(16, 8), new(8, 16)];
-        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(twin, [3, 6], [], false, [1, 1], SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out long twinSetup, out bool twinEligible, CancellationToken.None))
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(twin, [3, 6], [], false, [1, 1], SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out bool twinEligible, CancellationToken.None))
         {
             Assert.True(twinEligible);
-            Assert.Equal(104, twinSetup);
         }
         SvgDevicePoint[] touching = [new(0, 0), new(8, 0), new(0, 8), new(8, 0), new(8, 8), new(0, 8)];
-        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(touching, [3, 6], [], false, [1, 1], SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out long touchingSetup, out bool touchingEligible, CancellationToken.None))
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(touching, [3, 6], [], false, [1, 1], SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out bool touchingEligible, CancellationToken.None))
         {
             Assert.False(touchingEligible);
         }
         SvgDevicePoint[] degenerate = [new(0, 0), new(0, 0), new(0, 0)];
-        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(degenerate, [3], [], false, [0], SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out long degenerateSetup, out bool degenerateEligible, CancellationToken.None))
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(degenerate, [3], [], false, [0], SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out bool degenerateEligible, CancellationToken.None))
         {
             Assert.False(degenerateEligible);
         }
@@ -1235,7 +1150,7 @@ public sealed class RenderBudgetTests
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] lobes = [new(2, 2), new(4, 3), new(8, 4), new(8, 8), new(2, 8), new(4, 4), new(4, 2), new(4, 0), new(2, 2), new(0, 4), new(0, 0), new(2, 2)];
         int[] ends = [5, 9, 12];
-        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(lobes, ends, [], false, null, SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out long _, out bool eligible, CancellationToken.None))
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(lobes, ends, [], false, null, SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out bool eligible, CancellationToken.None))
         {
             Assert.False(eligible);
         }
@@ -1248,7 +1163,7 @@ public sealed class RenderBudgetTests
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] loops = [new(0, 0), new(8, 0), new(0, 8), new(16, 0), new(24, 8), new(24, 0), new(20, 4)];
         int[] ends = [3, 7];
-        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(loops, ends, [], false, null, SvgPolygonMapping.FlattenedCurves, 0, 32, 0, 16, 32, 16, budget, out long _, out bool eligible, CancellationToken.None))
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(loops, ends, [], false, null, SvgPolygonMapping.FlattenedCurves, 0, 32, 0, 16, 32, 16, budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
         }
@@ -1263,7 +1178,7 @@ public sealed class RenderBudgetTests
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] bands = [new(0, 0), new(4, 0), new(4, 4), new(0, 4), new(2, 2), new(6, 2), new(6, 6), new(2, 6)];
         int[] ends = [4, 8];
-        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(bands, ends, [], false, [1, 1], SvgPolygonMapping.FiniteEdges, 0, 8, 0, 8, 8, 8, budget, out long _, out bool eligible, CancellationToken.None))
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(bands, ends, [], false, [1, 1], SvgPolygonMapping.FiniteEdges, 0, 8, 0, 8, 8, 8, budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
         }

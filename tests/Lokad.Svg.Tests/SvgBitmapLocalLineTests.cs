@@ -36,33 +36,26 @@ public sealed class SvgBitmapLocalLineTests
         // replace the bitmap origin when preparing local line intersections.
         SvgAnalyticClipContext clip = new(new(279, 63, 510, 256), new(254, 0));
         RenderBudget budget = new(1_000_000);
-        long setup;
         long storage;
         {
-            using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 279, 510, 31, 362, new(279, 510), clip, SvgAnalyticPaintClip.Antialiased, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage warm = SvgAnalyticCoverage.Prepare(ref preparation, 279, 510, 31, 362, new(279, 510), clip, SvgAnalyticPaintClip.Antialiased, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
         }
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 279, 510, 31, 362, new(279, 510), clip, SvgAnalyticPaintClip.Antialiased, 1_000_000, budget, out setup, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 279, 510, 31, 362, new(279, 510), clip, SvgAnalyticPaintClip.Antialiased, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             storage = budget.Snapshot().CurrentBytes;
-            walker.PrepareRow(100, 1_000_000, out long _, CancellationToken.None);
+            walker.PrepareRow(100, CancellationToken.None);
             byte[] pixel = new byte[4];
             walker.PaintPixel(300 - 279, pixel, SvgAnalyticPaint.Solid(new(0, 0, 0, 255)), SvgAnalyticClipCoverage.Full);
             Assert.Equal(255, pixel[3]);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        try
-        {
-            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 279, 510, 31, 362, new(279, 510), clip, SvgAnalyticPaintClip.Antialiased, setup - 1, budget, out long _, out bool _, CancellationToken.None);
-            Assert.Fail("Local coordinate mapping and fixed-edge translation must fit the remaining work.");
-        }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget tight = new(storage - 1);
         try
         {
-            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 279, 510, 31, 362, new(279, 510), clip, SvgAnalyticPaintClip.Antialiased, 1_000_000, tight, out long _, out bool _, CancellationToken.None);
+            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 279, 510, 31, 362, new(279, 510), clip, SvgAnalyticPaintClip.Antialiased, tight, out bool _, CancellationToken.None);
             Assert.Fail("Local clipping must release edge storage after a later reservation is denied.");
         }
         catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
@@ -71,7 +64,7 @@ public sealed class SvgBitmapLocalLineTests
         cancellation.Cancel();
         try
         {
-            using SvgAnalyticCoverage canceled = SvgAnalyticCoverage.Prepare(ref preparation, 279, 510, 31, 362, new(279, 510), clip, SvgAnalyticPaintClip.Antialiased, 1_000_000, budget, out long _, out bool _, cancellation.Token);
+            using SvgAnalyticCoverage canceled = SvgAnalyticCoverage.Prepare(ref preparation, 279, 510, 31, 362, new(279, 510), clip, SvgAnalyticPaintClip.Antialiased, budget, out bool _, cancellation.Token);
             Assert.Fail("Cached local clipping must still observe the caller's cancellation.");
         }
         catch (OperationCanceledException exception) { Assert.Equal(cancellation.Token, exception.CancellationToken); }

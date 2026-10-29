@@ -22,7 +22,7 @@ namespace Lokad.Svg.Parsing;
 /// endpoint route; retained source replay preserves native float geometry at raster time.</para>
 /// <para>Open trailing contours seal implicitly for fill; a repeated closepath without an open contour is
 /// a no-op. Command letters are bounded by the caller limit, points by the builder capacity, and scanning
-/// work by the shared counter checkpoints.</para>
+/// traversal observes cooperative cancellation.</para>
 /// </remarks>
 internal static class SvgPathDataParser
 {
@@ -116,14 +116,14 @@ internal static class SvgPathDataParser
     /// <summary>Reads original vertices and controls without flattening or synthesizing fill closure.</summary>
     /// <remarks>The caller owns command storage and its bounded reservation. Parsing observes the same
     /// syntax/command bounds and cancellation as geometry lowering; no contour scratch is allocated.</remarks>
-    internal static void ParseCommands(string value, int maximumCommands,         CancellationToken cancellationToken, BudgetedParserList<SvgAuthoredPathCommand> commands)
+    internal static void ParseCommands(string value, int maximumCommands, CancellationToken cancellationToken, BudgetedParserList<SvgAuthoredPathCommand> commands)
     {
         ArgumentNullException.ThrowIfNull(commands);
         ParseCore(value, SvgAffineTransform.Identity, null, default, maximumCommands, cancellationToken, null, commands);
     }
 
     private static void ParseCore(string? value, SvgAffineTransform transform, SvgContourBuilder? builder,
-        SvgFlattenPolicy flattenPolicy, int maximumCommands,         CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds, BudgetedParserList<SvgAuthoredPathCommand>? authored)
+        SvgFlattenPolicy flattenPolicy, int maximumCommands, CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds, BudgetedParserList<SvgAuthoredPathCommand>? authored)
     {
         if (maximumCommands < 1) throw new ArgumentOutOfRangeException(nameof(maximumCommands));
         if (value is null) return;

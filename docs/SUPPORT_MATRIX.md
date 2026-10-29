@@ -53,7 +53,7 @@ plans output using the same sizing rules.
 
 `SvgRasterBounds` optionally caps raster width, height and/or pixels. At least one
 bound must be positive. Bounds can reduce `OutputScale` uniformly; they do not
-change layout or retry memory/work failures at a smaller size. Pixel dimensions
+change layout or retry memory refusals at a smaller size. Pixel dimensions
 round to nearest, away from zero, with a one-pixel minimum and conservative cap
 enforcement. An empty physical clip still paints nothing. Excessive output without
 bounds, and excessive intermediate surfaces, fail explicitly.
@@ -72,7 +72,7 @@ retain cap behavior. Dash placement follows authored endpoint order. Zero-size
 rectangles paint nothing. Missing circle radii/path data and empty point lists
 paint nothing; an ellipse copies its one supplied radius to the missing axis.
 Repeated/closing vertices and one/two-point lists retain ordinary stroke/marker
-rules. Whitespace-only paths remain subject to input/work limits.
+rules. Whitespace-only paths remain subject to input and structural limits.
 
 Line endpoints accept fractional numbers/px, not percentages or other units.
 Polygon/polyline coordinates and transform arguments are bare SVG numbers.
@@ -260,7 +260,7 @@ Filters accept `feGaussianBlur`, `feOffset`, `feFlood`, `feComposite` over/in,
 SourceGraphic, SourceAlpha or earlier exact result names. Both unit systems,
 primitive/filter regions, local CSS references and sRGB/linearRGB spaces work.
 Result/input names retain case and whitespace; missing/forward/cyclic references
-fail explicitly. Intermediate surfaces and work are bounded.
+fail explicitly. Intermediate surfaces obey dimension, pixel and memory limits.
 
 Flood color alpha combines with flood opacity. Cropping, image sampling, color
 transfer and enclosing opacity retain separate numerical stages. Offscreen source
@@ -314,7 +314,7 @@ Nonzero spacing, face/paint changes and absolute positions prevent ligature
 merging. Relative positions/rotation retain clusters and advance source cursors.
 Comments/descriptions/CDATA retain fragment metrics; shaping may cross nodes,
 while scaled element boundaries follow native font selection. Inert title/desc/
-metadata text does not consume rendered-text allowance; XML/input/work limits apply.
+metadata text does not consume rendered-text allowance; XML/input and structural limits apply.
 Anchors include relative advances/backtracking. Ordinary/path ranges share shaping
 and object paint boxes, including unpainted characters. Text after a nonempty path
 resumes at its authored endpoint; empty paths do not move the cursor. Zero
@@ -342,12 +342,13 @@ spacing, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2 are unsupported.
 ## Resource limits and memory accounting
 
 `SvgRenderLimits` independently bounds input/output, dimensions/pixels, XML
-structure, path commands, accounted storage and shared work. Cancellation and
+structure, path commands and accounted storage. Cancellation and
 deterministic cleanup span discovery/preparation, parsing, rasterization and
 encoding. Intermediate surfaces also consume limits. Caller streams stay open;
 the host owns transactional output. PNG encoding checks encoded size and memory
-admission, with cancellation during scanlines, CRC and writes; it has no synthetic
-work quota. Parser/raster work limits remain during the ongoing migration. Supplied font/source bytes remain immutable
+admission, with cancellation during scanlines, CRC and writes. Parsing, rendering
+and encoding have no synthetic work quotas; cooperative cancellation remains
+available throughout. Supplied font/source bytes remain immutable
 and valid for their documented borrowed lifetimes. A prepared document permits
 one conversion; independently owned PNG outputs outlive the operation.
 

@@ -11,7 +11,7 @@ namespace Lokad.Svg.Rendering;
 /// retrying geometry failures. Non-finite control points and invalid policies are caller contract
 /// violations reported as <see cref="ArgumentOutOfRangeException"/>.</para>
 /// <para>This is pure geometry. Coverage quantization and pixel fidelity of flattened curves are separate
-/// calibration concerns. Callers charge one curve-expansion work unit per appended segment; this kernel
+/// calibration concerns. This kernel
 /// holds no budget itself and allocates nothing.</para>
 /// </remarks>
 internal static class SvgCurveFlatten
@@ -171,7 +171,7 @@ internal static class SvgCurveFlatten
 /// </remarks>
 internal readonly record struct SvgFlattenPolicy
 {
-    /// <summary>Initializes a flattening bound with explicit error and work limits.</summary>
+    /// <summary>Initializes a flattening bound with explicit error and segment limits.</summary>
     internal SvgFlattenPolicy(double flatness, int maximumDepth, int maximumSegments)
     {
         Flatness = flatness;

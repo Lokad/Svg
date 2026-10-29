@@ -283,7 +283,6 @@ public sealed class SvgCurvedFontDocumentTests
             cancellation.Cancel();
             Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.ConvertToPng(root, options, budget, cancellation.Token));
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            SvgRenderLimits limits = options.Limits;
             Assert.Equal(expected, SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -479,8 +478,6 @@ public sealed class SvgCurvedFontDocumentTests
         RenderBudget denied = new(accounting.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, snapshot, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        RenderBudget workDenied = new(long.MaxValue);
-        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using SvgRoot retried = SvgRootParser.Parse(input, SvgRenderLimits.Default, accounting, snapshot, CancellationToken.None);
         Assert.Equal(original, Assert.Single(snapshot.Fonts).Bytes.ToArray());
     }

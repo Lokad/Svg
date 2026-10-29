@@ -62,8 +62,8 @@ internal ref struct SvgScanlineCoverage
     public void Dispose() => _reservation?.Dispose();
 
     /// <summary>Validates retained contours like the shared fan path, then reserves scanline scratch for one fill.</summary>
-    /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically; the returned setup cost covers validation, epsilon calibration and plain-mode orientation scoring for the caller work ledger.</remarks>
-    internal static SvgScanlineCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, int xStart, int xEnd, RenderBudget budget, out long setupWork, CancellationToken cancellationToken)
+    /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically; preparation observes cancellation during validation, epsilon calibration and plain-mode orientation scoring.</remarks>
+    internal static SvgScanlineCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, int xStart, int xEnd, RenderBudget budget, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
         SvgPolygonCoverage.ValidateContourEnds(points, ends);
@@ -121,7 +121,6 @@ internal ref struct SvgScanlineCoverage
             segmentTotal[0] = 0;
         }
         catch { scratch?.Dispose(); throw; }
-        setupWork = (long)points.Length + ends.Length;
         return new SvgScanlineCoverage(points, ends, votes, isEvenOdd, hasVotes, orientations, xStart, xEnd, epsilon, allFinite, crossX, crossContour, touchLo, touchHi, winding, segmentX, segmentTotal, scratch);
 
         static long ScratchByteCount(int pointCount, int contourCount, bool hasVotes)
@@ -151,9 +150,9 @@ internal ref struct SvgScanlineCoverage
         return twice > 0 ? 1 : twice < 0 ? -1 : 0;
     }
 
-    /// <summary>Builds sorted crossings and touched intervals for one pixel row, charging setup work.</summary>
+    /// <summary>Builds sorted crossings and touched intervals for one pixel row with cooperative cancellation.</summary>
     /// <remarks>Every contour edge is visited once per row; crossings sort by x with direction-encoded contour identity so the sweep resolves per-contour signed winding, and touched pixel ranges merge into disjoint intervals. The returned row cost covers the edge scan, winding clearing and a sorting upper bound for the caller ledger.</remarks>
-    internal void PrepareRow(int y, out long rowWork, CancellationToken cancellationToken)
+    internal void PrepareRow(int y, CancellationToken cancellationToken)
     {
         Array.Clear(_winding, 0, _contourCount);
         _crossCount = 0;
@@ -163,7 +162,6 @@ internal ref struct SvgScanlineCoverage
         _segmentTotal[0] = 0;
         if (!_allFinite)
         {
-            rowWork = _points.Length + _contourCount;
             return;
         }
         double centerY = y + 0.5;
@@ -273,9 +271,6 @@ internal ref struct SvgScanlineCoverage
             _segmentCount++;
         }
         cancellationToken.ThrowIfCancellationRequested();
-        int sortLevels = 0;
-        for (int level = _crossCount; level > 0; level >>= 1) sortLevels++;
-        rowWork = scanned + _contourCount + (long)_crossCount * sortLevels;
     }
 
     /// <summary>Reports whether one pixel may carry nonzero coverage on the prepared row.</summary>

@@ -48,13 +48,4 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    [Fact]
-    public void Nonbase_cmap_classification_charges_its_bounded_lookup_work()
-    {
-        byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "latin-nonbase", "Base.ttf")), unchanged = bytes.ToArray();
-        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        RenderBudget budget = new(long.MaxValue);
-        Assert.Equal(unchanged, bytes);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-    }
 }

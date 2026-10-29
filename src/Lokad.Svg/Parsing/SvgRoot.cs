@@ -232,7 +232,7 @@ internal enum SvgPolygonMapping
 /// edges map exactly. Straight edges map under the rectangle quarter-pixel discipline while flattened curve vertices,
 /// never on a calibration grid, map finite. The optional
 /// clip box stays in the same space and intersects raster bounds there. Scene storage covers all three arrays
-/// exactly; callers charge raster work per evaluated pixel, matching rectangle bands.</para>
+/// exactly; callers check cancellation during pixel traversal, matching rectangle bands.</para>
 /// </remarks>
 internal sealed class SvgPolygonFill : ISvgGeometryContent
 {

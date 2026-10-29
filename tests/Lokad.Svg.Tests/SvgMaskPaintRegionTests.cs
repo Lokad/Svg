@@ -52,19 +52,14 @@ public sealed class SvgMaskPaintRegionTests
     }
 
     [Fact]
-    public void Retained_region_work_refusal_and_cancellation_release_every_owner_before_retry()
+    public void Retained_region_cancellation_releases_every_owner_before_retry()
     {
         RenderBudget scene = new(1_000_000), raster = new(1_000_000);
-        SvgRenderLimits limits = new(1_000_000, 1024, 8, 64, 1024, 100, 100, 71);
-        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         using (SvgRoot root = Create(scene))
         {
             byte[] expected;
             using (SvgConverter.RasterizedSurface measured = SvgConverter.Rasterize(root, SvgRenderOptions.Default, raster, CancellationToken.None))
                 expected = measured.Pixels.ToArray();
-            SvgException error = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, options, raster, CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
-            Assert.Contains("Mask region coverage", error.Message, StringComparison.Ordinal);
             Assert.Equal(0, raster.Snapshot().CurrentBytes);
             using CancellationTokenSource cancelled = new();
             cancelled.Cancel();

@@ -18,7 +18,7 @@ internal readonly record struct SvgDirectPaintSpan(int Sequence);
 internal readonly record struct SvgDirectPaintLink(int First, int Last, int Span);
 
 /// <summary>Retains either premultiplied solid bytes or a floating shader sample for ordered paint replay.</summary>
-/// <remarks>Immutable and allocation-free. The caller owns destination storage and charges pixel/event work; the coverage walker checks cancellation between events. Samples retain no document or tile storage.</remarks>
+/// <remarks>Immutable and allocation-free. The caller owns destination storage; the coverage walker checks cancellation between events. Samples retain no document or tile storage.</remarks>
 internal readonly record struct SvgAnalyticPaint
 {
     private readonly SvgColor _solid;

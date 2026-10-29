@@ -137,14 +137,14 @@ public sealed class SvgAffineFloodTests
     [Theory]
     [InlineData("group")]
     [InlineData("zero-symbol")]
-    public void Affine_flood_restoration_releases_on_memory_work_denial_cancellation_and_retry(string source)
+    public void Affine_flood_restoration_releases_on_memory_refusal_cancellation_and_retry(string source)
     {
         byte[] input = Input("rotate(15 16 16)", "x='2.25' y='3.5' width='24.5' height='23.25'", "#4f83bc", ".43", source, true);
         AssertRestorationLimits(input);
     }
 
     [Fact]
-    public void Deferred_offset_restoration_checks_the_complete_row_work_charge()
+    public void Deferred_offset_restoration_preserves_pixels_and_owner_lifetimes()
     {
         string svg = System.Text.Encoding.UTF8.GetString(Input("rotate(15 16 16)", "x='0' y='0' width='32' height='32'", "blue", "1", "group", false));
         svg = svg.Replace("<feFlood flood-color='blue' flood-opacity='1'/>", "<feOffset in='SourceGraphic' dx='.3' dy='.7'/>", StringComparison.Ordinal);
@@ -158,19 +158,13 @@ public sealed class SvgAffineFloodTests
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {
             byte[] expected;
-            long work;
             RenderBudget measured = new(1_000_000);
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
-            { expected = surface.Pixels.ToArray(); work = surface.WorkUnits; }
+            { expected = surface.Pixels.ToArray(); }
             Assert.Equal(0, measured.Snapshot().CurrentBytes);
             RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
-            SvgRenderLimits limits = SvgRenderLimits.Default;
-            SvgRenderOptions shortWork = new(null, 1, SvgColor.Transparent,
-                new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                    limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)work - 1)));
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, shortWork, measured, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, measured.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();

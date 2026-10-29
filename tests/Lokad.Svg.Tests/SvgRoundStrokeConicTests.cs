@@ -121,28 +121,19 @@ public sealed class SvgRoundStrokeConicTests
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, polygon.Signs ?? [], false, polygon.Signs, polygon.Mapping, polygon.QuadSpans, [], new(6, 6, 26, 10), 32, 16);
         SvgAnalyticClipContext? clip = clipped ? new(new(0, 0, 32, 16)) : null;
         RenderBudget budget = new(1_000_000);
-        long firstWork;
-        using (SvgAnalyticCoverage first = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out firstWork, out bool eligible, CancellationToken.None))
+        using (SvgAnalyticCoverage first = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
             Assert.Equal(18L, preparation.NativePointCount);
-            first.PrepareRow(8, out long rowWork, CancellationToken.None);
-            Assert.True(rowWork > 0);
+            first.PrepareRow(8, CancellationToken.None);
         }
-        long setup;
-        using (SvgAnalyticCoverage cached = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out setup, out bool eligible, CancellationToken.None))
-        { Assert.True(eligible); Assert.True(setup < firstWork); }
+        using (SvgAnalyticCoverage cached = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
+        { Assert.True(eligible); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        try
-        {
-            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, setup - 1, budget, out long _, out bool _, CancellationToken.None);
-            Assert.Fail("Retained stroke setup must respect its work allowance.");
-        }
-        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
         RenderBudget tight = new(1);
         try
         {
-            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, 1_000_000, tight, out long _, out bool _, CancellationToken.None);
+            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, tight, out bool _, CancellationToken.None);
             Assert.Fail("Retained stroke edge storage must be reserved before allocation.");
         }
         catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
@@ -151,7 +142,7 @@ public sealed class SvgRoundStrokeConicTests
         cancellation.Cancel();
         try
         {
-            using SvgAnalyticCoverage canceled = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool _, cancellation.Token);
+            using SvgAnalyticCoverage canceled = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 16, new(0, 16), clip, SvgAnalyticPaintClip.Binary, budget, out bool _, cancellation.Token);
             Assert.Fail("Retained stroke caches must observe cancellation.");
         }
         catch (OperationCanceledException exception) { Assert.Equal(cancellation.Token, exception.CancellationToken); }
@@ -170,9 +161,9 @@ public sealed class SvgRoundStrokeConicTests
         SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, polygon.Signs ?? [], false, polygon.Signs, polygon.Mapping, polygon.QuadSpans, [], new(0, 12, 32, 20), 32, 32);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage coverage = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 32), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage coverage = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 32), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            coverage.PrepareRow(16, out long _, CancellationToken.None);
+            coverage.PrepareRow(16, CancellationToken.None);
             byte[] pixel = new byte[4];
             coverage.PaintPixel(16, pixel, SvgAnalyticPaint.Solid(new(255, 0, 0, 255)), SvgAnalyticClipCoverage.Full);
             Assert.Equal(255, pixel[3]);

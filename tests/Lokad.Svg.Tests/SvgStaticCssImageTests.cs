@@ -274,21 +274,8 @@ public sealed class SvgStaticCssImageTests
             Assert.Equal(new SvgPaintBounds(14.25f, 15.5f, 110.75f, 86.75f), binding.ObjectBounds);
             long retained = budget.Snapshot().CurrentBytes;
             byte[] expected;
-            long work;
             using (SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
-            { expected = output.Pixels.ToArray(); work = output.WorkUnits; }
-            foreach (long allowed in new[] { work / 2, work - 1 })
-            {
-                SvgRenderLimits limits = SvgRenderLimits.Default;
-                SvgRenderOptions bounded = new(null, 1, SvgColor.Transparent, new(limits.MaximumAccountedBytes, limits.MaximumInputBytes,
-                    limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands,
-                    checked((int)allowed), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement));
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                {
-                    using SvgConverter.RasterizedSurface denied = SvgConverter.Rasterize(scene, bounded, budget, CancellationToken.None);
-                }).ErrorCode);
-                Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            }
+            { expected = output.Pixels.ToArray(); }
             using SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
             Assert.Equal(expected, retry.Pixels);
         }
@@ -328,13 +315,13 @@ public sealed class SvgStaticCssImageTests
     }
 
     [Fact]
-    public void Affine_coverage_cancellation_and_raster_work_denial_release_temporary_owners()
+    public void Affine_coverage_cancellation_releases_temporary_owners()
         => AssertActiveRasterLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "affine-image-maps", "affine-varied-placement.svg")));
 
     [Theory]
     [InlineData("affine-filter-regions")]
     [InlineData("effects-marker-sheet")]
-    public void Affine_filter_cancellation_and_raster_work_denial_release_temporary_owners(string identity)
+    public void Affine_filter_cancellation_releases_temporary_owners(string identity)
         => AssertActiveRasterLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", identity + ".svg")));
 
     private static void AssertActiveRasterLifecycle(byte[] input)
@@ -343,9 +330,8 @@ public sealed class SvgStaticCssImageTests
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             byte[] expected;
-            long work;
             using (SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
-            { expected = output.Pixels.ToArray(); work = output.WorkUnits; }
+            { expected = output.Pixels.ToArray(); }
             long retained = budget.Snapshot().CurrentBytes;
             using CancellationTokenSource cancellation = new();
             bool reached = false;
@@ -361,14 +347,6 @@ public sealed class SvgStaticCssImageTests
             }
             Assert.True(reached);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            SvgRenderLimits limits = SvgRenderLimits.Default;
-            SvgRenderOptions bounded = new(null, 1, SvgColor.Transparent, new(limits.MaximumAccountedBytes, limits.MaximumInputBytes,
-                limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes,
-                limits.MaximumPathCommands, checked((int)work - 1), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement));
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            {
-                using SvgConverter.RasterizedSurface denied = SvgConverter.Rasterize(scene, bounded, budget, CancellationToken.None);
-            }).ErrorCode);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             using SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
             Assert.Equal(expected, retry.Pixels);

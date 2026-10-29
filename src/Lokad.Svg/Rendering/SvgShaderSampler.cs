@@ -59,20 +59,6 @@ internal struct SvgShaderSampler
         return SvgAnalyticPaint.Shader(sample.Sample(_texture.Span, _alpha));
     }
 
-    internal SvgAnalyticPaint Sample(int x, int y, ref long work, long maximumWork, CancellationToken token)
-    {
-        if (_kind != Kind.Pattern) return SampleGradient(x, y);
-        SvgPatternGeometry pattern = _pattern ?? throw new InvalidOperationException("Pattern sampling requires a retained texture definition.");
-        SvgPatternSample sample = SvgPatternSample.Prepare(pattern, x, y, pattern.NativeImageMap is null ? default : _context.Origin(x, y), ref _coordinates);
-        if (sample.RequiresFiltering)
-        {
-            token.ThrowIfCancellationRequested();
-            if (4 > maximumWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern filter work exceeds the configured limit.");
-            work += 4;
-        }
-        return SvgAnalyticPaint.Shader(sample.Sample(_texture.Span, _alpha));
-    }
-
     private SvgAnalyticPaint SampleGradient(int x, int y)
     {
         if (_kind == Kind.Constant) return SvgAnalyticPaint.Constant(_constant.AsConstant(_alpha));

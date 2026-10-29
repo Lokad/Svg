@@ -24,7 +24,7 @@ ordinary conversion does not discover machine fonts or fetch resources.
 The opt-in [HTTP font-pack resolver](docs/HTTP_FONTS.md) supplies host-configured
 acquisition and caching, with shared memory admission and disposable PNG results.
 Font-selected fitting/scanning and pair kerning follow the [documented subset](docs/SUPPORT_MATRIX.md#text-and-fonts).
-Size/work limits, cancellation and borrowed-storage lifetimes apply throughout.
+Size and structural limits, cancellation and borrowed-storage lifetimes apply throughout.
 Memory accounting follows the [approximate resource policy](docs/SUPPORT_MATRIX.md#resource-limits-and-memory-accounting).
 
 Qualification covers the [26 upstream documents](tests/Research/upstream-static-documents/README.md)

@@ -33,8 +33,7 @@ internal enum SvgContourFlags
 /// <para>Predicates evaluate in double arithmetic and are exact for integer-scale geometry; every finite
 /// input classifies deterministically. Non-finite intermediates fail with
 /// <see cref="SvgErrorCode.LimitExceeded"/>. Touching and coincident configurations classify exactly but
-/// carry no nesting meaning; that family stays outside admission. Callers charge one validation work unit
-/// per examined segment pair; this classifier holds no budget itself and allocates nothing.</para>
+/// carry no nesting meaning; that family stays outside admission. Segment-pair traversal observes cancellation; this classifier allocates nothing.</para>
 /// </remarks>
 internal static class SvgContourStructure
 {
@@ -120,7 +119,7 @@ internal static class SvgContourStructure
 
     /// <summary>Reports whether every contact between distinct contours is a transversal proper crossing.</summary>
     /// <remarks>
-    /// <para>Mirrors the set-classification pair scan, but keeps the transversal verdict instead of collapsing it: separated pairs and strict opposite-sign crossings pass while vertex-on-edge contacts, shared endpoints, collinear overlaps and single-point contacts fail. Zero-length edges skip like classification. Observes cancellation at the pair checkpoint; allocates nothing and holds no budget; callers charge the quadratic pair estimate up front.</para>
+    /// <para>Mirrors the set-classification pair scan, but keeps the transversal verdict instead of collapsing it: separated pairs and strict opposite-sign crossings pass while vertex-on-edge contacts, shared endpoints, collinear overlaps and single-point contacts fail. Zero-length edges skip like classification. Observes cancellation at the pair checkpoint; allocates nothing and holds no budget; pair traversal checks cancellation.</para>
     /// </remarks>
     internal static bool AllInterLoopContactsTransversal(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, CancellationToken cancellationToken)
     {
@@ -167,7 +166,7 @@ internal static class SvgContourStructure
     }
 
     /// <summary>Finds one polygon vertex strictly inside a non-incident edge of any contour slice.</summary>
-    /// <remarks>Vertex-on-edge contact mirrors the classifier's touch rule: zero orientation with the point inside the other bounding box, excluding shared endpoints by value so corners and welded vertices never report. Deterministic first-found order over loops, vertices and edges; callers charge one validation work unit per examined pair.</remarks>
+    /// <remarks>Vertex-on-edge contact mirrors the classifier's touch rule: zero orientation with the point inside the other bounding box, excluding shared endpoints by value so corners and welded vertices never report. Deterministic first-found order over loops, vertices and edges; pair traversal observes cancellation.</remarks>
     internal static bool TryFindVertexOnEdge(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, out int loop, out int edge, out int vertex, CancellationToken cancellationToken)
     {
         SvgPolygonCoverage.ValidateContourEnds(points, contourEnds);
@@ -208,7 +207,7 @@ internal static class SvgContourStructure
     }
 
     /// <summary>Finds one shared endpoint value between non-adjacent edges of one closed contour slice.</summary>
-    /// <remarks>Mirrors the classifier's adjacency exclusions: neighboring edges and the closing pair never count, and zero-length edges are skipped. Any of the four endpoint combinations may report; callers split the ring at the two occurrences. Deterministic first-found order; callers charge one validation work unit per examined pair.</remarks>
+    /// <remarks>Mirrors the classifier's adjacency exclusions: neighboring edges and the closing pair never count, and zero-length edges are skipped. Any of the four endpoint combinations may report; callers split the ring at the two occurrences. Deterministic first-found order; pair traversal observes cancellation.</remarks>
     internal static bool TryFindSelfTouch(ReadOnlySpan<SvgDevicePoint> points, int start, int end, out int firstEdge, out int secondEdge, out SvgDevicePoint touch, CancellationToken cancellationToken)
     {
         if (start < 0 || start > points.Length) throw new ArgumentOutOfRangeException(nameof(start));
@@ -240,7 +239,7 @@ internal static class SvgContourStructure
     }
 
     /// <summary>Finds one strict-interior crossing between edges of two distinct contour loops.</summary>
-    /// <remarks>Loop pairs share the classifier bounding-box precheck, then strict opposite nonzero orientation signs on both sides plus the shared crossing computation, so endpoint contacts, collinear overlaps and touches never report. Deterministic first-found order over loop pairs, first edges and second edges; callers charge one validation work unit per examined pair.</remarks>
+    /// <remarks>Loop pairs share the classifier bounding-box precheck, then strict opposite nonzero orientation signs on both sides plus the shared crossing computation, so endpoint contacts, collinear overlaps and touches never report. Deterministic first-found order over loop pairs, first edges and second edges; pair traversal observes cancellation.</remarks>
     internal static bool TryFindInterLoopProperCrossing(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, out int firstLoop, out int firstEdge, out int secondLoop, out int secondEdge, out SvgDevicePoint crossing, CancellationToken cancellationToken)
     {
         SvgPolygonCoverage.ValidateContourEnds(points, contourEnds);
@@ -534,7 +533,7 @@ internal static class SvgContourStructure
     /// <summary>Reports whether split loops share at most common vertices with no other contact or partial overlap.</summary>
     /// <remarks>
     /// <para>Every loop pair shares a bounding-box precheck per edge pair, then orientation predicates: a proper crossing rejects outright, an endpoint lying strictly inside the other segment rejects as a touch beyond shared vertices, and a positive-length collinear overlap rejects as coincidence. Endpoint coincidences are admissible only for bitwise-equal shared split vertices, and the closing edge of each loop counts like any other. Containment runs after the edge scan over non-shared vertices with half-open ray casting: mutual containment rejects as partial overlap, one-sided containment admits nesting for role resolution, and none admits disjoint siblings.</para>
-    /// <para>Ordering matters: the edge scan runs first, so a vertex lying exactly on the other loop reaches containment only as a shared vertex, where ray casting would decide arbitrarily. Predicates evaluate in double arithmetic and stay exact for integer-scale geometry; every finite input decides deterministically, and non-finite intermediates fail with LimitExceeded. Loops with fewer than three vertices reject. Observes cancellation at the pair checkpoint, allocates nothing, and holds no budget; callers charge the quadratic pair estimate up front.</para>
+    /// <para>Ordering matters: the edge scan runs first, so a vertex lying exactly on the other loop reaches containment only as a shared vertex, where ray casting would decide arbitrarily. Predicates evaluate in double arithmetic and stay exact for integer-scale geometry; every finite input decides deterministically, and non-finite intermediates fail with LimitExceeded. Loops with fewer than three vertices reject. Observes cancellation at the pair checkpoint, allocates nothing, and holds no budget; pair traversal checks cancellation.</para>
     /// </remarks>
     internal static bool AreSplitLoopsAdmissible(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, CancellationToken cancellationToken)
     {
@@ -588,7 +587,7 @@ internal static class SvgContourStructure
     }
 
     /// <summary>Reports whether every vertex of one loop is shared with, inside, or on the boundary of another.</summary>
-    /// <remarks>Nested span-sharing loops keep hole and island roles through the fan path, so the guard admits them while adjacent sharing stays rejected for union surgery. Deterministic vertex order; observes cancellation through the shared pair counter.</remarks>
+    /// <remarks>Nested span-sharing loops keep hole and island roles through the fan path, so the guard admits them while adjacent sharing stays rejected for union surgery. Deterministic vertex order; observes cancellation during pair traversal.</remarks>
     private static bool LoopVerticesWithinLoop(ReadOnlySpan<SvgDevicePoint> points, int innerStart, int innerCount, int outerStart, int outerCount, ref int pairs, CancellationToken cancellationToken)
     {
         for (int index = 0; index < innerCount; index++)
@@ -676,7 +675,7 @@ internal static class SvgContourStructure
     }
 
     /// <summary>Reports whether either loop covers area strictly inside the other loop.</summary>
-    /// <remarks>Strict vertices and edge midpoints test inside-or-outside with shared and boundary points excluded, so shared spans, endpoint contacts and span-touching nested loops never report by themselves; any report means positive-area overlap. Contained loops report too, so callers apply boundary-inclusive containment gating first. Deterministic vertex, edge and midpoint order; observes cancellation at the pair checkpoint; allocates nothing and holds no budget, with callers charging the quadratic pair estimate.</remarks>
+    /// <remarks>Strict vertices and edge midpoints test inside-or-outside with shared and boundary points excluded, so shared spans, endpoint contacts and span-touching nested loops never report by themselves; any report means positive-area overlap. Contained loops report too, so callers apply boundary-inclusive containment gating first. Deterministic vertex, edge and midpoint order; observes cancellation at the pair checkpoint; allocates nothing and holds no budget, with cancellation during pair traversal.</remarks>
     internal static bool LoopsOverlapStrictly(ReadOnlySpan<SvgDevicePoint> points, int firstStart, int firstCount, int secondStart, int secondCount, CancellationToken cancellationToken)
     {
         static bool StrictlyInside(ReadOnlySpan<SvgDevicePoint> vertices, int outerStart, int outerCount, SvgDevicePoint candidate)

@@ -9,9 +9,12 @@ Development targets 0.4.0. Published 0.3.0 and its source tag remain unchanged.
 - Add opt-in host-configured HTTP font packs with coalesced acquisition, verified
   program caching, structured failures and shared memory admission. Retain one
   document preparation and dispose governed PNG results to release their charges.
-- Remove PNG encoding and parser fuel quotas; retain structural, numerical,
+- Remove PNG encoding, parser and raster fuel quotas; retain structural, numerical,
   size/admission and cancellation contracts. Stop compressor finalization from
   retrying a refused allocation and keep canceled symbol sealing transactional.
+- API migration: remove `maximumWorkUnits` from `SvgRenderLimits` constructor
+  calls and stop reading `MaximumWorkUnits`. XML depth/attribute arguments now
+  follow `maximumPathCommands`. The memory probe removes `--maximum-work-units`.
 - Fail memory admission rather than selecting storage-pressure rendering paths;
   retain direct numerical routes and independent native references.
 
@@ -80,7 +83,7 @@ Linux, with no runtime package dependencies.
   regular, bold, real italic and intentional fallback qualification.
 - Synchronous/asynchronous output to owned memory, caller memory or streams,
   plus explicit preparation through `SvgPreparedDocument`.
-- Size/work limits, approximate memory accounting, cancellation, deterministic
+- Size and structural limits, approximate memory accounting, cancellation, deterministic
   cleanup and documented borrowed-resource lifetimes.
 - Frozen Windows/Linux visual references, public font checks and installed-package
   consumer verification. Packages include the icon, README, changelog, licenses,

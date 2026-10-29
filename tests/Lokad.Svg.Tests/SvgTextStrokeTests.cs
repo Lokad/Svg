@@ -136,10 +136,6 @@ public sealed partial class OpenTypeFontTests
         RenderBudget denied = new(40_000);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(root, options, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        SvgRenderLimits limits = SvgRenderLimits.Default;
-        SvgRenderOptions workDenied = new(null, 1, SvgColor.Transparent,
-            new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, 2_000), snapshot);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(root, workDenied, accepted, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();

@@ -65,7 +65,7 @@ public sealed class SvgOrderedClipTests
             SvgAnalyticContourPreparation preparation = new(placed, source.ContourEnds, [1], true, null, SvgPolygonMapping.NativeFillEdges,
                 [], [], new(10, 9, 32, 29), 32, 32, source, map);
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 32),
-                new(new(0, 0, 32, 32)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+                new(new(0, 0, 32, 32)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             Assert.Equal(true, preparation.SourceConvex);
             Assert.Equal(false, preparation.Convex);

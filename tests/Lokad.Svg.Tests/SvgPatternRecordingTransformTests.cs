@@ -100,8 +100,6 @@ public sealed class SvgPatternRecordingTransformTests
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                     recording.TryMap(output, SvgAffineTransform.Identity, target, deniedScratch, CancellationToken.None, out _)).ErrorCode);
                 Assert.Equal(0, deniedScratch.Snapshot().CurrentBytes);
-                RenderBudget scratch = new(8_000_000);
-                Assert.Equal(0, scratch.Snapshot().CurrentBytes);
 
                 SvgRenderOptions options = new(null, 1.5, SvgColor.Transparent, SvgRenderLimits.Default);
                 RenderBudget raster = new(8_000_000);

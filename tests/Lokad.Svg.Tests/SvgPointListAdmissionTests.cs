@@ -54,8 +54,7 @@ public sealed class SvgPointListAdmissionTests
         RenderBudget budget = new(1_000_000);
         SvgRenderLimits defaults = SvgRenderLimits.Default;
         SvgRenderLimits limits = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
-            defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, 4, defaults.MaximumWorkUnits,
-            defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
+            defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, 4, defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

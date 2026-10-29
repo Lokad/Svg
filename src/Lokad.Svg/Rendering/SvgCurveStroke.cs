@@ -12,7 +12,7 @@ internal readonly record struct SvgStrokeCurveSegment(SvgDevicePoint Start, SvgD
 
 /// <summary>Fits normal-offset curves with the pinned native quadratic subdivision decisions.</summary>
 /// <remarks>The caller owns the budgeted output list and publishes it only after success. Recursive
-/// numerical state occupies bounded stack storage; every node observes work limits and cancellation.
+/// numerical state occupies bounded stack storage; every node observes structural bounds and cancellation.
 /// Output growth is charged before allocation and capped independently of the native recursion limit.
 /// Separate calls share no mutable state. This fits individual curves; path joins and caps belong to
 /// the contour constructor.</remarks>
@@ -187,7 +187,7 @@ internal static class SvgCurveStroke
 
     private static void Fit(Curve conic, float radius, float tolerance, int side,
         ref Construction q, ref int depth, BudgetedParserList<SvgStrokeCurveSegment> output,
-CancellationToken token)
+        CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         Result result = Compare(conic, radius, tolerance, side, ref q);
@@ -310,7 +310,7 @@ CancellationToken token)
 
     private static void FitCubic(Curve curve, float radius, float tolerance, int side,
         ref Construction q, ref int depth, ref bool foundTangents, BudgetedParserList<SvgStrokeCurveSegment> output,
-CancellationToken token)
+        CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         Result result = Result.Split;

@@ -8,7 +8,7 @@ namespace Lokad.Svg.Rendering;
 internal readonly record struct SvgRecognizedRectangle(float Left, float Top, float Right, float Bottom, bool Closed, bool Clockwise);
 
 /// <summary>Recognizes a rectangle from original mapped verbs, without retaining or allocating storage.</summary>
-/// <remarks>The caller maps float points and charges each visit under its work/cancellation contract.
+/// <remarks>The caller maps float points and checks cancellation during traversal.
 /// Open contours may be rectangles for filling; stroke callers must require explicit closure.
 /// Each instance is local to one pass and owns no commands, scene objects or shared state.</remarks>
 internal struct SvgRectanglePathRecognizer

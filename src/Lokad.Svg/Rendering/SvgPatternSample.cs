@@ -2,7 +2,7 @@ using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
 
-/// <summary>Prepares picture texture addresses before the caller charges optional bilinear work.</summary>
+/// <summary>Prepares picture texture addresses for optional bilinear interpolation.</summary>
 /// <remarks>Owns no storage. The caller retains the texture and mutable coordinate cache, charges
 /// four interpolation units before Sample when filtering is required, and checks cancellation.
 /// Prepared addresses are valid only for the same validated texture dimensions.</remarks>

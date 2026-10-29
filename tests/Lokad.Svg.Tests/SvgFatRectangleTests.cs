@@ -41,40 +41,28 @@ public sealed class SvgFatRectangleTests
                 commands.Add(new(Enum.Parse<SvgAuthoredPathVerb>(verb), SvgAuthoredArcFlags.None,
                     points.Length > 0 ? points[0] : default, points.Length > 1 ? points[1] : default, points.Length > 2 ? points[2] : default));
             }
-            long work = 0;
-            SvgFatRectangleCoverage? rectangle = SvgFatRectangleCoverage.TryCreate(commands.ToArray(), [], SvgAffineTransform.Identity, new(0, 0), new(0, 0, 512, 512), ref work, 10_000, CancellationToken.None);
+            SvgFatRectangleCoverage? rectangle = SvgFatRectangleCoverage.TryCreate(commands.ToArray(), [], SvgAffineTransform.Identity, new(0, 0), new(0, 0, 512, 512), CancellationToken.None);
             Assert.Equal(expected[id], rectangle.HasValue);
         }
     }
 
     [Fact]
-    public void Shortcut_owns_no_scratch_and_checks_remaining_work_and_paint_cancellation()
+    public void Shortcut_owns_no_scratch_and_observes_paint_cancellation()
     {
         SvgDevicePoint[] points = [new(2.125, 2.13), new(9.938, 2.13), new(9.938, 9.997), new(2.125, 9.997)];
         SvgAnalyticContourPreparation preparation = new(points, [4], [], false, null, SvgPolygonMapping.NativeFillEdges, [], [], new(2, 2, 10, 10), 32, 32);
         RenderBudget budget = new(1);
-        long requiredWork;
-        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 2, 10, 2, 10, new(0, 32), null, SvgAnalyticPaintClip.Binary, 10_000, budget, out requiredWork, out bool eligible, CancellationToken.None))
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 2, 10, 2, 10, new(0, 32), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
             Assert.Equal(0, walker.EdgeCount);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
-            walker.PrepareRow(2, 1, out long rowWork, cancellation.Token);
-            Assert.Equal(1, rowWork);
+            walker.PrepareRow(2, cancellation.Token);
             cancellation.Cancel();
             try { walker.PaintPixel(0, new byte[4], SvgAnalyticPaint.Solid(new(64, 96, 128, 255)), SvgAnalyticClipCoverage.Full); Assert.Fail("Canceled paint succeeded."); }
             catch (OperationCanceledException error) { Assert.Equal(cancellation.Token, error.CancellationToken); }
-            try { walker.PrepareRow(2, 0, out long _, CancellationToken.None); Assert.Fail("Denied row succeeded."); }
-            catch (SvgException error) { Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode); }
         }
-        SvgAnalyticContourPreparation denied = new(points, [4], [], false, null, SvgPolygonMapping.NativeFillEdges, [], [], new(2, 2, 10, 10), 32, 32);
-        try
-        {
-            using SvgAnalyticCoverage unexpected = SvgAnalyticCoverage.Prepare(ref denied, 2, 10, 2, 10, new(0, 32), null, SvgAnalyticPaintClip.Binary, requiredWork - 1, budget, out long _, out bool _, CancellationToken.None);
-            Assert.Fail("Denied recognition succeeded.");
-        }
-        catch (SvgException error) { Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

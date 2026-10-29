@@ -113,19 +113,14 @@ public sealed class SvgInheritedClipIsolationTests
             {
                 RenderBudget raster = new(8_000_000);
                 byte[] expected;
-                long work;
                 using (SvgConverter.RasterizedSurface first = SvgConverter.Rasterize(root, SvgRenderOptions.Default, raster, CancellationToken.None))
                 {
                     expected = first.Pixels.ToArray();
-                    work = first.WorkUnits;
                 }
                 Assert.Equal(0, raster.Snapshot().CurrentBytes);
                 RenderBudget deniedRaster = new(raster.Snapshot().PeakBytes - 1);
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, deniedRaster, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, deniedRaster.Snapshot().CurrentBytes);
-                SvgRenderLimits limits = SvgRenderLimits.Default;
-                SvgRenderLimits deniedWork = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)work - 1), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, deniedWork), raster, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, raster.Snapshot().CurrentBytes);
                 using CancellationTokenSource cancellation = new();
                 using (SvgAnalyticPaintProbe.Arm((phase, _) =>

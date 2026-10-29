@@ -189,12 +189,9 @@ internal ref partial struct SvgAnalyticCoverage
     private RenderBudget.BudgetReservation? _directSpanReservation;
     private int _directSpanCount;
     private int _paintSequence;
-    private long _rowOperationWork;
-    private long _rowOperationWorkLimit;
     private CancellationToken _rowCancellationToken;
     private int _nextNextY;
     private int _walkY;
-    private long _strips;
 
     /// <summary>Native horizontal rectangle and AA clip wrappers forward fringe pairs as ordinary runs.</summary>
     internal readonly SvgAnalyticPaintKind PairPaintKind => _usesHorizontalClip || _forceRle ? SvgAnalyticPaintKind.Direct : SvgAnalyticPaintKind.Pair;
@@ -232,7 +229,6 @@ internal ref partial struct SvgAnalyticCoverage
         }
         _nextNextY = int.MaxValue;
         _walkY = 0;
-        _strips = 0;
     }
 
     private SvgAnalyticCoverage(int xStart, int width)
@@ -276,7 +272,7 @@ internal ref partial struct SvgAnalyticCoverage
     }
 
     /// <summary>Replays this pixel's direct paints in order, then paints its pending coverage at row flush.</summary>
-    /// <remarks>Indexed relative to the preparation x start. Paint samples belong to the caller; this method borrows one destination pixel, allocates nothing, and observes the row token between events. PrepareRow charges fringe/overlap event work and span indexing; the caller's per-pixel raster charge covers the first full-span paint. Clip coverage is applied to each paint operation, not to their combined alpha.</remarks>
+    /// <remarks>Indexed relative to the preparation x start. Paint samples belong to the caller; this method borrows one destination pixel, allocates nothing, and observes the row token between events. PrepareRow records fringe/overlap events and span indices. Clip coverage is applied to each paint operation, not to their combined alpha.</remarks>
     internal void PaintPixel(int x, scoped Span<byte> destination, SvgAnalyticPaint paint, SvgAnalyticClipCoverage clipCoverage)
     {
         if (clipCoverage.IsEmpty) return;
@@ -342,12 +338,11 @@ internal ref partial struct SvgAnalyticCoverage
     {
         if (x < (_leftClip >> 16) - _xStart || x >= (_rightClip >> 16) - _xStart || alpha == 0) return;
         _rowCancellationToken.ThrowIfCancellationRequested();
-        ChargeOperationWork(2); // Record and later replay this event.
         EnsureDirectLinks(x, x + 1);
         if (_directOperationCount == _directOperations.Length)
         {
             int capacity = _directOperations.Length == 0 ? 16 : _directOperations.Length > int.MaxValue / 2 ? checked(_directOperationCount + 1) : _directOperations.Length * 2;
-            ChargeOperationWork((long)capacity + _directOperationCount);
+            _rowCancellationToken.ThrowIfCancellationRequested();
             SvgAnalyticPaintProbe.Observe(SvgAnalyticPaintPhase.BeforeBufferGrowth, _directOperationCount);
             _rowCancellationToken.ThrowIfCancellationRequested();
             RenderBudget budget = _budget ?? throw new InvalidOperationException("The analytic row has no storage owner.");
@@ -384,15 +379,11 @@ internal ref partial struct SvgAnalyticCoverage
         int end = Math.Min(x + length, (_rightClip >> 16) - _xStart);
         if (end <= start) return;
         _rowCancellationToken.ThrowIfCancellationRequested();
-        // Index the first full span directly in each pixel's link. Its material
-        // paint is covered by the caller's per-pixel raster charge. Further
-        // overlapping spans become ordinary events with separately charged replay.
-        ChargeOperationWork((long)end - start + 1);
         EnsureDirectLinks(start, end);
         if (_directSpanCount == _directSpans.Length)
         {
             int capacity = _directSpans.Length == 0 ? 16 : checked(_directSpans.Length * 2);
-            ChargeOperationWork((long)capacity + _directSpanCount);
+            _rowCancellationToken.ThrowIfCancellationRequested();
             SvgAnalyticPaintProbe.Observe(SvgAnalyticPaintPhase.BeforeSpanBufferGrowth, _directSpanCount);
             _rowCancellationToken.ThrowIfCancellationRequested();
             RenderBudget budget = _budget ?? throw new InvalidOperationException("The analytic row has no storage owner.");
@@ -440,7 +431,7 @@ internal ref partial struct SvgAnalyticCoverage
         int requiredEnd = Math.Max(end, _directLinkStart + _directLinks.Length);
         int capacity = (int)Math.Max(requiredEnd - requiredStart, Math.Min((long)_directLinks.Length * 2, (long)maximum - minimum));
         int replacementStart = Math.Clamp(requiredStart, minimum, maximum - capacity);
-        ChargeOperationWork((long)capacity + _directLinks.Length);
+        _rowCancellationToken.ThrowIfCancellationRequested();
         SvgAnalyticPaintProbe.Observe(SvgAnalyticPaintPhase.BeforeLinkBufferGrowth, _directLinks.Length);
         _rowCancellationToken.ThrowIfCancellationRequested();
         RenderBudget budget = _budget ?? throw new InvalidOperationException("The analytic row has no storage owner.");
@@ -469,12 +460,6 @@ internal ref partial struct SvgAnalyticCoverage
     internal readonly SvgAnalyticScanWindow GetPaintWindow(SvgAnalyticScanWindow original)
         => new(_directPaintLeft < 0 ? Math.Min(original.Left, _xStart + _directPaintLeft) : original.Left,
             _directPaintRight > _width ? Math.Max(original.Right, _xStart + _directPaintRight) : original.Right);
-
-    private void ChargeOperationWork(long units)
-    {
-        if (units > _rowOperationWorkLimit - _rowOperationWork - _strips) throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic paint operations exceed the configured work limit.");
-        _rowOperationWork += units;
-    }
 
     /// <summary>Gets pending mask/run coverage, indexed from the preparation x start. Direct paint events must be replayed separately through PaintPixel.</summary>
     internal ReadOnlySpan<byte> Row => _fatRectangle is not null || _rectangleFrame is not null || _rectangleFill is not null ? ReadOnlySpan<byte>.Empty : new(_row, 1, _width);
@@ -739,7 +724,7 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Advances one live cubic edge to its next emittable segment, mirroring one updateCubic call.</summary>
     /// <remarks>Consumes forward-difference steps until the first non-degenerate segment refreshes the walked position, then stops with remaining count intact; returns false when the piece is exhausted. Curve positions and derivatives advance without walk-position resets. CubicXOffset separately carries the quarter-grid compatibility displacement; SnappedY is the walked start, not the curve parameter position. The final authored endpoint discards the displacement, as in the pinned construction.</remarks>
-    private static bool AdvanceCubicLive(AnalyticEdge edge, ref long work)
+    private static bool AdvanceCubicLive(AnalyticEdge edge)
     {
         int count = edge.CurveCount;
         int oldx = edge.FCx;
@@ -780,7 +765,6 @@ internal ref partial struct SvgAnalyticCoverage
             oldy = newy;
             oldWalkX = newWalkX;
             edge.SnappedY = endy;
-            work += 2;
         } while (count < 0 && !success);
         edge.FCx = newx;
         edge.FCy = newy;
@@ -791,9 +775,8 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Builds one live cubic edge for a monotonic piece, advancing to its first segment.</summary>
     /// <remarks>Returns false for zero-height pieces (the caller falls back to flattened chords, preserving degenerate-span behavior); live edges never merge verticals since the pinned builder does not combine analytic edges.</remarks>
-    private static bool BuildCubicLiveEdge(List<AnalyticEdge> kept, (float X, float Y) p0, (float X, float Y) p1, (float X, float Y) p2, (float X, float Y) p3, ref int contourEdges, ref long setupCost)
+    private static bool BuildCubicLiveEdge(List<AnalyticEdge> kept, (float X, float Y) p0, (float X, float Y) p1, (float X, float Y) p2, (float X, float Y) p3, ref int contourEdges)
     {
-        setupCost += 4;
         CubicSetup setup = ComputeCubicSetup(p0, p1, p2, p3);
         if (setup.IsEmpty) return false;
         AnalyticEdge edge = new()
@@ -825,7 +808,7 @@ internal ref partial struct SvgAnalyticCoverage
         edge.InitialFCDDDx = edge.FCDDDx;
         edge.InitialFCDDDy = edge.FCDDDy;
         edge.InitialWinding = edge.Winding;
-        if (!AdvanceCubicLive(edge, ref setupCost)) return false;
+        if (!AdvanceCubicLive(edge)) return false;
         kept.Add(edge);
         contourEdges++;
         return true;
@@ -833,7 +816,7 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Substitutes live cubic edges for one retained span, returning the built edge count for flattened fallback when zero.</summary>
     /// <remarks>Convex and interval walkers advance each monotonic cubic piece live, preserving the smoothing decisions at segment boundaries.</remarks>
-    private static int AppendCubicLiveEdges(List<AnalyticEdge> kept, double startX, double startY, double firstCX, double firstCY, double secondCX, double secondCY, double endX, double endY, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
+    private static int AppendCubicLiveEdges(List<AnalyticEdge> kept, double startX, double startY, double firstCX, double firstCY, double secondCX, double secondCY, double endX, double endY, ref int contourEdges, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         (float X, float Y) p0 = ((float)startX, (float)startY);
@@ -844,12 +827,12 @@ internal ref partial struct SvgAnalyticCoverage
         int count = ChopCubicSpan(p0, p1, p2, p3, dst);
         if (count == 0)
         {
-            return BuildCubicLiveEdge(kept, p0, p1, p2, p3, ref contourEdges, ref setupCost) ? 1 : 0;
+            return BuildCubicLiveEdge(kept, p0, p1, p2, p3, ref contourEdges) ? 1 : 0;
         }
         int built = 0;
-        if (BuildCubicLiveEdge(kept, (dst[0], dst[1]), (dst[2], dst[3]), (dst[4], dst[5]), (dst[6], dst[7]), ref contourEdges, ref setupCost)) built++;
-        if (BuildCubicLiveEdge(kept, (dst[6], dst[7]), (dst[8], dst[9]), (dst[10], dst[11]), (dst[12], dst[13]), ref contourEdges, ref setupCost)) built++;
-        if (count == 2 && BuildCubicLiveEdge(kept, (dst[12], dst[13]), (dst[14], dst[15]), (dst[16], dst[17]), (dst[18], dst[19]), ref contourEdges, ref setupCost)) built++;
+        if (BuildCubicLiveEdge(kept, (dst[0], dst[1]), (dst[2], dst[3]), (dst[4], dst[5]), (dst[6], dst[7]), ref contourEdges)) built++;
+        if (BuildCubicLiveEdge(kept, (dst[6], dst[7]), (dst[8], dst[9]), (dst[10], dst[11]), (dst[12], dst[13]), ref contourEdges)) built++;
+        if (count == 2 && BuildCubicLiveEdge(kept, (dst[12], dst[13]), (dst[14], dst[15]), (dst[16], dst[17]), (dst[18], dst[19]), ref contourEdges)) built++;
         return built;
     }
 
@@ -980,7 +963,7 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Advances one live quadratic edge to its next emittable segment, mirroring one updateQuadratic call.</summary>
     /// <remarks>Consumes forward-difference steps until the first non-degenerate segment refreshes the walked position, then stops with remaining count intact; returns false when the piece is exhausted. The caller re-anchors both snapped starts to the walked position first (keepContinuous).</remarks>
-    private static bool AdvanceQuadLive(AnalyticEdge edge, ref long work)
+    private static bool AdvanceQuadLive(AnalyticEdge edge)
     {
         int count = edge.CurveCount;
         int oldx = edge.FCx;
@@ -1035,7 +1018,6 @@ internal ref partial struct SvgAnalyticCoverage
             if (slope < int.MaxValue) success = RefreshCubicEdge(edge, edge.QSnappedX, edge.SnappedY, endx, endy, slope);
             oldx = newx;
             oldy = newy;
-            work += 2;
         } while (count > 0 && !success);
         edge.FCx = newx;
         edge.FCy = newy;
@@ -1049,11 +1031,10 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Builds one live quadratic edge for a monotonic piece, advancing to its first segment.</summary>
     /// <remarks>Returns false for zero-height pieces (the caller falls back to flattened chords, preserving degenerate-span behavior); live edges never merge verticals since the pinned builder does not combine analytic edges.</remarks>
-    private static bool BuildQuadLiveEdge(List<AnalyticEdge> kept, float x0, float y0, float x1, float y1, float x2, float y2, ref int contourEdges, ref long setupCost)
+    private static bool BuildQuadLiveEdge(List<AnalyticEdge> kept, float x0, float y0, float x1, float y1, float x2, float y2, ref int contourEdges)
     {
         QuadSetup setup = ComputeQuadSetup(x0, y0, x1, y1, x2, y2);
         if (setup.IsEmpty) return false;
-        setupCost += 4;
         AnalyticEdge edge = new()
         {
             Winding = setup.Winding,
@@ -1080,7 +1061,7 @@ internal ref partial struct SvgAnalyticCoverage
         edge.InitialFCDDx = edge.FCDDx;
         edge.InitialFCDDy = edge.FCDDy;
         edge.InitialWinding = edge.Winding;
-        if (!AdvanceQuadLive(edge, ref setupCost)) return false;
+        if (!AdvanceQuadLive(edge)) return false;
         kept.Add(edge);
         contourEdges++;
         return true;
@@ -1088,7 +1069,7 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Substitutes live quadratic edges for one retained span, returning the built edge count for flattened fallback when zero.</summary>
     /// <remarks>Both walkers advance each monotonic quadratic piece live, preserving strip-boundary continuation and convex smoothing.</remarks>
-    private static int AppendQuadLiveEdges(List<AnalyticEdge> kept, double startX, double startY, double controlX, double controlY, double endX, double endY, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
+    private static int AppendQuadLiveEdges(List<AnalyticEdge> kept, double startX, double startY, double controlX, double controlY, double endX, double endY, ref int contourEdges, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         float x0 = (float)startX;
@@ -1101,50 +1082,48 @@ internal ref partial struct SvgAnalyticCoverage
         int count = ChopQuadSpan(x0, y0, x1, y1, x2, y2, dst, out float fallbackY1);
         if (count == 0)
         {
-            return BuildQuadLiveEdge(kept, x0, y0, x1, fallbackY1, x2, y2, ref contourEdges, ref setupCost) ? 1 : 0;
+            return BuildQuadLiveEdge(kept, x0, y0, x1, fallbackY1, x2, y2, ref contourEdges) ? 1 : 0;
         }
         int built = 0;
-        if (BuildQuadLiveEdge(kept, dst[0], dst[1], dst[2], dst[3], dst[4], dst[5], ref contourEdges, ref setupCost)) built++;
-        if (BuildQuadLiveEdge(kept, dst[4], dst[5], dst[6], dst[7], dst[8], dst[9], ref contourEdges, ref setupCost)) built++;
+        if (BuildQuadLiveEdge(kept, dst[0], dst[1], dst[2], dst[3], dst[4], dst[5], ref contourEdges)) built++;
+        if (BuildQuadLiveEdge(kept, dst[4], dst[5], dst[6], dst[7], dst[8], dst[9], ref contourEdges)) built++;
         return built;
     }
 
     /// <summary>Converts retained rational verbs after output mapping and reuses the polynomial walker.</summary>
     private static int AppendRetainedQuadEdges(List<AnalyticEdge> kept, SvgAnalyticConstructionPoints points, SvgQuadSpan span,
-        ref int contourEdges, ref long setupWork, long maximumWork, CancellationToken token)
+        ref int contourEdges, CancellationToken token)
     {
-        SvgDevicePoint start = points.GetPoint(span.StartIndex, ref setupWork, maximumWork, token), end = points.GetPoint(span.EndIndex, ref setupWork, maximumWork, token);
+        SvgDevicePoint start = points.GetPoint(span.StartIndex, token), end = points.GetPoint(span.EndIndex, token);
         if (span.ConicWeight == 1f)
-            return AppendQuadLiveEdges(kept, start.X, start.Y, span.Control.X, span.Control.Y, end.X, end.Y, ref contourEdges, ref setupWork, token);
+            return AppendQuadLiveEdges(kept, start.X, start.Y, span.Control.X, span.Control.Y, end.X, end.Y, ref contourEdges, token);
         Span<SvgDevicePoint> quads = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
-        CheckClippedSetupWork(setupWork + SvgRationalQuadratic.MaximumConversionWork, maximumWork, token);
-        int count = SvgRationalQuadratic.Convert(start, span.Control, end, span.ConicWeight, SvgRationalQuadratic.DeviceTolerance, quads, out int conversionWork, token);
-        setupWork += conversionWork;
+        token.ThrowIfCancellationRequested();
+        int count = SvgRationalQuadratic.Convert(start, span.Control, end, span.ConicWeight, SvgRationalQuadratic.DeviceTolerance, quads, token);
         int built = 0;
         for (int quad = 0; quad < count; quad++)
         {
             SvgDevicePoint first = quads[2 * quad], control = quads[2 * quad + 1], last = quads[2 * quad + 2];
-            built += AppendQuadLiveEdges(kept, first.X, first.Y, control.X, control.Y, last.X, last.Y, ref contourEdges, ref setupWork, token);
+            built += AppendQuadLiveEdges(kept, first.X, first.Y, control.X, control.Y, last.X, last.Y, ref contourEdges, token);
         }
         return built;
     }
 
     /// <summary>Bounds expanded conic edges without retaining an intermediate tape.</summary>
     private static long QuadraticEdgeBound(SvgAnalyticConstructionPoints points, SvgQuadSpan[] spans,
-        ref long setupWork, long maximumWork, CancellationToken token)
+        CancellationToken token)
     {
         long bound = (long)spans.Length * 2;
         Span<SvgDevicePoint> quads = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
         for (int index = 0; index < spans.Length; index++)
         {
             if (spans[index].ConicWeight == 1f) continue;
-            SvgQuadSpan span = points.GetQuad(spans[index], index, ref setupWork, maximumWork, token);
-            SvgDevicePoint start = points.GetPoint(span.StartIndex, ref setupWork, maximumWork, token);
-            SvgDevicePoint end = points.GetPoint(span.EndIndex, ref setupWork, maximumWork, token);
-            CheckClippedSetupWork(setupWork + SvgRationalQuadratic.MaximumConversionWork, maximumWork, token);
+            SvgQuadSpan span = points.GetQuad(spans[index], index, token);
+            SvgDevicePoint start = points.GetPoint(span.StartIndex, token);
+            SvgDevicePoint end = points.GetPoint(span.EndIndex, token);
+            token.ThrowIfCancellationRequested();
             int count = SvgRationalQuadratic.Convert(start, span.Control, end, span.ConicWeight,
-                SvgRationalQuadratic.DeviceTolerance, quads, out int work, token);
-            setupWork += work;
+                SvgRationalQuadratic.DeviceTolerance, quads, token);
             bound += (long)(count - 1) * 2;
         }
         return bound;
@@ -1302,43 +1281,43 @@ internal ref partial struct SvgAnalyticCoverage
         return bytes;
     }
     /// <summary>Validates retained contours like the shared fan path, then reserves analytic scratch within the admitted contact gates.</summary>
-    /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically. Single rings keep the exact legacy sequence, extended to nonzero pure-crossing rings on curve-flattened payloads whose signed winding the edge walk accumulates directly; multi-contour sets additionally admit disjoint-or-nested contact-free loops with per-contour area and vote filtering plus a set-level contact scan, and nonzero span-free orthogonal contact sets with a cached, charged direction scan and signed-winding accumulation, extended to nonzero crossing-, touching- or self-touching sets on curve-flattened payloads without coincident contacts, keeping integer and fractional straight-edge payloads on the exact fan path, with self-touching loops walking their shared vertices through the same signed-winding accumulation, reporting ineligible without reserving otherwise, so the caller keeps the legacy path; the returned value still requires disposal. The setup cost covers validation, area, convexity and self-contact scoring, edge setup and a sorting upper bound for the caller work ledger.</remarks>
-    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
+    /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically. Single rings keep the exact legacy sequence, extended to nonzero pure-crossing rings on curve-flattened payloads whose signed winding the edge walk accumulates directly; multi-contour sets additionally admit disjoint-or-nested contact-free loops with per-contour area and vote filtering plus a set-level contact scan, and nonzero span-free orthogonal contact sets with a cached direction scan and signed-winding accumulation, extended to nonzero crossing-, touching- or self-touching sets on curve-flattened payloads without coincident contacts, keeping integer and fractional straight-edge payloads on the exact fan path, with self-touching loops walking their shared vertices through the same signed-winding accumulation, reporting ineligible without reserving otherwise, so the caller keeps the legacy path; the returned value still requires disposal.</remarks>
+    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
     {
-        return Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, Array.Empty<SvgQuadSpan>(), xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, budget, out setupWork, out eligible, cancellationToken);
+        return Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, Array.Empty<SvgQuadSpan>(), xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, budget, out eligible, cancellationToken);
     }
 
     /// <summary>Prepares one analytic fill, substituting analytic quad segments for retained span ranges under single-contour clean-structure gating.</summary>
-    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
+    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
     {
-        return Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, Array.Empty<SvgCubicSpan>(), xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, budget, out setupWork, out eligible, cancellationToken);
+        return Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, Array.Empty<SvgCubicSpan>(), xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, budget, out eligible, cancellationToken);
     }
 
     /// <summary>Prepares one analytic fill, substituting analytic curve segments for retained quadratic and cubic span ranges under single-contour clean-structure gating.</summary>
-    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
-        => Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, new(0, outputWidth), budget, out setupWork, out eligible, cancellationToken);
+    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
+        => Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, new(0, outputWidth), budget, out eligible, cancellationToken);
 
     /// <summary>Prepares retained analytic edges using a clip window distinct from path storage and native mask/run dispatch bounds.</summary>
     /// <remarks>The caller supplies a canvas-clamped integer clip window and retains fractional clip coverage at paint time. Run walking uses the clip window; the mask route retains its existing path-bound window. Owned row/edge/event storage remains bounded by the path dimensions and conversion budget, with the existing cancellation and fallback gates.</remarks>
-    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, SvgAnalyticScanWindow window, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
-        => Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, window, null, long.MaxValue, budget, out setupWork, out eligible, cancellationToken);
+    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, SvgAnalyticScanWindow window, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
+        => Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, window, null, budget, out eligible, cancellationToken);
 
-    /// <summary>Prepares uncut or clip-built edges under one explicit remaining setup-work limit.</summary>
+    /// <summary>Prepares uncut or clip-built edges with owned scratch and cooperative cancellation.</summary>
     /// <remarks>Clipping uses caller-owned stack scratch and two charged passes, reserving complete emitted-edge storage before allocation. Proper even-odd crossings preserve directed contours, including zero signed-area lobes; other rigid-contact gates and fractional paint clipping remain in force. Returned ownership is single-threaded and must be disposed on every exit. This convenience form also uses the supplied storage bounds for dispatch; callers with distinct complete path bounds must use the preparation overload.</remarks>
-    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, long maximumSetupWork, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
+    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
     {
         SvgAnalyticContourPreparation preparation = new(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, new(xStart, yStart, xEnd, yEnd), outputWidth, outputHeight);
-        return Prepare(ref preparation, xStart, xEnd, yStart, yEnd, window, constructionClip, SvgAnalyticPaintClip.Binary, maximumSetupWork, budget, out setupWork, out eligible, cancellationToken);
+        return Prepare(ref preparation, xStart, xEnd, yStart, yEnd, window, constructionClip, SvgAnalyticPaintClip.Binary, budget, out eligible, cancellationToken);
     }
 
     /// <summary>Builds one raster context from borrowed geometry, charging clip-independent classification once.</summary>
-    /// <remarks>The preparation and geometry remain immutable except for cached classifications in this single-threaded scope. Construction clipping and paint-clip dispatch are independent: an AA paint consumer forces run storage even for contained or small paths, and forwards specialized fringe pairs as ordinary runs. This context-local choice is not cached with geometry. Each returned walker independently owns its reserved edges, rows and events; it retains no borrowed spans or reference to the cache. Cancellation and remaining work apply before classification and construction.</remarks>
-    internal static SvgAnalyticCoverage Prepare(scoped ref SvgAnalyticContourPreparation preparation, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, SvgAnalyticPaintClip paintClip, long maximumSetupWork, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
-        => Prepare(ref preparation, xStart, xEnd, yStart, yEnd, window, new(0, 0), constructionClip, paintClip, maximumSetupWork, budget, out setupWork, out eligible, cancellationToken);
+    /// <remarks>The preparation and geometry remain immutable except for cached classifications in this single-threaded scope. Construction clipping and paint-clip dispatch are independent: an AA paint consumer forces run storage even for contained or small paths, and forwards specialized fringe pairs as ordinary runs. This context-local choice is not cached with geometry. Each returned walker independently owns its reserved edges, rows and events; it retains no borrowed spans or reference to the cache. Cancellation applies before and during classification and construction.</remarks>
+    internal static SvgAnalyticCoverage Prepare(scoped ref SvgAnalyticContourPreparation preparation, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, SvgAnalyticPaintClip paintClip, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
+        => Prepare(ref preparation, xStart, xEnd, yStart, yEnd, window, new(0, 0), constructionClip, paintClip, budget, out eligible, cancellationToken);
 
     /// <summary>Builds contained edges in their owning bitmap without invoking construction clipping.</summary>
-    /// <remarks>Source operands map on demand under the shared work limit, with no additional storage. Fixed edge and curve state translates after construction. Classification, curve dispatch, paint clipping, cancellation and ownership remain shared with the uncut and clipped routes.</remarks>
-    internal static SvgAnalyticCoverage Prepare(scoped ref SvgAnalyticContourPreparation preparation, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticScanWindow window, SvgCpuBitmapOrigin bitmapOrigin, SvgAnalyticClipContext? constructionClip, SvgAnalyticPaintClip paintClip, long maximumSetupWork, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
+    /// <remarks>Source operands map on demand with no additional storage. Fixed edge and curve state translates after construction. Classification, curve dispatch, paint clipping, cancellation and ownership remain shared with the uncut and clipped routes.</remarks>
+    internal static SvgAnalyticCoverage Prepare(scoped ref SvgAnalyticContourPreparation preparation, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticScanWindow window, SvgCpuBitmapOrigin bitmapOrigin, SvgAnalyticClipContext? constructionClip, SvgAnalyticPaintClip paintClip, RenderBudget budget, out bool eligible, CancellationToken cancellationToken)
     {
         ReadOnlySpan<SvgDevicePoint> points = preparation.Points;
         ReadOnlySpan<int> ends = preparation.Ends;
@@ -1355,7 +1334,6 @@ internal ref partial struct SvgAnalyticCoverage
         if (paintClip is not (SvgAnalyticPaintClip.Binary or SvgAnalyticPaintClip.Antialiased)) throw new ArgumentOutOfRangeException(nameof(paintClip));
         if (window.Left < 0 || window.Right > outputWidth || window.Right < window.Left) throw new ArgumentOutOfRangeException(nameof(window));
         if (bitmapOrigin.X < 0 || bitmapOrigin.Y < 0 || bitmapOrigin.X > outputWidth || bitmapOrigin.Y > outputHeight) throw new ArgumentOutOfRangeException(nameof(bitmapOrigin));
-        if (maximumSetupWork < 0) throw new ArgumentOutOfRangeException(nameof(maximumSetupWork));
         if (constructionClip is {} context && (context.Bounds.Left < 0 || context.Bounds.Top < 0 || context.Bounds.Right > outputWidth || context.Bounds.Bottom > outputHeight || context.Bounds.Right < context.Bounds.Left || context.Bounds.Bottom < context.Bounds.Top)) throw new ArgumentOutOfRangeException(nameof(constructionClip));
         ReadOnlySpan<int> votes = isEvenOdd ? nestingSigns : (signs is int[] roles ? roles : ReadOnlySpan<int>.Empty);
         bool hasVotes = isEvenOdd || signs is not null;
@@ -1374,12 +1352,10 @@ internal ref partial struct SvgAnalyticCoverage
             }
             return true;
         }
-        setupWork = 0;
         eligible = false;
         if (!preparation.BasicChecked)
         {
-            setupWork = (long)points.Length + ends.Length + quadSpans.Length + 2L * cubicSpans.Length;
-            CheckClippedSetupWork(setupWork, maximumSetupWork, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             SvgPolygonCoverage.ValidateContourEnds(points, ends);
             if (!isEvenOdd && signs is not null && signs.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(signs));
             if (isEvenOdd && nestingSigns.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(nestingSigns));
@@ -1447,7 +1423,7 @@ internal ref partial struct SvgAnalyticCoverage
         {
             ReadOnlySpan<SvgAuthoredPathCommand> commands = preparation.Source is {} source ? source.Commands : ReadOnlySpan<SvgAuthoredPathCommand>.Empty;
             SvgAnalyticClipBounds rectangleClip = constructionClip is {} clippedRectangle ? clippedRectangle.Bounds : new(window.Left, 0, window.Right, outputHeight);
-            SvgFatRectangleCoverage? rectangle = SvgFatRectangleCoverage.TryCreate(commands, points, preparation.SourceMap, bitmapOrigin, rectangleClip, ref setupWork, maximumSetupWork, cancellationToken);
+            SvgFatRectangleCoverage? rectangle = SvgFatRectangleCoverage.TryCreate(commands, points, preparation.SourceMap, bitmapOrigin, rectangleClip, cancellationToken);
             if (rectangle is {} fatRectangle)
             {
                 eligible = true;
@@ -1485,9 +1461,8 @@ internal ref partial struct SvgAnalyticCoverage
                 if (directedWinding) preparation.Structure = SvgContourFlags.None;
                 else
                 {
-                    CheckClippedSetupWork(setupWork + (long)points.Length * points.Length, maximumSetupWork, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
                     preparation.Structure = SvgContourStructure.ClassifySet(points, ends, cancellationToken);
-                    setupWork += (long)points.Length * points.Length;
                 }
             }
             SvgContourFlags setStructure = preparation.Structure.Value;
@@ -1502,9 +1477,8 @@ internal ref partial struct SvgAnalyticCoverage
                 bool transversal = false;
                 if (!directedWinding && !isEvenOdd && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) == SvgContourFlags.None)
                 {
-                    CheckClippedSetupWork(setupWork + (long)points.Length * points.Length, maximumSetupWork, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
                     transversal = SvgContourStructure.AllInterLoopContactsTransversal(points, ends, cancellationToken);
-                    setupWork += (long)points.Length * points.Length;
                 }
                 preparation.TransversalUnion = transversal;
             }
@@ -1516,9 +1490,8 @@ internal ref partial struct SvgAnalyticCoverage
                 bool orthogonal = !isEvenOdd && mapping != SvgPolygonMapping.FlattenedCurves && quadSpans.Length == 0 && cubicSpans.Length == 0 && (setStructure & SvgContourFlags.SelfTouch) == SvgContourFlags.None && rigidContacts;
                 if (orthogonal)
                 {
-                    CheckClippedSetupWork(setupWork + points.Length, maximumSetupWork, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
                     orthogonal = IsOrthogonalSet(points, ends, cancellationToken);
-                    setupWork += points.Length;
                 }
                 preparation.OrthogonalUnion = orthogonal;
             }
@@ -1528,11 +1501,11 @@ internal ref partial struct SvgAnalyticCoverage
             bool orthogonalUnion = preparation.OrthogonalUnion.Value;
             if (!evenOddCrossings && !transversalUnion && !orthogonalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
             bool useNativeSpans = mapping == SvgPolygonMapping.NativeFillEdges || !isEvenOdd && (mapping is SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges);
-            long multiPointCount = GetNativePointCount(ref preparation, useNativeSpans, maximumSetupWork, ref setupWork, cancellationToken);
-            if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, mapping, quadSpans, cubicSpans, useNativeSpans, false, false, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, multiClip.BitmapOrigin, preparation.Source, preparation.SourceMap, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
+            long multiPointCount = GetNativePointCount(ref preparation, useNativeSpans, cancellationToken);
+            if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, mapping, quadSpans, cubicSpans, useNativeSpans, false, false, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, multiClip.BitmapOrigin, preparation.Source, preparation.SourceMap, budget, out eligible, cancellationToken);
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = multiPointCount > (long)(yEnd - yStart) * 2;
-            long multiCurveEdges = QuadraticEdgeBound(constructionPoints, quadSpans, ref setupWork, maximumSetupWork, cancellationToken) + (long)cubicSpans.Length * 3;
+            long multiCurveEdges = QuadraticEdgeBound(constructionPoints, quadSpans, cancellationToken) + (long)cubicSpans.Length * 3;
             RenderBudget.BudgetReservation? multiScratch = budget.Reserve(ScratchByteCount(points.Length, multiWidth, multiCurveEdges), SvgMemoryCategory.Surface);
             try
             {
@@ -1576,10 +1549,10 @@ internal ref partial struct SvgAnalyticCoverage
                         if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                         if (contourSpans && quadAt < quadRunEnd && quadSpans[quadAt].StartIndex == index)
                         {
-                            SvgQuadSpan span = constructionPoints.GetQuad(quadSpans[quadAt], quadAt, ref setupWork, maximumSetupWork, cancellationToken);
+                            SvgQuadSpan span = constructionPoints.GetQuad(quadSpans[quadAt], quadAt, cancellationToken);
                             quadAt++;
                             // Native verbs keep their controls even when flattening emits one chord.
-                            if ((mapping is (SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges) || span.EndIndex - index >= 2 || span.ConicWeight != 1f) && AppendRetainedQuadEdges(multiKept, constructionPoints, span, ref contourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0)
+                            if ((mapping is (SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges) || span.EndIndex - index >= 2 || span.ConicWeight != 1f) && AppendRetainedQuadEdges(multiKept, constructionPoints, span, ref contourEdges, cancellationToken) > 0)
                             {
                                 index = span.EndIndex - 1;
                                 continue;
@@ -1587,19 +1560,19 @@ internal ref partial struct SvgAnalyticCoverage
                         }
                         else if (contourSpans && cubicAt < cubicRunEnd && cubicSpans[cubicAt].StartIndex == index)
                         {
-                            SvgCubicSpan cubic = constructionPoints.GetCubic(cubicSpans[cubicAt], cubicAt, ref setupWork, maximumSetupWork, cancellationToken);
+                            SvgCubicSpan cubic = constructionPoints.GetCubic(cubicSpans[cubicAt], cubicAt, cancellationToken);
                             cubicAt++;
-                            SvgDevicePoint curveStart = constructionPoints.GetPoint(cubic.StartIndex, ref setupWork, maximumSetupWork, cancellationToken);
-                            SvgDevicePoint curveEnd = constructionPoints.GetPoint(cubic.EndIndex, ref setupWork, maximumSetupWork, cancellationToken);
+                            SvgDevicePoint curveStart = constructionPoints.GetPoint(cubic.StartIndex, cancellationToken);
+                            SvgDevicePoint curveEnd = constructionPoints.GetPoint(cubic.EndIndex, cancellationToken);
                             // Native cubic admission follows retained verbs, including one-chord flattenings.
-                            if (cubic.EndIndex - index >= 1 && AppendCubicLiveEdges(multiKept, curveStart.X, curveStart.Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, curveEnd.X, curveEnd.Y, ref contourEdges, ref setupWork, cancellationToken) > 0)
+                            if (cubic.EndIndex - index >= 1 && AppendCubicLiveEdges(multiKept, curveStart.X, curveStart.Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, curveEnd.X, curveEnd.Y, ref contourEdges, cancellationToken) > 0)
                             {
                                 index = cubic.EndIndex - 1;
                                 continue;
                             }
                         }
-                        SvgDevicePoint multiFirst = constructionPoints.GetPoint(index, ref setupWork, maximumSetupWork, cancellationToken);
-                        SvgDevicePoint multiSecond = constructionPoints.GetPoint(start + ((index - start + 1) % count), ref setupWork, maximumSetupWork, cancellationToken);
+                        SvgDevicePoint multiFirst = constructionPoints.GetPoint(index, cancellationToken);
+                        SvgDevicePoint multiSecond = constructionPoints.GetPoint(start + ((index - start + 1) % count), cancellationToken);
                         AnalyticEdge? multiEdge = SetLine(multiFirst.X, multiFirst.Y, multiSecond.X, multiSecond.Y, true);
                         if (multiEdge is null) continue;
                         if (multiEdge.DX == 0 && contourEdges > 0 && CombineVertical(multiEdge, multiKept)) continue;
@@ -1608,7 +1581,7 @@ internal ref partial struct SvgAnalyticCoverage
                     }
                 }
                 if (constructionPoints.IsBitmapLocal)
-                    foreach (AnalyticEdge edge in multiKept) TranslateConstructedEdge(edge, bitmapOrigin, ref setupWork, maximumSetupWork, cancellationToken);
+                    foreach (AnalyticEdge edge in multiKept) TranslateConstructedEdge(edge, bitmapOrigin, cancellationToken);
                 AnalyticEdge[] multiEdges = multiKept.ToArray();
                 SortEdges(multiEdges, cancellationToken);
                 AnalyticEdge multiHead = new() { UpperY = int.MinValue, LowerY = int.MinValue, X = int.MinValue, UpperX = int.MinValue, DY = int.MaxValue };
@@ -1622,13 +1595,9 @@ internal ref partial struct SvgAnalyticCoverage
                 byte[] multiRow = new byte[multiWidth + 2];
                 int[] multiTemp = new int[multiWidth + 4];
                 int[] multiAlphas = new int[multiWidth + 4];
-                int multiLevels = 0;
-                for (int level = multiEdges.Length; level > 0; level >>= 1) multiLevels++;
-                setupWork += (long)multiEdges.Length * (multiLevels + 3);
                 eligible = true;
                 bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
-                if (useRunBlitter) setupWork += multiWidth;
-                CheckClippedSetupWork(setupWork, maximumSetupWork, cancellationToken);
+                if (useRunBlitter) {}                cancellationToken.ThrowIfCancellationRequested();
                 return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, false, useRunBlitter, false, paintClip, window, budget, multiScratch);
             }
             catch { multiScratch?.Dispose(); throw; }
@@ -1637,9 +1606,8 @@ internal ref partial struct SvgAnalyticCoverage
         if (!preparation.HasArea.Value) return default;
         if (preparation.Structure is null)
         {
-            CheckClippedSetupWork(setupWork + (long)points.Length * (points.Length - 1) / 2, maximumSetupWork, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             preparation.Structure = SvgContourStructure.ClassifyContour(points, 0, points.Length, cancellationToken);
-            setupWork += (long)points.Length * (points.Length - 1) / 2;
         }
         SvgContourFlags structure = preparation.Structure.Value;
         bool rigidRing = !directedWinding && (structure != SvgContourFlags.ProperCrossing || (!isEvenOdd && mapping != SvgPolygonMapping.FlattenedCurves));
@@ -1654,7 +1622,7 @@ internal ref partial struct SvgAnalyticCoverage
         }
         if (preparation.Convex is null)
         {
-            CheckClippedSetupWork(setupWork + points.Length, maximumSetupWork, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             // Equal turn signs do not prove convexity for an intersecting ring.
             // Native shape builders cache convexity for source ovals and rounded rectangles.
             // Non-axis placement invalidates that cache: float controls must be classified again.
@@ -1665,7 +1633,6 @@ internal ref partial struct SvgAnalyticCoverage
             bool hasRawControls = retained || preparation.Source is not null;
             bool convexRing = knownConvex || hasRawControls
                 || IsConvexRing(points, cancellationToken) && structure == SvgContourFlags.None;
-            setupWork += points.Length;
             if (convexRing && !knownConvex && preparation.Source is {} source)
             {
                 // Native transforms retain cached source concavity even when float
@@ -1673,30 +1640,23 @@ internal ref partial struct SvgAnalyticCoverage
                 // still require classification after their final placement.
                 if (preparation.SourceConvex is null)
                 {
-                    long sourceWork = source.Points.Length + (long)source.QuadSpans.Length + 2L * source.CubicSpans.Length + 2;
-                    CheckClippedSetupWork(setupWork + sourceWork, maximumSetupWork, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
                     preparation.SourceConvex = SvgRawContourConvexity.IsConvex(source.Points, source.QuadSpans, source.CubicSpans, cancellationToken);
-                    setupWork += sourceWork;
                 }
                 convexRing = preparation.SourceConvex.Value;
             }
             if (convexRing && !knownConvex && hasRawControls)
             {
-                // Raw controls can reverse a turn that flattened samples omit. Reserve the
-                // complete traversal before classifying; contexts in the same bitmap reuse the decision.
-                long rawWork = points.Length + (long)quadSpans.Length + 2L * cubicSpans.Length + 2;
                 if (preparation.Source is {} localSource)
                 {
-                    rawWork *= 3;
-                    CheckClippedSetupWork(setupWork + rawWork, maximumSetupWork, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
                     convexRing = SvgRawContourConvexity.IsConvexAfterPlacement(localSource, preparation.SourceMap, bitmapOrigin, cancellationToken);
                 }
                 else
                 {
-                    CheckClippedSetupWork(setupWork + rawWork, maximumSetupWork, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
                     convexRing = SvgRawContourConvexity.IsConvex(points, quadSpans, cubicSpans, cancellationToken);
                 }
-                setupWork += rawWork;
             }
             bool box = convexRing;
             if (box)
@@ -1719,11 +1679,11 @@ internal ref partial struct SvgAnalyticCoverage
         bool convex = preparation.Convex.Value;
         bool desnapBox = preparation.DesnapBox;
         bool useCurveSpans = preparation.UseCurveSpans;
-        long singlePointCount = GetNativePointCount(ref preparation, useCurveSpans, maximumSetupWork, ref setupWork, cancellationToken);
-        if (constructionClip is {} singleClip) return PrepareClipped(singlePointCount, points, ends, votes, hasVotes, isEvenOdd, mapping, quadSpans, cubicSpans, useCurveSpans, convex, desnapBox, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, singleClip.BitmapOrigin, preparation.Source, preparation.SourceMap, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
+        long singlePointCount = GetNativePointCount(ref preparation, useCurveSpans, cancellationToken);
+        if (constructionClip is {} singleClip) return PrepareClipped(singlePointCount, points, ends, votes, hasVotes, isEvenOdd, mapping, quadSpans, cubicSpans, useCurveSpans, convex, desnapBox, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, singleClip.BitmapOrigin, preparation.Source, preparation.SourceMap, budget, out eligible, cancellationToken);
         int width = xEnd - xStart;
         bool skipIntersect = singlePointCount > (long)(yEnd - yStart) * 2;
-        long curveEdges = useCurveSpans ? QuadraticEdgeBound(constructionPoints, quadSpans, ref setupWork, maximumSetupWork, cancellationToken) + (long)cubicSpans.Length * 3 : 0;
+        long curveEdges = useCurveSpans ? QuadraticEdgeBound(constructionPoints, quadSpans, cancellationToken) + (long)cubicSpans.Length * 3 : 0;
         RenderBudget.BudgetReservation? scratch = budget.Reserve(ScratchByteCount(points.Length, width, curveEdges), SvgMemoryCategory.Surface);
         try
         {
@@ -1735,14 +1695,14 @@ internal ref partial struct SvgAnalyticCoverage
                 if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                 if (useCurveSpans && spanCursor < quadSpans.Length && quadSpans[spanCursor].StartIndex == index)
                 {
-                    SvgQuadSpan span = constructionPoints.GetQuad(quadSpans[spanCursor], spanCursor, ref setupWork, maximumSetupWork, cancellationToken);
+                    SvgQuadSpan span = constructionPoints.GetQuad(quadSpans[spanCursor], spanCursor, cancellationToken);
                     spanCursor++;
                     int spanContourEdges = kept.Count;
                     bool quadSubstituted = false;
                     // Fallback sample density does not change an authored quadratic into a line.
                     if (mapping is (SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges) || span.EndIndex - index >= 2 || span.ConicWeight != 1f)
                     {
-                        if (AppendRetainedQuadEdges(kept, constructionPoints, span, ref spanContourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0) quadSubstituted = true;
+                        if (AppendRetainedQuadEdges(kept, constructionPoints, span, ref spanContourEdges, cancellationToken) > 0) quadSubstituted = true;
                     }
                     if (quadSubstituted)
                     {
@@ -1753,7 +1713,7 @@ internal ref partial struct SvgAnalyticCoverage
                 }
                 else if (useCurveSpans && cubicCursor < cubicSpans.Length && cubicSpans[cubicCursor].StartIndex == index)
                 {
-                    SvgCubicSpan cubic = constructionPoints.GetCubic(cubicSpans[cubicCursor], cubicCursor, ref setupWork, maximumSetupWork, cancellationToken);
+                    SvgCubicSpan cubic = constructionPoints.GetCubic(cubicSpans[cubicCursor], cubicCursor, cancellationToken);
                     cubicCursor++;
                     int cubicContourEdges = kept.Count;
                     // Both walkers advance cubic state at strip boundaries; convex
@@ -1762,9 +1722,9 @@ internal ref partial struct SvgAnalyticCoverage
                     // A one-chord approximation still owns genuine cubic controls and native stepping.
                     if (cubic.EndIndex - index >= 1)
                     {
-                        SvgDevicePoint curveStart = constructionPoints.GetPoint(cubic.StartIndex, ref setupWork, maximumSetupWork, cancellationToken);
-                        SvgDevicePoint curveEnd = constructionPoints.GetPoint(cubic.EndIndex, ref setupWork, maximumSetupWork, cancellationToken);
-                        if (AppendCubicLiveEdges(kept, curveStart.X, curveStart.Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, curveEnd.X, curveEnd.Y, ref cubicContourEdges, ref setupWork, cancellationToken) > 0) substituted = true;
+                        SvgDevicePoint curveStart = constructionPoints.GetPoint(cubic.StartIndex, cancellationToken);
+                        SvgDevicePoint curveEnd = constructionPoints.GetPoint(cubic.EndIndex, cancellationToken);
+                        if (AppendCubicLiveEdges(kept, curveStart.X, curveStart.Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, curveEnd.X, curveEnd.Y, ref cubicContourEdges, cancellationToken) > 0) substituted = true;
                     }
                     if (substituted)
                     {
@@ -1772,15 +1732,15 @@ internal ref partial struct SvgAnalyticCoverage
                         continue;
                     }
                 }
-                SvgDevicePoint first = constructionPoints.GetPoint(index, ref setupWork, maximumSetupWork, cancellationToken);
-                SvgDevicePoint second = constructionPoints.GetPoint((index + 1) % points.Length, ref setupWork, maximumSetupWork, cancellationToken);
+                SvgDevicePoint first = constructionPoints.GetPoint(index, cancellationToken);
+                SvgDevicePoint second = constructionPoints.GetPoint((index + 1) % points.Length, cancellationToken);
                 AnalyticEdge? edge = SetLine(first.X, first.Y, second.X, second.Y, !desnapBox);
                 if (edge is null) continue;
                 if (edge.DX == 0 && kept.Count > 0 && CombineVertical(edge, kept)) continue;
                 kept.Add(edge);
             }
             if (constructionPoints.IsBitmapLocal)
-                foreach (AnalyticEdge edge in kept) TranslateConstructedEdge(edge, bitmapOrigin, ref setupWork, maximumSetupWork, cancellationToken);
+                foreach (AnalyticEdge edge in kept) TranslateConstructedEdge(edge, bitmapOrigin, cancellationToken);
             AnalyticEdge[] edges = kept.ToArray();
             SortEdges(edges, cancellationToken);
             AnalyticEdge head = new() { UpperY = int.MinValue, LowerY = int.MinValue, X = int.MinValue, UpperX = int.MinValue, DY = int.MaxValue };
@@ -1794,20 +1754,16 @@ internal ref partial struct SvgAnalyticCoverage
             byte[] row = new byte[width + 2];
             int[] temp = new int[width + 4];
             int[] alphas = new int[width + 4];
-            int levels = 0;
-            for (int level = edges.Length; level > 0; level >>= 1) levels++;
-            setupWork += (long)edges.Length * (levels + 3);
             eligible = true;
             bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
-            if (useRunBlitter) setupWork += width;
-            CheckClippedSetupWork(setupWork, maximumSetupWork, cancellationToken);
+            if (useRunBlitter) {}            cancellationToken.ThrowIfCancellationRequested();
             return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, desnapBox, useRunBlitter, false, paintClip, window, budget, scratch);
         }
         catch { scratch?.Dispose(); throw; }
     }
     /// <summary>Counts the raw points represented by usable retained verbs before edge clipping or subdivision.</summary>
-    /// <remarks>The borrowed cache is single-threaded and immutable for this fill. Validation and range traversal are charged once before work; no storage is allocated. Declined contour spans retain their flattened point count, and clipping never changes the whole-path count used for native density dispatch.</remarks>
-    private static long GetNativePointCount(scoped ref SvgAnalyticContourPreparation preparation, bool useSpans, long maximumWork, scoped ref long setupWork, CancellationToken token)
+    /// <remarks>The borrowed cache is single-threaded and immutable for this fill. Validation and range traversal check cancellation and allocate no storage. Declined contour spans retain their flattened point count, and clipping never changes the whole-path count used for native density dispatch.</remarks>
+    private static long GetNativePointCount(scoped ref SvgAnalyticContourPreparation preparation, bool useSpans, CancellationToken token)
     {
         if (preparation.NativePointCount is long cached) return cached;
         if (preparation.Source is SvgPreparedPathContours source)
@@ -1821,10 +1777,7 @@ internal ref partial struct SvgAnalyticCoverage
             ReadOnlySpan<int> ends = preparation.Ends;
             SvgQuadSpan[] quads = preparation.QuadSpans;
             SvgCubicSpan[] cubics = preparation.CubicSpans;
-            // One range-discovery visit and one merged validation visit per span.
-            long units = ends.Length + 2L * (quads.Length + (long)cubics.Length);
-            CheckClippedSetupWork(setupWork + units, maximumWork, token);
-            setupWork += units;
+            token.ThrowIfCancellationRequested();
             int previousEnd = 0;
             int quadCursor = 0;
             int cubicCursor = 0;
@@ -2146,10 +2099,9 @@ internal ref partial struct SvgAnalyticCoverage
         _walkY = y;
         for (AnalyticEdge? edge = head.Next; edge is not null && edge.UpperY <= y; edge = edge.Next)
         {
-            if ((_strips & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
             GoY(edge, y);
             UpdateNextNext(edge.LowerY);
-            _strips++;
         }
         AnalyticEdge? probe = head.Next;
         while (probe is not null && probe.UpperY <= y) probe = probe.Next;
@@ -2158,7 +2110,6 @@ internal ref partial struct SvgAnalyticCoverage
         while (true)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            _strips++;
             int winding = 0;
             bool inside = false;
             int previousX = head.X;
@@ -2193,7 +2144,6 @@ internal ref partial struct SvgAnalyticCoverage
                         BlitTrapezoidRow(left, rite, nextLeft, nextRite, leftDY, cursor.DY, fullAlpha, close);
                     }
                     previousRite = FixedCeilToInt(Math.Max(rite, cursor.X));
-                    _strips++;
                 }
                 else
                 {
@@ -2210,13 +2160,13 @@ internal ref partial struct SvgAnalyticCoverage
                         {
                             cursor.CubicXOffset = unchecked(cursor.X - cursor.FCx);
                             cursor.SnappedY = cursor.Y;
-                            if (!AdvanceCubicLive(cursor, ref _strips)) break;
+                            if (!AdvanceCubicLive(cursor)) break;
                         }
                         else
                         {
                             cursor.QSnappedX = cursor.X;
                             cursor.SnappedY = cursor.Y;
-                            if (!AdvanceQuadLive(cursor, ref _strips)) break;
+                            if (!AdvanceQuadLive(cursor)) break;
                         }
                     }
                     if (cursor.LowerY <= nextY) RemoveEdge(cursor);
@@ -2257,12 +2207,11 @@ internal ref partial struct SvgAnalyticCoverage
         while (true)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            _strips++;
             while (leftEdge.LowerY <= y)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (leftEdge.CurveCount < 0 && AdvanceCubicLive(leftEdge, ref _strips)) continue;
-                if (leftEdge.CurveCount > 0 && AdvanceQuadLive(leftEdge, ref _strips)) continue;
+                if (leftEdge.CurveCount < 0 && AdvanceCubicLive(leftEdge)) continue;
+                if (leftEdge.CurveCount > 0 && AdvanceQuadLive(leftEdge)) continue;
                 if (current is null || FixedFloorToInt(current.UpperY) >= _stopY) return;
                 leftEdge = current;
                 current = current.Next;
@@ -2270,8 +2219,8 @@ internal ref partial struct SvgAnalyticCoverage
             while (rightEdge.LowerY <= y)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (rightEdge.CurveCount < 0 && AdvanceCubicLive(rightEdge, ref _strips)) continue;
-                if (rightEdge.CurveCount > 0 && AdvanceQuadLive(rightEdge, ref _strips)) continue;
+                if (rightEdge.CurveCount < 0 && AdvanceCubicLive(rightEdge)) continue;
+                if (rightEdge.CurveCount > 0 && AdvanceQuadLive(rightEdge)) continue;
                 if (current is null || FixedFloorToInt(current.UpperY) >= _stopY) return;
                 rightEdge = current;
                 current = current.Next;
@@ -2380,7 +2329,6 @@ internal ref partial struct SvgAnalyticCoverage
                 left = nextLeft;
                 rite = nextRite;
                 y = nextY;
-                _strips++;
             }
         }
         int tailY = localBot - y;
@@ -2394,33 +2342,22 @@ internal ref partial struct SvgAnalyticCoverage
         rite -= SnapHalf;
         return (left, rite, y);
     }
-    /// <summary>Prepares a row with an explicitly unbounded operation-work allowance for internal diagnostics.</summary>
-    internal void PrepareRow(int y, out long rowWork, CancellationToken cancellationToken)
-        => PrepareRow(y, long.MaxValue, out rowWork, cancellationToken);
-
     /// <summary>Restores the retained edges and prepares the requested mask/run row and direct paint events.</summary>
-    /// <remarks>Rows arrive in ascending order within the preparation window. Each call restores curve state and links; allocated event capacity is reused. Returned work covers row clearing, edge restoration, visited strips, event recording/replay and buffer growth/copying. New operation work is checked against maximumRowWork before allocation or recording. The caller checks the complete row charge before painting. Cancellation preserves its token; Dispose owns all buffers, including after denial or cancellation.</remarks>
-    internal void PrepareRow(int y, long maximumRowWork, out long rowWork, CancellationToken cancellationToken)
+    /// <remarks>Rows arrive in ascending order within the preparation window. Each call restores curve state and links; allocated event capacity is reused. Clearing, restoration, strip traversal, event recording/replay and buffer growth observe cancellation. Growth reserves memory before allocation. Cancellation preserves its token; Dispose owns all buffers, including after refusal or cancellation.</remarks>
+    internal void PrepareRow(int y, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         _rowCancellationToken = cancellationToken;
         if (_rectangleFrame is not null)
         {
-            rowWork = 1 + 3L * _width;
-            if (rowWork > maximumRowWork) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame row exceeds the remaining work limit.");
             _rectangleRow = y;
             return;
         }
         if (_fatRectangle is not null || _rectangleFill is not null)
         {
-            if (maximumRowWork < 1) throw new SvgException(SvgErrorCode.LimitExceeded, "Filled rectangle row exceeds the remaining work limit.");
             _rectangleRow = y;
-            rowWork = 1;
             return;
         }
-        _strips = 0;
-        _rowOperationWork = 0;
-        _rowOperationWorkLimit = maximumRowWork - _width - (long)_edges.Length * 3;
         _directOperationCount = 0;
         _directSpanCount = 0;
         _paintSequence = 0;
@@ -2428,7 +2365,7 @@ internal ref partial struct SvgAnalyticCoverage
         _directPaintRight = _width;
         if (_useRunBlitter)
         {
-            ChargeOperationWork(_directLinks.Length - _width);
+            _rowCancellationToken.ThrowIfCancellationRequested();
             for (int index = 0; index < _directLinks.Length; index++)
             {
                 if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
@@ -2436,8 +2373,7 @@ internal ref partial struct SvgAnalyticCoverage
             }
         }
         Array.Clear(_row, 0, _row.Length);
-        _strips = 0;
-        if (_edges.Length == 0) { rowWork = _width; return; }
+        if (_edges.Length == 0) { return; }
         for (int index = 0; index < _edges.Length; index++)
         {
             if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
@@ -2456,7 +2392,7 @@ internal ref partial struct SvgAnalyticCoverage
                 _edges[index].FCDDDx = _edges[index].InitialFCDDDx;
                 _edges[index].FCDDDy = _edges[index].InitialFCDDDy;
                 _edges[index].QSnappedX = _edges[index].InitialQSnappedX;
-                bool liveAdvanced = _edges[index].InitialCurveCount < 0 ? AdvanceCubicLive(_edges[index], ref _strips) : AdvanceQuadLive(_edges[index], ref _strips);
+                bool liveAdvanced = _edges[index].InitialCurveCount < 0 ? AdvanceCubicLive(_edges[index]) : AdvanceQuadLive(_edges[index]);
                 if (!liveAdvanced) _edges[index].LowerY = _edges[index].UpperY;
             }
             else
@@ -2479,16 +2415,11 @@ internal ref partial struct SvgAnalyticCoverage
         tail.Prev = _edges[^1];
         if (_convex) WalkConvexRow(y, cancellationToken);
         else WalkEdgesRow(y, cancellationToken);
-
-        rowWork = _width + (long)_edges.Length * 3 + _strips + _rowOperationWork;
     }
 
-    private static void TranslateConstructedEdge(AnalyticEdge edge, SvgCpuBitmapOrigin origin, ref long work, long maximumWork, CancellationToken token)
+    private static void TranslateConstructedEdge(AnalyticEdge edge, SvgCpuBitmapOrigin origin, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        int units = edge.InitialCurveCount == 0 ? 5 : edge.InitialCurveCount < 0 ? 13 : 15;
-        if (units > maximumWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Fixed edge translation exceeds the remaining work limit.");
-        work += units;
         int dx = origin.X << 16, dy = origin.Y << 16;
         edge.X += dx; edge.UpperX += dx;
         edge.Y += dy; edge.UpperY += dy; edge.LowerY += dy;

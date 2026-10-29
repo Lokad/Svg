@@ -14,7 +14,7 @@ namespace Lokad.Svg.Rendering;
 /// nonzero winding still fills; route spike loops through contour-structure validation before even-odd
 /// filling since coincident retracing cancels there. Acute inner turns may self-intersect with the same
 /// nonzero caveat. Zero-length segments are skipped; all-degenerate solid open input draws nothing with butt caps,
-/// a flatness-bounded disc with round caps, and an axis-aligned square with square caps per the zero-length subpath rule, while dashed outlining discards zero-length runs before stroking. Callers charge one stroke-expansion work unit per appended point; this kernel holds
+/// a flatness-bounded disc with round caps, and an axis-aligned square with square caps per the zero-length subpath rule, while dashed outlining discards zero-length runs before stroking. This kernel holds
 /// no budget itself and allocates nothing beyond the caller buffer it fills through.</para>
 /// </remarks>
 /// <summary>Selects the admitted open-end cap style for one stroke.</summary>

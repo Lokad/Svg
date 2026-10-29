@@ -114,9 +114,8 @@ public sealed class SvgFractionalMaskRegionTests
         {
             RenderBudget measured = new(1_000_000);
             byte[] expected;
-            long work;
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
-            { expected = surface.Pixels.ToArray(); work = surface.WorkUnits; }
+            { expected = surface.Pixels.ToArray(); }
             Assert.Equal(0, measured.Snapshot().CurrentBytes);
             RenderBudget denied = new(measured.Snapshot().PeakBytes + 72);
             using (denied.Reserve(73, SvgMemoryCategory.Parser))
@@ -124,11 +123,6 @@ public sealed class SvgFractionalMaskRegionTests
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(73, denied.Snapshot().CurrentBytes);
             }
-            SvgRenderLimits limits = SvgRenderLimits.Default;
-            SvgRenderOptions shortWork = new(null, 1, SvgColor.Transparent,
-                new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                    limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)work - 1)));
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, shortWork, measured, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, measured.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();

@@ -4,7 +4,7 @@ namespace Lokad.Svg.Rendering;
 
 /// <summary>Borrows one draw's native bitmap origins and source placement for shader sampling.</summary>
 /// <remarks>Immutable and allocation-free. Clip metadata belongs to the caller's raster scope;
-/// the context must not outlive it. Callers charge pixel work and observe cancellation.</remarks>
+/// the context must not outlive it. Callers observe cancellation.</remarks>
 internal readonly record struct SvgShaderSamplingContext(SvgCpuRasterGrid Grid, SvgAnalyticClipBounds Layer,
     SvgCpuClipCoverage? LayerClip, SvgPaintBounds? NativeSourceBounds, SvgCpuBitmapOrigin? DitherOrigin,
     SvgAffineTransform SourceInverse, double ScaleX, double ScaleY, double OffsetX, double OffsetY)

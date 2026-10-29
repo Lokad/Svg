@@ -7,7 +7,7 @@ using Lokad.Svg.Parsing;
 /// <summary>Retains float fringe coverage for the native filled-path rectangle shortcut.</summary>
 /// <remarks>This immutable value owns no storage. Creation borrows scene commands under a bounded,
 /// cancellable mapping pass; the returned value retains neither commands nor scene owners.
-/// Pixel lookup is allocation-free and belongs to the caller's raster work charge.</remarks>
+/// Pixel lookup is allocation-free; the caller checks cancellation during traversal.</remarks>
 internal readonly struct SvgFatRectangleCoverage
 {
     private readonly float _left, _top, _right, _bottom;
@@ -33,7 +33,7 @@ internal readonly struct SvgFatRectangleCoverage
 
     /// <summary>Recognizes original mapped line verbs and intersects the actual bitmap clip before fat dispatch.</summary>
     internal static SvgFatRectangleCoverage? TryCreate(ReadOnlySpan<SvgAuthoredPathCommand> commands, ReadOnlySpan<SvgDevicePoint> closedPoints, SvgAffineTransform map,
-        SvgCpuBitmapOrigin origin, SvgAnalyticClipBounds clip, ref long work, long maximumWork, CancellationToken token)
+        SvgCpuBitmapOrigin origin, SvgAnalyticClipBounds clip, CancellationToken token)
     {
         SvgRectanglePathRecognizer recognizer = new();
         bool authored = !commands.IsEmpty;
@@ -44,15 +44,11 @@ internal readonly struct SvgFatRectangleCoverage
                 ? new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default)
                 : new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, closedPoints[index], default, default);
             token.ThrowIfCancellationRequested();
-            if (3 > maximumWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Filled rectangle recognition exceeds the remaining work limit.");
-            work += 3;
             SvgDevicePoint point = command.Verb is SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.Line
                 ? MapPoint(command.First, map, origin, authored) : default;
             if (!recognizer.Add(command.Verb, point)) return null;
         }
         if (recognizer.Finish() is not SvgRecognizedRectangle rectangle) return null;
-        if (8 > maximumWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Filled rectangle clipping exceeds the remaining work limit.");
-        work += 8;
         float left = MathF.Max(rectangle.Left, clip.Left - origin.X);
         float right = MathF.Min(rectangle.Right, clip.Right - origin.X);
         float top = MathF.Max(rectangle.Top, clip.Top - origin.Y);

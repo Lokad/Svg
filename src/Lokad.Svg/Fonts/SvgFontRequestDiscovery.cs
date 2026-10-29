@@ -21,7 +21,6 @@ internal static class SvgFontRequestDiscovery
     internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
-        ArgumentNullException.ThrowIfNull(limits);
         RenderBudget budget = new(limits.MaximumAccountedBytes);
         return Discover(svg, limits, budget, cancellationToken);
     }
@@ -34,7 +33,7 @@ internal static class SvgFontRequestDiscovery
     }
 
     /// <summary>Borrows the operation's already-collected styles and reader workspace; only discovery control storage is temporary.</summary>
-    internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits,         RenderBudget budget, SvgDocumentPreparation preparation, CancellationToken cancellationToken)
+    internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, SvgDocumentPreparation preparation, CancellationToken cancellationToken)
         => DiscoverCore(svg, limits, budget, preparation, null, cancellationToken);
 
     /// <summary>Shares request discovery and whitespace normalization while retaining bounded scalar needs for selective acquisition.</summary>
@@ -46,7 +45,7 @@ internal static class SvgFontRequestDiscovery
     }
 
     /// <summary>Returns a caller-owned scalar requirement owner, charged through acquisition while borrowing this document preparation.</summary>
-    internal static SvgFontCoverageDiscovery DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits,         RenderBudget budget, SvgDocumentPreparation preparation, CancellationToken cancellationToken)
+    internal static SvgFontCoverageDiscovery DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, SvgDocumentPreparation preparation, CancellationToken cancellationToken)
     {
         SvgFontCoverageDiscovery coverage = new(budget, cancellationToken);
         try

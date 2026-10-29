@@ -36,7 +36,7 @@ public sealed class SvgOrthogonalDashTests
         {
             using SvgAnalyticCoverage walker = Prepare(budget, false, out bool eligible);
             Assert.True(eligible);
-            walker.PrepareRow(4, out long _, CancellationToken.None);
+            walker.PrepareRow(4, CancellationToken.None);
             byte[] pixel = new byte[4];
             walker.PaintPixel(35, pixel, SvgAnalyticPaint.Solid(new SvgColor(0, 0, 0, 255)), SvgAnalyticClipCoverage.Full);
             Assert.Equal(new byte[] { 0, 0, 0, 1 }, pixel);
@@ -45,18 +45,16 @@ public sealed class SvgOrthogonalDashTests
     }
 
     [Fact]
-    public void Orthogonal_classification_is_charged_once_across_raster_contexts()
+    public void Orthogonal_classification_is_cached_across_raster_contexts()
     {
         SvgAnalyticContourPreparation preparation = new(Points(), [4, 8, 12], [], false, [1, 1, 1], SvgPolygonMapping.FiniteEdges, [], [], new(4, 2, 55, 10), 64, 16);
         RenderBudget budget = new(1_000_000);
-        long firstSetup;
-        using (SvgAnalyticCoverage first = SvgAnalyticCoverage.Prepare(ref preparation, 4, 55, 2, 10, new(4, 55), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out firstSetup, out bool eligible, CancellationToken.None))
+        using (SvgAnalyticCoverage first = SvgAnalyticCoverage.Prepare(ref preparation, 4, 55, 2, 10, new(4, 55), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
             Assert.True(eligible);
         Assert.True(preparation.OrthogonalUnion);
-        using (SvgAnalyticCoverage next = SvgAnalyticCoverage.Prepare(ref preparation, 4, 55, 2, 10, new(4, 55), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long nextSetup, out bool eligible, CancellationToken.None))
+        using (SvgAnalyticCoverage next = SvgAnalyticCoverage.Prepare(ref preparation, 4, 55, 2, 10, new(4, 55), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
-            Assert.True(nextSetup < firstSetup);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -106,23 +104,6 @@ public sealed class SvgOrthogonalDashTests
     }
 
     [Fact]
-    public void Work_denial_releases_newly_admitted_walker_storage()
-    {
-        RenderBudget measured = new(1_000_000);
-        SvgDevicePoint[] points = Points();
-        long setup;
-        using (SvgAnalyticCoverage first = SvgAnalyticCoverage.Prepare(points, [4, 8, 12], [], false, [1, 1, 1], SvgPolygonMapping.FiniteEdges, [], [], 4, 55, 2, 10, 64, 16, new(4, 55), null, 1_000_000, measured, out setup, out bool eligible, CancellationToken.None))
-            Assert.True(eligible);
-        RenderBudget denied = new(1_000_000);
-        SvgException exception = Assert.Throws<SvgException>(() =>
-        {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4, 8, 12], [], false, [1, 1, 1], SvgPolygonMapping.FiniteEdges, [], [], 4, 55, 2, 10, 64, 16, new(4, 55), null, setup - 1, denied, out long _, out bool _, CancellationToken.None);
-        });
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Equal(0, denied.Snapshot().CurrentBytes);
-    }
-
-    [Fact]
     public void Cancellation_after_preparation_releases_newly_admitted_walker_storage()
     {
         RenderBudget budget = new(1_000_000);
@@ -131,7 +112,7 @@ public sealed class SvgOrthogonalDashTests
             using SvgAnalyticCoverage walker = Prepare(budget, false, out bool eligible);
             Assert.True(eligible);
             source.Cancel();
-            try { walker.PrepareRow(4, out long _, source.Token); Assert.Fail("Cancelled row preparation must not complete."); }
+            try { walker.PrepareRow(4, source.Token); Assert.Fail("Cancelled row preparation must not complete."); }
             catch (OperationCanceledException exception) { Assert.Equal(source.Token, exception.CancellationToken); }
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -140,7 +121,7 @@ public sealed class SvgOrthogonalDashTests
     private static SvgDevicePoint[] Points() => [new(4, 2), new(14, 2), new(14, 10), new(4, 10), new(8, 2), new(20, 2), new(20, 10), new(8, 10), new(39.999996185302734, 2), new(55, 2), new(55, 10), new(39.999996185302734, 10)];
 
     private static SvgAnalyticCoverage Prepare(RenderBudget budget, bool evenOdd, out bool eligible)
-        => SvgAnalyticCoverage.Prepare(Points(), [4, 8, 12], evenOdd ? [1, 1, 1] : [], evenOdd, [1, 1, 1], SvgPolygonMapping.FiniteEdges, 4, 55, 2, 10, 64, 16, budget, out long _, out eligible, CancellationToken.None);
+        => SvgAnalyticCoverage.Prepare(Points(), [4, 8, 12], evenOdd ? [1, 1, 1] : [], evenOdd, [1, 1, 1], SvgPolygonMapping.FiniteEdges, 4, 55, 2, 10, 64, 16, budget, out eligible, CancellationToken.None);
 
     private static byte[] Input(string direction)
     {

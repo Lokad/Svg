@@ -15,11 +15,9 @@ public sealed class SvgAffineRadialPaintTests
         {
             long owned = budget.Snapshot().CurrentBytes;
             byte[] expected;
-            long rasterWork;
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             {
                 expected = surface.Pixels.ToArray();
-                rasterWork = surface.WorkUnits;
                 Assert.Contains(expected, value => value != 0);
             }
             long temporaryPeak = budget.Snapshot().PeakBytes - owned;
@@ -33,14 +31,6 @@ public sealed class SvgAffineRadialPaintTests
                 }).ErrorCode);
                 Assert.Equal(padded, budget.Snapshot().CurrentBytes);
             }
-            SvgRenderLimits defaults = SvgRenderLimits.Default;
-            SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
-                defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-                checked((int)(rasterWork - 1)), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            {
-                using var denied = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, tight), budget, CancellationToken.None);
-            }).ErrorCode);
             Assert.Equal(owned, budget.Snapshot().CurrentBytes);
             foreach (int threshold in new[] { 1, 5_000 })
             {
@@ -87,24 +77,10 @@ public sealed class SvgAffineRadialPaintTests
             SvgAuthoredPathCommand[][] original = paths.Select(path => path.Commands.ToArray()).ToArray();
             long owned = retry.Snapshot().CurrentBytes;
             byte[] expected;
-            long rasterWork;
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, retry, CancellationToken.None))
             {
                 expected = surface.Pixels.ToArray();
                 Assert.Contains(expected, value => value != 0);
-                rasterWork = surface.WorkUnits;
-            }
-            SvgRenderLimits defaults = SvgRenderLimits.Default;
-            foreach (long limit in new[] { 0L + 1, (0L + rasterWork) / 2, rasterWork - 1 })
-            {
-                SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
-                    defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-                    checked((int)limit), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                {
-                    using var denied = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, tight), retry, CancellationToken.None);
-                }).ErrorCode);
-                Assert.Equal(owned, retry.Snapshot().CurrentBytes);
             }
             using (retry.Reserve(1_000_000 - owned - 1024, SvgMemoryCategory.Surface))
             {

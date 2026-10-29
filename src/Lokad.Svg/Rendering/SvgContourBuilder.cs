@@ -8,8 +8,7 @@ namespace Lokad.Svg.Rendering;
 /// implicitly from their last point back to their start, matching the contour-topology convention.</para>
 /// <para>Storage starts small and doubles toward the construction maxima; exhausting a maximum fails with
 /// <see cref="SvgErrorCode.LimitExceeded"/>. There is nothing to dispose: the arrays are plain managed
-/// memory. Callers reserve point, contour and lazily allocated span columns, and charge one geometry work
-/// unit per stored point; this buffer holds no budget itself. One conversion owns a builder; concurrent use is not supported.</para>
+/// memory. Callers reserve point, contour and lazily allocated span columns; this buffer holds no budget itself. One conversion owns a builder; concurrent use is not supported.</para>
 /// </remarks>
 internal sealed class SvgContourBuilder
 {

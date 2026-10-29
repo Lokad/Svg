@@ -42,10 +42,9 @@ public sealed class SvgSingleStopGradientTests
     {
         byte[] input = Input(radial, instance, false);
         RenderBudget measured = new(1_000_000);
-        long rasterWork;
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
-            rasterWork = surface.WorkUnits;
+            {}
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 1024)
@@ -57,26 +56,6 @@ public sealed class SvgSingleStopGradientTests
                 using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
             });
             Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        }
-        foreach (long limit in new[] { rasterWork - 1, rasterWork, rasterWork + 1 })
-        {
-            SvgRenderLimits defaults = SvgRenderLimits.Default;
-            SvgRenderLimits limits = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
-                defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-                checked((int)limit), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
-            RenderBudget budget = new(1_000_000);
-            using (SvgRoot root = SvgRootParser.Parse(input, limits, budget, CancellationToken.None))
-            {
-                SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
-                if (limit < rasterWork)
-                    Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, options, budget, CancellationToken.None)).ErrorCode);
-                else
-                {
-                    using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, budget, CancellationToken.None);
-                    Assert.Equal(rasterWork, surface.WorkUnits);
-                }
-            }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
         using CancellationTokenSource cancellation = new();

@@ -191,8 +191,6 @@ public sealed partial class OpenTypeFontTests
             Assert.Single(glyphs.Glyphs.ToArray());
         }
         Assert.Equal(0, successfulBudget.Snapshot().CurrentBytes);
-        RenderBudget deniedBudget = new(1_024);
-        Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
     }
 
     [Fact]
@@ -219,8 +217,6 @@ public sealed partial class OpenTypeFontTests
             Assert.All(glyphs.Glyphs.ToArray(), glyph => Assert.Equal((ushort)1, glyph.GlyphIndex));
         }
         Assert.Equal(0, exactBudget.Snapshot().CurrentBytes);
-        RenderBudget deniedBudget = new(1_024);
-        Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
     }
 
     [Fact]
@@ -1462,7 +1458,7 @@ public sealed partial class OpenTypeFontTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray();
-        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, SvgRenderLimits.Default.MaximumWorkUnits);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16);
 
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(input, catalog, new CountingFontProvider(source), limits, CancellationToken.None));
 
@@ -1483,7 +1479,7 @@ public sealed partial class OpenTypeFontTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray();
-        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, SvgRenderLimits.Default.MaximumWorkUnits);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16);
 
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(input, catalog, new CountingFontProvider(source), limits, CancellationToken.None));
 
@@ -2192,7 +2188,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Discovery_and_lowering_agree_on_root_node_boundaries(string svg, int maximumNodes, bool succeeds, bool painted)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
-        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 256, 4_096, maximumNodes, 16, 100_000, 16, 16);
+        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 256, 4_096, maximumNodes, 16, 16, 16);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
         if (succeeds)
@@ -2234,7 +2230,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Discovery_and_lowering_agree_on_text_node_boundaries(string svg, int maximumNodes, bool succeeds)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
-        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 256, 4_096, maximumNodes, 16, 100_000, 16, 16);
+        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 256, 4_096, maximumNodes, 16, 16, 16);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
         if (succeeds)
@@ -2268,7 +2264,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Discovery_and_lowering_agree_on_reader_workspace_denial(string svg)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
-        SvgRenderLimits limits = new(1, 1_024, 16, 256, 4_096, 16, 16, 100_000, 16, 16);
+        SvgRenderLimits limits = new(1, 1_024, 16, 256, 4_096, 16, 16, 16, 16);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
 
@@ -3881,7 +3877,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Direct_text_lowering_releases_scene_and_parser_reservations_when_transformation_is_cancelled()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
-        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 100_000);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
         RenderBudget budget = new(limits.MaximumAccountedBytes);
         using CancellationTokenSource cancellation = new();
@@ -4142,7 +4138,7 @@ public sealed partial class OpenTypeFontTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan rotate='1px'>A</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-        SvgRenderLimits attributeLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 100_000, 128, 1);
+        SvgRenderLimits attributeLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 128, 1);
         var attributeOptions = new SvgRenderOptions(null, 1, SvgColor.Transparent, attributeLimits, snapshot);
 
         SvgException attributeException = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan x='1' y='1'>A</tspan></text></svg>"u8.ToArray(), attributeOptions, CancellationToken.None));
@@ -4155,13 +4151,13 @@ public sealed partial class OpenTypeFontTests
     public async Task Attribute_free_direct_text_spans_respect_the_remaining_node_and_depth_limits()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
-        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 1, 16, 100_000);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 1, 16);
         var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, limits, snapshot);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan>A</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        SvgRenderLimits depthLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 100_000, 2);
+        SvgRenderLimits depthLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 2);
         var depthOptions = new SvgRenderOptions(null, 1, SvgColor.Transparent, depthLimits, snapshot);
 
         SvgException depthException = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan>A</tspan></text></svg>"u8.ToArray(), depthOptions, CancellationToken.None));

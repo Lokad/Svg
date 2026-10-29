@@ -48,18 +48,15 @@ public sealed class SvgConicStrokeTests
     }
 
     [Fact]
-    public void Work_denial_and_cancellation_release_private_output_before_retry()
+    public void Cancellation_releases_private_output_before_retry()
     {
         RenderBudget budget = new(16_777_216);
-        using (BudgetedParserList<SvgStrokeCurveSegment> output = new(budget, SvgMemoryCategory.Geometry))
-        {
-        }
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using CancellationTokenSource source = new();
         source.Cancel();
         using (BudgetedParserList<SvgStrokeCurveSegment> output = new(budget, SvgMemoryCategory.Geometry))
         {
             OperationCanceledException error = Assert.Throws<OperationCanceledException>(() => Append(output, source.Token));
+            Assert.Equal(source.Token, error.CancellationToken);
             Assert.Equal(0, output.Count);
             Append(output, CancellationToken.None);
             Assert.True(output.Count > 1);
@@ -117,12 +114,12 @@ public sealed class SvgConicStrokeTests
             byte[] output = new byte[64 * 64 * 4];
             SvgAnalyticClipContext? clip = clipped ? new(new(12, 0, 52, 64)) : null;
             using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), clip,
-                SvgAnalyticPaintClip.Binary, 1_000_000, budget, out _, out bool eligible, CancellationToken.None))
+                SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
             {
                 Assert.True(eligible);
                 for (int y = 0; y < 64; y++)
                 {
-                    walker.PrepareRow(y, out _, CancellationToken.None);
+                    walker.PrepareRow(y, CancellationToken.None);
                     for (int x = 0; x < 64; x++) walker.PaintPixel(x, output.AsSpan((y * 64 + x) * 4, 4), SvgAnalyticPaint.Solid(new(231, 28, 53, 255)), SvgAnalyticClipCoverage.Full);
                 }
             }
@@ -166,12 +163,6 @@ public sealed class SvgConicStrokeTests
             SvgAuthoredPath outline = source.StrokeOutline ?? throw new InvalidOperationException("Missing oval source outline.");
             SvgAuthoredPathCommand[] originalOutline = outline.Commands.ToArray();
             long owned = budget.Snapshot().CurrentBytes;
-            SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
-                defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-                checked((int)0L + 1), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
-            SvgException work = Assert.Throws<SvgException>(() => { using var denied = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, tight), budget, CancellationToken.None); });
-            Assert.Equal(SvgErrorCode.LimitExceeded, work.ErrorCode);
-            Assert.Equal(owned, budget.Snapshot().CurrentBytes);
             using (budget.Reserve(defaults.MaximumAccountedBytes - owned - 1024, SvgMemoryCategory.Surface))
             {
                 long padded = budget.Snapshot().CurrentBytes;

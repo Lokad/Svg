@@ -4,19 +4,17 @@ namespace Lokad.Svg.Rendering;
 
 /// <summary>Converts finite nonnegative rational quadratics with native float subdivision.</summary>
 /// <remarks>Buffers belong to the caller. Conversion allocates no storage, preserves endpoints and
-/// checks cancellation at every subdivision. The caller charges returned work before publishing any
-/// geometry and reserves the bounded numerical phase before entering it. Concurrent calls are independent.</remarks>
+/// checks cancellation at every subdivision. Subdivision retains explicit depth, point-count and error bounds. Concurrent calls are independent.</remarks>
 internal static class SvgRationalQuadratic
 {
     internal const int MaximumQuadCount = 32;
     internal const int MaximumPointCount = 2 * MaximumQuadCount + 1;
-    internal const int MaximumConversionWork = 72;
     internal const float DeviceTolerance = 0.25f;
     internal const float QuarterCircleWeight = 0.707106781f;
 
-    /// <summary>Writes interleaved start/control/end points and reports the actual subdivision work.</summary>
+    /// <summary>Writes interleaved start/control/end points and returns the actual quadratic count.</summary>
     internal static int Convert(SvgDevicePoint start, SvgDevicePoint control, SvgDevicePoint end,
-        float weight, float tolerance, Span<SvgDevicePoint> output, out int work, CancellationToken token)
+        float weight, float tolerance, Span<SvgDevicePoint> output, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         if (!float.IsFinite(weight) || weight < 0) throw new ArgumentOutOfRangeException(nameof(weight));
@@ -28,8 +26,7 @@ internal static class SvgRationalQuadratic
         float y = k * ((float)start.Y - 2f * (float)control.Y + (float)end.Y);
         float error = MathF.Sqrt(x * x + y * y);
         int depth = 0;
-        work = 1;
-        while (depth < 5 && !(error <= tolerance)) { error *= 0.25f; depth++; work++; }
+        while (depth < 5 && !(error <= tolerance)) { error *= 0.25f; depth++; }
         int count = 1 << depth;
         if (output.Length < 2 * count + 1) throw new SvgException(SvgErrorCode.LimitExceeded, "Conic conversion exceeds the caller point buffer.");
         output[0] = start;
@@ -38,7 +35,6 @@ internal static class SvgRationalQuadratic
         if (depth == 5)
         {
             Split(start, control, end, weight, out SvgDevicePoint first, out SvgDevicePoint middle, out SvgDevicePoint second, out float _);
-            work++;
             if (CannotNormalize(first, middle) && CannotNormalize(middle, second))
             {
                 output[1] = output[2] = output[3] = first;
@@ -48,13 +44,10 @@ internal static class SvgRationalQuadratic
                 collapsed = true;
             }
         }
-        if (!collapsed) Subdivide(start, control, end, weight, depth, output, ref next, ref work, token);
-        // These bounded passes mirror the native final finite-point check.
-        work++;
+        if (!collapsed) Subdivide(start, control, end, weight, depth, output, ref next, token);
         for (int index = 0; index < next; index++)
         {
             if (float.IsFinite((float)output[index].X) && float.IsFinite((float)output[index].Y)) continue;
-            work++;
             for (int interior = 1; interior < next - 1; interior++) output[interior] = control;
             break;
         }
@@ -75,10 +68,9 @@ internal static class SvgRationalQuadratic
     }
 
     private static void Subdivide(SvgDevicePoint start, SvgDevicePoint control, SvgDevicePoint end,
-        float weight, int depth, Span<SvgDevicePoint> output, ref int next, ref int work, CancellationToken token)
+        float weight, int depth, Span<SvgDevicePoint> output, ref int next, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        work++;
         if (depth == 0) { output[next++] = control; output[next++] = end; return; }
         Split(start, control, end, weight, out SvgDevicePoint first, out SvgDevicePoint middle, out SvgDevicePoint second, out float newWeight);
         // Keep native monotonic Y ordering after float cancellation.
@@ -89,8 +81,8 @@ internal static class SvgRationalQuadratic
             if (!Between((float)start.Y, (float)first.Y, (float)middle.Y)) first = new(first.X, start.Y);
             if (!Between((float)middle.Y, (float)second.Y, (float)end.Y)) second = new(second.X, end.Y);
         }
-        Subdivide(start, first, middle, newWeight, depth - 1, output, ref next, ref work, token);
-        Subdivide(middle, second, end, newWeight, depth - 1, output, ref next, ref work, token);
+        Subdivide(start, first, middle, newWeight, depth - 1, output, ref next, token);
+        Subdivide(middle, second, end, newWeight, depth - 1, output, ref next, token);
 
         static bool Between(float first, float value, float last) => (first - value) * (last - value) <= 0;
     }

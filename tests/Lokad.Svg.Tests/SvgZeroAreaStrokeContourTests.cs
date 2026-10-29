@@ -20,10 +20,10 @@ public sealed class SvgZeroAreaStrokeContourTests
         RenderBudget budget = new(1_000_000);
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, [], false, null, SvgPolygonMapping.NativeStrokeEdges,
             [], [], 0, 16, 0, 16, 16, 16, new(0, 16), clipped ? new(new(0, 0, 16, 16)) : null,
-            1_000_000, budget, out long _, out bool eligible, CancellationToken.None))
+            budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
-            walker.PrepareRow(2, out long _, CancellationToken.None);
+            walker.PrepareRow(2, CancellationToken.None);
             byte[] pixel = new byte[4];
             walker.PaintPixel(1, pixel, SvgAnalyticPaint.Solid(new(0, 0, 255, 255)), SvgAnalyticClipCoverage.Full);
             Assert.Equal((byte)255, pixel[3]);

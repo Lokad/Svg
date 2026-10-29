@@ -31,7 +31,7 @@ internal enum SvgFilterBoundsKind : byte { Visual, StoredImage, Output }
 internal readonly record struct SvgOffsetFilterPlacement(double X, double Y, bool AlphaOnly, SvgPaintBounds Clip);
 
 /// <summary>Borrows native parameter coordinates and the source bitmap origin in the playback grid.</summary>
-/// <remarks>Immutable values own no storage. The caller charges composition work and keeps bitmap storage separately owned.</remarks>
+/// <remarks>Immutable values own no storage. The caller keeps bitmap storage separately owned and checks cancellation during composition.</remarks>
 internal readonly record struct SvgFilterNativeMapping(SvgShaderMatrix Coordinates, SvgCpuBitmapOrigin Origin);
 
 /// <summary>Places a filter source in the bounded parent bitmaps used for restoration.</summary>
@@ -78,7 +78,6 @@ internal readonly record struct SvgFilterResult(SvgConverter.RasterizedSurface F
     /// <summary>Identifies the stored pixel lanes; optional uniform paint metadata remains sRGB.</summary>
     internal SvgFilterColorSpace ColorSpace { get; init; } = SvgFilterColorSpace.Srgb;
     internal byte[] Pixels => Frame.Pixels;
-    internal long WorkUnits => Frame.WorkUnits;
     public void Dispose() { SampleReservation?.Dispose(); Frame.Dispose(); }
 }
 
@@ -138,13 +137,13 @@ internal static class SvgFilterPlayback
     private readonly record struct UniformColor(bool Known, SvgShaderPaint Paint, bool HighPrecision);
     /// <summary>Encloses an authored source capture hint before mapping it to the filter layer.</summary>
     /// <remarks>Finite parameter-space inputs are caller-validated. Unlike layer rounding, this preserves
-    /// every nonzero authored fringe. It allocates nothing; callers charge bounded setup work.</remarks>
+    /// every nonzero authored fringe. It allocates nothing.</remarks>
     internal static SvgPaintBounds RoundParameterBounds(SvgPaintBounds value)
         => new(MathF.Floor(value.Left), MathF.Floor(value.Top), MathF.Ceiling(value.Right), MathF.Ceiling(value.Bottom));
 
     /// <summary>Encloses the requested native source image independently of capture storage and transparent guard pixels.</summary>
     /// <remarks>Intersects the image hint and propagated request before integer admission; callers admit nonempty requests.
-    /// This immutable helper allocates nothing; the caller charges bounded setup work and owns cancellation.</remarks>
+    /// This immutable helper allocates nothing; the caller owns cancellation.</remarks>
     internal static SvgPaintBounds RequestedSourceImageBounds(SvgPaintBounds hint, SvgPaintBounds needed)
     {
         double left = Math.Floor(MathF.Max(hint.Left, needed.Left)), top = Math.Floor(MathF.Max(hint.Top, needed.Top));
@@ -158,7 +157,7 @@ internal static class SvgFilterPlayback
 
     /// <summary>Rounds native layer bounds after the filter coordinate system's small integer-boundary inset.</summary>
     /// <remarks>Matches skif::RoundOut; this is coordinate rounding, not a pixel-comparison tolerance.
-    /// The finite inputs are caller-validated and the caller charges bounded setup work.</remarks>
+    /// The finite inputs are caller-validated.</remarks>
     internal static SvgPaintBounds RoundLayerBounds(SvgPaintBounds value)
     {
         const float roundEpsilon = 1e-3f;
@@ -257,7 +256,7 @@ internal static class SvgFilterPlayback
 
     /// <summary>Back-propagates a bounded output through earlier local results to the dynamic source.</summary>
     /// <remarks>Resources are borrowed and immutable. Temporary request/region arrays share the conversion
-    /// budget and release on every exit; all graph visits charge work and observe cancellation. Coordinates
+    /// budget and release on every exit; all graph visits observe cancellation. Coordinates
     /// use the caller's device grid. No pixels or caller storage are changed.</remarks>
     internal static SvgPaintBounds RequiredSourceBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgFilterRegionContext context, SvgPaintBounds requested, RenderBudget budget, CancellationToken token)
@@ -275,7 +274,7 @@ internal static class SvgFilterPlayback
     // cancellation use the supplied counter. No pixel ownership is transferred.
     private static SvgPaintBounds PrepareRequests(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgFilterRegionContext context, SvgPaintBounds requested, SvgPaintBounds[] regions, SvgPaintBounds[] requests, Span<SvgPaintBounds> bounds,
-CancellationToken token)
+        CancellationToken token)
     {
         int count = resource.Primitives.Items.Length;
         if (count == 0) return requested;
@@ -415,14 +414,14 @@ CancellationToken token)
     // Evaluates the full available grid. Numerical mechanism callers use this
     // named convenience; rendering supplies its distinct requested output below.
     internal static SvgFilterResult ApplyFullFrame(ReadOnlySpan<byte> source, int width, int height,
-        SvgFilterResource resource, SvgFilterDeviceMap map, RenderBudget budget, long availableWork, CancellationToken token)
-        => Apply(source, width, height, resource, map, new(0, 0, width, height), budget, availableWork, token);
+        SvgFilterResource resource, SvgFilterDeviceMap map, RenderBudget budget, CancellationToken token)
+        => Apply(source, width, height, resource, map, new(0, 0, width, height), budget, token);
 
     // Requested output uses the source grid's coordinates, independently of its
     // physical allocation and the source ink. All storage/work stays budgeted.
     internal static SvgFilterResult Apply(ReadOnlySpan<byte> source, int width, int height,
         SvgFilterResource resource, SvgFilterDeviceMap map, SvgPaintBounds requestedOutput, RenderBudget budget,
-        long availableWork, CancellationToken token)
+        CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         long pixels = (long)width * height;
@@ -439,7 +438,6 @@ CancellationToken token)
         SampledOffset?[] sampledOffsets = new SampledOffset?[count];
         bool[] linear = new bool[count];
         UniformColor[] uniform = new UniformColor[count];
-        long work = 0;
         bool returned = false;
         SvgShaderPaint[]? samples = null;
         bool linearOffsetSamples = false;
@@ -458,7 +456,7 @@ CancellationToken token)
             // so a blur can sample strokes outside the requested output region.
             if (count == 0)
             {
-                Charge(bytes);
+                token.ThrowIfCancellationRequested();
                 outputs[0] = Allocate();
                 token.ThrowIfCancellationRequested();
             }
@@ -508,7 +506,7 @@ CancellationToken token)
                     using SvgConverter.RasterizedSurface? sampledInput = resolvesSample ? Allocate() : null;
                     if (sampledInput is {} resolved)
                     {
-                        Charge(pixels * 20);
+                        token.ThrowIfCancellationRequested();
                         bool floating = inputLinear != (colorSpace == SvgFilterColorSpace.LinearRgb) || IsAlpha(primitive.Input);
                         for (int offset = 0; offset < bytes; offset += 4)
                         {
@@ -526,7 +524,7 @@ CancellationToken token)
                             : map.Regions?.SourceBounds ?? new(0, 0, width, height);
                         if (deviation.Horizontal > .03f || deviation.Vertical > .03f)
                         {
-                            Charge(8);
+                            token.ThrowIfCancellationRequested();
                             float radiusX = deviation.Horizontal <= .03f ? 0 : MathF.Ceiling(3f * deviation.Horizontal);
                             float radiusY = deviation.Vertical <= .03f ? 0 : MathF.Ceiling(3f * deviation.Vertical);
                             inputBounds = new(MathF.Floor(inputBounds.Left - radiusX), MathF.Floor(inputBounds.Top - radiusY),
@@ -550,9 +548,9 @@ CancellationToken token)
                         // Earlier nodes retain pixels that later offsets may bring onscreen.
                         SvgFilterRasterPlacement placement = (index == finalIndex ? map.Regions?.RasterPlacement : null)
                             ?? new(new(0, 0), new(width, height, true), new(0, 0, width, height));
-                        work += SvgGaussianBlur.ApplyRescaled(input, output, width, height, deviation, inputBounds, regions[index], placement,
+                        SvgGaussianBlur.ApplyRescaled(input, output, width, height, deviation, inputBounds, regions[index], placement,
                             inputLinear, colorSpace, index == finalIndex && colorSpace == SvgFilterColorSpace.LinearRgb ? AllocateSamples() : Span<SvgShaderPaint>.Empty,
-                            budget, availableWork - work, token);
+                            budget, token);
                         if (map.Regions is not null && deferredImage is null) { Clip(output, regions[index]); ClipOffsetSamples(regions[index]); }
                         continue;
                     }
@@ -583,7 +581,7 @@ CancellationToken token)
                             {
                                 using SvgConverter.RasterizedSurface converted = Allocate();
                                 ConvertColor(input, converted.Pixels, SvgFilterColorSpace.LinearRgb);
-                                work += SvgGaussianBlur.Apply(converted.Pixels, output, width, height, deviation, budget, availableWork - work, token);
+                                SvgGaussianBlur.Apply(converted.Pixels, output, width, height, deviation, budget, token);
                                 linear[index] = true;
                                 if (map.Regions is not null && deferredImage is null) { Clip(output, regions[index]); ClipOffsetSamples(regions[index]); }
                                 continue;
@@ -591,14 +589,14 @@ CancellationToken token)
                             linear[index] = true;
                         }
                     }
-                    work += SvgGaussianBlur.Apply(input, output, width, height, deviation, budget, availableWork - work, token);
+                    SvgGaussianBlur.Apply(input, output, width, height, deviation, budget, token);
                     linear[index] |= inputLinear;
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Flood)
                 {
                     uniform[index] = new(true, FloodPaint(primitive.Flood), false);
                     SvgConstantShaderPaint flood = FloodPaint(primitive.Flood).AsConstant(1f);
-                    Charge(pixels);
+                    token.ThrowIfCancellationRequested();
                     for (int offset = 0; offset < bytes; offset += 4)
                     {
                         token.ThrowIfCancellationRequested();
@@ -611,7 +609,7 @@ CancellationToken token)
                     ReadOnlySpan<byte> second = ReadInput(primitive.SecondInput, index, graphic);
                     bool secondLinear = primitive.SecondInput.Index >= 0 && linear[primitive.SecondInput.Index];
                     bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
-                    Charge(24);
+                    token.ThrowIfCancellationRequested();
                     SvgPaintBounds sourceBounds = map.Regions?.SourceBounds ?? new(0, 0, width, height);
                     SvgPaintBounds firstBounds = primitive.Input.Index >= 0 ? imageBounds[primitive.Input.Index] : sourceBounds;
                     SvgPaintBounds secondBounds = primitive.SecondInput.Index >= 0 ? imageBounds[primitive.SecondInput.Index] : sourceBounds;
@@ -634,7 +632,7 @@ CancellationToken token)
                     SvgShaderMatrix? nativeTransform = null;
                     if (map.Regions?.NativeMapping is {} nativeMapping && nativeMapping.Coordinates.TryInvert(out SvgShaderMatrix parameterInverse))
                     {
-                        Charge(64);
+                        token.ThrowIfCancellationRequested();
                         // Retain the conjugated matrix, including finite residual skew.
                         // Reducing it to a vector can select a different native image blitter.
                         placed = SvgShaderMatrix.Concat(nativeMapping.Coordinates,
@@ -645,7 +643,7 @@ CancellationToken token)
                     }
                     if (primitive.Input.Index < 0 || !uniform[primitive.Input.Index].Known)
                     {
-                        Charge(32);
+                        token.ThrowIfCancellationRequested();
                         SvgShaderMatrix imageTransform = nativeTransform ?? placed;
                         (float x0, float y0) = imageTransform.Map(bounds.Left, bounds.Top);
                         (float x1, float y1) = imageTransform.Map(bounds.Right, bounds.Top);
@@ -682,7 +680,7 @@ CancellationToken token)
                             : ResolvePaintSource(primitive.Input) == SvgFilterInput.SourceAlpha ? SvgFilterDeferredColorFilter.SourceAlpha : SvgFilterDeferredColorFilter.None;
                         deferredImage = new(imageToSource, bounds, regions[index], SvgFilterImageSampling.Nearest) { ColorFilter = pending };
                         linear[index] = inputLinear;
-                        Charge(pixels);
+                        token.ThrowIfCancellationRequested();
                         input.CopyTo(output);
                     }
                     else if (primitive.Input.Index >= 0 && uniform[primitive.Input.Index].Known)
@@ -702,7 +700,7 @@ CancellationToken token)
                             SvgShaderPaint paint = uniform[primitive.Input.Index].Paint;
                             if (colorSpace == SvgFilterColorSpace.LinearRgb) paint = SvgFilterColorTransfer.Convert(paint, colorSpace);
                             SvgConstantShaderPaint constant = paint.AsConstant(1f);
-                            Charge(pixels);
+                            token.ThrowIfCancellationRequested();
                             for (int y = 0; y < height; y++)
                             {
                                 token.ThrowIfCancellationRequested();
@@ -718,7 +716,6 @@ CancellationToken token)
                             while (tail > index)
                             {
                                 token.ThrowIfCancellationRequested();
-                                Charge(1);
                                 SvgFilterPrimitive alias = resource.Primitives.Items[tail];
                                 if (alias.Kind == SvgFilterPrimitiveKind.GaussianBlur && (float)Math.Abs(alias.SigmaX * map.ScaleX) <= .03f && (float)Math.Abs(alias.SigmaY * map.ScaleY) <= .03f) tail = alias.Input.Index;
                                 else if (alias.Kind == SvgFilterPrimitiveKind.Merge && alias.MergeCount == 1) tail = resource.MergeInputs.Items[alias.MergeFirst].Index;
@@ -731,7 +728,7 @@ CancellationToken token)
                                     new(1, 0, storedBounds.Left - nativeOrigin.X, 0, 1, storedBounds.Top - nativeOrigin.Y));
                                 // A nontrivial transform cannot defer a visible input
                                 // layer crop. Resolve pending paint before that transform.
-                                Charge(64);
+                                token.ThrowIfCancellationRequested();
                                 SvgShaderPaint retained = paint;
                                 bool resolvesUniformCrop = !ContainsDemand(nativeTransform ?? placed, storedBounds, requests[index]);
                                 if (resolvesUniformCrop)
@@ -754,7 +751,7 @@ CancellationToken token)
                                     }
                                     return true;
                                 }
-                                Charge(bytes);
+                                token.ThrowIfCancellationRequested();
                                 converted.Pixels.CopyTo(output);
                             }
                             else if (tail == index && nativeTransform is null && colorSpace == SvgFilterColorSpace.Srgb
@@ -763,7 +760,7 @@ CancellationToken token)
                                 // Nearest sampling keeps uniform texels packed while
                                 // final image-edge coverage blends against the caller.
                                 // An enclosing opacity layer still consumes output bytes.
-                                Charge(48);
+                                token.ThrowIfCancellationRequested();
                                 SvgPaintBounds expanded = OffsetSamplingBounds(bitmapBounds, dx, dy);
                                 SvgPaintBounds texels = new(bitmapBounds.Left + dx, bitmapBounds.Top + dy,
                                     bitmapBounds.Right + dx, bitmapBounds.Bottom + dy);
@@ -782,7 +779,7 @@ CancellationToken token)
                                 int left = (int)MathF.Floor(Math.Clamp(expanded.Left, 0, width)), top = (int)MathF.Floor(Math.Clamp(expanded.Top, 0, height));
                                 int right = (int)MathF.Ceiling(Math.Clamp(expanded.Right, 0, width)), bottom = (int)MathF.Ceiling(Math.Clamp(expanded.Bottom, 0, height));
                                 int moveX = (int)MathF.Floor(dx + .5f), moveY = (int)MathF.Floor(dy + .5f);
-                                Charge(pixels);
+                                token.ThrowIfCancellationRequested();
                                 for (int y = 0; y < height; y++)
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -831,7 +828,7 @@ CancellationToken token)
                     if (primitive.MergeCount == 1)
                     {
                         SvgFilterInput merged = resource.MergeInputs.Items[primitive.MergeFirst];
-                        Charge(bytes);
+                        token.ThrowIfCancellationRequested();
                         ReadInput(merged, index, graphic).CopyTo(output);
                         linear[index] = merged.Index >= 0 && linear[merged.Index];
                         RetainSampling(index, merged, false);
@@ -852,7 +849,7 @@ CancellationToken token)
                         ReadOnlySpan<byte> layer = ReadInput(merged, index, graphic);
                         bool layerLinear = merged.Index >= 0 && linear[merged.Index];
                         Composite(layer, output, merged, layerLinear, colorSpace, graphic);
-                        Charge(8);
+                        token.ThrowIfCancellationRequested();
                         SvgPaintBounds inputImageBounds = merged.Index >= 0 ? imageBounds[merged.Index]
                             : map.Regions?.SourceBounds ?? new(0, 0, width, height);
                         if (inputImageBounds.Right > inputImageBounds.Left && inputImageBounds.Bottom > inputImageBounds.Top)
@@ -866,10 +863,10 @@ CancellationToken token)
                 else if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow)
                 {
                     using SvgConverter.RasterizedSurface alpha = Allocate();
-                    Charge(pixels);
+                    token.ThrowIfCancellationRequested();
                     for (int offset = 0; offset < bytes; offset += 4) { token.ThrowIfCancellationRequested(); alpha.Pixels[offset + 3] = input[offset + 3]; }
                     using SvgConverter.RasterizedSurface blurred = Allocate();
-                    work += SvgGaussianBlur.Apply(alpha.Pixels, blurred.Pixels, width, height, deviation, budget, availableWork - work, token);
+                    SvgGaussianBlur.Apply(alpha.Pixels, blurred.Pixels, width, height, deviation, budget, token);
                     double shadowX = primitive.OffsetX * map.ScaleX, shadowY = primitive.OffsetY * map.ScaleY;
                     bool fractionalShadow = shadowX != Math.Truncate(shadowX) || shadowY != Math.Truncate(shadowY);
                     bool retainedColorFilter = colorSpace == SvgFilterColorSpace.LinearRgb && !inputLinear
@@ -877,12 +874,12 @@ CancellationToken token)
                     SvgConstantShaderPaint tint = default;
                     if (fractionalShadow && !retainedColorFilter)
                     {
-                        Charge(32);
+                        token.ThrowIfCancellationRequested();
                         tint = PrepareShadowShaderTint(primitive.Flood, colorSpace).AsConstant(1);
                     }
                     if (!fractionalShadow)
                     {
-                        Charge(32 + pixels * 4);
+                        token.ThrowIfCancellationRequested();
                         SvgShaderPaint nativeTint = PrepareShadowShaderTint(primitive.Flood, colorSpace);
                         SvgConstantShaderPaint packedTint = nativeTint.AsConstant(1);
                         // An effective-zero blur retains its input color filter. A nonzero
@@ -913,7 +910,7 @@ CancellationToken token)
                     {
                         // Pending color filters select floating sampling through
                         // the fractional transform, just as at integer offsets.
-                        Charge(32 + pixels * 16);
+                        token.ThrowIfCancellationRequested();
                         SvgShaderPaint nativeTint = PrepareShadowShaderTint(primitive.Flood, colorSpace);
                         for (int y = 0; y < height; y++)
                         {
@@ -930,7 +927,7 @@ CancellationToken token)
                     else Offset(blurred.Pixels, output, shadowX, shadowY, null, fractionalShadow ? tint : null, null, OffsetImagePaint.Packed, new(colorSpace, colorSpace, colorSpace), new(0, 0, width, height));
                     bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
                     bool convertSource = inputLinear != destinationLinear;
-                    Charge(pixels * (convertSource ? 2 : 1));
+                    token.ThrowIfCancellationRequested();
                     for (int offset = 0; offset < bytes; offset += 4)
                     {
                         token.ThrowIfCancellationRequested();
@@ -947,7 +944,7 @@ CancellationToken token)
                         or SvgFilterPrimitiveKind.Flood or SvgFilterPrimitiveKind.DropShadow;
                 if (materialized && map.Regions is not null && deferredImage is null)
                 {
-                    Charge(8);
+                    token.ThrowIfCancellationRequested();
                     SvgPaintBounds extent = imageBounds[index], wanted = requests[index];
                     imageBounds[index] = new(MathF.Max(extent.Left, wanted.Left), MathF.Max(extent.Top, wanted.Top),
                         MathF.Min(extent.Right, wanted.Right), MathF.Min(extent.Bottom, wanted.Bottom));
@@ -970,7 +967,7 @@ CancellationToken token)
                 AllocateSamples();
                 if (linearOffsetSamples && samples is {} offsetValues)
                 {
-                    Charge(pixels);
+                    token.ThrowIfCancellationRequested();
                     for (int offset = 0; offset < bytes; offset += 4)
                     {
                         token.ThrowIfCancellationRequested();
@@ -985,7 +982,7 @@ CancellationToken token)
             if (samples is not null && map.Regions is not null)
             {
                 SvgPaintBounds finalRegion = regions[finalIndex];
-                Charge(pixels);
+                token.ThrowIfCancellationRequested();
                 for (int y = 0; y < height; y++)
                 {
                     token.ThrowIfCancellationRequested();
@@ -996,7 +993,7 @@ CancellationToken token)
             }
             token.ThrowIfCancellationRequested();
             returned = true;
-            return new(outputs[finalIndex] with { WorkUnits = work }, samples, sampleOwner)
+            return new(outputs[finalIndex] with { }, samples, sampleOwner)
             {
                 ColorSpace = count > 0 && map.Regions?.DeferFinalColorTransfer == true && linear[finalIndex]
                     ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb,
@@ -1013,7 +1010,7 @@ CancellationToken token)
         }
 
         // Prepare immutable premultiplied sRGB lanes without allocation or ownership.
-        // The enclosing operation charges work and observes pixel cancellation.
+        // The enclosing operation observes pixel cancellation.
         static SvgShaderPaint FloodPaint(SvgSolidPaint paint)
             => new(paint.Color.Red / 255f * paint.Alpha, paint.Color.Green / 255f * paint.Alpha,
                 paint.Color.Blue / 255f * paint.Alpha, paint.Alpha);
@@ -1025,7 +1022,6 @@ CancellationToken token)
             while (reference.Index >= 0)
             {
                 token.ThrowIfCancellationRequested();
-                Charge(1);
                 SvgFilterPrimitive alias = resource.Primitives.Items[reference.Index];
 
                 SvgFilterInput next;
@@ -1045,7 +1041,6 @@ CancellationToken token)
         void RetainSampling(int index, SvgFilterInput reference, bool nearest)
         {
             token.ThrowIfCancellationRequested();
-            Charge(1);
             SvgFilterDeferredColorFilter colorFilter = reference == SvgFilterInput.SourceAlpha
                 ? SvgFilterDeferredColorFilter.SourceAlpha
                 : reference.Index >= 0 ? outputs[reference.Index].SamplingColorFilter : SvgFilterDeferredColorFilter.None;
@@ -1070,7 +1065,6 @@ CancellationToken token)
             SvgPaintBounds bounds, bool compatible)
         {
             token.ThrowIfCancellationRequested();
-            Charge(128);
             SvgPaintBounds region = RoundLayerBounds(regions[index]), wanted = requests[index];
             SvgPaintBounds clip = new(MathF.Max(region.Left, wanted.Left), MathF.Max(region.Top, wanted.Top),
                 MathF.Min(region.Right, wanted.Right), MathF.Min(region.Bottom, wanted.Bottom));
@@ -1105,7 +1099,7 @@ CancellationToken token)
         {
             inverse = default;
             if (reference.Index < 0 || sampledOffsets[reference.Index] is not {} image) return false;
-            Charge(80);
+            token.ThrowIfCancellationRequested();
             bool contained = demand.Left >= image.Clip.Left && demand.Top >= image.Clip.Top
                 && demand.Right <= image.Clip.Right && demand.Bottom <= image.Clip.Bottom;
             if (!contained)
@@ -1133,7 +1127,7 @@ CancellationToken token)
         void ClipOffsetSamples(SvgPaintBounds bounds)
         {
             if (!linearOffsetSamples || samples is not {} values) return;
-            Charge(pixels);
+            token.ThrowIfCancellationRequested();
             for (int y = 0; y < height; y++)
             {
                 token.ThrowIfCancellationRequested();
@@ -1155,7 +1149,7 @@ CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             RenderBudget.BudgetReservation owner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(bytes), SvgMemoryCategory.Surface);
-            try { return new(width, height, new byte[bytes], owner, 0); }
+            try { return new(width, height, new byte[bytes], owner); }
             catch { owner.Dispose(); throw; }
         }
 
@@ -1166,7 +1160,7 @@ CancellationToken token)
             {
                 if (outputs[count].Pixels is null)
                 {
-                    Charge(pixels);
+                    token.ThrowIfCancellationRequested();
                     outputs[count] = Allocate();
                     for (int offset = 0; offset < bytes; offset += 4)
                     {
@@ -1187,7 +1181,6 @@ CancellationToken token)
             while (reference.Index >= 0)
             {
                 token.ThrowIfCancellationRequested();
-                Charge(1);
                 SvgFilterPrimitive source = resource.Primitives.Items[reference.Index];
                 if (source.Kind != SvgFilterPrimitiveKind.Offset
                     && (source.Kind != SvgFilterPrimitiveKind.GaussianBlur || source.SigmaX != 0 || source.SigmaY != 0)) break;
@@ -1207,7 +1200,7 @@ CancellationToken token)
                     new(retained.Input.Index >= 0 && linear[retained.Input.Index] ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb, retained.OperatingSpace, colorSpace), retained.Clip);
                 return;
             }
-            Charge(pixels * (inputLinear == (colorSpace == SvgFilterColorSpace.LinearRgb) ? 1 : 2));
+            token.ThrowIfCancellationRequested();
             for (int offset = 0; offset < bytes; offset += 4)
             {
                 token.ThrowIfCancellationRequested();
@@ -1227,10 +1220,10 @@ CancellationToken token)
             SvgFilterColorSpace colorSpace, ReadOnlySpan<byte> graphic, SvgPaintBounds demand)
         {
             bool destinationLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
-            Charge(pixels * (1 + (firstLinear == destinationLinear ? 0 : 1) + (secondLinear == destinationLinear ? 0 : 1)));
+            token.ThrowIfCancellationRequested();
             bool firstSampled = TryPrepareSample(firstReference, demand, out SvgShaderMatrix firstInverse);
             bool secondSampled = TryPrepareSample(secondReference, demand, out SvgShaderMatrix secondInverse);
-            if (firstSampled || secondSampled) Charge(pixels * ((firstSampled ? 16 : 0) + (secondSampled ? 16 : 0)));
+            if (firstSampled || secondSampled) token.ThrowIfCancellationRequested();
             bool highPrecision = firstLinear != destinationLinear || secondLinear != destinationLinear
                 || IsAlpha(firstReference) || IsAlpha(secondReference);
             for (int offset = 0; offset < bytes; offset += 4)
@@ -1300,7 +1293,6 @@ CancellationToken token)
             while (reference.Index >= 0)
             {
                 token.ThrowIfCancellationRequested();
-                Charge(1);
                 SvgFilterPrimitive primitive = resource.Primitives.Items[reference.Index];
                 if (primitive.Kind != SvgFilterPrimitiveKind.Offset
                     && (primitive.Kind != SvgFilterPrimitiveKind.GaussianBlur || primitive.SigmaX != 0 || primitive.SigmaY != 0)) return false;
@@ -1341,15 +1333,9 @@ CancellationToken token)
             return linear == (destination == SvgFilterColorSpace.LinearRgb) ? sample : SvgFilterColorTransfer.Convert(sample, destination);
         }
 
-        void Charge(long amount)
-        {
-            if (amount > availableWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter graph exceeds the configured work limit.");
-            work += amount;
-        }
-
         bool HasColor(ReadOnlySpan<byte> input)
         {
-            Charge(pixels);
+            token.ThrowIfCancellationRequested();
             for (int offset = 0; offset < bytes; offset += 4)
             {
                 token.ThrowIfCancellationRequested();
@@ -1360,7 +1346,7 @@ CancellationToken token)
 
         void ConvertColor(ReadOnlySpan<byte> input, Span<byte> output, SvgFilterColorSpace destination)
         {
-            Charge(pixels);
+            token.ThrowIfCancellationRequested();
             const float byteScale = 1f / 255f;
             for (int offset = 0; offset < bytes; offset += 4)
             {
@@ -1381,7 +1367,7 @@ CancellationToken token)
         {
             int left = Bound(region.Left, width, false), right = Bound(region.Right, width, true);
             int top = Bound(region.Top, height, false), bottom = Bound(region.Bottom, height, true);
-            Charge(bytes);
+            token.ThrowIfCancellationRequested();
             for (int row = 0; row < height; row++)
             {
                 token.ThrowIfCancellationRequested();
@@ -1398,14 +1384,14 @@ CancellationToken token)
         void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy, SvgPaintBounds? imageBounds, SvgConstantShaderPaint? shadow, SvgShaderMatrix? nativeTransform, OffsetImagePaint imagePaint, ImageColorTransfer transfer, SvgPaintBounds outputClip)
         {
             ValidateOffset(dx, dy);
-            Charge(32);
+            token.ThrowIfCancellationRequested();
             SvgPaintBounds clipping = RoundLayerBounds(outputClip);
             int clipLeft = (int)Math.Clamp(clipping.Left, 0, width), clipTop = (int)Math.Clamp(clipping.Top, 0, height);
             int clipRight = (int)Math.Clamp(clipping.Right, 0, width), clipBottom = (int)Math.Clamp(clipping.Bottom, 0, height);
             if (clipRight <= clipLeft || clipBottom <= clipTop) return;
             int conversionSteps = (transfer.Source == transfer.Working ? 0 : 1) + (transfer.Working == transfer.Destination ? 0 : 1);
             bool convertImage = conversionSteps != 0;
-            if (convertImage) Charge(pixels * 2 * conversionSteps);
+            if (convertImage) token.ThrowIfCancellationRequested();
             bool fractional = dx != Math.Truncate(dx) || dy != Math.Truncate(dy);
             if (fractional && shadow is {} flood)
             {
@@ -1413,7 +1399,7 @@ CancellationToken token)
                 // ordinary feOffset retains nearest-neighbor displacement.
                 // The source-in color filter follows interpolation and retains
                 // its independently quantized constant premultiplied lanes.
-                Charge(pixels * 4);
+                token.ThrowIfCancellationRequested();
                 for (int y = clipTop; y < clipBottom; y++)
                 {
                     token.ThrowIfCancellationRequested();
@@ -1448,7 +1434,7 @@ CancellationToken token)
             bounds = OffsetSamplingBounds(bounds, (float)dx, (float)dy);
             if (fractional && nativeTransform is null)
             {
-                Charge(16);
+                token.ThrowIfCancellationRequested();
                 // A nearest image translation whose AA rectangle rounds to the
                 // same four-bit pixel grid takes the native sprite path. Its
                 // image-edge AA is absent; the source's own coverage remains.
@@ -1467,9 +1453,9 @@ CancellationToken token)
             int imageRight = (int)MathF.Ceiling(Math.Clamp(bounds.Right, 0, width));
             int imageBottom = (int)MathF.Ceiling(Math.Clamp(bounds.Bottom, 0, height));
             if (imageRight <= imageLeft || imageBottom <= imageTop) return;
-            if (fractional) Charge(16);
+            if (fractional) token.ThrowIfCancellationRequested();
             if (fractional && imagePaint is OffsetImagePaint.Floating or OffsetImagePaint.FloatingSamples or OffsetImagePaint.SourceAlpha)
-                Charge(pixels * (imagePaint == OffsetImagePaint.Floating ? 12 : 4));
+                token.ThrowIfCancellationRequested();
             Span<SvgShaderPaint> coveredSamples = fractional && imagePaint == OffsetImagePaint.FloatingSamples
                 ? AllocateSamples() : Span<SvgShaderPaint>.Empty;
             if (!coveredSamples.IsEmpty) linearOffsetSamples = true;
@@ -1478,7 +1464,7 @@ CancellationToken token)
             if (dx != Math.Truncate(dx)) dx = Math.Floor((float)dx + .5f);
             if (dy != Math.Truncate(dy)) dy = Math.Floor((float)dy + .5f);
             ValidateOffset(dx, dy);
-            Charge(pixels);
+            token.ThrowIfCancellationRequested();
             for (int y = clipTop; y < clipBottom; y++)
             {
                 token.ThrowIfCancellationRequested();
@@ -1565,17 +1551,17 @@ CancellationToken token)
                 points[3] = Point(imageBounds.Left, imageBounds.Bottom);
                 SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4], [], false, null, SvgPolygonMapping.NativeFillEdges,
                     [], [], 0, width, 0, height, width, height, new(0, width), new SvgAnalyticClipContext(new(clipLeft, clipTop, clipRight, clipBottom)),
-                    availableWork - work, budget, out long preparationWork, out bool eligible, token);
+                    budget, out bool eligible, token);
                 try
                 {
-                    Charge(preparationWork);
+                    token.ThrowIfCancellationRequested();
                     if (!eligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transformed filter image edges exceed the retained coverage boundary.");
-                    Charge(pixels * 4);
+                    token.ThrowIfCancellationRequested();
                     for (int y = clipTop; y < clipBottom; y++)
                     {
                         token.ThrowIfCancellationRequested();
-                        walker.PrepareRow(y, availableWork - work, out long rowWork, token);
-                        Charge(rowWork);
+                        walker.PrepareRow(y, token);
+                        token.ThrowIfCancellationRequested();
                         for (int x = clipLeft; x < clipRight; x++)
                         {
                             if ((x & 4095) == 0) token.ThrowIfCancellationRequested();
@@ -1603,7 +1589,7 @@ CancellationToken token)
         }
 
         // Retain displaced capture padding separately from the finite colored
-        // texels. Pure shared setup; callers charge work and own cancellation.
+        // texels. Pure shared setup; callers own cancellation.
         static SvgPaintBounds OffsetSamplingBounds(SvgPaintBounds bounds, float dx, float dy)
             => new(MathF.Min(bounds.Left, MathF.Floor(bounds.Left + dx)), MathF.Min(bounds.Top, MathF.Floor(bounds.Top + dy)),
                 MathF.Max(bounds.Right, MathF.Ceiling(bounds.Right + dx)), MathF.Max(bounds.Bottom, MathF.Ceiling(bounds.Bottom + dy)));

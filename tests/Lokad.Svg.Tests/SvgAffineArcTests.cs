@@ -27,13 +27,6 @@ public sealed class SvgAffineArcTests
             SvgAuthoredPathCommand[] original = source.Commands.ToArray();
             Assert.Equal(2, original.Count(command => command.Verb == SvgAuthoredPathVerb.Arc));
             long owned = retry.Snapshot().CurrentBytes;
-            SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
-                defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-                checked((int)0L + 1), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            {
-                using var denied = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, tight), retry, CancellationToken.None);
-            }).ErrorCode);
             Assert.Equal(owned, retry.Snapshot().CurrentBytes);
             using (retry.Reserve(1_000_000 - owned - 1024, SvgMemoryCategory.Surface))
             {

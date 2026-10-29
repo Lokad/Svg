@@ -41,7 +41,7 @@ public sealed class SvgDefinitionNamespaceTests
         SvgRenderLimits defaults = SvgRenderLimits.Default;
         SvgRenderLimits limits = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
             defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-            defaults.MaximumWorkUnits, defaults.MaximumXmlDepth, 1);
+            defaults.MaximumXmlDepth, 1);
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs xmlns:metadata='urn:metadata' id='definitions'/></svg>"u8.ToArray();
         RenderBudget budget = new(1_000_000);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, budget, CancellationToken.None)).ErrorCode);

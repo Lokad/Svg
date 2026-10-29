@@ -45,7 +45,7 @@ public sealed class SvgFontRequestDiscoveryTests
     public void Does_not_reserve_a_direct_text_chunk_without_eligible_text()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
-        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 16, 1_024, 16, 16, 100, 16, 1);
+        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 16, 1_024, 16, 16, 16, 1);
         long workspace = SvgRootParser.GetXmlReaderWorkspaceBytes(input.Length, limits.MaximumAttributesPerElement);
         RenderBudget budget = new(workspace);
 
@@ -59,7 +59,7 @@ public sealed class SvgFontRequestDiscoveryTests
     public void Denied_reader_workspace_rejects_discovery_without_retention()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
-        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 16, 1_024, 16, 16, 100, 16, 1);
+        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 16, 1_024, 16, 16, 16, 1);
         long workspace = SvgRootParser.GetXmlReaderWorkspaceBytes(input.Length, limits.MaximumAttributesPerElement);
         RenderBudget budget = new(workspace - 1);
 
@@ -253,7 +253,7 @@ public sealed class SvgFontRequestDiscoveryTests
     [Fact]
     public void Applies_caller_selected_structural_limits_during_discovery()
     {
-        SvgRenderLimits limits = new(1_000_000, 1_024, 128, 1_024, 1_024, 1, 16, 1_000);
+        SvgRenderLimits limits = new(1_000_000, 1_024, 128, 1_024, 1_024, 1, 16);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), limits, CancellationToken.None));
 

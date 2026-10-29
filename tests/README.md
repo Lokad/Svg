@@ -141,9 +141,9 @@ Its shared-layout fixture adds the common glyph-owner allocation path once.
 encoded-size boundaries, cancellation, backpressure and write failures. Shared-root
 stream-growth refusal cases protect cleanup without a second admission during
 compressor disposal; removed PNG fuel counters are not test contracts.
-The [parser validation map](Research/release-baselines/parser-validation.md)
+The [fuel-removal validation map](Research/release-baselines/parser-validation.md)
 identifies the retained numerical, structural, cancellation and allocation paths
-after removing parser fuel. Actual allocation-growth checks do not establish CPU
+after removing operation fuel. Actual allocation-growth checks do not establish CPU
 scaling; performance measurements belong in the benchmark harness.
 Dedicated tests retain unusual stream failures, overlap, borrowed storage,
 resource refusal, cancellation and disposal paths. Rendering fixtures do not

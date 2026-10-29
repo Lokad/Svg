@@ -6,16 +6,11 @@ using Lokad.Svg.Parsing;
 
 internal ref partial struct SvgAnalyticCoverage
 {
-    private static void CheckClippedSetupWork(long requiredWork, long maximumWork, CancellationToken token)
-    {
-        token.ThrowIfCancellationRequested();
-        if (requiredWork > maximumWork) throw new SvgException(SvgErrorCode.LimitExceeded, "Clipped analytic preparation exceeds the remaining work limit.");
-    }
 
 
     /// <summary>Counts and constructs clipped verbs without retaining an intermediate piece tape.</summary>
     /// <remarks>Both passes charge clipping, validation and traversal. Authored points map directly into bitmap coordinates; all clipped verbs construct there, combine there, then translate their fixed walk/curve state to canvas space. Source contours are borrowed during construction and no extra mapped tape is allocated. Rational verbs convert after device mapping, one quadratic at a time through the same bounded piece buffer. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. All curve edges retain live state, including convex polynomial quadratics. Horizontal/AA paint clipping stays separate from curve clipping. Reservations transfer to the returned instance or release on every exception.</remarks>
-    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, SvgPreparedPathContours? source, SvgAffineTransform sourceMap, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
+    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, SvgPreparedPathContours? source, SvgAffineTransform sourceMap, RenderBudget budget, out bool eligible, CancellationToken token)
     {
         eligible = false;
         int width = xEnd - xStart;
@@ -28,7 +23,7 @@ internal ref partial struct SvgAnalyticCoverage
         RenderBudget.BudgetReservation? scratch = null;
         try
         {
-            ChargeClippedSetupWork(ref setupWork, 4, maximumWork, token);
+            token.ThrowIfCancellationRequested();
             SvgAnalyticClipBounds localClip = new(clip.Left - origin.X, clip.Top - origin.Y, clip.Right - origin.X, clip.Bottom - origin.Y);
             for (int pass = 0; pass < 2; pass++)
             {
@@ -46,43 +41,40 @@ internal ref partial struct SvgAnalyticCoverage
                     int start = priorEnd;
                     int end = ends[contour];
                     priorEnd = end;
-                    ChargeClippedSetupWork(ref setupWork, end - start + 1L, maximumWork, token);
+                    token.ThrowIfCancellationRequested();
                     if (end - start < 3 || (hasVotes && votes[contour] == 0) || (mapping != SvgPolygonMapping.NativeFillEdges && (mapping != SvgPolygonMapping.NativeStrokeEdges || isEvenOdd) && TwiceArea(points[start..end]) == 0)) continue;
-                    while (quadCursor < quads.Length && quads[quadCursor].Contour < contour) { ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token); quadCursor++; }
-                    while (cubicCursor < cubics.Length && cubics[cubicCursor].Contour < contour) { ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token); cubicCursor++; }
+                    while (quadCursor < quads.Length && quads[quadCursor].Contour < contour) { token.ThrowIfCancellationRequested(); quadCursor++; }
+                    while (cubicCursor < cubics.Length && cubics[cubicCursor].Contour < contour) { token.ThrowIfCancellationRequested(); cubicCursor++; }
                     int quadEnd = quadCursor;
                     int cubicEnd = cubicCursor;
-                    while (quadEnd < quads.Length && quads[quadEnd].Contour == contour) { ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token); quadEnd++; }
-                    while (cubicEnd < cubics.Length && cubics[cubicEnd].Contour == contour) { ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token); cubicEnd++; }
-                    ChargeClippedSetupWork(ref setupWork, (long)quadEnd - quadCursor + cubicEnd - cubicCursor, maximumWork, token);
+                    while (quadEnd < quads.Length && quads[quadEnd].Contour == contour) { token.ThrowIfCancellationRequested(); quadEnd++; }
+                    while (cubicEnd < cubics.Length && cubics[cubicEnd].Contour == contour) { token.ThrowIfCancellationRequested(); cubicEnd++; }
+                    token.ThrowIfCancellationRequested();
                     bool contourSpans = useSpans && (quadEnd == quadCursor || quads[quadEnd - 1].EndIndex < end) && (cubicEnd == cubicCursor || cubics[cubicEnd - 1].EndIndex < end) && ContourSpansValid(start, end, quads, quadCursor, quadEnd, cubics, cubicCursor, cubicEnd, out _, token);
                     for (int index = start; index < end; index++)
                     {
-                        ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token);
+                        token.ThrowIfCancellationRequested();
                         int sourceIndex = index;
                         bool hasQuad = contourSpans && quadCursor < quadEnd && quads[quadCursor].StartIndex == index;
                         bool hasCubic = contourSpans && cubicCursor < cubicEnd && cubics[cubicCursor].StartIndex == index;
-                        bool localLine = !hasQuad && !hasCubic;
                         int conicCount = 1;
                         bool rational = hasQuad && quads[quadCursor].ConicWeight != 1f;
                         if (rational)
                         {
                             SvgQuadSpan conic = source is null ? quads[quadCursor] : source.QuadSpans[quadCursor];
-                            ChargeClippedSetupWork(ref setupWork, 6, maximumWork, token);
-                            CheckClippedSetupWork(setupWork + SvgRationalQuadratic.MaximumConversionWork, maximumWork, token);
+                            token.ThrowIfCancellationRequested();
                             // Subdivide after mapping the source conic into this bitmap.
                             SvgAnalyticClipPoint first = ToLocalClipPoint(sourcePoints[index], origin, localSourceMap);
                             SvgAnalyticClipPoint control = ToLocalClipPoint(conic.Control, origin, localSourceMap);
                             SvgAnalyticClipPoint last = ToLocalClipPoint(sourcePoints[conic.EndIndex], origin, localSourceMap);
                             conicCount = SvgRationalQuadratic.Convert(new(first.X, first.Y), new(control.X, control.Y), new(last.X, last.Y), conic.ConicWeight,
-                                SvgRationalQuadratic.DeviceTolerance, conicPoints, out int conicWork, token);
-                            ChargeClippedSetupWork(ref setupWork, conicWork, maximumWork, token);
+                                SvgRationalQuadratic.DeviceTolerance, conicPoints, token);
+                            token.ThrowIfCancellationRequested();
                         }
                         for (int conicIndex = 0; conicIndex < conicCount; conicIndex++)
                         {
-                            ChargeClippedSetupWork(ref setupWork, localLine ? 4 : hasCubic ? 8 : 6, maximumWork, token);
-                            Clipper clipper = new(localClip, !convex, pieces, maximumWork - setupWork, token);
-                            try
+                            token.ThrowIfCancellationRequested();
+                            Clipper clipper = new(localClip, !convex, pieces, token);
                             {
                                 if (hasQuad)
                                 {
@@ -105,50 +97,39 @@ internal ref partial struct SvgAnalyticCoverage
                                 }
                                 else clipper.ClipLine(ToLocalClipPoint(sourcePoints[index], origin, localSourceMap), ToLocalClipPoint(sourcePoints[index + 1 < end ? index + 1 : start], origin, localSourceMap));
                             }
-                            finally { setupWork += clipper.WorkUnits; }
                             for (int pieceIndex = 0; pieceIndex < clipper.Count; pieceIndex++)
                             {
                                 SvgAnalyticClipPiece piece = pieces[pieceIndex];
-                                ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token);
+                                token.ThrowIfCancellationRequested();
                                 if (pass == 0)
                                 {
                                     // Validate every endpoint/control before reserving or constructing fixed edges.
-                                    ChargeClippedSetupWork(ref setupWork, (int)piece.Kind, maximumWork, token);
+                                    token.ThrowIfCancellationRequested();
                                     if (!InFixedRange(piece, origin)) return default;
                                     // Each admitted clipped monotonic piece owns one live edge.
                                     maximumEdges++;
                                     continue;
                                 }
                                 if (kept is null) throw new InvalidOperationException("Clipped edge storage was not reserved.");
-                                // Check the complete bounded numerical phase before entering
-                                // it, then report its actual setup and initial stepping cost.
-                                long phaseBound = piece.Kind == SvgAnalyticClipKind.Line ? 2 : 132;
-                                CheckClippedSetupWork(setupWork + phaseBound, maximumWork, token);
-                                long edgeWork = 0;
+                                token.ThrowIfCancellationRequested();
                                 int contourEdges = kept.Count;
                                 switch (piece.Kind)
                                 {
                                     case SvgAnalyticClipKind.Line:
                                         AnalyticEdge? edge = SetLine(piece.First.X, piece.First.Y, piece.Second.X, piece.Second.Y, true);
-                                        edgeWork = 2;
                                         if (edge is not null)
                                         {
                                             if (!CombineVertical(edge, kept)) kept.Add(edge);
                                         }
                                         break;
                                     case SvgAnalyticClipKind.Quad:
-                                        BuildQuadLiveEdge(kept, piece.First.X, piece.First.Y, piece.Second.X, piece.Second.Y, piece.Third.X, piece.Third.Y, ref contourEdges, ref edgeWork);
-                                        // Existing quad helpers charge setup only for nonempty
-                                        // pieces; clipping also charges rejected setups.
-                                        if (edgeWork == 0) edgeWork = 4;
+                                        BuildQuadLiveEdge(kept, piece.First.X, piece.First.Y, piece.Second.X, piece.Second.Y, piece.Third.X, piece.Third.Y, ref contourEdges);
                                         break;
                                     case SvgAnalyticClipKind.Cubic:
-                                        BuildCubicLiveEdge(kept, piece.First.Coordinates, piece.Second.Coordinates, piece.Third.Coordinates, piece.Fourth.Coordinates, ref contourEdges, ref edgeWork);
+                                        BuildCubicLiveEdge(kept, piece.First.Coordinates, piece.Second.Coordinates, piece.Third.Coordinates, piece.Fourth.Coordinates, ref contourEdges);
                                         break;
                                     default: throw new InvalidOperationException("Unknown clipped analytic verb.");
                                 }
-                                if (edgeWork > phaseBound) throw new InvalidOperationException("Clipped edge construction exceeded its bounded numerical phase.");
-                                setupWork += edgeWork;
                             }
                         }
                         if (hasQuad) quadCursor++;
@@ -159,11 +140,9 @@ internal ref partial struct SvgAnalyticCoverage
             if (kept is null) throw new InvalidOperationException("Clipped edge storage was not constructed.");
             foreach (AnalyticEdge edge in kept)
             {
-                TranslateConstructedEdge(edge, origin, ref setupWork, maximumWork, token);
+                TranslateConstructedEdge(edge, origin, token);
             }
-            int levels = 0;
-            for (int level = kept.Count; level > 0; level >>= 1) levels++;
-            ChargeClippedSetupWork(ref setupWork, (long)kept.Count * (levels + 3) + (useRunBlitter ? width : 0), maximumWork, token);
+            token.ThrowIfCancellationRequested();
             AnalyticEdge[] edges = kept.ToArray();
             SortEdges(edges, token);
             AnalyticEdge head = new() { UpperY = int.MinValue, LowerY = int.MinValue, X = int.MinValue, UpperX = int.MinValue, DY = int.MaxValue };
@@ -195,13 +174,6 @@ internal ref partial struct SvgAnalyticCoverage
             static bool Point(SvgAnalyticClipPoint point, SvgCpuBitmapOrigin origin) => float.IsFinite(point.X) && float.IsFinite(point.Y)
                 && MathF.Abs(point.X) <= MaxRange && MathF.Abs(point.Y) <= MaxRange
                 && Math.Abs((double)point.X + origin.X) <= MaxRange && Math.Abs((double)point.Y + origin.Y) <= MaxRange;
-        }
-
-        static void ChargeClippedSetupWork(scoped ref long work, long units, long maximumWork, CancellationToken token)
-        {
-            token.ThrowIfCancellationRequested();
-            if (units > maximumWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Clipped analytic preparation exceeds the remaining work limit.");
-            work += units;
         }
 
         static SvgAnalyticClipPoint ToLocalClipPoint(SvgDevicePoint point, SvgCpuBitmapOrigin origin, SvgAffineTransform? sourceMap)

@@ -140,7 +140,7 @@ public sealed class SvgDocumentDimensionsTests
     [Fact]
     public void Inspection_does_not_apply_raster_caps_or_allocate_a_surface()
     {
-        SvgRenderLimits limits = new(32_768, 4096, 1, 1, 1, 8, 1, 10_000, 8, 8);
+        SvgRenderLimits limits = new(32_768, 4096, 1, 1, 1, 8, 1, 8, 8);
         SvgRenderOptions options = new(null, 100, SvgColor.Transparent, limits);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1000000000' height='1000000000'><text font-family='Missing'>A</text></svg>"u8.ToArray();
         SvgDocumentDimensions result = SvgConverter.InspectDimensions(svg, options, CancellationToken.None);
@@ -196,7 +196,7 @@ public sealed class SvgDocumentDimensionsTests
     [Fact]
     public void Inspection_checks_structure_and_preserves_cancellation()
     {
-        SvgRenderLimits limits = new(1_000_000, 4096, 100, 10_000, 4096, 1, 10, 10_000, 8, 8);
+        SvgRenderLimits limits = new(1_000_000, 4096, 100, 10_000, 4096, 1, 10, 8, 8);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.InspectDimensions("<svg xmlns='http://www.w3.org/2000/svg'><g/></svg>"u8.ToArray(), options, CancellationToken.None)).ErrorCode);
         using CancellationTokenSource source = new();

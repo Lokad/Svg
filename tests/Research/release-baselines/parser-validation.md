@@ -1,11 +1,12 @@
-# Parser validation responsibilities
+# Validation after fuel removal
 
 Parser fuel is removed from parsing, font preparation, geometry construction and
 PNG decoding. `ParserWorkCounter`, its arguments and retained parser totals are
 gone. Cancellation checks remain in actual traversal loops. Structural limits,
 checked storage sizes and numerical domains remain independent contracts.
-Raster work quotas and the private memory-cap migration are separate remaining
-changes; this record does not close shared memory governance.
+Raster quota plumbing, remaining-fuel algorithm choices and MaximumWorkUnits are
+also removed. The private memory-cap migration remains separate; this record does
+not close shared memory governance.
 
 | Removed expectation | Retained responsibility |
 | --- | --- |
@@ -29,7 +30,30 @@ The [regression](../../Lokad.Svg.Tests/SvgSymbolContentTests.cs) previously warm
 that mutation through an obsolete fuel-refusal call. Removing the warmup exposed
 the retained-capacity change; the implementation now avoids it.
 
-Source review starts at `596125e0f`: use `git show` on the relevant test file to
-inspect the prior counter expectations. This map and the source tests are the
+Source review starts at `596125e0f` for parser fuel and `09d485074` for raster
+fuel: use `git show` on the relevant test file to inspect prior expectations.
+This map and the source tests are the
 durable evidence; local test receipts are generated output. Qualification commands
 and development/milestone selections remain in [the test guide](../../README.md).
+
+The raster migration retains actual point/piece/edge counts, array bounds,
+subdivision depth/error, sampling and rounding. Analytic row-event memory refusal,
+growth peaks and cancellation remain separate from removed operation quotas.
+Blur tests compare pixels, source immutability, per-axis cancellation and owner
+cleanup without synthetic return totals. The analytic clipper's former quota-only
+binary-search test is covered numerically by the independent
+`near-quadratic-binary-root-witness` row in
+[the native piece bank](../../Lokad.Svg.Tests/TestData/analytic-clipped-pieces.json).
+The memory probe's pattern refusal now tests byte admission instead of fuel.
+
+The fallback glyph path prepares its subdivision points without a fuel-dependent
+algorithm choice. Its prepared-storage refusal, coverage-entry cancellation and
+exact pixels are separate checks in
+[the budget contracts](../../Lokad.Svg.Tests/RenderBudgetTests.cs).
+Cached native counts retain direct assertions; canceled uncached count/raw-control
+preparations preserve their caches and can retry. Borrowed bitmap-curve construction
+now refuses actual scratch storage before checking unchanged source curves and
+exact retry pixels. Mixed clipping, mask, filter and shader tests retain real
+memory refusal, cancellation and cleanup while their quota-only branches are gone.
+The ligature lifecycle tests no longer repeat the same post-quota call 120 times;
+they exercise the longer input once with a live storage charge, then verify release.

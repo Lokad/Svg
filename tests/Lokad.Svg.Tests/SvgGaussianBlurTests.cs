@@ -29,7 +29,7 @@ public sealed class SvgGaussianBlurTests
         SvgShaderPaint[] samples = new SvgShaderPaint[width * height];
         if (cropped) samples.AsSpan().Fill(new(1, 1, 1, 1));
         RenderBudget accepted = new(1_000_000);
-        long work = Run(expected, samples, accepted, long.MaxValue, CancellationToken.None);
+        Run(expected, samples, accepted, CancellationToken.None);
         if (cropped)
         {
             Assert.Equal(default, samples[0]);
@@ -39,69 +39,53 @@ public sealed class SvgGaussianBlurTests
         Assert.Contains(expected, value => value > 0);
         Assert.Contains(samples, value => value.Alpha > 0);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        foreach (long available in new[] { 0, work / 2, work - 1 })
-        {
-            RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(new byte[source.Length], new SvgShaderPaint[samples.Length], denied, available, CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         foreach (long limit in new[] { 1, peak / 2, peak - 1 })
         {
             RenderBudget denied = new(limit);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(new byte[source.Length], new SvgShaderPaint[samples.Length], denied, work, CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(new byte[source.Length], new SvgShaderPaint[samples.Length], denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         byte[] retry = new byte[source.Length];
-        Assert.Throws<OperationCanceledException>(() => Run(retry, new SvgShaderPaint[samples.Length], accepted, work, cancellation.Token));
+        Assert.Throws<OperationCanceledException>(() => Run(retry, new SvgShaderPaint[samples.Length], accepted, cancellation.Token));
         Assert.All(retry, value => Assert.Equal(0, value));
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         SvgShaderPaint[] retrySamples = new SvgShaderPaint[samples.Length];
-        Assert.Equal(work, Run(retry, retrySamples, accepted, work, CancellationToken.None));
+        Run(retry, retrySamples, accepted, CancellationToken.None);
         Assert.Equal(expected, retry); Assert.Equal(samples, retrySamples); Assert.Equal(before, source);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
 
-        long Run(byte[] destination, SvgShaderPaint[] outputSamples, RenderBudget budget, long availableWork, CancellationToken token)
+        void Run(byte[] destination, SvgShaderPaint[] outputSamples, RenderBudget budget, CancellationToken token)
             => SvgGaussianBlur.ApplyRescaled(source, destination, width, height, new(sigma, sigma), new(0, 0, width, height),
                 cropped ? new(10, 8, 125, 90) : new(0, 0, width, height),
                 cropped ? new(new(200, 210), new(512, 512), new(240, 220, 318, 288))
                     : new(new(0, 0), new(width, height, true), new(0, 0, width, height)),
-                false, colorSpace, outputSamples, budget, availableWork, token);
+                false, colorSpace, outputSamples, budget, token);
     }
 
     [Fact]
-    public void Every_denied_work_and_memory_boundary_releases_owners_and_preserves_source_before_retry()
+    public void Memory_refusals_release_owners_and_preserve_source_before_retry()
     {
         byte[] source = Source();
         byte[] before = (byte[])source.Clone();
         byte[] expected = new byte[source.Length];
         RenderBudget accepted = new(1_000_000);
-        long work = SvgGaussianBlur.Apply(source, expected, 13, 9, new(3, 4), accepted, long.MaxValue, CancellationToken.None);
+        SvgGaussianBlur.Apply(source, expected, 13, 9, new(3, 4), accepted, CancellationToken.None);
         long peak = accepted.Snapshot().PeakBytes;
         Assert.True(peak > 0);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        for (long available = 0; available < work; available++)
-        {
-            RenderBudget budget = new(1_000_000);
-            byte[] target = new byte[source.Length];
-            SvgException denied = Assert.Throws<SvgException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(3, 4), budget, available, CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            Assert.Equal(0, budget.Snapshot().PeakBytes);
-            Assert.All(target, value => Assert.Equal(0, value));
-        }
         for (long limit = 1; limit < peak; limit++)
         {
             RenderBudget budget = new(limit);
             byte[] target = new byte[source.Length];
-            SvgException denied = Assert.Throws<SvgException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(3, 4), budget, work, CancellationToken.None));
+            SvgException denied = Assert.Throws<SvgException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(3, 4), budget, CancellationToken.None));
             Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             Assert.All(target, value => Assert.Equal(0, value));
         }
         byte[] retry = new byte[source.Length];
-        Assert.Equal(work, SvgGaussianBlur.Apply(source, retry, 13, 9, new(3, 4), accepted, work, CancellationToken.None));
+        SvgGaussianBlur.Apply(source, retry, 13, 9, new(3, 4), accepted, CancellationToken.None);
         Assert.Equal(expected, retry);
         Assert.Equal(before, source);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
@@ -117,7 +101,7 @@ public sealed class SvgGaussianBlurTests
         RenderBudget budget = new(1_000_000);
         using CancellationTokenSource cancellation = new();
         int observed = 0;
-        OperationCanceledException stopped = Assert.Throws<OperationCanceledException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(3, 4), budget, long.MaxValue, cancellation.Token, line =>
+        OperationCanceledException stopped = Assert.Throws<OperationCanceledException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(3, 4), budget, cancellation.Token, line =>
         {
             observed = line;
             Assert.True(budget.Snapshot().CurrentBytes > 0);
@@ -128,8 +112,8 @@ public sealed class SvgGaussianBlurTests
         Assert.Equal(before, source);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         byte[] expected = new byte[source.Length];
-        SvgGaussianBlur.Apply(source, expected, 13, 9, new(3, 4), budget, long.MaxValue, CancellationToken.None);
-        SvgGaussianBlur.Apply(source, target, 13, 9, new(3, 4), budget, long.MaxValue, CancellationToken.None);
+        SvgGaussianBlur.Apply(source, expected, 13, 9, new(3, 4), budget, CancellationToken.None);
+        SvgGaussianBlur.Apply(source, target, 13, 9, new(3, 4), budget, CancellationToken.None);
         Assert.Equal(expected, target);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -141,7 +125,7 @@ public sealed class SvgGaussianBlurTests
     {
         byte[] source = Source(), target = new byte[source.Length];
         RenderBudget budget = new(1);
-        Assert.Equal(source.Length, SvgGaussianBlur.Apply(source, target, 13, 9, new(horizontal, vertical), budget, source.Length, CancellationToken.None));
+        SvgGaussianBlur.Apply(source, target, 13, 9, new(horizontal, vertical), budget, CancellationToken.None);
         Assert.Equal(source, target);
         Assert.Equal(0, budget.Snapshot().PeakBytes);
     }
@@ -155,7 +139,7 @@ public sealed class SvgGaussianBlurTests
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         RenderBudget budget = new(1_000_000);
-        OperationCanceledException stopped = Assert.Throws<OperationCanceledException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(sigma, sigma), budget, long.MaxValue, cancellation.Token));
+        OperationCanceledException stopped = Assert.Throws<OperationCanceledException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(sigma, sigma), budget, cancellation.Token));
         Assert.Equal(cancellation.Token, stopped.CancellationToken);
         Assert.Equal(before, source);
         Assert.All(target, value => Assert.Equal(0, value));
@@ -173,14 +157,13 @@ public sealed class SvgGaussianBlurTests
         RenderBudget budget = new(1_000_000);
         if (sigma < 2)
         {
-            long work = SvgGaussianBlur.Apply(source, target, 13, 9, new(sigma, 3), budget, long.MaxValue, CancellationToken.None);
-            Assert.True(work > 0);
+            SvgGaussianBlur.Apply(source, target, 13, 9, new(sigma, 3), budget, CancellationToken.None);
             Assert.Contains(target, value => value > 0);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
         else
         {
-            SvgException rejected = Assert.Throws<SvgException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(sigma, 3), budget, long.MaxValue, CancellationToken.None));
+            SvgException rejected = Assert.Throws<SvgException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(sigma, 3), budget, CancellationToken.None));
             Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
             Assert.Equal(0, budget.Snapshot().PeakBytes);
             Assert.All(target, value => Assert.Equal(0, value));
@@ -195,9 +178,9 @@ public sealed class SvgGaussianBlurTests
         Assert.Throws<ArgumentOutOfRangeException>(() => new SvgGaussianDeviation(float.PositiveInfinity, 3));
         byte[] source = Source(), before = (byte[])source.Clone(), target = new byte[source.Length - 1];
         RenderBudget budget = new(1_000_000);
-        Assert.Throws<ArgumentException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(3, 4), budget, long.MaxValue, CancellationToken.None));
-        Assert.Throws<ArgumentException>(() => SvgGaussianBlur.Apply(source, source, 13, 9, new(3, 4), budget, long.MaxValue, CancellationToken.None));
-        SvgException huge = Assert.Throws<SvgException>(() => SvgGaussianBlur.Apply(source, target, int.MaxValue, int.MaxValue, new(3, 4), budget, long.MaxValue, CancellationToken.None));
+        Assert.Throws<ArgumentException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(3, 4), budget, CancellationToken.None));
+        Assert.Throws<ArgumentException>(() => SvgGaussianBlur.Apply(source, source, 13, 9, new(3, 4), budget, CancellationToken.None));
+        SvgException huge = Assert.Throws<SvgException>(() => SvgGaussianBlur.Apply(source, target, int.MaxValue, int.MaxValue, new(3, 4), budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, huge.ErrorCode);
         Assert.Equal(before, source);
         Assert.Equal(0, budget.Snapshot().PeakBytes);

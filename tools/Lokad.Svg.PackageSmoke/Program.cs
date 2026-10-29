@@ -13,7 +13,7 @@ byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='1'/>"u8.
 byte[] storage = new byte[1_024];
 svg.CopyTo(storage, 0);
 byte[] original = (byte[])storage.Clone();
-SvgRenderLimits limits = new(200_000, 1_024, 1, 16, 1_024, 16, 16, 1_000);
+SvgRenderLimits limits = new(200_000, 1_024, 1, 16, 1_024, 16, 16);
 SvgRenderOptions limitedOptions = new(null, 1, SvgColor.Transparent, limits);
 foreach (bool asynchronous in new[] { false, true })
 {

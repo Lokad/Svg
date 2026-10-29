@@ -96,30 +96,22 @@ public sealed class SvgAuthoredPathTests
             long retained = budget.Snapshot().CurrentBytes;
             SvgAnalyticContourPreparation preparation = new(mapped.Points, mapped.ContourEnds, [], false, null, SvgPolygonMapping.NativeFillEdges,
                 mapped.QuadSpans, mapped.CubicSpans, new(635, 341, 672, 378), 792, 806, source, authored.SceneMap);
-            long setup;
             long storage;
             using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
-                SvgAnalyticPaintClip.Binary, 100_000, budget, out long _, out bool eligible, CancellationToken.None))
+                SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
             {
                 Assert.True(eligible);
                 storage = budget.Snapshot().CurrentBytes - retained;
             }
             using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
-                SvgAnalyticPaintClip.Binary, 100_000, budget, out setup, out bool eligible, CancellationToken.None)) Assert.True(eligible);
+                SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None)) Assert.True(eligible);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            try
-            {
-                using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
-                    SvgAnalyticPaintClip.Binary, setup - 1, budget, out long _, out bool _, CancellationToken.None);
-                Assert.Fail("Contained mapping and fixed-state translation must fit the work limit.");
-            }
-            catch (SvgException error) { Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode); }
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             RenderBudget tight = new(storage - 1);
             try
             {
                 using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
-                    SvgAnalyticPaintClip.Binary, 100_000, tight, out long _, out bool _, CancellationToken.None);
+                    SvgAnalyticPaintClip.Binary, tight, out bool _, CancellationToken.None);
                 Assert.Fail("Contained construction must release its edge storage after denial.");
             }
             catch (SvgException error) { Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode); }
@@ -129,7 +121,7 @@ public sealed class SvgAuthoredPathTests
             try
             {
                 using SvgAnalyticCoverage canceled = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
-                    SvgAnalyticPaintClip.Binary, 100_000, budget, out long _, out bool _, cancellation.Token);
+                    SvgAnalyticPaintClip.Binary, budget, out bool _, cancellation.Token);
                 Assert.Fail("Cached contained construction must observe cancellation.");
             }
             catch (OperationCanceledException error) { Assert.Equal(cancellation.Token, error.CancellationToken); }
@@ -156,36 +148,40 @@ public sealed class SvgAuthoredPathTests
             SvgAnalyticContourPreparation preparation = new(mapped.Points, mapped.ContourEnds, [], false, null, SvgPolygonMapping.NativeFillEdges,
                 mapped.QuadSpans, mapped.CubicSpans, new(0, 0, 600, 600), 600, 600, source, authored.SceneMap);
             SvgAnalyticClipContext clip = new(new(0, 254, 256, 510), new(0, 254));
-            long setupWork;
             byte[] expected = new byte[256 * 4];
             using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 256, 0, 600, new(0, 256), clip, SvgAnalyticPaintClip.Binary,
-                100_000, budget, out setupWork, out bool eligible, CancellationToken.None))
+                budget, out bool eligible, CancellationToken.None))
             {
                 Assert.True(eligible);
-                walker.PrepareRow(287, out _, CancellationToken.None);
+                walker.PrepareRow(287, CancellationToken.None);
                 for (int x = 0; x < 256; x++) walker.PaintPixel(x, expected.AsSpan(x * 4, 4), SvgAnalyticPaint.Solid(new(64, 176, 128, 255)), SvgAnalyticClipCoverage.Full);
             }
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            long storage;
             using (SvgAnalyticCoverage measured = SvgAnalyticCoverage.Prepare(ref preparation, 0, 256, 0, 600, new(0, 256), clip, SvgAnalyticPaintClip.Binary,
-                100_000, budget, out setupWork, out bool eligible, CancellationToken.None))
+                budget, out bool eligible, CancellationToken.None))
             {
                 Assert.True(eligible);
+                storage = budget.Snapshot().CurrentBytes - retained;
             }
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            RenderBudget tight = new(storage - 1);
             try
             {
                 using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 256, 0, 600, new(0, 256), clip, SvgAnalyticPaintClip.Binary,
-                    setupWork - 1, budget, out _, out _, CancellationToken.None);
-                Assert.Fail("Expected construction work denial.");
+                    tight, out _, CancellationToken.None);
+                Assert.Fail("Construction must refuse storage that cannot fit its budget.");
             }
             catch (SvgException error) { Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode); }
+            Assert.Equal(1, tight.Snapshot().DeniedReservationCount);
+            Assert.Equal(0, tight.Snapshot().CurrentBytes);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             byte[] actual = new byte[expected.Length];
             using (SvgAnalyticCoverage retry = SvgAnalyticCoverage.Prepare(ref preparation, 0, 256, 0, 600, new(0, 256), clip, SvgAnalyticPaintClip.Binary,
-                100_000, budget, out _, out bool eligible, CancellationToken.None))
+                budget, out bool eligible, CancellationToken.None))
             {
                 Assert.True(eligible);
-                retry.PrepareRow(287, out _, CancellationToken.None);
+                retry.PrepareRow(287, CancellationToken.None);
                 for (int x = 0; x < 256; x++) retry.PaintPixel(x, actual.AsSpan(x * 4, 4), SvgAnalyticPaint.Solid(new(64, 176, 128, 255)), SvgAnalyticClipCoverage.Full);
             }
             Assert.Equal(expected, actual);
@@ -365,9 +361,9 @@ public sealed class SvgAuthoredPathTests
             Assert.Single(mapped.ContourEnds);
             Assert.Equal(2, mapped.CubicSpans.Length);
             Assert.Equal(isEvenOdd ? new[] { 1 } : null, mapped.Signs);
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(mapped.Points, mapped.ContourEnds, mapped.Signs ?? [], isEvenOdd, mapped.Signs, SvgPolygonMapping.NativeFillEdges, mapped.QuadSpans, mapped.CubicSpans, 0, 8, 0, 8, 16, 16, budget, out _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(mapped.Points, mapped.ContourEnds, mapped.Signs ?? [], isEvenOdd, mapped.Signs, SvgPolygonMapping.NativeFillEdges, mapped.QuadSpans, mapped.CubicSpans, 0, 8, 0, 8, 16, 16, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            walker.PrepareRow(3, out _, CancellationToken.None);
+            walker.PrepareRow(3, CancellationToken.None);
             byte[] pixel = new byte[4];
             walker.PaintPixel(3, pixel, SvgAnalyticPaint.Solid(new(255, 0, 0, 255)), SvgAnalyticClipCoverage.Full);
             // Three fresh pinned-browser captures record this native crossing.
@@ -388,9 +384,9 @@ public sealed class SvgAuthoredPathTests
             using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, isEvenOdd, budget, CancellationToken.None);
             Assert.Equal(2, mapped.ContourEnds.Length);
             Assert.Equal(isEvenOdd ? new[] { 1, 1 } : null, mapped.Signs);
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(mapped.Points, mapped.ContourEnds, mapped.Signs ?? [], isEvenOdd, mapped.Signs, SvgPolygonMapping.NativeFillEdges, 0, 18, 0, 8, 32, 16, budget, out _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(mapped.Points, mapped.ContourEnds, mapped.Signs ?? [], isEvenOdd, mapped.Signs, SvgPolygonMapping.NativeFillEdges, 0, 18, 0, 8, 32, 16, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            walker.PrepareRow(2, out _, CancellationToken.None);
+            walker.PrepareRow(2, CancellationToken.None);
             foreach (int x in new[] { 1, 11 })
             {
                 byte[] pixel = new byte[4];

@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Runtime.InteropServices;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
@@ -82,30 +83,29 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Parser_syntax_scanning_respects_the_public_shared_work_limit()
+    public void Padded_styles_and_recovered_empty_paths_leave_no_geometry()
     {
-        (string Content, int MaximumWorkUnits)[] cases =
+        string[] cases =
         [
-            ("<style>" + new string(' ', 4096) + "rect { fill: red; }</style>", 4),
-            ("<path d='" + new string(' ', 4096) + "X'/>", 5),
+            "<style>" + new string(' ', 4096) + "rect { fill: red; }</style>",
+            "<path d='" + new string(' ', 4096) + "X'/>",
         ];
-
-        foreach ((string content, int maximumWorkUnits) in cases)
+        foreach (string content in cases)
         {
-            SvgRenderLimits limits = new(20_000, 8_192, 16, 16, 1_024, 16, 16, maximumWorkUnits);
-            SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
-            string svg = "<svg xmlns='http://www.w3.org/2000/svg'>" + content + "</svg>";
-
-            SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), options, CancellationToken.None));
-
-            Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+            byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + content + "</svg>");
+            RenderBudget budget = new(1_000_000);
+            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+            {
+                Assert.Empty(root.Geometries);
+            }
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
     }
 
     [Fact]
     public void Encoding_stops_before_exceeding_the_configured_png_limit()
     {
-        SvgRenderLimits limits = new(20_000, 1024, 16, 16, 1, 16, 16, 16);
+        SvgRenderLimits limits = new(20_000, 1024, 16, 16, 1, 16, 16);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), options, CancellationToken.None));
@@ -299,30 +299,30 @@ public sealed class PublicContractTests
         Assert.Equal(256, limits.MaximumAttributesPerElement);
         Assert.Equal(100_000, limits.MaximumNodes);
         Assert.Equal(1_000_000, limits.MaximumPathCommands);
-        Assert.Equal(100_000_000, limits.MaximumWorkUnits);
     }
 
     [Fact]
     public void Render_limits_reject_a_nonpositive_XML_depth()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgRenderLimits(1024, 1024, 16, 16, 1024, 16, 16, 16, 0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgRenderLimits(1024, 1024, 16, 16, 1024, 16, 16, 0));
     }
 
     [Fact]
     public void Render_limits_reject_a_nonpositive_attribute_limit()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgRenderLimits(1024, 1024, 16, 16, 1024, 16, 16, 16, 16, 0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgRenderLimits(1024, 1024, 16, 16, 1024, 16, 16, 16, 0));
     }
 
     [Fact]
     public void Render_limit_convenience_constructors_forward_default_nesting_limits()
     {
-        SvgRenderLimits eight = new(1024, 1024, 16, 16, 1024, 16, 16, 16);
-        SvgRenderLimits nine = new(1024, 1024, 16, 16, 1024, 16, 16, 16, 64);
+        SvgRenderLimits seven = new(1024, 1024, 16, 16, 1024, 16, 16);
+        SvgRenderLimits eight = new(1024, 1024, 16, 16, 1024, 16, 16, 64);
 
-        Assert.Equal(128, eight.MaximumXmlDepth);
+        Assert.Equal(128, seven.MaximumXmlDepth);
+        Assert.Equal(256, seven.MaximumAttributesPerElement);
+        Assert.Equal(64, eight.MaximumXmlDepth);
         Assert.Equal(256, eight.MaximumAttributesPerElement);
-        Assert.Equal(256, nine.MaximumAttributesPerElement);
     }
 
     [Theory]
@@ -333,13 +333,12 @@ public sealed class PublicContractTests
     [InlineData(4, "maximumEncodedPngBytes")]
     [InlineData(5, "maximumNodes")]
     [InlineData(6, "maximumPathCommands")]
-    [InlineData(7, "maximumWorkUnits")]
-    [InlineData(8, "maximumXmlDepth")]
-    [InlineData(9, "maximumAttributesPerElement")]
+    [InlineData(7, "maximumXmlDepth")]
+    [InlineData(8, "maximumAttributesPerElement")]
     public void Render_limits_reject_nonpositive_values_at_every_position(int position, string parameterName)
     {
-        ConstructorInfo constructor = typeof(SvgRenderLimits).GetConstructors().Single(static c => c.GetParameters().Length == 10);
-        object?[] arguments = [268_435_456L, 16_777_216, 16_384, 16_777_216, 134_217_728, 100_000, 1_000_000, 100_000_000, 128, 256];
+        ConstructorInfo constructor = typeof(SvgRenderLimits).GetConstructors().Single(static c => c.GetParameters().Length == 9);
+        object?[] arguments = [268_435_456L, 16_777_216, 16_384, 16_777_216, 134_217_728, 100_000, 1_000_000, 128, 256];
         arguments[position] = position == 0 ? (object)0L : (object)0;
 
         try { constructor.Invoke(arguments); Assert.Fail("Nonpositive limit constructed without an ArgumentOutOfRangeException."); }
@@ -382,7 +381,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Input_limit_is_checked_before_rendering()
     {
-        SvgRenderLimits limits = new(1_024, 1, 1, 1, 1, 1, 1, 1);
+        SvgRenderLimits limits = new(1_024, 1, 1, 1, 1, 1, 1);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(new byte[] { 1, 2 }, options, CancellationToken.None));
@@ -701,7 +700,7 @@ public sealed class PublicContractTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>", 16, 16, 2)]
     public void Configured_structural_limits_fail_at_public_conversion(string svg, int maximumNodes, int maximumXmlDepth, int maximumAttributes)
     {
-        SvgRenderLimits limits = new(32_768, 1_024, 16, 256, 4_096, maximumNodes, 16, 1_000, maximumXmlDepth, maximumAttributes);
+        SvgRenderLimits limits = new(32_768, 1_024, 16, 256, 4_096, maximumNodes, 16, maximumXmlDepth, maximumAttributes);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), options, CancellationToken.None));
@@ -712,7 +711,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Cumulative_path_command_limit_fails_at_public_conversion()
     {
-        SvgRenderLimits limits = new(32_768, 1_024, 16, 256, 4_096, 16, 9, 1_000);
+        SvgRenderLimits limits = new(32_768, 1_024, 16, 256, 4_096, 16, 9);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 1 V 1 H 0 Z'/><path d='M 2,0 H 3 V 1 H 2 Z'/></svg>"u8.ToArray();
 
@@ -724,7 +723,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Surface_budget_fails_before_a_large_pixel_buffer_allocation()
     {
-        SvgRenderLimits limits = new(20_000, 1024, 100, 10_000, 1024, 1, 1, 100);
+        SvgRenderLimits limits = new(20_000, 1024, 100, 10_000, 1024, 1, 1);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'/>"u8.ToArray(), options, CancellationToken.None));
@@ -735,7 +734,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Contiguous_rgba_surface_overflow_is_a_configured_limit_failure()
     {
-        SvgRenderLimits limits = new(10_000_000_000, 1024, int.MaxValue, int.MaxValue, 1024, 1, 1, 100);
+        SvgRenderLimits limits = new(10_000_000_000, 1024, int.MaxValue, int.MaxValue, 1024, 1, 1);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1073741824' height='2'/>"u8.ToArray(), options, CancellationToken.None));
@@ -756,9 +755,9 @@ public sealed class PublicContractTests
     [Fact]
     public void Owned_png_output_stays_within_the_conversion_budget()
     {
-        SvgRenderLimits insufficient = new(131_071, 1024, 2, 4, 1024, 1, 1, 1);
+        SvgRenderLimits insufficient = new(131_071, 1024, 2, 4, 1024, 1, 1);
         SvgRenderOptions insufficientOptions = new(null, 1, SvgColor.Transparent, insufficient);
-        SvgRenderLimits sufficient = new(131_072, 1024, 2, 4, 1024, 1, 1, 64);
+        SvgRenderLimits sufficient = new(131_072, 1024, 2, 4, 1024, 1, 1);
         SvgRenderOptions sufficientOptions = new(null, 1, SvgColor.Transparent, sufficient);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray();
 
@@ -773,9 +772,9 @@ public sealed class PublicContractTests
     public void Retained_scene_arrays_stay_within_the_conversion_budget()
     {
         long retainedScenePeak = SvgSceneBuilder.RecordedPaintOwnerBytes + ParserCollectionMemory.GetArrayByteCount<SvgRecordedPaintValue>(4) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4);
-        SvgRenderLimits insufficient = new(131_072 + retainedScenePeak - 1, 1024, 2, 4, 1024, 16, 16, 32);
+        SvgRenderLimits insufficient = new(131_072 + retainedScenePeak - 1, 1024, 2, 4, 1024, 16, 16);
         SvgRenderOptions insufficientOptions = new(null, 1, SvgColor.Transparent, insufficient);
-        SvgRenderLimits sufficient = new(131_072 + retainedScenePeak, 1024, 2, 4, 1024, 16, 16, 64);
+        SvgRenderLimits sufficient = new(131_072 + retainedScenePeak, 1024, 2, 4, 1024, 16, 16);
         SvgRenderOptions sufficientOptions = new(null, 1, SvgColor.Transparent, sufficient);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1'/></svg>"u8.ToArray();
 
@@ -789,7 +788,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Caller_destination_does_not_reserve_owned_png_output()
     {
-        SvgRenderLimits limits = new(131_072, 1024, 2, 4, 1024, 1, 1, 64);
+        SvgRenderLimits limits = new(131_072, 1024, 2, 4, 1024, 1, 1);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         byte[] destination = new byte[70];
 
@@ -801,7 +800,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Writable_stream_destination_does_not_reserve_owned_png_output()
     {
-        SvgRenderLimits limits = new(131_072, 1024, 2, 4, 1024, 1, 1, 64);
+        SvgRenderLimits limits = new(131_072, 1024, 2, 4, 1024, 1, 1);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         using MemoryStream destination = new(70);
 
@@ -814,7 +813,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Group_opacity_reserves_an_isolated_surface_before_allocation()
     {
-        SvgRenderLimits limits = new(20_000, 1024, 64, 4_096, 1024, 16, 16, 16);
+        SvgRenderLimits limits = new(20_000, 1024, 64, 4_096, 1024, 16, 16);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g opacity='0.5'><rect width='64' height='64'/></g></svg>"u8.ToArray(), options, CancellationToken.None));

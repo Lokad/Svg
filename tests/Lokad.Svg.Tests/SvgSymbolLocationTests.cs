@@ -57,7 +57,7 @@ public sealed class SvgSymbolLocationTests
     public void Descriptive_symbol_nodes_observe_the_same_structural_limit_in_lowering_and_discovery(int maximumNodes, bool admitted)
     {
         byte[] input = Input("<symbol id='s'><title>Shape</title><desc>Original control</desc><metadata><m:note xmlns:m='urn:sample'/></metadata><rect width='4' height='4'/></symbol><use href='#s'/>");
-        SvgRenderLimits limits = new(1_000_000, 8192, 32, 1024, 4096, maximumNodes, 128, 100_000, 16, 32);
+        SvgRenderLimits limits = new(1_000_000, 8192, 32, 1024, 4096, maximumNodes, 128, 16, 32);
         RenderBudget budget = new(limits.MaximumAccountedBytes);
         if (admitted)
         {

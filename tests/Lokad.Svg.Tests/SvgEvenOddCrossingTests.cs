@@ -17,13 +17,12 @@ public sealed class SvgEvenOddCrossingTests
         int[] votes = multiple ? [1, 1] : [1];
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), null, 1_000_000, budget, out long setup, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), null, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            Assert.True(setup > 0);
-            walker.PrepareRow(2, out long _, CancellationToken.None);
+            walker.PrepareRow(2, CancellationToken.None);
             Assert.Equal((byte)255, walker.Row[6]);
             Assert.Equal((byte)0, walker.Row[4]);
-            walker.PrepareRow(5, out long _, CancellationToken.None);
+            walker.PrepareRow(5, CancellationToken.None);
             Assert.Equal((byte)255, walker.Row[1]);
             if (multiple) Assert.Equal((byte)255, walker.Row[9]);
         }
@@ -32,28 +31,20 @@ public sealed class SvgEvenOddCrossingTests
     }
 
     [Fact]
-    public void Crossing_preparation_work_memory_denial_and_cancellation_release_ownership()
+    public void Crossing_preparation_memory_refusal_and_cancellation_release_ownership()
     {
         SvgDevicePoint[] points = [new(1, 1), new(7, 7), new(7, 1), new(1, 7), new(9, 1), new(15, 7), new(15, 1), new(9, 7)];
         RenderBudget success = new(1_000_000);
-        long setup;
         long storage;
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4, 8], [1, 1], true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(0, 0, 16, 16)), 1_000_000, success, out setup, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4, 8], [1, 1], true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(0, 0, 16, 16)), success, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             storage = success.Snapshot().CurrentBytes;
         }
-        RenderBudget workDenied = new(1_000_000);
-        SvgException work = Assert.Throws<SvgException>(() =>
-        {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4, 8], [1, 1], true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(0, 0, 16, 16)), setup - 1, workDenied, out long _, out bool _, CancellationToken.None);
-        });
-        Assert.Equal(SvgErrorCode.LimitExceeded, work.ErrorCode);
-        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         RenderBudget memoryDenied = new(storage - 1);
         SvgException memory = Assert.Throws<SvgException>(() =>
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4, 8], [1, 1], true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(0, 0, 16, 16)), 1_000_000, memoryDenied, out long _, out bool _, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4, 8], [1, 1], true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(0, 0, 16, 16)), memoryDenied, out bool _, CancellationToken.None);
         });
         Assert.Equal(SvgErrorCode.LimitExceeded, memory.ErrorCode);
         Assert.Equal(0, memoryDenied.Snapshot().CurrentBytes);
@@ -62,7 +53,7 @@ public sealed class SvgEvenOddCrossingTests
         RenderBudget cancelled = new(1_000_000);
         OperationCanceledException exception = Assert.Throws<OperationCanceledException>(() =>
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4, 8], [1, 1], true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(0, 0, 16, 16)), 1_000_000, cancelled, out long _, out bool _, cancellation.Token);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4, 8], [1, 1], true, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(0, 0, 16, 16)), cancelled, out bool _, cancellation.Token);
         });
         Assert.Equal(cancellation.Token, exception.CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);

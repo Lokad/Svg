@@ -55,7 +55,7 @@ internal static class SvgAnalyticRectangleClip
     }
 
     /// <summary>Gets the admitted rectangle's clip coverage at one destination pixel.</summary>
-    /// <remarks>Native AA rectangles truncate X to 1/256 and snap Y to quarters before constructing their byte mask. Initially binary, nearly integral rectangles round to integer boundaries. Partial Y rows pass through the native run-alpha snap; full-height fringes retain their bytes. Boundary provenance prevents allocation bounds from becoming AA edges. This constant-size calculation owns no storage; the caller's per-pixel raster work covers it. It models one rectangle, not successive AA mask intersections or cache history.</remarks>
+    /// <remarks>Native AA rectangles truncate X to 1/256 and snap Y to quarters before constructing their byte mask. Initially binary, nearly integral rectangles round to integer boundaries. Partial Y rows pass through the native run-alpha snap; full-height fringes retain their bytes. Boundary provenance prevents allocation bounds from becoming AA edges. This constant-size calculation owns no storage; the caller checks cancellation during pixel traversal. It models one rectangle, not successive AA mask intersections or cache history.</remarks>
     internal static SvgAnalyticClipCoverage GetCoverage((double Left, double Top, double Right, double Bottom) bounds, SvgClipAntialiasing antialiasing, int x, int y)
     {
         if (x >= bounds.Left && x + 1 <= bounds.Right && y >= bounds.Top && y + 1 <= bounds.Bottom) return SvgAnalyticClipCoverage.Full;

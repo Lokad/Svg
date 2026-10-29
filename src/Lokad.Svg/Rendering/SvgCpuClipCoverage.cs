@@ -70,20 +70,14 @@ internal sealed class SvgCpuClipCoverage : IDisposable
 
     /// <summary>Intersects local borders and trims bounds after the caller intersects canvas interiors.</summary>
     internal void IntersectAndTrim(SvgCpuClipCoverage? previous, byte[] previousTape, byte[] intersectedTape,
-        int width, long maximumWork, out long work, CancellationToken token)
+        int width, CancellationToken token)
     {
-        work = 0;
         for (int index = 0; index < _contexts.Length; index++)
         {
             token.ThrowIfCancellationRequested();
             BitmapCoverage context = _contexts[index];
-            if (work >= maximumWork) throw new SvgException(SvgErrorCode.LimitExceeded, "Bitmap clip intersection exceeds the configured work limit.");
-            work++;
             if (!context.Prepared) continue;
             SvgAnalyticClipBounds bitmap = context.Bitmap, area = context.Bounds;
-            long pixels = (long)(area.Right - area.Left) * (area.Bottom - area.Top);
-            if (pixels > maximumWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Bitmap clip intersection exceeds the configured work limit.");
-            work += pixels;
             int left = area.Right, top = area.Bottom, right = area.Left, bottom = area.Top;
             for (int y = area.Top; y < area.Bottom; y++)
             {

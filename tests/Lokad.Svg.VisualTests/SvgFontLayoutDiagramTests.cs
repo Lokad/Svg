@@ -130,8 +130,6 @@ public sealed class SvgFontLayoutDiagramTests
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(input, snapshot, denied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, denied.Snapshot().CurrentBytes);
             }
-            RenderBudget workDenied = new(32_000_000);
-            Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             using (GlyphExpansionProbe.Observe(cancellation.Cancel))
             {

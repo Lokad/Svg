@@ -10,8 +10,7 @@ internal readonly record struct SvgCurveMeasureStep(float Distance, int Paramete
 /// <summary>Measures and cuts original float curves using the native contour-distance rules.</summary>
 /// <remarks>The caller owns all input/output buffers. Measurement has at most eight recursive levels
 /// and 256 distance records per curve. Polynomial subdivision and conic evaluation allocate no heap
-/// storage. Work is charged before each recursive visit, lookup and bounded cut phase, with cancellation
-/// checks throughout. Outputs may be partial on denial and must remain private until success. Calls are independent.</remarks>
+/// storage. Recursive visits, lookups and bounded cut phases check cancellation throughout. Outputs may be partial on denial and must remain private until success. Calls are independent.</remarks>
 internal static class SvgCurveMeasure
 {
     internal const int MaximumStepCount = 256;
@@ -19,7 +18,7 @@ internal static class SvgCurveMeasure
 
     internal static int Measure(SvgMeasuredCurveKind kind, ReadOnlySpan<SvgDevicePoint> points, float weight,
         float resolutionScale, float initialDistance, Span<SvgCurveMeasureStep> output, out float distance,
-CancellationToken token)
+        CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         Validate(kind, points, weight);
@@ -38,7 +37,7 @@ CancellationToken token)
 
     /// <summary>Finds the native float parameter within one curve's cumulative distance records.</summary>
     internal static float ParameterAt(ReadOnlySpan<SvgCurveMeasureStep> steps, float initialDistance, float distance,
-CancellationToken token)
+        CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         if (steps.IsEmpty || !float.IsFinite(distance) || distance < initialDistance || distance > steps[^1].Distance)
@@ -62,7 +61,7 @@ CancellationToken token)
     /// evaluation; it need not equal the chopped polynomial's intermediate endpoint after float rounding.</remarks>
     internal static bool Cut(SvgMeasuredCurveKind kind, ReadOnlySpan<SvgDevicePoint> points, float weight,
         float start, float stop, Span<SvgDevicePoint> output, out SvgMeasuredCurveKind resultKind, out float resultWeight,
-CancellationToken token)
+        CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         Validate(kind, points, weight);
@@ -200,7 +199,7 @@ CancellationToken token)
 
     private static void WalkPolynomial(SvgMeasuredCurveKind kind, ReadOnlySpan<SvgDevicePoint> p, int minimum, int maximum,
         int depth, float tolerance, Span<SvgCurveMeasureStep> output, ref float distance, ref int count,
-CancellationToken token)
+        CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         int n = kind == SvgMeasuredCurveKind.Quadratic ? 3 : 4;

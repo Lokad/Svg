@@ -172,8 +172,6 @@ public sealed class SvgEmptyFilterGroupTests
         RenderBudget denied = new(parserPeak - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        RenderBudget workDenied = new(1_000_000);
-        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         Assert.Equal(Render(Red), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 

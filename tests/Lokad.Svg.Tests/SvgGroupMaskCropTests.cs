@@ -14,13 +14,11 @@ public sealed class SvgGroupMaskCropTests
     {
         byte[] input = Read(identity);
         RenderBudget measured = new(8_000_000);
-        long rasterWork;
         byte[] expected;
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
         {
             expected = surface.Pixels.ToArray();
-            rasterWork = surface.WorkUnits;
             SvgSceneStorage storage = root.SceneStorage ?? throw new InvalidOperationException("Missing scene storage.");
             Assert.All(storage.MaskContents, mask => Assert.Null(mask.UniformSource));
         }
@@ -35,13 +33,11 @@ public sealed class SvgGroupMaskCropTests
         SvgRenderLimits defaults = SvgRenderLimits.Default;
         SvgRenderLimits limits = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
             defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-            checked((int)(rasterWork - 1)), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
+            defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
         RenderBudget raster = new(8_000_000);
         using (SvgRoot root = SvgRootParser.Parse(input, limits, raster, null, CancellationToken.None))
         {
             long retained = raster.Snapshot().CurrentBytes;
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, limits), raster, CancellationToken.None)).ErrorCode);
             Assert.Equal(retained, raster.Snapshot().CurrentBytes);
             using SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, SvgRenderOptions.Default, raster, CancellationToken.None);
             Assert.Equal(expected, retry.Pixels);

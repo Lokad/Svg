@@ -29,7 +29,7 @@ internal readonly record struct SvgGlyphRgbCoverage(byte Red, byte Green, byte B
 /// ordinates for fractional horizontal glyph-grid endpoints independently of
 /// span ownership and stub continuation. Stub checks include bounded native
 /// overshoot and directed vertex contact; no additional contour arrays are retained.
-/// Every segment, crossing, comparison and cell consumes work and observes cancellation.
+/// Segment, crossing, comparison and cell traversal observes cancellation.
 /// Callers own positioning, bounds, clipping, preblend and scratch reservations;
 /// independent calls with separate scratch may run concurrently.</remarks>
 internal static class SvgGlyphLcdCoverage
@@ -173,8 +173,7 @@ internal static class SvgGlyphLcdCoverage
 
     /// <summary>Prepares horizontal scans and their directed endpoint limits once per pixel row.</summary>
     /// <remarks>Caller reserves and owns crossing storage, count scratch and contours. All are borrowed;
-    /// they must remain unchanged until every pixel in this row has finished. Preparation charges actual
-    /// gathering/sorting work and observes cancellation. No vertical scans or per-pixel cells are retained.</remarks>
+    /// they must remain unchanged until every pixel in this row has finished. Preparation observes cancellation during gathering and sorting. No vertical scans or per-pixel cells are retained.</remarks>
     internal static ScanRow PrepareRow(ReadOnlySpan<OpenTypeQuadraticSegment> segments, int pixelY, Span<Crossing> crossings, Span<int> counts, CancellationToken token)
         => PrepareRowCore(segments, [], pixelY, crossings, counts, SvgGlyphLcdMode.Symmetric, token);
 

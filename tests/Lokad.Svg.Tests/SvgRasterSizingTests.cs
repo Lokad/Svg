@@ -59,7 +59,7 @@ public sealed class SvgRasterSizingTests
     {
         SvgRenderLimits d = SvgRenderLimits.Default;
         SvgRenderLimits limits = new(d.MaximumAccountedBytes, d.MaximumInputBytes, 128, 16_384,
-            d.MaximumEncodedPngBytes, d.MaximumNodes, d.MaximumPathCommands, d.MaximumWorkUnits);
+            d.MaximumEncodedPngBytes, d.MaximumNodes, d.MaximumPathCommands);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='4800' height='2400'/>"u8.ToArray();
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg,
             new(null, 1, SvgColor.Transparent, limits), CancellationToken.None)).ErrorCode);
@@ -82,7 +82,7 @@ public sealed class SvgRasterSizingTests
     {
         SvgRenderLimits d = SvgRenderLimits.Default;
         SvgRenderLimits limits = new(d.MaximumAccountedBytes, d.MaximumInputBytes, int.MaxValue, int.MaxValue,
-            d.MaximumEncodedPngBytes, d.MaximumNodes, d.MaximumPathCommands, d.MaximumWorkUnits);
+            d.MaximumEncodedPngBytes, d.MaximumNodes, d.MaximumPathCommands);
         SvgRasterSize result = SvgRasterSizing.Resolve(new(1_000_000, 1_000_000), 1,
             new(int.MaxValue, int.MaxValue, long.MaxValue), limits);
         Assert.InRange(result.PixelCount, 1, int.MaxValue / 4);
@@ -158,7 +158,7 @@ public sealed class SvgRasterSizingTests
         Assert.Equal(expected, stream.ToArray());
         SvgRenderLimits d = SvgRenderLimits.Default;
         SvgRenderLimits limits = new(d.MaximumAccountedBytes, d.MaximumInputBytes, d.MaximumDimension, d.MaximumPixels,
-            1, d.MaximumNodes, d.MaximumPathCommands, d.MaximumWorkUnits);
+            1, d.MaximumNodes, d.MaximumPathCommands);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, stream,
             new(null, 1, SvgColor.Transparent, limits, null, bounds), CancellationToken.None)).ErrorCode);
         Assert.Equal(expected, stream.ToArray());

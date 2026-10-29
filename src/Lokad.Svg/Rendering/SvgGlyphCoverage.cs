@@ -10,7 +10,7 @@ internal static class SvgGlyphCoverage
 
     /// <summary>Owns the existing eight subdivision endpoints and original start for each fallback segment.</summary>
     /// <remarks>One conversion thread and glyph. Preparation reserves dominant storage before allocation,
-    /// charges each subdivision and observes cancellation. Coverage borrows immutable points while this owner
+    /// observes cancellation at each subdivision. Coverage borrows immutable points while this owner
     /// remains alive; disposal releases the array reference and aggregate allowance after the last borrower.</remarks>
     internal sealed class PreparedContours : IDisposable
     {
@@ -92,12 +92,6 @@ internal static class SvgGlyphCoverage
             }
         }
         return (byte)((covered * 255 + total / 2) / total);
-    }
-
-    /// <summary>Returns the fixed subdivision operations needed for one coverage sample across these contours.</summary>
-    internal static long GetSampleWorkUnits(ReadOnlySpan<SvgGlyphQuadraticContour> contours)
-    {
-        return checked(GetSegmentCount(contours) * QuadraticSubdivisions);
     }
 
     /// <summary>Returns the bounded number of quadratic segments visited by one contour operation.</summary>

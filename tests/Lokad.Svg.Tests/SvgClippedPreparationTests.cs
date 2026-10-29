@@ -37,10 +37,10 @@ public sealed class SvgClippedPreparationTests
         SvgAnalyticContourPreparation preparation = new(points, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(int.MinValue, int.MinValue, int.MaxValue, int.MaxValue), 16, 16);
         Assert.True(preparation.UsesRunBlitter);
         RenderBudget budget = new(100_000);
-        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 16, 0, 16, new(0, 16), null, SvgAnalyticPaintClip.Binary, 100_000, budget, out long _, out bool eligible, CancellationToken.None))
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 16, 0, 16, new(0, 16), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None))
         {
             Assert.True(eligible);
-            walker.PrepareRow(6, out long _, CancellationToken.None);
+            walker.PrepareRow(6, CancellationToken.None);
             Assert.Equal(16, walker.Row.Length);
             byte[] pixel = new byte[4];
             walker.PaintPixel(6, pixel, SvgAnalyticPaint.Solid(new(255, 0, 0, 255)), SvgAnalyticClipCoverage.Full);
@@ -55,9 +55,9 @@ public sealed class SvgClippedPreparationTests
         SvgDevicePoint[] points = [new(-4, 4), new(-2, 4), new(-2, 12), new(-4, 12)];
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4], [], false, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(8, 0, 16, 16)), 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [4], [], false, null, SvgPolygonMapping.FiniteEdges, [], [], 0, 16, 0, 16, 16, 16, new(0, 16), new(new(8, 0, 16, 16)), budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            walker.PrepareRow(8, out long _, CancellationToken.None);
+            walker.PrepareRow(8, CancellationToken.None);
             // The closed box lies wholly to the left of this clip. Its projected
             // sides have opposite winding and must leave no coverage interval.
             Assert.All(walker.Row.ToArray(), value => Assert.Equal((byte)0, value));
@@ -74,9 +74,9 @@ public sealed class SvgClippedPreparationTests
         Assert.All(polygon.Points, point => Assert.InRange(point.Y, 0, 128));
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            walker.PrepareRow(12, out long _, CancellationToken.None);
+            walker.PrepareRow(12, CancellationToken.None);
             byte[] pixel = new byte[4];
             walker.PaintPixel(86, pixel, SvgAnalyticPaint.Solid(polygon.Color), SvgAnalyticClipCoverage.Full);
             // The independently frozen scaled control is alpha 168 here;
@@ -87,28 +87,6 @@ public sealed class SvgClippedPreparationTests
     }
 
     [Fact]
-    public void Work_denial_after_sizing_releases_partial_construction()
-    {
-        using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(ScaledInput), SvgRenderLimits.Default, CancellationToken.None);
-        var polygon = Assert.Single(root.Geometries).Polygon;
-        RenderBudget success = new(1_000_000);
-        long setup;
-        {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), 1_000_000, success, out setup, out bool eligible, CancellationToken.None);
-            Assert.True(eligible);
-        }
-        RenderBudget denied = new(1_000_000);
-        SvgException exception = Assert.Throws<SvgException>(() =>
-        {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), setup - 1, denied, out long _, out bool _, CancellationToken.None);
-        });
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.True(denied.Snapshot().PeakBytes > 0);
-        Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        Assert.Equal(0, denied.Snapshot().DeniedReservationCount);
-    }
-
-    [Fact]
     public void Run_link_memory_denial_releases_reserved_clipped_edges()
     {
         using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(ScaledInput), SvgRenderLimits.Default, CancellationToken.None);
@@ -116,14 +94,14 @@ public sealed class SvgClippedPreparationTests
         RenderBudget success = new(1_000_000);
         long storage;
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), 1_000_000, success, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), success, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
             storage = success.Snapshot().CurrentBytes;
         }
         RenderBudget denied = new(storage - 1);
         SvgException exception = Assert.Throws<SvgException>(() =>
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), 1_000_000, denied, out long _, out bool _, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), denied, out bool _, CancellationToken.None);
         });
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.True(denied.Snapshot().PeakBytes > 0);
@@ -141,7 +119,7 @@ public sealed class SvgClippedPreparationTests
         source.Cancel();
         OperationCanceledException exception = Assert.Throws<OperationCanceledException>(() =>
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), 1_000_000, budget, out long _, out bool _, source.Token);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 128, 0, 128, 128, 128, new(0, 128), new(new(0, 0, 128, 128)), budget, out bool _, source.Token);
         });
         Assert.Equal(source.Token, exception.CancellationToken);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

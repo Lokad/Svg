@@ -85,7 +85,7 @@ public sealed class SvgFilterSourceCoverageTests
     [InlineData(false)]
     [InlineData(true)]
     [Trait("Layer", "Contract")]
-    public void Aliased_source_work_refusal_cancellation_and_retry_release_temporary_owners(bool materialized)
+    public void Aliased_source_memory_refusal_cancellation_and_retry_release_temporary_owners(bool materialized)
     {
         RenderBudget parser = new(1_000_000);
         string graph = materialized ? "<feGaussianBlur stdDeviation='.4 0'/><feOffset dy='.5'/>"
@@ -96,29 +96,25 @@ public sealed class SvgFilterSourceCoverageTests
             byte[] source = [253, 0, 1, 255, 253, 0, 1, 255];
             RenderBudget budget = new(1_000_000);
             byte[] expected;
-            long work;
-            using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), budget, 1_000_000, CancellationToken.None))
+            using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), budget, CancellationToken.None))
             {
-                expected = result.Pixels.ToArray(); work = result.WorkUnits;
-                Assert.Equal(materialized, result.Samples is not null);
+                expected = result.Pixels.ToArray();                 Assert.Equal(materialized, result.Samples is not null);
             }
             if (!materialized) Assert.Equal(new byte[] { 127, 0, 1, 128, 253, 0, 1, 255 }, expected);
             Assert.Equal(128, expected[3]);
             Assert.Equal(255, expected[7]);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), budget, work - 1, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             RenderBudget tight = new(budget.Snapshot().PeakBytes - 1);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), tight, work, CancellationToken.None)).ErrorCode);
+                SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), tight, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
             Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() =>
-                SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), budget, work, cancellation.Token)).CancellationToken);
+                SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), budget, cancellation.Token)).CancellationToken);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            using (SvgFilterResult retry = SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), budget, work, CancellationToken.None))
+            using (SvgFilterResult retry = SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), budget, CancellationToken.None))
                 Assert.Equal(expected, retry.Pixels);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             Assert.Equal(new byte[] { 253, 0, 1, 255, 253, 0, 1, 255 }, source);

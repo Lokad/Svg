@@ -22,7 +22,7 @@ internal readonly record struct SvgAnalyticClipBounds(int Left, int Top, int Rig
 internal ref partial struct SvgAnalyticCoverage
 {
     /// <summary>Constructs monotonic clipped verbs in caller-owned scratch, preserving path winding.</summary>
-    /// <remarks>No heap allocation or retained ownership occurs. The caller provides at least MaximumPieces slots and must account any subsequent edge storage before construction. Each clip replaces the previous pieces; work accumulates within the supplied limit and is charged before numerical operations, including empty/rejected pieces and root-search iterations. Cancellation preserves the supplied token. Each instance and its scratch have one caller and are single-threaded.</remarks>
+    /// <remarks>No heap allocation or retained ownership occurs. The caller provides at least MaximumPieces slots and must account any subsequent edge storage before construction. Each clip replaces the previous pieces; traversal and root searches observe cancellation and retain their numerical bounds. Cancellation preserves the supplied token. Each instance and its scratch have one caller and are single-threaded.</remarks>
     internal ref struct Clipper
     {
         // At most nine X/Y-monotonic cubics, each emitting two projection lines
@@ -32,27 +32,16 @@ internal ref partial struct SvgAnalyticCoverage
         private readonly SvgAnalyticClipBounds _clip;
         private readonly bool _cullRight;
         private readonly Span<SvgAnalyticClipPiece> _pieces;
-        private readonly long _maximumWork;
         private readonly CancellationToken _token;
         internal int Count { get; private set; }
-        internal long WorkUnits { get; private set; }
 
-        internal Clipper(SvgAnalyticClipBounds clip, bool cullRight, Span<SvgAnalyticClipPiece> pieces, long maximumWork, CancellationToken cancellationToken)
+        internal Clipper(SvgAnalyticClipBounds clip, bool cullRight, Span<SvgAnalyticClipPiece> pieces, CancellationToken cancellationToken)
         {
             if (clip.Left > clip.Right || clip.Top > clip.Bottom) throw new ArgumentOutOfRangeException(nameof(clip));
             if (pieces.Length < MaximumPieces) throw new ArgumentOutOfRangeException(nameof(pieces));
-            if (maximumWork < 0) throw new ArgumentOutOfRangeException(nameof(maximumWork));
             _clip = clip; _cullRight = cullRight; _pieces = pieces;
-            _maximumWork = maximumWork; _token = cancellationToken;
-            Count = 0; WorkUnits = 0;
-        }
-
-        private void Charge(int units)
-        {
-            _token.ThrowIfCancellationRequested();
-            if (units > _maximumWork - WorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic edge clipping exceeds the configured work limit.");
-            WorkUnits += units;
-        }
+_token = cancellationToken;
+            Count = 0;         }
 
         private static void Validate(SvgAnalyticClipPoint point)
         {
@@ -61,7 +50,7 @@ internal ref partial struct SvgAnalyticCoverage
 
         private void Append(SvgAnalyticClipPiece piece)
         {
-            Charge((int)piece.Kind);
+            _token.ThrowIfCancellationRequested();
             if (Count == MaximumPieces) throw new InvalidOperationException("Analytic clipping exceeded its proven piece bound.");
             _pieces[Count++] = piece;
         }
@@ -75,7 +64,7 @@ internal ref partial struct SvgAnalyticCoverage
         /// <summary>Clips one line vertically and projects its outside horizontal pieces to clip boundaries.</summary>
         internal void ClipLine(SvgAnalyticClipPoint first, SvgAnalyticClipPoint second)
         {
-            Count = 0; Charge(2); Validate(first); Validate(second);
+            Count = 0; _token.ThrowIfCancellationRequested(); Validate(first); Validate(second);
             if (_clip.Left == _clip.Right || _clip.Top == _clip.Bottom) return;
             int low = first.Y < second.Y ? 0 : 1;
             int high = 1 - low;
@@ -118,7 +107,7 @@ internal ref partial struct SvgAnalyticCoverage
 
             static float IntersectHorizontal(ref Clipper clipper, SvgAnalyticClipPoint first, SvgAnalyticClipPoint second, float y)
             {
-                clipper.Charge(4);
+                clipper._token.ThrowIfCancellationRequested();
                 if (MathF.Abs(second.Y - first.Y) <= 1f / 4096) return (float)(0.5 * ((double)first.X + second.X));
                 double x = first.X + ((double)y - first.Y) * ((double)second.X - first.X) / ((double)second.Y - first.Y);
                 return (float)Math.Clamp(x, Math.Min(first.X, second.X), Math.Max(first.X, second.X));
@@ -126,7 +115,7 @@ internal ref partial struct SvgAnalyticCoverage
 
             static float IntersectVertical(ref Clipper clipper, SvgAnalyticClipPoint first, SvgAnalyticClipPoint second, float x)
             {
-                clipper.Charge(4);
+                clipper._token.ThrowIfCancellationRequested();
                 float y = MathF.Abs(second.X - first.X) <= 1f / 4096 ? (float)(0.5 * ((double)first.Y + second.Y))
                     : (float)(first.Y + ((double)x - first.X) * ((double)second.Y - first.Y) / ((double)second.X - first.X));
                 return Math.Clamp(y, Math.Min(first.Y, second.Y), Math.Max(first.Y, second.Y));
@@ -136,7 +125,7 @@ internal ref partial struct SvgAnalyticCoverage
         /// <summary>Splits a cubic at Y then X extrema and clips each monotonic piece, preserving native projection order.</summary>
         internal void ClipCubic(SvgAnalyticClipPoint p0, SvgAnalyticClipPoint p1, SvgAnalyticClipPoint p2, SvgAnalyticClipPoint p3)
         {
-            Count = 0; Charge(4); Validate(p0); Validate(p1); Validate(p2); Validate(p3);
+            Count = 0; _token.ThrowIfCancellationRequested(); Validate(p0); Validate(p1); Validate(p2); Validate(p3);
             if (_clip.Left == _clip.Right || _clip.Top == _clip.Bottom) return;
             float top = Math.Min(Math.Min(p0.Y, p1.Y), Math.Min(p2.Y, p3.Y));
             float bottom = Math.Max(Math.Max(p0.Y, p1.Y), Math.Max(p2.Y, p3.Y));
@@ -157,7 +146,7 @@ internal ref partial struct SvgAnalyticCoverage
 
             static int ChopExtrema(ref Clipper clipper, SvgAnalyticClipPoint p0, SvgAnalyticClipPoint p1, SvgAnalyticClipPoint p2, SvgAnalyticClipPoint p3, bool xAxis, scoped Span<SvgAnalyticClipPoint> output)
             {
-                clipper.Charge(16);
+                clipper._token.ThrowIfCancellationRequested();
                 Span<float> roots = stackalloc float[2];
                 int count = xAxis ? CubicExtremaY(p0.X, p1.X, p2.X, p3.X, roots) : CubicExtremaY(p0.Y, p1.Y, p2.Y, p3.Y, roots);
                 if (count == 0) { output[0] = p0; output[1] = p1; output[2] = p2; output[3] = p3; return 1; }
@@ -173,7 +162,7 @@ internal ref partial struct SvgAnalyticCoverage
 
             static void ClipMonoCubic(ref Clipper clipper, scoped ReadOnlySpan<SvgAnalyticClipPoint> source)
             {
-                clipper.Charge(8);
+                clipper._token.ThrowIfCancellationRequested();
                 Span<SvgAnalyticClipPoint> points = stackalloc SvgAnalyticClipPoint[4];
                 bool reverse = source[0].Y > source[3].Y;
                 for (int i = 0; i < 4; i++) points[i] = source[reverse ? 3 - i : i];
@@ -216,7 +205,7 @@ internal ref partial struct SvgAnalyticCoverage
 
                 static void ChopAtAxis(ref Clipper clipper, scoped ReadOnlySpan<SvgAnalyticClipPoint> points, float target, bool xAxis, scoped Span<SvgAnalyticClipPoint> output)
                 {
-                    clipper.Charge(16);
+                    clipper._token.ThrowIfCancellationRequested();
                     double a = xAxis ? points[0].X : points[0].Y;
                     double b = xAxis ? points[1].X : points[1].Y;
                     double c = xAxis ? points[2].X : points[2].Y;
@@ -245,7 +234,7 @@ internal ref partial struct SvgAnalyticCoverage
                     float previous;
                     do
                     {
-                        clipper.Charge(4);
+                        clipper._token.ThrowIfCancellationRequested();
                         float location = ((fa * current + fb) * current + fc) * current, distance = MathF.Abs(location - goal);
                         if (closest > distance) { closest = distance; bestT = current; }
                         previous = current; current += location < goal ? step : -step; step *= 0.5f;
@@ -256,7 +245,7 @@ internal ref partial struct SvgAnalyticCoverage
 
                     static bool FirstIntersection(ref Clipper clipper, double a, double b, double c, double d, out double solution)
                     {
-                        clipper.Charge(16);
+                        clipper._token.ThrowIfCancellationRequested();
                         Span<double> roots = stackalloc double[3];
                         int count = CubicRoots(a, b, c, d, roots);
                         Span<double> valid = stackalloc double[3];
@@ -288,20 +277,16 @@ internal ref partial struct SvgAnalyticCoverage
                         found = 0;
                         for (; start < 3; start++)
                         {
-                            long searchWork = clipper.WorkUnits;
                             double root;
-                            try { root = Search(a, b, c, d, regions[start], regions[start + 1], ref searchWork, clipper._maximumWork, clipper._token); }
-                            finally { clipper.WorkUnits = searchWork; }
+                            { root = Search(a, b, c, d, regions[start], regions[start + 1], clipper._token); }
                             if (root >= 0 && (found < 1 || Math.Abs(valid[0] - root) >= 1e-8) && (found < 2 || Math.Abs(valid[1] - root) >= 1e-8)) valid[found++] = root;
                         }
                         for (int i = 0; i < found; i++) if (Math.Abs(Evaluate(a, b, c, d, valid[i])) < 1e-5) { solution = valid[i]; return true; }
                         solution = 0; return false;
 
-                        static double Search(double a, double b, double c, double d, double start, double stop, ref long work, long maximumWork, CancellationToken token)
+                        static double Search(double a, double b, double c, double d, double start, double stop, CancellationToken token)
                         {
                             token.ThrowIfCancellationRequested();
-                            if (2 > maximumWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic clip root search exceeds the configured work limit.");
-                            work += 2;
                             double left = Evaluate(a, b, c, d, start);
                             if (Math.Abs(left) < 1e-8) return start;
                             double right = Evaluate(a, b, c, d, stop);
@@ -309,8 +294,6 @@ internal ref partial struct SvgAnalyticCoverage
                             for (int i = 0; i < 1000; i++)
                             {
                                 token.ThrowIfCancellationRequested();
-                                if (4 > maximumWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic clip root search exceeds the configured work limit.");
-                                work += 4;
                                 double step = (start + stop) / 2, current = Evaluate(a, b, c, d, step);
                                 if (Math.Abs(current) < 1e-8) return step;
                                 if ((current < 0 && left < 0) || (current > 0 && left > 0)) start = step;
@@ -376,7 +359,7 @@ internal ref partial struct SvgAnalyticCoverage
         /// <summary>Splits a quadratic at Y then X extrema and clips the monotonic pieces.</summary>
         internal void ClipQuad(SvgAnalyticClipPoint p0, SvgAnalyticClipPoint p1, SvgAnalyticClipPoint p2)
         {
-            Count = 0; Charge(3); Validate(p0); Validate(p1); Validate(p2);
+            Count = 0; _token.ThrowIfCancellationRequested(); Validate(p0); Validate(p1); Validate(p2);
             if (_clip.Left == _clip.Right || _clip.Top == _clip.Bottom) return;
             if (Math.Max(Math.Max(p0.Y, p1.Y), p2.Y) <= _clip.Top || Math.Min(Math.Min(p0.Y, p1.Y), p2.Y) >= _clip.Bottom) return;
             Span<SvgAnalyticClipPoint> yPieces = stackalloc SvgAnalyticClipPoint[5];
@@ -391,7 +374,7 @@ internal ref partial struct SvgAnalyticCoverage
 
             static int ChopQuadExtrema(ref Clipper clipper, SvgAnalyticClipPoint p0, SvgAnalyticClipPoint p1, SvgAnalyticClipPoint p2, bool xAxis, scoped Span<SvgAnalyticClipPoint> output)
             {
-                clipper.Charge(8);
+                clipper._token.ThrowIfCancellationRequested();
                 float a = xAxis ? p0.X : p0.Y, b = xAxis ? p1.X : p1.Y, c = xAxis ? p2.X : p2.Y;
                 if (!QuadMonotonic(a, b, c))
                 {
@@ -410,7 +393,7 @@ internal ref partial struct SvgAnalyticCoverage
 
             static void ClipMonoQuad(ref Clipper clipper, scoped ReadOnlySpan<SvgAnalyticClipPoint> source)
             {
-                clipper.Charge(8);
+                clipper._token.ThrowIfCancellationRequested();
                 Span<SvgAnalyticClipPoint> points = stackalloc SvgAnalyticClipPoint[3];
                 bool reverse = source[0].Y > source[2].Y;
                 for (int i = 0; i < 3; i++) points[i] = source[reverse ? 2 - i : i];
@@ -418,7 +401,7 @@ internal ref partial struct SvgAnalyticCoverage
                 Span<SvgAnalyticClipPoint> chopped = stackalloc SvgAnalyticClipPoint[5];
                 if (points[0].Y < clipper._clip.Top)
                 {
-                    clipper.Charge(8);
+                    clipper._token.ThrowIfCancellationRequested();
                     if (QuadIntersection(points, clipper._clip.Top, false, out float t))
                     {
                         ChopQuad(points[0], points[1], points[2], t, chopped);
@@ -428,7 +411,7 @@ internal ref partial struct SvgAnalyticCoverage
                 }
                 if (points[2].Y > clipper._clip.Bottom)
                 {
-                    clipper.Charge(8);
+                    clipper._token.ThrowIfCancellationRequested();
                     if (QuadIntersection(points, clipper._clip.Bottom, false, out float t))
                     {
                         ChopQuad(points[0], points[1], points[2], t, chopped);
@@ -441,7 +424,7 @@ internal ref partial struct SvgAnalyticCoverage
                 if (points[0].X >= clipper._clip.Right) { if (!clipper._cullRight) clipper.Vertical(clipper._clip.Right, points[0].Y, points[2].Y, reverse); return; }
                 if (points[0].X < clipper._clip.Left)
                 {
-                    clipper.Charge(8);
+                    clipper._token.ThrowIfCancellationRequested();
                     if (QuadIntersection(points, clipper._clip.Left, true, out float t))
                     {
                         ChopQuad(points[0], points[1], points[2], t, chopped);
@@ -452,7 +435,7 @@ internal ref partial struct SvgAnalyticCoverage
                 }
                 if (points[2].X > clipper._clip.Right)
                 {
-                    clipper.Charge(8);
+                    clipper._token.ThrowIfCancellationRequested();
                     if (QuadIntersection(points, clipper._clip.Right, true, out float t))
                     {
                         ChopQuad(points[0], points[1], points[2], t, chopped);

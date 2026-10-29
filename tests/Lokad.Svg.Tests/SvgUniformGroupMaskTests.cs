@@ -56,19 +56,12 @@ public sealed class SvgUniformGroupMaskTests
         RenderBudget sceneBudget = new(10_000_000), measured = new(10_000_000);
         using (SvgRoot scene = SvgRootParser.Parse(Input(forward), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
         {
-            long work;
-            using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None)) work = surface.WorkUnits;
+            using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None)) {}
             Assert.Equal(0, measured.Snapshot().CurrentBytes);
             RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, tight, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
             RenderBudget denied = new(10_000_000);
-            SvgRenderLimits standard = SvgRenderLimits.Default;
-            SvgRenderLimits limits = new(standard.MaximumAccountedBytes, standard.MaximumInputBytes, standard.MaximumDimension,
-                standard.MaximumPixels, standard.MaximumEncodedPngBytes, standard.MaximumNodes, standard.MaximumPathCommands,
-                checked((int)work - 1), standard.MaximumXmlDepth, standard.MaximumAttributesPerElement);
-            SvgRenderOptions limited = new(null, 1, SvgColor.Transparent, limits);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, limited, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();

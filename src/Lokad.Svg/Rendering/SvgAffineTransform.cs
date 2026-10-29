@@ -85,8 +85,7 @@ internal readonly record struct SvgAffineTransform(double A, double B, double C,
     }
 
     /// <summary>Composes rounded native canvas coefficients in SkM44 column-product order.</summary>
-    /// <remarks>Pure bounded arithmetic with no storage ownership. Callers charge preparation work
-    /// and observe cancellation. Preserve the translation addition order and separate float products.</remarks>
+    /// <remarks>Pure bounded arithmetic with no storage ownership. Callers observe cancellation. Preserve the translation addition order and separate float products.</remarks>
     internal SvgAffineTransform ComposeNative(SvgAffineTransform inner)
     {
         float a = (float)A, b = (float)B, c = (float)C, d = (float)D, e = (float)E, f = (float)F;

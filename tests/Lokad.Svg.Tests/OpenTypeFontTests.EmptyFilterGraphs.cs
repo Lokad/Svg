@@ -12,21 +12,18 @@ public sealed partial class OpenTypeFontTests
             SvgFilterUnits.UserSpace, SvgFilterColorSpace.Srgb, new([], null), null);
         byte[] source = [255, 0, 0, 255];
         RenderBudget budget = new(1_000_000);
-        long work;
-        using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, long.MaxValue, CancellationToken.None))
+        using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, CancellationToken.None))
         {
             Assert.Equal(new byte[4], result.Pixels);
-            work = result.WorkUnits;
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget tight = new(budget.Snapshot().PeakBytes - 1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), tight, work, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), tight, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, work - 1, CancellationToken.None)).ErrorCode);
         using CancellationTokenSource cancelled = new();
         cancelled.Cancel();
-        Assert.ThrowsAny<OperationCanceledException>(() => SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, work, cancelled.Token));
-        using (SvgFilterResult retry = SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, work, CancellationToken.None))
+        Assert.ThrowsAny<OperationCanceledException>(() => SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, cancelled.Token));
+        using (SvgFilterResult retry = SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, CancellationToken.None))
             Assert.Equal(new byte[4], retry.Pixels);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(new byte[] { 255, 0, 0, 255 }, source);

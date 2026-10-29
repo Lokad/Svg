@@ -8,12 +8,12 @@ namespace Lokad.Svg.Rendering;
 /// <summary>Subdivides mapped hairline curves and extends endpoint caps with native float operations.</summary>
 /// <remarks>All buffers are bounded stack storage. Cubics have at most four pieces and 512 lines per
 /// piece; quadratics have at most 32 lines and conics at most 32 quadratics. Each polynomial is checked
-/// for finite interior points before painting any of its lines. Work is charged before numerical
-/// phases and every evaluation, subdivision and paint is cancellable. Calls share no mutable state.</remarks>
+/// for finite interior points before painting any of its lines. Every evaluation, subdivision and paint
+/// is cancellable. Calls share no mutable state.</remarks>
 internal static class SvgHairlineCurves
 {
     internal static void DrawQuadratic(ref SvgHairlineCoverage raster, scoped ReadOnlySpan<SvgDevicePoint> points,
-CancellationToken token)
+        CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         float x0 = (float)points[0].X, y0 = (float)points[0].Y;
@@ -30,17 +30,17 @@ CancellationToken token)
     }
 
     internal static void DrawConic(ref SvgHairlineCoverage raster, scoped ReadOnlySpan<SvgDevicePoint> points, float weight,
-CancellationToken token)
+        CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         Span<SvgDevicePoint> quads = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
         int count = SvgRationalQuadratic.Convert(points[0], points[1], points[2], weight,
-            SvgRationalQuadratic.DeviceTolerance, quads, out _, token);
+            SvgRationalQuadratic.DeviceTolerance, quads, token);
         for (int index = 0; index < count; index++) DrawQuadratic(ref raster, quads.Slice(2 * index, 3), token);
     }
 
     internal static void DrawCubic(ref SvgHairlineCoverage raster, scoped ReadOnlySpan<SvgDevicePoint> points,
-CancellationToken token)
+        CancellationToken token)
     {
         // Reserve the constant root-solving and chopping phase before computing it.
         token.ThrowIfCancellationRequested();
@@ -115,7 +115,7 @@ CancellationToken token)
     }
 
     internal static void ExtendCaps(Span<SvgDevicePoint> points, SvgStrokeCap cap, bool first, bool last,
-CancellationToken token)
+        CancellationToken token)
     {
         if (cap == SvgStrokeCap.Butt) return;
         token.ThrowIfCancellationRequested();

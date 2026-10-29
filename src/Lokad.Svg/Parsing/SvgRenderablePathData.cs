@@ -11,7 +11,7 @@ internal readonly record struct SvgRenderablePathData(string Value, int CommandC
     {
         value ??= string.Empty;
         (int length, int count) = SvgPathDataParser.ReadRenderablePrefix(value, maximumCommands, token);
-        // Whitespace still passes through authored scanning and work accounting.
+        // Whitespace still passes through cancellable authored scanning.
         if (count == 0) return new(string.Empty, count, null);
         if (length == value.Length) return new(value, count, null);
         if (length == 0) return new(string.Empty, count, null);

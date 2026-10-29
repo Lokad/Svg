@@ -174,8 +174,6 @@ public sealed partial class OpenTypeFontTests
             Assert.Equal(new[] { 100d, 50, 100 }, Enumerable.Range(0, 3).Select(index => run.GetGlyphFont(index).FontSize));
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        RenderBudget denied = new(1_000_000);
-        Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget memory = new(budget.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             SvgTextRunBuilder.Create(style, "AAA", [], [], [], fonts, null, null, snapshot, memory, CancellationToken.None)).ErrorCode);

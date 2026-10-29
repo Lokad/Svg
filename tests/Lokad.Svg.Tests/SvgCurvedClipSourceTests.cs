@@ -62,23 +62,9 @@ public sealed class SvgCurvedClipSourceTests
             SvgAuthoredPath[] paths = storage.MaskContents.SelectMany(mask => mask.Geometries).Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>().ToArray();
             SvgAuthoredPathCommand[][] original = paths.Select(path => path.Commands.ToArray()).ToArray();
             long owned = retry.Snapshot().CurrentBytes;
-            long rasterWork;
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, retry, CancellationToken.None))
             {
                 Assert.Contains(surface.Pixels, value => value != 0);
-                rasterWork = surface.WorkUnits;
-            }
-            SvgRenderLimits defaults = SvgRenderLimits.Default;
-            foreach (long limit in new[] { 0L + 1, (0L + rasterWork) / 2, rasterWork - 1 })
-            {
-                SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
-                    defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-                    checked((int)limit), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                {
-                    using var denied = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, tight), retry, CancellationToken.None);
-                }).ErrorCode);
-                Assert.Equal(owned, retry.Snapshot().CurrentBytes);
             }
             using (retry.Reserve(1_000_000 - owned - 1024, SvgMemoryCategory.Surface))
             {

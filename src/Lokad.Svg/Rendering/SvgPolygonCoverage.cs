@@ -12,7 +12,7 @@ namespace Lokad.Svg.Rendering;
 /// device coordinates exactly.</para>
 /// <para>This is pure geometry. Coverage-to-alpha quantization, opacity products and compositing remain
 /// separate calibration concerns and must not be folded into these values.</para>
-/// <para>Callers charge mapped vertices up front and one raster work unit per evaluated pixel per polygon vertex; this kernel holds no budget itself and
+/// <para>The caller checks cancellation during mapping and pixel traversal; this kernel
 /// allocates nothing, clipping each fan triangle in fixed scratch spans.</para>
 /// </remarks>
 internal static class SvgPolygonCoverage

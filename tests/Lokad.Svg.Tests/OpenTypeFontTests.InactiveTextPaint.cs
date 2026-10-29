@@ -228,8 +228,6 @@ public sealed partial class OpenTypeFontTests
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
-        RenderBudget workDenied = new(1_000_000);
-        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgFontRequestDiscovery.Discover(input, cancellation.Token)).CancellationToken);

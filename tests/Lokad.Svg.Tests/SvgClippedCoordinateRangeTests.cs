@@ -18,9 +18,9 @@ public sealed class SvgClippedCoordinateRangeTests
             using SvgPreparedPathContours source = outline.PrepareSource(SvgAffineTransform.Identity, false, budget, CancellationToken.None);
             SvgAnalyticContourPreparation preparation = new(source.Points, source.ContourEnds, [], false, source.Signs, SvgPolygonMapping.NativeFillEdges,
                 source.QuadSpans, source.CubicSpans, new(12, 12, 8_388_627, 20), 32, 32, source, outline.SceneMap);
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 12, 32, 12, 20, new(0, 32), new(new(0, 0, 32, 32)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 12, 32, 12, 20, new(0, 32), new(new(0, 0, 32, 32)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            walker.PrepareRow(12, out long _, CancellationToken.None);
+            walker.PrepareRow(12, CancellationToken.None);
             byte[] pixel = new byte[4];
             walker.PaintPixel(1, pixel, SvgAnalyticPaint.Solid(new(0, 0, 255, 255)), SvgAnalyticClipCoverage.Full);
             // Premultiplied pixel (13,12) in the independent miter-bounds-00 capture.
@@ -42,9 +42,9 @@ public sealed class SvgClippedCoordinateRangeTests
         SvgAnalyticContourPreparation preparation = new(points, [3], [], false, null, SvgPolygonMapping.NativeFillEdges, [], [], new(-1_000_000, 4, 1_000_000, 28), 32, 32);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 4, 28, new(0, 32), new(new(0, 0, 32, 32)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 4, 28, new(0, 32), new(new(0, 0, 32, 32)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.True(eligible);
-            walker.PrepareRow(16, out long _, CancellationToken.None);
+            walker.PrepareRow(16, CancellationToken.None);
             byte[] pixel = new byte[4];
             walker.PaintPixel(endpoint > 0 ? 20 : 12, pixel, SvgAnalyticPaint.Solid(new(0, 0, 255, 255)), SvgAnalyticClipCoverage.Full);
             Assert.Equal((byte)255, pixel[3]);
@@ -62,11 +62,11 @@ public sealed class SvgClippedCoordinateRangeTests
         SvgAnalyticContourPreparation preparation = new(points, [3], [], false, null, SvgPolygonMapping.NativeFillEdges, [], [], new(0, 0, 32, 32), 32, 32);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage uncut = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 32), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage uncut = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 32), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.False(eligible);
         }
         {
-            using SvgAnalyticCoverage clipped = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 32), new(new(0, 0, 32, 32)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage clipped = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 0, 32, new(0, 32), new(new(0, 0, 32, 32)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.False(eligible);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -81,7 +81,7 @@ public sealed class SvgClippedCoordinateRangeTests
         SvgAnalyticContourPreparation preparation = new(points, [3], [], false, null, SvgPolygonMapping.NativeFillEdges, [], [], new(-32_768, 4, 32_768, 28), 40_000, 32);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 4, 28, new(0, 32), null, SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 32, 4, 28, new(0, 32), null, SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.False(eligible);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -96,7 +96,7 @@ public sealed class SvgClippedCoordinateRangeTests
         SvgAnalyticContourPreparation preparation = new(points, [3], [], false, null, SvgPolygonMapping.NativeFillEdges, [], [], new(40_004, 4, 40_028, 28), 40_032, 32);
         RenderBudget budget = new(1_000_000);
         {
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 40_000, 40_032, 4, 28, new(40_000, 40_032), new(origin, 0), new(new(40_000, 0, 40_032, 32), new(origin, 0)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 40_000, 40_032, 4, 28, new(40_000, 40_032), new(origin, 0), new(new(40_000, 0, 40_032, 32), new(origin, 0)), SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None);
             Assert.False(eligible);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

@@ -35,7 +35,7 @@ public sealed class SvgScanlineCoverageTests
                 long before = GC.GetAllocatedBytesForCurrentThread();
                 try
                 {
-                    using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, [], false, roles, 0, 1, budget, out _, CancellationToken.None);
+                    using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, [], false, roles, 0, 1, budget, CancellationToken.None);
                 }
                 catch (SvgException exception) { failure = exception; }
                 allocated = Math.Min(allocated, GC.GetAllocatedBytesForCurrentThread() - before);
@@ -56,12 +56,12 @@ public sealed class SvgScanlineCoverageTests
         int[] ends = [3];
         int[] roles = [1];
         RenderBudget budget = new(long.MaxValue);
-        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 18, budget, out _, CancellationToken.None);
+        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 18, budget, CancellationToken.None);
 
         int culled = 0;
         for (int y = -2; y < 18; y++)
         {
-            scan.PrepareRow(y, out _, CancellationToken.None);
+            scan.PrepareRow(y, CancellationToken.None);
             for (int x = -2; x < 18; x++)
             {
                 double fan = SvgPolygonCoverage.GetWindingCoverage(points, ends, roles, x, y, CancellationToken.None);
@@ -79,12 +79,12 @@ public sealed class SvgScanlineCoverageTests
         int[] ends = [4, 8];
         int[] signs = [1, -1];
         RenderBudget budget = new(long.MaxValue);
-        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, signs, true, signs, -2, 18, budget, out _, CancellationToken.None);
+        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, signs, true, signs, -2, 18, budget, CancellationToken.None);
 
         int evaluatedHole = 0;
         for (int y = -2; y < 18; y++)
         {
-            scan.PrepareRow(y, out _, CancellationToken.None);
+            scan.PrepareRow(y, CancellationToken.None);
             for (int x = -2; x < 18; x++)
             {
                 double fan = SvgPolygonCoverage.GetEvenOddCoverage(points, ends, signs, x, y, CancellationToken.None);
@@ -104,11 +104,11 @@ public sealed class SvgScanlineCoverageTests
         int[] ends = [3, 6];
         int[] roles = [1, 1];
         RenderBudget budget = new(long.MaxValue);
-        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 18, budget, out _, CancellationToken.None);
+        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 18, budget, CancellationToken.None);
 
         for (int y = -2; y < 18; y++)
         {
-            scan.PrepareRow(y, out _, CancellationToken.None);
+            scan.PrepareRow(y, CancellationToken.None);
             for (int x = -2; x < 18; x++)
             {
                 double fan = SvgPolygonCoverage.GetWindingCoverage(points, ends, roles, x, y, CancellationToken.None);
@@ -116,7 +116,7 @@ public sealed class SvgScanlineCoverageTests
             }
         }
 
-        scan.PrepareRow(8, out _, CancellationToken.None);
+        scan.PrepareRow(8, CancellationToken.None);
         Assert.True(scan.MightCover(8), "Shared-vertex pixel must evaluate.");
         Assert.True(scan.MightCover(7), "Vertex-adjacent pixel must evaluate.");
     }
@@ -127,11 +127,11 @@ public sealed class SvgScanlineCoverageTests
         SvgDevicePoint[] points = [new SvgDevicePoint(2, 2), new SvgDevicePoint(2, 14), new SvgDevicePoint(14, 14), new SvgDevicePoint(14, 2)];
         int[] ends = [4];
         RenderBudget budget = new(long.MaxValue);
-        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, [], false, null, -2, 18, budget, out _, CancellationToken.None);
+        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, [], false, null, -2, 18, budget, CancellationToken.None);
 
         for (int y = -2; y < 18; y++)
         {
-            scan.PrepareRow(y, out _, CancellationToken.None);
+            scan.PrepareRow(y, CancellationToken.None);
             for (int x = -2; x < 18; x++)
             {
                 double fan = SvgPolygonCoverage.GetWindingCoverage(points, ends, x, y, CancellationToken.None);
@@ -147,9 +147,9 @@ public sealed class SvgScanlineCoverageTests
         int[] ends = [3, 5];
         int[] roles = [1, 1];
         RenderBudget budget = new(long.MaxValue);
-        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 44, budget, out _, CancellationToken.None);
+        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 44, budget, CancellationToken.None);
 
-        scan.PrepareRow(32, out _, CancellationToken.None);
+        scan.PrepareRow(32, CancellationToken.None);
         Assert.False(scan.MightCover(32), "Degenerate-only row must cull.");
     }
 
@@ -160,9 +160,9 @@ public sealed class SvgScanlineCoverageTests
         int[] ends = [3];
         int[] roles = [1];
         RenderBudget budget = new(long.MaxValue);
-        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 18, budget, out _, CancellationToken.None);
+        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, -2, 18, budget, CancellationToken.None);
 
-        scan.PrepareRow(4, out _, CancellationToken.None);
+        scan.PrepareRow(4, CancellationToken.None);
         Assert.True(scan.MightCover(-2), "Non-finite payload must evaluate everywhere.");
         Assert.True(scan.MightCover(17), "Non-finite payload must evaluate everywhere.");
     }
@@ -173,9 +173,9 @@ public sealed class SvgScanlineCoverageTests
         SvgDevicePoint[] points = [];
         int[] ends = [];
         RenderBudget budget = new(long.MaxValue);
-        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, [], false, null, 0, 8, budget, out _, CancellationToken.None);
+        using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(points, ends, [], false, null, 0, 8, budget, CancellationToken.None);
 
-        scan.PrepareRow(4, out _, CancellationToken.None);
+        scan.PrepareRow(4, CancellationToken.None);
         Assert.False(scan.MightCover(4), "Empty payload must cull.");
     }
 
@@ -187,7 +187,7 @@ public sealed class SvgScanlineCoverageTests
         int[] roles = [1, 1];
         RenderBudget budget = new(long.MaxValue);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, 0, 8, budget, out _, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, 0, 8, budget, CancellationToken.None));
         Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetWindingCoverage(points, ends, roles, 0, 0, CancellationToken.None));
     }
 
@@ -199,18 +199,18 @@ public sealed class SvgScanlineCoverageTests
         int[] ends = [8];
         int[] roles = [1];
         RenderBudget budget = new(long.MaxValue);
-        using SvgScanlineCoverage plain = SvgScanlineCoverage.Prepare(points, ends, [], false, null, 0, 16, budget, out _, CancellationToken.None);
-        using SvgScanlineCoverage voted = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, 0, 16, budget, out _, CancellationToken.None);
+        using SvgScanlineCoverage plain = SvgScanlineCoverage.Prepare(points, ends, [], false, null, 0, 16, budget, CancellationToken.None);
+        using SvgScanlineCoverage voted = SvgScanlineCoverage.Prepare(points, ends, roles, false, roles, 0, 16, budget, CancellationToken.None);
 
-        plain.PrepareRow(3, out _, CancellationToken.None);
-        voted.PrepareRow(3, out _, CancellationToken.None);
+        plain.PrepareRow(3, CancellationToken.None);
+        voted.PrepareRow(3, CancellationToken.None);
         Assert.True(plain.MightCover(7), "Even-winding lens pixel must evaluate through the plain fan path.");
         Assert.True(voted.MightCover(7), "Even-winding lens pixel must evaluate through the voted fan path.");
 
         for (int y = 0; y < 16; y++)
         {
-            plain.PrepareRow(y, out _, CancellationToken.None);
-            voted.PrepareRow(y, out _, CancellationToken.None);
+            plain.PrepareRow(y, CancellationToken.None);
+            voted.PrepareRow(y, CancellationToken.None);
             for (int x = 0; x < 16; x++)
             {
                 double plainFan = SvgPolygonCoverage.GetWindingCoverage(points, ends, x, y, CancellationToken.None);

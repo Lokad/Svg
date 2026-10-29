@@ -292,12 +292,8 @@ public static partial class SvgConverter
         if (pixelCountLong > options.Limits.MaximumPixels || pixelCountLong > int.MaxValue / 4) throw new SvgException(SvgErrorCode.LimitExceeded, "Output pixel count exceeds the configured contiguous RGBA surface limit.");
         int pixelCount = (int)pixelCountLong;
         int surfaceByteCount = pixelCount * 4;
-        long workUnits = 0L;
-        if (workUnits > options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scene parser work exceeds the configured rendering limit.");
         if (options.BackgroundColor != SvgColor.Transparent)
         {
-            if (pixelCount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Background initialization exceeds the configured work limit.");
-            workUnits += pixelCount;
         }
         (double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
         (double patternRootScaleX, double patternRootOffsetX, double patternRootScaleY, double patternRootOffsetY) = GetViewBoxTransform(root.ViewBox, width, height, 1);
@@ -375,8 +371,6 @@ public static partial class SvgConverter
                 int red = (solidColor.Red * solidColor.Alpha + 127) / 255;
                 int green = (solidColor.Green * solidColor.Alpha + 127) / 255;
                 int blue = (solidColor.Blue * solidColor.Alpha + 127) / 255;
-                if (pixelCount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle raster work exceeds the configured limit.");
-                workUnits += pixelCount;
                 for (int y = 0; y < outputHeight; y++)
                 {
                     SolidCanvasRasterizationProbe.Row(y);
@@ -397,12 +391,8 @@ public static partial class SvgConverter
                 int commandIndex = RenderCommands(0, pixels, false);
                 if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
             }
-            // Child surfaces and preparation batches report work separately.
-            // Validate their accumulated charge before transferring the surface.
-            if (workUnits > options.Limits.MaximumWorkUnits)
-                throw new SvgException(SvgErrorCode.LimitExceeded, "Raster work exceeds the configured limit.");
             if (surfaceMode == RasterSurfaceMode.Capture) ApplyCaptureUnpremultiply(pixels, pixelCount, cancellationToken);
-            return new RasterizedSurface(outputWidth, outputHeight, pixels, surface, workUnits) { DeferredImage = deferredImage, FilterColorSpace = filterOutputColorSpace, SamplingColorFilter = filterSamplingColorFilter };
+            return new RasterizedSurface(outputWidth, outputHeight, pixels, surface) { DeferredImage = deferredImage, FilterColorSpace = filterOutputColorSpace, SamplingColorFilter = filterSamplingColorFilter };
         }
         catch
         {
@@ -432,7 +422,7 @@ public static partial class SvgConverter
         }
 
         // Borrow source geometry when rebasing a nested binding. Effects remain
-        // separate from raw object/paint bounds; each bounded visit charges work.
+        // separate from raw object/paint bounds; each traversal observes cancellation.
         SvgFilterBinding PlaceFilterBinding(SvgFilterBinding binding, int first)
         {
             if (sourcePlacement == SvgAffineTransform.Identity) return binding;
@@ -515,8 +505,6 @@ public static partial class SvgConverter
             bool missingImageBounds = false, missingElementBounds = false;
             for (; end < root.Commands.Length; end++)
             {
-                if (workUnits == options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source traversal exceeds the work limit.");
-                workUnits++;
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgDrawCommand item = root.Commands[end];
                 if (nestedDepth < 0 && item.Kind == SvgDrawCommandKind.Geometry && root.Geometries[item.GeometryIndex].Kind == SvgGeometryKind.EmbeddedImage)
@@ -570,7 +558,7 @@ public static partial class SvgConverter
             }
             if (binding.Transform.B != 0 || binding.Transform.C != 0)
                 return RenderAffineFilter();
-            SvgPaintBounds region = FilterRegion(binding, resource,                 SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset));
+            SvgPaintBounds region = FilterRegion(binding, resource, SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset));
             if (region.Right <= region.Left || region.Bottom <= region.Top) return end + 1;
             double primitiveScaleX = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox ? binding.ObjectBounds.Right - binding.ObjectBounds.Left : binding.Transform.A;
             double primitiveScaleY = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox ? binding.ObjectBounds.Bottom - binding.ObjectBounds.Top : binding.Transform.D;
@@ -625,8 +613,6 @@ public static partial class SvgConverter
             foreach (SvgFilterPrimitive primitive in resource.Primitives.Items)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (workUnits == options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter extent traversal exceeds the work limit.");
-                workUnits++;
                 paddingX += Math.Ceiling(Math.Abs(primitive.SigmaX * primitiveMap.ScaleX) * 4) + Math.Ceiling(Math.Abs(primitive.OffsetX * primitiveMap.ScaleX));
                 paddingY += Math.Ceiling(Math.Abs(primitive.SigmaY * primitiveMap.ScaleY) * 4) + Math.Ceiling(Math.Abs(primitive.OffsetY * primitiveMap.ScaleY));
                 offsetPaddingX += Math.Ceiling(Math.Abs(primitive.OffsetX * primitiveMap.ScaleX));
@@ -635,7 +621,7 @@ public static partial class SvgConverter
             double left = sourceLeft, top = sourceTop, right = sourceRight, bottom = sourceBottom;
             // The source grid only needs the captured image and requested output.
             // Kernel samples beyond this union are transparent; allocating the
-            // entire halo makes large blurs needlessly exhaust work and storage.
+            // entire halo makes large blurs needlessly consume unnecessary storage and traversal.
             double requestedLeft = Math.Max(region.Left, layerBounds.Left), requestedTop = Math.Max(region.Top, layerBounds.Top);
             double requestedRight = Math.Min(region.Right, layerBounds.Right), requestedBottom = Math.Min(region.Bottom, layerBounds.Bottom);
             if (activeViewportBounds is {} filterClip)
@@ -721,16 +707,12 @@ public static partial class SvgConverter
             primitiveMap = primitiveMap with { Regions = new(primitiveCoordinates,
                 objectPrimitiveUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), gridRegion)
                 { DeferFinalColorTransfer = frame?.FilterSourceMap is not null && frame?.FilterBinding is {} colorBinding && colorBinding.Index == command.MaskContentIndex, PictureOutput = surfaceMode == RasterSurfaceMode.PremultipliedPattern, RasterPlacement = new(new((int)frameLeft, (int)frameTop), rasterGrid, layerBounds), SourceBounds = new((float)(sourceImageExtent.Left - frameLeft), (float)(sourceImageExtent.Top - frameTop), (float)(sourceImageExtent.Right - frameLeft), (float)(sourceImageExtent.Bottom - frameTop)), DeferFinalOffset = frame?.FilterBinding is {} deferredBinding && deferredBinding.Index == command.MaskContentIndex && frame?.FilterSourceMap is not null } };
-            long copyWork = (long)sw * sh * 4 + end - first + 16;
-            if (copyWork >= options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source capture exceeds the work limit.");
-            workUnits += copyWork;
             using RenderBudget.BudgetReservation? commandsOwner = end > first
                 ? budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(end - first), SvgMemoryCategory.Scene) : null;
             SvgDrawCommand[] sourceCommands = new SvgDrawCommand[end - first];
             for (int index = first; index < end; index++) { cancellationToken.ThrowIfCancellationRequested(); sourceCommands[index - first] = root.Commands[index]; }
             SvgRenderLimits limits = options.Limits;
-            SvgRenderLimits sourceLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes,
-                limits.MaximumNodes, limits.MaximumPathCommands, checked((int)(limits.MaximumWorkUnits - workUnits)), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+            SvgRenderLimits sourceLimits = limits;
             SvgRenderOptions sourceOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, sourceLimits, options.FontSnapshot);
             SvgRoot borrowed = root with { Commands = sourceCommands};
             SvgAnalyticClipBounds sourceContentClip = SourceContentClip(sourceCaptureBounds, new((int)left - 1, (int)top - 1), sw + 2, sh + 2);
@@ -780,7 +762,6 @@ public static partial class SvgConverter
                     NativeMapping = !objectPrimitiveUnits && captureFrame.NativeCapturePlacement is not null ? regionMapping : nativeRegions.NativeMapping } };
             }
             using RasterizedSurface captured = Rasterize(borrowed, sourceOptions, budget, RasterSurfaceMode.PremultipliedFilter, captureFrame, cancellationToken);
-            workUnits += captured.WorkUnits;
             int frameBytes = fw * fh * 4;
             using RenderBudget.BudgetReservation frameOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(frameBytes), SvgMemoryCategory.Surface);
             byte[] source = new byte[frameBytes];
@@ -793,8 +774,7 @@ public static partial class SvgConverter
             using SvgFilterResult filtered = SvgFilterPlayback.Apply(source, fw, fh, resource, primitiveMap,
                 new((float)(requestedLeft - frameLeft), (float)(requestedTop - frameTop),
                     (float)(requestedRight - frameLeft), (float)(requestedBottom - frameTop)),
-                budget, limits.MaximumWorkUnits - workUnits, cancellationToken);
-            workUnits += filtered.WorkUnits;
+                budget, cancellationToken);
             if (frame?.FilterBinding is {} colorOutput && colorOutput.Index == command.MaskContentIndex)
             {
                 filterOutputColorSpace = filtered.ColorSpace;
@@ -804,9 +784,6 @@ public static partial class SvgConverter
             {
                 SvgAffineTransform move = SvgAffineTransform.FromTranslation(frameLeft, frameTop);
                 deferredImage = deferred with { SourceBounds = deferred.SourceBounds.Map(move, cancellationToken), Clip = deferred.Clip.Map(move, cancellationToken) };
-                long copy = (long)outputWidth * outputHeight;
-                if (copy > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Deferred filter capture exceeds its work limit.");
-                workUnits += copy;
                 for (int y = 0; y < outputHeight; y++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -834,9 +811,6 @@ public static partial class SvgConverter
                 restoreRight = Math.Min(restoreRight, ClampCeiling(opacityExtent.Right, outputWidth));
                 restoreBottom = Math.Min(restoreBottom, ClampCeiling(opacityExtent.Bottom, outputHeight));
             }
-            long restoreWork = (long)Math.Max(0, restoreRight - restoreLeft) * Math.Max(0, restoreBottom - restoreTop);
-            if (restoreWork > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter restore exceeds the work limit.");
-            workUnits += restoreWork;
             SvgFilterUniformPaint? uniformPaint = filtered.ColorSpace == SvgFilterColorSpace.Srgb && command.SourceOpacity.Value * foldedOpacity == 1 ? filtered.UniformPaint : null;
             for (int y = restoreTop; y < restoreBottom; y++)
             {
@@ -897,9 +871,6 @@ public static partial class SvgConverter
                 foreach (SvgCpuRasterContext bitmap in rasterGrid.GetContexts(layerBounds))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    if (workUnits >= options.Limits.MaximumWorkUnits)
-                        throw new SvgException(SvgErrorCode.LimitExceeded, "Affine bitmap traversal exceeds the configured work limit.");
-                    workUnits++;
                     RenderAffineBitmap(bitmap);
                 }
                 return end + 1;
@@ -928,10 +899,8 @@ public static partial class SvgConverter
                 SvgDrawCommand[] commands = new SvgDrawCommand[count + 2];
                 SvgGeometry[] geometries = new SvgGeometry[count];
                 int geometryCount = 0;
-                bool preparationCharged = false;
                 SvgPaintBounds? objectBounds = null, visualBounds = null;
                 SvgPaintBounds? parameterObjectBounds = null, parameterVisualBounds = null;
-                try
                 {
                     commands[0] = command with { SourceOpacity = SvgPaintOpacity.Opaque };
                     for (int index = first; index < end; index++)
@@ -1078,15 +1047,12 @@ public static partial class SvgConverter
                         restoreRight = Math.Max(restoreLeft, Math.Min(restoreRight, ClampCeiling(paintBounds.Right, outputWidth)));
                         restoreBottom = Math.Max(restoreTop, Math.Min(restoreBottom, ClampCeiling(paintBounds.Bottom, outputHeight)));
                     }
-                    preparationCharged = true;
-                    SvgRenderLimits layerLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes,
-                        limits.MaximumNodes, limits.MaximumPathCommands, checked((int)(limits.MaximumWorkUnits - workUnits)), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+                    SvgRenderLimits layerLimits = limits;
                     SvgRoot borrowed = root with { Geometries = geometries, Commands = commands};
                     using RasterizedSurface image = Rasterize(borrowed, new(options.Viewport, options.OutputScale, SvgColor.Transparent, layerLimits, options.FontSnapshot),
                         budget, RasterSurfaceMode.PremultipliedFilter,
                         new RasterFrame((int)frameWidth, (int)frameHeight, 1, -left, 1, -top)
                         { SingleBitmap = true, FilterBinding = new(command.MaskContentIndex, local), SourcePlacement = placement, NativeSourceBounds = nativeSource, FilterSourceMap = new(arena.BindingAt(command.MaskContentIndex).Transform, layerMap, new SvgAffineTransform(inverse.ScaleX, inverse.SkewY, inverse.SkewX, inverse.ScaleY, inverse.TranslateX, inverse.TranslateY).ComposeNative(SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset))) }, cancellationToken);
-                    workUnits += image.WorkUnits;
                     // Native drawSpecial composes the stored image origin and
                     // transparent one-pixel outset before inverting its matrix.
                     // Subtracting that origin after inverse mapping changes phase.
@@ -1128,10 +1094,6 @@ public static partial class SvgConverter
                     bool floatingSamples = image.FilterColorSpace == SvgFilterColorSpace.LinearRgb
                         || image.SamplingColorFilter == SvgFilterDeferredColorFilter.SourceAlpha || floatingOffset || imageEdges
                         && (resource.Primitives.Items[^1].ColorSpace ?? resource.ColorSpace) == SvgFilterColorSpace.LinearRgb;
-                    long restoreWork = 128L + (long)Math.Max(0, restoreRight - restoreLeft) * Math.Max(0, restoreBottom - restoreTop)
-                        * ((floatingSamples ? 8 : 4) + (imageEdges ? 2 : 0));
-                    if (restoreWork > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Affine filter restoration exceeds the configured work limit.");
-                    workUnits += restoreWork;
                     int opacity = Math.Clamp((int)MathF.Floor(command.SourceOpacity.Value * foldedOpacity * 255 + .5f), 0, 255);
                     Span<SvgDevicePoint> edgePoints = stackalloc SvgDevicePoint[4];
                     float imageWidth = nativeImage.Right - nativeImage.Left, imageHeight = nativeImage.Bottom - nativeImage.Top;
@@ -1149,7 +1111,6 @@ public static partial class SvgConverter
                     Span<int> imageEnds = stackalloc int[1] { 4 };
                     SvgAnalyticContourPreparation edgePreparation = new(edgePoints, imageEnds, [], false, null, SvgPolygonMapping.NativeFillEdges,
                         [], [], dispatch, outputWidth, outputHeight);
-                    long edgeWork = 0;
                     bool edgeEligible = true;
                     // Image geometry is antialiased independently of clip type;
                     // only an actual AA clip selects its RLE accumulation path.
@@ -1157,8 +1118,7 @@ public static partial class SvgConverter
                         ? SvgAnalyticPaintClip.Antialiased : SvgAnalyticPaintClip.Binary;
                     using SvgAnalyticCoverage edgeWalker = imageEdges ? SvgAnalyticCoverage.Prepare(ref edgePreparation, restoreLeft, restoreRight, restoreTop, restoreBottom,
                         new(restoreLeft, restoreRight), new SvgAnalyticClipContext(edgeArea), edgePaintClip,
-                        limits.MaximumWorkUnits - workUnits, budget, out edgeWork, out edgeEligible, cancellationToken) : default;
-                    workUnits += edgeWork;
+                        budget, out edgeEligible, cancellationToken) : default;
                     if (!edgeEligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine filter image edges are outside the retained boundary.");
                     Span<byte> edgePixel = stackalloc byte[4];
                     for (int y = restoreTop; y < restoreBottom; y++)
@@ -1166,8 +1126,7 @@ public static partial class SvgConverter
                         cancellationToken.ThrowIfCancellationRequested();
                         if (imageEdges)
                         {
-                            edgeWalker.PrepareRow(y, limits.MaximumWorkUnits - workUnits, out long rowWork, cancellationToken);
-                            workUnits += rowWork;
+                            edgeWalker.PrepareRow(y, cancellationToken);
                         }
                         for (int x = restoreLeft; x < restoreRight; x++)
                         {
@@ -1221,10 +1180,6 @@ public static partial class SvgConverter
                     }
                     return;
                 }
-                finally
-                {
-                    if (!preparationCharged) {}                    // Geometry and paint owners remain borrowed from the parent scene.
-                }
 
                 // Native min/max affine singular scales (SkMatrix.cpp) and the
                 // decal boundary criterion (SkImageFilterTypes.cpp), at the source pin.
@@ -1253,8 +1208,7 @@ public static partial class SvgConverter
                 void RestoreFlood(RasterizedSurface image, SvgPaintBounds bounds, SvgShaderMatrix transform,
                     SvgCpuBitmapOrigin origin, SvgAnalyticClipBounds area)
                 {
-                    SvgRenderLimits limits = options.Limits;
-                    Charge(128);
+                    cancellationToken.ThrowIfCancellationRequested();
                     int sx = (int)Math.Clamp((double)bounds.Left - origin.X, 0, image.Width - 1);
                     int sy = (int)Math.Clamp((double)bounds.Top - origin.Y, 0, image.Height - 1);
                     int at = (sy * image.Width + sx) * 4;
@@ -1274,19 +1228,19 @@ public static partial class SvgConverter
                         {
                             walker = SvgAnalyticCoverage.Prepare(ref preparation, area.Left, area.Right, area.Top, area.Bottom,
                                 new(area.Left, area.Right), new SvgAnalyticClipContext(area), SvgAnalyticPaintClip.Antialiased,
-                                limits.MaximumWorkUnits - workUnits, budget, out long setupWork, out bool eligible, cancellationToken);
-                            Charge(setupWork);
+                                budget, out bool eligible, cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             if (!eligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine flood clip edges are outside the retained boundary.");
                         }
-                        Charge((long)(area.Right - area.Left) * (area.Bottom - area.Top) * (opacityLayer ? 8 : 4));
+                        cancellationToken.ThrowIfCancellationRequested();
                         Span<byte> clipPixel = stackalloc byte[4];
                         for (int y = area.Top; y < area.Bottom; y++)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             if (clipped)
                             {
-                                walker.PrepareRow(y, limits.MaximumWorkUnits - workUnits, out long rowWork, cancellationToken);
-                                Charge(rowWork);
+                                walker.PrepareRow(y, cancellationToken);
+                                cancellationToken.ThrowIfCancellationRequested();
                             }
                             for (int x = area.Left; x < area.Right; x++)
                             {
@@ -1339,11 +1293,6 @@ public static partial class SvgConverter
                         }
                         return true;
                     }
-                    void Charge(long amount)
-                    {
-                        if (amount > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Affine flood restoration exceeds its work limit.");
-                        workUnits += amount;
-                    }
                 }
 
                 // Restores one retained source image; storage stays with its captured
@@ -1351,7 +1300,6 @@ public static partial class SvgConverter
                 void RestoreDeferredImage(RasterizedSurface image, SvgFilterDeferredImage deferred, SvgAffineTransform sourceDevice,
                     SvgPaintBounds nativeSource, SvgCpuBitmapOrigin frameOrigin, SvgAnalyticClipBounds area)
                 {
-                    SvgRenderLimits limits = options.Limits;
                     SvgShaderMatrix device = new((float)sourceDevice.A, (float)sourceDevice.C, (float)sourceDevice.E,
                         (float)sourceDevice.B, (float)sourceDevice.D, (float)sourceDevice.F);
                     SvgShaderMatrix forward = SvgShaderMatrix.Concat(device, deferred.ImageToSource);
@@ -1413,7 +1361,7 @@ public static partial class SvgConverter
                     }
                     if (imageClip.Right <= imageClip.Left || imageClip.Bottom <= imageClip.Top) return;
                     SvgAnalyticClipBounds cropConstruction = imageClip;
-                    Charge(64);
+                    cancellationToken.ThrowIfCancellationRequested();
                     SvgAnalyticContourPreparation imagePreparation = new(points, [4], [], false, null, SvgPolygonMapping.NativeFillEdges,
                         [], [], area, outputWidth, outputHeight);
                     scoped SvgAnalyticCoverage walker = default, cropWalker = default;
@@ -1435,17 +1383,16 @@ public static partial class SvgConverter
                                 boundsWalker = SvgAnalyticCoverage.Prepare(ref boundsPreparation, cropConstruction.Left, cropConstruction.Right,
                                     cropConstruction.Top, cropConstruction.Bottom, new(cropConstruction.Left, cropConstruction.Right),
                                     new SvgAnalyticClipContext(cropConstruction, bitmap.Origin), SvgAnalyticPaintClip.Antialiased,
-                                    limits.MaximumWorkUnits - workUnits, budget, out long boundsWork, out bool eligible, cancellationToken);
-                                Charge(boundsWork);
+                                    budget, out bool eligible, cancellationToken);
+                                cancellationToken.ThrowIfCancellationRequested();
                                 if (!eligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Deferred affine crop bounds are outside the retained boundary.");
                                 int leftEdge = cropConstruction.Right, topEdge = cropConstruction.Bottom;
                                 int rightEdge = cropConstruction.Left, bottomEdge = cropConstruction.Top;
                                 for (int y = cropConstruction.Top; y < cropConstruction.Bottom; y++)
                                 {
                                     cancellationToken.ThrowIfCancellationRequested();
-                                    boundsWalker.PrepareRow(y, limits.MaximumWorkUnits - workUnits, out long rowWork, cancellationToken);
-                                    Charge(rowWork);
-                                    Charge(2L * (cropConstruction.Right - cropConstruction.Left));
+                                    boundsWalker.PrepareRow(y, cancellationToken);
+                                    cancellationToken.ThrowIfCancellationRequested();
                                     for (int x = cropConstruction.Left; x < cropConstruction.Right; x++)
                                     {
                                         edgePixel.Clear();
@@ -1467,8 +1414,8 @@ public static partial class SvgConverter
                                 ? SvgAnalyticPaintClip.Antialiased : SvgAnalyticPaintClip.Binary;
                             walker = SvgAnalyticCoverage.Prepare(ref imagePreparation, area.Left, area.Right, area.Top, area.Bottom,
                                 new(area.Left, area.Right), new SvgAnalyticClipContext(imageClip, bitmap.Origin), imagePaintClip,
-                                limits.MaximumWorkUnits - workUnits, budget, out long setupWork, out bool eligible, cancellationToken);
-                            Charge(setupWork);
+                                budget, out bool eligible, cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             if (!eligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Deferred affine image edges are outside the retained boundary.");
                         }
                         if (cropped)
@@ -1477,31 +1424,29 @@ public static partial class SvgConverter
                                 [], [], area, outputWidth, outputHeight);
                             cropWalker = SvgAnalyticCoverage.Prepare(ref cropPreparation, area.Left, area.Right, area.Top, area.Bottom,
                                 new(area.Left, area.Right), new SvgAnalyticClipContext(cropConstruction, bitmap.Origin), SvgAnalyticPaintClip.Antialiased,
-                                limits.MaximumWorkUnits - workUnits, budget, out long cropWork, out bool eligible, cancellationToken);
-                            Charge(cropWork);
+                                budget, out bool eligible, cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             if (!eligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Deferred affine crop edges are outside the retained boundary.");
                             int rowBytes = checked((area.Right - area.Left) * 4);
                             cropOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(rowBytes), SvgMemoryCategory.Surface);
                             cropRow = new byte[rowBytes];
                         }
-                        Charge((long)(area.Right - area.Left) * (area.Bottom - area.Top)
-                            * ((deferred.ColorFilter == SvgFilterDeferredColorFilter.LinearRgbRoundTrip ? 12 : 4)
-                                + (command.SourceOpacity.Value * foldedOpacity < 1 ? 4 : 0)));
+                        cancellationToken.ThrowIfCancellationRequested();
                         int opacity = Math.Clamp((int)MathF.Floor(command.SourceOpacity.Value * foldedOpacity * 255 + .5f), 0, 255);
                         for (int y = area.Top; y < area.Bottom; y++)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             if (!linear)
                             {
-                                walker.PrepareRow(y, limits.MaximumWorkUnits - workUnits, out long rowWork, cancellationToken);
-                                Charge(rowWork);
+                                walker.PrepareRow(y, cancellationToken);
+                                cancellationToken.ThrowIfCancellationRequested();
                             }
                             if (cropped)
                             {
-                                Charge((long)(area.Right - area.Left) * 2);
+                                cancellationToken.ThrowIfCancellationRequested();
                                 cropRow.AsSpan().Clear();
-                                cropWalker.PrepareRow(y, limits.MaximumWorkUnits - workUnits, out long cropWork, cancellationToken);
-                                Charge(cropWork);
+                                cropWalker.PrepareRow(y, cancellationToken);
+                                cancellationToken.ThrowIfCancellationRequested();
                                 for (int x = area.Left; x < area.Right; x++)
                                     cropWalker.PaintPixel(x - area.Left, cropRow.AsSpan((x - area.Left) * 4, 4),
                                         SvgAnalyticPaint.Solid(new(0, 0, 0, 255)), SvgAnalyticClipCoverage.Full);
@@ -1606,11 +1551,6 @@ public static partial class SvgConverter
 
                     static SvgDevicePoint MapPoint(SvgShaderMatrix matrix, float x, float y)
                         => SvgAuthoredPath.MapPoint(new(matrix.ScaleX, matrix.SkewY, matrix.SkewX, matrix.ScaleY, matrix.TranslateX, matrix.TranslateY), new(x, y), new(0, 0));
-                    void Charge(long amount)
-                    {
-                        if (amount > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Deferred affine image restoration exceeds its work limit.");
-                        workUnits += amount;
-                    }
                 }
 
                 static SvgPaintBounds Union(SvgPaintBounds? prior, SvgPaintBounds next)
@@ -1672,14 +1612,14 @@ public static partial class SvgConverter
                 bool fractional = false;
                 foreach (SvgFilterPrimitive item in resource.Primitives.Items)
                 {
-                    Charge(1);
+                    cancellationToken.ThrowIfCancellationRequested();
                     if (item.Kind != SvgFilterPrimitiveKind.Offset) continue;
                     double dx = item.OffsetX * primitiveMap.ScaleX, dy = item.OffsetY * primitiveMap.ScaleY;
                     fractional |= dx != Math.Truncate(dx) || dy != Math.Truncate(dy);
                 }
                 if (!fractional) return false;
                 int commandCount = end - first + 2;
-                Charge(commandCount);
+                cancellationToken.ThrowIfCancellationRequested();
                 using RenderBudget.BudgetReservation commandsOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(commandCount), SvgMemoryCategory.Scene);
                 SvgDrawCommand[] commands = new SvgDrawCommand[commandCount];
                 commands[0] = command;
@@ -1697,17 +1637,13 @@ public static partial class SvgConverter
                 foreach (SvgCpuRasterContext bitmap in rasterGrid.GetContexts(requested))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    Charge(1);
                     SvgAnalyticClipBounds clip = new(Math.Max(requested.Left, bitmap.BitmapClip.Left), Math.Max(requested.Top, bitmap.BitmapClip.Top),
                         Math.Min(requested.Right, bitmap.BitmapClip.Right), Math.Min(requested.Bottom, bitmap.BitmapClip.Bottom));
                     if (activeViewportCoverage is {} coverage && coverage.TryGetBounds(bitmap.BitmapClip, out SvgAnalyticClipBounds bounded))
                         clip = new(Math.Max(clip.Left, bounded.Left), Math.Max(clip.Top, bounded.Top), Math.Min(clip.Right, bounded.Right), Math.Min(clip.Bottom, bounded.Bottom));
                     if (clip.Right <= clip.Left || clip.Bottom <= clip.Top) continue;
                     SvgRenderLimits original = options.Limits;
-                    long remaining = original.MaximumWorkUnits - workUnits;
-                    if (remaining <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Fractional bitmap replay exceeds its work limit.");
-                    SvgRenderLimits replayLimits = new(original.MaximumAccountedBytes, original.MaximumInputBytes, original.MaximumDimension, original.MaximumPixels, original.MaximumEncodedPngBytes,
-                        original.MaximumNodes, original.MaximumPathCommands, checked((int)remaining), original.MaximumXmlDepth, original.MaximumAttributesPerElement);
+                    SvgRenderLimits replayLimits = original;
                     SvgRenderOptions replayOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, replayLimits, options.FontSnapshot);
                     int ox = bitmap.BitmapClip.Left, oy = bitmap.BitmapClip.Top;
                     using RasterizedSurface result = Rasterize(scene, replayOptions, budget, RasterSurfaceMode.PremultipliedFilter,
@@ -1716,10 +1652,10 @@ public static partial class SvgConverter
                         { SingleBitmap = true, ContentClip = new(clip.Left - ox, clip.Top - oy, clip.Right - ox, clip.Bottom - oy),
                             ParentOrigin = bitmap.Origin, CaptureOrigin = new(ox, oy), FilterBinding = new(command.MaskContentIndex, binding),
                             SourcePlacement = sourcePlacement, NativeCapturePlacement = PlaceNativeSource(new(ox, oy)) }, cancellationToken);
-                    Charge(result.WorkUnits);
+                    cancellationToken.ThrowIfCancellationRequested();
                     int x1 = Math.Max(clip.Left, bitmap.Interior.Left), y1 = Math.Max(clip.Top, bitmap.Interior.Top);
                     int x2 = Math.Min(clip.Right, bitmap.Interior.Right), y2 = Math.Min(clip.Bottom, bitmap.Interior.Bottom);
-                    Charge((long)Math.Max(0, x2 - x1) * Math.Max(0, y2 - y1));
+                    cancellationToken.ThrowIfCancellationRequested();
                     for (int y = y1; y < y2; y++)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
@@ -1733,13 +1669,6 @@ public static partial class SvgConverter
                     }
                 }
                 return true;
-
-                void Charge(long amount)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    if (amount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Fractional bitmap replay exceeds its work limit.");
-                    workUnits += amount;
-                }
             }
 
             // The image content is independent of its scratch padding and origin.
@@ -1760,7 +1689,6 @@ public static partial class SvgConverter
                 for (int index = 0; index < primitives.Length; index++)
                 {
                     SvgFilterPrimitive primitive = primitives[index];
-                    Charge(1);
                     cancellationToken.ThrowIfCancellationRequested();
                     if (primitive.Kind == SvgFilterPrimitiveKind.Offset)
                     {
@@ -1785,7 +1713,7 @@ public static partial class SvgConverter
                         ? SvgFilterDeferredColorFilter.SourceAlpha : SvgFilterDeferredColorFilter.None;
                 using RenderBudget.BudgetReservation commandOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(end - first), SvgMemoryCategory.Scene);
                 SvgDrawCommand[] draws = new SvgDrawCommand[end - first];
-                Charge(draws.Length);
+                cancellationToken.ThrowIfCancellationRequested();
                 for (int index = first; index < end; index++) draws[index - first] = root.Commands[index];
                 SvgRoot scene = root with { Commands = draws};
                 // The native saveLayer hint includes drawable source and filtered
@@ -1795,7 +1723,7 @@ public static partial class SvgConverter
                 for (int placementIndex = 0; placementIndex < placements.Count; placementIndex++)
                 {
                     SvgOffsetFilterPlacement placement = placements[placementIndex];
-                    Charge(1);
+                    cancellationToken.ThrowIfCancellationRequested();
                     double x1 = Math.Max(sourceLeft + placement.X, placement.Clip.Left), y1 = Math.Max(sourceTop + placement.Y, placement.Clip.Top);
                     double x2 = Math.Min(sourceRight + placement.X, placement.Clip.Right), y2 = Math.Min(sourceBottom + placement.Y, placement.Clip.Bottom);
                     if (x2 <= x1 || y2 <= y1) continue;
@@ -1817,7 +1745,7 @@ public static partial class SvgConverter
                     for (int placementIndex = 0; placementIndex < placements.Count; placementIndex++)
                     {
                         SvgOffsetFilterPlacement placement = placements[placementIndex];
-                        Charge(1);
+                        cancellationToken.ThrowIfCancellationRequested();
                         double x1 = Math.Max(captureLeft, Math.Max(tile.BitmapClip.Left, placement.Clip.Left) - placement.X);
                         double y1 = Math.Max(captureTop, Math.Max(tile.BitmapClip.Top, placement.Clip.Top) - placement.Y);
                         double x2 = Math.Min(captureRight, Math.Min(tile.BitmapClip.Right, placement.Clip.Right) - placement.X);
@@ -1830,7 +1758,7 @@ public static partial class SvgConverter
                     left = Math.Floor(left) - 1; top = Math.Floor(top) - 1; right = Math.Ceiling(right) + 1; bottom = Math.Ceiling(bottom) + 1;
                     if (frame is { FilterBinding: {} nativeCaptureOwner, NativeSourceBounds: {} captureExtent } && nativeCaptureOwner.Index == command.MaskContentIndex)
                     {
-                        Charge(16);
+                        cancellationToken.ThrowIfCancellationRequested();
                         left = Math.Floor(captureExtent.Left * horizontalScale + horizontalOffset) - 1;
                         top = Math.Floor(captureExtent.Top * verticalScale + verticalOffset) - 1;
                         right = Math.Ceiling(captureExtent.Right * horizontalScale + horizontalOffset) + 1;
@@ -1842,10 +1770,7 @@ public static partial class SvgConverter
                         || sourceWidth * sourceHeight > limits.MaximumPixels || sourceWidth * sourceHeight > int.MaxValue / 4
                         || left < int.MinValue || left > int.MaxValue || top < int.MinValue || top > int.MaxValue)
                         throw new SvgException(SvgErrorCode.LimitExceeded, "Offset source capture exceeds the configured surface limits.");
-                    long remaining = limits.MaximumWorkUnits - workUnits;
-                    if (remaining <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Offset source capture exceeds the configured work limit.");
-                    SvgRenderLimits captureLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                        limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)remaining), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+                    SvgRenderLimits captureLimits = limits;
                     SvgRenderOptions captureOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, captureLimits, options.FontSnapshot);
                     bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
                     SvgAffineTransform coordinates = objectSourceUnits
@@ -1857,7 +1782,7 @@ public static partial class SvgConverter
                     SvgPaintBounds requestedSource = new(MathF.Max(requested.Left, tile.BitmapClip.Left), MathF.Max(requested.Top, tile.BitmapClip.Top),
                         MathF.Min(requested.Right, tile.BitmapClip.Right), MathF.Min(requested.Bottom, tile.BitmapClip.Bottom));
                     // Each compositor bitmap owns its clipped request and image origin.
-                    Charge(1);
+                    cancellationToken.ThrowIfCancellationRequested();
                     if (activeViewportCoverage is {} clipCoverage && clipCoverage.TryGetBounds(tile.BitmapClip, out SvgAnalyticClipBounds bitmapClip))
                         requestedSource = new(MathF.Max(requestedSource.Left, bitmapClip.Left), MathF.Max(requestedSource.Top, bitmapClip.Top),
                             MathF.Min(requestedSource.Right, bitmapClip.Right), MathF.Min(requestedSource.Bottom, bitmapClip.Bottom));
@@ -1873,7 +1798,7 @@ public static partial class SvgConverter
                     SvgAnalyticClipBounds sourceContentClip = new(1, 1, (int)sourceWidth - 1, (int)sourceHeight - 1);
                     if (frame is { FilterBinding: {} sourceOwner, NativeSourceBounds: {} ownedSource } && sourceOwner.Index == command.MaskContentIndex)
                     {
-                        Charge(16);
+                        cancellationToken.ThrowIfCancellationRequested();
                         SvgPaintBounds content = new((float)(ownedSource.Left * horizontalScale + horizontalOffset),
                             (float)(ownedSource.Top * verticalScale + verticalOffset),
                             (float)(ownedSource.Right * horizontalScale + horizontalOffset),
@@ -1883,7 +1808,7 @@ public static partial class SvgConverter
                     using RasterizedSurface captured = Rasterize(scene, captureOptions, budget, RasterSurfaceMode.PremultipliedFilter,
                         new RasterFrame((int)sourceWidth, (int)sourceHeight, horizontalScale, horizontalOffset - left, verticalScale, verticalOffset - top)
                         { SingleBitmap = true, ContentClip = sourceContentClip, ParentOrigin = tile.Origin, CaptureOrigin = new((int)left, (int)top), ImageShaderOrigin = sourceImageOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left, (int)top)) }, cancellationToken);
-                    Charge(captured.WorkUnits);
+                    cancellationToken.ThrowIfCancellationRequested();
                     int tw = tile.BitmapClip.Right - tile.BitmapClip.Left, th = tile.BitmapClip.Bottom - tile.BitmapClip.Top;
                     using RenderBudget.BudgetReservation tileOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(checked(tw * th * 4)), SvgMemoryCategory.Surface);
                     byte[] pixels = new byte[tw * th * 4];
@@ -1903,7 +1828,7 @@ public static partial class SvgConverter
                         int y1 = Math.Max(tile.BitmapClip.Top, (int)Math.Max(top + placement.Y, Math.Floor(placement.Clip.Top)));
                         int x2 = Math.Min(tile.BitmapClip.Right, (int)Math.Min(right + placement.X, Math.Ceiling(placement.Clip.Right)));
                         int y2 = Math.Min(tile.BitmapClip.Bottom, (int)Math.Min(bottom + placement.Y, Math.Ceiling(placement.Clip.Bottom)));
-                        Charge((long)Math.Max(0, x2 - x1) * Math.Max(0, y2 - y1));
+                        cancellationToken.ThrowIfCancellationRequested();
                         for (int y = y1; y < y2; y++)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
@@ -1926,7 +1851,7 @@ public static partial class SvgConverter
                     }
                     int restoreLeft = Math.Max(requested.Left, tile.Interior.Left), restoreTop = Math.Max(requested.Top, tile.Interior.Top);
                     int restoreRight = Math.Min(requested.Right, tile.Interior.Right), restoreBottom = Math.Min(requested.Bottom, tile.Interior.Bottom);
-                    Charge((long)Math.Max(0, restoreRight - restoreLeft) * Math.Max(0, restoreBottom - restoreTop));
+                    cancellationToken.ThrowIfCancellationRequested();
                     float opacity = command.SourceOpacity.Value * foldedOpacity;
                     byte paintAlpha = (byte)Math.Clamp((int)MathF.Floor(opacity * 255 + .5f), 0, 255);
                     for (int y = restoreTop; y < restoreBottom; y++)
@@ -1996,12 +1921,6 @@ public static partial class SvgConverter
 
                 static double PixelOffset(double value)
                     => value == Math.Truncate(value) ? value : MathF.Floor((float)value + .5f);
-
-                void Charge(long amount)
-                {
-                    if (amount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Offset source replay exceeds the configured work limit.");
-                    workUnits += amount;
-                }
             }
 
         }
@@ -2025,8 +1944,6 @@ public static partial class SvgConverter
             foreach (SvgDrawCommand command in root.Commands)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (workUnits == options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Solid paint analysis exceeds the configured work limit.");
-                workUnits++;
                 if (command.Kind != SvgDrawCommandKind.Geometry || (uint)command.GeometryIndex >= (uint)root.Geometries.Length) return false;
                 SvgGeometry geometry = root.Geometries[command.GeometryIndex];
                 if (geometry.Kind != SvgGeometryKind.Rectangle || geometry.SolidPaint is not SvgSolidPaint paint || geometry.Rectangle.Stroke is not null) return false;
@@ -2183,7 +2100,7 @@ public static partial class SvgConverter
         // Painted output and stored image bounds share graph propagation, with distinct rounding domains.
         SvgPaintBounds FilterResultBounds(SvgFilterBinding binding, SvgFilterResource filter, SvgFilterBoundsKind kind)
         {
-            SvgPaintBounds filtered = FilterRegion(binding, filter,                 SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset));
+            SvgPaintBounds filtered = FilterRegion(binding, filter, SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset));
             if (binding.Transform.TryInvert(out SvgAffineTransform inverseBinding))
             {
                 SvgFilterBinding local = binding with { Transform = SvgAffineTransform.Identity,
@@ -2363,7 +2280,7 @@ public static partial class SvgConverter
                     case SvgGeometryKind.AxisAlignedLine:
                         SvgAxisAlignedLine line = geometry.AxisAlignedLine;
                         if (line.IsPainted)
-                            IncludeBox(new(Math.Min(line.X1,line.X2), Math.Min(line.Y1,line.Y2), Math.Abs(line.X2-line.X1), Math.Abs(line.Y2-line.Y1), default, true, null), outputMap, line.StrokeWidth / 2d);
+                            IncludeBox(new(Math.Min(line.X1, line.X2), Math.Min(line.Y1, line.Y2), Math.Abs(line.X2-line.X1), Math.Abs(line.Y2-line.Y1), default, true, null), outputMap, line.StrokeWidth / 2d);
                         break;
                     case SvgGeometryKind.PolygonFill:
                         IncludePoints(geometry.Polygon.Points);
@@ -2440,10 +2357,10 @@ public static partial class SvgConverter
             void Include(SvgDevicePoint point, SvgAffineTransform map)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                SvgDevicePoint mapped = SvgAuthoredPath.MapPoint(map, point, new(0,0));
+                SvgDevicePoint mapped = SvgAuthoredPath.MapPoint(map, point, new(0, 0));
                 if (!double.IsFinite(mapped.X) || !double.IsFinite(mapped.Y)) throw new SvgException(SvgErrorCode.LimitExceeded, "Layer bounds exceed the admitted numeric range.");
-                left = Math.Min(left,mapped.X); top = Math.Min(top,mapped.Y);
-                right = Math.Max(right,mapped.X); bottom = Math.Max(bottom,mapped.Y);
+                left = Math.Min(left, mapped.X); top = Math.Min(top, mapped.Y);
+                right = Math.Max(right, mapped.X); bottom = Math.Max(bottom, mapped.Y);
             }
         }
 
@@ -2454,8 +2371,6 @@ public static partial class SvgConverter
             for (int end = first; end < root.Commands.Length; end++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Paint-record inspection exceeds configured work.");
-                workUnits++;
                 SvgDrawCommand candidate = root.Commands[end];
                 if (candidate.Kind == SvgDrawCommandKind.EndGroup)
                 {
@@ -2520,9 +2435,6 @@ public static partial class SvgConverter
                         if (clipFrames is { Count: > 0 })
                         {
                             cancellationToken.ThrowIfCancellationRequested();
-                            if (workUnits >= options.Limits.MaximumWorkUnits)
-                                throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport clip traversal exceeds the configured limit.");
-                            workUnits++;
                             ViewportClipFrame saved = clipFrames[^1];
                             clipFrames.RemoveLast();
                             RestoreViewportClip(saved);
@@ -2565,12 +2477,6 @@ public static partial class SvgConverter
                             && sourcePlacement.PreservesAxisAlignedRectangles && regionLeft <= previousLayer.Left && regionTop <= previousLayer.Top
                             && regionRight >= previousLayer.Right && regionBottom >= previousLayer.Bottom)
                         {
-                            // A clip containing the complete destination is already
-                            // enforced by its bitmap. An extra isolated layer changes
-                            // shader origins inside child masks despite clipping no ink.
-                            const long containedClipWork = 8;
-                            if (containedClipWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport clip setup exceeds the configured limit.");
-                            workUnits += containedClipWork;
                             cancellationToken.ThrowIfCancellationRequested();
                             index = RenderCommands(index, destination, true);
                             continue;
@@ -2587,9 +2493,6 @@ public static partial class SvgConverter
                         bool shaderRestore = false;
                         if (viewportClip || affineViewportClip)
                         {
-                            const long clipSetupWork = 8;
-                            if (clipSetupWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport clip setup exceeds the configured limit.");
-                            workUnits += clipSetupWork;
                             // A retained affine clip owns source coordinates and its map.
                             // Scene-space bounds rounded before output placement cannot safely
                             // trim its device bitmap: native concatenation can move an edge.
@@ -2644,10 +2547,6 @@ public static partial class SvgConverter
                                     for (int y = clipTop; y < clipBottom; y++)
                                     {
                                         cancellationToken.ThrowIfCancellationRequested();
-                                        int rowWork = Math.Max(0, clipRight - clipLeft);
-                                        if (rowWork > options.Limits.MaximumWorkUnits - workUnits)
-                                            throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport rectangle clip exceeds the configured work limit.");
-                                        workUnits += rowWork;
                                         for (int x = clipLeft; x < clipRight; x++)
                                         {
                                             byte alpha = SvgAnalyticRectangleClip.GetCoverage(rectangleBounds, clipAntialiasing, x, y).Apply(255);
@@ -2658,9 +2557,6 @@ public static partial class SvgConverter
                                 }
                                 if (previousClip.Length != 0 && (viewportContent is not {} boundedClip || boundedClip.BoundsClipContentIndex < 0))
                                 {
-                                    if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
-                                        throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport clip intersection exceeds the configured limit.");
-                                    workUnits += pixelCount;
                                     for (int pixel = 0; pixel < pixelCount; pixel++)
                                     {
                                         cancellationToken.ThrowIfCancellationRequested();
@@ -2670,8 +2566,7 @@ public static partial class SvgConverter
                                     if (clipCoverage is not null)
                                     {
                                         clipCoverage.IntersectAndTrim(activeViewportCoverage, previousClip, clipPixels, outputWidth,
-                                            options.Limits.MaximumWorkUnits - workUnits, out long intersectionWork, cancellationToken);
-                                        workUnits += intersectionWork;
+                                            cancellationToken);
                                     }
                                 }
                                 layer = CoverageBounds(clipPixels, layer, out bool rectangleClip);
@@ -2681,9 +2576,6 @@ public static partial class SvgConverter
                                     && (viewportContent?.DrawMap is null || viewportContent?.DrawMap == activeViewportDrawMap);
                                 clipFrames ??= new(budget, SvgMemoryCategory.Surface, cancellationToken);
                                 cancellationToken.ThrowIfCancellationRequested();
-                                if (workUnits >= options.Limits.MaximumWorkUnits)
-                                    throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport clip metadata exceeds the configured limit.");
-                                workUnits++;
                                 int beforeCount = clipFrames.Count;
                                 try
                                 {
@@ -2728,10 +2620,6 @@ public static partial class SvgConverter
                         SvgAnalyticPaintClip sourcePaintClip = SvgAnalyticPaintClip.Binary;
                         if (command.RegionKind == SvgLayerRegionKind.Mask && placedRegion is {} paintRegion)
                         {
-                            const long maskClipSetupWork = 8;
-                            if (maskClipSetupWork > options.Limits.MaximumWorkUnits - workUnits)
-                                throw new SvgException(SvgErrorCode.LimitExceeded, "Mask paint-clip setup exceeds the configured limit.");
-                            workUnits += maskClipSetupWork;
                             // Enclose in source space before placing the clip. Rounding a
                             // fractional scene pose would change the source's AA consumer.
                             bool retainedPaintRegion = command.MaskContentIndex >= 0 && root.SceneStorage is {} clipStorage
@@ -2750,19 +2638,16 @@ public static partial class SvgConverter
                             sourcePaintClip = maskClipAntialiased ? SvgAnalyticPaintClip.Antialiased : SvgAnalyticPaintClip.Binary;
                             if (retainedPaintRegion && sourcePlacement.IsAxisAligned && maskClipAntialiased)
                             {
-                                if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
-                                    throw new SvgException(SvgErrorCode.LimitExceeded, "Mask region coverage exceeds the configured limit.");
-                                workUnits += pixelCount;
                                 RenderBudget.BudgetReservation owner = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
                                 try
                                 {
                                     byte[] regionPixels = new byte[surfaceByteCount];
-                                    SvgRectangleCoverage regionCoverage = SvgRectangleCoverage.Create(Math.Min(first.X,last.X), Math.Min(first.Y,last.Y),
-                                        Math.Max(first.X,last.X), Math.Max(first.Y,last.Y), outputWidth, outputHeight);
+                                    SvgRectangleCoverage regionCoverage = SvgRectangleCoverage.Create(Math.Min(first.X, last.X), Math.Min(first.Y, last.Y),
+                                        Math.Max(first.X, last.X), Math.Max(first.Y, last.Y), outputWidth, outputHeight);
                                     for (int y = 0; y < outputHeight; y++)
                                     {
                                         cancellationToken.ThrowIfCancellationRequested();
-                                        for (int x = 0; x < outputWidth; x++) regionPixels[(y*outputWidth+x)*4+3] = regionCoverage.GetAlpha(x,y);
+                                        for (int x = 0; x < outputWidth; x++) regionPixels[(y*outputWidth+x)*4+3] = regionCoverage.GetAlpha(x, y);
                                     }
                                     sourcePaintClipPixels = regionPixels;
                                     sourcePaintClipOwner = owner;
@@ -2784,9 +2669,6 @@ public static partial class SvgConverter
                             activeViewportIsBinary = sourcePreviousBinary; activeViewportIsRectangle = sourcePreviousRectangle;
                             activeViewportBounds = sourcePreviousBounds; activeViewportCoverage = sourcePreviousCoverage;
                         }
-                        long compositionWork = pixelCount;
-                        if (compositionWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Group opacity composition exceeds the configured limit.");
-                        workUnits += compositionWork;
                         // Skia hard-rectangle clipping rounds each mapped edge to the nearest integer
                         // (Copyright 2006 The Android Open Source Project; see THIRD_PARTY_NOTICES.txt);
                         // half-pixel ties move toward positive infinity on both sides.
@@ -2941,7 +2823,7 @@ public static partial class SvgConverter
 
         // Borrow caller-reserved destination storage. Clip collection forces ordered AA runs;
         // mask/clip content is independent of the surrounding paint opacity and clip stack.
-        // Geometry traversal retains the existing work, cancellation and temporary-owner contracts.
+        // Geometry traversal retains cancellation and temporary-owner contracts.
         SvgCpuClipCoverage? RasterizeMaskContent(SvgMaskContent content, byte[] destination, bool viewport, SvgAnalyticClipBounds contentBounds, SvgAnalyticPaintClip paintClip, byte[] sourcePaintClipPixels, out bool binaryViewport)
         {
             binaryViewport = content.ClipKind is SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion;
@@ -2996,10 +2878,6 @@ public static partial class SvgConverter
             {
                 if (viewport)
                 {
-                    long initializationWork = rasterGrid.ClipInitializationWork;
-                    if (initializationWork > options.Limits.MaximumWorkUnits - workUnits)
-                        throw new SvgException(SvgErrorCode.LimitExceeded, "Bitmap clip storage exceeds the configured work limit.");
-                    workUnits += initializationWork;
                     coverage = new(rasterGrid, budget);
                     collectingClipCoverage = coverage;
                 }
@@ -3007,11 +2885,7 @@ public static partial class SvgConverter
                     && content.Geometries.Length == 1 && content.Geometries[0].AuthoredPath is { IsKnownConvex: true } rectangle
                     && rectangle.Commands.Length == 5)
                 {
-                    const long classificationWork = 8;
                     cancellationToken.ThrowIfCancellationRequested();
-                    if (classificationWork > options.Limits.MaximumWorkUnits - workUnits)
-                        throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle clip classification exceeds the configured limit.");
-                    workUnits += classificationWork;
                     SvgAffineTransform clipMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
                     if (sourcePlacement != SvgAffineTransform.Identity) clipMap = clipMap.Compose(sourcePlacement);
                     binaryViewport = RoundsToBinaryRectangle(rectangle, MapSourceTransform(clipMap, rectangle.SceneMap), contentBounds);
@@ -3029,12 +2903,6 @@ public static partial class SvgConverter
                     boundsCoverage = RasterizeMaskContent(storage.MaskContents[content.BoundsClipContentIndex], boundsPixels, true, contentBounds, SvgAnalyticPaintClip.Antialiased, [], out _);
                     if (viewport && previousClip.Length != 0)
                     {
-                        // The enclosing rectangle intersects the existing native clip
-                        // before the path is constructed. Its trimmed bitmap bounds
-                        // control curve clipping; coverage applies only once.
-                        if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
-                            throw new SvgException(SvgErrorCode.LimitExceeded, "Clip construction intersection exceeds the configured limit.");
-                        workUnits += pixelCount;
                         for (int pixel = 0; pixel < pixelCount; pixel++)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
@@ -3044,8 +2912,7 @@ public static partial class SvgConverter
                         if (boundsCoverage is not null)
                         {
                             boundsCoverage.IntersectAndTrim(previousCoverage, previousClip, boundsPixels, outputWidth,
-                                options.Limits.MaximumWorkUnits - workUnits, out long intersectionWork, cancellationToken);
-                            workUnits += intersectionWork;
+                                cancellationToken);
                         }
                     }
                     activeConstructionCoverage = boundsCoverage;
@@ -3064,15 +2931,13 @@ public static partial class SvgConverter
                         throw new SvgException(SvgErrorCode.MalformedInput, "A binary viewport requires retained rectangle geometry.");
                     SvgAffineTransform clipMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
                     if (sourcePlacement != SvgAffineTransform.Identity) clipMap = clipMap.ComposeChecked(sourcePlacement);
-                    workUnits += SvgBinaryViewportCoverage.Rasterize(viewportPath,
+                    SvgBinaryViewportCoverage.Rasterize(viewportPath,
                         MapSourceTransform(clipMap, viewportPath.SceneMap), rasterGrid,
-                        contentBounds, destination, outputWidth, coverage, content.Geometries[0].Polygon.IsEvenOdd, content.ClipKind == SvgClipContentKind.BinaryExclusion, budget, options.Limits.MaximumWorkUnits - workUnits, cancellationToken);
+                        contentBounds, destination, outputWidth, coverage, content.Geometries[0].Polygon.IsEvenOdd, content.ClipKind == SvgClipContentKind.BinaryExclusion, budget, cancellationToken);
                 }
                 else foreach (SvgGeometry geometry in content.Geometries) RasterizeGeometry(geometry, destination);
                 if (boundsPixels.Length != 0)
                 {
-                    if (pixelCount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Clip bounds intersection exceeds the configured limit.");
-                    workUnits += pixelCount;
                     for (int pixel = 0; pixel < pixelCount; pixel++)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
@@ -3082,15 +2947,12 @@ public static partial class SvgConverter
                 }
                 if (!viewport && !content.IsAlpha && sourcePaintClipPixels.Length != 0)
                 {
-                    if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
-                        throw new SvgException(SvgErrorCode.LimitExceeded, "Mask region restore exceeds the configured limit.");
-                    workUnits += pixelCount;
                     for (int pixel = 0; pixel < pixelCount; pixel++)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         int offset = pixel*4;
                         byte alpha = sourcePaintClipPixels[offset+3];
-                        for (int lane = 0; lane < 4; lane++) destination[offset+lane] = MultiplyAlpha(destination[offset+lane],alpha);
+                        for (int lane = 0; lane < 4; lane++) destination[offset+lane] = MultiplyAlpha(destination[offset+lane], alpha);
                     }
                 }
                 transferred = true;
@@ -3141,10 +3003,6 @@ public static partial class SvgConverter
         {
             if (activeViewportDrawMap is not {} viewport) return output.ComposeChecked(target);
             cancellationToken.ThrowIfCancellationRequested();
-            const long mapWork = 8;
-            if (mapWork > options.Limits.MaximumWorkUnits - workUnits)
-                throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport draw mapping exceeds the configured limit.");
-            workUnits += mapWork;
             return viewport.Prepare(output, target);
         }
 
@@ -3296,10 +3154,6 @@ public static partial class SvgConverter
             bool pictureReduction = pictureMip != 0 || pictureLevels.LowerWeight != 0;
             if (pictureReduction) decodeSize = (Math.Max(1, sampleWidth >> pictureMip), Math.Max(1, sampleHeight >> pictureMip));
             using RasterizedSurface? mask = authoredPath is null ? null : PrepareImageMask(authoredPath, image.Box.Clip, raster);
-            long sampleWork = (long)(raster.Right - raster.Left) * (raster.Bottom - raster.Top)
-                * (pictureLevels.LowerWeight != 0 ? 8 : 4);
-            if (sampleWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image sampling exceeds the configured work limit.");
-            workUnits += sampleWork;
             (RasterizedSurface? mipValue, RasterizedSurface? lowerValue) = PrepareImageLevels();
             using RasterizedSurface? mip = mipValue;
             using RasterizedSurface? lowerMip = lowerValue;
@@ -3395,17 +3249,13 @@ public static partial class SvgConverter
                         }
                         int width = Math.Max(1, (bounds.Right - bounds.Left) / 2);
                         int height = Math.Max(1, (bounds.Bottom - bounds.Top) / 2);
-                        long reductionWork = (long)width * height * SvgImageMipMap.SampleCount(bounds);
-                        if (reductionWork > options.Limits.MaximumWorkUnits - workUnits)
-                            throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image reduction exceeds the configured work limit.");
-                        workUnits += reductionWork;
                         RenderBudget.BudgetReservation reservation = budget.Reserve(checked((long)width * height * 4 + 64), SvgMemoryCategory.Surface);
                         RasterizedSurface next;
                         try
                         {
                             byte[] reduced = new byte[checked(width * height * 4)];
                             SvgImageMipMap.Reduce(pixels, stride, bounds, reduced, cancellationToken);
-                            next = new(width, height, reduced, reservation, 0);
+                            next = new(width, height, reduced, reservation);
                         }
                         catch { reservation.Dispose(); throw; }
                         previous?.Dispose();
@@ -3416,17 +3266,13 @@ public static partial class SvgConverter
                     }
                     if (!pictureReduction && (previous is not {} last || last.Width != decodeSize.Width || last.Height != decodeSize.Height))
                     {
-                        long resizeWork = (long)decodeSize.Width * decodeSize.Height * 4;
-                        if (resizeWork > options.Limits.MaximumWorkUnits - workUnits)
-                            throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image resize exceeds the configured work limit.");
-                        workUnits += resizeWork;
                         RenderBudget.BudgetReservation reservation = budget.Reserve(checked((long)decodeSize.Width * decodeSize.Height * 4 + 64), SvgMemoryCategory.Surface);
                         RasterizedSurface resized;
                         try
                         {
                             byte[] reduced = new byte[checked(decodeSize.Width * decodeSize.Height * 4)];
                             SvgImageMipMap.Resize(pixels, stride, bounds, reduced, decodeSize.Width, decodeSize.Height, cancellationToken);
-                            resized = new(decodeSize.Width, decodeSize.Height, reduced, reservation, 0);
+                            resized = new(decodeSize.Width, decodeSize.Height, reduced, reservation);
                         }
                         catch { reservation.Dispose(); throw; }
                         previous?.Dispose();
@@ -3538,19 +3384,16 @@ public static partial class SvgConverter
                     foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom)))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        if (workUnits >= options.Limits.MaximumWorkUnits)
-                            throw new SvgException(SvgErrorCode.LimitExceeded, "Image coverage traversal exceeds the configured work limit.");
-                        workUnits++;
                         SvgCpuRasterContext context = LayerRasterContext(cpuTile);
                         SvgAnalyticClipBounds area = new(Math.Max(context.Interior.Left, bounds.Left), Math.Max(context.Interior.Top, bounds.Top),
                             Math.Min(context.Interior.Right, bounds.Right), Math.Min(context.Interior.Bottom, bounds.Bottom));
                         if (area.Left >= area.Right || area.Top >= area.Bottom) continue;
                         using PolygonRaster traversal = new(ref preparation, raster, context, ActiveClipBounds(context),
-                            PolygonPaintClip(raster, context), area, false, budget, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                            PolygonPaintClip(raster, context), area, budget, cancellationToken);
                         for (int y = traversal.StartY; y < traversal.EndY; y++)
                         {
-                            traversal.PrepareRow(y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
-                            SvgAnalyticScanWindow window = traversal.GetPaintWindow(ref workUnits, options.Limits.MaximumWorkUnits);
+                            traversal.PrepareRow(y, cancellationToken);
+                            SvgAnalyticScanWindow window = traversal.GetPaintWindow();
                             for (int x = window.Left; x < window.Right; x++)
                             {
                                 if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
@@ -3567,7 +3410,7 @@ public static partial class SvgConverter
                         }
                         if (!traversal.IsAnalytic) break;
                     }
-                    return new(width, height, pixels, reservation, 0);
+                    return new(width, height, pixels, reservation);
                 }
                 catch { reservation.Dispose(); throw; }
             }
@@ -3650,9 +3493,6 @@ public static partial class SvgConverter
                 double pointScaleY = authored is null && coordinateSpace == PathCoordinateSpace.User ? verticalScale : 1;
                 double pointOffsetX = authored is null && coordinateSpace == PathCoordinateSpace.User ? horizontalOffset : 0;
                 double pointOffsetY = authored is null && coordinateSpace == PathCoordinateSpace.User ? verticalOffset : 0;
-                long mappingWork = (long)points.Length + 2L * quadSpans.Length + 2L * cubicSpans.Length;
-                if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
-                workUnits += mappingWork;
                 RenderBudget.BudgetReservation mappedReservation = budget.Reserve(checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length)), SvgMemoryCategory.Surface);
                 try
                 {
@@ -3760,9 +3600,6 @@ public static partial class SvgConverter
                 cancellationToken.ThrowIfCancellationRequested();
                 for (int x = bounds.Left; x < bounds.Right; x++)
                 {
-                    if (workUnits >= options.Limits.MaximumWorkUnits)
-                        throw new SvgException(SvgErrorCode.LimitExceeded, "Clip opacity inspection exceeds the configured limit.");
-                    workUnits++;
                     if (pixels[(y * outputWidth + x) * 4 + 3] != 255) return false;
                 }
             }
@@ -3779,10 +3616,6 @@ public static partial class SvgConverter
 
         SvgAnalyticClipBounds CoverageBounds(byte[] pixels, SvgAnalyticClipBounds area, out bool rectangle)
         {
-            long boundsWork = (long)Math.Max(0, area.Right - area.Left) * Math.Max(0, area.Bottom - area.Top);
-            if (boundsWork > options.Limits.MaximumWorkUnits - workUnits)
-                throw new SvgException(SvgErrorCode.LimitExceeded, "Clip coverage bounds exceed the configured work limit.");
-            workUnits += boundsWork;
             int left = area.Right, top = area.Bottom, right = area.Left, bottom = area.Top;
             long nonzero = 0;
             bool binary = true;
@@ -3854,13 +3687,6 @@ public static partial class SvgConverter
                 && rectangleSource.Commands.Length == 5 && raster.AuthoredMap.IsAxisAligned
                 && raster.QuadSpans.Length == 0 && raster.CubicSpans.Length == 0)
             {
-                // An authored rectangle paint can become axis-aligned again in a filter
-                // source. Clip construction retains its own coverage consumer; convex
-                // path identity alone does not authorize rectangle-paint arithmetic.
-                long rectangleWork = 4L + (long)(raster.EndX - raster.StartX) * (raster.EndY - raster.StartY);
-                if (rectangleWork > options.Limits.MaximumWorkUnits - workUnits)
-                    throw new SvgException(SvgErrorCode.LimitExceeded, "Retained rectangle raster work exceeds the configured limit.");
-                workUnits += rectangleWork;
                 SvgRectangleCoverage coverage = SvgRectangleCoverage.Create(raster.CompleteBounds.Left, raster.CompleteBounds.Top,
                     raster.CompleteBounds.Right, raster.CompleteBounds.Bottom, outputWidth, outputHeight);
                 SvgClipBox? clip = raster.Clip is {} edges ? new SvgClipBox(edges.Left, edges.Top, edges.Right - edges.Left, edges.Bottom - edges.Top) { Antialiasing = raster.ClipAntialiasing } : null;
@@ -3882,24 +3708,20 @@ public static partial class SvgConverter
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgCpuRasterContext context = LayerRasterContext(cpuTile);
                 if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
-                if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "CPU raster context traversal exceeds the configured limit.");
-                workUnits++;
                 if (raster.Clip is not null)
                 {
-                    if (4 > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle paint-clip classification exceeds the configured limit.");
-                    workUnits += 4;
                 }
                 SvgAnalyticClipBounds paintArea = collectingClipCoverage is null ? context.Interior : context.BitmapClip;
                 using PolygonRaster traversal = new(ref preparation, raster, context, ActiveClipBounds(context),
-                    PolygonPaintClip(raster, context), paintArea, collectingClipCoverage is not null, budget,
-                    ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                    PolygonPaintClip(raster, context), paintArea, budget,
+                    cancellationToken);
                 bool useAnalytic = traversal.IsAnalytic;
                 int startY = traversal.StartY, endY = traversal.EndY;
                 int clipLeft = context.BitmapClip.Right, clipTop = context.BitmapClip.Bottom, clipRight = context.BitmapClip.Left, clipBottom = context.BitmapClip.Top;
                 for (int y = startY; y < endY; y++)
                 {
-                    traversal.PrepareRow(y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
-                    SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow(ref workUnits, options.Limits.MaximumWorkUnits);
+                    traversal.PrepareRow(y, cancellationToken);
+                    SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow();
                     int rowStartX = paintWindow.Left, rowEndX = paintWindow.Right;
                     for (int x = rowStartX; x < rowEndX; x++)
                     {
@@ -3954,8 +3776,6 @@ public static partial class SvgConverter
         SvgShaderPaint PrepareGradientFactory(ReadOnlySpan<SvgGradientStop> stops, SvgGradientSpread spread, out SvgColor luminance)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient factory preparation exceeds the configured work limit.");
-            workUnits++;
             if (stops.Length > 256) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient factory preparation exceeds the supported stop limit.");
             luminance = default;
             if (stops.Length == 0) return default;
@@ -3969,8 +3789,6 @@ public static partial class SvgConverter
             for (int index = 0; index < stops.Length - 1; index++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient factory integration exceeds the configured work limit.");
-                workUnits++;
                 float first = Math.Clamp((float)stops[index].Offset, 0, 1);
                 float second = Math.Clamp((float)stops[index + 1].Offset, first, 1);
                 Vector4 a = Color(stops[index]), b = Color(stops[index + 1]);
@@ -4020,30 +3838,26 @@ public static partial class SvgConverter
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgCpuRasterContext context = LayerRasterContext(cpuTile);
                 if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
-                if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "CPU raster context traversal exceeds the configured limit.");
-                workUnits++;
                 if (raster.Clip is not null)
                 {
-                    if (4 > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle paint-clip classification exceeds the configured limit.");
-                    workUnits += 4;
                 }
                 SvgAnalyticClipBounds paintArea = context.Interior;
                 using PolygonRaster traversal = new(ref preparation, raster, context, ActiveClipBounds(context),
-                    PolygonPaintClip(raster, context), paintArea, false, budget,
-                    ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                    PolygonPaintClip(raster, context), paintArea, budget,
+                    cancellationToken);
                 bool useAnalytic = traversal.IsAnalytic;
                 int startY = traversal.StartY, endY = traversal.EndY;
                 for (int y = startY; y < endY; y++)
                 {
-                traversal.PrepareRow(y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
-                SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow(ref workUnits, options.Limits.MaximumWorkUnits);
+                traversal.PrepareRow(y, cancellationToken);
+                SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow();
                 int rowStartX = paintWindow.Left, rowEndX = paintWindow.Right;
                 for (int x = rowStartX; x < rowEndX; x++)
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                     double pixelCoverage = !useAnalytic && traversal.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                     int offset = (y * outputWidth + x) * 4;
-                    SvgAnalyticPaint sample = shader.Sample(x, y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                    SvgAnalyticPaint sample = shader.Sample(x, y, cancellationToken);
                     if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), sample, PolygonClipCoverage(raster, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
                 }
@@ -4082,30 +3896,26 @@ public static partial class SvgConverter
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgCpuRasterContext context = LayerRasterContext(cpuTile);
                 if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
-                if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "CPU raster context traversal exceeds the configured limit.");
-                workUnits++;
                 if (raster.Clip is not null)
                 {
-                    if (4 > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle paint-clip classification exceeds the configured limit.");
-                    workUnits += 4;
                 }
                 SvgAnalyticClipBounds paintArea = context.Interior;
                 using PolygonRaster traversal = new(ref preparation, raster, context, ActiveClipBounds(context),
-                    PolygonPaintClip(raster, context), paintArea, false, budget,
-                    ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                    PolygonPaintClip(raster, context), paintArea, budget,
+                    cancellationToken);
                 bool useAnalytic = traversal.IsAnalytic;
                 int startY = traversal.StartY, endY = traversal.EndY;
                 for (int y = startY; y < endY; y++)
                 {
-                traversal.PrepareRow(y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
-                SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow(ref workUnits, options.Limits.MaximumWorkUnits);
+                traversal.PrepareRow(y, cancellationToken);
+                SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow();
                 int rowStartX = paintWindow.Left, rowEndX = paintWindow.Right;
                 for (int x = rowStartX; x < rowEndX; x++)
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                     double pixelCoverage = !useAnalytic && traversal.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                     int offset = (y * outputWidth + x) * 4;
-                    SvgAnalyticPaint sample = shader.Sample(x, y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                    SvgAnalyticPaint sample = shader.Sample(x, y, cancellationToken);
                     if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), sample, PolygonClipCoverage(raster, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
                 }
@@ -4140,30 +3950,26 @@ public static partial class SvgConverter
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgCpuRasterContext context = LayerRasterContext(cpuTile);
                 if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
-                if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "CPU raster context traversal exceeds the configured limit.");
-                workUnits++;
                 if (raster.Clip is not null)
                 {
-                    if (4 > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle paint-clip classification exceeds the configured limit.");
-                    workUnits += 4;
                 }
                 SvgAnalyticClipBounds paintArea = context.Interior;
                 using PolygonRaster traversal = new(ref preparation, raster, context, ActiveClipBounds(context),
-                    PolygonPaintClip(raster, context), paintArea, false, budget,
-                    ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                    PolygonPaintClip(raster, context), paintArea, budget,
+                    cancellationToken);
                 bool useAnalytic = traversal.IsAnalytic;
                 int startY = traversal.StartY, endY = traversal.EndY;
                 for (int y = startY; y < endY; y++)
                 {
-                traversal.PrepareRow(y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
-                SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow(ref workUnits, options.Limits.MaximumWorkUnits);
+                traversal.PrepareRow(y, cancellationToken);
+                SvgAnalyticScanWindow paintWindow = traversal.GetPaintWindow();
                 int rowStartX = paintWindow.Left, rowEndX = paintWindow.Right;
                 for (int x = rowStartX; x < rowEndX; x++)
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                     double pixelCoverage = !useAnalytic && traversal.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                     int offset = (y * outputWidth + x) * 4;
-                    SvgAnalyticPaint sample = shader.Sample(x, y, ref workUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+                    SvgAnalyticPaint sample = shader.Sample(x, y, cancellationToken);
                     if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), sample, PolygonClipCoverage(raster, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
                 }
@@ -4208,11 +4014,9 @@ public static partial class SvgConverter
                         ? new((float)options.OutputScale, 0, 0, 0, (float)options.OutputScale, 0) : outputMap;
                     if (recording is not null)
                     {
-                        try
                         {
                             if (!recording.TryMap(external, patternRootMap, target, budget, cancellationToken, out drawMap)) return false;
                         }
-                        finally { }
                     }
                     else if (patternRootMap != SvgAffineTransform.Identity)
                     {
@@ -4318,11 +4122,9 @@ public static partial class SvgConverter
             cancellationToken.ThrowIfCancellationRequested();
             if (pattern.VectorContent is {} content)
             {
-                long remaining = options.Limits.MaximumWorkUnits - workUnits;
-                if (remaining <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile rendering exceeds the configured work limit.");
                 using RenderBudget.BudgetReservation setup = budget.Reserve(256, SvgMemoryCategory.Geometry);
                 SvgRenderLimits limits = options.Limits;
-                SvgRenderLimits tileLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)remaining), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+                SvgRenderLimits tileLimits = limits;
                 SvgRenderOptions tileOptions = new(new SvgViewport(pattern.TextureWidth, pattern.TextureHeight), 1, SvgColor.Transparent, tileLimits);
                 SvgSceneStorage scene = content.Scene;
                 SvgRoot tileRoot = new(null, null, pattern.RasterSourceBox ?? throw new InvalidOperationException("Vector tile replay requires a mapped source grid."), scene.Geometries, scene.Commands, false, scene);
@@ -4336,7 +4138,6 @@ public static partial class SvgConverter
                     contentFrame = new(pattern.TextureWidth, pattern.TextureHeight, map.ScaleX, map.TranslateX, map.ScaleY, map.TranslateY);
                 }
                 RasterizedSurface rendered = Rasterize(tileRoot, tileOptions, budget, RasterSurfaceMode.PremultipliedPattern, contentFrame, cancellationToken);
-                workUnits += rendered.WorkUnits;
                 return rendered;
             }
             RenderBudget.BudgetReservation reservation = budget.Reserve(checked(tilePixels * 4), SvgMemoryCategory.Surface);
@@ -4344,7 +4145,7 @@ public static partial class SvgConverter
             {
                 byte[] pixels = new byte[(int)tilePixels * 4];
                 BlitPatternTile(pattern, pixels);
-                return new RasterizedSurface(pattern.TextureWidth, pattern.TextureHeight, pixels, reservation, 0);
+                return new RasterizedSurface(pattern.TextureWidth, pattern.TextureHeight, pixels, reservation);
             }
             catch { reservation.Dispose(); throw; }
         }
@@ -4364,9 +4165,6 @@ public static partial class SvgConverter
 
         void BlitPatternBox(SvgRectangle box, byte[] tile, SvgPatternGeometry pattern, SvgSolidPaint? sourcePaint)
         {
-            int setupVisits = box.Clip is null ? 4 : 8;
-            if (setupVisits > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern rectangle preparation exceeds the configured work limit.");
-            workUnits += setupVisits;
             cancellationToken.ThrowIfCancellationRequested();
             double left = box.X - pattern.OriginX, top = box.Y - pattern.OriginY;
             double right = left + box.Width, bottom = top + box.Height;
@@ -4376,9 +4174,6 @@ public static partial class SvgConverter
             int startY = ClampFloor(clip is {} cy ? Math.Max(top, cy.Y) : top, pattern.TextureHeight);
             int endX = Math.Max(startX, ClampCeiling(clip is {} ex ? Math.Min(right, ex.Right) : right, pattern.TextureWidth));
             int endY = Math.Max(startY, ClampCeiling(clip is {} ey ? Math.Min(bottom, ey.Bottom) : bottom, pattern.TextureHeight));
-            long blitted = (long)(endY - startY) * (endX - startX);
-            if (blitted > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile raster work exceeds the configured limit.");
-            workUnits += blitted;
             // Pattern content is rasterized into an image before repeat sampling.
             // Its constant-shader byte coverage retains the native rounded lane scale.
             SvgConstantShaderPaint paint = sourcePaint is {} solid
@@ -4433,8 +4228,6 @@ public static partial class SvgConverter
                 pattern.NativeImageMap is null ? default : ShaderBitmapOrigin(x, y), ref imageCoordinates);
             if (sample.RequiresFiltering)
             {
-                if (4 > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern filter work exceeds the configured limit.");
-                workUnits += 4;
             }
             return sample.Sample(tile, ShaderAlpha(MultiplyAlpha(pattern.Opacity, opacity)));
         }
@@ -4786,19 +4579,6 @@ public static partial class SvgConverter
                     }
                 }
             }
-            long segmentCount;
-            long sampleWork;
-            try
-            {
-                segmentCount = SvgGlyphCoverage.GetSegmentCount(glyph.Contours);
-                sampleWork = checked(segmentCount * 8);
-            }
-            catch (OverflowException)
-            {
-                throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the supported accounting range.");
-            }
-            if (segmentCount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the configured work limit.");
-            workUnits += segmentCount;
             double minimumX = double.PositiveInfinity;
             double minimumY = double.PositiveInfinity;
             double maximumX = double.NegativeInfinity;
@@ -4816,19 +4596,6 @@ public static partial class SvgConverter
             int endX = ClampCeiling(MapEdge(maximumX, horizontalScale, horizontalOffset), outputWidth);
             int startY = ClampFloor(MapEdge(minimumY, verticalScale, verticalOffset), outputHeight);
             int endY = ClampCeiling(MapEdge(maximumY, verticalScale, verticalOffset), outputHeight);
-            long coverage = (long)(endY - startY) * (endX - startX);
-            long coverageWork;
-            try
-            {
-                long samplesPerPixel = checked(GlyphSamplesPerAxis * GlyphSamplesPerAxis);
-                coverageWork = checked(coverage * checked(sampleWork * samplesPerPixel + 1 + (glyph.Shader is null ? 0 : 16)));
-            }
-            catch (OverflowException)
-            {
-                throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the supported accounting range.");
-            }
-            if (coverageWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the configured work limit.");
-            workUnits += coverageWork;
             if (startX == endX || startY == endY) return;
             double sourceLeft = (startX - horizontalOffset) / horizontalScale;
             double sourceRight = (endX - horizontalOffset) / horizontalScale;
@@ -4840,9 +4607,7 @@ public static partial class SvgConverter
             {
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph coverage coordinates exceed the admitted numeric range.");
             }
-            // Optional preparation yields to both memory and the existing tight work boundary.
-            using SvgGlyphCoverage.PreparedContours? prepared = sampleWork <= options.Limits.MaximumWorkUnits - workUnits
-                ? SvgGlyphCoverage.PreparedContours.TryCreate(glyph.Contours, budget, cancellationToken) : null;
+            using SvgGlyphCoverage.PreparedContours? prepared = SvgGlyphCoverage.PreparedContours.TryCreate(glyph.Contours, budget, cancellationToken);
             for (int y = startY; y < endY; y++)
             for (int x = startX; x < endX; x++)
             {
@@ -4866,7 +4631,7 @@ public static partial class SvgConverter
             // domain; adding the document's integer origin before edge construction
             // loses precision. The child scene borrows these scoped path/fill owners.
             // It uses the ordinary geometry rasterizer, the same conversion budget,
-            // remaining work and cancellation token. Only final mask painting belongs
+            // cancellation token. Only final mask painting belongs
             // to the parent SVG viewport/opacity scope. No font ownership transfers.
             void RasterizeMappedBitmap(SvgAuthoredPath sourcePath, ReadOnlySpan<byte> preblend)
             {
@@ -4910,8 +4675,6 @@ public static partial class SvgConverter
                     || samplingWidth * bitmapHeight > limits.MaximumPixels || samplingWidth * bitmapHeight > int.MaxValue / 4)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph bitmap exceeds the configured surface limits.");
                 int width = (int)samplingWidth, height = (int)bitmapHeight;
-                long remaining = limits.MaximumWorkUnits - workUnits;
-                if (remaining <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph bitmap exceeds the configured work limit.");
                 OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
                 SvgAuthoredPath localPath;
                 try { localPath = SvgAuthoredPath.Create(owned, SvgAffineTransform.FromScaleOffset(sampleScale, 1, -(left + sampleInset) * sampleScale, -top), budget); }
@@ -4923,19 +4686,14 @@ public static partial class SvgConverter
                     SvgGeometry[] geometries = [SvgGeometry.FromPolygonFill(fill) with { AuthoredPath = localPath }];
                     SvgDrawCommand[] draws = [new(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)];
                     SvgRoot bitmapRoot = new(null, null, null, geometries, draws, false, null);
-                    SvgRenderLimits bitmapLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                        limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)remaining), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+                    SvgRenderLimits bitmapLimits = limits;
                     SvgRenderOptions bitmapOptions = new(new SvgViewport(width, height), 1, SvgColor.Transparent, bitmapLimits);
                     using RasterizedSurface bitmap = Rasterize(bitmapRoot, bitmapOptions, budget, RasterSurfaceMode.PremultipliedGlyph, cancellationToken);
-                    workUnits += bitmap.WorkUnits;
                     double deviceLeft = originX + left, deviceTop = originY + top;
                     int startX = Math.Max(layerBounds.Left, ClampFloor(deviceLeft, outputWidth));
                     int startY = Math.Max(layerBounds.Top, ClampFloor(deviceTop, outputHeight));
                     int endX = Math.Min(layerBounds.Right, ClampCeiling(deviceLeft + bitmapWidth, outputWidth));
                     int endY = Math.Min(layerBounds.Bottom, ClampCeiling(deviceTop + height, outputHeight));
-                    long paintWork = (long)Math.Max(0, endX - startX) * Math.Max(0, endY - startY) * ((horizontalStrokeFilter ? 37 : 1) + (glyph.Shader is null ? 0 : 16));
-                    if (paintWork > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph mask painting exceeds the configured work limit.");
-                    workUnits += paintWork;
                     for (int y = startY; y < endY; y++)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
@@ -5093,8 +4851,6 @@ public static partial class SvgConverter
             SvgRectanglePathRecognizer recognizer = new();
             foreach (SvgAuthoredPathCommand command in source.Commands)
             {
-                if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle fill preparation exceeds the remaining work limit.");
-                workUnits++;
                 cancellationToken.ThrowIfCancellationRequested();
                 if (!recognizer.Add(command.Verb, command.First)) return null;
             }
@@ -5117,8 +4873,6 @@ public static partial class SvgConverter
             SvgRectanglePathRecognizer recognizer = new();
             foreach (SvgAuthoredPathCommand command in source.Commands)
             {
-                if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle source preparation exceeds the remaining work limit.");
-                workUnits++;
                 cancellationToken.ThrowIfCancellationRequested();
                 if (!recognizer.Add(command.Verb, command.First)) return null;
             }
@@ -5135,9 +4889,6 @@ public static partial class SvgConverter
 
         void RasterizeRectangleStroke(SvgRectangle rectangle, SvgStroke stroke, byte[] destination)
         {
-            int setup = rectangle.Clip is null ? 8 : 12;
-            if (setup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame preparation exceeds the configured work limit.");
-            workUnits += setup;
             cancellationToken.ThrowIfCancellationRequested();
             SvgRectangleFrameCoverage frame = SvgRectangleFrameCoverage.Create(
                 MapRectangleEdge(rectangle.X, horizontalScale, horizontalOffset), MapRectangleEdge(rectangle.Y, verticalScale, verticalOffset),
@@ -5168,9 +4919,6 @@ public static partial class SvgConverter
                 SvgRectangleFrameCoverage local = frame;
                 if (origin != default)
                 {
-                    if (8 > options.Limits.MaximumWorkUnits - workUnits)
-                        throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle bitmap-frame preparation exceeds the configured work limit.");
-                    workUnits += 8;
                     local = SvgRectangleFrameCoverage.Create(
                         MapRectangleEdge(rectangle.X, horizontalScale, (float)horizontalOffset - origin.X),
                         MapRectangleEdge(rectangle.Y, verticalScale, (float)verticalOffset - origin.Y),
@@ -5181,10 +4929,6 @@ public static partial class SvgConverter
                 int x1 = Math.Max(left, context.Interior.Left), x2 = Math.Min(right, context.Interior.Right);
                 int y1 = Math.Max(top, context.Interior.Top), y2 = Math.Min(bottom, context.Interior.Bottom);
                 if (x2 <= x1 || y2 <= y1) continue;
-                long rows = 2L * (y2 - y1);
-                if (rows > options.Limits.MaximumWorkUnits - workUnits)
-                    throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame rows exceed the configured work limit.");
-                workUnits += rows;
                 long pixels = 0;
                 for (int y = y1; y < y2; y++)
                 {
@@ -5192,10 +4936,6 @@ public static partial class SvgConverter
                     (int end, int start) = local.GetRowSpans(y - origin.Y, x1 - origin.X, x2 - origin.X);
                     pixels += end - (x1 - origin.X) + (x2 - origin.X) - Math.Max(end, start);
                 }
-                long rasterWork = 5 * pixels;
-                if (rasterWork > options.Limits.MaximumWorkUnits - workUnits)
-                    throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame raster exceeds the configured work limit.");
-                workUnits += rasterWork;
                 for (int y = y1; y < y2; y++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -5259,9 +4999,6 @@ public static partial class SvgConverter
 
         SvgRectangleRaster PrepareRectangle(SvgRectangle rectangle)
         {
-            int setupVisits = rectangle.Clip is null ? 4 : 8;
-            if (setupVisits > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle preparation exceeds the configured work limit.");
-            workUnits += setupVisits;
             cancellationToken.ThrowIfCancellationRequested();
             double x1 = MapRectangleEdge(rectangle.X, horizontalScale, horizontalOffset);
             double y1 = MapRectangleEdge(rectangle.Y, verticalScale, verticalOffset);
@@ -5283,9 +5020,6 @@ public static partial class SvgConverter
             }
             int startX = ClampFloor(left, outputWidth), startY = ClampFloor(top, outputHeight);
             int endX = Math.Max(startX, ClampCeiling(right, outputWidth)), endY = Math.Max(startY, ClampCeiling(bottom, outputHeight));
-            long pixels = (long)(endX - startX) * (endY - startY);
-            if (pixels > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle raster work exceeds the configured limit.");
-            workUnits += pixels;
             return new(startX, startY, endX, endY, coverage, clip);
         }
 
@@ -5440,7 +5174,7 @@ public static partial class SvgConverter
     private enum RasterSurfaceMode { Capture, PremultipliedPattern, PremultipliedFilter, PremultipliedGlyph }
 
     /// <summary>Owns the pixel surface and its budget reservation until encoding or a failed caller releases it.</summary>
-    internal readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels, RenderBudget.BudgetReservation Reservation, long WorkUnits) : IDisposable
+    internal readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels, RenderBudget.BudgetReservation Reservation) : IDisposable
     {
         internal SvgFilterDeferredImage? DeferredImage { get; init; }
         /// <summary>Identifies borrowed affine filter pixels awaiting their final transfer; ordinary raster surfaces are sRGB.</summary>

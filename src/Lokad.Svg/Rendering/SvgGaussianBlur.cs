@@ -20,8 +20,8 @@ internal readonly record struct SvgGaussianDeviation
 /// <summary>Blurs borrowed premultiplied RGBA pixels with transparent samples outside their frame.</summary>
 /// <remarks>
 /// The caller owns both frames and their reservations. This routine never changes the source;
-/// temporary owners release on completion, denial and cancellation. Work is admitted before
-/// allocation or execution. Independent invocations share no mutable state.
+/// temporary owners release on completion, refusal and cancellation. Storage is reserved before
+/// allocation, and pixel traversal checks cancellation. Independent invocations share no mutable state.
 /// The fused three-box passes and scaled division follow the pinned Skia CPU blur arithmetic
 /// (Copyright 2024 Google LLC; see THIRD_PARTY_NOTICES.txt). Color-space conversion belongs to
 /// the filter graph. Small deviations retain Chromium's box-kernel selection, including
@@ -31,10 +31,10 @@ internal static class SvgGaussianBlur
 {
     /// <summary>Rescales original image bounds progressively, blurs the reduced grid and restores its shader samples.</summary>
     /// <remarks>All temporary frames are budget-owned and released on every exit. Source and destination are borrowed;
-    /// work is admitted before each pixel phase, and cancellation is checked per row. Color transfer is deferred to sampling.</remarks>
-    internal static long ApplyRescaled(ReadOnlySpan<byte> source, Span<byte> destination, int width, int height,
+    /// storage is reserved before allocation, and cancellation is checked per row. Color transfer is deferred to sampling.</remarks>
+    internal static void ApplyRescaled(ReadOnlySpan<byte> source, Span<byte> destination, int width, int height,
         SvgGaussianDeviation deviation, SvgPaintBounds sourceBounds, SvgPaintBounds requestedBounds, SvgFilterRasterPlacement placement, bool inputLinear, SvgFilterColorSpace space,
-        Span<SvgShaderPaint> samples, RenderBudget budget, long availableWork, CancellationToken token)
+        Span<SvgShaderPaint> samples, RenderBudget budget, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(budget);
         long pixels = (long)width * height;
@@ -56,16 +56,13 @@ internal static class SvgGaussianBlur
         int srcWidth = (int)Math.Max(0, sourceWidth), srcHeight = (int)Math.Max(0, sourceHeight);
         if (srcWidth <= 0 || srcHeight <= 0)
         {
-            long clearWork = destination.Length + samples.Length;
-            if (clearWork > availableWork) throw new SvgException(SvgErrorCode.LimitExceeded, "Empty rescaled output exceeds the work limit.");
             destination.Clear(); samples.Clear(); token.ThrowIfCancellationRequested();
-            return clearWork;
+            return;
         }
         float centerX = xSteps == 0 ? 0 : .5f * (srcLeft + srcLeft + srcWidth);
         float centerY = ySteps == 0 ? 0 : .5f * (srcTop + srcTop + srcHeight);
         SvgPaintBounds logical = new(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight);
         SvgConverter.RasterizedSurface current = default;
-        long work = 0;
         try
         {
             bool first = true;
@@ -81,7 +78,7 @@ internal static class SvgGaussianBlur
                     (logical.Right - cx) * sx, (logical.Bottom - cy) * sy);
                 int lowLeft = (int)Math.Floor(next.Left), lowTop = (int)Math.Floor(next.Top);
                 int lowWidth = (int)Math.Ceiling(next.Right) - lowLeft, lowHeight = (int)Math.Ceiling(next.Bottom) - lowTop;
-                Charge((long)lowWidth * lowHeight);
+                token.ThrowIfCancellationRequested();
                 SvgConverter.RasterizedSurface down = Allocate(lowWidth, lowHeight);
 
                 try
@@ -115,7 +112,7 @@ internal static class SvgGaussianBlur
             int outputBottom = (int)Math.Ceiling((height - offsetY) / scaleBackY) + 1;
             using SvgConverter.RasterizedSurface padded = Allocate(outputRight - outputLeft, outputBottom - outputTop);
             int imageLeft = (int)Math.Floor(logical.Left), imageTop = (int)Math.Floor(logical.Top);
-            Charge((long)current.Width * current.Height);
+            token.ThrowIfCancellationRequested();
             for (int row = 0; row < current.Height; row++)
             {
                 token.ThrowIfCancellationRequested();
@@ -127,19 +124,19 @@ internal static class SvgGaussianBlur
                     .CopyTo(padded.Pixels.AsSpan((y * padded.Width + x + start) * 4, (end - start) * 4));
             }
             using SvgConverter.RasterizedSurface blurred = Allocate(padded.Width, padded.Height);
-            work += Apply(padded.Pixels, blurred.Pixels, padded.Width, padded.Height,
-                new(Math.Min(sigmaX / scaleBackX, 135), Math.Min(sigmaY / scaleBackY, 135)), budget, availableWork - work, token);
-            Charge((long)width * height);
+            Apply(padded.Pixels, blurred.Pixels, padded.Width, padded.Height,
+                new(Math.Min(sigmaX / scaleBackX, 135), Math.Min(sigmaY / scaleBackY, 135)), budget, token);
+            token.ThrowIfCancellationRequested();
             destination.Clear();
             SvgCpuBitmapOrigin sourceOrigin = placement.SourceOrigin;
             if (space == SvgFilterColorSpace.LinearRgb)
             {
-                Charge(samples.Length);
+                token.ThrowIfCancellationRequested();
                 samples.Clear();
                 SvgAnalyticClipBounds clip = placement.Clip;
                 SvgAnalyticClipBounds parent = new(Math.Max(clip.Left, sourceOrigin.X), Math.Max(clip.Top, sourceOrigin.Y),
                     (int)Math.Min(clip.Right, (long)sourceOrigin.X + width), (int)Math.Min(clip.Bottom, (long)sourceOrigin.Y + height));
-                if (parent.Right <= parent.Left || parent.Bottom <= parent.Top) return work;
+                if (parent.Right <= parent.Left || parent.Bottom <= parent.Top) return;
                 int requestedLeft = (int)Math.Clamp(Math.Floor((double)sourceOrigin.X + requestedBounds.Left), parent.Left, parent.Right);
                 int requestedTop = (int)Math.Clamp(Math.Floor((double)sourceOrigin.Y + requestedBounds.Top), parent.Top, parent.Bottom);
                 int requestedRight = (int)Math.Clamp(Math.Ceiling((double)sourceOrigin.X + requestedBounds.Right), parent.Left, parent.Right);
@@ -147,7 +144,6 @@ internal static class SvgGaussianBlur
                 foreach (SvgCpuRasterContext tile in placement.Grid.GetContexts(new(requestedLeft, requestedTop, requestedRight, requestedBottom)))
                 {
                     token.ThrowIfCancellationRequested();
-                    Charge(1);
                     SvgCpuBitmapOrigin origin = new(Math.Max(tile.Origin.X, clip.Left), Math.Max(tile.Origin.Y, clip.Top));
                     int cropLeft = Math.Max(requestedLeft, tile.BitmapClip.Left), cropTop = Math.Max(requestedTop, tile.BitmapClip.Top);
                     int cropRight = Math.Min(requestedRight, tile.BitmapClip.Right), cropBottom = Math.Min(requestedBottom, tile.BitmapClip.Bottom);
@@ -181,7 +177,7 @@ internal static class SvgGaussianBlur
                         }
                     }
                 }
-                return work;
+                return;
             }
             // Packed restoration retains the qualified bitmap sampler and paint-alpha path.
             SvgShaderMatrix bitmapRestore = new(scaleBackX, 0, scaleBackX * (outputLeft + 1) + (offsetX + sourceOrigin.X),
@@ -208,16 +204,10 @@ internal static class SvgGaussianBlur
                     bitmapX += bitmapStep;
                 }
             }
-            return work;
+            return;
 
         }
         finally { if (current.Pixels is not null) current.Dispose(); }
-
-        void Charge(long amount)
-        {
-            if (amount > availableWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Rescaled blur exceeds its work limit.");
-            work += amount;
-        }
         SvgConverter.RasterizedSurface Allocate(int w, int h)
         {
             token.ThrowIfCancellationRequested();
@@ -225,7 +215,7 @@ internal static class SvgGaussianBlur
             if (w <= 0 || h <= 0 || pixels > int.MaxValue / 4) throw new SvgException(SvgErrorCode.LimitExceeded, "Rescaled blur exceeds contiguous image storage.");
             int bytes = (int)pixels * 4;
             RenderBudget.BudgetReservation owner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(bytes), SvgMemoryCategory.Surface);
-            try { return new(w, h, new byte[bytes], owner, 0); }
+            try { return new(w, h, new byte[bytes], owner); }
             catch { owner.Dispose(); throw; }
         }
         static int Steps(float scale)
@@ -271,13 +261,13 @@ internal static class SvgGaussianBlur
         }
     }
 
-    internal static long Apply(ReadOnlySpan<byte> source, Span<byte> destination, int width, int height,
-        SvgGaussianDeviation deviation, RenderBudget budget, long availableWork, CancellationToken token)
-        => Apply(source, destination, width, height, deviation, budget, availableWork, token, null);
+    internal static void Apply(ReadOnlySpan<byte> source, Span<byte> destination, int width, int height,
+        SvgGaussianDeviation deviation, RenderBudget budget, CancellationToken token)
+        => Apply(source, destination, width, height, deviation, budget, token, null);
 
     /// <summary>The optional observer runs after each complete scanline; it borrows no pixels or owners.</summary>
-    internal static long Apply(ReadOnlySpan<byte> source, Span<byte> destination, int width, int height,
-        SvgGaussianDeviation deviation, RenderBudget budget, long availableWork, CancellationToken token,
+    internal static void Apply(ReadOnlySpan<byte> source, Span<byte> destination, int width, int height,
+        SvgGaussianDeviation deviation, RenderBudget budget, CancellationToken token,
         Action<int>? completedScanline)
     {
         ArgumentNullException.ThrowIfNull(budget);
@@ -290,14 +280,11 @@ internal static class SvgGaussianBlur
         if (source.Overlaps(destination)) throw new ArgumentException("The filter source and destination must be independent frames.");
         token.ThrowIfCancellationRequested();
         BoxKernel horizontal = Kernel(deviation.Horizontal), vertical = Kernel(deviation.Vertical);
-        long work = checked(AxisWork(horizontal, width, height) + AxisWork(vertical, height, width));
-        if (horizontal.Identity && vertical.Identity) work = bytes;
-        if (work > availableWork) throw new SvgException(SvgErrorCode.LimitExceeded, "Gaussian blur exceeds the configured work limit.");
-        if (horizontal.Identity && vertical.Identity)
+        if (horizontal.Identity && vertical.Identity) {}        if (horizontal.Identity && vertical.Identity)
         {
             source.CopyTo(destination);
             token.ThrowIfCancellationRequested();
-            return work;
+            return;
         }
 
         int ringLength = Math.Max(horizontal.RingLength, vertical.RingLength);
@@ -314,10 +301,7 @@ internal static class SvgGaussianBlur
             Axis(intermediate, destination, vertical, false);
         }
         token.ThrowIfCancellationRequested();
-        return work;
-
-        static long AxisWork(BoxKernel kernel, int extent, int lines)
-            => kernel.Identity ? 0 : checked(((long)extent + kernel.Border + kernel.RingLength) * lines * 4);
+        return;
 
         void Axis(ReadOnlySpan<byte> input, Span<byte> output, BoxKernel kernel, bool alongRows)
         {
