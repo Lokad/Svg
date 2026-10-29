@@ -1,5 +1,8 @@
 # Tests and provenance
 
+The [release baseline index](Research/release-baselines/README.md) identifies the
+published source, package, reference trees and inherited qualification.
+
 Run focused checks while editing, affected integration before promotion, and the
 full offline suite at a coherent milestone. These responsibilities complement
 each other:

@@ -1,0 +1,52 @@
+{
+  "version": "0.3.0",
+  "sourceCommit": "3f770d2db64519de957f6572c4b391934313cb6b",
+  "publicationRecordCommit": "c595a0ac7f7df2c9ff11c1c2f260a7d6bf655040",
+  "tag": "v0.3.0",
+  "publishedUtc": "2026-10-28T16:54:41.19+00:00",
+  "publishedPackage": {
+    "url": "https://api.nuget.org/v3/flatcontainer/lokad.svg/0.3.0/lokad.svg.0.3.0.nupkg",
+    "sha256": "422b55321cf709dd004f2b8bb3d6dbee2b6a4bc5aef46e835d403835064f46f5",
+    "librarySha256": "c685a23d457ea58fa8eb27b55c6bf9b4beb66022dc990dabe302e4b5bc3ba625"
+  },
+  "symbolsSha256": "6b91ab6ef61333bb7bec83a3b10ccedae41cad8f90d31bf22456c7556cd1746e",
+  "gitTrees": {
+    "src/Lokad.Svg": "29f309f3b3c1f0fa7d13a9d87411035959990150",
+    "tests/Lokad.Svg.Tests": "3bff92135d7d157d941a1d586654b90f41668382",
+    "tests/Lokad.Svg.VisualTests": "56f5723232045fa11a3a7216a6a467afb092ccc8",
+    "tests/Research": "514897439b8acb19f45dac7fb32a6b858d65bfec",
+    "tests/Fixtures": "2294e072deed13b0f1d3e171eb1b33e94fd4a744",
+    "tests/References": "724185ab3c5883b6f245329193069b91a84dafc8"
+  },
+  "committedEvidenceSha256": {
+    "docs/SUPPORT_MATRIX.md": "a201d5ff914b62c761e2c48430858dbee07f28daf2699da423fa89c612c68539",
+    "docs/RASTERIZATION_DESIGN.md": "24580063817924c2c2c320e24d0ffda7a733df8f61765279ef455f8621bd66e1",
+    "tests/README.md": "4fbffb88473f9ad60d4d08512dbcee7dc89ba92f21d0ea3e2886a13fb51aa19b",
+    "tools/README.md": "c9e9fe52b3be4e8daa82321012661971bd8b3562a01c90e5db288f07aed57826",
+    "LICENSE.txt": "3829ca8ca7beb49c5156930eab2180f966e002eba6692dfddd755b4c4634b3f5",
+    "THIRD_PARTY_NOTICES.txt": "eca0c6eba2505e4c8b6d7a1b42aba56e69a99082d3541871d858f59d28082e72",
+    "licenses/FreeType/FTL.TXT": "08c135755dd589039470f1fdbb400daaabaaa50d0b366d19cebff4d22986baa1",
+    "tests/Fixtures/LICENSE.txt": "8ac4e09fe12b70761b49a22201d787e6b0c37be79a9bff241b0ca5c4fb745fd9",
+    "tests/Research/public-font-qualification/fonts/OFL.txt": "0dab92d0544f7b233403f14b84a663bdbfa746982eda629e7f4f9ffe1b036feb",
+    "tests/Research/static-truetype-fonts/dejavu/LICENSE": "7a083b136e64d064794c3419751e5c7dd10d2f64c108fe5ba161eae5e5958a93",
+    "tests/Research/static-truetype-fonts/liberation/LICENSE": "93fed46019c38bbe566b479d22148e2e8a1e85ada614accb0211c37b2c61c19b"
+  },
+  "qualification": {
+    "sourceCi": "https://github.com/Lokad/Svg/actions/runs/40721914385",
+    "publicationRecordCi": "https://github.com/Lokad/Svg/actions/runs/40849943395",
+    "platforms": [
+      "Windows",
+      "Linux"
+    ],
+    "framework": "net10.0",
+    "inheritedFullTestCountPerHost": 73703,
+    "measuredInThisExecution": false
+  },
+  "testSelections": {
+    "mechanisms": "FullyQualifiedName~SvgAlphaBoundaryMechanismTests",
+    "apiAndOwnership": "FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests",
+    "development": "Category!=Research",
+    "full": "unfiltered solution suite"
+  },
+  "performance": "Not measured; dedicated quiet VM unavailable."
+}

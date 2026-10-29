@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+Development targets 0.4.0. Published 0.3.0 and its source tag remain unchanged.
+
 ## 0.3.0 - 2026-10-28
 
 Published on [NuGet.org](https://www.nuget.org/packages/Lokad.Svg/0.3.0).
