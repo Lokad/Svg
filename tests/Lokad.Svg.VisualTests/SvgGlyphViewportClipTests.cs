@@ -5,7 +5,7 @@ namespace Lokad.Svg.VisualTests;
 
 public sealed class SvgGlyphViewportClipTests
 {
-    private static string FontDirectory => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
+    private static string FontDirectory => Path.Combine(ResearchCorpus.Root, "supplied-font-labels");
     private static readonly byte[] FontBytes = File.ReadAllBytes(Path.Combine(FontDirectory, "fonts", "NotoSans-Regular.ttf"));
 
     public static IEnumerable<object[]> ViewportCases()

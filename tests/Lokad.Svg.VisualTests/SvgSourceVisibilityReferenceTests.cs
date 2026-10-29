@@ -18,7 +18,7 @@ public sealed class SvgSourceVisibilityReferenceTests
     [InlineData("linear-rect-stroke")]
     public async Task Copied_sources_match_each_actual_browser_image(string id)
     {
-        string folder = Path.Combine(AppContext.BaseDirectory, "Research", "source-visibility");
+        string folder = Path.Combine(ResearchCorpus.Root, "source-visibility");
         using JsonDocument evidence = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "capture.json")));
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes("{\"packId\":\"empty\",\"files\":[{\"relativePath\":\"unused.ttf\",\"byteSize\":1,\"sha256\":\"" + new string('0', 64) + "\"}],\"families\":[{\"requestedFamily\":\"Unused\",\"resolvedFamily\":\"Unused\",\"relativeFontFile\":\"unused.ttf\"}]}"), "empty");
         foreach (string kind in new[] { "candidate", "control" })

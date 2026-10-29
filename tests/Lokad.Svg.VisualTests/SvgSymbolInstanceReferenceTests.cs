@@ -12,7 +12,7 @@ public sealed class SvgSymbolInstanceReferenceTests
     {
         foreach (string family in new[] { "symbol-instances", "symbol-presentation", "symbol-content", "symbol-content-diagnostics", "symbol-viewport-opacity", "use-paint-properties", "rectangle-frames", "rectangle-path-strokes", "use-stroke-opacity", "use-stroke-style", "rendered-group-styles", "instance-shader-opacity", "container-shader-inheritance", "viewport-percentage-bases", "transformed-rectangle-fills", "iching-library", "pattern-vector-content", "pattern-inheritance", "pattern-affine-placement", "pattern-general-placement", "nested-affine-opacity", "gradient-masks", "mask-local-references", "mask-content-order", "mask-group-scopes", "mask-presentation", "paint-order", "fractional-rectangle-widths", "oval-source-replay", "affine-arcs", "native-path-replay", "source-convexity", "convex-path-clips", "oval-percentage-lengths", "curved-path-clips", "native-clip-winding", "deferred-paint-leaves", "affine-radial-paints", "compound-clip-content", "transformed-rectangle-strokes", "object-bounding-clips", "affine-rectangle-strokes", "pattern-viewbox", "pattern-instance-content", "gradient-stop-ranges", "open-clip-contours", "group-mask-crop", "clip-intersections", "vector-effects", "filter-regions", "filter-merges", "nonuniform-curve-paints", "affine-paint-instances", "symbol-fractional-frames", "affine-oval-strokes", "scoped-clips-masks", "colored-effects-markers", "static-css-images", "affine-image-maps", "effects-marker-sheet", "composition-sheet", "shared-paint-map-sheet", "primitive-stroke-sheet", "stroke-style-exit-sheet", "shared-map-exit-sheet", "clip-union-exit-sheet", "cubic-viewport-exit-sheet", "composition-resource-exit-sheet", "mask-color-affine-exit-sheet", "mask-viewport-exit-sheet", "viewport-clip-opacity-exit-sheet", "forward-bbox-clip-exit-sheet", "tile-mask-exit-sheet", "linear-restoration-exit-sheet", "filter-owner-exit-sheet", "marker-presentation-sheet", "symbol-presentation-sheet", "feather-line-documents", "completion-pattern-clips", "completion-pattern-object-clips", "completion-instance-clips", "completion-mask-clips", "completion-nested-clips", "completion-filtered-gradients" })
         {
-            using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", family, "manifest.json")));
+            using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, family, "manifest.json")));
             foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
                 if (!item.TryGetProperty("role", out JsonElement role) || role.GetString() != "font-contract-fixture")
                     yield return new object[] { family, RequiredString(item, "id") };
@@ -23,7 +23,7 @@ public sealed class SvgSymbolInstanceReferenceTests
     [MemberData(nameof(Cases))]
     public void Symbol_instances_retain_measured_browser_outcomes(string family, string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
+        string directory = Path.Combine(ResearchCorpus.Root, family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
         Assert.Equal(family switch { "symbol-content-diagnostics" => 3, "symbol-viewport-opacity" => 18, "use-paint-properties" => 31, "rectangle-frames" => 15, "rectangle-path-strokes" => 30, "use-stroke-opacity" => 81, "use-stroke-style" => 99, "rendered-group-styles" => 123, "instance-shader-opacity" => 150, "container-shader-inheritance" => 192, "viewport-percentage-bases" => 81, "transformed-rectangle-fills" => 15, "iching-library" => 25, "pattern-vector-content" => 22, "pattern-inheritance" => 17, "pattern-affine-placement" => 18, "pattern-general-placement" => 15, "nested-affine-opacity" => 7, "gradient-masks" => 20, "mask-local-references" => 19, "mask-content-order" => 12, "mask-group-scopes" => 16, "mask-presentation" => 33, "paint-order" => 29, "fractional-rectangle-widths" => 10, "oval-source-replay" => 8, "affine-arcs" => 15, "native-path-replay" => 62, "source-convexity" => 12, "convex-path-clips" => 11, "oval-percentage-lengths" => 12, "curved-path-clips" => 12, "native-clip-winding" => 18, "deferred-paint-leaves" => 29, "affine-radial-paints" => 23, "compound-clip-content" => 18, "transformed-rectangle-strokes" => 6, "object-bounding-clips" => 7, "affine-rectangle-strokes" => 10, "pattern-viewbox" => 6, "pattern-instance-content" => 9, "gradient-stop-ranges" => 6, "open-clip-contours" => 9, "group-mask-crop" => 16, "clip-intersections" => 10, "vector-effects" => 10, "filter-regions" => 26, "filter-merges" => 4, "nonuniform-curve-paints" => 2, "affine-paint-instances" => 8, "symbol-fractional-frames" => 4, "affine-oval-strokes" => 6, "scoped-clips-masks" => 5, "colored-effects-markers" => 12, "static-css-images" => 5, "affine-image-maps" => 3, "effects-marker-sheet" => 11, "composition-sheet" => 1, "shared-paint-map-sheet" => 3, "primitive-stroke-sheet" => 4, "stroke-style-exit-sheet" => 4, "shared-map-exit-sheet" => 5, "clip-union-exit-sheet" => 5, "cubic-viewport-exit-sheet" => 2, "composition-resource-exit-sheet" => 3, "mask-color-affine-exit-sheet" => 3, "mask-viewport-exit-sheet" => 5, "viewport-clip-opacity-exit-sheet" => 6, "forward-bbox-clip-exit-sheet" => 6, "tile-mask-exit-sheet" => 2, "linear-restoration-exit-sheet" => 3, "filter-owner-exit-sheet" => 13, "marker-presentation-sheet" => 2, "symbol-presentation-sheet" => 2, "feather-line-documents" => 2, "completion-pattern-clips" => 3, "completion-pattern-object-clips" => 4, "completion-instance-clips" => 10, "completion-mask-clips" => 4, "completion-nested-clips" => 4, "completion-filtered-gradients" => 5, _ => 16 }, root.GetProperty("cases").GetArrayLength());
@@ -179,7 +179,7 @@ public sealed class SvgSymbolInstanceReferenceTests
             ("native-path-replay", "mask-clipped-vector-group")
         })
         {
-            byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", sample.Family, sample.Name + ".svg"));
+            byte[] input = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, sample.Family, sample.Name + ".svg"));
             byte[] unchanged = input.ToArray();
             RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(16_000_000));
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
@@ -218,7 +218,7 @@ public sealed class SvgSymbolInstanceReferenceTests
     [Fact]
     public void Primitive_shader_strokes_release_sources_and_rasters_on_denial_cancellation_and_retry()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "primitive-stroke-sheet");
+        string directory = Path.Combine(ResearchCorpus.Root, "primitive-stroke-sheet");
         foreach (string name in new[] { "line-shader-alpha", "point-list-radial-map" })
         {
             byte[] input = File.ReadAllBytes(Path.Combine(directory, name + ".svg"));
@@ -261,7 +261,7 @@ public sealed class SvgSymbolInstanceReferenceTests
     [Fact]
     public void Stroke_style_exits_release_sources_and_rasters_on_denial_cancellation_and_retry()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "stroke-style-exit-sheet");
+        string directory = Path.Combine(ResearchCorpus.Root, "stroke-style-exit-sheet");
         foreach (string name in new[] { "solid-line-caps", "rounded-shader-alpha", "oval-shader-alpha" })
         {
             byte[] input = File.ReadAllBytes(Path.Combine(directory, name + ".svg"));
@@ -305,7 +305,7 @@ public sealed class SvgSymbolInstanceReferenceTests
     [Fact]
     public void Shared_map_exits_release_sources_and_rasters_on_denial_cancellation_and_retry()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "shared-map-exit-sheet");
+        string directory = Path.Combine(ResearchCorpus.Root, "shared-map-exit-sheet");
         foreach (string name in new[] { "reflected-basic-use", "scaled-viewport-rectangle-stroke", "scaled-stroked-pattern-content", "nonuniform-nonscaling-dashes" })
         {
             byte[] input = File.ReadAllBytes(Path.Combine(directory, name + ".svg"));

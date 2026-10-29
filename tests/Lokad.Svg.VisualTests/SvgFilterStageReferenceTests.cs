@@ -50,5 +50,5 @@ public sealed class SvgFilterStageReferenceTests
         Assert.True(PixelComparer.Compare(expected, PngRgbaDecoder.Decode(actual, 1_048_576)).IsExact, id);
     }
 
-    private static string Folder(string family) => Path.Combine(AppContext.BaseDirectory, "Research", family);
+    private static string Folder(string family) => Path.Combine(ResearchCorpus.Root, family);
 }

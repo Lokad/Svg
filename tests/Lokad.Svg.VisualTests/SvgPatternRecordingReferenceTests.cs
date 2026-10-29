@@ -31,7 +31,7 @@ public sealed class SvgPatternRecordingReferenceTests
     [InlineData("affine-reflect")]
     public async Task Pattern_recording_matches_each_authored_and_externally_scaled_browser_image(string id)
     {
-        string folder = Path.Combine(AppContext.BaseDirectory, "Research", "pattern-recording");
+        string folder = Path.Combine(ResearchCorpus.Root, "pattern-recording");
         using JsonDocument evidence = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "capture.json")));
         JsonElement program = evidence.RootElement.GetProperty("fontProgram");
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(folder, Text(program, "catalog"))), Text(program, "packId"));

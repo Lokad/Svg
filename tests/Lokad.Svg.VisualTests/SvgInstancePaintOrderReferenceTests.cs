@@ -15,7 +15,7 @@ public sealed class SvgInstancePaintOrderReferenceTests
     [InlineData("radial-stroke")]
     public void Each_resource_order_matches_its_independent_browser_image(string id)
     {
-        string folder = Path.Combine(AppContext.BaseDirectory, "Research", "forward-instance-paints");
+        string folder = Path.Combine(ResearchCorpus.Root, "forward-instance-paints");
         using JsonDocument evidence = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "capture.json")));
         foreach (string kind in new[] { "candidate", "control" })
         {

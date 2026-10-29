@@ -7,7 +7,7 @@ namespace Lokad.Svg.VisualTests;
 
 public sealed class SvgStaticTrueTypeFontTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "static-truetype-fonts");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "static-truetype-fonts");
 
     [Theory]
     [InlineData("liberation")]

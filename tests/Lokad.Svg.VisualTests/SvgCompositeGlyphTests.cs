@@ -9,7 +9,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Protects independently fitted component/parent geometry, font scale semantics and bounded cleanup; whole-document pixels remain a separate acceptance gate.</summary>
 public sealed class SvgCompositeGlyphTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "supplied-font-documents");
     private static TrueTypeHintTarget Target => new(35, TrueTypeHintQueryFlags.Grayscale, TrueTypeHintControlScale.FractionalFontUnits, TrueTypeHintPreparation.DefaultThenTarget);
 
     public static IEnumerable<object[]> Cases()

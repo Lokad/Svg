@@ -8,8 +8,8 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Checks actual accent contours and metric-dependent parent hints against independent native data; whole-document pixel acceptance remains separate.</summary>
 public sealed class SvgCompositeMetricsTests
 {
-    private static string FontPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels", "fonts", "NotoSans-Regular.ttf");
-    private static string WitnessPath => Path.Combine(AppContext.BaseDirectory, "Research", "curved-font-documents", "diagnostics", "composite-metrics-contours.json");
+    private static string FontPath => Path.Combine(ResearchCorpus.Root, "supplied-font-labels", "fonts", "NotoSans-Regular.ttf");
+    private static string WitnessPath => Path.Combine(ResearchCorpus.Root, "curved-font-documents", "diagnostics", "composite-metrics-contours.json");
     private static TrueTypeHintTarget Target => new(35, TrueTypeHintQueryFlags.Grayscale, TrueTypeHintControlScale.FractionalFontUnits, TrueTypeHintPreparation.DefaultThenTarget);
 
     public static IEnumerable<object[]> Cases()

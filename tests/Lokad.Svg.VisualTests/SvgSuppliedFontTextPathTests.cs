@@ -10,7 +10,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Protects the unchanged local text-path document, separate controls and caller-supplied font contract.</summary>
 public sealed class SvgSuppliedFontTextPathTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-text-paths");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "supplied-font-text-paths");
 
     public static IEnumerable<object[]> Cases()
     {
@@ -97,7 +97,7 @@ public sealed class SvgSuppliedFontTextPathTests
         }
     }
 
-    private static string FontDirectory => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
+    private static string FontDirectory => Path.Combine(ResearchCorpus.Root, "supplied-font-labels");
 
     private static ValueTask<SvgFontSnapshot> Prepare(byte[] input) => SvgFontSnapshot.CreateAsync(input, Catalog(), Provider(), CancellationToken.None);
 

@@ -10,7 +10,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Protects the complete CC0 document, supplied Mono Bold positioning and exact output contracts.</summary>
 public sealed class SvgSuppliedFontDocumentTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "supplied-font-documents");
 
     public static IEnumerable<object[]> Cases()
     {

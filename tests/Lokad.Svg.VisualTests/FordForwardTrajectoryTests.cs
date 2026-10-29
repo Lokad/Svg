@@ -14,7 +14,7 @@ public sealed class FordForwardTrajectoryTests
     [Fact]
     public void Cubic_twin_has_exact_painted_coverage_after_window_separation()
     {
-        string research = Path.Combine(AppContext.BaseDirectory, "Research");
+        string research = ResearchCorpus.Root;
         byte[] svg = File.ReadAllBytes(Path.Combine(research, "cubic-twin-100x100.svg"));
         byte[] oracleBytes = File.ReadAllBytes(Path.Combine(research, "references", "cubic-twin-100x100.png"));
         RgbaImage reference = PngRgbaDecoder.Decode(oracleBytes, 100 * 100);
@@ -34,7 +34,7 @@ public sealed class FordForwardTrajectoryTests
     [Fact]
     public void Twin_rows_attribute_live_against_flat_and_oracle()
     {
-        string research = Path.Combine(AppContext.BaseDirectory, "Research");
+        string research = ResearchCorpus.Root;
         byte[] svg = File.ReadAllBytes(Path.Combine(research, "cubic-twin-100x100.svg"));
         byte[] oracleBytes = File.ReadAllBytes(Path.Combine(research, "references", "cubic-twin-100x100.png"));
         RgbaImage reference = PngRgbaDecoder.Decode(oracleBytes, 100 * 100);
@@ -213,7 +213,7 @@ public sealed class FordForwardTrajectoryTests
     [Fact]
     public void Twin_spans_report_individual_live_fidelity()
     {
-        string research = Path.Combine(AppContext.BaseDirectory, "Research");
+        string research = ResearchCorpus.Root;
         byte[] svg = File.ReadAllBytes(Path.Combine(research, "cubic-twin-100x100.svg"));
         byte[] oracleBytes = File.ReadAllBytes(Path.Combine(research, "references", "cubic-twin-100x100.png"));
         RgbaImage reference = PngRgbaDecoder.Decode(oracleBytes, 100 * 100);

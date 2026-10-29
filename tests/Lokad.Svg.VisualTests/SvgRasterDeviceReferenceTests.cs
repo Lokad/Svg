@@ -44,5 +44,5 @@ public sealed class SvgRasterDeviceReferenceTests
         Assert.True(PixelComparer.Compare(expected, PngRgbaDecoder.Decode(actual, 1_048_576)).IsExact, id);
     }
 
-    private static string Folder() => Path.Combine(AppContext.BaseDirectory, "Research", "raster-capture-profiles");
+    private static string Folder() => Path.Combine(ResearchCorpus.Root, "raster-capture-profiles");
 }

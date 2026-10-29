@@ -9,7 +9,7 @@ public sealed class SvgGaussianBlurReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "filter-blur-kernel", "manifest.json")));
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "filter-blur-kernel", "manifest.json")));
         foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
             yield return new object[] { Required(item, "id") };
     }
@@ -18,7 +18,7 @@ public sealed class SvgGaussianBlurReferenceTests
     [MemberData(nameof(Cases))]
     public void Premultiplied_blur_kernel_matches_frozen_browser_control(string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "filter-blur-kernel");
+        string directory = Path.Combine(ResearchCorpus.Root, "filter-blur-kernel");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
@@ -57,7 +57,7 @@ public sealed class SvgGaussianBlurReferenceTests
     [MemberData(nameof(Cases))]
     public async Task Whole_filter_playback_matches_the_same_frozen_control_through_six_outputs(string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "filter-blur-kernel");
+        string directory = Path.Combine(ResearchCorpus.Root, "filter-blur-kernel");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
         byte[] source = File.ReadAllBytes(Path.Combine(directory, Required(item, "input")));

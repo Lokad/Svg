@@ -8,7 +8,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Protects native intermediate contours separately from unfinished font pixel acceptance.</summary>
 public sealed class SvgLatinLightOutlineTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "supplied-font-labels");
 
     public static IEnumerable<object[]> Cases()
     {

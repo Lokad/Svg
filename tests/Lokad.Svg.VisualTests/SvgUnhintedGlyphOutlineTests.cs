@@ -8,7 +8,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Checks immutable native outlines independently of the final matching-platform pixel controls.</summary>
 public sealed class SvgUnhintedGlyphOutlineTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "curved-font-documents");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "curved-font-documents");
 
     [Theory]
     [InlineData(36, 20)]
@@ -21,7 +21,7 @@ public sealed class SvgUnhintedGlyphOutlineTests
     {
         using JsonDocument diagnostic = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "diagnostics", "unhinted-device-outlines.json")));
         JsonElement root = diagnostic.RootElement;
-        byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels", "fonts", "NotoSans-Regular.ttf"));
+        byte[] bytes = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "supplied-font-labels", "fonts", "NotoSans-Regular.ttf"));
         Assert.Equal(root.GetProperty("fontProgramSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(bytes)));
         JsonElement expected = root.GetProperty("outlines").EnumerateArray().Single(x => x.GetProperty("glyph").GetInt32() == glyph && x.GetProperty("size").GetDouble() == size);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);

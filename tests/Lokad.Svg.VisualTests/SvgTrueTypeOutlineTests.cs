@@ -9,7 +9,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Checks independent intermediate grid-fit geometry, without claiming Windows font pixel acceptance.</summary>
 public sealed class SvgTrueTypeOutlineTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "supplied-font-labels");
     private static TrueTypeHintTarget Target => new(35, TrueTypeHintQueryFlags.Grayscale, TrueTypeHintControlScale.FractionalFontUnits, TrueTypeHintPreparation.DefaultThenTarget);
 
     public static IEnumerable<object[]> Cases()

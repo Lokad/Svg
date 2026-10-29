@@ -9,7 +9,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Protects independent native component placement and material ownership; whole-document pixels are checked separately.</summary>
 public sealed class SvgCompositeFlagTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "composite-flag-exit-sheet");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "composite-flag-exit-sheet");
     private static TrueTypeHintTarget WindowsTarget => new(42, TrueTypeHintQueryFlags.FontVariations | TrueTypeHintQueryFlags.VerticalPhantoms | TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
 
     public static IEnumerable<object[]> NativeCases()

@@ -7,7 +7,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Protects the native contours that exposed near-point and contour-start defects in SVG Translate.</summary>
 public sealed class SvgLatinLightNearPointTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "supplied-font-documents");
 
     public static IEnumerable<object[]> Cases()
     {

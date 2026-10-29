@@ -8,7 +8,7 @@ public sealed class SvgSymbolLocationReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "symbol-locations", "manifest.json")));
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "symbol-locations", "manifest.json")));
         foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
             yield return new object[] { RequiredString(item, "id") };
     }
@@ -17,7 +17,7 @@ public sealed class SvgSymbolLocationReferenceTests
     [MemberData(nameof(Cases))]
     public async Task Symbol_instances_match_stable_browser_references_through_all_six_outputs(string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "symbol-locations");
+        string directory = Path.Combine(ResearchCorpus.Root, "symbol-locations");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
         Assert.Equal(14, root.GetProperty("cases").GetArrayLength());

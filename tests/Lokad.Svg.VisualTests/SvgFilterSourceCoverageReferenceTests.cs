@@ -50,5 +50,5 @@ public sealed class SvgFilterSourceCoverageReferenceTests
         Assert.True(PixelComparer.Compare(primaryImage, PngRgbaDecoder.Decode(actual, 1_048_576)).IsExact, id);
     }
 
-    private static string Folder() => Path.Combine(AppContext.BaseDirectory, "Research", "filter-source-coverage");
+    private static string Folder() => Path.Combine(ResearchCorpus.Root, "filter-source-coverage");
 }

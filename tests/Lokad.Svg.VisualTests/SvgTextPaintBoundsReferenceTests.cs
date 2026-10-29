@@ -66,7 +66,7 @@ public sealed class SvgTextPaintBoundsReferenceTests
         Assert.Equal(actual, document.ConvertToPng(CancellationToken.None).ToArray());
     }
 
-    private static string Folder() => Path.Combine(AppContext.BaseDirectory, "Research", "text-paint-bounds");
+    private static string Folder() => Path.Combine(ResearchCorpus.Root, "text-paint-bounds");
 
     private sealed class FontPrograms : ISvgFontProgramSourceProvider
     {
@@ -76,7 +76,7 @@ public sealed class SvgTextPaintBoundsReferenceTests
             string name = file.RelativePath == "sans.ttf" ? "supplied-font-labels" : "supplied-font-documents";
             string font = file.RelativePath == "sans.ttf" ? "NotoSans-Regular.ttf" : "NotoSansMono-Bold.ttf";
             return ValueTask.FromResult<ISvgFontProgramSource?>(new SvgMemoryFontProgramSource(file.RelativePath,
-                File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", name, "fonts", font))));
+                File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, name, "fonts", font))));
         }
     }
 }

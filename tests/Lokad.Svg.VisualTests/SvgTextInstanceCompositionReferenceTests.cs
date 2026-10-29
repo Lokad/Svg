@@ -62,7 +62,7 @@ public sealed class SvgTextInstanceCompositionReferenceTests
     private static async Task<byte[]> Render(JsonElement row, byte[] input)
     {
         using SvgFontSnapshot? fonts = row.GetProperty("font").GetBoolean()
-            ? await SvgFontSnapshot.CreateAsync(input, SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "static-css-document", "font-pack.json")), "public-noto-sans"), new FontPrograms(), CancellationToken.None)
+            ? await SvgFontSnapshot.CreateAsync(input, SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "static-css-document", "font-pack.json")), "public-noto-sans"), new FontPrograms(), CancellationToken.None)
             : null;
         SvgRenderOptions options = new(null, row.GetProperty("outputScale").GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default, fonts);
         return SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
@@ -84,12 +84,12 @@ public sealed class SvgTextInstanceCompositionReferenceTests
     private static string Required(JsonElement row, string name)
         => row.GetProperty(name).GetString() ?? throw new InvalidDataException("Missing " + name + ".");
 
-    private static string Folder(string collection) => Path.Combine(AppContext.BaseDirectory, "Research", collection);
+    private static string Folder(string collection) => Path.Combine(ResearchCorpus.Root, collection);
     private static string Host() => OperatingSystem.IsWindows() ? "windows" : "linux";
 
     private sealed class FontPrograms : ISvgFontProgramSourceProvider
     {
-        private static readonly byte[] Bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels", "fonts", "NotoSans-Regular.ttf"));
+        private static readonly byte[] Bytes = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "supplied-font-labels", "fonts", "NotoSans-Regular.ttf"));
 
         /// <summary>Transfers a fresh source to acquisition over immutable shared bytes; honors cancellation and permits concurrent independent calls.</summary>
         public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)

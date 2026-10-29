@@ -9,7 +9,7 @@ namespace Lokad.Svg.VisualTests;
 
 public sealed partial class SvgGlyphFallbackTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "glyph-fallback");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "glyph-fallback");
 
     [Fact]
     public async Task Mixed_coverage_preserves_primary_glyphs_advances_and_complete_document_pixels()

@@ -8,7 +8,7 @@ namespace Lokad.Svg.VisualTests;
 
 public sealed class SvgWindowsGlyphTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "supplied-font-labels");
 
     [Theory]
     [InlineData("74-50-0")]
@@ -16,7 +16,7 @@ public sealed class SvgWindowsGlyphTests
     [InlineData("77-50-0.75")]
     public async Task Large_windows_curves_match_complete_native_textures_after_bounded_subdivision(string identity)
     {
-        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "mask-group-documents", "diagnostics", "windows-glyph-masks.json")));
+        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "mask-group-documents", "diagnostics", "windows-glyph-masks.json")));
         JsonElement item = native.RootElement.GetProperty("cases").EnumerateArray().Single(candidate => candidate.GetProperty("id").GetString() == identity);
         Assert.Equal(3, item.GetProperty("freshProcessCaptures").GetInt32());
         using SvgFontSnapshot snapshot = await Prepare();
@@ -74,7 +74,7 @@ public sealed class SvgWindowsGlyphTests
     [InlineData("horizontal-parent-ring")]
     public async Task Mapped_windows_masks_match_complete_independent_native_textures(string identity)
     {
-        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "curved-font-documents", "diagnostics", "windows-mapped-masks.json")));
+        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "curved-font-documents", "diagnostics", "windows-mapped-masks.json")));
         JsonElement item = native.RootElement.GetProperty("cases").EnumerateArray().Single(item => item.GetProperty("id").GetString() == identity);
         using SvgFontSnapshot snapshot = await Prepare();
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
@@ -147,7 +147,7 @@ public sealed class SvgWindowsGlyphTests
     [Fact]
     public async Task Collapsed_tips_and_bounded_dropouts_match_complete_independent_native_textures()
     {
-        string path = Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics", "windows-smart-stubs.json");
+        string path = Path.Combine(ResearchCorpus.Root, "supplied-font-documents", "diagnostics", "windows-smart-stubs.json");
         using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(path));
         Assert.Equal(6, native.RootElement.GetProperty("originalCases").GetArrayLength());
         foreach (JsonElement item in native.RootElement.GetProperty("originalCases").EnumerateArray())
@@ -202,7 +202,7 @@ public sealed class SvgWindowsGlyphTests
     {
         if (!OperatingSystem.IsWindows()) return;
         using SvgFontSnapshot snapshot = await PrepareMono();
-        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "scalar-x-reset.svg"));
+        byte[] input = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "supplied-font-documents", "scalar-x-reset.svg"));
         var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
         {
@@ -258,7 +258,7 @@ public sealed class SvgWindowsGlyphTests
     public async Task Mono_quarter_strikes_and_smart_dropout_strike_match_independent_native_rgb_masks()
     {
         using SvgFontSnapshot snapshot = await PrepareMono();
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics");
+        string directory = Path.Combine(ResearchCorpus.Root, "supplied-font-documents", "diagnostics");
         using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "windows-glyph-coverage.json")));
         foreach (JsonElement item in native.RootElement.GetProperty("coverageCases").EnumerateArray()
             .Concat(native.RootElement.GetProperty("smartDropoutCases").EnumerateArray())
@@ -301,7 +301,7 @@ public sealed class SvgWindowsGlyphTests
     [Fact]
     public void Directed_contours_match_complete_independent_native_boundary_textures()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics");
+        string directory = Path.Combine(ResearchCorpus.Root, "supplied-font-documents", "diagnostics");
         using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "windows-contour-boundaries.json")));
         foreach (JsonElement item in native.RootElement.GetProperty("cases").EnumerateArray())
         {
@@ -355,7 +355,7 @@ public sealed class SvgWindowsGlyphTests
     [Fact]
     public void Coefficient_precision_and_implied_points_match_complete_translated_native_curve_textures()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics");
+        string directory = Path.Combine(ResearchCorpus.Root, "supplied-font-documents", "diagnostics");
         using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "windows-curve-cells.json")));
         JsonElement[] cases = native.RootElement.GetProperty("cases").EnumerateArray().ToArray();
         Assert.Equal(5, cases.Length);
@@ -416,7 +416,7 @@ public sealed class SvgWindowsGlyphTests
     public async Task Windows_implied_curve_midpoints_retain_half_f26_units()
     {
         using SvgFontSnapshot snapshot = await PrepareMono();
-        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics", "windows-glyph-coverage.json")));
+        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "supplied-font-documents", "diagnostics", "windows-glyph-coverage.json")));
         foreach (JsonElement item in native.RootElement.GetProperty("impliedMidpointCases").EnumerateArray())
         {
             var budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
@@ -488,7 +488,7 @@ public sealed class SvgWindowsGlyphTests
 
     private static ValueTask<SvgFontSnapshot> PrepareMono()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents");
+        string directory = Path.Combine(ResearchCorpus.Root, "supplied-font-documents");
         byte[] input = File.ReadAllBytes(Path.Combine(directory, "svg-translate-textpath.svg"));
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "font-pack.json")), "public-noto-sans-mono");
         return SvgFontSnapshot.CreateAsync(input, catalog, new MemoryProvider(File.ReadAllBytes(Path.Combine(directory, "fonts", "NotoSansMono-Bold.ttf")), "public-noto-sans-mono"), CancellationToken.None);

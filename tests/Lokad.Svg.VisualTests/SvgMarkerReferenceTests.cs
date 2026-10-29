@@ -10,7 +10,7 @@ public sealed class SvgMarkerReferenceTests
     {
         foreach (string family in new[] { "marker-content", "path-marker-content", "marker-instance-content" })
         {
-            string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
+            string directory = Path.Combine(ResearchCorpus.Root, family);
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
             foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
                 yield return new object[] { family, Required(item, "id") };
@@ -21,7 +21,7 @@ public sealed class SvgMarkerReferenceTests
     [MemberData(nameof(Cases))]
     public async Task Marker_cases_preserve_frozen_pixels_and_explicit_boundaries_through_six_apis(string family, string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
+        string directory = Path.Combine(ResearchCorpus.Root, family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
         Assert.Equal(family switch { "marker-content" => 20, "path-marker-content" => 23, "marker-instance-content" => 15, _ => throw new InvalidDataException("Unknown marker family.") }, root.GetProperty("cases").GetArrayLength());

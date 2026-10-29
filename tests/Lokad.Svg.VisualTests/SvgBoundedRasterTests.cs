@@ -7,8 +7,8 @@ namespace Lokad.Svg.VisualTests;
 
 public sealed class SvgBoundedRasterTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "bounded-raster-sizing");
-    private static string FontDirectory => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "bounded-raster-sizing");
+    private static string FontDirectory => Path.Combine(ResearchCorpus.Root, "supplied-font-labels");
 
     [Theory]
     [InlineData("layout-600", "layout.svg", 600, 300)]

@@ -10,7 +10,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Retains the complete declared layout guide and orthogonal missing-semantic witnesses.</summary>
 public sealed class SvgFontLayoutDiagramTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "font-layout-diagram");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "font-layout-diagram");
 
     [Fact]
     public async Task Nested_viewport_own_map_keeps_supplied_glyph_placement_and_physical_clipping()
@@ -31,7 +31,7 @@ public sealed class SvgFontLayoutDiagramTests
     [Fact]
     public async Task Whole_pattern_content_releases_borrowed_font_filter_and_image_resources_on_denial_and_retry()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "pattern-tile-sheet");
+        string directory = Path.Combine(ResearchCorpus.Root, "pattern-tile-sheet");
         byte[] input = File.ReadAllBytes(Path.Combine(directory, "pattern-tile-sheet.svg"));
         byte[] unchanged = input.ToArray();
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
@@ -62,7 +62,7 @@ public sealed class SvgFontLayoutDiagramTests
     {
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("Example", 400, false)], new Provider(), CancellationToken.None);
-        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet", "stroke-modes.svg"));
+        byte[] input = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "remaining-label-path-sheet", "stroke-modes.svg"));
         byte[] unchanged = input.ToArray();
         RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(16_000_000));
         using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, snapshot, CancellationToken.None);
@@ -114,7 +114,7 @@ public sealed class SvgFontLayoutDiagramTests
     {
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("Example", 400, false), new("Mono", 700, false)], new Provider(), CancellationToken.None);
-        byte[] original = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet", "solid-decorations.svg"));
+        byte[] original = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "remaining-label-path-sheet", "solid-decorations.svg"));
         byte[] unchanged = original.ToArray();
         byte[] affine = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(original).Replace("<g font-family", "<g transform='rotate(7 160 80)' font-family", StringComparison.Ordinal));
         byte[] stroked = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(original).Replace("<g font-family", "<g stroke='#a44f32' stroke-width='1' font-family", StringComparison.Ordinal));
@@ -152,7 +152,7 @@ public sealed class SvgFontLayoutDiagramTests
     [Fact]
     public async Task Stroked_decoration_compound_clips_release_render_storage_on_denial_cancellation_and_retry()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "stroked-decorations");
+        string directory = Path.Combine(ResearchCorpus.Root, "stroked-decorations");
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "..", "offset-merge-document", "font-pack.json")), "public-noto-sans");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("serif", 400, false)], new Provider(), CancellationToken.None);
         byte[] original = File.ReadAllBytes(Path.Combine(directory, "direct-stroked-decoration.svg"));
@@ -294,21 +294,21 @@ public sealed class SvgFontLayoutDiagramTests
         => ReadCases(DirectoryPath);
 
     public static IEnumerable<object[]> CascadeCases()
-        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "root-resource-cascade"));
+        => ReadCases(Path.Combine(ResearchCorpus.Root, "root-resource-cascade"));
 
     public static IEnumerable<object[]> PatternTileCases()
-        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "pattern-tile-sheet"));
+        => ReadCases(Path.Combine(ResearchCorpus.Root, "pattern-tile-sheet"));
 
     public static IEnumerable<object[]> StrokedDecorationCases()
-        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "stroked-decorations"));
+        => ReadCases(Path.Combine(ResearchCorpus.Root, "stroked-decorations"));
 
     public static IEnumerable<object[]> GlyphResourceCases()
-        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "glyph-resource-exit-sheet"));
+        => ReadCases(Path.Combine(ResearchCorpus.Root, "glyph-resource-exit-sheet"));
 
     [Fact]
     public async Task Glyph_resource_scopes_preserve_preparation_denial_cancellation_cleanup_and_retry()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "glyph-resource-exit-sheet");
+        string directory = Path.Combine(ResearchCorpus.Root, "glyph-resource-exit-sheet");
         byte[] input = File.ReadAllBytes(Path.Combine(directory, "glyph-resource-sheet.svg")), unchanged = input.ToArray();
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "..", "supplied-font-labels", "font-pack.json")), "public-noto-sans");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
@@ -341,16 +341,16 @@ public sealed class SvgFontLayoutDiagramTests
     }
 
     public static IEnumerable<object[]> MarkerCompletionCases()
-        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "marker-completion-sheet"));
+        => ReadCases(Path.Combine(ResearchCorpus.Root, "marker-completion-sheet"));
 
     [Theory]
     [MemberData(nameof(MarkerCompletionCases))]
     public Task Marker_completion_outputs_match_original_sources_and_verified_font_references(string identity)
-        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "marker-completion-sheet"), identity, [new("Example", 400, false)]);
+        => ValidateDeclared(Path.Combine(ResearchCorpus.Root, "marker-completion-sheet"), identity, [new("Example", 400, false)]);
 
     [Fact]
     public void Marker_completion_sheet_uses_its_svg_local_supplied_face()
-        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "marker-completion-sheet"), "marker-completion-sheet");
+        => ValidateIntendedFont(Path.Combine(ResearchCorpus.Root, "marker-completion-sheet"), "marker-completion-sheet");
 
     [Fact]
     public Task Marker_completion_releases_owners_on_denial_cancellation_and_prepared_retry()
@@ -378,83 +378,83 @@ public sealed class SvgFontLayoutDiagramTests
     }
 
     public static IEnumerable<object[]> RetainedInstanceEffectCases()
-        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "retained-instance-effect-sheet"));
+        => ReadCases(Path.Combine(ResearchCorpus.Root, "retained-instance-effect-sheet"));
 
     [Theory]
     [MemberData(nameof(RetainedInstanceEffectCases))]
     public Task Retained_instance_effect_outputs_match_unchanged_platform_references(string identity)
-        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "retained-instance-effect-sheet"), identity, [new("Example", 400, false)]);
+        => ValidateDeclared(Path.Combine(ResearchCorpus.Root, "retained-instance-effect-sheet"), identity, [new("Example", 400, false)]);
 
     [Fact]
     public void Retained_instance_effect_sheet_uses_the_declared_supplied_face()
-        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "retained-instance-effect-sheet"), "retained-instance-effect-sheet");
+        => ValidateIntendedFont(Path.Combine(ResearchCorpus.Root, "retained-instance-effect-sheet"), "retained-instance-effect-sheet");
 
     [Fact]
     public Task Retained_instance_effect_sheet_releases_owners_on_denial_cancellation_and_prepared_retry()
         => ValidateRetainedTextOwners("retained-instance-effect-sheet", "retained-instance-effect-sheet.svg");
 
     public static IEnumerable<object[]> FilterSourceCases()
-        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "filter-source-exit-sheet"));
+        => ReadCases(Path.Combine(ResearchCorpus.Root, "filter-source-exit-sheet"));
 
     [Theory]
     [MemberData(nameof(FilterSourceCases))]
     public Task Declared_filter_source_document_and_controls_match_frozen_references(string identity)
-        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "filter-source-exit-sheet"), identity, [new("Example", 400, false)]);
+        => ValidateDeclared(Path.Combine(ResearchCorpus.Root, "filter-source-exit-sheet"), identity, [new("Example", 400, false)]);
 
     [Fact]
     public void Filter_source_document_uses_the_declared_supplied_face()
-        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "filter-source-exit-sheet"), "filter-source-sheet");
+        => ValidateIntendedFont(Path.Combine(ResearchCorpus.Root, "filter-source-exit-sheet"), "filter-source-sheet");
 
     [Fact]
     public Task Filter_source_sheet_releases_owners_on_denial_cancellation_and_prepared_retry()
         => ValidateRetainedTextOwners("filter-source-exit-sheet", "filter-source-sheet.svg");
 
     public static IEnumerable<object[]> AffineSourceCases()
-        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "affine-source-exit-sheet"));
+        => ReadCases(Path.Combine(ResearchCorpus.Root, "affine-source-exit-sheet"));
 
     [Theory]
     [MemberData(nameof(AffineSourceCases))]
     public Task Declared_affine_source_document_and_controls_match_frozen_references(string identity)
-        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "affine-source-exit-sheet"), identity, [new("Example", 400, false)]);
+        => ValidateDeclared(Path.Combine(ResearchCorpus.Root, "affine-source-exit-sheet"), identity, [new("Example", 400, false)]);
 
     [Fact]
     public void Affine_source_document_uses_the_declared_supplied_face()
-        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "affine-source-exit-sheet"), "affine-source-sheet");
+        => ValidateIntendedFont(Path.Combine(ResearchCorpus.Root, "affine-source-exit-sheet"), "affine-source-sheet");
 
     [Fact]
     public Task Affine_source_sheet_releases_owners_on_denial_cancellation_and_prepared_retry()
         => ValidateRetainedTextOwners("affine-source-exit-sheet", "affine-source-sheet.svg");
 
     public static IEnumerable<object[]> CompositeFlagCases()
-        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "composite-flag-exit-sheet"));
+        => ReadCases(Path.Combine(ResearchCorpus.Root, "composite-flag-exit-sheet"));
 
     [Theory]
     [MemberData(nameof(CompositeFlagCases))]
     public Task Declared_composite_flag_document_and_controls_match_frozen_references(string identity)
-        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "composite-flag-exit-sheet"), identity, [new("Example", 400, false)]);
+        => ValidateDeclared(Path.Combine(ResearchCorpus.Root, "composite-flag-exit-sheet"), identity, [new("Example", 400, false)]);
 
     [Fact]
     public void Composite_flag_document_uses_the_authored_supplied_face()
-        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "composite-flag-exit-sheet"), "composite-flag-sheet");
+        => ValidateIntendedFont(Path.Combine(ResearchCorpus.Root, "composite-flag-exit-sheet"), "composite-flag-sheet");
 
     [Fact]
     public Task Composite_flag_sheet_releases_owners_on_denial_cancellation_and_prepared_retry()
         => ValidateRetainedTextOwners("composite-flag-exit-sheet", "composite-flag-sheet.svg");
 
     public static IEnumerable<object[]> InstancePaintCases()
-        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "instance-paint-exit-sheet"));
+        => ReadCases(Path.Combine(ResearchCorpus.Root, "instance-paint-exit-sheet"));
 
     [Theory]
     [MemberData(nameof(InstancePaintCases))]
     public Task Declared_instance_paint_outputs_preserve_sources_and_references(string identity)
-        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "instance-paint-exit-sheet"), identity, [new("Example", 400, false)]);
+        => ValidateDeclared(Path.Combine(ResearchCorpus.Root, "instance-paint-exit-sheet"), identity, [new("Example", 400, false)]);
 
     [Fact]
     public void Instance_paint_document_uses_the_declared_supplied_font()
-        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "instance-paint-exit-sheet"), "instance-paint-sheet");
+        => ValidateIntendedFont(Path.Combine(ResearchCorpus.Root, "instance-paint-exit-sheet"), "instance-paint-sheet");
 
     public static IEnumerable<object[]> TextMapCases()
-        => ReadCases(Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet"));
+        => ReadCases(Path.Combine(ResearchCorpus.Root, "text-map-exit-sheet"));
 
     [Theory]
     [InlineData("mixed-direct-path.svg")]
@@ -476,7 +476,7 @@ public sealed class SvgFontLayoutDiagramTests
     [Fact]
     public async Task Retained_dormant_forward_paint_diagnostic_is_definition_order_invariant()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "instance-paint-exit-sheet");
+        string directory = Path.Combine(ResearchCorpus.Root, "instance-paint-exit-sheet");
         byte[] input = File.ReadAllBytes(Path.Combine(directory, "diagnostics", "dormant-forward-paint.svg")), unchanged = input.ToArray();
         string xml = System.Text.Encoding.UTF8.GetString(input);
         int start = xml.IndexOf("<linearGradient", StringComparison.Ordinal);
@@ -497,7 +497,7 @@ public sealed class SvgFontLayoutDiagramTests
 
     private static async Task ValidateRetainedTextOwners(string bankName, string inputName)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", bankName);
+        string directory = Path.Combine(ResearchCorpus.Root, bankName);
         byte[] input = File.ReadAllBytes(Path.Combine(directory, inputName)), unchanged = input.ToArray();
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, Required(manifest.RootElement, "fontPack"))), Required(manifest.RootElement, "fontPackId"));
@@ -551,14 +551,14 @@ public sealed class SvgFontLayoutDiagramTests
     [InlineData("mixed-length-layout")]
     public async Task Remaining_label_path_outputs_preserve_frozen_inputs_and_platform_references(string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet");
+        string directory = Path.Combine(ResearchCorpus.Root, "remaining-label-path-sheet");
         await ValidateDeclared(directory, identity, [new("Example", 400, false), new("Mono", 700, false)]);
     }
 
     [Fact]
     public void Remaining_label_font_selection_keeps_its_independent_native_proofs()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet");
+        string directory = Path.Combine(ResearchCorpus.Root, "remaining-label-path-sheet");
         using JsonDocument proof = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "font-use-proof", "qualification.json")));
         string platform = OperatingSystem.IsLinux() ? "linux" : "windows";
         string referencePath = OperatingSystem.IsLinux() ? "references/linux64/remaining-label-path-sheet.png" : "references/remaining-label-path-sheet.png";
@@ -582,7 +582,7 @@ public sealed class SvgFontLayoutDiagramTests
     [MemberData(nameof(CascadeCases))]
     public async Task Declared_cascade_outputs_preserve_original_sources_and_platform_references(string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "root-resource-cascade");
+        string directory = Path.Combine(ResearchCorpus.Root, "root-resource-cascade");
         await ValidateDeclared(directory, identity, [new("Example", 400, false)]);
         if (identity != "cascade-sheet") return;
         using JsonDocument proof = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "font-use-proof", "qualification.json")));
@@ -602,22 +602,22 @@ public sealed class SvgFontLayoutDiagramTests
     [Theory]
     [MemberData(nameof(PatternTileCases))]
     public Task Declared_pattern_tile_outputs_preserve_original_sources_and_platform_references(string identity)
-        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "pattern-tile-sheet"), identity, [new("Example", 400, false)]);
+        => ValidateDeclared(Path.Combine(ResearchCorpus.Root, "pattern-tile-sheet"), identity, [new("Example", 400, false)]);
 
     [Theory]
     [MemberData(nameof(StrokedDecorationCases))]
     public Task Declared_stroked_decoration_outputs_preserve_original_sources_and_platform_references(string identity)
-        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "stroked-decorations"), identity, [new("serif", 400, false)]);
+        => ValidateDeclared(Path.Combine(ResearchCorpus.Root, "stroked-decorations"), identity, [new("serif", 400, false)]);
 
     [Theory]
     [MemberData(nameof(GlyphResourceCases))]
     public Task Declared_glyph_resource_outputs_preserve_original_sources_and_platform_references(string identity)
-        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "glyph-resource-exit-sheet"), identity, [new("Example", 400, false)]);
+        => ValidateDeclared(Path.Combine(ResearchCorpus.Root, "glyph-resource-exit-sheet"), identity, [new("Example", 400, false)]);
 
     [Fact]
     public void Glyph_resource_document_uses_the_declared_supplied_font()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "glyph-resource-exit-sheet");
+        string directory = Path.Combine(ResearchCorpus.Root, "glyph-resource-exit-sheet");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         Assert.Equal(Required(manifest.RootElement, "fontProgramSha256"), Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Path.Combine(DirectoryPath, "..", "supplied-font-labels", "fonts", "NotoSans-Regular.ttf")))));
         using JsonDocument proof = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "font-use-proof", "qualification.json")));
@@ -639,11 +639,11 @@ public sealed class SvgFontLayoutDiagramTests
     [Theory]
     [MemberData(nameof(TextMapCases))]
     public Task Declared_text_map_outputs_preserve_original_sources_and_platform_references(string identity)
-        => ValidateDeclared(Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet"), identity, [new("Example", 400, false)]);
+        => ValidateDeclared(Path.Combine(ResearchCorpus.Root, "text-map-exit-sheet"), identity, [new("Example", 400, false)]);
 
     [Fact]
     public void Text_map_document_uses_the_declared_supplied_font()
-        => ValidateIntendedFont(Path.Combine(AppContext.BaseDirectory, "Research", "text-map-exit-sheet"), "text-map-sheet");
+        => ValidateIntendedFont(Path.Combine(ResearchCorpus.Root, "text-map-exit-sheet"), "text-map-sheet");
 
     private static void ValidateIntendedFont(string directory, string identity)
     {

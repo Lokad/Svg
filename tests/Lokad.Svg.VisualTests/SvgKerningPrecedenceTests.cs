@@ -13,7 +13,7 @@ public sealed class SvgKerningPrecedenceTests
     [InlineData("windows-font-span-extension", "public-windows-font-span-extension", 2)]
     public async Task Font_document_matches_independent_metrics_and_frozen_pixels(string directory, string packId, int fontCount)
     {
-        string directoryPath = Path.Combine(AppContext.BaseDirectory, "Research", directory);
+        string directoryPath = Path.Combine(ResearchCorpus.Root, directory);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directoryPath, "manifest.json")));
         JsonElement recipe = manifest.RootElement;
         int pixels = checked(recipe.GetProperty("width").GetInt32() * recipe.GetProperty("height").GetInt32());

@@ -13,6 +13,15 @@ each other:
 | API and ownership | Cover distinct execution/allocation paths, destinations, prepared documents, cancellation, refusal, cleanup and retry with representative inputs. | [API forms](Lokad.Svg.Tests/SvgConversionApiContractTests.cs), [shared admission](Lokad.Svg.Tests/OpenTypeFontTests.SharedMemory.cs), [text replay/ownership](Lokad.Svg.Tests/SvgTextNodeMetricsTests.cs), public-contract and destination-overlap tests. |
 | Rendering | Compare each input with its own independent browser reference through canonical owned synchronous conversion. Keep platform differences and specific replay interactions. | [Native paint inputs](Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs), fixture and research-reference tests. |
 
+Visual tests read the committed `Research/` corpus from the checkout; ordinary
+builds do not copy it into either framework's output. `LOKAD_SVG_RESEARCH_ROOT`
+can select another corpus root containing `manifest.json`; an invalid explicit
+root fails instead of falling back. Tests only read this corpus. Small core-test
+`TestData` subsets and fixture/reference links keep their existing layout.
+For offline execution outside a checkout, use the explicit
+[visual-suite export](../tools/README.md#export-the-visual-suite), which includes
+references, font licenses and the managed font host.
+
 The pinned .NET 11 RC SDK is the development default. Install both .NET 11 and
 .NET 10 runtimes; checks never require implicit major-version roll-forward.
 For example, after a Release build, an alpha change can start with:

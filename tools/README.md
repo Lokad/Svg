@@ -27,6 +27,25 @@ discovery. Full unfiltered Windows/Linux tests, resource/font-host probes and
 installed-package checks remain milestone/CI gates. Keep browser captures and
 references unchanged when reorganizing tests.
 
+## Export the visual suite
+
+Ordinary builds share the checkout's committed research corpus. To produce a
+standalone offline suite after a Release build:
+
+```powershell
+tools/export-visual-tests.ps1 -DestinationDirectory artifacts/visual-suite-net11
+```
+
+The destination must be new. Use `-TargetFramework net10.0` after building that
+framework. The export contains the visual-test binaries, independent corpus,
+font licenses and FontProbe host. `test-bundle.json` records the source/tree IDs,
+modified-source flag and actual assembly hashes. Move the complete directory to
+the qualification host, install its matching runtime and SDK, then run
+`dotnet vstest Lokad.Svg.VisualTests.dll` from there. No checkout, browser,
+network endpoint or external repository is needed. Inside a checkout,
+`LOKAD_SVG_RESEARCH_ROOT` can explicitly select the exported `Research` path;
+otherwise tests prefer current committed sources to stale output copies.
+
 ## Chrome setup
 
 The [Windows pin](chrome-for-testing.json) and [Linux pin](chrome-for-testing.linux64.json)

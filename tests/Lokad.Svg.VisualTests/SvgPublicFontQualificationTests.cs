@@ -13,7 +13,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Qualifies four public requests through catalog/provider acquisition, independent metrics and the actual FontProbe executable.</summary>
 public sealed class SvgPublicFontQualificationTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "public-font-qualification");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "public-font-qualification");
 
     public static IEnumerable<object[]> Requests()
     {
@@ -101,7 +101,7 @@ public sealed class SvgPublicFontQualificationTests
             System.Runtime.Versioning.TargetFrameworkAttribute framework = System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Runtime.Versioning.TargetFrameworkAttribute>(typeof(SvgPublicFontQualificationTests).Assembly)
                 ?? throw new InvalidOperationException("The test assembly has no target framework.");
             string targetFramework = "net" + new System.Runtime.Versioning.FrameworkName(framework.FrameworkName).Version.ToString(2);
-            string tool = Path.Combine(FindRepository(), "tools", "Lokad.Svg.FontProbe", "bin", "Release", targetFramework, "Lokad.Svg.FontProbe.dll");
+            string tool = FindFontProbe(targetFramework);
             foreach (string argument in new[] { tool, "--manifest", Path.Combine(DirectoryPath, "font-pack.json"), "--pack-id", "public-standalone-fonts", "--font-root", temporary, "--svg", Path.GetFullPath(Path.Combine(sourceDirectory, Required(visual, "input"))), "--output", output })
                 start.ArgumentList.Add(argument);
             using Process process = Process.Start(start) ?? throw new InvalidOperationException("The public font host did not start.");
@@ -121,12 +121,17 @@ public sealed class SvgPublicFontQualificationTests
         }
         finally { Directory.Delete(temporary, true); }
 
-        static string FindRepository()
+        static string FindFontProbe(string targetFramework)
         {
+            string bundled = Path.Combine(AppContext.BaseDirectory, "FontProbe", "Lokad.Svg.FontProbe.dll");
+            if (File.Exists(bundled)) return bundled;
             foreach (string start in new[] { AppContext.BaseDirectory, Environment.CurrentDirectory })
                 for (DirectoryInfo? directory = new(start); directory is not null; directory = directory.Parent)
-                    if (File.Exists(Path.Combine(directory.FullName, "Lokad.Svg.slnx"))) return directory.FullName;
-            throw new DirectoryNotFoundException("Public host qualification requires the repository's built FontProbe.");
+                {
+                    string candidate = Path.Combine(directory.FullName, "tools", "Lokad.Svg.FontProbe", "bin", "Release", targetFramework, "Lokad.Svg.FontProbe.dll");
+                    if (File.Exists(candidate)) return candidate;
+                }
+            throw new FileNotFoundException("Build the FontProbe for " + targetFramework + " or export the visual suite.");
         }
     }
 

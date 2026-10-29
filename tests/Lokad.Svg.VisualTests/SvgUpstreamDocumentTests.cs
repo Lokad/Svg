@@ -9,7 +9,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Exercises the finite upstream document selection through the existing native-reference comparison.</summary>
 public sealed class SvgUpstreamDocumentTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "upstream-static-documents");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "upstream-static-documents");
 
     public static IEnumerable<object[]> Documents()
     {

@@ -20,7 +20,7 @@ public sealed class SvgLineMarkerReferenceTests
     [InlineData("r84-encoded-9")]
     public async Task Line_marker_inputs_match_their_own_browser_images(string id)
     {
-        string folder = Path.Combine(AppContext.BaseDirectory, "Research", "line-marker-instances");
+        string folder = Path.Combine(ResearchCorpus.Root, "line-marker-instances");
         using JsonDocument evidence = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "capture.json")));
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes("{\"packId\":\"empty\",\"files\":[{\"relativePath\":\"unused.ttf\",\"byteSize\":1,\"sha256\":\"" + new string('0', 64) + "\"}],\"families\":[{\"requestedFamily\":\"Unused\",\"resolvedFamily\":\"Unused\",\"relativeFontFile\":\"unused.ttf\"}]}"), "empty");
         foreach (string kind in new[] { "candidate", "control" })

@@ -18,7 +18,7 @@ public sealed class SvgFractionalMaskRegionReferenceTests
     [InlineData("rect-use-offset-tight")]
     public async Task Mask_regions_match_each_actual_browser_image(string id)
     {
-        string folder = Path.Combine(AppContext.BaseDirectory, "Research", "fractional-mask-regions");
+        string folder = Path.Combine(ResearchCorpus.Root, "fractional-mask-regions");
         using JsonDocument evidence = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "capture.json")));
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes("{\"packId\":\"empty\",\"files\":[{\"relativePath\":\"unused.ttf\",\"byteSize\":1,\"sha256\":\"" + new string('0', 64) + "\"}],\"families\":[{\"requestedFamily\":\"Unused\",\"resolvedFamily\":\"Unused\",\"relativeFontFile\":\"unused.ttf\"}]}"), "empty");
         foreach (string kind in new[] { "candidate", "control" })

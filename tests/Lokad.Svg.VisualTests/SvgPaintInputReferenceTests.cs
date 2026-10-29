@@ -93,7 +93,7 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
             Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, maximumReferencePixels), PngRgbaDecoder.Decode(actual, maximumReferencePixels)).IsExact, id);
     }
 
-    private static string Folder(string name) => Path.Combine(AppContext.BaseDirectory, "Research", name);
+    private static string Folder(string name) => Path.Combine(ResearchCorpus.Root, name);
 
     /// <summary>Owns one immutable serif face for rendering tests; font acquisition and request/cleanup behavior are tested separately as contracts.</summary>
     public sealed class NativeFontFixture : IAsyncLifetime
@@ -103,7 +103,7 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
 
         public NativeFontFixture()
         {
-            _bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research/supplied-font-labels/fonts/NotoSans-Regular.ttf"));
+            _bytes = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "supplied-font-labels/fonts/NotoSans-Regular.ttf"));
             Sha256 = Convert.ToHexStringLower(SHA256.HashData(_bytes.Span));
             Css = "<style>@font-face{font-family:ReviewFont;src:url(data:font/ttf;base64," + Convert.ToBase64String(_bytes.Span) + ")}</style>";
         }
@@ -115,8 +115,7 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
         /// <summary>Prepares the corpus's sole serif/normal/400 face once; the fixture retains bytes and snapshot until every case completes.</summary>
         public async Task InitializeAsync()
         {
-            SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,
-                "Research/static-css-document/font-pack.json")), "public-noto-sans");
+            SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "static-css-document/font-pack.json")), "public-noto-sans");
             _snapshot = await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='serif'>A</text></svg>"u8.ToArray(),
                 catalog, new FontProvider(_bytes), CancellationToken.None);
         }

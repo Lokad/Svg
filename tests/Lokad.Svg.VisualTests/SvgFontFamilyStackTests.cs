@@ -7,7 +7,7 @@ namespace Lokad.Svg.VisualTests;
 
 public sealed class SvgFontFamilyStackTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "font-family-stacks");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "font-family-stacks");
 
     [Fact]
     public async Task Ordered_document_selects_authored_programs_and_matches_frozen_Chrome_pixels()

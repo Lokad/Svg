@@ -9,7 +9,7 @@ public sealed class ResearchProbeTests
     [Fact]
     public void Stable_research_probes_retain_their_oracle_evidence_and_stay_categorized()
     {
-        string research = Path.Combine(AppContext.BaseDirectory, "Research");
+        string research = ResearchCorpus.Root;
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(research, "manifest.json")));
         int probeCount = 0;
 

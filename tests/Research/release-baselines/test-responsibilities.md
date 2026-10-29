@@ -80,7 +80,7 @@ The complete routine paint selection passed 34,066 checks in 81.32 s before and
 There is no measured improvement in total rendering-validation time from this pass.
 These local setup measurements are not renderer performance or quiet-VM results.
 
-P2 still needs suite-wide classification, corpus sharing, separation of bulk raster
+P2 still needs suite-wide classification, separation of bulk raster
 comparison from PNG transport, and review of remaining repeated fixture work.
 This loader change does not establish that those tasks are closed.
 
@@ -89,3 +89,27 @@ Validation: all 41,335 paint/integrity checks pass on Windows and Linux under
 runtime/host combination. A .NET 10 rendering selection retains 619 text, clip and
 partition checks on both hosts; both framework builds are warning-free. No runtime
 code, fixture inputs, native images, capture metadata or licenses changed.
+
+## Shared corpus and explicit export
+
+Visual tests resolve the committed research corpus once per process and read it
+in place. They prefer the checkout to stale copies from previous builds. An
+explicit `LOKAD_SVG_RESEARCH_ROOT` overrides discovery; missing explicit roots fail.
+Outside a checkout, the standalone suite uses its adjacent `Research` directory.
+Five selection regressions cover explicit roots, checkout freshness, standalone
+fallback and invalid/missing configuration. Public font qualification also locates
+its bundled FontProbe host before trying checkout tool outputs.
+
+The ordinary project no longer copies the full research tree: 47,581 tracked
+files / 100,548,974 blob bytes at the preceding checkpoint. Its two explicit
+fixture-oracle links remain. Small core `TestData` subsets remain separate.
+The [export procedure](../../../tools/README.md#export-the-visual-suite) copies
+the full corpus and notices only when an archive is requested. Old output copies
+were preserved for this migration; avoided future copies are not reclaimed space.
+No input, native reference, capture record or license was rewritten.
+
+Shared-corpus qualification passes all 45,917 visual checks per host under .NET 11
+and 1,393 selected checks per host under .NET 10. An exported suite outside the
+checkout passes 40 integrity/rendering/font-host checks on each OS, including
+actual FontProbe execution from its bundled directory. Both normal builds were
+checked without an output Research tree, and neither recreated it.

@@ -28,7 +28,7 @@ internal sealed class PaintReferenceBank
     public bool IsResearch(string id) => _selection.Value.ResearchIds.Contains(id);
     public JsonElement GetCase(string id) => _rows.Value[id];
 
-    private string Folder => Path.Combine(AppContext.BaseDirectory, "Research", Name);
+    private string Folder => Path.Combine(ResearchCorpus.Root, Name);
 
     private Selection ReadSelection()
     {

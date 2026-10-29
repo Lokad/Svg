@@ -8,7 +8,7 @@ public sealed class SvgPaintRecordingReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "paint-recording", "manifest.json")));
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "paint-recording", "manifest.json")));
         foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
             yield return new object[] { RequiredString(item, "id") };
     }
@@ -17,7 +17,7 @@ public sealed class SvgPaintRecordingReferenceTests
     [MemberData(nameof(Cases))]
     public async Task Recorded_paints_preserve_browser_results_through_all_six_outputs(string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "paint-recording");
+        string directory = Path.Combine(ResearchCorpus.Root, "paint-recording");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());

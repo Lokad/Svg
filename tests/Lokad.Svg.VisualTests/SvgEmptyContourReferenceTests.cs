@@ -20,7 +20,7 @@ public sealed class SvgEmptyContourReferenceTests
     [InlineData("circle-solid-fill-filter")]
     public async Task Empty_source_and_omitted_source_match_their_own_browser_images(string id)
     {
-        string folder = Path.Combine(AppContext.BaseDirectory, "Research", "empty-contour-sources");
+        string folder = Path.Combine(ResearchCorpus.Root, "empty-contour-sources");
         using JsonDocument evidence = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "capture.json")));
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes("{\"packId\":\"empty\",\"files\":[{\"relativePath\":\"unused.ttf\",\"byteSize\":1,\"sha256\":\"" + new string('0', 64) + "\"}],\"families\":[{\"requestedFamily\":\"Unused\",\"resolvedFamily\":\"Unused\",\"relativeFontFile\":\"unused.ttf\"}]}"), "empty");
         foreach (string kind in new[] { "candidate", "control" })

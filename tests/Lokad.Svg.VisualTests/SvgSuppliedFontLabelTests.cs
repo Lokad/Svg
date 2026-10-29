@@ -10,7 +10,7 @@ namespace Lokad.Svg.VisualTests;
 /// <summary>Protects public-font admission, layout, exact outputs and representative raw/prepared sink contracts; the selected document and seven controls are exact on both platforms, while wider composite promises stay open.</summary>
 public sealed class SvgSuppliedFontLabelTests
 {
-    private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
+    private static string DirectoryPath => Path.Combine(ResearchCorpus.Root, "supplied-font-labels");
 
     public static IEnumerable<object[]> Cases()
     {
