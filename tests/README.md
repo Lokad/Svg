@@ -134,6 +134,10 @@ image through the canonical conversion path.
 
 The API matrix uses eight inputs across twelve raw/prepared destination forms.
 Its shared-layout fixture adds the common glyph-owner allocation path once.
+[PNG contracts](Lokad.Svg.Tests/PngEncoderTests.cs) retain exact output/chunk and
+encoded-size boundaries, cancellation, backpressure and write failures. Shared-root
+stream-growth refusal cases protect cleanup without a second admission during
+compressor disposal; removed PNG fuel counters are not test contracts.
 Dedicated tests retain unusual stream failures, overlap, borrowed storage,
 resource refusal, cancellation and disposal paths. Rendering fixtures do not
 each need the whole matrix. The text-node corpus still has all 594 native image

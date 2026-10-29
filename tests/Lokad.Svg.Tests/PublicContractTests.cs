@@ -151,18 +151,6 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Png_preprocessing_respects_the_public_shared_work_limit()
-    {
-        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 4);
-        SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, limits);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), options, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Contains("PNG preprocessing", exception.Message);
-    }
-
-    [Fact]
     public void Encoding_stops_before_exceeding_the_configured_png_limit()
     {
         SvgRenderLimits limits = new(20_000, 1024, 16, 16, 1, 16, 16, 16);

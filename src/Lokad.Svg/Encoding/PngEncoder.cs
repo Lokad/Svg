@@ -24,25 +24,22 @@ internal static class PngEncoder
         => Encode(width, height, rgba, new RenderBudget(long.MaxValue), maximumEncodedPngBytes, cancellationToken);
 
     internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
-        => Encode(width, height, rgba, budget, maximumEncodedPngBytes, 0, long.MaxValue, cancellationToken);
-
-    internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumEncodedPngBytes, long initialWorkUnits, long maximumWorkUnits, CancellationToken cancellationToken)
-        => Encode(width, height, rgba, budget, null, maximumEncodedPngBytes, initialWorkUnits, maximumWorkUnits, cancellationToken);
+        => Encode(width, height, rgba, budget, null, maximumEncodedPngBytes, cancellationToken);
 
     /// <summary>Encodes with temporary scratch under budget and optional retained output under a pre-established sibling scope.</summary>
     /// <remarks>The caller owns outputScope through result consumption and disposes it on failure. This method finishes all scratch users before return.</remarks>
     internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, IMemoryScope? outputScope,
-        int maximumEncodedPngBytes, long initialWorkUnits, long maximumWorkUnits, CancellationToken cancellationToken)
+        int maximumEncodedPngBytes, CancellationToken cancellationToken)
     {
         if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        PngWorkCounter workCounter = new(initialWorkUnits, maximumWorkUnits);
+
         using RenderBudget.BudgetReservation? minimumOutput = ReserveOutput(budget, outputScope, FixedPngBytesWithoutIdat + PngChunkOverheadBytes);
-        using PngSegmentedBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), workCounter, cancellationToken);
+        using PngSegmentedBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), cancellationToken);
         int length = GetOutputLength(checked((int)compressed.Length));
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
         using RenderBudget.BudgetReservation? remainingOutput = ReserveOutput(budget, outputScope, length - (FixedPngBytesWithoutIdat + PngChunkOverheadBytes));
         byte[] output = new byte[length];
-        WritePng(width, height, compressed, output, workCounter, cancellationToken);
+        WritePng(width, height, compressed, output, cancellationToken);
         return output;
 
         static RenderBudget.BudgetReservation? ReserveOutput(RenderBudget scratch, IMemoryScope? owner, long bytes)
@@ -61,62 +58,53 @@ internal static class PngEncoder
         => EncodeInto(width, height, rgba, destination, new RenderBudget(long.MaxValue), maximumEncodedPngBytes, cancellationToken);
 
     internal static int EncodeInto(int width, int height, ReadOnlySpan<byte> rgba, Memory<byte> destination, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
-        => EncodeInto(width, height, rgba, destination, budget, maximumEncodedPngBytes, 0, long.MaxValue, cancellationToken);
-
-    internal static int EncodeInto(int width, int height, ReadOnlySpan<byte> rgba, Memory<byte> destination, RenderBudget budget, int maximumEncodedPngBytes, long initialWorkUnits, long maximumWorkUnits, CancellationToken cancellationToken)
     {
         if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        PngWorkCounter workCounter = new(initialWorkUnits, maximumWorkUnits);
-        using PngSegmentedBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), workCounter, cancellationToken);
+
+        using PngSegmentedBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), cancellationToken);
         int length = GetOutputLength(checked((int)compressed.Length));
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
         if (destination.Length < length) throw new SvgException(SvgErrorCode.InsufficientDestination, "PNG destination is too small.");
-        WritePng(width, height, compressed, destination.Span[..length], workCounter, cancellationToken);
+        WritePng(width, height, compressed, destination.Span[..length], cancellationToken);
         return length;
     }
 
     internal static int EncodeTo(int width, int height, ReadOnlySpan<byte> rgba, Stream destination, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
-        => EncodeTo(width, height, rgba, destination, budget, maximumEncodedPngBytes, 0, long.MaxValue, cancellationToken);
-
-    internal static int EncodeTo(int width, int height, ReadOnlySpan<byte> rgba, Stream destination, RenderBudget budget, int maximumEncodedPngBytes, long initialWorkUnits, long maximumWorkUnits, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(destination);
         if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
         if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        PngWorkCounter workCounter = new(initialWorkUnits, maximumWorkUnits);
-        WritePngPrefix(width, height, destination, workCounter, cancellationToken);
-        using PngIdatOutputStream compressed = new(destination, budget, maximumEncodedPngBytes, workCounter, cancellationToken);
-        CompressInto(width, height, rgba, budget, compressed, workCounter, cancellationToken);
+
+        WritePngPrefix(width, height, destination, cancellationToken);
+        using PngIdatOutputStream compressed = new(destination, budget, maximumEncodedPngBytes, cancellationToken);
+        CompressInto(width, height, rgba, budget, compressed, cancellationToken);
         int length = compressed.Complete();
-        WriteChunk(destination, "IEND"u8, [], workCounter, cancellationToken);
+        WriteChunk(destination, "IEND"u8, [], cancellationToken);
         return length;
     }
 
     internal static async Task<int> EncodeToAsync(int width, int height, ReadOnlyMemory<byte> rgba, Stream destination, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
-        => await EncodeToAsync(width, height, rgba, destination, budget, maximumEncodedPngBytes, 0, long.MaxValue, cancellationToken).ConfigureAwait(false);
-
-    internal static async Task<int> EncodeToAsync(int width, int height, ReadOnlyMemory<byte> rgba, Stream destination, RenderBudget budget, int maximumEncodedPngBytes, long initialWorkUnits, long maximumWorkUnits, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(destination);
         if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
         if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        PngWorkCounter workCounter = new(initialWorkUnits, maximumWorkUnits);
+
         using RenderBudget.BudgetReservation scratchReservation = budget.Reserve(AsyncScratchStorageBytes, SvgMemoryCategory.Png);
         byte[] scratch = new byte[AsyncScratchLength];
-        await WritePngPrefixAsync(width, height, destination, scratch, workCounter, cancellationToken).ConfigureAwait(false);
-        using PngAsyncIdatOutputStream compressed = new(destination, budget, maximumEncodedPngBytes, scratch, workCounter, cancellationToken);
-        await CompressIntoAsync(width, height, rgba, budget, compressed, workCounter, cancellationToken).ConfigureAwait(false);
+        await WritePngPrefixAsync(width, height, destination, scratch, cancellationToken).ConfigureAwait(false);
+        using PngAsyncIdatOutputStream compressed = new(destination, budget, maximumEncodedPngBytes, scratch, cancellationToken);
+        await CompressIntoAsync(width, height, rgba, budget, compressed, cancellationToken).ConfigureAwait(false);
         int length = await compressed.CompleteAsync().ConfigureAwait(false);
-        await WriteChunkAsync(destination, IendChunkType, ReadOnlyMemory<byte>.Empty, scratch, workCounter, cancellationToken).ConfigureAwait(false);
+        await WriteChunkAsync(destination, IendChunkType, ReadOnlyMemory<byte>.Empty, scratch, cancellationToken).ConfigureAwait(false);
         return length;
     }
 
-    private static PngSegmentedBuffer Compress(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumCompressedBytes, PngWorkCounter workCounter, CancellationToken cancellationToken)
+    private static PngSegmentedBuffer Compress(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumCompressedBytes, CancellationToken cancellationToken)
     {
-        PngSegmentedBuffer compressed = new(budget, maximumCompressedBytes, workCounter, cancellationToken);
+        PngSegmentedBuffer compressed = new(budget, maximumCompressedBytes, cancellationToken);
         try
         {
-            CompressInto(width, height, rgba, budget, compressed, workCounter, cancellationToken);
+            CompressInto(width, height, rgba, budget, compressed, cancellationToken);
             return compressed;
         }
         catch
@@ -126,37 +114,53 @@ internal static class PngEncoder
         }
     }
 
-    private static void CompressInto(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, Stream destination, PngWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void CompressInto(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, PngCompressionOutput destination, CancellationToken cancellationToken)
     {
         int stride = ValidatePixelBuffer(width, height, rgba);
-        workCounter.ConsumePixels(width, height, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         using RenderBudget.BudgetReservation rowReservation = budget.Reserve(checked((long)stride + 1), SvgMemoryCategory.Png);
         byte[] row = new byte[stride + 1];
         using ZLibStream zlib = new(destination, CompressionLevel.Optimal, true);
-        for (int y = 0; y < height; y++)
+        try
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            row[0] = 0;
-            rgba.Slice(y * stride, stride).CopyTo(row.AsSpan(1));
-            ClearTransparentPixelRgb(row);
-            zlib.Write(row);
+            for (int y = 0; y < height; y++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                row[0] = 0;
+                rgba.Slice(y * stride, stride).CopyTo(row.AsSpan(1));
+                ClearTransparentPixelRgb(row, cancellationToken);
+                zlib.Write(row);
+            }
+        }
+        catch
+        {
+            destination.Abort();
+            throw;
         }
     }
 
-    private static async Task CompressIntoAsync(int width, int height, ReadOnlyMemory<byte> rgba, RenderBudget budget, Stream destination, PngWorkCounter workCounter, CancellationToken cancellationToken)
+    private static async Task CompressIntoAsync(int width, int height, ReadOnlyMemory<byte> rgba, RenderBudget budget, PngCompressionOutput destination, CancellationToken cancellationToken)
     {
         int stride = ValidatePixelBuffer(width, height, rgba.Span);
-        workCounter.ConsumePixels(width, height, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         using RenderBudget.BudgetReservation rowReservation = budget.Reserve(checked((long)stride + 1), SvgMemoryCategory.Png);
         byte[] row = new byte[stride + 1];
         await using ZLibStream zlib = new(destination, CompressionLevel.Optimal, true);
-        for (int y = 0; y < height; y++)
+        try
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            row[0] = 0;
-            rgba.Span.Slice(y * stride, stride).CopyTo(row.AsSpan(1));
-            ClearTransparentPixelRgb(row);
-            await zlib.WriteAsync(row, cancellationToken).ConfigureAwait(false);
+            for (int y = 0; y < height; y++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                row[0] = 0;
+                rgba.Span.Slice(y * stride, stride).CopyTo(row.AsSpan(1));
+                ClearTransparentPixelRgb(row, cancellationToken);
+                await zlib.WriteAsync(row, cancellationToken).ConfigureAwait(false);
+            }
+        }
+        catch
+        {
+            destination.Abort();
+            throw;
         }
     }
 
@@ -175,7 +179,7 @@ internal static class PngEncoder
             + Math.Max(0, available % chunkBytes - PngChunkOverheadBytes);
     }
 
-    private static void WritePng(int width, int height, PngSegmentedBuffer compressed, Span<byte> output, PngWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void WritePng(int width, int height, PngSegmentedBuffer compressed, Span<byte> output, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         PngSignature.CopyTo(output);
@@ -185,12 +189,12 @@ internal static class PngEncoder
         BinaryPrimitives.WriteUInt32BigEndian(header[4..], checked((uint)height));
         header[8] = 8;
         header[9] = 6;
-        offset += WriteChunk(output[offset..], "IHDR"u8, header, workCounter, cancellationToken);
-        offset += WriteSegmentedIdatChunks(output[offset..], compressed, workCounter, cancellationToken);
-        offset += WriteChunk(output[offset..], "IEND"u8, [], workCounter, cancellationToken);
+        offset += WriteChunk(output[offset..], "IHDR"u8, header, cancellationToken);
+        offset += WriteSegmentedIdatChunks(output[offset..], compressed, cancellationToken);
+        offset += WriteChunk(output[offset..], "IEND"u8, [], cancellationToken);
     }
 
-    private static void WritePngPrefix(int width, int height, Stream output, PngWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void WritePngPrefix(int width, int height, Stream output, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         output.Write(PngSignature);
@@ -199,10 +203,10 @@ internal static class PngEncoder
         BinaryPrimitives.WriteUInt32BigEndian(header[4..], checked((uint)height));
         header[8] = 8;
         header[9] = 6;
-        WriteChunk(output, "IHDR"u8, header, workCounter, cancellationToken);
+        WriteChunk(output, "IHDR"u8, header, cancellationToken);
     }
 
-    private static async Task WritePngPrefixAsync(int width, int height, Stream output, byte[] scratch, PngWorkCounter workCounter, CancellationToken cancellationToken)
+    private static async Task WritePngPrefixAsync(int width, int height, Stream output, byte[] scratch, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         await output.WriteAsync(PngSignature, cancellationToken).ConfigureAwait(false);
@@ -210,12 +214,12 @@ internal static class PngEncoder
         BinaryPrimitives.WriteUInt32BigEndian(scratch.AsSpan(8), checked((uint)height));
         scratch[12] = 8;
         scratch[13] = 6;
-        await WriteChunkAsync(output, IhdrChunkType, scratch.AsMemory(4, 13), scratch, workCounter, cancellationToken).ConfigureAwait(false);
+        await WriteChunkAsync(output, IhdrChunkType, scratch.AsMemory(4, 13), scratch, cancellationToken).ConfigureAwait(false);
     }
 
-    private static int WriteSegmentedIdatChunks(Span<byte> output, PngSegmentedBuffer compressed, PngWorkCounter workCounter, CancellationToken cancellationToken)
+    private static int WriteSegmentedIdatChunks(Span<byte> output, PngSegmentedBuffer compressed, CancellationToken cancellationToken)
     {
-        if (compressed.Length == 0) return WriteChunk(output, "IDAT"u8, [], workCounter, cancellationToken);
+        if (compressed.Length == 0) return WriteChunk(output, "IDAT"u8, [], cancellationToken);
         int outputOffset = 0;
         int remaining = checked((int)compressed.Length);
         int segmentIndex = 0;
@@ -223,15 +227,15 @@ internal static class PngEncoder
         while (remaining > 0)
         {
             int chunkLength = Math.Min(MaximumIdatPayloadBytes, remaining);
-            outputOffset += WriteSegmentedChunk(output[outputOffset..], compressed, ref segmentIndex, ref segmentOffset, chunkLength, workCounter, cancellationToken);
+            outputOffset += WriteSegmentedChunk(output[outputOffset..], compressed, ref segmentIndex, ref segmentOffset, chunkLength, cancellationToken);
             remaining -= chunkLength;
         }
         return outputOffset;
     }
 
-    private static int WriteSegmentedChunk(Span<byte> output, PngSegmentedBuffer compressed, ref int segmentIndex, ref int segmentOffset, int chunkLength, PngWorkCounter workCounter, CancellationToken cancellationToken)
+    private static int WriteSegmentedChunk(Span<byte> output, PngSegmentedBuffer compressed, ref int segmentIndex, ref int segmentOffset, int chunkLength, CancellationToken cancellationToken)
     {
-        workCounter.ConsumeSerializedBytes(chunkLength, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         BinaryPrimitives.WriteUInt32BigEndian(output, checked((uint)chunkLength));
         IdatChunkType.CopyTo(output[4..]);
         uint crc = 0xffffffff;
@@ -254,9 +258,9 @@ internal static class PngEncoder
         return checked(12 + chunkLength);
     }
 
-    private static int WriteChunk(Span<byte> output, ReadOnlySpan<byte> type, ReadOnlySpan<byte> data, PngWorkCounter workCounter, CancellationToken cancellationToken)
+    private static int WriteChunk(Span<byte> output, ReadOnlySpan<byte> type, ReadOnlySpan<byte> data, CancellationToken cancellationToken)
     {
-        if (type.SequenceEqual(IdatChunkType)) workCounter.ConsumeSerializedBytes(data.Length, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         int length = checked(12 + data.Length);
         uint crc = ComputeChunkCrc(type, data, cancellationToken);
         BinaryPrimitives.WriteUInt32BigEndian(output, checked((uint)data.Length));
@@ -265,9 +269,9 @@ internal static class PngEncoder
         return length;
     }
 
-    private static void WriteChunk(Stream output, ReadOnlySpan<byte> type, ReadOnlySpan<byte> data, PngWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void WriteChunk(Stream output, ReadOnlySpan<byte> type, ReadOnlySpan<byte> data, CancellationToken cancellationToken)
     {
-        if (type.SequenceEqual(IdatChunkType)) workCounter.ConsumeSerializedBytes(data.Length, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         uint crc = ComputeChunkCrc(type, data, cancellationToken);
         Span<byte> length = stackalloc byte[4];
         BinaryPrimitives.WriteUInt32BigEndian(length, checked((uint)data.Length));
@@ -284,9 +288,9 @@ internal static class PngEncoder
         output.Write(length);
     }
 
-    private static async Task WriteChunkAsync(Stream output, ReadOnlyMemory<byte> type, ReadOnlyMemory<byte> data, byte[] scratch, PngWorkCounter workCounter, CancellationToken cancellationToken)
+    private static async Task WriteChunkAsync(Stream output, ReadOnlyMemory<byte> type, ReadOnlyMemory<byte> data, byte[] scratch, CancellationToken cancellationToken)
     {
-        if (type.Span.SequenceEqual(IdatChunkType)) workCounter.ConsumeSerializedBytes(data.Length, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         uint crc = ComputeChunkCrc(type.Span, data.Span, cancellationToken);
         BinaryPrimitives.WriteUInt32BigEndian(scratch, checked((uint)data.Length));
         await output.WriteAsync(scratch.AsMemory(0, 4), cancellationToken).ConfigureAwait(false);
@@ -302,12 +306,19 @@ internal static class PngEncoder
         await output.WriteAsync(scratch.AsMemory(0, 4), cancellationToken).ConfigureAwait(false);
     }
 
-    private sealed class PngIdatOutputStream : Stream
+    /// <summary>Owns compressed staging for one synchronous or asynchronous encoder.</summary>
+    /// <remarks>Implementations discard writes after Abort so compressor disposal cannot retry admission or output after an earlier failure. They retain reservations until disposal, leave the borrowed destination open and serialize all writes and disposal within one operation.</remarks>
+    private abstract class PngCompressionOutput : Stream
+    {
+        internal bool IsAborted { get; private set; }
+        internal void Abort() => IsAborted = true;
+    }
+
+    private sealed class PngIdatOutputStream : PngCompressionOutput
     {
         private readonly Stream _output;
         private readonly RenderBudget _budget;
         private readonly int _maximumEncodedPngBytes;
-        private readonly PngWorkCounter _workCounter;
         private readonly CancellationToken _cancellationToken;
         private RenderBudget.BudgetReservation? _reservation;
         private byte[]? _buffer;
@@ -316,12 +327,11 @@ internal static class PngEncoder
         private int _idatChunkCount;
         private bool _isComplete;
 
-        internal PngIdatOutputStream(Stream output, RenderBudget budget, int maximumEncodedPngBytes, PngWorkCounter workCounter, CancellationToken cancellationToken)
+        internal PngIdatOutputStream(Stream output, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
         {
             _output = output;
             _budget = budget;
             _maximumEncodedPngBytes = maximumEncodedPngBytes;
-            _workCounter = workCounter;
             _cancellationToken = cancellationToken;
         }
 
@@ -332,14 +342,14 @@ internal static class PngEncoder
             if (_compressedLength == 0)
             {
                 EnsureOutputLength(0, _idatChunkCount + 1);
-                WriteChunk(_output, IdatChunkType, [], _workCounter, _cancellationToken);
+                WriteChunk(_output, IdatChunkType, [], _cancellationToken);
                 _idatChunkCount++;
             }
             else if (_bufferedLength > 0)
             {
                 byte[] buffer = _buffer ?? throw new InvalidOperationException("PNG IDAT buffer allocation did not complete.");
                 EnsureOutputLength(_compressedLength, _idatChunkCount + 1);
-                WriteChunk(_output, IdatChunkType, buffer.AsSpan(0, _bufferedLength), _workCounter, _cancellationToken);
+                WriteChunk(_output, IdatChunkType, buffer.AsSpan(0, _bufferedLength), _cancellationToken);
                 _bufferedLength = 0;
                 _idatChunkCount++;
             }
@@ -365,16 +375,16 @@ internal static class PngEncoder
 
         public override void Write(ReadOnlySpan<byte> buffer)
         {
+            if (IsAborted) return;
             if (_isComplete) throw new InvalidOperationException("PNG IDAT output was already completed.");
             _cancellationToken.ThrowIfCancellationRequested();
-            _workCounter.ConsumeCompressedBytes(buffer.Length, _cancellationToken);
             while (!buffer.IsEmpty)
             {
                 if (_bufferedLength == 0 && buffer.Length >= MaximumIdatPayloadBytes)
                 {
                     int directCompressedLength = checked(_compressedLength + MaximumIdatPayloadBytes);
                     EnsureOutputLength(directCompressedLength, _idatChunkCount + 1);
-                    WriteChunk(_output, IdatChunkType, buffer[..MaximumIdatPayloadBytes], _workCounter, _cancellationToken);
+                    WriteChunk(_output, IdatChunkType, buffer[..MaximumIdatPayloadBytes], _cancellationToken);
                     _compressedLength = directCompressedLength;
                     _idatChunkCount++;
                     buffer = buffer[MaximumIdatPayloadBytes..];
@@ -391,7 +401,7 @@ internal static class PngEncoder
                 buffer = buffer[count..];
                 if (_bufferedLength == destination.Length && !TryGrowBuffer())
                 {
-                    WriteChunk(_output, IdatChunkType, destination, _workCounter, _cancellationToken);
+                    WriteChunk(_output, IdatChunkType, destination, _cancellationToken);
                     _bufferedLength = 0;
                     _idatChunkCount++;
                 }
@@ -422,7 +432,7 @@ internal static class PngEncoder
             catch { replacementReservation.Dispose(); throw; }
             try
             {
-                _workCounter.ConsumeBufferedCopyBytes(_bufferedLength, _cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 current.AsSpan(0, _bufferedLength).CopyTo(replacement);
             }
             catch { replacementReservation.Dispose(); throw; }
@@ -451,13 +461,12 @@ internal static class PngEncoder
         }
     }
 
-    private sealed class PngAsyncIdatOutputStream : Stream
+    private sealed class PngAsyncIdatOutputStream : PngCompressionOutput
     {
         private readonly Stream _output;
         private readonly RenderBudget _budget;
         private readonly int _maximumEncodedPngBytes;
         private readonly byte[] _scratch;
-        private readonly PngWorkCounter _workCounter;
         private readonly CancellationToken _cancellationToken;
         private RenderBudget.BudgetReservation? _reservation;
         private byte[]? _buffer;
@@ -466,13 +475,12 @@ internal static class PngEncoder
         private int _idatChunkCount;
         private bool _isComplete;
 
-        internal PngAsyncIdatOutputStream(Stream output, RenderBudget budget, int maximumEncodedPngBytes, byte[] scratch, PngWorkCounter workCounter, CancellationToken cancellationToken)
+        internal PngAsyncIdatOutputStream(Stream output, RenderBudget budget, int maximumEncodedPngBytes, byte[] scratch, CancellationToken cancellationToken)
         {
             _output = output;
             _budget = budget;
             _maximumEncodedPngBytes = maximumEncodedPngBytes;
             _scratch = scratch;
-            _workCounter = workCounter;
             _cancellationToken = cancellationToken;
         }
 
@@ -483,14 +491,14 @@ internal static class PngEncoder
             if (_compressedLength == 0)
             {
                 EnsureOutputLength(0, _idatChunkCount + 1);
-                await WriteChunkAsync(_output, IdatChunkType, ReadOnlyMemory<byte>.Empty, _scratch, _workCounter, _cancellationToken).ConfigureAwait(false);
+                await WriteChunkAsync(_output, IdatChunkType, ReadOnlyMemory<byte>.Empty, _scratch, _cancellationToken).ConfigureAwait(false);
                 _idatChunkCount++;
             }
             else if (_bufferedLength > 0)
             {
                 byte[] buffer = _buffer ?? throw new InvalidOperationException("PNG IDAT buffer allocation did not complete.");
                 EnsureOutputLength(_compressedLength, _idatChunkCount + 1);
-                await WriteChunkAsync(_output, IdatChunkType, buffer.AsMemory(0, _bufferedLength), _scratch, _workCounter, _cancellationToken).ConfigureAwait(false);
+                await WriteChunkAsync(_output, IdatChunkType, buffer.AsMemory(0, _bufferedLength), _scratch, _cancellationToken).ConfigureAwait(false);
                 _bufferedLength = 0;
                 _idatChunkCount++;
             }
@@ -518,17 +526,17 @@ internal static class PngEncoder
 
         public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken)
         {
+            if (IsAborted) return;
             if (_isComplete) throw new InvalidOperationException("PNG IDAT output was already completed.");
             cancellationToken.ThrowIfCancellationRequested();
             _cancellationToken.ThrowIfCancellationRequested();
-            _workCounter.ConsumeCompressedBytes(buffer.Length, _cancellationToken);
             while (!buffer.IsEmpty)
             {
                 if (_bufferedLength == 0 && buffer.Length >= MaximumIdatPayloadBytes)
                 {
                     int directCompressedLength = checked(_compressedLength + MaximumIdatPayloadBytes);
                     EnsureOutputLength(directCompressedLength, _idatChunkCount + 1);
-                    await WriteChunkAsync(_output, IdatChunkType, buffer[..MaximumIdatPayloadBytes], _scratch, _workCounter, _cancellationToken).ConfigureAwait(false);
+                    await WriteChunkAsync(_output, IdatChunkType, buffer[..MaximumIdatPayloadBytes], _scratch, _cancellationToken).ConfigureAwait(false);
                     _compressedLength = directCompressedLength;
                     _idatChunkCount++;
                     buffer = buffer[MaximumIdatPayloadBytes..];
@@ -545,7 +553,7 @@ internal static class PngEncoder
                 buffer = buffer[count..];
                 if (_bufferedLength == destination.Length && !TryGrowBuffer())
                 {
-                    await WriteChunkAsync(_output, IdatChunkType, destination, _scratch, _workCounter, _cancellationToken).ConfigureAwait(false);
+                    await WriteChunkAsync(_output, IdatChunkType, destination, _scratch, _cancellationToken).ConfigureAwait(false);
                     _bufferedLength = 0;
                     _idatChunkCount++;
                 }
@@ -576,7 +584,7 @@ internal static class PngEncoder
             catch { replacementReservation.Dispose(); throw; }
             try
             {
-                _workCounter.ConsumeBufferedCopyBytes(_bufferedLength, _cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 current.AsSpan(0, _bufferedLength).CopyTo(replacement);
             }
             catch { replacementReservation.Dispose(); throw; }
@@ -606,11 +614,10 @@ internal static class PngEncoder
     }
 
     /// <summary>Accumulates compressed bytes in budgeted segments without geometric copies.</summary>
-    private sealed class PngSegmentedBuffer : Stream
+    private sealed class PngSegmentedBuffer : PngCompressionOutput
     {
         private readonly RenderBudget _budget;
         private readonly int _maximumLength;
-        private readonly PngWorkCounter _workCounter;
         private readonly CancellationToken _cancellationToken;
         private readonly List<Segment> _segments = new();
         private int _length;
@@ -623,11 +630,10 @@ internal static class PngEncoder
             internal RenderBudget.BudgetReservation? Reservation = reservation;
         }
 
-        internal PngSegmentedBuffer(RenderBudget budget, int maximumLength, PngWorkCounter workCounter, CancellationToken cancellationToken)
+        internal PngSegmentedBuffer(RenderBudget budget, int maximumLength, CancellationToken cancellationToken)
         {
             _budget = budget;
             _maximumLength = maximumLength;
-            _workCounter = workCounter;
             _cancellationToken = cancellationToken;
         }
 
@@ -651,8 +657,8 @@ internal static class PngEncoder
 
         public override void Write(ReadOnlySpan<byte> buffer)
         {
+            if (IsAborted) return;
             _cancellationToken.ThrowIfCancellationRequested();
-            _workCounter.ConsumeCompressedBytes(buffer.Length, _cancellationToken);
             int requiredLength = checked(_length + buffer.Length);
             if (requiredLength > _maximumLength) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
             while (!buffer.IsEmpty)
@@ -708,50 +714,6 @@ internal static class PngEncoder
             }
         }
     }
-    private sealed class PngWorkCounter
-    {
-        private readonly long _maximumWorkUnits;
-        private long _usedWorkUnits;
-
-        internal PngWorkCounter(long initialWorkUnits, long maximumWorkUnits)
-        {
-            if (initialWorkUnits < 0 || maximumWorkUnits < initialWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG encoding exceeds the configured work limit.");
-            _usedWorkUnits = initialWorkUnits;
-            _maximumWorkUnits = maximumWorkUnits;
-        }
-
-        internal void ConsumePixels(int width, int height, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            long pixels = checked((long)width * height);
-            if (pixels > _maximumWorkUnits - _usedWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG preprocessing exceeds the configured work limit.");
-            _usedWorkUnits += pixels;
-        }
-
-        internal void ConsumeCompressedBytes(int byteCount, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (byteCount > _maximumWorkUnits - _usedWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG compression exceeds the configured work limit.");
-            _usedWorkUnits += byteCount;
-        }
-
-        /// <summary>Charges geometric-buffer growth copies of already-written compressed bytes.</summary>
-        internal void ConsumeBufferedCopyBytes(int byteCount, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (byteCount > _maximumWorkUnits - _usedWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG compression-buffer growth exceeds the configured work limit.");
-            _usedWorkUnits += byteCount;
-        }
-
-        /// <summary>Charges CRC computation and payload copying while compressed IDAT payload is serialized.</summary>
-        internal void ConsumeSerializedBytes(int byteCount, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (byteCount > _maximumWorkUnits - _usedWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG serialization exceeds the configured work limit.");
-            _usedWorkUnits += byteCount;
-        }
-    }
-
     /// <summary>Computes one PNG chunk CRC with deterministic cancellation checkpoints.</summary>
     private static uint ComputeChunkCrc(ReadOnlySpan<byte> type, ReadOnlySpan<byte> data, CancellationToken cancellationToken)
     {
@@ -776,10 +738,11 @@ internal static class PngEncoder
     }
 
     /// <summary>Clears RGB channels of fully transparent pixels in one filter row.</summary>
-    private static void ClearTransparentPixelRgb(Span<byte> row)
+    private static void ClearTransparentPixelRgb(Span<byte> row, CancellationToken cancellationToken)
     {
         for (int x = 1; x < row.Length; x += 4)
         {
+            if (((x - 1) & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
             if (row[x + 3] == 0) { row[x] = 0; row[x + 1] = 0; row[x + 2] = 0; }
         }
     }

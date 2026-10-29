@@ -345,7 +345,9 @@ spacing, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2 are unsupported.
 structure, path commands, accounted storage and shared work. Cancellation and
 deterministic cleanup span discovery/preparation, parsing, rasterization and
 encoding. Intermediate surfaces also consume limits. Caller streams stay open;
-the host owns transactional output. Supplied font/source bytes remain immutable
+the host owns transactional output. PNG encoding checks encoded size and memory
+admission, with cancellation during scanlines, CRC and writes; it has no synthetic
+work quota. Parser/raster work limits remain during the ongoing migration. Supplied font/source bytes remain immutable
 and valid for their documented borrowed lifetimes. A prepared document permits
 one conversion; independently owned PNG outputs outlive the operation.
 
