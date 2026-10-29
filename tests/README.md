@@ -29,8 +29,21 @@ dotnet test -c Release --no-build --filter 'Category!=Research'
 ```
 
 Only the explicitly selected extended matrix has this category; it does not
-exclude the other native research-reference tests. `Layer` traits identify the
-classes migrated to these responsibilities; they are not a complete suite index.
+exclude the other native research-reference tests. Migrated classes use consistent
+`Layer=Mechanism`, `Layer=Contract`, `Layer=Rendering` and `Layer=Integrity` traits.
+For their focused mechanism/contract check:
+
+```powershell
+dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter 'Layer=Mechanism|Layer=Contract'
+```
+
+Layer classification is still incomplete; this selection does not replace affected
+unclassified tests or full qualification.
+The [responsibility map](Research/release-baselines/test-responsibilities.md)
+records the paint corpus's routine/research partition and lazy bank setup. Its
+41,334 rendering cases retain their original identities, references and assertions;
+case discovery no longer retains all rendering metadata. The measured setup
+allocation fell from 177 MB to 100 MB; routine validation remained about 81 s.
 The [point-list source maps](Research/point-list-source-maps/README.md) separate
 90 independent native inputs, twelve viewport mechanisms and two selected ownership
 cases; their numerical boundaries do not repeat the full API matrix.
@@ -233,8 +246,9 @@ and TRX output, excluding build) gave:
 | Development native paint check | 273.7 s (formerly full) | 71.3 s (routine) |
 
 These are edit-loop measurements, not performance guarantees or a claim that
-full qualification became faster. The full comparison retains all 37,372 native
-cases plus a corpus-partition check. The API matrix and direct numerical checks
+full qualification became faster. That measurement covered 37,372 native
+cases plus a corpus-partition check; the current partition is in the
+[responsibility map](Research/release-baselines/test-responsibilities.md). The API matrix and direct numerical checks
 add separate responsibilities; CI continues to run every research case.
 
 [Paint input tests](Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs)

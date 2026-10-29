@@ -10,7 +10,7 @@ public sealed partial class OpenTypeFontTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_preparation_failures_retain_acquisition_stage_font_request_and_source(bool manifestFailure)
     {
         (byte[] manifest, byte[] font) = HttpFontFixture("files/example.ttf");
@@ -64,7 +64,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_owned_async_cancellation_releases_execution_without_creating_a_result()
     {
         using var handler = new HttpFontHandler((_, _) => throw new InvalidOperationException("Font-free conversion must not acquire resources."));
@@ -81,7 +81,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_governed_async_stream_keeps_scratch_until_the_write_and_its_failure_finish()
     {
         using var handler = new HttpFontHandler((_, _) => throw new InvalidOperationException("Font-free conversion must not acquire resources."));
@@ -117,7 +117,7 @@ public sealed partial class OpenTypeFontTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_prepared_documents_prepare_once_and_keep_each_owned_result_charged(bool asynchronous)
     {
         (byte[] manifest, byte[] font) = HttpFontFixture("files/example.ttf");
@@ -163,7 +163,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_font_free_preparation_is_independent_of_cold_warm_and_stalled_initialization()
     {
         (byte[] manifest, byte[] font) = HttpFontFixture("files/example.ttf");
@@ -214,7 +214,7 @@ public sealed partial class OpenTypeFontTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_font_free_preparation_is_independent_of_failed_initialization(bool invalidManifest)
     {
         using var handler = new HttpFontHandler((_, _) => Task.FromResult(new HttpResponseMessage(invalidManifest ? HttpStatusCode.OK : HttpStatusCode.NotFound)
@@ -237,7 +237,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_governed_conversion_refusal_releases_execution_and_allows_later_retry()
     {
         (byte[] manifest, byte[] font) = HttpFontFixture("files/example.ttf");

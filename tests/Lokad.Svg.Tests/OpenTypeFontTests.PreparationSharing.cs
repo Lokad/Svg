@@ -8,7 +8,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class OpenTypeFontTests
 {
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public void Discovery_uses_the_preparation_budget_and_recovers_after_refused_temporary_storage()
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><text class='label'>A</text><style>.label { font-family: Example; }</style></svg>"u8.ToArray();
@@ -32,7 +32,7 @@ public sealed partial class OpenTypeFontTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Prepared_operation_collects_styles_once_for_request_and_coverage_acquisition(bool multipleFiles)
     {
         byte[] font = CreateTriangleFont();

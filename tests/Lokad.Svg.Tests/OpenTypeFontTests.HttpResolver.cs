@@ -8,7 +8,7 @@ namespace Lokad.Svg.Tests;
 public sealed partial class OpenTypeFontTests
 {
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_resolver_coalesces_manifest_waiters_and_does_not_borrow_the_first_token()
     {
         (byte[] manifest, _) = HttpFontFixture("files/example.ttf");
@@ -46,7 +46,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_resolver_shares_verified_programs_and_keeps_live_borrows_charged_after_disposal()
     {
         (byte[] manifest, byte[] font) = HttpFontFixture("files/example.ttf");
@@ -99,7 +99,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData(false, false)]
     [InlineData(true, false)]
     [InlineData(true, true)]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_resolver_deadline_covers_headers_and_known_or_chunked_bodies(bool body, bool declaredLength)
     {
         using var handler = new HttpFontHandler(async (_, token) =>
@@ -123,7 +123,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_resolver_retries_transient_status_but_recovers_from_invalid_manifests_only_on_a_later_call()
     {
         (byte[] manifest, _) = HttpFontFixture("files/example.ttf");
@@ -153,7 +153,7 @@ public sealed partial class OpenTypeFontTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_resolver_does_not_cache_or_retry_size_and_integrity_failures(bool wrongSize)
     {
         (byte[] manifest, byte[] font) = HttpFontFixture("files/example.ttf");
@@ -183,7 +183,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_resolver_admission_refusal_starts_no_transport_and_does_not_retry()
     {
         (byte[] manifest, _) = HttpFontFixture("files/example.ttf");
@@ -208,7 +208,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData(404)]
     [InlineData(501)]
     [InlineData(505)]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_resolver_does_not_retry_deterministic_http_rejection(int status)
     {
         using var handler = new HttpFontHandler((_, _) => Task.FromResult(new HttpResponseMessage((HttpStatusCode)status)));
@@ -223,7 +223,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_resolver_rejects_a_reported_redirect_outside_the_root()
     {
         using var handler = new HttpFontHandler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
@@ -241,7 +241,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_resolver_canceled_waiters_leave_shared_deadline_cleanup_and_later_program_recovery()
     {
         (byte[] manifest, byte[] font) = HttpFontFixture("files/example.ttf");
@@ -284,7 +284,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData(0)]
     [InlineData(1)]
     [InlineData(2)]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_resolver_bounds_actual_body_bytes_independently_of_declared_length(int declaration)
     {
         var stream = new HttpFontChunkedStream(new byte[8192]);
@@ -311,7 +311,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData("files/%252e%252e/escape.ttf", false)]
     [InlineData("files/%252fescape.ttf", false)]
     [InlineData("files/%255cescape.ttf", false)]
-    [Trait("Layer", "Mechanisms")]
+    [Trait("Layer", "Mechanism")]
     public async Task Http_resolver_keeps_encoded_filenames_but_rejects_nested_traversal_and_separators(string path, bool accepted)
     {
         (byte[] manifest, byte[] font) = HttpFontFixture(path);
@@ -339,7 +339,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_resolver_zero_idle_capacity_releases_programs_only_after_the_last_borrower()
     {
         (byte[] manifest, byte[] font) = HttpFontFixture("files/example.ttf");

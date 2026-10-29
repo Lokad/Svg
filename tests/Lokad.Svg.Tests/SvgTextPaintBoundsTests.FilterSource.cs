@@ -18,7 +18,7 @@ public sealed partial class SvgTextPaintBoundsTests
 
     [Theory]
     [MemberData(nameof(FilterSourceBoundsCases))]
-    [Trait("Layer", "Mechanisms")]
+    [Trait("Layer", "Mechanism")]
     public async Task Filter_recording_and_element_bounds_match_independent_native_owner_boxes(string id)
     {
         byte[] bytes = File.ReadAllBytes(DataPath("filter-source-vectors.json"));
@@ -54,7 +54,7 @@ public sealed partial class SvgTextPaintBoundsTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Recording_scope_copy_releases_after_refusal_and_partial_failure_then_retries_and_borrows()
     {
         using SvgFontSnapshot fonts = await CreateSnapshotAsync();
@@ -92,7 +92,7 @@ public sealed partial class SvgTextPaintBoundsTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Recording_box_scratch_releases_after_denial_cancellation_then_retries()
     {
         using SvgFontSnapshot fonts = await CreateSnapshotAsync();
@@ -127,7 +127,7 @@ public sealed partial class SvgTextPaintBoundsTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Prepared_filter_owners_release_after_cancellation_and_preserve_input_independence_on_fresh_retry()
     {
         using JsonDocument vectors = JsonDocument.Parse(File.ReadAllBytes(DataPath("filter-source-vectors.json")));

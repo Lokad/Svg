@@ -10,7 +10,7 @@ public sealed partial class OpenTypeFontTests
     public enum SharedFilterScope { Clip, Mask, Both }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Shared_glyph_view_disposal_preserves_parent_storage_and_offset_metadata()
     {
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -40,7 +40,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Mechanisms")]
+    [Trait("Layer", "Mechanism")]
     public async Task Repeated_own_filters_remap_only_their_source_command_ranges()
     {
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -65,7 +65,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData(SharedFilterScope.Clip)]
     [InlineData(SharedFilterScope.Mask)]
     [InlineData(SharedFilterScope.Both)]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Own_filtered_shared_text_retains_output_scopes_and_neighboring_pending_uses(SharedFilterScope scopes)
     {
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -76,7 +76,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Shared_glyph_views_release_owners_after_denial_cancellation_and_retry()
     {
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);

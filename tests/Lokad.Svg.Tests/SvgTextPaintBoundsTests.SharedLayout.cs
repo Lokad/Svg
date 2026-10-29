@@ -17,7 +17,7 @@ public sealed partial class SvgTextPaintBoundsTests
 
     [Theory]
     [MemberData(nameof(SharedPathBoxCases))]
-    [Trait("Layer", "Mechanisms")]
+    [Trait("Layer", "Mechanism")]
     public async Task Direct_and_path_views_share_the_native_whole_text_object_box(string id)
     {
         using SvgFontSnapshot fonts = await CreateSnapshotAsync();

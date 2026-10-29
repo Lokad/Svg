@@ -2,7 +2,7 @@ using System.Text.Json;
 
 namespace Lokad.Svg.Tests;
 
-[Trait("Layer", "Contracts")]
+[Trait("Layer", "Contract")]
 public sealed class SvgClippedStrokeOwnershipTests
 {
     [Theory]

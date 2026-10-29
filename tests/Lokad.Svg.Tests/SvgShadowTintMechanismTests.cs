@@ -3,7 +3,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
-[Trait("Layer", "Mechanisms")]
+[Trait("Layer", "Mechanism")]
 public sealed class SvgShadowTintMechanismTests
 {
     [Theory]

@@ -14,7 +14,7 @@ public sealed class SvgFontCoverageDiscoveryTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public void Materialized_scalar_needs_remain_charged_until_their_coverage_owner_finishes()
     {
         using TestMemoryBudget root = new(1_000_000);

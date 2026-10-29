@@ -5,103 +5,62 @@ using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-[Trait("Layer", "Rendering")]
 public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputReferenceTests.NativeFontFixture>
 {
     private readonly NativeFontFixture _fonts;
-    private static readonly IReadOnlyDictionary<(string Folder, string Id), JsonElement> CaseIndex;
-    private static readonly HashSet<(string Folder, string Id)> ResearchColorAndFilterCases;
+    private static readonly PaintReferenceBank[] Banks =
+    [
+        new("ordered-clip-coverage"), new("clipped-stroke-preparation"), new("marker-canvas-stages"),
+        new("filter-region-coordinates"), new("point-list-source-maps"), new("image-source-views"),
+        new("offset-merge-inputs"), new("filter-merge-image-draw"), new("filter-source-recording-map"),
+        new("filter-source-composition"), new("linear-shape-source-maps"), new("radial-axis-source-maps"),
+        new("gradient-spread-stages"), new("gradient-paint-replay"), new("gradient-factory-colors"),
+        new("linear-periodic-stops"), new("gradient-stop-preparation"), new("gradient-color-alpha"),
+        new("filter-uniform-precision"), new("solid-paint-alpha"), new("pattern-source-selection"),
+        new("text-node-boundaries"), new("hairline-clip-rounding"),
+    ];
 
     public SvgPaintInputReferenceTests(NativeFontFixture fonts) => _fonts = fonts;
 
-    static SvgPaintInputReferenceTests()
-    {
-        Dictionary<(string Folder, string Id), JsonElement> cases = new();
-        HashSet<(string Folder, string Id)> resolvedCases = new();
-        foreach (string folder in new[] { "ordered-clip-coverage", "clipped-stroke-preparation", "marker-canvas-stages", "filter-region-coordinates", "point-list-source-maps", "image-source-views", "offset-merge-inputs", "filter-merge-image-draw", "filter-source-recording-map", "filter-source-composition", "linear-shape-source-maps", "radial-axis-source-maps", "gradient-spread-stages", "gradient-paint-replay", "gradient-factory-colors", "linear-periodic-stops", "gradient-stop-preparation", "gradient-color-alpha", "filter-uniform-precision", "solid-paint-alpha", "pattern-source-selection", "text-node-boundaries", "hairline-clip-rounding" })
-        {
-            using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "capture.json")));
-            foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
-            {
-                string id = row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing case id.");
-                // Independent clones retain managed metadata after the source document is disposed.
-                cases.Add((folder, id), row.Clone());
-            }
-            if (folder == "filter-uniform-precision")
-            {
-                using JsonDocument status = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "resolved-known-differences.json")));
-                string captureText = File.ReadAllText(Path.Combine(Folder(folder), "capture.json")).Replace("\r\n", "\n", StringComparison.Ordinal);
-                string captureHash = Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(captureText)));
-                if (status.RootElement.GetProperty("sourceCaptureSha256").GetString() != captureHash)
-                    throw new InvalidDataException("Historical filter capture changed after its status audit.");
-                HashSet<string> ids = status.RootElement.GetProperty("resolvedHistoricalIds").EnumerateArray()
-                    .Select(item => item.GetString() ?? throw new InvalidDataException("Missing resolved filter id."))
-                    .ToHashSet(StringComparer.Ordinal);
-                HashSet<string> routineIds = status.RootElement.GetProperty("routineHistoricalIds").EnumerateArray()
-                    .Select(item => item.GetString() ?? throw new InvalidDataException("Missing routine filter id."))
-                    .ToHashSet(StringComparer.Ordinal);
-                foreach (JsonElement row in data.RootElement.GetProperty("knownDifferences").EnumerateArray())
-                {
-                    string id = row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing historical filter id.");
-                    if (!ids.Remove(id)) continue;
-                    cases.Add((folder, id), row.Clone());
-                    if (!routineIds.Remove(id)) resolvedCases.Add((folder, id));
-                }
-                if (ids.Count != 0 || routineIds.Count != 0)
-                    throw new InvalidDataException("Resolved filter status names an unknown historical input.");
-            }
-        }
-        CaseIndex = cases;
-        ResearchColorAndFilterCases = resolvedCases;
-        foreach (string folder in new[] { "gradient-color-alpha", "filter-uniform-precision", "filter-source-composition" })
-        {
-            using JsonDocument selection = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(folder), "research-cases.json")));
-            foreach (JsonElement selected in selection.RootElement.GetProperty("cases").EnumerateArray())
-            {
-                string id = selected.GetString() ?? throw new InvalidDataException("Missing research case id.");
-                if (!cases.ContainsKey((folder, id))) throw new InvalidDataException("Research selection names an unknown native case.");
-                if (!ResearchColorAndFilterCases.Add((folder, id))) throw new InvalidDataException("Research selection contains a duplicate case.");
-            }
-        }
-    }
+    public static IEnumerable<object[]> Cases() => SelectedCases(false);
 
-    public static IEnumerable<object[]> Cases()
-    {
-        foreach ((string folder, string id) in CaseIndex.Keys)
-            if (!ResearchColorAndFilterCases.Contains((folder, id)))
-                yield return [folder, id];
-    }
+    public static IEnumerable<object[]> ResearchCases() => SelectedCases(true);
 
-    public static IEnumerable<object[]> ResearchCases()
+    private static IEnumerable<object[]> SelectedCases(bool research)
     {
-        foreach ((string folder, string id) in CaseIndex.Keys)
-            if (ResearchColorAndFilterCases.Contains((folder, id)))
-                yield return [folder, id];
+        foreach (PaintReferenceBank bank in Banks)
+            foreach (string id in bank.CaseIds)
+                if (bank.IsResearch(id) == research)
+                    yield return [bank.Name, id];
     }
 
     [Fact]
+    [Trait("Layer", "Integrity")]
     public void Routine_and_research_cases_partition_the_resolved_capture_corpus()
     {
         (string, string)[] all = Cases().Concat(ResearchCases()).Select(row => ((string)row[0], (string)row[1])).ToArray();
-        Assert.Equal(CaseIndex.Count, all.Length);
-        Assert.Equal(CaseIndex.Count, all.Distinct().Count());
-        Assert.All(all, key => Assert.True(CaseIndex.ContainsKey(key)));
+        Assert.Equal(Banks.Sum(bank => bank.CaseIds.Count), all.Length);
+        Assert.Equal(all.Length, all.Distinct().Count());
+        foreach (PaintReferenceBank bank in Banks)
+            Assert.Equal(bank.CaseIds.Count, all.Count(key => key.Item1 == bank.Name));
     }
 
     [Theory]
     [MemberData(nameof(Cases))]
+    [Trait("Layer", "Rendering")]
     public void Paint_inputs_match_each_native_image(string folder, string id)
         => AssertNativeImage(folder, id);
 
     [Theory]
     [MemberData(nameof(ResearchCases))]
+    [Trait("Layer", "Rendering")]
     [Trait("Category", "Research")]
     public void Extended_color_and_filter_matrix_matches_each_native_image(string folder, string id)
         => AssertNativeImage(folder, id);
 
     private void AssertNativeImage(string folder, string id)
     {
-        JsonElement row = CaseIndex[(folder, id)];
+        JsonElement row = Banks.Single(bank => bank.Name == folder).GetCase(id);
         bool hasPlatformReferences = row.TryGetProperty("platforms", out JsonElement platforms);
         JsonElement expected = hasPlatformReferences && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
             ? platforms.GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux") : row;

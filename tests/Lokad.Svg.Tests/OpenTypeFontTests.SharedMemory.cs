@@ -16,7 +16,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     [MemberData(nameof(GovernedOutputCases))]
     public async Task Governed_output_paths_share_the_host_and_keep_destination_ownership(bool prepared, bool asynchronous, GovernedDestination destination)
     {
@@ -63,7 +63,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     [InlineData(false, false)]
     [InlineData(false, true)]
     [InlineData(true, false)]
@@ -95,7 +95,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public void Inspection_borrows_the_root_and_releases_refused_or_successful_workspace()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'/>"u8.ToArray();
@@ -112,7 +112,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Http_document_and_output_use_the_active_host_scope_while_cache_uses_the_root()
     {
         (byte[] manifest, byte[] font) = HttpFontFixture("files/example.ttf");
@@ -142,7 +142,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public void Retained_png_charge_competes_with_later_conversion_and_reuses_immediately()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect width='4' height='4' fill='red'/></svg>"u8.ToArray();
@@ -171,7 +171,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_metadata_stays_charged_while_caller_program_bytes_remain_borrowed()
     {
         byte[] original = CreateTriangleFont();
@@ -195,7 +195,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Cancelled_font_acquisition_drains_borrowers_before_refunding_discovery_storage()
     {
         (var catalog, var provider, _) = CreateExamplePack(CreateTriangleFont());
@@ -224,7 +224,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Overlapping_async_output_keeps_its_owner_until_write_failure_finishes()
     {
         using TestMemoryBudget host = new(2_000_000);
@@ -253,7 +253,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Cancelled_font_byte_read_keeps_charges_until_read_completion()
     {
         byte[] program = CreateTriangleFont();

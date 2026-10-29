@@ -2,7 +2,7 @@ using Lokad.Svg.Fonts;
 
 namespace Lokad.Svg.Tests;
 
-[Trait("Layer", "Contracts")]
+[Trait("Layer", "Contract")]
 public sealed class SvgConversionApiContractTests
 {
     public enum OutputForm { Owned, Memory, Stream, AsyncOwned, AsyncMemory, AsyncStream }

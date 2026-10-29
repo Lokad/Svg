@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Lokad.Svg.Tests;
 
-[Trait("Layer", "Mechanisms")]
+[Trait("Layer", "Mechanism")]
 public sealed class SvgFilterOutputRequestTests
 {
     [Theory]

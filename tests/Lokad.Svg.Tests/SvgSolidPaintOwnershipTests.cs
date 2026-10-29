@@ -5,7 +5,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
-[Trait("Layer", "Contracts")]
+[Trait("Layer", "Contract")]
 public sealed class SvgSolidPaintOwnershipTests
 {
     [Theory]

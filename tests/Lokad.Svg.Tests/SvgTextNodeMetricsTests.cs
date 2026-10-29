@@ -6,7 +6,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
-[Trait("Layer", "Contracts")]
+[Trait("Layer", "Contract")]
 public sealed class SvgTextNodeMetricsTests
 {
     private static readonly string Folder = Path.Combine(AppContext.BaseDirectory, "TestData", "text-node-boundaries");

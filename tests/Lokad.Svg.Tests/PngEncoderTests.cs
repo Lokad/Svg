@@ -57,7 +57,7 @@ public sealed class PngEncoderTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    [Trait("Layer", "Contracts")]
+    [Trait("Layer", "Contract")]
     public async Task Stream_buffer_growth_refusal_releases_scratch_and_allows_retry(bool asynchronous)
     {
         byte[] pixels = CreateHighEntropyPixels();
