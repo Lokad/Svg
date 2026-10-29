@@ -95,6 +95,9 @@
       },
       "lokad.svg": {
         "type": "Project"
+      },
+      "lokad.svg.visualdiff": {
+        "type": "Project"
       }
     },
     "net11.0": {
@@ -190,6 +193,9 @@
         }
       },
       "lokad.svg": {
+        "type": "Project"
+      },
+      "lokad.svg.visualdiff": {
         "type": "Project"
       }
     }

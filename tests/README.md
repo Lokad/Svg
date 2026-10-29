@@ -18,7 +18,8 @@ defines supported behavior.
 
 The [responsibility map](Research/release-baselines/test-responsibilities.md)
 records paint-bank membership, lazy loading, raster/PNG separation and measured
-validation costs. Equal images alone never establish redundancy. Preserve distinct
+validation costs, including the core pixel helpers and API fixture allocation.
+Equal images alone never establish redundancy. Preserve distinct
 source graphs, allocation paths, native companions, platform differences and
 exclusions. Rendering fixtures do not each need all twelve API forms.
 

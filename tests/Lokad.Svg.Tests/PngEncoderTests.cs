@@ -1,13 +1,16 @@
 using Lokad.Svg.Encoding;
 using Lokad.Svg.Rendering;
 using Lokad.Svg.Testing;
+using Lokad.Svg.VisualDiff;
 using System.Buffers.Binary;
+using System.IO.Compression;
 
 namespace Lokad.Svg.Tests;
 
 public sealed class PngEncoderTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Encodes_a_valid_rgba8_png_with_straight_alpha_pixels()
     {
         byte[] png = PngEncoder.Encode(1, 1, [10, 20, 30, 40], CancellationToken.None);
@@ -19,10 +22,38 @@ public sealed class PngEncoderTests
         Assert.Equal("IDAT", System.Text.Encoding.ASCII.GetString(png, 37, 4));
     }
 
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void Multiple_scanlines_keep_unfiltered_straight_rgba_and_clear_only_zero_alpha_rgb()
+    {
+        byte[] png = PngEncoder.Encode(3, 2,
+            [10, 20, 30, 40, 99, 88, 77, 0, 255, 0, 128, 255,
+             3, 4, 5, 1, 200, 50, 10, 0, 1, 2, 3, 254], CancellationToken.None);
+
+        Assert.Equal(new byte[]
+        {
+            10, 20, 30, 40, 0, 0, 0, 0, 255, 0, 128, 255,
+            3, 4, 5, 1, 0, 0, 0, 0, 1, 2, 3, 254
+        }, PngRgbaDecoder.Decode(png, 6).Pixels);
+
+        int dataLength = BinaryPrimitives.ReadInt32BigEndian(png.AsSpan(33));
+        using MemoryStream compressed = new(png, 41, dataLength);
+        using ZLibStream scanlines = new(compressed, CompressionMode.Decompress);
+        byte[] rows = new byte[26];
+        scanlines.ReadExactly(rows);
+        Assert.Equal(new byte[]
+        {
+            0, 10, 20, 30, 40, 0, 0, 0, 0, 255, 0, 128, 255,
+            0, 3, 4, 5, 1, 0, 0, 0, 0, 1, 2, 3, 254
+        }, rows);
+        Assert.Equal(-1, scanlines.ReadByte());
+    }
+
     [Theory]
     [InlineData(0, 1, 4, typeof(ArgumentOutOfRangeException), "width")]
     [InlineData(1, 0, 4, typeof(ArgumentOutOfRangeException), "height")]
     [InlineData(1, 1, 3, typeof(ArgumentException), "rgba")]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_invalid_pixel_buffers(int width, int height, int byteCount, Type errorType, string parameterName)
     {
         Exception exception = Assert.Throws(errorType, () => PngEncoder.Encode(width, height, new byte[byteCount], CancellationToken.None));
@@ -31,6 +62,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Cancellation_is_checked_before_scanline_encoding()
     {
         using CancellationTokenSource cancellation = new();
@@ -39,6 +71,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Stream_sinks_emit_byte_identical_output_with_owned_memory()
     {
         byte[] pixels = CreateHighEntropyPixels();
@@ -85,6 +118,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Encodes_directly_into_caller_destination()
     {
         byte[] owned = PngEncoder.Encode(1, 1, [1, 2, 3, 4], CancellationToken.None);
@@ -98,6 +132,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Streams_large_png_data_in_bounded_writes()
     {
         byte[] pixels = CreateHighEntropyPixels();
@@ -110,6 +145,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Streams_without_retaining_the_full_compressed_payload()
     {
         byte[] pixels = CreateHighEntropyPixels();
@@ -135,6 +171,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Synchronous_stream_encoding_propagates_destination_write_failures()
     {
         using FailingWriteStream destination = new();
@@ -145,6 +182,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Streams_large_png_data_in_bounded_asynchronous_writes()
     {
         byte[] pixels = CreateHighEntropyPixels();
@@ -158,6 +196,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Reserves_async_stream_chunk_scratch_before_writing()
     {
         using BoundedAsyncWriteStream destination = new(65_536);
@@ -168,6 +207,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Asynchronous_stream_encoding_propagates_destination_write_failures()
     {
         using FailingWriteStream destination = new();
@@ -178,6 +218,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Async_stream_encoding_observes_cancellation_after_output_begins()
     {
         using CancellationTokenSource cancellation = new();
@@ -191,6 +232,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Async_stream_encoding_waits_for_destination_backpressure()
     {
         using StallingAsyncWriteStream destination = new();
@@ -211,6 +253,7 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Splits_large_compressed_data_into_bounded_IDAT_chunks()
     {
         byte[] pixels = CreateHighEntropyPixels();
@@ -230,6 +273,7 @@ public sealed class PngEncoderTests
     [InlineData(128)]
     [InlineData(180)]
     [InlineData(181)]
+    [Trait("Layer", "Contract")]
     public void Owned_and_caller_memory_limits_match_stream_output_near_idat_boundaries(int side)
     {
         byte[] pixels = new byte[side * side * 4];

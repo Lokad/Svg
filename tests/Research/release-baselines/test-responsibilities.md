@@ -162,3 +162,50 @@ expanded 817-case .NET 10 native/format/background selection per host. The 294
 API/budget/codec checks pass on all runtime/host combinations. Both solution
 builds are warning-free; unchanged inputs/references and opaque/transparent
 controls preserve the existing rendering baseline.
+
+## Core pixel helpers and allocation contracts
+
+The source before this pass is `e13932150`. The eight core clip/curve/mask/polygon/
+shape/stroke/style/instance classes retain every original declaration, SVG input,
+assertion and data case. Their shared [pixel helper](../../Lokad.Svg.Tests/SvgRasterTestHelper.cs)
+uses the existing production capture owner and returns a test-owned copy before
+releasing it. Only zero-alpha RGB is normalized, matching prior PNG output.
+The eight private PNG decoders are removed; six explicit PNG geometry paths and
+all encoded-byte equality checks still use PNG. Those paths reuse the existing
+independent VisualDiff decoder, including its CRC and bounded-format checks.
+The [codec tests](../../Lokad.Svg.Tests/PngEncoderTests.cs) separately retain
+unfiltered multirow layout, straight RGBA lanes and transparent-RGB clearing.
+The new codec case makes that responsibility explicit instead of testing filter
+choice incidentally throughout geometry fixtures.
+
+| Previous responsibility | Current owner and preserved behavior |
+| --- | --- |
+| Nine contour eligibility methods in `RenderBudgetTests` | [SvgContourEligibilityTests](../../Lokad.Svg.Tests/SvgContourEligibilityTests.cs), with identical method names/bodies and original cleanup assertions; classified as mechanisms. |
+| Remaining budget tests | [RenderBudgetTests](../../Lokad.Svg.Tests/RenderBudgetTests.cs), classified as contracts; the curve storage/command-bound assertion stays here. |
+| Unclassified public API checks | [PublicContractTests](../../Lokad.Svg.Tests/PublicContractTests.cs), classified as contracts. |
+| Mixed PNG codec and stream checks | [PngEncoderTests](../../Lokad.Svg.Tests/PngEncoderTests.cs) uses method-level Mechanism/Contract traits for all seventeen methods. |
+| Font read in every API case | [API matrix](../../Lokad.Svg.Tests/SvgConversionApiContractTests.cs) still has 96 cases and per-invocation provider/snapshot owners. Only its 36 text cases read the font; unexpected font-free acquisition fails. |
+
+On every runtime/host, all 1,146 unmoved TRX case IDs match; nine relocated facts
+match their original method names/bodies. Truncated display names retain distinct
+case IDs. The normalized display-name multiset for all 1,155 original cases has
+SHA-256
+`e7d83654c6001ab0faebcc1447248e8b0036e459421be2a6ba65ef445041bffe`.
+No original case is batched or removed; one focused multirow codec case is added.
+The .NET 10 CI selection includes the relocated mechanisms.
+
+Three fresh Windows .NET 11 processes executed all 96 API cases sequentially.
+Median managed allocation fell from 84.5 MB to 50.3 MB; median execution stayed
+about 1.02 seconds. Input font bytes and per-case lifetimes remain independent;
+there is no shared mutable provider or snapshot. One sequential focused VSTest
+comparison cost 10.64 seconds before and 5.67 seconds after, with approximately
+one second of reported test execution in both. That startup-dominated sample does
+not establish a timing improvement; allocation and responsibility separation are
+the concrete results. No renderer or quiet-VM performance claim follows.
+
+Validation for this pass: the complete .NET 11 core suite passes 27,753 cases per
+host after helper migration and method relocation. The final test-only multirow
+codec addition passes with the affected 1,156-case selection on each runtime/host;
+all original cases remain, plus the named codec vector. Both solution builds and
+locked restore pass. Production source, independent references, authored inputs,
+tolerances and licenses are unchanged.

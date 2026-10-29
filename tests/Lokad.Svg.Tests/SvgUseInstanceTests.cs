@@ -1,5 +1,4 @@
-using System.Buffers.Binary;
-using System.IO.Compression;
+using static Lokad.Svg.Tests.SvgRasterTestHelper;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
@@ -1377,39 +1376,6 @@ public sealed class SvgUseInstanceTests
 
         Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='8' height='8' fill='red' stroke='blue' stroke-width='2'/><rect x='-5' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></svg>"), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
             SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
-    }
-
-    private static byte[] RenderPixels(string svg, out int width, out int height)
-    {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
-        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None);
-        return DecodeRgba(png, out width, out height);
-    }
-
-    private static byte[] DecodeRgba(ReadOnlyMemory<byte> png, out int width, out int height)
-    {
-        width = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(16, 4));
-        height = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(20, 4));
-        using MemoryStream compressed = new();
-        for (int offset = 8; offset < png.Length;)
-        {
-            int length = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(offset, 4));
-            if (png.Span.Slice(offset + 4, 4).SequenceEqual("IDAT"u8)) compressed.Write(png.Span.Slice(offset + 8, length));
-            offset += length + 12;
-        }
-
-        compressed.Position = 0;
-        using ZLibStream zlib = new(compressed, CompressionMode.Decompress);
-        byte[] raw = new byte[checked((width * 4 + 1) * height)];
-        zlib.ReadExactly(raw);
-        byte[] pixels = new byte[checked(width * 4 * height)];
-        for (int y = 0; y < height; y++)
-        {
-            if (raw[y * (width * 4 + 1)] != 0) throw new InvalidDataException("Test PNG decoder expects an unfiltered scanline.");
-            raw.AsSpan(y * (width * 4 + 1) + 1, width * 4).CopyTo(pixels.AsSpan(y * width * 4, width * 4));
-        }
-
-        return pixels;
     }
 
     private static SvgColor Pixel(byte[] pixels, int width, int x, int y)

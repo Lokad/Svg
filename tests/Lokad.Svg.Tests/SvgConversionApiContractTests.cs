@@ -40,7 +40,8 @@ public sealed class SvgConversionApiContractTests
         double scale = id == "positioned-path" ? 1.5 : 1;
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,
             "TestData/text-node-boundaries/font-pack.json")), "public-noto-sans");
-        byte[] fontBytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData/text-paint-bounds/sans.ttf"));
+        byte[] fontBytes = needsFont
+            ? File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData/text-paint-bounds/sans.ttf")) : [];
         FontProvider provider = new(fontBytes);
         using SvgFontSnapshot? fonts = needsFont ? await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None) : null;
         SvgRenderOptions options = new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
@@ -88,6 +89,7 @@ public sealed class SvgConversionApiContractTests
         public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            if (bytes.Length == 0) throw new InvalidOperationException("The font-free API fixture must not acquire a font.");
             return ValueTask.FromResult<ISvgFontProgramSource?>(new SvgMemoryFontProgramSource(file.RelativePath, bytes));
         }
     }

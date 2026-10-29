@@ -257,6 +257,7 @@
     <None Include="../Research/point-list-source-maps/inputs/acceptance-gradient-direct-source.svg" Link="TestData/point-list-source-maps/inputs/acceptance-gradient-direct-source.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/point-list-source-maps/inputs/acceptance-symbol-nested-viewport.svg" Link="TestData/point-list-source-maps/inputs/acceptance-symbol-nested-viewport.svg" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
+    <ProjectReference Include="../../tools/Lokad.Svg.VisualDiff/Lokad.Svg.VisualDiff.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">
