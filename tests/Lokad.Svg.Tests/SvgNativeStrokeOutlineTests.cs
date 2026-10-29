@@ -148,7 +148,6 @@ public sealed class SvgNativeStrokeOutlineTests
             storage = budget.Snapshot().CurrentBytes;
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget tight = new RenderBudget(new HostMemoryBudget(storage - 1));
         try
         {

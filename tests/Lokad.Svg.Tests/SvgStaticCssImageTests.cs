@@ -347,7 +347,6 @@ public sealed class SvgStaticCssImageTests
             }
             Assert.True(reached);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             using SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
             Assert.Equal(expected, retry.Pixels);
         }

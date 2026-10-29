@@ -146,7 +146,6 @@ public sealed class SvgNonScalingMarkerTests
                 Assert.Equal(flood ? (byte)255 : (byte)0, raster.Pixels[3]);
             }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
             Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input,
@@ -278,7 +277,6 @@ public sealed class SvgNonScalingMarkerTests
                 using SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
                 Assert.Equal((byte)255, raster.Pixels[(12 * 32 + 20) * 4 + 3]);
             }
-            Assert.Equal(73, budget.Snapshot().CurrentBytes);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();

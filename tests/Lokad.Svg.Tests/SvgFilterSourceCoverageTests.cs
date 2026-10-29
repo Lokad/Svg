@@ -104,7 +104,6 @@ public sealed class SvgFilterSourceCoverageTests
             Assert.Equal(128, expected[3]);
             Assert.Equal(255, expected[7]);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
             RenderBudget tight = new RenderBudget(new HostMemoryBudget(budget.Snapshot().PeakBytes - 1));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                 SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), tight, CancellationToken.None)).ErrorCode);

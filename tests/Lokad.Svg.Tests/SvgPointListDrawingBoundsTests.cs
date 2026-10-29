@@ -87,7 +87,6 @@ public sealed class SvgPointListDrawingBoundsTests
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)) { peak = budget.Snapshot().PeakBytes; }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) { }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
         }

@@ -1,5 +1,6 @@
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Rendering")]
 public sealed class SvgRectangleShaderContextsTests
 {
     public static IEnumerable<object[]> PaintContexts()
@@ -7,7 +8,7 @@ public sealed class SvgRectangleShaderContextsTests
         foreach (string paint in new[] { "linear-user", "linear-box", "radial-user", "radial-box", "pattern-user", "pattern-box" })
         foreach (string width in new[] { ".5", "2", "24" })
         foreach (string pose in new[] { "", "translate(.5 .25)", "scale(.75 1.1)" })
-        foreach (string consumer in new[] { "direct", "use", "symbol", "group-use", "viewport", "clip", "mask", "filter" })
+        foreach (string consumer in new[] { "use", "symbol", "group-use", "viewport", "clip", "mask", "filter" })
         foreach (double scale in new[] { 1d, 1.5d })
         foreach (string opacity in new[] { "1", ".5" })
             yield return [paint, width, pose, consumer, scale, opacity];
@@ -16,6 +17,23 @@ public sealed class SvgRectangleShaderContextsTests
     [Theory]
     [MemberData(nameof(PaintContexts))]
     public void Shader_instances_preserve_direct_paint_coordinates_and_composition(string paint, string width, string pose, string consumer, double scale, string opacity)
+    {
+        var (control, input, options) = PaintInputs(paint, width, pose, consumer, scale, opacity);
+        SvgRasterTestHelper.AssertPixelsEqual(control, input, options);
+    }
+
+    [Theory]
+    [InlineData("linear-user", "2", "scale(.75 1.1)", "filter", 1.5, ".5")]
+    [InlineData("radial-box", ".5", "translate(.5 .25)", "mask", 1.5, ".5")]
+    [InlineData("pattern-box", "24", "", "symbol", 1d, "1")]
+    [InlineData("linear-box", "2", "translate(.5 .25)", "clip", 1.5, ".5")]
+    public void Complete_png_shader_paths_preserve_maps_bounds_and_effects(string paint, string width, string pose, string consumer, double scale, string opacity)
+    {
+        var (control, input, options) = PaintInputs(paint, width, pose, consumer, scale, opacity);
+        SvgRasterTestHelper.AssertPngEqual(control, input, options);
+    }
+
+    private static (byte[] Control, byte[] Input, SvgRenderOptions Options) PaintInputs(string paint, string width, string pose, string consumer, double scale, string opacity)
     {
         string resource = paint switch
         {
@@ -29,7 +47,7 @@ public sealed class SvgRectangleShaderContextsTests
         string fill = width == "2" ? "fill='url(#q)'" : opacity == ".5" ? "fill='green'" : "fill='none'";
         string shape = "<rect x='4' y='4' width='20' height='20' " + fill + " stroke='url(#p)' stroke-width='" + width + "' stroke-opacity='.75'/>";
         SvgRenderOptions options = new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default);
-        Assert.Equal(SvgConverter.ConvertToPng(Input(false), options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(Input(true), options, CancellationToken.None).ToArray());
+        return (Input(false), Input(true), options);
 
         byte[] Input(bool instance)
         {
@@ -38,7 +56,7 @@ public sealed class SvgRectangleShaderContextsTests
             {
                 if (consumer == "symbol") { extra = "<symbol id='s' viewBox='0 0 32 32'>" + shape + "</symbol>"; inner = "<use href='#s' width='32' height='32'/>"; }
                 else if (consumer == "group-use") { extra = "<g id='s'>" + shape + "</g>"; inner = "<use href='#s'/>"; }
-                else if (consumer != "direct") { extra = shape.Replace("/>", " id='s'/>", StringComparison.Ordinal); inner = "<use href='#s'/>"; }
+                else { extra = shape.Replace("/>", " id='s'/>", StringComparison.Ordinal); inner = "<use href='#s'/>"; }
             }
             else if (consumer == "symbol") inner = "<svg width='32' height='32' viewBox='0 0 32 32'>" + shape + "</svg>";
             string body = "<g transform='" + pose + "' opacity='" + opacity + "'>" + inner + "</g>";

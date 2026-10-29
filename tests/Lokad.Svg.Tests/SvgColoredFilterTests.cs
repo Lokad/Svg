@@ -79,7 +79,6 @@ public sealed class SvgColoredFilterTests
             using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), budget, CancellationToken.None))
             { expected = result.Pixels.ToArray(); }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
             RenderBudget tight = new RenderBudget(new HostMemoryBudget(Math.Max(1, budget.Snapshot().PeakBytes - 1)));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
                 SvgFilterPlayback.ApplyFullFrame(source, 1, 1, resource, new(1, 1), tight, CancellationToken.None)).ErrorCode);

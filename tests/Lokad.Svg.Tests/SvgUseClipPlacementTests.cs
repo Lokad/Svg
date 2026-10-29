@@ -19,15 +19,17 @@ public sealed class SvgUseClipPlacementTests
 
     [Theory]
     [MemberData(nameof(Placements))]
+    [Trait("Layer", "Rendering")]
     public void Owning_use_clip_keeps_the_same_placement_as_an_enclosing_translation(string shape, string clip, bool fractional, string map, bool symbol, bool filter, bool forward)
     {
         // Actual native SVG pairs independently establish this equivalence.
         // Filter/source-text fidelity remains separate from clip placement.
-        Assert.Equal(Render(Document(shape, clip, fractional, map, symbol, filter, forward, true)),
-            Render(Document(shape, clip, fractional, map, symbol, filter, forward, false)));
+        var (control, input) = PlacementInputs(shape, clip, fractional, map, symbol, filter, forward);
+        SvgRasterTestHelper.AssertPixelsEqual(control, input, SvgRenderOptions.Default);
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Fractional_owning_clip_multiplies_native_edge_and_corner_coverage()
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("rect", "rect", true, "", false, false, false, false));
@@ -43,6 +45,7 @@ public sealed class SvgUseClipPlacementTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("<rect x='4' y='4' width='16' height='16'/>")]
     [InlineData("<path d='M4 4H20V20H4Z'/>")]
     public void Nearly_integral_object_clip_rounds_to_native_binary_bounds_at_output_scale(string source)
@@ -60,6 +63,7 @@ public sealed class SvgUseClipPlacementTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void One_vector_paint_folds_opacity_through_its_clip_without_changing_color_rounding()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect id='s' width='32' height='32' fill='#55a0dc'/><clipPath id='c'><rect x='4.5' y='5.5' width='10' height='10'/></clipPath></defs><use href='#s' x='3.5' y='2.5' opacity='.68' clip-path='url(#c)'/></svg>"u8.ToArray();
@@ -70,6 +74,7 @@ public sealed class SvgUseClipPlacementTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Multiple_paints_keep_isolated_opacity_inside_an_owning_clip()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><g id='s'><rect width='20' height='20' fill='red'/><rect x='8' width='20' height='20' fill='blue'/></g><clipPath id='c'><rect width='32' height='32'/></clipPath></defs><use href='#s' opacity='.68' clip-path='url(#c)'/></svg>"u8.ToArray();
@@ -81,6 +86,7 @@ public sealed class SvgUseClipPlacementTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("rect", false, false)]
     [InlineData("object", false, false)]
     [InlineData("path", false, false)]
@@ -100,7 +106,6 @@ public sealed class SvgUseClipPlacementTests
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)) { peak = budget.Snapshot().PeakBytes; }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new(); cancellation.Cancel();
             Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, cancellation.Token)).CancellationToken);
             using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) { }
@@ -118,6 +123,7 @@ public sealed class SvgUseClipPlacementTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<g id='s'/>")]
     [InlineData("<path id='s' d=''/>")]
     [InlineData("<polygon id='s' points=''/>")]
@@ -131,7 +137,20 @@ public sealed class SvgUseClipPlacementTests
         Assert.Equal(unchanged, destination);
     }
 
-    private static byte[] Render(string svg) => SvgConverter.ConvertToPng(TextEncoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+    [Theory]
+    [Trait("Layer", "Rendering")]
+    [InlineData("rect", "rect", true, "", false, false, true)]
+    [InlineData("curve", "object", false, "matrix(.75 0 0 1.25 0 -4)", true, true, true)]
+    [InlineData("polygon", "path", true, "scale(.75)", false, true, false)]
+    public void Complete_png_owning_clips_preserve_placement_and_effects(string shape, string clip, bool fractional, string map, bool symbol, bool filter, bool forward)
+    {
+        var (control, input) = PlacementInputs(shape, clip, fractional, map, symbol, filter, forward);
+        SvgRasterTestHelper.AssertPngEqual(control, input, SvgRenderOptions.Default);
+    }
+
+    private static (byte[] Control, byte[] Input) PlacementInputs(string shape, string clip, bool fractional, string map, bool symbol, bool filter, bool forward)
+        => (TextEncoding.UTF8.GetBytes(Document(shape, clip, fractional, map, symbol, filter, forward, true)),
+            TextEncoding.UTF8.GetBytes(Document(shape, clip, fractional, map, symbol, filter, forward, false)));
 
     private static string Document(string shape, string clip, bool fractional, string map, bool symbol, bool filter, bool forward, bool control)
     {

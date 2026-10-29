@@ -36,7 +36,6 @@ public sealed class PngImageDecoderTests
         // The retained doubled compressed buffer coexists with unfiltered pixels.
         Assert.True(roomy.Snapshot().PeakBytes >= 2L * (compressed.Length - 1) + pixels.Length + 2 * rowBytes);
         Assert.Equal(0, roomy.Snapshot().CurrentBytes);
-        Assert.Equal(0, roomy.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, split);
     }
 

@@ -10,9 +10,12 @@ internal static class SvgRasterTestHelper
         => RenderPixels(TextEncoding.UTF8.GetBytes(svg), out width, out height);
 
     internal static byte[] RenderPixels(ReadOnlyMemory<byte> svg, out int width, out int height)
+        => RenderPixels(svg, SvgRenderOptions.Default, out width, out height);
+
+    internal static byte[] RenderPixels(ReadOnlyMemory<byte> svg, SvgRenderOptions options, out int width, out int height)
     {
         using SvgConverter.RasterizedConversion capture = SvgConverter.PrepareRasterization(
-            svg, SvgRenderOptions.Default, CancellationToken.None);
+            svg, options, CancellationToken.None);
         width = capture.Surface.Width;
         height = capture.Surface.Height;
         // Tests own this copy after the scene/surface owner is released. Match
@@ -22,6 +25,18 @@ internal static class SvgRasterTestHelper
             if (pixels[offset + 3] == 0) pixels.AsSpan(offset, 3).Clear();
         return pixels;
     }
+
+    internal static void AssertPixelsEqual(ReadOnlyMemory<byte> control, ReadOnlyMemory<byte> input, SvgRenderOptions options)
+    {
+        byte[] expected = RenderPixels(control, options, out int expectedWidth, out int expectedHeight);
+        byte[] actual = RenderPixels(input, options, out int actualWidth, out int actualHeight);
+        Assert.Equal((expectedWidth, expectedHeight), (actualWidth, actualHeight));
+        Assert.Equal(expected, actual);
+    }
+
+    internal static void AssertPngEqual(ReadOnlyMemory<byte> control, ReadOnlyMemory<byte> input, SvgRenderOptions options)
+        => Assert.Equal(SvgConverter.ConvertToPng(control, options, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
 
     internal static byte[] DecodeRgba(ReadOnlyMemory<byte> png, out int width, out int height)
     {

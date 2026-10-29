@@ -89,7 +89,6 @@ public sealed class SvgFilterPlaybackTests
             // The retained native command trace records [0,12,69,92].
             Assert.Equal((0d, 12d, 69d, 92d), (Math.Floor(hint.Left), Math.Floor(hint.Top), Math.Ceiling(hint.Right), Math.Ceiling(hint.Bottom)));
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
             Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgFilterPlayback.SourceLayerBounds(resource,
@@ -132,7 +131,6 @@ public sealed class SvgFilterPlaybackTests
             // [5,23,25,43] expanded by its native three-sigma radius of 3.
             Assert.Equal(new SvgPaintBounds(2, 20, 30, 46), SvgFilterPlayback.RequiredSourceBounds(resource,
                 new(1, 1), context, new(10, 20, 30, 40), budget, CancellationToken.None));
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();

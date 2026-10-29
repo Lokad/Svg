@@ -314,3 +314,56 @@ including every research recipe and original image comparison. The affected
 59 integrity/partition/complete-PNG checks also pass on .NET 10 on both hosts.
 Case IDs agree across hosts; the original rendering-case declarations, data
 selection and bank registry are unchanged. Both solution builds are warning-free.
+
+## Core shader, overlap and owning-clip responsibilities
+
+At `493bd2485`, 216 shader-context rows use `consumer=direct`. Their actual and
+control SVG bytes are identical; the retained `use` and `group-use` rows already
+render those same control bytes with identical options. Only these self-comparisons
+are removed. Their input/options membership SHA-256 is
+`5a3e6a7a8248394a2d306f2a73cab249013ce9555d67f379193a3bc21ec32b83`.
+This decision uses source/execution identity, not equal resulting images.
+
+| Original responsibility | Retained owner and scope |
+| --- | --- |
+| Shader-context equivalence, 1,728 rows | [Shader contexts](../../Lokad.Svg.Tests/SvgRectangleShaderContextsTests.cs): 1,512 meaningful rows for the seven distinct consumers, with original paint/map/scale/opacity combinations and all direct control inputs. |
+| Combined paints and ordered draws | [Rectangle overlap](../../Lokad.Svg.Tests/SvgRectanglePaintOverlapTests.cs): all 1,464 paint comparisons and 144 isolated-layer comparisons, with original exclusions. Constant-color paints retain their distinct resource graphs. |
+| Owning-use clip placement | [Clip placement](../../Lokad.Svg.Tests/SvgUseClipPlacementTests.cs): all 864 placement comparisons, five direct coverage/rounding mechanism cases, nine ownership cases and four destination-rejection cases. |
+
+All 3,984 retained rendering pairs and their serialized options match the original
+compiled builders byte-for-byte. The raster helper now accepts explicit options
+and compares dimensions as well as exact canonical RGBA bytes. Its owner, final
+unpremultiply and zero-alpha RGB convention are unchanged. Only the bulk checks'
+incidental encoding is removed. Eleven complete PNG representatives retain shader
+maps through masks/clips/filters, pattern/symbol frames, independent paint overlap,
+fractional layer strokes and owning clips with forward references and effects.
+Every representative belongs to the original source/options matrix.
+
+Rendering cases have Rendering traits; direct clip coverage/rounding cases have
+Mechanism traits; refusal/cancellation/cleanup/retry and untouched-destination
+checks have Contract traits. The existing independent
+[shader-frame](../../Lokad.Svg.VisualTests/SvgRectangleShaderFrameReferenceTests.cs)
+and [overlap](../../Lokad.Svg.VisualTests/SvgRectanglePaintOverlapReferenceTests.cs)
+browser captures remain unchanged, including their prepared companions.
+
+Thirty-two adjacent duplicate `Snapshot().CurrentBytes` assertions are removed.
+The conversion-confined snapshot only reads counters and clones category data;
+there is no operation between either repeated read. All checks around distinct
+parse/render/refusal/cancellation/retry operations remain. Twenty-seven other
+files match their original source after deleting only those duplicate lines;
+the mixed clip class's mechanism/contract bodies retain every other statement.
+No ownership test or allocation path is removed.
+
+Three fresh sequential Windows .NET 11 processes measured 13.39 seconds median
+before and 13.04 seconds after, including host/discovery/TRX and excluding build.
+That small change does not establish a material timing improvement. The original
+4,002 meaningful case IDs remain; 216 self-comparisons are removed and eleven PNG
+cases added, yielding 4,013 focused cases. Production code, source inputs, native
+references, tolerances and licenses are unchanged.
+
+The complete .NET 11 core suite passes 34,049 cases on each host. The affected
+.NET 10 selection passes 4,100 per host, and 128 native-reference/layout integration
+cases pass on every host/runtime pair. Case IDs agree across hosts and the .NET 10
+affected cases remain in full .NET 11 coverage. Both solution builds are warning-free.
+The core inventory now has 20,716 unclassified cases; this slice does not close
+the remaining suite-wide classification work.

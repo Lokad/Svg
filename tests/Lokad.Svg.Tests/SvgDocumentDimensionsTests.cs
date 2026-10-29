@@ -172,7 +172,6 @@ public sealed class SvgDocumentDimensionsTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Equal(new SvgViewport(40, 20), SvgDocumentSizing.Inspect(svg, SvgRenderOptions.Default, budget, CancellationToken.None).LogicalViewport);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget denied = new RenderBudget(new HostMemoryBudget(1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgDocumentSizing.Inspect(svg, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);

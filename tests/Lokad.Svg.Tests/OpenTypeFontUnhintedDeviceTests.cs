@@ -51,6 +51,5 @@ public sealed partial class OpenTypeFontTests
         cancellation.Cancel();
         Assert.Throws<OperationCanceledException>(() => OpenTypeFont.GetUnhintedDeviceContours(bytes, 2, metrics, 20.48, budget, cancellation.Token));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 }

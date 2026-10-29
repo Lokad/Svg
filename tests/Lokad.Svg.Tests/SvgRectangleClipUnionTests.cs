@@ -99,7 +99,6 @@ public sealed class SvgRectangleClipUnionTests
                     Assert.Equal((byte)255, raster.Pixels[(16 * 32 + 16) * 4 + 3]);
                 }
                 Assert.Equal(73, budget.Snapshot().CurrentBytes);
-                Assert.Equal(73, budget.Snapshot().CurrentBytes);
                 using CancellationTokenSource cancellation = new();
                 cancellation.Cancel();
                 Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input,

@@ -82,7 +82,6 @@ public sealed class SvgSymbolLocationTests
         Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None)).Family);
         long peak = budget.Snapshot().PeakBytes;
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget denied = new RenderBudget(new HostMemoryBudget(peak - 1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);

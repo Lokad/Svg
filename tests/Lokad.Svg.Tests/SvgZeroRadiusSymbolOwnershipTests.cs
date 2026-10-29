@@ -28,7 +28,6 @@ public sealed class SvgZeroRadiusSymbolOwnershipTests
         {
             using (SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, CancellationToken.None)) { }
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
-            Assert.Equal(73, parser.Snapshot().CurrentBytes);
             RenderBudget denied = new RenderBudget(new HostMemoryBudget(parser.Snapshot().PeakBytes - 74));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);

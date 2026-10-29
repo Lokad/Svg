@@ -92,7 +92,6 @@ public sealed partial class OpenTypeFontTests
             d.MaximumEncodedPngBytes, 3, d.MaximumPathCommands, d.MaximumXmlDepth, d.MaximumAttributesPerElement);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     private static byte[] Document(string body) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" + body + "</svg>");

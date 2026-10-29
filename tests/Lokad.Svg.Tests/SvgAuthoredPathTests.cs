@@ -106,7 +106,6 @@ public sealed class SvgAuthoredPathTests
             using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
                 SvgAnalyticPaintClip.Binary, budget, out bool eligible, CancellationToken.None)) Assert.True(eligible);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             RenderBudget tight = new RenderBudget(new HostMemoryBudget(storage - 1));
             try
             {

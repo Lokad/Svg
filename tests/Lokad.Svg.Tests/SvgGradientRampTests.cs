@@ -90,7 +90,6 @@ public sealed class SvgGradientRampTests
             Assert.True(budget.Snapshot().CurrentBytes > 0);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

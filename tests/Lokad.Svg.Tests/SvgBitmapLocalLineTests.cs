@@ -51,7 +51,6 @@ public sealed class SvgBitmapLocalLineTests
             Assert.Equal(255, pixel[3]);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget tight = new RenderBudget(new HostMemoryBudget(storage - 1));
         try
         {

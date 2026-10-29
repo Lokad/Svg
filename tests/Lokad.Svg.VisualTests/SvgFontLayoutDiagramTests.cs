@@ -168,7 +168,6 @@ public sealed class SvgFontLayoutDiagramTests
             using (SvgRoot measured = SvgRootParser.Parse(input, SvgRenderLimits.Default, parsed, snapshot, CancellationToken.None))
                 Assert.NotEmpty(measured.Geometries.ToArray());
             Assert.Equal(0, parsed.Snapshot().CurrentBytes);
-            Assert.Equal(0, parsed.Snapshot().CurrentBytes);
             using (CancellationTokenSource parseCancellation = new())
             {
                 using (GlyphExpansionProbe.Observe(parseCancellation.Cancel))
