@@ -47,6 +47,9 @@ batches on the same host because it audits the shared temporary-profile namespac
 Setup preserves sandboxing. On Windows it authenticates the bundled installer,
 uses its bounded `--configure-browser-in-directory` operation (success status 78)
 and verifies Chrome-specific read/execute capability rules on the browser tree.
+DevTools connects directly over loopback, independently of host HTTP/WebSocket
+proxy settings. The three-process smoke supplies an unusable proxy to protect that
+contract while comparing the same native pixels.
 Fresh, cached and offline paths reject escapes/junctions and preserve parent ACLs;
 denied permissions are reported rather than broadly reset. Ubuntu CI grants
 `userns` through an AppArmor policy attached to the exact pinned executable; see

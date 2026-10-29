@@ -21,10 +21,12 @@ internal sealed class DevToolsConnection : IAsyncDisposable
 
     internal static async Task<DevToolsConnection> ConnectAsync(string debuggerAddress, CancellationToken cancellationToken)
     {
-        using HttpClient client = new() { Timeout = TimeSpan.FromSeconds(10) };
+        // DevTools is local IPC; host proxy discovery must not delay loopback requests.
+        using HttpClient client = new(new SocketsHttpHandler { UseProxy = false }) { Timeout = TimeSpan.FromSeconds(10) };
         using JsonDocument document = JsonDocument.Parse(await client.GetStringAsync("http://" + debuggerAddress + "/json/version", cancellationToken));
         string endpoint = document.RootElement.GetProperty("webSocketDebuggerUrl").GetString() ?? throw new InvalidDataException("DevTools endpoint is missing.");
         ClientWebSocket socket = new();
+        socket.Options.Proxy = null;
         try
         {
             await socket.ConnectAsync(new Uri(endpoint), cancellationToken);
@@ -39,7 +41,8 @@ internal sealed class DevToolsConnection : IAsyncDisposable
 
     internal static async Task<DevToolsConnection> ConnectToTargetAsync(string debuggerAddress, string targetId, CancellationToken cancellationToken)
     {
-        using HttpClient client = new() { Timeout = TimeSpan.FromSeconds(10) };
+        // DevTools is local IPC; host proxy discovery must not delay loopback requests.
+        using HttpClient client = new(new SocketsHttpHandler { UseProxy = false }) { Timeout = TimeSpan.FromSeconds(10) };
         while (true)
         {
             using JsonDocument targets = JsonDocument.Parse(await client.GetStringAsync("http://" + debuggerAddress + "/json/list", cancellationToken));
@@ -48,6 +51,7 @@ internal sealed class DevToolsConnection : IAsyncDisposable
                 if (target.GetProperty("id").GetString() != targetId) continue;
                 string endpoint = target.GetProperty("webSocketDebuggerUrl").GetString() ?? throw new InvalidDataException("Target endpoint is missing.");
                 ClientWebSocket socket = new();
+                socket.Options.Proxy = null;
                 try
                 {
                     await socket.ConnectAsync(new Uri(endpoint), cancellationToken);

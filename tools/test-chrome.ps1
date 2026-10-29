@@ -47,6 +47,9 @@ function Invoke-ChromeCapture {
     $start.RedirectStandardInput = $true
     $start.RedirectStandardOutput = $true
     $start.RedirectStandardError = $true
+    # Local DevTools HTTP/WebSocket traffic must work despite an unusable host proxy.
+    foreach ($name in @('HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY')) { $start.Environment[$name] = 'http://127.0.0.1:1' }
+    $start.Environment['NO_PROXY'] = ''
     $start.ArgumentList.Add($chromeTool)
     $start.ArgumentList.Add($executable)
     $start.ArgumentList.Add('2')
