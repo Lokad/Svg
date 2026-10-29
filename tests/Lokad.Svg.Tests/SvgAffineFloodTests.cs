@@ -4,6 +4,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Rendering")]
 public sealed class SvgAffineFloodTests
 {
     // Chrome 153.0.8010.52, Chromium 1681091, recipe 3, 32x32 transparent RGBA.
@@ -126,55 +127,12 @@ public sealed class SvgAffineFloodTests
     [MemberData(nameof(BoundaryRegions))]
     public void Terminal_floods_preserve_native_mapped_region_coverage(string map, string region, string color, string opacity, string source, bool previous, string expectedHash)
     {
-        byte[] input = Input(map, region, color, opacity, source, previous);
+        byte[] input = SvgAffineFloodInput.Create(map, region, color, opacity, source, previous);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Equal(expectedHash, Convert.ToHexString(SHA256.HashData(surface.Pixels)));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-    }
-
-    [Theory]
-    [InlineData("group")]
-    [InlineData("zero-symbol")]
-    public void Affine_flood_restoration_releases_on_memory_refusal_cancellation_and_retry(string source)
-    {
-        byte[] input = Input("rotate(15 16 16)", "x='2.25' y='3.5' width='24.5' height='23.25'", "#4f83bc", ".43", source, true);
-        AssertRestorationLimits(input);
-    }
-
-    [Fact]
-    public void Deferred_offset_restoration_preserves_pixels_and_owner_lifetimes()
-    {
-        string svg = System.Text.Encoding.UTF8.GetString(Input("rotate(15 16 16)", "x='0' y='0' width='32' height='32'", "blue", "1", "group", false));
-        svg = svg.Replace("<feFlood flood-color='blue' flood-opacity='1'/>", "<feOffset in='SourceGraphic' dx='.3' dy='.7'/>", StringComparison.Ordinal);
-        AssertRestorationLimits(System.Text.Encoding.UTF8.GetBytes(svg));
-    }
-
-    private static void AssertRestorationLimits(byte[] input)
-    {
-        byte[] unchanged = input.ToArray();
-        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
-        {
-            byte[] expected;
-            RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
-            using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
-            { expected = surface.Pixels.ToArray(); }
-            Assert.Equal(0, measured.Snapshot().CurrentBytes);
-            RenderBudget denied = new RenderBudget(new HostMemoryBudget(measured.Snapshot().PeakBytes - 1));
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-            Assert.Equal(0, measured.Snapshot().CurrentBytes);
-            using CancellationTokenSource cancellation = new();
-            cancellation.Cancel();
-            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, cancellation.Token)).CancellationToken);
-            Assert.Equal(0, measured.Snapshot().CurrentBytes);
-            using SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None);
-            Assert.Equal(expected, retry.Pixels);
-        }
-        Assert.Equal(0, parser.Snapshot().CurrentBytes);
-        Assert.Equal(unchanged, input);
     }
 
     [Theory]
@@ -192,7 +150,7 @@ public sealed class SvgAffineFloodTests
     [InlineData("scale(1.25 .75) rotate(15 16 16)", "#4f83bc", ".43", "mask", "34F23DB874DECDD41E63F2303F6C91FA0A4E7AA5F69231927B78F9A0D5C0C67F")]
     public void Terminal_floods_preserve_native_pattern_and_mask_consumers(string map, string color, string opacity, string context, string expectedHash)
     {
-        string svg = System.Text.Encoding.UTF8.GetString(Input(map, "x='2.25' y='3.5' width='24.5' height='23.25'", color, opacity, "rect", true));
+        string svg = System.Text.Encoding.UTF8.GetString(SvgAffineFloodInput.Create(map, "x='2.25' y='3.5' width='24.5' height='23.25'", color, opacity, "rect", true));
         int start = svg.IndexOf("</defs>", StringComparison.Ordinal) + "</defs>".Length;
         string body = svg[start..^"</svg>".Length];
         string content = context switch
@@ -211,18 +169,4 @@ public sealed class SvgAffineFloodTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    private static byte[] Input(string map, string region, string color, string opacity, string source, bool previous)
-    {
-        string node = source switch
-        {
-            "rect" => "<rect x='4' y='4' width='8' height='8' fill='red' filter='url(#f)'/>",
-            "group" => "<g filter='url(#f)'><circle cx='8' cy='8' r='4' fill='red'/></g>",
-            "use" => "<use href='#empty' filter='url(#f)'/>",
-            "zero-symbol" => "<use href='#s' width='0' height='32' filter='url(#f)'/>",
-            _ => throw new ArgumentException("Unknown source form.", nameof(source))
-        };
-        string graph = (previous ? "<feOffset dx='1'/>" : "") + "<feFlood flood-color='" + color + "' flood-opacity='" + opacity + "'/>";
-        return System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' " + region + ">" + graph
-            + "</filter><g id='empty'/><symbol id='s' viewBox='0 0 32 32'><rect width='32' height='32' fill='red'/></symbol></defs><g transform='" + map + "'>" + node + "</g></svg>");
-    }
 }

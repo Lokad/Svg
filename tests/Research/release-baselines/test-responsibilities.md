@@ -367,3 +367,45 @@ cases pass on every host/runtime pair. Case IDs agree across hosts and the .NET 
 affected cases remain in full .NET 11 coverage. Both solution builds are warning-free.
 The core inventory now has 20,716 unclassified cases; this slice does not close
 the remaining suite-wide classification work.
+
+## Degenerate geometry and flood ownership
+
+The source before this pass is `4d9a4bd4a`. The
+[zero-radius tests](../../Lokad.Svg.Tests/SvgZeroRadiusPaintTests.cs) retain all
+576 solid-path and 216 symbol-map comparisons, including their original
+nonuniform-map exclusions. Compiled old/new builders produce identical input
+pairs and options. Bulk comparisons use exact capture pixels and dimensions;
+five original source/options combinations also retain complete PNG equality.
+The independent [browser references](../../Lokad.Svg.VisualTests/SvgZeroRadiusPaintReferenceTests.cs)
+and their prepared companions are unchanged.
+
+The 576 [empty-source cases](../../Lokad.Svg.Tests/SvgEmptyContourMappingTests.cs)
+are named for the blank pixels they actually assert. The former name claimed
+allocation coverage without measuring allocation. Their source construction,
+paint/instance matrix and expected output remain; only incidental PNG encoding
+is removed. The eight curve-mapping ownership cases retain their original refusal
+sweep, borrowed storage, cancellation, source-command preservation and retry.
+Two direct parser-boundary facts retain input-byte/node and authored-command
+limits; the whitespace fact keeps its complete PNG check and loses the stale
+"work" label.
+
+The [flood rendering bank](../../Lokad.Svg.Tests/SvgAffineFloodTests.cs) retains
+all 540 mapped-region and twelve pattern/mask cases, with every original Chrome
+hash and rendering statement. The three restoration contracts move unchanged to
+[SvgAffineFloodOwnershipTests](../../Lokad.Svg.Tests/SvgAffineFloodOwnershipTests.cs).
+A small [shared input factory](../../Lokad.Svg.Tests/SvgAffineFloodInput.cs)
+retains the exact original source builder, avoiding duplicated SVG construction.
+The ownership cases now also match the existing .NET 10 CI ownership selection.
+
+No original case is removed. The case map accounts for 576 rendering-name
+changes, one whitespace-name change and three relocated ownership cases; all
+1,353 other original identities remain. Five complete PNG cases make 1,938
+focused cases versus 1,933 before. The old/new Windows .NET 11 validation medians
+are 8.54/8.75 seconds across three fresh processes, including discovery/host/TRX;
+there is no measured speedup. This pass separates responsibilities and corrects
+claims, without changing production, inputs, native hashes/references or limits.
+
+Validation: the complete .NET 11 core suite passes 34,054 cases per host, the
+affected .NET 10 selection passes 1,938 per host, and all eight independent
+zero-radius reference cases pass on every runtime/host pair. Explicit identity
+mapping accounts for every original case; both solution builds are warning-free.

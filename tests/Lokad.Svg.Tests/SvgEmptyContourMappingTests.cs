@@ -16,7 +16,8 @@ public sealed class SvgEmptyContourMappingTests
 
     [Theory]
     [MemberData(nameof(EmptySources))]
-    public void Empty_sources_map_without_allocating_contour_storage_or_throwing(string shape, string paint, string role, string consumer, bool translated)
+    [Trait("Layer", "Rendering")]
+    public void Empty_sources_preserve_blank_pixels_through_paint_and_instance_mapping(string shape, string paint, string role, string consumer, bool translated)
     {
         string start = shape switch
         {
@@ -35,10 +36,11 @@ public sealed class SvgEmptyContourMappingTests
         string body = consumer == "symbol" ? "<defs><symbol id='s' viewBox='0 0 32 32'>" + geometry + "</symbol></defs><use href='#s' width='32' height='32'" + transform + "/>"
             : consumer == "use" ? "<defs>" + geometry.Replace("/>", " id='s'/>", StringComparison.Ordinal) + "</defs><use href='#s'" + transform + "/>"
             : "<g" + transform + ">" + geometry + "</g>";
-        Assert.Equal(Render(Document("")), Render(Document(Resource(paint) + body)));
+        SvgRasterTestHelper.AssertPixelsEqual(Document(""), Document(Resource(paint) + body), SvgRenderOptions.Default);
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("solid", false)]
     [InlineData("solid", true)]
     [InlineData("linear", false)]
@@ -102,7 +104,8 @@ public sealed class SvgEmptyContourMappingTests
     }
 
     [Fact]
-    public void Whitespace_normalization_preserves_authored_input_work_and_node_limits()
+    [Trait("Layer", "Mechanism")]
+    public void Whitespace_normalization_preserves_authored_input_bytes_and_node_limits()
     {
         byte[] input = Document("<path d='" + new string(' ', 20_000) + "'/>");
         RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
@@ -119,10 +122,11 @@ public sealed class SvgEmptyContourMappingTests
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, tight, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
-        Assert.Equal(Render(Document("")), Render(input));
+        SvgRasterTestHelper.AssertPngEqual(Document(""), input, SvgRenderOptions.Default);
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void A_degenerate_drawable_path_still_counts_authored_commands()
     {
         SvgRenderLimits normal = SvgRenderLimits.Default;
@@ -134,7 +138,6 @@ public sealed class SvgEmptyContourMappingTests
     }
 
     private static byte[] Document(string body) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + body + "</svg>");
-    private static byte[] Render(byte[] input) => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
     private static string Resource(string paint) => paint switch
     {
         "linear" => "<defs><linearGradient id='p' gradientUnits='userSpaceOnUse' x2='32'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient></defs>",
