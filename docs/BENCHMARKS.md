@@ -14,7 +14,7 @@ from the [correctness qualification](../tests/README.md) and approximate
 Run a warmed conversion sample from the repository root:
 
 ```powershell
-dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks -- --job Short --filter "*SvgCurveBenchmarks*" "*SvgSceneBenchmarks*" --exporters JSON --artifacts artifacts/benchmarks
+dotnet run -c Release --framework net11.0 --project benchmarks/Lokad.Svg.Benchmarks -- --job Short --filter "*SvgCurveBenchmarks*" "*SvgSceneBenchmarks*" --exporters JSON --artifacts artifacts/benchmarks
 ```
 
 Input construction, option setup and font acquisition belong outside warmed

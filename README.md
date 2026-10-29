@@ -56,7 +56,7 @@ Tests, browser tooling and benchmarks are used only for development.
 On the dedicated quiet benchmark VM, run allocation and throughput benchmarks with:
 
 ```powershell
-dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks
+dotnet run -c Release --framework net11.0 --project benchmarks/Lokad.Svg.Benchmarks
 ```
 
 [BENCHMARKS](docs/BENCHMARKS.md) describes workloads and measurement conditions.
@@ -77,7 +77,7 @@ tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artif
 For an isolated conversion and optional budget/cancellation controls:
 
 ```powershell
-dotnet run -c Release --project tools/Lokad.Svg.MemoryProbe -- tests/Fixtures/original/solid-red.svg artifacts/probe.png --maximum-accounted-bytes 1048576
+dotnet run -c Release --framework net11.0 --project tools/Lokad.Svg.MemoryProbe -- tests/Fixtures/original/solid-red.svg artifacts/probe.png --maximum-accounted-bytes 1048576
 ```
 
 [FontProbe](tools/Lokad.Svg.FontProbe/README.md) documents explicit local/HTTP font
