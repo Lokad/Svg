@@ -1,6 +1,9 @@
 # Changelog
 
-## 0.3.0
+## 0.3.0 - 2026-10-28
+
+Published on [NuGet.org](https://www.nuget.org/packages/Lokad.Svg/0.3.0).
+Source tag: `v0.3.0`.
 
 - Expand ordered CSS font-family selection, host-defined generic mappings,
   coverage-based fallback and bounded TrueType/GPOS/GDEF compatibility.
