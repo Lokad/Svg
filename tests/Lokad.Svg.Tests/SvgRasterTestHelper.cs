@@ -26,6 +26,9 @@ internal static class SvgRasterTestHelper
         return pixels;
     }
 
+    internal static void AssertPixelsEqual(string control, string input, SvgRenderOptions options)
+        => AssertPixelsEqual(TextEncoding.UTF8.GetBytes(control), TextEncoding.UTF8.GetBytes(input), options);
+
     internal static void AssertPixelsEqual(ReadOnlyMemory<byte> control, ReadOnlyMemory<byte> input, SvgRenderOptions options)
     {
         byte[] expected = RenderPixels(control, options, out int expectedWidth, out int expectedHeight);
@@ -33,6 +36,9 @@ internal static class SvgRasterTestHelper
         Assert.Equal((expectedWidth, expectedHeight), (actualWidth, actualHeight));
         Assert.Equal(expected, actual);
     }
+
+    internal static void AssertPngEqual(string control, string input, SvgRenderOptions options)
+        => AssertPngEqual(TextEncoding.UTF8.GetBytes(control), TextEncoding.UTF8.GetBytes(input), options);
 
     internal static void AssertPngEqual(ReadOnlyMemory<byte> control, ReadOnlyMemory<byte> input, SvgRenderOptions options)
         => Assert.Equal(SvgConverter.ConvertToPng(control, options, CancellationToken.None).ToArray(),

@@ -518,3 +518,33 @@ All 752 affected cases, 71 native-image checks and two provenance checks pass on
 each Windows/Linux/runtime combination. Both affected builds are warning-free.
 Production, browser references, tolerances and the text-layout implementation are
 unchanged. This closes the root-parser split, not suite-wide classification.
+
+## Definition display and font acquisition
+
+The source before this pass is `3997d21b3`. All 390 original
+[definition-display cases](../../Lokad.Svg.Tests/SvgDefinitionDisplayTests.cs)
+and 73 [sibling font cases](../../Lokad.Svg.Tests/OpenTypeFontTests.DefinitionDisplay.cs)
+retain their original identities. Both shared data builders, including the text
+branch consumed through `MemberData`, have identical bodies and constants.
+
+The 389 rendering rows retain every resource kind, display state, selector,
+definition order, template replacement and filter transform. Their 391 comparison
+pairs use exact production capture dimensions and canonical RGBA. Seven complete
+PNG representatives are selected directly from the original resource/template
+rows. The borrowed-parser/raster refusal, cancellation and retry body is unchanged.
+Rendering and contract traits separate these responsibilities without removing
+inputs or changing references, tolerances, numerical boundaries or production.
+
+The font cases keep their conversions, exact pixels, fallback controls and zero
+request assertions. The positive request check now measures the actual input's
+increment after control preparation; previously the control's requests alone
+could satisfy it. No font scenario is moved to research or dropped.
+
+Two string overloads forward UTF-8 input to the existing raster/PNG helpers;
+all six original helper implementations are unchanged. All 463 original IDs
+remain, with seven PNG cases added, yielding 396 Rendering and 74 Contract cases.
+Three fresh sequential Windows .NET 11 processes measure 7.35/7.13 seconds median
+for the core selection, including discovery/host/TRX and excluding build. This is
+a small validation-cost difference, not a material renderer speedup.
+All 470 affected cases, 71 native-image checks and two provenance checks pass on
+Windows/Linux under both runtimes. Both affected builds are warning-free.

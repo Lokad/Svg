@@ -65,11 +65,32 @@ public sealed class SvgDefinitionDisplayTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(ResourceCases), false)]
     public void Defs_display_controls_resource_availability_without_suppressing_use_targets(string kind, string scenario, string selector, bool forward, string actual, string expected, bool disabled)
     {
         _ = (kind, scenario, selector, forward, disabled);
-        Assert.Equal(Render(expected), Render(actual));
+        SvgRasterTestHelper.AssertPixelsEqual(expected, actual, SvgRenderOptions.Default);
+    }
+
+    public static IEnumerable<object[]> ResourcePngCases()
+    {
+        foreach (object[] row in ResourceCases(false))
+            if (((string)row[0], (string)row[1], (string)row[2], (bool)row[3]) is
+                ("image", "ancestor-none", "#d", true) or
+                ("mask", "defs-none", "defs", false) or
+                ("filter", "unset", "#d", false) or
+                ("symbol", "initial", "defs", true))
+                yield return row;
+    }
+
+    [Theory]
+    [Trait("Layer", "Rendering")]
+    [MemberData(nameof(ResourcePngCases))]
+    public void Complete_png_resource_display_preserves_availability(string kind, string scenario, string selector, bool forward, string actual, string expected, bool disabled)
+    {
+        _ = (kind, scenario, selector, forward, disabled);
+        SvgRasterTestHelper.AssertPngEqual(expected, actual, SvgRenderOptions.Default);
     }
 
     public static IEnumerable<object[]> TemplateCases()
@@ -100,14 +121,35 @@ public sealed class SvgDefinitionDisplayTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [MemberData(nameof(TemplateCases))]
     public void Local_template_content_can_replace_unavailable_content_with_its_required_dimensions(string kind, string mode, string hidden, bool forward, bool ownDisplay, string actual, string expected)
     {
         _ = (kind, mode, hidden, forward, ownDisplay);
-        Assert.Equal(Render(expected), Render(actual));
+        SvgRasterTestHelper.AssertPixelsEqual(expected, actual, SvgRenderOptions.Default);
+    }
+
+    public static IEnumerable<object[]> TemplatePngCases()
+    {
+        foreach (object[] row in TemplateCases())
+            if (((string)row[0], (string)row[1], (string)row[2], (bool)row[3], (bool)row[4]) is
+                ("pattern", "complete-replace", "base", true, true) or
+                ("linearGradient", "borrow", "alias", false, false) or
+                ("radialGradient", "replace", "base", true, false))
+                yield return row;
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
+    [MemberData(nameof(TemplatePngCases))]
+    public void Complete_png_template_display_preserves_local_replacements(string kind, string mode, string hidden, bool forward, bool ownDisplay, string actual, string expected)
+    {
+        _ = (kind, mode, hidden, forward, ownDisplay);
+        SvgRasterTestHelper.AssertPngEqual(expected, actual, SvgRenderOptions.Default);
+    }
+
+    [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("linearGradient")]
     [InlineData("radialGradient")]
     public void An_unavailable_single_stop_gradient_keeps_the_shapes_independent_stroke(string kind)
@@ -117,21 +159,23 @@ public sealed class SvgDefinitionDisplayTests
         foreach (string selector in new[] { "defs", "#r" })
         {
             string actual = Start + "<style>" + selector + "{display:none}</style><defs><" + kind + " id='r'><stop stop-color='red'/></" + kind + "></defs>" + shape + "url(#r)'/></svg>";
-            Assert.Equal(Render(expected), Render(actual));
+            SvgRasterTestHelper.AssertPixelsEqual(expected, actual, SvgRenderOptions.Default);
         }
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("")]
     [InlineData("rotate(15 16 16)")]
     [InlineData("skewX(20)")]
     public void An_unavailable_filter_does_not_paint_its_source(string transform)
     {
         string input = Start + "<style>#f{display:none}</style><defs><filter id='f'><feFlood flood-color='blue'/></filter></defs><rect width='32' height='32' fill='red' transform='" + transform + "' filter='url(#f)'/></svg>";
-        Assert.Equal(Render(Start + "</svg>"), Render(input));
+        SvgRasterTestHelper.AssertPixelsEqual(Start + "</svg>", input, SvgRenderOptions.Default);
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Deferred_sources_and_unavailable_resources_release_on_denial_cancellation_and_retry()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(Start + "<style>#d{display:none}</style><defs id='d'>" + Box.Replace("<rect ", "<rect id='box' ", StringComparison.Ordinal)
@@ -172,6 +216,4 @@ public sealed class SvgDefinitionDisplayTests
     private const string Start = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' font-family='Example' font-size='12'>";
     private const string Box = "<rect x='4' y='4' width='8' height='8' fill='blue'/>";
     private const string Line = "<path d='M0 0H28' stroke='black'/>";
-    private static byte[] Render(string input)
-        => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(input), SvgRenderOptions.Default, CancellationToken.None).ToArray();
 }
