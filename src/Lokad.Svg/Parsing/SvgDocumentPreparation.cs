@@ -1,4 +1,5 @@
 using System.Xml;
+using Lokad.Svg.Fonts;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -11,6 +12,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
 {
     private readonly ReadOnlyMemory<byte> _svg;
     private readonly SvgRenderLimits _limits;
+    private readonly RenderBudget _budget;
     private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private readonly RenderBudget.BudgetReservation _workspace;
@@ -20,7 +22,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
     private SvgDocumentPreparation(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget,
         ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation workspace, XmlReaderSettings settings)
     {
-        _svg = svg; _limits = limits; _work = work; _token = token;
+        _svg = svg; _limits = limits; _budget = budget; _work = work; _token = token;
         _workspace = workspace; Settings = settings;
         Rules = new(budget, SvgMemoryCategory.Parser, work, token);
         Strings = new(budget);
@@ -33,6 +35,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
     internal static SvgDocumentPreparation Create(ReadOnlyMemory<byte> svg, SvgRenderLimits limits,
         RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
+        SvgPreparationProbe.Observe(SvgPreparationPhase.Workspace);
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         RenderBudget.BudgetReservation workspace = budget.Reserve(SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
         SvgDocumentPreparation? result = null;
@@ -51,6 +54,14 @@ internal sealed class SvgDocumentPreparation : IDisposable
             throw;
         }
     }
+
+    /// <summary>Discovers requests under this preparation's active owner, reusing its styles and reader workspace.</summary>
+    internal SvgFontFaceRequest[] DiscoverFontRequests()
+        => SvgFontRequestDiscovery.Discover(_svg, _limits, _work, _budget, this, _token);
+
+    /// <summary>Collects scalar coverage under this preparation's owner without acquiring or laying out fonts.</summary>
+    internal SvgFontCoverageRequest[] DiscoverFontCoverage()
+        => SvgFontRequestDiscovery.DiscoverWithCoverage(_svg, _limits, _work, _budget, this, _token);
 
     internal SvgDocumentDimensions InspectDimensions(SvgRenderOptions options)
     {

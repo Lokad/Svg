@@ -22,6 +22,10 @@ and deferred opacity bind at replay. Resource references borrow their scene;
 sealed child scenes retain storage after parser staging ends. Partial construction
 and failure release owners deterministically.
 
+Prepared-document font discovery borrows the same collected styles, reader
+workspace and active budget used by lowering. Discovery control storage is
+temporary; selected font bytes stay alive through the prepared operation.
+
 Geometry uses inline primitive values plus one typed reference payload. That
 payload owns its reservations; authored paths retain separate ownership. Prepared
 documents retain one scene/font operation for one conversion. Font programs remain

@@ -32,7 +32,7 @@ public sealed class SvgPreparedDocument : IDisposable
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
         using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, workCounter, cancellationToken);
         options = preparation.ResolveRasterOptions(options);
-        SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(svg, catalog, provider, options.Limits, options.FontSelectionPolicy, workCounter, cancellationToken).ConfigureAwait(false);
+        SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(preparation, catalog, provider, options.FontSelectionPolicy, workCounter, cancellationToken).ConfigureAwait(false);
         try
         {
             SvgRenderOptions preparedOptions = options.WithFontSnapshot(snapshot);

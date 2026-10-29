@@ -32,6 +32,9 @@ classes migrated to these responsibilities; they are not a complete suite index.
 The [point-list source maps](Research/point-list-source-maps/README.md) separate
 90 independent native inputs, twelve viewport mechanisms and two selected ownership
 cases; their numerical boundaries do not repeat the full API matrix.
+The [preparation contracts](Lokad.Svg.Tests/OpenTypeFontTests.PreparationSharing.cs)
+cover request-only and scalar-coverage acquisition with one stylesheet collection,
+exact raw/prepared output, and shared-budget refusal, cleanup and reuse.
 The [filter-region controls](Research/filter-region-coordinates/README.md) retain
 65 independent native inputs, 27 direct mechanisms and one selected ownership
 witness. Their source/image coordinate interactions retain the existing tests;

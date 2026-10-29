@@ -233,6 +233,27 @@ public sealed partial class SvgFontSnapshot : IDisposable
         SvgFontCoverageRequest[]? coverage = catalog.Files.Count > 1 ? SvgFontRequestDiscovery.DiscoverWithCoverage(svg, limits, workCounter, cancellationToken) : null;
         SvgFontFaceRequest[] requests = coverage is null ? SvgFontRequestDiscovery.Discover(svg, limits, workCounter, cancellationToken)
             : coverage.Select(static item => item.Request).ToArray();
+        return await CreateDiscoveredAsync(catalog, provider, policy, workCounter, requests, coverage, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Acquires fonts from one retained document preparation without creating another budget or stylesheet collection.</summary>
+    internal static ValueTask<SvgFontSnapshot> CreateAsync(SvgDocumentPreparation preparation, SvgFontPackCatalog catalog,
+        ISvgFontProgramSourceProvider provider, SvgFontSelectionPolicy? policy, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(preparation);
+        ArgumentNullException.ThrowIfNull(catalog);
+        ArgumentNullException.ThrowIfNull(provider);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        SvgFontCoverageRequest[]? coverage = catalog.Files.Count > 1 ? preparation.DiscoverFontCoverage() : null;
+        SvgFontFaceRequest[] requests = coverage is null ? preparation.DiscoverFontRequests()
+            : coverage.Select(static item => item.Request).ToArray();
+        return CreateDiscoveredAsync(catalog, provider, policy, workCounter, requests, coverage, cancellationToken);
+    }
+
+    private static async ValueTask<SvgFontSnapshot> CreateDiscoveredAsync(SvgFontPackCatalog catalog,
+        ISvgFontProgramSourceProvider provider, SvgFontSelectionPolicy? policy, ParserWorkCounter workCounter,
+        SvgFontFaceRequest[] requests, SvgFontCoverageRequest[]? coverage, CancellationToken cancellationToken)
+    {
         try
         {
             return coverage is null

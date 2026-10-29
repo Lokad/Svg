@@ -10,6 +10,7 @@ internal static class SvgRootStyleSheetParser
     internal static void Collect(ReadOnlyMemory<byte> svg, XmlReaderSettings settings, SvgRenderLimits limits, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        SvgPreparationProbe.Observe(SvgPreparationPhase.StyleSheets);
         // XML names are literal. ASCII-compatible inputs without either spelling
         // need no second reader; wide encodings fall through to ordinary XML parsing.
         ReadOnlySpan<byte> bytes = svg.Span;

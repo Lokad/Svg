@@ -35,14 +35,30 @@ internal static class SvgFontRequestDiscovery
 
     /// <summary>Discovers admitted text requests while reserving all discovery control storage from the supplied preparation budget.</summary>
     internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, RenderBudget budget, CancellationToken cancellationToken)
-        => DiscoverCore(svg, limits, workCounter, budget, null, cancellationToken);
+    {
+        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, limits, budget, workCounter, cancellationToken);
+        return Discover(svg, limits, workCounter, budget, preparation, cancellationToken);
+    }
+
+    /// <summary>Borrows the operation's already-collected styles and reader workspace; only discovery control storage is temporary.</summary>
+    internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter,
+        RenderBudget budget, SvgDocumentPreparation preparation, CancellationToken cancellationToken)
+        => DiscoverCore(svg, limits, workCounter, budget, preparation, null, cancellationToken);
 
     /// <summary>Shares request discovery and whitespace normalization while retaining bounded scalar needs for selective acquisition.</summary>
     internal static SvgFontCoverageRequest[] DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         RenderBudget budget = new(limits.MaximumAccountedBytes);
+        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, limits, budget, workCounter, cancellationToken);
+        return DiscoverWithCoverage(svg, limits, workCounter, budget, preparation, cancellationToken);
+    }
+
+    /// <summary>Retains scalar needs while borrowing the document's preparation and charging its active budget.</summary>
+    internal static SvgFontCoverageRequest[] DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter,
+        RenderBudget budget, SvgDocumentPreparation preparation, CancellationToken cancellationToken)
+    {
         using SvgFontCoverageDiscovery coverage = new(budget, workCounter, cancellationToken);
-        SvgFontFaceRequest[] requests = DiscoverCore(svg, limits, workCounter, budget, coverage, cancellationToken);
+        SvgFontFaceRequest[] requests = DiscoverCore(svg, limits, workCounter, budget, preparation, coverage, cancellationToken);
         var result = new SvgFontCoverageRequest[requests.Length];
         for (int index = 0; index < requests.Length; index++)
         {
@@ -52,16 +68,15 @@ internal static class SvgFontRequestDiscovery
         return result;
     }
 
-    private static SvgFontFaceRequest[] DiscoverCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, RenderBudget budget, SvgFontCoverageDiscovery? coverage, CancellationToken cancellationToken)
+    private static SvgFontFaceRequest[] DiscoverCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, RenderBudget budget, SvgDocumentPreparation preparation, SvgFontCoverageDiscovery? coverage, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
         ArgumentNullException.ThrowIfNull(workCounter);
         ArgumentNullException.ThrowIfNull(budget);
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
-        // Reserve the same conservative reader workspace as root parsing before either XmlReader is created.
-        using RenderBudget.BudgetReservation xmlReaderWorkspace = budget.Reserve(SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
-        using var styleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var styleStrings = new BudgetedParserStringStore(budget);
+        ArgumentNullException.ThrowIfNull(preparation);
+        BudgetedParserList<CssRule> styleRules = preparation.Rules;
+        BudgetedParserStringStore styleStrings = preparation.Strings;
         using var requestKeys = new BudgetedParserList<TextRequestKey>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var inheritedLevels = new BudgetedParserList<TextStyle>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var directTextLevels = new BudgetedParserList<DiscoveryCandidate>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -81,8 +96,7 @@ internal static class SvgFontRequestDiscovery
         RenderBudget.BudgetReservation? textChunkReservation = null;
         try
         {
-            XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, workCounter, cancellationToken);
-            SvgRootStyleSheetParser.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
+            XmlReaderSettings settings = preparation.Settings;
             using SvgInstanceFontDiscovery? instanceFonts = SvgInstanceFontDiscovery.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
             using SvgPaintResourceSelection? paintResources = SvgPaintResourceSelection.Create(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken, instanceFonts);
             using SvgCssAncestorContext ancestors = new(styleRules, budget, workCounter, cancellationToken);
