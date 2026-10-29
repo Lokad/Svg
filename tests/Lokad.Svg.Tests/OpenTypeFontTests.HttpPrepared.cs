@@ -211,6 +211,31 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(0, budget.Reserved);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    [Trait("Layer", "Contracts")]
+    public async Task Http_font_free_preparation_is_independent_of_failed_initialization(bool invalidManifest)
+    {
+        using var handler = new HttpFontHandler((_, _) => Task.FromResult(new HttpResponseMessage(invalidManifest ? HttpStatusCode.OK : HttpStatusCode.NotFound)
+        {
+            Content = new ByteArrayContent("{}"u8.ToArray())
+        }));
+        using var client = new HttpClient(handler);
+        using var budget = new TestMemoryBudget(8_000_000);
+        await using var resolver = SvgHttpFontPackResolver.Create("test-pack", new("https://fonts.invalid/pack/"), client, HttpFontOptions(), budget);
+        byte[] text = "<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>A</text></svg>"u8.ToArray();
+        SvgException failure = await Assert.ThrowsAsync<SvgException>(async () => await SvgPreparedDocument.CreateAsync(text, resolver, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(invalidManifest ? SvgFontFailureStage.Format : SvgFontFailureStage.Transport, failure.FontDiagnostic?.Stage);
+        Assert.Equal(0, budget.Reserved);
+        byte[] shape = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect width='5' height='5' fill='blue'/></svg>"u8.ToArray();
+        byte[] expected = SvgConverter.ConvertToPng(shape, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        using (SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(shape, resolver, SvgRenderOptions.Default, CancellationToken.None).AsTask().WaitAsync(TimeSpan.FromSeconds(5)))
+        using (SvgPngResult result = document.ConvertToOwnedPng(CancellationToken.None)) Assert.Equal(expected, result.Memory.ToArray());
+        Assert.Equal(1, handler.Requests);
+        Assert.Equal(0, budget.Reserved);
+    }
+
     [Fact]
     [Trait("Layer", "Contracts")]
     public async Task Http_governed_conversion_refusal_releases_execution_and_allows_later_retry()

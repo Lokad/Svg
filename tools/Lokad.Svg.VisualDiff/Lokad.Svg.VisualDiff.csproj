@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <!-- Referenced by both test runtimes; use normal multi-target negotiation. -->
+    <TargetFramework />
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 </Project>

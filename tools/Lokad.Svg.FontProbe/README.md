@@ -8,7 +8,7 @@ configuration discovery.
 Run it only with explicit locations:
 
 ```powershell
-dotnet run -c Release --project tools/Lokad.Svg.FontProbe -- --manifest <manifest.json> --pack-id <pack-id> --font-root <font-directory> --svg <input.svg> --output <output.png>
+dotnet run -c Release --framework net11.0 --project tools/Lokad.Svg.FontProbe -- --manifest <manifest.json> --pack-id <pack-id> --font-root <font-directory> --svg <input.svg> --output <output.png>
 ```
 
 Alternatively, provide an explicit HTTP(S) source root. The host requests
@@ -16,7 +16,7 @@ Alternatively, provide an explicit HTTP(S) source root. The host requests
 program paths below that pack root:
 
 ```powershell
-dotnet run -c Release --project tools/Lokad.Svg.FontProbe -- --source-uri <https://source-root/> --pack-id <pack-id> --svg <input.svg> --output <output.png>
+dotnet run -c Release --framework net11.0 --project tools/Lokad.Svg.FontProbe -- --source-uri <https://source-root/> --pack-id <pack-id> --svg <input.svg> --output <output.png>
 ```
 
 The source URI must be absolute HTTP(S), end at a directory, and have no query or

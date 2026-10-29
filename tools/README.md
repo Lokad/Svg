@@ -1,7 +1,9 @@
 # Developer tools and research
 
 Run commands from the repository root after a Release build with the pinned
-.NET 11 RC SDK. Tools default to `net11.0`; smoke/capture/validation scripts accept
+.NET 11 RC SDK. Test-referenced tools build both targets; direct `dotnet run`
+commands select `--framework net11.0`. Smoke/capture/validation scripts default to
+`net11.0` and accept
 `-TargetFramework net10.0` after an explicit .NET 10 build. Install both runtimes.
 `test-package.ps1` checks and executes both targets against one isolated package
 restore; no runtime roll-forward is required. Keep caches, captures
@@ -103,7 +105,7 @@ even if a screenshot exists. Benign messages do not reject it.
 ## Pixel comparison
 
 ```powershell
-dotnet run --project tools/Lokad.Svg.VisualDiff -- reference.png candidate.png
+dotnet run --framework net11.0 --project tools/Lokad.Svg.VisualDiff -- reference.png candidate.png
 ```
 
 Exit codes are `0` for equal dimensions and exact canonical RGBA8 pixels, `1`

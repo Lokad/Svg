@@ -1,5 +1,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Net;
+using Lokad.Svg.Testing;
 using System.Security.Cryptography;
 using System.Text.Json;
 using Lokad.Svg.Fonts;
@@ -26,15 +28,7 @@ public sealed class SvgPublicFontQualificationTests
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
         JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
-        string sourceDirectory = DirectoryPath;
-        JsonElement visual = item;
-        using JsonDocument? reused = item.TryGetProperty("sourceManifest", out JsonElement sourceManifest)
-            ? JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, sourceManifest.GetString() ?? throw new InvalidDataException()))) : null;
-        if (reused is not null)
-        {
-            sourceDirectory = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(DirectoryPath, Required(item, "sourceManifest")))) ?? throw new InvalidDataException();
-            visual = reused.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == Required(item, "sourceCase"));
-        }
+        (string sourceDirectory, JsonElement visual) = ReadVisualCase(item);
         byte[] input = File.ReadAllBytes(Path.Combine(sourceDirectory, Required(visual, "input")));
         Assert.Equal(Required(visual, "sourceSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
         string platform = OperatingSystem.IsLinux() ? "linux" : "windows";
@@ -133,6 +127,65 @@ public sealed class SvgPublicFontQualificationTests
                 for (DirectoryInfo? directory = new(start); directory is not null; directory = directory.Parent)
                     if (File.Exists(Path.Combine(directory.FullName, "Lokad.Svg.slnx"))) return directory.FullName;
             throw new DirectoryNotFoundException("Public host qualification requires the repository's built FontProbe.");
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(Requests))]
+    [Trait("Layer", "Rendering")]
+    public async Task Http_acquisition_preserves_real_regular_bold_italic_and_fallback_native_output(string identity)
+    {
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
+        JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
+        (string sourceDirectory, JsonElement visual) = ReadVisualCase(item);
+        byte[] input = File.ReadAllBytes(Path.Combine(sourceDirectory, Required(visual, "input")));
+        Assert.Equal(Required(visual, "sourceSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
+        Dictionary<string, byte[]> programs = manifest.RootElement.GetProperty("programs").EnumerateArray().ToDictionary(
+            p => Required(p, "relativePath"), p => File.ReadAllBytes(Path.Combine(DirectoryPath, Required(p, "source"))), StringComparer.Ordinal);
+        byte[] catalogBytes = File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json"));
+        TrackingProvider explicitProvider = new(programs);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, SvgFontPackCatalog.Parse(catalogBytes, "public-standalone-fonts"), explicitProvider, CancellationToken.None);
+        byte[] expected = SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None).ToArray();
+        Dictionary<string, byte[]> resources = new(programs, StringComparer.Ordinal) { ["manifest.json"] = catalogBytes };
+        using QualificationHttpHandler handler = new(resources);
+        using HttpClient client = new(handler);
+        using TestMemoryBudget budget = new(64_000_000);
+        SvgHttpFontAcquisitionOptions acquisition = new(TimeSpan.FromSeconds(5), 1, TimeSpan.Zero, 65_536, 1_048_576, 2_000_000);
+        await using SvgHttpFontPackResolver resolver = SvgHttpFontPackResolver.Create("public-standalone-fonts", new("https://fonts.invalid/pack/"), client, acquisition, budget);
+        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, resolver, SvgRenderOptions.Default, CancellationToken.None);
+        using SvgPngResult output = document.ConvertToOwnedPng(CancellationToken.None);
+        Assert.Equal(expected, output.Memory.ToArray());
+        string[] acquisitions = item.GetProperty("expectedAcquisitions").EnumerateArray().Select(v => v.GetString() ?? throw new InvalidDataException()).ToArray();
+        Assert.Equal(acquisitions.Append("manifest.json").Order(StringComparer.Ordinal), handler.RequestedFiles.Order(StringComparer.Ordinal));
+        Assert.Equal(acquisitions.Order(StringComparer.Ordinal), explicitProvider.RequestedFiles.Order(StringComparer.Ordinal));
+        string referenceName = OperatingSystem.IsLinux() ? "linuxReference" : "reference";
+        byte[] reference = File.ReadAllBytes(Path.Combine(sourceDirectory, Required(visual, referenceName)));
+        Assert.Equal(Required(visual, referenceName + "Sha256"), Convert.ToHexStringLower(SHA256.HashData(reference)));
+        int pixels = checked(visual.GetProperty("width").GetInt32() * visual.GetProperty("height").GetInt32());
+        PixelComparison comparison = PixelComparer.Compare(PngRgbaDecoder.Decode(reference, pixels), PngRgbaDecoder.Decode(output.Memory.ToArray(), pixels));
+        Assert.True(comparison.IsExact, identity + ": " + comparison);
+    }
+
+    private static (string Directory, JsonElement Case) ReadVisualCase(JsonElement item)
+    {
+        if (!item.TryGetProperty("sourceManifest", out JsonElement sourceManifest)) return (DirectoryPath, item);
+        string manifestPath = Path.GetFullPath(Path.Combine(DirectoryPath, sourceManifest.GetString() ?? throw new InvalidDataException()));
+        using JsonDocument source = JsonDocument.Parse(File.ReadAllBytes(manifestPath));
+        JsonElement visual = source.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == Required(item, "sourceCase"));
+        return (Path.GetDirectoryName(manifestPath) ?? throw new InvalidDataException(), visual.Clone());
+    }
+
+    /// <summary>Concurrently logs controlled requests and returns response-owned wrappers over immutable host bytes. Observes cancellation without live I/O or disposing the borrowed resource map.</summary>
+    private sealed class QualificationHttpHandler(IReadOnlyDictionary<string, byte[]> resources) : HttpMessageHandler
+    {
+        internal ConcurrentBag<string> RequestedFiles { get; } = new();
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            string path = new Uri("https://fonts.invalid/pack/").MakeRelativeUri(request.RequestUri ?? throw new InvalidOperationException()).ToString();
+            RequestedFiles.Add(path);
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(resources[path]) });
         }
     }
 

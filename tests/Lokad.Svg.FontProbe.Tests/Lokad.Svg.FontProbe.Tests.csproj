@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="../../tools/Lokad.Svg.FontProbe/Lokad.Svg.FontProbe.csproj">
-      <SetTargetFramework Condition="'$(TargetFramework)' == 'net10.0'">TargetFramework=net10.0</SetTargetFramework>
-    </ProjectReference>
+    <ProjectReference Include="../../tools/Lokad.Svg.FontProbe/Lokad.Svg.FontProbe.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">

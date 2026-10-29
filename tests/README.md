@@ -37,6 +37,11 @@ cases; their numerical boundaries do not repeat the full API matrix.
 The [preparation contracts](Lokad.Svg.Tests/OpenTypeFontTests.PreparationSharing.cs)
 cover request-only and scalar-coverage acquisition with one stylesheet collection,
 exact raw/prepared output, and shared-budget refusal, cleanup and reuse.
+The [HTTP preparation contracts](Lokad.Svg.Tests/OpenTypeFontTests.HttpPrepared.cs)
+cover failed initialization, independent font-free calls and result ownership.
+Four [public font cases](Lokad.Svg.VisualTests/SvgPublicFontQualificationTests.cs)
+compare selective HTTP acquisition with the explicit provider and unchanged native
+references for regular, bold, real italic and fallback faces on both runtimes.
 The [filter-region controls](Research/filter-region-coordinates/README.md) retain
 65 independent native inputs, 27 direct mechanisms and one selected ownership
 witness. Their source/image coordinate interactions retain the existing tests;
