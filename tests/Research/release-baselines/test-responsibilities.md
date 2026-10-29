@@ -209,3 +209,63 @@ codec addition passes with the affected 1,156-case selection on each runtime/hos
 all original cases remain, plus the named codec vector. Both solution builds and
 locked restore pass. Production source, independent references, authored inputs,
 tolerances and licenses are unchanged.
+
+## Inert-paint rendering and prepared contracts
+
+The original regressions, introduced in `2a75d0b96`, compare an inert paint server
+with explicit `none` while retaining the independent paint, bounds and effects.
+They are metamorphic rendering checks, supplementary to the unchanged independent
+browser references. Their former source at `58ddcf2f0` mixes canonical rendering,
+prepared rendering and font-request counts inside two looped theories.
+
+| Original inputs | Canonical rendering | Routine prepared contract | Extended prepared contract |
+| --- | ---: | ---: | ---: |
+| 540 paint rows, with 3 or 4 companion paints | 2,120 graphs | 302 | 1,818 |
+| 80 template rows, with 18 order/map/effect combinations | 1,440 graphs | 600 | 840 |
+
+[Canonical cases](../../Lokad.Svg.Tests/SvgInertPaintTests.cs) now discover each
+graph separately and compare exact production capture pixels with its original
+control. Dimensions and every nonzero-alpha lane remain exact; only zero-alpha
+RGB is normalized to the former PNG convention. No input or control is removed.
+Both factories preserve all 7,120 generated SVG byte arrays, including unused
+definitions, forward ordering and the original nested-pattern exclusions.
+Sorted parameter/control-or-input/hash rows have SHA-256:
+
+- Paint: `dc88127a9b815df045a5944e31a46981e2a6e55f5770e98e52a61f467a6586bd`.
+- Template: `fc3c38772e310475fd78617e62d604f4b9466084841554788ab9182d634dccaa`.
+
+[Prepared contracts](../../Lokad.Svg.Tests/OpenTypeFontTests.InertPaintServers.cs)
+keep complete PNG equality and zero acquisition with fresh per-case providers.
+Routine paint cases retain every server, paint and consumer on the curve route,
+plus every primitive lowering route with direct solid paint. Routine templates
+retain every server/paint-role/units/consumer/order/effect combination with a
+rotated map, plus every map/effect on the direct object-box route. Thus shared
+preparation and resource replay stay covered without requiring the full product
+for every development check. Remaining combinations are ordinary individually
+discovered `Category=Research` cases; unfiltered qualification includes all of them.
+The .NET 10 CI compatibility selection keeps the routine contracts, while full
+.NET 10 release checks also include research.
+
+The nine invalid-value cases still check all three resource kinds through raw
+conversion and asynchronous preparation, retaining their exact error categories.
+The mask partial-owner fact still checks borrowed storage, refusal, cancellation,
+cleanup, unchanged input and immediate retry. Their bodies and case IDs are
+unchanged. Supplied-text/native-layer regressions remain in their independent
+[visual class](../../Lokad.Svg.VisualTests/SvgSuppliedFontLabelTests.cs); this pass
+does not generalize away font, glyph-bound or prepared-specific interactions.
+
+Three sequential fresh Windows .NET 11 processes measured the same affected
+method selection before and its separated routine responsibilities afterward,
+including 135 unchanged inert-input sentinels. Median wall time, including host,
+discovery and TRX writing but excluding build, is **14.30 s before / 15.02 s after**.
+Canonical rendering alone takes **14.00 s**. Individually exposing the formerly
+looped graphs increases discovery/reporting cost; this pass establishes **no
+end-to-end validation speedup**. The benefit is selectable responsibilities and
+less repeated encoding/preparation during rendering investigation. Counts are
+765 old rows versus 4,607 routine rows; both cover the same 3,560 target graphs.
+No cases are hidden by batching, and these are not renderer/quiet-VM timings.
+
+The complete .NET 11 core suite, including every extended prepared case, passes
+34,254 checks on each host. The affected .NET 10 rendering/contract/API/codec
+selection passes 4,726 on each host. The original 145 retained case IDs match,
+including all invalid-value/ownership cases and the unchanged sentinels.

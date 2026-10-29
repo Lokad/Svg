@@ -18,7 +18,8 @@ defines supported behavior.
 
 The [responsibility map](Research/release-baselines/test-responsibilities.md)
 records paint-bank membership, lazy loading, raster/PNG separation and measured
-validation costs, including the core pixel helpers and API fixture allocation.
+validation costs, including the core pixel helpers, API fixture allocation and
+the [inert-paint split](Research/release-baselines/test-responsibilities.md#inert-paint-rendering-and-prepared-contracts).
 Equal images alone never establish redundancy. Preserve distinct
 source graphs, allocation paths, native companions, platform differences and
 exclusions. Rendering fixtures do not each need all twelve API forms.
@@ -34,6 +35,7 @@ no check relies on implicit major-version roll-forward. After a Release build:
 
 ```powershell
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgAlphaBoundaryMechanismTests
+dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgInertPaintTests
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter 'Layer=Mechanism|Layer=Contract'
 dotnet test tests/Lokad.Svg.VisualTests -c Release --no-build --filter 'FullyQualifiedName~SvgPaintInputReferenceTests&Category!=Research'
 ```
@@ -107,6 +109,7 @@ dotnet test Lokad.Svg.slnx -c Release --no-build
 The [CI workflow](../.github/workflows/ci.yml) runs the full unfiltered .NET 11 suite
 on Windows/Linux, representative .NET 10 API/ownership/numerical/native checks,
 resource/font-host tools and isolated installed-package consumers for both TFMs.
+The .NET 10 development selection excludes `Category=Research`; full runs include it.
 For a focused .NET 10 run, specify `--framework net10.0` and build that target.
 At release boundaries or after relevant runtime/numerical changes, also run:
 

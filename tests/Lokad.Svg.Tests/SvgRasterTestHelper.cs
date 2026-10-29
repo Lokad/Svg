@@ -7,9 +7,12 @@ namespace Lokad.Svg.Tests;
 internal static class SvgRasterTestHelper
 {
     internal static byte[] RenderPixels(string svg, out int width, out int height)
+        => RenderPixels(TextEncoding.UTF8.GetBytes(svg), out width, out height);
+
+    internal static byte[] RenderPixels(ReadOnlyMemory<byte> svg, out int width, out int height)
     {
         using SvgConverter.RasterizedConversion capture = SvgConverter.PrepareRasterization(
-            TextEncoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None);
+            svg, SvgRenderOptions.Default, CancellationToken.None);
         width = capture.Surface.Width;
         height = capture.Surface.Height;
         // Tests own this copy after the scene/surface owner is released. Match
