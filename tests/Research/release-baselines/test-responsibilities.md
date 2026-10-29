@@ -80,8 +80,8 @@ The complete routine paint selection passed 34,066 checks in 81.32 s before and
 There is no measured improvement in total rendering-validation time from this pass.
 These local setup measurements are not renderer performance or quiet-VM results.
 
-P2 still needs suite-wide classification, separation of bulk raster
-comparison from PNG transport, and review of remaining repeated fixture work.
+P2 still needs suite-wide classification and review of remaining repeated fixture
+work.
 This loader change does not establish that those tasks are closed.
 
 Validation: all 41,335 paint/integrity checks pass on Windows and Linux under
@@ -113,3 +113,35 @@ and 1,393 selected checks per host under .NET 10. An exported suite outside the
 checkout passes 40 integrity/rendering/font-host checks on each OS, including
 actual FontProbe execution from its bundled directory. Both normal builds were
 checked without an output Research tree, and neither recreated it.
+
+## Raster comparisons and PNG transport
+
+All 41,334 original paint-case identities now compare the production capture
+surface with their same native image. The existing parse/raster owner is the
+internal seam; no second scene parser, renderer, pixel API or ownership wrapper
+was added. It retains scene, surface and host-scope charges through comparison.
+Capture pixels are sRGB straight-alpha RGBA8 after the production's final
+unpremultiply. RGB at zero alpha is unspecified before encoding and ignored by
+the existing comparer on both paths; all other channels keep exact comparisons.
+The previous 16,384-pixel actual-image bound remains explicitly asserted.
+
+Ten complete PNG representatives retain clips, embedded-image cropping, scaled
+linear/radial paints, filter composition, patterns, fractional font placement,
+alpha midpoints and both original scaled shadow graphs. Other native PNG test
+classes, the 96-case API matrix, distinct ownership paths and codec/stream tests
+remain unchanged. Six direct seam cases compare every canonical RGBA byte with
+decoded PNG (normalizing only zero-alpha RGB), retain the borrowed root through
+access and cover cancellation, refused preparation, cleanup and immediate retry.
+No native image, case, capture metadata or tolerance is removed or rewritten.
+
+One sequential Windows .NET 11 edit-loop measurement, including discovery, host
+startup and TRX output but excluding build, took 82.53 s before (34,066 checks)
+and 75.14 s after (34,076 checks). The ten extra checks are the complete PNG
+representatives; original rendering identities and the research partition retain
+their same SHA-256 digest. This measures validation cost, not renderer throughput
+or a quiet-VM performance result.
+
+The affected milestone passes 45,933 visual checks per host on .NET 11, 783 selected
+visual checks per host on .NET 10 and 294 API/budget/codec checks on each runtime/host
+combination. Both solution builds are warning-free. The main test guide now links
+these responsibility/provenance records instead of repeating collection narratives.

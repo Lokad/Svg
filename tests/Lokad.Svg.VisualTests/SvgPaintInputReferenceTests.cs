@@ -49,16 +49,31 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
     [MemberData(nameof(Cases))]
     [Trait("Layer", "Rendering")]
     public void Paint_inputs_match_each_native_image(string folder, string id)
-        => AssertNativeImage(folder, id);
+        => AssertNativeImage(folder, id, false);
 
     [Theory]
     [MemberData(nameof(ResearchCases))]
     [Trait("Layer", "Rendering")]
     [Trait("Category", "Research")]
     public void Extended_color_and_filter_matrix_matches_each_native_image(string folder, string id)
-        => AssertNativeImage(folder, id);
+        => AssertNativeImage(folder, id, false);
 
-    private void AssertNativeImage(string folder, string id)
+    [Theory]
+    [Trait("Layer", "Rendering")]
+    [InlineData("ordered-clip-coverage", "clip-geometric-content-0330-candidate")]
+    [InlineData("image-source-views", "original-crop-image-aspect-0636-candidate")]
+    [InlineData("gradient-paint-replay", "material-1-candidate-1p5")]
+    [InlineData("radial-axis-source-maps", "axis-rect-inside-x-local")]
+    [InlineData("filter-merge-image-draw", "source-rotated-duplicate-candidate")]
+    [InlineData("pattern-source-selection", "source-unused-source-text-before")]
+    [InlineData("text-node-boundaries", "node-comment-x2_5")]
+    [InlineData("filter-uniform-precision", "controls-opacity-midpoints-0-candidate-1")]
+    [InlineData("filter-uniform-precision", "controls-graphs-srgb-13-control-1p5")]
+    [InlineData("filter-uniform-precision", "controls-graphs-linear-37-control-1p5")]
+    public void Representative_complete_png_paths_retain_their_native_images(string folder, string id)
+        => AssertNativeImage(folder, id, true);
+
+    private void AssertNativeImage(string folder, string id, bool encodePng)
     {
         JsonElement row = Banks.Single(bank => bank.Name == folder).GetCase(id);
         bool hasPlatformReferences = row.TryGetProperty("platforms", out JsonElement platforms);
@@ -86,11 +101,21 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
         SvgRenderOptions options = row.TryGetProperty("scale", out JsonElement scale)
             ? new(null, scale.GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default, fonts)
             : new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
-        byte[] actual = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         // Scaled supplied-font references include a 150 by 78 pixel image.
         const int maximumReferencePixels = 16_384;
+        using SvgConverter.RasterizedConversion? conversion = encodePng ? null
+            : SvgConverter.PrepareRasterization(input, options, CancellationToken.None);
+        RgbaImage actual;
+        if (conversion is {} capture)
+        {
+            Assert.InRange(checked(capture.Surface.Width * capture.Surface.Height), 1, maximumReferencePixels);
+            // Borrow the exact straight-alpha pixels handed to the encoder. The
+            // existing comparer treats RGB at zero alpha as zero on both paths.
+            actual = new RgbaImage(capture.Surface.Width, capture.Surface.Height, capture.Surface.Pixels);
+        }
+        else actual = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray(), maximumReferencePixels);
         if (!hasPlatformReferences || OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
-            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, maximumReferencePixels), PngRgbaDecoder.Decode(actual, maximumReferencePixels)).IsExact, id);
+            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, maximumReferencePixels), actual).IsExact, id);
     }
 
     private static string Folder(string name) => Path.Combine(ResearchCorpus.Root, name);

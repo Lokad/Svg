@@ -221,8 +221,9 @@ public static partial class SvgConverter
         cancellationToken.ThrowIfCancellationRequested();
     }
 
-    /// <summary>Creates the one budgeted parse-and-raster lifetime shared by every output API.</summary>
-    private static RasterizedConversion PrepareRasterization(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
+    /// <summary>Creates the budgeted parse-and-raster lifetime shared by output APIs and internal pixel validation.</summary>
+    /// <remarks>The caller owns the result and finishes all pixel borrowers before disposal. Capture pixels are tightly packed sRGB straight-alpha RGBA8; RGB at zero alpha is unspecified until PNG encoding clears it. No PNG encoding or encoded-size validation occurs here.</remarks>
+    internal static RasterizedConversion PrepareRasterization(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         ValidateInvocation(svg, options, cancellationToken);
         return PrepareRasterizationCore(svg, options, cancellationToken);
@@ -5211,8 +5212,9 @@ public static partial class SvgConverter
         public void Dispose() => Reservation.Dispose();
     }
 
-    /// <summary>Owns the parsed scene and surface reservations until one output path has completed or failed.</summary>
-    private sealed class RasterizedConversion : IDisposable
+    /// <summary>Owns the parsed scene, surface and invocation scope until their synchronous pixel borrower or output path finishes.</summary>
+    /// <remarks>Surface pixels are borrowed read-only until disposal; callers must not retain or mutate them, or race disposal with access. The supplied host budget remains borrowed.</remarks>
+    internal sealed class RasterizedConversion : IDisposable
     {
         private readonly SvgRoot _root;
         private readonly IMemoryScope? _scope;
