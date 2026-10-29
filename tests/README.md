@@ -10,7 +10,7 @@ defines supported behavior.
 
 | Layer | Purpose and representative tests |
 | --- | --- |
-| Mechanism | Parsing, numerical boundaries, geometry, shaping and rounding directly. Keep useful exhaustive boundaries here: [alpha](Lokad.Svg.Tests/SvgAlphaBoundaryMechanismTests.cs), parser, OpenType and filter-stage tests. |
+| Mechanism | Parsing, numerical boundaries, geometry, shaping and rounding directly. Keep useful exhaustive boundaries here: [alpha](Lokad.Svg.Tests/SvgAlphaBoundaryMechanismTests.cs), [parser metadata](Lokad.Svg.Tests/SvgRootParserTests.cs), OpenType and filter-stage tests. |
 | Contract | Distinct execution, allocation and ownership paths: the [96-case API matrix](Lokad.Svg.Tests/SvgConversionApiContractTests.cs), [shared admission](Lokad.Svg.Tests/OpenTypeFontTests.SharedMemory.cs), retained font/scene data, cancellation, refusal, cleanup and retry. |
 | Rendering | Each source/options/platform case keeps its independent native image. The [paint bank](Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs) compares production capture pixels directly; selected complete PNG cases retain transport interactions. |
 | Integrity | Manifest identities, hashes, capture context, licensing, corpus partition and provenance. Existing combined fixtures retain these assertions until their responsibilities are separated. |
@@ -34,14 +34,17 @@ The pinned .NET 11 RC SDK is the default. Install both .NET 11 and .NET 10 runti
 no check relies on implicit major-version roll-forward. After a Release build:
 
 ```powershell
+dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgRootParserTests
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgAlphaBoundaryMechanismTests
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgInertPaintTests
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter 'Layer=Mechanism|Layer=Contract'
 dotnet test tests/Lokad.Svg.VisualTests -c Release --no-build --filter 'FullyQualifiedName~SvgPaintInputReferenceTests&Layer=Rendering&Category!=Research'
 ```
 
-Start with the affected mechanism/class and follow with its rendering bank and
-ownership paths. `Category!=Research` excludes only explicitly selected extended
+The parser metadata selection excludes [rendering](Lokad.Svg.Tests/SvgRootRenderingTests.cs)
+and [ownership](Lokad.Svg.Tests/SvgRootParserOwnershipTests.cs); include both for parser
+integration. Start with the affected mechanism/class and follow with its rendering
+bank and ownership paths. `Category!=Research` excludes only explicitly selected extended
 matrices; other browser-backed research references remain routine.
 For affected paint integration, omit `Layer=Rendering` to include the separate
 font-capture recipe checks. Reference images share reads/decoding within the

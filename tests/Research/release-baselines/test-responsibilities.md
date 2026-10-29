@@ -478,6 +478,43 @@ method traits; 1,432 original cases gain a responsibility without changing ident
 Three fresh sequential Windows .NET 11 processes measure 8.46/8.50 seconds median,
 including discovery/host/TRX and excluding build. There is no material validation
 speedup. The benefit is separated rendering/transport responsibilities and shared
-ownership assertions. All 2,329 affected cases and 100 independent point-list/shader
-reference checks pass on Windows/Linux under both supported runtimes. Both affected
+ownership assertions. All 2,329 affected cases and 100 point-list/shader native/provenance
+integration checks pass on Windows/Linux under both supported runtimes. Both affected
 builds are warning-free. Production and the text-layout implementation are unchanged.
+
+## Root parser responsibilities
+
+The source before this pass is `e975ca152`. The former parser class mixed scene
+metadata, rendering and memory admission. All 752 original cases remain:
+
+| Responsibility | Owner | Methods / cases |
+| --- | --- | ---: |
+| Parsing, structure, numerical limits and retained geometry/paint metadata | [SvgRootParserTests](../../Lokad.Svg.Tests/SvgRootParserTests.cs) | 520 /541 |
+| Exact pixels, complete PNG equivalence and known rendering interactions | [SvgRootRenderingTests](../../Lokad.Svg.Tests/SvgRootRenderingTests.cs) | 184 /198 |
+| Distinct parser allocations, transfer, growth, refusal and release | [SvgRootParserOwnershipTests](../../Lokad.Svg.Tests/SvgRootParserOwnershipTests.cs) | 13 /13 |
+
+Every one of the original 725 method/helper bodies, parameter lists and test
+attribute lists has an identical source fingerprint after relocation. No test
+assertion, input expression, data row, limit, PNG check or cleanup is removed.
+The nine callers of `SvgPathFillAssertions.Equivalent` belong to rendering;
+mask/recording command assertions inspect metadata and remain mechanisms.
+Cleanup surrounding a pixel check does not by itself make it a general contract.
+The thirteen ownership cases now also match the existing .NET 10 CI selection.
+
+Seven methods across the mechanism/rendering classes share one small
+[native-pattern assertion](../../Lokad.Svg.Tests/SvgPatternContentAssertions.cs).
+It borrows the scene only during the assertion. Other helpers stay with their
+consumers. Classes have one layer each, with no inheritance or new test framework.
+Two names now describe decimal dimensions and uniform-image color/placement;
+their old allocation claims had no allocation assertion. Their bodies are unchanged.
+An explicit case map accounts for all class/name changes and retains all 540
+unaffected IDs, including distinct cases with truncated equal display names.
+
+Three fresh sequential Windows .NET 11 processes measured 7.95 seconds median
+before and 7.59 after for all 752 cases. The separate 541-case mechanism selection
+measured 7.01 seconds. These modest, host-dominated validation costs include
+discovery/host/TRX and exclude build; they are not renderer throughput measurements.
+All 752 affected cases, 71 native-image checks and two provenance checks pass on
+each Windows/Linux/runtime combination. Both affected builds are warning-free.
+Production, browser references, tolerances and the text-layout implementation are
+unchanged. This closes the root-parser split, not suite-wide classification.
