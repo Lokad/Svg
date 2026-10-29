@@ -37,12 +37,15 @@ no check relies on implicit major-version roll-forward. After a Release build:
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgAlphaBoundaryMechanismTests
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgInertPaintTests
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter 'Layer=Mechanism|Layer=Contract'
-dotnet test tests/Lokad.Svg.VisualTests -c Release --no-build --filter 'FullyQualifiedName~SvgPaintInputReferenceTests&Category!=Research'
+dotnet test tests/Lokad.Svg.VisualTests -c Release --no-build --filter 'FullyQualifiedName~SvgPaintInputReferenceTests&Layer=Rendering&Category!=Research'
 ```
 
 Start with the affected mechanism/class and follow with its rendering bank and
 ownership paths. `Category!=Research` excludes only explicitly selected extended
 matrices; other browser-backed research references remain routine.
+For affected paint integration, omit `Layer=Rendering` to include the separate
+font-capture recipe checks. Reference images share reads/decoding within the
+fixture; every case still validates its source and declared reference hash.
 
 Capture pixels are tightly packed sRGB straight-alpha RGBA8 after the production
 unpremultiply. The comparer keeps its existing zero-alpha RGB convention;

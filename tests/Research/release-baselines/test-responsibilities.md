@@ -269,3 +269,48 @@ The complete .NET 11 core suite, including every extended prepared case, passes
 34,254 checks on each host. The affected .NET 10 rendering/contract/API/codec
 selection passes 4,726 on each host. The original 145 retained case IDs match,
 including all invalid-value/ownership cases and the unchanged sentinels.
+
+## Shared native images and font-capture integrity
+
+All original paint cases, options, platform companions and exactness rules remain.
+The fixture now shares each declared reference path's hash and decoded pixels
+through [NativeReferenceImages](../../Lokad.Svg.VisualTests/NativeReferenceImages.cs).
+Every row still checks its own expected hash, including cache hits. Two negative
+integrity cases cover mismatched metadata on cold/warm paths and valid reuse
+after rejection. Pixels are borrowed read-only; the existing comparer does not
+mutate them. The class fixture clears images after every borrower has finished.
+The 16,384-pixel per-image decode bound remains. Caching follows file identity;
+no source graphs or distinct native companions are combined because they look alike.
+
+Across the 23 Windows banks, 41,334 rendering inputs reference 9,493 paths, with
+31,841 repeat decodes. The complete decoded corpus is 59,729,000 bytes; selected
+runs load only requested images, retained for their fixture lifetime. This is test
+fixture memory, not an allocation or performance claim about library conversions.
+
+The same 10,633 font-bearing graph recipes now have separate per-bank Integrity
+checks in their original routine/research partition. Source/font/capture hashes,
+family replacement and exact embedded CSS bytes remain pinned. SHA-256 consumes
+the same UTF-8 prefix, cached CSS and suffix without materializing a font-sized
+inserted string and byte array per graph. The ten complete PNG representatives
+remain rendering checks; their shared recipe is verified by the integrity layer.
+No reference, metadata, input or license is regenerated or changed.
+
+| Sequential Windows .NET 11 validation cost | Before | After |
+| --- | ---: | ---: |
+| Routine paint, including discovery/host/TRX, median of three fresh processes | 81.95 s /34,076 cases | 66.11 s /34,099 cases |
+| Temporary managed allocation for 100 existing font-capture hashes | 227,795,824 bytes | 58,192 bytes |
+
+Every original routine case ID remains; the additional 23 cases are the separate
+routine integrity gates. Before wall times were 179.49/79.60/81.95 seconds; after
+68.36/66.11/65.69. The first baseline was much slower, and these sequential local
+samples are validation costs, not renderer throughput or quiet-VM measurements.
+The untimed allocation probe checks both algorithms against every selected
+committed capture hash; the table uses three-process medians (the first baseline
+allocated 2,320 extra bytes, while both other baselines and all after runs agree). It excludes shared CSS and
+input setup from both intervals and measures the recipe hashing work alone.
+
+Validation: all 45,988 visual checks pass on Windows/Linux under .NET 11,
+including every research recipe and original image comparison. The affected
+59 integrity/partition/complete-PNG checks also pass on .NET 10 on both hosts.
+Case IDs agree across hosts; the original rendering-case declarations, data
+selection and bank registry are unchanged. Both solution builds are warning-free.

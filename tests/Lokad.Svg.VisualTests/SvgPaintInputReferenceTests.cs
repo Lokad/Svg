@@ -5,9 +5,9 @@ using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputReferenceTests.NativeFontFixture>
+public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputReferenceTests.NativePaintFixture>
 {
-    private readonly NativeFontFixture _fonts;
+    private readonly NativePaintFixture _fixture;
     private static readonly PaintReferenceBank[] Banks =
     [
         new("ordered-clip-coverage"), new("clipped-stroke-preparation"), new("marker-canvas-stages"),
@@ -20,7 +20,7 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
         new("text-node-boundaries"), new("hairline-clip-rounding"),
     ];
 
-    public SvgPaintInputReferenceTests(NativeFontFixture fonts) => _fonts = fonts;
+    public SvgPaintInputReferenceTests(NativePaintFixture fixture) => _fixture = fixture;
 
     public static IEnumerable<object[]> Cases() => SelectedCases(false);
 
@@ -73,21 +73,31 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
     public void Representative_complete_png_paths_retain_their_native_images(string folder, string id)
         => AssertNativeImage(folder, id, true);
 
-    private void AssertNativeImage(string folder, string id, bool encodePng)
+    public static IEnumerable<object[]> BankCases() => Banks.Select(bank => new object[] { bank.Name });
+
+    [Theory]
+    [MemberData(nameof(BankCases))]
+    [Trait("Layer", "Integrity")]
+    public void Paint_font_capture_recipes_match_provenance(string folder)
+        => AssertFontProvenance(folder, false);
+
+    [Theory]
+    [MemberData(nameof(BankCases))]
+    [Trait("Layer", "Integrity")]
+    [Trait("Category", "Research")]
+    public void Extended_paint_font_capture_recipes_match_provenance(string folder)
+        => AssertFontProvenance(folder, true);
+
+    private void AssertFontProvenance(string folder, bool research)
     {
-        JsonElement row = Banks.Single(bank => bank.Name == folder).GetCase(id);
-        bool hasPlatformReferences = row.TryGetProperty("platforms", out JsonElement platforms);
-        JsonElement expected = hasPlatformReferences && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
-            ? platforms.GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux") : row;
-        byte[] input = File.ReadAllBytes(Path.Combine(Folder(folder), row.GetProperty("input").GetString() ?? throw new InvalidDataException("Missing source path.")));
-        byte[] reference = File.ReadAllBytes(Path.Combine(Folder(folder), expected.GetProperty("reference").GetString() ?? throw new InvalidDataException("Missing reference path.")));
-        Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
-        Assert.Equal(expected.GetProperty("referenceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(reference)));
-        bool hasFonts = row.TryGetProperty("font", out JsonElement font) && font.GetBoolean();
-        SvgFontSnapshot? fonts = hasFonts ? _fonts.Snapshot : null;
-        if (hasFonts)
+        PaintReferenceBank bank = Banks.Single(bank => bank.Name == folder);
+        foreach (string id in bank.CaseIds)
         {
-            Assert.Equal(row.GetProperty("nativeFontSha256").GetString(), _fonts.Sha256);
+            if (bank.IsResearch(id) != research) continue;
+            JsonElement row = bank.GetCase(id);
+            if (!row.TryGetProperty("font", out JsonElement font) || !font.GetBoolean()) continue;
+            byte[] input = File.ReadAllBytes(Path.Combine(Folder(folder), row.GetProperty("input").GetString() ?? throw new InvalidDataException("Missing source path.")));
+            Assert.Equal(row.GetProperty("nativeFontSha256").GetString(), _fixture.Sha256);
             byte[] captureInput = input;
             if (row.TryGetProperty("captureInput", out JsonElement capturePath))
             {
@@ -95,9 +105,37 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
                 Assert.Equal(row.GetProperty("captureInputSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(captureInput)));
             }
             string nativeInput = System.Text.Encoding.UTF8.GetString(captureInput).Replace("font-family='serif'", "font-family='ReviewFont'", StringComparison.Ordinal);
-            nativeInput = nativeInput.Insert(nativeInput.IndexOf('>') + 1, _fonts.Css);
-            Assert.Equal(row.GetProperty("nativeSourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(nativeInput))));
+            Assert.Equal(row.GetProperty("nativeSourceSha256").GetString(), CaptureHash(nativeInput, _fixture.CssBytes.Span));
         }
+
+        // Hash the exact UTF-8 prefix + embedded CSS + suffix used by capture.
+        // Avoid allocating a font-sized string and byte array for every input.
+        static string CaptureHash(string nativeInput, ReadOnlySpan<byte> css)
+        {
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(nativeInput);
+            int insertion = bytes.AsSpan().IndexOf((byte)'>') + 1;
+            using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+            hash.AppendData(bytes.AsSpan(0, insertion));
+            hash.AppendData(css);
+            hash.AppendData(bytes.AsSpan(insertion));
+            return Convert.ToHexStringLower(hash.GetHashAndReset());
+        }
+    }
+
+    private void AssertNativeImage(string folder, string id, bool encodePng)
+    {
+        JsonElement row = Banks.Single(bank => bank.Name == folder).GetCase(id);
+        bool hasPlatformReferences = row.TryGetProperty("platforms", out JsonElement platforms);
+        JsonElement expected = hasPlatformReferences && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
+            ? platforms.GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux") : row;
+        byte[] input = File.ReadAllBytes(Path.Combine(Folder(folder), row.GetProperty("input").GetString() ?? throw new InvalidDataException("Missing source path.")));
+        RgbaImage reference = _fixture.References.Get(
+            Path.Combine(Folder(folder), expected.GetProperty("reference").GetString() ?? throw new InvalidDataException("Missing reference path.")),
+            expected.GetProperty("referenceSha256").GetString() ?? throw new InvalidDataException("Missing reference hash."));
+        Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
+        bool hasFonts = row.TryGetProperty("font", out JsonElement font) && font.GetBoolean();
+        SvgFontSnapshot? fonts = hasFonts ? _fixture.Snapshot : null;
+        if (hasFonts) Assert.Equal(row.GetProperty("nativeFontSha256").GetString(), _fixture.Sha256);
         SvgRenderOptions options = row.TryGetProperty("scale", out JsonElement scale)
             ? new(null, scale.GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default, fonts)
             : new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
@@ -115,26 +153,29 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
         }
         else actual = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray(), maximumReferencePixels);
         if (!hasPlatformReferences || OperatingSystem.IsWindows() || OperatingSystem.IsLinux())
-            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, maximumReferencePixels), actual).IsExact, id);
+            Assert.True(PixelComparer.Compare(reference, actual).IsExact, id);
     }
 
     private static string Folder(string name) => Path.Combine(ResearchCorpus.Root, name);
 
-    /// <summary>Owns one immutable serif face for rendering tests; font acquisition and request/cleanup behavior are tested separately as contracts.</summary>
-    public sealed class NativeFontFixture : IAsyncLifetime
+    /// <summary>Owns shared immutable native images and one serif face through all rendering/provenance cases; acquisition and cleanup contracts are tested separately.</summary>
+    public sealed class NativePaintFixture : IAsyncLifetime
     {
         private readonly ReadOnlyMemory<byte> _bytes;
         private SvgFontSnapshot? _snapshot;
 
-        public NativeFontFixture()
+        internal NativeReferenceImages References { get; } = new();
+
+        public NativePaintFixture()
         {
             _bytes = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "supplied-font-labels/fonts/NotoSans-Regular.ttf"));
             Sha256 = Convert.ToHexStringLower(SHA256.HashData(_bytes.Span));
-            Css = "<style>@font-face{font-family:ReviewFont;src:url(data:font/ttf;base64," + Convert.ToBase64String(_bytes.Span) + ")}</style>";
+            string css = "<style>@font-face{font-family:ReviewFont;src:url(data:font/ttf;base64," + Convert.ToBase64String(_bytes.Span) + ")}</style>";
+            CssBytes = System.Text.Encoding.UTF8.GetBytes(css);
         }
 
         public string Sha256 { get; }
-        public string Css { get; }
+        public ReadOnlyMemory<byte> CssBytes { get; }
         public SvgFontSnapshot Snapshot => _snapshot ?? throw new InvalidOperationException("The shared rendering font is not initialized.");
 
         /// <summary>Prepares the corpus's sole serif/normal/400 face once; the fixture retains bytes and snapshot until every case completes.</summary>
@@ -145,11 +186,12 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
                 catalog, new FontProvider(_bytes), CancellationToken.None);
         }
 
-        /// <summary>Releases the snapshot after all borrowed rendering calls finish; no conversion may overlap fixture disposal.</summary>
+        /// <summary>Releases the snapshot and cached images after all borrowed calls finish; no conversion or reference read may overlap fixture disposal.</summary>
         public Task DisposeAsync()
         {
             _snapshot?.Dispose();
             _snapshot = null;
+            References.Clear();
             return Task.CompletedTask;
         }
     }
