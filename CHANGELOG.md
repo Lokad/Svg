@@ -4,6 +4,12 @@
 
 Development targets 0.4.0. Published 0.3.0 and its source tag remain unchanged.
 
+- Add opt-in host-configured HTTP font packs with coalesced acquisition, verified
+  program caching, structured failures and shared memory admission. Retain one
+  document preparation and dispose governed PNG results to release their charges.
+- Fail memory admission rather than selecting storage-pressure rendering paths;
+  retain direct numerical routes and independent native references.
+
 ## 0.3.0 - 2026-10-28
 
 Published on [NuGet.org](https://www.nuget.org/packages/Lokad.Svg/0.3.0).

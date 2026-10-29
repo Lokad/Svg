@@ -27,6 +27,11 @@ or asynchronously. Text needs an explicit font catalog and font-program provider
 `SvgPreparedDocument.CreateAsync` prepares a document for one conversion; the host
 owns font sources, resource acquisition and caching.
 
+The opt-in `SvgHttpFontPackResolver` uses a caller-owned HttpClient and
+`IMemoryBudget` for shared acquisition/cache admission. Prepare through its
+document overload and use `ConvertToOwnedPng`/`ConvertToOwnedPngAsync`; dispose the
+returned `SvgPngResult` after its readers/writes finish to release the PNG charge.
+
 This package includes CHANGELOG.md, LICENSE.txt and THIRD_PARTY_NOTICES.txt.
 The repository contains the detailed support matrix, contributor documentation
 and test evidence.

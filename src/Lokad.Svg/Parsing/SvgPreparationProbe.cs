@@ -1,7 +1,7 @@
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Identifies document-level preparation boundaries for focused invocation-count tests.</summary>
-internal enum SvgPreparationPhase { Workspace, StyleSheets, Scene }
+internal enum SvgPreparationPhase { Workspace, StyleSheets, FontIndex, PaintIndex, Scene }
 
 /// <summary>Provides execution-local preparation observations without introducing runtime fuel or quotas.</summary>
 internal static class SvgPreparationProbe

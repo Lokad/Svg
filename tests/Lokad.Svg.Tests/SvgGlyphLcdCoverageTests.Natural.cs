@@ -238,7 +238,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
             }
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Null(SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, mode, new(1), work, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, mode, new(1), work, CancellationToken.None)).ErrorCode);
 
         static OpenTypeOutlinePoint P(int x, int y) => new(20 + x / 64d, 80 - y / 64d);
     }

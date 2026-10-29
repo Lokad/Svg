@@ -43,7 +43,7 @@ public sealed partial class SvgFontSnapshot
                             throw new SvgException(SvgErrorCode.LimitExceeded, "Examined font programs exceed the snapshot face or byte bound.");
                         ISvgFontProgramSource? source;
                         try { source = await provider.GetSourceAsync(selection.Face.File, token).ConfigureAwait(false); }
-                        catch (SvgException exception) { throw SvgFontSourceFailures.Create(selection, exception.ErrorCode); }
+                        catch (SvgException exception) { throw SvgFontSourceFailures.Create(selection, exception); }
                         work.Consume(token);
                         if (source is null) throw SvgFontSourceFailures.Create(selection, SvgErrorCode.UnresolvedResource);
                         SvgFontProgramResolution bound = catalog.Bind(selection, source, work, token);

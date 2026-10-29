@@ -18,6 +18,10 @@ internal sealed class SvgDocumentPreparation : IDisposable
     private readonly RenderBudget.BudgetReservation _workspace;
     private SvgRootSyntax? _root;
     private bool _structureInspected;
+    private SvgInstanceFontDiscovery? _fontInstances;
+    private SvgPaintResourceSelection? _paintResources;
+    private bool _fontInstancesCollected;
+    private bool _paintResourcesCollected;
 
     private SvgDocumentPreparation(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget,
         ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation workspace, XmlReaderSettings settings)
@@ -62,6 +66,31 @@ internal sealed class SvgDocumentPreparation : IDisposable
     /// <summary>Collects scalar coverage under this preparation's owner without acquiring or laying out fonts.</summary>
     internal SvgFontCoverageRequest[] DiscoverFontCoverage()
         => SvgFontRequestDiscovery.DiscoverWithCoverage(_svg, _limits, _work, _budget, this, _token);
+
+    /// <summary>Borrows the retained admitted dependency graph; this preparation owns it through acquisition and lowering.</summary>
+    internal SvgInstanceFontDiscovery? GetFontInstances()
+    {
+        if (!_fontInstancesCollected)
+        {
+            _fontInstances = SvgInstanceFontDiscovery.Collect(_svg, Settings, _limits, Rules, Strings, _budget, _work, _token);
+            _fontInstancesCollected = true;
+        }
+        return _fontInstances;
+    }
+
+    /// <summary>Borrows the resolved resource selection shared by discovery and lowering; no caller may dispose it.</summary>
+    internal SvgPaintResourceSelection? GetPaintResources()
+    {
+        if (!_paintResourcesCollected)
+        {
+            ReadOnlySpan<byte> bytes = _svg.Span;
+            SvgInstanceFontDiscovery? consumers = _fontInstancesCollected ? _fontInstances
+                : bytes.Contains((byte)0) || bytes.IndexOf("pattern"u8) >= 0 ? GetFontInstances() : null;
+            _paintResources = SvgPaintResourceSelection.Create(_svg, Settings, _limits, Rules, Strings, _budget, _work, _token, consumers);
+            _paintResourcesCollected = true;
+        }
+        return _paintResources;
+    }
 
     internal SvgDocumentDimensions InspectDimensions(SvgRenderOptions options)
     {
@@ -117,6 +146,8 @@ internal sealed class SvgDocumentPreparation : IDisposable
 
     public void Dispose()
     {
+        _fontInstances?.Dispose();
+        _paintResources?.Dispose();
         Rules.Dispose();
         Strings.Dispose();
         _workspace.Dispose();

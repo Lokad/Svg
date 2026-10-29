@@ -55,7 +55,7 @@ internal static class SvgGlyphLcdCoverage
         internal SvgGlyphLcdMode Mode { get; } = mode;
     }
 
-    /// <summary>Owns optional immutable contour maps and horizontal crossing storage for one glyph; declines reuse when the allowance is unavailable.</summary>
+    /// <summary>Owns immutable contour maps and horizontal crossing storage for one eligible glyph; admission refusal fails the operation.</summary>
     /// <remarks>Conversion-thread ownership only. The caller keeps this owner alive while row scans borrow its storage;
     /// disposal releases both array references and the aggregate allowance after the last borrower finishes.
     /// Source contours remain immutable for all row calls; mapped line flags preserve the authored line/curve distinction.</remarks>
@@ -98,7 +98,6 @@ internal static class SvgGlyphLcdCoverage
             int count = segmentCount * factor;
             // Dominant crossing/mapping arrays plus a conservative aggregate owner/reservation allowance.
             long bytes = ParserCollectionMemory.GetArrayByteCount<Crossing>(count) + ParserCollectionMemory.GetArrayByteCount<MappedSegment>(segmentCount) + 96;
-            if (bytes > budget.AvailableBytes) return null;
             RenderBudget.BudgetReservation reservation = budget.Reserve(bytes, SvgMemoryCategory.Temporary);
             try { return new(segments, mode, reservation, work, token); }
             catch { reservation.Dispose(); throw; }

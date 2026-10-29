@@ -6,6 +6,7 @@ The repository [README](../README.md) covers installation and the API overview.
 | --- | --- |
 | [SVG support](SUPPORT_MATRIX.md) | Current accepted syntax, restrictions, diagnostics and resource contract. |
 | [Rasterization design](RASTERIZATION_DESIGN.md) | Internal stages, ownership, coordinate domains and numerical invariants. |
+| [HTTP font packs](HTTP_FONTS.md) | Opt-in acquisition, selection, transport policy and shared memory ownership. |
 | [Benchmarks](BENCHMARKS.md) | Workloads, measurement method and reproduction. |
 
 [Test guidance](../tests/README.md) owns qualification and reference provenance.

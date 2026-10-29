@@ -63,7 +63,15 @@ finally { $symbolArchive.Dispose() }
 New-Item -ItemType Directory -Force -Path $ResultsDirectory | Out-Null
 $consumer = Join-Path $ResultsDirectory ('package-consumer-' + [Guid]::NewGuid().ToString('N'))
 $template = Join-Path $PSScriptRoot 'Lokad.Svg.PackageSmoke'
-Copy-Item -LiteralPath $template -Destination $consumer -Recurse
+New-Item -ItemType Directory -Path $consumer | Out-Null
+foreach ($source in Get-ChildItem -LiteralPath $template -File | Where-Object { $_.Extension -in @('.cs', '.csproj') }) {
+    Copy-Item -LiteralPath $source.FullName -Destination $consumer
+}
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot '../tests/Shared/TestMemoryBudget.cs') -Destination (Join-Path $consumer 'TestMemoryBudget.cs')
+$consumerAssets = Join-Path $consumer 'assets'
+New-Item -ItemType Directory -Path $consumerAssets | Out-Null
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot '../tests/Research/glyph-fallback/fonts/Primary.ttf') -Destination (Join-Path $consumerAssets 'Primary.ttf')
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot '../tests/Research/glyph-fallback/LICENSE.txt') -Destination (Join-Path $consumerAssets 'LICENSE.txt')
 $consumerProject = Join-Path $consumer 'Lokad.Svg.PackageSmoke.csproj'
 $packageCache = Join-Path $consumer 'nuget-packages'
 $previousPackageCache = $env:NUGET_PACKAGES

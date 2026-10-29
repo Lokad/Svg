@@ -12,7 +12,13 @@ public enum SvgFontFailureStage
     /// <summary>A selected program could not supply a requested glyph.</summary>
     Glyph,
     /// <summary>No authored or host-authorized fallback family could be selected.</summary>
-    Selection
+    Selection,
+    /// <summary>HTTP acquisition failed at the configured transport boundary.</summary>
+    Transport,
+    /// <summary>The shared acquisition deadline expired.</summary>
+    Timeout,
+    /// <summary>A declared or received resource size exceeded its acquisition policy.</summary>
+    Size
 }
 
 /// <summary>

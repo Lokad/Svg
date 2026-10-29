@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <Compile Include="../Shared/TestMemoryBudget.cs" Link="TestMemoryBudget.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/text-instance-composition/mechanisms/*.svg" Link="TestData/text-instance-composition/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>

@@ -181,7 +181,7 @@ public sealed class SvgFontPackCatalog
         try { pending = provider.GetSourceAsync(resolution.Face.File, cancellationToken); }
         catch (SvgException exception)
         {
-            throw SvgFontSourceFailures.Create(resolution, exception.ErrorCode);
+            throw SvgFontSourceFailures.Create(resolution, exception);
         }
         return pending.IsCompletedSuccessfully
             ? AcquireResolved(resolution, pending.Result, cancellationToken)
@@ -197,7 +197,7 @@ public sealed class SvgFontPackCatalog
         try { verification = ((VerifiedSvgFontProgramSource)bound.Source).GetBytesAsync(null, cancellationToken); }
         catch (SvgFontProgramSourceFailure exception)
         {
-            throw SvgFontSourceFailures.Create(resolution, exception.SourceException.ErrorCode);
+            throw SvgFontSourceFailures.Create(resolution, exception.SourceException);
         }
         catch (SvgException exception)
         {
@@ -214,7 +214,7 @@ public sealed class SvgFontPackCatalog
         try { source = await pending.ConfigureAwait(false); }
         catch (SvgException exception)
         {
-            throw SvgFontSourceFailures.Create(resolution, exception.ErrorCode);
+            throw SvgFontSourceFailures.Create(resolution, exception);
         }
         return await AcquireResolved(resolution, source, cancellationToken).ConfigureAwait(false);
     }
@@ -224,7 +224,7 @@ public sealed class SvgFontPackCatalog
         try { await verification.ConfigureAwait(false); }
         catch (SvgFontProgramSourceFailure exception)
         {
-            throw SvgFontSourceFailures.Create(resolution, exception.SourceException.ErrorCode);
+            throw SvgFontSourceFailures.Create(resolution, exception.SourceException);
         }
         catch (SvgException exception)
         {
@@ -368,7 +368,7 @@ public sealed class SvgFontPackCatalog
         return value.ToUpperInvariant();
     }
 
-    private static void ValidatePackId(string packId)
+    internal static void ValidatePackId(string packId)
     {
         if (IsUnsafePathSegment(packId)) throw new ArgumentException("The font pack identifier must be one safe relative path segment.", nameof(packId));
     }

@@ -99,7 +99,7 @@ public sealed partial class SvgFontSnapshot : IDisposable
                 try { loadedBytes = await GetVerifiedBytesAsync(resolution.Source, workCounter, cancellationToken).ConfigureAwait(false); }
                 catch (SvgFontProgramSourceFailure exception)
                 {
-                    throw SvgFontSourceFailures.Create(resolution.Resolution, exception.SourceException.ErrorCode);
+                    throw SvgFontSourceFailures.Create(resolution.Resolution, exception.SourceException);
                 }
                 catch (SvgException exception) when (exception.FontDiagnostic is null)
                 {
@@ -183,7 +183,7 @@ public sealed partial class SvgFontSnapshot : IDisposable
                 try { source = await provider.GetSourceAsync(selection.Face.File, cancellationToken).ConfigureAwait(false); }
                 catch (SvgException exception)
                 {
-                    throw SvgFontSourceFailures.Create(selection, exception.ErrorCode);
+                    throw SvgFontSourceFailures.Create(selection, exception);
                 }
                 Consume(workCounter, cancellationToken);
                 if (source is null) throw SvgFontSourceFailures.Create(selection, SvgErrorCode.UnresolvedResource);
@@ -247,6 +247,14 @@ public sealed partial class SvgFontSnapshot : IDisposable
         SvgFontCoverageRequest[]? coverage = catalog.Files.Count > 1 ? preparation.DiscoverFontCoverage() : null;
         SvgFontFaceRequest[] requests = coverage is null ? preparation.DiscoverFontRequests()
             : coverage.Select(static item => item.Request).ToArray();
+        return CreateDiscoveredAsync(catalog, provider, policy, workCounter, requests, coverage, cancellationToken);
+    }
+
+    /// <summary>Acquires a previously discovered requirement set without revisiting document structure.</summary>
+    internal static ValueTask<SvgFontSnapshot> CreateAsync(SvgFontPackCatalog catalog, SvgFontCoverageRequest[] coverage,
+        ISvgFontProgramSourceProvider provider, SvgFontSelectionPolicy? policy, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        SvgFontFaceRequest[] requests = coverage.Select(static item => item.Request).ToArray();
         return CreateDiscoveredAsync(catalog, provider, policy, workCounter, requests, coverage, cancellationToken);
     }
 

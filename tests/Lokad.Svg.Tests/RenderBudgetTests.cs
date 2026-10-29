@@ -8,6 +8,30 @@ using Lokad.Svg.Fonts;
 public sealed class RenderBudgetTests
 {
     [Fact]
+    public void Borrowed_scopes_share_admission_and_failed_growth_preserves_both_charges()
+    {
+        using var host = new Lokad.Svg.Testing.TestMemoryBudget(500);
+        using IMemoryScope firstScope = host.CreateScope();
+        using IMemoryScope secondScope = host.CreateScope();
+        var first = new RenderBudget(firstScope);
+        var second = new RenderBudget(secondScope);
+        using RenderBudget.BudgetReservation retained = first.Reserve(200, SvgMemoryCategory.Parser);
+        using RenderBudget.BudgetReservation growing = second.Reserve(250, SvgMemoryCategory.Surface);
+        Assert.Equal(450, host.Reserved);
+        SvgException refused = Assert.Throws<SvgException>(() => growing.Grow(100));
+        Assert.Equal(SvgErrorCode.LimitExceeded, refused.ErrorCode);
+        Assert.Equal(450, host.Reserved);
+        Assert.Equal(250, second.Snapshot().CurrentBytes);
+        growing.Grow(50);
+        Assert.Equal(500, host.Reserved);
+        retained.Dispose();
+        Assert.Equal(300, host.Reserved);
+        growing.Dispose();
+        Assert.Equal(0, host.Reserved);
+        Assert.False(host.Disposed);
+    }
+
+    [Fact]
     public void Pattern_table_denies_before_allocating_more_tile_values_than_the_budget_can_hold()
     {
         // The first dictionary growth selects seven entries. Even their tile

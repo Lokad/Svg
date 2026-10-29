@@ -208,10 +208,7 @@ internal static class SvgRootParser
         SvgAffineTransform outputMap, SvgViewport? explicitViewport, double rasterScale, SvgDocumentPreparation preparation)
     {
         SvgPreparationProbe.Observe(SvgPreparationPhase.Scene);
-        ReadOnlySpan<byte> bytes = svg.Span;
-        using Lokad.Svg.Fonts.SvgInstanceFontDiscovery? consumers = !bytes.Contains((byte)0) && bytes.IndexOf("pattern"u8) < 0 ? null : Lokad.Svg.Fonts.SvgInstanceFontDiscovery.Collect(svg, preparation.Settings, limits, preparation.Rules, preparation.Strings, budget, workCounter, cancellationToken);
-        using SvgPaintResourceSelection? paintResources = SvgPaintResourceSelection.Create(svg, preparation.Settings,
-            limits, preparation.Rules, preparation.Strings, budget, workCounter, cancellationToken, consumers);
+        SvgPaintResourceSelection? paintResources = preparation.GetPaintResources();
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, preparation.Settings);
         return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, workCounter, cancellationToken,

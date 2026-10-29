@@ -6,8 +6,8 @@ namespace Lokad.Svg.Rendering;
 /// <remarks>Conversion-thread ownership only. Borrowers finish before replacement/disposal.
 /// The parent scene keeps content alive. Source and mapped metadata, surface dimensions,
 /// sampling maps and paint must agree; destination fill rectangles are independent.
-/// Tracking uses one conservative aggregate allowance. Declining retention leaves the
-/// caller owning the supplied surface. Disposal drops references and releases both owners.</remarks>
+/// Tracking uses one conservative aggregate allowance. Admission refusal leaves the
+/// caller owning the supplied surface and fails the operation. Disposal releases both owners.</remarks>
 internal sealed class SvgPatternTileCache : IDisposable
 {
     private const long TrackingBytes = 608;
@@ -24,10 +24,8 @@ internal sealed class SvgPatternTileCache : IDisposable
         _reservation = reservation;
     }
 
-    internal static SvgPatternTileCache? TryRetain(SvgPatternGeometry source, SvgPatternGeometry mapped, SvgConverter.RasterizedSurface surface, RenderBudget budget)
+    internal static SvgPatternTileCache Retain(SvgPatternGeometry source, SvgPatternGeometry mapped, SvgConverter.RasterizedSurface surface, RenderBudget budget)
     {
-        // Keep enough headroom for the next rectangle's optional mapping metadata.
-        if (TrackingBytes + 512 > budget.AvailableBytes) return null;
         RenderBudget.BudgetReservation reservation = budget.Reserve(TrackingBytes, SvgMemoryCategory.Temporary);
         try { return new(source, mapped, surface, reservation); }
         catch { reservation.Dispose(); throw; }

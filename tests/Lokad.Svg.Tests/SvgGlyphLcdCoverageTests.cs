@@ -237,7 +237,7 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
-    public void Optional_row_storage_yields_to_memory_pressure_and_releases_its_aggregate_allowance()
+    public void Row_storage_refusal_preserves_the_live_owner_and_releases_its_aggregate_allowance()
     {
         RenderBudget budget = new(10_000);
         OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 6, 6);
@@ -245,8 +245,9 @@ public sealed partial class SvgGlyphLcdCoverageTests
         {
             Assert.Equal(80, storage.Crossings.Length);
             Assert.True(budget.Snapshot().CurrentBytes > 0);
-            Assert.Null(SvgGlyphLcdCoverage.ScanStorage.TryCreate(new OpenTypeQuadraticSegment[100], budget, new(long.MaxValue), CancellationToken.None));
-            Assert.Equal(0, budget.Snapshot().DeniedReservationCount);
+            SvgException refusal = Assert.Throws<SvgException>(() => SvgGlyphLcdCoverage.ScanStorage.TryCreate(new OpenTypeQuadraticSegment[100], budget, new(long.MaxValue), CancellationToken.None));
+            Assert.Equal(SvgErrorCode.LimitExceeded, refusal.ErrorCode);
+            Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
             storage.Dispose();
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             Assert.Throws<ObjectDisposedException>(() => { _ = storage.Crossings.Length; });
@@ -263,16 +264,12 @@ public sealed partial class SvgGlyphLcdCoverageTests
     }
 
     [Fact]
-    public void Unprepared_pressure_route_keeps_independent_native_dropout_coverage()
+    public void Direct_unprepared_scan_keeps_independent_native_dropout_coverage()
     {
-        RenderBudget budget = new(1_000);
         OpenTypeQuadraticSegment[] segments = Rectangle(0, -1d / 64, 6, 0);
-        Assert.Null(SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, budget, new(long.MaxValue), CancellationToken.None));
         SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, true, new(long.MaxValue), CancellationToken.None);
         // Same unchanged independent native thin-stroke result as above.
         Assert.Equal(new SvgGlyphRgbCoverage(28, 28, 28), SvgGlyphLcdCoverage.GetCoverage(segments, 2, -1, new SvgGlyphLcdCoverage.Crossing[8], bounds, new(long.MaxValue), CancellationToken.None));
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(0, budget.Snapshot().DeniedReservationCount);
     }
 
     private static OpenTypeQuadraticSegment[] Rectangle(double left, double top, double right, double bottom)

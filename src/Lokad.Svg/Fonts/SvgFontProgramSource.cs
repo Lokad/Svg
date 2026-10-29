@@ -22,7 +22,8 @@ public interface ISvgFontProgramSource
 /// owns the provider's lifetime, storage, cache policy, concurrency and retries.
 /// Implementations must observe cancellation and must not return a source for a
 /// different program. Returning <see langword="null"/> reports that the program
-/// is unavailable; this library neither probes the file system nor performs I/O.
+/// is unavailable. Ordinary conversion discovers no sources; the opt-in HTTP
+/// resolver supplies a provider under its explicit acquisition/ownership policy.
 /// </summary>
 public interface ISvgFontProgramSourceProvider
 {
@@ -115,9 +116,7 @@ internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFac
     private ReadOnlyMemory<byte> Validate(ReadOnlyMemory<byte> bytes, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        if (bytes.Length != face.File.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.");
-        byte[] hash = SvgFontProgramIntegrity.ComputeSha256(bytes, workCounter, cancellationToken);
-        if (!hash.SequenceEqual(face.File.Sha256Bytes)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.");
+        SvgFontProgramIntegrity.Verify(bytes, face.File, workCounter, cancellationToken);
         return bytes;
     }
 }
@@ -132,13 +131,26 @@ internal sealed class SvgFontProgramSourceFailure(SvgException sourceException) 
 internal static class SvgFontSourceFailures
 {
     internal static SvgException Create(SvgFontPackResolution resolution, SvgErrorCode errorCode)
-        => new(errorCode, "The selected font program could not be acquired from the caller-provided source.", new SvgFontDiagnostic(SvgFontFailureStage.Source, resolution.Request.Family, resolution.Face.ResolvedFamily, resolution.Face.File.RelativePath + ":" + resolution.Face.FaceIndex, string.Empty,
+        => Create(resolution, errorCode, SvgFontFailureStage.Source);
+
+    internal static SvgException Create(SvgFontPackResolution resolution, SvgException failure)
+        => Create(resolution, failure.ErrorCode, failure.FontDiagnostic?.Stage ?? SvgFontFailureStage.Source);
+
+    private static SvgException Create(SvgFontPackResolution resolution, SvgErrorCode errorCode, SvgFontFailureStage stage)
+        => new(errorCode, "The selected font program could not be acquired from the caller-provided source.", new SvgFontDiagnostic(stage, resolution.Request.Family, resolution.Face.ResolvedFamily, resolution.Face.File.RelativePath + ":" + resolution.Face.FaceIndex, string.Empty,
             resolution.Request.Weight, resolution.Request.Italic, resolution.IsFallback, null, null), resolution.Request.SourceContext?.Describe(string.Empty, string.Empty));
 }
 
 /// <summary>Hashes caller-owned font bytes in bounded, cancellable checkpoints shared by source and snapshot integrity validation.</summary>
 internal static class SvgFontProgramIntegrity
 {
+    internal static void Verify(ReadOnlyMemory<byte> bytes, SvgFontPackFile file, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        if (bytes.Length != file.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.");
+        byte[] hash = ComputeSha256(bytes, workCounter, cancellationToken);
+        if (!hash.SequenceEqual(file.Sha256Bytes)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.");
+    }
+
     internal static byte[] ComputeSha256(ReadOnlyMemory<byte> bytes, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         using IncrementalHash hashing = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);

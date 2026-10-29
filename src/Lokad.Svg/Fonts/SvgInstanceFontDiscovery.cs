@@ -8,8 +8,8 @@ namespace Lokad.Svg.Fonts;
 /// <remarks>Mask and marker resources retain their own inherited context; local use targets inherit
 /// the consuming instance. One parser-thread operation owns the bounded token/graph storage and
 /// shares work/cancellation. Paint metadata is borrowed through all visits. Disposal releases only
-/// owned storage. Discovery disposes this index before program acquisition; scene lowering borrows
-/// already-acquired programs. The index never opens programs or constructs render geometry.</remarks>
+/// owned storage. Document preparation retains the admitted graph through acquisition and lowering;
+/// standalone discovery releases it on return. The index never opens programs or constructs render geometry.</remarks>
 internal sealed class SvgInstanceFontDiscovery : IDisposable
 {
     private enum Kind { Container, Definition, Opaque, Text, Use, Geometry, Mask, Marker }
@@ -55,6 +55,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         if (!bytes.Contains((byte)0) && (bytes.IndexOf("text"u8) < 0 || bytes.IndexOf("use"u8) < 0 && bytes.IndexOf("mask"u8) < 0)
             && (bytes.IndexOf("marker"u8) < 0 || bytes.IndexOf("ex"u8) < 0)
             && (bytes.IndexOf("pattern"u8) < 0 || bytes.IndexOf("text"u8) < 0 && (bytes.IndexOf("marker"u8) < 0 || bytes.IndexOf("ex"u8) < 0))) return null;
+        SvgPreparationProbe.Observe(SvgPreparationPhase.FontIndex);
         SvgInstanceFontDiscovery result = new(limits, rules, strings, budget, work, token,
             bytes.Contains((byte)0) || bytes.IndexOf("marker"u8) >= 0,
             bytes.Contains((byte)0) || bytes.IndexOf("mask"u8) >= 0,

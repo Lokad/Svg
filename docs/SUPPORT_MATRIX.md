@@ -16,7 +16,7 @@ contract; it does not imply full SVG, CSS or browser conformance.
 | Content | Embedded base64 PNGs, static CSS and supplied-font labels/spans/text paths. |
 
 Scripts/events, animation, a mutable DOM, `foreignObject` HTML, perspective and
-arbitrary external documents are unsupported. Conversion does not fetch resources
+arbitrary external documents are unsupported. Ordinary conversion does not fetch resources
 or discover machine fonts. Unsupported visible behavior reports
 `UnsupportedFeature`; malformed input, unresolved references and exceeded limits
 have distinct [error categories](../src/Lokad.Svg/SvgErrorCode.cs).
@@ -282,6 +282,8 @@ Fonts come from explicit host manifests/catalogs/providers. Hosts own acquisitio
 credentials, retries and caches. Required unavailable/corrupt programs and missing
 glyphs fail; conversion neither discovers fonts nor synthesizes styles.
 [FontProbe](../tools/Lokad.Svg.FontProbe/README.md) demonstrates host acquisition.
+The opt-in [HTTP resolver](HTTP_FONTS.md) supplies a verified shared cache from a
+host-selected pack root; it adds no SVG-directed fetching or ambient font discovery.
 
 | Area | Accepted boundary |
 | --- | --- |
@@ -346,12 +348,14 @@ the host owns transactional output. Supplied font/source bytes remain immutable
 and valid for their documented borrowed lifetimes. A prepared document permits
 one conversion; independently owned PNG outputs outlive the operation.
 
-Memory accounting is approximate: the engineering target is no more than **20%
-of conversion-attributable live memory** unaccounted for across representative
-workloads, not an instantaneous heap cap. Borrowed storage and runtime/host
-overhead are separate. Reservations cover dominant pixel/image/scene/glyph
-storage and aggregate overhead; byte-exact small-object bookkeeping is not a
-contract. Representative limit, cancellation, cleanup and retry checks protect it.
+Memory accounting estimates dominant retained capacity and temporary peaks.
+Roughly 20% unaccounted small objects/metadata is an intentional allowance, not a
+per-workload coverage proof or instantaneous heap cap. Borrowed storage and
+runtime/host overhead are separate. [HTTP-prepared documents](HTTP_FONTS.md) share
+the host's allowance across cache, execution and retained output; refunds follow
+their real ownership lifetimes. Admission refusal ends the operation rather than
+selecting an alternate rendering/storage route. Representative refusal,
+cancellation, cleanup and retry checks protect these contracts.
 
 ## Qualification
 

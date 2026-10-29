@@ -39,15 +39,16 @@ public sealed class SvgPreparedGlyphCoverageTests
     }
 
     [Fact]
-    public void Preparation_declines_memory_pressure_and_keeps_the_original_coverage_route()
+    public void Preparation_refusal_fails_without_an_unaccounted_alternative_route()
     {
         SvgGlyphQuadraticContour[] contours = [new([Line(0, 0, 2, 0), Line(2, 0, 2, 2), Line(2, 2, 0, 2), Line(0, 2, 0, 0)])];
         RenderBudget budget = new(500);
-        Assert.Null(SvgGlyphCoverage.PreparedContours.TryCreate(contours, budget, new(long.MaxValue), CancellationToken.None));
+        SvgException refusal = Assert.Throws<SvgException>(() => SvgGlyphCoverage.PreparedContours.TryCreate(contours, budget, new(long.MaxValue), CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, refusal.ErrorCode);
         Assert.Equal(255, SvgGlyphCoverage.GetCoverage(contours, 0, 0, 4, CancellationToken.None));
         Assert.Equal(0, SvgGlyphCoverage.GetCoverage(contours, 2, 0, 4, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(0, budget.Snapshot().DeniedReservationCount);
+        Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
         Assert.Null(SvgGlyphCoverage.PreparedContours.TryCreate([], budget, new(0), CancellationToken.None));
     }
 

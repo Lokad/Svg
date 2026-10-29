@@ -48,7 +48,6 @@ internal static class SvgGlyphCoverage
             if (segments == 0 || segments > int.MaxValue / (QuadraticSubdivisions + 1)) return null;
             int count = (int)segments * (QuadraticSubdivisions + 1);
             long bytes = ParserCollectionMemory.GetArrayByteCount<SvgGlyphOutlinePoint>(count) + 96;
-            if (bytes > budget.AvailableBytes) return null;
             RenderBudget.BudgetReservation reservation = budget.Reserve(bytes, SvgMemoryCategory.Temporary);
             try { return new(contours, count, reservation, work, token); }
             catch { reservation.Dispose(); throw; }

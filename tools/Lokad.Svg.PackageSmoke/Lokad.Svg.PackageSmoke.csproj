@@ -8,5 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Lokad.Svg" Version="$(LokadSvgPackageVersion)" />
+    <None Update="assets/*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

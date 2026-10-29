@@ -25,6 +25,10 @@ and failure release owners deterministically.
 Prepared-document font discovery borrows the same collected styles, reader
 workspace and active budget used by lowering. Discovery control storage is
 temporary; selected font bytes stay alive through the prepared operation.
+The admitted resource dependency graph and paint selection remain owned by that
+preparation through acquisition, then serve lowering without a second collection.
+The [HTTP resolver](HTTP_FONTS.md) owns shared downloads/cache under a longer-lived
+host scope; document and retained PNG owners are siblings under the same root.
 
 Geometry uses inline primitive values plus one typed reference payload. That
 payload owns its reservations; authored paths retain separate ownership. Prepared

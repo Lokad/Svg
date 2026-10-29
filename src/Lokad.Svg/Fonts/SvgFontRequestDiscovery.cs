@@ -97,8 +97,8 @@ internal static class SvgFontRequestDiscovery
         try
         {
             XmlReaderSettings settings = preparation.Settings;
-            using SvgInstanceFontDiscovery? instanceFonts = SvgInstanceFontDiscovery.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
-            using SvgPaintResourceSelection? paintResources = SvgPaintResourceSelection.Create(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken, instanceFonts);
+            SvgInstanceFontDiscovery? instanceFonts = preparation.GetFontInstances();
+            SvgPaintResourceSelection? paintResources = preparation.GetPaintResources();
             using SvgCssAncestorContext ancestors = new(styleRules, budget, workCounter, cancellationToken);
             using ReadOnlyMemoryStream stream = new(svg);
             using XmlReader reader = XmlReader.Create(stream, settings);

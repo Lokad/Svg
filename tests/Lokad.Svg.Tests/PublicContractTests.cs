@@ -289,6 +289,25 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public async Task Http_resolver_and_prepared_entry_points_reject_null_arguments()
+    {
+        using var client = new HttpClient();
+        using var budget = new Lokad.Svg.Testing.TestMemoryBudget(1_000_000);
+        var options = new SvgHttpFontAcquisitionOptions(TimeSpan.FromSeconds(5), 1, TimeSpan.Zero, 4096, 1_000_000, 1_000_000);
+        Uri root = new("https://fonts.invalid/pack/");
+        MethodInfo create = ConvertMethod(typeof(SvgHttpFontPackResolver), "Create", typeof(string), typeof(Uri), typeof(HttpClient), typeof(SvgHttpFontAcquisitionOptions), typeof(IMemoryBudget));
+        AssertSyncNullArgument(null, create, "packId", [null, root, client, options, budget]);
+        AssertSyncNullArgument(null, create, "packRoot", ["pack", null, client, options, budget]);
+        AssertSyncNullArgument(null, create, "client", ["pack", root, null, options, budget]);
+        AssertSyncNullArgument(null, create, "options", ["pack", root, client, null, budget]);
+        AssertSyncNullArgument(null, create, "budget", ["pack", root, client, options, null]);
+        await using var resolver = SvgHttpFontPackResolver.Create("pack", root, client, options, budget);
+        MethodInfo prepare = ConvertMethod(typeof(SvgPreparedDocument), "CreateAsync", typeof(ReadOnlyMemory<byte>), typeof(SvgHttpFontPackResolver), typeof(SvgRenderOptions), typeof(CancellationToken));
+        await AssertValueTaskNullArgument<SvgPreparedDocument>(prepare.Invoke(null, [ReadOnlyMemory<byte>.Empty, null, SvgRenderOptions.Default, CancellationToken.None]), "resolver");
+        await AssertValueTaskNullArgument<SvgPreparedDocument>(prepare.Invoke(null, [ReadOnlyMemory<byte>.Empty, resolver, null, CancellationToken.None]), "options");
+    }
+
+    [Fact]
     public void Internal_signatures_do_not_use_optional_parameters()
     {
         List<string> violations = new();

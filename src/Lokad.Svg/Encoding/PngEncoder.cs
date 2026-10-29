@@ -27,17 +27,31 @@ internal static class PngEncoder
         => Encode(width, height, rgba, budget, maximumEncodedPngBytes, 0, long.MaxValue, cancellationToken);
 
     internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumEncodedPngBytes, long initialWorkUnits, long maximumWorkUnits, CancellationToken cancellationToken)
+        => Encode(width, height, rgba, budget, null, maximumEncodedPngBytes, initialWorkUnits, maximumWorkUnits, cancellationToken);
+
+    /// <summary>Encodes with temporary scratch under budget and optional retained output under a pre-established sibling scope.</summary>
+    /// <remarks>The caller owns outputScope through result consumption and disposes it on failure. This method finishes all scratch users before return.</remarks>
+    internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, IMemoryScope? outputScope,
+        int maximumEncodedPngBytes, long initialWorkUnits, long maximumWorkUnits, CancellationToken cancellationToken)
     {
         if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
         PngWorkCounter workCounter = new(initialWorkUnits, maximumWorkUnits);
-        using RenderBudget.BudgetReservation minimumOutput = budget.Reserve(FixedPngBytesWithoutIdat + PngChunkOverheadBytes, SvgMemoryCategory.Output);
+        using RenderBudget.BudgetReservation? minimumOutput = ReserveOutput(budget, outputScope, FixedPngBytesWithoutIdat + PngChunkOverheadBytes);
         using PngSegmentedBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), workCounter, cancellationToken);
         int length = GetOutputLength(checked((int)compressed.Length));
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        using RenderBudget.BudgetReservation remainingOutput = budget.Reserve(length - (FixedPngBytesWithoutIdat + PngChunkOverheadBytes), SvgMemoryCategory.Output);
+        using RenderBudget.BudgetReservation? remainingOutput = ReserveOutput(budget, outputScope, length - (FixedPngBytesWithoutIdat + PngChunkOverheadBytes));
         byte[] output = new byte[length];
         WritePng(width, height, compressed, output, workCounter, cancellationToken);
         return output;
+
+        static RenderBudget.BudgetReservation? ReserveOutput(RenderBudget scratch, IMemoryScope? owner, long bytes)
+        {
+            if (owner is null) return scratch.Reserve(bytes, SvgMemoryCategory.Output);
+            if (!owner.TryReserve(bytes, out _)) throw new SvgException(SvgErrorCode.LimitExceeded, "The host refused PNG result storage.");
+            // The pre-established result scope owns this charge until result disposal.
+            return null;
+        }
     }
 
     internal static int EncodeInto(int width, int height, ReadOnlySpan<byte> rgba, Memory<byte> destination, CancellationToken cancellationToken)

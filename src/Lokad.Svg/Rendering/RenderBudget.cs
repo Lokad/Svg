@@ -7,6 +7,7 @@ namespace Lokad.Svg.Rendering;
 internal sealed class RenderBudget
 {
     private readonly long _maximumBytes;
+    private readonly IMemoryBudget? _sharedBudget;
     private readonly long[] _bytesByCategory = new long[Enum.GetValues<SvgMemoryCategory>().Length];
     private long _currentBytes;
     private long _peakBytes;
@@ -22,14 +23,29 @@ internal sealed class RenderBudget
         _maximumBytes = maximumBytes;
     }
 
-    internal BudgetReservation Reserve(long bytes, SvgMemoryCategory category)
+    /// <summary>Borrows a host owner without introducing a cap or copying its available balance.</summary>
+    internal RenderBudget(IMemoryBudget budget)
     {
-        Charge(bytes, category);
-        return new BudgetReservation(this, bytes, category);
+        ArgumentNullException.ThrowIfNull(budget);
+        _sharedBudget = budget;
     }
 
-    /// <summary>Unreserved allowance on the conversion thread; optional preparation may decline storage before allocating.</summary>
-    internal long AvailableBytes => _maximumBytes - _currentBytes;
+    internal BudgetReservation Reserve(long bytes, SvgMemoryCategory category)
+    {
+        if (_sharedBudget is null)
+        {
+            Charge(bytes, category);
+            return new BudgetReservation(this, bytes, category, null);
+        }
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(bytes);
+        if (!_sharedBudget.TryReserve(bytes, out IMemoryReservation? reservation)) Deny();
+        RecordCharge(bytes, category);
+        return new BudgetReservation(this, bytes, category, reservation);
+    }
+
+    /// <summary>Legacy diagnostic allowance; host-governed operations do not expose or inspect a remaining balance.</summary>
+    internal long AvailableBytes => _sharedBudget is null ? _maximumBytes - _currentBytes
+        : throw new InvalidOperationException("A borrowed shared budget has no local available balance.");
 
     private void Charge(long bytes, SvgMemoryCategory category)
     {
@@ -40,10 +56,20 @@ internal sealed class RenderBudget
 
         if (bytes > _maximumBytes - _currentBytes)
         {
-            _deniedReservationCount++;
-            throw new SvgException(SvgErrorCode.LimitExceeded, "The conversion would exceed its renderer-owned memory budget.");
+            Deny();
         }
 
+        RecordCharge(bytes, category);
+    }
+
+    private void Deny()
+    {
+        _deniedReservationCount++;
+        throw new SvgException(SvgErrorCode.LimitExceeded, "The memory budget refused renderer-owned storage.");
+    }
+
+    private void RecordCharge(long bytes, SvgMemoryCategory category)
+    {
         _currentBytes += bytes;
         _bytesByCategory[(int)category] += bytes;
         if (_currentBytes > _peakBytes)
@@ -69,19 +95,27 @@ internal sealed class RenderBudget
         private RenderBudget? _owner;
         private long _bytes;
         private readonly SvgMemoryCategory _category;
+        private readonly IMemoryReservation? _shared;
 
-        internal BudgetReservation(RenderBudget owner, long bytes, SvgMemoryCategory category)
+        internal BudgetReservation(RenderBudget owner, long bytes, SvgMemoryCategory category, IMemoryReservation? shared)
         {
             _owner = owner;
             _bytes = bytes;
             _category = category;
+            _shared = shared;
         }
 
         /// <summary>Adds an aggregate allowance before material allocation; denial leaves both owner and reservation unchanged. Must not race disposal.</summary>
         internal void Grow(long bytes)
         {
             RenderBudget owner = _owner ?? throw new ObjectDisposedException(nameof(BudgetReservation));
-            owner.Charge(bytes, _category);
+            if (_shared is null) owner.Charge(bytes, _category);
+            else
+            {
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(bytes);
+                if (!_shared.TryResize(checked(_bytes + bytes))) owner.Deny();
+                owner.RecordCharge(bytes, _category);
+            }
             _bytes += bytes;
         }
 
@@ -90,6 +124,7 @@ internal sealed class RenderBudget
             RenderBudget? owner = Interlocked.Exchange(ref _owner, null);
             if (owner is not null)
             {
+                _shared?.Dispose();
                 owner.Release(_bytes, _category);
             }
         }

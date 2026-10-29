@@ -133,6 +133,15 @@ public static partial class SvgConverter
         return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
     }
 
+    /// <summary>Encodes a retained scene while the caller's sibling scope owns the returned PNG storage and charge.</summary>
+    internal static byte[] ConvertToOwnedPng(SvgRoot root, SvgRenderOptions options, RenderBudget budget, IMemoryScope outputScope, CancellationToken cancellationToken)
+    {
+        ValidatePreparedInvocation(options, budget, cancellationToken);
+        using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
+        return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, budget, outputScope,
+            options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+    }
+
     /// <summary>Converts one retained prepared scene into caller-owned destination memory.</summary>
     internal static int ConvertToPng(SvgRoot root, Memory<byte> destination, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
     {
@@ -3206,7 +3215,7 @@ public static partial class SvgConverter
         void RasterizeGeometry(SvgGeometry geometry, byte[] destination)
         {
             bool reusablePattern = geometry.Kind == SvgGeometryKind.PatternFill && geometry.Pattern.Stroke is null && geometry.LeafMask is null;
-            if (!reusablePattern || patternTileCache is {} retained && (!retained.MatchesSource(geometry.Pattern) || NeedsPatternMapping(geometry.Pattern) && budget.AvailableBytes < 512)) ReleasePatternTile();
+            if (!reusablePattern || patternTileCache is {} retained && !retained.MatchesSource(geometry.Pattern)) ReleasePatternTile();
             SvgRecordedPaintValue previousPaint = activePaint;
             SvgRecordedPaintValue previousStroke = activeStrokePaint;
             SvgViewportDrawMap? previousDrawMap = activeViewportDrawMap;
@@ -4346,7 +4355,7 @@ public static partial class SvgConverter
             RasterizedSurface prepared = PreparePatternTile(mapped);
             try
             {
-                patternTileCache = retain ? SvgPatternTileCache.TryRetain(original, mapped, prepared, budget) : null;
+                patternTileCache = retain ? SvgPatternTileCache.Retain(original, mapped, prepared, budget) : null;
                 return new(prepared, patternTileCache is null);
             }
             catch { prepared.Dispose(); throw; }
