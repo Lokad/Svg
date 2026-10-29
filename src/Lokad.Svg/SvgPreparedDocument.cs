@@ -79,7 +79,8 @@ public sealed class SvgPreparedDocument : IDisposable
             ParserWorkCounter work = new(options.Limits.MaximumWorkUnits);
             using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, work, cancellationToken);
             options = preparation.ResolveRasterOptions(options);
-            SvgFontCoverageRequest[] requirements = preparation.DiscoverFontCoverage();
+            using SvgFontCoverageDiscovery coverage = preparation.DiscoverFontCoverage();
+            SvgFontCoverageRequest[] requirements = coverage.Requests;
             if (requirements.Length == 0)
                 snapshot = await SvgFontSnapshot.CreateAsync(Array.Empty<SvgFontProgramResolution>(), cancellationToken).ConfigureAwait(false);
             else

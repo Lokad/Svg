@@ -37,6 +37,9 @@ cases; their numerical boundaries do not repeat the full API matrix.
 The [preparation contracts](Lokad.Svg.Tests/OpenTypeFontTests.PreparationSharing.cs)
 cover request-only and scalar-coverage acquisition with one stylesheet collection,
 exact raw/prepared output, and shared-budget refusal, cleanup and reuse.
+[Coverage ownership](Lokad.Svg.Tests/SvgFontCoverageDiscoveryTests.cs) keeps copied
+scalar requirements charged through acquisition rather than refunding them when
+the temporary collection finishes.
 The [HTTP preparation contracts](Lokad.Svg.Tests/OpenTypeFontTests.HttpPrepared.cs)
 cover failed initialization, independent font-free calls and result ownership.
 Four [public font cases](Lokad.Svg.VisualTests/SvgPublicFontQualificationTests.cs)

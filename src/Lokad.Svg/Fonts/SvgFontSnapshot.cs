@@ -230,24 +230,26 @@ public sealed partial class SvgFontSnapshot : IDisposable
         ArgumentNullException.ThrowIfNull(provider);
         // A standalone face-zero program has one cmap, regardless of aliases.
         // Keep ordinary single-program preparation on its existing fast path.
-        SvgFontCoverageRequest[]? coverage = catalog.Files.Count > 1 ? SvgFontRequestDiscovery.DiscoverWithCoverage(svg, limits, workCounter, cancellationToken) : null;
+        using SvgFontCoverageDiscovery? owner = catalog.Files.Count > 1 ? SvgFontRequestDiscovery.DiscoverWithCoverage(svg, limits, workCounter, cancellationToken) : null;
+        SvgFontCoverageRequest[]? coverage = owner?.Requests;
         SvgFontFaceRequest[] requests = coverage is null ? SvgFontRequestDiscovery.Discover(svg, limits, workCounter, cancellationToken)
             : coverage.Select(static item => item.Request).ToArray();
         return await CreateDiscoveredAsync(catalog, provider, policy, workCounter, requests, coverage, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Acquires fonts from one retained document preparation without creating another budget or stylesheet collection.</summary>
-    internal static ValueTask<SvgFontSnapshot> CreateAsync(SvgDocumentPreparation preparation, SvgFontPackCatalog catalog,
+    internal static async ValueTask<SvgFontSnapshot> CreateAsync(SvgDocumentPreparation preparation, SvgFontPackCatalog catalog,
         ISvgFontProgramSourceProvider provider, SvgFontSelectionPolicy? policy, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(preparation);
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(provider);
         ArgumentNullException.ThrowIfNull(workCounter);
-        SvgFontCoverageRequest[]? coverage = catalog.Files.Count > 1 ? preparation.DiscoverFontCoverage() : null;
+        using SvgFontCoverageDiscovery? owner = catalog.Files.Count > 1 ? preparation.DiscoverFontCoverage() : null;
+        SvgFontCoverageRequest[]? coverage = owner?.Requests;
         SvgFontFaceRequest[] requests = coverage is null ? preparation.DiscoverFontRequests()
             : coverage.Select(static item => item.Request).ToArray();
-        return CreateDiscoveredAsync(catalog, provider, policy, workCounter, requests, coverage, cancellationToken);
+        return await CreateDiscoveredAsync(catalog, provider, policy, workCounter, requests, coverage, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Acquires a previously discovered requirement set without revisiting document structure.</summary>

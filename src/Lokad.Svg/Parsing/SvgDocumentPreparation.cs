@@ -63,8 +63,8 @@ internal sealed class SvgDocumentPreparation : IDisposable
     internal SvgFontFaceRequest[] DiscoverFontRequests()
         => SvgFontRequestDiscovery.Discover(_svg, _limits, _work, _budget, this, _token);
 
-    /// <summary>Collects scalar coverage under this preparation's owner without acquiring or laying out fonts.</summary>
-    internal SvgFontCoverageRequest[] DiscoverFontCoverage()
+    /// <summary>Returns caller-owned scalar coverage charged to this preparation budget; keep it alive until acquisition finishes.</summary>
+    internal SvgFontCoverageDiscovery DiscoverFontCoverage()
         => SvgFontRequestDiscovery.DiscoverWithCoverage(_svg, _limits, _work, _budget, this, _token);
 
     /// <summary>Borrows the retained admitted dependency graph; this preparation owns it through acquisition and lowering.</summary>

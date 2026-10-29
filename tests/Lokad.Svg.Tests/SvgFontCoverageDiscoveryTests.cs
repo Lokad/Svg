@@ -1,6 +1,7 @@
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
+using Lokad.Svg.Testing;
 
 namespace Lokad.Svg.Tests;
 
@@ -23,6 +24,26 @@ public sealed class SvgFontCoverageDiscoveryTests
         Assert.False(SvgFontCoverageDiscovery.AllowsScalarFallback(0x301));
         Assert.False(SvgFontCoverageDiscovery.AllowsScalarFallback(0x200D));
         Assert.False(SvgFontCoverageDiscovery.AllowsScalarFallback(0x627));
+    }
+
+    [Fact]
+    [Trait("Layer", "Contracts")]
+    public void Materialized_scalar_needs_remain_charged_until_their_coverage_owner_finishes()
+    {
+        using TestMemoryBudget root = new(1_000_000);
+        RenderBudget budget = new(root);
+        using (SvgFontCoverageDiscovery coverage = new(budget, new(long.MaxValue), CancellationToken.None))
+        {
+            SvgFontFaceRequest request = new("Example", 400, false);
+            string text = new(Enumerable.Range(33, 94).Select(static value => (char)value).ToArray());
+            coverage.ObserveNormalized(request, text);
+            long collecting = root.Reserved;
+            uint[] scalars = coverage.GetScalars(request);
+            Assert.Equal(94, scalars.Length);
+            Assert.True(root.Reserved >= collecting + scalars.Length * sizeof(uint), "Returned scalar storage must stay admitted while its acquisition borrower is active.");
+        }
+        Assert.Equal(0, root.Reserved);
+        Assert.False(root.Disposed);
     }
 
     [Fact]

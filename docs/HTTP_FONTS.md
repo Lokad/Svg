@@ -32,7 +32,7 @@ still determines admitted faces, shaping and per-document bounds.
 | Owner | Storage | Lifetime |
 | --- | --- | --- |
 | Resolver/cache | Shared acquisition, catalog and verified programs | Resolver closure plus completion of outstanding I/O and document borrowers. |
-| Prepared document | Retained admission indices, selected snapshot, scene and raster/encoder scratch | One conversion or disposal, after actual users finish. |
+| Prepared document | Retained admission indices, scalar requirements, selected snapshot, scene and raster/encoder scratch | One conversion or disposal, after actual users finish. |
 | Owned PNG result | Encoded PNG bytes under a sibling scope | Result disposal after readers/writes finish. |
 
 Font-free shapes, hidden text and unused definitions do not initialize the

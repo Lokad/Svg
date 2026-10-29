@@ -9,8 +9,10 @@ internal readonly record struct SvgFontCoverageRequest(SvgFontFaceRequest Reques
 
 /// <summary>Collects bounded normalized scalar needs without opening fonts or retaining text.</summary>
 /// <remarks>Parser-local owner of aggregate dictionary storage. Shared normalization emits into this
-/// output; positioning belongs to later layout and is not accepted here. Disposal releases its
-/// reservation. Every scalar and retained-entry scan observes the supplied work/token context.</remarks>
+/// output; positioning belongs to later layout and is not accepted here. Materialization releases
+/// collection storage and retains the scalar copies under one aggregate reservation through font
+/// acquisition. Callers finish all borrowers before disposal; use is confined to one operation.
+/// Every scalar and retained-entry scan observes the supplied work/token context.</remarks>
 internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
 {
     private readonly record struct FontKey(string Family, int Weight, bool Italic)
@@ -31,6 +33,9 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     private bool _hasOutput;
     private char _highSurrogate;
     private int _count;
+    private RenderBudget.BudgetReservation? _resultsReservation;
+    private SvgFontCoverageRequest[]? _requests;
+    private bool _disposed;
 
     internal SvgFontCoverageDiscovery(RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
@@ -55,13 +60,46 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
 
     internal uint[] GetScalars(SvgFontFaceRequest request)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_requests is not null) throw new InvalidOperationException("Coverage collection has already finished.");
         using BudgetedParserList<uint> scalars = new(_budget, SvgMemoryCategory.Parser, _work, _token);
         foreach (Entry entry in _entries.Values)
         {
             _work.Consume(_token);
             if (entry.Font.Matches(request)) scalars.Add(entry.Scalar);
         }
+        long bytes = checked(32L + sizeof(uint) * (long)scalars.Count);
+        if (_resultsReservation is null) _resultsReservation = _budget.Reserve(bytes, SvgMemoryCategory.Parser);
+        else _resultsReservation.Grow(bytes);
         return scalars.AsSpan().ToArray();
+    }
+
+    /// <summary>Borrows the materialized request/scalar arrays until this owner is disposed; acquisition must finish first.</summary>
+    internal SvgFontCoverageRequest[] Requests
+    {
+        get
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            return _requests ?? throw new InvalidOperationException("Coverage collection has not finished.");
+        }
+    }
+
+    /// <summary>Finishes collection, reserving retained copies before allocation and dropping the superseded dictionary.</summary>
+    internal void Materialize(SvgFontFaceRequest[] requests)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_requests is not null) throw new InvalidOperationException("Coverage collection has already finished.");
+        long bytes = checked(32L + 16L * requests.Length);
+        if (_resultsReservation is null) _resultsReservation = _budget.Reserve(bytes, SvgMemoryCategory.Parser);
+        else _resultsReservation.Grow(bytes);
+        SvgFontCoverageRequest[] result = new SvgFontCoverageRequest[requests.Length];
+        for (int index = 0; index < requests.Length; index++)
+        {
+            _work.Consume(_token);
+            result[index] = new(requests[index], GetScalars(requests[index]));
+        }
+        _requests = result;
+        _entries.Dispose();
     }
 
     /// <summary>Consumes a borrowed normalized span, retaining only distinct font/scalar pairs and a pending separator owner.</summary>
@@ -118,5 +156,12 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
         return true;
     }
 
-    public void Dispose() => _entries.Dispose();
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _requests = null;
+        _entries.Dispose();
+        _resultsReservation?.Dispose();
+        _disposed = true;
+    }
 }

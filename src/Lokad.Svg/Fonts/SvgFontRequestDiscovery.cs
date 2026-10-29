@@ -46,26 +46,25 @@ internal static class SvgFontRequestDiscovery
         => DiscoverCore(svg, limits, workCounter, budget, preparation, null, cancellationToken);
 
     /// <summary>Shares request discovery and whitespace normalization while retaining bounded scalar needs for selective acquisition.</summary>
-    internal static SvgFontCoverageRequest[] DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgFontCoverageDiscovery DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         RenderBudget budget = new(limits.MaximumAccountedBytes);
         using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, limits, budget, workCounter, cancellationToken);
         return DiscoverWithCoverage(svg, limits, workCounter, budget, preparation, cancellationToken);
     }
 
-    /// <summary>Retains scalar needs while borrowing the document's preparation and charging its active budget.</summary>
-    internal static SvgFontCoverageRequest[] DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter,
+    /// <summary>Returns a caller-owned scalar requirement owner, charged through acquisition while borrowing this document preparation.</summary>
+    internal static SvgFontCoverageDiscovery DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter,
         RenderBudget budget, SvgDocumentPreparation preparation, CancellationToken cancellationToken)
     {
-        using SvgFontCoverageDiscovery coverage = new(budget, workCounter, cancellationToken);
-        SvgFontFaceRequest[] requests = DiscoverCore(svg, limits, workCounter, budget, preparation, coverage, cancellationToken);
-        var result = new SvgFontCoverageRequest[requests.Length];
-        for (int index = 0; index < requests.Length; index++)
+        SvgFontCoverageDiscovery coverage = new(budget, workCounter, cancellationToken);
+        try
         {
-            workCounter.Consume(cancellationToken);
-            result[index] = new(requests[index], coverage.GetScalars(requests[index]));
+            SvgFontFaceRequest[] requests = DiscoverCore(svg, limits, workCounter, budget, preparation, coverage, cancellationToken);
+            coverage.Materialize(requests);
+            return coverage;
         }
-        return result;
+        catch { coverage.Dispose(); throw; }
     }
 
     private static SvgFontFaceRequest[] DiscoverCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, RenderBudget budget, SvgDocumentPreparation preparation, SvgFontCoverageDiscovery? coverage, CancellationToken cancellationToken)
