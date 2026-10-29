@@ -5,13 +5,11 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgQuadSpanWalkerTests
 {
-    private static (SvgDevicePoint[] Points, int[] Ends, int[]? Signs, SvgQuadSpan[] Spans) LowerArch(bool evenOdd)
+    /// <summary>Transfers an owned parsed scene; callers retain it until every borrowed contour and walker has finished.</summary>
+    private static SvgRoot ParseArch(bool evenOdd)
     {
         string rule = evenOdd ? " fill-rule='evenodd'" : string.Empty;
-        SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z' fill='blue'" + rule + "/></svg>"), SvgRenderLimits.Default, CancellationToken.None);
-        SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
-        return (geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans);
+        return SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z' fill='blue'" + rule + "/></svg>"), SvgRenderLimits.Default, CancellationToken.None);
     }
 
     private static byte[] WalkRows(SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] spans, bool isEvenOdd, int firstRow, int pastLastRow, out bool eligible)
@@ -46,7 +44,10 @@ public sealed class SvgQuadSpanWalkerTests
     [Fact]
     public void Quad_spans_substitute_analytic_edges_on_clean_arch()
     {
-        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] spans) = LowerArch(false);
+        using SvgRoot scene = ParseArch(false);
+        SvgGeometry geometry = Assert.Single(scene.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] spans) = (geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans);
         Assert.Single(spans);
         byte[] flat = WalkRows(points, ends, signs, Array.Empty<SvgQuadSpan>(), false, 8, 48, out bool flatEligible);
         byte[] curved = WalkRows(points, ends, signs, spans, false, 8, 48, out bool curvedEligible);
@@ -59,7 +60,10 @@ public sealed class SvgQuadSpanWalkerTests
     [Fact]
     public void Overlapping_spans_decline_to_flattened_rows()
     {
-        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] spans) = LowerArch(false);
+        using SvgRoot scene = ParseArch(false);
+        SvgGeometry geometry = Assert.Single(scene.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] spans) = (geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans);
         SvgQuadSpan first = spans[0];
         SvgQuadSpan[] overlapping = [first, new SvgQuadSpan(0, first.StartIndex, first.EndIndex, first.Control)];
         byte[] flat = WalkRows(points, ends, signs, Array.Empty<SvgQuadSpan>(), false, 8, 48, out bool _);
@@ -72,7 +76,10 @@ public sealed class SvgQuadSpanWalkerTests
     [Fact]
     public void Evenodd_spans_decline_to_flattened_rows()
     {
-        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] spans) = LowerArch(true);
+        using SvgRoot scene = ParseArch(true);
+        SvgGeometry geometry = Assert.Single(scene.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] spans) = (geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans);
         Assert.Single(spans);
         byte[] flat = WalkRows(points, ends, signs, Array.Empty<SvgQuadSpan>(), true, 8, 48, out bool flatEligible);
         byte[] declined = WalkRows(points, ends, signs, spans, true, 8, 48, out bool declinedEligible);
@@ -84,7 +91,7 @@ public sealed class SvgQuadSpanWalkerTests
     [Fact]
     public void Multi_quad_spans_substitute_per_contour()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,30 Q32,4 56,30 Z M8,60 Q32,34 56,60 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,30 Q32,4 56,30 Z M8,60 Q32,34 56,60 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(2, geometry.Polygon.ContourEnds.Length);
         SvgQuadSpan[] spans = geometry.Polygon.QuadSpans;
@@ -102,7 +109,7 @@ public sealed class SvgQuadSpanWalkerTests
     [Fact]
     public void Single_chord_span_falls_back_to_flattened_rows()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4,0 8,0 L8,8 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4,0 8,0 L8,8 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         SvgQuadSpan span = Assert.Single(geometry.Polygon.QuadSpans);
         Assert.Equal(1, span.EndIndex - span.StartIndex);

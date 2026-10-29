@@ -409,3 +409,35 @@ Validation: the complete .NET 11 core suite passes 34,054 cases per host, the
 affected .NET 10 selection passes 1,938 per host, and all eight independent
 zero-radius reference cases pass on every runtime/host pair. Explicit identity
 mapping accounts for every original case; both solution builds are warning-free.
+
+## Parsed-scene lifetimes in characterization tests
+
+Before this pass (`becf16041`), 343 successful parse-result declarations lacked
+`using`. Syntax and caller review distinguish their ownership:
+
+- 338 test-local declarations now retain and dispose the scene at scope exit,
+  after geometry assertions, coverage walkers and other borrowers finish.
+- Three source-copy/transfer tests retain their exact deliberate early disposal
+  and `finally` cleanup; they are not converted mechanically.
+- The cubic/quadratic walker helpers return an owned scene instead of borrowed
+  arrays from an undisposed scene. All six callers scope that owner. Their input
+  expressions and assertions are preserved, with no array copies added.
+
+The [scene contract](../../../src/Lokad.Svg/Parsing/SvgRoot.cs) now describes the
+retained scene and viewport, shared ownership across copies, borrowed inputs,
+conversion-thread use and uncancelable disposal of storage/reservations.
+The obsolete viewport-only summary is removed; production behavior is unchanged.
+
+A broader syntax audit accounts for 1,586 direct test `Parse`/`ParsePrepared`
+invocations: 1,132 scoped forms, 443 expected failures, seven owner-returning
+factories with scoped callers, the three intentional early-disposal declarations
+and one successful assignment followed by an explicit `using` scope. This audit
+does not equate every missing keyword with a leak or assume pooled storage.
+
+All original test identities, inputs, assertions and references remain. The 943
+focused cases pass before/after. Three sequential fresh Windows .NET 11 processes
+measure 7.88/8.71 seconds median, including discovery/host/TRX and excluding build;
+this adds required lifetime cleanup and establishes no validation speedup.
+The full .NET 11 core suite passes 34,054 cases per host; 970 affected .NET 10
+checks pass per host. Five visual diagnostics pass on each runtime/host pair,
+including their unchanged coverage-stage evidence. Both builds are warning-free.

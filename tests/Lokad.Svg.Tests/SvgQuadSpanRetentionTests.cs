@@ -8,7 +8,7 @@ public sealed class SvgQuadSpanRetentionTests
     [Fact]
     public void Quad_path_retains_control_through_device_transform()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='translate(3,4)'><path d='M8,48 Q32,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='translate(3,4)'><path d='M8,48 Q32,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
@@ -22,7 +22,7 @@ public sealed class SvgQuadSpanRetentionTests
     [Fact]
     public void Quad_path_without_transform_retains_exact_endpoints()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         SvgQuadSpan span = Assert.Single(geometry.Polygon.QuadSpans);
@@ -51,7 +51,7 @@ public sealed class SvgQuadSpanRetentionTests
     [Fact]
     public void Line_path_carries_no_spans()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L4,8 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L4,8 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
@@ -61,7 +61,7 @@ public sealed class SvgQuadSpanRetentionTests
     [Fact]
     public void Evenodd_quad_contour_retains_spans_without_crossings()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z' fill='blue' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z' fill='blue' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Single(geometry.Polygon.QuadSpans);
@@ -70,7 +70,7 @@ public sealed class SvgQuadSpanRetentionTests
     public void Closing_bitwise_span_survives_stripping_translation()
     {
         // A span ending at a stripped closing duplicate keeps the duplicate explicitly, so axis-aligned closed loops substitute their closing curve exactly like dust-divergent ones.
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Q32,88 8,48 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Q32,88 8,48 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(2, geometry.Polygon.QuadSpans.Length);
         SvgQuadSpan closing = geometry.Polygon.QuadSpans[1];
@@ -82,7 +82,7 @@ public sealed class SvgQuadSpanRetentionTests
     [Fact]
     public void Dusty_path_retains_spans_and_authored_joints()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 L0.0000000004,0 L8,0 Q12,8 8,12 L0,12 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 L0.0000000004,0 L8,0 Q12,8 8,12 L0,12 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         SvgQuadSpan span = Assert.Single(geometry.Polygon.QuadSpans);
         Assert.Equal(new SvgDevicePoint(12, 8), span.Control);
@@ -94,7 +94,7 @@ public sealed class SvgQuadSpanRetentionTests
     {
         // Retaining the directed path keeps the tiny closing joint and its curve;
         // it must not snap the curve endpoint to the contour's initial vertex.
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 Q4,-4 8,0 L8,8 Q4,8 0.0000000004,0.0000000004 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 Q4,-4 8,0 L8,8 Q4,8 0.0000000004,0.0000000004 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(2, geometry.Polygon.QuadSpans.Length);
         SvgQuadSpan span = geometry.Polygon.QuadSpans[0];
@@ -112,7 +112,7 @@ public sealed class SvgQuadSpanRetentionTests
     [Fact]
     public void Quad_control_maps_exactly_through_nonuniform_scale()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='64'><g transform='scale(2,0.5)'><path d='M8,48 Q32,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='64'><g transform='scale(2,0.5)'><path d='M8,48 Q32,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         SvgQuadSpan span = Assert.Single(geometry.Polygon.QuadSpans);
         Assert.Equal(new SvgDevicePoint(64, 4), span.Control);
@@ -122,7 +122,7 @@ public sealed class SvgQuadSpanRetentionTests
     [Fact]
     public void Quad_control_maps_exactly_through_reflection()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='scale(-1,1) translate(-64,0)'><path d='M8,48 Q32,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='scale(-1,1) translate(-64,0)'><path d='M8,48 Q32,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         SvgQuadSpan span = Assert.Single(geometry.Polygon.QuadSpans);
         Assert.Equal(new SvgDevicePoint(32, 8), span.Control);

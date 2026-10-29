@@ -46,7 +46,7 @@ public sealed class SvgCubicSpanRetentionTests
     [Fact]
     public void Cubic_path_retains_controls_through_device_transform()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='translate(1,2)'><path d='M0,8 C3,0 6,0 8,8 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='translate(1,2)'><path d='M0,8 C3,0 6,0 8,8 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
@@ -61,7 +61,7 @@ public sealed class SvgCubicSpanRetentionTests
     [Fact]
     public void Mixed_quad_cubic_path_retains_both_channels()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 Q4,0 8,8 Z M0,0 C2,-4 6,-4 8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 Q4,0 8,8 Z M0,0 C2,-4 6,-4 8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Single(geometry.Polygon.QuadSpans);
@@ -89,7 +89,7 @@ public sealed class SvgCubicSpanRetentionTests
     [Fact]
     public void Dusty_multi_contour_path_retains_both_channels_and_authored_joints()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 Q4,0 8,8 Z M0,0 L0.0000000004,0 C2,-4 6,-4 8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 Q4,0 8,8 Z M0,0 L0.0000000004,0 C2,-4 6,-4 8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         SvgQuadSpan quad = Assert.Single(geometry.Polygon.QuadSpans);
         Assert.Equal(new SvgDevicePoint(4, 0), quad.Control);
@@ -106,7 +106,7 @@ public sealed class SvgCubicSpanRetentionTests
     {
         // Retaining the directed path keeps the tiny closing joint and its curve;
         // it must not snap the curve endpoint to the contour's initial vertex.
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 C2,-4 6,-4 8,0 L8,8 C6,8 2,8 0.0000000004,0.0000000004 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 C2,-4 6,-4 8,0 L8,8 C6,8 2,8 0.0000000004,0.0000000004 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(2, geometry.Polygon.CubicSpans.Length);
         SvgCubicSpan span = geometry.Polygon.CubicSpans[0];
@@ -178,7 +178,7 @@ public sealed class SvgCubicSpanRetentionTests
     [Fact]
     public void Rounded_rect_retains_four_arc_spans_with_tiled_endpoints()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='3' y='3' width='10' height='10' rx='3' fill='black'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='3' y='3' width='10' height='10' rx='3' fill='black'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
@@ -198,7 +198,7 @@ public sealed class SvgCubicSpanRetentionTests
     [Fact]
     public void Degenerate_rounded_rect_retains_no_arc_spans()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='3' y='3' width='10' height='10' rx='5' fill='black'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='3' y='3' width='10' height='10' rx='5' fill='black'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
@@ -209,7 +209,7 @@ public sealed class SvgCubicSpanRetentionTests
     [Fact]
     public void Cubic_controls_map_exactly_through_quarter_turn_matrix()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='matrix(0,1,-1,0,0,0)'><path d='M8,48 C24,8 40,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='matrix(0,1,-1,0,0,0)'><path d='M8,48 C24,8 40,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         SvgCubicSpan span = Assert.Single(geometry.Polygon.CubicSpans);
         Assert.Equal(new SvgDevicePoint(-8, 24), span.FirstControl);

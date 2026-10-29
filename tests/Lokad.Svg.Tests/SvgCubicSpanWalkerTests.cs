@@ -95,13 +95,11 @@ public sealed class SvgCubicSpanWalkerTests
         Assert.Equal(0, retryBudget.Snapshot().CurrentBytes);
     }
 
-    private static (SvgDevicePoint[] Points, int[] Ends, int[]? Signs, SvgQuadSpan[] QuadSpans, SvgCubicSpan[] CubicSpans) LowerCubicArch(bool evenOdd)
+    /// <summary>Transfers an owned parsed scene; callers retain it until every borrowed contour and walker has finished.</summary>
+    private static SvgRoot ParseCubicArch(bool evenOdd)
     {
         string rule = evenOdd ? " fill-rule='evenodd'" : string.Empty;
-        SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 C24,8 40,8 56,48 Z' fill='blue'" + rule + "/></svg>"), SvgRenderLimits.Default, CancellationToken.None);
-        SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
-        return (geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans, geometry.Polygon.CubicSpans);
+        return SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 C24,8 40,8 56,48 Z' fill='blue'" + rule + "/></svg>"), SvgRenderLimits.Default, CancellationToken.None);
     }
 
     private static byte[] WalkRows(SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, bool isEvenOdd, int firstRow, int pastLastRow, out bool eligible)
@@ -136,7 +134,10 @@ public sealed class SvgCubicSpanWalkerTests
     [Fact]
     public void Cubic_spans_substitute_analytic_edges_on_clean_arch()
     {
-        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans) = LowerCubicArch(false);
+        using SvgRoot scene = ParseCubicArch(false);
+        SvgGeometry geometry = Assert.Single(scene.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans) = (geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans, geometry.Polygon.CubicSpans);
         Assert.Empty(quadSpans);
         Assert.Single(cubicSpans);
         byte[] flat = WalkRows(points, ends, signs, quadSpans, Array.Empty<SvgCubicSpan>(), false, 8, 48, out bool flatEligible);
@@ -150,7 +151,10 @@ public sealed class SvgCubicSpanWalkerTests
     [Fact]
     public void Overlapping_cubic_spans_decline_to_flattened_rows()
     {
-        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans) = LowerCubicArch(false);
+        using SvgRoot scene = ParseCubicArch(false);
+        SvgGeometry geometry = Assert.Single(scene.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans) = (geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans, geometry.Polygon.CubicSpans);
         SvgCubicSpan first = cubicSpans[0];
         SvgCubicSpan[] overlapping = [first, new SvgCubicSpan(first.Contour, first.StartIndex, first.EndIndex, first.FirstControl, first.SecondControl)];
         byte[] flat = WalkRows(points, ends, signs, quadSpans, Array.Empty<SvgCubicSpan>(), false, 8, 48, out bool _);
@@ -163,7 +167,10 @@ public sealed class SvgCubicSpanWalkerTests
     [Fact]
     public void Evenodd_cubic_spans_decline_to_flattened_rows()
     {
-        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans) = LowerCubicArch(true);
+        using SvgRoot scene = ParseCubicArch(true);
+        SvgGeometry geometry = Assert.Single(scene.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans) = (geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans, geometry.Polygon.CubicSpans);
         Assert.Single(cubicSpans);
         byte[] flat = WalkRows(points, ends, signs, quadSpans, Array.Empty<SvgCubicSpan>(), true, 8, 48, out bool flatEligible);
         byte[] declined = WalkRows(points, ends, signs, quadSpans, cubicSpans, true, 8, 48, out bool declinedEligible);
@@ -176,7 +183,7 @@ public sealed class SvgCubicSpanWalkerTests
     [Fact]
     public void Flat_cubic_span_falls_back_to_flattened_rows()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C2,0 6,0 8,0 L8,8 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C2,0 6,0 8,0 L8,8 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         SvgCubicSpan span = Assert.Single(geometry.Polygon.CubicSpans);
         Assert.Equal(1, span.EndIndex - span.StartIndex);
@@ -191,7 +198,7 @@ public sealed class SvgCubicSpanWalkerTests
     [Fact]
     public void Multi_quad_and_cubic_substitute_per_contour()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z M8,20 C12,12 20,12 24,20 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z M8,20 C12,12 20,12 24,20 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Single(geometry.Polygon.QuadSpans);
         SvgCubicSpan cubic = Assert.Single(geometry.Polygon.CubicSpans);
@@ -210,7 +217,7 @@ public sealed class SvgCubicSpanWalkerTests
     [Fact]
     public void Multi_invalid_spans_fall_back_per_contour()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z M8,20 C12,12 20,12 24,20 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z M8,20 C12,12 20,12 24,20 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Single(geometry.Polygon.QuadSpans);
         SvgCubicSpan cubic = Assert.Single(geometry.Polygon.CubicSpans);
@@ -229,7 +236,7 @@ public sealed class SvgCubicSpanWalkerTests
     [Fact]
     public void Multi_cubic_spans_substitute_per_contour()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,30 C20,4 44,4 56,30 Z M8,60 C20,34 44,34 56,60 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,30 C20,4 44,4 56,30 Z M8,60 C20,34 44,34 56,60 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(2, geometry.Polygon.ContourEnds.Length);
         SvgCubicSpan[] spans = geometry.Polygon.CubicSpans;

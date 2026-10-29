@@ -5,7 +5,12 @@ using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 using System.Runtime.CompilerServices;
 
-/// <summary>Represents the parsed root viewport dimensions before scene construction.</summary>
+/// <summary>Owns one retained SVG scene and its logical viewport.</summary>
+/// <remarks>Geometry, commands and resource bindings borrow the scene storage.
+/// Copies share that owner; finish all borrowers before disposing it. Scene use
+/// and disposal belong to the conversion thread. Disposal is uncancelable and
+/// releases scene storage and its reservations, leaving borrowed SVG/font inputs
+/// with their caller.</remarks>
 internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, SvgSceneStorage? SceneStorage) : IDisposable
 {
     internal SvgSourceDiagnostic? UnsupportedDiagnostic { get; init; }
@@ -16,6 +21,7 @@ internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Hei
     /// <summary>Materializes visible rectangle bounds only for parser characterization tests.</summary>
     internal SvgRectangle[] Rectangles => SvgGeometry.ToRectangles(Geometries);
 
+    /// <summary>Idempotently releases the shared scene owner after every borrower has finished.</summary>
     public void Dispose() => SceneStorage?.Dispose();
 }
 
