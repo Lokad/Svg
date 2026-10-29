@@ -106,9 +106,10 @@ internal sealed class SvgViewportTextContext : IDisposable
     internal static SvgViewportTextContext Create(SvgDocumentState state, SvgInheritedContainer? inheritance, SvgAffineTransform placement, SvgAffineViewportClip viewport)
     {
         // The nullable value fields occupy their full storage even when absent.
-        // Include the object header/references and reservation token; owner-list
+        // Include the object header/references and reservation token, including
+        // its borrowed shared-reservation reference; owner-list
         // backing storage is accounted separately by its budgeted collection.
-        long storageBytes = 72L + Unsafe.SizeOf<SvgInheritedContainer?>()
+        long storageBytes = 80L + Unsafe.SizeOf<SvgInheritedContainer?>()
             + Unsafe.SizeOf<SvgAffineTransform>() + Unsafe.SizeOf<SvgAffineViewportClip?>();
         RenderBudget.BudgetReservation owner = state.Budget.Reserve(storageBytes, SvgMemoryCategory.Parser);
         try
