@@ -5,7 +5,7 @@ internal readonly record struct SvgTextPositionSpan(int Start, int End, SvgTextP
 
 /// <summary>Advances one ancestor's lists once per normalized scalar, independently of descendant overrides.</summary>
 /// <remarks>Parser-thread confined, allocation-free, and borrowed from the owning layout buffer.
-/// The caller charges each step and checks cancellation; no cursor owns storage.</remarks>
+/// The caller checks cancellation per step; no cursor owns storage.</remarks>
 internal struct SvgTextPositionSpanCursor
 {
     private readonly SvgTextPositionSpan _span;

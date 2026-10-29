@@ -41,10 +41,10 @@ public sealed partial class OpenTypeFontTests
         SvgTextGlyphPaint paint = new(new(new(255, 255, 255, 255), 1), true) { FillServer = "url(#g)" };
         SvgGlyphDeviceMetrics metrics = new(1, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, false);
         RenderBudget budget = new(1_000_000);
-        using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AAA", [], [], [], paint, metrics, snapshot, budget, new(long.MaxValue), CancellationToken.None))
+        using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AAA", [], [], [], paint, metrics, snapshot, budget, CancellationToken.None))
         {
             Assert.Single(run.PaintFragments.ToArray());
-            SvgRectangle box = SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, budget, new(long.MaxValue), CancellationToken.None);
+            SvgRectangle box = SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, budget, CancellationToken.None);
             Assert.Equal(12, box.X); Assert.Equal(13, box.Y);
             // FreeType quantizes size to 26.6 before advancing; DirectWrite keeps scalar metrics.
             Assert.Equal(OperatingSystem.IsWindows() ? 43.875 : 43.859375, box.Width);

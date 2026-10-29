@@ -34,8 +34,7 @@ public sealed class SvgAffinePaintReplayTests
         byte[] unchanged = input.ToArray();
         SvgRenderOptions options = new(null, 8, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget budget = new(8_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             byte[] expected;
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, budget, CancellationToken.None)) expected = surface.Pixels.ToArray();
@@ -57,8 +56,6 @@ public sealed class SvgAffinePaintReplayTests
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget deniedWork = new(8_000_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgRootParser.Parse(input, SvgRenderLimits.Default, deniedWork, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, deniedWork.Snapshot().CurrentBytes);
         RenderBudget deniedMemory = new(Math.Max(1, budget.Snapshot().PeakBytes - 1_024));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>

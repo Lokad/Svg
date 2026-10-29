@@ -44,7 +44,7 @@ public sealed partial class OpenTypeFontTests
     {
         SvgTextPositionLists lists = new("1 2 3 4", "10 20 30 40", "0 1 2 3", null, "5 15") { CharacterOffset = 2 };
         RenderBudget budget = new(100_000);
-        using (OwnedParserArray<SvgTextPositionAdjustment> positions = lists.Build("AA", [], budget, new(1000), CancellationToken.None))
+        using (OwnedParserArray<SvgTextPositionAdjustment> positions = lists.Build("AA", [], budget, CancellationToken.None))
         {
             Assert.Equal(2, positions.Items.Length);
             Assert.Equal(3, positions.Items[0].X); Assert.Equal(30, positions.Items[0].Y); Assert.Equal(2, positions.Items[0].Dx);

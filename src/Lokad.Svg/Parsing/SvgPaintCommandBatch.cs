@@ -12,7 +12,7 @@ internal readonly record struct SvgPendingCommandStart(int Text, int Clip, int M
 /// <remarks>Single-threaded, conversion-local scratch borrows the scene and document. Geometry and paint
 /// owners never move. Emissions must follow descending original positions and append commands only.
 /// Scope ranges created during an emission follow that tail; older ranges follow original boundaries.
-/// Storage reserves before growth, every traversal charges work and cancellation, and failure leaves
+/// Storage reserves before growth, every traversal observes cancellation, and failure leaves
 /// retained owners with document teardown. Disposal releases scratch without observing cancellation.</remarks>
 internal sealed class SvgPaintCommandBatch : IDisposable
 {
@@ -20,23 +20,21 @@ internal sealed class SvgPaintCommandBatch : IDisposable
 
     private readonly SvgDocumentState _state;
     private readonly SvgSceneBuilder _scene;
-    private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private readonly SvgPendingCommandStart _first;
     private readonly int _originalCount;
     private readonly SvgPendingCommandStart _end;
     private readonly BudgetedParserList<Replacement> _replacements;
 
-    internal SvgPaintCommandBatch(SvgDocumentState state, SvgSceneBuilder scene, SvgPendingCommandStart first, SvgPendingCommandStart end, ParserWorkCounter work, CancellationToken token)
+    internal SvgPaintCommandBatch(SvgDocumentState state, SvgSceneBuilder scene, SvgPendingCommandStart first, SvgPendingCommandStart end, CancellationToken token)
     {
         _state = state;
         _scene = scene;
-        _work = work;
         _token = token;
         _first = first;
         _originalCount = scene.CommandCount;
         _end = end;
-        _replacements = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        _replacements = new(state.Budget, SvgMemoryCategory.Parser, token);
     }
 
     internal SvgPaintCommandEmission Begin(int position)
@@ -59,14 +57,14 @@ internal sealed class SvgPaintCommandBatch : IDisposable
         if (_replacements.Count == 0) return;
         using RenderBudget.BudgetReservation mapOwner = _state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(_originalCount + 1), SvgMemoryCategory.Parser);
         int[] positions = new int[_originalCount + 1];
-        BudgetedSceneList<SvgDrawCommand> commands = new(_state.Budget, _work, _token);
+        BudgetedSceneList<SvgDrawCommand> commands = new(_state.Budget, _token);
         bool transferred = false;
         try
         {
             int next = _replacements.Count - 1;
             for (int index = 0; index < _originalCount; index++)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 positions[index] = commands.Count;
                 if (next < 0 || _replacements[next].Emission.Position != index)
                 {
@@ -76,25 +74,25 @@ internal sealed class SvgPaintCommandBatch : IDisposable
                 Replacement replacement = _replacements[next--];
                 for (int offset = 0; offset < replacement.Count; offset++)
                 {
-                    _work.Consume(_token);
+                    _token.ThrowIfCancellationRequested();
                     commands.Add(_scene.CommandAt(replacement.Emission.TailStart + offset));
                 }
             }
             positions[_originalCount] = commands.Count;
-            SvgReferenceResolver.RemapPendingCommandRanges(_state, _scene, positions, _first, _end, _work, _token);
+            SvgReferenceResolver.RemapPendingCommandRanges(_state, _scene, positions, _first, _end, _token);
             for (int index = 0; index < scopes.Length; index++)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 scopes[index] = scopes[index] with { FirstCommandIndex = positions[scopes[index].FirstCommandIndex] };
             }
             foreach (Replacement replacement in _replacements.AsSpan())
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 SvgPaintCommandEmission emission = replacement.Emission;
                 int shift = positions[emission.Position] - emission.TailStart;
                 for (int index = emission.FirstClip; index < replacement.EndClip; index++)
                 {
-                    _work.Consume(_token);
+                    _token.ThrowIfCancellationRequested();
                     PendingGroupClip clip = _state.PendingGroupClips[index];
                     if (ReferenceEquals(clip.Scene, _scene)) _state.PendingGroupClips[index] = clip with
                     {
@@ -104,7 +102,7 @@ internal sealed class SvgPaintCommandBatch : IDisposable
                 }
                 for (int index = emission.FirstMask; index < replacement.EndMask; index++)
                 {
-                    _work.Consume(_token);
+                    _token.ThrowIfCancellationRequested();
                     PendingGroupMask mask = _state.PendingGroupMasks[index];
                     if (ReferenceEquals(mask.Scene, _scene)) _state.PendingGroupMasks[index] = mask with
                     {

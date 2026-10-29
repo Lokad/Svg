@@ -9,9 +9,8 @@ public sealed class SvgSceneTransferTests
     public void Materialized_content_rebinds_bounds_and_enclosing_clips_without_changing_sources_or_sibling_sharing()
     {
         RenderBudget budget = new(2_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgDocumentState state = new(budget, work, CancellationToken.None))
-        using (SvgSceneBuilder destination = new(budget, work, CancellationToken.None))
+        using (SvgDocumentState state = new(budget, CancellationToken.None))
+        using (SvgSceneBuilder destination = new(budget, CancellationToken.None))
         {
             SvgSceneBuilder source = state.Scene;
             int enclosing = source.AddMaskContent(new([], 255, true) { ConstantAlpha = 191 });
@@ -24,7 +23,7 @@ public sealed class SvgSceneTransferTests
             operation.Resolved = true; operation.Value = 255; operation.RegionKind = SvgLayerRegionKind.AffineViewport;
             operation.ContentIndex = child; operation.EnclosingClip = outer; operation.Region = new(1, 1, 6, 6);
             SvgLeafMaskBinding binding = SvgLeafMaskComposition.NewBinding(state, operation, null);
-            using (SvgLeafMaskMapper mapper = SvgLeafMaskMapper.CreateSceneTransfer(state, source, destination, work, CancellationToken.None))
+            using (SvgLeafMaskMapper mapper = SvgLeafMaskMapper.CreateSceneTransfer(state, source, destination, CancellationToken.None))
             {
                 SvgLeafMaskBinding mapped = Assert.IsType<SvgLeafMaskBinding>(mapper.Map(binding));
                 Assert.Same(mapped, mapper.Map(binding));
@@ -45,35 +44,29 @@ public sealed class SvgSceneTransferTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void Denied_transfer_releases_scratch_and_preserves_source_for_retry(bool cancelled)
+    [Fact]
+    public void Cancelled_transfer_releases_scratch_and_preserves_source_for_retry()
     {
         RenderBudget budget = new(2_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgDocumentState state = new(budget, work, CancellationToken.None))
-        using (SvgSceneBuilder destination = new(budget, work, CancellationToken.None))
+        using (SvgDocumentState state = new(budget, CancellationToken.None))
+        using (SvgSceneBuilder destination = new(budget, CancellationToken.None))
         {
             int sourceIndex = state.Scene.AddMaskContent(new([], 255, true) { ConstantAlpha = 191 });
             SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
             operation.Resolved = true; operation.Value = 255; operation.ContentIndex = sourceIndex;
             SvgLeafMaskBinding binding = SvgLeafMaskComposition.NewBinding(state, operation, null);
             using CancellationTokenSource cancellation = new();
-            if (cancelled) cancellation.Cancel();
+            cancellation.Cancel();
             long before = budget.Snapshot().CurrentBytes;
             using (SvgLeafMaskMapper denied = SvgLeafMaskMapper.CreateSceneTransfer(state, state.Scene, destination,
-                cancelled ? work : new(1), cancellation.Token))
+                cancellation.Token))
             {
-                if (cancelled)
-                    Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => denied.Map(binding)).CancellationToken);
-                else
-                    Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => denied.Map(binding)).ErrorCode);
+                Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => denied.Map(binding)).CancellationToken);
             }
             Assert.Equal(before, budget.Snapshot().CurrentBytes);
             Assert.Equal(sourceIndex, operation.ContentIndex);
             Assert.Equal((byte)191, state.Scene.MaskContentAt(sourceIndex).ConstantAlpha);
-            using SvgLeafMaskMapper retry = SvgLeafMaskMapper.CreateSceneTransfer(state, state.Scene, destination, work, CancellationToken.None);
+            using SvgLeafMaskMapper retry = SvgLeafMaskMapper.CreateSceneTransfer(state, state.Scene, destination, CancellationToken.None);
             SvgLeafMaskBinding mapped = Assert.IsType<SvgLeafMaskBinding>(retry.Map(binding));
             Assert.Equal((byte)191, destination.MaskContentAt(mapped.Operation.ContentIndex).ConstantAlpha);
         }

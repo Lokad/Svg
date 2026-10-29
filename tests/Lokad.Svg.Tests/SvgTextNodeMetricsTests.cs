@@ -74,11 +74,10 @@ public sealed class SvgTextNodeMetricsTests
         double outputScale = row.GetProperty("scale").GetDouble();
         SvgRenderOptions options = new(null, outputScale, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
         RenderBudget parser = new(8_000_000), raster = new(8_000_000);
-        ParserWorkCounter work = new(options.Limits.MaximumWorkUnits);
-        using (SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(input, options.Limits, parser, work, CancellationToken.None))
+        using (SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(input, options.Limits, parser, CancellationToken.None))
         {
             SvgRenderOptions rasterOptions = preparation.ResolveRasterOptions(options);
-            using SvgRoot scene = SvgRootParser.ParsePrepared(input, options.Limits, parser, fonts, work, CancellationToken.None,
+            using SvgRoot scene = SvgRootParser.ParsePrepared(input, options.Limits, parser, fonts, CancellationToken.None,
                 preparation.GetOutputMap(rasterOptions), rasterOptions.Viewport, rasterOptions.OutputScale, preparation);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, rasterOptions, raster, CancellationToken.None);
             Assert.Equal(row.GetProperty("platforms").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux")
@@ -103,8 +102,7 @@ public sealed class SvgTextNodeMetricsTests
         FontProvider provider = new();
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog, provider, CancellationToken.None);
         RenderBudget measured = new(8_000_000);
-        ParserWorkCounter work = new(10_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, fonts, work, CancellationToken.None)) { }
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, fonts, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         foreach (long limit in new[] { 1, measured.Snapshot().PeakBytes / 2 })
         {
@@ -112,7 +110,6 @@ public sealed class SvgTextNodeMetricsTests
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, fonts, new ParserWorkCounter(Math.Max(1, work.Used / 2)), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         using CancellationTokenSource canceled = new();
         canceled.Cancel();

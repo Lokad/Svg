@@ -100,14 +100,12 @@ public sealed class SvgImageInstanceViewportTests
         string image = Image(true, "width='50%' height='50%'");
         byte[] input = Input("<defs>" + image + " id='s'/></defs><svg width='16' height='16'><use href='#s'/></svg>");
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(1_000_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();

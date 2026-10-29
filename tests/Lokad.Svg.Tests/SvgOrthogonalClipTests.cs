@@ -63,20 +63,6 @@ public sealed class SvgOrthogonalClipTests
     }
 
     [Fact]
-    public void Parser_work_denial_releases_contour_and_scene_storage()
-    {
-        byte[] input = Input("path");
-        ParserWorkCounter measuredWork = new(SvgRenderLimits.Default.MaximumWorkUnits);
-        RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, measuredWork, CancellationToken.None))
-            Assert.Single(root.Geometries);
-        RenderBudget denied = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new ParserWorkCounter(measuredWork.Used - 1), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Equal(0, denied.Snapshot().CurrentBytes);
-    }
-
-    [Fact]
     public void Cancellation_after_clipped_preparation_releases_raster_storage()
     {
         using SvgRoot root = SvgRootParser.Parse(Input("path"), SvgRenderLimits.Default, CancellationToken.None);

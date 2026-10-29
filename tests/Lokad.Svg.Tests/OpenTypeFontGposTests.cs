@@ -14,9 +14,9 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] font = CreateKerningGraphFont([CreateKerningLookup(2, 0, CreateClassPairs(ranges, -300))], [0]);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
-        Assert.Equal(expected, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, null, CancellationToken.None));
-        Assert.Equal(0, OpenTypeFont.GetPairAdjustment(font, 0, 1, metrics, null, CancellationToken.None));
-        Assert.Equal(-50, OpenTypeFont.GetPairAdjustment(font, 1, 0, metrics, null, CancellationToken.None));
+        Assert.Equal(expected, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, CancellationToken.None));
+        Assert.Equal(0, OpenTypeFont.GetPairAdjustment(font, 0, 1, metrics, CancellationToken.None));
+        Assert.Equal(-50, OpenTypeFont.GetPairAdjustment(font, 1, 0, metrics, CancellationToken.None));
     }
 
     [Theory]
@@ -25,7 +25,7 @@ public sealed partial class OpenTypeFontTests
     public void Gpos_first_matching_subtable_includes_zero_adjustment(short first, int expected)
     {
         byte[] font = CreateKerningGraphFont([CreateKerningLookup(2, 0, CreatePairList(1, first), CreateClassPairs(false, -300))], [0]);
-        Assert.Equal(expected, OpenTypeFont.GetPairAdjustment(font, 1, 1, OpenTypeFont.ParseMetrics(font, CancellationToken.None), null, CancellationToken.None));
+        Assert.Equal(expected, OpenTypeFont.GetPairAdjustment(font, 1, 1, OpenTypeFont.ParseMetrics(font, CancellationToken.None), CancellationToken.None));
     }
 
     [Fact]
@@ -33,8 +33,8 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] font = CreateKerningGraphFont([CreateKerningLookup(2, 0, CreatePairList(0, -100), CreateClassPairs(true, -300))], [0]);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
-        Assert.Equal(-300, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, null, CancellationToken.None));
-        Assert.Equal(-100, OpenTypeFont.GetPairAdjustment(font, 1, 0, metrics, null, CancellationToken.None));
+        Assert.Equal(-300, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, CancellationToken.None));
+        Assert.Equal(-100, OpenTypeFont.GetPairAdjustment(font, 1, 0, metrics, CancellationToken.None));
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public sealed partial class OpenTypeFontTests
         byte[] font = CreateKerningGraphFont([CreateKerningLookup(2, 0, CreatePairList(1, -300)), CreateKerningLookup(2, 0, CreateClassPairs(false, -50))], [1, 0, 1]);
         byte[] unchanged = font.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
-        Assert.Equal(-350, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, null, CancellationToken.None));
+        Assert.Equal(-350, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, CancellationToken.None));
         Assert.Equal(unchanged, font);
     }
 
@@ -56,7 +56,7 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(font)], CancellationToken.None);
         SvgPreparedFont prepared = Assert.Single(snapshot.Fonts);
         Assert.Single(SvgGlyphLayout.Layout(prepared, "A", 100, 0, 3, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.ValidateGlyphPositioning(font, 0, prepared.Metrics, null, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.ValidateGlyphPositioning(font, 0, prepared.Metrics, CancellationToken.None)).ErrorCode);
 
         byte[] covered = font.ToArray();
         OpenTypeGposPairTable graph = Assert.IsType<OpenTypeGposPairTable>(prepared.Metrics.Gpos);
@@ -101,19 +101,15 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public void Gpos_parse_and_query_work_is_bounded_and_cancellable()
+    public void Gpos_parse_and_query_preserve_cancellation()
     {
         byte[] font = CreateKerningGraphFont([CreateKerningLookup(2, 0, CreateClassPairs(true, -300))], [0]);
-        ParserWorkCounter work = new(long.MaxValue);
-        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, work, CancellationToken.None);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.ParseMetrics(font, new ParserWorkCounter(work.Used - 1), CancellationToken.None)).ErrorCode);
-        ParserWorkCounter queryWork = new(long.MaxValue);
-        Assert.Equal(-300, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, queryWork, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, new ParserWorkCounter(queryWork.Used - 1), CancellationToken.None)).ErrorCode);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+        Assert.Equal(-300, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, CancellationToken.None));
         using CancellationTokenSource cancelled = new();
         cancelled.Cancel();
-        Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.ValidateGlyphPositioning(font, 1, metrics, null, cancelled.Token));
-        Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, null, cancelled.Token));
+        Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.ValidateGlyphPositioning(font, 1, metrics, cancelled.Token));
+        Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, cancelled.Token));
     }
 
     [Fact]
@@ -123,10 +119,10 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.ParseMetrics(font, CancellationToken.None)).ErrorCode);
         font = AddGlyphDefinitions(font, 1);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
-        Assert.Equal(-100, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, null, CancellationToken.None));
+        Assert.Equal(-100, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, CancellationToken.None));
         WriteUInt16(font, font.Length - 2, 3);
         metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.ValidateGlyphPositioning(font, 1, metrics, null, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.ValidateGlyphPositioning(font, 1, metrics, CancellationToken.None)).ErrorCode);
 
         static byte[] AddGlyphDefinitions(byte[] original, ushort glyphClass)
         {

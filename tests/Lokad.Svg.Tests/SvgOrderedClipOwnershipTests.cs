@@ -18,25 +18,19 @@ public sealed class SvgOrderedClipOwnershipTests
         {
             SvgClipChild[] children = [new(first, false, SvgClipPaintKind.Rectangle), new(second, false, SvgClipPaintKind.Rectangle), new(third, false, SvgClipPaintKind.Rectangle)];
             SvgAuthoredPathCommand[][] before = children.Select(child => child.Path.Commands.ToArray()).ToArray();
-            ParserWorkCounter work = new(1_000_000);
             SvgAuthoredPathCommand[] expected;
-            using (SvgAuthoredPath result = SvgClipUnion.ResolveOrdered(children, scratch, work, CancellationToken.None).Path)
+            using (SvgAuthoredPath result = SvgClipUnion.ResolveOrdered(children, scratch, CancellationToken.None).Path)
                 expected = result.Commands.ToArray();
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
             RenderBudget denied = new(scratch.Snapshot().PeakBytes - 1);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgClipUnion.ResolveOrdered(children, denied, new(1_000_000), CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgClipUnion.ResolveOrdered(children, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
-            foreach (long limit in new[] { work.Used / 2, work.Used - 1 })
-            {
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgClipUnion.ResolveOrdered(children, scratch, new(limit), CancellationToken.None)).ErrorCode);
-                Assert.Equal(0, scratch.Snapshot().CurrentBytes);
-            }
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
             Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
-                SvgClipUnion.ResolveOrdered(children, scratch, new(1_000_000), cancellation.Token)).CancellationToken);
+                SvgClipUnion.ResolveOrdered(children, scratch, cancellation.Token)).CancellationToken);
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
-            using (SvgAuthoredPath retry = SvgClipUnion.ResolveOrdered(children, scratch, new(1_000_000), CancellationToken.None).Path)
+            using (SvgAuthoredPath retry = SvgClipUnion.ResolveOrdered(children, scratch, CancellationToken.None).Path)
                 Assert.Equal(expected, retry.Commands.ToArray());
             for (int index = 0; index < children.Length; index++) Assert.Equal(before[index], children[index].Path.Commands.ToArray());
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);

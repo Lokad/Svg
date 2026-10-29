@@ -28,7 +28,7 @@ public sealed partial class OpenTypeFontTests
         => Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeUnhintedDeviceScale.Create(size, 1000)).ErrorCode);
 
     [Fact]
-    public void Unhinted_point_assembly_releases_owners_on_success_denial_cancellation_and_work_exhaustion()
+    public void Unhinted_point_assembly_releases_owners_on_success_denial_cancellation()
     {
         byte[] bytes = CreateTriangleFont();
         OpenTypeTableRange range = OpenTypeFont.GetGlyphDataRange(bytes, 2, CancellationToken.None);
@@ -40,18 +40,17 @@ public sealed partial class OpenTypeFontTests
         byte[] unchanged = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         RenderBudget budget = new(long.MaxValue);
-        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetUnhintedDeviceContours(bytes, 2, metrics, 20.48, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetUnhintedDeviceContours(bytes, 2, metrics, 20.48, budget, CancellationToken.None))
             Assert.NotEmpty(contours.Segments);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, bytes);
         RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetUnhintedDeviceContours(bytes, 2, metrics, 20.48, denied, new(long.MaxValue), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetUnhintedDeviceContours(bytes, 2, metrics, 20.48, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Throws<OperationCanceledException>(() => OpenTypeFont.GetUnhintedDeviceContours(bytes, 2, metrics, 20.48, budget, new(long.MaxValue), cancellation.Token));
+        Assert.Throws<OperationCanceledException>(() => OpenTypeFont.GetUnhintedDeviceContours(bytes, 2, metrics, 20.48, budget, cancellation.Token));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetUnhintedDeviceContours(bytes, 2, metrics, 20.48, budget, new(1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 }

@@ -21,11 +21,10 @@ public sealed class SvgCurveMeasureTests
     {
         SvgDevicePoint[] points = [new(0, 0), new(0, 0), new(3, 4), new(6, 8)];
         if (kind == 0) points[1] = points[2];
-        SvgDevicePoint tangent = SvgCurveMeasure.Tangent((SvgMeasuredCurveKind)kind, points, 2, parameter, new(long.MaxValue), CancellationToken.None);
+        SvgDevicePoint tangent = SvgCurveMeasure.Tangent((SvgMeasuredCurveKind)kind, points, 2, parameter, CancellationToken.None);
         Assert.Equal(new(x, y), tangent);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgCurveMeasure.Tangent((SvgMeasuredCurveKind)kind, points, 2, parameter, new(0), CancellationToken.None)).ErrorCode);
         using CancellationTokenSource cancelled = new(); cancelled.Cancel();
-        Assert.Equal(cancelled.Token, Assert.Throws<OperationCanceledException>(() => SvgCurveMeasure.Tangent((SvgMeasuredCurveKind)kind, points, 2, parameter, new(long.MaxValue), cancelled.Token)).CancellationToken);
+        Assert.Equal(cancelled.Token, Assert.Throws<OperationCanceledException>(() => SvgCurveMeasure.Tangent((SvgMeasuredCurveKind)kind, points, 2, parameter, cancelled.Token)).CancellationToken);
     }
 
     [Fact]
@@ -39,7 +38,7 @@ public sealed class SvgCurveMeasureTests
             float weight = Number(fields[2]), scale = Number(fields[3]), initial = Number(fields[4]);
             SvgDevicePoint[] points = Points(fields[5]);
             int actualCount = SvgCurveMeasure.Measure(kind, points, weight, scale, initial, steps, out float distance,
-                new ParserWorkCounter(100_000), CancellationToken.None);
+CancellationToken.None);
             EqualBits(fields[0] + " distance", Bits(fields[6]), distance);
             string[] expected = fields[7].Split(';', StringSplitOptions.RemoveEmptyEntries);
             Assert.Equal(expected.Length, actualCount);
@@ -53,7 +52,7 @@ public sealed class SvgCurveMeasureTests
             {
                 string[] values = lookup.Split(':');
                 float parameter = SvgCurveMeasure.ParameterAt(steps[..actualCount], initial,
-                    BitConverter.UInt32BitsToSingle(Bits(values[0])), new ParserWorkCounter(100_000), CancellationToken.None);
+                    BitConverter.UInt32BitsToSingle(Bits(values[0])), CancellationToken.None);
                 EqualBits(fields[0] + " parameter " + values[0], Bits(values[1]), parameter);
             }
             maximumSteps = Math.Max(maximumSteps, actualCount);
@@ -77,7 +76,7 @@ public sealed class SvgCurveMeasureTests
                 uint[] values = expected.Split(':').Select(Bits).ToArray();
                 bool valid = SvgCurveMeasure.Cut(kind, points, Number(fields[2]), BitConverter.UInt32BitsToSingle(values[0]),
                     BitConverter.UInt32BitsToSingle(values[1]), cut, out SvgMeasuredCurveKind resultKind, out float resultWeight,
-                    new ParserWorkCounter(100_000), CancellationToken.None);
+CancellationToken.None);
                 Assert.Equal(values[2] != 0, valid);
                 if (valid)
                 {
@@ -101,29 +100,25 @@ public sealed class SvgCurveMeasureTests
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]
-    public void Measurement_and_cut_denial_preserve_token_and_allow_successful_retry(int curveKind)
+    public void Measurement_and_cut_preserve_cancellation_and_allow_retry(int curveKind)
     {
         SvgMeasuredCurveKind kind = (SvgMeasuredCurveKind)curveKind;
         SvgDevicePoint[] points = [new(6, 40), new(-12, -12), new(76, 80), new(58, 12)];
         SvgCurveMeasureStep[] steps = new SvgCurveMeasureStep[SvgCurveMeasure.MaximumStepCount];
         SvgDevicePoint[] cut = [new(-1, -1), new(-1, -1), new(-1, -1), new(-1, -1)];
-        SvgException before = Assert.Throws<SvgException>(() => Measure(new(0), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, before.ErrorCode);
         Assert.All(steps, v => Assert.Equal(default, v));
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Measure(new(1), CancellationToken.None)).ErrorCode);
         using CancellationTokenSource cancelled = new(); cancelled.Cancel();
-        OperationCanceledException measured = Assert.ThrowsAny<OperationCanceledException>(() => Measure(new(100_000), cancelled.Token));
+        OperationCanceledException measured = Assert.ThrowsAny<OperationCanceledException>(() => Measure(cancelled.Token));
         Assert.Equal(cancelled.Token, measured.CancellationToken);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Cut(new(8), CancellationToken.None)).ErrorCode);
         Assert.All(cut, v => Assert.Equal(new SvgDevicePoint(-1, -1), v));
-        OperationCanceledException chopped = Assert.ThrowsAny<OperationCanceledException>(() => Cut(new(100_000), cancelled.Token));
+        OperationCanceledException chopped = Assert.ThrowsAny<OperationCanceledException>(() => Cut(cancelled.Token));
         Assert.Equal(cancelled.Token, chopped.CancellationToken);
-        Assert.True(Measure(new(100_000), CancellationToken.None) > 0);
-        Assert.True(Cut(new(100_000), CancellationToken.None));
+        Assert.True(Measure(CancellationToken.None) > 0);
+        Assert.True(Cut(CancellationToken.None));
         Assert.NotEqual(new SvgDevicePoint(-1, -1), cut[0]);
 
-        int Measure(ParserWorkCounter work, CancellationToken token) => SvgCurveMeasure.Measure(kind, points, .75f, 1, 0, steps, out _, work, token);
-        bool Cut(ParserWorkCounter work, CancellationToken token) => SvgCurveMeasure.Cut(kind, points, .75f, .25f, .75f, cut, out _, out _, work, token);
+        int Measure(CancellationToken token) => SvgCurveMeasure.Measure(kind, points, .75f, 1, 0, steps, out _, token);
+        bool Cut(CancellationToken token) => SvgCurveMeasure.Cut(kind, points, .75f, .25f, .75f, cut, out _, out _, token);
     }
 
     [Fact]
@@ -132,18 +127,18 @@ public sealed class SvgCurveMeasureTests
         SvgDevicePoint[] points = [new(6, 40), new(-12, -12), new(76, 80), new(58, 12)];
         SvgCurveMeasureStep[] steps = [default, new(-1, -1)];
         SvgException denied = Assert.Throws<SvgException>(() => SvgCurveMeasure.Measure(SvgMeasuredCurveKind.Cubic, points, 1, 4, 0,
-            steps.AsSpan(0, 1), out _, new(100_000), CancellationToken.None));
+            steps.AsSpan(0, 1), out _, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         Assert.Equal(new SvgCurveMeasureStep(-1, -1), steps[1]);
         SvgDevicePoint[] degenerate = [new(8, 8), new(8, 8), new(8, 8), new(8, 8)];
         foreach (SvgMeasuredCurveKind kind in Enum.GetValues<SvgMeasuredCurveKind>())
         {
-            Assert.Equal(0, SvgCurveMeasure.Measure(kind, degenerate, 1, 1, 0, steps, out float distance, new(100_000), CancellationToken.None));
+            Assert.Equal(0, SvgCurveMeasure.Measure(kind, degenerate, 1, 1, 0, steps, out float distance, CancellationToken.None));
             Assert.Equal(0, distance);
         }
         // A short curve cannot advance a large float accumulator; retain the native no-record rule.
         SvgDevicePoint[] tiny = [new(0, 0), new(.0001f, 0)];
-        Assert.Equal(0, SvgCurveMeasure.Measure(SvgMeasuredCurveKind.Line, tiny, 1, 1, 100_000, steps, out float unchanged, new(100_000), CancellationToken.None));
+        Assert.Equal(0, SvgCurveMeasure.Measure(SvgMeasuredCurveKind.Line, tiny, 1, 1, 100_000, steps, out float unchanged, CancellationToken.None));
         Assert.Equal(100_000, unchanged);
     }
 

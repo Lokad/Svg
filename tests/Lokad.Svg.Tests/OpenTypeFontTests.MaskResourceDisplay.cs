@@ -109,14 +109,12 @@ public sealed partial class OpenTypeFontTests
         if (ancestor) definition = "<g display='none'>" + definition + "</g>";
         byte[] input = Document(definition + "<rect width='8' height='8' fill='red' mask='url(#m)'/>");
         RenderBudget baseline = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, baseline, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, baseline, null, CancellationToken.None)) { }
         Assert.Equal(0, baseline.Snapshot().CurrentBytes);
         RenderBudget denied = new(baseline.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(1_000_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();

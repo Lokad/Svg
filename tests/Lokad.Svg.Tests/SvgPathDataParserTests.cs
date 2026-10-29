@@ -82,7 +82,7 @@ public sealed class SvgPathDataParserTests
     public void Transform_maps_vertices()
     {
         SvgContourBuilder builder = new(16, 4);
-        SvgPathDataParser.ParsePath("M1 1L2 2Z", SvgAffineTransform.FromScale(2, 3), builder, new SvgFlattenPolicy(0.5, 64, 256), 16, new ParserWorkCounter(1_000_000), CancellationToken.None, null);
+        SvgPathDataParser.ParsePath("M1 1L2 2Z", SvgAffineTransform.FromScale(2, 3), builder, new SvgFlattenPolicy(0.5, 64, 256), 16, CancellationToken.None, null);
 
         Assert.Equal([new SvgDevicePoint(2, 3), new SvgDevicePoint(4, 6)], builder.GetContour(0).ToArray());
     }
@@ -223,7 +223,7 @@ public sealed class SvgPathDataParserTests
     {
         SvgContourBuilder scaled = new(256, 4);
         scaled.EnableQuadSpanRetention();
-        SvgPathDataParser.ParsePath("M8 0A8 8 0 0 1 0 8Z", SvgAffineTransform.FromScale(2, 2), scaled, new SvgFlattenPolicy(0.5, 64, 256), 64, new ParserWorkCounter(1_000_000), CancellationToken.None, null);
+        SvgPathDataParser.ParsePath("M8 0A8 8 0 0 1 0 8Z", SvgAffineTransform.FromScale(2, 2), scaled, new SvgFlattenPolicy(0.5, 64, 256), 64, CancellationToken.None, null);
         SvgQuadSpan quarter = Assert.Single(scaled.GetQuadSpans());
         Assert.Equal(16, quarter.Control.X, 5);
         Assert.Equal(16, quarter.Control.Y, 5);
@@ -245,7 +245,7 @@ public sealed class SvgPathDataParserTests
     private static SvgContourBuilder ParseCurve(string value, double flatness)
     {
         SvgContourBuilder builder = new(256, 4);
-        SvgPathDataParser.ParsePath(value, SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(flatness, 64, 256), 64, new ParserWorkCounter(1_000_000), CancellationToken.None, null);
+        SvgPathDataParser.ParsePath(value, SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(flatness, 64, 256), 64, CancellationToken.None, null);
         return builder;
     }
 
@@ -273,15 +273,7 @@ public sealed class SvgPathDataParserTests
     {
         SvgContourBuilder builder = new(16, 4);
 
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgPathDataParser.ParsePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 1, new ParserWorkCounter(1_000_000), CancellationToken.None, null)).ErrorCode);
-    }
-
-    [Fact]
-    public void Work_budget_denies()
-    {
-        SvgContourBuilder builder = new(16, 4);
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgPathDataParser.ParsePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 16, new ParserWorkCounter(0), CancellationToken.None, null)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgPathDataParser.ParsePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 1, CancellationToken.None, null)).ErrorCode);
     }
 
     [Fact]
@@ -291,13 +283,13 @@ public sealed class SvgPathDataParserTests
         using CancellationTokenSource cancelled = new();
         cancelled.Cancel();
 
-        Assert.Throws<OperationCanceledException>(() => SvgPathDataParser.ParsePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 16, new ParserWorkCounter(1_000_000), cancelled.Token, null));
+        Assert.Throws<OperationCanceledException>(() => SvgPathDataParser.ParsePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 16, cancelled.Token, null));
     }
 
     private static SvgContourBuilder Parse(string? value)
     {
         SvgContourBuilder builder = new(64, 8);
-        SvgPathDataParser.ParsePath(value, SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 64, new ParserWorkCounter(1_000_000), CancellationToken.None, null);
+        SvgPathDataParser.ParsePath(value, SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 64, CancellationToken.None, null);
         return builder;
     }
 
@@ -342,20 +334,18 @@ public sealed class SvgPathDataParserTests
     [Fact]
     public void Single_closed_subpath_reads_closed_single()
     {
-        ParserWorkCounter counter = new(1000);
-        Assert.True(SvgPathDataParser.IsSingleClosedPath("M0,0 L8,0 L8,8 Z", counter, CancellationToken.None));
-        Assert.True(SvgPathDataParser.IsSingleClosedPath("m0 0l8 0l-8 8z", counter, CancellationToken.None));
-        Assert.True(SvgPathDataParser.IsSingleClosedPath("M1e-2,0 L2,2e0 A24,24 0 1 1 5,5 Z", counter, CancellationToken.None));
+        Assert.True(SvgPathDataParser.IsSingleClosedPath("M0,0 L8,0 L8,8 Z", CancellationToken.None));
+        Assert.True(SvgPathDataParser.IsSingleClosedPath("m0 0l8 0l-8 8z", CancellationToken.None));
+        Assert.True(SvgPathDataParser.IsSingleClosedPath("M1e-2,0 L2,2e0 A24,24 0 1 1 5,5 Z", CancellationToken.None));
     }
 
     [Fact]
     public void Open_or_multi_subpaths_read_not_closed_single()
     {
-        ParserWorkCounter counter = new(1000);
-        Assert.False(SvgPathDataParser.IsSingleClosedPath(null, counter, CancellationToken.None));
-        Assert.False(SvgPathDataParser.IsSingleClosedPath(string.Empty, counter, CancellationToken.None));
-        Assert.False(SvgPathDataParser.IsSingleClosedPath("M0,0 L8,0 L8,8", counter, CancellationToken.None));
-        Assert.False(SvgPathDataParser.IsSingleClosedPath("M0,0Z M2,2Z", counter, CancellationToken.None));
-        Assert.False(SvgPathDataParser.IsSingleClosedPath("M0,0 L8,0 Z L2,2", counter, CancellationToken.None));
+        Assert.False(SvgPathDataParser.IsSingleClosedPath(null, CancellationToken.None));
+        Assert.False(SvgPathDataParser.IsSingleClosedPath(string.Empty, CancellationToken.None));
+        Assert.False(SvgPathDataParser.IsSingleClosedPath("M0,0 L8,0 L8,8", CancellationToken.None));
+        Assert.False(SvgPathDataParser.IsSingleClosedPath("M0,0Z M2,2Z", CancellationToken.None));
+        Assert.False(SvgPathDataParser.IsSingleClosedPath("M0,0 L8,0 Z L2,2", CancellationToken.None));
     }
 }

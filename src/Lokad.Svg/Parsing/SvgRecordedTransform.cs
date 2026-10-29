@@ -5,7 +5,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Retains one native recording boundary independently of flattened scene placement.</summary>
 /// <remarks>The scene reserves and owns this immutable node; descendants and recorded paints borrow
 /// its parent chain. Local maps combine intervening source transforms before float canvas composition.
-/// Raster preparation charges each visited node, observes cancellation and owns temporary storage.
+/// Raster preparation checks cancellation per visited node and owns temporary storage.
 /// Nodes contain no output-dependent cache and can be shared by independent raster draws.</remarks>
 internal sealed class SvgRecordedTransform
 {
@@ -28,10 +28,10 @@ internal sealed class SvgRecordedTransform
     /// <remarks>The authored viewport initial map joins the first source stage before narrowing.
     /// The output map belongs to the external bitmap/capture; target remains in scene coordinates.</remarks>
     internal bool TryMap(SvgShaderMatrix output, SvgAffineTransform initial, SvgAffineTransform target, RenderBudget budget,
-        ParserWorkCounter work, CancellationToken token, out SvgShaderMatrix result)
+CancellationToken token, out SvgShaderMatrix result)
     {
         result = default;
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         if (!Map.TryInvert(out SvgAffineTransform inverse)) return false;
         using RenderBudget.BudgetReservation? owner = Count > 64
             ? budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgAffineTransform>(Count), SvgMemoryCategory.Surface) : null;
@@ -39,7 +39,7 @@ internal sealed class SvgRecordedTransform
         int index = Count;
         for (SvgRecordedTransform? current = this; current is not null; current = current.Parent)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             stages[--index] = current.Local;
         }
         result = output;

@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Routes bounded definitions, symbols and local instances while preserving streaming order.</summary>
 internal static class SvgDefinitionParser
 {
-    internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken)
     {
         if (state.FilterDefinition is {} activeFilter && reader.Depth > state.FilterDepth)
         {
@@ -15,18 +15,18 @@ internal static class SvgDefinitionParser
             return true;
         }
         if (state.HasPatternTemplateReferences && state.PatternDepth < 0 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
-            SvgPatternReferenceResolver.Resolve(state, false, workCounter, cancellationToken);
+            SvgPatternReferenceResolver.Resolve(state, false, cancellationToken);
         bool symbolLocation = state.SymbolDepth >= 0 && state.SymbolDefinition is {} activeSymbol && reader.Depth == activeSymbol.ChildDepth(state.SymbolDepth);
-        if (symbolLocation && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgSymbolContentParser.TryParse(reader, root, state, namedColors, workCounter, cancellationToken, false)) return true;
+        if (symbolLocation && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgSymbolContentParser.TryParse(reader, root, state, namedColors, cancellationToken, false)) return true;
         bool inDefinitions = (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1) || symbolLocation;
         if (inDefinitions && state.SymbolDepth < 0 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "g")
         {
             // A dormant group shares ordered source replay with symbols, without
             // adding a viewport or painting its definition location.
-            state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken,
+            state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, cancellationToken,
                 new(SvgPaint.Default, default, null, false, null, null, SvgPaintOpacity.Opaque));
-            _ = SvgSymbolContentParser.TryParse(reader, root, state, namedColors, workCounter, cancellationToken, true);
-            if (reader.IsEmptyElement) RegisterSymbol(state, workCounter, cancellationToken);
+            _ = SvgSymbolContentParser.TryParse(reader, root, state, namedColors, cancellationToken, true);
+            if (reader.IsEmptyElement) RegisterSymbol(state, cancellationToken);
             else state.SymbolDepth = reader.Depth;
             return true;
         }
@@ -34,12 +34,12 @@ internal static class SvgDefinitionParser
         bool groupNestedDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && state.PatternId is null && state.MaskId is null && state.ClipPathId is null && state.GroupDepth > 0 && reader.GetAttribute("id") is not null;
         if (inDefinitions && state.MarkerDefinition is null && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "text")
         {
-            SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
+            SvgElementAttributePolicy.ValidateText(reader, cancellationToken);
             string? id = reader.GetAttribute("id");
             if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
                 throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
-            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
-            SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken, true);
+            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
+            SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, cancellationToken, true);
             SvgRetainedTextSource source = SvgRetainedTextSource.Capture(reader, context, state, limits);
             state.NodeCount += source.ChildNodeCount; state.TextCharacterCount += source.CharacterCount;
             SvgDefinition definition = new([], false, null, null)
@@ -57,8 +57,8 @@ internal static class SvgDefinitionParser
         }
         if ((inDefinitions || rootDefinition || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "filter")
         {
-            state.FilterDefinition = SvgFilterDefinitionBuilder.Create(reader, state.Budget, workCounter, cancellationToken);
-            SvgComputedStyle filterStyle = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken).ResolveStyle(reader, true);
+            state.FilterDefinition = SvgFilterDefinitionBuilder.Create(reader, state.Budget, cancellationToken);
+            SvgComputedStyle filterStyle = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken).ResolveStyle(reader, true);
             state.FilterDefinition.IsAvailable = state.DefinitionResourcesDisplayed && filterStyle.GetDisplay() != SvgDisplay.None;
             if (reader.IsEmptyElement) RegisterFilter(state);
             else state.FilterDepth = reader.Depth;
@@ -70,19 +70,19 @@ internal static class SvgDefinitionParser
             string? id = reader.GetAttribute("id");
             if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
                 throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
-            if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
-            else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
-            else if (reader.LocalName == "path") SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
-            else if (reader.LocalName == "circle" || reader.LocalName == "ellipse") SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
-            else if (reader.LocalName == "image") SvgElementAttributePolicy.ValidateImage(reader, workCounter, cancellationToken);
-            else SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken);
-            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+            if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, cancellationToken);
+            else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, cancellationToken);
+            else if (reader.LocalName == "path") SvgElementAttributePolicy.ValidatePath(reader, cancellationToken);
+            else if (reader.LocalName == "circle" || reader.LocalName == "ellipse") SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, cancellationToken);
+            else if (reader.LocalName == "image") SvgElementAttributePolicy.ValidateImage(reader, cancellationToken);
+            else SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, cancellationToken);
+            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
             if (symbolChild)
             {
                 SvgSymbolPresentation symbol = (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require a presentation context.")).Presentation;
                 context = context with { InheritedPresentation = new(symbol.Paint, true, true, SvgAffineTransform.Identity) { OwnOpacity = symbol.SourceOpacity, ElementDisplay = symbol.ElementDisplay == SvgDisplay.Inherit ? SvgDisplay.Inline : symbol.ElementDisplay, Markers = symbol.Markers, PaintOrder = symbol.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, PaintServerFill = symbol.PaintServerFill }, InheritedStroke = symbol.Stroke, InheritedFillRule = symbol.FillRule, RecordingScope = new(1) };
             }
-            SvgComputedStyle retainedStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
+            SvgComputedStyle retainedStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, cancellationToken);
             if (symbolChild && (retainedStyle.InheritsOpacity || retainedStyle.InheritsDisplay))
             {
                 (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require a presentation context.")).EnableContent();
@@ -116,7 +116,7 @@ internal static class SvgDefinitionParser
             bool MissingPaint(string? value)
             {
                 if (value is null || !SvgLocalUrl.TryParseId(value, out string paintId)) return false;
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 return !state.Gradients.TryGetValue(paintId, out _) && !state.RadialGradients.TryGetValue(paintId, out _)
                     && !state.Patterns.TryGetValue(paintId, out _);
             }
@@ -128,15 +128,15 @@ internal static class SvgDefinitionParser
             bool retained = false;
             try
             {
-                SvgPaintRecording.FinishDefinition(definition.Geometries, state, workCounter, cancellationToken);
-                SvgDefinition source = deferredSource ? definition : BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, false);
-                SvgComputedStyle sourceStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
+                SvgPaintRecording.FinishDefinition(definition.Geometries, state, cancellationToken);
+                SvgDefinition source = deferredSource ? definition : BindSymbolFill(definition, reader, context, state, cancellationToken, false);
+                SvgComputedStyle sourceStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, cancellationToken);
                 definition = definition with { SourceFillBindings = source.SymbolFillBindings, SourceDisplayed = (sourceStyle.GetSourceDisplay() != SvgDisplay.None), SourceDisplay = sourceStyle.GetSourceDisplay(), SourceVisible = sourceStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, true), LeafSource = reader.LocalName == "image"
                     ? SvgDefinitionLeafSource.CaptureImage(reader, context, state, limits) : deferredSource || relativeRectangle
                         ? SvgDefinitionLeafSource.CaptureUnconstructed(reader, context, state) : SvgDefinitionLeafSource.Capture(reader, context, state) };
                 if (symbolChild)
                 {
-                    definition = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, true);
+                    definition = BindSymbolFill(definition, reader, context, state, cancellationToken, true);
                     SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require an open definition builder.");
                     if (reader.LocalName == "image" || deferredSource || relativeRectangle || SvgLocalUrl.ReadReference(reader, "mask") is not null) { builder.EnableContent(); state.HasRetainedSymbolContent = true; }
                     builder.Add(definition);
@@ -144,7 +144,7 @@ internal static class SvgDefinitionParser
                 }
                 if (id is not null)
                 {
-                    workCounter.Consume(cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
                     if (state.Definitions.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                     string retainedId = state.Strings.Copy(id);
                     SvgDefinition registered = symbolChild ? definition with { SymbolFillBindings = source.SymbolFillBindings, BorrowedFromSymbol = true } : definition;
@@ -155,7 +155,7 @@ internal static class SvgDefinitionParser
             finally { if (!retained) foreach (SvgGeometry geometry in definition.Geometries) geometry.Dispose(); }
             if (inDefinitions && !reader.IsEmptyElement)
             {
-                SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, workCounter, cancellationToken);
+                SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, cancellationToken);
                 state.NodeCount = subtree.NodeCount;
                 state.HasUnsupportedContent |= subtree.HasUnsupportedChildren;
             }
@@ -165,11 +165,11 @@ internal static class SvgDefinitionParser
             && SvgStructuralVocabulary.IsSymbolDefinitionLocation(directChild, isEligible && state.GroupDepth > 0, state.DefinitionsDepth, state.SymbolDepth, reader.Depth))
         {
             bool marker = reader.LocalName == "marker";
-            if (!marker) SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
-            InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, state, workCounter, cancellationToken);
-            SvgPaintableElementContext markerContext = marker ? SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken) : default;
-            SvgComputedStyle style = marker ? markerContext.ResolveStyle(reader, true) : SvgComputedStyleResolver.Resolve(reader, sheet, workCounter, cancellationToken, true).ResolveDisplay(SvgDisplay.Inline);
-            state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, style, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), markerContext.InheritedTextStyle, markerContext.StyleSheet, workCounter, cancellationToken) with { IsAvailable = state.DefinitionResourcesDisplayed } : null;
+            if (!marker) SvgElementAttributePolicy.ValidateSymbol(reader, cancellationToken);
+            InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, state, cancellationToken);
+            SvgPaintableElementContext markerContext = marker ? SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken) : default;
+            SvgComputedStyle style = marker ? markerContext.ResolveStyle(reader, true) : SvgComputedStyleResolver.Resolve(reader, sheet, cancellationToken, true).ResolveDisplay(SvgDisplay.Inline);
+            state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, style, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), markerContext.InheritedTextStyle, markerContext.StyleSheet, cancellationToken) with { IsAvailable = state.DefinitionResourcesDisplayed } : null;
             SvgPaint inheritedPaint = marker ? markerContext.InheritedPresentation.Paint : SvgPaint.Default;
             // Pinned Chrome honors display on symbol instances, but ignores it on marker definitions.
             bool displayed = (style.GetDisplay() != SvgDisplay.None);
@@ -178,23 +178,23 @@ internal static class SvgDefinitionParser
             string? shaderFill = null, shaderId = null;
             if (shader && style.Fill is string fill)
             {
-                workCounter.ConsumeText(fill.Length, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 shaderFill = CopyStyleValue(fill, state);
                 shaderId = CopyStyleValue(SvgGradientSyntax.ParsePaintId(fill), state);
             }
             SvgInheritedStrokeStyle stroke = new(CopyStyleValue(style.Linecap, state), CopyStyleValue(style.Linejoin, state), CopyStyleValue(style.Dasharray, state), CopyStyleValue(style.Dashoffset, state), CopyStyleValue(style.Width, state), CopyStyleValue(style.Miterlimit, state), CopyStyleValue(style.StrokeOpacity, state), CopyStyleValue(style.Stroke, state));
             SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), marker || style.Fill is not null,
-                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentPaint : style.Color is null ? null : SvgColorParser.ParsePaint(style.Color, namedColors), marker ? style.GetOpacity() : style.ResolveOpacity(SvgPaintOpacity.Opaque).GetOpacity()) { ElementDisplay = marker ? style.GetDisplay() : style.GetSourceDisplay(), IsHidden = marker ? !state.DefinitionResourcesDisplayed : !displayed, IsVisible = marker ? SvgPresentationResolver.ParseVisibility(style.Visibility, markerContext.InheritedPresentation.IsVisible) : style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true), InheritsOpacity = !marker && style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, workCounter, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
+                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentPaint : style.Color is null ? null : SvgColorParser.ParsePaint(style.Color, namedColors), marker ? style.GetOpacity() : style.ResolveOpacity(SvgPaintOpacity.Opaque).GetOpacity()) { ElementDisplay = marker ? style.GetDisplay() : style.GetSourceDisplay(), IsHidden = marker ? !state.DefinitionResourcesDisplayed : !displayed, IsVisible = marker ? SvgPresentationResolver.ParseVisibility(style.Visibility, markerContext.InheritedPresentation.IsVisible) : style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true), InheritsOpacity = !marker && style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
             if (!marker) presentation = presentation with
             {
                 TextStyleSource = SvgRetainedTextSource.CaptureElement(reader,
-                    SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken), state, limits)
+                    SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken), state, limits)
             };
             string? id = reader.GetAttribute("id");
             if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             state.SymbolId = id is null ? null : state.Strings.Copy(id);
-            state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
-            state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken, presentation);
+            state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), cancellationToken);
+            state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, cancellationToken, presentation);
             state.SymbolDefinition.EstablishesViewport = true;
             // Keep authored symbol fill-rule on its scope. A flattened child reconstructed
             // for an instance would otherwise inherit the caller's rule instead.
@@ -203,7 +203,7 @@ internal static class SvgDefinitionParser
                 state.SymbolDefinition.EnableContent();
                 state.HasRetainedSymbolContent = true;
             }
-            if (reader.IsEmptyElement) RegisterSymbol(state, workCounter, cancellationToken);
+            if (reader.IsEmptyElement) RegisterSymbol(state, cancellationToken);
             else state.SymbolDepth = reader.Depth;
             return true;
         }
@@ -211,21 +211,21 @@ internal static class SvgDefinitionParser
         bool inClipDefinitions = state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1;
         if ((inClipDefinitions || rootDefinition || resourceDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "clipPath")
         {
-            SvgElementAttributePolicy.ValidateClipPath(reader, workCounter, cancellationToken);
+            SvgElementAttributePolicy.ValidateClipPath(reader, cancellationToken);
             state.ClipPathId = reader.GetAttribute("id");
             state.ClipBox = null;
             state.ClipRectangleSource = null;
             state.ClipPolygon = null;
             state.ClipIsObjectBoundingBox = SvgClipPathSyntax.ParseClipUnits(reader.GetAttribute("clipPathUnits"));
-            SvgPaintableElementContext clipParent = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
-            SvgComputedStyle clipParentStyle = SvgComputedStyleResolver.Resolve(reader, clipParent.StyleSheet, workCounter, cancellationToken).ResolveDisplay(clipParent.InheritedPresentation.ElementDisplay);
+            SvgPaintableElementContext clipParent = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
+            SvgComputedStyle clipParentStyle = SvgComputedStyleResolver.Resolve(reader, clipParent.StyleSheet, cancellationToken).ResolveDisplay(clipParent.InheritedPresentation.ElementDisplay);
             state.ClipElementDisplay = clipParentStyle.GetDisplay();
             state.ClipIsDisplayed = state.DefinitionResourcesDisplayed && state.ClipElementDisplay != SvgDisplay.None;
             state.ClipIsEvenOdd = SvgClipPathSyntax.ParseClipRule((clipParentStyle.ClipRule ?? clipParent.InheritedClipRule ?? "nonzero").AsSpan());
             state.ClipIsVisible = SvgPresentationResolver.ParseVisibility(clipParentStyle.Visibility, clipParent.InheritedPresentation.IsVisible);
             if (reader.IsEmptyElement)
             {
-                if (state.ClipPathId is not null) RegisterClipBox(state, workCounter, cancellationToken);
+                if (state.ClipPathId is not null) RegisterClipBox(state, cancellationToken);
             }
             else state.ClipPathDepth = reader.Depth;
             return true;
@@ -235,7 +235,7 @@ internal static class SvgDefinitionParser
             if (state.ClipUse is not null && reader.LocalName != "use") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element clip content is implemented.");
             if (reader.LocalName == "use")
             {
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 context = context with { InheritedPresentation = context.InheritedPresentation with { IsDisplayed = true, IsVisible = state.ClipIsVisible } };
                 if (SvgResourceUseReplay.Retain(reader, context, root, state) is not {} use) return true;
                 if (state.ClipIsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse referenced clip content is implemented.");
@@ -245,31 +245,31 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName == "rect")
             {
-                SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
-                InlineStyle clipInline = SvgInlineStyleParser.ParseGeometry(reader.GetAttribute("style"), workCounter, cancellationToken);
+                SvgElementAttributePolicy.ValidateRectangle(reader, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
+                InlineStyle clipInline = SvgInlineStyleParser.ParseGeometry(reader.GetAttribute("style"), cancellationToken);
                 SvgComputedStyle clipStyle = SvgComputedStyle.Resolve(reader, clipInline, context.StyleSheet).ResolveDisplay(state.ClipElementDisplay);
                 RetainClipSource(reader, context, clipStyle, state);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases);
                 // A resource uses its own child map; ancestors place the referencing element.
-                SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseElementTransform(reader, workCounter, cancellationToken);
+                SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseElementTransform(reader, cancellationToken);
                 SvgAffineViewportClip source = new(new(syntax.X, syntax.Y, syntax.Width, syntax.Height), clipTransform);
                 string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
                 if (!SvgPresentationResolver.IsPainted(clipStyle, true, state.ClipIsVisible))
                 {
-                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                     return true;
                 }
-                PromoteClipRectangle(state, workCounter, cancellationToken);
+                PromoteClipRectangle(state, cancellationToken);
                 double radiusX = syntax.CornerX ?? syntax.CornerY ?? 0;
                 double radiusY = syntax.CornerY ?? syntax.CornerX ?? 0;
                 if (radiusX > 0 && radiusY > 0 && syntax.Width > 0 && syntax.Height > 0)
                 {
-                    using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
+                    using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, cancellationToken);
                     SvgRoundedRectPath.Append(commands, syntax.X, syntax.Y, syntax.Width, syntax.Height, radiusX, radiusY);
-                    AppendClipChild(CreateClipSource(commands.Detach(), clipTransform, false, nestedClip, state, workCounter, cancellationToken),
-                        state, workCounter, cancellationToken);
+                    AppendClipChild(CreateClipSource(commands.Detach(), clipTransform, false, nestedClip, state, cancellationToken),
+                        state, cancellationToken);
                 }
                 else if (clipTransform.IsAxisAligned && state.ClipPolygon is null && nestedClip is null)
                 {
@@ -277,50 +277,50 @@ internal static class SvgDefinitionParser
                     state.ClipBox = new SvgClipBox(rect.X, rect.Y, rect.Width, rect.Height);
                     state.ClipRectangleSource = source;
                 }
-                else AppendClipChild(CreateClipRectangle(source, state, workCounter, cancellationToken) with
-                    { NestedClipId = nestedClip, UsesNativeReplay = nestedClip is not null }, state, workCounter, cancellationToken);
-                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                else AppendClipChild(CreateClipRectangle(source, state, cancellationToken) with
+                    { NestedClipId = nestedClip, UsesNativeReplay = nestedClip is not null }, state, cancellationToken);
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
             }
             if (reader.LocalName == "path")
             {
-                SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
-                SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgElementAttributePolicy.ValidatePath(reader, cancellationToken);
+                SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 // A resource uses its own child map; ancestors place the referencing element.
-                SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseElementTransform(reader, workCounter, cancellationToken);
-                SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, clipContext.StyleSheet, workCounter, cancellationToken);
+                SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseElementTransform(reader, cancellationToken);
+                SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, clipContext.StyleSheet, cancellationToken);
                 RetainClipSource(reader, clipContext, clipStyle, state);
                 bool isEvenOdd = clipStyle.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(clipStyle.ClipRule.AsSpan());
                 string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
                 bool visible = SvgPresentationResolver.IsPainted(clipStyle, true, state.ClipIsVisible);
-                if (visible) PromoteClipRectangle(state, workCounter, cancellationToken);
-                SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, visible, limits.MaximumPathCommands, state, workCounter, cancellationToken)
+                if (visible) PromoteClipRectangle(state, cancellationToken);
+                SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, visible, limits.MaximumPathCommands, state, cancellationToken)
                     with { IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
                 if (visible)
                 {
                     clipContent = clipContent with { NestedClipId = nestedClip, UsesNativeReplay = clipContent.UsesNativeReplay || nestedClip is not null };
-                    AppendClipChild(clipContent, state, workCounter, cancellationToken);
+                    AppendClipChild(clipContent, state, cancellationToken);
                 }
-                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
             }
             if (reader.LocalName is "circle" or "ellipse")
             {
-                SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
-                SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
+                SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
+                SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, cancellationToken);
                 SvgViewportLengthBases clipBases = state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases;
                 RetainClipSource(reader, context, clipStyle, state);
                 SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, clipBases) : SvgEllipseSyntax.ParseEllipse(reader, clipBases);
-                SvgAffineTransform childMap = SvgGeometrySyntax.ParseElementTransform(reader, workCounter, cancellationToken);
+                SvgAffineTransform childMap = SvgGeometrySyntax.ParseElementTransform(reader, cancellationToken);
                 if (!SvgPresentationResolver.IsPainted(clipStyle, true, state.ClipIsVisible))
                 {
-                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                     return true;
                 }
-                PromoteClipRectangle(state, workCounter, cancellationToken);
-                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
+                PromoteClipRectangle(state, cancellationToken);
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, cancellationToken);
                 if (!SvgOrthogonalGeometryLowering.AppendNativeEllipseCommands(commands, oval.CenterX, oval.CenterY, oval.RadiusX, oval.RadiusY))
                 {
                     if (state.ClipPolygon is null)
@@ -328,16 +328,16 @@ internal static class SvgDefinitionParser
                         if (state.ClipIsObjectBoundingBox) state.ClipPolygon = new([], []) { IsObjectBoundingBox = true };
                         else state.ClipBox = new(0, 0, 0, 0);
                     }
-                    else AppendClipChild(new([], []) { IsObjectBoundingBox = state.ClipIsObjectBoundingBox }, state, workCounter, cancellationToken);
+                    else AppendClipChild(new([], []) { IsObjectBoundingBox = state.ClipIsObjectBoundingBox }, state, cancellationToken);
                 }
                 else
                 {
                     string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                     nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
-                    AppendClipChild(CreateClipSource(commands.Detach(), childMap, childMap.IsAxisAligned, nestedClip, state, workCounter, cancellationToken),
-                        state, workCounter, cancellationToken);
+                    AppendClipChild(CreateClipSource(commands.Detach(), childMap, childMap.IsAxisAligned, nestedClip, state, cancellationToken),
+                        state, cancellationToken);
                 }
-                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
             }
             state.HasUnsupportedContent = true;
@@ -345,21 +345,21 @@ internal static class SvgDefinitionParser
         }
         if ((inDefinitions || directChild || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "mask")
         {
-            SvgElementAttributePolicy.ValidateMask(reader, workCounter, cancellationToken);
-            SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+            SvgElementAttributePolicy.ValidateMask(reader, cancellationToken);
+            SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
             // A resource inherits presentation, while its content coordinates start
             // at the resource rather than at a rendered definition ancestor.
             maskContext = maskContext with { InheritedPresentation = maskContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = true, TextMetrics = default } };
-            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, maskContext.StyleSheet).ResolveOpacity(maskContext.InheritedPresentation.ElementOpacity).ResolveDisplay(maskContext.InheritedPresentation.ElementDisplay);
             // The resource container supplies inherited style; its children paint
             // the mask without an extra opacity layer around the resource itself.
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, maskContext.StyleSheet,
                 maskContext.InheritedPresentation, maskContext.InheritedFillRule, maskContext.InheritedTextStyle,
-                maskContext.InheritedStroke, namedColors, state.PaintResources, workCounter, cancellationToken);
+                maskContext.InheritedStroke, namedColors, state.PaintResources, cancellationToken);
             if (style.Fill is not null && inherited.Presentation.PaintServerFill is string fill)
             {
-                workCounter.ConsumeText(fill.Length, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 inherited = inherited with { Presentation = inherited.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
             }
             SvgGroupScope scope = new(reader.Depth, SvgGroupKind.Mask, inherited.Presentation, inherited.TextStyle,
@@ -393,8 +393,8 @@ internal static class SvgDefinitionParser
             {
                 if (state.MaskId is not null)
                 {
-                    if (state.MaskIsDisplayed) RegisterMask(state, workCounter, cancellationToken);
-                    else SvgMaskSyntax.RegisterDisabled(state, workCounter, cancellationToken);
+                    if (state.MaskIsDisplayed) RegisterMask(state, cancellationToken);
+                    else SvgMaskSyntax.RegisterDisabled(state, cancellationToken);
                 }
                 state.MaskId = null;
                 state.MaskCustomRegion = null;
@@ -413,11 +413,11 @@ internal static class SvgDefinitionParser
         }
         if (state.MaskDepth >= 0 && reader.Depth == state.MaskDepth + 1 && !resourceDefinition && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
-            if (SvgMaskContentReplay.Retain(reader, root, state, namedColors, workCounter, cancellationToken)) return true;
+            if (SvgMaskContentReplay.Retain(reader, root, state, namedColors, cancellationToken)) return true;
             if (state.MaskContentBuilder is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
             if (SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
             {
-                SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 if (SvgGradientSyntax.IsGradientFill(maskContext.ResolveStyle(reader).Fill))
                 {
                     if (state.MaskValue is not null || state.MaskContentGeometries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
@@ -426,20 +426,20 @@ internal static class SvgDefinitionParser
                     SvgDefinition lowered = LowerInstanceSource(reader, maskContext, state);
                     try
                     {
-                        state.MaskContentBox = UnionMaskContentBox(lowered.Geometries, workCounter, cancellationToken);
-                        SvgSceneBuilder builder = state.MaskContentBuilder = new(state.Budget, workCounter, cancellationToken);
-                        SvgPaintRecording.AdoptLeafScene(lowered, builder, state, workCounter, cancellationToken);
+                        state.MaskContentBox = UnionMaskContentBox(lowered.Geometries, cancellationToken);
+                        SvgSceneBuilder builder = state.MaskContentBuilder = new(state.Budget, cancellationToken);
+                        SvgPaintRecording.AdoptLeafScene(lowered, builder, state, cancellationToken);
                     }
                     catch { foreach (SvgGeometry geometry in lowered.Geometries) geometry.Dispose(); throw; }
-                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                     return true;
                 }
             }
             if (reader.LocalName == "rect")
             {
                 if (state.MaskValue is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle masks are implemented.");
-                SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgElementAttributePolicy.ValidateRectangle(reader, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
                 SvgResolvedPaintableElement element = context.ResolveShape(reader, false);
                 if (!element.Presentation.IsPainted) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Invisible mask content is not implemented.");
@@ -447,27 +447,27 @@ internal static class SvgDefinitionParser
                 byte sourceAlpha = (byte)Math.Clamp((int)(sourcePaint.Alpha * element.Style.GetOpacity().Value * 255f + .5f), 0, 255);
                 state.MaskValue = SvgMaskSyntax.InterpretValue(element.Presentation.Color with { Alpha = sourceAlpha }, state.MaskIsAlpha);
                 state.MaskContentBox = element.Transform.Apply(new SvgClipBox(syntax.X, syntax.Y, syntax.Width, syntax.Height));
-                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
             }
             if (reader.LocalName == "circle")
             {
                 if (state.MaskValue is not null || state.MaskContentGeometries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
-                SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
+                SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, cancellationToken);
                 if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on mask content are not implemented.");
                 if (SvgLocalUrl.ReadReference(reader, "mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
-                SvgPaintableElementContext contentContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext contentContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 using SvgParsedGeometry lowered = SvgLeafParser.ParseCircle(reader, contentContext, null, state);
                 try
                 {
-                    (SvgGeometry[] contentGeometries, SvgColor contentPaint) = RetainPaintedMaskContent(lowered.Geometries, state, workCounter, cancellationToken);
+                    (SvgGeometry[] contentGeometries, SvgColor contentPaint) = RetainPaintedMaskContent(lowered.Geometries, state, cancellationToken);
                     state.MaskContentGeometries = contentGeometries;
                     state.MaskContentLuminance = contentPaint.Red;
                     state.MaskContentIsAlpha = state.MaskIsAlpha;
-                    state.MaskContentBox = UnionMaskContentBox(state.MaskContentGeometries, workCounter, cancellationToken);
+                    state.MaskContentBox = UnionMaskContentBox(state.MaskContentGeometries, cancellationToken);
                 }
                 catch { lowered.Discard(); throw; }
-                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
             }
             state.HasUnsupportedContent = true;
@@ -475,22 +475,22 @@ internal static class SvgDefinitionParser
         }
         if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "pattern")
         {
-            SvgElementAttributePolicy.ValidatePattern(reader, workCounter, cancellationToken);
+            SvgElementAttributePolicy.ValidatePattern(reader, cancellationToken);
             state.PatternId = reader.GetAttribute("id");
-            state.PatternTemplate = SvgPatternSyntax.ParsePatternElement(reader, state, workCounter, cancellationToken);
+            state.PatternTemplate = SvgPatternSyntax.ParsePatternElement(reader, state, cancellationToken);
             state.PatternTile = state.PatternTemplate.Grid;
-            SvgPaintableElementContext patternContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+            SvgPaintableElementContext patternContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
             patternContext = patternContext with { InheritedPresentation = patternContext.InheritedPresentation with { TextMetrics = default } };
-            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, patternContext.StyleSheet).ResolveOpacity(patternContext.InheritedPresentation.ElementOpacity).ResolveDisplay(patternContext.InheritedPresentation.ElementDisplay);
             if (style.GetOpacity().Value != 1)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Opacity on pattern containers is not implemented.");
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, patternContext.StyleSheet,
                 patternContext.InheritedPresentation, patternContext.InheritedFillRule, patternContext.InheritedTextStyle,
-                patternContext.InheritedStroke, namedColors, state.PaintResources, workCounter, cancellationToken);
+                patternContext.InheritedStroke, namedColors, state.PaintResources, cancellationToken);
             if (style.Fill is not null && inherited.Presentation.PaintServerFill is string fill)
             {
-                workCounter.ConsumeText(fill.Length, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 inherited = inherited with { Presentation = inherited.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
             }
             state.PatternScopeStart = state.PatternScopes?.Count ?? 0;
@@ -505,7 +505,7 @@ internal static class SvgDefinitionParser
             else
             {
                 state.Groups.RemoveLast();
-                if (state.PatternId is not null) RegisterPattern(state, workCounter, cancellationToken);
+                if (state.PatternId is not null) RegisterPattern(state, cancellationToken);
                 state.PatternId = null;
                 state.PatternTile = null;
                 state.PatternTemplate = default;
@@ -517,15 +517,15 @@ internal static class SvgDefinitionParser
             if (reader.LocalName == "use")
             {
                 SvgPatternUseReplay.Retain(reader, root, state, namedColors,
-                    GetPatternContentBuilder(state, workCounter, cancellationToken), workCounter, cancellationToken);
+                    GetPatternContentBuilder(state, cancellationToken), cancellationToken);
                 return true;
             }
             if (reader.LocalName == "g")
             {
-                SvgParsedGroup group = SvgGroupParser.Parse(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgParsedGroup group = SvgGroupParser.Parse(reader, root, state, namedColors, cancellationToken);
                 if (!reader.IsEmptyElement || group.Scope.HasFilter)
                 {
-                    SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
+                    SvgSceneBuilder builder = GetPatternContentBuilder(state, cancellationToken);
                     bool clip = group.Scope.ClipPathId is not null && !group.Scope.HasFilter;
                     bool mask = group.DeferredMask is not null;
                     bool isolate = !group.Scope.HasFilter && group.Scope.IsolatesOpacity || clip || mask;
@@ -544,7 +544,7 @@ internal static class SvgDefinitionParser
                     }
                     if (clip || mask)
                     {
-                        state.PatternScopes ??= new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+                        state.PatternScopes ??= new(state.Budget, SvgMemoryCategory.Parser, cancellationToken);
                         state.PatternScopes.Add(new(group.Scope.ClipPathId, group.DeferredMask, group.Scope.InheritedPresentation.Transform, firstCommand, group.Scope.IsolatesOpacity, group.Scope.HasFilter));
                     }
                     state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup, IsolatesOpacity = isolate, FilterGeometryStart = builder.GeometryCount });
@@ -554,20 +554,20 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName is "rect" or "circle" or "ellipse" or "path" or "polygon" or "polyline" or "line" or "image" or "text")
             {
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken).PrepareStyle(reader);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken).PrepareStyle(reader);
                 SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
                 bool rendered = reader.LocalName is "image" or "text" || SvgLocalUrl.ReadReference(reader, "clip-path") is not null || SvgLocalUrl.ReadReference(reader, "mask") is not null || style.Filter is {} filter && filter.Trim() != "none";
                 bool deferred = SvgDeferredPaintLeaves.NeedsReplay(reader, context, state);
                 if (rendered || deferred)
                 {
-                    if (!SvgRenderedLeafParser.ValidateLeafAttributes(reader, workCounter, cancellationToken))
+                    if (!SvgRenderedLeafParser.ValidateLeafAttributes(reader, cancellationToken))
                         throw new InvalidOperationException("Pattern replay requires a supported leaf.");
                     RejectPatternContentPaint(style, state);
                     SvgPatternTemplate template = state.PatternTemplate;
                     if ((template.Width == 0 || template.Height == 0 || template.Href is null && (template.Width is null || template.Height is null))
                         && state.PaintResources?.RequiresPatternContent(state.PatternId) != true)
                         context = context with { InheritedPresentation = context.InheritedPresentation with { IsDisplayed = false } };
-                    SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
+                    SvgSceneBuilder builder = GetPatternContentBuilder(state, cancellationToken);
                     if (state.DefinitionReplayScene is not null) throw new InvalidOperationException("Definition leaf replay cannot nest.");
                     double previousTextScale = state.OutputTextScale;
                     if (state.EffectiveFrame is {} textHost)
@@ -578,12 +578,12 @@ internal static class SvgDefinitionParser
                     try
                     {
                         if (deferred) SvgDeferredPaintLeaves.Retain(reader, context, state, rendered ? SvgDeferredPaintKind.Rendered : SvgDeferredPaintKind.PatternDefinition);
-                        else _ = SvgRenderedLeafParser.ParseResolved(reader, context, root, state, limits, state.Budget, fontSnapshot, workCounter, cancellationToken);
+                        else _ = SvgRenderedLeafParser.ParseResolved(reader, context, root, state, limits, state.Budget, fontSnapshot, cancellationToken);
                     }
                     finally { state.DefinitionReplayScene = null; state.OutputTextScale = previousTextScale; }
                     if (!textContent && !reader.IsEmptyElement)
                     {
-                        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, workCounter, cancellationToken);
+                        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, cancellationToken);
                         state.NodeCount = subtree.NodeCount;
                         state.HasUnsupportedContent |= subtree.HasUnsupportedChildren;
                     }
@@ -592,8 +592,8 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName == "rect" && KeepsLegacyRectanglePaint() && state.PatternTemplate.KeepsLegacyRectangle && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
             {
-                SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
-                SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgElementAttributePolicy.ValidateRectangle(reader, cancellationToken);
+                SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 tileContext = tileContext with { InheritedPresentation = tileContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
                 // The tile payload retains a resolved rectangle, so its paint must be resolved before storing it.
                 using SvgParsedGeometry parsedContent = SvgLeafParser.ParseRectangleCore(reader, tileContext, null, state);
@@ -605,9 +605,9 @@ internal static class SvgDefinitionParser
                         foreach (SvgGeometry unused in parsedContent.Geometries) unused.Dispose();
                         SvgComputedStyle style = tileContext.ResolveStyle(reader);
                         RejectPatternContentPaint(style, state);
-                        SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
-                        SvgPaintRecording.AdoptLeafScene(LowerInstanceSource(reader, tileContext, state), builder, state, workCounter, cancellationToken);
-                        SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                        SvgSceneBuilder builder = GetPatternContentBuilder(state, cancellationToken);
+                        SvgPaintRecording.AdoptLeafScene(LowerInstanceSource(reader, tileContext, state), builder, state, cancellationToken);
+                        SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                         return true;
                     }
                     SvgGeometry validated = parsedContent.Geometries[0];
@@ -617,7 +617,7 @@ internal static class SvgDefinitionParser
                     // legacy one-leaf fast path, while vector scenes need native opacity/stroke recording.
                     state.PatternRectangleSource = SvgDefinitionLeafSource.Capture(reader, tileContext, state);
                     state.PatternRectangleContext = tileContext;
-                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                    SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                     return true;
 
                     static bool CanKeepLegacyContent(SvgParsedGeometry parsed, SvgPatternTile tile)
@@ -638,28 +638,28 @@ internal static class SvgDefinitionParser
             {
                 switch (reader.LocalName)
                 {
-                    case "rect": SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken); break;
-                    case "circle": case "ellipse": SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken); break;
-                    case "path": SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken); break;
-                    case "line": SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken); break;
-                    default: SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken); break;
+                    case "rect": SvgElementAttributePolicy.ValidateRectangle(reader, cancellationToken); break;
+                    case "circle": case "ellipse": SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, cancellationToken); break;
+                    case "path": SvgElementAttributePolicy.ValidatePath(reader, cancellationToken); break;
+                    case "line": SvgElementAttributePolicy.ValidateLine(reader, cancellationToken); break;
+                    default: SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, cancellationToken); break;
                 }
-                SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgSceneBuilder builder = GetPatternContentBuilder(state, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 SvgComputedStyle style = context.ResolveStyle(reader);
                 RejectPatternContentPaint(style, state);
                 AdoptLeaf(LowerInstanceSource(reader, context, state));
-                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
 
-                void AdoptLeaf(SvgDefinition lowered) => SvgPaintRecording.AdoptLeafScene(lowered, builder, state, workCounter, cancellationToken);
+                void AdoptLeaf(SvgDefinition lowered) => SvgPaintRecording.AdoptLeafScene(lowered, builder, state, cancellationToken);
             }
             state.HasUnsupportedContent = true;
             return true;
 
             bool KeepsLegacyRectanglePaint()
             {
-                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 SvgComputedStyle style = context.ResolveStyle(reader);
                 bool hasFill = style.Fill is {} fill ? !fill.Trim().Equals("none", StringComparison.Ordinal) : context.InheritedPresentation.Paint.HasFill;
                 bool hasStroke = (style.Stroke ?? context.InheritedStroke.Stroke) is {} stroke && !stroke.Trim().Equals("none", StringComparison.Ordinal);
@@ -671,29 +671,29 @@ internal static class SvgDefinitionParser
         }
         if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild || resourceDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "radialGradient")
         {
-            SvgElementAttributePolicy.ValidateRadialGradient(reader, workCounter, cancellationToken);
+            SvgElementAttributePolicy.ValidateRadialGradient(reader, cancellationToken);
             state.RadialGradientId = reader.GetAttribute("id");
-            if (state.RadialGradientId is {} radialId) state.RadialGradientId = ClaimGradientId(state, radialId, workCounter, cancellationToken);
-            SvgComputedStyle gradientStyle = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken).ResolveStyle(reader, true);
-            SvgRadialTemplate template = SvgGradientSyntax.ParseRadialVector(reader, workCounter, cancellationToken)
+            if (state.RadialGradientId is {} radialId) state.RadialGradientId = ClaimGradientId(state, radialId, cancellationToken);
+            SvgComputedStyle gradientStyle = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken).ResolveStyle(reader, true);
+            SvgRadialTemplate template = SvgGradientSyntax.ParseRadialVector(reader, cancellationToken)
                 with { IsAvailable = state.DefinitionResourcesDisplayed && gradientStyle.GetDisplay() != SvgDisplay.None };
             state.RadialGradient = template;
             if (!reader.IsEmptyElement) state.RadialGradientDepth = reader.Depth;
-            else if (state.RadialGradientId is not null) RegisterRadialGradient(state, workCounter, cancellationToken);
+            else if (state.RadialGradientId is not null) RegisterRadialGradient(state, cancellationToken);
             state.GradientStops.Clear();
             return true;
         }
         if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild || resourceDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "linearGradient")
         {
-            SvgElementAttributePolicy.ValidateLinearGradient(reader, workCounter, cancellationToken);
+            SvgElementAttributePolicy.ValidateLinearGradient(reader, cancellationToken);
             state.GradientId = reader.GetAttribute("id");
-            if (state.GradientId is {} linearId) state.GradientId = ClaimGradientId(state, linearId, workCounter, cancellationToken);
-            SvgComputedStyle gradientStyle = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken).ResolveStyle(reader, true);
-            SvgGradientTemplate template = SvgGradientSyntax.ParseLinearVector(reader, workCounter, cancellationToken)
+            if (state.GradientId is {} linearId) state.GradientId = ClaimGradientId(state, linearId, cancellationToken);
+            SvgComputedStyle gradientStyle = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken).ResolveStyle(reader, true);
+            SvgGradientTemplate template = SvgGradientSyntax.ParseLinearVector(reader, cancellationToken)
                 with { IsAvailable = state.DefinitionResourcesDisplayed && gradientStyle.GetDisplay() != SvgDisplay.None };
             state.Gradient = template;
             if (!reader.IsEmptyElement) state.GradientDepth = reader.Depth;
-            else if (state.GradientId is not null) RegisterGradient(state, workCounter, cancellationToken);
+            else if (state.GradientId is not null) RegisterGradient(state, cancellationToken);
             state.GradientStops.Clear();
             return true;
         }
@@ -702,9 +702,9 @@ internal static class SvgDefinitionParser
             if (reader.LocalName == "stop")
             {
                 if (state.GradientStops.Count >= SvgGradientSyntax.MaximumGradientStops) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient stop count exceeds the supported limit.");
-                SvgElementAttributePolicy.ValidateGradientStop(reader, workCounter, cancellationToken);
-                state.GradientStops.Add(SvgGradientSyntax.ParseStop(reader, namedColors, workCounter, cancellationToken));
-                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                SvgElementAttributePolicy.ValidateGradientStop(reader, cancellationToken);
+                state.GradientStops.Add(SvgGradientSyntax.ParseStop(reader, namedColors, cancellationToken));
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
             }
             state.HasUnsupportedContent = true;
@@ -712,36 +712,36 @@ internal static class SvgDefinitionParser
         }
         if (state.DefinitionsDepth < 0 && (directChild || state.GroupDepth > 0 || state.Viewports.Count > 0) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
         {
-            SvgElementAttributePolicy.ValidateDefinitionContainer(reader, workCounter, cancellationToken);
-            SvgPaintableElementContext definitionContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
-            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+            SvgElementAttributePolicy.ValidateDefinitionContainer(reader, cancellationToken);
+            SvgPaintableElementContext definitionContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
+            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, definitionContext.StyleSheet);
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, definitionContext.StyleSheet, definitionContext.InheritedPresentation,
-                definitionContext.InheritedFillRule, definitionContext.InheritedTextStyle, definitionContext.InheritedStroke, namedColors, state.PaintResources, workCounter, cancellationToken);
+                definitionContext.InheritedFillRule, definitionContext.InheritedTextStyle, definitionContext.InheritedStroke, namedColors, state.PaintResources, cancellationToken);
             if (!reader.IsEmptyElement) state.DefinitionInheritance = inherited;
             if (!reader.IsEmptyElement) state.DefinitionsDepth = reader.Depth;
             return true;
         }
         if (state.DefinitionsDepth < 0 && (directChild || isEligible) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
         {
-            SvgElementAttributePolicy.ValidateUse(reader, workCounter, cancellationToken);
-            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
-            InlineStyle inline = SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), workCounter, cancellationToken);
+            SvgElementAttributePolicy.ValidateUse(reader, cancellationToken);
+            SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
+            InlineStyle inline = SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), cancellationToken);
             context = context with { AuthoredStyle = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet) };
             SvgViewportFrame? parentFrame = state.EffectiveFrame;
             double? baseWidth = parentFrame?.ViewportWidth ?? root.UserViewportWidth;
             double? baseHeight = parentFrame?.ViewportHeight ?? root.UserViewportHeight;
             if (SvgLocalReferenceParser.ParseUse(reader, context, inline, state.Strings, baseWidth, baseHeight, state) is not {} reference)
             {
-                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+                SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
             }
             SvgRenderedGroupSourceParser.CaptureUse(reader, context, reference, state);
             SvgDeferredClip? deferredClip = ResolveDeferredClip(reader, state);
             SvgViewportFrame? useFrame = deferredClip is null ? SvgClipPathSyntax.ResolveLeafClip(reader, state) : state.EffectiveFrame;
             string? maskAttribute = SvgLocalUrl.ReadReference(reader, "mask");
-            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, ResolveDeferredMaskValue(reader, state), maskAttribute is null ? null : state.Strings.Copy(maskAttribute), deferredClip, state, workCounter, cancellationToken);
-            SvgStructuralAdmission.ConsumeLeafChildren(reader, state, workCounter, cancellationToken);
+            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, ResolveDeferredMaskValue(reader, state), maskAttribute is null ? null : state.Strings.Copy(maskAttribute), deferredClip, state, cancellationToken);
+            SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
             return true;
         }
         return false;
@@ -763,7 +763,7 @@ internal static class SvgDefinitionParser
             return null;
         }
 
-        static SvgClipBox UnionMaskContentBox(SvgGeometry[] geometries, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgClipBox UnionMaskContentBox(SvgGeometry[] geometries, CancellationToken cancellationToken)
         {
             double left = double.PositiveInfinity;
             double top = double.PositiveInfinity;
@@ -771,7 +771,7 @@ internal static class SvgDefinitionParser
             double bottom = double.NegativeInfinity;
             foreach (SvgGeometry geometry in geometries)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 SvgRectangle box = SvgMaskSyntax.BoundingBox(geometry);
                 if (box.X < left) left = box.X;
                 if (box.Y < top) top = box.Y;
@@ -781,16 +781,15 @@ internal static class SvgDefinitionParser
             return new SvgClipBox(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top));
         }
 
-        static (SvgGeometry[] Geometries, SvgColor Paint) RetainPaintedMaskContent(ReadOnlySpan<SvgGeometry> geometries, SvgDocumentState maskState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static (SvgGeometry[] Geometries, SvgColor Paint) RetainPaintedMaskContent(ReadOnlySpan<SvgGeometry> geometries, SvgDocumentState maskState, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(maskState);
-            ArgumentNullException.ThrowIfNull(workCounter);
-            using BudgetedParserList<int> kept = new(maskState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+            using BudgetedParserList<int> kept = new(maskState.Budget, SvgMemoryCategory.Geometry, cancellationToken);
             SvgColor paint = default;
             bool hasPaint = false;
             for (int index = 0; index < geometries.Length; index++)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 if (geometries[index].Kind != SvgGeometryKind.PolygonFill) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid mask content is implemented.");
                 if (!geometries[index].Polygon.HasFill)
                 {
@@ -811,7 +810,7 @@ internal static class SvgDefinitionParser
             SvgGeometry[] retained = new SvgGeometry[kept.Count];
             for (int index = 0; index < kept.Count; index++)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 retained[index] = geometries[kept[index]];
             }
             return (retained, paint);
@@ -819,16 +818,16 @@ internal static class SvgDefinitionParser
 
         // Keep single rectangle resources on their established box route. Only
         // a sibling materializes native commands, retaining the child's own map.
-        static void PromoteClipRectangle(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        static void PromoteClipRectangle(SvgDocumentState state, CancellationToken token)
         {
             if (state.ClipBox is null) return;
             if (state.ClipPolygon is null && state.ClipRectangleSource is {} source)
-                state.ClipPolygon = CreateClipRectangle(source, state, work, token);
+                state.ClipPolygon = CreateClipRectangle(source, state, token);
             state.ClipRectangleSource = null;
             state.ClipBox = null;
         }
 
-        static SvgClipPolygon CreateClipRectangle(SvgAffineViewportClip source, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        static SvgClipPolygon CreateClipRectangle(SvgAffineViewportClip source, SvgDocumentState state, CancellationToken token)
         {
             SvgClipBox box = source.Box;
             ReadOnlySpan<SvgDevicePoint> corners = stackalloc SvgDevicePoint[]
@@ -840,10 +839,10 @@ internal static class SvgDefinitionParser
                 + ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Scene));
             SvgDevicePoint[] points = new SvgDevicePoint[4];
             int[] ends = [4];
-            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, work, token);
+            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, token);
             for (int index = 0; index < corners.Length; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgDevicePoint point = corners[index];
                 if (!double.IsFinite(point.X) || !double.IsFinite(point.Y))
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Native clip rectangle coordinates exceed the finite float range.");
@@ -862,20 +861,20 @@ internal static class SvgDefinitionParser
         // Rounded rectangles and ovals share one native source/staging owner.
         // Resource units and nested intersections bind later in the final scene.
         static SvgClipPolygon CreateClipSource(OwnedParserArray<SvgAuthoredPathCommand> owned, SvgAffineTransform map,
-            bool oval, string? nestedClip, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+            bool oval, string? nestedClip, SvgDocumentState state, CancellationToken token)
         {
             SvgAuthoredPath source;
             try { source = SvgAuthoredPath.CreateConvexShape(owned, map, state.Budget); }
             catch { owned.Dispose(); throw; }
             try
             {
-                using SvgPreparedPathContours prepared = source.Prepare(SvgAffineTransform.Identity, false, state.Budget, work, token);
+                using SvgPreparedPathContours prepared = source.Prepare(SvgAffineTransform.Identity, false, state.Budget, token);
                 state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(prepared.Points.Length)
                     + ParserCollectionMemory.GetArrayByteCount<int>(prepared.ContourEnds.Length), SvgMemoryCategory.Scene));
                 SvgDevicePoint[] points = new SvgDevicePoint[prepared.Points.Length];
                 int[] ends = new int[prepared.ContourEnds.Length];
-                for (int index = 0; index < points.Length; index++) { work.Consume(token); points[index] = prepared.Points[index]; }
-                for (int index = 0; index < ends.Length; index++) { work.Consume(token); ends[index] = prepared.ContourEnds[index]; }
+                for (int index = 0; index < points.Length; index++) { token.ThrowIfCancellationRequested(); points[index] = prepared.Points[index]; }
+                for (int index = 0; index < ends.Length; index++) { token.ThrowIfCancellationRequested(); ends[index] = prepared.ContourEnds[index]; }
                 return new(points, ends) { SourcePath = source, UsesNativeReplay = true, IsOval = oval,
                     IsObjectBoundingBox = state.ClipIsObjectBoundingBox, NestedClipId = nestedClip };
             }
@@ -884,14 +883,14 @@ internal static class SvgDefinitionParser
 
         // Adopt each source once; union failure retains the first staging owner
         // and releases the incoming owner. Publish before cancellable classification.
-        static void AppendClipChild(SvgClipPolygon child, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        static void AppendClipChild(SvgClipPolygon child, SvgDocumentState state, CancellationToken token)
         {
             if (child.Points.Length == 0 && state.ClipPolygon is {} painted)
             {
                 child.SourcePath?.Dispose();
                 if (painted.NestedClipId is null && !painted.UsesNativeReplay && !painted.UsesMaskFallback
                     && (!painted.IsObjectBoundingBox || painted.ChildCount == 1) && painted.ContourEnds.Length == 1
-                    && TryGetAxisClipBox(painted.Points, work, token, out SvgClipBox box))
+                    && TryGetAxisClipBox(painted.Points, token, out SvgClipBox box))
                     state.ClipBox = box;
                 return;
             }
@@ -902,7 +901,7 @@ internal static class SvgDefinitionParser
             if (state.ClipPolygon is {} first)
             {
                 SvgClipPolygon combined;
-                try { combined = CombineClipChildren(first, child, state, work, token); }
+                try { combined = CombineClipChildren(first, child, state, token); }
                 finally { child.SourcePath?.Dispose(); }
                 state.ClipPolygon = combined;
                 first.SourcePath?.Dispose();
@@ -912,33 +911,33 @@ internal static class SvgDefinitionParser
             state.ClipBox = child.Points.Length == 0 ? new(0, 0, 0, 0)
                 : child.NestedClipId is null && !child.UsesNativeReplay && !child.UsesMaskFallback
                     && (!child.IsObjectBoundingBox || child.ChildCount == 1) && child.ContourEnds.Length == 1
-                    && TryGetAxisClipBox(child.Points, work, token, out SvgClipBox clipRect) ? clipRect : null;
+                    && TryGetAxisClipBox(child.Points, token, out SvgClipBox clipRect) ? clipRect : null;
         }
 
         // Retain original child owners and layout bounds. Containment keeps its
         // primitive route; other unions resolve once when the definition closes.
         // The child threshold selects painted replay before any boundary solver.
         static SvgClipPolygon CombineClipChildren(SvgClipPolygon first, SvgClipPolygon next, SvgDocumentState state,
-            ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
         {
             if (first.NestedClipId is not null || next.NestedClipId is not null)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested clips on union children are not implemented.");
             SvgAuthoredPath nextPath = next.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands.");
-            BudgetedParserList<SvgClipChild> originals = state.ClipChildren ??= new(state.Budget, SvgMemoryCategory.Scene, work, token);
+            BudgetedParserList<SvgClipChild> originals = state.ClipChildren ??= new(state.Budget, SvgMemoryCategory.Scene, token);
             SvgClipChildRange range;
             if (first.Children is {} sourceRange) range = sourceRange;
             else
             {
                 range = new(originals.Count, 1);
-                Retain(first.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands."), first.IsEvenOdd, first.PaintKind, originals, state.Budget, work, token);
+                Retain(first.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands."), first.IsEvenOdd, first.PaintKind, originals, state.Budget, token);
             }
             if (range.First + range.Count != originals.Count) throw new InvalidOperationException("Clip child staging must remain contiguous.");
-            Retain(nextPath, next.IsEvenOdd, next.PaintKind, originals, state.Budget, work, token);
+            Retain(nextPath, next.IsEvenOdd, next.PaintKind, originals, state.Budget, token);
             range = range with { Count = range.Count + 1 };
             if (first.ChildCount >= 42)
             {
                 SvgPaintBounds a = first.ResourceBounds ?? throw new InvalidOperationException("A clip union requires source bounds.");
-                SvgPaintBounds b = ChildBounds(next, nextPath, work, token);
+                SvgPaintBounds b = ChildBounds(next, nextPath, token);
                 return first with { SourcePath = null, Children = range, UsesMaskFallback = true, IsResolvedUnion = true,
                     ChildCount = first.ChildCount + 1, IsOval = false,
                     ResourceBounds = new(MathF.Min(a.Left, b.Left), MathF.Min(a.Top, b.Top), MathF.Max(a.Right, b.Right), MathF.Max(a.Bottom, b.Bottom)) };
@@ -949,40 +948,40 @@ internal static class SvgDefinitionParser
             // Keep authored children/counts for the bounded fallback and source
             // bounds for later siblings, while copying the selected path owner.
             if (!first.UsesNativeReplay && !next.UsesNativeReplay && first.ContourEnds.Length == 1 && next.ContourEnds.Length == 1
-                && TryGetAxisClipBox(first.Points, work, token, out SvgClipBox firstBox)
-                && TryGetAxisClipBox(next.Points, work, token, out SvgClipBox nextBox))
+                && TryGetAxisClipBox(first.Points, token, out SvgClipBox firstBox)
+                && TryGetAxisClipBox(next.Points, token, out SvgClipBox nextBox))
             {
                 SvgClipPolygon? outer = firstBox.Contains(nextBox.X, nextBox.Y, nextBox.Right, nextBox.Bottom) ? first
                     : nextBox.Contains(firstBox.X, firstBox.Y, firstBox.Right, firstBox.Bottom) ? next : null;
                 if (outer is {} containing)
                 {
                     SvgAuthoredPath original = containing.SourcePath ?? throw new InvalidOperationException("A containing clip rectangle requires source commands.");
-                    SvgPaintBounds bounds = ChildBounds(containing, original, work, token);
-                    return containing with { SourcePath = original.Copy(SvgAffineTransform.Identity, state.Budget, work, token),
+                    SvgPaintBounds bounds = ChildBounds(containing, original, token);
+                    return containing with { SourcePath = original.Copy(SvgAffineTransform.Identity, state.Budget, token),
                         Children = range, ChildCount = first.ChildCount + 1, ResourceBounds = bounds };
                 }
             }
-            SvgPaintBounds firstBounds = ChildBounds(first, firstPath, work, token);
-            SvgPaintBounds nextBounds = ChildBounds(next, nextPath, work, token);
-            return first with { SourcePath = firstPath.Copy(SvgAffineTransform.Identity, state.Budget, work, token),
+            SvgPaintBounds firstBounds = ChildBounds(first, firstPath, token);
+            SvgPaintBounds nextBounds = ChildBounds(next, nextPath, token);
+            return first with { SourcePath = firstPath.Copy(SvgAffineTransform.Identity, state.Budget, token),
                 Children = range, UsesNativeReplay = true, IsResolvedUnion = false, DeferredUnion = true,
                 ChildCount = first.ChildCount + 1, IsOval = false, PaintKind = SvgClipPaintKind.Path,
                 ResourceBounds = new(MathF.Min(firstBounds.Left, nextBounds.Left), MathF.Min(firstBounds.Top, nextBounds.Top),
                     MathF.Max(firstBounds.Right, nextBounds.Right), MathF.Max(firstBounds.Bottom, nextBounds.Bottom)) };
 
             static void Retain(SvgAuthoredPath path, bool isEvenOdd, SvgClipPaintKind paintKind, BudgetedParserList<SvgClipChild> originals,
-                RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+                RenderBudget budget, CancellationToken token)
             {
-                SvgAuthoredPath copy = path.Copy(SvgAffineTransform.Identity, budget, work, token);
+                SvgAuthoredPath copy = path.Copy(SvgAffineTransform.Identity, budget, token);
                 try { originals.Add(new(copy, isEvenOdd, paintKind)); }
                 catch { copy.Dispose(); throw; }
             }
 
-            static SvgPaintBounds ChildBounds(SvgClipPolygon polygon, SvgAuthoredPath path, ParserWorkCounter work, CancellationToken token)
+            static SvgPaintBounds ChildBounds(SvgClipPolygon polygon, SvgAuthoredPath path, CancellationToken token)
             {
                 if (polygon.ResourceBounds is {} bounds) return bounds;
-                SvgRectangle tight = SvgPathBounds.Compute(path.Commands, work, token);
-                return new SvgPaintBounds((float)tight.X, (float)tight.Y, (float)(tight.X + tight.Width), (float)(tight.Y + tight.Height)).Map(path.SceneMap, work, token);
+                SvgRectangle tight = SvgPathBounds.Compute(path.Commands, token);
+                return new SvgPaintBounds((float)tight.X, (float)tight.Y, (float)(tight.X + tight.Width), (float)(tight.Y + tight.Height)).Map(path.SceneMap, token);
             }
         }
 
@@ -1000,13 +999,12 @@ internal static class SvgDefinitionParser
             });
         }
 
-        static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, bool isEvenOdd, bool visible, int maximumCommands, SvgDocumentState clipState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, bool isEvenOdd, bool visible, int maximumCommands, SvgDocumentState clipState, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(clipState);
-            ArgumentNullException.ThrowIfNull(workCounter);
             if (string.IsNullOrWhiteSpace(pathData)) return new([], []);
-            (int letters, bool hasCurve) = ScanClipPathData(pathData, workCounter, cancellationToken);
-            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(pathData, maximumCommands, clipState.Budget, workCounter, cancellationToken);
+            (int letters, bool hasCurve) = ScanClipPathData(pathData, cancellationToken);
+            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(pathData, maximumCommands, clipState.Budget, cancellationToken);
             pathData = renderData.Value;
             if (pathData.Length == 0) return new([], []);
             int pointCapacity = (int)Math.Min(hasCurve ? (long)letters * (SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand + 1) : pathData.Length / 2L + 2, SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints);
@@ -1015,22 +1013,22 @@ internal static class SvgDefinitionParser
             using RenderBudget.BudgetReservation scratch = clipState.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
             SvgContourBuilder builder = hasCurve ? SvgContourBuilder.CreateGrowing(pointCapacity, contourCapacity) : new(pointCapacity, contourCapacity);
             SvgFlattenPolicy flattenPolicy = new(SvgOrthogonalGeometryLowering.FlattenFlatness, SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand);
-            using BudgetedParserList<SvgAuthoredPathCommand> authored = new(clipState.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
-            SvgPathDataParser.ParsePath(pathData, clipTransform, builder, flattenPolicy, letters, workCounter, cancellationToken, null, authored);
+            using BudgetedParserList<SvgAuthoredPathCommand> authored = new(clipState.Budget, SvgMemoryCategory.Scene, cancellationToken);
+            SvgPathDataParser.ParsePath(pathData, clipTransform, builder, flattenPolicy, letters, cancellationToken, null, authored);
             if (!visible) return new([], []);
-            using BudgetedParserList<SvgDevicePoint> stripped = new(clipState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
-            using BudgetedParserList<int> strippedEnds = new(clipState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+            using BudgetedParserList<SvgDevicePoint> stripped = new(clipState.Budget, SvgMemoryCategory.Geometry, cancellationToken);
+            using BudgetedParserList<int> strippedEnds = new(clipState.Budget, SvgMemoryCategory.Geometry, cancellationToken);
             for (int contour = 0; contour < builder.ContourCount; contour++)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 ReadOnlySpan<SvgDevicePoint> ring = builder.GetContour(contour);
-                using BudgetedParserList<SvgDevicePoint> cleaned = new(clipState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+                using BudgetedParserList<SvgDevicePoint> cleaned = new(clipState.Budget, SvgMemoryCategory.Geometry, cancellationToken);
                 SvgDevicePoint first = default;
                 SvgDevicePoint previous = default;
                 bool hasKept = false;
                 for (int index = 0; index < ring.Length; index++)
                 {
-                    workCounter.Consume(cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
                     SvgDevicePoint vertex = ring[index];
                     if (hasKept && previous == vertex) continue;
                     if (hasKept && vertex == first && index == ring.Length - 1) continue;
@@ -1042,7 +1040,7 @@ internal static class SvgDefinitionParser
                 if (cleaned.Count < 3) continue;
                 for (int index = 0; index < cleaned.Count; index++)
                 {
-                    workCounter.Consume(cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
                     stripped.Add(cleaned[index]);
                 }
                 strippedEnds.Add(stripped.Count);
@@ -1053,12 +1051,12 @@ internal static class SvgDefinitionParser
             int[] retainedEnds = new int[strippedEnds.Count];
             for (int index = 0; index < stripped.Count; index++)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 retainedPoints[index] = stripped[index];
             }
             for (int index = 0; index < strippedEnds.Count; index++)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 retainedEnds[index] = strippedEnds[index];
             }
             OwnedParserArray<SvgAuthoredPathCommand> owned = authored.Detach();
@@ -1068,13 +1066,13 @@ internal static class SvgDefinitionParser
             return new SvgClipPolygon(retainedPoints, retainedEnds) { SourcePath = source, IsEvenOdd = isEvenOdd, UsesNativeReplay = hasCurve || builder.ContourCount > 1 };
         }
 
-        static (int Letters, bool HasCurve) ScanClipPathData(string pathData, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static (int Letters, bool HasCurve) ScanClipPathData(string pathData, CancellationToken cancellationToken)
         {
             int letters = 0;
             bool hasCurve = false;
             for (int index = 0; index < pathData.Length; index++)
             {
-                if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
+                if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                 char current = pathData[index];
                 if (current is 'e' or 'E')
                 {
@@ -1086,12 +1084,12 @@ internal static class SvgDefinitionParser
                 hasCurve |= current is 'Q' or 'q' or 'T' or 't' or 'C' or 'c' or 'S' or 's' or 'A' or 'a';
                 letters++;
             }
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (letters == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip paths are not implemented.");
             return (letters, hasCurve);
         }
 
-        static bool TryGetAxisClipBox(SvgDevicePoint[] ring, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgClipBox box)
+        static bool TryGetAxisClipBox(SvgDevicePoint[] ring, CancellationToken cancellationToken, out SvgClipBox box)
         {
             box = default;
             if (ring.Length != 4) return false;
@@ -1099,11 +1097,11 @@ internal static class SvgDefinitionParser
             double maxX = Math.Max(Math.Max(ring[0].X, ring[1].X), Math.Max(ring[2].X, ring[3].X));
             double minY = Math.Min(Math.Min(ring[0].Y, ring[1].Y), Math.Min(ring[2].Y, ring[3].Y));
             double maxY = Math.Max(Math.Max(ring[0].Y, ring[1].Y), Math.Max(ring[2].Y, ring[3].Y));
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (!(maxX > minX) || !(maxY > minY)) return false;
             for (int index = 0; index < 4; index++)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 bool onX = ring[index].X == minX || ring[index].X == maxX;
                 bool onY = ring[index].Y == minY || ring[index].Y == maxY;
                 if (!onX || !onY) return false;
@@ -1131,13 +1129,13 @@ internal static class SvgDefinitionParser
             finally { state.DeferringLeafClip = previousClipDeferral; }
             bool allowsOverride = style == default && parsed.Geometries.Length == 1
                 && parsed.Geometries[0].Kind == SvgGeometryKind.Rectangle && parsed.Geometries[0].Rectangle.HasFill;
-            return new SvgDefinition(RetainParsedGeometries(parsed, state, context.WorkCounter, context.CancellationToken), allowsOverride, null, symbolViewBox);
+            return new SvgDefinition(RetainParsedGeometries(parsed, state, context.CancellationToken), allowsOverride, null, symbolViewBox);
         }
     }
 
-    private static string ClaimGradientId(SvgDocumentState state, string id, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static string ClaimGradientId(SvgDocumentState state, string id, CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         bool known = state.GradientRegistrations.TryGetValue(id, out SvgGradientRegistration registration);
         if (known && registration.IsDefined) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
         string retained = state.Strings.Copy(id);
@@ -1146,9 +1144,9 @@ internal static class SvgDefinitionParser
         return retained;
     }
 
-    internal static void RegisterGradient(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void RegisterGradient(SvgDocumentState state, CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         SvgGradientTemplate template = state.Gradient ?? throw new InvalidOperationException("Gradient registration requires gradient dimensions.");
         if (state.GradientStops.Count > SvgGradientSyntax.MaximumGradientStops) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient stop count exceeds the supported limit.");
         if (template.Href is not null)
@@ -1162,11 +1160,11 @@ internal static class SvgDefinitionParser
             string hrefId = SvgGradientSyntax.ParseGradientHrefId(template.Href);
             if (!state.Gradients.TryGetValue(hrefId, out _) && !state.RadialGradients.TryGetValue(hrefId, out _))
             {
-                StashPendingLinearGradient(state, template, hrefId, workCounter, cancellationToken);
+                StashPendingLinearGradient(state, template, hrefId, cancellationToken);
                 return;
             }
         }
-        (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveGradientStops(state, template, workCounter, cancellationToken);
+        (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveGradientStops(state, template, cancellationToken);
         if (template.Href is {} vectorHref && template.VectorCount < 4)
         {
             string id = SvgGradientSyntax.ParseGradientHrefId(vectorHref);
@@ -1204,10 +1202,10 @@ internal static class SvgDefinitionParser
         (double x1, double y1, double x2, double y2, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY, bool hasLinearRotation) = ResolveGradientVector(template);
         if (!template.IsAvailable) { isEmpty = true; start = default; end = default; stops = []; }
         SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasLinearRotation)
-        { SourcePaint = RetainSourcePaint(template, state, workCounter, cancellationToken) };
+        { SourcePaint = RetainSourcePaint(template, state, cancellationToken) };
         string retainedId = state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier.");
         if (!state.Gradients.TryAdd(retainedId, gradient)) throw new InvalidOperationException("Resolved gradients register once.");
-        ResolveGradientDependents(state, retainedId, workCounter, cancellationToken);
+        ResolveGradientDependents(state, retainedId, cancellationToken);
 
         static (double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientSpread Spread, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation) ResolveGradientVector(SvgGradientTemplate template)
         {
@@ -1239,9 +1237,9 @@ internal static class SvgDefinitionParser
 
         }
 
-        static SvgLinearPaintMap RetainSourcePaint(SvgGradientTemplate source, SvgDocumentState document, ParserWorkCounter work, CancellationToken token)
+        static SvgLinearPaintMap RetainSourcePaint(SvgGradientTemplate source, SvgDocumentState document, CancellationToken token)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             return document.Scene.RetainLinearPaintMap(new(
                 source.X1, source.Y1, source.X2, source.Y2,
                 source.HasTransform ? source.Transform : SvgGradientTransform.Identity, SvgAffineTransform.Identity, false));
@@ -1249,29 +1247,28 @@ internal static class SvgDefinitionParser
     }
 
     /// <summary>Retains a linear template and its authored stops until its target registers.</summary>
-    private static void StashPendingLinearGradient(SvgDocumentState state, SvgGradientTemplate template, string hrefId, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void StashPendingLinearGradient(SvgDocumentState state, SvgGradientTemplate template, string hrefId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
-        ArgumentNullException.ThrowIfNull(workCounter);
         string id = state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier.");
         string dependencyKey = state.Strings.Copy(hrefId);
         string authoredHref = state.Strings.Copy(template.Href ?? throw new InvalidOperationException("Pending gradients require their authored href."));
         SvgGradientStop[] stops = AllocateGradientStops(state);
         for (int index = 0; index < stops.Length; index++)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             stops[index] = state.GradientStops[index];
         }
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         SvgPendingGradientReference reference = new(SvgGradientKind.Linear, state.PendingLinearGradientHrefs.Count);
-        SvgPendingGradientReference? next = LinkPendingGradient(state, dependencyKey, reference, workCounter, cancellationToken);
+        SvgPendingGradientReference? next = LinkPendingGradient(state, dependencyKey, reference, cancellationToken);
         state.PendingLinearGradientHrefs.Add(new(id, template with { Href = authoredHref }, stops) { Next = next });
     }
 
     private static SvgPendingGradientReference? LinkPendingGradient(SvgDocumentState state, string target, SvgPendingGradientReference reference,
-        ParserWorkCounter workCounter, CancellationToken cancellationToken)
+CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         if (state.GradientRegistrations.TryGetValue(target, out SvgGradientRegistration registration))
         {
             state.GradientRegistrations.Replace(target, registration with { FirstDependent = reference });
@@ -1283,18 +1280,18 @@ internal static class SvgDefinitionParser
 
     /// <summary>Wakes only aliases of a newly resolved gradient, visiting each dependency once across both kinds.</summary>
     /// <remarks>Document-owned lists keep stable indices and borrow their stop arrays until teardown.
-    /// Links and ready storage are reserved before growth; traversal charges work and observes cancellation.
+    /// Links and ready storage are reserved before growth; traversal observes cancellation.
     /// Nested registrations append to the same iterative stack without recursion. State is conversion-local.</remarks>
-    private static void ResolveGradientDependents(SvgDocumentState state, string target, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void ResolveGradientDependents(SvgDocumentState state, string target, CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         if (state.GradientRegistrations.TryGetValue(target, out SvgGradientRegistration registration) && registration.FirstDependent is {} first)
         {
             state.GradientRegistrations.Replace(target, registration with { FirstDependent = null });
             SvgPendingGradientReference? next = first;
             while (next is {} reference)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 state.ReadyGradientHrefs.Add(reference);
                 next = reference.Kind == SvgGradientKind.Linear ? state.PendingLinearGradientHrefs[reference.Index].Next : state.PendingRadialGradientHrefs[reference.Index].Next;
             }
@@ -1305,11 +1302,11 @@ internal static class SvgDefinitionParser
         {
             while (state.ReadyGradientHrefs.Count > 0)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 SvgPendingGradientReference reference = state.ReadyGradientHrefs[^1];
                 state.ReadyGradientHrefs.RemoveLast();
-                if (reference.Kind == SvgGradientKind.Linear) RegisterPendingLinearGradient(state, state.PendingLinearGradientHrefs[reference.Index], workCounter, cancellationToken);
-                else RegisterPendingRadialGradient(state, state.PendingRadialGradientHrefs[reference.Index], workCounter, cancellationToken);
+                if (reference.Kind == SvgGradientKind.Linear) RegisterPendingLinearGradient(state, state.PendingLinearGradientHrefs[reference.Index], cancellationToken);
+                else RegisterPendingRadialGradient(state, state.PendingRadialGradientHrefs[reference.Index], cancellationToken);
             }
         }
         finally
@@ -1319,10 +1316,9 @@ internal static class SvgDefinitionParser
     }
 
     /// <summary>Resolves deferred gradient href inheritances, rejecting targets that never registered with the original registration error.</summary>
-    internal static void ResolvePendingGradientHrefs(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void ResolvePendingGradientHrefs(SvgDocumentState state, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (state.PendingLinearGradientHrefs.Count > 0 || state.PendingRadialGradientHrefs.Count > 0)
         {
             state.ThrowOnMissingGradientHref = true;
@@ -1330,13 +1326,13 @@ internal static class SvgDefinitionParser
             {
                 foreach (PendingLinearGradientHref pending in state.PendingLinearGradientHrefs.AsSpan())
                 {
-                    workCounter.Consume(cancellationToken);
-                    if (!state.Gradients.TryGetValue(pending.Id, out _)) RegisterPendingLinearGradient(state, pending, workCounter, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (!state.Gradients.TryGetValue(pending.Id, out _)) RegisterPendingLinearGradient(state, pending, cancellationToken);
                 }
                 foreach (PendingRadialGradientHref pending in state.PendingRadialGradientHrefs.AsSpan())
                 {
-                    workCounter.Consume(cancellationToken);
-                    if (!state.RadialGradients.TryGetValue(pending.Id, out _)) RegisterPendingRadialGradient(state, pending, workCounter, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (!state.RadialGradients.TryGetValue(pending.Id, out _)) RegisterPendingRadialGradient(state, pending, cancellationToken);
                 }
             }
             finally
@@ -1346,20 +1342,20 @@ internal static class SvgDefinitionParser
         }
     }
 
-    private static void RegisterPendingLinearGradient(SvgDocumentState state, PendingLinearGradientHref pending, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void RegisterPendingLinearGradient(SvgDocumentState state, PendingLinearGradientHref pending, CancellationToken cancellationToken)
     {
         state.GradientId = pending.Id;
         state.Gradient = pending.Template;
         state.GradientStops.Clear();
         foreach (SvgGradientStop stop in pending.Stops)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             state.GradientStops.Add(stop);
         }
 
         try
         {
-            RegisterGradient(state, workCounter, cancellationToken);
+            RegisterGradient(state, cancellationToken);
         }
         finally
         {
@@ -1369,20 +1365,20 @@ internal static class SvgDefinitionParser
         }
     }
 
-    private static void RegisterPendingRadialGradient(SvgDocumentState state, PendingRadialGradientHref pending, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void RegisterPendingRadialGradient(SvgDocumentState state, PendingRadialGradientHref pending, CancellationToken cancellationToken)
     {
         state.RadialGradientId = pending.Id;
         state.RadialGradient = pending.Template;
         state.GradientStops.Clear();
         foreach (SvgGradientStop stop in pending.Stops)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             state.GradientStops.Add(stop);
         }
 
         try
         {
-            RegisterRadialGradient(state, workCounter, cancellationToken);
+            RegisterRadialGradient(state, cancellationToken);
         }
         finally
         {
@@ -1391,9 +1387,9 @@ internal static class SvgDefinitionParser
             state.GradientStops.Clear();
         }
     }
-    internal static void RegisterRadialGradient(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void RegisterRadialGradient(SvgDocumentState state, CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         SvgRadialTemplate template = state.RadialGradient ?? throw new InvalidOperationException("Radial gradient registration requires gradient dimensions.");
         if (state.GradientStops.Count > SvgGradientSyntax.MaximumGradientStops) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient stop count exceeds the supported limit.");
         if (template.Href is not null && template.VectorCount > 0 && template.VectorCount < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial vector overrides are not implemented.");
@@ -1406,11 +1402,11 @@ internal static class SvgDefinitionParser
             string hrefId = SvgGradientSyntax.ParseGradientHrefId(template.Href);
             if (!state.Gradients.TryGetValue(hrefId, out _) && !state.RadialGradients.TryGetValue(hrefId, out _))
             {
-                StashPendingRadialGradient(state, template, hrefId, workCounter, cancellationToken);
+                StashPendingRadialGradient(state, template, hrefId, cancellationToken);
                 return;
             }
         }
-        (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveRadialStops(state, template, workCounter, cancellationToken);
+        (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveRadialStops(state, template, cancellationToken);
         SvgRadialGradientSource? inheritedSource = null;
         if (template.Href is {} vectorHref
             && state.RadialGradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(vectorHref), out SvgRadialGradient parentGradient))
@@ -1468,7 +1464,7 @@ internal static class SvgDefinitionParser
         }
         string retainedId = state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier.");
         if (!state.RadialGradients.TryAdd(retainedId, gradient)) throw new InvalidOperationException("Resolved gradients register once.");
-        ResolveGradientDependents(state, retainedId, workCounter, cancellationToken);
+        ResolveGradientDependents(state, retainedId, cancellationToken);
 
         static (double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientSpread Spread, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation, SvgGradientTransform Inverse, bool HasGeneralTransform) ResolveRadialVector(SvgRadialTemplate template)
         {
@@ -1537,28 +1533,27 @@ internal static class SvgDefinitionParser
     }
 
     /// <summary>Retains a radial template and its authored stops until its target registers.</summary>
-    private static void StashPendingRadialGradient(SvgDocumentState state, SvgRadialTemplate template, string hrefId, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void StashPendingRadialGradient(SvgDocumentState state, SvgRadialTemplate template, string hrefId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
-        ArgumentNullException.ThrowIfNull(workCounter);
         string id = state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier.");
         string dependencyKey = state.Strings.Copy(hrefId);
         string authoredHref = state.Strings.Copy(template.Href ?? throw new InvalidOperationException("Pending gradients require their authored href."));
         SvgGradientStop[] stops = AllocateGradientStops(state);
         for (int index = 0; index < stops.Length; index++)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             stops[index] = state.GradientStops[index];
         }
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         SvgPendingGradientReference reference = new(SvgGradientKind.Radial, state.PendingRadialGradientHrefs.Count);
-        SvgPendingGradientReference? next = LinkPendingGradient(state, dependencyKey, reference, workCounter, cancellationToken);
+        SvgPendingGradientReference? next = LinkPendingGradient(state, dependencyKey, reference, cancellationToken);
         state.PendingRadialGradientHrefs.Add(new(id, template with { Href = authoredHref }, stops) { Next = next });
     }
 
-    private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveRadialStops(SvgDocumentState state, SvgRadialTemplate template, ParserWorkCounter work, CancellationToken token)
+    private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveRadialStops(SvgDocumentState state, SvgRadialTemplate template, CancellationToken token)
     {
-        if (state.GradientStops.Count >= 1) return ClampStopList(state, work, token);
+        if (state.GradientStops.Count >= 1) return ClampStopList(state, token);
         if (template.Href is null) return (default, default, 0, 1, true, Array.Empty<SvgGradientStop>());
         string stopHrefId = SvgGradientSyntax.ParseGradientHrefId(template.Href);
         if (state.RadialGradients.TryGetValue(stopHrefId, out SvgRadialGradient parent)) return (parent.Start, parent.End, parent.Offset1, parent.Offset2, parent.IsEmpty, parent.Stops);
@@ -1582,9 +1577,9 @@ internal static class SvgDefinitionParser
         }
     }
 
-    private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveGradientStops(SvgDocumentState state, SvgGradientTemplate template, ParserWorkCounter work, CancellationToken token)
+    private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveGradientStops(SvgDocumentState state, SvgGradientTemplate template, CancellationToken token)
     {
-        if (state.GradientStops.Count >= 1) return ClampStopList(state, work, token);
+        if (state.GradientStops.Count >= 1) return ClampStopList(state, token);
         if (template.Href is null) return (default, default, 0, 1, true, Array.Empty<SvgGradientStop>());
         if (!state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgLinearGradient parent))
         {
@@ -1606,41 +1601,41 @@ internal static class SvgDefinitionParser
         return new SvgGradientStop[count];
     }
 
-    private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ClampStopList(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ClampStopList(SvgDocumentState state, CancellationToken token)
     {
         // A stop offset below the previous effective offset rises to it, forming a hard edge; Math.Clamp below preserves the order.
         for (int index = 1; index < state.GradientStops.Count; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (state.GradientStops[index].Offset < state.GradientStops[index - 1].Offset) state.GradientStops[index] = state.GradientStops[index] with { Offset = state.GradientStops[index - 1].Offset };
         }
         SvgGradientStop[] clamped = AllocateGradientStops(state);
         for (int index = 0; index < clamped.Length; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             clamped[index] = state.GradientStops[index] with { Offset = Math.Clamp(state.GradientStops[index].Offset, 0, 1) };
         }
         return (clamped[0].Color, clamped[^1].Color, clamped[0].Offset, clamped[^1].Offset, false, clamped);
     }
 
     /// <summary>Promotes the legacy first rectangle before appending a vector leaf or entering a tile group.</summary>
-    private static SvgSceneBuilder GetPatternContentBuilder(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgSceneBuilder GetPatternContentBuilder(SvgDocumentState state, CancellationToken cancellationToken)
     {
         SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Vector pattern content requires a tile grid.");
-        SvgSceneBuilder builder = state.PatternContentBuilder ??= new(state.Budget, workCounter, cancellationToken);
+        SvgSceneBuilder builder = state.PatternContentBuilder ??= new(state.Budget, cancellationToken);
         if (tile.Content is not null)
         {
             SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
             SvgPaintableElementContext previous = state.PatternRectangleContext;
-            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.ElementDisplay, previous.InheritedPresentation.TextMetrics, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, SvgSourceContourRetention.None, previous.InheritedPresentation.IsDisplayed, state), builder, state, workCounter, cancellationToken);
+            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.ElementDisplay, previous.InheritedPresentation.TextMetrics, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, SvgSourceContourRetention.None, previous.InheritedPresentation.IsDisplayed, state), builder, state, cancellationToken);
             state.PatternTile = tile with { Content = null };
         }
         return builder;
     }
 
-    internal static void RegisterPattern(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void RegisterPattern(SvgDocumentState state, CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         string retainedId = state.Strings.Copy(state.PatternId ?? throw new InvalidOperationException("Pattern registration requires an identifier."));
         SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern registration requires pattern dimensions.");
         if (state.PatternDefinitions.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
@@ -1661,12 +1656,12 @@ internal static class SvgDefinitionParser
         {
             if (!state.Patterns.TryAdd(retainedId, tile)) throw new InvalidOperationException("A pattern must register once.");
         }
-        SvgPatternReferenceResolver.Register(state, retainedId, workCounter, cancellationToken);
+        SvgPatternReferenceResolver.Register(state, retainedId, cancellationToken);
     }
 
-    internal static void RegisterMaskContent(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void RegisterMaskContent(SvgDocumentState state, CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         string retainedId = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask content registration requires an identifier."));
         SvgGeometry[] geometries = state.MaskContentGeometries ?? throw new InvalidOperationException("Mask content registration requires retained geometries.");
         if (state.Masks.TryGetValue(retainedId, out _) || !state.MaskContents.TryAdd(retainedId, new SvgMaskContent(geometries, state.MaskContentLuminance, state.MaskContentIsAlpha))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
@@ -1675,9 +1670,9 @@ internal static class SvgDefinitionParser
         if (state.MaskContentBox is SvgClipBox content && !state.MaskContentBoxes.TryAdd(retainedId, content)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
     }
 
-    internal static void RegisterMask(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void RegisterMask(SvgDocumentState state, CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         string retainedId = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask registration requires an identifier."));
         if (state.MaskContents.TryGetValue(retainedId, out _) || !state.Masks.TryAdd(retainedId, state.MaskValue ?? 0)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
         if (state.MaskCustomRegion is SvgClipBox region && !state.MaskRegions.TryAdd(retainedId, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
@@ -1696,9 +1691,9 @@ internal static class SvgDefinitionParser
         else if (!state.MaskDefaultUserSpaceRegion && state.MaskCustomRegion is SvgClipBox custom && state.MaskContentBox is SvgClipBox cover && !cover.Contains(custom.X, custom.Y, custom.X + custom.Width, custom.Y + custom.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
     }
 
-    internal static void RegisterClipPolygon(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void RegisterClipPolygon(SvgDocumentState state, CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip polygon registration requires an identifier."));
         SvgClipPolygon polygon = state.ClipPolygon ?? throw new InvalidOperationException("Clip polygon registration requires retained points.");
         polygon = polygon with { IsDisabled = !state.ClipIsDisplayed };
@@ -1707,16 +1702,16 @@ internal static class SvgDefinitionParser
             SvgClipChildRange range = polygon.Children ?? throw new InvalidOperationException("Deferred union children are missing.");
             BudgetedParserList<SvgClipChild> children = state.ClipChildren ?? throw new InvalidOperationException("Deferred union owners are missing.");
             SvgAuthoredPath previous = polygon.SourcePath ?? throw new InvalidOperationException("Deferred source owner is missing.");
-            SvgClipUnionResult resolved = SvgClipUnion.ResolveOrdered(children.AsSpan().Slice(range.First, range.Count), state.Budget, workCounter, cancellationToken);
+            SvgClipUnionResult resolved = SvgClipUnion.ResolveOrdered(children.AsSpan().Slice(range.First, range.Count), state.Budget, cancellationToken);
             try
             {
-                using SvgPreparedPathContours prepared = resolved.Path.Prepare(SvgAffineTransform.Identity, resolved.IsEvenOdd, state.Budget, workCounter, cancellationToken);
+                using SvgPreparedPathContours prepared = resolved.Path.Prepare(SvgAffineTransform.Identity, resolved.IsEvenOdd, state.Budget, cancellationToken);
                 state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(prepared.Points.Length)
                     + ParserCollectionMemory.GetArrayByteCount<int>(prepared.ContourEnds.Length), SvgMemoryCategory.Scene));
                 SvgDevicePoint[] retainedPoints = new SvgDevicePoint[prepared.Points.Length];
                 int[] retainedEnds = new int[prepared.ContourEnds.Length];
-                for (int index = 0; index < retainedPoints.Length; index++) { workCounter.Consume(cancellationToken); retainedPoints[index] = prepared.Points[index]; }
-                for (int index = 0; index < retainedEnds.Length; index++) { workCounter.Consume(cancellationToken); retainedEnds[index] = prepared.ContourEnds[index]; }
+                for (int index = 0; index < retainedPoints.Length; index++) { cancellationToken.ThrowIfCancellationRequested(); retainedPoints[index] = prepared.Points[index]; }
+                for (int index = 0; index < retainedEnds.Length; index++) { cancellationToken.ThrowIfCancellationRequested(); retainedEnds[index] = prepared.ContourEnds[index]; }
                 polygon = polygon with { Points = retainedPoints, ContourEnds = retainedEnds, SourcePath = resolved.Path,
                     IsEvenOdd = resolved.IsEvenOdd, IsResolvedUnion = true, DeferredUnion = false, UsesNativeReplay = true };
                 state.ClipPolygon = polygon;
@@ -1727,7 +1722,7 @@ internal static class SvgDefinitionParser
         else if (!polygon.IsDisabled && polygon.ChildCount > 1 && !polygon.IsResolvedUnion)
         {
             SvgAuthoredPath previous = polygon.SourcePath ?? throw new InvalidOperationException("A child union requires source commands.");
-            SvgAuthoredPath normalized = NormalizeUnion(polygon, state.Budget, workCounter, cancellationToken);
+            SvgAuthoredPath normalized = NormalizeUnion(polygon, state.Budget, cancellationToken);
             polygon = polygon with { SourcePath = normalized };
             // Publish ownership before releasing the old path or registering the
             // id, so duplicate ids and cancellation retain one cleanup owner.
@@ -1739,9 +1734,9 @@ internal static class SvgDefinitionParser
         // Preserve the qualified contour ordering and cyclic starts. Same-directed
         // nonzero contours represent the union of overlapping convex children;
         // disjoint content retains its established parity replay.
-        static SvgAuthoredPath NormalizeUnion(SvgClipPolygon polygon, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        static SvgAuthoredPath NormalizeUnion(SvgClipPolygon polygon, RenderBudget budget, CancellationToken token)
         {
-            if (SvgClipUnion.ResolveCrossings(polygon, budget, work, token) is {} resolved) return resolved;
+            if (SvgClipUnion.ResolveCrossings(polygon, budget, token) is {} resolved) return resolved;
             int count = polygon.ContourEnds.Length;
             if (count > 42) throw new InvalidOperationException("A retained union exceeded its admitted child limit.");
             Span<int> order = stackalloc int[42];
@@ -1753,7 +1748,7 @@ internal static class SvgDefinitionParser
                 int end = polygon.ContourEnds[contour];
                 for (int index = start; index < end; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgDevicePoint point = polygon.Points[index];
                     left = MathF.Min(left, (float)point.X); top = MathF.Min(top, (float)point.Y);
                     right = MathF.Max(right, (float)point.X); bottom = MathF.Max(bottom, (float)point.Y);
@@ -1762,7 +1757,7 @@ internal static class SvgDefinitionParser
                 int position = contour;
                 while (position > 0)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgPaintBounds preceding = bounds[order[position - 1]];
                     if (preceding.Top < top || (preceding.Top == top && preceding.Left <= left)) break;
                     order[position] = order[position - 1]; position--;
@@ -1770,23 +1765,23 @@ internal static class SvgDefinitionParser
                 order[position] = contour;
                 start = end;
             }
-            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, work, token);
+            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, token);
             for (int position = 0; position < count; position++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 int contour = order[position];
                 start = contour == 0 ? 0 : polygon.ContourEnds[contour - 1];
                 int end = polygon.ContourEnds[contour];
-                while (end > start && polygon.Points[end - 1] == polygon.Points[start]) { work.Consume(token); end--; }
+                while (end > start && polygon.Points[end - 1] == polygon.Points[start]) { token.ThrowIfCancellationRequested(); end--; }
                 int next = start + 1;
-                while (next < end && polygon.Points[next] == polygon.Points[start]) { work.Consume(token); next++; }
+                while (next < end && polygon.Points[next] == polygon.Points[start]) { token.ThrowIfCancellationRequested(); next++; }
                 if (next >= end) throw new InvalidOperationException("A retained union contour became degenerate.");
                 SvgDevicePoint first = polygon.Points[next];
                 commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, first, default, default));
                 commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, polygon.Points[start], default, default));
                 for (int index = end - 1; index > next; index--)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     if (polygon.Points[index] != polygon.Points[index + 1 < end ? index + 1 : start])
                         commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, polygon.Points[index], default, default));
                 }
@@ -1799,9 +1794,9 @@ internal static class SvgDefinitionParser
         }
     }
 
-    internal static void RegisterClipBox(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void RegisterClipBox(SvgDocumentState state, CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip-path registration requires an identifier."));
         if (state.ClipPolygons.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
         if (!state.ClipIsDisplayed)
@@ -1843,20 +1838,20 @@ internal static class SvgDefinitionParser
         }
     }
 
-    internal static void RegisterSymbol(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static void RegisterSymbol(SvgDocumentState state, CancellationToken token)
     {
         SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol registration requires an open builder.");
-        SvgDefinition definition = builder.Build(state.SymbolViewBox, state, work, token) with { Marker = state.MarkerDefinition, EstablishesViewport = builder.EstablishesViewport };
+        SvgDefinition definition = builder.Build(state.SymbolViewBox, state, token) with { Marker = state.MarkerDefinition, EstablishesViewport = builder.EstablishesViewport };
         bool retained = false;
         try
         {
-            SvgPaintRecording.WrapInstance(definition.Geometries, builder.Presentation.SourceOpacity, state.NewRecordingScope(), state, work, token);
-            work.Consume(token);
+            SvgPaintRecording.WrapInstance(definition.Geometries, builder.Presentation.SourceOpacity, state.NewRecordingScope(), state, token);
+            token.ThrowIfCancellationRequested();
             if (state.SymbolId is string id)
             {
                 if (!state.Definitions.TryAdd(id, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             }
-            else state.RetainAnonymousSymbol(definition, work, token);
+            else state.RetainAnonymousSymbol(definition, token);
             if (state.MaskGroupChildIndex >= 0)
             {
                 SvgMaskReplayChild child = state.MaskReplayChildren[state.MaskGroupChildIndex];
@@ -1887,12 +1882,12 @@ internal static class SvgDefinitionParser
         string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
         if ((stroke is null || stroke == "none" || SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) && state.FilterGroupDepth <= 0
             && !SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers) return new([], false, null, null);
-        return new(RetainParsedGeometries(SvgLeafParser.ParseLine(reader, context, null, state), state, context.WorkCounter, context.CancellationToken), false, null, null);
+        return new(RetainParsedGeometries(SvgLeafParser.ParseLine(reader, context, null, state), state, context.CancellationToken), false, null, null);
     }
 
     /// <summary>Lowers one immutable source leaf with its resolved instance stroke, reusing the ordinary shape routes.</summary>
     /// <remarks>The caller owns returned geometries. Document reservations own array/binding storage; failure releases
-    /// native geometry and every lowerer observes the supplied work, cancellation and memory bounds.</remarks>
+    /// native geometry and every lowerer observes the supplied cancellation and memory bounds.</remarks>
     internal static SvgDefinition LowerInstanceSource(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
         => LowerInstanceSource(reader, context, state, context.InheritedPresentation.IsDisplayed);
 
@@ -1913,7 +1908,7 @@ internal static class SvgDefinitionParser
         {
             if (filtered && isDisplayed) state.FilterGroupDepth++;
             definition = reader.LocalName == "rect"
-                ? new(RetainParsedGeometries(SvgLeafParser.ParseRectangle(reader, context, null, state), state, context.WorkCounter, context.CancellationToken), false, null, null)
+                ? new(RetainParsedGeometries(SvgLeafParser.ParseRectangle(reader, context, null, state), state, context.CancellationToken), false, null, null)
                 : reader.LocalName == "image" ? ParseImageSource(reader, context, state)
                 : reader.LocalName == "line" ? ParseLineDefinition(reader, context, state)
                 : ParseShapeDefinition(reader, context, state, null, false);
@@ -1922,7 +1917,7 @@ internal static class SvgDefinitionParser
         try
         {
             if (filtered && isDisplayed && (sourceStyle.GetDisplay() != SvgDisplay.None) && SvgPaintRecording.IsFilterSource(reader, context))
-                SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.WorkCounter, context.CancellationToken);
+                SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.CancellationToken);
             string? mask = SvgLocalUrl.ReadReference(reader, "mask");
             if (mask is not null)
             {
@@ -1931,13 +1926,13 @@ internal static class SvgDefinitionParser
                 if (isDisplayed && (sourceStyle.GetDisplay() != SvgDisplay.None)
                     && SvgMaskSyntax.HasPaintableTarget(reader, visible, filtered ? sourceStyle.Filter : null))
                     SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, mask,
-                        context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
+                        context.ResolveTransform(reader), state, context.CancellationToken);
             }
             if (clipId is not null)
-                SvgClipPathSyntax.ApplyResourceClip(definition.Geometries, clipId, context.ResolveTransform(reader), state, context.WorkCounter, context.CancellationToken);
-            if (filtered) SvgPaintRecording.WrapInstance(definition.Geometries, sourceStyle.GetOpacity(), state.NewRecordingScope(), state, context.WorkCounter, context.CancellationToken);
-            SvgPaintRecording.FinishDefinition(definition.Geometries, state, context.WorkCounter, context.CancellationToken);
-            return BindSymbolFill(definition, reader, context, state, context.WorkCounter, context.CancellationToken, false);
+                SvgClipPathSyntax.ApplyResourceClip(definition.Geometries, clipId, context.ResolveTransform(reader), state, context.CancellationToken);
+            if (filtered) SvgPaintRecording.WrapInstance(definition.Geometries, sourceStyle.GetOpacity(), state.NewRecordingScope(), state, context.CancellationToken);
+            SvgPaintRecording.FinishDefinition(definition.Geometries, state, context.CancellationToken);
+            return BindSymbolFill(definition, reader, context, state, context.CancellationToken, false);
         }
         catch { foreach (SvgGeometry geometry in definition.Geometries) geometry.Dispose(); throw; }
 
@@ -1948,20 +1943,20 @@ internal static class SvgDefinitionParser
             SvgGeometry image = SvgLeafParser.ParseImage(reader, context, null, context.LengthBases.Width, context.LengthBases.Height, limits, state);
             try
             {
-                using BudgetedParserList<SvgGeometry> batch = new(state.Budget, SvgMemoryCategory.Scene, context.WorkCounter, context.CancellationToken);
+                using BudgetedParserList<SvgGeometry> batch = new(state.Budget, SvgMemoryCategory.Scene, context.CancellationToken);
                 batch.Add(image);
-                return new(SvgReferenceResolver.RetainInstanceBatch(batch.AsSpan(), state, context.WorkCounter, context.CancellationToken), false, null, null);
+                return new(SvgReferenceResolver.RetainInstanceBatch(batch.AsSpan(), state, context.CancellationToken), false, null, null);
             }
             catch { image.Dispose(); throw; }
         }
     }
 
-    private static SvgDefinition BindSymbolFill(SvgDefinition definition, XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, ParserWorkCounter work, CancellationToken token, bool includesSymbolPresentation)
+    private static SvgDefinition BindSymbolFill(SvgDefinition definition, XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, CancellationToken token, bool includesSymbolPresentation)
     {
         if (definition.Geometries.Length == 0) return definition with { SymbolFillBindings = [] };
         // Bind only authored fill properties: container URL injection belongs to lowering,
         // while source aliases must exclude their definition ancestors.
-        SvgComputedStyle authored = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token);
+        SvgComputedStyle authored = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, token);
         SvgComputedStyle style = context.InheritedStroke.ApplyTo(authored).ResolveDisplay(SvgDisplay.Inline);
         _ = SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName);
         SvgSymbolPresentation symbol = includesSymbolPresentation ? (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol fills require a presentation context.")).Presentation : default;
@@ -1975,7 +1970,7 @@ internal static class SvgDefinitionParser
         string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
         SvgPaint? authoredStroke = stroke is not null && !SvgPatternSyntax.IsPatternFill(stroke)
             ? SvgPaintResolver.Resolve(stroke, null, null, SvgPaint.Default, context.NamedColors) : null;
-        SvgComputedStyle sourceStyle = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token);
+        SvgComputedStyle sourceStyle = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, token);
         string? strokeOpacity = sourceStyle.StrokeOpacity ?? (includesSymbolPresentation ? symbol.Stroke.StrokeOpacity : null);
         SvgPaintOpacity? authoredStrokeOpacity = strokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(strokeOpacity);
         RenderBudget.BudgetReservation reservation = state.Budget.Reserve(128 + ParserCollectionMemory.GetArrayByteCount<SvgSymbolFillBinding>(definition.Geometries.Length), SvgMemoryCategory.Scene);
@@ -1984,7 +1979,7 @@ internal static class SvgDefinitionParser
             SvgSymbolFillBinding[] bindings = new SvgSymbolFillBinding[definition.Geometries.Length];
             for (int index = 0; index < bindings.Length; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgRecordedPaintValue recorded = state.Scene.GetRecordedPaintValue(definition.Geometries[index].RecordedPaint);
                 bool strokeChannel = recorded.IsStroke;
                 if (recorded.IsMarkerContent)
@@ -2016,12 +2011,12 @@ internal static class SvgDefinitionParser
             && (style.Linejoin is null || style.Linejoin.AsSpan().Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase))
             && (style.Dasharray is null || style.Dasharray.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
             && (vectorEffect is null || !SvgStrokeStyleSyntax.ParseVectorEffect(vectorEffect))
-            && SvgPathDataParser.IsSingleClosedPath(pathData, context.WorkCounter, context.CancellationToken))
+            && SvgPathDataParser.IsSingleClosedPath(pathData, context.CancellationToken))
         {
             if (definitionTransform is null) localContext = localContext with { RetainInstanceStrokePath = true };
             else
             {
-                SvgAffineTransform elementMap = SvgGeometrySyntax.ParseElementTransform(reader, context.WorkCounter, context.CancellationToken);
+                SvgAffineTransform elementMap = SvgGeometrySyntax.ParseElementTransform(reader, context.CancellationToken);
                 if (elementMap.TryGetUniformScale(out double definitionScale) && Math.Abs(definitionScale - 1) <= 1e-9)
                     localContext = localContext with { RetainInstanceStrokePath = true };
             }
@@ -2045,7 +2040,7 @@ internal static class SvgDefinitionParser
                     float top = (float)oval.CenterY - (float)oval.RadiusY, bottom = (float)oval.CenterY + (float)oval.RadiusY;
                     if (!float.IsFinite(left) || !float.IsFinite(right) || !float.IsFinite(top) || !float.IsFinite(bottom)) throw new SvgException(SvgErrorCode.LimitExceeded, "Oval instance coordinates exceed the finite float range.");
                     float midX = (float)(0.5 * ((double)left + right)), midY = (float)(0.5 * ((double)top + bottom));
-                    using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, context.WorkCounter, context.CancellationToken);
+                    using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, context.CancellationToken);
                     commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(right, midY), default, default));
                     commands.Add(new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, new(right, bottom), new(midX, bottom), new(SvgRationalQuadratic.QuarterCircleWeight, 0)));
                     commands.Add(new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, new(left, bottom), new(left, midY), new(SvgRationalQuadratic.QuarterCircleWeight, 0)));
@@ -2057,7 +2052,7 @@ internal static class SvgDefinitionParser
                     catch { owned.Dispose(); throw; }
                 }
             }
-            return new SvgDefinition(geometries, IsOverrideableFill(style, geometries), ResolveInstanceStrokeMiterLimit(style, geometries, pathData, definitionTransform, vectorEffect, context.WorkCounter, context.CancellationToken), symbolViewBox);
+            return new SvgDefinition(geometries, IsOverrideableFill(style, geometries), ResolveInstanceStrokeMiterLimit(style, geometries, pathData, definitionTransform, vectorEffect, context.CancellationToken), symbolViewBox);
         }
         catch
         {
@@ -2065,7 +2060,7 @@ internal static class SvgDefinitionParser
             throw;
         }
 
-        static double? ResolveInstanceStrokeMiterLimit(SvgComputedStyle computed, SvgGeometry[] lowered, string? pathData, string? transformAttribute, string? vectorEffect, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static double? ResolveInstanceStrokeMiterLimit(SvgComputedStyle computed, SvgGeometry[] lowered, string? pathData, string? transformAttribute, string? vectorEffect, CancellationToken cancellationToken)
         {
             if (lowered.Length != 1 || lowered[0].Kind != SvgGeometryKind.PolygonFill) return null;
             if (lowered[0].Polygon.ContourEnds.Length != 1) return null;
@@ -2075,10 +2070,10 @@ internal static class SvgDefinitionParser
             if (vectorEffect is not null && SvgStrokeStyleSyntax.ParseVectorEffect(vectorEffect)) return null;
             if (transformAttribute is not null)
             {
-                SvgAffineTransform elementMap = SvgGeometrySyntax.ParseTransform(transformAttribute, workCounter, cancellationToken);
+                SvgAffineTransform elementMap = SvgGeometrySyntax.ParseTransform(transformAttribute, cancellationToken);
                 if (!elementMap.TryGetUniformScale(out double definitionScale) || Math.Abs(definitionScale - 1) > 1e-9) return null;
             }
-            if (!SvgPathDataParser.IsSingleClosedPath(pathData, workCounter, cancellationToken)) return null;
+            if (!SvgPathDataParser.IsSingleClosedPath(pathData, cancellationToken)) return null;
             return SvgStrokeStyleSyntax.ParseMiterLimit(computed.Miterlimit);
         }
 
@@ -2112,7 +2107,7 @@ internal static class SvgDefinitionParser
         }
     }
 
-    private static SvgGeometry[] RetainParsedGeometries(SvgParsedGeometry parsed, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    private static SvgGeometry[] RetainParsedGeometries(SvgParsedGeometry parsed, SvgDocumentState state, CancellationToken token)
     {
         try
         {
@@ -2123,7 +2118,7 @@ internal static class SvgDefinitionParser
                 SvgGeometry[] retained = new SvgGeometry[parsed.Geometries.Length];
                 for (int index = 0; index < retained.Length; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     retained[index] = parsed.Geometries[index];
                 }
                 state.DefinitionReservations.Add(reservation);

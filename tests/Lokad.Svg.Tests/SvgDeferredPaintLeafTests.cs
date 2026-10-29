@@ -18,7 +18,7 @@ public sealed class SvgDeferredPaintLeafTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'>" + shape + "<text font-family='Missing'>x</text>" + definition + "</svg>");
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(Array.Empty<SvgFontProgramResolution>(), CancellationToken.None);
         RenderBudget budget = new(1_000_000);
-        SvgException failure = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, new(1_000_000), CancellationToken.None));
+        SvgException failure = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None));
         Assert.Equal(expected, failure.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         if (defined) Assert.NotNull(failure.FontDiagnostic);
@@ -37,31 +37,17 @@ public sealed class SvgDeferredPaintLeafTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "deferred-paint-leaves", id + ".svg"));
         RenderBudget discovery = new(1_000_000);
-        ParserWorkCounter discoveryWork = new(1_000_000);
-        Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discoveryWork, discovery, CancellationToken.None));
+        Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discovery, CancellationToken.None));
         Assert.Equal(0, discovery.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < discoveryWork.Used; limit++)
-        {
-            RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(limit), denied, CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
             Assert.NotEmpty(root.Geometries.ToArray());
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 256) DenyMemory(limit);
         DenyMemory(peak - 1);
         RenderBudget retry = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, retry, null, new(work.Used), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, retry, null, CancellationToken.None))
         {
             SvgSceneStorage storage = root.SceneStorage ?? throw new InvalidOperationException("Missing scene storage.");
             SvgAuthoredPath[] paths = root.Geometries.Concat(storage.MaskContents.SelectMany(mask => mask.Geometries)).Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>().ToArray();
@@ -76,7 +62,7 @@ public sealed class SvgDeferredPaintLeafTests
                 expected = surface.Pixels.ToArray();
             }
             SvgRenderLimits defaults = SvgRenderLimits.Default;
-            foreach (long limit in new[] { root.ParserWorkUnits + 1, (root.ParserWorkUnits + rasterWork) / 2, rasterWork - 1 })
+            foreach (long limit in new[] { 0L + 1, (0L + rasterWork) / 2, rasterWork - 1 })
             {
                 SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
                     defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
@@ -112,7 +98,7 @@ public sealed class SvgDeferredPaintLeafTests
         void DenyMemory(long limit)
         {
             RenderBudget denied = new(limit);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
     }
@@ -164,7 +150,7 @@ public sealed class SvgDeferredPaintLeafTests
     public void Linear_fallback_inverts_composed_source_coordinates()
     {
         RenderBudget budget = new(1_000_000);
-        using (SvgSceneBuilder scene = new(budget, new(1_000_000), CancellationToken.None))
+        using (SvgSceneBuilder scene = new(budget, CancellationToken.None))
         {
             SvgGradientTransform local = new(3, 0, 0, 2, 4, -5);
             SvgAffineTransform reference = new(2, 0.5, 0.25, 3, 7, 11);
@@ -182,20 +168,13 @@ public sealed class SvgDeferredPaintLeafTests
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "geometric-pattern.svg"));
         SvgRenderOptions options = new(new SvgViewport(284, 284), 1, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget measured = new(20_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, measured, CancellationToken.None))
         {
             Assert.Equal(284, surface.Width);
             Assert.Equal(284, surface.Height);
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { 0, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(20_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget deniedMemory = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {

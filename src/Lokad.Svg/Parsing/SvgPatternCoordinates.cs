@@ -4,7 +4,7 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Shares immutable pattern-unit semantics while each paint retains its own unclipped source bounds.</summary>
 /// <remarks>No geometry or pixels are owned here. Definition/paint metadata allowances cover this small
-/// shared value; callers own work, cancellation and the replay scene. Resolution is allocation-free.</remarks>
+/// shared value; callers own cancellation and the replay scene. Resolution is allocation-free.</remarks>
 internal sealed record SvgPatternCoordinates(bool ObjectBoxTiles, bool ObjectBoxContent)
 {
     internal SvgPaintBounds? ObjectBox { get; init; }

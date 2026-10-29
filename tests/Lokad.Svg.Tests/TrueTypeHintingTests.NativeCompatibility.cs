@@ -25,7 +25,7 @@ public sealed partial class TrueTypeHintingTests
         TrueTypeHintTarget target = Target with { Grid = clearType ? TrueTypeHintGrid.ClearType : TrueTypeHintGrid.Physical, WindowsArithmetic = windows };
         RenderBudget budget = new(long.MaxValue);
         using (TrueTypeHinting machine = TrueTypeHinting.Create(new(16, 10, 2, 0), [64], points, [0], 16,
-            new(65536, 65536), target, budget, new(long.MaxValue), CancellationToken.None))
+            new(65536, 65536), target, budget, CancellationToken.None))
         {
             if (function >= 0) machine.Run(definition, TrueTypeHintProgramKind.Font);
             machine.Prepare(Convert.FromHexString(waiver ? "B1080142B104038E" : "B1080142"), target);
@@ -41,7 +41,7 @@ public sealed partial class TrueTypeHintingTests
     {
         TrueTypeHintTarget target = Target with { Grid = TrueTypeHintGrid.ClearType, WindowsArithmetic = true };
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(16, 10, 1, 0), [64], [], [], 16,
-            new(65536, 65536), target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(65536, 65536), target, new(long.MaxValue), CancellationToken.None);
         machine.Run(Convert.FromHexString("B0002C4523466020B02660B004262348482D"), TrueTypeHintProgramKind.Font);
         machine.Prepare(Convert.FromHexString("B1080142B109084342"), target);
         Assert.Equal(0, machine.Storage[9]);
@@ -58,7 +58,7 @@ public sealed partial class TrueTypeHintingTests
     {
         TrueTypeHintTarget target = Target with { Grid = TrueTypeHintGrid.ClearType, WindowsArithmetic = true };
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(16, 8, 1, 0), [64], [], [], 16,
-            new(65536, 65536), target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(65536, 65536), target, new(long.MaxValue), CancellationToken.None);
         machine.Run(Convert.FromHexString("B0002C4523466020B02660B004262348482D"), TrueTypeHintProgramKind.Font);
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => machine.Run(Convert.FromHexString("B00843"), TrueTypeHintProgramKind.Glyph)).ErrorCode);
     }
@@ -72,7 +72,7 @@ public sealed partial class TrueTypeHintingTests
         // at half scale; assembled device points do not change operand units.
         TrueTypeHintPoint[] points = [new(0, 0, 0, 0), default, default, default, default];
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [64], [], [], 16,
-            new(32768, 32768), Target with { WindowsArithmetic = true }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(32768, 32768), Target with { WindowsArithmetic = true }, new(long.MaxValue), CancellationToken.None);
         machine.HintGlyph(Convert.FromHexString("B90000FF6470"), points, [0], composite);
         Assert.Equal(-78, machine.ControlValues[0]);
         Assert.Equal(0, points[0].X);
@@ -90,7 +90,7 @@ public sealed partial class TrueTypeHintingTests
     public void Authored_simple_dropout_modes_observe_scan_control(int control, byte scanType, int ppem, bool simple, bool excludeStubs)
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], ppem,
-            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(65536, 65536), Target, new(long.MaxValue), CancellationToken.None);
         machine.Prepare(new byte[] { 0xB8, (byte)(control >> 8), (byte)control, 0x85, 0xB0, scanType, 0x8D }, Target);
         machine.Run(ReadOnlyMemory<byte>.Empty, TrueTypeHintProgramKind.Glyph);
         Assert.Equal(simple, machine.GlyphSimpleDropouts);
@@ -103,7 +103,7 @@ public sealed partial class TrueTypeHintingTests
     public void Composite_and_following_glyph_restore_prepared_simple_dropout_policy(byte scanType)
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 16,
-            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(65536, 65536), Target, new(long.MaxValue), CancellationToken.None);
         machine.Prepare(new byte[] { 0xB8, 1, 255, 0x85, 0xB0, scanType, 0x8D }, Target);
         TrueTypeHintPoint[] points = [new(0, 0, 0, 0), default, default, default, default];
         machine.HintGlyph(Convert.FromHexString("B0028D"), points, [0], false);

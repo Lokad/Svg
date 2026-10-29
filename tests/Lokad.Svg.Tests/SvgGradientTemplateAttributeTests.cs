@@ -79,14 +79,12 @@ public sealed class SvgGradientTemplateAttributeTests
     {
         var documents = Documents(kind, "transform", true, true, true);
         RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        ParserWorkCounter work = new(SvgRenderLimits.Default.MaximumWorkUnits);
-        using (SvgRoot root = SvgRootParser.Parse(documents.Actual, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(documents.Actual, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(documents.Actual, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(documents.Actual, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
@@ -119,7 +117,7 @@ public sealed class SvgGradientTemplateAttributeTests
     public void Denied_radial_definition_storage_preserves_the_scene_owner()
     {
         RenderBudget budget = new(SvgSceneBuilder.RecordedPaintOwnerBytes + SvgRadialGradientSource.RetainedStorageBytes - 1);
-        using (SvgSceneBuilder scene = new(budget, new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None))
+        using (SvgSceneBuilder scene = new(budget, CancellationToken.None))
         {
             long before = budget.Snapshot().CurrentBytes;
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => scene.RetainRadialSource(default)).ErrorCode);

@@ -24,19 +24,18 @@ public sealed class PngImageDecoderTests
         byte[] unchanged = split.ToArray();
         long limit = 2L * compressed.Length + 2 * rowBytes + 64;
         RenderBudget tight = new(limit);
-        Assert.Equal(SvgColor.Transparent, Decode(single, tight, new(100_000), CancellationToken.None));
+        Assert.Equal(SvgColor.Transparent, Decode(single, tight, CancellationToken.None));
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
-        SvgException denied = Assert.Throws<SvgException>(() => Decode(split, tight, new(100_000), CancellationToken.None));
+        SvgException denied = Assert.Throws<SvgException>(() => Decode(split, tight, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         Assert.Equal(1, tight.Snapshot().DeniedReservationCount);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
 
         RenderBudget roomy = new(8L * compressed.Length);
-        Assert.Equal(SvgColor.Transparent, Decode(split, roomy, new(100_000), CancellationToken.None));
+        Assert.Equal(SvgColor.Transparent, Decode(split, roomy, CancellationToken.None));
         // The retained doubled compressed buffer coexists with unfiltered pixels.
         Assert.True(roomy.Snapshot().PeakBytes >= 2L * (compressed.Length - 1) + pixels.Length + 2 * rowBytes);
         Assert.Equal(0, roomy.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Decode(split, roomy, new(2), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, roomy.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, split);
     }
@@ -67,7 +66,7 @@ public sealed class PngImageDecoderTests
         Assert.NotEmpty(scenario);
         byte[] unchanged = png.ToArray();
         RenderBudget budget = new(100_000);
-        SvgException error = Assert.Throws<SvgException>(() => Decode(png, budget, new(10_000), CancellationToken.None));
+        SvgException error = Assert.Throws<SvgException>(() => Decode(png, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.MalformedInput, error.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, png);
@@ -203,7 +202,7 @@ public sealed class PngImageDecoderTests
         chunks.Add(new("IDAT", ZlibCompress(row))); chunks.Add(new("IEND", []));
         byte[] png = BuildPng(chunks), unchanged = png.ToArray();
         RenderBudget budget = new(100_000);
-        DecodedPngImage image = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, new(10_000), CancellationToken.None);
+        DecodedPngImage image = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, CancellationToken.None);
         using (DecodedPngRaster raster = Assert.IsType<DecodedPngRaster>(image.Raster))
         {
             Assert.Equal(2, image.Width); Assert.Equal(1, image.Height);
@@ -218,7 +217,7 @@ public sealed class PngImageDecoderTests
     public void Uniform_png_does_not_retain_a_pixel_surface()
     {
         RenderBudget budget = new(100_000);
-        DecodedPngImage image = PngImageDecoder.Decode(Convert.FromBase64String(RedPixel), SvgRenderLimits.Default, budget, new(10_000), CancellationToken.None);
+        DecodedPngImage image = PngImageDecoder.Decode(Convert.FromBase64String(RedPixel), SvgRenderLimits.Default, budget, CancellationToken.None);
         Assert.Null(image.Raster);
         Assert.Equal(new SvgColor(255, 0, 0, 255), image.Color);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -234,7 +233,7 @@ public sealed class PngImageDecoderTests
         ]);
         RenderBudget budget = new(100_000);
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() =>
-            PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, new(10_000), CancellationToken.None)).ErrorCode);
+            PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.True(budget.Snapshot().PeakBytes >= 4 * 2 * 2);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -248,14 +247,11 @@ public sealed class PngImageDecoderTests
             new("IEND", []),
         ]);
         RenderBudget budget = new(100_000);
-        ParserWorkCounter measured = new(10_000);
-        DecodedPngImage first = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, measured, CancellationToken.None);
+        DecodedPngImage first = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, CancellationToken.None);
         byte[] expected;
         using (DecodedPngRaster raster = Assert.IsType<DecodedPngRaster>(first.Raster)) expected = raster.Pixels.ToArray();
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, new(measured.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        DecodedPngImage retry = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, new(10_000), CancellationToken.None);
+        DecodedPngImage retry = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, CancellationToken.None);
         using (DecodedPngRaster raster = Assert.IsType<DecodedPngRaster>(retry.Raster)) Assert.Equal(expected, raster.Pixels);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -314,7 +310,7 @@ public sealed class PngImageDecoderTests
     public void Decodes_two_color_rgb_and_palette_rows(string base64)
     {
         RenderBudget budget = new(100_000);
-        DecodedPngImage image = PngImageDecoder.Decode(Convert.FromBase64String(base64), SvgRenderLimits.Default, budget, new ParserWorkCounter(10_000), CancellationToken.None);
+        DecodedPngImage image = PngImageDecoder.Decode(Convert.FromBase64String(base64), SvgRenderLimits.Default, budget, CancellationToken.None);
         try
         {
             Assert.Equal(2, image.Width);
@@ -603,7 +599,7 @@ public sealed class PngImageDecoderTests
         byte[] png = System.Convert.FromBase64String(RedPixel);
         RenderBudget budget = new(5);
 
-        SvgException exception = Assert.Throws<SvgException>(() => Decode(png, budget, new ParserWorkCounter(10_000), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => Decode(png, budget, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -614,23 +610,13 @@ public sealed class PngImageDecoderTests
     {
         byte[] png = System.Convert.FromBase64String(RedPixel);
         RenderBudget measured = new(100_000);
-        _ = Decode(png, measured, new(10_000), CancellationToken.None);
+        _ = Decode(png, measured, CancellationToken.None);
         RenderBudget budget = new(measured.Snapshot().PeakBytes - 1);
 
-        SvgException exception = Assert.Throws<SvgException>(() => Decode(png, budget, new ParserWorkCounter(10_000), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => Decode(png, budget, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-    }
-
-    [Fact]
-    public void Exhausted_work_rejects_decode()
-    {
-        byte[] png = System.Convert.FromBase64String(RedPixel);
-
-        SvgException exception = Assert.Throws<SvgException>(() => Decode(png, new RenderBudget(100_000), new ParserWorkCounter(0), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
 
     [Fact]
@@ -638,7 +624,7 @@ public sealed class PngImageDecoderTests
     {
         byte[] png = System.Convert.FromBase64String(RedPixel);
 
-        Assert.Throws<OperationCanceledException>(() => Decode(png, new RenderBudget(100_000), new ParserWorkCounter(10_000), new CancellationToken(true)));
+        Assert.Throws<OperationCanceledException>(() => Decode(png, new RenderBudget(100_000), new CancellationToken(true)));
     }
 
     [Fact]
@@ -646,13 +632,9 @@ public sealed class PngImageDecoderTests
     {
         byte[] small = System.Convert.FromBase64String(RedPixel);
         byte[] large = System.Convert.FromBase64String(Wide16384);
-        ParserWorkCounter smallWork = new(1_000_000);
-        ParserWorkCounter largeWork = new(1_000_000);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), Decode(small, new RenderBudget(100_000), smallWork, CancellationToken.None));
-        Assert.Equal(new SvgColor(255, 0, 0, 255), Decode(large, new RenderBudget(1_000_000), largeWork, CancellationToken.None));
-
-        Assert.True(largeWork.Used > smallWork.Used);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Decode(small, new RenderBudget(100_000), CancellationToken.None));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Decode(large, new RenderBudget(1_000_000), CancellationToken.None));
     }
 
     [Fact]
@@ -661,15 +643,15 @@ public sealed class PngImageDecoderTests
         byte[] png = System.Convert.FromBase64String(RgbaWithTransparency);
         RenderBudget budget = new(1);
 
-        SvgException exception = Assert.Throws<SvgException>(() => Decode(png, budget, new ParserWorkCounter(10_000), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => Decode(png, budget, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    private static SvgColor Decode(byte[] png, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgColor Decode(byte[] png, RenderBudget budget, CancellationToken cancellationToken)
     {
-        DecodedPngImage image = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, workCounter, cancellationToken);
+        DecodedPngImage image = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, cancellationToken);
         try
         {
             Assert.Null(image.Raster);
@@ -684,7 +666,7 @@ public sealed class PngImageDecoderTests
 
     private static SvgColor DecodeBuilt(byte[] png)
     {
-        return Decode(png, new RenderBudget(100_000), new ParserWorkCounter(10_000), CancellationToken.None);
+        return Decode(png, new RenderBudget(100_000), CancellationToken.None);
     }
 
     private static SvgErrorCode DecodeBuiltError(byte[] png)
@@ -827,6 +809,6 @@ public sealed class PngImageDecoderTests
     private static SvgColor Decode(string base64)
     {
         byte[] png = System.Convert.FromBase64String(base64);
-        return Decode(png, new RenderBudget(100_000), new ParserWorkCounter(10_000), CancellationToken.None);
+        return Decode(png, new RenderBudget(100_000), CancellationToken.None);
     }
 }

@@ -17,7 +17,7 @@ public sealed partial class OpenTypeFontTests
         // disabled. Mode 2 removes thin stripes; modes 4/5 retain them.
         byte[] bytes = CreateUnfittedScannerFont([0xB8, 1, 255, 0x85, 0xB0, scanType, 0x8D], []);
         RenderBudget budget = new(long.MaxValue);
-        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, budget, CancellationToken.None))
         {
             Assert.Equal(smart, contours.SmartDropouts);
             Assert.False(contours.SimpleDropouts);
@@ -36,9 +36,9 @@ public sealed partial class OpenTypeFontTests
         byte[] bytes = CreateUnfittedScannerFont([0x00, 0xB0, 0, 0xB8, 1, 0, 0x48], [0xB8, 1, 255, 0x85, 0xB0, 4, 0x8D]);
         RenderBudget budget = new(long.MaxValue);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        using (OpenTypeGlyphContourStorage expected = OpenTypeFont.GetWindowsUnfittedContours(plain, 1, OpenTypeFont.ParseMetrics(plain, CancellationToken.None), 8, budget, new(long.MaxValue), CancellationToken.None))
-        using (OpenTypeGlyphContourStorage actual = OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, metrics, 8, budget, new(long.MaxValue), CancellationToken.None))
-        using (OpenTypeGlyphContourStorage fitted = OpenTypeFont.GetTrueTypeContours(bytes, 1, metrics, 8, new OpenTypeWindowsGlyphProfile(SvgGlyphLcdMode.Symmetric, true).CreateHintTarget(1), TrueTypeImpliedPointRounding.None, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage expected = OpenTypeFont.GetWindowsUnfittedContours(plain, 1, OpenTypeFont.ParseMetrics(plain, CancellationToken.None), 8, budget, CancellationToken.None))
+        using (OpenTypeGlyphContourStorage actual = OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, metrics, 8, budget, CancellationToken.None))
+        using (OpenTypeGlyphContourStorage fitted = OpenTypeFont.GetTrueTypeContours(bytes, 1, metrics, 8, new OpenTypeWindowsGlyphProfile(SvgGlyphLcdMode.Symmetric, true).CreateHintTarget(1), TrueTypeImpliedPointRounding.None, budget, CancellationToken.None))
         {
             Assert.Equal(expected.Segments, actual.Segments);
             Assert.NotEqual(actual.Segments[0].Start.Y, fitted.Segments[0].Start.Y);
@@ -54,7 +54,7 @@ public sealed partial class OpenTypeFontTests
         // bytes must not make the unsupported instruction necessary.
         byte[] bytes = CreateUnfittedScannerFont([0x4C, 0x40, 3, 0x85, 0x8D, 0x4C, 0x21], []);
         RenderBudget budget = new(long.MaxValue);
-        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, budget, CancellationToken.None))
             Assert.NotEmpty(contours.Segments);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -64,7 +64,7 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] bytes = CreateUnfittedScannerFont([0xB8, 1, 255, 0x85, 0xB0, 4, 0x8D], []);
         RenderBudget budget = new(256);
-        SvgException error = Assert.Throws<SvgException>(() => OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, budget, new(long.MaxValue), CancellationToken.None));
+        SvgException error = Assert.Throws<SvgException>(() => OpenTypeFont.GetWindowsUnfittedContours(bytes, 1, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 8, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

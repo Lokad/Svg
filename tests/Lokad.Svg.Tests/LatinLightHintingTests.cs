@@ -18,7 +18,7 @@ public sealed class LatinLightHintingTests
             new(1082, 1102, 1102, -20, true, true)];
         RenderBudget budget = new(long.MaxValue);
 
-        LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 8, new(0, 0), budget, new(long.MaxValue), CancellationToken.None);
+        LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 8, new(0, 0), budget, CancellationToken.None);
 
         Assert.Equal(136, points[4].Y);
         Assert.Equal(186, points[5].Y);
@@ -34,7 +34,7 @@ public sealed class LatinLightHintingTests
             new(1082, 1102, 1102, -20, true, true)];
         RenderBudget budget = new(long.MaxValue);
 
-        LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 4, new(0, 0), budget, new(long.MaxValue), CancellationToken.None);
+        LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 4, new(0, 0), budget, CancellationToken.None);
 
         Assert.Equal(90, points[12].Y);
         Assert.Equal(104, points[5].Y);
@@ -54,7 +54,7 @@ public sealed class LatinLightHintingTests
         LatinAlignmentZone[] zones = [new(0, 0, 1000, 0, false, false), new(1000, 1000, 1000, 0, true, false)];
         RenderBudget budget = new(long.MaxValue);
 
-        LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 8, new(0, 0), budget, new(long.MaxValue), CancellationToken.None);
+        LatinLightHinting.Hint(points, [3, 7, 11, 14], zones, 2048, 8, new(0, 0), budget, CancellationToken.None);
 
         Assert.Equal(expectedStemY, points[4].Y);
         Assert.Equal(105, points[5].Y);
@@ -74,7 +74,7 @@ public sealed class LatinLightHintingTests
         OpenTypeGlyphPoint[] unchanged = points.ToArray();
         RenderBudget budget = new(long.MaxValue);
 
-        LatinStemWidths widths = LatinLightHinting.MeasureStemWidths(points, [3, 7], 2048, budget, new(long.MaxValue), CancellationToken.None);
+        LatinStemWidths widths = LatinLightHinting.MeasureStemWidths(points, [3, 7], 2048, budget, CancellationToken.None);
 
         Assert.Equal(80, widths.MaximumWidth);
         Assert.Equal(4, widths.EdgeDistanceThreshold);
@@ -91,24 +91,9 @@ public sealed class LatinLightHintingTests
         OpenTypeGlyphPoint[] points = Enumerable.Repeat(new OpenTypeGlyphPoint(3, 7, true), count).ToArray();
         RenderBudget budget = new(long.MaxValue);
 
-        LatinLightHinting.Hint(points, [(ushort)(count - 1)], [], 1000, 16, budget, new(10_000), CancellationToken.None);
+        LatinLightHinting.Hint(points, [(ushort)(count - 1)], [], 1000, 16, budget, CancellationToken.None);
 
         Assert.All(points, point => Assert.Equal(new OpenTypeGlyphPoint(3, 7, true), point));
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-    }
-
-    [Fact]
-    public void Near_point_discovery_releases_scratch_when_work_expires()
-    {
-        OpenTypeGlyphPoint[] points = Enumerable.Repeat(new OpenTypeGlyphPoint(3, 7, true), 32).ToArray();
-        RenderBudget budget = new(long.MaxValue);
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => LatinLightHinting.Hint(points, [31], [], 1000, 16, budget, new(60), CancellationToken.None)).ErrorCode);
-
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.True(budget.Snapshot().PeakBytes > 0);
-        Assert.All(points, point => Assert.Equal(new OpenTypeGlyphPoint(3, 7, true), point));
-        LatinLightHinting.Hint(points, [31], [], 1000, 16, budget, new(10_000), CancellationToken.None);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -120,7 +105,7 @@ public sealed class LatinLightHintingTests
         LatinAlignmentZone[] zones = [new(0, 0, 700, 0, false, false), new(700, 700, 700, 0, true, false)];
         RenderBudget budget = new(long.MaxValue);
 
-        LatinLightHinting.Hint(points, [3], zones, 1000, 16, budget, new(10_000), CancellationToken.None);
+        LatinLightHinting.Hint(points, [3], zones, 1000, 16, budget, CancellationToken.None);
 
         Assert.Equal(expected, points);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -133,8 +118,8 @@ public sealed class LatinLightHintingTests
         OpenTypeGlyphPoint[] backward = forward.Reverse().ToArray();
         LatinAlignmentZone[] zones = [new(0, 0, 700, 0, false, false), new(700, 700, 700, 0, true, false)];
         var budget = new RenderBudget(long.MaxValue);
-        LatinLightHinting.Hint(forward, [3], zones, 1000, 16, budget, new(long.MaxValue), CancellationToken.None);
-        LatinLightHinting.Hint(backward, [3], zones, 1000, 16, budget, new(long.MaxValue), CancellationToken.None);
+        LatinLightHinting.Hint(forward, [3], zones, 1000, 16, budget, CancellationToken.None);
+        LatinLightHinting.Hint(backward, [3], zones, 1000, 16, budget, CancellationToken.None);
 
         Assert.Equal(forward, backward.Reverse());
         Assert.Equal(new int[] { 0, 704, 704, 0 }, forward.Select(point => point.Y));
@@ -147,7 +132,7 @@ public sealed class LatinLightHintingTests
         OpenTypeGlyphPoint[] points = [new(-100, 0, true), new(0, 700, true), new(100, 0, true)];
         var budget = new RenderBudget(long.MaxValue);
 
-        LatinLightHinting.Hint(points, [2], [], 1000, 16, budget, new(long.MaxValue), CancellationToken.None);
+        LatinLightHinting.Hint(points, [2], [], 1000, 16, budget, CancellationToken.None);
 
         Assert.Equal(new OpenTypeGlyphPoint[] { new(-102, 0, true), new(0, 717, true), new(102, 0, true) }, points);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -160,7 +145,7 @@ public sealed class LatinLightHintingTests
         LatinAlignmentZone[] zones = [new(700, 700, 700, 0, true, true)];
         var budget = new RenderBudget(long.MaxValue);
 
-        LatinLightHinting.Hint(points, [3], zones, 1000, 0.001, budget, new(long.MaxValue), CancellationToken.None);
+        LatinLightHinting.Hint(points, [3], zones, 1000, 0.001, budget, CancellationToken.None);
 
         Assert.All(points, point => Assert.Equal(new OpenTypeGlyphPoint(0, 0, true), point));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -175,7 +160,7 @@ public sealed class LatinLightHintingTests
     public void Rejects_out_of_range_device_sizes_before_allocation(double size)
     {
         var budget = new RenderBudget(long.MaxValue);
-        SvgException exception = Assert.Throws<SvgException>(() => LatinLightHinting.Hint([], [], [], 1000, size, budget, new(long.MaxValue), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => LatinLightHinting.Hint([], [], [], 1000, size, budget, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().PeakBytes);
@@ -192,29 +177,11 @@ public sealed class LatinLightHintingTests
         LatinAlignmentZone[] zones = [new(0, 0, 700, 0, false, false), new(700, 700, 700, 0, true, false)];
         var budget = new RenderBudget(maximumBytes);
 
-        SvgException exception = Assert.Throws<SvgException>(() => LatinLightHinting.Hint(points, [3], zones, 1000, 16, budget, new(long.MaxValue), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => LatinLightHinting.Hint(points, [3], zones, 1000, 16, budget, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
-    }
-
-    [Theory]
-    [InlineData(1)]
-    [InlineData(5)]
-    [InlineData(15)]
-    [InlineData(30)]
-    public void Releases_scratch_when_work_expires_then_allows_retry(long maximumWork)
-    {
-        OpenTypeGlyphPoint[] points = [new(0, 0, true), new(0, 700, true), new(300, 700, true), new(300, 0, true)];
-        LatinAlignmentZone[] zones = [new(0, 0, 700, 0, false, false), new(700, 700, 700, 0, true, false)];
-        var budget = new RenderBudget(long.MaxValue);
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => LatinLightHinting.Hint(points, [3], zones, 1000, 16, budget, new(maximumWork), CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        LatinLightHinting.Hint(points, [3], zones, 1000, 16, budget, new(long.MaxValue), CancellationToken.None);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(704, points[1].Y);
     }
 
     [Fact]
@@ -224,7 +191,7 @@ public sealed class LatinLightHintingTests
         cancellation.Cancel();
         var budget = new RenderBudget(long.MaxValue);
 
-        Assert.ThrowsAny<OperationCanceledException>(() => LatinLightHinting.Hint([new(0, 0, true)], [0], [new(0, 0, 0, 0, false, false)], 1000, 16, budget, new(long.MaxValue), cancellation.Token));
+        Assert.ThrowsAny<OperationCanceledException>(() => LatinLightHinting.Hint([new(0, 0, true)], [0], [new(0, 0, 0, 0, false, false)], 1000, 16, budget, cancellation.Token));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 }

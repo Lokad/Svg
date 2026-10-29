@@ -76,7 +76,7 @@ internal readonly record struct SvgGlyphDeviceMetrics(double Scale, SvgGlyphMetr
     internal double RoundWidth(double width) => MathF.Ceiling((float)(width * Scale) * 64) / (Scale * 64);
 
     /// <summary>Applies native fragment paint truncation before the retained tangent map and device strike placement.</summary>
-    /// <remarks>Operates on immutable borrowed metrics without allocating or owning storage. The caller charges one glyph step and checks cancellation. Semantic path measurement remains unchanged.</remarks>
+    /// <remarks>Operates on immutable borrowed metrics without allocating or owning storage. The caller checks cancellation per glyph. Semantic path measurement remains unchanged.</remarks>
     internal SvgAffineTransform PlaceTextPathPaint(SvgAffineTransform map, double halfAdvance, double baselineShift, double fontSize, OpenTypeFontMetrics font)
     {
         float size = GetEffectiveFontSize(fontSize * Scale);

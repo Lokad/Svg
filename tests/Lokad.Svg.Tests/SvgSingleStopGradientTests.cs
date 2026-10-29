@@ -38,23 +38,15 @@ public sealed class SvgSingleStopGradientTests
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
-    public void A_single_stop_releases_owners_on_work_memory_and_cancellation_denial(bool radial, bool instance)
+    public void A_single_stop_releases_owners_on_memory_and_cancellation_denial(bool radial, bool instance)
     {
         byte[] input = Input(radial, instance, false);
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
         long rasterWork;
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
             rasterWork = surface.WorkUnits;
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget budget = new(1_000_000);
-            SvgException denied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(limit), CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
-            Assert.True(budget.Snapshot().CurrentBytes == 0, "Storage retained at parser work limit " + limit + ".");
-        }
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 1024)
         {

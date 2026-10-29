@@ -35,12 +35,8 @@ internal static partial class OpenTypeFont
     private const uint GlyfTag = 0x676C7966;
 
     internal static OpenTypeFontMetrics ParseMetrics(ReadOnlyMemory<byte> bytes, CancellationToken cancellationToken)
-        => ParseMetrics(bytes, null, cancellationToken);
-
-    /// <summary>Parses core metrics while charging visited SFNT directory records to one operation work counter.</summary>
-    internal static OpenTypeFontMetrics ParseMetrics(ReadOnlyMemory<byte> bytes, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        Consume(workCounter, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         ReadOnlySpan<byte> data = bytes.Span;
         RequireRange(data, 0, 12, "SFNT header");
         uint scalerType = ReadUInt32(data, 0);
@@ -53,7 +49,7 @@ internal static partial class OpenTypeFont
         var tables = new Dictionary<uint, OpenTypeTableRange>(tableCount);
         for (int index = 0; index < tableCount; index++)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             int offset = 12 + index * 16;
             uint tag = ReadUInt32(data, offset);
             uint tableOffset = ReadUInt32(data, offset + 8);
@@ -82,12 +78,12 @@ internal static partial class OpenTypeFont
         if (numberOfHMetrics == 0 || numberOfHMetrics > glyphCount) throw InvalidFont("The hhea numberOfHMetrics value is invalid.");
         int hmtxBytes = checked(numberOfHMetrics * 4 + (glyphCount - numberOfHMetrics) * 2);
         RequireTableLength(hmtx, hmtxBytes, "hmtx");
-        bool extendWindowsSpans = tables.TryGetValue(NameTag, out OpenTypeTableRange name) && ValidateNameTable(data, name, workCounter, cancellationToken);
-        if (tables.TryGetValue(Os2Tag, out OpenTypeTableRange os2)) ValidateOs2Table(data, os2, workCounter, cancellationToken);
-        OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, tables.TryGetValue(GdefTag, out OpenTypeTableRange gdef) ? gdef : null, glyphCount, workCounter, cancellationToken) : null;
+        bool extendWindowsSpans = tables.TryGetValue(NameTag, out OpenTypeTableRange name) && ValidateNameTable(data, name, cancellationToken);
+        if (tables.TryGetValue(Os2Tag, out OpenTypeTableRange os2)) ValidateOs2Table(data, os2, cancellationToken);
+        OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, tables.TryGetValue(GdefTag, out OpenTypeTableRange gdef) ? gdef : null, glyphCount, cancellationToken) : null;
         // Selected GPOS kerning takes precedence, including zero adjustments.
         // Unused legacy contents stay opaque; SFNT ranges were validated above.
-        OpenTypeKernTable? kern = gpos is null && tables.TryGetValue(KernTag, out OpenTypeTableRange kernTable) ? ParseKernTable(data, kernTable, glyphCount, workCounter, cancellationToken) : null;
+        OpenTypeKernTable? kern = gpos is null && tables.TryGetValue(KernTag, out OpenTypeTableRange kernTable) ? ParseKernTable(data, kernTable, glyphCount, cancellationToken) : null;
         OpenTypeFontLineMetrics lineMetrics = ReadLineMetrics(data, hhea, tables.TryGetValue(Os2Tag, out OpenTypeTableRange lineOs2) ? lineOs2 : null);
         return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, gpos, tables.TryGetValue(GsubTag, out OpenTypeTableRange gsub) ? gsub : null, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null, (ReadUInt16(bytes.Span, head.Offset + 16) & 8) != 0, lineMetrics)
             {
@@ -126,14 +122,10 @@ internal static partial class OpenTypeFont
 
     /// <summary>Maps one Unicode scalar using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static ushort GetGlyphIndex(ReadOnlyMemory<byte> bytes, uint scalar, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
-        => GetGlyphIndex(bytes, scalar, metrics, null, cancellationToken);
-
-    /// <summary>Maps one Unicode scalar with the conversion work counter used by direct-text layout.</summary>
-    internal static ushort GetGlyphIndex(ReadOnlyMemory<byte> bytes, uint scalar, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (scalar > 0x10FFFF || scalar is >= 0xD800 and <= 0xDFFF) throw new ArgumentOutOfRangeException(nameof(scalar));
         CmapLookupProbe.Started();
-        Consume(workCounter, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange cmap = metrics.Cmap ?? throw InvalidFont("The SFNT font is missing its cmap table.");
         RequireTableLength(cmap, 4, "cmap");
@@ -143,7 +135,7 @@ internal static partial class OpenTypeFont
         OpenTypeTableRange? format12Candidate = null;
         for (int index = 0; index < encodingCount; index++)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             int record = cmap.Offset + 4 + index * 8;
             ushort platform = ReadUInt16(data, record);
             ushort encoding = ReadUInt16(data, record + 2);
@@ -156,7 +148,7 @@ internal static partial class OpenTypeFont
             if (isUnicodeFormat4) format4Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
             if (isUnicodeFormat12) format12Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
         }
-        if (format12Candidate is OpenTypeTableRange selected12) return GetFormat12GlyphIndex(data, selected12, scalar, metrics.GlyphCount, workCounter, cancellationToken);
+        if (format12Candidate is OpenTypeTableRange selected12) return GetFormat12GlyphIndex(data, selected12, scalar, metrics.GlyphCount, cancellationToken);
         if (format4Candidate is not OpenTypeTableRange selected4) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The selected font has no supported Unicode cmap format 4 table.");
         OpenTypeTableRange format4 = selected4;
         RequireTableLength(format4, 16, "cmap format 4");
@@ -171,10 +163,10 @@ internal static partial class OpenTypeFont
         int startCodes = endCodes + segments * 2 + 2;
         int deltas = startCodes + segments * 2;
         int ranges = deltas + segments * 2;
-        ValidateFormat4Segments(data, format4, length, segments, endCodes, startCodes, ranges, workCounter, cancellationToken);
+        ValidateFormat4Segments(data, format4, length, segments, endCodes, startCodes, ranges, cancellationToken);
         for (int index = 0; index < segments; index++)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             ushort end = ReadUInt16(data, endCodes + index * 2);
             if (scalar > end) continue;
             ushort start = ReadUInt16(data, startCodes + index * 2);
@@ -190,7 +182,7 @@ internal static partial class OpenTypeFont
         return 0;
     }
 
-    private static ushort GetFormat12GlyphIndex(ReadOnlySpan<byte> data, OpenTypeTableRange table, uint scalar, ushort glyphCount, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static ushort GetFormat12GlyphIndex(ReadOnlySpan<byte> data, OpenTypeTableRange table, uint scalar, ushort glyphCount, CancellationToken cancellationToken)
     {
         RequireTableLength(table, 16, "cmap format 12");
         uint length = ReadUInt32(data, table.Offset + 4);
@@ -200,7 +192,7 @@ internal static partial class OpenTypeFont
         ushort glyph = 0;
         for (uint index = 0; index < groups; index++)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             int offset = checked(table.Offset + 16 + (int)index * 12);
             uint start = ReadUInt32(data, offset);
             uint end = ReadUInt32(data, offset + 4);
@@ -216,13 +208,13 @@ internal static partial class OpenTypeFont
         return glyph;
     }
 
-    private static void ValidateFormat4Segments(ReadOnlySpan<byte> data, OpenTypeTableRange format4, int length, int segments, int endCodes, int startCodes, int ranges, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static void ValidateFormat4Segments(ReadOnlySpan<byte> data, OpenTypeTableRange format4, int length, int segments, int endCodes, int startCodes, int ranges, CancellationToken cancellationToken)
     {
         int glyphIndexArray = checked(ranges + segments * 2);
         ushort previousEnd = 0;
         for (int index = 0; index < segments; index++)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             ushort end = ReadUInt16(data, endCodes + index * 2);
             ushort start = ReadUInt16(data, startCodes + index * 2);
             if (start > end || (index != 0 && end <= previousEnd)) throw InvalidFont("The cmap format 4 segments are not strictly ordered.");
@@ -243,13 +235,9 @@ internal static partial class OpenTypeFont
 
     /// <summary>Gets one advance using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static ushort GetAdvanceWidth(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
-        => GetAdvanceWidth(bytes, glyphIndex, metrics, null, cancellationToken);
-
-    /// <summary>Gets one advance with the conversion work counter used by direct-text layout.</summary>
-    internal static ushort GetAdvanceWidth(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (glyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyphIndex));
-        Consume(workCounter, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange hmtx = metrics.Hmtx;
         int metricIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
@@ -257,7 +245,7 @@ internal static partial class OpenTypeFont
     }
 
     /// <summary>Gets the admitted legacy horizontal kerning adjustment for one adjacent glyph pair.</summary>
-    internal static short GetKerningAdjustment(ReadOnlyMemory<byte> bytes, ushort leftGlyphIndex, ushort rightGlyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal static short GetKerningAdjustment(ReadOnlyMemory<byte> bytes, ushort leftGlyphIndex, ushort rightGlyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
         if (leftGlyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(leftGlyphIndex));
         if (rightGlyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(rightGlyphIndex));
@@ -267,7 +255,7 @@ internal static partial class OpenTypeFont
         int high = kern.PairCount;
         while (low < high)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             int index = low + (high - low) / 2;
             int offset = kern.PairOffset + index * 6;
             ushort candidateLeft = ReadUInt16(data, offset);
@@ -285,12 +273,8 @@ internal static partial class OpenTypeFont
 
     /// <summary>Gets one borrowed glyph range using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeTableRange GetGlyphDataRange(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
-        => GetGlyphDataRange(bytes, glyphIndex, metrics, null, cancellationToken);
-
-    /// <summary>Gets one borrowed glyph range while charging the loca lookup to a conversion work counter.</summary>
-    internal static OpenTypeTableRange GetGlyphDataRange(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        Consume(workCounter, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         if (glyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyphIndex));
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange loca = metrics.Loca ?? throw InvalidFont("The SFNT font is missing its loca table.");
@@ -309,16 +293,12 @@ internal static partial class OpenTypeFont
 
     /// <summary>Reads one glyph header using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeGlyphHeader? GetGlyphHeader(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
-        => GetGlyphHeader(bytes, glyphIndex, metrics, null, cancellationToken);
-
-    /// <summary>Reads one glyph header while charging its loca lookup to a conversion work counter.</summary>
-    internal static OpenTypeGlyphHeader? GetGlyphHeader(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
         return ParseGlyphHeader(bytes, glyph);
     }
 
-    /// <summary>Reads one glyph header from a range already validated and charged by its caller.</summary>
+    /// <summary>Reads one glyph header from a range already validated by its caller.</summary>
     private static OpenTypeGlyphHeader? ParseGlyphHeader(ReadOnlyMemory<byte> bytes, OpenTypeTableRange glyph)
     {
         if (glyph.Length == 0) return null;
@@ -334,23 +314,19 @@ internal static partial class OpenTypeFont
 
     /// <summary>Reads simple-glyph structure using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeSimpleGlyphStructure GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
-        => GetSimpleGlyphStructure(bytes, glyphIndex, metrics, null, cancellationToken);
-
-    /// <summary>Reads simple-glyph structure while charging its contour records to a conversion work counter.</summary>
-    internal static OpenTypeSimpleGlyphStructure GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, null, workCounter, cancellationToken);
+        using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, null, cancellationToken);
         return structure.Value;
     }
 
     /// <summary>Reads simple-glyph structure and owns its endpoint array until point decoding completes.</summary>
-    private static OpenTypeSimpleGlyphStructureStorage GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-        => GetGlyphStructure(bytes, glyphIndex, metrics, budget, workCounter, cancellationToken, false);
+    private static OpenTypeSimpleGlyphStructureStorage GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget? budget, CancellationToken cancellationToken)
+        => GetGlyphStructure(bytes, glyphIndex, metrics, budget, cancellationToken, false);
 
     /// <summary>Reads one glyph header and simple metadata, optionally leaving composite decoding to the point assembler.</summary>
-    private static OpenTypeSimpleGlyphStructureStorage GetGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken, bool allowComposite)
+    private static OpenTypeSimpleGlyphStructureStorage GetGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget? budget, CancellationToken cancellationToken, bool allowComposite)
     {
-        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
         if (glyph.Length == 0) return new(new OpenTypeSimpleGlyphStructure([], 0, glyph), null);
         OpenTypeGlyphHeader? header = ParseGlyphHeader(bytes, glyph);
         if (header is not OpenTypeGlyphHeader value) throw new InvalidOperationException("A nonempty glyph did not return a header.");
@@ -378,7 +354,7 @@ internal static partial class OpenTypeFont
         {
             for (int index = 0; index < endpoints.Length; index++)
             {
-                Consume(workCounter, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 ushort endpoint = ReadUInt16(data, glyph.Offset + 10 + index * 2);
                 if (index != 0 && endpoint <= previous) throw InvalidFont("The simple glyf contour endpoints are not strictly increasing.");
                 endpoints[index] = endpoint;
@@ -399,17 +375,13 @@ internal static partial class OpenTypeFont
 
     /// <summary>Decodes simple-glyph points using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
-        => GetSimpleGlyphPoints(bytes, glyphIndex, metrics, null, cancellationToken);
-
-    /// <summary>Decodes simple-glyph points while charging flag and coordinate records to a conversion work counter.</summary>
-    internal static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, workCounter, cancellationToken);
-        return GetSimpleGlyphPoints(bytes, structure, workCounter, cancellationToken);
+        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, cancellationToken);
+        return GetSimpleGlyphPoints(bytes, structure, cancellationToken);
     }
 
     /// <summary>Decodes point flags and coordinates from already-validated simple-glyph structure.</summary>
-    private static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, OpenTypeSimpleGlyphStructure structure, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, OpenTypeSimpleGlyphStructure structure, CancellationToken cancellationToken)
     {
         if (structure.ContourEndpoints.Length == 0) return [];
         int pointCount = checked(structure.ContourEndpoints[^1] + 1);
@@ -421,7 +393,7 @@ internal static partial class OpenTypeFont
         var flags = new byte[pointCount];
         for (int index = 0; index < flags.Length;)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (cursor >= end) throw InvalidFont("The simple glyf flags are truncated.");
             byte flag = data[cursor++];
             int repeats = 1;
@@ -438,14 +410,14 @@ internal static partial class OpenTypeFont
         int x = 0;
         for (int index = 0; index < points.Length; index++)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             x = checked(x + ReadCoordinate(data, ref cursor, end, flags[index], 2, 16, "horizontal"));
             points[index] = new OpenTypeGlyphPoint(x, 0, (flags[index] & 1) != 0);
         }
         int y = 0;
         for (int index = 0; index < points.Length; index++)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             y = checked(y + ReadCoordinate(data, ref cursor, end, flags[index], 4, 32, "vertical"));
             points[index] = points[index] with { Y = y };
         }
@@ -453,7 +425,7 @@ internal static partial class OpenTypeFont
     }
 
     /// <summary>Decodes points while retaining their reservation until quadratic lowering has completed.</summary>
-    private static OpenTypeGlyphPointStorage GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, OpenTypeSimpleGlyphStructure structure, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static OpenTypeGlyphPointStorage GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, OpenTypeSimpleGlyphStructure structure, RenderBudget budget, CancellationToken cancellationToken)
     {
         if (structure.ContourEndpoints.Length == 0) return new([], null);
         int pointCount = checked(structure.ContourEndpoints[^1] + 1);
@@ -467,7 +439,7 @@ internal static partial class OpenTypeFont
         GlyphDecoderBudgetProbe.Reserved(GlyphDecoderBudgetPhase.SimpleFlags, budget);
         for (int index = 0; index < flags.Length;)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (cursor >= end) throw InvalidFont("The simple glyf flags are truncated.");
             byte flag = data[cursor++];
             int repeats = 1;
@@ -490,14 +462,14 @@ internal static partial class OpenTypeFont
             int x = 0;
             for (int index = 0; index < points.Length; index++)
             {
-                Consume(workCounter, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 x = checked(x + ReadCoordinate(data, ref cursor, end, flags[index], 2, 16, "horizontal"));
                 points[index] = new OpenTypeGlyphPoint(x, 0, (flags[index] & 1) != 0);
             }
             int y = 0;
             for (int index = 0; index < points.Length; index++)
             {
-                Consume(workCounter, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 y = checked(y + ReadCoordinate(data, ref cursor, end, flags[index], 4, 32, "vertical"));
                 points[index] = points[index] with { Y = y };
             }
@@ -511,21 +483,21 @@ internal static partial class OpenTypeFont
     }
 
     /// <summary>Builds closed quadratic segments from decoded simple-glyph contours, charging contour and point records like the budgeted decoder.</summary>
-    internal static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, CancellationToken cancellationToken)
     {
-        using var segments = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, workCounter, cancellationToken);
-        BuildQuadraticContours(points, endpoints, segments, false, TrueTypeImpliedPointRounding.None, workCounter, cancellationToken);
+        using var segments = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, cancellationToken);
+        BuildQuadraticContours(points, endpoints, segments, false, TrueTypeImpliedPointRounding.None, cancellationToken);
         return segments.ToArray();
     }
 
-    private static void BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, OpenTypeSegmentAccumulator segments, bool retainContourBoundaries, TrueTypeImpliedPointRounding impliedPointRounding, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static void BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, OpenTypeSegmentAccumulator segments, bool retainContourBoundaries, TrueTypeImpliedPointRounding impliedPointRounding, CancellationToken cancellationToken)
     {
         if (endpoints.Length == 0) return;
         if (points.Length == 0 || endpoints[^1] != points.Length - 1) throw new ArgumentException("Contour endpoints must cover the supplied points.", nameof(endpoints));
         int first = 0;
         foreach (ushort lastValue in endpoints)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             int firstSegment = segments.Count;
             int last = lastValue;
             if (last < first) throw new ArgumentException("Contour endpoints must be strictly increasing.", nameof(endpoints));
@@ -536,7 +508,7 @@ internal static partial class OpenTypeFont
             OpenTypeOutlinePoint? control = null;
             for (int index = first; index <= last; index++)
             {
-                Consume(workCounter, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 OpenTypeGlyphPoint point = points[index];
                 if (point.IsOnCurve)
                 {
@@ -579,25 +551,21 @@ internal static partial class OpenTypeFont
 
     /// <summary>Decodes simple-glyph contours using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeQuadraticSegment[] GetSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
-        => GetSimpleGlyphContours(bytes, glyphIndex, metrics, null, cancellationToken);
-
-    /// <summary>Decodes simple-glyph contours while charging decoded records to a conversion work counter.</summary>
-    internal static OpenTypeQuadraticSegment[] GetSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, cancellationToken);
         if (structure.ContourEndpoints.Length == 0) return [];
-        OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, structure, workCounter, cancellationToken);
-        return BuildQuadraticContours(points, structure.ContourEndpoints, workCounter, cancellationToken);
+        OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, structure, cancellationToken);
+        return BuildQuadraticContours(points, structure.ContourEndpoints, cancellationToken);
     }
 
     /// <summary>Decodes simple-glyph arrays and retains every temporary reservation through exact decoded-segment materialization.</summary>
-    private static OpenTypeGlyphContourStorage GetBudgetedSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static OpenTypeGlyphContourStorage GetBudgetedSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, CancellationToken cancellationToken)
     {
-        using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, budget, workCounter, cancellationToken);
+        using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, budget, cancellationToken);
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
-        using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, structure.Value, budget, workCounter, cancellationToken);
-        using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, workCounter, cancellationToken);
-        BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, TrueTypeImpliedPointRounding.None, workCounter, cancellationToken);
+        using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, structure.Value, budget, cancellationToken);
+        using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, cancellationToken);
+        BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, TrueTypeImpliedPointRounding.None, cancellationToken);
         return segments.Detach();
     }
 
@@ -607,28 +575,24 @@ internal static partial class OpenTypeFont
 
     /// <summary>Reads composite-glyph components using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeCompositeGlyphComponent[] GetCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
-        => GetCompositeGlyphComponents(bytes, glyphIndex, metrics, null, cancellationToken);
-
-    /// <summary>Reads composite-glyph components while charging each component record to a conversion work counter.</summary>
-    internal static OpenTypeCompositeGlyphComponent[] GetCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        using var components = new OpenTypeCompositeComponentAccumulator(null, workCounter, cancellationToken);
-        ReadCompositeGlyphComponents(bytes, glyphIndex, metrics, components, workCounter, cancellationToken);
+        using var components = new OpenTypeCompositeComponentAccumulator(null, cancellationToken);
+        ReadCompositeGlyphComponents(bytes, glyphIndex, metrics, components, cancellationToken);
         return components.ToArray();
     }
 
     /// <summary>Reads composite components into a budgeted owner until recursive expansion has consumed them.</summary>
-    private static OpenTypeCompositeGlyphComponentStorage GetBudgetedCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static OpenTypeCompositeGlyphComponentStorage GetBudgetedCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, CancellationToken cancellationToken)
     {
-        using var components = new OpenTypeCompositeComponentAccumulator(budget, workCounter, cancellationToken);
-        OpenTypeTableRange instructions = ReadCompositeGlyphComponents(bytes, glyphIndex, metrics, components, workCounter, cancellationToken);
+        using var components = new OpenTypeCompositeComponentAccumulator(budget, cancellationToken);
+        OpenTypeTableRange instructions = ReadCompositeGlyphComponents(bytes, glyphIndex, metrics, components, cancellationToken);
         return components.Detach(instructions);
     }
 
     /// <summary>Validates and appends the component records of one composite glyph.</summary>
-    private static OpenTypeTableRange ReadCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeCompositeComponentAccumulator components, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static OpenTypeTableRange ReadCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeCompositeComponentAccumulator components, CancellationToken cancellationToken)
     {
-        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
         OpenTypeGlyphHeader? header = ParseGlyphHeader(bytes, glyph);
         if (header is not OpenTypeGlyphHeader value || !value.IsComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The requested glyph is not a composite TrueType glyph.");
         ReadOnlySpan<byte> data = bytes.Span;
@@ -638,7 +602,7 @@ internal static partial class OpenTypeFont
         ushort flags;
         do
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (components.Count == MaximumCompositeGlyphComponents) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph component count exceeds the supported limit.");
             if (cursor > end - 4) throw InvalidFont("The composite glyf component is truncated.");
             flags = ReadUInt16(data, cursor);
@@ -681,75 +645,75 @@ internal static partial class OpenTypeFont
         cancellationToken.ThrowIfCancellationRequested();
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return [];
-        using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, null, null, cancellationToken);
-        using var contours = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, null, cancellationToken);
-        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, header, null, cancellationToken);
+        using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, null, cancellationToken);
+        using var contours = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, cancellationToken);
+        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, header, cancellationToken);
         return contours.ToArray();
     }
 
     /// <summary>Expands one glyph and owns the budget reservation for the decoded segment array until its consumer disposes the storage.</summary>
-    internal static OpenTypeGlyphContourStorage GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal static OpenTypeGlyphContourStorage GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
         cancellationToken.ThrowIfCancellationRequested();
-        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return new([], [], null, null);
-        using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, budget, workCounter, cancellationToken);
-        using var contours = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, workCounter, cancellationToken);
-        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, header, workCounter, cancellationToken);
+        using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, budget, cancellationToken);
+        using var contours = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, cancellationToken);
+        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, header, cancellationToken);
         return contours.Detach();
     }
 
-    private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeGlyphRecursionTracker active, int depth, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, OpenTypeGlyphHeader? knownHeader, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeGlyphRecursionTracker active, int depth, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, OpenTypeGlyphHeader? knownHeader, CancellationToken cancellationToken)
     {
         GlyphExpansionProbe.Started();
-        Consume(workCounter, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         if (glyphIndex >= metrics.GlyphCount) throw InvalidFont("A composite glyf component references a glyph outside maxp.");
         if (depth > MaximumCompositeGlyphDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph nesting depth exceeds the supported limit.");
         if (!active.TryEnter(glyphIndex)) throw InvalidFont("The composite glyph graph contains a cycle.");
         try
         {
-            OpenTypeGlyphHeader? header = knownHeader ?? GetGlyphHeader(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+            OpenTypeGlyphHeader? header = knownHeader ?? GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
             if (header is null) return;
             if (!header.Value.IsComposite)
             {
                 if (contours.Budget is RenderBudget budget)
                 {
-                    using OpenTypeGlyphContourStorage decoded = GetBudgetedSimpleGlyphContours(bytes, glyphIndex, metrics, budget, workCounter, cancellationToken);
-                    AppendDecodedContours(decoded, transform, contours, workCounter, cancellationToken);
+                    using OpenTypeGlyphContourStorage decoded = GetBudgetedSimpleGlyphContours(bytes, glyphIndex, metrics, budget, cancellationToken);
+                    AppendDecodedContours(decoded, transform, contours, cancellationToken);
                 }
-                else AppendDecodedSegments(GetSimpleGlyphContours(bytes, glyphIndex, metrics, workCounter, cancellationToken), transform, contours, workCounter, cancellationToken);
+                else AppendDecodedSegments(GetSimpleGlyphContours(bytes, glyphIndex, metrics, cancellationToken), transform, contours, cancellationToken);
                 return;
             }
             if (contours.Budget is RenderBudget componentBudget)
             {
-                using OpenTypeCompositeGlyphComponentStorage components = GetBudgetedCompositeGlyphComponents(bytes, glyphIndex, metrics, componentBudget, workCounter, cancellationToken);
+                using OpenTypeCompositeGlyphComponentStorage components = GetBudgetedCompositeGlyphComponents(bytes, glyphIndex, metrics, componentBudget, cancellationToken);
                 foreach (OpenTypeCompositeGlyphComponent component in components.Components)
                 {
-                    ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, null, workCounter, cancellationToken);
+                    ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, null, cancellationToken);
                 }
             }
-            else foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, metrics, workCounter, cancellationToken)) ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, null, workCounter, cancellationToken);
+            else foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, metrics, cancellationToken)) ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, null, cancellationToken);
         }
         finally { active.Exit(glyphIndex); }
 
-        static void AppendDecodedSegments(ReadOnlySpan<OpenTypeQuadraticSegment> segments, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        static void AppendDecodedSegments(ReadOnlySpan<OpenTypeQuadraticSegment> segments, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, CancellationToken cancellationToken)
         {
             foreach (OpenTypeQuadraticSegment segment in segments)
             {
-                Consume(workCounter, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 if (contours.Count == MaximumExpandedGlyphSegments) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded glyph segment count exceeds the supported limit.");
                 contours.Add(Transform(segment, transform));
             }
         }
 
-        static void AppendDecodedContours(OpenTypeGlyphContourStorage decoded, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        static void AppendDecodedContours(OpenTypeGlyphContourStorage decoded, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, CancellationToken cancellationToken)
         {
             int first = 0;
             foreach (int end in decoded.ContourEnds)
             {
                 if (end <= first || end > decoded.Segments.Length) throw new InvalidOperationException("Decoded glyph contour boundaries are invalid.");
-                AppendDecodedSegments(decoded.Segments.AsSpan(first, end - first), transform, contours, workCounter, cancellationToken);
+                AppendDecodedSegments(decoded.Segments.AsSpan(first, end - first), transform, contours, cancellationToken);
                 contours.CompleteContour();
                 first = end;
             }
@@ -804,7 +768,7 @@ internal static partial class OpenTypeFont
     }
 
     /// <summary>Validates borrowed name records and identifies the measured Windows span-extension policy; embedded names never select a face.</summary>
-    private static bool ValidateNameTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static bool ValidateNameTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, CancellationToken cancellationToken)
     {
         RequireTableLength(table, 6, "name");
         ushort version = ReadUInt16(data, table.Offset);
@@ -833,7 +797,7 @@ internal static partial class OpenTypeFont
         bool extendWindowsSpans = false;
         for (int index = 0; index < nameCount; index++)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             int record = recordOffset + index * 12;
             ushort platform = ReadUInt16(data, record);
             ushort encoding = ReadUInt16(data, record + 2);
@@ -862,7 +826,7 @@ internal static partial class OpenTypeFont
         }
         for (int index = 0; index < languageTagCount; index++)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             int record = languageTagOffset + index * 4;
             int length = ReadUInt16(data, record);
             if ((length & 1) != 0) throw InvalidFont("A name language-tag string has an invalid UTF-16BE length.");
@@ -878,9 +842,9 @@ internal static partial class OpenTypeFont
     }
 
     /// <summary>Validates the version-specific minimum length of optional OS/2 metadata without applying its style metrics.</summary>
-    private static void ValidateOs2Table(ReadOnlySpan<byte> data, OpenTypeTableRange table, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static void ValidateOs2Table(ReadOnlySpan<byte> data, OpenTypeTableRange table, CancellationToken cancellationToken)
     {
-        Consume(workCounter, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         RequireTableLength(table, 2, "OS/2");
         ushort version = ReadUInt16(data, table.Offset);
         int minimumLength = version switch
@@ -908,7 +872,7 @@ internal static partial class OpenTypeFont
     }
 
     /// <summary>Validates one horizontal legacy format-0 kerning subtable without retaining or allocating pair storage.</summary>
-    private static OpenTypeKernTable ParseKernTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, ushort glyphCount, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static OpenTypeKernTable ParseKernTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, ushort glyphCount, CancellationToken cancellationToken)
     {
         RequireTableLength(table, 4, "kern");
         if (ReadUInt16(data, table.Offset) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only version-zero legacy kern tables are supported.");
@@ -928,7 +892,7 @@ internal static partial class OpenTypeFont
         ushort previousRight = 0;
         for (int index = 0; index < pairCount; index++)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             int offset = pairOffset + index * 6;
             ushort left = ReadUInt16(data, offset);
             ushort right = ReadUInt16(data, offset + 2);
@@ -965,12 +929,6 @@ internal static partial class OpenTypeFont
     }
 
     private static ushort ApplyDelta(ushort glyph, short delta) => glyph == 0 ? (ushort)0 : unchecked((ushort)(glyph + delta));
-
-    private static void Consume(ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-    {
-        if (workCounter is null) cancellationToken.ThrowIfCancellationRequested();
-        else workCounter.Consume(cancellationToken);
-    }
 
     private static OpenTypeTableRange RequiredTable(IReadOnlyDictionary<uint, OpenTypeTableRange> tables, uint tag, string name)
         => tables.TryGetValue(tag, out OpenTypeTableRange range) ? range : throw InvalidFont("The SFNT font is missing its " + name + " table.");
@@ -1163,7 +1121,6 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
     private readonly GlyphDecoderBudgetPhase _exactPhase;
     private readonly GlyphDecoderBudgetPhase _contourCapacityPhase;
     private readonly GlyphDecoderBudgetPhase _contourExactPhase;
-    private readonly ParserWorkCounter? _workCounter;
     private readonly CancellationToken _cancellationToken;
     private OpenTypeQuadraticSegment[] _segments = [];
     private int[] _contourEnds = [];
@@ -1172,14 +1129,13 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
     private int _count;
     private int _contourCount;
 
-    internal OpenTypeSegmentAccumulator(RenderBudget? budget, GlyphDecoderBudgetPhase capacityPhase, GlyphDecoderBudgetPhase exactPhase, GlyphDecoderBudgetPhase contourCapacityPhase, GlyphDecoderBudgetPhase contourExactPhase, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal OpenTypeSegmentAccumulator(RenderBudget? budget, GlyphDecoderBudgetPhase capacityPhase, GlyphDecoderBudgetPhase exactPhase, GlyphDecoderBudgetPhase contourCapacityPhase, GlyphDecoderBudgetPhase contourExactPhase, CancellationToken cancellationToken)
     {
         _budget = budget;
         _capacityPhase = capacityPhase;
         _exactPhase = exactPhase;
         _contourCapacityPhase = contourCapacityPhase;
         _contourExactPhase = contourExactPhase;
-        _workCounter = workCounter;
         _cancellationToken = cancellationToken;
     }
 
@@ -1199,7 +1155,7 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
     {
         if (_count == 0 || (_contourCount != 0 && _contourEnds[_contourCount - 1] == _count)) return;
         if (_contourCount == _contourEnds.Length) GrowContourEnds();
-        Consume();
+        _cancellationToken.ThrowIfCancellationRequested();
         _contourEnds[_contourCount++] = _count;
     }
 
@@ -1288,7 +1244,7 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
     {
         for (int index = 0; index < _count; index++)
         {
-            Consume();
+            _cancellationToken.ThrowIfCancellationRequested();
             destination[index] = _segments[index];
         }
     }
@@ -1325,32 +1281,25 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
     {
         for (int index = 0; index < _contourCount; index++)
         {
-            Consume();
+            _cancellationToken.ThrowIfCancellationRequested();
             destination[index] = _contourEnds[index];
         }
     }
 
-    private void Consume()
-    {
-        if (_workCounter is null) _cancellationToken.ThrowIfCancellationRequested();
-        else _workCounter.Consume(_cancellationToken);
-    }
 }
 
 /// <summary>Builds composite-component records with reservation-backed capacity and exact-copy ownership.</summary>
 internal sealed class OpenTypeCompositeComponentAccumulator : IDisposable
 {
     private readonly RenderBudget? _budget;
-    private readonly ParserWorkCounter? _workCounter;
     private readonly CancellationToken _cancellationToken;
     private OpenTypeCompositeGlyphComponent[] _components = [];
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
-    internal OpenTypeCompositeComponentAccumulator(RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal OpenTypeCompositeComponentAccumulator(RenderBudget? budget, CancellationToken cancellationToken)
     {
         _budget = budget;
-        _workCounter = workCounter;
         _cancellationToken = cancellationToken;
     }
 
@@ -1422,31 +1371,24 @@ internal sealed class OpenTypeCompositeComponentAccumulator : IDisposable
     {
         for (int index = 0; index < _count; index++)
         {
-            Consume();
+            _cancellationToken.ThrowIfCancellationRequested();
             destination[index] = _components[index];
         }
     }
 
-    private void Consume()
-    {
-        if (_workCounter is null) _cancellationToken.ThrowIfCancellationRequested();
-        else _workCounter.Consume(_cancellationToken);
-    }
 }
 
 /// <summary>Owns the bounded active composite-glyph stack used for cycle detection during one expansion.</summary>
 internal sealed class OpenTypeGlyphRecursionTracker : IDisposable
 {
-    private readonly ParserWorkCounter? _workCounter;
     private readonly CancellationToken _cancellationToken;
     private ushort[] _glyphs;
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
-    internal OpenTypeGlyphRecursionTracker(int capacity, RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal OpenTypeGlyphRecursionTracker(int capacity, RenderBudget? budget, CancellationToken cancellationToken)
     {
         if (capacity <= 0) throw new ArgumentOutOfRangeException(nameof(capacity));
-        _workCounter = workCounter;
         _cancellationToken = cancellationToken;
         _reservation = budget?.Reserve(ParserCollectionMemory.GetArrayByteCount<ushort>(capacity), SvgMemoryCategory.Geometry);
         try { _glyphs = new ushort[capacity]; }
@@ -1459,7 +1401,7 @@ internal sealed class OpenTypeGlyphRecursionTracker : IDisposable
     {
         for (int index = 0; index < _count; index++)
         {
-            Consume();
+            _cancellationToken.ThrowIfCancellationRequested();
             if (_glyphs[index] == glyph) return false;
         }
         if (_count == _glyphs.Length) throw new InvalidOperationException("The composite glyph recursion tracker is smaller than its validated depth limit.");
@@ -1481,11 +1423,6 @@ internal sealed class OpenTypeGlyphRecursionTracker : IDisposable
         _reservation = null;
     }
 
-    private void Consume()
-    {
-        if (_workCounter is null) _cancellationToken.ThrowIfCancellationRequested();
-        else _workCounter.Consume(_cancellationToken);
-    }
 }
 
 /// <summary>Represents the linear part of one validated composite-glyph transform.</summary>
@@ -1512,7 +1449,7 @@ internal enum OpenTypeCompositeOffsetMath { NativeLength, FontationsLength, Dire
 internal readonly record struct OpenTypeCompositeGlyphComponent(ushort GlyphIndex, int HorizontalOffset, int VerticalOffset, OpenTypeAffineTransform Transform, ushort Flags)
 {
     /// <summary>Resolves the component's design-unit translation before device scaling and optional grid rounding.</summary>
-    /// <remarks>Allocation-free scalar setup after the caller charges the component visit. Native scaled offsets
+    /// <remarks>Allocation-free scalar setup after the caller checks cancellation for the component visit. Native scaled offsets
     /// use the two matrix-row lengths rather than transforming the translation vector; raw metadata stays unchanged.</remarks>
     internal OpenTypeOutlinePoint GetOffset(OpenTypeCompositeOffsetMath math)
     {

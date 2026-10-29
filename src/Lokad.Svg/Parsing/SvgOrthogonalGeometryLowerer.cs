@@ -47,37 +47,34 @@ internal ref struct SvgOrthogonalGeometryLowering
     private readonly bool _isPath;
     private readonly bool _isEvenOdd;
     private readonly int _maximumGeometryElements;
-    private readonly ParserWorkCounter _workCounter;
     private readonly CancellationToken _cancellationToken;
     private readonly BudgetedParserList<int> _boundaries;
     private readonly BudgetedParserList<SvgOrthogonalEdgeIntersection> _intersections;
     private readonly BudgetedParserList<SvgGeometry> _geometries;
     private int _geometryElementCount;
 
-    internal SvgOrthogonalGeometryLowering(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, string elementName, bool isPath, bool isEvenOdd, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal SvgOrthogonalGeometryLowering(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, string elementName, bool isPath, bool isEvenOdd, int maximumGeometryElements, RenderBudget budget, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
         ArgumentNullException.ThrowIfNull(budget);
-        ArgumentNullException.ThrowIfNull(workCounter);
         _points = points;
         _contourEnds = contourEnds;
         _elementName = elementName;
         _isPath = isPath;
         _isEvenOdd = isEvenOdd;
         _maximumGeometryElements = maximumGeometryElements;
-        _workCounter = workCounter;
         _cancellationToken = cancellationToken;
         _geometryElementCount = points.Count;
-        _boundaries = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+        _boundaries = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, cancellationToken);
         try
         {
             for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) _boundaries.Add(points[pointIndex].Y);
-            _boundaries.Sort(_workCounter, _cancellationToken);
-            _intersections = new BudgetedParserList<SvgOrthogonalEdgeIntersection>(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+            _boundaries.Sort(_cancellationToken);
+            _intersections = new BudgetedParserList<SvgOrthogonalEdgeIntersection>(budget, SvgMemoryCategory.Geometry, cancellationToken);
             try
             {
-                _geometries = new BudgetedParserList<SvgGeometry>(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+                _geometries = new BudgetedParserList<SvgGeometry>(budget, SvgMemoryCategory.Geometry, cancellationToken);
             }
             catch
             {
@@ -107,7 +104,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 int contourEnd = _contourEnds[contourIndex];
                 for (int pointIndex = contourStart; pointIndex < contourEnd; pointIndex++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     SvgPoint start = _points[pointIndex]; SvgPoint end = pointIndex + 1 < contourEnd ? _points[pointIndex + 1] : _points[contourStart];
                     if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
                     if (start.X != end.X) continue;
@@ -115,7 +112,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 }
                 contourStart = contourEnd;
             }
-            _intersections.Sort(_workCounter, _cancellationToken);
+            _intersections.Sort(_cancellationToken);
             if (_intersections.Count == 0) continue;
             if (_isEvenOdd)
             {
@@ -173,7 +170,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerPolygonFill(SvgColor color, bool hasFill, SvgAffineTransform transform, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         int[] ends = MapDiagonalContours(transform, frame, mapped);
         return RetainIntegerPointList(FinishPolygonFill(mapped, ends, color, hasFill, SvgPolygonMapping.QuarterEdges, frame, budget), hasFill, transform, frame, budget);
     }
@@ -182,7 +179,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerGradientPolygonFill(SvgLinearGradient gradient, SvgRectangle box, bool hasFill, byte opacity, SvgAffineTransform transform, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         int[] ends = MapDiagonalContours(transform, frame, mapped);
         return RetainIntegerPointList(FinishGradientPolygonFill(mapped, ends, gradient, box, hasFill, opacity, frame, budget), hasFill, transform, frame, budget);
     }
@@ -191,13 +188,13 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerRadialPolygonFill(SvgRadialGradient gradient, SvgRectangle box, bool hasFill, byte opacity, SvgAffineTransform transform, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         int[] ends = MapDiagonalContours(transform, frame, mapped);
         return RetainIntegerPointList(FinishRadialPolygonFill(mapped, ends, gradient, box, hasFill, opacity, frame, budget), hasFill, transform, frame, budget);
     }
 
     /// <summary>Retains original integer polygon/polyline fill verbs alongside normalized paint geometry.</summary>
-    /// <remarks>Commands own directed raster winding; scene bounds and stroke construction keep their existing representation. Budgeted command copying observes work/cancellation; failed handoff releases geometry and command owners.</remarks>
+    /// <remarks>Commands own directed raster winding; scene bounds and stroke construction keep their existing representation. Budgeted command copying observes cancellation; failed handoff releases geometry and command owners.</remarks>
     private SvgParsedGeometry RetainIntegerPointList(SvgParsedGeometry result, bool hasFill, SvgAffineTransform transform, SvgViewportFrame? frame, RenderBudget budget)
     {
         OwnedParserArray<SvgAuthoredPathCommand> owned = new([], null);
@@ -206,7 +203,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (!_isPath && _elementName is "polygon" or "polyline" && hasFill && result.Geometries.Length == 1)
             {
                 (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(transform, frame, false);
-                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
                 for (int index = 0; index < _points.Count; index++)
                 {
                     SvgPoint point = _points[index];
@@ -240,7 +237,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             int keptBefore = mapped.Count;
             for (int index = contourStart; index < contourEnd; index++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 SvgPoint vertex = _points[index];
                 if (hasKept && previous == vertex) continue;
                 if (hasKept && vertex == first && index == contourEnd - 1) continue;
@@ -297,10 +294,9 @@ internal ref struct SvgOrthogonalGeometryLowering
 
     /// <summary>Appends one stripped contour while recording each source index surviving mapped index into indexMap, or -1 for dropped vertices.</summary>
     /// <remarks>Callers pass a map sized to the source slice only when translating retained spans; every other route passes null with identical stripping. The map lets span translation resolve endpoints without value matching.</remarks>
-    private static int AppendMappedContour(BudgetedParserList<SvgDevicePoint> mapped, ReadOnlySpan<SvgDevicePoint> source, int[]? indexMap, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static int AppendMappedContour(BudgetedParserList<SvgDevicePoint> mapped, ReadOnlySpan<SvgDevicePoint> source, int[]? indexMap, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(mapped);
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (indexMap is not null && indexMap.Length != source.Length) throw new ArgumentOutOfRangeException(nameof(indexMap));
         SvgDevicePoint previous = default;
         SvgDevicePoint first = default;
@@ -308,7 +304,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         int keptBefore = mapped.Count;
         for (int index = 0; index < source.Length; index++)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             SvgDevicePoint vertex = source[index];
             if (hasKept && previous == vertex)
             {
@@ -337,7 +333,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, false);
         double mappedRadiusX = radiusX * Math.Abs(scaleX);
         double mappedRadiusY = radiusY * Math.Abs(scaleY);
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         SvgQuadSpan[] conics = Array.Empty<SvgQuadSpan>();
         using RenderBudget.BudgetReservation? scratch = mappedRadiusX > 0 && mappedRadiusY > 0 ? budget.Reserve(
             ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(1, ShapeSegmentsPerShape))
@@ -355,11 +351,11 @@ internal ref struct SvgOrthogonalGeometryLowering
             builder.EnableQuadSpanRetention();
             if (!deviceMap.IsAxisAligned && (radiusX != radiusY || !deviceMap.IsUniformScale()))
             {
-                using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
                 AppendNativeEllipseCommands(source, centerX, centerY, radiusX, radiusY);
                 foreach (SvgAuthoredPathCommand command in source.AsSpan())
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     switch (command.Verb)
                     {
                         case SvgAuthoredPathVerb.Move: builder.BeginContour(SvgNativePathStroke.MapPoint(deviceMap, command.First)); break;
@@ -388,7 +384,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             if (result.Geometries.Length == 1)
             {
-                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
                 AppendNativeEllipseCommands(commands, centerX, centerY, radiusX, radiusY);
                 owned = commands.Detach();
                 result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateConvexShape(owned, deviceMap, budget) };
@@ -401,17 +397,17 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Measures, cuts and strokes original oval conics through the shared native source route.</summary>
-    /// <remarks>Caller admission supplies finite affine placement and validated cap styles. Commands, dash measurements, cuts and generated outlines share bounded work/cancellation and owned storage; empty native bounds paint nothing.</remarks>
+    /// <remarks>Caller admission supplies finite affine placement and validated cap styles. Commands, dash measurements, cuts and generated outlines share bounded cancellation and owned storage; empty native bounds paint nothing.</remarks>
     internal SvgParsedGeometry LowerNativeEllipseStroke(double centerX, double centerY, double radiusX, double radiusY,
         SvgResolvedPaintableElement element, SvgStroke stroke, double[]? dashes, double dashOffset, double? pathLength,
         double miterLimit, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
         double deviceWidth = NativeStrokeDeviceWidth(stroke.Width, element.Transform, deviceMap, frame, nonScaling);
-        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
         if (!AppendNativeEllipseCommands(commands, centerX, centerY, radiusX, radiusY))
         {
-            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
             return new(empty.Detach(), 0);
         }
         return LowerNativeStrokeCommands(commands, deviceMap, deviceWidth, stroke.Width, miterLimit,
@@ -421,7 +417,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Appends one source-float oval for fill replay and native stroke construction.</summary>
-    /// <remarks>The caller owns the command list and its budget, work and cancellation checkpoints. Finite collapsed bounds append nothing; every retained verb is charged before publication.</remarks>
+    /// <remarks>The caller owns the command list and its memory budget and cancellation checkpoints. Finite collapsed bounds append nothing; every retained verb is reserved before publication.</remarks>
     internal static bool AppendNativeEllipseCommands(BudgetedParserList<SvgAuthoredPathCommand> commands, double centerX, double centerY, double radiusX, double radiusY)
     {
         float left = (float)centerX - (float)radiusX, right = (float)centerX + (float)radiusX;
@@ -459,7 +455,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerRectangleSourceFill(double x, double y, double width, double height,
         SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
-        using BudgetedParserList<SvgFractionalPoint> points = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgFractionalPoint> points = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         double right = x + width, bottom = y + height;
         // Match native rectangle contour order before clipping and vertical-edge combination.
         points.Add(new(x, y));
@@ -478,7 +474,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (radiusX == 0 && radiusY == 0)
                 return LowerRectangleSourceFill(x, y, width, height, element, frame, budget);
             (SvgAffineTransform nativeMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
-            using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+            using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
             SvgRoundedRectPath.Append(source, x, y, width, height, radiusX, radiusY);
             // As for mapped ovals, retain conic controls for legacy bounds while
             // native playback consumes the original float source and its map.
@@ -494,7 +490,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             nativeBuilder.EnableQuadSpanRetention();
             foreach (SvgAuthoredPathCommand command in source.AsSpan())
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 switch (command.Verb)
                 {
                     case SvgAuthoredPathVerb.Move: nativeBuilder.BeginContour(SvgNativePathStroke.MapPoint(nativeMap, command.First)); break;
@@ -506,7 +502,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                     default: throw new InvalidOperationException("Native rounded rectangle contains an unexpected verb.");
                 }
             }
-            using BudgetedParserList<SvgDevicePoint> nativePoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            using BudgetedParserList<SvgDevicePoint> nativePoints = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
             foreach (SvgDevicePoint point in nativeBuilder.GetContour(0)) nativePoints.Add(point);
             SvgParsedGeometry nativeResult = FinishPolygonFill(nativePoints, [nativePoints.Count], nativeBuilder.GetQuadSpans(), [],
                 element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
@@ -537,7 +533,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         // outside the substitution model, so only full-edged rects retain arc spans.
         if (mappedRadiusX < shifted.Width / 2 && mappedRadiusY < shifted.Height / 2) builder.EnableCubicSpanRetention();
         builder.AddRoundedRect(shifted.X, shifted.Y, shifted.Width, shifted.Height, mappedRadiusX, mappedRadiusY, flattenPolicy, _cancellationToken);
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         SvgCubicSpan[] recordedCubics = builder.GetCubicSpans();
         List<SvgCubicSpan> keptCubicSpans = new(recordedCubics.Length);
         int[] ends = new int[builder.ContourCount];
@@ -549,7 +545,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             int cubicRunEnd = cubicCursor;
             while (cubicRunEnd < recordedCubics.Length && recordedCubics[cubicRunEnd].Contour == contour) cubicRunEnd++;
             int[]? indexMap = cubicRunEnd > cubicCursor ? new int[slice.Length] : null;
-            if (AppendMappedContour(mapped, slice, indexMap, _workCounter, _cancellationToken) < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer path contours are implemented.");
+            if (AppendMappedContour(mapped, slice, indexMap, _cancellationToken) < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer path contours are implemented.");
             ends[contour] = mapped.Count;
             if (indexMap is not null) TranslateCubicSpans(recordedCubics, cubicCursor, cubicRunEnd, contour, indexMap, keptCubicSpans);
             cubicCursor = cubicRunEnd;
@@ -562,7 +558,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             if (element.Presentation.HasFill && result.Geometries.Length == 1)
             {
-                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
                 SvgRoundedRectPath.Append(commands, x, y, width, height, radiusX, radiusY);
                 owned = commands.Detach();
                 result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = radiusX == 0 && radiusY == 0
@@ -586,7 +582,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         // retained map carries independent scales, rotations and skews to playback.
         double deviceWidth = radiusX == 0 && radiusY == 0 && !stroke.NonScalingStroke
             ? stroke.Width : NativeStrokeDeviceWidth(stroke.Width, element.Transform, deviceMap, frame, stroke.NonScalingStroke);
-        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
         if (radiusX == 0 && radiusY == 0 && stroke.DashPattern is not null)
         {
             // SVG sharp-rectangle dashes start at the top-left corner. Ordinary
@@ -635,9 +631,9 @@ internal ref struct SvgOrthogonalGeometryLowering
             builder.EnableQuadSpanRetention();
             builder.EnableCubicSpanRetention();
         }
-        using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
-        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, null, element.Presentation.HasFill || retainInstanceCenterline ? authored : null);
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
+        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _cancellationToken, null, element.Presentation.HasFill || retainInstanceCenterline ? authored : null);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         SvgQuadSpan[] recorded = builder.GetQuadSpans();
         List<SvgQuadSpan> keptSpans = new(recorded.Length);
         SvgCubicSpan[] recordedCubics = builder.GetCubicSpans();
@@ -657,7 +653,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             int cubicSpanRunEnd = cubicSpanCursor;
             while (cubicSpanRunEnd < recordedCubics.Length && recordedCubics[cubicSpanRunEnd].Contour == contour) cubicSpanRunEnd++;
             int[]? indexMap = (spanRunEnd > spanCursor || cubicSpanRunEnd > cubicSpanCursor) ? new int[slice.Length] : null;
-            if (AppendMappedContour(mapped, slice, indexMap, _workCounter, _cancellationToken) < 3)
+            if (AppendMappedContour(mapped, slice, indexMap, _cancellationToken) < 3)
             {
                 // Degenerate contours enclose no area while strokes outline them separately, mirroring singleton-drop tolerance.
                 while (mapped.Count > before) mapped.RemoveLast();
@@ -670,19 +666,19 @@ internal ref struct SvgOrthogonalGeometryLowering
                 bool needsClosingVertex = false;
                 for (int span = spanCursor; span < spanRunEnd && !needsClosingVertex; span++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     if (recorded[span].EndIndex == slice.Length - 1) needsClosingVertex = true;
                 }
 
                 for (int span = cubicSpanCursor; span < cubicSpanRunEnd && !needsClosingVertex; span++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     if (recordedCubics[span].EndIndex == slice.Length - 1) needsClosingVertex = true;
                 }
 
                 if (needsClosingVertex)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     mapped.Add(slice[slice.Length - 1]);
                     ends[kept - 1] = mapped.Count;
                     indexMap[slice.Length - 1] = mapped.Count - 1;
@@ -709,7 +705,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 SvgDevicePoint[] retained = new SvgDevicePoint[mapped.Count];
                 for (int index = 0; index < retained.Length; index++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     SvgDevicePoint vertex = mapped[index];
                     // The largest admitted integer rounds to 2^31 in native float commands.
                     // Checked integer source placement retains its original range before replay.
@@ -721,7 +717,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 if (signs is not null)
                     for (int contour = 0; contour < signs.Length; contour++)
                     {
-                        _workCounter.Consume(_cancellationToken);
+                        _cancellationToken.ThrowIfCancellationRequested();
                         signs[contour] = 1;
                     }
                 result = RetainPolygonFill(retained, ends, signs, keptSpans.ToArray(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
@@ -743,26 +739,25 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Resolves one pre-weld point index to its compacted position, snapping dust-dropped joints to their surviving anchor.</summary>
-    private static int ResolveWeldIndex(int[] weldMap, int oldStart, int oldIndex, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static int ResolveWeldIndex(int[] weldMap, int oldStart, int oldIndex, CancellationToken cancellationToken)
     {
         if (oldIndex < oldStart) return -1;
         if (weldMap[oldIndex] >= 0) return weldMap[oldIndex];
         for (int probe = oldIndex - 1; probe >= oldStart; probe--)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (weldMap[probe] >= 0) return weldMap[probe];
         }
         return -1;
     }
 
         /// <summary>Re-anchors cubic spans to compacted weld indices, dropping spans with closing-compacted endpoints as well as unresolvable or degenerate ranges.</summary>
-    private static SvgCubicSpan[] RemapWeldCubicSpans(SvgCubicSpan[] spans, int[] weldMap, int[] ends, int[] weldedEnds, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgCubicSpan[] RemapWeldCubicSpans(SvgCubicSpan[] spans, int[] weldMap, int[] ends, int[] weldedEnds, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(spans);
         ArgumentNullException.ThrowIfNull(weldMap);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(weldedEnds);
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (spans.Length == 0) return spans;
         List<SvgCubicSpan> kept = new(spans.Length);
         int contour = -1;
@@ -770,7 +765,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         int oldStart = 0;
         foreach (SvgCubicSpan span in spans)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (span.Contour != contour)
             {
                 contour = span.Contour;
@@ -787,8 +782,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (span.StartIndex < oldStart || span.EndIndex < oldStart ||
                 span.StartIndex >= weldMap.Length || span.EndIndex >= weldMap.Length ||
                 weldMap[span.StartIndex] == WeldClosingDrop || weldMap[span.EndIndex] == WeldClosingDrop) continue;
-            int start = ResolveWeldIndex(weldMap, oldStart, span.StartIndex, workCounter, cancellationToken);
-            int end = ResolveWeldIndex(weldMap, oldStart, span.EndIndex, workCounter, cancellationToken);
+            int start = ResolveWeldIndex(weldMap, oldStart, span.StartIndex, cancellationToken);
+            int end = ResolveWeldIndex(weldMap, oldStart, span.EndIndex, cancellationToken);
             if (start < previousEnd || end <= start || end > weldedEnds[contour]) continue;
             previousEnd = end;
             kept.Add(new SvgCubicSpan(contour, start, end, span.FirstControl, span.SecondControl));
@@ -797,13 +792,12 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
         /// <summary>Re-anchors quadratic spans to compacted weld indices, dropping spans with closing-compacted endpoints as well as unresolvable or degenerate ranges.</summary>
-    private static SvgQuadSpan[] RemapWeldQuadSpans(SvgQuadSpan[] spans, int[] weldMap, int[] ends, int[] weldedEnds, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgQuadSpan[] RemapWeldQuadSpans(SvgQuadSpan[] spans, int[] weldMap, int[] ends, int[] weldedEnds, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(spans);
         ArgumentNullException.ThrowIfNull(weldMap);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(weldedEnds);
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (spans.Length == 0) return spans;
         List<SvgQuadSpan> kept = new(spans.Length);
         int contour = -1;
@@ -811,7 +805,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         int oldStart = 0;
         foreach (SvgQuadSpan span in spans)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (span.Contour != contour)
             {
                 contour = span.Contour;
@@ -828,8 +822,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (span.StartIndex < oldStart || span.EndIndex < oldStart ||
                 span.StartIndex >= weldMap.Length || span.EndIndex >= weldMap.Length ||
                 weldMap[span.StartIndex] == WeldClosingDrop || weldMap[span.EndIndex] == WeldClosingDrop) continue;
-            int start = ResolveWeldIndex(weldMap, oldStart, span.StartIndex, workCounter, cancellationToken);
-            int end = ResolveWeldIndex(weldMap, oldStart, span.EndIndex, workCounter, cancellationToken);
+            int start = ResolveWeldIndex(weldMap, oldStart, span.StartIndex, cancellationToken);
+            int end = ResolveWeldIndex(weldMap, oldStart, span.EndIndex, cancellationToken);
             if (start < previousEnd || end <= start || end > weldedEnds[contour]) continue;
             previousEnd = end;
             kept.Add(span with { Contour = contour, StartIndex = start, EndIndex = end });
@@ -873,7 +867,7 @@ internal ref struct SvgOrthogonalGeometryLowering
 
     /// <summary>Lowers fractional straight contours under composed affine placement and retains source verbs for filled output.</summary>
     /// <remarks>Scene geometry preserves paint bounds and admission. A filled result owns immutable source
-    /// commands and its composed scene map, with storage/work charged before allocation and cancellation
+    /// commands and its composed scene map, with storage reserved before allocation and cancellation
     /// checked through the shared budgeted list. Partial failure releases both scene and command owners.
     /// Explicit polygon closure stays distinct from the implicit fill closure of a polyline.</remarks>
     internal SvgParsedGeometry LowerPointListFill(BudgetedParserList<SvgFractionalPoint> points, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
@@ -882,14 +876,14 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _elementName + " vertex count exceeds the configured path-command limit.");
         (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         SvgFractionalPoint previous = default;
         SvgFractionalPoint first = default;
         bool hasKept = false;
         bool diagonal = false;
         for (int index = 0; index < points.Count; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             SvgFractionalPoint vertex = new((float)points[index].X, (float)points[index].Y);
             if (hasKept && previous == vertex) continue;
             if (hasKept && vertex == first && index == points.Count - 1) continue;
@@ -902,7 +896,7 @@ internal ref struct SvgOrthogonalGeometryLowering
 
         if (mapped.Count < 3)
         {
-            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
             return new(empty.Detach(), points.Count + 1);
         }
         int[] ends = [mapped.Count];
@@ -924,7 +918,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             double limit = (double)(float)int.MaxValue;
             for (int index = 0; index < retained.Length; index++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 SvgDevicePoint vertex = mapped[index];
                 if (!double.IsFinite(vertex.X) || !double.IsFinite(vertex.Y) || Math.Abs(vertex.X) > limit || Math.Abs(vertex.Y) > limit)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill coordinates exceed the admitted numeric range.");
@@ -939,7 +933,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             if (element.Presentation.HasFill && result.Geometries.Length == 1)
             {
-                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
                 for (int index = 0; index < points.Count; index++)
                 {
                     SvgFractionalPoint point = points[index];
@@ -966,16 +960,16 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _elementName + " stroke point count exceeds the configured path-command limit.");
         if (points.Count == 0)
         {
-            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
             return new(empty.Detach(), 0);
         }
         (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
         double deviceWidth = NativeStrokeDeviceWidth(width, element.Transform, deviceMap, frame, nonScaling);
         using RenderBudget.BudgetReservation sourceOwner = budget.Reserve(128, SvgMemoryCategory.Geometry);
-        using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
         for (int index = 0; index < points.Count; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             authored.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None,
                 new(points[index].X, points[index].Y), default, default));
         }
@@ -994,10 +988,10 @@ internal ref struct SvgOrthogonalGeometryLowering
         (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
         double deviceWidth = NativeStrokeDeviceWidth(width, element.Transform, deviceMap, frame, nonScaling);
         using RenderBudget.BudgetReservation sourceOwner = budget.Reserve(128, SvgMemoryCategory.Geometry);
-        using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
         for (int index = 0; index < points.Count; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             authored.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None,
                 new(points[index].X, points[index].Y), default, default));
         }
@@ -1132,7 +1126,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgDevicePoint segmentEnd = contour[(index + 1) % contour.Length];
             if (segmentStart == segmentEnd) continue;
             lastSeg = index;
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             double segmentLength = Math.Sqrt((segmentEnd.X - segmentStart.X) * (segmentEnd.X - segmentStart.X) + (segmentEnd.Y - segmentStart.Y) * (segmentEnd.Y - segmentStart.Y));
             double traveled = 0;
             while (true)
@@ -1321,8 +1315,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
         using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
         SvgContourBuilder outlines = new(pointCapacity, (int)contourCapacity);
-        using BudgetedParserList<SvgDevicePoint> leading = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-        using BudgetedParserList<SvgDevicePoint> current = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> leading = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> current = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         double scaledOffset = dashOffset * dashScale * dashFactor;
         if (!double.IsFinite(scaledOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
         for (int contour = 0; contour < source.ContourCount; contour++)
@@ -1348,7 +1342,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             foreach (bool closed in closedEnds)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 if (closed) { nativeStroke = false; break; }
             }
         }
@@ -1463,9 +1457,9 @@ internal ref struct SvgOrthogonalGeometryLowering
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
         using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
         SvgContourBuilder builder = hasCurves ? SvgContourBuilder.CreateGrowing(pointCapacity, contourCapacity) : new(pointCapacity, contourCapacity);
-        using BudgetedParserList<bool> closedEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-        using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
-        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, closedEnds, hasFill ? authored : null);
+        using BudgetedParserList<bool> closedEnds = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
+        using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
+        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _cancellationToken, closedEnds, hasFill ? authored : null);
         if (authored.Count == 0)
             return LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget) with { ElementCount = commandCount + 1 };
         if (builder.PointCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke point count exceeds the configured path-command limit.");
@@ -1474,7 +1468,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Filters and strokes caller-owned source verbs, transferring their array only to a successfully retained centerline.</summary>
-    /// <remarks>Uses this lowerer's single-conversion work, cancellation and geometry owners.
+    /// <remarks>Uses this lowerer's single-conversion cancellation and geometry owners.
     /// The caller disposes its command list on every exit and adopts the returned geometry owners on success.
     /// Device maps and width are already resolved; non-scaling construction offsets mapped commands before placement.</remarks>
     internal SvgParsedGeometry LowerNativeStrokeCommands(BudgetedParserList<SvgAuthoredPathCommand> authored,
@@ -1500,10 +1494,10 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (dashes is null) commands = authored.Detach();
             else
             {
-                SvgRectangle originalBounds = SvgPathBounds.Compute(authored.AsSpan(), _workCounter, _cancellationToken);
+                SvgRectangle originalBounds = SvgPathBounds.Compute(authored.AsSpan(), _cancellationToken);
                 sourceBounds = nonScaling ? deviceMap.Apply(originalBounds) : originalBounds;
                 commands = SvgNativeDashPath.Filter(authored.AsSpan(), dashes, dashOffset, pathLength,
-                    nonScaling ? constructionMap : SvgAffineTransform.Identity, resolutionScale, budget, _workCounter, _cancellationToken);
+                    nonScaling ? constructionMap : SvgAffineTransform.Identity, resolutionScale, budget, _cancellationToken);
                 if (nonScaling) { retainedMap = outlineMap; constructionMap = SvgAffineTransform.Identity; }
             }
             SvgParsedGeometry stroked = LowerNativeStrokePath(commands.Items, constructionMap,
@@ -1531,13 +1525,13 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (!float.IsFinite(radius) || !float.IsFinite(resolutionScale) || resolutionScale <= 0 || !float.IsFinite(miterLimit))
             throw new SvgException(SvgErrorCode.LimitExceeded, "Native path stroke parameters exceed the finite float range.");
         using RenderBudget.BudgetReservation owners = budget.Reserve(512, SvgMemoryCategory.Geometry);
-        using BudgetedParserList<SvgStrokeOutlineCommand> outline = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-        if (radius > 0) SvgNativePathStroke.Build(commands, radius, miterLimit, cap, join, resolutionScale, constructionMap, outline, budget, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgStrokeOutlineCommand> outline = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
+        if (radius > 0) SvgNativePathStroke.Build(commands, radius, miterLimit, cap, join, resolutionScale, constructionMap, outline, budget, _cancellationToken);
         SvgFlattenPolicy policy = new(ScaledFlatness(outputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
-        (int points, int contours, int spans) = Traverse(null, outline.AsSpan(), outlineMap, policy, _workCounter, _cancellationToken);
+        (int points, int contours, int spans) = Traverse(null, outline.AsSpan(), outlineMap, policy, _cancellationToken);
         if (points == 0)
         {
-            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
             return new(empty.Detach(), 0);
         }
         long scratchBytes = 3 * ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points)
@@ -1545,16 +1539,16 @@ internal ref struct SvgOrthogonalGeometryLowering
         using RenderBudget.BudgetReservation? scratch = scratchBytes == 0 ? null : budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
         SvgContourBuilder outlines = new(points, contours);
         outlines.EnableQuadSpanRetention();
-        _ = Traverse(outlines, outline.AsSpan(), outlineMap, policy, _workCounter, _cancellationToken);
+        _ = Traverse(outlines, outline.AsSpan(), outlineMap, policy, _cancellationToken);
         SvgParsedGeometry result = FinishDirectedStrokeFill(outlines, color, hasFill, SvgPolygonMapping.NativeStrokeEdges, frame, budget);
         try
         {
             if (result.Geometries.Length == 1)
             {
-                using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, _cancellationToken);
                 foreach (SvgStrokeOutlineCommand command in outline.AsSpan())
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     // Native point density includes zero-length outline verbs. Retain
                     // their source commands; edge construction discards their empty edges.
                     SvgAuthoredPathCommand verb = command.Verb switch
@@ -1577,14 +1571,14 @@ internal ref struct SvgOrthogonalGeometryLowering
         catch { result.Discard(); throw; }
 
         static (int Points, int Contours, int Spans) Traverse(SvgContourBuilder? builder, ReadOnlySpan<SvgStrokeOutlineCommand> commands,
-            SvgAffineTransform map, SvgFlattenPolicy policy, ParserWorkCounter work, CancellationToken token)
+            SvgAffineTransform map, SvgFlattenPolicy policy, CancellationToken token)
         {
             Span<SvgDevicePoint> samples = stackalloc SvgDevicePoint[CurveSegmentsPerCommand];
             SvgDevicePoint current = default;
             int points = 0, contours = 0, spans = 0;
             foreach (SvgStrokeOutlineCommand command in commands)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgDevicePoint end = SvgNativePathStroke.MapPoint(map, command.End.Device());
                 switch (command.Verb)
                 {
@@ -1601,14 +1595,14 @@ internal ref struct SvgOrthogonalGeometryLowering
                         {
                             if (!SvgCurveFlatten.TryFlattenQuadratic(current, control, end, policy, samples, token, out int added))
                                 throw new SvgException(SvgErrorCode.LimitExceeded, "Curve flattening exceeds the supported expansion range.");
-                            for (int point = 0; point < added; point++) work.Consume(token);
+                            token.ThrowIfCancellationRequested();
                             points = checked(points + added);
                         }
                         else builder.AddQuadratic(control, end, policy, token);
                         spans++; break;
                     case SvgStrokeOutlineVerb.Conic:
                         if (builder is null)
-                        { for (int point = 0; point < 8; point++) work.Consume(token); points = checked(points + 8); }
+                        { token.ThrowIfCancellationRequested(); points = checked(points + 8); }
                         else builder.AddConic(SvgNativePathStroke.MapPoint(map, command.Control.Device()), end, command.Weight, 8, token);
                         spans++; break;
                     case SvgStrokeOutlineVerb.Close: builder?.EndContour(); contours++; break;
@@ -1637,7 +1631,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         if (flattenedCenterline || isDashedStroke) return FinishDirectedStrokeFill(outlines, color, hasFill, flattenedCenterline ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.QuarterEdges, frame, budget);
         if (loopSubpaths.Length != outlines.ContourCount) throw new InvalidOperationException("Stroke outline subpath flags must match the sampled outlines.");
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         int[] ends = new int[outlines.ContourCount];
         int[] subpaths = new int[outlines.ContourCount];
         bool fractionalVertices = false;
@@ -1647,11 +1641,11 @@ internal ref struct SvgOrthogonalGeometryLowering
             ReadOnlySpan<SvgDevicePoint> slice = outlines.GetContour(contour);
             foreach (SvgDevicePoint vertex in slice)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 if (Math.Abs(vertex.X * 4 - Math.Round(vertex.X * 4, MidpointRounding.AwayFromZero)) > 0.000000001 || Math.Abs(vertex.Y * 4 - Math.Round(vertex.Y * 4, MidpointRounding.AwayFromZero)) > 0.000000001) fractionalVertices = true;
             }
 
-            AppendMappedContour(mapped, slice, null, _workCounter, _cancellationToken);
+            AppendMappedContour(mapped, slice, null, _cancellationToken);
             ends[contour] = mapped.Count;
             subpaths[contour] = loopSubpaths[contour];
         }
@@ -1681,7 +1675,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             }
 
             if (memberCount == 0) continue;
-            using BudgetedParserList<SvgDevicePoint> groupMapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            using BudgetedParserList<SvgDevicePoint> groupMapped = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
             int[] endsForGroup = new int[memberCount];
             int member = 0;
             for (int contour = 0; contour < ends.Length; contour++)
@@ -1690,7 +1684,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 int start = contour == 0 ? 0 : ends[contour - 1];
                 for (int index = start; index < ends[contour]; index++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     groupMapped.Add(retainedMapped[index]);
                 }
 
@@ -1728,7 +1722,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             }
         }
 
-        ChargePairs(_workCounter, (long)loopTotal * (loopTotal - 1) / 2, _cancellationToken);
+        ChargePairs((long)loopTotal * (loopTotal - 1) / 2, _cancellationToken);
         bool[] keepLoop = new bool[loopTotal];
         for (int loop = 0; loop < loopTotal; loop++) keepLoop[loop] = true;
         long comparedPairs = 0;
@@ -1791,11 +1785,11 @@ internal ref struct SvgOrthogonalGeometryLowering
             int count = groupEnds[group][member] - start;
             for (int vertex = 0; vertex < count; vertex++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 retained[target++] = groupPoints[group][start + vertex];
             }
 
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             finalEnds[targetEnd] = target;
             finalSigns[targetEnd] = groupSigns[group][member];
             targetEnd++;
@@ -1816,19 +1810,19 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Retains directed stroke outlines as one nonzero fill without converting winding overlaps into touching bands.</summary>
-    /// <remarks>Native strokes preserve float construction, fitted quadratics, rational round verbs and directed overlaps through their typed mapping. Surviving curves re-anchor to global indices after duplicate contour merging; caller scratch covers builder columns and returned verbs. Sampled shape outlines retain their legacy mapping. The caller retains ownership and charges point, contour and role traversals; returned scene reservations release on failure or disposal.</remarks>
+    /// <remarks>Native strokes preserve float construction, fitted quadratics, rational round verbs and directed overlaps through their typed mapping. Surviving curves re-anchor to global indices after duplicate contour merging; caller scratch covers builder columns and returned verbs. Sampled shape outlines retain their legacy mapping. The caller retains ownership and observes cancellation during point, contour and role traversals; returned scene reservations release on failure or disposal.</remarks>
     private SvgParsedGeometry FinishDirectedStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, SvgPolygonMapping sourceMapping, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(outlines);
         ArgumentNullException.ThrowIfNull(budget);
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         int[] ends = new int[outlines.ContourCount];
         bool fractionalVertices = false;
         for (int contour = 0; contour < outlines.ContourCount; contour++)
         {
             foreach (SvgDevicePoint vertex in outlines.GetContour(contour))
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 mapped.Add(vertex);
                 if (Math.Abs(vertex.X * 4 - Math.Round(vertex.X * 4, MidpointRounding.AwayFromZero)) > 0.000000001 || Math.Abs(vertex.Y * 4 - Math.Round(vertex.Y * 4, MidpointRounding.AwayFromZero)) > 0.000000001) fractionalVertices = true;
             }
@@ -1836,9 +1830,9 @@ internal ref struct SvgOrthogonalGeometryLowering
             ends[contour] = mapped.Count;
         }
 
-        ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+        ChargePairs((long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
         SvgDevicePoint[] retainedOutlines = mapped.AsSpan().ToArray();
-        SvgContourNesting.MergeIdenticalContours(retainedOutlines, ends, _workCounter, out SvgDevicePoint[] mergedOutlines, out int[] mergedEnds, _cancellationToken);
+        SvgContourNesting.MergeIdenticalContours(retainedOutlines, ends, out SvgDevicePoint[] mergedOutlines, out int[] mergedEnds, _cancellationToken);
         retainedOutlines = mergedOutlines;
         ends = mergedEnds;
 
@@ -1854,7 +1848,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 bool equal = candidate.Length == kept.Length;
                 for (int vertex = 0; equal && vertex < candidate.Length; vertex++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     equal = candidate[vertex] == kept[vertex];
                 }
                 if (equal) break;
@@ -1862,10 +1856,10 @@ internal ref struct SvgOrthogonalGeometryLowering
             }
             if (sourceContour == outlines.ContourCount) throw new InvalidOperationException("A merged stroke contour lost its source.");
             while (conicCursor < conics.Length && conics[conicCursor].Contour < sourceContour)
-            { _workCounter.Consume(_cancellationToken); conicCursor++; }
+            { _cancellationToken.ThrowIfCancellationRequested(); conicCursor++; }
             while (conicCursor < conics.Length && conics[conicCursor].Contour == sourceContour)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 SvgQuadSpan span = conics[conicCursor++];
                 conics[conicKept++] = span with { Contour = contour, StartIndex = start + span.StartIndex, EndIndex = start + span.EndIndex };
             }
@@ -1878,7 +1872,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (conicKept != conics.Length) Array.Resize(ref conics, conicKept);
             ValidateDeviceRange(retainedOutlines);
             int[] roles = new int[ends.Length];
-            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            ChargePairs((long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
             SvgContourNesting.ComputeWindingRoles(retainedOutlines, ends, roles, false, _cancellationToken);
             for (int contour = 0; contour < ends.Length; contour++)
             {
@@ -1909,19 +1903,18 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Compacts dust-scale consecutive joints (including each contour closing joint) in place, writing cumulative compacted ends and returning the compacted total.</summary>
-    /// <remarks>Snapping keeps the earlier bitwise value so no computed points ever appear and the touch pipeline keeps its bitwise invariant; strictly-bitwise-equal joints keep the existing zero-length path untouched. Results under three points per contour flow to the existing degenerate guards exactly like any degenerate input. Charges one work unit per examined point and observes cancellation through the counter; compacted ends reuse caller-reserved ends-sized storage. When provided, the index map records the compacted position per kept point, -1 per interior dust joint and the WeldClosingDrop mark per compacted closing joint so span re-anchoring can tell the two drops apart. Contours flagged in keepClosingVertex snap a dust-divergent closing joint bitwise shut to the contour start instead of compacting it, so a retained span ending there survives with exact verb endpoints and the explicit zero-length close flows to the existing degenerate guards.</remarks>
+    /// <remarks>Snapping keeps the earlier bitwise value so no computed points ever appear and the touch pipeline keeps its bitwise invariant; strictly-bitwise-equal joints keep the existing zero-length path untouched. Results under three points per contour flow to the existing degenerate guards exactly like any degenerate input. Observes cancellation per examined point; compacted ends reuse caller-reserved ends-sized storage. When provided, the index map records the compacted position per kept point, -1 per interior dust joint and the WeldClosingDrop mark per compacted closing joint so span re-anchoring can tell the two drops apart. Contours flagged in keepClosingVertex snap a dust-divergent closing joint bitwise shut to the contour start instead of compacting it, so a retained span ending there survives with exact verb endpoints and the explicit zero-length close flows to the existing degenerate guards.</remarks>
     /// <summary>Compacts dust-scale consecutive joints in place, dropping dust-divergent closing joints.</summary>
-    internal static int WeldDustJoints(SvgDevicePoint[] points, int[] ends, int[] weldedEnds, int[]? indexMap, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => WeldDustJoints(points, ends, weldedEnds, indexMap, new bool[ends.Length], workCounter, cancellationToken);
+    internal static int WeldDustJoints(SvgDevicePoint[] points, int[] ends, int[] weldedEnds, int[]? indexMap, CancellationToken cancellationToken)
+        => WeldDustJoints(points, ends, weldedEnds, indexMap, new bool[ends.Length], cancellationToken);
 
     /// <summary>Compacts dust-scale consecutive joints in place, keeping flagged closing joints bitwise shut for retained spans.</summary>
-    internal static int WeldDustJoints(SvgDevicePoint[] points, int[] ends, int[] weldedEnds, int[]? indexMap, bool[] keepClosingVertex, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static int WeldDustJoints(SvgDevicePoint[] points, int[] ends, int[] weldedEnds, int[]? indexMap, bool[] keepClosingVertex, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(weldedEnds);
         ArgumentNullException.ThrowIfNull(keepClosingVertex);
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (weldedEnds.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(weldedEnds));
         if (keepClosingVertex.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(keepClosingVertex));
         if (indexMap is not null && indexMap.Length != points.Length) throw new ArgumentOutOfRangeException(nameof(indexMap));
@@ -1940,7 +1933,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             int lastOld = -1;
             for (int index = start; index < end; index++)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 if (hasAnchor && IsDustJoint(anchor, points[index]))
                 {
                     if (indexMap is not null) indexMap[index] = -1;
@@ -2001,13 +1994,13 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 foreach (SvgQuadSpan span in quadSpans)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     if (span.Contour >= 0 && span.Contour < ends.Length && span.EndIndex == ends[span.Contour] - 1) keepClosingVertex[span.Contour] = true;
                 }
 
                 foreach (SvgCubicSpan span in cubicSpans)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     if (span.Contour >= 0 && span.Contour < ends.Length && span.EndIndex == ends[span.Contour] - 1) keepClosingVertex[span.Contour] = true;
                 }
             }
@@ -2015,11 +2008,11 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 using RenderBudget.BudgetReservation? weldMapReservation = trackWeldSpans ? budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(retained.Length), SvgMemoryCategory.Geometry) : null;
                 int[]? weldMap = trackWeldSpans ? new int[retained.Length] : null;
-                weldedTotal = WeldDustJoints(retained, ends, weldedEnds, weldMap, keepClosingVertex, _workCounter, _cancellationToken);
+                weldedTotal = WeldDustJoints(retained, ends, weldedEnds, weldMap, keepClosingVertex, _cancellationToken);
                 if (weldedTotal < retained.Length && trackWeldSpans && weldMap is not null)
                 {
-                    quadSpans = RemapWeldQuadSpans(quadSpans, weldMap, ends, weldedEnds, _workCounter, _cancellationToken);
-                    cubicSpans = RemapWeldCubicSpans(cubicSpans, weldMap, ends, weldedEnds, _workCounter, _cancellationToken);
+                    quadSpans = RemapWeldQuadSpans(quadSpans, weldMap, ends, weldedEnds, _cancellationToken);
+                    cubicSpans = RemapWeldCubicSpans(cubicSpans, weldMap, ends, weldedEnds, _cancellationToken);
                 }
                 else if (weldedTotal < retained.Length)
                 {
@@ -2034,15 +2027,15 @@ internal ref struct SvgOrthogonalGeometryLowering
                 SvgDevicePoint[] tightPoints = new SvgDevicePoint[weldedTotal];
                 for (int index = 0; index < weldedTotal; index++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     tightPoints[index] = retained[index];
                 }
                 retained = tightPoints;
                 ends = weldedEnds;
             }
-            ChargePairs(_workCounter, (long)weldedTotal * (weldedTotal - 1) / 2, _cancellationToken);
-            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
-            if (SvgContourNesting.MergeIdenticalContours(retained, ends, _workCounter, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, _cancellationToken))
+            ChargePairs((long)weldedTotal * (weldedTotal - 1) / 2, _cancellationToken);
+            ChargePairs((long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            if (SvgContourNesting.MergeIdenticalContours(retained, ends, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, _cancellationToken))
             {
                 quadSpans = Array.Empty<SvgQuadSpan>();
                 cubicSpans = Array.Empty<SvgCubicSpan>();
@@ -2066,8 +2059,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 quadSpans = Array.Empty<SvgQuadSpan>();
                 cubicSpans = Array.Empty<SvgCubicSpan>();
-                using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-                using BudgetedParserList<int> splitEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+                using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
+                using BudgetedParserList<int> splitEnds = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
                 if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget, keepUnresolved, out interLoopResolved))
                 {
                     splitPoints.Clear();
@@ -2102,7 +2095,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 }
             }
             int[] signs = new int[ends.Length];
-            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            ChargePairs((long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
             bool skipSharedVertices = touchResolved || interLoopResolved || unionResolved || mixedResolved;
             if (_isEvenOdd) SvgContourNesting.ComputeParitySigns(retained, ends, signs, skipSharedVertices, _cancellationToken);
             else SvgContourNesting.ComputeWindingRoles(retained, ends, signs, skipSharedVertices, _cancellationToken);
@@ -2138,7 +2131,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Splits self-crossing contours at interior crossings into simple loops sharing only split vertices, then eliminates crossings between loops the same way.</summary>
-    /// <remarks>Every queued loop classifies either clean, joining the output, or as a pure proper crossing, splitting again; any other flag rejects, so touches, spikes and degenerate edges never enter the output. Even-odd keeps the single-contour single-crossing gate because first-vertex parity signs are meaningless for vertex-sharing loops, while nonzero fill iterates to a fixpoint where each split strictly reduces the remaining intra-loop crossings. Admitted loop sets pass the pairwise split-loop guard, so loops meet at most at bitwise-shared split vertices with nesting resolved by roles. When the guard still sees inter-loop crossings under nonzero fill, a second sweep subdivides both edges at each computed crossing until no strict crossing remains; each round strictly reduces the crossing count, and the guard still rejects touches, overlaps and degenerates exactly as before. Even-odd never enters the second sweep. Sets resolved across loops report through interLoopResolved so nesting tests skip bitwise-shared vertices. Stroke outlines without crossings bypass this stage: crossing subdivision re-tiles exact abutments by whole quanta and churns multi-loop sets to its cap, while intra-loop self-crossing splits stay available to strokes carrying ProperCrossing. Output lists are caller-owned budgeted storage filled after the caller reserves them; each popped loop charges its pair estimate, each copied vertex charges one work unit, and the final guard charges the quadratic pair estimate; observes cancellation in classification, search, copy and guard. Partial output on denial stays caller-discarded.</remarks>
+    /// <remarks>Every queued loop classifies either clean, joining the output, or as a pure proper crossing, splitting again; any other flag rejects, so touches, spikes and degenerate edges never enter the output. Even-odd keeps the single-contour single-crossing gate because first-vertex parity signs are meaningless for vertex-sharing loops, while nonzero fill iterates to a fixpoint where each split strictly reduces the remaining intra-loop crossings. Admitted loop sets pass the pairwise split-loop guard, so loops meet at most at bitwise-shared split vertices with nesting resolved by roles. When the guard still sees inter-loop crossings under nonzero fill, a second sweep subdivides both edges at each computed crossing until no strict crossing remains; each round strictly reduces the crossing count, and the guard still rejects touches, overlaps and degenerates exactly as before. Even-odd never enters the second sweep. Sets resolved across loops report through interLoopResolved so nesting tests skip bitwise-shared vertices. Stroke outlines without crossings bypass this stage: crossing subdivision re-tiles exact abutments by whole quanta and churns multi-loop sets to its cap, while intra-loop self-crossing splits stay available to strokes carrying ProperCrossing. Output lists are caller-owned budgeted storage filled after the caller reserves them; each popped loop and final guard observe cancellation in classification, search, copy and guard. Partial output on denial stays caller-discarded.</remarks>
     private bool TrySplitCrossingContours(SvgContourFlags structure, ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, bool isEvenOdd, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, RenderBudget budget, bool strokeOutlines, out bool interLoopResolved)
     {
         ArgumentNullException.ThrowIfNull(splitPoints);
@@ -2148,20 +2141,20 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (strokeOutlines && (structure & SvgContourFlags.ProperCrossing) == SvgContourFlags.None) return false;
         if (structure == SvgContourFlags.None) return false;
         if (isEvenOdd && (structure != SvgContourFlags.ProperCrossing || ends.Length != 1 || ends[0] != points.Length)) return false;
-        using BudgetedParserList<SvgDevicePoint> workPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-        using BudgetedParserList<int> pending = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> workPoints = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
+        using BudgetedParserList<int> pending = new(budget, SvgMemoryCategory.Geometry, _cancellationToken);
         for (int index = 0; index < points.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workPoints.Add(points[index]);
         }
 
         int previousEnd = 0;
         foreach (int contourEnd in ends)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             pending.Add(previousEnd);
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             pending.Add(contourEnd);
             previousEnd = contourEnd;
         }
@@ -2177,17 +2170,17 @@ internal ref struct SvgOrthogonalGeometryLowering
             cursor += 2;
             int count = end - start;
             if (count < 3) return false;
-            ChargePairs(_workCounter, (long)count * (count - 1) / 2, _cancellationToken);
+            ChargePairs((long)count * (count - 1) / 2, _cancellationToken);
             SvgContourFlags loop = SvgContourStructure.ClassifyContour(workPoints.AsSpan(), start, end, _cancellationToken);
             if (loop == SvgContourFlags.None)
             {
                 for (int index = start; index < end; index++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     splitPoints.Add(workPoints[index]);
                 }
 
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 splitEnds.Add(splitPoints.Count);
                 continue;
             }
@@ -2200,40 +2193,40 @@ internal ref struct SvgOrthogonalGeometryLowering
             int firstLoopStart = workPoints.Count;
             for (int index = start + firstEdge + 1; index <= start + secondEdge; index++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 workPoints.Add(workPoints[index]);
             }
 
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workPoints.Add(crossing);
             int secondLoopStart = workPoints.Count;
             for (int index = start + secondEdge + 1; index < end; index++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 workPoints.Add(workPoints[index]);
             }
 
             for (int index = start; index <= start + firstEdge; index++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 workPoints.Add(workPoints[index]);
             }
 
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workPoints.Add(crossing);
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             pending.Add(firstLoopStart);
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             pending.Add(secondLoopStart);
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             pending.Add(secondLoopStart);
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             pending.Add(workPoints.Count);
             splitDone = true;
         }
 
         long totalPoints = splitPoints.Count;
-        ChargePairs(_workCounter, totalPoints * totalPoints, _cancellationToken);
+        ChargePairs(totalPoints * totalPoints, _cancellationToken);
         if (SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken)) return true;
         if (isEvenOdd) return false;
         if (!TrySplitInterLoopCrossings(splitPoints, splitEnds)) return false;
@@ -2242,7 +2235,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Eliminates proper crossings between split loops by subdividing both edges at each computed crossing.</summary>
-    /// <remarks>Phase-one outputs are intra-clean, so only inter-loop strict crossings remain; each subdivision replaces the crossing pair with endpoint contacts at one bitwise-shared vertex while every other contact stays untouched, so the crossing count strictly decreases and the sweep ends at the round cap at the latest. The earlier loop index always subdivides first so the later loop range stays valid. Touches, overlaps and degenerate edges are never repaired: the split-loop guard still arbitrates the final set and rejects them exactly as before, and even-odd never enters this sweep. On failure the phase-one output stays untouched for the caller to discard; on success the output lists hold the subdivided set for the shared reservation, mapping and nesting steps. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation.</remarks>
+    /// <remarks>Phase-one outputs are intra-clean, so only inter-loop strict crossings remain; each subdivision replaces the crossing pair with endpoint contacts at one bitwise-shared vertex while every other contact stays untouched, so the crossing count strictly decreases and the sweep ends at the round cap at the latest. The earlier loop index always subdivides first so the later loop range stays valid. Touches, overlaps and degenerate edges are never repaired: the split-loop guard still arbitrates the final set and rejects them exactly as before, and even-odd never enters this sweep. On failure the phase-one output stays untouched for the caller to discard; on success the output lists hold the subdivided set for the shared reservation, mapping and nesting steps. Observes cancellation per sweep round and copied vertex.</remarks>
     private bool TrySplitInterLoopCrossings(BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds)
     {
         ArgumentNullException.ThrowIfNull(splitPoints);
@@ -2251,12 +2244,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         int[] workEnds = new int[splitEnds.Count];
         for (int index = 0; index < workPoints.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workPoints[index] = splitPoints[index];
         }
         for (int index = 0; index < workEnds.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workEnds[index] = splitEnds[index];
         }
         long rounds = 0;
@@ -2264,7 +2257,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         while (true)
         {
             if (++rounds > maximumRounds) return false;
-            ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
+            ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
             if (!SvgContourStructure.TryFindInterLoopProperCrossing(workPoints, workEnds, out int firstLoop, out int firstEdge, out int secondLoop, out int secondEdge, out SvgDevicePoint crossing, _cancellationToken)) break;
             InsertSplitVertex(ref workPoints, workEnds, firstLoop, firstEdge, crossing);
             InsertSplitVertex(ref workPoints, workEnds, secondLoop, secondEdge, crossing);
@@ -2273,15 +2266,15 @@ internal ref struct SvgOrthogonalGeometryLowering
         splitEnds.Clear();
         for (int index = 0; index < workPoints.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             splitPoints.Add(workPoints[index]);
         }
         for (int index = 0; index < workEnds.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             splitEnds.Add(workEnds[index]);
         }
-        ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
+        ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
         return SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken);
     }
 
@@ -2295,26 +2288,26 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgDevicePoint[] nextPoints = new SvgDevicePoint[workPoints.Length + 1];
         for (int index = 0; index < insertAt; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextPoints[index] = workPoints[index];
         }
-        _workCounter.Consume(_cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         nextPoints[insertAt] = vertex;
         for (int index = insertAt; index < workPoints.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextPoints[index + 1] = workPoints[index];
         }
         for (int index = loop; index < workEnds.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workEnds[index] = workEnds[index] + 1;
         }
         workPoints = nextPoints;
     }
 
     /// <summary>Unions same-fill loops that share coincident boundary spans into simple loops.</summary>
-    /// <remarks>Nonzero sets resolve contained-drop and single-edge splices by union semantics while even-odd sets keep those gates; both fill rules share bitwise endpoint subdivision, simultaneous multi-span splicing with remainder linking, guard arbitration and nesting resolution, which stay exact because subdivision preserves geometry and linked boundaries resolve through parity depth. Admits sets whose only non-touch defect is positive-length collinear overlap between loops: edges subdivide at overlap endpoints with bitwise copies of existing vertices, loops contained in larger same-direction loops drop, and loop pairs sharing exactly one duplicate edge splice into a single boundary while pairs sharing two or more opposite spans splice every span at once with remainder linking. Stroke outlines pass contained-drop as disabled (containment inside an outer ring does not imply coverage for stroke bands) while subdivision and splicing run for both. Stroke outlines additionally bypass this stage entirely: no measured stroke win resolves here while multi-loop sets grind its sweep to the cap, so touch, mixed-contact and pass-through paths carry strokes. Opposite-direction containment, same-directed multi-span sharing, crossings, spikes and degenerate edges stay rejected. No computed points ever appear. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps, reporting resolved loops so nesting tests skip bitwise-shared vertices through the union flag. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Partial output on denial stays caller-discarded.</remarks>
+    /// <remarks>Nonzero sets resolve contained-drop and single-edge splices by union semantics while even-odd sets keep those gates; both fill rules share bitwise endpoint subdivision, simultaneous multi-span splicing with remainder linking, guard arbitration and nesting resolution, which stay exact because subdivision preserves geometry and linked boundaries resolve through parity depth. Admits sets whose only non-touch defect is positive-length collinear overlap between loops: edges subdivide at overlap endpoints with bitwise copies of existing vertices, loops contained in larger same-direction loops drop, and loop pairs sharing exactly one duplicate edge splice into a single boundary while pairs sharing two or more opposite spans splice every span at once with remainder linking. Stroke outlines pass contained-drop as disabled (containment inside an outer ring does not imply coverage for stroke bands) while subdivision and splicing run for both. Stroke outlines additionally bypass this stage entirely: no measured stroke win resolves here while multi-loop sets grind its sweep to the cap, so touch, mixed-contact and pass-through paths carry strokes. Opposite-direction containment, same-directed multi-span sharing, crossings, spikes and degenerate edges stay rejected. No computed points ever appear. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps, reporting resolved loops so nesting tests skip bitwise-shared vertices through the union flag. Observes cancellation per sweep round and copied vertex. Partial output on denial stays caller-discarded.</remarks>
     private bool TryResolveCoincidentUnion(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, bool allowContainedDrop, bool strokeOutlines, out bool unionResolved)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -2327,7 +2320,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         bool singleEvenOdd = false;
         if (_isEvenOdd && (structure & SvgContourFlags.SelfTouch) == SvgContourFlags.None)
         {
-            ChargePairs(_workCounter, (long)points.Length * points.Length, _cancellationToken);
+            ChargePairs((long)points.Length * points.Length, _cancellationToken);
             singleEvenOdd = !SvgContourStructure.TryFindInterLoopProperCrossing(points, ends, out _, out _, out _, out _, out _, _cancellationToken);
         }
         if ((structure & SvgContourFlags.CoincidentOverlap) == SvgContourFlags.None) return false;
@@ -2338,12 +2331,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         int[] workEnds = new int[ends.Length];
         for (int index = 0; index < points.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workPoints[index] = points[index];
         }
         for (int index = 0; index < ends.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workEnds[index] = ends[index];
         }
         long sweeps = 0;
@@ -2351,7 +2344,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         while (true)
         {
             if (++sweeps > maximumSweeps) return false;
-            ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
+            ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
             if (SubdivideCoincidentOverlapEndpoints(ref workPoints, ref workEnds)) continue;
             if (nonzeroOnly && allowContainedDrop && TryDropContainedUnionLoop(ref workPoints, ref workEnds)) continue;
             if (nonzeroOnly && TrySpliceSharedUnionEdge(ref workPoints, ref workEnds, false)) continue;
@@ -2362,15 +2355,15 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (!EveryLoopHasUnsharedVertex(workPoints, workEnds)) return false;
         for (int index = 0; index < workPoints.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             splitPoints.Add(workPoints[index]);
         }
         for (int index = 0; index < workEnds.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             splitEnds.Add(workEnds[index]);
         }
-        ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
+        ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
         if (!SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken)) return false;
         unionResolved = true;
         return true;
@@ -2400,7 +2393,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         int occurrence = -1;
         for (int index = 0; index < workPoints.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             if (workPoints[index] == value) { occurrence = index; break; }
         }
         if (occurrence < 0) return false;
@@ -2409,7 +2402,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Drops zero-area loops whose edges all duplicate other loops exactly.</summary>
-    /// <remarks>Retraced spikes cancel pairwise to weld-scale area while their edges coincide with surviving boundaries, so removing them changes no coverage: zero-area loops contribute no winding under either fill rule while their fringe coincides with the duplicated edges. Opposite-sign pairs, nonzero areas and non-duplicated edges stay rejected. Charges one work unit per examined pair and vertex, and observes cancellation.</remarks>
+    /// <remarks>Retraced spikes cancel pairwise to weld-scale area while their edges coincide with surviving boundaries, so removing them changes no coverage: zero-area loops contribute no winding under either fill rule while their fringe coincides with the duplicated edges. Opposite-sign pairs, nonzero areas and non-duplicated edges stay rejected. Observes cancellation per examined pair and vertex.</remarks>
     private bool TryDropSpikeUnionLoop(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
     {
         for (int inner = 0; inner < workEnds.Length; inner++)
@@ -2432,7 +2425,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                     int otherCount = workEnds[other] - otherStart;
                     for (int otherEdge = 0; otherEdge < otherCount; otherEdge++)
                     {
-                        _workCounter.Consume(_cancellationToken);
+                        _cancellationToken.ThrowIfCancellationRequested();
                         SvgDevicePoint otherEdgeStart = workPoints[otherStart + otherEdge];
                         SvgDevicePoint otherEdgeEnd = workPoints[otherStart + ((otherEdge + 1) % otherCount)];
                         if (otherEdgeStart == edgeStart && otherEdgeEnd == edgeEnd) { found = true; break; }
@@ -2479,7 +2472,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     {
         for (int index = innerStart; index < innerEnd; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             if (IsSharedLoopVertex(points[index], points, outerStart, outerEnd)) continue;
             if (SvgContourStructure.IsPointOnLoopBoundary(points, outerStart, outerEnd, points[index])) continue;
             if (SvgContourNesting.ContainsPoint(points, outerStart, outerEnd, points[index].X, points[index].Y)) continue;
@@ -2527,10 +2520,10 @@ internal ref struct SvgOrthogonalGeometryLowering
             int otherEnd = workEnds[other];
             for (int source = otherStart; source < otherEnd; source++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextPoints[target++] = workPoints[source];
             }
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[targetEnd++] = target;
         }
         workPoints = nextPoints;
@@ -2561,7 +2554,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                     if (firstEdgeStart == firstEdgeEnd) continue;
                     for (int secondEdge = 0; secondEdge < secondCount; secondEdge++)
                     {
-                        _workCounter.Consume(_cancellationToken);
+                        _cancellationToken.ThrowIfCancellationRequested();
                         SvgDevicePoint secondEdgeStart = workPoints[secondStart + secondEdge];
                         SvgDevicePoint secondEdgeEnd = workPoints[secondStart + ((secondEdge + 1) % secondCount)];
                         if (secondEdgeStart == secondEdgeEnd) continue;
@@ -2596,14 +2589,14 @@ internal ref struct SvgOrthogonalGeometryLowering
         int target = 0;
         for (int offset = 0; offset < firstCount; offset++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             result[target++] = workPoints[firstStart + ((sharedFirst + 1 + offset) % firstCount)];
         }
         if (sameDirected)
         {
             for (int offset = secondCount - 1; offset >= 2; offset--)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 result[target++] = workPoints[secondStart + ((sharedSecond + offset) % secondCount)];
             }
         }
@@ -2611,7 +2604,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             for (int offset = 2; offset < secondCount; offset++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 result[target++] = workPoints[secondStart + ((sharedSecond + offset) % secondCount)];
             }
         }
@@ -2628,18 +2621,18 @@ internal ref struct SvgOrthogonalGeometryLowering
             int otherEnd = workEnds[other];
             for (int source = otherStart; source < otherEnd; source++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextPoints[target++] = workPoints[source];
             }
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[targetEnd++] = target;
         }
         for (int index = 0; index < result.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextPoints[target++] = result[index];
         }
-        _workCounter.Consume(_cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         nextEnds[targetEnd++] = target;
         workPoints = nextPoints;
         workEnds = nextEnds;
@@ -2656,9 +2649,9 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Links one same-wound doubled span between two loops into outer ring plus doubled island.</summary>
-    /// <remarks>Scans loop pairs like the shared-edge splice but admits only same-directed exact spans with no opposite-directed sharing between uncontained loops; the doubled-span link itself rechecks orientation signs, common vertices and the split-loop guard. At most one link fires per sweep through the caller spent flag, so linked outputs never re-trigger the same pair. Charges one work unit per examined pair and delegates copy charging to the link.</remarks>
+    /// <remarks>Scans loop pairs like the shared-edge splice but admits only same-directed exact spans with no opposite-directed sharing between uncontained loops; the doubled-span link itself rechecks orientation signs, common vertices and the split-loop guard. At most one link fires per sweep through the caller spent flag, so linked outputs never re-trigger the same pair. Checks cancellation per examined pair and during linked copies.</remarks>
     /// <summary>Conforms near-coincident spans between shared vertices to bitwise duplicates.</summary>
-    /// <remarks>Variant arcs flatten to spans that share endpoints but weave within a pixel: exact subdivision finds no vertex to copy while computed crossings never saturate, so the sweep grinds without admitting. When two same-wound uncontained loops share distinct vertices u and v with interior-vertex-free spans on both sides deviating at most one device pixel symmetrically, the higher-index span takes bitwise copies of the lower-index span interior, turning the lens into exact spans for the splice and drop steps. Opposite-wound pairs, zero-area loops, contained pairs and wider deviations stay rejected; exact spans never re-trigger, so each conform strictly reduces differing-span pairs with the insertion cap as backstop. Charges one work unit per examined pair and copied vertex, and observes cancellation.</remarks>
+    /// <remarks>Variant arcs flatten to spans that share endpoints but weave within a pixel: exact subdivision finds no vertex to copy while computed crossings never saturate, so the sweep grinds without admitting. When two same-wound uncontained loops share distinct vertices u and v with interior-vertex-free spans on both sides deviating at most one device pixel symmetrically, the higher-index span takes bitwise copies of the lower-index span interior, turning the lens into exact spans for the splice and drop steps. Opposite-wound pairs, zero-area loops, contained pairs and wider deviations stay rejected; exact spans never re-trigger, so each conform strictly reduces differing-span pairs with the insertion cap as backstop. Checks cancellation per examined pair and copied vertex.</remarks>
     private bool TryConformNearSpans(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
     {
         for (int first = 0; first < workEnds.Length; first++)
@@ -2727,7 +2720,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Replaces one span interior with bitwise copies of another span interior.</summary>
-    /// <remarks>Both spans share endpoints with the donor interior already validated within the conform bound; copies reuse existing donor vertices in receiver traversal order so no computed points appear, with reversed copies producing opposite exact spans for the well-tested opposite splice. The receiver keeps the span endpoints and all off-span vertices in cyclic order while later loops shift by the interior-count delta, so cyclic spans wrapping past the loop end stay consistent. Charges one work unit per copied vertex, and observes cancellation.</remarks>
+    /// <remarks>Both spans share endpoints with the donor interior already validated within the conform bound; copies reuse existing donor vertices in receiver traversal order so no computed points appear, with reversed copies producing opposite exact spans for the well-tested opposite splice. The receiver keeps the span endpoints and all off-span vertices in cyclic order while later loops shift by the interior-count delta, so cyclic spans wrapping past the loop end stay consistent. Checks cancellation per copied vertex.</remarks>
     private void ConformSpanInterior(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int firstBegin, int firstLength, int second, int secondAnchor, int secondLength, bool receiverReversed)
     {
         int firstStart = first == 0 ? 0 : workEnds[first - 1];
@@ -2752,30 +2745,30 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 for (int source = otherStart; source < otherEnd; source++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     nextPoints[target++] = workPoints[source];
                 }
             }
             else
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextPoints[target++] = anchorValue;
                 for (int offset = 0; offset < donorInterior; offset++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     int donorOffset = receiverReversed ? donorInterior - offset : 1 + offset;
                     nextPoints[target++] = workPoints[firstStart + ((firstBegin + donorOffset) % firstCount)];
                 }
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextPoints[target++] = endValue;
                 int rest = secondCount - receiverInterior - 2;
                 for (int offset = 1; offset <= rest; offset++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     nextPoints[target++] = workPoints[otherStart + ((spanEnd + offset) % secondCount)];
                 }
             }
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[targetEnd++] = target;
         }
         if (target != nextPoints.Length || targetEnd != nextEnds.Length) return;
@@ -2793,12 +2786,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         int secondCount = workEnds[second] - secondStart;
         for (int firstEdge = 0; firstEdge < firstCount; firstEdge++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             SvgDevicePoint spanStart = workPoints[firstStart + firstEdge];
             if (!IsSharedLoopVertex(spanStart, workPoints, secondStart, secondStart + secondCount)) continue;
             for (int firstLength = 2; firstLength < firstCount; firstLength++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 SvgDevicePoint spanEnd = workPoints[firstStart + ((firstEdge + firstLength) % firstCount)];
                 if (spanEnd == spanStart) continue;
                 if (!IsSharedLoopVertex(spanEnd, workPoints, secondStart, secondStart + secondCount)) continue;
@@ -2820,7 +2813,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         int secondAnchor = -1;
         for (int secondEdge = 0; secondEdge < secondCount; secondEdge++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             if (workPoints[secondStart + secondEdge] == spanStart) { secondAnchor = secondEdge; break; }
         }
         if (secondAnchor < 0) return false;
@@ -2836,7 +2829,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Links boundary arcs at shared vertices into union rings, dropping interior arcs.</summary>
-    /// <remarks>Same-wound uncontained loop pairs split at every shared vertex; arcs strictly inside the other loop drop as covered while boundary arcs link deterministically where each shared vertex keeps exactly two boundary ends, otherwise the pair stays rejected for tangent weaving. Opposite-wound pairs, contained pairs, zero-area loops, repeated shared values and degenerate arcs stay rejected, and each firing drops at least one interior arc while linking creates no vertices, so the sweep cannot revisit the same pair. The split-loop guard still arbitrates. Charges one work unit per examined pair and copied vertex, and observes cancellation.</remarks>
+    /// <remarks>Same-wound uncontained loop pairs split at every shared vertex; arcs strictly inside the other loop drop as covered while boundary arcs link deterministically where each shared vertex keeps exactly two boundary ends, otherwise the pair stays rejected for tangent weaving. Opposite-wound pairs, contained pairs, zero-area loops, repeated shared values and degenerate arcs stay rejected, and each firing drops at least one interior arc while linking creates no vertices, so the sweep cannot revisit the same pair. The split-loop guard still arbitrates. Checks cancellation per examined pair and copied vertex.</remarks>
     private bool TryLinkSharedVertexArcs(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
     {
         for (int first = 0; first < workEnds.Length; first++)
@@ -2868,13 +2861,13 @@ internal ref struct SvgOrthogonalGeometryLowering
         int total = 0;
         for (int index = 0; index < count; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             if (IsSharedLoopVertex(points[start + index], points, otherStart, otherStart + otherCount)) found[total++] = index;
         }
         int[] shared = new int[total];
         for (int index = 0; index < total; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             shared[index] = found[index];
         }
         return shared;
@@ -2887,7 +2880,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             for (int second = first + 1; second < shared.Length; second++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 if (points[start + shared[first]] == points[start + shared[second]]) return false;
             }
         }
@@ -2922,7 +2915,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Replaces two loops with linked rings, keeping every other loop bitwise.</summary>
-    /// <remarks>Ring vertices reuse existing points in walked order; later loop indices shift with the count delta. Charges one work unit per copied vertex, and observes cancellation.</remarks>
+    /// <remarks>Ring vertices reuse existing points in walked order; later loop indices shift with the count delta. Checks cancellation per copied vertex.</remarks>
     private bool ReplaceLoopPair(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int second, SvgDevicePoint[] ringVerts, int[] ringEnds, int ringCount, int ringTotal)
     {
         if (ringCount <= 0) return false;
@@ -2941,10 +2934,10 @@ internal ref struct SvgOrthogonalGeometryLowering
             int otherEnd = workEnds[other];
             for (int source = otherStart; source < otherEnd; source++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextPoints[target++] = workPoints[source];
             }
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[targetEnd++] = target;
         }
         int ringStart = 0;
@@ -2952,10 +2945,10 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             for (int source = ringStart; source < ringEnds[ring]; source++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextPoints[target++] = ringVerts[source];
             }
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[targetEnd++] = target;
             ringStart = ringEnds[ring];
         }
@@ -2982,7 +2975,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         for (int arc = 0; arc < firstArcs; arc++)
         {
             if (firstInterior[arc]) continue;
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             int begin = firstShared[arc];
             int length = (firstShared[(arc + 1) % firstArcs] - begin + firstCount) % firstCount;
             if (length <= 0 || length >= firstCount) return false;
@@ -2994,7 +2987,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         for (int arc = 0; arc < secondArcs; arc++)
         {
             if (secondInterior[arc]) continue;
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             int begin = secondShared[arc];
             int length = (secondShared[(arc + 1) % secondArcs] - begin + secondCount) % secondCount;
             if (length <= 0 || length >= secondCount) return false;
@@ -3020,7 +3013,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgDevicePoint walkVertex = workPoints[seedStart + ((arcBegin[seed] + arcLength[seed]) % seedCount)];
             for (int offset = 1; offset <= arcLength[seed]; offset++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 ringVerts[ringTotal++] = workPoints[seedStart + ((arcBegin[seed] + offset) % seedCount)];
             }
             int arrivalLoop = seedLoop;
@@ -3028,7 +3021,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             while (true)
             {
                 if (++steps > boundaryTotal + 1) return false;
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 int otherChoice = -1;
                 int sameChoice = -1;
                 for (int candidate = 0; candidate < boundaryTotal; candidate++)
@@ -3036,7 +3029,6 @@ internal ref struct SvgOrthogonalGeometryLowering
                     if (visited[candidate]) continue;
                     int candidateLoop = arcLoop[candidate];
                     int candidateStart = candidateLoop == 0 ? firstStart : secondStart;
-                    int candidateCount = candidateLoop == 0 ? firstCount : secondCount;
                     if (workPoints[candidateStart + arcBegin[candidate]] != walkVertex) continue;
                     if (candidateLoop != arrivalLoop)
                     {
@@ -3061,7 +3053,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 int choiceCount = choiceLoop == 0 ? firstCount : secondCount;
                 for (int offset = 1; offset <= arcLength[choice]; offset++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     ringVerts[ringTotal++] = workPoints[choiceStart + ((arcBegin[choice] + offset) % choiceCount)];
                 }
                 walkVertex = workPoints[choiceStart + ((arcBegin[choice] + arcLength[choice]) % choiceCount)];
@@ -3132,7 +3124,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                     if (firstEdgeStart == firstEdgeEnd) continue;
                     for (int secondEdge = 0; secondEdge < secondCount; secondEdge++)
                     {
-                        _workCounter.Consume(_cancellationToken);
+                        _cancellationToken.ThrowIfCancellationRequested();
                         SvgDevicePoint secondEdgeStart = workPoints[secondStart + secondEdge];
                         SvgDevicePoint secondEdgeEnd = workPoints[secondStart + ((secondEdge + 1) % secondCount)];
                         if (secondEdgeStart == secondEdgeEnd) continue;
@@ -3156,7 +3148,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Links two same-wound loops sharing one same-directed span into outer ring plus doubled island.</summary>
-    /// <remarks>Reversal would cancel same-side area, so the shared span stays once while both remainders split at their first common interior vertex and cross-chain around it: every segment lands exactly once with both loops keeping the parents orientation. Missing common vertices, degenerate outputs and opposite-wound pairs stay rejected for the reversal path while the split-loop guard still arbitrates. Charges one work unit per examined pair and copied vertex, and observes cancellation.</remarks>
+    /// <remarks>Reversal would cancel same-side area, so the shared span stays once while both remainders split at their first common interior vertex and cross-chain around it: every segment lands exactly once with both loops keeping the parents orientation. Missing common vertices, degenerate outputs and opposite-wound pairs stay rejected for the reversal path while the split-loop guard still arbitrates. Checks cancellation per examined pair and copied vertex.</remarks>
     private bool TrySpliceDoubledSpan(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int sharedFirst, int second, int sharedSecond)
     {
         int firstStart = first == 0 ? 0 : workEnds[first - 1];
@@ -3171,12 +3163,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         int secondSplit = -1;
         for (int firstOffset = 1; firstOffset < firstLength && firstSplit < 0; firstOffset++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             SvgDevicePoint candidate = workPoints[firstStart + ((sharedFirst + 1 + firstOffset) % firstCount)];
             if (candidate == spanStart || candidate == workPoints[firstStart + ((sharedFirst + 1) % firstCount)]) continue;
             for (int secondOffset = 1; secondOffset < secondLength; secondOffset++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 if (workPoints[secondStart + ((sharedSecond + 1 + secondOffset) % secondCount)] == candidate)
                 {
                     firstSplit = firstOffset;
@@ -3196,22 +3188,22 @@ internal ref struct SvgOrthogonalGeometryLowering
         island[0] = spanStart;
         for (int offset = 0; offset < firstHead; offset++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             outer[1 + offset] = workPoints[firstStart + ((sharedFirst + 1 + offset) % firstCount)];
         }
         for (int offset = 0; offset < secondTail; offset++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             outer[1 + firstHead + offset] = workPoints[secondStart + ((sharedSecond + 1 + secondHead + offset) % secondCount)];
         }
         for (int offset = 0; offset < secondHead; offset++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             island[1 + offset] = workPoints[secondStart + ((sharedSecond + 1 + offset) % secondCount)];
         }
         for (int offset = 0; offset < firstTail; offset++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             island[1 + secondHead + offset] = workPoints[firstStart + ((sharedFirst + 1 + firstHead + offset) % firstCount)];
         }
         if (outer.Length < 3 || island.Length < 3) return false;
@@ -3228,25 +3220,25 @@ internal ref struct SvgOrthogonalGeometryLowering
             int otherEnd = workEnds[other];
             for (int source = otherStart; source < otherEnd; source++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextPoints[target++] = workPoints[source];
             }
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[targetEnd++] = target;
         }
         for (int index = 0; index < outer.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextPoints[target++] = outer[index];
         }
-        _workCounter.Consume(_cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         nextEnds[targetEnd++] = target;
         for (int index = 0; index < island.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextPoints[target++] = island[index];
         }
-        _workCounter.Consume(_cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         nextEnds[targetEnd++] = target;
         if (target != nextPoints.Length || targetEnd != nextEnds.Length) return false;
         workPoints = nextPoints;
@@ -3262,7 +3254,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         return spliced == SvgContourFlags.None;
     }
     /// <summary>Splices loop pairs sharing two or more opposite duplicate edges into union boundaries.</summary>
-    /// <remarks>Collects every opposite-directed exact-span duplicate between loop pairs that neither contain, requires a remainder edge on both loops, then drops every shared span and links remainder ends across loops at each shared vertex while keeping same-loop continuation at merely touched values. Adjacent shared edges form chains the walk skips in one jump from the chain-entry vertex, so multi-edge wordmark chains link exactly like disjoint spans. Deterministic walks cover each remainder edge once with a step cap as backstop; degenerate or non-simple results keep the set rejected so the split-loop guard still arbitrates. Single shared spans stay with the single-edge splice, same-directed sharing and fully-shared pairs stay gated, and even-odd sets keep their coincident ban at the caller. Charges one work unit per examined pair and copied vertex, and observes cancellation.</remarks>
+    /// <remarks>Collects every opposite-directed exact-span duplicate between loop pairs that neither contain, requires a remainder edge on both loops, then drops every shared span and links remainder ends across loops at each shared vertex while keeping same-loop continuation at merely touched values. Adjacent shared edges form chains the walk skips in one jump from the chain-entry vertex, so multi-edge wordmark chains link exactly like disjoint spans. Deterministic walks cover each remainder edge once with a step cap as backstop; degenerate or non-simple results keep the set rejected so the split-loop guard still arbitrates. Single shared spans stay with the single-edge splice, same-directed sharing and fully-shared pairs stay gated, and even-odd sets keep their coincident ban at the caller. Checks cancellation per examined pair and copied vertex.</remarks>
     private bool TrySpliceSharedUnionEdges(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
     {
         for (int first = 0; first < workEnds.Length; first++)
@@ -3284,7 +3276,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                     if (firstEdgeStart == firstEdgeEnd) continue;
                     for (int secondEdge = 0; secondEdge < secondCount; secondEdge++)
                     {
-                        _workCounter.Consume(_cancellationToken);
+                        _cancellationToken.ThrowIfCancellationRequested();
                         SvgDevicePoint secondEdgeStart = workPoints[secondStart + secondEdge];
                         SvgDevicePoint secondEdgeEnd = workPoints[secondStart + ((secondEdge + 1) % secondCount)];
                         if (secondEdgeStart == secondEdgeEnd) continue;
@@ -3301,7 +3293,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Splices every opposite duplicate edge between two loops into union boundary loops.</summary>
-    /// <remarks>Recollects the counted opposite pairs, requires vertex-disjoint spans with remainder edges on both loops, then walks remainder edges alternating loops at shared-span endpoints. Holds no budget beyond per-vertex copies; callers charge the pair scan.</remarks>
+    /// <remarks>Recollects the counted opposite pairs, requires vertex-disjoint spans with remainder edges on both loops, then walks remainder edges alternating loops at shared-span endpoints. Holds no budget beyond per-vertex copies; callers check cancellation during the pair scan.</remarks>
     private bool SpliceSharedUnionEdges(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int second, int sharedPairs)
     {
         int firstStart = first == 0 ? 0 : workEnds[first - 1];
@@ -3318,7 +3310,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (firstEdgeStart == firstEdgeEnd) continue;
             for (int secondEdge = 0; secondEdge < secondCount; secondEdge++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 SvgDevicePoint secondEdgeStart = workPoints[secondStart + secondEdge];
                 SvgDevicePoint secondEdgeEnd = workPoints[secondStart + ((secondEdge + 1) % secondCount)];
                 if (secondEdgeStart == secondEdgeEnd) continue;
@@ -3340,13 +3332,13 @@ internal ref struct SvgOrthogonalGeometryLowering
         int firstRemainder = 0;
         for (int edge = 0; edge < firstCount; edge++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             if (!firstShared[edge]) firstRemainder++;
         }
         int secondRemainder = 0;
         for (int edge = 0; edge < secondCount; edge++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             if (!secondShared[edge]) secondRemainder++;
         }
         if (firstRemainder == 0 || secondRemainder == 0) return false;
@@ -3372,7 +3364,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 while (true)
                 {
                     if (++steps > firstRemainder + secondRemainder + 1) return false;
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     if (walkLoop == 0) firstSeen[walkEdge] = true;
                     else secondSeen[walkEdge] = true;
                     int walkStart = walkLoop == 0 ? firstStart : secondStart;
@@ -3394,7 +3386,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                         int continuation = -1;
                         for (int otherEdge = 0; otherEdge < otherCount; otherEdge++)
                         {
-                            _workCounter.Consume(_cancellationToken);
+                            _cancellationToken.ThrowIfCancellationRequested();
                             if (otherShared[otherEdge] || workPoints[otherStart + otherEdge] != vertex) continue;
                             if (continuation >= 0) return false;
                             continuation = otherEdge;
@@ -3424,20 +3416,20 @@ internal ref struct SvgOrthogonalGeometryLowering
             int otherEnd = workEnds[other];
             for (int source = otherStart; source < otherEnd; source++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextPoints[target++] = workPoints[source];
             }
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[targetEnd++] = target;
         }
         for (int index = 0; index < linkedTotal; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextPoints[target++] = linked[index];
         }
         for (int loop = 0; loop < linkedLoops; loop++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[targetEnd++] = target - linkedTotal + linkedEnds[loop];
         }
         workPoints = nextPoints;
@@ -3446,7 +3438,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Resolves point-touching contours into simple loops sharing only vertices.</summary>
-    /// <remarks>Admits sets whose only defects are endpoint contacts plus strict crossings between loops: nonzero sets of any loop count resolve crossings alongside touches, while even-odd resolution admits exactly two-loop sets without self-touches, including pure-crossing sets with no touch to anchor on (opposite parity signs are exact for every two-loop configuration under absolute-value combination, so crossing subdivision reports through subdividedCrossings for sign forcing and larger even-odd sets stay gated). Edges split at interior touch vertices with bitwise copies, inter-loop crossings subdivide both edges at the computed crossing, and self-touching rings split at shared vertices into lobes. Every loop keeps a vertex that is neither shared nor on another loop boundary for robust nesting tests, and the split-loop guard verifies the result. Intra-loop crossings, collinear overlaps and degenerate edges stay rejected, as do fully-inscribed loops and larger even-odd crossing sets. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps. Charges pair estimates for scans plus one work unit per copied vertex, and observes cancellation.</remarks>
+    /// <remarks>Admits sets whose only defects are endpoint contacts plus strict crossings between loops: nonzero sets of any loop count resolve crossings alongside touches, while even-odd resolution admits exactly two-loop sets without self-touches, including pure-crossing sets with no touch to anchor on (opposite parity signs are exact for every two-loop configuration under absolute-value combination, so crossing subdivision reports through subdividedCrossings for sign forcing and larger even-odd sets stay gated). Edges split at interior touch vertices with bitwise copies, inter-loop crossings subdivide both edges at the computed crossing, and self-touching rings split at shared vertices into lobes. Every loop keeps a vertex that is neither shared nor on another loop boundary for robust nesting tests, and the split-loop guard verifies the result. Intra-loop crossings, collinear overlaps and degenerate edges stay rejected, as do fully-inscribed loops and larger even-odd crossing sets. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps. Checks cancellation during scans and copying.</remarks>
     private bool TryResolveTouchContours(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, out bool subdividedCrossings)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -3464,12 +3456,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         int[] workEnds = new int[ends.Length];
         for (int index = 0; index < points.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workPoints[index] = points[index];
         }
         for (int index = 0; index < ends.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workEnds[index] = ends[index];
         }
         long sweeps = 0;
@@ -3479,7 +3471,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (++sweeps > maximumSweeps) return false;
             if (!_isEvenOdd || allowEvenOddCrossings)
             {
-                ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
+                ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
                 if (SvgContourStructure.TryFindInterLoopProperCrossing(workPoints, workEnds, out int crossingFirstLoop, out int crossingFirstEdge, out int crossingSecondLoop, out int crossingSecondEdge, out SvgDevicePoint crossing, _cancellationToken))
                 {
                     InsertSplitVertex(ref workPoints, workEnds, crossingFirstLoop, crossingFirstEdge, crossing);
@@ -3504,19 +3496,19 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (!EveryLoopHasUnsharedVertex(workPoints, workEnds)) return false;
         for (int index = 0; index < workPoints.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             splitPoints.Add(workPoints[index]);
         }
         for (int index = 0; index < workEnds.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             splitEnds.Add(workEnds[index]);
         }
-        ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
+        ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
         return SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken);
     }
     /// <summary>Unions nonzero loops mixing crossings, coincident spans and touches through one subdivision sweep.</summary>
-    /// <remarks>Earlier stages refuse mixed sets at their entry gates even though every needed operation already exists: vertex-on-edge subdivision already covers intra-loop coincident endpoints with bitwise copies, self-touch splitting turns the mixed single loop into loop pairs, inter-loop crossing subdivision shares the computed crossing as a bitwise value between loops, and spike-drop plus shared-edge splicing remove the resulting exact duplicates (contained-drop runs only when the caller allows it, since stroke bands keep contained loops), with near-span conforming aligning variant arcs first, with at most one doubled-span link per sweep so linked outputs never re-trigger the same pair. The sweep repeats those operations to a fixpoint so the retraced-span-plus-crossing class resolves while pure-crossing, pure-touch and even-odd sets keep their existing stages and gates. Computed crossing points appear exactly like the touch sweep; every other inserted value copies an existing vertex. The split-loop guard still arbitrates the final set. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Inserted vertices stay within twice the initial points plus ends because near-duplicate weaving would otherwise subdivide without saturating; deeper sets stay honestly rejected. Partial output on denial stays caller-discarded.</remarks>
+    /// <remarks>Earlier stages refuse mixed sets at their entry gates even though every needed operation already exists: vertex-on-edge subdivision already covers intra-loop coincident endpoints with bitwise copies, self-touch splitting turns the mixed single loop into loop pairs, inter-loop crossing subdivision shares the computed crossing as a bitwise value between loops, and spike-drop plus shared-edge splicing remove the resulting exact duplicates (contained-drop runs only when the caller allows it, since stroke bands keep contained loops), with near-span conforming aligning variant arcs first, with at most one doubled-span link per sweep so linked outputs never re-trigger the same pair. The sweep repeats those operations to a fixpoint so the retraced-span-plus-crossing class resolves while pure-crossing, pure-touch and even-odd sets keep their existing stages and gates. Computed crossing points appear exactly like the touch sweep; every other inserted value copies an existing vertex. The split-loop guard still arbitrates the final set. Observes cancellation per sweep round and copied vertex. Inserted vertices stay within twice the initial points plus ends because near-duplicate weaving would otherwise subdivide without saturating; deeper sets stay honestly rejected. Partial output on denial stays caller-discarded.</remarks>
     private bool TryResolveMixedContactUnion(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, bool allowContainedDrop, out bool mixedResolved)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -3532,12 +3524,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         int[] workEnds = new int[ends.Length];
         for (int index = 0; index < points.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workPoints[index] = points[index];
         }
         for (int index = 0; index < ends.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             workEnds[index] = ends[index];
         }
         long sweeps = 0;
@@ -3550,7 +3542,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             if (++sweeps > maximumSweeps) return false;
             if (workPoints.Length > points.Length + maximumInsertions) return false;
-            ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
+            ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
             if (SubdivideCoincidentOverlapEndpoints(ref workPoints, ref workEnds)) continue;
             if (SvgContourStructure.TryFindInterLoopProperCrossing(workPoints, workEnds, out int crossingFirstLoop, out int crossingFirstEdge, out int crossingSecondLoop, out int crossingSecondEdge, out SvgDevicePoint crossing, _cancellationToken))
             {
@@ -3577,15 +3569,15 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (!EveryLoopHasUnsharedVertex(workPoints, workEnds)) return false;
         for (int index = 0; index < workPoints.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             splitPoints.Add(workPoints[index]);
         }
         for (int index = 0; index < workEnds.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             splitEnds.Add(workEnds[index]);
         }
-        ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
+        ChargePairs((long)workPoints.Length * workPoints.Length, _cancellationToken);
         if (!SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken)) return false;
         mixedResolved = true;
         return true;
@@ -3600,19 +3592,19 @@ internal ref struct SvgOrthogonalGeometryLowering
         int[] nextEnds = new int[workEnds.Length];
         for (int index = 0; index < insertAt; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextPoints[index] = workPoints[index];
         }
-        _workCounter.Consume(_cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         nextPoints[insertAt] = workPoints[vertex];
         for (int index = insertAt; index < workPoints.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextPoints[index + 1] = workPoints[index];
         }
         for (int index = 0; index < workEnds.Length; index++)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[index] = workEnds[index] + (insertAt <= workEnds[index] ? 1 : 0);
         }
         workPoints = nextPoints;
@@ -3651,7 +3643,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                         int otherStart = other == 0 ? 0 : workEnds[other - 1];
                         for (int otherIndex = otherStart; otherIndex < workEnds[other]; otherIndex++)
                         {
-                            _workCounter.Consume(_cancellationToken);
+                            _cancellationToken.ThrowIfCancellationRequested();
                             if (spikeVertex == workPoints[otherIndex]) { blocked = true; return false; }
                         }
                     }
@@ -3667,34 +3659,34 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 for (int source = other == 0 ? 0 : workEnds[other - 1]; source < workEnds[other]; source++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     nextPoints[target++] = workPoints[source];
                 }
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextEnds[targetEnd++] = target;
             }
             for (int offset = 0; offset < firstLength; offset++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextPoints[target++] = workPoints[start + ((firstOccurrence - start + offset) % count)];
             }
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[targetEnd++] = target;
             for (int offset = 0; offset < secondLength; offset++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextPoints[target++] = workPoints[start + ((secondOccurrence - start + offset) % count)];
             }
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[targetEnd++] = target;
             for (int other = loop + 1; other < workEnds.Length; other++)
             {
                 for (int source = workEnds[other - 1]; source < workEnds[other]; source++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     nextPoints[target++] = workPoints[source];
                 }
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 nextEnds[targetEnd++] = target;
             }
             workPoints = nextPoints;
@@ -3722,7 +3714,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 for (int offset = spikeLength; offset < count; offset++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     nextPoints[target++] = workPoints[start + ((spikeStart - start + offset) % count)];
                 }
             }
@@ -3730,11 +3722,11 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 for (int source = otherStart; source < otherEnd; source++)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     nextPoints[target++] = workPoints[source];
                 }
             }
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             nextEnds[targetEnd++] = target;
         }
         workPoints = nextPoints;
@@ -3760,7 +3752,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             bool found = false;
             for (int index = start; index < end && !found; index++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 bool shared = false;
                 for (int other = 0; other < workEnds.Length && !shared; other++)
                 {
@@ -3768,7 +3760,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                     int otherStart = other == 0 ? 0 : workEnds[other - 1];
                     for (int otherIndex = otherStart; otherIndex < workEnds[other]; otherIndex++)
                     {
-                        _workCounter.Consume(_cancellationToken);
+                        _cancellationToken.ThrowIfCancellationRequested();
                         if (workPoints[index] == workPoints[otherIndex]) { shared = true; break; }
                     }
                 }
@@ -3791,14 +3783,14 @@ internal ref struct SvgOrthogonalGeometryLowering
 
 
     /// <summary>Upgrades quarter-edge mapping to finite edges when split vertices leave the quarter grid.</summary>
-    /// <remarks>Split crossings land at arbitrary finite coordinates while polygon lowering assumes quarter-grid vertices; the scan mirrors the stroke-outline fractionality check. Charges one work unit per scanned vertex and observes cancellation.</remarks>
+    /// <remarks>Split crossings land at arbitrary finite coordinates while polygon lowering assumes quarter-grid vertices; the scan mirrors the stroke-outline fractionality check. Checks cancellation per scanned vertex.</remarks>
     private SvgPolygonMapping UpgradeSplitMapping(SvgDevicePoint[] retained, SvgPolygonMapping mapping)
     {
         ArgumentNullException.ThrowIfNull(retained);
         if (mapping != SvgPolygonMapping.QuarterEdges) return mapping;
         foreach (SvgDevicePoint vertex in retained)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             if (Math.Abs(vertex.X * 4 - Math.Round(vertex.X * 4, MidpointRounding.AwayFromZero)) > 0.000000001 || Math.Abs(vertex.Y * 4 - Math.Round(vertex.Y * 4, MidpointRounding.AwayFromZero)) > 0.000000001) return SvgPolygonMapping.FiniteEdges;
         }
 
@@ -3806,9 +3798,9 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
 
-    internal static void ChargePairs(ParserWorkCounter workCounter, long pairs, CancellationToken cancellationToken)
+    internal static void ChargePairs(long pairs, CancellationToken cancellationToken)
     {
-        for (long charged = 0; charged < pairs; charged += ParserWorkCounter.ByteCheckpointSize) workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
     }
 
     private static void ValidateDeviceRange(SvgDevicePoint[] retained)
@@ -3886,15 +3878,14 @@ internal ref struct SvgOrthogonalGeometryLowering
         _boundaries.Dispose();
     }
 
-    internal static void ValidateContours(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => ValidateContours(points, contourEnds, elementName, workCounter, cancellationToken, false);
+    internal static void ValidateContours(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, string elementName, CancellationToken cancellationToken)
+        => ValidateContours(points, contourEnds, elementName, cancellationToken, false);
 
     /// <summary>Validates band contours, deferring diagonal simplicity checks to outline lowering when admitted; spatial classification still rejects touching contours there.</summary>
-    internal static void ValidateContours(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowDiagonal)
+    internal static void ValidateContours(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, string elementName, CancellationToken cancellationToken, bool allowDiagonal)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (contourEnds.Count == 0 || contourEnds[contourEnds.Count - 1] != points.Count) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer path contours are implemented.");
         int contourStart = 0;
         for (int contourIndex = 0; contourIndex < contourEnds.Count; contourIndex++)
@@ -3908,12 +3899,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             int contourEnd = contourEnds[contourIndex];
             if (SvgContourTopology.Classify(points.AsSpan(), contourStart, contourEnd) == SvgContourKind.Diagonal && !allowDiagonal) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned " + elementName + " contours are implemented.");
-            ValidateContourSlice(points, contourStart, contourEnd, elementName, workCounter, cancellationToken);
+            ValidateContourSlice(points, contourStart, contourEnd, elementName, cancellationToken);
             contourStart = contourEnd;
         }
     }
 
-    private static void ValidateContourSlice(BudgetedParserList<SvgPoint> points, int contourStart, int contourEnd, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void ValidateContourSlice(BudgetedParserList<SvgPoint> points, int contourStart, int contourEnd, string elementName, CancellationToken cancellationToken)
     {
         for (int firstIndex = contourStart; firstIndex < contourEnd; firstIndex++)
         {
@@ -3921,7 +3912,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             bool firstHorizontal = firstStart.Y == firstEnd.Y;
             for (int secondIndex = firstIndex + 1; secondIndex < contourEnd; secondIndex++)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 SvgPoint secondStart = points[secondIndex]; SvgPoint secondEnd = secondIndex + 1 < contourEnd ? points[secondIndex + 1] : points[contourStart];
                 bool secondHorizontal = secondStart.Y == secondEnd.Y;
                 if (!EdgesIntersect(firstStart, firstEnd, firstHorizontal, secondStart, secondEnd, secondHorizontal)) continue;

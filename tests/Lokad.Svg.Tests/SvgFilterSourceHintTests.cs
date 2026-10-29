@@ -67,7 +67,7 @@ public sealed class SvgFilterSourceHintTests
             SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(32, 32), new(-100, -100, 100, 100));
             RenderBudget scratch = new(1_000_000);
             SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, new(6, 11, 26, 22),
-                scratch, new(1_000), CancellationToken.None);
+                scratch, CancellationToken.None);
             // Native source capture encloses both source and shifted output in
             // parameter coordinates. Layer-space inset rounding belongs later.
             Assert.Equal(new SvgPaintBounds(left, top, right, bottom), SvgFilterPlayback.RoundParameterBounds(hint));

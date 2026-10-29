@@ -17,7 +17,7 @@ public sealed class SvgCompoundClipAdmissionTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect " + attributes + "/></svg>");
         RenderBudget budget = new(1_000_000);
-        Assert.Equal(error, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(error, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -52,7 +52,7 @@ public sealed class SvgCompoundClipAdmissionTests
         input.Append("</clipPath></defs><rect width='256' height='32' clip-path='url(#c)'/></svg>");
         byte[] bytes = System.Text.Encoding.UTF8.GetBytes(input.ToString());
         RenderBudget budget = new(8_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(bytes, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(bytes, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             Assert.NotEmpty(root.Geometries.ToArray());
             SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(root.SceneStorage);
@@ -105,7 +105,7 @@ public sealed class SvgCompoundClipAdmissionTests
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><path d='M3 3H22V22H3Z' transform='rotate(3 16 16)'/><path d='M12 12V29H29V12Z'/></clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/></svg>"u8.ToArray();
         RenderBudget budget = new(1_000_000);
         byte[] expected;
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
             expected = output.Pixels.ToArray();
         Assert.Contains(expected, value => value != 0);

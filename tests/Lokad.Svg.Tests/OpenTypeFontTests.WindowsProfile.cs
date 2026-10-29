@@ -16,7 +16,7 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         RenderBudget budget = new(long.MaxValue);
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(1, 0, 0, 0), 11.5, budget))
-        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(scale, 0, scale, 0, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(scale, 0, scale, 0, budget, CancellationToken.None))
             Assert.Equal(symmetric ? SvgGlyphLcdMode.Symmetric : SvgGlyphLcdMode.Natural, contours.WindowsLcdMode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -36,7 +36,7 @@ public sealed partial class OpenTypeFontTests
         byte[] unchanged = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         Assert.True(metrics.HasGlyphInstructions);
-        OpenTypeWindowsGlyphProfile profile = OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, size, new(long.MaxValue), CancellationToken.None);
+        OpenTypeWindowsGlyphProfile profile = OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, size, CancellationToken.None);
         Assert.Equal(symmetric ? SvgGlyphLcdMode.Symmetric : SvgGlyphLcdMode.Natural, profile.LcdMode);
         Assert.Equal(fitting, profile.GridFit);
         Assert.Equal(unchanged, bytes);
@@ -54,8 +54,8 @@ public sealed partial class OpenTypeFontTests
         byte[] bytes = CreateWindowsProfileFont(Convert.FromHexString(table), instructions);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         Assert.Equal(instructions, metrics.HasGlyphInstructions);
-        Assert.Equal(symmetric ? SvgGlyphLcdMode.Symmetric : SvgGlyphLcdMode.Natural, OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, size, new(long.MaxValue), CancellationToken.None).LcdMode);
-        Assert.True(OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, size, new(long.MaxValue), CancellationToken.None).GridFit);
+        Assert.Equal(symmetric ? SvgGlyphLcdMode.Symmetric : SvgGlyphLcdMode.Natural, OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, size, CancellationToken.None).LcdMode);
+        Assert.True(OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, size, CancellationToken.None).GridFit);
     }
 
     [Theory]
@@ -67,19 +67,17 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] bytes = CreateWindowsProfileFont(Convert.FromHexString(table), true);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        Assert.Equal(expected, Assert.Throws<SvgException>(() => OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, 8, new(long.MaxValue), CancellationToken.None)).ErrorCode);
+        Assert.Equal(expected, Assert.Throws<SvgException>(() => OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, 8, CancellationToken.None)).ErrorCode);
     }
 
     [Fact]
-    public void Windows_profile_observes_work_and_token_without_owning_font_storage()
+    public void Windows_profile_observes_cancellation_without_owning_font_storage()
     {
         byte[] bytes = CreateWindowsProfileFont(Convert.FromHexString("000100030008000A000E0007FFFF000F"), true);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        ParserWorkCounter measured = new(long.MaxValue);
-        OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, 12, measured, CancellationToken.None);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, 12, new(measured.Used - 1), CancellationToken.None)).ErrorCode);
+        OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, 12, CancellationToken.None);
         using CancellationTokenSource cancellation = new(); cancellation.Cancel();
-        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, 12, new(long.MaxValue), cancellation.Token));
+        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.GetWindowsGlyphProfile(bytes, metrics, 12, cancellation.Token));
         Assert.Equal(cancellation.Token, error.CancellationToken);
     }
 

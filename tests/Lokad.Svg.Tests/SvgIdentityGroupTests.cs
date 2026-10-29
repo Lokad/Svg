@@ -20,9 +20,8 @@ public sealed class SvgIdentityGroupTests
         static (byte[], long) Render(SvgPaintOpacity? opacity)
         {
             RenderBudget sceneBudget = new(1_000_000), rasterBudget = new(1_000_000);
-            ParserWorkCounter work = new(100_000);
             byte[] pixels;
-            using (SvgSceneBuilder builder = new(sceneBudget, work, CancellationToken.None))
+            using (SvgSceneBuilder builder = new(sceneBudget, CancellationToken.None))
             {
                 SvgRecordingScope scope = new(1);
                 if (opacity is {} value) builder.BeginSourceOpacityScope(value, scope);
@@ -32,7 +31,7 @@ public sealed class SvgIdentityGroupTests
                 builder.AddGeometry(SvgGeometry.FromRectangle(new(5, 5, 10, 10, new(0, 0, 255, 128), true, null)) with { RecordedPaint = blue });
                 if (opacity is not null) builder.EndOpacityScope();
                 SvgSceneStorage storage = builder.Build();
-                using SvgRoot root = new(new(16, false), new(16, false), null, storage.Geometries, storage.Commands, false, work.Used, storage);
+                using SvgRoot root = new(new(16, false), new(16, false), null, storage.Geometries, storage.Commands, false, storage);
                 using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None);
                 pixels = surface.Pixels.ToArray();
             }

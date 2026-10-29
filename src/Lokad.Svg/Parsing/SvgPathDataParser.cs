@@ -27,16 +27,15 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgPathDataParser
 {
     /// <summary>Finds the drawable prefix through the last complete segment, using the strict parser's number and flag grammar.</summary>
-    /// <remarks>Only malformed path syntax ends the prefix. Full-input command/work limits and cancellation remain failures.
+    /// <remarks>Only malformed path syntax ends the prefix. Full-input command limits and cancellation remain failures.
     /// This scan owns no storage; the rendering caller reserves any shortened string before copying it.
     /// Strict contour parsing remains available for callers requiring syntax errors.</remarks>
-    internal static (int Length, int CommandCount) ReadRenderablePrefix(string value, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static (int Length, int CommandCount) ReadRenderablePrefix(string value, int maximumCommands, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(value);
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (maximumCommands < 1) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
-        int count = ValidateCommandBudget(value, maximumCommands, workCounter, cancellationToken);
-        PathDataReader reader = new(value, workCounter, cancellationToken);
+        int count = ValidateCommandBudget(value, maximumCommands, cancellationToken);
+        PathDataReader reader = new(value, cancellationToken);
         int completed = 0;
         try
         {
@@ -79,12 +78,11 @@ internal static class SvgPathDataParser
 
     /// <summary>Parses path data, mapping each vertex and appending sealed contours to the builder.</summary>
     /// <summary>Reports whether path data holds one moveto subpath sealed by a trailing closepath.</summary>
-    /// <remarks>Letters outside digit-or-dot exponents are commands, so single M/m plus single Z/z with a trailing Z reads closed-single without tokenizing; lowering validates the grammar first, so callers only invoke this on successfully lowered paths. Charges scanning work by input length and observes cancellation through the counter.</remarks>
-    internal static bool IsSingleClosedPath(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <remarks>Letters outside digit-or-dot exponents are commands, so single M/m plus single Z/z with a trailing Z reads closed-single without tokenizing; lowering validates the grammar first, so callers only invoke this on successfully lowered paths. Observes cancellation during scanning.</remarks>
+    internal static bool IsSingleClosedPath(string? value, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (string.IsNullOrEmpty(value)) return false;
-        workCounter.ConsumeBytes(value.Length, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         int movetos = 0;
         int closes = 0;
         char lastCommand = '\0';
@@ -106,34 +104,31 @@ internal static class SvgPathDataParser
         return hasCommand && movetos == 1 && closes == 1 && lastCommand is 'Z' or 'z';
     }
 
-    internal static void ParsePath(string? value, SvgAffineTransform transform, SvgContourBuilder builder, SvgFlattenPolicy flattenPolicy, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds)
-        => ParsePath(value, transform, builder, flattenPolicy, maximumCommands, workCounter, cancellationToken, closedEnds, null);
+    internal static void ParsePath(string? value, SvgAffineTransform transform, SvgContourBuilder builder, SvgFlattenPolicy flattenPolicy, int maximumCommands, CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds)
+        => ParsePath(value, transform, builder, flattenPolicy, maximumCommands, cancellationToken, closedEnds, null);
 
-    internal static void ParsePath(string? value, SvgAffineTransform transform, SvgContourBuilder builder, SvgFlattenPolicy flattenPolicy, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds, BudgetedParserList<SvgAuthoredPathCommand>? authored)
+    internal static void ParsePath(string? value, SvgAffineTransform transform, SvgContourBuilder builder, SvgFlattenPolicy flattenPolicy, int maximumCommands, CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds, BudgetedParserList<SvgAuthoredPathCommand>? authored)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ParseCore(value, transform, builder, flattenPolicy, maximumCommands, workCounter, cancellationToken, closedEnds, authored);
+        ParseCore(value, transform, builder, flattenPolicy, maximumCommands, cancellationToken, closedEnds, authored);
     }
 
     /// <summary>Reads original vertices and controls without flattening or synthesizing fill closure.</summary>
-    /// <remarks>The caller owns command storage and its bounded reservation. Parsing charges the same
-    /// syntax/command work and cancellation as geometry lowering; no contour scratch is allocated.</remarks>
-    internal static void ParseCommands(string value, int maximumCommands, ParserWorkCounter workCounter,
-        CancellationToken cancellationToken, BudgetedParserList<SvgAuthoredPathCommand> commands)
+    /// <remarks>The caller owns command storage and its bounded reservation. Parsing observes the same
+    /// syntax/command bounds and cancellation as geometry lowering; no contour scratch is allocated.</remarks>
+    internal static void ParseCommands(string value, int maximumCommands,         CancellationToken cancellationToken, BudgetedParserList<SvgAuthoredPathCommand> commands)
     {
         ArgumentNullException.ThrowIfNull(commands);
-        ParseCore(value, SvgAffineTransform.Identity, null, default, maximumCommands, workCounter, cancellationToken, null, commands);
+        ParseCore(value, SvgAffineTransform.Identity, null, default, maximumCommands, cancellationToken, null, commands);
     }
 
     private static void ParseCore(string? value, SvgAffineTransform transform, SvgContourBuilder? builder,
-        SvgFlattenPolicy flattenPolicy, int maximumCommands, ParserWorkCounter workCounter,
-        CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds, BudgetedParserList<SvgAuthoredPathCommand>? authored)
+        SvgFlattenPolicy flattenPolicy, int maximumCommands,         CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds, BudgetedParserList<SvgAuthoredPathCommand>? authored)
     {
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (maximumCommands < 1) throw new ArgumentOutOfRangeException(nameof(maximumCommands));
         if (value is null) return;
-        ValidateCommandBudget(value, maximumCommands, workCounter, cancellationToken);
-        PathDataReader reader = new(value, workCounter, cancellationToken);
+        ValidateCommandBudget(value, maximumCommands, cancellationToken);
+        PathDataReader reader = new(value, cancellationToken);
         if (reader.End) return;
         char command = reader.ReadCommand();
         if (command is not ('M' or 'm')) throw new SvgException(SvgErrorCode.MalformedInput, "Path data must start with a moveto command.");
@@ -450,7 +445,7 @@ internal static class SvgPathDataParser
         {
             // Normalize in source space, then map each retained conic. Radii and
             // sweep cannot be transformed independently under a general affine map.
-            for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
             int count = SvgEndpointArc.Convert(start, radiusX, radiusY, rotation, largeArc, sweep, end, arcs, cancellationToken);
             if (count == 0) builder?.AddLine(MapPathPoint(transform, end.X, end.Y));
@@ -466,12 +461,12 @@ internal static class SvgPathDataParser
         }
     }
 
-    private static int ValidateCommandBudget(string value, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static int ValidateCommandBudget(string value, int maximumCommands, CancellationToken cancellationToken)
     {
         int commandCount = 0;
         for (int index = 0; index < value.Length; index++)
         {
-            if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
+            if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
             if (value[index] is not ('M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'C' or 'c' or 'S' or 's' or 'Q' or 'q' or 'T' or 't' or 'A' or 'a' or 'Z' or 'z')) continue;
             if (commandCount >= maximumCommands) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
             commandCount++;
@@ -489,16 +484,14 @@ internal static class SvgPathDataParser
     private ref struct PathDataReader
     {
         private readonly ReadOnlySpan<char> _value;
-        private readonly ParserWorkCounter _workCounter;
         private readonly CancellationToken _cancellationToken;
         private int _position;
         private int _nextCheckpoint;
         private bool _hasValue;
 
-        internal PathDataReader(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        internal PathDataReader(ReadOnlySpan<char> value, CancellationToken cancellationToken)
         {
             _value = value;
-            _workCounter = workCounter;
             _cancellationToken = cancellationToken;
         }
 
@@ -551,7 +544,7 @@ internal static class SvgPathDataParser
             ReadOnlySpan<char> token = _value[start.._position];
             if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Path number values exceed the configured syntax limit.");
             if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data coordinates must be finite numbers.");
-            double number = SvgFloatNumber.ReadValidated(token, _workCounter, _cancellationToken);
+            double number = SvgFloatNumber.ReadValidated(token, _cancellationToken);
             _hasValue = true;
             return number;
         }
@@ -611,7 +604,7 @@ internal static class SvgPathDataParser
         {
             while (_nextCheckpoint < _value.Length && position >= _nextCheckpoint)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 _nextCheckpoint += 4096;
             }
         }

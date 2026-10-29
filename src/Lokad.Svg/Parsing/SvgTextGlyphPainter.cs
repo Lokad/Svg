@@ -27,54 +27,53 @@ internal sealed record SvgTextPatternShader(SvgPatternGeometry Pattern) : SvgTex
 
 /// <summary>Replays fill and stroke in normalized fragment order using the existing platform glyph sources.</summary>
 /// <remarks>All inputs remain borrowed. Each emitted geometry transfers to the scene; temporary decoded contours
-/// observe the shared budget/work/token and release on every exit. Direct and path font-placement distinctions remain explicit.</remarks>
+/// observe the shared memory budget and cancellation token and release on every exit. Direct and path font-placement distinctions remain explicit.</remarks>
 internal static class SvgTextGlyphPainter
 {
     /// <summary>Emits one direct run with the same ordered decorations, paints and borrowed clip as deferred replay.</summary>
     internal static void EmitDirect(SvgTextRun run, SvgAffineTransform placement, SvgLeafMaskBinding? clip, SvgColor fallback,
-        SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, CancellationToken token)
-        => EmitDirect(run, placement, clip, fallback, state, maximumCommands, budget, work, recording, null, token);
+        SvgDocumentState state, int maximumCommands, RenderBudget budget, SvgRecordedTransform? recording, CancellationToken token)
+        => EmitDirect(run, placement, clip, fallback, state, maximumCommands, budget, recording, null, token);
 
     internal static void EmitDirect(SvgTextRun run, SvgAffineTransform placement, SvgLeafMaskBinding? clip, SvgColor fallback,
-        SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, SvgRectangle? objectBox, CancellationToken token)
+        SvgDocumentState state, int maximumCommands, RenderBudget budget, SvgRecordedTransform? recording, SvgRectangle? objectBox, CancellationToken token)
     {
-        SvgTextPaintPreparation prepared = SvgTextPaintPreparation.Create(run, work, token);
+        SvgTextPaintPreparation prepared = SvgTextPaintPreparation.Create(run, token);
         prepared.ObjectBox = objectBox;
-        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, false, maximumCommands, budget, work, recording, ref prepared, token);
-        Emit(run, placement, [], clip, fallback, state, maximumCommands, budget, work, recording, ref prepared, token);
-        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, true, maximumCommands, budget, work, recording, ref prepared, token);
+        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, false, maximumCommands, budget, recording, ref prepared, token);
+        Emit(run, placement, [], clip, fallback, state, maximumCommands, budget, recording, ref prepared, token);
+        SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, true, maximumCommands, budget, recording, ref prepared, token);
     }
 
     internal static void Emit(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> pathPlacements,
-        SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, CancellationToken token)
-        => Emit(run, placement, pathPlacements, pathClip, fallback, state, maximumCommands, budget, work, recording, null, token);
+        SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget, SvgRecordedTransform? recording, CancellationToken token)
+        => Emit(run, placement, pathPlacements, pathClip, fallback, state, maximumCommands, budget, recording, null, token);
 
     internal static void Emit(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> pathPlacements,
-        SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, SvgRectangle? objectBox, CancellationToken token)
+        SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget, SvgRecordedTransform? recording, SvgRectangle? objectBox, CancellationToken token)
     {
-        SvgTextPaintPreparation prepared = SvgTextPaintPreparation.Create(run, work, token);
+        SvgTextPaintPreparation prepared = SvgTextPaintPreparation.Create(run, token);
         prepared.ObjectBox = objectBox;
-        Emit(run, placement, pathPlacements, pathClip, fallback, state, maximumCommands, budget, work, recording, ref prepared, token);
+        Emit(run, placement, pathPlacements, pathClip, fallback, state, maximumCommands, budget, recording, ref prepared, token);
     }
 
     private static void Emit(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> pathPlacements,
-        SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget, ParserWorkCounter work,
-        SvgRecordedTransform? recording, ref SvgTextPaintPreparation prepared, CancellationToken token)
+        SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget,         SvgRecordedTransform? recording, ref SvgTextPaintPreparation prepared, CancellationToken token)
     {
         if (!pathPlacements.IsEmpty && pathPlacements.Length != run.Glyphs.Length) throw new ArgumentException("Path placements must cover every source glyph.", nameof(pathPlacements));
         if (run.PaintFragments.IsEmpty)
         {
-            Fill(run, placement, pathPlacements, pathClip, fallback, 0, run.Glyphs.Length, state, budget, work, recording, ref prepared, token);
+            Fill(run, placement, pathPlacements, pathClip, fallback, 0, run.Glyphs.Length, state, budget, recording, ref prepared, token);
             return;
         }
         foreach (SvgTextPaintFragment fragment in run.PaintFragments)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (fragment.Start == fragment.End) continue;
             SvgTextShader? shader = null;
             SvgTextGlyphPaint fragmentPaint = run.GetGlyphPaint(fragment.Start, fallback);
             if (fragmentPaint.HasStroke && fragmentPaint.Stroke is {} fragmentStroke && fragmentStroke.Style.Stroke is {} strokeValue && SvgLocalUrl.TryParseId(strokeValue, out _))
-                shader = Bind(strokeValue, run, placement, pathPlacements, state, work, ref prepared, token);
+                shader = Bind(strokeValue, run, placement, pathPlacements, state, ref prepared, token);
             // A direct run shares each paint pass. Path text paints independently
             // placed glyphs, so an adjacent glyph's stroke follows the prior fill.
             int start = fragment.Start;
@@ -86,18 +85,18 @@ internal static class SvgTextGlyphPainter
                 double decorationWidth = run.GlyphStretch == 0 ? 0 : (float)run.Glyphs[start].Advance / (float)run.GlyphStretch;
                 ReadOnlySpan<SvgTextPaintFragment> decoration = [new(start, end, decorationWidth)];
                 if (!pathPlacements.IsEmpty)
-                    SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, false, maximumCommands, budget, work, recording, ref prepared, token);
-                if (strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, work, recording, ref prepared, token);
-                if (paint.HasFill) Fill(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, work, recording, ref prepared, token);
-                if (!strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, work, recording, ref prepared, token);
+                    SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, false, maximumCommands, budget, recording, ref prepared, token);
+                if (strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, recording, ref prepared, token);
+                if (paint.HasFill) Fill(run, placement, pathPlacements, pathClip, fallback, start, end, state, budget, recording, ref prepared, token);
+                if (!strokeFirst && paint.HasStroke) Stroke(run, placement, pathPlacements, pathClip, shader, fallback, start, end, state, budget, recording, ref prepared, token);
                 if (!pathPlacements.IsEmpty)
-                    SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, true, maximumCommands, budget, work, recording, ref prepared, token);
+                    SvgTextDecorationRenderer.Emit(run, decoration, placement, pathPlacements, pathClip, state, fallback, true, maximumCommands, budget, recording, ref prepared, token);
                 start = end;
             }
         }
 
         static void Fill(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgLeafMaskBinding? pathClip,
-            SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, ref SvgTextPaintPreparation prepared, CancellationToken token)
+            SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, SvgRecordedTransform? recording, ref SvgTextPaintPreparation prepared, CancellationToken token)
         {
             OpenTypeGlyphContourStorage? decoded = null;
             string? fillServer = null;
@@ -108,23 +107,23 @@ internal static class SvgTextGlyphPainter
             {
                 for (int index = start; index < end; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgPlacedTextGlyph placed = Place(run, index, placement, paths);
                     if (!placed.Visible) continue;
                     SvgGlyphFontStyle font = run.GetGlyphFont(index);
                     if (decoded is null || decodedIndex != placed.Position.GlyphIndex || !ReferenceEquals(decodedFont, font.Font))
                     {
                         decoded?.Dispose();
-                        decoded = OpenTypeFont.GetGlyphContours(font.Font.Bytes, placed.Position.GlyphIndex, font.Font.Metrics, budget, work, token);
+                        decoded = OpenTypeFont.GetGlyphContours(font.Font.Bytes, placed.Position.GlyphIndex, font.Font.Metrics, budget, token);
                         decodedIndex = placed.Position.GlyphIndex; decodedFont = font.Font;
                     }
-                    using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, placed.Position, font.FontSize, placed.Map, decoded, budget, work, token);
+                    using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, placed.Position, font.FontSize, placed.Map, decoded, budget, token);
                     SvgTextGlyphPaint paint = run.GetGlyphPaint(index, fallback);
                     if (!paint.HasFill) continue;
                     if (paint.FillServer != fillServer)
                     {
                         fillServer = paint.FillServer;
-                        shader = fillServer is null ? null : Bind(fillServer, run, placement, paths, state, work, ref prepared, token);
+                        shader = fillServer is null ? null : Bind(fillServer, run, placement, paths, state, ref prepared, token);
                     }
                     SvgPositionedGlyph position = placed.Position;
                     SvgAffineTransform map = placed.Map;
@@ -144,7 +143,7 @@ internal static class SvgTextGlyphPainter
                     try
                     {
                         SvgRecordedTransform? shaderRecording = shader is SvgTextPatternShader ? recording : null;
-                        SvgGeometry geometry = Record(glyph, run, placement, paths, shaderRecording, state, fallback, paint.FillPaint, ref prepared, work, token);
+                        SvgGeometry geometry = Record(glyph, run, placement, paths, shaderRecording, state, fallback, paint.FillPaint, ref prepared, token);
                         if (pathClip is not null) geometry = geometry with { LeafMask = pathClip };
                         state.Scene.AddGeometry(geometry);
                     }
@@ -155,19 +154,19 @@ internal static class SvgTextGlyphPainter
         }
 
         static void Stroke(SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgLeafMaskBinding? pathClip,
-            SvgTextShader? shader, SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, SvgRecordedTransform? recording, ref SvgTextPaintPreparation prepared, CancellationToken token)
+            SvgTextShader? shader, SvgColor fallback, int start, int end, SvgDocumentState state, RenderBudget budget, SvgRecordedTransform? recording, ref SvgTextPaintPreparation prepared, CancellationToken token)
         {
             // Empty servers have no stroke outline. Retaining one would enlarge
             // native layer bounds and shift the surviving paint's bitmap origin.
             if (shader is SvgTextLinearShader { Gradient.IsEmpty: true } or SvgTextRadialShader { Gradient.IsEmpty: true }) return;
             for (int index = start; index < end; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgPlacedTextGlyph placed = Place(run, index, placement, paths);
                 SvgTextGlyphPaint paint = run.GetGlyphPaint(index, fallback);
                 if (!placed.Visible || paint.Stroke is not {} stroke || !paint.HasStroke) continue;
                 SvgGlyphFontStyle font = run.GetGlyphFont(index);
-                using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, placed.Position, font.FontSize, placed.Map, budget, work, token);
+                using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, placed.Position, font.FontSize, placed.Map, budget, token);
                 if (contours.Contours.Length == 0) continue;
                 stroke = stroke with { FontScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(placement) };
                 SvgGlyphGeometry glyph = SvgGlyphGeometry.CreateStroke(contours, stroke, font.Font, placed.Position, font.FontSize, placed.Map, budget);
@@ -175,7 +174,7 @@ internal static class SvgTextGlyphPainter
                 try
                 {
                     SvgRecordedTransform? shaderRecording = shader is SvgTextPatternShader ? recording : null;
-                    SvgGeometry geometry = Record(glyph, run, placement, paths, shaderRecording, state, fallback, stroke.ResolvePaint(), ref prepared, work, token);
+                    SvgGeometry geometry = Record(glyph, run, placement, paths, shaderRecording, state, fallback, stroke.ResolvePaint(), ref prepared, token);
                     if (pathClip is not null) geometry = geometry with { LeafMask = pathClip };
                     state.Scene.AddGeometry(geometry);
                 }
@@ -184,24 +183,24 @@ internal static class SvgTextGlyphPainter
         }
 
         static SvgTextShader Bind(string value, SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths,
-            SvgDocumentState state, ParserWorkCounter work, ref SvgTextPaintPreparation prepared, CancellationToken token)
+            SvgDocumentState state, ref SvgTextPaintPreparation prepared, CancellationToken token)
         {
             if (!SvgLocalUrl.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local text paints are implemented.");
             if (state.Gradients.TryGetValue(id, out SvgLinearGradient linear))
             {
-                SvgRectangle box = linear.IsUserSpace || linear.IsEmpty ? default : prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, work, token));
-                return state.Scene.RetainTextShader(SvgGradientSyntax.BindLinearSourceMap(linear, box, placement, state, work, token));
+                SvgRectangle box = linear.IsUserSpace || linear.IsEmpty ? default : prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, token));
+                return state.Scene.RetainTextShader(SvgGradientSyntax.BindLinearSourceMap(linear, box, placement, state, token));
             }
             if (state.RadialGradients.TryGetValue(id, out SvgRadialGradient radial))
             {
-                SvgRectangle box = radial.IsUserSpace || radial.IsEmpty ? default : prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, work, token));
-                return state.Scene.RetainTextShader(SvgGradientSyntax.BindRadialSourceMap(radial, box, placement, work, token));
+                SvgRectangle box = radial.IsUserSpace || radial.IsEmpty ? default : prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, token));
+                return state.Scene.RetainTextShader(SvgGradientSyntax.BindRadialSourceMap(radial, box, placement, token));
             }
             if (state.Patterns.TryGetValue(id, out SvgPatternTile tile))
             {
                 state.OutputMap.ComposeChecked(placement);
-                tile = SvgPatternReferenceResolver.ForReplay(id, tile, state, work, token);
-                SvgRectangle box = tile.Coordinates is null ? default : prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, work, token));
+                tile = SvgPatternReferenceResolver.ForReplay(id, tile, state, token);
+                SvgRectangle box = tile.Coordinates is null ? default : prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, token));
                 SvgGeometry content = SvgPatternSyntax.LowerPatternFillGeometry(tile, box, true, 255, null, placement, null);
                 if (content.Kind != SvgGeometryKind.PatternFill)
                     return state.Scene.RetainTextShader(new SvgLinearGradient(default, default, 0, 0, 1, 0, 0, 1, true, true, SvgGradientSpread.Pad, [], 1, 1, false));
@@ -220,19 +219,19 @@ internal static class SvgTextGlyphPainter
         }
 
         static SvgGeometry Record(SvgGlyphGeometry glyph, SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths,
-            SvgRecordedTransform? recording, SvgDocumentState state, SvgColor fallback, SvgSolidPaint sourcePaint, ref SvgTextPaintPreparation prepared, ParserWorkCounter work, CancellationToken token)
+            SvgRecordedTransform? recording, SvgDocumentState state, SvgColor fallback, SvgSolidPaint sourcePaint, ref SvgTextPaintPreparation prepared, CancellationToken token)
         {
             float alpha = glyph.Shader is null ? sourcePaint.Alpha : glyph.Color.Alpha / 255f;
             SvgPaintBounds? objects = null, sourceVisual = null, elementVisual = null;
             SvgSourceObjectBounds? sourceObjectsMetadata = null;
             if (state.FilterGroupDepth > 0 && prepared.NativeDrawing)
             {
-                SvgRectangle box = prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, work, token));
+                SvgRectangle box = prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, token));
                 sourceObjectsMetadata = new(new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)), placement);
-                objects = sourceObjectsMetadata.Value.Bounds.Map(placement, work, token);
+                objects = sourceObjectsMetadata.Value.Bounds.Map(placement, token);
                 if (prepared.FilterVisualBounds is null)
                 {
-                    SvgRectangle fragments = SvgTextLayoutBounds.MeasureSourceVisual(run, paths, placement, state.TextBoundsMetrics, work, token);
+                    SvgRectangle fragments = SvgTextLayoutBounds.MeasureSourceVisual(run, paths, placement, state.TextBoundsMetrics, token);
                     SvgPaintBounds visual = new((float)fragments.X, (float)fragments.Y,
                         (float)(fragments.X + fragments.Width), (float)(fragments.Y + fragments.Height));
                     if (run.HasRootRecording)
@@ -244,14 +243,14 @@ internal static class SvgTextGlyphPainter
                     // Native text records enclose their source rectangle before
                     // the element map, independently of compact ink capture.
                     visual = new(MathF.Floor(visual.Left), MathF.Floor(visual.Top), MathF.Ceiling(visual.Right), MathF.Ceiling(visual.Bottom));
-                    prepared.FilterVisualBounds = visual.Map(placement, work, token);
+                    prepared.FilterVisualBounds = visual.Map(placement, token);
                 }
                 sourceVisual = prepared.FilterVisualBounds;
                 if (prepared.ElementVisualBounds is null)
                 {
                     float stroke = (float)run.ElementStrokeWidth;
                     prepared.ElementVisualBounds = new SvgPaintBounds((float)box.X - stroke, (float)box.Y - stroke,
-                        (float)(box.X + box.Width) + stroke, (float)(box.Y + box.Height) + stroke).MapLayout(placement, work, token);
+                        (float)(box.X + box.Width) + stroke, (float)(box.Y + box.Height) + stroke).MapLayout(placement, token);
                 }
                 elementVisual = prepared.ElementVisualBounds;
             }
@@ -259,16 +258,16 @@ internal static class SvgTextGlyphPainter
             // drawing and bitmap-origin contracts, independent of native text drawings.
             if (!prepared.NativeDrawing || state.FilterGroupDepth > 0)
                 return paths.IsEmpty || recording is not null || state.FilterGroupDepth > 0 || alpha != glyph.Color.Alpha / 255f ? RecordFallback(objects, sourceVisual, elementVisual) : SvgGeometry.FromGlyphContours(glyph);
-            SvgRecordedPaint paint = prepared.RecordDrawing(run, placement, paths, state, fallback, alpha, recording, work, token);
+            SvgRecordedPaint paint = prepared.RecordDrawing(run, placement, paths, state, fallback, alpha, recording, token);
             SvgGeometry nativeGeometry = SvgGeometry.FromGlyphContours(glyph) with { RecordedPaint = paint };
             if ((paths.IsEmpty || recording is not null) && state.Viewports.Count != 0)
-                nativeGeometry = nativeGeometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, work, token) };
+                nativeGeometry = nativeGeometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, token) };
             return nativeGeometry;
 
             SvgGeometry RecordFallback(SvgPaintBounds? sourceObjects, SvgPaintBounds? sourceVisualBounds, SvgPaintBounds? elementVisualBounds)
             {
                 SvgGeometry geometry = SvgGeometry.FromGlyphContours(glyph);
-                if (state.Viewports.Count != 0) geometry = geometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, work, token) };
+                if (state.Viewports.Count != 0) geometry = geometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, token) };
                 if (state.FilterGroupDepth <= 0)
                 {
                     if (recording is null && alpha == glyph.Color.Alpha / 255f) return geometry;
@@ -281,7 +280,7 @@ internal static class SvgTextGlyphPainter
                 foreach (SvgGlyphQuadraticContour contour in glyph.Contours)
                 foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     Include(segment.Start); Include(segment.Control); Include(segment.End);
                 }
                 SvgPaintBounds bounds = float.IsPositiveInfinity(left) ? default : new(left, top, right, bottom);

@@ -3,14 +3,14 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Owns geometry values during lowering, including their paint/contour reservations.</summary>
-/// <remarks>Single-threaded. Add adopts its input even on failure. Detach transfers every value and its array reservation on success; disposal releases all still-owned values. Work/cancellation and array accounting use the existing parser list.</remarks>
+/// <remarks>Single-threaded. Add adopts its input even on failure. Detach transfers every value and its array reservation on success; disposal releases all still-owned values. Cancellation and array accounting use the existing parser list.</remarks>
 internal sealed class BudgetedGeometryBuilder : IDisposable
 {
     private readonly BudgetedParserList<SvgGeometry> _items;
 
-    internal BudgetedGeometryBuilder(RenderBudget budget, SvgMemoryCategory category, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal BudgetedGeometryBuilder(RenderBudget budget, SvgMemoryCategory category, CancellationToken cancellationToken)
     {
-        _items = new(budget, category, workCounter, cancellationToken);
+        _items = new(budget, category, cancellationToken);
     }
 
     internal SvgGeometry this[int index] => _items[index];

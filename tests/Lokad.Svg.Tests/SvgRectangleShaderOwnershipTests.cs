@@ -24,12 +24,10 @@ public sealed class SvgRectangleShaderOwnershipTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + resources + body + "</svg>");
         byte[] unchanged = input.ToArray();
         RenderBudget parser = new(8_000_000);
-        ParserWorkCounter work = new(10_000_000);
         using (RenderBudget.BudgetReservation borrower = parser.Reserve(73, SvgMemoryCategory.Scene))
         {
-            using (SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, work, CancellationToken.None)) { }
+            using (SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, CancellationToken.None)) { }
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
             RenderBudget denied = new(parser.Snapshot().PeakBytes - 74);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);

@@ -14,8 +14,7 @@ public sealed class SvgForwardUseExpansionTests
     public void Clipped_forward_uses_stay_within_linear_work(int count)
     {
         RenderBudget budget = new(50_000_000);
-        ParserWorkCounter work = new(count * 200 + 2000);
-        using (SvgRoot root = SvgRootParser.Parse(Repeated(count, true), SvgRenderLimits.Default, budget, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(Repeated(count, true), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -31,15 +30,14 @@ public sealed class SvgForwardUseExpansionTests
     public void Expansion_remaps_command_boundaries_only_for_the_owning_scene()
     {
         RenderBudget budget = new(100_000);
-        ParserWorkCounter work = new(10_000);
-        using (SvgDocumentState state = new(budget, work, CancellationToken.None))
-        using (SvgSceneBuilder foreign = new(budget, work, CancellationToken.None))
+        using (SvgDocumentState state = new(budget, CancellationToken.None))
+        using (SvgSceneBuilder foreign = new(budget, CancellationToken.None))
         {
             SvgGeometry rectangle = SvgGeometry.FromRectangle(new(0, 0, 1, 1, SvgColor.Transparent, true, null));
             SvgUseReference reference = new("p", 0, 0, 0, 0, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null, null);
             for (int index = 0; index < 2; index++)
             {
-                SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, null, null, null, null, state, work, CancellationToken.None);
+                SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, null, null, null, null, state, CancellationToken.None);
                 state.Scene.AddGeometry(rectangle);
             }
             state.Definitions.TryAdd("p", new([rectangle, rectangle], false, null, null));
@@ -50,7 +48,7 @@ public sealed class SvgForwardUseExpansionTests
             state.PendingGroupMasks.Add(new("m", 1, 3, 0, null, SvgAffineTransform.Identity, state.Scene, false));
             state.PendingGroupMasks.Add(new("m", 1, -1, 0, null, SvgAffineTransform.Identity, foreign, false));
 
-            SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, work, CancellationToken.None);
+            SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, CancellationToken.None);
 
             Assert.Equal(6, state.Scene.CommandCount);
             Assert.Equal(3, state.PendingTextRuns[0].CommandIndex);
@@ -68,26 +66,19 @@ public sealed class SvgForwardUseExpansionTests
     }
 
     [Fact]
-    public void Batch_expansion_releases_storage_on_work_memory_denial_and_cancellation()
+    public void Batch_expansion_releases_storage_on_memory_denial_and_cancellation()
     {
         byte[] input = Mixed(true);
         RenderBudget measured = new(2_000_000);
-        ParserWorkCounter work = new(100_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(2_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         RenderBudget cancelled = new(2_000_000);
-        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, new(100_000), cancellation.Token));
+        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, cancellation.Token));
         Assert.Equal(cancellation.Token, error.CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
 

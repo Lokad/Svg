@@ -284,11 +284,6 @@ public sealed class SvgCurvedFontDocumentTests
             Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.ConvertToPng(root, options, budget, cancellation.Token));
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             SvgRenderLimits limits = options.Limits;
-            SvgRenderLimits workLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)root.ParserWorkUnits + 300), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-            SvgRenderOptions workDenied = new(null, 1, SvgColor.Transparent, workLimits, snapshot);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(root, workDenied, budget, CancellationToken.None)).ErrorCode);
-            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             Assert.Equal(expected, SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -316,7 +311,7 @@ public sealed class SvgCurvedFontDocumentTests
         {
             SvgGlyphRasterSource source = Assert.Single(root.Geometries).Glyph.Source ?? throw new InvalidDataException("Missing mapped glyph source.");
             long retained = budget.Snapshot().CurrentBytes;
-            using (SvgAuthoredPath path = source.CreateMappedPath(scale, xOffset, scale, yOffset, budget, new(long.MaxValue), CancellationToken.None))
+            using (SvgAuthoredPath path = source.CreateMappedPath(scale, xOffset, scale, yOffset, budget, CancellationToken.None))
             {
                 Assert.Equal(x, path.SceneMap.E);
                 Assert.Equal(y, path.SceneMap.F);
@@ -485,7 +480,6 @@ public sealed class SvgCurvedFontDocumentTests
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, snapshot, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(long.MaxValue);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, snapshot, new(16), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using SvgRoot retried = SvgRootParser.Parse(input, SvgRenderLimits.Default, accounting, snapshot, CancellationToken.None);
         Assert.Equal(original, Assert.Single(snapshot.Fonts).Bytes.ToArray());

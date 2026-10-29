@@ -97,16 +97,14 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
-    public void CSS_weight_matching_preserves_bounded_scans_and_cancellation()
+    public void CSS_weight_matching_preserves_cancellation()
     {
         SvgFontPackCatalog catalog = WeightCatalog([600, 900]);
         SvgFontFaceRequest request = SvgFontFaceRequest.FromCss("Example", 700, false);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            catalog.Resolve(request, new ParserWorkCounter(1), CancellationToken.None)).ErrorCode);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
-            catalog.Resolve(request, new ParserWorkCounter(100), cancellation.Token)).CancellationToken);
+            catalog.Resolve(request, cancellation.Token)).CancellationToken);
         Assert.Equal(900, catalog.Resolve(request).Face.Weight);
     }
 

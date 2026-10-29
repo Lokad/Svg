@@ -75,22 +75,15 @@ public sealed class SvgInertTypographyTests
     }
 
     [Fact]
-    public void Typography_scans_charge_work_observe_cancellation_and_release_partial_owners()
+    public void Typography_scans_observe_cancellation_and_release_owners()
     {
         byte[] input = Wrap("<path style='font-family:Missing Family;font-size:22px;text-align:center' d='M2 2H30V30H2Z'/>");
         RenderBudget accepted = new(1_000_000);
-        long work;
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accepted, CancellationToken.None)) work = root.ParserWorkUnits;
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accepted, CancellationToken.None)) Assert.Single(root.Geometries);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        foreach (long allowed in new[] { 0, 1, work / 2, work - 1 })
-        {
-            RenderBudget budget = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new ParserWorkCounter(allowed), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        }
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Throws<OperationCanceledException>(() => SvgInertPresentationSyntax.TryValidateTypography("font-family", "Missing Family", new(1_000), cancellation.Token));
+        Assert.Throws<OperationCanceledException>(() => SvgInertPresentationSyntax.TryValidateTypography("font-family", "Missing Family", cancellation.Token));
     }
 
     private static byte[] Wrap(string body) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + body + "</svg>");

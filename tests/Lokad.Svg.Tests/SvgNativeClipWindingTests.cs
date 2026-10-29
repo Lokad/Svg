@@ -51,20 +51,13 @@ public sealed class SvgNativeClipWindingTests
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "non-ionizing-warning.svg"));
         SvgRenderOptions options = new(new SvgViewport(616, 540), 1, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget measured = new(20_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, measured, CancellationToken.None))
         {
             Assert.Equal(616, surface.Width);
             Assert.Equal(540, surface.Height);
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { 0, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(20_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget deniedMemory = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {

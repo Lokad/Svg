@@ -108,7 +108,6 @@ internal sealed partial class TrueTypeHinting : IDisposable
     private TrueTypeHintPoint[] _glyph;
     private ushort[] _ends;
     private bool _compositeGlyph;
-    private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private TrueTypeHintTarget _target;
     private readonly int _ppem;
@@ -123,21 +122,21 @@ internal sealed partial class TrueTypeHinting : IDisposable
     private TrueTypeHintSuperRound _superRound = new(64, 0, 32);
     private TrueTypeHintZone _zp0 = TrueTypeHintZone.Glyph, _zp1 = TrueTypeHintZone.Glyph, _zp2 = TrueTypeHintZone.Glyph;
 
-    private TrueTypeHinting(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget.BudgetReservation reservation, ParserWorkCounter work, CancellationToken token)
+    private TrueTypeHinting(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget.BudgetReservation reservation, CancellationToken token)
     {
         _stack = new int[profile.Stack]; _storage = new int[profile.Storage];
         _functions = new TrueTypeHintFunction[profile.Functions]; _twilight = new TrueTypeHintPoint[profile.Twilight];
         _cvt = new int[cvt.Length]; _initialCvt = new int[cvt.Length];
-        for (int i = 0; i < cvt.Length; i++) { work.Consume(token); _cvt[i] = _initialCvt[i] = cvt[i]; }
+        for (int i = 0; i < cvt.Length; i++) { token.ThrowIfCancellationRequested(); _cvt[i] = _initialCvt[i] = cvt[i]; }
         _glyph = glyph; _ends = ends; _ppem = ppem; _scale = scale; _target = target;
-        _reservation = reservation; _work = work; _token = token;
+        _reservation = reservation; _token = token;
     }
 
     /// <summary>Copies control values and borrows glyph points and contour ends for an exclusively owned interpreter.</summary>
-    /// <remarks>Windows control values arrive scaled on the maximum device axis. The caller retains the borrowed arrays until disposal. Creation and execution share the supplied work, cancellation and memory budgets; independent owners may run concurrently.</remarks>
-    internal static TrueTypeHinting Create(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    /// <remarks>Windows control values arrive scaled on the maximum device axis. The caller retains the borrowed arrays until disposal. Creation and execution share the supplied cancellation token and memory budget; independent owners may run concurrently.</remarks>
+    internal static TrueTypeHinting Create(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget budget, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         if (profile.Stack is < 0 or > 4096 || profile.Storage is < 0 or > 4096 || profile.Functions is < 0 or > 1024 || profile.Twilight is < 0 or > 4096 || cvt.Length > 4096 || glyph.Length > 32772)
             throw new SvgException(SvgErrorCode.LimitExceeded, "TrueType interpreter storage exceeds the supported bounds.");
         if (ppem is < 0 or > 32767 || scale.Vertical < 0 || scale.Horizontal < 0 ||
@@ -147,7 +146,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
         int previous = -1;
         foreach (ushort end in ends)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (end <= previous || end >= glyph.Length) throw Invalid("TrueType contour ends are outside their ordered point range.");
             previous = end;
         }
@@ -155,7 +154,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
             + ParserCollectionMemory.GetArrayByteCount<int>(profile.Storage) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(cvt.Length)
             + ParserCollectionMemory.GetArrayByteCount<TrueTypeHintFunction>(profile.Functions) + ParserCollectionMemory.GetArrayByteCount<TrueTypeHintPoint>(profile.Twilight);
         RenderBudget.BudgetReservation reservation = budget.Reserve(bytes, SvgMemoryCategory.Geometry);
-        try { return new(profile, cvt, glyph, ends, ppem, scale, target, reservation, work, token); }
+        try { return new(profile, cvt, glyph, ends, ppem, scale, target, reservation, token); }
         catch { reservation.Dispose(); throw; }
     }
 
@@ -169,17 +168,17 @@ internal sealed partial class TrueTypeHinting : IDisposable
     internal bool GlyphExcludeDropoutStubs { get; private set; }
 
     /// <summary>Fits a borrowed child or assembled composite, retaining font/preparation CVT, storage and functions between components.</summary>
-    /// <remarks>Glyph graphics state is restored after each call. Points/endpoints remain caller-owned and are unbound on every exit. Composite originals are already device coordinates and must not be scaled again. This operation shares the machine's single-threaded work, cancellation and bounded storage contract.</remarks>
+    /// <remarks>Glyph graphics state is restored after each call. Points/endpoints remain caller-owned and are unbound on every exit. Composite originals are already device coordinates and must not be scaled again. This operation shares the machine's single-threaded cancellation and bounded storage contract.</remarks>
     internal void HintGlyph(ReadOnlyMemory<byte> program, TrueTypeHintPoint[] points, ushort[] ends, bool composite)
     {
         if (_reservation is null) throw new InvalidOperationException("The TrueType interpreter is disposed.");
-        _work.Consume(_token);
+        _token.ThrowIfCancellationRequested();
         if (points.Length < 4) throw Invalid("TrueType glyph points omit their phantom slots.");
         if (points.Length > 32772) throw new SvgException(SvgErrorCode.LimitExceeded, "TrueType glyph points exceed the supported bound.");
         int previous = -1;
         foreach (ushort end in ends)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (end <= previous || end >= points.Length - 4) throw Invalid("TrueType contour ends are outside their ordered outline point range.");
             previous = end;
         }
@@ -216,7 +215,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
         ValidateTarget(target);
         if (target.ControlScale != _target.ControlScale || target.Preparation != _target.Preparation || target.HorizontalRatio != _target.HorizontalRatio || target.Grid != _target.Grid || target.WindowsArithmetic != _target.WindowsArithmetic)
             throw Invalid("A TrueType mode transition cannot change its arithmetic, CVT scale, grid or preparation policy.");
-        for (int i = 0; i < _cvt.Length; i++) { _work.Consume(_token); _cvt[i] = _initialCvt[i]; }
+        for (int i = 0; i < _cvt.Length; i++) { _token.ThrowIfCancellationRequested(); _cvt[i] = _initialCvt[i]; }
         _target = target;
         Run(program, TrueTypeHintProgramKind.Preparation);
     }
@@ -224,7 +223,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
     internal void Run(ReadOnlyMemory<byte> program, TrueTypeHintProgramKind kind)
     {
         if (_reservation is null) throw new InvalidOperationException("The TrueType interpreter is disposed.");
-        _work.Consume(_token);
+        _token.ThrowIfCancellationRequested();
         if (kind is not TrueTypeHintProgramKind.Font and not TrueTypeHintProgramKind.Preparation and not TrueTypeHintProgramKind.Glyph)
             throw Invalid("The TrueType program kind is invalid.");
         if (program.Length > ushort.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A TrueType program exceeds its supported byte bound.");
@@ -273,13 +272,13 @@ internal sealed partial class TrueTypeHinting : IDisposable
         int pc = 0, conditionalDepth = 0;
         while (pc < program.Length)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             int start = pc; byte opcode = program.Span[pc++];
             if (opcode is 0x40 or 0x41 or >= 0xB0 and <= 0xBF)
             {
                 bool words = opcode == 0x41 || opcode >= 0xB8;
                 int count = opcode is 0x40 or 0x41 ? ReadByte() : (opcode & 7) + 1;
-                for (int i = 0; i < count; i++) { _work.Consume(_token); Push(words ? (short)((ReadByte() << 8) | ReadByte()) : ReadByte()); }
+                for (int i = 0; i < count; i++) { _token.ThrowIfCancellationRequested(); Push(words ? (short)((ReadByte() << 8) | ReadByte()) : ReadByte()); }
                 continue;
             }
             switch (opcode)
@@ -353,7 +352,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x23: { int a = Pop(), b = Pop(); Push(a); Push(b); break; }
                 case 0x24: Push(_count); break;
                 case 0x25: Push(Peek(Pop())); break;
-                case 0x26: { int k = Pop(), value = Peek(k); int index = _count - k; for (int i = index; i < _count - 1; i++) { _work.Consume(_token); _stack[i] = _stack[i + 1]; } _stack[_count - 1] = value; break; }
+                case 0x26: { int k = Pop(), value = Peek(k); int index = _count - k; for (int i = index; i < _count - 1; i++) { _token.ThrowIfCancellationRequested(); _stack[i] = _stack[i + 1]; } _stack[_count - 1] = value; break; }
                 case 0x2A: { int function = Pop(), count = Pop(); if (count < 0) throw Invalid("A TrueType function loop has a negative count."); for (int i = 0; i < count; i++) Call(function); break; }
                 case 0x2B: Call(Pop()); break;
                 case 0x2C:
@@ -362,7 +361,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     int function = Index(Pop(), _functions.Length); int first = pc;
                     while (pc < program.Length && program.Span[pc] != 0x2D)
                     {
-                        _work.Consume(_token);
+                        _token.ThrowIfCancellationRequested();
                         if (program.Span[pc] == 0x2C) throw Invalid("A TrueType function definition is nested.");
                         SkipInstruction();
                     }
@@ -386,7 +385,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x34: case 0x35: ShiftContour(opcode); break;
                 case 0x38:
                 {
-                    int amount = Pop(); for (int i = 0; i < _loop; i++) { _work.Consume(_token); ref TrueTypeHintPoint p = ref Point(_zp2, Pop()); MoveAlongFreedom(ref p, amount); } _loop = 1; break;
+                    int amount = Pop(); for (int i = 0; i < _loop; i++) { _token.ThrowIfCancellationRequested(); ref TrueTypeHintPoint p = ref Point(_zp2, Pop()); MoveAlongFreedom(ref p, amount); } _loop = 1; break;
                 }
                 case 0x39: InterpolatePoints(); break;
                 case 0x3A: case 0x3B:
@@ -417,7 +416,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x3C:
                 {
                     TrueTypeHintPoint reference = Point(_zp0, _rp0);
-                    for (int i = 0; i < _loop; i++) { _work.Consume(_token); ref TrueTypeHintPoint p = ref Point(_zp1, Pop()); Move(ref p, ProjectedDistance(reference, p, false), true); } _loop = 1; break;
+                    for (int i = 0; i < _loop; i++) { _token.ThrowIfCancellationRequested(); ref TrueTypeHintPoint p = ref Point(_zp1, Pop()); Move(ref p, ProjectedDistance(reference, p, false), true); } _loop = 1; break;
                 }
                 case 0x3D: _round = TrueTypeHintRound.DoubleGrid; break;
                 case 0x3E: case 0x3F:
@@ -533,7 +532,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     int last = Pop(), first = Pop();
                     if (!_target.UsesWindowsArithmetic && BackwardCompatible && _iupX && _iupY) break;
                     Index(first, _glyph.Length); Index(last, _glyph.Length);
-                    for (int index = first; index <= last; index++) { _work.Consume(_token); _glyph[index].IsOnCurve = opcode == 0x81; }
+                    for (int index = first; index <= last; index++) { _token.ThrowIfCancellationRequested(); _glyph[index].IsOnCurve = opcode == 0x81; }
                     break;
                 }
                 case 0x85: _scanControl = Pop() & 0xFFFF; _scanConfigured = true; break;
@@ -587,7 +586,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 pc = Math.Min(pc, destination);
                 while (pc < end)
                 {
-                    _work.Consume(_token);
+                    _token.ThrowIfCancellationRequested();
                     byte crossed = program.Span[pc];
                     if (crossed == 0x58) conditionalDepth += direction;
                     else if (crossed == 0x59) conditionalDepth -= direction;
@@ -601,14 +600,14 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 byte op = ReadByte(); int count = op is 0x40 or 0x41 ? ReadByte() : op is >= 0xB0 and <= 0xBF ? (op & 7) + 1 : 0;
                 bool words = op == 0x41 || op >= 0xB8 && op <= 0xBF;
                 int bytes = count * (words ? 2 : 1); if (bytes > program.Length - pc) throw Invalid("Skipped TrueType push operands are truncated.");
-                for (int i = 0; i < bytes; i++) _work.Consume(_token); pc += bytes;
+                _token.ThrowIfCancellationRequested(); pc += bytes;
             }
             bool Skip(bool acceptsElse)
             {
                 int nesting = 0;
                 while (pc < program.Length)
                 {
-                    _work.Consume(_token); byte op = program.Span[pc];
+                    _token.ThrowIfCancellationRequested(); byte op = program.Span[pc];
                     if (op == 0x58) nesting++;
                     else if (op == 0x59) { if (nesting == 0) { pc++; return false; } nesting--; }
                     else if (op == 0x1B && nesting == 0 && acceptsElse) { pc++; return true; }
@@ -618,7 +617,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
             }
             void Call(int index)
             {
-                _work.Consume(_token); TrueTypeHintFunction function = _functions[Index(index, _functions.Length)];
+                _token.ThrowIfCancellationRequested(); TrueTypeHintFunction function = _functions[Index(index, _functions.Length)];
                 if (!function.Defined) throw Invalid("An undefined TrueType function was called.");
                 if (_depth == 32) throw new SvgException(SvgErrorCode.LimitExceeded, "TrueType function nesting exceeds its limit.");
                 _depth++; try { Execute(function.Program, kind); } finally { _depth--; }
@@ -629,7 +628,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 int contour = Pop(), first, end;
                 if (_zp2 == TrueTypeHintZone.Twilight) { if (contour != 0) throw Invalid("A twilight contour index is invalid."); first = 0; end = _twilight.Length; }
                 else { int index = Index(contour, _ends.Length); first = index == 0 ? 0 : _ends[index - 1] + 1; end = _ends[index] + 1; }
-                for (int i = first; i < end; i++) { _work.Consume(_token); if (_zp2 == referenceZone && i == referenceIndex) continue; ref TrueTypeHintPoint p = ref Point(_zp2, i); Move(ref p, delta, false); }
+                for (int i = first; i < end; i++) { _token.ThrowIfCancellationRequested(); if (_zp2 == referenceZone && i == referenceIndex) continue; ref TrueTypeHintPoint p = ref Point(_zp2, i); Move(ref p, delta, false); }
             }
             (TrueTypeHintZone Zone, int Index, int Delta) ReferenceShift(byte op)
             {
@@ -643,7 +642,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 (_, _, int delta) = ReferenceShift(op);
                 for (int i = 0; i < _loop; i++)
                 {
-                    _work.Consume(_token);
+                    _token.ThrowIfCancellationRequested();
                     ref TrueTypeHintPoint point = ref Point(_zp2, Pop());
                     Move(ref point, delta, true);
                 }
@@ -698,7 +697,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 int currentRange = ProjectedDistance(last, first, false);
                 for (int i = 0; i < _loop; i++)
                 {
-                    _work.Consume(_token);
+                    _token.ThrowIfCancellationRequested();
                     ref TrueTypeHintPoint point = ref Point(_zp2, Pop());
                     int original = OriginalDistance(point);
                     int distance = originalRange != 0 ? Divide(original, originalRange, currentRange) : original;
@@ -718,7 +717,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 int count = Pop(); if (count < 0 || count > _count / 2) throw Invalid("TrueType delta operands exceed the stack.");
                 for (int i = 0; i < count; i++)
                 {
-                    _work.Consume(_token); int p = Pop(), argument = Pop();
+                    _token.ThrowIfCancellationRequested(); int p = Pop(), argument = Pop();
                     if (argument is < 0 or > 255) throw Invalid("A TrueType delta argument is invalid.");
                     int ppem = checked(_deltaBase + (op is 0x71 or 0x74 ? 16 : op is 0x72 or 0x75 ? 32 : 0) + (argument >> 4));
                     int step = (argument & 15) - 8; if (step >= 0) step++;
@@ -745,7 +744,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     int firstTouched = -1, previous = -1;
                     for (int i = first; i <= last; i++)
                     {
-                        _work.Consume(_token); if (!(axis == TrueTypeHintAxis.X ? _glyph[i].TouchedX : _glyph[i].TouchedY)) continue;
+                        _token.ThrowIfCancellationRequested(); if (!(axis == TrueTypeHintAxis.X ? _glyph[i].TouchedX : _glyph[i].TouchedY)) continue;
                         if (firstTouched < 0) firstTouched = i;
                         if (previous >= 0) Interpolate(previous + 1, i - 1, previous, i);
                         previous = i;
@@ -762,7 +761,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     int scale = unscaledA == unscaledB || currentA == currentB ? 0 : Divide(checked(currentB - currentA), checked(unscaledB - unscaledA), 65536);
                     for (int i = from; i <= to; i++)
                     {
-                        _work.Consume(_token); int original = Original(_glyph[i]); int value;
+                        _token.ThrowIfCancellationRequested(); int original = Original(_glyph[i]); int value;
                         if (original <= originalA) value = checked(original + currentA - originalA);
                         else if (original >= originalB) value = checked(original + currentB - originalB);
                         else if (unscaledA == unscaledB || currentA == currentB) value = currentA;

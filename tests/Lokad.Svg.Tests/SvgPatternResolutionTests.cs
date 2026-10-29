@@ -17,8 +17,7 @@ public sealed class SvgPatternResolutionTests
     public void Separate_defs_and_unrelated_definitions_do_not_retry_blocked_aliases(int count, bool chain, bool unrelated)
     {
         RenderBudget budget = new(30_000_000);
-        ParserWorkCounter work = new(count * 60 + 2000);
-        using (SvgRoot root = SvgRootParser.Parse(SeparateDefinitions(count, true, chain, unrelated), SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(SeparateDefinitions(count, true, chain, unrelated), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan(0, 4).ToArray());
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -32,18 +31,17 @@ public sealed class SvgPatternResolutionTests
     public void Cancellation_before_ready_aliases_drain_releases_waiting_and_ready_storage()
     {
         RenderBudget budget = new(1_000_000);
-        ParserWorkCounter work = new(10_000);
         using CancellationTokenSource cancellation = new();
-        using (SvgDocumentState state = new(budget, work, cancellation.Token))
+        using (SvgDocumentState state = new(budget, cancellation.Token))
         {
             SvgPatternTemplate template = default;
             state.PatternDefinitions.TryAdd("alias", new(template with { Href = "base" }, template.Grid, null, default, false));
-            SvgPatternReferenceResolver.Register(state, "alias", work, cancellation.Token);
+            SvgPatternReferenceResolver.Register(state, "alias", cancellation.Token);
             state.PatternDefinitions.TryAdd("base", new(template, template.Grid, null, default, false));
             state.Patterns.TryAdd("base", template.Grid);
-            SvgPatternReferenceResolver.Register(state, "base", work, cancellation.Token);
+            SvgPatternReferenceResolver.Register(state, "base", cancellation.Token);
             cancellation.Cancel();
-            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgPatternReferenceResolver.Resolve(state, true, work, cancellation.Token)).CancellationToken);
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgPatternReferenceResolver.Resolve(state, true, cancellation.Token)).CancellationToken);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -98,12 +96,13 @@ public sealed class SvgPatternResolutionTests
             if (split) xml.Append("</defs><defs>");
             xml.Append("<pattern id='p").Append(count).Append("' patternUnits='userSpaceOnUse' width='8' height='8'><rect width='4' height='4' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p0)'/></svg>");
             RenderBudget budget = new(20_000_000);
-            ParserWorkCounter work = new(count * 40 + 2000);
-            using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml.ToString()), SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
+            long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+            using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None))
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
                 Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan(0, 4).ToArray());
-            if (previous != 0) Assert.True(work.Used <= previous * 5 / 2);
-            previous = work.Used;
+            long allocated = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
+            if (previous != 0) Assert.True(allocated <= previous * 5 / 2);
+            previous = allocated;
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
     }
@@ -121,8 +120,7 @@ public sealed class SvgPatternResolutionTests
         if (pending) { xml.Append("<defs>"); AppendBase(); xml.Append("</defs>"); }
         xml.Append("<rect width='8' height='8' fill='url(#p0)'/></svg>");
         RenderBudget budget = new(20_000_000);
-        ParserWorkCounter work = new(100_000);
-        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml.ToString()), SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan(0, 4).ToArray());
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -159,15 +157,8 @@ public sealed class SvgPatternResolutionTests
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='ready' patternUnits='userSpaceOnUse' width='8' height='8'><rect width='4' height='4'/></pattern><pattern id='alias' href='#ready'/><pattern id='p' href='#q'/><pattern id='r' href='#p'/></defs><rect width='1' height='1'/><defs><pattern id='q' href='#ready'/></defs><rect width='8' height='8' fill='url(#r)'/></svg>"u8.ToArray();
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(10_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
         DenyMemory(peak - 1);

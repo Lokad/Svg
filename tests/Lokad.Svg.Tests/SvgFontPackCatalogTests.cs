@@ -144,18 +144,14 @@ public sealed partial class SvgFontPackCatalogTests
     }
 
     [Fact]
-    public void Bounded_catalog_resolution_charges_candidate_scans_and_checks_cancellation()
+    public void Catalog_resolution_preserves_cancellation()
     {
         SvgFontPackCatalog catalog = Parse(Manifest("test-pack", "[]",
             """{ "requestedFamily": "Alias", "resolvedFamily": "Family", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false }""",
             """{ "requestedFamily": "Alias", "resolvedFamily": "Family", "relativeFontFile": "files/bold.ttf", "weight": 700, "italic": false }"""));
-
-        SvgException exception = Assert.Throws<SvgException>(() => catalog.Resolve(new SvgFontFaceRequest("Alias", 700, false), new ParserWorkCounter(1), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Throws<OperationCanceledException>(() => catalog.Resolve(new SvgFontFaceRequest("Alias", 700, false), new ParserWorkCounter(10), cancellation.Token));
+        Assert.Throws<OperationCanceledException>(() => catalog.Resolve(new SvgFontFaceRequest("Alias", 700, false), cancellation.Token));
         Assert.Throws<OperationCanceledException>(() => catalog.Resolve(new SvgFontFaceRequest("Alias", 700, false), cancellation.Token));
     }
 

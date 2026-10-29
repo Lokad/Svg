@@ -42,13 +42,13 @@ internal readonly record struct SvgMarkerStyle(string? Start, string? Mid, strin
         }
     }
 
-    internal SvgMarkerStyle Retain(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal SvgMarkerStyle Retain(SvgDocumentState state, CancellationToken token)
     {
         return new(Copy(Start), Copy(Mid), Copy(End));
         string? Copy(string? value)
         {
             if (value is null) return null;
-            work.ConsumeText(value.Length, token);
+            token.ThrowIfCancellationRequested();
             return state.Strings.Copy(value);
         }
     }
@@ -67,17 +67,17 @@ internal static class SvgMarkerSyntax
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only none or local marker references are implemented.");
     }
 
-    internal static SvgMarkerDefinition Parse(XmlReader reader, SvgComputedStyle style, SvgViewportLengthBases bases, ParserWorkCounter work, CancellationToken token)
-        => Parse(reader, style, bases, SvgInheritedTextStyle.Default, default, work, token);
+    internal static SvgMarkerDefinition Parse(XmlReader reader, SvgComputedStyle style, SvgViewportLengthBases bases, CancellationToken token)
+        => Parse(reader, style, bases, SvgInheritedTextStyle.Default, default, token);
 
     internal static SvgMarkerDefinition Parse(XmlReader reader, SvgComputedStyle style, SvgViewportLengthBases bases,
-        SvgInheritedTextStyle inheritedFont, InlineStyle sheet, ParserWorkCounter work, CancellationToken token)
+        SvgInheritedTextStyle inheritedFont, InlineStyle sheet, CancellationToken token)
     {
-        SvgElementAttributePolicy.ValidateMarker(reader, work, token);
+        SvgElementAttributePolicy.ValidateMarker(reader, token);
         string overflow = style.Overflow ?? "hidden";
         bool visibleOverflow = SvgCssWhitespace.Trim(overflow.AsSpan()).Equals("visible", StringComparison.OrdinalIgnoreCase);
         if (!visibleOverflow) SvgNestedViewportSyntax.ValidateOverflow(overflow);
-        _ = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), work, token);
+        _ = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), token);
         SvgInheritedTextStyle? font = null;
         double? widthEx = null, heightEx = null, refXEx = null, refYEx = null;
         double width = Coordinate(reader.GetAttribute("markerWidth"), bases.Width, 3, ref widthEx);
@@ -112,7 +112,7 @@ internal static class SvgMarkerSyntax
             {
                 if (font is null)
                 {
-                    InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), work, token, true);
+                    InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), token, true);
                     font = SvgTextInheritance.Resolve(reader, inheritedFont,
                         SvgInlineStyleParser.MergeFont(inline.TextFont, inline.Important, sheet.TextFont, sheet.Important), null, null);
                 }
@@ -154,13 +154,13 @@ internal static class SvgMarkerSyntax
         {
             if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Marker values exceed the configured syntax limit.");
-            work.ConsumeBytes(value.Length, token);
+            token.ThrowIfCancellationRequested();
         }
         double Number(ReadOnlySpan<char> value, bool svgAngle)
         {
             if (SvgCssWhitespace.Trim(value).Length != value.Length || !double.TryParse(value, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double number) || !double.IsFinite(number))
                 throw new SvgException(SvgErrorCode.MalformedInput, "Marker values must be finite numbers.");
-            return Finite(svgAngle ? SvgFloatNumber.ReadValidated(value, work, token) : number);
+            return Finite(svgAngle ? SvgFloatNumber.ReadValidated(value, token) : number);
         }
         static float Finite(double number)
         {
@@ -194,7 +194,7 @@ internal static class SvgMarkerRenderer
     {
         if (!markers.HasMarkers) return body;
         BudgetedParserList<SvgMarkerPosition> positions;
-        try { positions = SvgMarkerVertices.Read(reader, maximumCommands, state, context.WorkCounter, context.CancellationToken); }
+        try { positions = SvgMarkerVertices.Read(reader, maximumCommands, state, context.CancellationToken); }
         catch { body.Discard(); throw; }
         using (positions) return Attach(body, positions.AsSpan(), markers, reader, context, paint, frame, state, maximumCommands);
     }
@@ -205,23 +205,21 @@ internal static class SvgMarkerRenderer
     {
         // A later instance map must see the marker's native corners, rather than
         // a rectangle flattened during the host's source construction.
-        static SvgGeometry RetainRectangle(SvgGeometry geometry, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        static SvgGeometry RetainRectangle(SvgGeometry geometry, SvgDocumentState state, CancellationToken token)
         {
             SvgRectangle box = geometry.Rectangle;
             SvgPaint paint = new(new(box.Color, box.Color.Alpha / 255f), box.HasFill, SvgPaintOpacity.Opaque, new(box.Color, box.Color.Alpha / 255f), false);
             SvgResolvedPaintableElement element = new(default, SvgAffineTransform.Identity, new(paint, box.Color, null, 255, box.HasFill), 1);
-            using BudgetedParserList<SvgPoint> points = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
-            using BudgetedParserList<int> ends = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
-            using SvgOrthogonalGeometryLowering lowering = new(points, ends, "rect", false, false, int.MaxValue, state.Budget, work, token);
+            using BudgetedParserList<SvgPoint> points = new(state.Budget, SvgMemoryCategory.Geometry, token);
+            using BudgetedParserList<int> ends = new(state.Budget, SvgMemoryCategory.Geometry, token);
+            using SvgOrthogonalGeometryLowering lowering = new(points, ends, "rect", false, false, int.MaxValue, state.Budget, token);
             SvgViewportFrame? clipFrame = box.Clip is {} clip ? new(0, 0, 1, 1, null, null, clip, -1) : null;
             using SvgParsedGeometry result = lowering.LowerRectangleSourceFill(box.X, box.Y, box.Width, box.Height, element, clipFrame, state.Budget);
             if (result.Geometries.Length != 1) throw new InvalidOperationException("A retained marker rectangle requires one contour.");
             return result.Geometries[0] with { RecordedPaint = geometry.RecordedPaint, RecordedStrokePaint = geometry.RecordedStrokePaint, LeafMask = geometry.LeafMask };
         }
-
-        ParserWorkCounter work = context.WorkCounter;
         CancellationToken token = context.CancellationToken;
-        using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
+        using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Geometry, token);
         try
         {
             SvgComputedStyle style = context.ResolveStyle(reader);
@@ -241,7 +239,7 @@ internal static class SvgMarkerRenderer
                 if (operation != 2) { AddBody(operation == 1); continue; }
                 foreach (SvgMarkerPosition position in positions)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     string? value = position.Role switch
                     {
                         SvgMarkerVertexRole.Start => markers.Start,
@@ -261,16 +259,16 @@ internal static class SvgMarkerRenderer
                 float right = float.NegativeInfinity, bottom = float.NegativeInfinity;
                 foreach (SvgGeometry geometry in output.AsSpan())
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgPaintBounds bounds;
                     if (geometry.RecordedPaint.Identity > 0 && state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).VisualBounds is {} visual)
                         bounds = visual;
                     else
                     {
                         SvgAuthoredPath? path = geometry.AuthoredPath?.StrokeOutline ?? geometry.AuthoredPath;
-                        SvgRectangle box = path is null ? SvgMaskSyntax.BoundingBox(geometry) : SvgPathBounds.Compute(path.Commands, work, token);
+                        SvgRectangle box = path is null ? SvgMaskSyntax.BoundingBox(geometry) : SvgPathBounds.Compute(path.Commands, token);
                         bounds = new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height));
-                        if (path is not null) bounds = bounds.Map(path.SceneMap, work, token);
+                        if (path is not null) bounds = bounds.Map(path.SceneMap, token);
                     }
                     left = MathF.Min(left, bounds.Left); top = MathF.Min(top, bounds.Top);
                     right = MathF.Max(right, bounds.Right); bottom = MathF.Max(bottom, bounds.Bottom);
@@ -278,14 +276,14 @@ internal static class SvgMarkerRenderer
                 layerRegion = new(MathF.Floor(left), MathF.Floor(top), MathF.Ceiling(right) - MathF.Floor(left), MathF.Ceiling(bottom) - MathF.Floor(top))
                     { Antialiasing = SvgClipAntialiasing.None };
             }
-            SvgPaintRecording.WrapInstance(output.AsMutableSpan(), paint.ElementOpacity, state.NewRecordingScope(), layerRegion, state, work, token);
+            SvgPaintRecording.WrapInstance(output.AsMutableSpan(), paint.ElementOpacity, state.NewRecordingScope(), layerRegion, state, token);
             return SvgNativeVisualBounds.Cull(new(output.Detach(), body.ElementCount), reader, context, paint, frame, maximumCommands, state);
 
             void AddBody(bool strokeOperation)
             {
                 for (int index = 0; index < body.Geometries.Length; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgGeometry geometry = body.Geometries[index];
                     if (geometry.RecordedPaint.Identity == 0 || state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).IsStroke != strokeOperation) continue;
                     output.Add(geometry);
@@ -297,7 +295,7 @@ internal static class SvgMarkerRenderer
             void Add(string? value, double x, double y, bool start, double tangent)
             {
                 if (!SvgMarkerStyle.Active(value)) return;
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 string id = SvgGradientSyntax.ParsePaintId(value);
                 if (!state.Definitions.TryGetValue(id, out SvgDefinition source) || source.Marker is not {} marker)
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local marker references are implemented.");
@@ -309,8 +307,8 @@ internal static class SvgMarkerRenderer
                     SvgFontSnapshot snapshot = state.TextReplay?.Fonts
                         ?? throw new SvgException(SvgErrorCode.UnresolvedResource, "Font-relative marker coordinates require a supplied font snapshot.");
                     string family = lengths.Font.Family ?? throw new SvgException(SvgErrorCode.UnresolvedResource, "Font-relative marker coordinates require a font family.");
-                    SvgPreparedFont font = snapshot.GetFont(SvgFontFaceRequest.FromCss(family, lengths.Font.Weight, lengths.Font.Italic, null, work, token), id, work, token);
-                    int xHeight = font.GetXHeight(work, token);
+                    SvgPreparedFont font = snapshot.GetFont(SvgFontFaceRequest.FromCss(family, lengths.Font.Weight, lengths.Font.Italic, null, token), id, token);
+                    int xHeight = font.GetXHeight(token);
                     float ex = xHeight > 0 ? (float)lengths.Font.FontSize * xHeight / font.UnitsPerEm : (float)lengths.Font.FontSize * .5f;
                     marker = marker with { Width = Resolve(lengths.Width, marker.Width), Height = Resolve(lengths.Height, marker.Height),
                         RefX = Resolve(lengths.RefX, marker.RefX), RefY = Resolve(lengths.RefY, marker.RefY) };
@@ -373,19 +371,19 @@ internal static class SvgMarkerRenderer
                 bool previousPicture = state.IsResourcePicture;
                 SvgGeometry[] mapped;
                 state.IsResourcePicture = true;
-                try { mapped = SvgReferenceResolver.Apply(source, reference, frame, state, work, token); }
+                try { mapped = SvgReferenceResolver.Apply(source, reference, frame, state, token); }
                 finally { state.IsResourcePicture = previousPicture; }
                 int transferred = 0;
                 try
                 {
                     for (; transferred < mapped.Length; transferred++)
                     {
-                        work.Consume(token);
+                        token.ThrowIfCancellationRequested();
                         SvgGeometry geometry = mapped[transferred];
                         if (context.RetainInstanceStrokePath && !context.StrokeHostMap.IsAxisAligned
                             && geometry.Kind == SvgGeometryKind.Rectangle
                             && geometry.Rectangle is { Width: > 0, Height: > 0, Stroke: null })
-                            mapped[transferred] = geometry = RetainRectangle(geometry, state, work, token);
+                            mapped[transferred] = geometry = RetainRectangle(geometry, state, token);
                         if (geometry.RecordedPaint.Identity > 0)
                             state.Scene.ChangeRecordedPaint(geometry.RecordedPaint, state.Scene.GetRecordedPaintValue(geometry.RecordedPaint) with { IsMarkerContent = true, DrawMap = drawMap });
                         if (geometry.RecordedStrokePaint.Identity > 0)

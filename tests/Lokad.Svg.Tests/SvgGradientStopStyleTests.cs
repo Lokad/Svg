@@ -32,7 +32,7 @@ public sealed class SvgGradientStopStyleTests
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<stop stop-color='#46596d80' stop-opacity='.9' style='stop-opacity:27%!important;stop-opacity:1'/>"));
         reader.MoveToContent();
-        SvgGradientStop stop = SvgGradientSyntax.ParseStop(reader, SvgRootParser.CssNamedColors, new(10_000), CancellationToken.None);
+        SvgGradientStop stop = SvgGradientSyntax.ParseStop(reader, SvgRootParser.CssNamedColors, CancellationToken.None);
         Assert.Equal(128 * (1f / 255f) * .27f, stop.Alpha);
         Assert.Equal(new SvgColor(70, 89, 109, 35), stop.Color);
     }

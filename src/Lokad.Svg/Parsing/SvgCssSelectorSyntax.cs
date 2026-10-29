@@ -3,30 +3,30 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Shares bounded compound-selector syntax between admission and allocation-free matching.</summary>
 internal static class SvgCssSelectorSyntax
 {
-    internal static CssSpecificity Specificity(ReadOnlySpan<char> pattern, ParserWorkCounter work, CancellationToken token)
+    internal static CssSpecificity Specificity(ReadOnlySpan<char> pattern, CancellationToken token)
     {
         ComponentReader reader = new(pattern);
         CssSpecificity result = default;
         while (reader.Read(out ComponentKind kind, out _, out _))
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             result += kind == ComponentKind.Type ? new CssSpecificity(0, 0, 1) : kind == ComponentKind.Id ? new CssSpecificity(1, 0, 0) : new CssSpecificity(0, 1, 0);
         }
         return result;
     }
 
-    internal static bool Matches(ReadOnlySpan<char> pattern, SvgCssElement element, ParserWorkCounter work, CancellationToken token)
+    internal static bool Matches(ReadOnlySpan<char> pattern, SvgCssElement element, CancellationToken token)
     {
         if (!element.IsSvg) return false;
         ComponentReader reader = new(pattern);
         while (reader.Read(out ComponentKind kind, out ReadOnlySpan<char> value, out ReadOnlySpan<char> expected))
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             bool matched = kind switch
             {
                 ComponentKind.Type => value.Equals(element.Name.AsSpan(), StringComparison.Ordinal),
                 ComponentKind.Id => EqualIdentifier(element.Id, value),
-                ComponentKind.Class => SvgStyleSheet.HasCssClass(element.Classes, value, work, token),
+                ComponentKind.Class => SvgStyleSheet.HasCssClass(element.Classes, value, token),
                 ComponentKind.AttributePresent => (value.SequenceEqual("id") ? element.Id : element.Classes) is not null,
                 ComponentKind.AttributeEquals => EqualIdentifier(value.SequenceEqual("id") ? element.Id : element.Classes, expected),
                 _ => false
@@ -44,12 +44,12 @@ internal static class SvgCssSelectorSyntax
     }
 
     /// <summary>Matches selector chains with two dynamic-programming rows rather than recursive backtracking.
-    /// Work is bounded by selector components times open ancestors, charged to the operation counter.</summary>
-    internal static bool MatchesChain(string selector, SvgCssElement current, SvgCssAncestorContext context, ParserWorkCounter work, CancellationToken token)
+    /// Traversal visits selector components times open ancestors and checks cancellation.</summary>
+    internal static bool MatchesChain(string selector, SvgCssElement current, SvgCssAncestorContext context, CancellationToken token)
     {
         ReverseReader reader = new(selector.AsSpan());
         if (!reader.Read(out ReadOnlySpan<char> pattern, out _)) return false;
-        if (!Matches(pattern, current, work, token)) return false;
+        if (!Matches(pattern, current, token)) return false;
         ReadOnlySpan<SvgCssElement> ancestors = context.Ancestors;
         int length = ancestors.Length + 1;
         Span<byte> rows = context.MatchRows(length);
@@ -61,10 +61,10 @@ internal static class SvgCssSelectorSyntax
             next.Clear();
             for (int index = ancestors.Length - 1; index >= 0; index--)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 suffix |= previous[index + 1] != 0;
                 bool linked = child ? previous[index + 1] != 0 : suffix;
-                if (!linked || !Matches(pattern, ancestors[index], work, token)) continue;
+                if (!linked || !Matches(pattern, ancestors[index], token)) continue;
                 next[index] = 1;
                 reachable = true;
             }

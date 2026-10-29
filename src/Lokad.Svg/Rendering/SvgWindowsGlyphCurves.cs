@@ -4,12 +4,12 @@ using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 
 /// <summary>Prepares Windows quadratic leaves before their bounded implicit scan coefficients are formed.</summary>
-/// <remarks>Borrows positioned contours and returns an exclusive reservation-backed owner. Sampling-grid rounding precedes extrema and span subdivision; each integer product rounds independently. Translation is removed before signed coordinate checks. Every visited leaf and emitted segment charges work and observes cancellation. Denial and cancellation release all intermediate storage; independent conversion owners may call concurrently.</remarks>
+/// <remarks>Borrows positioned contours and returns an exclusive reservation-backed owner. Sampling-grid rounding precedes extrema and span subdivision; each integer product rounds independently. Translation is removed before signed coordinate checks. Every visited leaf and emitted segment observes cancellation. Denial and cancellation release all intermediate storage; independent conversion owners may call concurrently.</remarks>
 internal static class SvgWindowsGlyphCurves
 {
-    internal static OpenTypeGlyphContourStorage Prepare(OpenTypeGlyphContourStorage source, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static OpenTypeGlyphContourStorage Prepare(OpenTypeGlyphContourStorage source, RenderBudget budget, CancellationToken token)
     {
-        using OpenTypeSegmentAccumulator result = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
+        using OpenTypeSegmentAccumulator result = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, token);
         double originX = source.Segments.Length == 0 ? 0 : Math.Floor(source.Segments[0].Start.X);
         double originY = source.Segments.Length == 0 ? 0 : Math.Floor(source.Segments[0].Start.Y);
         int verticalScale = source.WindowsLcdMode == SvgGlyphLcdMode.Natural ? 64 : 320;
@@ -18,7 +18,7 @@ internal static class SvgWindowsGlyphCurves
         {
             for (int index = first; index < end; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 OpenTypeQuadraticSegment segment = source.Segments[index];
                 Point a = Map(segment.Start), b = Map(segment.Control), c = Map(segment.End);
                 if (segment.Control == segment.End) Add(a, c, c);
@@ -46,7 +46,7 @@ internal static class SvgWindowsGlyphCurves
 
         void Add(Point a, Point b, Point c)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             result.Add(new(Device(a), Device(b), Device(c)));
         }
 
@@ -54,7 +54,7 @@ internal static class SvgWindowsGlyphCurves
 
         void Split(Point a, Point b, Point c, int depth)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (depth > 32) throw new SvgException(SvgErrorCode.LimitExceeded, "The glyph curve subdivision exceeds its bounded depth.");
             long dx = b.X - a.X, dy = b.Y - a.Y, ex = c.X - b.X, ey = c.Y - b.Y;
             Point left, middle, right;

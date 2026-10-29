@@ -43,7 +43,7 @@ public sealed class SvgFilterSourceCoverageTests
         using SvgRoot scene = Parse("<feGaussianBlur stdDeviation='" + sigma + "'/>", budget);
         SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(100, 100), new(-100, -100, 100, 100));
         SvgPaintBounds stored = SvgFilterPlayback.SourceLayerBounds(Resource(scene), new(1.5, 1.5), context,
-            new(10, 10, 20, 20), SvgFilterBoundsKind.StoredImage, budget, new(1_000), CancellationToken.None);
+            new(10, 10, 20, 20), SvgFilterBoundsKind.StoredImage, budget, CancellationToken.None);
         Assert.Equal(new SvgPaintBounds(10 - radiusX, 10 - radiusY, 20 + radiusX, 20 + radiusY), stored);
     }
 

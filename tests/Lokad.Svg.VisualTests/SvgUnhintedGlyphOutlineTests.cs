@@ -26,7 +26,7 @@ public sealed class SvgUnhintedGlyphOutlineTests
         JsonElement expected = root.GetProperty("outlines").EnumerateArray().Single(x => x.GetProperty("glyph").GetInt32() == glyph && x.GetProperty("size").GetDouble() == size);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         RenderBudget budget = new(long.MaxValue);
-        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetUnhintedDeviceContours(bytes, (ushort)glyph, metrics, size, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetUnhintedDeviceContours(bytes, (ushort)glyph, metrics, size, budget, CancellationToken.None))
         {
             Assert.Equal(expected.GetProperty("ends").EnumerateArray().Select(x => x.GetInt32()), contours.ContourEnds);
             double[][] segments = contours.Segments.Select(s => new[] { s.Start.X / 64, s.Start.Y / 64, s.Control.X / 64, s.Control.Y / 64, s.End.X / 64, s.End.Y / 64 }).ToArray();

@@ -5,8 +5,8 @@ namespace Lokad.Svg.Rendering;
 using Lokad.Svg.Parsing;
 
 /// <summary>Prepares immutable native coefficients from canonical stops for linear and radial replay.</summary>
-/// <remarks>Inline pairs own no storage; other ramps reserve before allocating at most 259 segments. Preparation charges work
-/// and observes cancellation. Sampling allocates nothing; callers charge pixels and check rows. Copies borrow the same owner
+/// <remarks>Inline pairs own no storage; other ramps reserve before allocating at most 259 segments. Preparation observes
+/// cancellation. Sampling allocates nothing; callers account for pixels and check rows. Copies borrow the same owner
 /// and must finish before the preparing scope disposes it. No source storage or retained scene metadata is added.</remarks>
 internal readonly struct SvgGradientRamp : IDisposable
 {
@@ -21,9 +21,9 @@ internal readonly struct SvgGradientRamp : IDisposable
     }
 
     internal static SvgGradientRamp Create(ReadOnlySpan<SvgGradientStop> stops, SvgGradientSpread spread,
-        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        RenderBudget budget, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         if (stops.Length > 256) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient ramp preparation exceeds the supported stop limit.");
         if (stops.Length == 0) return new(Pair(default, default, 0, 0), new([], null), 0, 0);
         if (stops.Length == 1) return new(Pair(stops[0].Color, stops[0].Color, stops[0].Alpha, stops[0].Alpha), new([], null), 0, 0);
@@ -32,7 +32,7 @@ internal readonly struct SvgGradientRamp : IDisposable
             bool same = true;
             for (int index = 1; index < stops.Length; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 if (!SamePaint(stops[index], stops[0])) { same = false; break; }
             }
             if (same) return new(Pair(stops[0].Color, stops[0].Color, stops[0].Alpha, stops[0].Alpha), new([], null), 0, 0);
@@ -40,13 +40,13 @@ internal readonly struct SvgGradientRamp : IDisposable
         if (stops.Length == 2 && (float)stops[0].Offset == 0 && (float)stops[1].Offset == 1)
             return new(Pair(stops[0].Color, stops[1].Color, stops[0].Alpha, stops[1].Alpha), new([], null), 0, 0);
 
-        SvgGradientStops canonical = SvgGradientStops.Create(stops, spread, work, token);
+        SvgGradientStops canonical = SvgGradientStops.Create(stops, spread, token);
         int capacity = canonical.Uniform ? canonical.Count : canonical.Count + 1;
         RenderBudget.BudgetReservation owner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGradientRampSegment>(capacity), SvgMemoryCategory.Temporary);
         try
         {
             SvgGradientRampSegment[] segments = new SvgGradientRampSegment[capacity];
-            SvgGradientStops.Enumerator iterator = canonical.GetEnumerator(work, token);
+            SvgGradientStops.Enumerator iterator = canonical.GetEnumerator(token);
             if (!iterator.MoveNext()) throw new InvalidOperationException("Canonical gradient is missing its first color.");
             SvgGradientStop previous = iterator.Current;
             int used = 0;

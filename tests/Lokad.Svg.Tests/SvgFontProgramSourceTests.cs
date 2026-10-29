@@ -160,15 +160,15 @@ public sealed class SvgFontProgramSourceTests
     {
         SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
         var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>());
-        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 3);
+        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 100_000);
         SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, limits);
-        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='url(#missing)'/></svg>"u8.ToArray();
 
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(svg, catalog, provider, limits, CancellationToken.None);
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgPreparedDocument.CreateAsync(svg, catalog, provider, options, CancellationToken.None));
 
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Contains("parsing work", exception.Message);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Contains("Only defined local gradient references", exception.Message);
     }
 
     [Fact]

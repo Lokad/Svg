@@ -4,7 +4,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Supplies one paintable element with its inherited rendering context and bounded style resolution.</summary>
-internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, SvgInheritedStrokeStyle InheritedStroke, InlineStyle StyleSheet, IReadOnlyDictionary<string, SvgColor> NamedColors, ParserWorkCounter WorkCounter, CancellationToken CancellationToken, double OutputMagnification, string? InheritedFillRule)
+internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, SvgInheritedStrokeStyle InheritedStroke, InlineStyle StyleSheet, IReadOnlyDictionary<string, SvgColor> NamedColors, CancellationToken CancellationToken, double OutputMagnification, string? InheritedFillRule)
 {
     /// <summary>Maps this construction's scene coordinates to the outermost viewport, including deferred instance placement.</summary>
     internal SvgAffineTransform StrokeHostMap { get; init; } = SvgAffineTransform.Identity;
@@ -17,7 +17,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal bool CanPaintEmptyNativeBounds { get; init; }
     internal SvgComputedStyle? AuthoredStyle { get; init; }
     internal string? InheritedClipRule { get; init; }
-    internal static SvgPaintableElementContext Create(XmlReader reader, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgPaintableElementContext Create(XmlReader reader, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, CancellationToken cancellationToken)
     {
         SvgInheritedPresentation inheritedPresentation = state.Groups.Count == 0 ? root.InheritedPresentation : state.Groups[^1].InheritedPresentation;
         // Opacity is not inherited through an intervening viewport or defs node.
@@ -54,7 +54,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
         SvgViewportLengthBases lengthBases = new(state.EffectiveFrame?.ViewportWidth ?? state.SymbolViewBox?.Width ?? root.UserViewportWidth,
             state.EffectiveFrame?.ViewportHeight ?? state.SymbolViewBox?.Height ?? root.UserViewportHeight);
         if (state.MaskObjectBoundingBoxContent && reader.Depth > state.MaskDepth) lengthBases = new(1, 1);
-        return new SvgPaintableElementContext(inheritedPresentation, inheritedTextStyle, inheritedStroke, SvgDocumentStyleResolver.Resolve(reader, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken, state.OutputMagnification, inheritedFillRule) { StrokeHostMap = state.OutputMap, InheritedClipRule = state.Groups.Count == 0 ? root.ClipRule : state.Groups[^1].ClipRule, RecordingScope = recordingScope, LengthBases = lengthBases };
+        return new SvgPaintableElementContext(inheritedPresentation, inheritedTextStyle, inheritedStroke, SvgDocumentStyleResolver.Resolve(reader, state, cancellationToken), namedColors, cancellationToken, state.OutputMagnification, inheritedFillRule) { StrokeHostMap = state.OutputMap, InheritedClipRule = state.Groups.Count == 0 ? root.ClipRule : state.Groups[^1].ClipRule, RecordingScope = recordingScope, LengthBases = lengthBases };
     }
 
     /// <summary>Retains this leaf's cascaded declarations before applying instance inheritance or deferred opacity.</summary>
@@ -64,7 +64,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     {
         return AuthoredStyle is not null ? this : this with
         {
-            AuthoredStyle = SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken, reader.LocalName == "text")
+            AuthoredStyle = SvgComputedStyleResolver.Resolve(reader, StyleSheet, CancellationToken, reader.LocalName == "text")
         };
     }
 
@@ -72,14 +72,14 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
 
     internal SvgComputedStyle ResolveStyle(XmlReader reader, bool allowsDirectTextFontProperties)
     {
-        SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken, allowsDirectTextFontProperties));
+        SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, StyleSheet, CancellationToken, allowsDirectTextFontProperties));
         style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity).ResolveDisplay(InheritedPresentation.ElementDisplay) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         if (DeferPaintOpacity) style = style with { Opacity = null, ComputedOpacity = null };
         if (style.Fill is null && InheritedPresentation.PaintServerFill is string fill) style = style with { Fill = fill };
         return style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
     }
 
-    internal SvgAffineTransform ResolveTransform(XmlReader reader) => InheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, WorkCounter, CancellationToken));
+    internal SvgAffineTransform ResolveTransform(XmlReader reader) => InheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, CancellationToken));
 
     internal SvgResolvedShapePresentation ResolvePresentation(SvgComputedStyle style, bool acceptsStroke)
         => SvgShapePresentationResolver.Resolve(style, InheritedPresentation.Paint, InheritedPresentation.IsDisplayed, InheritedPresentation.IsVisible, acceptsStroke, NamedColors);
@@ -101,7 +101,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     /// <summary>Resolves direct text paint and retains its inline font declarations from the same bounded style scan.</summary>
     internal SvgResolvedDirectTextElement ResolveTextShape(XmlReader reader)
     {
-        InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), WorkCounter, CancellationToken, true);
+        InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), CancellationToken, true);
         SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyle.Resolve(reader, inline, StyleSheet));
         style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity).ResolveDisplay(InheritedPresentation.ElementDisplay) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         SvgComputedStyle textStyle = style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;

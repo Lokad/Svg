@@ -48,7 +48,7 @@ public sealed class SvgDirectPaintSpillTests
         });
         OperationCanceledException exception = Assert.Throws<OperationCanceledException>(() =>
         {
-            using SvgRoot root = SvgRootParser.Parse(Source, SvgRenderLimits.Default, budget, null, new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None);
+            using SvgRoot root = SvgRootParser.Parse(Source, SvgRenderLimits.Default, budget, null, CancellationToken.None);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, cancellation.Token);
         });
         Assert.True(observedGrowth);

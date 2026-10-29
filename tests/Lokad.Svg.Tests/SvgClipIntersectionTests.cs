@@ -14,19 +14,11 @@ public sealed class SvgClipIntersectionTests
     {
         byte[] input = Read(identity);
         RenderBudget measured = new(8_000_000);
-        ParserWorkCounter work = new(1_000_000);
         byte[] expected;
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
             expected = surface.Pixels.ToArray();
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { 0, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(8_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget memory = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {

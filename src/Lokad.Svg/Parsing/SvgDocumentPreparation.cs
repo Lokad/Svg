@@ -6,14 +6,13 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Owns one document's reader workspace and collected styles through sizing and scene lowering.</summary>
 /// <remarks>Conversion-thread ownership only. Readers and parser state borrow these settings/rules;
-/// they must finish before disposal. All traversal shares the caller's work counter and cancellation.
+/// they must finish before disposal. All traversal observes the caller's cancellation token.
 /// Disposal releases preparation storage; a completed scene retains its own required resources.</remarks>
 internal sealed class SvgDocumentPreparation : IDisposable
 {
     private readonly ReadOnlyMemory<byte> _svg;
     private readonly SvgRenderLimits _limits;
     private readonly RenderBudget _budget;
-    private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private readonly RenderBudget.BudgetReservation _workspace;
     private SvgRootSyntax? _root;
@@ -24,11 +23,11 @@ internal sealed class SvgDocumentPreparation : IDisposable
     private bool _paintResourcesCollected;
 
     private SvgDocumentPreparation(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget,
-        ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation workspace, XmlReaderSettings settings)
+CancellationToken token, RenderBudget.BudgetReservation workspace, XmlReaderSettings settings)
     {
-        _svg = svg; _limits = limits; _budget = budget; _work = work; _token = token;
+        _svg = svg; _limits = limits; _budget = budget; _token = token;
         _workspace = workspace; Settings = settings;
-        Rules = new(budget, SvgMemoryCategory.Parser, work, token);
+        Rules = new(budget, SvgMemoryCategory.Parser, token);
         Strings = new(budget);
     }
 
@@ -37,7 +36,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
     internal BudgetedParserStringStore Strings { get; }
 
     internal static SvgDocumentPreparation Create(ReadOnlyMemory<byte> svg, SvgRenderLimits limits,
-        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        RenderBudget budget, CancellationToken token)
     {
         SvgPreparationProbe.Observe(SvgPreparationPhase.Workspace);
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
@@ -45,9 +44,9 @@ internal sealed class SvgDocumentPreparation : IDisposable
         SvgDocumentPreparation? result = null;
         try
         {
-            XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, work, token);
-            result = new(svg, limits, budget, work, token, workspace, settings);
-            SvgRootStyleSheetParser.Collect(svg, settings, limits, result.Rules, result.Strings, budget, work, token);
+            XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, token);
+            result = new(svg, limits, budget, token, workspace, settings);
+            SvgRootStyleSheetParser.Collect(svg, settings, limits, result.Rules, result.Strings, budget, token);
             return result;
         }
         catch (Exception exception)
@@ -61,18 +60,18 @@ internal sealed class SvgDocumentPreparation : IDisposable
 
     /// <summary>Discovers requests under this preparation's active owner, reusing its styles and reader workspace.</summary>
     internal SvgFontFaceRequest[] DiscoverFontRequests()
-        => SvgFontRequestDiscovery.Discover(_svg, _limits, _work, _budget, this, _token);
+        => SvgFontRequestDiscovery.Discover(_svg, _limits, _budget, this, _token);
 
     /// <summary>Returns caller-owned scalar coverage charged to this preparation budget; keep it alive until acquisition finishes.</summary>
     internal SvgFontCoverageDiscovery DiscoverFontCoverage()
-        => SvgFontRequestDiscovery.DiscoverWithCoverage(_svg, _limits, _work, _budget, this, _token);
+        => SvgFontRequestDiscovery.DiscoverWithCoverage(_svg, _limits, _budget, this, _token);
 
     /// <summary>Borrows the retained admitted dependency graph; this preparation owns it through acquisition and lowering.</summary>
     internal SvgInstanceFontDiscovery? GetFontInstances()
     {
         if (!_fontInstancesCollected)
         {
-            _fontInstances = SvgInstanceFontDiscovery.Collect(_svg, Settings, _limits, Rules, Strings, _budget, _work, _token);
+            _fontInstances = SvgInstanceFontDiscovery.Collect(_svg, Settings, _limits, Rules, Strings, _budget, _token);
             _fontInstancesCollected = true;
         }
         return _fontInstances;
@@ -86,7 +85,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
             ReadOnlySpan<byte> bytes = _svg.Span;
             SvgInstanceFontDiscovery? consumers = _fontInstancesCollected ? _fontInstances
                 : bytes.Contains((byte)0) || bytes.IndexOf("pattern"u8) >= 0 ? GetFontInstances() : null;
-            _paintResources = SvgPaintResourceSelection.Create(_svg, Settings, _limits, Rules, Strings, _budget, _work, _token, consumers);
+            _paintResources = SvgPaintResourceSelection.Create(_svg, Settings, _limits, Rules, Strings, _budget, _token, consumers);
             _paintResourcesCollected = true;
         }
         return _paintResources;
@@ -127,16 +126,16 @@ internal sealed class SvgDocumentPreparation : IDisposable
             int nodes = 0;
             while (reader.Read())
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 if (reader.NodeType != XmlNodeType.Element) continue;
                 SvgStructuralAdmission.ValidateElementStructure(reader, _limits);
                 if (nodes++ >= _limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                 if (nodes != 1) continue;
                 SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
-                SvgElementAttributePolicy.ValidateRoot(reader, _work, _token);
-                InlineStyle sheet = SvgRootStyleSheetParser.ResolveRoot(reader.GetAttribute("id"), reader.GetAttribute("class"), Rules, _work, _token);
-                InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), _work, _token, true);
-                _root = SvgRootSyntax.ParseComputed(reader, inline, sheet, _work, _token);
+                SvgElementAttributePolicy.ValidateRoot(reader, _token);
+                InlineStyle sheet = SvgRootStyleSheetParser.ResolveRoot(reader.GetAttribute("id"), reader.GetAttribute("class"), Rules, _token);
+                InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), _token, true);
+                _root = SvgRootSyntax.ParseComputed(reader, inline, sheet, _token);
                 if (!inspectStructure) return _root.Value;
             }
             _structureInspected = true;

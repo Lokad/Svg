@@ -27,48 +27,48 @@ internal static class SvgTextPathLayout
 {
     /// <summary>Reuses authored path commands and composed coordinates without flattening or fill closure.</summary>
     internal static SvgTextPathBaseline ReadBaseline(SvgDefinitionLeafSource source, int maximumCommands, RenderBudget budget,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
-        using SvgMeasuredTextPath path = ReadMeasured(source, maximumCommands, budget, work, token);
+        using SvgMeasuredTextPath path = ReadMeasured(source, maximumCommands, budget, token);
         return path.Baseline;
     }
 
     internal static SvgMeasuredTextPath ReadMeasured(SvgDefinitionLeafSource source, int maximumCommands, RenderBudget budget,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         if (source.LocalName != "path") throw new SvgException(SvgErrorCode.UnresolvedResource, "The text-path reference must identify a path.");
         double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(source.GetAttribute("pathLength"));
         if (pathLength == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Zero calibrated text-path lengths are not implemented.");
         // A referenced path's own transform supplements the text coordinate system;
         // definition ancestors do not move that local baseline (SVG 2 textPath).
-        SvgAffineTransform map = SvgGeometrySyntax.ParseTransform(source.GetAttribute("transform"), work, token);
+        SvgAffineTransform map = SvgGeometrySyntax.ParseTransform(source.GetAttribute("transform"), token);
         string data = source.GetAttribute("d") ?? string.Empty;
-        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Parser, work, token);
-        (int prefixLength, _) = SvgPathDataParser.ReadRenderablePrefix(data, maximumCommands, work, token);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Parser, token);
+        (int prefixLength, _) = SvgPathDataParser.ReadRenderablePrefix(data, maximumCommands, token);
         using RenderBudget.BudgetReservation? prefixOwner = prefixLength == data.Length ? null : budget.Reserve(32L + 2L * prefixLength, SvgMemoryCategory.Parser);
-        SvgPathDataParser.ParseCommands(prefixLength == data.Length ? data : data[..prefixLength], maximumCommands, work, token, commands);
-        return SvgMeasuredTextPath.Create(commands.AsSpan(), map, pathLength, budget, work, token);
+        SvgPathDataParser.ParseCommands(prefixLength == data.Length ? data : data[..prefixLength], maximumCommands, token, commands);
+        return SvgMeasuredTextPath.Create(commands.AsSpan(), map, pathLength, budget, token);
     }
 
     /// <summary>Resolves local paths, places glyphs and moves their ordinary scene commands into reserved paint slots.</summary>
-    /// <remarks>Existing scene/source owners provide raster replay. Every path/glyph/command step charges work;
+    /// <remarks>Existing scene/source owners provide raster replay. Every path/glyph/command step observes cancellation;
     /// document teardown releases queued runs and partially adopted glyphs on denial or cancellation.</remarks>
-    internal static void Resolve(SvgDocumentState state, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
-        => Resolve(state, default, limits, work, token);
+    internal static void Resolve(SvgDocumentState state, SvgRenderLimits limits, CancellationToken token)
+        => Resolve(state, default, limits, token);
 
     /// <summary>Resolves only the appended source-local suffix; earlier document runs remain borrowed and untouched.</summary>
-    internal static void Resolve(SvgDocumentState state, SvgPendingCommandStart first, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
+    internal static void Resolve(SvgDocumentState state, SvgPendingCommandStart first, SvgRenderLimits limits, CancellationToken token)
     {
         if (state.PendingTextRuns.Count == first.Text) return;
-        using SvgPaintCommandBatch commands = new(state, state.Scene, first, state.PendingCommandEnd, work, token);
+        using SvgPaintCommandBatch commands = new(state, state.Scene, first, state.PendingCommandEnd, token);
         for (int index = state.PendingTextRuns.Count - 1; index >= first.Text; index--)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgPendingTextRun pending = state.PendingTextRuns[index];
             if (!ReferenceEquals(pending.Scene, state.Scene)) continue;
             SvgPaintCommandEmission emission = commands.Begin(pending.CommandIndex);
-            Emit(state, index, limits, work, token);
+            Emit(state, index, limits, token);
             commands.Retain(emission);
         }
         commands.Complete();
@@ -77,7 +77,7 @@ internal static class SvgTextPathLayout
     /// <summary>Emits one queued run into its recorded scene; the caller replaces its paint slot in source order.</summary>
     /// <remarks>The document retains ownership on failure. Success releases the run and metadata allowance;
     /// teardown is idempotent. Temporary scene and filter bindings are restored even on work denial or cancellation.</remarks>
-    internal static void Emit(SvgDocumentState state, int index, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
+    internal static void Emit(SvgDocumentState state, int index, SvgRenderLimits limits, CancellationToken token)
     {
         SvgPendingTextRun pending = state.PendingTextRuns[index];
         SvgSceneBuilder? previous = state.DefinitionReplayScene;
@@ -88,7 +88,7 @@ internal static class SvgTextPathLayout
         {
             if (pending.SharedLayout is {} sharedLayout)
             {
-                sharedLayout.Emit(pending, state, limits, work, token);
+                sharedLayout.Emit(pending, state, limits, token);
                 sharedLayout.Dispose();
                 pending.Owner.Dispose();
                 return;
@@ -97,18 +97,18 @@ internal static class SvgTextPathLayout
             if (pending.Reference is not {} reference)
             {
                 run = pending.Run ?? throw new InvalidOperationException("A queued direct paint requires a shaped run.");
-                SvgTextGlyphPainter.EmitDirect(run, pending.Placement, pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, work, pending.RecordingTransform, token);
+                SvgTextGlyphPainter.EmitDirect(run, pending.Placement, pending.ViewportClip, pending.Color, state, limits.MaximumPathCommands, state.Budget, pending.RecordingTransform, token);
             }
             else
             {
                 if (!state.Definitions.TryGetValue(reference.PathId, out SvgDefinition definition) || definition.LeafSource is not {} source)
                     throw new SvgException(SvgErrorCode.UnresolvedResource, "The local text-path reference was not found.");
-                using SvgMeasuredTextPath measured = ReadMeasured(source, limits.MaximumPathCommands, state.Budget, work, token);
+                using SvgMeasuredTextPath measured = ReadMeasured(source, limits.MaximumPathCommands, state.Budget, token);
                 SvgTextPathBaseline baseline = measured.Baseline;
                 double offset = reference.IsPercentage ? baseline.Length * (reference.StartOffset / 100) : reference.StartOffset * baseline.OffsetScale;
                 if (!double.IsFinite(offset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The resolved text-path offset is not finite.");
                 run = pending.Run ?? throw new InvalidOperationException("A queued path requires a shaped run.");
-                EmitPath(state, pending, run, measured, offset, limits, work, token);
+                EmitPath(state, pending, run, measured, offset, limits, token);
             }
             run.Dispose();
             pending.Owner.Dispose();
@@ -121,38 +121,38 @@ internal static class SvgTextPathLayout
     }
 
     /// <summary>Emits a path run using a caller-owned measured baseline; shared source ranges and isolated paths use the same placement code.</summary>
-    /// <remarks>The caller retains run/path ownership. Every glyph charges the borrowed work/token, temporary placements reserve geometry, and failed emission leaves scene cleanup to the document.</remarks>
+    /// <remarks>The caller retains run/path ownership. Every glyph observes the borrowed cancellation token, temporary placements reserve geometry, and failed emission leaves scene cleanup to the document.</remarks>
     internal static void EmitPath(SvgDocumentState state, SvgPendingTextRun pending, SvgTextRun run, SvgMeasuredTextPath measured,
-        double offset, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
-        => EmitPath(state, pending, run, measured, offset, null, limits, work, token);
+        double offset, SvgRenderLimits limits, CancellationToken token)
+        => EmitPath(state, pending, run, measured, offset, null, limits, token);
 
     internal static void EmitPath(SvgDocumentState state, SvgPendingTextRun pending, SvgTextRun run, SvgMeasuredTextPath measured,
-        double offset, SvgRectangle? objectBox, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
+        double offset, SvgRectangle? objectBox, SvgRenderLimits limits, CancellationToken token)
     {
-        using OwnedParserArray<SvgPlacedTextGlyph> placements = PlacePath(state, pending, run, measured, offset, work, token);
+        using OwnedParserArray<SvgPlacedTextGlyph> placements = PlacePath(state, pending, run, measured, offset, token);
         SvgTextGlyphPainter.Emit(run, pending.Placement, placements.Items, pending.ViewportClip, pending.Color, state,
-            limits.MaximumPathCommands, state.Budget, work, pending.RecordingTransform, objectBox, token);
+            limits.MaximumPathCommands, state.Budget, pending.RecordingTransform, objectBox, token);
     }
 
     /// <summary>Measures the same source placements before shared object-box shader binding; all temporary path storage is scoped to this visit.</summary>
     internal static SvgRectangle MeasurePath(SvgDocumentState state, SvgPendingTextRun pending, SvgTextRun run,
-        SvgMeasuredTextPath measured, double offset, ParserWorkCounter work, CancellationToken token)
+        SvgMeasuredTextPath measured, double offset, CancellationToken token)
     {
-        using OwnedParserArray<SvgPlacedTextGlyph> placements = PlacePath(state, pending, run, measured, offset, work, token);
-        return SvgTextLayoutBounds.Measure(run, placements.Items, pending.Placement, state.TextBoundsMetrics, work, token);
+        using OwnedParserArray<SvgPlacedTextGlyph> placements = PlacePath(state, pending, run, measured, offset, token);
+        return SvgTextLayoutBounds.Measure(run, placements.Items, pending.Placement, state.TextBoundsMetrics, token);
     }
 
     /// <summary>Owns the temporary glyph placements; the caller disposes the detached array on every exit.</summary>
     private static OwnedParserArray<SvgPlacedTextGlyph> PlacePath(SvgDocumentState state, SvgPendingTextRun pending, SvgTextRun run,
-        SvgMeasuredTextPath measured, double offset, ParserWorkCounter work, CancellationToken token)
+        SvgMeasuredTextPath measured, double offset, CancellationToken token)
     {
         SvgTextPathBaseline baseline = measured.Baseline;
         double pathScale = run.DeviceMetrics?.Scale ?? state.OutputTextScale;
-        using BudgetedParserList<SvgPlacedTextGlyph> placements = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
+        using BudgetedParserList<SvgPlacedTextGlyph> placements = new(state.Budget, SvgMemoryCategory.Geometry, token);
         int glyphIndex = 0;
         foreach (SvgPositionedGlyph glyph in run.Glyphs)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgGlyphFontStyle glyphFont = run.GetGlyphFont(glyphIndex);
             double rotation = run.GetGlyphRotation(glyphIndex);
             SvgTextGlyphPaint paint = run.GetGlyphPaint(glyphIndex++, pending.Color);
@@ -176,7 +176,7 @@ internal static class SvgTextPathLayout
                 ? glyph with { X = baseline.X + distance, Y = baseline.Y + glyph.Y }
                 : glyph with { X = 0, Y = 0 };
             SvgAffineTransform glyphMap = horizontalPlacement ? SvgAffineTransform.Identity
-                : measured.GlyphMap(midpoint, glyph.Advance / 2, glyph.Y, rotation, work, token);
+                : measured.GlyphMap(midpoint, glyph.Advance / 2, glyph.Y, rotation, token);
             // SVG layout keeps signed inline advances, but the rotated
             // fragment rectangle clamps its painted width to zero.
             double paintHalfAdvance = glyph.Advance / 2;
@@ -190,7 +190,7 @@ internal static class SvgTextPathLayout
             {
                 // Retain the scalar path point and physical inline subtraction
                 // before inverse scaling for both bounds and paint fitting.
-                SvgAffineTransform sourcePoint = measured.GlyphMap(midpoint, 0, 0, work, token);
+                SvgAffineTransform sourcePoint = measured.GlyphMap(midpoint, 0, 0, token);
                 float scale = (float)pathScale;
                 float sourceX = (float)sourcePoint.E * scale - (float)(glyph.Advance * pathScale) / 2;
                 float sourceY = (float)sourcePoint.F * scale + (float)(glyph.Y * pathScale);

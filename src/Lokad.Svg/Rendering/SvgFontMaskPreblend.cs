@@ -8,13 +8,13 @@ using Lokad.Svg.Parsing;
 /// <remarks>Uses pinned three-bit canonical luminance and platform gamma/contrast. No mask, font or destination storage is retained. Each entry consumes work and observes cancellation; concurrent callers use independent buffers. Paint alpha and clipping apply after preblend.</remarks>
 internal static class SvgFontMaskPreblend
 {
-    internal static void BuildLinuxGrayTable(Span<byte> table, SvgColor color, ParserWorkCounter work, CancellationToken token)
-        => BuildTable(table, color, false, work, token);
+    internal static void BuildLinuxGrayTable(Span<byte> table, SvgColor color, CancellationToken token)
+        => BuildTable(table, color, false, token);
 
-    internal static void BuildWindowsGrayTable(Span<byte> table, SvgColor color, ParserWorkCounter work, CancellationToken token)
-        => BuildTable(table, color, true, work, token);
+    internal static void BuildWindowsGrayTable(Span<byte> table, SvgColor color, CancellationToken token)
+        => BuildTable(table, color, true, token);
 
-    private static void BuildTable(Span<byte> table, SvgColor color, bool useSrgb, ParserWorkCounter work, CancellationToken token)
+    private static void BuildTable(Span<byte> table, SvgColor color, bool useSrgb, CancellationToken token)
     {
         if (table.Length != 256) throw new ArgumentException("A font preblend table must contain 256 entries.", nameof(table));
         int red = Canonical(color.Red), green = Canonical(color.Green), blue = Canonical(color.Blue);
@@ -26,7 +26,7 @@ internal static class SvgFontMaskPreblend
         float contrast = (useSrgb ? 1f : .2f) * linearDestination;
         for (int index = 0; index < table.Length; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             float alpha = index / 255f;
             alpha += (1f - alpha) * contrast * alpha;
             float linearOutput = linearSource * alpha + (1f - alpha) * linearDestination;

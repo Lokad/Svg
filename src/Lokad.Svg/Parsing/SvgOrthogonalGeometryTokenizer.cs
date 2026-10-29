@@ -6,15 +6,15 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses bounded absolute integer path and point-list contours into charged point storage. Diagonal contours materialize here; orthogonality is enforced downstream at lowering.</summary>
 internal static class SvgOrthogonalGeometryTokenizer
 {
-    internal static BudgetedParserList<SvgPoint> ParsePath(string value, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<int> contourEnds, bool allowDegenerateContours)
+    internal static BudgetedParserList<SvgPoint> ParsePath(string value, int maximumGeometryElements, RenderBudget budget, CancellationToken cancellationToken, BudgetedParserList<int> contourEnds, bool allowDegenerateContours)
     {
         ArgumentNullException.ThrowIfNull(contourEnds);
-        ValidatePathCommandCount(value, maximumGeometryElements, workCounter, cancellationToken);
-        PathTokenReader tokens = new(value, workCounter, cancellationToken);
+        ValidatePathCommandCount(value, maximumGeometryElements, cancellationToken);
+        PathTokenReader tokens = new(value, cancellationToken);
         if (tokens.End) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
         char firstCommand = tokens.ReadCommand();
         if (firstCommand is not ('M' or 'm')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
-        BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+        BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, cancellationToken);
         try
         {
             int commandIndex = 0;
@@ -186,13 +186,13 @@ internal static class SvgOrthogonalGeometryTokenizer
         points.Add(next);
         return next;
     }
-    internal static BudgetedParserList<SvgPoint> ParsePointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowDegenerateContours)
+    internal static BudgetedParserList<SvgPoint> ParsePointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, CancellationToken cancellationToken, bool allowDegenerateContours)
     {
-        ValidatePointListVertexCount(value, maximumGeometryElements, workCounter, cancellationToken);
-        BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+        ValidatePointListVertexCount(value, maximumGeometryElements, cancellationToken);
+        BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, cancellationToken);
         try
         {
-            DelimitedTokenReader values = new(value, workCounter, cancellationToken);
+            DelimitedTokenReader values = new(value, cancellationToken);
             int vertexCount = 0;
             while (values.TryReadValue(out ReadOnlySpan<char> x))
             {
@@ -225,16 +225,16 @@ internal static class SvgOrthogonalGeometryTokenizer
         }
     }
 
-    internal static BudgetedParserList<SvgFractionalPoint> ParseFractionalPointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => ParseFractionalPointList(value, elementName, maximumGeometryElements, budget, workCounter, cancellationToken, 3);
+    internal static BudgetedParserList<SvgFractionalPoint> ParseFractionalPointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, CancellationToken cancellationToken)
+        => ParseFractionalPointList(value, elementName, maximumGeometryElements, budget, cancellationToken, 3);
 
-    internal static BudgetedParserList<SvgFractionalPoint> ParseFractionalPointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, int minimumPoints)
+    internal static BudgetedParserList<SvgFractionalPoint> ParseFractionalPointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, CancellationToken cancellationToken, int minimumPoints)
     {
-        ValidatePointListVertexCount(value, maximumGeometryElements, workCounter, cancellationToken);
-        BudgetedParserList<SvgFractionalPoint> points = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+        ValidatePointListVertexCount(value, maximumGeometryElements, cancellationToken);
+        BudgetedParserList<SvgFractionalPoint> points = new(budget, SvgMemoryCategory.Geometry, cancellationToken);
         try
         {
-            DelimitedTokenReader values = new(value, workCounter, cancellationToken);
+            DelimitedTokenReader values = new(value, cancellationToken);
             int vertexCount = 0;
             bool invalidNativeCoordinate = false;
             while (values.TryReadValue(out ReadOnlySpan<char> x))
@@ -242,8 +242,8 @@ internal static class SvgOrthogonalGeometryTokenizer
                 if ((vertexCount & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                 if (!values.TryReadValue(out ReadOnlySpan<char> y)) throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points must pair every x coordinate with a y coordinate.");
                 if (vertexCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, elementName + " vertex count exceeds the configured path-command limit.");
-                float px = NativeCoordinate(x, elementName, workCounter, cancellationToken);
-                float py = NativeCoordinate(y, elementName, workCounter, cancellationToken);
+                float px = NativeCoordinate(x, elementName, cancellationToken);
+                float py = NativeCoordinate(y, elementName, cancellationToken);
                 invalidNativeCoordinate |= !float.IsFinite(px) || !float.IsFinite(py);
                 if (!invalidNativeCoordinate) points.Add(new SvgFractionalPoint(px, py));
                 vertexCount++;
@@ -260,10 +260,10 @@ internal static class SvgOrthogonalGeometryTokenizer
             throw;
         }
 
-        static float NativeCoordinate(ReadOnlySpan<char> token, string name, ParserWorkCounter work, CancellationToken cancellation)
+        static float NativeCoordinate(ReadOnlySpan<char> token, string name, CancellationToken cancellation)
         {
             _ = ParsePointCoordinate(token, name);
-            float native = SvgFloatNumber.ReadValidated(token, work, cancellation);
+            float native = SvgFloatNumber.ReadValidated(token, cancellation);
             // SVG numbers reject positive exponents above the float decimal range,
             // even for zero; other numeric consumers retain their own rules.
             int exponentAt = token.IndexOfAny('e', 'E');
@@ -279,26 +279,26 @@ internal static class SvgOrthogonalGeometryTokenizer
         return result;
     }
 
-    private static void ValidatePathCommandCount(string value, int maximumGeometryElements, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void ValidatePathCommandCount(string value, int maximumGeometryElements, CancellationToken cancellationToken)
     {
         int commandCount = 0;
         for (int index = 0; index < value.Length; index++)
         {
-            if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
+            if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
             if (value[index] is not ('M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'Z' or 'z')) continue;
             if (commandCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
             commandCount++;
         }
     }
 
-    private static void ValidatePointListVertexCount(string value, int maximumGeometryElements, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void ValidatePointListVertexCount(string value, int maximumGeometryElements, CancellationToken cancellationToken)
     {
         long maximumValues = (long)maximumGeometryElements * 2;
         int valueCount = 0;
         bool withinValue = false;
         for (int index = 0; index < value.Length; index++)
         {
-            if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
+            if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
             if (value[index] is ',' or ' ' or '\t' or '\r' or '\n') { withinValue = false; continue; }
             if (withinValue) continue;
             if (valueCount >= maximumValues) throw new SvgException(SvgErrorCode.LimitExceeded, "Point-list vertex count exceeds the configured limit.");
@@ -326,15 +326,13 @@ internal static class SvgOrthogonalGeometryTokenizer
     private ref struct PathTokenReader
     {
         private readonly ReadOnlySpan<char> _value;
-        private readonly ParserWorkCounter _workCounter;
         private readonly CancellationToken _cancellationToken;
         private int _position;
         private int _nextCheckpoint;
 
-        internal PathTokenReader(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        internal PathTokenReader(ReadOnlySpan<char> value, CancellationToken cancellationToken)
         {
             _value = value;
-            _workCounter = workCounter;
             _cancellationToken = cancellationToken;
         }
 
@@ -405,26 +403,24 @@ internal static class SvgOrthogonalGeometryTokenizer
         {
             while (_nextCheckpoint < _value.Length && _position >= _nextCheckpoint)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 _nextCheckpoint += 4096;
             }
         }
     }
 
-    /// <summary>Streams borrowed point tokens with shared work and cancellation checkpoints, owning no storage.</summary>
+    /// <summary>Streams borrowed point tokens with cancellation checkpoints, owning no storage.</summary>
     internal ref struct DelimitedTokenReader
     {
         private readonly ReadOnlySpan<char> _value;
-        private readonly ParserWorkCounter _workCounter;
         private readonly CancellationToken _cancellationToken;
         private int _position;
         private int _nextCheckpoint;
         private bool _hasValue;
 
-        internal DelimitedTokenReader(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        internal DelimitedTokenReader(ReadOnlySpan<char> value, CancellationToken cancellationToken)
         {
             _value = value;
-            _workCounter = workCounter;
             _cancellationToken = cancellationToken;
         }
 
@@ -452,7 +448,7 @@ internal static class SvgOrthogonalGeometryTokenizer
         {
             while (_nextCheckpoint < _value.Length && _position >= _nextCheckpoint)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 _nextCheckpoint += 4096;
             }
         }

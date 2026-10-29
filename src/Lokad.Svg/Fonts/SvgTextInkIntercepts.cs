@@ -15,24 +15,24 @@ internal static class SvgTextInkIntercepts
 {
     internal static void Collect(SvgTextRun run, SvgTextPaintFragment fragment, SvgPositionedGlyph first,
         double stripeTop, double stripeBottom, double dilation, double glyphStretch, BudgetedParserList<SvgTextInkGap> gaps,
-        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        RenderBudget budget, CancellationToken token)
     {
         for (int index = fragment.Start; index < fragment.End; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgGlyphFontStyle font = run.GetGlyphFont(index);
             SvgPositionedGlyph glyph = run.Glyphs[index];
             // Native path intercepts use an unhinted canonical 64px strike,
             // then scale the resulting interval back to the requested font size.
             float pathScale = (float)font.FontSize / 64;
-            using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, glyph with { X = 0, Y = 0 }, 64, budget, work, token);
+            using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, glyph with { X = 0, Y = 0 }, 64, budget, token);
             double originX = first.X + glyph.X - run.Glyphs[fragment.Start].X;
             double originY = first.Y + glyph.Y - run.Glyphs[fragment.Start].Y;
             double left = double.PositiveInfinity, right = double.NegativeInfinity;
             foreach (SvgGlyphQuadraticContour contour in contours.Contours)
             foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgGlyphOutlinePoint p = new((float)segment.Start.X, (float)segment.Start.Y),
                     q = new((float)segment.Control.X, (float)segment.Control.Y), r = new((float)segment.End.X, (float)segment.End.Y);
                 double top = ((float)stripeTop - (float)originY) / pathScale, bottom = ((float)stripeBottom - (float)originY) / pathScale;
@@ -53,7 +53,7 @@ internal static class SvgTextInkIntercepts
                 gaps.Add(new(x, x + extent));
             }
         }
-        gaps.Sort(work, token);
+        gaps.Sort(token);
 
         static void Include(double x, ref double left, ref double right) { left = Math.Min(left, x); right = Math.Max(right, x); }
 

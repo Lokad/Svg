@@ -81,10 +81,10 @@ public sealed class SvgOwnClipIsolationTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Known_and_forward_own_clip_siblings_keep_linear_parser_work(bool forward)
+    public void Known_and_forward_own_clip_siblings_keep_linear_parser_allocation_growth(bool forward)
     {
         long small = Measure(32), large = Measure(512);
-        Assert.True(large < small * 18, "Sixteen times as many sibling scopes must keep linear parser work.");
+        Assert.True(large < small * 18, "Sixteen times as many sibling scopes must keep linear parser allocation growth.");
 
         long Measure(int count)
         {
@@ -95,10 +95,10 @@ public sealed class SvgOwnClipIsolationTests
             if (forward) source.Append(definitions);
             source.Append("</svg>");
             RenderBudget budget = new(40_000_000);
-            ParserWorkCounter work = new(SvgRenderLimits.Default.MaximumWorkUnits);
-            using (SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(source.ToString()), SvgRenderLimits.Default, budget, null, work, CancellationToken.None)) { }
+            long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+            using (SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(source.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            return work.Used;
+            return GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
         }
     }
 }

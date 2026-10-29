@@ -62,7 +62,7 @@ public sealed class SvgRadialPaintStorageTests
         long paintBytes = SvgRadialGradient.RetainedStorageBytes;
         long arrayBytes = ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4);
         RenderBudget budget = new(detach ? paintBytes + arrayBytes : paintBytes);
-        using (BudgetedGeometryBuilder builder = new(budget, SvgMemoryCategory.Geometry, new(1000), CancellationToken.None))
+        using (BudgetedGeometryBuilder builder = new(budget, SvgMemoryCategory.Geometry, CancellationToken.None))
         {
             if (detach)
             {

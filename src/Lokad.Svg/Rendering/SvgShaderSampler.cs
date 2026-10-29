@@ -50,12 +50,12 @@ internal struct SvgShaderSampler
         _alpha = ((alpha * (int)(coverage * 256)) >> 8) / 255f;
     }
 
-    internal SvgAnalyticPaint Sample(int x, int y, ParserWorkCounter work, CancellationToken token)
+    internal SvgAnalyticPaint Sample(int x, int y, CancellationToken token)
     {
         if (_kind != Kind.Pattern) return SampleGradient(x, y);
         SvgPatternGeometry pattern = _pattern ?? throw new InvalidOperationException("Pattern sampling requires a retained texture definition.");
         SvgPatternSample sample = SvgPatternSample.Prepare(pattern, x, y, pattern.NativeImageMap is null ? default : _context.Origin(x, y), ref _coordinates);
-        if (sample.RequiresFiltering) for (int phase = 0; phase < 4; phase++) work.Consume(token);
+        if (sample.RequiresFiltering) token.ThrowIfCancellationRequested();
         return SvgAnalyticPaint.Shader(sample.Sample(_texture.Span, _alpha));
     }
 

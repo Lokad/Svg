@@ -18,7 +18,7 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(OpenTypeFont.GetGlyphContours(bytes, 1, CancellationToken.None), OpenTypeFont.GetGlyphContours(bytes, 2, CancellationToken.None));
         byte[] unchanged = bytes.ToArray();
         RenderBudget budget = new(long.MaxValue);
-        Assert.True(OpenTypeFont.NeedsCompositeDeviceFitting(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), budget, new(long.MaxValue), CancellationToken.None));
+        Assert.True(OpenTypeFont.NeedsCompositeDeviceFitting(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, bytes);
     }
@@ -40,7 +40,7 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(source.Start.X + 3, first.Start.X);
         Assert.Equal(source.Start.Y - 4, first.Start.Y);
         RenderBudget budget = new(long.MaxValue);
-        Assert.True(OpenTypeFont.NeedsCompositeDeviceFitting(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), budget, new(long.MaxValue), CancellationToken.None));
+        Assert.True(OpenTypeFont.NeedsCompositeDeviceFitting(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -55,7 +55,7 @@ public sealed partial class OpenTypeFontTests
         WriteInt16(bytes, range.Offset + 14, 0);
         WriteInt16(bytes, range.Offset + 16, 0);
         RenderBudget budget = new(long.MaxValue);
-        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetLatinLightContours(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 32, budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetLatinLightContours(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 32, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -89,7 +89,7 @@ public sealed partial class OpenTypeFontTests
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
         var budget = new RenderBudget(10_000);
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(2, 0, 3, 0), 100, budget))
-            Assert.False(source.HasSimpleOutline(new(long.MaxValue), CancellationToken.None));
+            Assert.False(source.HasSimpleOutline(CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
 
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();

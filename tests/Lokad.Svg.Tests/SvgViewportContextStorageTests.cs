@@ -14,7 +14,7 @@ public sealed class SvgViewportContextStorageTests
         using CancellationTokenSource cancellation = new();
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
-            using (SvgDocumentState state = new(budget, new(100_000), cancellation.Token))
+            using (SvgDocumentState state = new(budget, cancellation.Token))
             {
                 SvgInheritedContainer? inherited = realViewport
                     ? new(new(default, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default, null, 255, SvgInheritedStrokeStyle.Default)

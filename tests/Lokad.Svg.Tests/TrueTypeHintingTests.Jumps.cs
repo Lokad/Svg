@@ -15,7 +15,7 @@ public sealed partial class TrueTypeHintingTests
         // Forward early exits and a backward loop reduce the reached Courier
         // New control flow to authored programs without proprietary font bytes.
         var budget = new RenderBudget(long.MaxValue);
-        using (TrueTypeHinting machine = Create([], [], [], budget, new(long.MaxValue), CancellationToken.None))
+        using (TrueTypeHinting machine = Create([], [], [], budget, CancellationToken.None))
         {
             machine.Run(Convert.FromHexString(program), TrueTypeHintProgramKind.Glyph);
             Assert.Equal(7, machine.Storage[0]);

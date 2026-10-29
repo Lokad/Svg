@@ -136,24 +136,21 @@ public sealed class SvgNonScalingMarkerTests
     {
         byte[] input = FilteredBoundary("1e9", ancestor, flood);
         RenderBudget budget = new(1_000_000);
-        ParserWorkCounter work = new(10_000_000);
         long peak;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
-            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
+            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
             {
                 peak = budget.Snapshot().PeakBytes;
                 using SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
                 Assert.Equal(flood ? (byte)255 : (byte)0, raster.Pixels[3]);
             }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input,
-                SvgRenderLimits.Default, budget, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
             Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input,
-                SvgRenderLimits.Default, budget, null, new(10_000_000), cancellation.Token)).CancellationToken);
+                SvgRenderLimits.Default, budget, null, cancellation.Token)).CancellationToken);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) { }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
@@ -163,7 +160,7 @@ public sealed class SvgNonScalingMarkerTests
         using (RenderBudget.BudgetReservation borrowed = denied.Reserve(73, SvgMemoryCategory.Scene))
         {
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input,
-                SvgRenderLimits.Default, denied, null, new(10_000_000), CancellationToken.None)).ErrorCode);
+                SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(73, denied.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -272,24 +269,21 @@ public sealed class SvgNonScalingMarkerTests
     {
         byte[] input = Document("path", consumer, "mid", true, false);
         RenderBudget budget = new(1_000_000);
-        ParserWorkCounter work = new(10_000_000);
         long parserPeak;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
-            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
+            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
             {
                 parserPeak = budget.Snapshot().PeakBytes;
                 using SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
                 Assert.Equal((byte)255, raster.Pixels[(12 * 32 + 20) * 4 + 3]);
             }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input,
-                SvgRenderLimits.Default, budget, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
             Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input,
-                SvgRenderLimits.Default, budget, null, new(10_000_000), cancellation.Token)).CancellationToken);
+                SvgRenderLimits.Default, budget, null, cancellation.Token)).CancellationToken);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) { }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);

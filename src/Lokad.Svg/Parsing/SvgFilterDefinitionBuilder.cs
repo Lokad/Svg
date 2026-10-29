@@ -17,7 +17,6 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
     private readonly BudgetedSceneList<SvgFilterInput> _mergeInputs;
     private readonly BudgetedParserList<ResultName> _results;
     private readonly BudgetedParserStringStore _strings;
-    private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private SvgFilterAdmission? _rejection;
     private SvgFilterRegion _region = new(new(-10, true), new(-10, true), new(120, true), new(120, true), SvgFilterUnits.ObjectBoundingBox);
@@ -27,23 +26,22 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
     private int _mergeIndex = -1;
     internal string? Id { get; private set; }
 
-    private SvgFilterDefinitionBuilder(RenderBudget budget, ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation owner)
+    private SvgFilterDefinitionBuilder(RenderBudget budget, CancellationToken token, RenderBudget.BudgetReservation owner)
     {
         _owner = owner;
-        _work = work;
         _token = token;
-        _primitives = new(budget, work, token);
-        _mergeInputs = new(budget, work, token);
-        _results = new(budget, SvgMemoryCategory.Parser, work, token);
+        _primitives = new(budget, token);
+        _mergeInputs = new(budget, token);
+        _results = new(budget, SvgMemoryCategory.Parser, token);
         _strings = new(budget);
     }
 
-    internal static SvgFilterDefinitionBuilder Create(XmlReader reader, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static SvgFilterDefinitionBuilder Create(XmlReader reader, RenderBudget budget, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         RenderBudget.BudgetReservation owner = budget.Reserve(384, SvgMemoryCategory.Parser);
         SvgFilterDefinitionBuilder builder;
-        try { builder = new(budget, work, token, owner); }
+        try { builder = new(budget, token, owner); }
         catch { owner.Dispose(); throw; }
         try
         {
@@ -60,7 +58,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
                 {
                     if (legacyResolution.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
                         throw new SvgException(SvgErrorCode.LimitExceeded, "Legacy filter resolution exceeds the syntax limit.");
-                    work.ConsumeText(legacyResolution.Length, token);
+                    token.ThrowIfCancellationRequested();
                     int count = 0;
                     foreach (Range part in legacyResolution.AsSpan().SplitAny(" ,\t\r\n".AsSpan()))
                     {
@@ -80,7 +78,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
 
     internal void Add(XmlReader reader, bool directChild)
     {
-        _work.Consume(_token);
+        _token.ThrowIfCancellationRequested();
         if (!directChild && _mergeIndex >= 0 && reader.Depth == _mergeDepth + 1
             && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "feMergeNode")
         {
@@ -173,7 +171,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
         {
             double validated = Number(value);
             if (validated < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Blur deviations must be nonnegative.");
-            float native = SvgFloatNumber.ReadValidated(value, _work, _token);
+            float native = SvgFloatNumber.ReadValidated(value, _token);
             // Preserve finite legacy admission when intermediate float place
             // values overflow; playback still clamps mapped Gaussian deviations.
             return float.IsFinite(native) ? native : validated;
@@ -188,7 +186,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
             SvgFilterLength? Read(string? value)
             {
                 if (value is null) return null;
-                _work.ConsumeText(value.Length, _token);
+                _token.ThrowIfCancellationRequested();
                 return Length(value, default);
             }
         }
@@ -202,7 +200,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
         if (name == "SourceAlpha") return SvgFilterInput.SourceAlpha;
         for (int index = before - 1; index >= 0; index--)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (_results[index].Value == name) return new(index);
         }
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter inputs must name SourceGraphic, SourceAlpha or an earlier result.");
@@ -221,7 +219,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
     {
         while (reader.MoveToNextAttribute())
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (reader.NamespaceURI.Length != 0 && reader.NamespaceURI != "http://www.w3.org/1999/xlink") continue;
             bool admitted = false;
             foreach (Range range in allowed.AsSpan().Split(' '))

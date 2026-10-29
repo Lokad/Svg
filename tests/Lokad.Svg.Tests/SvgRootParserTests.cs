@@ -6,15 +6,6 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgRootParserTests
 {
-    [Fact]
-    public void Root_parser_uses_a_caller_owned_work_counter()
-    {
-        var budget = new RenderBudget(1_024 * 1_024);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), SvgRenderLimits.Default, budget, null, new ParserWorkCounter(0), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-    }
 
     [Fact]
     public void Container_presentation_resolves_inherited_paint_display_visibility_and_opacity()
@@ -3706,40 +3697,6 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Enforces_the_work_limit_while_scanning_stylesheet_text()
-    {
-        string stylesheet = new string(' ', 4096) + "rect { fill: red; }";
-        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>" + stylesheet + "</style></svg>");
-        SvgRenderLimits limits = new(10_000, 8_192, 16, 16, 1_024, 16, 16, 4);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-    }
-
-    [Fact]
-    public void Enforces_the_work_limit_while_validating_xml_attributes()
-    {
-        SvgRenderLimits limits = new(100_000, 1_024, 16, 16, 1_024, 16, 16, 3);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), limits, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Contains("parsing work", exception.Message);
-    }
-
-    [Fact]
-    public void Enforces_the_work_limit_while_removing_stylesheet_comments()
-    {
-        string stylesheet = "/*" + new string('x', 4096) + "*/ rect { fill: red; }";
-        SvgRenderLimits limits = new(10_000, 10_000, 16, 16, 1_024, 16, 16, 6);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>" + stylesheet + "</style></svg>"), limits, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-    }
-
-    [Fact]
     public void Reserves_raw_and_comment_stripped_stylesheet_text_during_parsing()
     {
         string stylesheet = "/**/" + new string(' ', 512) + "rect { fill: red; }";
@@ -3754,68 +3711,6 @@ public sealed class SvgRootParserTests
         Assert.Equal(0, insufficient.Snapshot().CurrentBytes);
         using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(measured.Snapshot().PeakBytes), CancellationToken.None);
         Assert.Single(root.Rectangles);
-    }
-
-    [Fact]
-    public void Enforces_the_work_limit_while_scanning_stylesheet_rule_syntax()
-    {
-        string stylesheet = new('x', 4096);
-        SvgRenderLimits limits = new(10_000, 10_000, 16, 16, 1_024, 16, 16, 5);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>" + stylesheet + "</style></svg>"), limits, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-    }
-
-    [Fact]
-    public void Enforces_the_work_limit_while_scanning_root_and_leaf_inline_style_text()
-    {
-        string style = new string(' ', 4096) + "fill: red";
-        SvgRenderLimits rootLimits = new(10_000, 8_192, 16, 16, 1_024, 16, 16, 4);
-        SvgRenderLimits leafLimits = new(10_000, 8_192, 16, 16, 1_024, 16, 16, 5);
-
-        SvgException root = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' style='" + style + "'/>") , rootLimits, CancellationToken.None));
-        SvgException leaf = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect style='" + style + "'/></svg>") , leafLimits, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, root.ErrorCode);
-        Assert.Equal(SvgErrorCode.LimitExceeded, leaf.ErrorCode);
-    }
-
-    [Fact]
-    public void Enforces_the_work_limit_while_reading_inline_style_declarations()
-    {
-        string style = new(';', 4096);
-        SvgRenderLimits limits = new(10_000, 10_000, 16, 16, 1_024, 16, 16, 4);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' style='" + style + "'/>") , limits, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-    }
-
-    [Fact]
-    public void Enforces_the_work_limit_while_preflighting_path_and_point_list_text()
-    {
-        string values = new string(' ', 4097);
-        SvgRenderLimits limits = new(10_000, 8_192, 16, 16, 1_024, 16, 16, 5);
-
-        SvgException path = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><path d='" + values + "'/></svg>") , limits, CancellationToken.None));
-        SvgException polygon = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='" + values + "'/></svg>") , limits, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, path.ErrorCode);
-        Assert.Equal(SvgErrorCode.LimitExceeded, polygon.ErrorCode);
-    }
-
-    [Fact]
-    public void Enforces_the_work_limit_while_reading_geometry_tokens()
-    {
-        string value = new string(' ', 4096) + "X";
-        SvgRenderLimits limits = new(10_000, 10_000, 16, 16, 1_024, 16, 16, 6);
-
-        SvgException path = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><path d='" + value + "'/></svg>") , limits, CancellationToken.None));
-        SvgException polygon = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='" + value + "'/></svg>") , limits, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, path.ErrorCode);
-        Assert.Equal(SvgErrorCode.LimitExceeded, polygon.ErrorCode);
     }
 
     [Fact]
@@ -3872,49 +3767,22 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Enforces_the_work_limit_while_resolving_forward_use_references()
-    {
-        SvgRenderLimits limits = new(1_000_000, 1_000_000, 16, 16, 1_000_000, 16, 16, 17);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#tile'/><use href='#tile'/><defs><rect id='tile' width='1' height='1'/></defs></svg>"u8.ToArray(), limits, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-    }
-
-    [Fact]
-    public void Enforces_the_work_limit_while_adding_definition_entries()
-    {
-        SvgRenderLimits limits = new(1_000_000, 1_000_000, 16, 16, 1_000_000, 16, 16, 8);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='first'/><rect id='second'/></defs></svg>"u8.ToArray(), limits, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-    }
-
-    [Fact]
-    public void Charges_parser_collection_sorting_to_the_shared_work_limit()
+    public void Parser_collection_sorting_orders_retained_values()
     {
         using BudgetedParserList<int> values = new(new RenderBudget(1_000), SvgMemoryCategory.Geometry);
         values.Add(3);
         values.Add(1);
         values.Add(2);
 
-        Assert.Throws<SvgException>(() => values.Sort(new ParserWorkCounter(2), CancellationToken.None));
-
-        values.Sort(new ParserWorkCounter(20), CancellationToken.None);
+        values.Sort(CancellationToken.None);
         Assert.Equal([1, 2, 3], values.AsSpan().ToArray());
     }
 
     [Fact]
-    public void Charges_scene_transfer_copies_to_the_shared_work_limit()
+    public void Scene_transfer_preserves_geometry()
     {
         SvgRectangle rectangle = new(0, 0, 1, 1, new SvgColor(0, 0, 0, 255), true, null);
-        using SvgSceneBuilder limited = new(new RenderBudget(10_000), new ParserWorkCounter(1), CancellationToken.None);
-        limited.AddGeometries([SvgGeometry.FromRectangle(rectangle)]);
-
-        Assert.Throws<SvgException>(() => limited.Build());
-
-        using SvgSceneBuilder accepted = new(new RenderBudget(10_000), new ParserWorkCounter(20), CancellationToken.None);
+        using SvgSceneBuilder accepted = new(new RenderBudget(10_000), CancellationToken.None);
         accepted.AddGeometries([SvgGeometry.FromRectangle(rectangle)]);
         using SvgSceneStorage storage = accepted.Build();
         Assert.Equal([rectangle], storage.Rectangles);
@@ -3925,7 +3793,7 @@ public sealed class SvgRootParserTests
     {
         RenderBudget budget = new(10_000);
         SvgRectangle rectangle = new(0, 0, 1, 1, new SvgColor(0, 0, 0, 255), true, null);
-        using var scene = new SvgSceneBuilder(budget, new ParserWorkCounter(100), CancellationToken.None);
+        using var scene = new SvgSceneBuilder(budget, CancellationToken.None);
         for (int index = 0; index < 4; index++) scene.AddGeometry(SvgGeometry.FromRectangle(rectangle));
         long beforeGrowth = budget.Snapshot().CurrentBytes;
 
@@ -3937,30 +3805,19 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Charges_parser_collection_transfer_copies_to_the_shared_work_limit()
+    public void Parser_collection_transfer_preserves_values()
     {
         RenderBudget budget = new(1_000);
-        using (BudgetedParserList<int> limited = new(budget, SvgMemoryCategory.Parser, new ParserWorkCounter(1), CancellationToken.None))
+        using (BudgetedParserList<int> limited = new(budget, SvgMemoryCategory.Parser, CancellationToken.None))
         {
             for (int value = 0; value < 5; value++) limited.Add(value);
-            Assert.Throws<SvgException>(() => limited.Detach());
         }
         Assert.Equal(0, budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Parser]);
 
-        using BudgetedParserList<int> accepted = new(new RenderBudget(1_000), SvgMemoryCategory.Parser, new ParserWorkCounter(20), CancellationToken.None);
+        using BudgetedParserList<int> accepted = new(new RenderBudget(1_000), SvgMemoryCategory.Parser, CancellationToken.None);
         for (int value = 0; value < 5; value++) accepted.Add(value);
         using OwnedParserArray<int> storage = accepted.Detach();
         Assert.Equal([0, 1, 2, 3, 4], storage.Items);
-    }
-
-    [Fact]
-    public void Enforces_the_work_limit_while_matching_stylesheet_rules()
-    {
-        SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 16, 1);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect, #one { fill: red; }</style><rect width='1'/></svg>"u8.ToArray(), limits, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
 
     [Fact]
@@ -4107,12 +3964,11 @@ public sealed class SvgRootParserTests
         Assert.True(reader.Read());
         Assert.True(reader.Read());
         RenderBudget budget = new(10_000);
-        ParserWorkCounter workCounter = new(1);
-        using SvgDocumentState state = new(budget, workCounter, CancellationToken.None);
+        using SvgDocumentState state = new(budget, CancellationToken.None);
         state.StyleRules.Add(new CssRule(".selected", new(0, 1, 0), default, false));
         SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, null, null);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRenderedLeafParser.TryParse(reader, true, root, state, SvgRenderLimits.Default, budget, new Dictionary<string, SvgColor>(), null, workCounter, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRenderedLeafParser.TryParse(reader, true, root, state, SvgRenderLimits.Default, budget, new Dictionary<string, SvgColor>(), null, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Contains("identifiers and class values", exception.Message);
@@ -4127,12 +3983,11 @@ public sealed class SvgRootParserTests
         Assert.True(reader.Read());
         CssRule rule = new(".selected", new(0, 1, 0), default, false);
         RenderBudget budget = new(10_000);
-        ParserWorkCounter work = new(10);
-        using BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser, work, CancellationToken.None);
-        using SvgCssAncestorContext ancestors = new(rules, budget, work, CancellationToken.None);
+        using BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser, CancellationToken.None);
+        using SvgCssAncestorContext ancestors = new(rules, budget, CancellationToken.None);
 
         SvgCssElement element = SvgCssElement.Read(reader);
-        SvgException exception = Assert.Throws<SvgException>(() => rule.Matches(element, ancestors, work, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => rule.Matches(element, ancestors, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Contains("identifiers and class values", exception.Message);
@@ -6956,7 +6811,7 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgGeometryKind.RadialPolygon, geometry.Kind);
         Assert.True(geometry.RadialPolygon.HasFill);
         SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
-        SvgRectangle bounds = SvgPathBounds.Compute(path.Commands, new(int.MaxValue), CancellationToken.None);
+        SvgRectangle bounds = SvgPathBounds.Compute(path.Commands, CancellationToken.None);
         Assert.Equal((0d, 0d, 8d, 8d), (bounds.X, bounds.Y, bounds.Width, bounds.Height));
         SvgGradientPaintMatrices matrices = Assert.IsType<SvgGradientPaintMatrices>(geometry.RadialPolygon.Gradient.NativePaintMatrices);
         Assert.Equal(new(8, 0, 0, 0, 8, 0), matrices.Local);
@@ -7872,7 +7727,7 @@ public sealed class SvgRootParserTests
     private static SvgRectangle MappedPointListBox(SvgGeometry geometry, SvgRectangle expectedSource, SvgAffineTransform expectedMap)
     {
         SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
-        SvgRectangle bounds = SvgPathBounds.Compute(path.Commands, new(int.MaxValue), CancellationToken.None);
+        SvgRectangle bounds = SvgPathBounds.Compute(path.Commands, CancellationToken.None);
         Assert.Equal((expectedSource.X, expectedSource.Y, expectedSource.Width, expectedSource.Height),
             (bounds.X, bounds.Y, bounds.Width, bounds.Height));
         Assert.Equal(expectedMap, path.SceneMap);

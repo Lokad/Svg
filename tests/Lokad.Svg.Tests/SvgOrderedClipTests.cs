@@ -22,7 +22,7 @@ public sealed class SvgOrderedClipTests
             SvgClipChild[] children = count == 2 ? [new(first, false, SvgClipPaintKind.Rectangle), new(second, false, SvgClipPaintKind.Rectangle)]
                 : reorder ? [new(first, false, SvgClipPaintKind.Rectangle), new(third, false, SvgClipPaintKind.Rectangle), new(second, false, SvgClipPaintKind.Rectangle)]
                 : [new(first, false, SvgClipPaintKind.Rectangle), new(second, false, SvgClipPaintKind.Rectangle), new(third, false, SvgClipPaintKind.Rectangle)];
-            SvgClipUnionResult resolved = SvgClipUnion.ResolveOrdered(children, budget, new(1_000_000), CancellationToken.None);
+            SvgClipUnionResult resolved = SvgClipUnion.ResolveOrdered(children, budget, CancellationToken.None);
             using SvgAuthoredPath result = resolved.Path;
             Assert.True(resolved.IsEvenOdd);
             using JsonDocument evidence = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData/ordered-clip-coverage/native-boundaries.json")));
@@ -56,7 +56,7 @@ public sealed class SvgOrderedClipTests
     {
         RenderBudget budget = new(1_000_000);
         using (SvgAuthoredPath path = Boundary(budget))
-        using (SvgPreparedPathContours source = path.PrepareSource(SvgAffineTransform.Identity, false, budget, new(1_000_000), CancellationToken.None))
+        using (SvgPreparedPathContours source = path.PrepareSource(SvgAffineTransform.Identity, false, budget, CancellationToken.None))
         {
             SvgAffineTransform map = new(1, .2, .3, 1, 0, 0);
             SvgDevicePoint[] placed = source.Points.Select(point => SvgAuthoredPath.MapPoint(map, point, new(0, 0))).ToArray();
@@ -74,7 +74,7 @@ public sealed class SvgOrderedClipTests
 
         static SvgAuthoredPath Boundary(RenderBudget budget)
         {
-            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, new(1_000_000), CancellationToken.None);
+            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, CancellationToken.None);
             SvgDevicePoint[] points = [new(12, 24), new(8, 24), new(8, 8), new(24, 8), new(24, 24), new(12, 24)];
             for (int index = 0; index < points.Length; index++)
                 commands.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, points[index], default, default));
@@ -95,7 +95,7 @@ public sealed class SvgOrderedClipTests
         input.Append(outerPath ? "<path d='M8 8H24V24H8Z'/>" : "<rect x='8' y='8' width='16' height='16'/>");
         input.Append("</clipPath></defs><g clip-path='url(#c)' transform='translate(.5 .25)'><path d='M4 26Q16 -4 28 26Z'/></g></svg>");
         RenderBudget budget = new(2_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(input.ToString()), SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(input.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgDrawCommand[] scopes = root.Commands.Where(command => command.Kind == SvgDrawCommandKind.BeginGroup).ToArray();
             int mask = Array.FindIndex(scopes, command => command.RegionKind == SvgLayerRegionKind.ClipMask);
@@ -113,7 +113,7 @@ public sealed class SvgOrderedClipTests
 
     internal static SvgAuthoredPath Rectangle(double left, double right, RenderBudget budget)
     {
-        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, new(1_000_000), CancellationToken.None);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, CancellationToken.None);
         SvgDevicePoint[] points = [new(left, 8), new(right, 8), new(right, 24), new(left, 24)];
         for (int index = 0; index < points.Length; index++)
             commands.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, points[index], default, default));

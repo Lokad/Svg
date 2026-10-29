@@ -93,14 +93,12 @@ public sealed class SvgLeafClipPlacementTests
         string content = Clip + "<defs><rect id='s' width='16' height='16' fill='red'/></defs><use href='#s' transform='" + transform + "' clip-path='url(#c)'/>";
         byte[] input = Input(content);
         RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        ParserWorkCounter work = new(SvgRenderLimits.Default.MaximumWorkUnits);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         Assert.Equal(Render(Clip + "<g transform='" + transform + "' clip-path='url(#c)'><rect width='16' height='16' fill='red'/></g>"), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
@@ -111,14 +109,12 @@ public sealed class SvgLeafClipPlacementTests
         const string drawing = "<rect width='16' height='16' fill='red' transform='translate(8 8)' clip-path='url(#c)'/>";
         byte[] input = Input(Clip + drawing);
         RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        ParserWorkCounter work = new(SvgRenderLimits.Default.MaximumWorkUnits);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();

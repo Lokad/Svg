@@ -79,14 +79,12 @@ public sealed class SvgLineClipCoverageTests
     {
         byte[] input = Input("<svg x='8' y='8' width='16' height='16'><line x1='0' y1='-1' x2='16' y2='-1' stroke='red' stroke-width='4'/></svg>");
         RenderBudget measured = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        ParserWorkCounter work = new(SvgRenderLimits.Default.MaximumWorkUnits);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();

@@ -74,21 +74,14 @@ public sealed class SvgAffineRadialPaintTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + definitions + "</defs>" + shape + "</svg>");
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
             Assert.NotEmpty(root.Geometries.ToArray());
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 256) DenyMemory(limit);
         DenyMemory(peak - 1);
         RenderBudget retry = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, retry, null, new(work.Used), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, retry, null, CancellationToken.None))
         {
             SvgAuthoredPath[] paths = root.Geometries.ToArray().Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>().ToArray();
             SvgAuthoredPathCommand[][] original = paths.Select(path => path.Commands.ToArray()).ToArray();
@@ -102,7 +95,7 @@ public sealed class SvgAffineRadialPaintTests
                 rasterWork = surface.WorkUnits;
             }
             SvgRenderLimits defaults = SvgRenderLimits.Default;
-            foreach (long limit in new[] { root.ParserWorkUnits + 1, (root.ParserWorkUnits + rasterWork) / 2, rasterWork - 1 })
+            foreach (long limit in new[] { 0L + 1, (0L + rasterWork) / 2, rasterWork - 1 })
             {
                 SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
                     defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
@@ -138,7 +131,7 @@ public sealed class SvgAffineRadialPaintTests
         void DenyMemory(long limit)
         {
             RenderBudget denied = new(limit);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
     }

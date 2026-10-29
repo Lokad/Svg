@@ -25,7 +25,7 @@ public sealed class SvgLatinLightNearPointTests
         byte[] bytes = File.ReadAllBytes(Path.Combine(DirectoryPath, "fonts", "NotoSansMono-Bold.ttf")), unchanged = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         RenderBudget budget = new(long.MaxValue);
-        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(bytes, item.GetProperty("glyphIndex").GetUInt16(), metrics, item.GetProperty("deviceSize").GetDouble(), budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(bytes, item.GetProperty("glyphIndex").GetUInt16(), metrics, item.GetProperty("deviceSize").GetDouble(), budget, CancellationToken.None))
         {
             Assert.Equal(item.GetProperty("contourEnds").EnumerateArray().Select(c => c.GetInt32()), contours.ContourEnds);
             JsonElement expected = item.GetProperty("segments");

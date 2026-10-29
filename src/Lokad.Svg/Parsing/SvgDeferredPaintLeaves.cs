@@ -31,7 +31,7 @@ internal static class SvgDeferredPaintLeaves
         bool Missing(string? paint)
         {
             if (!SvgGradientSyntax.IsGradientFill(paint)) return false;
-            context.WorkCounter.Consume(context.CancellationToken);
+            context.CancellationToken.ThrowIfCancellationRequested();
             string id = SvgGradientSyntax.ParsePaintId(paint);
             return !state.Gradients.TryGetValue(id, out _) && !state.RadialGradients.TryGetValue(id, out _) && !state.Patterns.TryGetValue(id, out _);
         }
@@ -39,7 +39,7 @@ internal static class SvgDeferredPaintLeaves
         bool MissingMarker(string? value)
         {
             if (!SvgMarkerStyle.Active(value)) return false;
-            context.WorkCounter.Consume(context.CancellationToken);
+            context.CancellationToken.ThrowIfCancellationRequested();
             string id = SvgGradientSyntax.ParsePaintId(value);
             // Retained marker content can depend on definitions declared after its host.
             return !state.Definitions.TryGetValue(id, out SvgDefinition definition) || definition.Marker is null
@@ -51,7 +51,7 @@ internal static class SvgDeferredPaintLeaves
     internal static void Retain(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgDeferredPaintKind kind)
     {
         SvgDefinitionLeafSource source = SvgDefinitionLeafSource.CaptureUnconstructed(reader, context, state);
-        int start = SvgReferenceResolver.SnapshotMaskScopes(state, context.WorkCounter, context.CancellationToken);
+        int start = SvgReferenceResolver.SnapshotMaskScopes(state, context.CancellationToken);
         state.DeferredPaintLeaves.Add(new(source, context with { AuthoredStyle = source.AuthoredStyle, StyleSheet = default },
             state.EffectiveFrame, state.Scene.AddPaintPlaceholder(), start, state.MaskScopeSnapshots.Count - start, state.Scene, kind));
     }
@@ -59,20 +59,20 @@ internal static class SvgDeferredPaintLeaves
     /// <summary>Replays retained leaves through the ordinary lowerers after all local paint definitions resolve.</summary>
     /// <remarks>Descending command positions keep unprocessed paint slots stable. One batch rebuilds
     /// drawing order and remaps existing and newly emitted scopes. Geometry and recorded-paint owners
-    /// stay in the same scene. Snapshot copies and command/range traversals charge work and cancellation;
+    /// stay in the same scene. Snapshot copies and command/range traversals observe cancellation;
     /// failure releases all owners through document teardown.</remarks>
     internal static void Resolve(SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
         if (state.DeferredPaintLeaves.Count == 0) return;
-        using SvgPaintCommandBatch commands = new(state, state.Scene, default, state.PendingCommandEnd, work, token);
+        using SvgPaintCommandBatch commands = new(state, state.Scene, default, state.PendingCommandEnd, token);
         for (int index = state.DeferredPaintLeaves.Count - 1; index >= 0; index--)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgDeferredPaintLeaf pending = state.DeferredPaintLeaves[index];
             if (!ReferenceEquals(pending.Scene, state.Scene)) continue;
             SvgPaintCommandEmission emission = commands.Begin(pending.CommandIndex);
-            Emit(index, root, state, limits, work, token);
+            Emit(index, root, state, limits, token);
             commands.Retain(emission);
         }
         commands.Complete();
@@ -80,9 +80,9 @@ internal static class SvgDeferredPaintLeaves
 
     /// <summary>Emits one leaf into its originating scene; the caller replaces its reserved slot in source order.</summary>
     /// <remarks>The document owns retained attributes and adopted geometry. Borrowed scene, viewport and
-    /// mask bindings restore on every exit; lowering charges shared work and observes budget/cancellation.</remarks>
+    /// mask bindings restore on every exit; lowering observes the memory budget and cancellation.</remarks>
     internal static void Emit(int index, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
         SvgDeferredPaintLeaf pending = state.DeferredPaintLeaves[index];
         bool tile = !ReferenceEquals(pending.Scene, state.Scene);
@@ -101,10 +101,10 @@ internal static class SvgDeferredPaintLeaves
             for (int scope = 0; scope < pending.MaskScopeCount; scope++)
                 state.MaskScopes.Add(state.MaskScopeSnapshots[pending.MaskScopeStart + scope]);
             if (pending.Kind == SvgDeferredPaintKind.PatternDefinition)
-                SvgPaintRecording.AdoptLeafScene(SvgDefinitionParser.LowerInstanceSource(pending.Source, pending.Context, state), pending.Scene, state, work, token);
+                SvgPaintRecording.AdoptLeafScene(SvgDefinitionParser.LowerInstanceSource(pending.Source, pending.Context, state), pending.Scene, state, token);
             else
                 SvgRenderedLeafParser.ParseResolved(pending.Source, pending.Context, root, state, limits,
-                    state.Budget, null, work, token);
+                    state.Budget, null, token);
         }
         finally
         {

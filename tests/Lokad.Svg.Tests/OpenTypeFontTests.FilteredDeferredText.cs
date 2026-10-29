@@ -37,23 +37,16 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         byte[] input = DeferredFilterTextDocument(consumer, context, true);
         RenderBudget accepted = new(2_000_000);
-        ParserWorkCounter work = new(100_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accepted, fonts, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accepted, fonts, CancellationToken.None)) { }
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(2_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget memoryDenied = new(256);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, memoryDenied, fonts, new(100_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, memoryDenied, fonts, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, memoryDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, accepted, fonts, new(100_000), cancellation.Token)).CancellationToken);
+        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, accepted, fonts, cancellation.Token)).CancellationToken);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accepted, fonts, new(100_000), CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accepted, fonts, CancellationToken.None)) { }
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
     }
 

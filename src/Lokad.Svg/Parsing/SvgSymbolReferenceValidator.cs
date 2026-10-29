@@ -4,28 +4,27 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Validates retained local reference graphs, including unused definitions, without recursion.</summary>
 /// <remarks>Parser-thread-only owner. Visitation and stack storage reserve before growth; every scanned node
-/// charges work and observes cancellation. Disposal releases metadata, never borrowed definition geometry.</remarks>
+/// observes cancellation. Disposal releases metadata, never borrowed definition geometry.</remarks>
 internal sealed class SvgSymbolReferenceValidator : IDisposable
 {
     private readonly RenderBudget.BudgetReservation _owner;
     private readonly SvgDocumentState _state;
-    private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private readonly BudgetedParserDictionary<SvgSymbolContentRange, byte> _visits;
     private readonly BudgetedParserList<Frame> _stack;
     private readonly record struct Frame(SvgSymbolContentRange Range, int Next);
 
-    private SvgSymbolReferenceValidator(SvgDocumentState state, ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation owner)
+    private SvgSymbolReferenceValidator(SvgDocumentState state, CancellationToken token, RenderBudget.BudgetReservation owner)
     {
-        _owner = owner; _state = state; _work = work; _token = token;
+        _owner = owner; _state = state; _token = token;
         _visits = new(state.Budget, SvgMemoryCategory.Parser, 128);
-        _stack = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        _stack = new(state.Budget, SvgMemoryCategory.Parser, token);
     }
 
-    internal static SvgSymbolReferenceValidator Create(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static SvgSymbolReferenceValidator Create(SvgDocumentState state, CancellationToken token)
     {
         RenderBudget.BudgetReservation owner = state.Budget.Reserve(512, SvgMemoryCategory.Parser);
-        try { return new(state, work, token, owner); }
+        try { return new(state, token, owner); }
         catch { owner.Dispose(); throw; }
     }
 
@@ -35,7 +34,7 @@ internal sealed class SvgSymbolReferenceValidator : IDisposable
         Push(root);
         while (_stack.Count > 0)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             Frame frame = _stack[^1];
             if (frame.Next == frame.Range.Start + frame.Range.Count)
             {
@@ -52,7 +51,7 @@ internal sealed class SvgSymbolReferenceValidator : IDisposable
 
     private void Push(SvgSymbolContentRange range)
     {
-        _work.Consume(_token);
+        _token.ThrowIfCancellationRequested();
         if (_visits.TryGetValue(range, out byte value))
         {
             if (value == 1)

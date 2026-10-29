@@ -86,11 +86,11 @@ public sealed class SvgAuthoredPathTests
     {
         RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='792' height='806'><path d='M640.137 350.319C635.619 343.137 661.913 341.619 671.813 368.319L644.137 377.619Z'/></svg>");
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new ParserWorkCounter(100_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
-            using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None);
-            using SvgPreparedPathContours source = authored.PrepareSource(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, false, budget, CancellationToken.None);
+            using SvgPreparedPathContours source = authored.PrepareSource(SvgAffineTransform.Identity, false, budget, CancellationToken.None);
             SvgDevicePoint[] originalPoints = source.Points.ToArray();
             SvgCubicSpan[] originalCubics = source.CubicSpans.ToArray();
             long retained = budget.Snapshot().CurrentBytes;
@@ -145,11 +145,11 @@ public sealed class SvgAuthoredPathTests
     {
         RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><path d='M19.137 37.319 C451.619 11.137 23.913 419.619 591.813 537.319 L41.137 521.619 Z'/></svg>");
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new ParserWorkCounter(100_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
-            using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None);
-            using SvgPreparedPathContours source = authored.PrepareSource(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, false, budget, CancellationToken.None);
+            using SvgPreparedPathContours source = authored.PrepareSource(SvgAffineTransform.Identity, false, budget, CancellationToken.None);
             SvgDevicePoint[] originalPoints = source.Points.ToArray();
             SvgCubicSpan[] originalCubics = source.CubicSpans.ToArray();
             long retained = budget.Snapshot().CurrentBytes;
@@ -207,7 +207,7 @@ public sealed class SvgAuthoredPathTests
             SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
             SvgAuthoredPathCommand[] commands = path.Commands.ToArray();
             RenderBudget replayBudget = new(16 * 1024);
-            using (SvgPreparedPathContours mapped = path.Prepare(SvgAffineTransform.Identity, isEvenOdd, replayBudget, new ParserWorkCounter(100_000), CancellationToken.None))
+            using (SvgPreparedPathContours mapped = path.Prepare(SvgAffineTransform.Identity, isEvenOdd, replayBudget, CancellationToken.None))
             {
                 Assert.Equal(3, mapped.ContourEnds.Length);
                 Assert.Equal(isEvenOdd ? new[] { 1, 1, 1 } : null, mapped.Signs);
@@ -254,7 +254,7 @@ public sealed class SvgAuthoredPathTests
         byte[] input = TextEncoding.UTF8.GetBytes(prefix + instance + "</svg>");
         Assert.Equal(expected, SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgGeometry stroke = Assert.Single(root.Geometries.ToArray(), geometry => geometry.Kind == SvgGeometryKind.PolygonFill && geometry.Polygon.HasFill);
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(stroke.AuthoredPath);
@@ -326,7 +326,7 @@ public sealed class SvgAuthoredPathTests
     [InlineData(false, false)]
     [InlineData(true, false)]
     [InlineData(false, true)]
-    public void Directed_contact_admission_releases_partial_storage_after_work_or_memory_denial(bool isEvenOdd, bool strokeInstance)
+    public void Directed_contact_admission_releases_partial_storage_after_memory_denial(bool isEvenOdd, bool strokeInstance)
     {
         string body = strokeInstance
             ? "<defs><path id='p' d='" + Retraced + "'/></defs><use href='#p' fill='none' stroke='red' stroke-width='4'/>"
@@ -334,25 +334,20 @@ public sealed class SvgAuthoredPathTests
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + body + "</svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
         RenderBudget normal = new(limits.MaximumAccountedBytes);
-        long work;
-        using (SvgRoot root = SvgRootParser.Parse(input, limits, normal, null, new(limits.MaximumWorkUnits), CancellationToken.None)) work = root.ParserWorkUnits;
+        using (SvgRoot root = SvgRootParser.Parse(input, limits, normal, null, CancellationToken.None)) { }
         Assert.Equal(0, normal.Snapshot().CurrentBytes);
-        RenderBudget workBudget = new(limits.MaximumAccountedBytes);
-        SvgException workDenied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, workBudget, null, new(work - 1), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, workDenied.ErrorCode);
-        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
         RenderBudget memoryBudget = new(normal.Snapshot().PeakBytes - 1);
-        SvgException memoryDenied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, memoryBudget, null, new(limits.MaximumWorkUnits), CancellationToken.None));
+        SvgException memoryDenied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, memoryBudget, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, memoryDenied.ErrorCode);
         Assert.Equal(0, memoryBudget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        OperationCanceledException cancelled = Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, limits, workBudget, null, new(limits.MaximumWorkUnits), cancellation.Token));
+        OperationCanceledException cancelled = Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, limits, normal, null, cancellation.Token));
         Assert.Equal(cancellation.Token, cancelled.CancellationToken);
-        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
-        using (SvgRoot retry = SvgRootParser.Parse(input, limits, workBudget, null, new(limits.MaximumWorkUnits), CancellationToken.None))
+        Assert.Equal(0, normal.Snapshot().CurrentBytes);
+        using (SvgRoot retry = SvgRootParser.Parse(input, limits, normal, null, CancellationToken.None))
             Assert.NotEmpty(retry.Geometries.ToArray());
-        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
+        Assert.Equal(0, normal.Snapshot().CurrentBytes);
     }
 
     [Theory]
@@ -366,7 +361,7 @@ public sealed class SvgAuthoredPathTests
             SvgGeometry geometry = Assert.Single(root.Geometries);
             Assert.Single(geometry.Polygon.ContourEnds);
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
-            using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, isEvenOdd, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, isEvenOdd, budget, CancellationToken.None);
             Assert.Single(mapped.ContourEnds);
             Assert.Equal(2, mapped.CubicSpans.Length);
             Assert.Equal(isEvenOdd ? new[] { 1 } : null, mapped.Signs);
@@ -390,7 +385,7 @@ public sealed class SvgAuthoredPathTests
         using (SvgRoot root = Parse("<path fill-rule='" + (isEvenOdd ? "evenodd" : "nonzero") + "' d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z M10,0 C12,2 16,6 18,8 L18,0 C16,2 12,6 10,8 Z'/>", budget))
         {
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
-            using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, isEvenOdd, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, isEvenOdd, budget, CancellationToken.None);
             Assert.Equal(2, mapped.ContourEnds.Length);
             Assert.Equal(isEvenOdd ? new[] { 1, 1 } : null, mapped.Signs);
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(mapped.Points, mapped.ContourEnds, mapped.Signs ?? [], isEvenOdd, mapped.Signs, SvgPolygonMapping.NativeFillEdges, 0, 18, 0, 8, 32, 16, budget, out _, out bool eligible, CancellationToken.None);
@@ -416,10 +411,10 @@ public sealed class SvgAuthoredPathTests
             long retained = budget.Snapshot().CurrentBytes;
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
-            OperationCanceledException cancelled = Assert.ThrowsAny<OperationCanceledException>(() => authored.Prepare(SvgAffineTransform.Identity, true, budget, new ParserWorkCounter(100_000), cancellation.Token));
+            OperationCanceledException cancelled = Assert.ThrowsAny<OperationCanceledException>(() => authored.Prepare(SvgAffineTransform.Identity, true, budget, cancellation.Token));
             Assert.Equal(cancellation.Token, cancelled.CancellationToken);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            using SvgPreparedPathContours retry = authored.Prepare(SvgAffineTransform.Identity, true, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            using SvgPreparedPathContours retry = authored.Prepare(SvgAffineTransform.Identity, true, budget, CancellationToken.None);
             Assert.Equal(new[] { 1, 1 }, retry.Signs);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -436,12 +431,12 @@ public sealed class SvgAuthoredPathTests
             using (budget.Reserve(SvgRenderLimits.Default.MaximumAccountedBytes - retained - 100, SvgMemoryCategory.Surface))
             {
                 long padded = budget.Snapshot().CurrentBytes;
-                SvgException denied = Assert.Throws<SvgException>(() => authored.Prepare(SvgAffineTransform.Identity, true, budget, new ParserWorkCounter(100_000), CancellationToken.None));
+                SvgException denied = Assert.Throws<SvgException>(() => authored.Prepare(SvgAffineTransform.Identity, true, budget, CancellationToken.None));
                 Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
                 Assert.Equal(padded, budget.Snapshot().CurrentBytes);
             }
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            using SvgPreparedPathContours retry = authored.Prepare(SvgAffineTransform.Identity, true, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            using SvgPreparedPathContours retry = authored.Prepare(SvgAffineTransform.Identity, true, budget, CancellationToken.None);
             Assert.Single(retry.ContourEnds);
             Assert.Equal(2, retry.CubicSpans.Length);
         }
@@ -479,30 +474,11 @@ public sealed class SvgAuthoredPathTests
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
             SvgRectangle sceneBox = geometry.GradientPolygon.Box;
             SvgDevicePoint[] scenePoints = geometry.GradientPolygon.Points.ToArray();
-            using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.FromScaleOffset(.5, .5, 0, 0), false, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.FromScaleOffset(.5, .5, 0, 0), false, budget, CancellationToken.None);
             Assert.Equal(sceneBox, geometry.GradientPolygon.Box);
             Assert.Equal(scenePoints, geometry.GradientPolygon.Points);
             Assert.Equal(2, authored.SceneMap.A);
             Assert.Equal((double)(float)1.137, mapped.Points[0].X);
-        }
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-    }
-
-    [Theory]
-    [InlineData(0)]
-    [InlineData(6)]
-    public void Denied_replay_releases_partial_arrays_and_keeps_the_source(long workLimit)
-    {
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        using (SvgRoot root = Parse(Path, budget))
-        {
-            SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
-            long retained = budget.Snapshot().CurrentBytes;
-            SvgException denied = Assert.Throws<SvgException>(() => authored.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(workLimit), CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
-            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            using SvgPreparedPathContours retry = authored.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None);
-            Assert.NotEmpty(retry.Points);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -517,41 +493,34 @@ public sealed class SvgAuthoredPathTests
             long retained = budget.Snapshot().CurrentBytes;
             SvgPolygonFill polygon = source.Polygon;
             SvgGeometry replacement = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.Color, polygon.HasFill, polygon.IsEvenOdd, polygon.Mapping, polygon.Clip, null, budget));
-            SvgException denied = Assert.Throws<SvgException>(() => source.CopyAuthoredPathTo(replacement, SvgAffineTransform.Identity, budget, new ParserWorkCounter(0), CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+            using (budget.Reserve(SvgRenderLimits.Default.MaximumAccountedBytes - budget.Snapshot().CurrentBytes, SvgMemoryCategory.Surface))
+            {
+                SvgException denied = Assert.Throws<SvgException>(() => source.CopyAuthoredPathTo(replacement, SvgAffineTransform.Identity, budget, CancellationToken.None));
+                Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+            }
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             Assert.NotEmpty(Assert.IsType<SvgAuthoredPath>(source.AuthoredPath).Commands.ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void Denied_endpoint_arc_replay_releases_scratch_and_can_retry(bool denyWork)
+    [Fact]
+    public void Denied_endpoint_arc_replay_releases_scratch_and_can_retry()
     {
         RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
         using (SvgRoot root = Parse("<path d='M12,4 A8,8 0 1 1 20,12 Z'/>", budget))
         {
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
             long retained = budget.Snapshot().CurrentBytes;
-            if (denyWork)
+            using (budget.Reserve(SvgRenderLimits.Default.MaximumAccountedBytes - retained - 100, SvgMemoryCategory.Surface))
             {
-                SvgException denied = Assert.Throws<SvgException>(() => authored.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(authored.Commands.Length + 2), CancellationToken.None));
+                long padded = budget.Snapshot().CurrentBytes;
+                SvgException denied = Assert.Throws<SvgException>(() => authored.Prepare(SvgAffineTransform.Identity, false, budget, CancellationToken.None));
                 Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
-            }
-            else
-            {
-                using (budget.Reserve(SvgRenderLimits.Default.MaximumAccountedBytes - retained - 100, SvgMemoryCategory.Surface))
-                {
-                    long padded = budget.Snapshot().CurrentBytes;
-                    SvgException denied = Assert.Throws<SvgException>(() => authored.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None));
-                    Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
-                    Assert.Equal(padded, budget.Snapshot().CurrentBytes);
-                }
+                Assert.Equal(padded, budget.Snapshot().CurrentBytes);
             }
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
-            using SvgPreparedPathContours retry = authored.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            using SvgPreparedPathContours retry = authored.Prepare(SvgAffineTransform.Identity, false, budget, CancellationToken.None);
             Assert.Equal(3, retry.QuadSpans.Length);
             Assert.Empty(retry.CubicSpans);
         }
@@ -559,5 +528,5 @@ public sealed class SvgAuthoredPathTests
     }
 
     private static SvgRoot Parse(string body, RenderBudget budget)
-        => SvgRootParser.Parse(TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 32 32'>" + body + "</svg>"), SvgRenderLimits.Default, budget, null, new ParserWorkCounter(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None);
+        => SvgRootParser.Parse(TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 32 32'>" + body + "</svg>"), SvgRenderLimits.Default, budget, null, CancellationToken.None);
 }

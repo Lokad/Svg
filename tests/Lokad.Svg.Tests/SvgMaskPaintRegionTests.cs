@@ -15,15 +15,14 @@ public sealed class SvgMaskPaintRegionTests
         double objectX, double objectWidth, double visualX, double visualWidth, double translation, double expectedX, double expectedWidth)
     {
         RenderBudget budget = new(1_000_000);
-        ParserWorkCounter work = new(100_000);
-        using (SvgDocumentState state = new(budget, work, CancellationToken.None))
+        using (SvgDocumentState state = new(budget, CancellationToken.None))
         {
             state.MaskRegions.TryAdd("mask", new(0, 0, 7, 8));
             SvgAffineTransform map = SvgAffineTransform.FromScaleOffset(1, 1, translation, 0);
             SvgRectangle objects = map.Apply(new SvgRectangle(objectX, 0, objectWidth, 8, default, false, null));
-            SvgPaintBounds visual = new SvgPaintBounds((float)visualX, 0, (float)(visualX + visualWidth), 8).Map(map, work, CancellationToken.None);
+            SvgPaintBounds visual = new SvgPaintBounds((float)visualX, 0, (float)(visualX + visualWidth), 8).Map(map, CancellationToken.None);
             SvgClipBox sceneRegion = map.Apply(new SvgClipBox(0, 0, 7, 8));
-            SvgClipBox actual = Assert.IsType<SvgClipBox>(SvgMaskTarget.SourcePaintRegion("mask", map, objects, visual, sceneRegion, state, work, CancellationToken.None));
+            SvgClipBox actual = Assert.IsType<SvgClipBox>(SvgMaskTarget.SourcePaintRegion("mask", map, objects, visual, sceneRegion, state, CancellationToken.None));
             Assert.Equal(new SvgClipBox(expectedX, 0, expectedWidth, 8), actual);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -80,9 +79,8 @@ public sealed class SvgMaskPaintRegionTests
 
     private static SvgRoot Create(RenderBudget budget)
     {
-        ParserWorkCounter work = new(100_000);
-        using SvgSceneBuilder builder = new(budget, work, CancellationToken.None);
-        using SvgSceneBuilder maskBuilder = new(budget, work, CancellationToken.None);
+        using SvgSceneBuilder builder = new(budget, CancellationToken.None);
+        using SvgSceneBuilder maskBuilder = new(budget, CancellationToken.None);
         maskBuilder.AddGeometry(SvgGeometry.FromRectangle(new(0, 0, 8, 8, new(255, 255, 255, 186), true, null)));
         SvgVectorContent vector = SvgVectorContent.Create(maskBuilder.Build(), budget);
         try { builder.AdoptVectorContent(vector); }
@@ -92,6 +90,6 @@ public sealed class SvgMaskPaintRegionTests
         builder.AddGeometry(SvgGeometry.FromRectangle(new(0, 0, 8, 8, new(255, 0, 0, 17), true, null)));
         builder.EndOpacityScope();
         SvgSceneStorage storage = builder.Build();
-        return new(new(8, false), new(8, false), null, storage.Geometries, storage.Commands, false, 0, storage);
+        return new(new(8, false), new(8, false), null, storage.Geometries, storage.Commands, false, storage);
     }
 }

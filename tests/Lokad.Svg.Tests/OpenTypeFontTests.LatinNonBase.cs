@@ -20,7 +20,7 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "latin-nonbase", file)), unchanged = bytes.ToArray();
         RenderBudget budget = new(long.MaxValue);
-        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(bytes, glyph, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), size, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(bytes, glyph, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), size, budget, CancellationToken.None))
         {
             OpenTypeOutlinePoint[] points = [new(left, bottom), new(left, top), new(right, top), new(right, bottom)];
             Assert.Equal([4], contours.ContourEnds.ToArray());
@@ -41,7 +41,7 @@ public sealed partial class OpenTypeFontTests
         int lookups = 0;
         using IDisposable probe = CmapLookupProbe.Arm(() => { if (++lookups == 5) cancellation.Cancel(); });
 
-        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.GetLatinLightContours(bytes, 1, metrics, 16, budget, new(long.MaxValue), cancellation.Token));
+        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.GetLatinLightContours(bytes, 1, metrics, 16, budget, cancellation.Token));
 
         Assert.Equal(cancellation.Token, error.CancellationToken);
         Assert.Equal(unchanged, bytes);
@@ -54,10 +54,6 @@ public sealed partial class OpenTypeFontTests
         byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "latin-nonbase", "Base.ttf")), unchanged = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         RenderBudget budget = new(long.MaxValue);
-
-        SvgException error = Assert.Throws<SvgException>(() => OpenTypeFont.GetLatinLightContours(bytes, 1, metrics, 16, budget, new(40), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
         Assert.Equal(unchanged, bytes);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

@@ -17,78 +17,68 @@ internal static class SvgFontRequestDiscovery
     internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, CancellationToken cancellationToken)
         => Discover(svg, SvgRenderLimits.Default, cancellationToken);
 
-    /// <summary>Discovers admitted text requests under the same caller-selected structural and work limits as rendering.</summary>
+    /// <summary>Discovers admitted text requests under the same caller-selected structural limits as rendering.</summary>
     internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
-        return Discover(svg, limits, new ParserWorkCounter(limits.MaximumWorkUnits), cancellationToken);
-    }
-
-    /// <summary>Discovers admitted text requests using one caller-owned preparation work counter.</summary>
-    internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
         ArgumentNullException.ThrowIfNull(limits);
-        ArgumentNullException.ThrowIfNull(workCounter);
         RenderBudget budget = new(limits.MaximumAccountedBytes);
-        return Discover(svg, limits, workCounter, budget, cancellationToken);
+        return Discover(svg, limits, budget, cancellationToken);
     }
 
     /// <summary>Discovers admitted text requests while reserving all discovery control storage from the supplied preparation budget.</summary>
-    internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, RenderBudget budget, CancellationToken cancellationToken)
+    internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
     {
-        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, limits, budget, workCounter, cancellationToken);
-        return Discover(svg, limits, workCounter, budget, preparation, cancellationToken);
+        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, limits, budget, cancellationToken);
+        return Discover(svg, limits, budget, preparation, cancellationToken);
     }
 
     /// <summary>Borrows the operation's already-collected styles and reader workspace; only discovery control storage is temporary.</summary>
-    internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter,
-        RenderBudget budget, SvgDocumentPreparation preparation, CancellationToken cancellationToken)
-        => DiscoverCore(svg, limits, workCounter, budget, preparation, null, cancellationToken);
+    internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits,         RenderBudget budget, SvgDocumentPreparation preparation, CancellationToken cancellationToken)
+        => DiscoverCore(svg, limits, budget, preparation, null, cancellationToken);
 
     /// <summary>Shares request discovery and whitespace normalization while retaining bounded scalar needs for selective acquisition.</summary>
-    internal static SvgFontCoverageDiscovery DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgFontCoverageDiscovery DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, CancellationToken cancellationToken)
     {
         RenderBudget budget = new(limits.MaximumAccountedBytes);
-        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, limits, budget, workCounter, cancellationToken);
-        return DiscoverWithCoverage(svg, limits, workCounter, budget, preparation, cancellationToken);
+        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, limits, budget, cancellationToken);
+        return DiscoverWithCoverage(svg, limits, budget, preparation, cancellationToken);
     }
 
     /// <summary>Returns a caller-owned scalar requirement owner, charged through acquisition while borrowing this document preparation.</summary>
-    internal static SvgFontCoverageDiscovery DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter,
-        RenderBudget budget, SvgDocumentPreparation preparation, CancellationToken cancellationToken)
+    internal static SvgFontCoverageDiscovery DiscoverWithCoverage(ReadOnlyMemory<byte> svg, SvgRenderLimits limits,         RenderBudget budget, SvgDocumentPreparation preparation, CancellationToken cancellationToken)
     {
-        SvgFontCoverageDiscovery coverage = new(budget, workCounter, cancellationToken);
+        SvgFontCoverageDiscovery coverage = new(budget, cancellationToken);
         try
         {
-            SvgFontFaceRequest[] requests = DiscoverCore(svg, limits, workCounter, budget, preparation, coverage, cancellationToken);
+            SvgFontFaceRequest[] requests = DiscoverCore(svg, limits, budget, preparation, coverage, cancellationToken);
             coverage.Materialize(requests);
             return coverage;
         }
         catch { coverage.Dispose(); throw; }
     }
 
-    private static SvgFontFaceRequest[] DiscoverCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, RenderBudget budget, SvgDocumentPreparation preparation, SvgFontCoverageDiscovery? coverage, CancellationToken cancellationToken)
+    private static SvgFontFaceRequest[] DiscoverCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, SvgDocumentPreparation preparation, SvgFontCoverageDiscovery? coverage, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
-        ArgumentNullException.ThrowIfNull(workCounter);
         ArgumentNullException.ThrowIfNull(budget);
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         ArgumentNullException.ThrowIfNull(preparation);
         BudgetedParserList<CssRule> styleRules = preparation.Rules;
         BudgetedParserStringStore styleStrings = preparation.Strings;
-        using var requestKeys = new BudgetedParserList<TextRequestKey>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var inheritedLevels = new BudgetedParserList<TextStyle>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var directTextLevels = new BudgetedParserList<DiscoveryCandidate>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var spanCandidates = new BudgetedParserList<DiscoveryCandidate>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var whitespaceLevels = new BudgetedParserList<SvgTextWhitespaceMode>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var eligibleLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var groupLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var viewportSizes = new BudgetedParserList<SvgViewportSize>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var switchScopes = new BudgetedParserList<SwitchScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var requestKeys = new BudgetedParserList<TextRequestKey>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        using var inheritedLevels = new BudgetedParserList<TextStyle>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        using var directTextLevels = new BudgetedParserList<DiscoveryCandidate>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        using var spanCandidates = new BudgetedParserList<DiscoveryCandidate>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        using var whitespaceLevels = new BudgetedParserList<SvgTextWhitespaceMode>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        using var eligibleLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        using var groupLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        using var viewportSizes = new BudgetedParserList<SvgViewportSize>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        using var switchScopes = new BudgetedParserList<SwitchScope>(budget, SvgMemoryCategory.Parser, cancellationToken);
         using var paintServerIds = new BudgetedParserDictionary<string, bool>(budget, SvgMemoryCategory.Parser, 96);
-        using var textPaintIds = new BudgetedParserList<TextPaintReference>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var textPaintIds = new BudgetedParserList<TextPaintReference>(budget, SvgMemoryCategory.Parser, cancellationToken);
         using var filterIds = new BudgetedParserDictionary<string, bool>(budget, SvgMemoryCategory.Parser, 96);
-        using var textFilterIds = new BudgetedParserList<TextFilterReference>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var textFilterIds = new BudgetedParserList<TextFilterReference>(budget, SvgMemoryCategory.Parser, cancellationToken);
         using var markerFonts = new BudgetedParserDictionary<string, MarkerFontReference>(budget, SvgMemoryCategory.Parser, 128);
         using var markerReferences = new BudgetedParserDictionary<string, MarkerReference>(budget, SvgMemoryCategory.Parser, 96);
         char[]? textChunk = null;
@@ -98,7 +88,7 @@ internal static class SvgFontRequestDiscovery
             XmlReaderSettings settings = preparation.Settings;
             SvgInstanceFontDiscovery? instanceFonts = preparation.GetFontInstances();
             SvgPaintResourceSelection? paintResources = preparation.GetPaintResources();
-            using SvgCssAncestorContext ancestors = new(styleRules, budget, workCounter, cancellationToken);
+            using SvgCssAncestorContext ancestors = new(styleRules, budget, cancellationToken);
             using ReadOnlyMemoryStream stream = new(svg);
             using XmlReader reader = XmlReader.Create(stream, settings);
             bool hasRoot = false;
@@ -122,7 +112,7 @@ internal static class SvgFontRequestDiscovery
             double? rootHeight = null;
             while (reader.Read())
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 ancestors.Observe(reader, 0);
                 if (activeCandidateLevel >= 0 && descriptionDepth >= 0 && reader.NodeType != XmlNodeType.Element)
                 {
@@ -161,10 +151,10 @@ internal static class SvgFontRequestDiscovery
                     bool hasGroupAncestor = groupDepth != 0;
                     SvgTextWhitespaceMode inheritedWhitespaceMode = whitespaceLevels.Count == 0 ? SvgTextWhitespaceMode.Default : whitespaceLevels[whitespaceLevels.Count - 1];
                     SvgTextWhitespaceMode childWhitespaceMode = inheritedWhitespaceMode;
-                    InlineStyle tspanStyleSheet = insideDirectText && isSvgElement && reader.LocalName == "tspan" ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
+                    InlineStyle tspanStyleSheet = insideDirectText && isSvgElement && reader.LocalName == "tspan" ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, cancellationToken) : default;
                     bool admittedTextSpan = false;
                     SvgTextSpanStyle? parsedTextSpan = null;
-                    if (insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanStyle(reader, new SvgTextSpanStyle(inheritedWhitespaceMode, 0) { Paint = inheritedLevels[^1].TextPaint(paintResources), Font = inheritedLevels[^1].Text }, tspanStyleSheet, workCounter, cancellationToken, out SvgTextSpanStyle spanStyle))
+                    if (insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanStyle(reader, new SvgTextSpanStyle(inheritedWhitespaceMode, 0) { Paint = inheritedLevels[^1].TextPaint(paintResources), Font = inheritedLevels[^1].Text }, tspanStyleSheet, cancellationToken, out SvgTextSpanStyle spanStyle))
                     {
                         childWhitespaceMode = spanStyle.WhitespaceMode;
                         admittedTextSpan = textPathDepth < 0 || spanStyle.PositionOffset is not SvgTextPositionOffset offset || offset.X is null && offset.Y is null;
@@ -174,7 +164,7 @@ internal static class SvgFontRequestDiscovery
                     {
                         try
                         {
-                            _ = SvgTextPathSyntax.Parse(reader, workCounter, cancellationToken);
+                            _ = SvgTextPathSyntax.Parse(reader, cancellationToken);
                             childWhitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, null, inheritedWhitespaceMode);
                             admittedTextSpan = true;
                             if (!reader.IsEmptyElement) { textPathDepth = reader.Depth; coverage?.BeginText(); }
@@ -221,7 +211,7 @@ internal static class SvgFontRequestDiscovery
                     TextStyle style;
                     if (inheritedLevels.Count == 0)
                     {
-                        SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, styleRules, workCounter, cancellationToken);
+                        SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, styleRules, cancellationToken);
                         rootWidth = root.UserViewportWidth;
                         rootHeight = root.UserViewportHeight;
                         style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.Paint, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Transform, null, root.InheritedStroke.Stroke) { Markers = root.InheritedPresentation.Markers, OwnOpacity = root.InheritedPresentation.ElementOpacity, ElementDisplay = root.InheritedPresentation.ElementDisplay, PaintServerFill = root.InheritedPresentation.PaintServerFill, StrokeStyle = root.InheritedStroke, PaintOrder = root.InheritedPresentation.PaintOrder };
@@ -232,7 +222,7 @@ internal static class SvgFontRequestDiscovery
                             || !sterile && !insideDirectText && inertDepth < 0 && (hasGroupAncestor || viewportSizes.Count > 0));
                     if (collectedStyleElement)
                     {
-                        SvgRootStyleSheetParser.Consume(reader, budget, workCounter, cancellationToken);
+                        SvgRootStyleSheetParser.Consume(reader, budget, cancellationToken);
                         continue;
                     }
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName) && (directChild || hasGroupAncestor || viewportSizes.Count > 0) && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
@@ -242,7 +232,7 @@ internal static class SvgFontRequestDiscovery
                     if (symbolDefinition)
                     {
                         if (reader.LocalName == "marker") ObserveMarkerDefinition(reader, style.Text, definitionResourcesDisplayed);
-                        else SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
+                        else SvgElementAttributePolicy.ValidateSymbol(reader, cancellationToken);
                         if (!reader.IsEmptyElement) symbolDepth = reader.Depth;
                     }
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
@@ -251,7 +241,7 @@ internal static class SvgFontRequestDiscovery
                     bool patternHasSize = true;
                     if (patternDefinition)
                     {
-                        SvgElementAttributePolicy.ValidatePattern(reader, workCounter, cancellationToken);
+                        SvgElementAttributePolicy.ValidatePattern(reader, cancellationToken);
                         parentAllowsText = true;
                         double? patternWidth = reader.GetAttribute("width") is {} width ? SvgGeometrySyntax.ParseRectangleCoordinate(width) : null;
                         double? patternHeight = reader.GetAttribute("height") is {} height ? SvgGeometrySyntax.ParseRectangleCoordinate(height) : null;
@@ -272,12 +262,12 @@ internal static class SvgFontRequestDiscovery
                     bool emptyViewport = false;
                     if (!sterile && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && !rootElement && (directChild || hasGroupAncestor || viewportSizes.Count > 0) && reader.LocalName == "svg")
                     {
-                        SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
+                        SvgElementAttributePolicy.ValidateNestedViewport(reader, cancellationToken);
                         double? baseWidth = viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width;
                         double? baseHeight = viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height;
                         SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, baseWidth, baseHeight);
                         emptyViewport = viewport.Width == 0 || viewport.Height == 0;
-                        SvgViewBox? viewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
+                        SvgViewBox? viewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), cancellationToken);
                         plainViewport = true;
                         if (!reader.IsEmptyElement) viewportSizes.Add(new SvgViewportSize(viewBox?.Width ?? viewport.Width, viewBox?.Height ?? viewport.Height, reader.Depth));
                     }
@@ -296,18 +286,18 @@ internal static class SvgFontRequestDiscovery
                     }
                     if (!sterile && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
                     {
-                        if (!rootElement && reader.LocalName == "switch") SvgElementAttributePolicy.ValidateSwitch(reader, workCounter, cancellationToken);
-                        else if (!rootElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
-                        else if ((directChild || hasGroupAncestor || viewportSizes.Count > 0) && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateDefinitionContainer(reader, workCounter, cancellationToken);
+                        if (!rootElement && reader.LocalName == "switch") SvgElementAttributePolicy.ValidateSwitch(reader, cancellationToken);
+                        else if (!rootElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateGroup(reader, cancellationToken);
+                        else if ((directChild || hasGroupAncestor || viewportSizes.Count > 0) && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateDefinitionContainer(reader, cancellationToken);
                     }
                     if (!sterile && inertDepth >= 0 && reader.Depth == inertDepth + 1 && isSvgElement)
                     {
-                        if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
-                        else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
-                        else if (reader.LocalName == "symbol") SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
+                        if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, cancellationToken);
+                        else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, cancellationToken);
+                        else if (reader.LocalName == "symbol") SvgElementAttributePolicy.ValidateSymbol(reader, cancellationToken);
                         else if (reader.LocalName == "marker") ObserveMarkerDefinition(reader, style.Text, definitionResourcesDisplayed);
                     }
-                    InlineStyle styleSheet = isSvgElement && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use" or "mask") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
+                    InlineStyle styleSheet = isSvgElement && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use" or "mask") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, cancellationToken) : default;
                     if (!sterile && !insideDirectText && isSvgElement && reader.LocalName == "mask"
                         && (directChild || parentAllowsText && hasGroupAncestor || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1))
                         instanceFonts?.RegisterMask(reader, SourceContext(style), styleSheet, definitionResourcesDisplayed,
@@ -317,7 +307,7 @@ internal static class SvgFontRequestDiscovery
                     // Reset definition-ancestor display before applying the resource's own declaration.
                     if (patternDefinition) style = style with { Metrics = default, IsDisplayed = patternHasSize && paintResources?.IsPatternDisplayed(reader.GetAttribute("id")) != false
                         && (paintResources?.RequiresPatternContent(reader.GetAttribute("id")) ?? true) };
-                    if (!sterile && isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use")) style = ApplyAttributes(reader, style, styleSheet, paintResources, workCounter, cancellationToken, out specifiedWhiteSpace);
+                    if (!sterile && isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use")) style = ApplyAttributes(reader, style, styleSheet, paintResources, cancellationToken, out specifiedWhiteSpace);
                     if (emptyViewport) style = style with { IsDisplayed = false };
                     if (!sterile && parsedTextSpan is SvgTextSpanStyle parsedSpan)
                     {
@@ -328,8 +318,8 @@ internal static class SvgFontRequestDiscovery
                     if (!sterile && !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement
                         && reader.LocalName is "line" or "path" or "polygon" or "polyline")
                     {
-                        InlineStyle leafSheet = SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken);
-                        SvgComputedStyle leaf = SvgComputedStyleResolver.Resolve(reader, leafSheet, workCounter, cancellationToken).ResolveDisplay(style.ElementDisplay);
+                        InlineStyle leafSheet = SvgStyleSheet.Resolve(reader, styleRules, ancestors, cancellationToken);
+                        SvgComputedStyle leaf = SvgComputedStyleResolver.Resolve(reader, leafSheet, cancellationToken).ResolveDisplay(style.ElementDisplay);
                         if (style.IsDisplayed && (leaf.GetDisplay() != SvgDisplay.None)
                             && SvgPresentationResolver.ParseVisibility(leaf.Visibility, style.IsVisible)
                             && (reader.LocalName != "path" || !string.IsNullOrWhiteSpace(reader.GetAttribute("d"))))
@@ -340,8 +330,8 @@ internal static class SvgFontRequestDiscovery
                         if (reader.LocalName == "use") instanceFonts?.AddUse(reader, SourceContext(style));
                         if (instanceFonts is not null && SvgLocalUrl.ReadReference(reader, "mask") is not null)
                         {
-                            InlineStyle targetSheet = SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken);
-                            SvgComputedStyle target = SvgComputedStyleResolver.Resolve(reader, targetSheet, workCounter, cancellationToken, true).ResolveDisplay(style.ElementDisplay);
+                            InlineStyle targetSheet = SvgStyleSheet.Resolve(reader, styleRules, ancestors, cancellationToken);
+                            SvgComputedStyle target = SvgComputedStyleResolver.Resolve(reader, targetSheet, cancellationToken, true).ResolveDisplay(style.ElementDisplay);
                             SvgInheritedContainer maskContext = SourceContext(style);
                             maskContext = maskContext with { Presentation = maskContext.Presentation with
                             { IsDisplayed = style.IsDisplayed && (target.GetDisplay() != SvgDisplay.None),
@@ -353,7 +343,7 @@ internal static class SvgFontRequestDiscovery
                     SvgTextWhitespaceMode whitespaceMode = SvgTextWhitespaceMode.Default;
                     if (inertDepth < 0 && !insideDirectText && isTextEligible)
                     {
-                        SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
+                        SvgElementAttributePolicy.ValidateText(reader, cancellationToken);
                         whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, specifiedWhiteSpace, inheritedTextWhitespaceMode);
                     }
                     // SVG text ignores valid fill-rule values; discovery still validates the admitted syntax.
@@ -370,13 +360,13 @@ internal static class SvgFontRequestDiscovery
                     if (candidateState.HasRequest) childWhitespaceMode = candidateState.WhitespaceMode;
                     if (consumeGeometryBody)
                     {
-                        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, nodeCount, workCounter, cancellationToken);
+                        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, nodeCount, cancellationToken);
                         nodeCount = subtree.NodeCount;
                         hasUnsupportedContent |= subtree.HasUnsupportedChildren;
                     }
                     else if (reader.IsEmptyElement)
                     {
-                        if (candidateState.HasRequest) AddCandidate(candidateState, requestKeys, workCounter, cancellationToken);
+                        if (candidateState.HasRequest) AddCandidate(candidateState, requestKeys, cancellationToken);
                     }
                     else
                     {
@@ -415,11 +405,11 @@ internal static class SvgFontRequestDiscovery
                         {
                             if (activeTextPainted)
                             {
-                                AddCandidate(candidateState, requestKeys, workCounter, cancellationToken);
+                                AddCandidate(candidateState, requestKeys, cancellationToken);
                                 if (candidateState.Filter is {} filter) ObserveFilter(filter);
                             }
                             if (activeTextPainted && !candidateState.HasChildElement)
-                                foreach (DiscoveryCandidate span in spanCandidates.AsSpan()) AddCandidate(span, requestKeys, workCounter, cancellationToken);
+                                foreach (DiscoveryCandidate span in spanCandidates.AsSpan()) AddCandidate(span, requestKeys, cancellationToken);
                             while (spanCandidates.Count != 0) spanCandidates.RemoveLast();
                             activeCandidateLevel = -1;
                         }
@@ -434,7 +424,7 @@ internal static class SvgFontRequestDiscovery
                         SvgInheritedTextStyle currentFont = inheritedLevels[^1].Text;
                         SvgFontCoverageDiscovery? visibleCoverage = paint.IsDisplayed ? coverage : null;
                         visibleCoverage?.SetFont(currentFont);
-                        bool hasRenderable = HasRenderableText(reader, GetTextChunk(), activeWhitespace, visibleCoverage, workCounter, cancellationToken, out bool hasCharacters, out bool endsWithCollapsible);
+                        bool hasRenderable = HasRenderableText(reader, GetTextChunk(), activeWhitespace, visibleCoverage, cancellationToken, out bool hasCharacters, out bool endsWithCollapsible);
                         if (hasRenderable && paint.IsDisplayed && pendingWhitespace is {} separator)
                         {
                             ObserveFont(separator);
@@ -461,38 +451,38 @@ internal static class SvgFontRequestDiscovery
             }
             if (!hasRoot) throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
             instanceFonts?.AddRequests(
-                request => AddCandidate(new(true, request.Family, request.Weight, request.Italic, SvgTextWhitespaceMode.Default, false, true) { SourceContext = request.SourceContext }, requestKeys, workCounter, cancellationToken),
+                request => AddCandidate(new(true, request.Family, request.Weight, request.Italic, SvgTextWhitespaceMode.Default, false, true) { SourceContext = request.SourceContext }, requestKeys, cancellationToken),
                 id => textPaintIds.Add(new(styleStrings.Copy(id))), ObserveFilter, ObserveMarkers, coverage);
             foreach (MarkerReference reference in markerReferences.Values)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 if (!markerFonts.TryGetValue(reference.Id, out MarkerFontReference retained)) continue;
                 SvgMarkerFontLengths lengths = retained.Lengths;
                 if (lengths.Font.Family is not {} family) throw new SvgException(SvgErrorCode.UnresolvedResource, "Font-relative marker coordinates require a font family.");
-                AddCandidate(new(true, family, lengths.Font.Weight, lengths.Font.Italic, SvgTextWhitespaceMode.Default, false, true), requestKeys, workCounter, cancellationToken);
+                AddCandidate(new(true, family, lengths.Font.Weight, lengths.Font.Italic, SvgTextWhitespaceMode.Default, false, true), requestKeys, cancellationToken);
             }
             foreach (TextPaintReference reference in textPaintIds.AsSpan())
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 if (!paintServerIds.TryGetValue(reference.Id, out _))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "A text paint requires a defined local paint server.");
             }
             foreach (TextFilterReference reference in textFilterIds.AsSpan())
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 if (!filterIds.TryGetValue(reference.Id, out _))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "A text filter requires a defined local filter.");
             }
             var result = new SvgFontFaceRequest[requestKeys.Count];
             for (int index = 0; index < result.Length; index++)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 TextRequestKey key = requestKeys[index];
                 if (key.Family is not string family)
                 {
                     throw new SvgException(SvgErrorCode.MalformedInput, "The discovered font request is missing its family.");
                 }
-                result[index] = SvgFontFaceRequest.FromCss(family, key.Weight, key.Italic, key.SourceContext, workCounter, cancellationToken);
+                result[index] = SvgFontFaceRequest.FromCss(family, key.Weight, key.Italic, key.SourceContext, cancellationToken);
             }
             return result;
 
@@ -503,11 +493,11 @@ internal static class SvgFontRequestDiscovery
 
             void ObserveMarkerDefinition(XmlReader marker, SvgInheritedTextStyle inherited, bool definitionResourcesDisplayed)
             {
-                InlineStyle sheet = SvgStyleSheet.Resolve(marker, styleRules, ancestors, workCounter, cancellationToken);
+                InlineStyle sheet = SvgStyleSheet.Resolve(marker, styleRules, ancestors, cancellationToken);
                 SvgMarkerDefinition definition = SvgMarkerSyntax.Parse(marker,
-                    SvgComputedStyleResolver.Resolve(marker, sheet, workCounter, cancellationToken, true),
+                    SvgComputedStyleResolver.Resolve(marker, sheet, cancellationToken, true),
                     new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height),
-                    inherited, sheet, workCounter, cancellationToken);
+                    inherited, sheet, cancellationToken);
                 if (definitionResourcesDisplayed && definition.FontLengths is {} lengths && definition.Width != 0 && definition.Height != 0 && marker.GetAttribute("id") is {} id)
                     markerFonts.TryAdd(styleStrings.Copy(id), new(lengths));
             }
@@ -517,7 +507,7 @@ internal static class SvgFontRequestDiscovery
                 Add(markers.Start); Add(markers.Mid); Add(markers.End);
                 void Add(string? value)
                 {
-                    workCounter.Consume(cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
                     if (!SvgMarkerStyle.Active(value)) return;
                     string id = styleStrings.Copy(SvgGradientSyntax.ParsePaintId(value));
                     markerReferences.TryAdd(id, new(id));
@@ -526,7 +516,7 @@ internal static class SvgFontRequestDiscovery
 
             void ObserveFilter(string filter)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 if (filter.Trim() == "none") return;
                 if (!SvgLocalUrl.TryParseId(filter, out string id))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local text filter references are implemented.");
@@ -554,8 +544,8 @@ internal static class SvgFontRequestDiscovery
         char[] GetTextChunk()
         {
             if (textChunk is not null) return textChunk;
-            RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount(ParserWorkCounter.ByteCheckpointSize, sizeof(char)), SvgMemoryCategory.Parser);
-            try { textChunk = new char[ParserWorkCounter.ByteCheckpointSize]; }
+            RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount(4096, sizeof(char)), SvgMemoryCategory.Parser);
+            try { textChunk = new char[4096]; }
             catch
             {
                 reservation.Dispose();
@@ -566,10 +556,9 @@ internal static class SvgFontRequestDiscovery
         }
     }
 
-    private static void AddCandidate(DiscoveryCandidate candidate, BudgetedParserList<TextRequestKey> requests, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void AddCandidate(DiscoveryCandidate candidate, BudgetedParserList<TextRequestKey> requests, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(requests);
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (!candidate.HasRequest || candidate.HasChildElement || !candidate.HasRenderableTextContent)
         {
             return;
@@ -580,7 +569,7 @@ internal static class SvgFontRequestDiscovery
         }
         for (int index = 0; index < requests.Count; index++)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             TextRequestKey existing = requests[index];
             if (existing.Family is not string existingFamily)
             {
@@ -595,7 +584,7 @@ internal static class SvgFontRequestDiscovery
         requests.Add(new TextRequestKey(family, candidate.Weight, candidate.Italic) { SourceContext = candidate.SourceContext });
     }
 
-    private static bool HasRenderableText(XmlReader reader, char[] chunk, SvgTextWhitespaceMode whitespaceMode, SvgFontCoverageDiscovery? coverage, ParserWorkCounter workCounter, CancellationToken cancellationToken, out bool hasCharacters, out bool endsWithCollapsible)
+    private static bool HasRenderableText(XmlReader reader, char[] chunk, SvgTextWhitespaceMode whitespaceMode, SvgFontCoverageDiscovery? coverage, CancellationToken cancellationToken, out bool hasCharacters, out bool endsWithCollapsible)
     {
         bool hasRenderableText = false;
         hasCharacters = false;
@@ -609,26 +598,26 @@ internal static class SvgFontRequestDiscovery
                 hasCharacters = true;
                 endsWithCollapsible = chunk[read - 1] is ' ' or '\t' or '\r' or '\n';
                 hasRenderableText |= whitespaceMode == SvgTextWhitespaceMode.Preserve
-                    ? SvgTextWhitespaceNormalizer.HasText(chunk.AsSpan(0, read), workCounter, cancellationToken)
-                    : SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken);
+                    ? SvgTextWhitespaceNormalizer.HasText(chunk.AsSpan(0, read), cancellationToken)
+                    : SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), cancellationToken);
                 coverage?.Observe(chunk.AsSpan(0, read), whitespaceMode);
             }
         } while (read != 0);
         return hasRenderableText;
     }
 
-    private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, InlineStyle styleSheet, SvgPaintResourceSelection? resources, ParserWorkCounter workCounter, CancellationToken cancellationToken, out string? specifiedWhiteSpace)
+    private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, InlineStyle styleSheet, SvgPaintResourceSelection? resources, CancellationToken cancellationToken, out string? specifiedWhiteSpace)
     {
-        InlineStyle inlineStyle = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+        InlineStyle inlineStyle = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
         SvgComputedStyle computedStyle = SvgComputedStyle.Resolve(reader, inlineStyle, styleSheet).ResolveOpacity(inherited.ElementOpacity).ResolveDisplay(inherited.ElementDisplay);
         specifiedWhiteSpace = SvgInlineStyleParser.MergeWithImportance(inlineStyle.WhiteSpace, inlineStyle.Important, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important);
         if (reader.LocalName is "svg" or "defs" or "use" || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
         {
-            SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inlineStyle, computedStyle, styleSheet, new SvgInheritedPresentation(inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, inherited.Transform) { TextMetrics = inherited.Metrics, OwnOpacity = inherited.ElementOpacity, ElementDisplay = inherited.ElementDisplay, PaintServerFill = inherited.PaintServerFill }, inherited.FillRule, inherited.Text, SvgInheritedStrokeStyle.Default, SvgRootParser.CssNamedColors, resources, workCounter, cancellationToken);
+            SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inlineStyle, computedStyle, styleSheet, new SvgInheritedPresentation(inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, inherited.Transform) { TextMetrics = inherited.Metrics, OwnOpacity = inherited.ElementOpacity, ElementDisplay = inherited.ElementDisplay, PaintServerFill = inherited.PaintServerFill }, inherited.FillRule, inherited.Text, SvgInheritedStrokeStyle.Default, SvgRootParser.CssNamedColors, resources, cancellationToken);
             return new TextStyle(resolved.TextStyle, resolved.Presentation.Paint, resolved.Presentation.IsDisplayed, resolved.Presentation.IsVisible, resolved.Presentation.Transform, resolved.FillRule, computedStyle.Stroke ?? inherited.Stroke) { Metrics = resolved.Presentation.TextMetrics, StrokeStyle = inherited.StrokeStyle.ResolveChild(computedStyle), OwnOpacity = resolved.Presentation.ElementOpacity, ElementDisplay = resolved.Presentation.ElementDisplay, PaintServerFill = resolved.Presentation.PaintServerFill, PaintOrder = computedStyle.PaintOrder ?? inherited.PaintOrder, Markers = SvgMarkerStyle.Resolve(computedStyle, inherited.Markers) };
         }
         SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, SvgInlineStyleParser.MergeFont(inlineStyle.TextFont, inlineStyle.Important, styleSheet.TextFont, styleSheet.Important), specifiedWhiteSpace, SvgInlineStyleParser.MergeWithImportance(inlineStyle.LetterSpacing, inlineStyle.Important, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WordSpacing, inlineStyle.Important, InlineImportantProperties.WordSpacing, styleSheet.WordSpacing, styleSheet.Important));
-        SvgAffineTransform transform = inherited.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, workCounter, cancellationToken));
+        SvgAffineTransform transform = inherited.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, cancellationToken));
         if (computedStyle.Fill is null && inherited.PaintServerFill is string fill) computedStyle = computedStyle with { Fill = fill };
         SvgResolvedShapePresentation textPresentation = SvgShapePresentationResolver.Resolve(SvgTextPaintStyle.ForColorResolution(computedStyle) with { Filter = null, Stroke = "none", Linecap = null, Linejoin = null, Dasharray = null, Dashoffset = null, Width = null, Miterlimit = null, StrokeOpacity = null }, inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, false, SvgRootParser.CssNamedColors);
         bool isDisplayed = inherited.IsDisplayed && (computedStyle.GetDisplay() != SvgDisplay.None);

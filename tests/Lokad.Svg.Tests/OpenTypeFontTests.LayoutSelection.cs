@@ -12,7 +12,7 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] font = CreateLanguageKerningFont(latin, false);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
-        Assert.Equal(expected, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, null, CancellationToken.None));
+        Assert.Equal(expected, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, CancellationToken.None));
     }
 
     [Fact]
@@ -20,7 +20,7 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] font = CreateLanguageKerningFont(true, true);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
-        Assert.Equal(-50, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, null, CancellationToken.None));
+        Assert.Equal(-50, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, CancellationToken.None));
     }
 
     [Fact]

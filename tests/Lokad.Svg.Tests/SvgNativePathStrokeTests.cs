@@ -42,9 +42,9 @@ public sealed class SvgNativePathStrokeTests
             using (BudgetedParserList<SvgStrokeOutlineCommand> expected = new(budget, SvgMemoryCategory.Geometry))
             using (BudgetedParserList<SvgStrokeOutlineCommand> actual = new(budget, SvgMemoryCategory.Geometry))
             {
-                SvgNativePathStroke.Build(shortPath, 1, 4, cap, SvgStrokeJoin.Miter, 1, map, expected, budget, new(10_000), CancellationToken.None);
+                SvgNativePathStroke.Build(shortPath, 1, 4, cap, SvgStrokeJoin.Miter, 1, map, expected, budget, CancellationToken.None);
                 SvgNativePathStroke.Build(longPath, 1, 4, cap, SvgStrokeJoin.Miter, 1, map, actual, budget,
-                    new(6 * longPath.Length + 10_000), CancellationToken.None);
+CancellationToken.None);
                 Assert.Equal(expected.AsSpan().ToArray(), actual.AsSpan().ToArray());
             }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -77,8 +77,8 @@ public sealed class SvgNativePathStrokeTests
         using (BudgetedParserList<SvgStrokeOutlineCommand> expected = new(budget, SvgMemoryCategory.Geometry))
         using (BudgetedParserList<SvgStrokeOutlineCommand> actual = new(budget, SvgMemoryCategory.Geometry))
         {
-            Build(shortPath, expected, budget, new(10_000), CancellationToken.None);
-            Build(longPath, actual, budget, new(6 * longPath.Length + 10_000), CancellationToken.None);
+            Build(shortPath, expected, budget, CancellationToken.None);
+            Build(longPath, actual, budget, CancellationToken.None);
             Assert.Equal(expected.AsSpan().ToArray(), actual.AsSpan().ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -96,11 +96,9 @@ public sealed class SvgNativePathStrokeTests
         RenderBudget budget = new(1_000_000);
         using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
         {
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                Build(path, output, budget, new(1000), CancellationToken.None)).ErrorCode);
             Assert.Equal(0, output.Count);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            Build(path, output, budget, new(100_000), CancellationToken.None);
+            Build(path, output, budget, CancellationToken.None);
             Assert.NotEqual(0, output.Count);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -127,7 +125,7 @@ public sealed class SvgNativePathStrokeTests
             using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
             {
                 SvgNativePathStroke.BuildGeneric(source, Number(columns[1]), Number(columns[2]), (SvgStrokeCap)int.Parse(columns[4], CultureInfo.InvariantCulture),
-                    (SvgStrokeJoin)int.Parse(columns[5], CultureInfo.InvariantCulture), Number(columns[3]), output, budget, new(2_000_000), CancellationToken.None);
+                    (SvgStrokeJoin)int.Parse(columns[5], CultureInfo.InvariantCulture), Number(columns[3]), output, budget, CancellationToken.None);
                 Assert.True(expected.Length == output.Count, columns[0] + ": outline command count");
                 for (int index = 0; index < output.Count; index++)
                 {
@@ -161,31 +159,6 @@ public sealed class SvgNativePathStrokeTests
     }
 
     [Theory]
-    [InlineData(0)]
-    [InlineData(16)]
-    [InlineData(100)]
-    public void Construction_work_denial_releases_private_lists_without_mutating_source(int limit)
-    {
-        SvgAuthoredPathCommand[] source = CurvedPath();
-        SvgAuthoredPathCommand[] original = source.ToArray();
-        RenderBudget budget = new(1_000_000);
-        using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
-        {
-            SvgException denied = Assert.Throws<SvgException>(() => Build(source, output, budget, new(limit), CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
-        }
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(original, source);
-        using (BudgetedParserList<SvgStrokeOutlineCommand> retry = new(budget, SvgMemoryCategory.Geometry))
-        {
-            Build(source, retry, budget, new(100_000), CancellationToken.None);
-            Assert.Contains(retry.AsSpan().ToArray(), command => command.Verb == SvgStrokeOutlineVerb.Quadratic);
-            Assert.Contains(retry.AsSpan().ToArray(), command => command.Verb == SvgStrokeOutlineVerb.Conic);
-        }
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-    }
-
-    [Theory]
     [InlineData(1)]
     [InlineData(1024)]
     [InlineData(1200)]
@@ -194,7 +167,7 @@ public sealed class SvgNativePathStrokeTests
         RenderBudget budget = new(limit);
         using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
         {
-            SvgException denied = Assert.Throws<SvgException>(() => Build(CurvedPath(), output, budget, new(100_000), CancellationToken.None));
+            SvgException denied = Assert.Throws<SvgException>(() => Build(CurvedPath(), output, budget, CancellationToken.None));
             Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -207,10 +180,10 @@ public sealed class SvgNativePathStrokeTests
         using CancellationTokenSource source = new(); source.Cancel();
         using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
         {
-            OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => Build(CurvedPath(), output, budget, new(100_000), source.Token));
+            OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => Build(CurvedPath(), output, budget, source.Token));
             Assert.Equal(source.Token, error.CancellationToken);
             Assert.Equal(0, output.Count);
-            Build(CurvedPath(), output, budget, new(100_000), CancellationToken.None);
+            Build(CurvedPath(), output, budget, CancellationToken.None);
             Assert.NotEqual(0, output.Count);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -231,16 +204,16 @@ public sealed class SvgNativePathStrokeTests
         using (BudgetedParserList<SvgStrokeOutlineCommand> first = new(budget, SvgMemoryCategory.Geometry))
         using (BudgetedParserList<SvgStrokeOutlineCommand> second = new(budget, SvgMemoryCategory.Geometry))
         {
-            SvgNativePathStroke.Build(source, 4, 4, SvgStrokeCap.Round, SvgStrokeJoin.Round, 1, map, first, budget, new(100_000), CancellationToken.None);
-            Build(mapped, second, budget, new(100_000), CancellationToken.None);
+            SvgNativePathStroke.Build(source, 4, 4, SvgStrokeCap.Round, SvgStrokeJoin.Round, 1, map, first, budget, CancellationToken.None);
+            Build(mapped, second, budget, CancellationToken.None);
             Assert.Equal(first.AsSpan().ToArray(), second.AsSpan().ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     private static void Build(SvgAuthoredPathCommand[] source, BudgetedParserList<SvgStrokeOutlineCommand> output,
-        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
-        => SvgNativePathStroke.Build(source, 4, 4, SvgStrokeCap.Round, SvgStrokeJoin.Round, 1, output, budget, work, token);
+        RenderBudget budget, CancellationToken token)
+        => SvgNativePathStroke.Build(source, 4, 4, SvgStrokeCap.Round, SvgStrokeJoin.Round, 1, output, budget, token);
 
     private static SvgAuthoredPathCommand[] CurvedPath() =>
     [

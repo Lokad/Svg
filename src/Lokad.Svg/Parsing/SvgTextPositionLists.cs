@@ -43,16 +43,16 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
 
     /// <summary>Builds root positions over normalized scalar boundaries, merging existing descendant adjustments.</summary>
     internal OwnedParserArray<SvgTextPositionAdjustment> Build(string text, ReadOnlySpan<SvgTextPositionAdjustment> descendants,
-        RenderBudget budget, ParserWorkCounter? work, CancellationToken token)
+        RenderBudget budget, CancellationToken token)
     {
-        using BudgetedParserList<SvgTextPositionAdjustment> positions = new(budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserList<SvgTextPositionAdjustment> positions = new(budget, SvgMemoryCategory.Parser, token);
         SvgGeometrySyntax.DelimitedTokenReader xs = new(X.AsSpan(), SvgNumberListSyntax.Svg, 0), ys = new(Y.AsSpan(), SvgNumberListSyntax.Svg, 0);
         SvgGeometrySyntax.DelimitedTokenReader dxs = new(Dx.AsSpan(), SvgNumberListSyntax.Svg, 0), dys = new(Dy.AsSpan(), SvgNumberListSyntax.Svg, 0);
         SvgGeometrySyntax.DelimitedTokenReader rotations = new(Rotate.AsSpan(), SvgNumberListSyntax.Svg, 0);
         double? lastRotation = null;
         for (int skipped = 0; skipped < CharacterOffset; skipped++)
         {
-            if (work is null) token.ThrowIfCancellationRequested(); else work.Consume(token);
+            token.ThrowIfCancellationRequested();
             _ = xs.TryReadValue(out _); _ = ys.TryReadValue(out _);
             _ = dxs.TryReadValue(out _); _ = dys.TryReadValue(out _);
             if (rotations.TryReadValue(out ReadOnlySpan<char> previous)) lastRotation = ReadToken(previous, false);
@@ -60,7 +60,7 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
         int sourceOffset = 0, descendantIndex = 0;
         foreach (System.Text.Rune scalar in text.EnumerateRunes())
         {
-            if (work is null) token.ThrowIfCancellationRequested(); else work.Consume(token);
+            token.ThrowIfCancellationRequested();
             double? x = xs.TryReadValue(out ReadOnlySpan<char> xv) ? ReadToken(xv) : null;
             double? y = ys.TryReadValue(out ReadOnlySpan<char> yv) ? ReadToken(yv) : null;
             bool hasDx = dxs.TryReadValue(out ReadOnlySpan<char> dxv), hasDy = dys.TryReadValue(out ReadOnlySpan<char> dyv);

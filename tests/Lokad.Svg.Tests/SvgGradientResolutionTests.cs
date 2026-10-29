@@ -11,17 +11,18 @@ public sealed class SvgGradientResolutionTests
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
-    public void Forward_chain_resolution_has_linear_work_in_both_orders(bool radial, bool reverse)
+    public void Forward_chain_resolution_has_linear_allocation_growth_in_both_orders(bool radial, bool reverse)
     {
         long previous = 0;
         foreach (int count in new[] { 128, 256, 512 })
         {
             byte[] input = Chain(count, radial, reverse);
             RenderBudget budget = new(20_000_000);
-            ParserWorkCounter work = new(count * 40 + 2000);
-            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, work, CancellationToken.None)) { }
-            if (previous != 0) Assert.True(work.Used <= previous * 5 / 2);
-            previous = work.Used;
+            long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
+            long allocated = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
+            if (previous != 0) Assert.True(allocated <= previous * 5 / 2);
+            previous = allocated;
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
     }
@@ -44,8 +45,7 @@ public sealed class SvgGradientResolutionTests
         for (int index = 0; index < 1024; index++) xml.Append("<radialGradient id='unused").Append(index).Append("'/>");
         xml.Append("</defs><defs><linearGradient id='later'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect width='4' height='4' fill='url(#g0)'/></svg>");
         RenderBudget budget = new(20_000_000);
-        ParserWorkCounter work = new(50_000);
-        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml.ToString()), SvgRenderLimits.Default, budget, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -64,26 +64,19 @@ public sealed class SvgGradientResolutionTests
     }
 
     [Fact]
-    public void Mixed_forward_templates_release_storage_at_work_memory_and_cancellation_boundaries()
+    public void Mixed_forward_templates_release_storage_at_memory_and_cancellation_boundaries()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><defs><linearGradient id='g0' href='#g1'/><radialGradient id='g1' href='#base'/><linearGradient id='g2' href='#base'/><radialGradient id='g3' href='#g0'/></defs><defs><linearGradient id='base'><stop stop-color='red'/><stop offset='1' stop-color='red'/></linearGradient></defs><rect width='4' height='4' fill='url(#g3)'/></svg>"u8.ToArray();
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(10_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         RenderBudget cancelled = new(1_000_000);
-        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, new(10_000), cancellation.Token));
+        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, cancellation.Token));
         Assert.Equal(cancellation.Token, error.CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
 
@@ -104,23 +97,12 @@ public sealed class SvgGradientResolutionTests
         string definitions = "<" + kind + " id='g0' href='#middle'/><" + kind + " id='middle' href='#%25qq'/><" + kind + " id='%qq'><stop stop-color='red'/></" + kind + ">";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><defs>" + definitions + "</defs><rect width='4' height='4' fill='url(#g0)'/></svg>");
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(10_000);
         using (RenderBudget.BudgetReservation borrowed = measured.Reserve(borrowedBytes, SvgMemoryCategory.Parser))
         {
-            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
             Assert.Equal(borrowedBytes, measured.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(1_000_000);
-            using (RenderBudget.BudgetReservation borrowed = denied.Reserve(borrowedBytes, SvgMemoryCategory.Parser))
-            {
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-                Assert.Equal(borrowedBytes, denied.Snapshot().CurrentBytes);
-            }
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         long peak = measured.Snapshot().PeakBytes;
         foreach (long limit in new[] { borrowedBytes + 1, (peak + borrowedBytes) / 2, peak - 1 })
         {

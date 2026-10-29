@@ -25,7 +25,7 @@ internal readonly ref struct SvgGradientStops
         Count = count;
     }
 
-    internal static SvgGradientStops Create(ReadOnlySpan<SvgGradientStop> source, SvgGradientSpread spread, ParserWorkCounter work, CancellationToken token)
+    internal static SvgGradientStops Create(ReadOnlySpan<SvgGradientStop> source, SvgGradientSpread spread, CancellationToken token)
     {
         if (source.Length is < 2 or > 256) throw new InvalidOperationException("Canonical gradient stops require two to 256 validated source entries.");
         bool firstImplicit = (float)source[0].Offset > 0, lastImplicit = (float)source[^1].Offset != 1;
@@ -36,7 +36,7 @@ internal readonly ref struct SvgGradientStops
         int groupLength = 1, count = 0;
         for (int index = 1; index <= raw._rawCount; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             float position = index == raw._rawCount ? float.PositiveInfinity : (float)raw.Raw(index).Offset;
             if (index < raw._rawCount)
             {
@@ -61,20 +61,19 @@ internal readonly ref struct SvgGradientStops
         return stop with { Offset = (float)stop.Offset };
     }
 
-    internal Enumerator GetEnumerator(ParserWorkCounter work, CancellationToken token) => new(this, work, token);
+    internal Enumerator GetEnumerator(CancellationToken token) => new(this, token);
 
     /// <summary>Streams borrowed canonical colors; each instance is confined to its caller's preparation stack.</summary>
     internal ref struct Enumerator
     {
         private readonly SvgGradientStops _stops;
-        private readonly ParserWorkCounter _work;
         private readonly CancellationToken _token;
         private int _next, _pending;
         internal SvgGradientStop Current { get; private set; }
 
-        internal Enumerator(SvgGradientStops stops, ParserWorkCounter work, CancellationToken token)
+        internal Enumerator(SvgGradientStops stops, CancellationToken token)
         {
-            _stops = stops; _work = work; _token = token;
+            _stops = stops; _token = token;
             _next = 0; _pending = -1; Current = default;
         }
 
@@ -82,13 +81,13 @@ internal readonly ref struct SvgGradientStops
         {
             if (_pending >= 0)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 Current = _stops.Raw(_pending); _pending = -1;
                 return true;
             }
             while (_next < _stops._rawCount)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 if (_stops.Uniform)
                 {
                     int index = _next++;
@@ -99,7 +98,7 @@ internal readonly ref struct SvgGradientStops
                 float position = (float)_stops.Raw(start).Offset;
                 while (end < _stops._rawCount)
                 {
-                    _work.Consume(_token);
+                    _token.ThrowIfCancellationRequested();
                     if ((float)_stops.Raw(end).Offset != position) break;
                     end++;
                 }

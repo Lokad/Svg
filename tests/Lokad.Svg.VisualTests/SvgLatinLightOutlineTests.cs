@@ -27,7 +27,7 @@ public sealed class SvgLatinLightOutlineTests
         byte[] original = bytes.ToArray();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         var budget = new RenderBudget(long.MaxValue);
-        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(bytes, item.GetProperty("glyphIndex").GetUInt16(), metrics, item.GetProperty("deviceSize").GetDouble(), budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(bytes, item.GetProperty("glyphIndex").GetUInt16(), metrics, item.GetProperty("deviceSize").GetDouble(), budget, CancellationToken.None))
         {
             JsonElement.ArrayEnumerator commands = item.GetProperty("commands").EnumerateArray();
             int first = 0;
@@ -74,26 +74,7 @@ public sealed class SvgLatinLightOutlineTests
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
         var budget = new RenderBudget(maximumBytes);
 
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetLatinLightContours(bytes, 36, metrics, 48, budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(original, bytes);
-    }
-
-    [Theory]
-    [InlineData(1)]
-    [InlineData(300)]
-    [InlineData(2000)]
-    [InlineData(10000)]
-    public void Expired_metric_discovery_releases_storage_and_retry_is_repeatable(long maximumWork)
-    {
-        byte[] bytes = File.ReadAllBytes(Path.Combine(DirectoryPath, "fonts", "NotoSans-Regular.ttf"));
-        byte[] original = bytes.ToArray();
-        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
-        var budget = new RenderBudget(long.MaxValue);
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetLatinLightContours(bytes, 36, metrics, 48, budget, new(maximumWork), CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        using (OpenTypeGlyphContourStorage retry = OpenTypeFont.GetLatinLightContours(bytes, 36, metrics, 48, budget, new(long.MaxValue), CancellationToken.None)) Assert.Equal(652, retry.Segments[0].End.Y);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetLatinLightContours(bytes, 36, metrics, 48, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(original, bytes);
     }

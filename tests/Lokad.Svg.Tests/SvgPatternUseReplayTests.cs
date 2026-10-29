@@ -56,8 +56,7 @@ public sealed class SvgPatternUseReplayTests
     {
         byte[] input = Input("<defs><pattern id='p' patternUnits='userSpaceOnUse' width='12' height='12' viewBox='0 0 12 12'><rect width='12' height='12' fill='blue'/><use href='#shape'/><rect x='6' y='6' width='5' height='5' fill='red'/></pattern><pattern id='q' patternUnits='userSpaceOnUse' width='12' height='12' viewBox='0 0 12 12'><use href='#shape'/><use href='#shape' x='3'/></pattern><g id='shape'><circle cx='4' cy='4' r='3' fill='green'/></g></defs><rect width='32' height='48' fill='url(#p)'/><rect x='32' width='32' height='48' fill='url(#q)'/>");
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(100_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         {
             Assert.False(root.HasUnsupportedChild);
             Assert.Equal(2, root.Geometries.Length);
@@ -65,18 +64,12 @@ public sealed class SvgPatternUseReplayTests
                 Assert.NotEmpty((geometry.Pattern.VectorContent ?? throw new InvalidOperationException()).Scene.Commands);
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { 1, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, new(100_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, new(100_000), cancellation.Token)).CancellationToken);
+        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         Assert.NotEmpty(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
@@ -89,7 +82,7 @@ public sealed class SvgPatternUseReplayTests
         SvgColor red = new(255, 0, 0, 255), blue = new(0, 0, 255, 255);
         SvgGradientStop[] stops = stopCount == 2 ? [new(.25, red), new(.75, blue)]
             : [new(.25, red), new(.4, red), new(.6, blue), new(.75, blue)];
-        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, new(10_000), new(1_000), CancellationToken.None);
+        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, new(10_000), CancellationToken.None);
         SvgShaderPaint inner = ramp.SampleAbsolute(.1, 1, 32);
         SvgShaderPaint outer = ramp.SampleAbsolute(.9, 1, 32);
         Assert.InRange(inner.Red, .99f, 1f);

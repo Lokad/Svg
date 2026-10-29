@@ -34,25 +34,24 @@ public sealed partial class SvgGlyphLcdCoverageTests
         const int columns = 10, rows = 7;
         Assert.Equal(columns * rows * 3, expected.Length);
         int left = (int)Math.Floor(originX) - 2, top = originY - 4;
-        ParserWorkCounter work = new(long.MaxValue);
         RenderBudget budget = new(long.MaxValue);
         SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, false, false, false,
-            SvgGlyphLcdMode.Natural, work, CancellationToken.None);
+            SvgGlyphLcdMode.Natural, CancellationToken.None);
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
         using (SvgGlyphLcdCoverage.ScanStorage storage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments,
-            SvgGlyphLcdMode.Natural, budget, work, CancellationToken.None) ?? throw new InvalidOperationException())
+            SvgGlyphLcdMode.Natural, budget, CancellationToken.None) ?? throw new InvalidOperationException())
         {
             Span<int> counts = stackalloc int[2];
             for (int y = top - 1; y <= top + rows; y++)
             {
-                SvgGlyphLcdCoverage.ScanRow row = storage.PrepareRow(segments, y, counts, work, CancellationToken.None);
+                SvgGlyphLcdCoverage.ScanRow row = storage.PrepareRow(segments, y, counts, CancellationToken.None);
                 for (int x = left - 1; x <= left + columns; x++)
                 {
                     int index = ((y - top) * columns + x - left) * 3;
                     SvgGlyphRgbCoverage pixel = x >= left && x < left + columns && y >= top && y < top + rows
                         ? new(expected[index], expected[index + 1], expected[index + 2]) : default;
-                    Assert.Equal(pixel, SvgGlyphLcdCoverage.GetCoverage(segments, x, y, scratch, bounds, work, CancellationToken.None));
-                    Assert.Equal(pixel, SvgGlyphLcdCoverage.GetCoverage(row, x, scratch, bounds, work, CancellationToken.None));
+                    Assert.Equal(pixel, SvgGlyphLcdCoverage.GetCoverage(segments, x, y, scratch, bounds, CancellationToken.None));
+                    Assert.Equal(pixel, SvgGlyphLcdCoverage.GetCoverage(row, x, scratch, bounds, CancellationToken.None));
                 }
             }
         }

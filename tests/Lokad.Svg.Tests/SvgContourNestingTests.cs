@@ -129,7 +129,7 @@ public sealed class SvgContourNestingTests
 
     private static (bool Merged, SvgDevicePoint[] Points, int[] Ends) Merge(SvgDevicePoint[] points, int[] ends)
     {
-        bool merged = SvgContourNesting.MergeIdenticalContours(points, ends, new ParserWorkCounter(1000), out SvgDevicePoint[] kept, out int[] keptEnds, CancellationToken.None);
+        bool merged = SvgContourNesting.MergeIdenticalContours(points, ends, out SvgDevicePoint[] kept, out int[] keptEnds, CancellationToken.None);
         return (merged, kept, keptEnds);
     }
 

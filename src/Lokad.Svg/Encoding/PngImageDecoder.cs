@@ -48,11 +48,10 @@ internal static class PngImageDecoder
     private static uint[]? _crcTable;
 
     /// <summary>Returns uniform color or adopts a premultiplied raster; the caller releases any returned raster on every exit.</summary>
-    internal static DecodedPngImage Decode(ReadOnlyMemory<byte> png, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static DecodedPngImage Decode(ReadOnlyMemory<byte> png, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
         ArgumentNullException.ThrowIfNull(budget);
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (!png.Span.StartsWith(PngSignature)) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded image data is not a PNG file.");
         int width = 0;
         int height = 0;
@@ -70,7 +69,7 @@ internal static class PngImageDecoder
         bool seenEnd = false;
         while (position < png.Length)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (position > png.Length - 12) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data ends inside a chunk header.");
             int length = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(position, 4));
             if (length < 0 || length > png.Length - position - 12) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has an invalid chunk length.");
@@ -81,7 +80,7 @@ internal static class PngImageDecoder
             if ((type[2] & 0x20) != 0) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has an invalid chunk-type reserved bit.");
             ReadOnlySpan<byte> data = png.Span.Slice(position + 8, length);
             uint expectedCrc = BinaryPrimitives.ReadUInt32BigEndian(png.Span.Slice(position + 8 + length, 4));
-            workCounter.ConsumeBytes(length, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (ComputeCrc(type, data) != expectedCrc) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data fails its chunk integrity check.");
             if (seenEnd) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data continues after its end chunk.");
             if (!seenHeader && !type.SequenceEqual("IHDR"u8)) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data must start with its header chunk.");
@@ -194,7 +193,7 @@ internal static class PngImageDecoder
                 int filled = 0;
                 while (filled < pixels.Length)
                 {
-                    workCounter.Consume(cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
                     int read = zlib.Read(pixels, filled, pixels.Length - filled);
                     if (read == 0) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data ends inside its pixel stream.");
                     filled += read;
@@ -206,10 +205,10 @@ internal static class PngImageDecoder
         {
             throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data carries corrupt compressed pixel data.");
         }
-        return ScanPixels(pixels, width, height, channels, transparent, palette, isPaletteType, (int)rowBytes, budget, workCounter, cancellationToken);
+        return ScanPixels(pixels, width, height, channels, transparent, palette, isPaletteType, (int)rowBytes, budget, cancellationToken);
     }
 
-    private static DecodedPngImage ScanPixels(byte[] pixels, int width, int height, int channels, byte[]? transparent, byte[]? palette, bool isPaletteType, int rowBytes, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static DecodedPngImage ScanPixels(byte[] pixels, int width, int height, int channels, byte[]? transparent, byte[]? palette, bool isPaletteType, int rowBytes, RenderBudget budget, CancellationToken cancellationToken)
     {
         if (isPaletteType && palette is null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data is missing its palette chunk.");
         if (isPaletteType && transparent is not null && transparent.Length > 256) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed transparency chunk.");
@@ -225,8 +224,7 @@ internal static class PngImageDecoder
         {
             for (int y = 0; y < height; y++)
             {
-                workCounter.Consume(cancellationToken);
-                workCounter.ConsumeBytes(rowBytes, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 int filter = pixels[position];
                 if (filter > 4) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data uses an unsupported row filter.");
                 Buffer.BlockCopy(pixels, position + 1, current, 0, current.Length);
@@ -269,7 +267,7 @@ internal static class PngImageDecoder
                         {
                             raster = DecodedPngRaster.Create(width, height, budget);
                             int preceding = y * width + x;
-                            workCounter.ConsumeBytes(preceding, cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             for (int previousPixel = 0; previousPixel < preceding; previousPixel++)
                             {
                                 if ((previousPixel & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();

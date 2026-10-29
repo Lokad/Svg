@@ -8,10 +8,10 @@ public sealed class SvgInheritedClipIsolationTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Forward_clip_layers_rebuild_sibling_commands_with_linear_parser_work(bool curvedFilter)
+    public void Forward_clip_layers_rebuild_sibling_commands_with_linear_parser_allocation_growth(bool curvedFilter)
     {
         long small = Measure(32, curvedFilter), large = Measure(512, curvedFilter);
-        Assert.True(large < small * 18, "Sixteen times as many sibling scopes must keep linear parser work.");
+        Assert.True(large < small * 18, "Sixteen times as many sibling scopes must keep linear parser allocation growth.");
 
         static long Measure(int count, bool curvedFilter)
         {
@@ -22,10 +22,10 @@ public sealed class SvgInheritedClipIsolationTests
             string clip = curvedFilter ? "<ellipse cx='16' cy='16' rx='12.5' ry='10.5'/>" : "<rect x='5.25' y='3.75' width='19.5' height='22'/>";
             source.Append("<defs><clipPath id='c'>" + clip + "</clipPath><filter id='f'><feOffset dx='1' dy='1'/></filter></defs></svg>");
             RenderBudget budget = new(40_000_000);
-            ParserWorkCounter work = new(SvgRenderLimits.Default.MaximumWorkUnits);
-            using (SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(source.ToString()), SvgRenderLimits.Default, budget, null, work, CancellationToken.None)) { }
+            long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+            using (SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(source.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            return work.Used;
+            return GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
         }
     }
 
@@ -103,10 +103,8 @@ public sealed class SvgInheritedClipIsolationTests
         RenderBudget parser = new(8_000_000);
         using (RenderBudget.BudgetReservation borrowed = parser.Reserve(73, SvgMemoryCategory.Scene))
         {
-            ParserWorkCounter parseWork = new(SvgRenderLimits.Default.MaximumWorkUnits);
-            using (SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, parseWork, CancellationToken.None)) { }
+            using (SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, CancellationToken.None)) { }
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, new(parseWork.Used - 1), CancellationToken.None)).ErrorCode);
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
             RenderBudget deniedParse = new(parser.Snapshot().PeakBytes - 74);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, deniedParse, CancellationToken.None)).ErrorCode);

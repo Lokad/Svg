@@ -6,36 +6,36 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses and resolves the deliberately narrow embedded stylesheet subset.</summary>
 internal static class SvgStyleSheet
 {
-    internal static void Parse(string value, int maximumRules, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void Parse(string value, int maximumRules, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, CancellationToken cancellationToken)
     {
-        for (int index = 0; index < value.Length; index += 4096) workCounter.Consume(cancellationToken);
-        using OwnedStyleSheetText commentless = StripComments(value, budget, workCounter, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
+        using OwnedStyleSheetText commentless = StripComments(value, budget, cancellationToken);
         value = commentless.Value;
         int position = 0;
         while (position < value.Length)
         {
-            position = SkipWhitespace(value, position, workCounter, cancellationToken);
+            position = SkipWhitespace(value, position, cancellationToken);
             if (position == value.Length) break;
-            int openingBrace = FindCharacter(value, '{', position, workCounter, cancellationToken);
+            int openingBrace = FindCharacter(value, '{', position, cancellationToken);
             if (openingBrace < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet rules must contain a declaration block.");
-            int closingBrace = FindCharacter(value, '}', openingBrace + 1, workCounter, cancellationToken);
-            if (closingBrace < 0 || ContainsCharacter(value, '{', openingBrace + 1, closingBrace, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested stylesheet rules are not implemented.");
-            InlineStyle style = SvgInlineStyleParser.Parse(value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1), strings, workCounter, cancellationToken, true);
-            CssSelectorListReader selectors = new(value.AsSpan(position, openingBrace - position), workCounter, cancellationToken);
+            int closingBrace = FindCharacter(value, '}', openingBrace + 1, cancellationToken);
+            if (closingBrace < 0 || ContainsCharacter(value, '{', openingBrace + 1, closingBrace, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested stylesheet rules are not implemented.");
+            InlineStyle style = SvgInlineStyleParser.Parse(value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1), strings, cancellationToken, true);
+            CssSelectorListReader selectors = new(value.AsSpan(position, openingBrace - position), cancellationToken);
             while (selectors.TryRead(out ReadOnlySpan<char> selector))
             {
                 if (rules.Count >= maximumRules) throw new SvgException(SvgErrorCode.LimitExceeded, "Stylesheet rule count exceeds the configured structural limit.");
-                rules.Add(ParseSelector(selector, style, strings, workCounter, cancellationToken));
+                rules.Add(ParseSelector(selector, style, strings, cancellationToken));
             }
             position = closingBrace + 1;
         }
     }
 
-    internal static InlineStyle Resolve(XmlReader reader, BudgetedParserList<CssRule> rules, SvgCssAncestorContext ancestors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static InlineStyle Resolve(XmlReader reader, BudgetedParserList<CssRule> rules, SvgCssAncestorContext ancestors, CancellationToken cancellationToken)
     {
         if (reader is SvgRetainedTextSource.Reader retained)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             return retained.StyleSheet;
         }
         SvgStyleCascade cascade = new();
@@ -43,23 +43,23 @@ internal static class SvgStyleSheet
         for (int ruleIndex = 0; ruleIndex < rules.Count; ruleIndex++)
         {
             CssRule rule = rules[ruleIndex];
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             // The reader stays on this element throughout the cascade. Read after the
-            // first work/cancellation check, and leave the no-rule path untouched.
+            // first cancellation check, and leave the no-rule path untouched.
             if (ruleIndex == 0) element = SvgCssElement.Read(reader);
-            if (!rule.Matches(element, ancestors, workCounter, cancellationToken)) continue;
+            if (!rule.Matches(element, ancestors, cancellationToken)) continue;
             cascade.Apply(rule.Style, rule.Specificity);
         }
         return cascade.ToInlineStyle();
     }
 
-    internal static OwnedStyleSheetText ReadElementText(XmlReader reader, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static OwnedStyleSheetText ReadElementText(XmlReader reader, RenderBudget budget, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (reader.IsEmptyElement) return new(string.Empty, null);
         using XmlReader subtree = reader.ReadSubtree();
         if (!subtree.Read()) throw new XmlException("Stylesheet content is missing.");
-        using BudgetedStyleSheetTextBuffer text = new(budget, workCounter, cancellationToken);
+        using BudgetedStyleSheetTextBuffer text = new(budget, cancellationToken);
         while (subtree.Read())
         {
             switch (subtree.NodeType)
@@ -79,7 +79,7 @@ internal static class SvgStyleSheet
         throw new XmlException("Stylesheet content is not closed.");
     }
 
-    internal static bool HasCssClass(string? value, ReadOnlySpan<char> expected, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static bool HasCssClass(string? value, ReadOnlySpan<char> expected, CancellationToken cancellationToken)
     {
         if (value is null) return false;
         ValidateIdentifierValue(value);
@@ -87,26 +87,26 @@ internal static class SvgStyleSheet
         int position = 0;
         while (position < classes.Length)
         {
-            ConsumeCheckpoint(position, workCounter, cancellationToken);
-            while (position < classes.Length && SvgCssWhitespace.Is(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
+            ConsumeCheckpoint(position, cancellationToken);
+            while (position < classes.Length && SvgCssWhitespace.Is(classes[position])) { ConsumeCheckpoint(position, cancellationToken); position++; }
             int start = position;
-            while (position < classes.Length && !SvgCssWhitespace.Is(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
+            while (position < classes.Length && !SvgCssWhitespace.Is(classes[position])) { ConsumeCheckpoint(position, cancellationToken); position++; }
             if (classes[start..position].Equals(expected, StringComparison.Ordinal)) return true;
         }
         return false;
     }
 
-    private static OwnedStyleSheetText StripComments(string value, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static OwnedStyleSheetText StripComments(string value, RenderBudget budget, CancellationToken cancellationToken)
     {
-        int length = SvgCssComments.Normalize(value, [], SvgCssCommentContext.StyleSheet, workCounter, cancellationToken);
+        int length = SvgCssComments.Normalize(value, [], SvgCssCommentContext.StyleSheet, cancellationToken);
         if (length == value.Length) return new(value, null);
         if (length == 0) return new(string.Empty, null);
         RenderBudget.BudgetReservation reservation = budget.Reserve(GetStringByteCount(length), SvgMemoryCategory.Parser);
         try
         {
-            return new(string.Create(length, (Value: value, Work: workCounter, Token: cancellationToken), static (destination, state) =>
+            return new(string.Create(length, (Value: value, Token: cancellationToken), static (destination, state) =>
             {
-                SvgCssComments.Normalize(state.Value, destination, SvgCssCommentContext.StyleSheet, state.Work, state.Token);
+                SvgCssComments.Normalize(state.Value, destination, SvgCssCommentContext.StyleSheet, state.Token);
             }), reservation);
         }
         catch { reservation.Dispose(); throw; }
@@ -120,27 +120,25 @@ internal static class SvgStyleSheet
         private const int InitialCapacity = 4_096;
         private const int CopyCheckpointCharacters = 4_096;
         private readonly RenderBudget _budget;
-        private readonly ParserWorkCounter _workCounter;
         private readonly CancellationToken _cancellationToken;
         private char[] _characters = [];
         private RenderBudget.BudgetReservation? _reservation;
         private int _length;
 
-        internal BudgetedStyleSheetTextBuffer(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        internal BudgetedStyleSheetTextBuffer(RenderBudget budget, CancellationToken cancellationToken)
         {
             _budget = budget;
-            _workCounter = workCounter;
             _cancellationToken = cancellationToken;
         }
 
         internal void Append(XmlReader reader)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             using RenderBudget.BudgetReservation probeOwner = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<char>(1), SvgMemoryCategory.Parser);
             char[] probe = new char[1];
             while (true)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 if (_length == _characters.Length)
                 {
                     // Prove that another character exists before growing a full buffer.
@@ -160,11 +158,11 @@ internal static class SvgStyleSheet
             RenderBudget.BudgetReservation reservation = _budget.Reserve(GetStringByteCount(_length), SvgMemoryCategory.Parser);
             try
             {
-                string value = string.Create(_length, (Characters: _characters, WorkCounter: _workCounter, CancellationToken: _cancellationToken), static (destination, state) =>
+                string value = string.Create(_length, (Characters: _characters, CancellationToken: _cancellationToken), static (destination, state) =>
                 {
                     for (int offset = 0; offset < destination.Length; offset += CopyCheckpointCharacters)
                     {
-                        state.WorkCounter.Consume(state.CancellationToken);
+                        state.CancellationToken.ThrowIfCancellationRequested();
                         int count = Math.Min(CopyCheckpointCharacters, destination.Length - offset);
                         state.Characters.AsSpan(offset, count).CopyTo(destination.Slice(offset, count));
                     }
@@ -201,7 +199,7 @@ internal static class SvgStyleSheet
             {
                 for (int offset = 0; offset < _length; offset += CopyCheckpointCharacters)
                 {
-                    _workCounter.Consume(_cancellationToken);
+                    _cancellationToken.ThrowIfCancellationRequested();
                     int count = Math.Min(CopyCheckpointCharacters, _length - offset);
                     _characters.AsSpan(offset, count).CopyTo(replacement.AsSpan(offset, count));
                 }
@@ -217,18 +215,18 @@ internal static class SvgStyleSheet
         }
     }
 
-    private static CssRule ParseSelector(ReadOnlySpan<char> selector, InlineStyle style, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static CssRule ParseSelector(ReadOnlySpan<char> selector, InlineStyle style, BudgetedParserStringStore strings, CancellationToken cancellationToken)
     {
         if (selector.Length > SvgSyntaxLimits.MaximumCssSelectorCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "CSS selectors exceed the configured syntax limit.");
-        CssSelectorTokenReader tokens = new(selector, workCounter, cancellationToken);
+        CssSelectorTokenReader tokens = new(selector, cancellationToken);
         if (!tokens.TryRead(out ReadOnlySpan<char> pattern) || pattern.SequenceEqual(">")) throw Unsupported();
-        CssSpecificity specificity = SvgCssSelectorSyntax.Specificity(pattern, workCounter, cancellationToken);
+        CssSpecificity specificity = SvgCssSelectorSyntax.Specificity(pattern, cancellationToken);
         bool combinator = false;
         while (tokens.TryRead(out pattern))
         {
             if (pattern.SequenceEqual(">") && !tokens.TryRead(out pattern)) throw Unsupported();
             if (pattern.SequenceEqual(">")) throw Unsupported();
-            specificity += SvgCssSelectorSyntax.Specificity(pattern, workCounter, cancellationToken);
+            specificity += SvgCssSelectorSyntax.Specificity(pattern, cancellationToken);
             combinator = true;
         }
         return new CssRule(strings.Copy(selector), specificity, style, combinator);
@@ -241,57 +239,55 @@ internal static class SvgStyleSheet
         if (value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");
     }
 
-    private static int SkipWhitespace(string value, int position, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static int SkipWhitespace(string value, int position, CancellationToken cancellationToken)
     {
-        while (position < value.Length && SvgCssWhitespace.Is(value[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
+        while (position < value.Length && SvgCssWhitespace.Is(value[position])) { ConsumeCheckpoint(position, cancellationToken); position++; }
         return position;
     }
 
-    private static int FindCharacter(string value, char character, int position, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static int FindCharacter(string value, char character, int position, CancellationToken cancellationToken)
     {
         SvgCssQuotedState quotes = default;
         while (position < value.Length)
         {
-            ConsumeCheckpoint(position, workCounter, cancellationToken);
+            ConsumeCheckpoint(position, cancellationToken);
             if (quotes.IsSyntax(value[position]) && value[position] == character) return position;
             position++;
         }
         return -1;
     }
 
-    private static bool ContainsCharacter(string value, char character, int start, int end, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static bool ContainsCharacter(string value, char character, int start, int end, CancellationToken cancellationToken)
     {
         SvgCssQuotedState quotes = default;
         for (int position = start; position < end; position++)
         {
-            ConsumeCheckpoint(position, workCounter, cancellationToken);
+            ConsumeCheckpoint(position, cancellationToken);
             if (quotes.IsSyntax(value[position]) && value[position] == character) return true;
         }
         return false;
     }
 
-    private static void ConsumeCheckpoint(int position, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void ConsumeCheckpoint(int position, CancellationToken cancellationToken)
     {
-        if ((position & 4095) == 0) workCounter.Consume(cancellationToken);
+        if ((position & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
     }
 
     private ref struct CssSelectorTokenReader
     {
         private readonly ReadOnlySpan<char> _value;
-        private readonly ParserWorkCounter _workCounter;
         private readonly CancellationToken _cancellationToken;
         private int _position;
 
-        internal CssSelectorTokenReader(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        internal CssSelectorTokenReader(ReadOnlySpan<char> value, CancellationToken cancellationToken)
         {
             _value = value;
-            _workCounter = workCounter;
             _cancellationToken = cancellationToken;
         }
 
         internal bool TryRead(out ReadOnlySpan<char> token)
         {
-            while (_position < _value.Length && SvgCssWhitespace.Is(_value[_position])) { ConsumeCheckpoint(_position, _workCounter, _cancellationToken); _position++; }
+            while (_position < _value.Length && SvgCssWhitespace.Is(_value[_position])) { ConsumeCheckpoint(_position, _cancellationToken); _position++; }
             if (_position == _value.Length)
             {
                 token = default;
@@ -311,7 +307,7 @@ internal static class SvgStyleSheet
                 if (value == '[') attribute = true;
                 else if (value == ']') attribute = false;
                 else if (!attribute && (SvgCssWhitespace.Is(value) || value == '>')) break;
-                ConsumeCheckpoint(_position, _workCounter, _cancellationToken);
+                ConsumeCheckpoint(_position, _cancellationToken);
                 _position++;
             }
             token = _value[start.._position];
@@ -322,14 +318,12 @@ internal static class SvgStyleSheet
     private ref struct CssSelectorListReader
     {
         private readonly ReadOnlySpan<char> _value;
-        private readonly ParserWorkCounter _workCounter;
         private readonly CancellationToken _cancellationToken;
         private int _position;
 
-        internal CssSelectorListReader(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        internal CssSelectorListReader(ReadOnlySpan<char> value, CancellationToken cancellationToken)
         {
             _value = value;
-            _workCounter = workCounter;
             _cancellationToken = cancellationToken;
         }
 
@@ -338,7 +332,7 @@ internal static class SvgStyleSheet
             while (_position < _value.Length)
             {
                 int start = _position;
-                while (_position < _value.Length && _value[_position] != ',') { ConsumeCheckpoint(_position, _workCounter, _cancellationToken); _position++; }
+                while (_position < _value.Length && _value[_position] != ',') { ConsumeCheckpoint(_position, _cancellationToken); _position++; }
                 selector = SvgCssWhitespace.Trim(_value[start.._position]);
                 if (_position < _value.Length) _position++;
                 if (!selector.IsEmpty) return true;
@@ -349,44 +343,15 @@ internal static class SvgStyleSheet
     }
 }
 
-internal sealed class ParserWorkCounter
-{
-    internal const int ByteCheckpointSize = 4_096;
-    private readonly long _maximumWorkUnits;
-    private long _used;
-
-    internal ParserWorkCounter(long maximumWorkUnits) => _maximumWorkUnits = maximumWorkUnits;
-
-    internal long Used => _used;
-
-    internal void ConsumeText(int characterCount, CancellationToken cancellationToken)
-    {
-        ConsumeBytes(characterCount, cancellationToken);
-    }
-
-    internal void ConsumeBytes(int byteCount, CancellationToken cancellationToken)
-    {
-        if (byteCount < 0) throw new ArgumentOutOfRangeException(nameof(byteCount));
-        for (int index = 0; index < byteCount; index += ByteCheckpointSize) Consume(cancellationToken);
-    }
-
-    internal void Consume(CancellationToken cancellationToken)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-        if (_used >= _maximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG parsing work exceeds the configured limit.");
-        _used++;
-    }
-}
-
 internal readonly record struct CssRule(string Selector, CssSpecificity Specificity, InlineStyle Style, bool HasCombinator)
 {
-    internal bool Matches(SvgCssElement element, SvgCssAncestorContext ancestors, ParserWorkCounter work, CancellationToken token)
+    internal bool Matches(SvgCssElement element, SvgCssAncestorContext ancestors, CancellationToken token)
         => HasCombinator
-            ? SvgCssSelectorSyntax.MatchesChain(Selector, element, ancestors, work, token)
-            : SvgCssSelectorSyntax.Matches(Selector.AsSpan(), element, work, token);
+            ? SvgCssSelectorSyntax.MatchesChain(Selector, element, ancestors, token)
+            : SvgCssSelectorSyntax.Matches(Selector.AsSpan(), element, token);
 
-    internal bool MatchesRoot(string? id, string? classes, ParserWorkCounter work, CancellationToken token)
-        => !HasCombinator && SvgCssSelectorSyntax.Matches(Selector.AsSpan(), new("svg", id, classes, true), work, token);
+    internal bool MatchesRoot(string? id, string? classes, CancellationToken token)
+        => !HasCombinator && SvgCssSelectorSyntax.Matches(Selector.AsSpan(), new("svg", id, classes, true), token);
 }
 
 /// <summary>Owns the temporary budget reservation for a comment-stripped stylesheet copy.</summary>

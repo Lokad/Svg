@@ -26,12 +26,12 @@ public sealed class SvgIntegerPointListTests
             byte[] input = System.Text.Encoding.UTF8.GetBytes(Document(points, definitions, placement));
             byte[] equivalent = System.Text.Encoding.UTF8.GetBytes(Document(path, definitions, placement));
             RenderBudget budget = new(1_000_000);
-            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
             {
                 SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries).AuthoredPath);
                 Assert.Equal(5, source.Commands.Length);
                 Assert.Equal(closed ? SvgAuthoredPathVerb.Close : SvgAuthoredPathVerb.End, source.Commands[4].Verb);
-                using SvgPreparedPathContours tape = source.PrepareSource(SvgAffineTransform.Identity, evenOdd, budget, new(1_000_000), CancellationToken.None);
+                using SvgPreparedPathContours tape = source.PrepareSource(SvgAffineTransform.Identity, evenOdd, budget, CancellationToken.None);
                 Assert.Equal(4, tape.Points.Length);
                 Assert.Equal(new[] { 4 }, tape.ContourEnds);
                 using SvgConverter.RasterizedSurface image = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);

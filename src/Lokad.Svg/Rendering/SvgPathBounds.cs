@@ -9,16 +9,16 @@ internal static class SvgPathBounds
 {
     /// <summary>Includes endpoints, movetos and original curve extrema in the source-coordinate paint box.</summary>
     /// <remarks>The caller supplies validated immutable verbs and owns their storage. Each verb,
-    /// bounded curve-root phase, evaluated extremum and arc normalization is charged before work.
+    /// bounded curve-root phase, evaluated extremum and arc normalization observes cancellation.
     /// Fixed stack buffers hold four roots and at most three endpoint conics; no heap storage is
     /// allocated or retained. Cancellation preserves its token. Calls have independent local state.</remarks>
-    internal static SvgRectangle Compute(ReadOnlySpan<SvgAuthoredPathCommand> commands, ParserWorkCounter work, CancellationToken token)
-        => Compute(commands, SvgAffineTransform.Identity, work, token);
+    internal static SvgRectangle Compute(ReadOnlySpan<SvgAuthoredPathCommand> commands, CancellationToken token)
+        => Compute(commands, SvgAffineTransform.Identity, token);
 
     /// <summary>Computes tight bounds after mapping native controls into a referencing object's coordinate system.</summary>
     /// <remarks>Source commands remain borrowed. Mapping and extrema share bounded work/token and fixed scratch;
     /// mapping precedes root evaluation so a rotated curve is not replaced by its enclosing rectangle.</remarks>
-    internal static SvgRectangle Compute(ReadOnlySpan<SvgAuthoredPathCommand> commands, SvgAffineTransform map, ParserWorkCounter work, CancellationToken token)
+    internal static SvgRectangle Compute(ReadOnlySpan<SvgAuthoredPathCommand> commands, SvgAffineTransform map, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
@@ -27,7 +27,7 @@ internal static class SvgPathBounds
         Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
         foreach (SvgAuthoredPathCommand command in commands)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             switch (command.Verb)
             {
                 case SvgAuthoredPathVerb.Move:
@@ -39,21 +39,21 @@ internal static class SvgPathBounds
                     Include(Map(current));
                     break;
                 case SvgAuthoredPathVerb.Quadratic:
-                    Quad(current, command.First, command.Second, 1, false, roots, work, token);
+                    Quad(current, command.First, command.Second, 1, false, roots, token);
                     current = command.Second;
                     break;
                 case SvgAuthoredPathVerb.Conic:
-                    Quad(current, command.First, command.Second, (float)command.Third.X, true, roots, work, token);
+                    Quad(current, command.First, command.Second, (float)command.Third.X, true, roots, token);
                     current = command.Second;
                     break;
                 case SvgAuthoredPathVerb.Cubic:
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgDevicePoint a = Map(current), b = Map(command.First), c = Map(command.Second), d = Map(command.Third);
                     int count = CubicRoots((float)a.X, (float)b.X, (float)c.X, (float)d.X, roots);
                     count += CubicRoots((float)a.Y, (float)b.Y, (float)c.Y, (float)d.Y, roots[count..]);
                     for (int index = 0; index < count; index++)
                     {
-                        work.Consume(token);
+                        token.ThrowIfCancellationRequested();
                         Include(new(
                             EvalCubic((float)a.X, (float)b.X, (float)c.X, (float)d.X, roots[index]),
                             EvalCubic((float)a.Y, (float)b.Y, (float)c.Y, (float)d.Y, roots[index])));
@@ -62,11 +62,11 @@ internal static class SvgPathBounds
                     Include(d);
                     break;
                 case SvgAuthoredPathVerb.Arc:
-                    for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     int conics = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X, (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0, command.Third, arcs, token);
                     for (int index = 0; index < conics; index++)
                     {
-                        Quad(current, arcs[index].Control, arcs[index].End, arcs[index].Weight, true, roots, work, token);
+                        Quad(current, arcs[index].Control, arcs[index].End, arcs[index].Weight, true, roots, token);
                         current = arcs[index].End;
                     }
                     current = command.Third;
@@ -87,7 +87,7 @@ internal static class SvgPathBounds
         SvgDevicePoint Map(SvgDevicePoint point)
         {
             if (map == SvgAffineTransform.Identity) return point;
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             return SvgAuthoredPath.MapPoint(map, point, new(0, 0));
         }
 
@@ -98,9 +98,9 @@ internal static class SvgPathBounds
             left = MathF.Min(left, x); right = MathF.Max(right, x);
             top = MathF.Min(top, y); bottom = MathF.Max(bottom, y);
         }
-        void Quad(SvgDevicePoint start, SvgDevicePoint control, SvgDevicePoint end, float weight, bool conic, Span<float> candidates, ParserWorkCounter counter, CancellationToken cancellation)
+        void Quad(SvgDevicePoint start, SvgDevicePoint control, SvgDevicePoint end, float weight, bool conic, Span<float> candidates, CancellationToken cancellation)
         {
-            counter.Consume(cancellation);
+            cancellation.ThrowIfCancellationRequested();
             start = Map(start); control = Map(control); end = Map(end);
             // SkConic::set substitutes one for nonpositive or nonfinite weights.
             if (conic && (!(weight > 0) || !float.IsFinite(weight))) weight = 1;
@@ -108,7 +108,7 @@ internal static class SvgPathBounds
             count += QuadRoots((float)start.Y, (float)control.Y, (float)end.Y, weight, conic, candidates[count..]);
             for (int index = 0; index < count; index++)
             {
-                counter.Consume(cancellation);
+                cancellation.ThrowIfCancellationRequested();
                 Include(new(
                     EvalQuad((float)start.X, (float)control.X, (float)end.X, weight, candidates[index]),
                     EvalQuad((float)start.Y, (float)control.Y, (float)end.Y, weight, candidates[index])));

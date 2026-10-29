@@ -26,20 +26,20 @@ internal static partial class SvgClipUnion
     /// <summary>Resolves ordered source curves with each child's independent winding rule.</summary>
     /// <remarks>Sources remain borrowed. Native float mapping/curvature splitting precedes double
     /// intersections; only the resolved controls narrow back to raster operands. Temporary lists reserve
-    /// before growth. Pair, root, winding and linking visits charge shared work/token. The returned
+    /// before growth. Pair, root, winding and linking visits observe cancellation. The returned
     /// command owner transfers on success; failure leaves source owners intact and releases scratch.</remarks>
     internal static SvgAuthoredPath ResolveNativeUnion(SvgAuthoredPath first, bool firstEvenOdd,
-        SvgAuthoredPath second, bool secondEvenOdd, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        SvgAuthoredPath second, bool secondEvenOdd, RenderBudget budget, CancellationToken token)
     {
-        using BudgetedParserList<CurveEdge> edges = new(budget, SvgMemoryCategory.Geometry, work, token);
-        AppendSource(first, 0, edges, work, token);
-        AppendSource(second, 1, edges, work, token);
-        return ResolveBoundary(edges, firstEvenOdd, secondEvenOdd, SvgClipUnionMode.Pairwise, budget, work, token);
+        using BudgetedParserList<CurveEdge> edges = new(budget, SvgMemoryCategory.Geometry, token);
+        AppendSource(first, 0, edges, token);
+        AppendSource(second, 1, edges, token);
+        return ResolveBoundary(edges, firstEvenOdd, secondEvenOdd, SvgClipUnionMode.Pairwise, budget, token);
     }
 
     /// <summary>Resolves original operands once, preserving native convex-builder normalization and source order.</summary>
-    /// <remarks>Input paths remain borrowed. Source preparation, convexity, copies and boundary visits charge work/token. Temporary owners release on failure; success transfers the returned path owner. All source directions must be nondegenerate and convex for common-winding construction; other inputs retain ordered pairwise operations.</remarks>
-    internal static SvgClipUnionResult ResolveOrdered(ReadOnlySpan<SvgClipChild> children, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    /// <remarks>Input paths remain borrowed. Source preparation, convexity, copies and boundary visits observe cancellation token. Temporary owners release on failure; success transfers the returned path owner. All source directions must be nondegenerate and convex for common-winding construction; other inputs retain ordered pairwise operations.</remarks>
+    internal static SvgClipUnionResult ResolveOrdered(ReadOnlySpan<SvgClipChild> children, RenderBudget budget, CancellationToken token)
     {
         if (children.Length < 2 || children.Length > 42) throw new ArgumentOutOfRangeException(nameof(children));
         using RenderBudget.BudgetReservation allowance = budget.Reserve(512, SvgMemoryCategory.Geometry);
@@ -47,10 +47,10 @@ internal static partial class SvgClipUnion
         bool allConvex = true;
         for (int index = 0; index < children.Length; index++)
         {
-            work.Consume(token);
-            using SvgPreparedPathContours prepared = children[index].Path.Prepare(SvgAffineTransform.Identity, children[index].IsEvenOdd, budget, work, token);
-            long classification = prepared.Points.Length + (long)prepared.QuadSpans.Length + 2L * prepared.CubicSpans.Length;
-            for (long visit = 0; visit < classification; visit++) work.Consume(token);
+            token.ThrowIfCancellationRequested();
+            using SvgPreparedPathContours prepared = children[index].Path.Prepare(SvgAffineTransform.Identity, children[index].IsEvenOdd, budget, token);
+
+            token.ThrowIfCancellationRequested();
             directions[index] = prepared.ContourEnds.Length == 1
                 ? SvgRawContourConvexity.Direction(prepared.Points, prepared.QuadSpans, prepared.CubicSpans, token)
                 : SvgConvexDirection.Unknown;
@@ -58,13 +58,13 @@ internal static partial class SvgClipUnion
         }
         if (!allConvex)
         {
-            SvgAuthoredPath result = children[0].Path.Copy(SvgAffineTransform.Identity, budget, work, token);
+            SvgAuthoredPath result = children[0].Path.Copy(SvgAffineTransform.Identity, budget, token);
             bool parity = children[0].IsEvenOdd;
             try
             {
                 for (int index = 1; index < children.Length; index++)
                 {
-                    SvgAuthoredPath next = ResolveNativeUnion(result, parity, children[index].Path, children[index].IsEvenOdd, budget, work, token);
+                    SvgAuthoredPath next = ResolveNativeUnion(result, parity, children[index].Path, children[index].IsEvenOdd, budget, token);
                     result.Dispose();
                     result = next;
                     parity = false;
@@ -73,22 +73,22 @@ internal static partial class SvgClipUnion
             }
             catch { result.Dispose(); throw; }
         }
-        using BudgetedParserList<CurveEdge> edges = new(budget, SvgMemoryCategory.Geometry, work, token);
+        using BudgetedParserList<CurveEdge> edges = new(budget, SvgMemoryCategory.Geometry, token);
         for (int index = 0; index < children.Length; index++)
         {
             int first = edges.Count;
-            AppendSource(children[index].Path, index, edges, work, token);
+            AppendSource(children[index].Path, index, edges, token);
             if (directions[index] == SvgConvexDirection.Clockwise)
-                ReverseOperand(children[index].Path, first, edges.Count, edges, work, token);
+                ReverseOperand(children[index].Path, first, edges.Count, edges, token);
         }
-        return new(ResolveBoundary(edges, false, false, SvgClipUnionMode.ConvexBuilder, budget, work, token), true);
+        return new(ResolveBoundary(edges, false, false, SvgClipUnionMode.ConvexBuilder, budget, token), true);
 
-        static void ReverseOperand(SvgAuthoredPath source, int first, int end, BudgetedParserList<CurveEdge> edges, ParserWorkCounter work, CancellationToken token)
+        static void ReverseOperand(SvgAuthoredPath source, int first, int end, BudgetedParserList<CurveEdge> edges, CancellationToken token)
         {
             SvgDevicePoint last = default;
             foreach (SvgAuthoredPathCommand command in source.Commands)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgDevicePoint? endpoint = command.Verb switch
                 {
                     SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.Line => command.First,
@@ -100,7 +100,7 @@ internal static partial class SvgClipUnion
             }
             for (int left = first, right = end - 1; left <= right; left++, right--)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 CurveEdge a = edges[left], b = edges[right];
                 edges[left] = Reverse(b);
                 edges[right] = Reverse(a);
@@ -108,14 +108,14 @@ internal static partial class SvgClipUnion
             int rotate = -1;
             for (int index = first; index < end; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 if (edges[index].Curve.Start == last) { rotate = index - first; break; }
             }
             if (rotate < 0) throw new InvalidOperationException("Native reversed source start is missing.");
             for (int count = 0; count < rotate; count++)
             {
                 CurveEdge initial = edges[first];
-                for (int index = first; index + 1 < end; index++) { work.Consume(token); edges[index] = edges[index + 1]; }
+                for (int index = first; index + 1 < end; index++) { token.ThrowIfCancellationRequested(); edges[index] = edges[index + 1]; }
                 edges[end - 1] = initial;
             }
 
@@ -130,28 +130,28 @@ internal static partial class SvgClipUnion
     }
 
     private static SvgAuthoredPath ResolveBoundary(BudgetedParserList<CurveEdge> edges, bool firstEvenOdd, bool secondEvenOdd,
-        SvgClipUnionMode mode, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        SvgClipUnionMode mode, RenderBudget budget, CancellationToken token)
     {
         using RenderBudget.BudgetReservation allowance = budget.Reserve(512, SvgMemoryCategory.Geometry);
-        using BudgetedParserList<CurveCut> cuts = new(budget, SvgMemoryCategory.Geometry, work, token);
+        using BudgetedParserList<CurveCut> cuts = new(budget, SvgMemoryCategory.Geometry, token);
         for (int index = 0; index < edges.Count; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             cuts.Add(new(index, 0, edges[index].Curve.Start)); cuts.Add(new(index, 1, edges[index].Curve.End));
         }
         for (int left = 0; left < edges.Count; left++)
             for (int right = left + 1; right < edges.Count; right++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 if (mode == SvgClipUnionMode.ConvexBuilder && edges[left].Child == edges[right].Child) continue;
-                Intersections(edges[left].Curve, edges[right].Curve, left, right, cuts, work, token);
+                Intersections(edges[left].Curve, edges[right].Curve, left, right, cuts, token);
             }
-        cuts.Sort(work, token);
-        using BudgetedParserList<CurveBoundary> boundary = new(budget, SvgMemoryCategory.Geometry, work, token);
+        cuts.Sort(token);
+        using BudgetedParserList<CurveBoundary> boundary = new(budget, SvgMemoryCategory.Geometry, token);
         Span<double> x = stackalloc double[4], y = stackalloc double[4], z = stackalloc double[4], equation = stackalloc double[4], roots = stackalloc double[6];
         for (int index = 1; index < cuts.Count; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             CurveCut a = cuts[index - 1], b = cuts[index];
             if (a.Edge != b.Edge || a.Point == b.Point || b.T - a.T <= 1e-13) continue;
             SvgClipCurve curve = edges[a.Edge].Curve;
@@ -162,14 +162,14 @@ internal static partial class SvgClipUnion
             int left0 = 0, right0 = 0, left1 = 0, right1 = 0;
             for (int edgeIndex = 0; edgeIndex < edges.Count; edgeIndex++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 CurveEdge other = edges[edgeIndex]; other.Curve.Coefficients(x, y, z);
                 double target = rayY ? point.X : point.Y;
                 for (int coefficient = 0; coefficient < 4; coefficient++) equation[coefficient] = (rayY ? x[coefficient] : y[coefficient]) - target * z[coefficient];
-                int count = SvgClipCurve.Roots(equation, roots, work, token);
+                int count = SvgClipCurve.Roots(equation, roots, token);
                 for (int rootIndex = 0; rootIndex < count; rootIndex++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     double t = roots[rootIndex]; SvgDevicePoint crossing = other.Curve.Evaluate(t), direction = other.Curve.Tangent(t);
                     double velocity = rayY ? direction.X : direction.Y;
                     if (velocity == 0 || (t == 0 && velocity < 0) || (t == 1 && velocity > 0)) continue;
@@ -197,18 +197,18 @@ internal static partial class SvgClipUnion
             bool duplicate = false;
             foreach (CurveBoundary existing in boundary.AsSpan())
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 if (existing.Start == part.Start && existing.End == part.End && edges[existing.Edge].Curve.Evaluate((existing.First + existing.Last) / 2) == point)
                 { duplicate = true; break; }
             }
             if (!duplicate) boundary.Add(part);
         }
-        using BudgetedParserList<SvgAuthoredPathCommand> output = new(budget, SvgMemoryCategory.Scene, work, token);
+        using BudgetedParserList<SvgAuthoredPathCommand> output = new(budget, SvgMemoryCategory.Scene, token);
         int remaining = boundary.Count;
         while (remaining > 0)
         {
             int seed = 0;
-            while (boundary[seed].Emitted) { work.Consume(token); seed++; }
+            while (boundary[seed].Emitted) { token.ThrowIfCancellationRequested(); seed++; }
             SvgDevicePoint start = boundary[seed].Start;
             output.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, start, default, default));
             int current = seed;
@@ -216,11 +216,11 @@ internal static partial class SvgClipUnion
             bool hasDeferredLine = false;
             while (true)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 CurveBoundary part = boundary[current]; boundary[current] = part with { Emitted = true }; remaining--;
                 if (edges[part.Edge].Curve.Kind == SvgMeasuredCurveKind.Line)
                 {
-                    if (hasDeferredLine && ChangedSlopes(deferredStart, deferredEnd, part.End, work, token))
+                    if (hasDeferredLine && ChangedSlopes(deferredStart, deferredEnd, part.End, token))
                     {
                         output.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, deferredEnd, default, default));
                         deferredStart = deferredEnd;
@@ -240,7 +240,7 @@ internal static partial class SvgClipUnion
                 int next = -1;
                 for (int index = 0; index < boundary.Count; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     if (!boundary[index].Emitted && boundary[index].Start == part.End) { next = index; break; }
                 }
                 if (next < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The native curve clip union boundary could not be linked.");
@@ -256,9 +256,9 @@ internal static partial class SvgClipUnion
 
 
 
-        static bool ChangedSlopes(SvgDevicePoint first, SvgDevicePoint middle, SvgDevicePoint last, ParserWorkCounter work, CancellationToken token)
+        static bool ChangedSlopes(SvgDevicePoint first, SvgDevicePoint middle, SvgDevicePoint last, CancellationToken token)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             float ax = (float)middle.X - (float)first.X, ay = (float)middle.Y - (float)first.Y;
             float bx = (float)last.X - (float)middle.X, by = (float)last.Y - (float)middle.Y;
             return ax * by != ay * bx;
@@ -269,33 +269,33 @@ internal static partial class SvgClipUnion
 
     }
 
-    private static void AppendSource(SvgAuthoredPath source, int child, BudgetedParserList<CurveEdge> edges, ParserWorkCounter work, CancellationToken token)
+    private static void AppendSource(SvgAuthoredPath source, int child, BudgetedParserList<CurveEdge> edges, CancellationToken token)
     {
         SvgDevicePoint current = default, first = default;
         bool active = false;
         Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
         foreach (SvgAuthoredPathCommand command in source.Commands)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (command.Verb == SvgAuthoredPathVerb.Move)
             {
-                if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, work, token);
+                if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, token);
                 current = first = command.First; active = true; continue;
             }
             if (command.Verb is SvgAuthoredPathVerb.End or SvgAuthoredPathVerb.Close)
             {
-                if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, work, token);
+                if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, token);
                 current = first; active = false; continue;
             }
             if (command.Verb == SvgAuthoredPathVerb.Arc)
             {
-                for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 int count = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
                     (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0, command.Third, arcs, token);
-                if (count == 0) Add(new(SvgMeasuredCurveKind.Line, current, default, default, command.Third, 1), source.SceneMap, child, edges, work, token);
+                if (count == 0) Add(new(SvgMeasuredCurveKind.Line, current, default, default, command.Third, 1), source.SceneMap, child, edges, token);
                 else for (int index = 0; index < count; index++)
                 {
-                    Add(new(SvgMeasuredCurveKind.Conic, current, arcs[index].Control, default, arcs[index].End, arcs[index].Weight), source.SceneMap, child, edges, work, token);
+                    Add(new(SvgMeasuredCurveKind.Conic, current, arcs[index].Control, default, arcs[index].End, arcs[index].Weight), source.SceneMap, child, edges, token);
                     current = arcs[index].End;
                 }
                 current = command.Third; continue;
@@ -308,15 +308,15 @@ internal static partial class SvgClipUnion
                 SvgAuthoredPathVerb.Cubic => new(SvgMeasuredCurveKind.Cubic, current, command.First, command.Second, command.Third, 1),
                 _ => throw new InvalidOperationException("Invalid native clip curve verb.")
             };
-            Add(curve, source.SceneMap, child, edges, work, token); current = curve.End;
+            Add(curve, source.SceneMap, child, edges, token); current = curve.End;
         }
-        if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, work, token);
+        if (active && current != first) Add(new(SvgMeasuredCurveKind.Line, current, default, default, first, 1), source.SceneMap, child, edges, token);
 
         // Native path-ops splits a conic at the float quadratic-curvature
         // parameter before intersection construction, even if no other edge cuts it.
-        static void Add(SvgClipCurve curve, SvgAffineTransform map, int child, BudgetedParserList<CurveEdge> edges, ParserWorkCounter work, CancellationToken token)
+        static void Add(SvgClipCurve curve, SvgAffineTransform map, int child, BudgetedParserList<CurveEdge> edges, CancellationToken token)
         {
-            for (int phase = 0; phase < 4; phase++) work.Consume(token);
+            token.ThrowIfCancellationRequested();
             curve = curve with { Start = SvgAuthoredPath.MapPoint(map, curve.Start, new(0, 0)), First = SvgAuthoredPath.MapPoint(map, curve.First, new(0, 0)), Second = SvgAuthoredPath.MapPoint(map, curve.Second, new(0, 0)), End = SvgAuthoredPath.MapPoint(map, curve.End, new(0, 0)) };
             if (curve.Kind == SvgMeasuredCurveKind.Cubic)
             {
@@ -343,8 +343,8 @@ internal static partial class SvgClipUnion
                     float t = numerator / denominator;
                     Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[3] { curve.Start, curve.First, curve.End };
                     Span<SvgDevicePoint> left = stackalloc SvgDevicePoint[4], right = stackalloc SvgDevicePoint[4];
-                    if (SvgCurveMeasure.Cut(curve.Kind, points, curve.Weight, 0, t, left, out _, out float leftWeight, work, token)
-                        && SvgCurveMeasure.Cut(curve.Kind, points, curve.Weight, t, 1, right, out _, out float rightWeight, work, token))
+                    if (SvgCurveMeasure.Cut(curve.Kind, points, curve.Weight, 0, t, left, out _, out float leftWeight, token)
+                        && SvgCurveMeasure.Cut(curve.Kind, points, curve.Weight, t, 1, right, out _, out float rightWeight, token))
                     {
                         edges.Add(new(new(curve.Kind, left[0], left[1], default, left[2], leftWeight), child));
                         edges.Add(new(new(curve.Kind, left[2], right[1], default, right[2], rightWeight), child));
@@ -356,7 +356,7 @@ internal static partial class SvgClipUnion
         }
     }
 
-    private static void Intersections(SvgClipCurve a, SvgClipCurve b, int left, int right, BudgetedParserList<CurveCut> cuts, ParserWorkCounter work, CancellationToken token)
+    private static void Intersections(SvgClipCurve a, SvgClipCurve b, int left, int right, BudgetedParserList<CurveCut> cuts, CancellationToken token)
     {
         Span<double> ax = stackalloc double[4], ay = stackalloc double[4], az = stackalloc double[4], equation = stackalloc double[7], roots = stackalloc double[6];
         a.Coefficients(ax, ay, az);
@@ -364,21 +364,21 @@ internal static partial class SvgClipUnion
         {
             if (a.Kind == SvgMeasuredCurveKind.Cubic)
             {
-                CubicIntersections(a, b, left, right, cuts, work, token);
+                CubicIntersections(a, b, left, right, cuts, token);
                 return;
             }
-            Intersections(b, a, right, left, cuts, work, token); return;
+            Intersections(b, a, right, left, cuts, token); return;
         }
         if (b.Kind == SvgMeasuredCurveKind.Line)
         {
             double dx = b.End.X - b.Start.X, dy = b.End.Y - b.Start.Y;
-            for (int index = 0; index < 4; index++) { work.Consume(token); equation[index] = dx * (ay[index] - b.Start.Y * az[index]) - dy * (ax[index] - b.Start.X * az[index]); }
-            int count = SvgClipCurve.Roots(equation[..4], roots, work, token);
+            for (int index = 0; index < 4; index++) { token.ThrowIfCancellationRequested(); equation[index] = dx * (ay[index] - b.Start.Y * az[index]) - dy * (ax[index] - b.Start.X * az[index]); }
+            int count = SvgClipCurve.Roots(equation[..4], roots, token);
             for (int index = 0; index < count; index++)
             {
                 SvgDevicePoint p = a.Evaluate(roots[index]);
                 double u = Math.Abs(dx) >= Math.Abs(dy) ? (p.X - b.Start.X) / dx : (p.Y - b.Start.Y) / dy;
-                Add(roots[index], u, a, b, left, right, cuts, work, token);
+                Add(roots[index], u, a, b, left, right, cuts, token);
             }
             return;
         }
@@ -389,27 +389,27 @@ internal static partial class SvgClipUnion
         equation.Clear();
         for (int index = 0; index < 4; index++)
         {
-            work.Consume(token); v0[index] = row0.Dot(ax[index], ay[index], az[index]); v1[index] = row1.Dot(ax[index], ay[index], az[index]); v2[index] = row2.Dot(ax[index], ay[index], az[index]);
+            token.ThrowIfCancellationRequested(); v0[index] = row0.Dot(ax[index], ay[index], az[index]); v1[index] = row1.Dot(ax[index], ay[index], az[index]); v2[index] = row2.Dot(ax[index], ay[index], az[index]);
         }
-        for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) { work.Consume(token); equation[i + j] += v1[i] * v1[j] - 4 * v0[i] * v2[j]; }
-        int found = SvgClipCurve.Roots(equation, roots, work, token);
+        for (int i = 0; i < 4; i++) for (int j = 0; j < 4; j++) { token.ThrowIfCancellationRequested(); equation[i + j] += v1[i] * v1[j] - 4 * v0[i] * v2[j]; }
+        int found = SvgClipCurve.Roots(equation, roots, token);
         for (int index = 0; index < found; index++)
         {
             double t = roots[index], v = SvgClipCurve.Polynomial(v1, t), first = SvgClipCurve.Polynomial(v0, t), last = SvgClipCurve.Polynomial(v2, t);
             double u = Math.Abs(first) > Math.Abs(last) ? v / (2 * first + v) : 2 * last / (v + 2 * last);
-            Add(t, u, a, b, left, right, cuts, work, token);
+            Add(t, u, a, b, left, right, cuts, token);
         }
 
         // The symmetric Bezout determinant eliminates the second cubic parameter.
         // Translate and scale by a power of two before polynomial arithmetic, then
         // recover the second parameter and refine against the original source curves.
         static void CubicIntersections(SvgClipCurve a, SvgClipCurve b, int left, int right,
-            BudgetedParserList<CurveCut> cuts, ParserWorkCounter work, CancellationToken token)
+            BudgetedParserList<CurveCut> cuts, CancellationToken token)
         {
             double extent = 0;
             foreach (SvgDevicePoint p in (ReadOnlySpan<SvgDevicePoint>)[a.Start, a.First, a.Second, a.End, b.First, b.Second, b.End])
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 extent = Math.Max(extent, Math.Max(Math.Abs(p.X - b.Start.X), Math.Abs(p.Y - b.Start.Y)));
             }
             if (extent == 0) return;
@@ -420,7 +420,7 @@ internal static partial class SvgClipUnion
             Span<double> b00 = stackalloc double[4], b01 = stackalloc double[4], b02 = stackalloc double[4], b11 = stackalloc double[4];
             for (int i = 0; i < 4; i++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 double f0 = (i == 0 ? bx[0] : 0) - ax[i], g0 = (i == 0 ? by[0] : 0) - ay[i];
                 b00[i] = bx[1] * g0 - by[1] * f0;
                 b01[i] = bx[2] * g0 - by[2] * f0;
@@ -432,24 +432,24 @@ internal static partial class SvgClipUnion
             equation.Clear();
             for (int i = 0; i < 4; i++)
             {
-                work.Consume(token); equation[i] -= b00[i] * b12 * b12;
+                token.ThrowIfCancellationRequested(); equation[i] -= b00[i] * b12 * b12;
                 for (int j = 0; j < 4; j++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     equation[i + j] += b00[i] * b11[j] * b22 + 2 * b01[i] * b02[j] * b12 - b01[i] * b01[j] * b22;
                     for (int k = 0; k < 4; k++)
-                    { work.Consume(token); equation[i + j + k] -= b11[i] * b02[j] * b02[k]; }
+                    { token.ThrowIfCancellationRequested(); equation[i + j + k] -= b11[i] * b02[j] * b02[k]; }
                 }
             }
-            int count = SvgClipCurve.Roots(equation, roots, work, token);
+            int count = SvgClipCurve.Roots(equation, roots, token);
             bool coincident = true;
-            foreach (double coefficient in equation) { work.Consume(token); coincident &= coefficient == 0; }
+            foreach (double coefficient in equation) { token.ThrowIfCancellationRequested(); coincident &= coefficient == 0; }
             if (coincident)
             {
                 // A shared cubic locus has an identically zero resultant. Both
                 // endpoint pairs delimit any partial overlap before winding selection.
-                ProjectEndpoints(na, nb, a, b, left, right, cuts, work, token);
-                ProjectEndpoints(nb, na, b, a, right, left, cuts, work, token);
+                ProjectEndpoints(na, nb, a, b, left, right, cuts, token);
+                ProjectEndpoints(nb, na, b, a, right, left, cuts, token);
                 return;
             }
             double xMotion = Math.Abs(bx[1]) + Math.Abs(bx[2]) + Math.Abs(bx[3]);
@@ -457,11 +457,11 @@ internal static partial class SvgClipUnion
             Span<double> parameter = stackalloc double[4], values = stackalloc double[3];
             for (int i = 0; i < count; i++)
             {
-                work.Consume(token); SvgDevicePoint p = na.Evaluate(roots[i]);
+                token.ThrowIfCancellationRequested(); SvgDevicePoint p = na.Evaluate(roots[i]);
                 (xMotion >= yMotion ? bx : by).CopyTo(parameter);
                 parameter[0] -= xMotion >= yMotion ? p.X : p.Y;
-                int found = SvgClipCurve.Roots(parameter, values, work, token);
-                for (int j = 0; j < found; j++) Add(roots[i], values[j], a, b, left, right, cuts, work, token);
+                int found = SvgClipCurve.Roots(parameter, values, token);
+                for (int j = 0; j < found; j++) Add(roots[i], values[j], a, b, left, right, cuts, token);
             }
 
             static SvgClipCurve Normalize(SvgClipCurve curve, SvgDevicePoint origin, double scale)
@@ -470,29 +470,29 @@ internal static partial class SvgClipUnion
                 => new((point.X - origin.X) * scale, (point.Y - origin.Y) * scale);
 
             static void ProjectEndpoints(SvgClipCurve source, SvgClipCurve target, SvgClipCurve originalSource, SvgClipCurve originalTarget,
-                int sourceIndex, int targetIndex, BudgetedParserList<CurveCut> cuts, ParserWorkCounter work, CancellationToken token)
+                int sourceIndex, int targetIndex, BudgetedParserList<CurveCut> cuts, CancellationToken token)
             {
                 Span<double> x = stackalloc double[4], y = stackalloc double[4], z = stackalloc double[4], parameter = stackalloc double[4], values = stackalloc double[3];
                 target.Coefficients(x, y, z);
                 bool useX = Math.Abs(x[1]) + Math.Abs(x[2]) + Math.Abs(x[3]) >= Math.Abs(y[1]) + Math.Abs(y[2]) + Math.Abs(y[3]);
                 for (int endpoint = 0; endpoint < 2; endpoint++)
                 {
-                    work.Consume(token); SvgDevicePoint p = source.Evaluate(endpoint);
+                    token.ThrowIfCancellationRequested(); SvgDevicePoint p = source.Evaluate(endpoint);
                     (useX ? x : y).CopyTo(parameter); parameter[0] -= useX ? p.X : p.Y;
-                    int found = SvgClipCurve.Roots(parameter, values, work, token);
+                    int found = SvgClipCurve.Roots(parameter, values, token);
                     for (int index = 0; index < found; index++)
-                        Add(endpoint, values[index], originalSource, originalTarget, sourceIndex, targetIndex, cuts, work, token);
+                        Add(endpoint, values[index], originalSource, originalTarget, sourceIndex, targetIndex, cuts, token);
                 }
             }
         }
 
-        static void Add(double t, double u, SvgClipCurve a, SvgClipCurve b, int left, int right, BudgetedParserList<CurveCut> cuts, ParserWorkCounter work, CancellationToken token)
+        static void Add(double t, double u, SvgClipCurve a, SvgClipCurve b, int left, int right, BudgetedParserList<CurveCut> cuts, CancellationToken token)
         {
             if (!double.IsFinite(u) || u < -1e-10 || u > 1 + 1e-10) return;
             u = Math.Clamp(u, 0, 1);
             for (int iteration = 0; iteration < 12; iteration++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgDevicePoint p = a.Evaluate(t), q = b.Evaluate(u), da = a.Tangent(t), db = b.Tangent(u);
                 double dx = p.X - q.X, dy = p.Y - q.Y, denominator = da.X * db.Y - da.Y * db.X;
                 if (denominator == 0) break;

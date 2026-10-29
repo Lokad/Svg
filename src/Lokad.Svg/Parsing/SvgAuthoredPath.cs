@@ -79,15 +79,15 @@ internal sealed class SvgAuthoredPath : IDisposable
     /// <summary>Replays authored commands and maps their vertices/controls once with the composed output matrix.</summary>
     /// <remarks>Reserves temporary builder storage before allocation. Every command and copied point consumes caller work;
     /// flattening uses its existing bounded, cancellable policy. The result exclusively owns its surface arrays.</remarks>
-    internal SvgPreparedPathContours Prepare(SvgAffineTransform outputMap, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => Replay(outputMap, isEvenOdd, true, budget, workCounter, cancellationToken);
+    internal SvgPreparedPathContours Prepare(SvgAffineTransform outputMap, bool isEvenOdd, RenderBudget budget, CancellationToken cancellationToken)
+        => Replay(outputMap, isEvenOdd, true, budget, cancellationToken);
 
     /// <summary>Replays and flattens source commands once, keeping original points for bitmap-local mapping.</summary>
-    /// <remarks>The returned owner retains source coordinates; the caller maps them with outputMap composed with SceneMap. Reservations, work, cancellation and cleanup match Prepare.</remarks>
-    internal SvgPreparedPathContours PrepareSource(SvgAffineTransform outputMap, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => Replay(outputMap, isEvenOdd, false, budget, workCounter, cancellationToken);
+    /// <remarks>The returned owner retains source coordinates; the caller maps them with outputMap composed with SceneMap. Reservations, cancellation and cleanup match Prepare.</remarks>
+    internal SvgPreparedPathContours PrepareSource(SvgAffineTransform outputMap, bool isEvenOdd, RenderBudget budget, CancellationToken cancellationToken)
+        => Replay(outputMap, isEvenOdd, false, budget, cancellationToken);
 
-    private SvgPreparedPathContours Replay(SvgAffineTransform outputMap, bool isEvenOdd, bool mapCoordinates, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private SvgPreparedPathContours Replay(SvgAffineTransform outputMap, bool isEvenOdd, bool mapCoordinates, RenderBudget budget, CancellationToken cancellationToken)
     {
         if (StrokeStyle is not null) throw new InvalidOperationException("A retained stroke centerline cannot be replayed as a fill.");
         SvgAffineTransform map = outputMap.ComposeChecked(SceneMap);
@@ -99,7 +99,7 @@ internal sealed class SvgAuthoredPath : IDisposable
         long maximumPoints = Commands.Length;
         foreach (SvgAuthoredPathCommand command in Commands)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (command.Verb == SvgAuthoredPathVerb.Arc) maximumSpans = checked(maximumSpans + 2);
             if (command.Verb is SvgAuthoredPathVerb.Quadratic or SvgAuthoredPathVerb.Cubic or SvgAuthoredPathVerb.Conic or SvgAuthoredPathVerb.Arc)
                 maximumPoints += SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand;
@@ -119,7 +119,7 @@ internal sealed class SvgAuthoredPath : IDisposable
         long nativePointCount = 0;
         foreach (SvgAuthoredPathCommand command in Commands)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             switch (command.Verb)
             {
                 case SvgAuthoredPathVerb.Move: builder.BeginContour(command.First); current = command.First; nativePointCount++; break;
@@ -127,18 +127,18 @@ internal sealed class SvgAuthoredPath : IDisposable
                 case SvgAuthoredPathVerb.Quadratic: builder.AddQuadratic(command.First, command.Second, policy, cancellationToken); current = command.Second; nativePointCount += 2; break;
                 case SvgAuthoredPathVerb.Conic: builder.AddConic(command.First, command.Second, (float)command.Third.X, 8, cancellationToken); current = command.Second; nativePointCount += 2; break;
                 case SvgAuthoredPathVerb.Cubic: builder.AddCubic(command.First, command.Second, command.Third, policy, cancellationToken); current = command.Third; nativePointCount += 3; break;
-                case SvgAuthoredPathVerb.Arc: nativePointCount += AppendEndpointArc(builder, current, command, workCounter, cancellationToken); current = command.Third; break;
+                case SvgAuthoredPathVerb.Arc: nativePointCount += AppendEndpointArc(builder, current, command, cancellationToken); current = command.Third; break;
                 case SvgAuthoredPathVerb.End:
                 case SvgAuthoredPathVerb.Close: builder.EndContour(); break;
                 default: throw new InvalidOperationException("Invalid retained path verb.");
             }
         }
-        using BudgetedParserList<SvgDevicePoint> points = new(budget, SvgMemoryCategory.Surface, workCounter, cancellationToken);
-        using BudgetedParserList<int> ends = new(budget, SvgMemoryCategory.Surface, workCounter, cancellationToken);
-        using BudgetedParserList<SvgQuadSpan> quads = new(budget, SvgMemoryCategory.Surface, workCounter, cancellationToken);
-        using BudgetedParserList<SvgCubicSpan> cubics = new(budget, SvgMemoryCategory.Surface, workCounter, cancellationToken);
-        using BudgetedParserList<int> offsets = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
-        using BudgetedParserList<int> contours = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> points = new(budget, SvgMemoryCategory.Surface, cancellationToken);
+        using BudgetedParserList<int> ends = new(budget, SvgMemoryCategory.Surface, cancellationToken);
+        using BudgetedParserList<SvgQuadSpan> quads = new(budget, SvgMemoryCategory.Surface, cancellationToken);
+        using BudgetedParserList<SvgCubicSpan> cubics = new(budget, SvgMemoryCategory.Surface, cancellationToken);
+        using BudgetedParserList<int> offsets = new(budget, SvgMemoryCategory.Geometry, cancellationToken);
+        using BudgetedParserList<int> contours = new(budget, SvgMemoryCategory.Geometry, cancellationToken);
         for (int contour = 0; contour < builder.ContourCount; contour++)
         {
             ReadOnlySpan<SvgDevicePoint> vertices = builder.GetContour(contour);
@@ -153,12 +153,12 @@ internal sealed class SvgAuthoredPath : IDisposable
             if (offsets[span.Contour] >= 0) quads.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], Control = mapCoordinates ? MapPoint(map, span.Control, new(0, 0)) : span.Control });
         foreach (SvgCubicSpan span in builder.GetCubicSpans())
             if (offsets[span.Contour] >= 0) cubics.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], FirstControl = mapCoordinates ? MapPoint(map, span.FirstControl, new(0, 0)) : span.FirstControl, SecondControl = mapCoordinates ? MapPoint(map, span.SecondControl, new(0, 0)) : span.SecondControl });
-        return CreateContours(points, ends, quads, cubics, _commands.Items, nativePointCount, isEvenOdd, IsKnownConvex, budget, workCounter, cancellationToken);
+        return CreateContours(points, ends, quads, cubics, _commands.Items, nativePointCount, isEvenOdd, IsKnownConvex, budget, cancellationToken);
 
-        static int AppendEndpointArc(SvgContourBuilder builder, SvgDevicePoint start, SvgAuthoredPathCommand command, ParserWorkCounter workCounter, CancellationToken token)
+        static int AppendEndpointArc(SvgContourBuilder builder, SvgDevicePoint start, SvgAuthoredPathCommand command, CancellationToken token)
         {
-            // One normalization phase and at most three conic verbs, charged before numerical work.
-            for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) workCounter.Consume(token);
+            // Observe cancellation before normalization and conic subdivision.
+            token.ThrowIfCancellationRequested();
             Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
             int count = SvgEndpointArc.Convert(start, command.First.X, command.First.Y, command.Second.X,
                 (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0, command.Third, arcs, token);
@@ -169,7 +169,7 @@ internal sealed class SvgAuthoredPath : IDisposable
             return count == 0 ? 1 : 2 * count;
         }
 
-        static SvgPreparedPathContours CreateContours(BudgetedParserList<SvgDevicePoint> pointBuilder, BudgetedParserList<int> endBuilder, BudgetedParserList<SvgQuadSpan> quadBuilder, BudgetedParserList<SvgCubicSpan> cubicBuilder, SvgAuthoredPathCommand[] commands, long nativePointCount, bool isEvenOdd, bool isKnownConvex, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgPreparedPathContours CreateContours(BudgetedParserList<SvgDevicePoint> pointBuilder, BudgetedParserList<int> endBuilder, BudgetedParserList<SvgQuadSpan> quadBuilder, BudgetedParserList<SvgCubicSpan> cubicBuilder, SvgAuthoredPathCommand[] commands, long nativePointCount, bool isEvenOdd, bool isKnownConvex, RenderBudget budget, CancellationToken cancellationToken)
         {
             RenderBudget.BudgetReservation owner = budget.Reserve(128, SvgMemoryCategory.Surface);
             OwnedParserArray<SvgDevicePoint> points = new([], null);
@@ -181,7 +181,7 @@ internal sealed class SvgAuthoredPath : IDisposable
                 points = pointBuilder.Detach(); ends = endBuilder.Detach(); quads = quadBuilder.Detach(); cubics = cubicBuilder.Detach();
                 if (isEvenOdd)
                 {
-                    using BudgetedParserList<int> signBuilder = new(budget, SvgMemoryCategory.Surface, workCounter, cancellationToken);
+                    using BudgetedParserList<int> signBuilder = new(budget, SvgMemoryCategory.Surface, cancellationToken);
                     // The native walker applies parity to directed winding. Keep
                     // every contour, including zero-area self-crossing rings.
                     for (int contour = 0; contour < ends.Items.Length; contour++) signBuilder.Add(1);
@@ -194,7 +194,7 @@ internal sealed class SvgAuthoredPath : IDisposable
     }
 
     /// <summary>Maps an authored float point after moving the translation into the software bitmap.</summary>
-    /// <remarks>The caller charges the point mapping and keeps source storage alive. This bounded operation allocates nothing and preserves native float multiply/add order; returned coordinates are bitmap-local.</remarks>
+    /// <remarks>The caller checks cancellation during point mapping and keeps source storage alive. This bounded operation allocates nothing and preserves native float multiply/add order; returned coordinates are bitmap-local.</remarks>
     internal static SvgDevicePoint MapPoint(SvgAffineTransform map, SvgDevicePoint point, SvgCpuBitmapOrigin origin)
     {
         float x = (float)point.X, y = (float)point.Y;
@@ -223,7 +223,7 @@ internal sealed class SvgAuthoredPath : IDisposable
 
     /// <summary>Adopts a degenerate rounded rectangle's line verbs with path coverage and primitive drawing bounds.</summary>
     /// <remarks>Ownership transfers only on success. Copy and transfer preserve both native contracts;
-    /// the caller charges command construction and the scene owns the bounded source storage.</remarks>
+    /// the caller checks cancellation during command construction and the scene owns the bounded source storage.</remarks>
     internal static SvgAuthoredPath CreateRectanglePath(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget budget)
         => Create(commands, sceneMap, null, null, SvgAuthoredFillShape.RectanglePath, budget);
 
@@ -245,21 +245,21 @@ internal sealed class SvgAuthoredPath : IDisposable
         catch { owner.Dispose(); throw; }
     }
 
-    /// <summary>Copies both command owners with bounded work and cancellation, composing an additional scene map.</summary>
-    internal SvgAuthoredPath Copy(SvgAffineTransform placement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => Copy(placement, _fillShape, budget, workCounter, cancellationToken);
+    /// <summary>Copies both command owners with cancellation checks, composing an additional scene map.</summary>
+    internal SvgAuthoredPath Copy(SvgAffineTransform placement, RenderBudget budget, CancellationToken cancellationToken)
+        => Copy(placement, _fillShape, budget, cancellationToken);
 
     /// <summary>Copies a retained clip rectangle as its authored fill operation for painted-mask replay.</summary>
-    /// <remarks>The caller supplies an authored rectangle, independently of geometric path recognition. The result owns both copies; work, mapping, cancellation and cleanup match ordinary copying.</remarks>
-    internal SvgAuthoredPath CopyRectangleFill(SvgAffineTransform placement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <remarks>The caller supplies an authored rectangle, independently of geometric path recognition. The result owns both copies; mapping, cancellation and cleanup match ordinary copying.</remarks>
+    internal SvgAuthoredPath CopyRectangleFill(SvgAffineTransform placement, RenderBudget budget, CancellationToken cancellationToken)
     {
         if (StrokeStyle is not null) throw new InvalidOperationException("A clip rectangle paint cannot carry a stroke.");
-        return Copy(placement, SvgAuthoredFillShape.Rectangle, budget, workCounter, cancellationToken);
+        return Copy(placement, SvgAuthoredFillShape.Rectangle, budget, cancellationToken);
     }
 
-    private SvgAuthoredPath Copy(SvgAffineTransform placement, SvgAuthoredFillShape fillShape, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private SvgAuthoredPath Copy(SvgAffineTransform placement, SvgAuthoredFillShape fillShape, RenderBudget budget, CancellationToken cancellationToken)
     {
-        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, cancellationToken);
         foreach (SvgAuthoredPathCommand command in Commands) commands.Add(command);
         OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
         SvgAuthoredPath? copiedOutline = null;
@@ -279,7 +279,7 @@ internal sealed class SvgAuthoredPath : IDisposable
                         ? nonScaling with { SourceMap = placement.ComposeChecked(nonScaling.SourceMap) } : null
                 };
             }
-            copiedOutline = _strokeOutline?.Copy(placement, budget, workCounter, cancellationToken);
+            copiedOutline = _strokeOutline?.Copy(placement, budget, cancellationToken);
             // Scene placement is finite metadata; the completed output map owns device admission.
             return Create(owned, placement.Compose(SceneMap), copiedStyle, copiedOutline, fillShape, budget);
         }

@@ -21,7 +21,7 @@ public sealed class SvgDefinitionNamespaceTests
             SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         Assert.Equal(new SvgViewport(16, 16), SvgConverter.InspectDimensions(input, SvgRenderOptions.Default, CancellationToken.None).LogicalViewport);
         RenderBudget budget = new(1_000_000);
-        Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(100_000), budget, CancellationToken.None));
+        Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

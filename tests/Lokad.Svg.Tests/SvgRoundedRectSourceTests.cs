@@ -16,23 +16,20 @@ public sealed class SvgRoundedRectSourceTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'>" + source + "</svg>");
         byte[] instanced = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'><defs>" + source + "</defs><use href='#source'/></svg>");
         RenderBudget budget = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(scene.Geometries[0].AuthoredPath);
             Assert.True(path.IsKnownConvex);
             Assert.Equal(4, path.Commands.ToArray().Count(static command => command.Verb == SvgAuthoredPathVerb.Conic));
-            Assert.Equal(SvgGeometrySyntax.ParseTransform(transform, new(1_000_000), CancellationToken.None), path.SceneMap);
+            Assert.Equal(SvgGeometrySyntax.ParseTransform(transform, CancellationToken.None), path.SceneMap);
             Assert.Equal(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
                 SvgConverter.ConvertToPng(instanced, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget denied = new(budget.Snapshot().PeakBytes / 2);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+            SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(work.Used / 2), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -48,7 +45,7 @@ public sealed class SvgRoundedRectSourceTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'>"
             + "<rect x='4.25' y='6.5' width='25.5' height='19' " + corners + " fill='#2168ad'/></svg>");
         RenderBudget budget = new(1_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries).AuthoredPath);
             Assert.True(source.IsKnownConvex);
@@ -58,7 +55,7 @@ public sealed class SvgRoundedRectSourceTests
             Assert.Equal(conicCount, source.Commands.ToArray().Count(static command => command.Verb == SvgAuthoredPathVerb.Conic));
             foreach (SvgAuthoredPathCommand command in source.Commands)
                 if (command.Verb == SvgAuthoredPathVerb.Conic) Assert.Equal((double)SvgRationalQuadratic.QuarterCircleWeight, command.Third.X);
-            using SvgPreparedPathContours prepared = source.PrepareSource(SvgAffineTransform.Identity, false, budget, new(1_000_000), CancellationToken.None);
+            using SvgPreparedPathContours prepared = source.PrepareSource(SvgAffineTransform.Identity, false, budget, CancellationToken.None);
             Assert.True(prepared.IsKnownConvex);
             Assert.Equal(conicCount, prepared.QuadSpans.Length);
         }
@@ -71,14 +68,14 @@ public sealed class SvgRoundedRectSourceTests
     public void Copies_and_transfers_preserve_shape_classification_and_release_both_stroke_owners(bool stroke)
     {
         RenderBudget sceneBudget = new(1_000_000), copyBudget = new(1_000_000), prepareBudget = new(1_000_000);
-        SvgRoot scene = SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, sceneBudget, null, new(1_000_000), CancellationToken.None);
+        SvgRoot scene = SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None);
         try
         {
             SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(scene.Geometries.Single(static geometry => geometry.AuthoredPath is not null).AuthoredPath);
             Assert.Equal(!stroke, source.IsKnownConvex);
             SvgAuthoredPathCommand[] commands = source.Commands.ToArray();
             SvgAffineTransform placement = new(-1.125, 0, 0, 1.125, 42.375, -.625);
-            using SvgAuthoredPath copied = source.Copy(placement, copyBudget, new(1_000_000), CancellationToken.None);
+            using SvgAuthoredPath copied = source.Copy(placement, copyBudget, CancellationToken.None);
             using SvgAuthoredPath transferred = copied.Transfer();
             copied.Dispose();
             scene.Dispose();
@@ -87,7 +84,7 @@ public sealed class SvgRoundedRectSourceTests
             Assert.Equal(!stroke, transferred.IsKnownConvex);
             Assert.Equal(placement.ComposeChecked(source.SceneMap), transferred.SceneMap);
             SvgAuthoredPath filled = stroke ? Assert.IsType<SvgAuthoredPath>(transferred.StrokeOutline) : transferred;
-            using SvgPreparedPathContours prepared = filled.PrepareSource(SvgAffineTransform.Identity, false, prepareBudget, new(1_000_000), CancellationToken.None);
+            using SvgPreparedPathContours prepared = filled.PrepareSource(SvgAffineTransform.Identity, false, prepareBudget, CancellationToken.None);
             Assert.Equal(!stroke, prepared.IsKnownConvex);
             Assert.NotEmpty(prepared.QuadSpans);
         }
@@ -99,23 +96,20 @@ public sealed class SvgRoundedRectSourceTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Partial_source_construction_releases_storage_after_memory_work_or_cancellation_denial(bool stroke)
+    public void Partial_source_construction_releases_storage_after_memory_or_cancellation_denial(bool stroke)
     {
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
-        SvgException memory = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, tight, null, new(1_000_000), CancellationToken.None));
+        SvgException memory = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, tight, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, memory.ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
         RenderBudget workBudget = new(1_000_000);
-        SvgException denied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, workBudget, null, new(work.Used - 1), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        OperationCanceledException canceled = Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, workBudget, null, new(1_000_000), cancellation.Token));
+        OperationCanceledException canceled = Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, workBudget, null, cancellation.Token));
         Assert.Equal(cancellation.Token, canceled.CancellationToken);
         Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
     }
@@ -126,23 +120,20 @@ public sealed class SvgRoundedRectSourceTests
     public void Partial_source_copy_and_replay_leave_no_owned_storage_on_denial(bool stroke)
     {
         RenderBudget sceneBudget = new(1_000_000), measured = new(1_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, sceneBudget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(Input(stroke), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
         {
             SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(scene.Geometries.Single(static geometry => geometry.AuthoredPath is not null).AuthoredPath);
-            ParserWorkCounter work = new(1_000_000);
-            using (source.Copy(SvgAffineTransform.Identity, measured, work, CancellationToken.None)) { }
+            using (source.Copy(SvgAffineTransform.Identity, measured, CancellationToken.None)) { }
             RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => source.Copy(SvgAffineTransform.Identity, tight, new(1_000_000), CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => source.Copy(SvgAffineTransform.Identity, tight, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
             RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => source.Copy(SvgAffineTransform.Identity, denied, new(work.Used - 1), CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             SvgAuthoredPath filled = stroke ? Assert.IsType<SvgAuthoredPath>(source.StrokeOutline) : source;
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => filled.PrepareSource(SvgAffineTransform.Identity, false, denied, new(2), CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
-            OperationCanceledException canceled = Assert.Throws<OperationCanceledException>(() => filled.PrepareSource(SvgAffineTransform.Identity, false, denied, new(1_000_000), cancellation.Token));
+            OperationCanceledException canceled = Assert.Throws<OperationCanceledException>(() => filled.PrepareSource(SvgAffineTransform.Identity, false, denied, cancellation.Token));
             Assert.Equal(cancellation.Token, canceled.CancellationToken);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
@@ -158,20 +149,12 @@ public sealed class SvgRoundedRectSourceTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'>"
             + "<rect x='4.25' y='6.5' width='25.5' height='19' rx='5' ry='9.5' " + paint + "/></svg>");
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter complete = new(1_000_000);
-        using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, complete, CancellationToken.None)) { }
+        using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < complete.Used; limit++)
-        {
-            RenderBudget denied = new(1_000_000);
-            SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         for (long limit = 256; limit < measured.Snapshot().PeakBytes; limit += 256)
         {
             RenderBudget denied = new(limit);
-            SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(1_000_000), CancellationToken.None));
+            SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None));
             Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
@@ -185,12 +168,12 @@ public sealed class SvgRoundedRectSourceTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'>"
             + "<rect x='4.25' y='6.5' width='25.5' height='19' rx='5' ry='9.5' " + paint + "/></svg>");
         RenderBudget budget = new(1_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
             Assert.NotEmpty(scene.Geometries);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget denied = new(budget.Snapshot().PeakBytes / 2);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+            SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
     }
 

@@ -5,20 +5,20 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses one bounded group or link context before its children are traversed.</summary>
 internal static class SvgGroupParser
 {
-    internal static SvgParsedGroup Parse(XmlReader reader, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgParsedGroup Parse(XmlReader reader, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, CancellationToken cancellationToken)
     {
-        if (reader.LocalName == "switch") SvgElementAttributePolicy.ValidateSwitch(reader, workCounter, cancellationToken);
-        else SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
-        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
-        InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+        if (reader.LocalName == "switch") SvgElementAttributePolicy.ValidateSwitch(reader, cancellationToken);
+        else SvgElementAttributePolicy.ValidateGroup(reader, cancellationToken);
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
+        InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet).ResolveOpacity(context.InheritedPresentation.ElementOpacity).ResolveDisplay(context.InheritedPresentation.ElementDisplay);
-        SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, context.StyleSheet, context.InheritedPresentation, context.InheritedFillRule, context.InheritedTextStyle, context.InheritedStroke, namedColors, state.PaintResources, workCounter, cancellationToken);
+        SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, context.StyleSheet, context.InheritedPresentation, context.InheritedFillRule, context.InheritedTextStyle, context.InheritedStroke, namedColors, state.PaintResources, cancellationToken);
         if (style.Fill is not null && resolved.Presentation.PaintServerFill is string fill)
         {
-            workCounter.ConsumeText(fill.Length, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             resolved = resolved with { Presentation = resolved.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
         }
-        resolved = resolved with { Presentation = resolved.Presentation with { Markers = resolved.Presentation.Markers.Retain(state, workCounter, cancellationToken) } };
+        resolved = resolved with { Presentation = resolved.Presentation with { Markers = resolved.Presentation.Markers.Retain(state, cancellationToken) } };
         string? filterId = null;
         if (style.Filter is string filter && filter.Trim() != "none")
         {

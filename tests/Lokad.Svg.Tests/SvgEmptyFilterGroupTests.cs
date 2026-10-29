@@ -156,9 +156,8 @@ public sealed class SvgEmptyFilterGroupTests
     public void Empty_filtered_group_owners_release_on_denial_cancellation_and_retry()
     {
         byte[] input = Input(Filter + "<g filter='url(#f)'/>");
-        RenderBudget measured = new(1_000_000); ParserWorkCounter work = new(1_000_000);
-        long parserPeak;
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        RenderBudget measured = new(1_000_000);         long parserPeak;
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         {
             parserPeak = measured.Snapshot().PeakBytes;
             Assert.Contains(root.Commands, command => command.RegionKind == SvgLayerRegionKind.Filter);
@@ -171,10 +170,9 @@ public sealed class SvgEmptyFilterGroupTests
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         RenderBudget denied = new(parserPeak - 1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(1_000_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         Assert.Equal(Render(Red), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }

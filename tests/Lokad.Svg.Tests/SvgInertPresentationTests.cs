@@ -85,7 +85,7 @@ public sealed class SvgInertPresentationTests
             }
             RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
             SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Wrap(body), SvgRenderLimits.Default,
-                budget, null, new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None));
+                budget, null, CancellationToken.None));
             Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
@@ -114,7 +114,7 @@ public sealed class SvgInertPresentationTests
         {
             RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
             SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default,
-                budget, null, new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None));
+                budget, null, CancellationToken.None));
             Assert.Equal(SvgErrorCode.MalformedInput, error.ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
@@ -166,29 +166,24 @@ public sealed class SvgInertPresentationTests
     [InlineData("background-root-attribute")]
     [InlineData("background-root-inline")]
     [InlineData("background-stylesheet")]
-    public void Inactive_presentation_observes_work_memory_cancellation_and_retry(string context)
+    public void Inactive_presentation_observes_memory_cancellation_and_retry(string context)
     {
         byte[] input = Input(context);
         SvgRenderLimits limits = SvgRenderLimits.Default;
         RenderBudget normal = new(limits.MaximumAccountedBytes);
-        long work;
-        using (SvgRoot root = SvgRootParser.Parse(input, limits, normal, null, new(limits.MaximumWorkUnits), CancellationToken.None)) work = root.ParserWorkUnits;
+        using (SvgRoot root = SvgRootParser.Parse(input, limits, normal, null, CancellationToken.None)) { }
         Assert.Equal(0, normal.Snapshot().CurrentBytes);
-        RenderBudget workBudget = new(limits.MaximumAccountedBytes);
-        SvgException workDenied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, workBudget, null, new(work - 1), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, workDenied.ErrorCode);
-        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
         RenderBudget memoryBudget = new(normal.Snapshot().PeakBytes - 1);
-        SvgException memoryDenied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, memoryBudget, null, new(limits.MaximumWorkUnits), CancellationToken.None));
+        SvgException memoryDenied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, memoryBudget, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, memoryDenied.ErrorCode);
         Assert.Equal(0, memoryBudget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        OperationCanceledException cancelled = Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, limits, workBudget, null, new(limits.MaximumWorkUnits), cancellation.Token));
+        OperationCanceledException cancelled = Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, limits, normal, null, cancellation.Token));
         Assert.Equal(cancellation.Token, cancelled.CancellationToken);
-        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
-        using (SvgRoot retry = SvgRootParser.Parse(input, limits, workBudget, null, new(limits.MaximumWorkUnits), CancellationToken.None)) Assert.Single(retry.Geometries);
-        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
+        Assert.Equal(0, normal.Snapshot().CurrentBytes);
+        using (SvgRoot retry = SvgRootParser.Parse(input, limits, normal, null, CancellationToken.None)) Assert.Single(retry.Geometries);
+        Assert.Equal(0, normal.Snapshot().CurrentBytes);
     }
 
     [Fact]

@@ -14,10 +14,9 @@ public sealed class SvgGroupMaskCropTests
     {
         byte[] input = Read(identity);
         RenderBudget measured = new(8_000_000);
-        ParserWorkCounter work = new(1_000_000);
         long rasterWork;
         byte[] expected;
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
         {
             expected = surface.Pixels.ToArray();
@@ -26,13 +25,6 @@ public sealed class SvgGroupMaskCropTests
             Assert.All(storage.MaskContents, mask => Assert.Null(mask.UniformSource));
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { 0, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(8_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget memory = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
@@ -45,7 +37,7 @@ public sealed class SvgGroupMaskCropTests
             defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
             checked((int)(rasterWork - 1)), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
         RenderBudget raster = new(8_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, limits, raster, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, limits, raster, null, CancellationToken.None))
         {
             long retained = raster.Snapshot().CurrentBytes;
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>

@@ -24,7 +24,7 @@ public sealed class SvgHairlineCoverageTests
             byte[] destination = new byte[64 * 64 * 4];
             SvgHairlineCoverage walker = new(destination, 64, 64, SvgAnalyticPaint.Solid(new(255, 0, 0, 208)),
                 null, SvgClipAntialiasing.None, mask, binary, new(new(0, 0, 64, 64), new(0, 0, 64, 64)),
-                new(100_000), CancellationToken.None);
+CancellationToken.None);
             SvgDevicePoint[] corners = [new(13.410023945401651, 53.04681908123335), new(19.327956946071712, 48.14011700656239),
                 new(20.093880441919556, 49.06389103300366), new(14.175947441249495, 53.97059310767462)];
             for (int index = 0; index < corners.Length; index++) walker.DrawLine(corners[index], corners[(index + 1) % corners.Length]);
@@ -54,7 +54,7 @@ public sealed class SvgHairlineCoverageTests
         {
             byte[] destination = new byte[64 * 64 * 4];
             Assert.True(SvgHairlineStroke.TryRasterize(path, SvgAffineTransform.FromScale(1.5, 1.5), new(255, 0, 0, 255), null,
-                null, SvgClipAntialiasing.None, mask, binary, destination, 64, 64, new(100_000), CancellationToken.None));
+                null, SvgClipAntialiasing.None, mask, binary, destination, 64, 64, CancellationToken.None));
             return destination;
         }
     }
@@ -87,7 +87,7 @@ public sealed class SvgHairlineCoverageTests
                 SvgAnalyticPaintKind kind = values[3] == "0" ? SvgAnalyticPaintKind.Direct : SvgAnalyticPaintKind.Pair;
                 paint.Blend(expected.AsSpan((y * width + x) * 4, 4), coverage, kind);
             }
-            SvgHairlineCoverage walker = new(actual, width, height, paint, null, SvgClipAntialiasing.None, new ParserWorkCounter(100_000), CancellationToken.None);
+            SvgHairlineCoverage walker = new(actual, width, height, paint, null, SvgClipAntialiasing.None, CancellationToken.None);
             walker.DrawLine(new(double.Parse(fields[3], CultureInfo.InvariantCulture), double.Parse(fields[4], CultureInfo.InvariantCulture)),
                 new(double.Parse(fields[5], CultureInfo.InvariantCulture), double.Parse(fields[6], CultureInfo.InvariantCulture)));
             Assert.True(expected.AsSpan().SequenceEqual(actual), fields[0]);
@@ -97,28 +97,21 @@ public sealed class SvgHairlineCoverageTests
     }
 
     [Fact]
-    public void Work_denial_precedes_paint_and_cancelled_long_line_can_be_retried()
+    public void Cancelled_long_line_preserves_pixels_and_allows_retry()
     {
         byte[] deniedPixels = new byte[1024 * 64 * 4];
-        SvgException denied = Assert.Throws<SvgException>(() => Draw(deniedPixels, new ParserWorkCounter(0), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         Assert.All(deniedPixels, value => Assert.Equal(0, value));
         using CancellationTokenSource cancelled = new();
         cancelled.Cancel();
-        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => Draw(deniedPixels, new ParserWorkCounter(100_000), cancelled.Token));
+        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => Draw(deniedPixels, cancelled.Token));
         Assert.Equal(cancelled.Token, error.CancellationToken);
-        ParserWorkCounter tight = new(10);
-        SvgException during = Assert.Throws<SvgException>(() => Draw(deniedPixels, tight, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, during.ErrorCode);
         Array.Clear(deniedPixels);
-        ParserWorkCounter retry = new(100_000);
-        Draw(deniedPixels, retry, CancellationToken.None);
+        Draw(deniedPixels, CancellationToken.None);
         Assert.Contains(deniedPixels, value => value != 0);
-        Assert.True(retry.Used < 5000);
 
-        static void Draw(byte[] destination, ParserWorkCounter work, CancellationToken token)
+        static void Draw(byte[] destination, CancellationToken token)
         {
-            SvgHairlineCoverage walker = new(destination, 1024, 64, SvgAnalyticPaint.Solid(new(235, 28, 35, 127)), null, SvgClipAntialiasing.None, work, token);
+            SvgHairlineCoverage walker = new(destination, 1024, 64, SvgAnalyticPaint.Solid(new(235, 28, 35, 127)), null, SvgClipAntialiasing.None, token);
             walker.DrawLine(new(4.25, 4.25), new(1004.25, 28.25));
         }
     }
@@ -130,30 +123,30 @@ public sealed class SvgHairlineCoverageTests
     {
         RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
         byte[] svg = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path transform='scale(2)' " + (nonScaling ? "vector-effect='non-scaling-stroke' " : "") + "fill='none' stroke='red' stroke-width='.5' d='M4,4H60V60H4Z M8,8H16'/></svg>");
-        using (SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, null, new ParserWorkCounter(1_000_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath original = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
             Assert.Contains(original.Commands.ToArray(), c => c.Verb == SvgAuthoredPathVerb.Close);
             Assert.Contains(original.Commands.ToArray(), c => c.Verb == SvgAuthoredPathVerb.End);
-            Assert.Throws<InvalidOperationException>(() => original.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None));
-            using SvgAuthoredPath copy = original.Copy(SvgAffineTransform.FromScale(.5, .5), budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            Assert.Throws<InvalidOperationException>(() => original.Prepare(SvgAffineTransform.Identity, false, budget, CancellationToken.None));
+            using SvgAuthoredPath copy = original.Copy(SvgAffineTransform.FromScale(.5, .5), budget, CancellationToken.None);
             Assert.Equal(nonScaling ? .5 : 1, Assert.IsType<SvgAuthoredStrokeStyle>(copy.StrokeStyle).WidthMap.A);
             using SvgAuthoredPath transferred = copy.Transfer();
             Assert.Empty(copy.Commands.ToArray());
             Assert.Equal(original.Commands.ToArray(), transferred.Commands.ToArray());
             Assert.Equal(.5, Assert.IsType<SvgAuthoredStrokeStyle>(transferred.StrokeStyle).Width);
             long retained = budget.Snapshot().CurrentBytes;
-            SvgException overflow = Assert.Throws<SvgException>(() => original.Copy(SvgAffineTransform.FromScale(float.MaxValue, float.MaxValue), budget, new ParserWorkCounter(100_000), CancellationToken.None));
+            SvgException overflow = Assert.Throws<SvgException>(() => original.Copy(SvgAffineTransform.FromScale(float.MaxValue, float.MaxValue), budget, CancellationToken.None));
             Assert.Equal(SvgErrorCode.UnsupportedFeature, overflow.ErrorCode);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             using (budget.Reserve(SvgRenderLimits.Default.MaximumAccountedBytes - retained - 100, SvgMemoryCategory.Surface))
             {
                 long padded = budget.Snapshot().CurrentBytes;
-                SvgException denied = Assert.Throws<SvgException>(() => original.Copy(SvgAffineTransform.Identity, budget, new ParserWorkCounter(100_000), CancellationToken.None));
+                SvgException denied = Assert.Throws<SvgException>(() => original.Copy(SvgAffineTransform.Identity, budget, CancellationToken.None));
                 Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
                 Assert.Equal(padded, budget.Snapshot().CurrentBytes);
             }
-            using SvgAuthoredPath retry = original.Copy(SvgAffineTransform.Identity, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            using SvgAuthoredPath retry = original.Copy(SvgAffineTransform.Identity, budget, CancellationToken.None);
             Assert.Equal(original.Commands.ToArray(), retry.Commands.ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

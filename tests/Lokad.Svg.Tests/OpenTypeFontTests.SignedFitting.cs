@@ -26,7 +26,7 @@ public sealed partial class OpenTypeFontTests
             { Grid = windows ? TrueTypeHintGrid.ClearType : TrueTypeHintGrid.Physical };
         RenderBudget budget = new(long.MaxValue);
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, composite ? (ushort)2 : (ushort)1,
-            OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 24, target, budget, new(long.MaxValue), CancellationToken.None))
+            OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 24, target, budget, CancellationToken.None))
         {
             Assert.Equal(new OpenTypeOutlinePoint(windows ? -31 : -32, useControl ? windows ? -10 : -11 : windows ? -7 : -8), contours.Segments[0].Start);
             Assert.Equal(new OpenTypeOutlinePoint(560, 1058), contours.Segments[0].End);

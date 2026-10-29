@@ -144,7 +144,7 @@ internal readonly record struct SvgTextPaintSpan(int Start, int End, SvgTextGlyp
 
 /// <summary>Preserves text metrics for an enclosing active filter even when inner paint is unavailable.</summary>
 /// <remarks>Value-only traversal state, reset at resource boundaries. Enter borrows preparation metadata,
-/// charges its shared work/cancellation for resource lookup, and owns no storage. An outer unavailable
+/// observes cancellation during resource lookup, and owns no storage. An outer unavailable
 /// filter suppresses inner filters too; an active outer filter still needs descendant source bounds.</remarks>
 internal readonly record struct SvgTextMetricScope(bool Suppressed, bool NeedsBounds)
 {

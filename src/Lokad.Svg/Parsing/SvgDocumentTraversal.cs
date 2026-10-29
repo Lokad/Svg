@@ -7,40 +7,39 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Traverses one bounded SVG document after reader setup without materializing a DOM.</summary>
 internal static class SvgDocumentTraversal
 {
-    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings, double rasterScale, SvgPaintResourceSelection? paintResources)
+    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings, double rasterScale, SvgPaintResourceSelection? paintResources)
     {
-        ArgumentNullException.ThrowIfNull(workCounter);
         while (reader.Read())
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (reader.NodeType != XmlNodeType.Element) continue;
             SvgStructuralAdmission.ValidateElementStructure(reader, limits);
             SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
-            SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, styleRules, workCounter, cancellationToken);
-            return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root, outputMap, explicitViewport, styleRules, styleStrings, rasterScale, paintResources);
+            SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, styleRules, cancellationToken);
+            return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, root, outputMap, explicitViewport, styleRules, styleStrings, rasterScale, paintResources);
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
 
 
     }
 
-    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings, double rasterScale, SvgPaintResourceSelection? paintResources)
+    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, SvgRootAttributes root, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings, double rasterScale, SvgPaintResourceSelection? paintResources)
     {
         if (reader.IsEmptyElement)
         {
-            ValidateDocumentEnd(reader, workCounter, cancellationToken);
-            return new SvgRoot(root.Width, root.Height, root.ViewBox, [], [], false, workCounter.Used, null);
+            ValidateDocumentEnd(reader, cancellationToken);
+            return new SvgRoot(root.Width, root.Height, root.ViewBox, [], [], false, null);
         }
         int rootDepth = reader.Depth;
         root = root with { ContainingViewport = explicitViewport };
-        using SvgDocumentState state = new(budget, workCounter, cancellationToken, styleRules, styleStrings, false);
+        using SvgDocumentState state = new(budget, cancellationToken, styleRules, styleStrings, false);
         state.PaintResources = paintResources;
         state.CssAncestors.Observe(reader, 0);
         // The root element consumes one node, matching font-request discovery's uniform per-element count.
         state.NodeCount = 1;
         if (root.InheritedPresentation.PaintServerFill is string rootFill)
         {
-            workCounter.ConsumeText(rootFill.Length, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             root = root with { InheritedPresentation = root.InheritedPresentation with { PaintServerFill = state.Strings.Copy(rootFill) } };
         }
         state.OutputMagnification = System.Math.Max(System.Math.Abs(outputMap.A), System.Math.Abs(outputMap.D));
@@ -53,7 +52,7 @@ internal static class SvgDocumentTraversal
         while (reader.Read())
         {
             SvgSourceContext? sourceContext = reader.NodeType == XmlNodeType.Element ? SvgSourceContext.Capture(reader) : null;
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             state.CssAncestors.Observe(reader, 0);
             if (reader.NodeType == XmlNodeType.Element)
             {
@@ -98,15 +97,15 @@ internal static class SvgDocumentTraversal
                 {
                     if (!reader.IsEmptyElement) state.DescriptionDepth = reader.Depth;
                 }
-                else if (SvgDefinitionParser.TryParse(reader, directChild, inScope, root, state, limits, namedColors, fontSnapshot, workCounter, cancellationToken)) { }
+                else if (SvgDefinitionParser.TryParse(reader, directChild, inScope, root, state, limits, namedColors, fontSnapshot, cancellationToken)) { }
                 else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "svg")
                 {
                     state.RenderedGroupContent?.AddUnsupported();
-                    SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
+                    SvgElementAttributePolicy.ValidateNestedViewport(reader, cancellationToken);
                     SvgViewportFrame? parentFrame = state.EffectiveFrame;
                     SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, parentFrame?.ViewportWidth ?? root.UserViewportWidth, parentFrame?.ViewportHeight ?? root.UserViewportHeight);
-                    SvgViewBox? nestedViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
+                    SvgViewBox? nestedViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), cancellationToken);
                     double localScaleX = 1;
                     double localScaleY = 1;
                     double viewOffsetX = 0;
@@ -141,11 +140,11 @@ internal static class SvgDocumentTraversal
                     }
                     SvgClipBox box = new(clipOriginX, clipOriginY, viewport.Width * clipScaleX, viewport.Height * clipScaleY);
                     if (parentClip is not null) box = box.Intersect(parentClip.Value);
-                    SvgPaintableElementContext viewportContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, workCounter, cancellationToken);
-                    InlineStyle viewportInline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+                    SvgPaintableElementContext viewportContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
+                    InlineStyle viewportInline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
                     SvgComputedStyle viewportStyle = SvgComputedStyle.Resolve(reader, viewportInline, viewportContext.StyleSheet);
                     SvgInheritedContainer inheritedViewport = SvgContainerInheritance.Resolve(reader, viewportInline, viewportStyle, viewportContext.StyleSheet, viewportContext.InheritedPresentation,
-                        viewportContext.InheritedFillRule, viewportContext.InheritedTextStyle, viewportContext.InheritedStroke, namedColors, state.PaintResources, workCounter, cancellationToken);
+                        viewportContext.InheritedFillRule, viewportContext.InheritedTextStyle, viewportContext.InheritedStroke, namedColors, state.PaintResources, cancellationToken);
                     if (viewport.Width == 0 || viewport.Height == 0)
                         inheritedViewport = inheritedViewport with { Presentation = inheritedViewport.Presentation with { IsDisplayed = false } };
                     SvgPaintOpacity sourceViewportOpacity = inheritedViewport.Presentation.ElementOpacity;
@@ -172,7 +171,7 @@ internal static class SvgDocumentTraversal
                     if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, nestedViewBox?.Width ?? viewport.Width, nestedViewBox?.Height ?? viewport.Height, box, reader.Depth) { RecordingScope = state.NewRecordingScope(), OwnOpacity = sourceViewportOpacity, HasAffineClipScope = affineClipScope, TextContext = SvgViewportTextContext.Create(state, inheritedViewport, textPlacement, textClip) });
                     if (affineClipScope)
                     {
-                        (SvgClipBox bounds, int contentIndex) = textClip.Register(state, state.Scene, workCounter, cancellationToken);
+                        (SvgClipBox bounds, int contentIndex) = textClip.Register(state, state.Scene, cancellationToken);
                         state.Scene.InsertCommands(state.Scene.CommandCount,
                             [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, bounds, contentIndex, 255) { RegionKind = SvgLayerRegionKind.AffineViewport }]);
                     }
@@ -185,21 +184,21 @@ internal static class SvgDocumentTraversal
                         }
                     }
                 }
-                else if (SvgRenderedLeafParser.TryParse(reader, inScope, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
+                else if (SvgRenderedLeafParser.TryParse(reader, inScope, root, state, limits, budget, namedColors, fontSnapshot, cancellationToken))
                 {
                     // Balanced leaves share the self-closing behavior; inert descriptions remain allowed.
                     // Drawing, animation and unknown children stay unsupported. Text owns its own subtree.
                     if (!textElement && !reader.IsEmptyElement)
                     {
-                        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, workCounter, cancellationToken);
+                        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, cancellationToken);
                         state.NodeCount = subtree.NodeCount;
                         state.HasUnsupportedContent |= subtree.HasUnsupportedChildren;
                     }
                 }
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
                 {
-                    SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, root, state, namedColors, workCounter, cancellationToken);
-                    SvgRenderedGroupSourceParser.BeginGroup(reader, root, state, limits, namedColors, workCounter, cancellationToken);
+                    SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, root, state, namedColors, cancellationToken);
+                    SvgRenderedGroupSourceParser.BeginGroup(reader, root, state, limits, namedColors, cancellationToken);
                     if (!reader.IsEmptyElement || parsedGroup.Scope.HasFilter)
                     {
                         bool isolates = parsedGroup.Scope.IsolatesOpacity || parsedGroup.Scope.HasDeferredMask || parsedGroup.Scope.HasFilter;
@@ -223,7 +222,7 @@ internal static class SvgDocumentTraversal
                             if (clipsChildren && state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox) && parsedGroup.Scope.InheritedPresentation.Transform.IsAxisAligned)
                             {
                                 SvgViewportFrame? clipParent = state.EffectiveFrame;
-                                SvgClipBox clip = SvgClipPathSyntax.MapGroupClip(clipBox, parsedGroup.Scope.InheritedPresentation.Transform, clipParent, workCounter, cancellationToken);
+                                SvgClipBox clip = SvgClipPathSyntax.MapGroupClip(clipBox, parsedGroup.Scope.InheritedPresentation.Transform, clipParent, cancellationToken);
                                 state.Viewports.Add(new SvgViewportFrame(clipParent?.OffsetX ?? 0, clipParent?.OffsetY ?? 0, clipParent?.ScaleX ?? 1, clipParent?.ScaleY ?? 1, clipParent?.ViewportWidth, clipParent?.ViewportHeight, clip, reader.Depth));
                                 state.ClipDepths.Add(reader.Depth);
                             }
@@ -242,7 +241,7 @@ internal static class SvgDocumentTraversal
                         if (isolatedViewport && isolationParent is {} clippedParent)
                         {
                             SvgDrawCommand clip = parsedGroup.Scope.HasDeferredMask && clippedParent.Clip.Antialiasing == SvgClipAntialiasing.All
-                                ? SvgClipPathSyntax.CreateRectangleScope(clippedParent.Clip, SvgAffineTransform.Identity, state, state.Scene, workCounter, cancellationToken)
+                                ? SvgClipPathSyntax.CreateRectangleScope(clippedParent.Clip, SvgAffineTransform.Identity, state, state.Scene, cancellationToken)
                                 : new(SvgDrawCommandKind.BeginGroup, -1, 255, clippedParent.Clip, -1, 255) { RegionKind = parsedGroup.Scope.HasFilter && clippedParent.RecordingScope.Value == 0 ? SvgLayerRegionKind.FilterOutputClip : SvgLayerRegionKind.Viewport };
                             state.Scene.InsertCommands(state.Scene.CommandCount, [clip]);
                             if (snapshot.PendingClip is {} clipIndex)
@@ -278,11 +277,11 @@ internal static class SvgDocumentTraversal
                 }
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                 {
-                    SvgRootStyleSheetParser.Consume(reader, budget, workCounter, cancellationToken);
+                    SvgRootStyleSheetParser.Consume(reader, budget, cancellationToken);
                 }
                 else if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                 {
-                    SvgRootStyleSheetParser.Consume(reader, budget, workCounter, cancellationToken);
+                    SvgRootStyleSheetParser.Consume(reader, budget, cancellationToken);
                 }
                 else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
                 else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsInertContainer(reader.LocalName)) { }
@@ -290,7 +289,7 @@ internal static class SvgDocumentTraversal
                 {
                     // Empty foreign-namespace elements (editor metadata like sodipodi:namedview) paint nothing and carry no renderable descendants.
                 }
-                else if (inScope && reader.NamespaceURI != "http://www.w3.org/2000/svg" && !reader.IsEmptyElement && TrySkipInertForeignSubtree(reader, state, limits, workCounter, cancellationToken)) { }
+                else if (inScope && reader.NamespaceURI != "http://www.w3.org/2000/svg" && !reader.IsEmptyElement && TrySkipInertForeignSubtree(reader, state, limits, cancellationToken)) { }
                 else if (inScope) state.HasUnsupportedContent = true;
                 if (state.HasUnsupportedContent && state.UnsupportedDiagnostic is null && sourceContext is {} unsupportedSource)
                     state.UnsupportedDiagnostic = unsupportedSource.Describe(string.Empty, string.Empty);
@@ -306,12 +305,12 @@ internal static class SvgDocumentTraversal
                 if (reader.Depth == state.DescriptionDepth) state.DescriptionDepth = -1;
                 if (reader.Depth == state.DefinitionsDepth)
                 {
-                    SvgPatternReferenceResolver.Resolve(state, false, workCounter, cancellationToken);
+                    SvgPatternReferenceResolver.Resolve(state, false, cancellationToken);
                 }
                 if (reader.Depth == state.DefinitionsDepth) { state.DefinitionsDepth = -1; state.DefinitionInheritance = null; }
                 if (reader.Depth == state.GradientDepth)
                 {
-                    if (state.GradientId is not null) SvgDefinitionParser.RegisterGradient(state, workCounter, cancellationToken);
+                    if (state.GradientId is not null) SvgDefinitionParser.RegisterGradient(state, cancellationToken);
                     state.GradientDepth = -1;
                     state.GradientId = null;
                     state.Gradient = null;
@@ -319,7 +318,7 @@ internal static class SvgDocumentTraversal
                 }
                 if (reader.Depth == state.RadialGradientDepth)
                 {
-                    if (state.RadialGradientId is not null) SvgDefinitionParser.RegisterRadialGradient(state, workCounter, cancellationToken);
+                    if (state.RadialGradientId is not null) SvgDefinitionParser.RegisterRadialGradient(state, cancellationToken);
                     state.RadialGradientDepth = -1;
                     state.RadialGradientId = null;
                     state.RadialGradient = null;
@@ -330,51 +329,51 @@ internal static class SvgDocumentTraversal
                     if (state.Groups.Count == 0 || state.Groups[^1].Kind != SvgGroupKind.Pattern || state.Groups[^1].Depth != reader.Depth)
                         throw new InvalidOperationException("Pattern presentation scope is unbalanced.");
                     state.Groups.RemoveLast();
-                    if (state.PatternId is not null) SvgDefinitionParser.RegisterPattern(state, workCounter, cancellationToken);
+                    if (state.PatternId is not null) SvgDefinitionParser.RegisterPattern(state, cancellationToken);
                     if (state.PatternContentBuilder is {} unused)
                     {
                         // Anonymous resources own no deferred scene. Drop borrowed ranges before disposal.
                         while (state.DeferredPaintLeaves.Count > state.PatternCommandStart.Paint)
                         {
-                            workCounter.Consume(cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             state.DeferredPaintLeaves.RemoveLast();
                         }
                         while (state.PendingTextRuns.Count > state.PatternCommandStart.Text)
                         {
-                            workCounter.Consume(cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             SvgPendingTextRun text = state.PendingTextRuns[^1];
                             text.Run?.Dispose(); text.SharedLayout?.Dispose(); text.Owner.Dispose();
                             state.PendingTextRuns.RemoveLast();
                         }
                         while (state.PendingGroupClips.Count > state.PatternCommandStart.Clip)
                         {
-                            workCounter.Consume(cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             state.PendingGroupClips.RemoveLast();
                         }
                         while (state.PendingGroupMasks.Count > state.PatternCommandStart.Mask)
                         {
-                            workCounter.Consume(cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             state.PendingGroupMasks.RemoveLast();
                         }
                         while (state.PendingLeafMasks.Count > 0 && ReferenceEquals(state.PendingLeafMasks[^1].Scene, unused))
                         {
-                            workCounter.Consume(cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             state.PendingLeafMasks.RemoveLast();
                         }
                         while (state.PendingLeafClips.Count > 0 && ReferenceEquals(state.PendingLeafClips[^1].Scene, unused))
                         {
-                            workCounter.Consume(cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             state.PendingLeafClips.RemoveLast();
                         }
                         while (state.PatternUseCount > 0)
                         {
-                            workCounter.Consume(cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             state.PatternUses.RemoveLast();
                             state.PatternUseCount--;
                         }
                         while (state.PatternScopes is {} scopes && scopes.Count > state.PatternScopeStart)
                         {
-                            workCounter.Consume(cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             scopes.RemoveLast();
                         }
                         unused.Dispose();
@@ -395,11 +394,11 @@ internal static class SvgDocumentTraversal
                 {
                     if (state.MaskId is not null)
                     {
-                        if (!state.MaskIsDisplayed) SvgMaskSyntax.RegisterDisabled(state, workCounter, cancellationToken);
-                        else if (state.MaskHasReplayContent) SvgMaskContentReplay.Register(state, workCounter, cancellationToken);
-                        else if (state.MaskContentBuilder is not null) RegisterMaskScene(state, workCounter, cancellationToken);
-                        else if (state.MaskContentGeometries is not null) SvgDefinitionParser.RegisterMaskContent(state, workCounter, cancellationToken);
-                        else SvgDefinitionParser.RegisterMask(state, workCounter, cancellationToken);
+                        if (!state.MaskIsDisplayed) SvgMaskSyntax.RegisterDisabled(state, cancellationToken);
+                        else if (state.MaskHasReplayContent) SvgMaskContentReplay.Register(state, cancellationToken);
+                        else if (state.MaskContentBuilder is not null) RegisterMaskScene(state, cancellationToken);
+                        else if (state.MaskContentGeometries is not null) SvgDefinitionParser.RegisterMaskContent(state, cancellationToken);
+                        else SvgDefinitionParser.RegisterMask(state, cancellationToken);
                         if (state.MaskIsDisplayed && state.MaskReplayChildCount > 0 && state.MaskContents.TryGetValue(state.MaskId, out SvgMaskContent source))
                             state.MaskContents.Replace(state.MaskId, source with { ReplaySource = new(state.MaskReplayChildStart, state.MaskReplayChildCount) });
                     }
@@ -426,10 +425,10 @@ internal static class SvgDocumentTraversal
                 {
                     if (state.ClipPathId is not null)
                     {
-                        if (state.ClipUse is not null) SvgResourceUseReplay.RegisterClip(state, workCounter, cancellationToken);
-                        else if (state.ClipBox is not null) SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);
-                        else if (state.ClipPolygon is not null) SvgDefinitionParser.RegisterClipPolygon(state, workCounter, cancellationToken);
-                        else SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);
+                        if (state.ClipUse is not null) SvgResourceUseReplay.RegisterClip(state, cancellationToken);
+                        else if (state.ClipBox is not null) SvgDefinitionParser.RegisterClipBox(state, cancellationToken);
+                        else if (state.ClipPolygon is not null) SvgDefinitionParser.RegisterClipPolygon(state, cancellationToken);
+                        else SvgDefinitionParser.RegisterClipBox(state, cancellationToken);
                     }
                     if (state.ClipPathId is null) state.ClipPolygon?.SourcePath?.Dispose();
                     state.ClipUse = null;
@@ -442,8 +441,8 @@ internal static class SvgDocumentTraversal
                     state.ClipIsVisible = true;
                 }
                 state.SymbolDefinition?.EndGroup(reader.Depth, state);
-                SvgRenderedGroupSourceParser.EndGroup(reader.Depth, state, workCounter, cancellationToken);
-                if (reader.Depth == state.SymbolDepth) SvgDefinitionParser.RegisterSymbol(state, workCounter, cancellationToken);
+                SvgRenderedGroupSourceParser.EndGroup(reader.Depth, state, cancellationToken);
+                if (reader.Depth == state.SymbolDepth) SvgDefinitionParser.RegisterSymbol(state, cancellationToken);
                 SvgViewportFrame? closingViewport = state.Viewports.Count > 0 && state.Viewports[^1].Depth == reader.Depth ? state.Viewports[^1] : null;
                 if (closingViewport is not null) state.Viewports.RemoveLast();
                 if (closingViewport?.OwnOpacity is {} closingOpacity && closingOpacity.Alpha != 255)
@@ -476,13 +475,13 @@ internal static class SvgDocumentTraversal
                     state.GroupSnapshotStarts.RemoveLast();
                     if (snapshotStart.Id is not null && group.Kind == SvgGroupKind.Group)
                     {
-                        workCounter.Consume(cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
                         if (state.Definitions.TryGetValue(snapshotStart.Id, out _) || state.GroupSnapshots.TryGetValue(snapshotStart.Id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                         string retainedId = state.Strings.Copy(snapshotStart.Id);
                         bool hasViewport = false;
                         for (int viewportIndex = 0; viewportIndex < state.Viewports.Count; viewportIndex++)
                         {
-                            workCounter.Consume(cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             SvgViewportFrame viewportFrame = state.Viewports[viewportIndex];
                             if (viewportFrame.ScaleX != 1 || viewportFrame.ScaleY != 1 || viewportFrame.OffsetX != 0 || viewportFrame.OffsetY != 0) { hasViewport = true; break; }
                         }
@@ -501,7 +500,7 @@ internal static class SvgDocumentTraversal
                     if (group.HasFilter && group.HasDeferredMask) state.Scene.EndOpacityScope();
                     if (snapshotStart.PendingMask is {} pendingMaskIndex)
                     {
-                        workCounter.Consume(cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
                         PendingGroupMask pendingMask = state.PendingGroupMasks[pendingMaskIndex];
                         state.PendingGroupMasks[pendingMaskIndex] = pendingMask with { EndCommandIndex = state.Scene.CommandCount };
                     }
@@ -511,7 +510,7 @@ internal static class SvgDocumentTraversal
                     }
                     if (snapshotStart.PendingClip is {} pendingGroupIndex)
                     {
-                        workCounter.Consume(cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
                         PendingGroupClip pendingGroup = state.PendingGroupClips[pendingGroupIndex];
                         state.PendingGroupClips[pendingGroupIndex] = pendingGroup with { EndCommandIndex = state.Scene.CommandCount };
                     }
@@ -519,30 +518,30 @@ internal static class SvgDocumentTraversal
                 }
                 if (reader.Depth == rootDepth)
                 {
-                    SvgDefinitionParser.ResolvePendingGradientHrefs(state, workCounter, cancellationToken);
-                    SvgPatternReferenceResolver.Resolve(state, true, workCounter, cancellationToken);
-                    SvgDeferredPaintLeaves.Resolve(root, state, limits, workCounter, cancellationToken);
+                    SvgDefinitionParser.ResolvePendingGradientHrefs(state, cancellationToken);
+                    SvgPatternReferenceResolver.Resolve(state, true, cancellationToken);
+                    SvgDeferredPaintLeaves.Resolve(root, state, limits, cancellationToken);
                     if (state.DeferredTextFailure is {} textFailure) throw textFailure;
-                    SvgTextPathLayout.Resolve(state, limits, workCounter, cancellationToken);
-                    state.ValidateSymbolReferences(workCounter, cancellationToken);
-                    state.PaintResources?.ValidateUnusedEffects(state, workCounter, cancellationToken);
-                    SvgResourceUseReplay.ResolveClips(state, workCounter, cancellationToken);
-                    SvgMaskContentReplay.Resolve(root, state, workCounter, cancellationToken);
-                    SvgPatternUseReplay.Resolve(root, state, limits, workCounter, cancellationToken);
-                    SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);
-                    SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);
-                    SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);
-                    SvgMaskSyntax.ResolvePendingLeafMasks(state, workCounter, cancellationToken);
-                    SvgMaskSyntax.ResolvePendingGroupMasks(state, workCounter, cancellationToken);
-                    SvgPatternUseReplay.Complete(state, workCounter, cancellationToken);
+                    SvgTextPathLayout.Resolve(state, limits, cancellationToken);
+                    state.ValidateSymbolReferences(cancellationToken);
+                    state.PaintResources?.ValidateUnusedEffects(state, cancellationToken);
+                    SvgResourceUseReplay.ResolveClips(state, cancellationToken);
+                    SvgMaskContentReplay.Resolve(root, state, cancellationToken);
+                    SvgPatternUseReplay.Resolve(root, state, limits, cancellationToken);
+                    SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, cancellationToken);
+                    SvgClipPathSyntax.ResolvePendingLeafClips(state, cancellationToken);
+                    SvgClipPathSyntax.ResolvePendingGroupClips(state, cancellationToken);
+                    SvgMaskSyntax.ResolvePendingLeafMasks(state, cancellationToken);
+                    SvgMaskSyntax.ResolvePendingGroupMasks(state, cancellationToken);
+                    SvgPatternUseReplay.Complete(state, cancellationToken);
                     if (root.SourceOpacity.Value != 1) state.Scene.EndOpacityScope();
-                    SvgLeafMaskComposition.Emit(state, workCounter, cancellationToken);
+                    SvgLeafMaskComposition.Emit(state, cancellationToken);
                     SvgSceneStorage sceneStorage = state.Scene.Build();
                     state.ReleaseDefinitions();
                     try
                     {
-                        ValidateDocumentEnd(reader, workCounter, cancellationToken);
-                        return new SvgRoot(root.Width, root.Height, root.ViewBox, sceneStorage.Geometries, sceneStorage.Commands, state.HasUnsupportedContent, workCounter.Used, sceneStorage)
+                        ValidateDocumentEnd(reader, cancellationToken);
+                        return new SvgRoot(root.Width, root.Height, root.ViewBox, sceneStorage.Geometries, sceneStorage.Commands, state.HasUnsupportedContent, sceneStorage)
                             { UnsupportedDiagnostic = state.UnsupportedDiagnostic };
                     }
                     catch { sceneStorage.Dispose(); throw; }
@@ -552,12 +551,12 @@ internal static class SvgDocumentTraversal
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
 
         // Seal shader-mask replay under one parent-owned vector scene; failure releases staging owners.
-        static void RegisterMaskScene(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static void RegisterMaskScene(SvgDocumentState state, CancellationToken cancellationToken)
         {
             string id = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask scene registration requires an identifier."));
             if (state.Masks.TryGetValue(id, out _) || state.MaskContents.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
             SvgSceneBuilder builder = state.MaskContentBuilder ?? throw new InvalidOperationException("Mask scene registration requires a builder.");
-            SvgLeafMaskComposition.Emit(state, builder, workCounter, cancellationToken);
+            SvgLeafMaskComposition.Emit(state, builder, cancellationToken);
             SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
             try { state.Scene.AdoptVectorContent(content); }
             catch { content.Dispose(); throw; }
@@ -572,18 +571,17 @@ internal static class SvgDocumentTraversal
     /// <para>Only editor namedview containers are eligible: unknown foreign elements keep the unsupported flag even when fully foreign (see the public-contract foreign-rect lock), so the allowlist cannot grow by content shape. A skipped subtree holds no SVG-namespace descendants, and this engine renders only SVG-namespace elements, so skipping paints nothing and drops no definitions.</para>
     /// <para>Mirrors the main loop per-element accounting: structural limits, node budget, work and cancellation, plus the symbol-depth rule. Leaves the reader on the foreign end element so the main loop end-element bookkeeping runs normally. Well-formed XML always closes the subtree; reaching the reader end reports false.</para>
     /// </remarks>
-    private static bool TrySkipInertForeignSubtree(System.Xml.XmlReader reader, SvgDocumentState state, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static bool TrySkipInertForeignSubtree(System.Xml.XmlReader reader, SvgDocumentState state, SvgRenderLimits limits, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(limits);
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (!string.Equals(reader.LocalName, "namedview", StringComparison.Ordinal)) return false;
         int foreignDepth = reader.Depth;
         bool clean = true;
         while (reader.Read())
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (reader.NodeType == System.Xml.XmlNodeType.Element)
             {
                 SvgStructuralAdmission.ValidateElementStructure(reader, limits);
@@ -600,11 +598,11 @@ internal static class SvgDocumentTraversal
 
     /// <summary>Consumes one non-empty rendered-leaf subtree, reporting whether it holds any child elements.</summary>
     /// <remarks>Element-free subtrees (whitespace or text only, which the leaf lowerers and the main loop both ignore) render exactly like the self-closing form. Mirrors the main-loop per-element accounting while consuming, and leaves the reader on the leaf end element so end-element bookkeeping runs normally.</remarks>
-    private static void ValidateDocumentEnd(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void ValidateDocumentEnd(XmlReader reader, CancellationToken cancellationToken)
     {
         while (reader.Read())
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (reader.NodeType is XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace) continue;
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has content after its root element.");
         }

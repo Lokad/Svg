@@ -21,7 +21,7 @@ public sealed partial class OpenTypeFontTests
         TrueTypeHintTarget target = new(42, TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric,
             TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single) { Grid = TrueTypeHintGrid.ClearType, WindowsArithmetic = true };
         RenderBudget budget = new(long.MaxValue);
-        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, glyph, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), size, target, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, glyph, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), size, target, budget, CancellationToken.None))
         {
             // The original program amplifies each coordinate unit to a pixel
             // and draws a four-pixel band. Native bounds independently encode

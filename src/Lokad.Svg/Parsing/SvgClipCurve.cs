@@ -6,8 +6,8 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one mapped native clip segment before boolean boundary construction.</summary>
 /// <remarks>Values borrow no storage. Double parameter evaluation belongs to path operations;
-/// output controls/weights narrow once before the existing float raster replay. Callers charge
-/// numerical visits and observe cancellation. No shared mutable state or allocation is used.</remarks>
+/// output controls/weights narrow once before the existing float raster replay. Callers observe
+/// cancellation during numerical visits. No shared mutable state or allocation is used.</remarks>
 internal readonly record struct SvgClipCurve(SvgMeasuredCurveKind Kind, SvgDevicePoint Start,
     SvgDevicePoint First, SvgDevicePoint Second, SvgDevicePoint End, float Weight)
 {
@@ -104,10 +104,10 @@ internal readonly record struct SvgClipCurve(SvgMeasuredCurveKind Kind, SvgDevic
 
     /// <summary>Isolates finite real roots on the unit interval using derivative partitions.</summary>
     /// <remarks>Degree is bounded by nine for cubic implicit intersections. Scratch is fixed per
-    /// recursion level; each derivative, partition and bisection visit consumes caller work/token.</remarks>
-    internal static int Roots(ReadOnlySpan<double> coefficients, Span<double> roots, ParserWorkCounter work, CancellationToken token)
+    /// recursion level; each derivative, partition and bisection visit consumes caller cancellation token.</remarks>
+    internal static int Roots(ReadOnlySpan<double> coefficients, Span<double> roots, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         int degree = coefficients.Length - 1;
         while (degree > 0 && coefficients[degree] == 0) degree--;
         if (degree == 0) return 0;
@@ -119,8 +119,8 @@ internal readonly record struct SvgClipCurve(SvgMeasuredCurveKind Kind, SvgDevic
             roots[0] = root; return 1;
         }
         Span<double> derivative = stackalloc double[9], critical = stackalloc double[9], divisions = stackalloc double[11];
-        for (int index = 1; index <= degree; index++) { work.Consume(token); derivative[index - 1] = coefficients[index] * index; }
-        int criticalCount = Roots(derivative[..degree], critical, work, token), divisionCount = 1;
+        for (int index = 1; index <= degree; index++) { token.ThrowIfCancellationRequested(); derivative[index - 1] = coefficients[index] * index; }
+        int criticalCount = Roots(derivative[..degree], critical, token), divisionCount = 1;
         divisions[0] = 0;
         for (int index = 0; index < criticalCount; index++) if (critical[index] > 0 && critical[index] < 1) divisions[divisionCount++] = critical[index];
         divisions[divisionCount++] = 1;
@@ -130,7 +130,7 @@ internal readonly record struct SvgClipCurve(SvgMeasuredCurveKind Kind, SvgDevic
         double error = magnitude * 16 * 2.2204460492503131e-16;
         for (int index = 0; index < divisionCount; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             double a = divisions[index], fa = Polynomial(coefficients[..(degree + 1)], a);
             if (Math.Abs(fa) <= error && (count == 0 || Math.Abs(a - roots[count - 1]) > 1e-13))
             {
@@ -141,7 +141,7 @@ internal readonly record struct SvgClipCurve(SvgMeasuredCurveKind Kind, SvgDevic
             if (Math.Abs(fa) <= error || Math.Abs(fb) <= error || Math.Sign(fa) == Math.Sign(fb)) continue;
             for (int iteration = 0; iteration < 60; iteration++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 double middle = (a + b) / 2;
                 if (middle == a || middle == b) break;
                 double fm = Polynomial(coefficients[..(degree + 1)], middle);

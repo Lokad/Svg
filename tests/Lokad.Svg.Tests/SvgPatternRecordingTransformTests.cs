@@ -82,11 +82,8 @@ public sealed class SvgPatternRecordingTransformTests
         RenderBudget parser = new(8_000_000);
         using (RenderBudget.BudgetReservation borrowed = parser.Reserve(73, SvgMemoryCategory.Scene))
         {
-            ParserWorkCounter parseWork = new(SvgRenderLimits.Default.MaximumWorkUnits);
-            using (SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, parseWork, CancellationToken.None)) { }
+            using (SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, CancellationToken.None)) { }
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, null, new(parseWork.Used - 1), CancellationToken.None)).ErrorCode);
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
             RenderBudget deniedParse = new(parser.Snapshot().PeakBytes - 74);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
@@ -101,11 +98,9 @@ public sealed class SvgPatternRecordingTransformTests
                 SvgShaderMatrix output = new(1.5f, 0, 0, 0, 1.5f, 0);
                 RenderBudget deniedScratch = new(ParserCollectionMemory.GetArrayByteCount<SvgAffineTransform>(recording.Count) - 1);
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                    recording.TryMap(output, SvgAffineTransform.Identity, target, deniedScratch, new(1000), CancellationToken.None, out _)).ErrorCode);
+                    recording.TryMap(output, SvgAffineTransform.Identity, target, deniedScratch, CancellationToken.None, out _)).ErrorCode);
                 Assert.Equal(0, deniedScratch.Snapshot().CurrentBytes);
                 RenderBudget scratch = new(8_000_000);
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                    recording.TryMap(output, SvgAffineTransform.Identity, target, scratch, new(2), CancellationToken.None, out _)).ErrorCode);
                 Assert.Equal(0, scratch.Snapshot().CurrentBytes);
 
                 SvgRenderOptions options = new(null, 1.5, SvgColor.Transparent, SvgRenderLimits.Default);
@@ -148,7 +143,7 @@ public sealed class SvgPatternRecordingTransformTests
                 float scale = 1 + index / 8f;
                 SvgShaderMatrix expected = new(scale, 0, .25f, 0, scale, .75f);
                 RenderBudget raster = new(8_000_000);
-                Assert.True(recording.TryMap(expected, SvgAffineTransform.Identity, target, raster, new(1000), CancellationToken.None, out SvgShaderMatrix actual));
+                Assert.True(recording.TryMap(expected, SvgAffineTransform.Identity, target, raster, CancellationToken.None, out SvgShaderMatrix actual));
                 Assert.Equal(expected, actual);
                 Assert.Equal(0, raster.Snapshot().CurrentBytes);
             });

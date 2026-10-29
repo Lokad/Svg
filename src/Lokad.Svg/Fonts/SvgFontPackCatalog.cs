@@ -79,69 +79,61 @@ public sealed class SvgFontPackCatalog
     public SvgFontPackResolution Resolve(SvgFontFaceRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
-        return ResolveCore(request, null, CancellationToken.None);
-    }
-
-    /// <summary>Resolves one request while charging every bounded candidate scan to the calling preparation operation.</summary>
-    internal SvgFontPackResolution Resolve(SvgFontFaceRequest request, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(request);
-        ArgumentNullException.ThrowIfNull(workCounter);
-        return ResolveCore(request, workCounter, cancellationToken);
+        return ResolveCore(request, CancellationToken.None);
     }
 
     /// <summary>Resolves one request while observing cancellation at every bounded candidate scan.</summary>
     internal SvgFontPackResolution Resolve(SvgFontFaceRequest request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
-        return ResolveCore(request, null, cancellationToken);
+        return ResolveCore(request, cancellationToken);
     }
 
-    private SvgFontPackResolution ResolveCore(SvgFontFaceRequest request, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-        => ResolveFamilies(request, null, workCounter, cancellationToken);
+    private SvgFontPackResolution ResolveCore(SvgFontFaceRequest request, CancellationToken cancellationToken)
+        => ResolveFamilies(request, null, cancellationToken);
 
     /// <summary>Resolves authored families in order, then only host-authorized fallbacks. No bytes are acquired.</summary>
     public SvgFontPackResolution ResolveFamilies(SvgFontFaceRequest request, SvgFontSelectionPolicy policy)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(policy);
-        return ResolveFamilies(request, policy, null, CancellationToken.None);
+        return ResolveFamilies(request, policy, CancellationToken.None);
     }
 
-    internal SvgFontPackResolution ResolveFamilies(SvgFontFaceRequest request, SvgFontSelectionPolicy? policy, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal SvgFontPackResolution ResolveFamilies(SvgFontFaceRequest request, SvgFontSelectionPolicy? policy, CancellationToken cancellationToken)
     {
-        foreach (SvgFontPackResolution candidate in EnumerateCandidates(request, policy, workCounter, cancellationToken)) return candidate;
+        foreach (SvgFontPackResolution candidate in EnumerateCandidates(request, policy, cancellationToken)) return candidate;
         throw new SvgException(SvgErrorCode.UnresolvedResource, "No supplied font matches the requested family list and host fallback policy.",
             new SvgFontDiagnostic(SvgFontFailureStage.Selection, request.Family, string.Empty, string.Empty, string.Empty,
                 request.Weight, request.Italic, null, null, null), request.SourceContext?.Describe(string.Empty, string.Empty));
     }
 
     /// <summary>Streams metadata candidates in authored/host order. A legacy last resort is offered only when no named candidate exists.</summary>
-    internal IEnumerable<SvgFontPackResolution> EnumerateCandidates(SvgFontFaceRequest request, SvgFontSelectionPolicy? policy, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal IEnumerable<SvgFontPackResolution> EnumerateCandidates(SvgFontFaceRequest request, SvgFontSelectionPolicy? policy, CancellationToken cancellationToken)
     {
         bool found = false;
         foreach (SvgFontFamily family in request.Families)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             string name = family.Name;
             if (family.IsGeneric && policy is not null)
             {
                 if (!policy.GenericFamilies.TryGetValue(name, out string? mapped)) continue;
                 name = mapped;
             }
-            SvgFontPackFace? exact = SelectFamily(name, request, workCounter, cancellationToken);
+            SvgFontPackFace? exact = SelectFamily(name, request, cancellationToken);
             if (exact is not null) { found = true; yield return new(request, exact, false); }
         }
         foreach (string fallback in policy?.FallbackFamilies ?? _fallbackFamilies)
         {
-            Consume(workCounter, cancellationToken);
-            SvgFontPackFace? candidate = SelectFamily(fallback, request, workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            SvgFontPackFace? candidate = SelectFamily(fallback, request, cancellationToken);
             if (candidate is not null) { found = true; yield return new(request, candidate, true); }
         }
 
         if (found || policy is not null) yield break;
-        SvgFontPackFace? textFace = SelectBest(request, true, workCounter, cancellationToken);
-        yield return new(request, textFace ?? SelectBest(request, false, workCounter, cancellationToken) ?? throw new InvalidOperationException("A validated font catalog has no selectable faces."), true);
+        SvgFontPackFace? textFace = SelectBest(request, true, cancellationToken);
+        yield return new(request, textFace ?? SelectBest(request, false, cancellationToken) ?? throw new InvalidOperationException("A validated font catalog has no selectable faces."), true);
     }
 
     /// <summary>
@@ -152,15 +144,15 @@ public sealed class SvgFontPackCatalog
     {
         ArgumentNullException.ThrowIfNull(resolution);
         ArgumentNullException.ThrowIfNull(source);
-        return Bind(resolution, source, null, CancellationToken.None);
+        return Bind(resolution, source, CancellationToken.None);
     }
 
     /// <summary>Binds a catalog resolution while metering the provenance scan against the calling preparation operation.</summary>
-    internal SvgFontProgramResolution Bind(SvgFontPackResolution resolution, ISvgFontProgramSource source, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal SvgFontProgramResolution Bind(SvgFontPackResolution resolution, ISvgFontProgramSource source, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(resolution);
         ArgumentNullException.ThrowIfNull(source);
-        if (!ContainsFace(resolution.Face, workCounter, cancellationToken)) throw new ArgumentException("The font-pack resolution does not belong to this catalog.", nameof(resolution));
+        if (!ContainsFace(resolution.Face, cancellationToken)) throw new ArgumentException("The font-pack resolution does not belong to this catalog.", nameof(resolution));
         return new SvgFontProgramResolution(resolution, new VerifiedSvgFontProgramSource(PackId, resolution.Face, source));
     }
 
@@ -175,7 +167,7 @@ public sealed class SvgFontPackCatalog
     {
         ArgumentNullException.ThrowIfNull(resolution);
         ArgumentNullException.ThrowIfNull(provider);
-        if (!ContainsFace(resolution.Face, null, cancellationToken)) throw new ArgumentException("The font-pack resolution does not belong to this catalog.", nameof(resolution));
+        if (!ContainsFace(resolution.Face, cancellationToken)) throw new ArgumentException("The font-pack resolution does not belong to this catalog.", nameof(resolution));
         cancellationToken.ThrowIfCancellationRequested();
         ValueTask<ISvgFontProgramSource?> pending;
         try { pending = provider.GetSourceAsync(resolution.Face.File, cancellationToken); }
@@ -192,9 +184,9 @@ public sealed class SvgFontPackCatalog
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (source is null) throw SvgFontSourceFailures.Create(resolution, SvgErrorCode.UnresolvedResource);
-        SvgFontProgramResolution bound = Bind(resolution, source, null, cancellationToken);
+        SvgFontProgramResolution bound = Bind(resolution, source, cancellationToken);
         ValueTask<ReadOnlyMemory<byte>> verification;
-        try { verification = ((VerifiedSvgFontProgramSource)bound.Source).GetBytesAsync(null, cancellationToken); }
+        try { verification = ((VerifiedSvgFontProgramSource)bound.Source).GetBytesForPreparationAsync(cancellationToken); }
         catch (SvgFontProgramSourceFailure exception)
         {
             throw SvgFontSourceFailures.Create(resolution, exception.SourceException);
@@ -289,35 +281,35 @@ public sealed class SvgFontPackCatalog
     }
 
     /// <summary>Proves face provenance with a bounded reference-identity scan, metering each candidate like the selection scans.</summary>
-    private bool ContainsFace(SvgFontPackFace face, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private bool ContainsFace(SvgFontPackFace face, CancellationToken cancellationToken)
     {
         foreach (SvgFontPackFace candidate in _faces)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (ReferenceEquals(candidate, face)) return true;
         }
 
         return false;
     }
 
-    private SvgFontPackFace? SelectFamily(string family, SvgFontFaceRequest request, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private SvgFontPackFace? SelectFamily(string family, SvgFontFaceRequest request, CancellationToken cancellationToken)
     {
         SvgFontPackFace? selected = null;
         foreach (SvgFontPackFace candidate in _faces)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (!MatchesFamily(candidate, family)) continue;
             if (selected is null || IsBetter(candidate, selected, request)) selected = candidate;
         }
         return selected;
     }
 
-    private SvgFontPackFace? SelectBest(SvgFontFaceRequest request, bool excludesMath, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private SvgFontPackFace? SelectBest(SvgFontFaceRequest request, bool excludesMath, CancellationToken cancellationToken)
     {
         SvgFontPackFace? selected = null;
         foreach (SvgFontPackFace candidate in _faces)
         {
-            Consume(workCounter, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (excludesMath && candidate.HasMathTable) continue;
             if (selected is null || IsBetter(candidate, selected, request)) selected = candidate;
         }
@@ -348,12 +340,6 @@ public sealed class SvgFontPackCatalog
             return weight >= target && weight <= 500 ? (0, weight)
                 : weight < target ? (1, -weight) : (2, weight);
         }
-    }
-
-    private static void Consume(ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-    {
-        if (workCounter is null) cancellationToken.ThrowIfCancellationRequested();
-        else workCounter.Consume(cancellationToken);
     }
 
     private static bool MatchesFamily(SvgFontPackFace face, string family)
@@ -452,10 +438,10 @@ public sealed class SvgFontFaceRequest
     /// <summary>Parses an ordered CSS family list, preserving generic versus quoted literal requests.</summary>
     /// <remarks>Catalog matching uses CSS weight fallback. Both input and canonical text are limited to 4,096 UTF-16 code units, with at most 256 families and 1,024 code units per decoded name.</remarks>
     public static SvgFontFaceRequest FromCss(string familyList, int weight, bool italic)
-        => FromCss(familyList, weight, italic, null, null, CancellationToken.None);
+        => FromCss(familyList, weight, italic, null, CancellationToken.None);
 
-    internal static SvgFontFaceRequest FromCss(string familyList, int weight, bool italic, SvgSourceContext? source, ParserWorkCounter? work, CancellationToken token)
-        => new(SvgFontFamilySyntax.Parse(familyList, work, token), weight, italic) { SourceContext = source };
+    internal static SvgFontFaceRequest FromCss(string familyList, int weight, bool italic, SvgSourceContext? source, CancellationToken token)
+        => new(SvgFontFamilySyntax.Parse(familyList, token), weight, italic) { SourceContext = source };
 
     internal bool Matches(SvgFontFaceRequest other)
     {

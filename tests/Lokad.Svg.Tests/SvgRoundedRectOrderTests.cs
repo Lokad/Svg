@@ -16,7 +16,7 @@ public sealed class SvgRoundedRectOrderTests
         JsonElement vector = vectors.RootElement.GetProperty("cases")[index];
         string svg = vector.GetProperty("svg").GetString() ?? throw new InvalidDataException("The native vector has no SVG input.");
         RenderBudget budget = new(1_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(TextEncoding.UTF8.GetBytes(svg), SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(TextEncoding.UTF8.GetBytes(svg), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(scene.Geometries.Single(static geometry => geometry.AuthoredPath is not null).AuthoredPath);
             JsonElement.ArrayEnumerator recorded = vector.GetProperty("commands").EnumerateArray();

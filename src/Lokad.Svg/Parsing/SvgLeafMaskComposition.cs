@@ -84,45 +84,43 @@ internal sealed class SvgLeafMaskMapper : IDisposable
     private readonly SvgDocumentState _state;
     private readonly SvgAffineTransform _map;
     private SvgRecordingMapper? _recordingMapper;
-    private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private readonly BudgetedParserDictionary<SvgLeafMaskOperation, SvgLeafMaskOperationReference> _operations;
     private readonly BudgetedParserDictionary<SvgLeafMaskBinding, SvgLeafMaskBindingReference> _bindings;
     private readonly BudgetedParserList<SvgLeafMaskBindingReference> _stack;
-    private SvgLeafMaskMapper(SvgDocumentState state, SvgAffineTransform map, ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation owner, SceneTransfer? transfer)
+    private SvgLeafMaskMapper(SvgDocumentState state, SvgAffineTransform map, CancellationToken token, RenderBudget.BudgetReservation owner, SceneTransfer? transfer)
     {
         _owner = owner;
         _transfer = transfer;
         if (transfer is not null)
         {
             _contents = new(state.Budget, SvgMemoryCategory.Parser, 96);
-            _contentStack = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+            _contentStack = new(state.Budget, SvgMemoryCategory.Parser, token);
         }
         _state = state;
         _map = map;
-        _work = work;
         _token = token;
         _operations = new(state.Budget, SvgMemoryCategory.Parser, 96);
         _bindings = new(state.Budget, SvgMemoryCategory.Parser, 96);
-        _stack = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        _stack = new(state.Budget, SvgMemoryCategory.Parser, token);
     }
     /// <summary>Reserves mapper/cache owners before allocation; dictionary entries and stack arrays charge growth separately.</summary>
-    internal static SvgLeafMaskMapper Create(SvgDocumentState state, SvgAffineTransform map, ParserWorkCounter work, CancellationToken token)
+    internal static SvgLeafMaskMapper Create(SvgDocumentState state, SvgAffineTransform map, CancellationToken token)
     {
         RenderBudget.BudgetReservation owner = state.Budget.Reserve(OwnerBytes, SvgMemoryCategory.Parser);
-        try { return new(state, map, work, token, owner, null); }
+        try { return new(state, map, token, owner, null); }
         catch { owner.Dispose(); throw; }
     }
 
     /// <summary>Rebinds borrowed scene-local effects without changing their placement or source paint lookup.</summary>
     /// <remarks>The destination owns copied content. The document owns mapped operations/bindings;
-    /// this single-threaded mapper owns only bounded caches. Work/cancellation cover every transfer,
+    /// this single-threaded mapper owns only bounded caches. Cancellation cover every transfer,
     /// and disposal releases scratch after success or failure without disposing either scene.</remarks>
     internal static SvgLeafMaskMapper CreateSceneTransfer(SvgDocumentState state, SvgSceneBuilder source,
-        SvgSceneBuilder destination, ParserWorkCounter work, CancellationToken token)
+        SvgSceneBuilder destination, CancellationToken token)
     {
         RenderBudget.BudgetReservation owner = state.Budget.Reserve(OwnerBytes + 256, SvgMemoryCategory.Parser);
-        try { return new(state, SvgAffineTransform.Identity, work, token, owner, new(source, destination)); }
+        try { return new(state, SvgAffineTransform.Identity, token, owner, new(source, destination)); }
         catch { owner.Dispose(); throw; }
     }
 
@@ -140,13 +138,13 @@ internal sealed class SvgLeafMaskMapper : IDisposable
         SvgLeafMaskBinding? inner = null;
         for (SvgLeafMaskBinding? current = source; current is not null; current = current.Inner)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (_bindings.TryGetValue(current, out SvgLeafMaskBindingReference cached)) { inner = cached.Binding; break; }
             _stack.Add(new(current));
         }
         for (int index = _stack.Count - 1; index >= 0; index--)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             SvgLeafMaskBinding original = _stack[index].Binding;
             if (!_operations.TryGetValue(original.Operation, out SvgLeafMaskOperationReference operation))
             {
@@ -157,7 +155,7 @@ internal sealed class SvgLeafMaskMapper : IDisposable
                 {
                     for (SvgLeafMaskOperation? current = original.Operation; current is not null; current = current.EnclosingClip)
                     {
-                        _work.Consume(_token);
+                        _token.ThrowIfCancellationRequested();
                         if (!_operations.TryGetValue(current, out SvgLeafMaskOperationReference mapped))
                         {
                             mapped = new(SvgLeafMaskComposition.NewOperation(_state, current, SvgAffineTransform.Identity));
@@ -193,7 +191,7 @@ internal sealed class SvgLeafMaskMapper : IDisposable
             pending.Clear();
             for (int index = contentIndex; index >= 0 && !contents.TryGetValue(index, out _);)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 pending.Add(index);
                 int bounds = transfer.Source.MaskContentAt(index).BoundsClipContentIndex;
                 if (bounds >= index) throw new InvalidOperationException("A transferred bounds clip must precede its content.");
@@ -201,7 +199,7 @@ internal sealed class SvgLeafMaskMapper : IDisposable
             }
             for (int index = pending.Count - 1; index >= 0; index--)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 SvgMaskContent content = transfer.Source.MaskContentAt(pending[index]);
                 int bounds = content.BoundsClipContentIndex;
                 int mappedBounds = -1;
@@ -257,14 +255,14 @@ internal static class SvgLeafMaskComposition
         catch { reservation.Dispose(); throw; }
     }
     /// <summary>Tags a leaf's entire geometry batch with one operation; resolution keeps its original range for coverage/bounds.</summary>
-    internal static void Retain(SvgDocumentState state, int first, int count, string id, SvgViewportFrame? parent, SvgAffineTransform transform, ParserWorkCounter work, CancellationToken token)
+    internal static void Retain(SvgDocumentState state, int first, int count, string id, SvgViewportFrame? parent, SvgAffineTransform transform, CancellationToken token)
     {
         SvgLeafMaskOperation operation = NewOperation(state, null, SvgAffineTransform.Identity);
         state.PendingLeafMasks.Add(new(first, count, id, parent, transform, operation, state.Scene));
         SvgLeafMaskBinding binding = NewBinding(state, operation, null);
         for (int index = first; index < first + count; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             state.Scene.AssignLeafMask(index, binding);
         }
     }
@@ -293,31 +291,31 @@ internal static class SvgLeafMaskComposition
             if (!region.Contains(box.X - half, box.Y - half, box.X + box.Width + half, box.Y + box.Height + half)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a mask region boundary are not implemented.");
         }
     }
-    /// <summary>Builds replacement commands under reserved storage and bounded work, preserving instance and sibling boundaries.</summary>
+    /// <summary>Builds replacement commands under reserved storage with cancellation checks, preserving instance and sibling boundaries.</summary>
     /// <remarks>Operations resolve iteratively. On success the scene adopts commands and every geometry
     /// drops its parser-owned link before registry disposal; failure releases staging and the scene owner
     /// releases any adopted partial result. Group validation runs before these leaf scopes appear.</remarks>
-    internal static void Emit(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
-        => Emit(state, state.Scene, work, token);
+    internal static void Emit(SvgDocumentState state, CancellationToken token)
+        => Emit(state, state.Scene, token);
 
     /// <summary>Compiles leaf scopes into the specified scene, retaining the document's bounded shared operation registry.</summary>
-    internal static void Emit(SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
+    internal static void Emit(SvgDocumentState state, SvgSceneBuilder scene, CancellationToken token)
     {
         scene.ResolveFilterOutputClips(state);
         if (state.LeafMaskOwners.Count == 0) return;
-        BudgetedSceneList<SvgDrawCommand> commands = new(state.Budget, work, token);
+        BudgetedSceneList<SvgDrawCommand> commands = new(state.Budget, token);
         bool transferred = false;
         int depth = 0;
         BudgetedParserList<SvgFilterClipScope>? filterClips = null;
-        using BudgetedParserList<SvgLeafMaskOperationReference> active = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<SvgLeafMaskOperationReference> desired = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<SvgLeafMaskOperationReference> unresolved = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserList<SvgLeafMaskOperationReference> active = new(state.Budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<SvgLeafMaskOperationReference> desired = new(state.Budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<SvgLeafMaskOperationReference> unresolved = new(state.Budget, SvgMemoryCategory.Parser, token);
         try
         {
             int count = scene.CommandCount;
             for (int index = 0; index <= count; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 desired.Clear();
                 SvgDrawCommand command = index < count ? scene.CommandAt(index) : default;
                 if (index < count && command.Kind == SvgDrawCommandKind.BeginGroup)
@@ -352,20 +350,20 @@ internal static class SvgLeafMaskComposition
                             for (SvgLeafMaskBinding? binding = ancestors; binding is not null; binding = binding.Inner)
                                 for (SvgLeafMaskOperation? operation = binding.Operation; operation is not null; operation = operation.Source)
                                 {
-                                    work.Consume(token);
+                                    token.ThrowIfCancellationRequested();
                                     retainedFilter |= operation.Filter is not null;
                                 }
                             // A retained child's own filter stays inside this scope.
                             if (!retainedFilter)
                             {
-                                filterClips ??= new(state.Budget, SvgMemoryCategory.Parser, work, token);
+                                filterClips ??= new(state.Budget, SvgMemoryCategory.Parser, token);
                                 filterClips.Add(new(depth, ancestors));
                             }
                         }
                     }
                     if (outputClip is {} clip)
                     {
-                        filterClips ??= new(state.Budget, SvgMemoryCategory.Parser, work, token);
+                        filterClips ??= new(state.Budget, SvgMemoryCategory.Parser, token);
                         filterClips.Add(new(depth, clip));
                     }
                 }
@@ -376,7 +374,7 @@ internal static class SvgLeafMaskComposition
                 int common = 0;
                 while (common < active.Count && common < desired.Count && ReferenceEquals(active[common].Operation, desired[common].Operation))
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     common++;
                 }
                 for (int end = active.Count; end > common; end--) commands.Add(new(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255));
@@ -405,7 +403,7 @@ internal static class SvgLeafMaskComposition
             transferred = true;
             for (int index = 0; index < scene.GeometryCount; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 scene.AssignLeafMask(index, null);
             }
         }
@@ -415,17 +413,17 @@ internal static class SvgLeafMaskComposition
         {
             for (SvgLeafMaskBinding? binding = first; binding is not null; binding = binding.Inner)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgLeafMaskOperation operation = binding.Operation;
                 unresolved.Clear();
                 for (SvgLeafMaskOperation? current = operation; current is not null && !current.Resolved; current = current.Source)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     unresolved.Add(new(current));
                 }
                 for (int pending = unresolved.Count - 1; pending >= 0; pending--)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgLeafMaskOperation mapped = unresolved[pending].Operation;
                     SvgLeafMaskOperation source = mapped.Source ?? throw new InvalidOperationException("Leaf mask was not resolved.");
                     mapped.Value = source.Value;
@@ -455,7 +453,7 @@ internal static class SvgLeafMaskComposition
                 }
                 if (operation.AffineViewport is {} clip && operation.ContentIndex < 0)
                 {
-                    (operation.Region, operation.ContentIndex) = clip.Register(state, scene, work, token);
+                    (operation.Region, operation.ContentIndex) = clip.Register(state, scene, token);
                     if (clip.IsExclusion) operation.Region = null;
                 }
                 if (operation.NativeClip is {} nativeClip && operation.ContentIndex < 0)
@@ -464,10 +462,10 @@ internal static class SvgLeafMaskComposition
                         throw new InvalidOperationException("Retained native clip content is missing.");
                     if (operation.RegionKind == SvgLayerRegionKind.Mask && content.NestedClipId is not null)
                     {
-                        (_, operation.ContentIndex) = SvgClipPathSyntax.RegisterNestedResourceMask(nativeClip.Id, content, nativeClip.Map, scene, state, work, token);
+                        (_, operation.ContentIndex) = SvgClipPathSyntax.RegisterNestedResourceMask(nativeClip.Id, content, nativeClip.Map, scene, state, token);
                         operation.Region = null;
                     }
-                    else content.Register(nativeClip.Map, content.UsesNativeReplay, state, scene, work, token).Bind(operation, state);
+                    else content.Register(nativeClip.Map, content.UsesNativeReplay, state, scene, token).Bind(operation, state);
                 }
                 if (operation.NativeMask is {} nativeMask && operation.ContentIndex < 0)
                 {
@@ -476,10 +474,10 @@ internal static class SvgLeafMaskComposition
                         SvgClipBox localBox = nativeMask.ObjectBounds;
                         SvgRectangle local = new(localBox.X, localBox.Y, localBox.Width, localBox.Height, default, false, null);
                         SvgMaskTarget scalarTarget = SvgMaskTarget.Create(nativeMask.Id, nativeMask.Map, local, state);
-                        SvgClipBox region = operation.Region ?? scalarTarget.SceneBounds(work, token);
+                        SvgClipBox region = operation.Region ?? scalarTarget.SceneBounds(token);
                         operation.Region = region;
                         operation.Value = constant;
-                        if (SvgMaskTarget.SourcePaintRegion(nativeMask.Id, nativeMask.Map, nativeMask.Map.Apply(local), nativeMask.LocalVisualBounds.Map(nativeMask.Map, work, token), region, state, work, token) is {} paintRegion)
+                        if (SvgMaskTarget.SourcePaintRegion(nativeMask.Id, nativeMask.Map, nativeMask.Map.Apply(local), nativeMask.LocalVisualBounds.Map(nativeMask.Map, token), region, state, token) is {} paintRegion)
                             operation.ContentIndex = scene.BindMaskPaintRegion(-1, paintRegion);
                     }
                     else
@@ -495,10 +493,10 @@ internal static class SvgLeafMaskComposition
                         try
                         {
                             SvgMaskContent placed = content.UniformSource is not null
-                                ? SvgMaskContentReplay.ResolveUniformSource(nativeMask.Id, nativeMask.Map, state, work, token)
-                                : SvgMaskContentReplay.PlaceForTarget(nativeMask.Id, content, nativeMask.Map, bounds, target, state, work, token);
+                                ? SvgMaskContentReplay.ResolveUniformSource(nativeMask.Id, nativeMask.Map, state, token)
+                                : SvgMaskContentReplay.PlaceForTarget(nativeMask.Id, content, nativeMask.Map, bounds, target, state, token);
                             operation.ContentIndex = scene.AddMaskContent(placed);
-                            operation.Region = target.SceneBounds(work, token);
+                            operation.Region = target.SceneBounds(token);
                         }
                         finally { state.DefinitionReplayScene = previous; }
                     }

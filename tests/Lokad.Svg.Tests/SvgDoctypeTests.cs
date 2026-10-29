@@ -56,7 +56,7 @@ public sealed class SvgDoctypeTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<?xml version='1.0' encoding='" + new string('x', 10_000) + "'?>" + RedSvg);
         RenderBudget budget = new(32 * 1024);
         SvgException denied = Assert.Throws<SvgException>(() => SvgXmlReaderPolicy.Create(input,
-            SvgRenderLimits.Default, budget, new ParserWorkCounter(1000), CancellationToken.None));
+            SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -100,7 +100,7 @@ public sealed class SvgDoctypeTests
         if (admitted)
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) Assert.Single(root.Rectangles);
-            Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new ParserWorkCounter(1000), budget, CancellationToken.None));
+            Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             SvgAffineTransform map = SvgPreparationTestHelper.GetOutputMap(input, new SvgRenderOptions(new SvgViewport(4, 6), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None);
             Assert.Equal((4.0, 6.0), (map.A, map.D));
             Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(RedSvg), SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
@@ -108,7 +108,7 @@ public sealed class SvgDoctypeTests
         else
         {
             Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
-            Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new ParserWorkCounter(1000), budget, CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -140,7 +140,7 @@ public sealed class SvgDoctypeTests
         SvgRenderLimits limits = new(1_048_576, limit == "input" ? input.Length - 1 : 1024, 16, 256, 1024, limit == "nodes" ? 1 : 16, 16, 1000, limit == "depth" ? 1 : 16, limit == "attributes" ? 1 : 16);
         RenderBudget budget = new(limits.MaximumAccountedBytes);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, budget, CancellationToken.None)).ErrorCode);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, limits, new ParserWorkCounter(1000), budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, limits, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -222,18 +222,12 @@ public sealed class SvgDoctypeTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<!--" + new string('x', 100_000) + "--><!DOCTYPE svg>" + RedSvg);
         RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        ParserWorkCounter counter = new(2);
-        SvgException denied = Assert.Throws<SvgException>(() => Run(CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
-        Assert.Equal(2, counter.Used);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-
-        counter = new(1000);
         using CancellationTokenSource cancellation = new();
         int checkpoint = -1;
         using IDisposable observer = SvgXmlPrologProbe.Arm(position =>
         {
-            if (position >= ParserWorkCounter.ByteCheckpointSize)
+            if (position >= 4096)
             {
                 checkpoint = position;
                 Assert.True(budget.Snapshot().CurrentBytes > SvgRootParser.GetXmlReaderWorkspaceBytes(input.Length, SvgRenderLimits.Default.MaximumAttributesPerElement));
@@ -242,13 +236,13 @@ public sealed class SvgDoctypeTests
         });
         OperationCanceledException cancelled = Assert.Throws<OperationCanceledException>(() => Run(cancellation.Token));
         Assert.Equal(cancellation.Token, cancelled.CancellationToken);
-        Assert.Equal(ParserWorkCounter.ByteCheckpointSize, checkpoint);
+        Assert.Equal(4096, checkpoint);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
 
         void Run(CancellationToken token)
         {
-            if (discovery) SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, counter, budget, token);
-            else { using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, counter, token); }
+            if (discovery) SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, token);
+            else { using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, token); }
         }
     }
 
@@ -259,30 +253,25 @@ public sealed class SvgDoctypeTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<?xml version='1.0'" + new string(' ', 100_000) + "?>" + RedSvg);
         RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        ParserWorkCounter counter = new(2);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(CancellationToken.None)).ErrorCode);
-        Assert.Equal(2, counter.Used);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-
-        counter = new(1000);
         using CancellationTokenSource cancellation = new();
         int checkpoint = -1;
         using IDisposable observer = SvgXmlPrologProbe.Arm(position =>
         {
-            if (position >= ParserWorkCounter.ByteCheckpointSize)
+            if (position >= 4096)
             {
                 checkpoint = position;
                 cancellation.Cancel();
             }
         });
         Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => Run(cancellation.Token)).CancellationToken);
-        Assert.Equal(ParserWorkCounter.ByteCheckpointSize, checkpoint);
+        Assert.Equal(4096, checkpoint);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
 
         void Run(CancellationToken token)
         {
-            if (discovery) SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, counter, budget, token);
-            else { using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, counter, token); }
+            if (discovery) SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, token);
+            else { using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, token); }
         }
     }
 
@@ -295,7 +284,7 @@ public sealed class SvgDoctypeTests
         RenderBudget budget = new(SvgRootParser.GetXmlReaderWorkspaceBytes(input.Length, SvgRenderLimits.Default.MaximumAttributesPerElement));
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
-            if (discovery) SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new ParserWorkCounter(1000), budget, CancellationToken.None);
+            if (discovery) SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None);
             else { using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None); }
         });
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
@@ -323,7 +312,7 @@ public sealed class SvgDoctypeTests
         long Measure(byte[] input)
         {
             long before = GC.GetAllocatedBytesForCurrentThread();
-            SvgXmlReaderPolicy.Create(input, SvgRenderLimits.Default, budget, new ParserWorkCounter(10_000), CancellationToken.None);
+            SvgXmlReaderPolicy.Create(input, SvgRenderLimits.Default, budget, CancellationToken.None);
             return GC.GetAllocatedBytesForCurrentThread() - before;
         }
     }

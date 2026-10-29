@@ -21,7 +21,7 @@ internal readonly record struct SvgPatternTile(SvgGeometry? Content, double Orig
 internal static class SvgPatternSyntax
 {
     /// <summary>Retains authored attributes separately from defaults so local templates can fill omissions.</summary>
-    internal static SvgPatternTemplate ParsePatternElement(XmlReader reader, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgPatternTemplate ParsePatternElement(XmlReader reader, SvgDocumentState state, CancellationToken cancellationToken)
     {
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
         string? target = null;
@@ -37,12 +37,12 @@ internal static class SvgPatternSyntax
             throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern aspect ratio values exceed the syntax limit.");
         return new(ParseOptional("x"), ParseOptional("y"), ParseExtent("width"), ParseExtent("height"),
             transform is null ? null : ParsePatternTransform(transform), ParseUnits("patternUnits"), ParseUnits("patternContentUnits"), target,
-            SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), null, workCounter, cancellationToken),
+            SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), null, cancellationToken),
             aspect is null ? null : SvgGeometrySyntax.ParsePreserveAspectRatio(aspect));
 
         SvgAffineTransform ParsePatternTransform(string value)
         {
-            SvgAffineTransform map = SvgGeometrySyntax.ParseTransform(value, workCounter, cancellationToken);
+            SvgAffineTransform map = SvgGeometrySyntax.ParseTransform(value, cancellationToken);
             if (map.Determinant == 0)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular pattern transforms are not implemented.");
             return map;
@@ -91,7 +91,7 @@ internal static class SvgPatternSyntax
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
         SvgAffineTransform transform = context.ResolveTransform(reader);
         context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame));
-        tile = SvgPatternReferenceResolver.ForReplay(patternId, tile, state, context.WorkCounter, context.CancellationToken);
+        tile = SvgPatternReferenceResolver.ForReplay(patternId, tile, state, context.CancellationToken);
         if (tile.VectorContent is null && !transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
         if (tile.VectorContent is null && (transform.A < 0 || transform.D < 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
@@ -100,20 +100,20 @@ internal static class SvgPatternSyntax
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
         if (isPath && painted && tile.HasContent && tile.TileWidth != 0 && tile.TileHeight != 0)
         {
-            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.CancellationToken);
             string d = renderData.Value;
-            (_, bool hasCurve, bool hasArc, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            (_, bool hasCurve, bool hasArc, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.CancellationToken);
             int commandCount = renderData.CommandCount;
 
             // Retain authored path contours and repaint their shared fill with the tile.
             SvgComputedStyle solidFill = style with { Fill = "black" };
             SvgResolvedPaintableElement curveShape = context.ResolveShape(solidFill, reader, true);
-            using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
+            using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.CancellationToken);
             SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
             SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasCurve, mapping, curveShape, frame, false, budget);
-            using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             try
             {
                 foreach (SvgGeometry existing in filled.Geometries)
@@ -127,7 +127,7 @@ internal static class SvgPatternSyntax
             }
             catch { foreach (SvgGeometry geometry in repainted.AsSpan()) geometry.Dispose(); filled.Discard(); throw; }
         }
-        using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalShapeParser.TokenizeBands(reader, elementName, isPath, maximumGeometryElements, budget, context, contourEnds);
         SvgPaintBounds? pointObjectBox = null;
         SvgAffineTransform pointObjectMap = SvgAffineTransform.Identity;
@@ -139,7 +139,7 @@ internal static class SvgPatternSyntax
                 ? SvgAffineTransform.FromScaleOffset(sourceViewport.ScaleX, sourceViewport.ScaleY, sourceViewport.OffsetX, sourceViewport.OffsetY).ComposeChecked(transform)
                 : transform;
         }
-        using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, isPath, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+        using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, isPath, isEvenOdd, maximumGeometryElements, budget, context.CancellationToken);
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || !tile.HasContent) return lowering.Lower(default, false, transform, frame);
         if (SvgOrthogonalShapeParser.HasDiagonalContour(points, contourEnds))
         {
@@ -147,7 +147,7 @@ internal static class SvgPatternSyntax
             SvgParsedGeometry white = lowering.LowerPolygonFill(default, painted, transform, frame, budget);
             try
             {
-                using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
                 foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform, budget)));
                 white.Dispose();
                 return SvgGradientSyntax.AppendPaintFillStroke(new SvgParsedGeometry(repainted.Detach(), white.ElementCount) { SourceObjectBox = pointObjectBox, SourceObjectMap = pointObjectMap }, reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
@@ -165,7 +165,7 @@ internal static class SvgPatternSyntax
             SvgPatternPaintMatrices? paintMatrices = tile.VectorContent is null ? null : new(paintPlacement, tile.VectorPlacement);
             for (int bandIndex = 0; bandIndex < bands.Length; bandIndex++)
             {
-                context.WorkCounter.Consume(context.CancellationToken);
+                context.CancellationToken.ThrowIfCancellationRequested();
                 bands[bandIndex] = SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bands[bandIndex].Rectangle, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox, Coordinates = tile.Coordinates, ShaderPlacement = tile.VectorContent is null ? SvgAffineTransform.Identity : paintPlacement.ComposeChecked(tile.VectorPlacement), PaintMatrices = paintMatrices });
             }
             return SvgGradientSyntax.AppendPaintFillStroke(solid, reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
@@ -190,7 +190,7 @@ internal static class SvgPatternSyntax
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgAffineTransform transform = context.ResolveTransform(reader);
         context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame));
-        tile = SvgPatternReferenceResolver.ForReplay(ParsePatternId(style.Fill), tile, state, context.WorkCounter, context.CancellationToken);
+        tile = SvgPatternReferenceResolver.ForReplay(ParsePatternId(style.Fill), tile, state, context.CancellationToken);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
         if (tile.VectorContent is null && (transform.A < 0 || transform.D < 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
@@ -245,7 +245,7 @@ internal static class SvgPatternSyntax
             right = frame.Value.Clip.ClipRectangle(frame.Value.Shift(right));
         }
         bool combined = hasLinearStroke || hasRadialStroke;
-        using BudgetedGeometryBuilder lowered = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder lowered = new(state.Budget, SvgMemoryCategory.Geometry, context.CancellationToken);
         SvgAffineTransform shaderPlacement = frame is {} viewport ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform;
         lowered.Add(LowerPatternFillGeometry(tile, placement, painted, fillOpacity, combined ? null : (painted ? stroke : null), shaderPlacement, null));
         // A zero width paints no stroke bands, so the pattern fill above reaches the scene alone; probe nulls only on zero widths here.
@@ -283,7 +283,7 @@ internal static class SvgPatternSyntax
     /// <summary>Lowers one pattern-stroked rectangle into one solid fill plus four pattern-evaluated stroke bands sharing the tile grid.</summary>
     internal static SvgParsedGeometry LowerPatternStrokeRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
     {
-        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
+        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.CancellationToken);
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Stroke), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
@@ -364,7 +364,7 @@ internal static class SvgPatternSyntax
         SvgGeometry? tileContent = tile.Content;
         bool paintBands = painted && tile.TileWidth != 0 && tile.TileHeight != 0 && tile.HasContent;
         SvgRectangle content = tileContent.HasValue ? tileContent.Value.Rectangle : default;
-        using BudgetedGeometryBuilder stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.CancellationToken);
         if (hasLinearFill) stroked.Add(SvgGradientSyntax.LowerLinearFillGeometry(fillGradient, box, fill, fillHasFill, fillOpacity));
         else if (hasRadialFill) stroked.Add(SvgGradientSyntax.LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity, state.Budget));
         else if (hasPatternFill) stroked.Add(LowerPatternFillGeometry(fillPatternTile, fill, fillHasFill, fillOpacity, null, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform, null));

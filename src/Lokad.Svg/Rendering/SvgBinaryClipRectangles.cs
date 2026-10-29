@@ -4,23 +4,22 @@ namespace Lokad.Svg.Rendering;
 
 /// <summary>Visits the horizontal bands of a borrowed binary clip in native region order.</summary>
 /// <remarks>All bounds are canvas coordinates. The caller retains immutable RGBA coverage and owns
-/// the work counter/token; row/run scans charge before reading. This stack-only iterator allocates
+/// the cancellation token; row/run scans check cancellation before reading. This stack-only iterator allocates
 /// no storage, and adjacent rows merge only when their full bitmap coverage agrees.</remarks>
 internal ref struct SvgBinaryClipRectangles
 {
     private readonly ReadOnlySpan<byte> _coverage;
     private readonly int _width, _height;
     private readonly SvgAnalyticClipBounds _bitmap, _area;
-    private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private int _top, _bottom, _x;
 
     internal SvgBinaryClipRectangles(ReadOnlySpan<byte> coverage, int width, int height,
-        SvgAnalyticClipBounds bitmap, SvgAnalyticClipBounds area, ParserWorkCounter work, CancellationToken token)
+        SvgAnalyticClipBounds bitmap, SvgAnalyticClipBounds area, CancellationToken token)
     {
         if (coverage.Length != checked(width * height * 4)) throw new ArgumentException("Binary clip storage must match the canvas.", nameof(coverage));
         _coverage = coverage; _width = width; _height = height; _bitmap = bitmap; _area = area;
-        _work = work; _token = token; _top = area.Top; _bottom = area.Top; _x = area.Right;
+_token = token; _top = area.Top; _bottom = area.Top; _x = area.Right;
         Current = default;
     }
 
@@ -40,7 +39,7 @@ internal ref struct SvgBinaryClipRectangles
                     bool same = true;
                     for (int x = _bitmap.Left; x < _bitmap.Right; x++)
                     {
-                        _work.Consume(_token);
+                        _token.ThrowIfCancellationRequested();
                         if (Alpha(x, _top) != Alpha(x, _bottom)) { same = false; break; }
                     }
                     if (!same) break;
@@ -50,7 +49,7 @@ internal ref struct SvgBinaryClipRectangles
             }
             while (_x < _area.Right)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 if (Alpha(_x, _top) != 0) break;
                 _x++;
             }
@@ -58,7 +57,7 @@ internal ref struct SvgBinaryClipRectangles
             int left = _x++;
             while (_x < _area.Right)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 if (Alpha(_x, _top) == 0) break;
                 _x++;
             }

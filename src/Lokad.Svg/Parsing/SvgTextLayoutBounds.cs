@@ -8,7 +8,7 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Measures source text paint boxes before stroke fringes and device paint placement.</summary>
 /// <remarks>Fonts and runs remain borrowed. A conversion-local metric cache and temporary fitted
-/// contours/scans reserve storage before allocation; all visits charge work and observe cancellation.
+/// contours/scans reserve storage before allocation; all visits observe cancellation.
 /// Disposal releases scratch on success or failure. No font or output-dependent cache is shared.</remarks>
 internal static class SvgTextLayoutBounds
 {
@@ -18,28 +18,28 @@ internal static class SvgTextLayoutBounds
         => size is > 0 and <= 32767 && font.Metrics.HasCompleteTrueTypeProfile;
 
     internal static SvgRectangle Measure(SvgTextRun run, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgAffineTransform placement,
-        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        RenderBudget budget, CancellationToken token)
     {
         if (run.Glyphs.IsEmpty) return default;
         using MetricCache cache = MetricCache.Create(budget);
-        return Measure(run, paths, placement, cache, work, token);
+        return Measure(run, paths, placement, cache, token);
     }
 
     internal static SvgRectangle Measure(SvgTextRun run, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgAffineTransform placement,
-        MetricCache cache, ParserWorkCounter work, CancellationToken token)
-        => cache.Measure(run, paths, placement, work, token);
+        MetricCache cache, CancellationToken token)
+        => cache.Measure(run, paths, placement, token);
 
     /// <summary>Measures source visual boxes with element and fragment strokes, independently of painted capture bounds.</summary>
     internal static SvgRectangle MeasureSourceVisual(SvgTextRun run, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgAffineTransform placement,
-        MetricCache cache, ParserWorkCounter work, CancellationToken token)
-        => cache.MeasureSourceVisual(run, paths, placement, work, token);
+        MetricCache cache, CancellationToken token)
+        => cache.MeasureSourceVisual(run, paths, placement, token);
 
     private enum BoundsKind { Object, SourceVisual }
 
     /// <summary>Owns fitted metric reuse during one parser state; fonts remain borrowed.</summary>
     /// <remarks>The parser thread owns access and disposal. Values retain no contour or bitmap;
     /// construction and entry growth reserve storage before allocation. Fitting charges the
-    /// caller's work/token. Disposal releases all reservations on success or failure.</remarks>
+    /// caller's cancellation token. Disposal releases all reservations on success or failure.</remarks>
     internal sealed class MetricCache : IDisposable
     {
         private readonly RenderBudget.BudgetReservation _owner;
@@ -62,15 +62,15 @@ internal static class SvgTextLayoutBounds
         public void Dispose() { _items.Dispose(); _owner.Dispose(); }
 
         internal SvgRectangle Measure(SvgTextRun run, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgAffineTransform placement,
-            ParserWorkCounter work, CancellationToken token)
-            => MeasureCore(run, paths, placement, BoundsKind.Object, work, token);
+CancellationToken token)
+            => MeasureCore(run, paths, placement, BoundsKind.Object, token);
 
         internal SvgRectangle MeasureSourceVisual(SvgTextRun run, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgAffineTransform placement,
-            ParserWorkCounter work, CancellationToken token)
-            => MeasureCore(run, paths, placement, BoundsKind.SourceVisual, work, token);
+CancellationToken token)
+            => MeasureCore(run, paths, placement, BoundsKind.SourceVisual, token);
 
         private SvgRectangle MeasureCore(SvgTextRun run, ReadOnlySpan<SvgPlacedTextGlyph> paths, SvgAffineTransform placement,
-            BoundsKind kind, ParserWorkCounter work, CancellationToken token)
+            BoundsKind kind, CancellationToken token)
         {
             if (run.Glyphs.IsEmpty) return default;
             RenderBudget budget = _budget;
@@ -89,21 +89,21 @@ internal static class SvgTextLayoutBounds
             {
                 for (int index = 0; index < run.Glyphs.Length; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgPlacedTextGlyph path = paths[index];
                     // Visibility controls ink, independently of the retained source box.
                     SvgAffineTransform map = path.SourceMap;
                     map = map with { E = map.E * scale, F = map.F * scale };
                     float inlineWidth = (float)(run.Glyphs[index].Advance * scale);
                     while (sourceFragment + 1 < run.PaintFragments.Length && index >= run.PaintFragments[sourceFragment].End) sourceFragment++;
-                    Include(Fragment(index, index + 1, inlineWidth, default).Map(map, work, token).Scale(inverseScale, inverseScale), index, sourceFragment);
+                    Include(Fragment(index, index + 1, inlineWidth, default).Map(map, token).Scale(inverseScale, inverseScale), index, sourceFragment);
                 }
             }
             else if (!run.PaintFragments.IsEmpty)
             {
                 foreach (SvgTextPaintFragment fragment in run.PaintFragments)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgPositionedGlyph first = run.Glyphs[Math.Min(fragment.Start, run.Glyphs.Length - 1)];
                     SvgDevicePoint origin = fragment.SourceOrigin ?? new((float)first.X * scale, (float)first.Y * scale);
                     float inlineWidth = fragment.SourceWidth ?? MathF.Ceiling((float)(fragment.Width * scale) * 64) / 64;
@@ -114,7 +114,7 @@ internal static class SvgTextLayoutBounds
                         SvgAffineTransform map = SvgAffineTransform.FromTranslation(origin.X, origin.Y)
                             .ComposeChecked(SvgAffineTransform.FromRotationDegrees(angle))
                             .ComposeChecked(SvgAffineTransform.FromTranslation(-origin.X, -origin.Y));
-                        box = box.Map(map, work, token);
+                        box = box.Map(map, token);
                     }
                     Include(box.Scale(inverseScale, inverseScale), Math.Min(fragment.Start, run.Glyphs.Length - 1), sourceFragment++);
                 }
@@ -123,7 +123,7 @@ internal static class SvgTextLayoutBounds
             {
                 for (int index = 0; index < run.Glyphs.Length; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgPositionedGlyph glyph = run.Glyphs[index];
                     float inlineWidth = MathF.Ceiling((float)(glyph.Advance * scale) * 64) / 64;
                     Include(Fragment(index, index + 1, inlineWidth, new((float)glyph.X * scale, (float)glyph.Y * scale)).Scale(inverseScale, inverseScale), index, -1);
@@ -132,18 +132,18 @@ internal static class SvgTextLayoutBounds
             if (recordingBoxes.Length != 0)
                 foreach (SvgTextRecordingScope scope in run.RecordingScopes)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     int low = 0, high = run.PaintFragments.Length;
                     while (low < high)
                     {
-                        work.Consume(token);
+                        token.ThrowIfCancellationRequested();
                         int middle = low + (high - low) / 2;
                         if (run.PaintFragments[middle].SourceEnd <= scope.Start) low = middle + 1;
                         else high = middle;
                     }
                     SourceBox ownerBox = default;
                     for (int index = low; index < recordingBoxes.Length && run.PaintFragments[index].SourceStart < scope.End; index++)
-                    { work.Consume(token); ownerBox = ownerBox.Union(recordingBoxes[index]); }
+                    { token.ThrowIfCancellationRequested(); ownerBox = ownerBox.Union(recordingBoxes[index]); }
                     if (!ownerBox.IsEmpty) sourceVisual = sourceVisual.Union(ownerBox.Outset((float)scope.StrokeWidth));
                 }
             if (kind == BoundsKind.SourceVisual)
@@ -178,14 +178,14 @@ internal static class SvgTextLayoutBounds
                 SvgPositionedGlyph first = run.Glyphs[Math.Min(start, run.Glyphs.Length - 1)];
                 for (int index = start; index < end; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgPositionedGlyph glyph = run.Glyphs[index];
                     SvgGlyphFontStyle face = run.GetGlyphFont(index);
                     float deviceSize = SvgGlyphDeviceMetrics.GetEffectiveFontSize(face.FontSize * scale);
                     MetricKey key = new(face.Font, glyph.GlyphIndex, deviceSize);
                     if (!metrics.TryGetValue(key, out SourceBox bounds))
                     {
-                        bounds = Ink(face.Font, glyph.GlyphIndex, deviceSize, budget, work, token);
+                        bounds = Ink(face.Font, glyph.GlyphIndex, deviceSize, budget, token);
                         metrics.TryAdd(key, bounds);
                     }
                     float relativeX = run.GlyphStretch == 0 ? 0 : (float)((glyph.X - first.X) * scale / run.GlyphStretch);
@@ -197,14 +197,14 @@ internal static class SvgTextLayoutBounds
                 return ink.Union(layout);
             }
 
-            static SourceBox Ink(SvgPreparedFont font, ushort glyph, float size, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+            static SourceBox Ink(SvgPreparedFont font, ushort glyph, float size, RenderBudget budget, CancellationToken token)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 if (size == 0) return default;
                 // Preserve the established generic-font and oversized-strike routes.
                 if (!UsesFittedMetrics(font, size))
                 {
-                    if (OpenTypeFont.GetGlyphHeader(font.Bytes, glyph, font.Metrics, work, token) is not {} header) return default;
+                    if (OpenTypeFont.GetGlyphHeader(font.Bytes, glyph, font.Metrics, token) is not {} header) return default;
                     float unit = size / font.UnitsPerEm;
                     return new(header.XMinimum * unit, -header.YMaximum * unit,
                         (header.XMaximum - header.XMinimum) * unit, (header.YMaximum - header.YMinimum) * unit);
@@ -212,19 +212,19 @@ internal static class SvgTextLayoutBounds
                 using SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(glyph, 0, 0, 0), size, budget);
                 if (OperatingSystem.IsLinux())
                 {
-                    using SvgAuthoredPath path = source.CreateLatinLightPath(1, 0, 1, 0, budget, work, token);
+                    using SvgAuthoredPath path = source.CreateLatinLightPath(1, 0, 1, 0, budget, token);
                     if (path.Commands.IsEmpty) return default;
-                    SvgRectangle bounds = SvgPathBounds.Compute(path.Commands, SvgAffineTransform.Identity, work, token);
+                    SvgRectangle bounds = SvgPathBounds.Compute(path.Commands, SvgAffineTransform.Identity, token);
                     float left = (float)Math.Floor(bounds.X), top = (float)Math.Floor(bounds.Y);
                     return new(left, top, (float)Math.Ceiling(bounds.X + bounds.Width) - left, (float)Math.Ceiling(bounds.Y + bounds.Height) - top);
                 }
-                using OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, work, token);
+                using OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, token);
                 if (contours.Segments.Length == 0) return default;
                 double minimumX = double.PositiveInfinity, minimumY = double.PositiveInfinity;
                 double maximumX = double.NegativeInfinity, maximumY = double.NegativeInfinity;
                 foreach (OpenTypeQuadraticSegment segment in contours.Segments)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     Include(segment.Start); Include(segment.Control); Include(segment.End);
                 }
                 int leftEdge = Edge(Math.Floor(minimumX - 1d / 3)), rightEdge = Edge(Math.Ceiling(maximumX + 1d / 3 + (contours.ExtendWindowsLcdSpans ? 1d / 6 : 0)));
@@ -234,14 +234,14 @@ internal static class SvgTextLayoutBounds
                 using RenderBudget.BudgetReservation crossingOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(crossingCount), SvgMemoryCategory.Temporary);
                 SvgGlyphLcdCoverage.Crossing[] crossings = new SvgGlyphLcdCoverage.Crossing[crossingCount];
                 SvgGlyphLcdCoverage.DropoutBounds limits = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts,
-                    contours.SimpleDropouts, contours.ExcludeDropoutStubs, contours.WindowsLcdMode, work, token) with { ExtendRight = contours.ExtendWindowsLcdSpans };
-                using SvgGlyphLcdCoverage.ScanStorage? scans = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, contours.WindowsLcdMode, budget, work, token);
+                    contours.SimpleDropouts, contours.ExcludeDropoutStubs, contours.WindowsLcdMode, token) with { ExtendRight = contours.ExtendWindowsLcdSpans };
+                using SvgGlyphLcdCoverage.ScanStorage? scans = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, contours.WindowsLcdMode, budget, token);
                 Span<int> counts = stackalloc int[10];
-                while (leftEdge < rightEdge && !HasInk(leftEdge, leftEdge + 1, topEdge, bottomEdge, scans, contours.Segments, crossings, counts, limits, work, token)) leftEdge++;
-                while (rightEdge > leftEdge && !HasInk(rightEdge - 1, rightEdge, topEdge, bottomEdge, scans, contours.Segments, crossings, counts, limits, work, token)) rightEdge--;
+                while (leftEdge < rightEdge && !HasInk(leftEdge, leftEdge + 1, topEdge, bottomEdge, scans, contours.Segments, crossings, counts, limits, token)) leftEdge++;
+                while (rightEdge > leftEdge && !HasInk(rightEdge - 1, rightEdge, topEdge, bottomEdge, scans, contours.Segments, crossings, counts, limits, token)) rightEdge--;
                 if (leftEdge == rightEdge) return default;
-                while (topEdge < bottomEdge && !HasInk(leftEdge, rightEdge, topEdge, topEdge + 1, scans, contours.Segments, crossings, counts, limits, work, token)) topEdge++;
-                while (bottomEdge > topEdge && !HasInk(leftEdge, rightEdge, bottomEdge - 1, bottomEdge, scans, contours.Segments, crossings, counts, limits, work, token)) bottomEdge--;
+                while (topEdge < bottomEdge && !HasInk(leftEdge, rightEdge, topEdge, topEdge + 1, scans, contours.Segments, crossings, counts, limits, token)) topEdge++;
+                while (bottomEdge > topEdge && !HasInk(leftEdge, rightEdge, bottomEdge - 1, bottomEdge, scans, contours.Segments, crossings, counts, limits, token)) bottomEdge--;
                 return new(leftEdge, topEdge, rightEdge - leftEdge, bottomEdge - topEdge);
 
                 void Include(OpenTypeOutlinePoint point)
@@ -253,16 +253,16 @@ internal static class SvgTextLayoutBounds
 
             static bool HasInk(int left, int right, int top, int bottom, SvgGlyphLcdCoverage.ScanStorage? storage,
                 ReadOnlySpan<OpenTypeQuadraticSegment> segments, Span<SvgGlyphLcdCoverage.Crossing> scratch, Span<int> counts,
-                SvgGlyphLcdCoverage.DropoutBounds bounds, ParserWorkCounter work, CancellationToken token)
+                SvgGlyphLcdCoverage.DropoutBounds bounds, CancellationToken token)
             {
                 for (int y = top; y < bottom; y++)
                 {
-                    work.Consume(token);
-                    SvgGlyphLcdCoverage.ScanRow scans = storage is null ? default : storage.PrepareRow(segments, y, counts, work, token);
+                    token.ThrowIfCancellationRequested();
+                    SvgGlyphLcdCoverage.ScanRow scans = storage is null ? default : storage.PrepareRow(segments, y, counts, token);
                     for (int x = left; x < right; x++)
                     {
-                        SvgGlyphRgbCoverage coverage = scans.IsPrepared ? SvgGlyphLcdCoverage.GetCoverage(scans, x, scratch, bounds, work, token)
-                            : SvgGlyphLcdCoverage.GetCoverage(segments, x, y, scratch, bounds, work, token);
+                        SvgGlyphRgbCoverage coverage = scans.IsPrepared ? SvgGlyphLcdCoverage.GetCoverage(scans, x, scratch, bounds, token)
+                            : SvgGlyphLcdCoverage.GetCoverage(segments, x, y, scratch, bounds, token);
                         if (coverage.Red != 0 || coverage.Green != 0 || coverage.Blue != 0) return true;
                     }
                 }
@@ -292,13 +292,13 @@ internal static class SvgTextLayoutBounds
         internal SourceBox Outset(float width) => IsEmpty ? this : new(X - width, Y - width, Width + width * 2, Height + width * 2);
         internal SourceBox Offset(float x, float y) => IsEmpty ? this : new(X + x, Y + y, Width, Height);
         internal SourceBox Scale(float x, float y) => IsEmpty ? this : new(X * x, Y * y, Width * x, Height * y);
-        internal SourceBox Map(SvgAffineTransform map, ParserWorkCounter work, CancellationToken token)
+        internal SourceBox Map(SvgAffineTransform map, CancellationToken token)
         {
             if (IsEmpty) return this;
             float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
             for (int corner = 0; corner < 4; corner++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgDevicePoint point = map.Apply((corner & 1) == 0 ? X : X + Width, (corner & 2) == 0 ? Y : Y + Height);
                 float x = (float)point.X, y = (float)point.Y;
                 if (!float.IsFinite(x) || !float.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text layout bounds exceed the numeric range.");

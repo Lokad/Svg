@@ -2,7 +2,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Resolves local pattern templates iteratively with charged graph storage and work.</summary>
+/// <summary>Resolves local pattern templates iteratively with reserved graph storage.</summary>
 /// <remarks>Single-conversion state; content aliases borrow a parent-owned scene. Cleanup ignores
 /// cancellation; all new scenes are adopted once or disposed on failure. Missing forward targets
 /// remain pending at a defs boundary and have an explicit unsupported outcome at document end.
@@ -11,14 +11,14 @@ internal static class SvgPatternReferenceResolver
 {
     /// <summary>Queues a ready alias or links it to its unresolved target; concrete definitions wake their waiters.</summary>
     /// <remarks>Document-owned lists keep stable indices; dictionary keys borrow retained template IDs.
-    /// Storage is reserved before growth, and registration charges work and observes cancellation.</remarks>
-    internal static void Register(SvgDocumentState state, string id, ParserWorkCounter work, CancellationToken token)
+    /// Storage is reserved before growth, and registration observes cancellation.</remarks>
+    internal static void Register(SvgDocumentState state, string id, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         if (!state.PatternDefinitions.TryGetValue(id, out SvgPatternDefinition definition)) throw new InvalidOperationException("Pattern registration requires retained metadata.");
         if (definition.Template.Href is not {} target)
         {
-            WakeDependents(state, id, work, token);
+            WakeDependents(state, id, token);
             return;
         }
         int index = state.PendingPatternReferences.Count;
@@ -31,12 +31,12 @@ internal static class SvgPatternReferenceResolver
         else if (!state.WaitingPatternReferences.TryAdd(target, index)) throw new InvalidOperationException("Pattern waiting lists register once.");
     }
 
-    internal static void Resolve(SvgDocumentState state, bool requireComplete, ParserWorkCounter work, CancellationToken token)
+    internal static void Resolve(SvgDocumentState state, bool requireComplete, CancellationToken token)
     {
         if (!state.HasPatternTemplateReferences) return;
         while (state.ReadyPatternReferences.Count != 0)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             int index = state.ReadyPatternReferences[^1];
             state.ReadyPatternReferences.RemoveLast();
             string id = state.PendingPatternReferences[index].Id;
@@ -54,7 +54,7 @@ internal static class SvgPatternReferenceResolver
                 if (parent.VectorContent is null && source.Tile.VectorContent is not null) parent = source.Tile;
                 if (parent.VectorContent is null && source.RectangleSource is {} rectangle)
                 {
-                    SvgVectorContent content = PromoteRectangle(rectangle, source.RectangleContext, state, work, token);
+                    SvgVectorContent content = PromoteRectangle(rectangle, source.RectangleContext, state, token);
                     parent = parent with { Content = null, VectorContent = content };
                     state.PatternDefinitions.Replace(target, source with { Tile = parent });
                 }
@@ -64,7 +64,7 @@ internal static class SvgPatternReferenceResolver
             state.PatternDefinitions.Replace(id, definition with { Template = template, Tile = tile });
             if (!state.Patterns.TryAdd(id, tile)) throw new InvalidOperationException("Resolved patterns register once.");
             state.UnresolvedPatternReferences--;
-            WakeDependents(state, id, work, token);
+            WakeDependents(state, id, token);
         }
         if (!requireComplete || !state.HasPatternTemplateReferences) return;
 
@@ -72,12 +72,12 @@ internal static class SvgPatternReferenceResolver
         // Follow its single outgoing edge iteratively to retain missing-target/cycle diagnostics.
         foreach (SvgPendingPatternReference root in state.PendingPatternReferences.AsSpan())
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (state.Patterns.TryGetValue(root.Id, out _)) continue;
             string id = root.Id;
             while (true)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 if (!state.PatternDefinitions.TryGetValue(id, out SvgPatternDefinition definition))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "A local pattern template target is not defined.");
                 if (definition.IsVisiting) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Cyclic pattern templates are not implemented.");
@@ -87,14 +87,14 @@ internal static class SvgPatternReferenceResolver
         }
     }
 
-    private static void WakeDependents(SvgDocumentState state, string target, ParserWorkCounter work, CancellationToken token)
+    private static void WakeDependents(SvgDocumentState state, string target, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         if (!state.WaitingPatternReferences.TryGetValue(target, out int next) || next < 0) return;
         state.WaitingPatternReferences.Replace(target, -1);
         while (next >= 0)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             state.ReadyPatternReferences.Add(next);
             next = state.PendingPatternReferences[next].Next;
         }
@@ -102,30 +102,30 @@ internal static class SvgPatternReferenceResolver
 
     /// <summary>Borrows native tile replay before rectangle content is copied into referencing geometry.</summary>
     /// <remarks>The definition caches a parent-owned scene using the existing template promotion route.
-    /// Creation charges work/storage and observes cancellation; aliases borrow the same owner.
+    /// Creation charges storage and observes cancellation; aliases borrow the same owner.
     /// Callers preserve their target-map range checks separately; promotion is independent of placement.
     /// Fills and strokes retain source replay for later instance/output placement. Failed promotion disposes every new owner.</remarks>
     internal static SvgPatternTile ForReplay(string id, SvgPatternTile tile,
-        SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        SvgDocumentState state, CancellationToken token)
     {
         if (tile.VectorContent is not null || tile.Content is null) return tile;
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         if (!state.PatternDefinitions.TryGetValue(id, out SvgPatternDefinition definition)) throw new InvalidOperationException("Pattern replay requires retained definition content.");
         SvgVectorContent content;
         if (definition.Tile.VectorContent is {} retained) content = retained;
         else
         {
             SvgDefinitionLeafSource source = definition.RectangleSource ?? throw new InvalidOperationException("Pattern promotion requires retained rectangle attributes.");
-            content = PromoteRectangle(source, definition.RectangleContext, state, work, token);
+            content = PromoteRectangle(source, definition.RectangleContext, state, token);
             state.PatternDefinitions.Replace(id, definition with { Tile = definition.Tile with { Content = null, VectorContent = content } });
         }
         return tile with { Content = null, VectorContent = content };
     }
 
     private static SvgVectorContent PromoteRectangle(SvgDefinitionLeafSource source, SvgPaintableElementContext context,
-        SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        SvgDocumentState state, CancellationToken token)
     {
-        using SvgSceneBuilder builder = new(state.Budget, work, token);
+        using SvgSceneBuilder builder = new(state.Budget, token);
         bool previousPicture = state.IsResourcePicture;
         SvgDefinition lowered;
         state.IsResourcePicture = true;
@@ -135,8 +135,8 @@ internal static class SvgPatternReferenceResolver
                 context.InheritedFillRule, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder, context.InheritedPresentation.Markers, context.InheritedPresentation.ElementOpacity, context.InheritedPresentation.ElementDisplay, context.InheritedPresentation.TextMetrics, context.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, context.LengthBases, SvgSourceContourRetention.None, context.InheritedPresentation.IsDisplayed, state);
         }
         finally { state.IsResourcePicture = previousPicture; }
-        SvgPaintRecording.AdoptLeafScene(lowered, builder, state, work, token);
-        SvgLeafMaskComposition.Emit(state, builder, work, token);
+        SvgPaintRecording.AdoptLeafScene(lowered, builder, state, token);
+        SvgLeafMaskComposition.Emit(state, builder, token);
         SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
         try { state.Scene.AdoptVectorContent(content); }
         catch { content.Dispose(); throw; }

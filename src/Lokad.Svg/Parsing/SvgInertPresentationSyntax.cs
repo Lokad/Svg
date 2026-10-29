@@ -6,11 +6,11 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgInertPresentationSyntax
 {
     /// <summary>Validates the neutral rendering keywords and unused geometric solid-paint declarations emitted by exporters.</summary>
-    /// <remarks>Borrowed values are bounded, charged and discarded. Only initial rendering behavior is admitted;
+    /// <remarks>Borrowed values are bounded, validated and discarded. Only initial rendering behavior is admitted;
     /// nondefault isolation, blending and rendering hints retain explicit unsupported outcomes. Solid-paint values
     /// apply only to nontext geometry here; solid-color paint servers remain outside this declaration slice.</remarks>
     internal static bool TryValidateRenderingDefaults(ReadOnlySpan<char> property, ReadOnlySpan<char> value,
-        bool isGeometry, ParserWorkCounter? work, CancellationToken token)
+        bool isGeometry, CancellationToken token)
     {
         string? expected = property.Equals("isolation", StringComparison.OrdinalIgnoreCase)
             || property.Equals("color-rendering", StringComparison.OrdinalIgnoreCase)
@@ -24,7 +24,6 @@ internal static class SvgInertPresentationSyntax
         if (expected is null && !solidColor && !solidOpacity) return false;
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
             throw new SvgException(SvgErrorCode.LimitExceeded, "Rendering declaration exceeds the syntax limit.");
-        work?.ConsumeText(value.Length, token);
         token.ThrowIfCancellationRequested();
         if (solidColor) _ = SvgColorParser.Parse(value.ToString(), SvgRootParser.CssNamedColors);
         else if (solidOpacity) _ = SvgColorParser.ParsePaintOpacity(value.ToString());
@@ -35,8 +34,8 @@ internal static class SvgInertPresentationSyntax
 
     /// <summary>Validates bounded typography on geometry that contains no text or font-relative lengths.</summary>
     /// <remarks>Values are borrowed and discarded; no font or string owner is created. Scalar scans
-    /// charge work and observe cancellation. Text/container callers retain their separate font rules.</remarks>
-    internal static bool TryValidateTypography(ReadOnlySpan<char> property, ReadOnlySpan<char> value, ParserWorkCounter? work, CancellationToken token)
+    /// observe cancellation. Text/container callers retain their separate font rules.</remarks>
+    internal static bool TryValidateTypography(ReadOnlySpan<char> property, ReadOnlySpan<char> value, CancellationToken token)
     {
         const string properties = "font-family font-size font-style font-weight font-stretch font-variant text-align line-height writing-mode text-anchor letter-spacing word-spacing text-decoration white-space -inkscape-font-specification";
         bool recognized = false;
@@ -44,7 +43,6 @@ internal static class SvgInertPresentationSyntax
             if (property.Equals(properties.AsSpan()[range], StringComparison.OrdinalIgnoreCase)) { recognized = true; break; }
         if (!recognized) return false;
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Typography value exceeds the syntax limit.");
-        work?.ConsumeText(value.Length, token);
         token.ThrowIfCancellationRequested();
         value = value.Trim();
         if (value.IsEmpty) throw new SvgException(SvgErrorCode.MalformedInput, "Typography values cannot be empty.");
@@ -53,7 +51,7 @@ internal static class SvgInertPresentationSyntax
         bool valid;
         if (property.Equals("font-family", StringComparison.OrdinalIgnoreCase))
         {
-            _ = Fonts.SvgFontFamilySyntax.Parse(value.ToString(), work, token);
+            _ = Fonts.SvgFontFamilySyntax.Parse(value.ToString(), token);
             return true;
         }
         if (property.Equals("-inkscape-font-specification", StringComparison.OrdinalIgnoreCase))
@@ -128,9 +126,8 @@ internal static class SvgInertPresentationSyntax
     }
 
     /// <summary>Validates a backdrop hint without storing it or creating a backdrop. Backdrop-dependent filters remain unsupported.</summary>
-    internal static void ValidateBackground(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal static void ValidateBackground(ReadOnlySpan<char> value, CancellationToken cancellationToken)
     {
-        workCounter?.ConsumeText(value.Length, cancellationToken);
         cancellationToken.ThrowIfCancellationRequested();
         int count = 0;
         bool newBackground = false;

@@ -21,7 +21,7 @@ public sealed class SvgConicStrokeTests
             using (BudgetedParserList<SvgStrokeCurveSegment> output = new(budget, SvgMemoryCategory.Geometry))
             {
                 SvgCurveStroke.Append(new(p[0], p[1]), new(p[2], p[3]), new(p[4], p[5]), Number(fields[1]), Number(fields[2]), Number(fields[3]),
-                    (SvgStrokeSide)int.Parse(fields[4], CultureInfo.InvariantCulture), output, new ParserWorkCounter(100_000), CancellationToken.None);
+                    (SvgStrokeSide)int.Parse(fields[4], CultureInfo.InvariantCulture), output, CancellationToken.None);
                 string[] expected = fields[6].Split(';');
                 Assert.Equal(expected.Length, output.Count);
                 for (int index = 0; index < expected.Length; index++)
@@ -53,24 +53,21 @@ public sealed class SvgConicStrokeTests
         RenderBudget budget = new(16_777_216);
         using (BudgetedParserList<SvgStrokeCurveSegment> output = new(budget, SvgMemoryCategory.Geometry))
         {
-            SvgException error = Assert.Throws<SvgException>(() => Append(output, new ParserWorkCounter(2), CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using CancellationTokenSource source = new();
         source.Cancel();
         using (BudgetedParserList<SvgStrokeCurveSegment> output = new(budget, SvgMemoryCategory.Geometry))
         {
-            OperationCanceledException error = Assert.Throws<OperationCanceledException>(() => Append(output, new ParserWorkCounter(100_000), source.Token));
-            Assert.Equal(source.Token, error.CancellationToken);
+            OperationCanceledException error = Assert.Throws<OperationCanceledException>(() => Append(output, source.Token));
             Assert.Equal(0, output.Count);
-            Append(output, new ParserWorkCounter(100_000), CancellationToken.None);
+            Append(output, CancellationToken.None);
             Assert.True(output.Count > 1);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
 
-        static void Append(BudgetedParserList<SvgStrokeCurveSegment> output, ParserWorkCounter work, CancellationToken token)
-            => SvgCurveStroke.Append(new(80, 48), new(80, 65), new(48, 65), SvgRationalQuadratic.QuarterCircleWeight, 5, 4, SvgStrokeSide.Inner, output, work, token);
+        static void Append(BudgetedParserList<SvgStrokeCurveSegment> output, CancellationToken token)
+            => SvgCurveStroke.Append(new(80, 48), new(80, 65), new(48, 65), SvgRationalQuadratic.QuarterCircleWeight, 5, 4, SvgStrokeSide.Inner, output, token);
     }
 
     private static IEnumerable<string> NativeRows()
@@ -91,7 +88,7 @@ public sealed class SvgConicStrokeTests
         RenderBudget budget = new(1);
         using BudgetedParserList<SvgStrokeCurveSegment> output = new(budget, SvgMemoryCategory.Geometry);
         SvgException error = Assert.Throws<SvgException>(() => SvgCurveStroke.Append(new(80, 48), new(80, 65), new(48, 65),
-            SvgRationalQuadratic.QuarterCircleWeight, 5, 1, SvgStrokeSide.Outer, output, new ParserWorkCounter(100_000), CancellationToken.None));
+            SvgRationalQuadratic.QuarterCircleWeight, 5, 1, SvgStrokeSide.Outer, output, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
         Assert.Equal(0, output.Count);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -157,7 +154,7 @@ public sealed class SvgConicStrokeTests
 
         SvgRenderLimits defaults = SvgRenderLimits.Default;
         RenderBudget budget = new(defaults.MaximumAccountedBytes);
-        using (SvgRoot root = SvgRootParser.Parse(input, defaults, budget, null, new(defaults.MaximumWorkUnits), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, defaults, budget, null, CancellationToken.None))
         {
             SvgGeometry geometry = Assert.Single(root.Geometries.ToArray(), value => value.Kind == SvgGeometryKind.PolygonFill && value.Polygon.Mapping == SvgPolygonMapping.NativeStrokeEdges);
             Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
@@ -171,7 +168,7 @@ public sealed class SvgConicStrokeTests
             long owned = budget.Snapshot().CurrentBytes;
             SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
                 defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-                checked((int)root.ParserWorkUnits + 1), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
+                checked((int)0L + 1), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
             SvgException work = Assert.Throws<SvgException>(() => { using var denied = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, tight), budget, CancellationToken.None); });
             Assert.Equal(SvgErrorCode.LimitExceeded, work.ErrorCode);
             Assert.Equal(owned, budget.Snapshot().CurrentBytes);
@@ -219,7 +216,7 @@ public sealed class SvgConicStrokeTests
             SvgConverter.ConvertToPng(instance, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         SvgRenderLimits limits = SvgRenderLimits.Default;
         RenderBudget budget = new(limits.MaximumAccountedBytes);
-        using (SvgRoot root = SvgRootParser.Parse(instance, limits, budget, null, new(limits.MaximumWorkUnits), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(instance, limits, budget, null, CancellationToken.None))
             Assert.True(root.Geometries.Length > 0);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

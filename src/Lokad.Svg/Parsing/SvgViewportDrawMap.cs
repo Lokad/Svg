@@ -4,7 +4,7 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Keeps SVG placement and its viewBox canvas boundary until device placement.</summary>
 /// <remarks>Immutable values own no storage. Scene arrays account for retained values;
-/// callers charge bounded matrix preparation work and observe cancellation. Source is the
+/// callers observe cancellation during matrix preparation. Source is the
 /// unrounded scene map; child maps are resolved before native canvas concatenation.</remarks>
 internal readonly record struct SvgViewportDrawMap(SvgAffineTransform Parent, SvgAffineTransform ViewBox, SvgAffineTransform Source)
 {

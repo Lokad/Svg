@@ -1619,7 +1619,7 @@ public sealed class SvgPolygonFillTests
         SvgGeometry geometry = Assert.Single(root.Geometries);
         SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
         using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, false,
-            new(SvgRenderLimits.Default.MaximumAccountedBytes), new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None);
+            new(SvgRenderLimits.Default.MaximumAccountedBytes), CancellationToken.None);
         Assert.Equal(2, mapped.ContourEnds.Length);
         Assert.NotEmpty(mapped.QuadSpans);
         Assert.True(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).Length > 0);

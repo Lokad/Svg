@@ -86,22 +86,21 @@ internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
 
     internal int Length => _length;
 
-    /// <summary>Copies text after reserving all live replacement storage and charges copying work to the current conversion.</summary>
-    internal void Append(string value, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <summary>Copies text after reserving all live replacement storage and observes conversion cancellation.</summary>
+    internal void Append(string value, int maximumLength, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(value);
-        Append(value.AsSpan(), maximumLength, workCounter, cancellationToken);
+        Append(value.AsSpan(), maximumLength, cancellationToken);
     }
 
     /// <summary>Copies one reader-provided text chunk without first materializing it as a string.</summary>
-    internal void Append(ReadOnlySpan<char> value, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal void Append(ReadOnlySpan<char> value, int maximumLength, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (value.Length > maximumLength - _length) throw new SvgException(SvgErrorCode.LimitExceeded, "The document direct text character count exceeds the admitted layout limit.");
-        EnsureCapacity(checked(_length + value.Length), workCounter, cancellationToken);
+        EnsureCapacity(checked(_length + value.Length), cancellationToken);
         for (int offset = 0; offset < value.Length; offset += CopyCheckpointCharacters)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             int count = Math.Min(CopyCheckpointCharacters, value.Length - offset);
             value.Slice(offset, count).CopyTo(_characters.AsSpan(_length + offset));
         }
@@ -109,13 +108,13 @@ internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
         if (!value.IsEmpty) _trailingCollapsedWhitespace = false;
     }
 
-    void ISvgTextOutput.Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => Append(value, maximumLength, workCounter, cancellationToken);
+    void ISvgTextOutput.Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, CancellationToken cancellationToken)
+        => Append(value, maximumLength, cancellationToken);
 
-    void ISvgTextOutput.AppendCollapsedWhitespace(double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    void ISvgTextOutput.AppendCollapsedWhitespace(double letterSpacing, int scopeDepth, int maximumLength, CancellationToken cancellationToken)
     {
         if (_length == 0 || _trailingCollapsedWhitespace) return;
-        Append(" ", maximumLength, workCounter, cancellationToken);
+        Append(" ", maximumLength, cancellationToken);
         _trailingCollapsedWhitespace = true;
     }
 
@@ -125,8 +124,8 @@ internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
         _characters[--_length] = default;
     }
 
-    void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken) { }
-    void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionLists lists, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken) { }
+    void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, CancellationToken cancellationToken) { }
+    void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionLists lists, int scopeDepth, CancellationToken cancellationToken) { }
 
     void ISvgTextOutput.ExitPositioningSpan(int scopeDepth) { }
 
@@ -162,7 +161,7 @@ internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
         _reservation = null;
     }
 
-    private void EnsureCapacity(int requiredLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private void EnsureCapacity(int requiredLength, CancellationToken cancellationToken)
     {
         if (requiredLength <= _characters.Length) return;
         int capacity = _characters.Length == 0 ? Math.Max(256, requiredLength) : _characters.Length > int.MaxValue / 2 ? requiredLength : Math.Max(_characters.Length * 2, requiredLength);
@@ -181,7 +180,7 @@ internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
         {
             for (int offset = 0; offset < _length; offset += CopyCheckpointCharacters)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 int count = Math.Min(CopyCheckpointCharacters, _length - offset);
                 _characters.AsSpan(offset, count).CopyTo(replacement.AsSpan(offset));
             }
@@ -208,7 +207,6 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
 {
     private readonly BudgetedTextBuffer _text;
     private readonly RenderBudget _budget;
-    private readonly ParserWorkCounter _workCounter;
     private readonly CancellationToken _cancellationToken;
     private readonly double _defaultLetterSpacing;
     private readonly double _defaultWordSpacing;
@@ -217,45 +215,43 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
     private BudgetedParserList<SvgTextPositionScope>? _positioningScopes;
     private BudgetedParserList<SvgTextPositionSpan>? _positionSpans;
 
-    internal SvgTextLayoutBuffer(RenderBudget budget, double defaultLetterSpacing, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        : this(budget, defaultLetterSpacing, 0, workCounter, cancellationToken) { }
+    internal SvgTextLayoutBuffer(RenderBudget budget, double defaultLetterSpacing, CancellationToken cancellationToken)
+        : this(budget, defaultLetterSpacing, 0, cancellationToken) { }
 
-    internal SvgTextLayoutBuffer(RenderBudget budget, double defaultLetterSpacing, double defaultWordSpacing, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal SvgTextLayoutBuffer(RenderBudget budget, double defaultLetterSpacing, double defaultWordSpacing, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        ArgumentNullException.ThrowIfNull(workCounter);
         if (!double.IsFinite(defaultLetterSpacing)) throw new ArgumentOutOfRangeException(nameof(defaultLetterSpacing));
         if (!double.IsFinite(defaultWordSpacing)) throw new ArgumentOutOfRangeException(nameof(defaultWordSpacing));
         _text = new BudgetedTextBuffer(budget);
         _budget = budget;
-        _workCounter = workCounter;
         _cancellationToken = cancellationToken;
         _defaultLetterSpacing = defaultLetterSpacing;
         _defaultWordSpacing = defaultWordSpacing;
     }
 
     /// <summary>Appends one normalized interval and records eligible span starts before resolving whole Unicode scalars.</summary>
-    public void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => Append(value, letterSpacing, _defaultWordSpacing, scopeDepth, maximumLength, workCounter, cancellationToken);
+    public void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, CancellationToken cancellationToken)
+        => Append(value, letterSpacing, _defaultWordSpacing, scopeDepth, maximumLength, cancellationToken);
 
     /// <summary>Retains inherited letter/word spacing in the same bounded normalized intervals.</summary>
-    internal void Append(ReadOnlySpan<char> value, double letterSpacing, double wordSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal void Append(ReadOnlySpan<char> value, double letterSpacing, double wordSpacing, int scopeDepth, int maximumLength, CancellationToken cancellationToken)
     {
         if (!double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(letterSpacing));
         if (!double.IsFinite(wordSpacing)) throw new ArgumentOutOfRangeException(nameof(wordSpacing));
         if (scopeDepth < 0) throw new ArgumentOutOfRangeException(nameof(scopeDepth));
-        if (!ReferenceEquals(workCounter, _workCounter) || cancellationToken != _cancellationToken) throw new InvalidOperationException("Text layout buffer calls must retain their construction work context.");
+        if (cancellationToken != _cancellationToken) throw new InvalidOperationException("Text layout buffer calls must retain their construction cancellation token.");
         int start = _text.Length;
-        _text.Append(value, maximumLength, workCounter, cancellationToken);
+        _text.Append(value, maximumLength, cancellationToken);
         if (!value.IsEmpty) _trailingCollapsedWhitespace = false;
         if (!value.IsEmpty && _positioningScopes is {} scopes)
         {
             for (int index = 0; index < scopes.Count; index++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 SvgTextPositionScope scope = scopes[index];
                 if (scope.ScopeDepth > scopeDepth || scope.SpanIndex >= 0) continue;
-                BudgetedParserList<SvgTextPositionSpan> positionSpans = _positionSpans ??= new(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
+                BudgetedParserList<SvgTextPositionSpan> positionSpans = _positionSpans ??= new(_budget, SvgMemoryCategory.Parser, _cancellationToken);
                 scopes[index] = scope with { SpanIndex = positionSpans.Count };
                 positionSpans.Add(new(start, 0, scope.Lists, scope.Offset));
             }
@@ -280,26 +276,26 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
     internal bool AcceptsCollapsedWhitespace => (_text.Length != 0 || _hasPriorText) && !_trailingCollapsedWhitespace;
     internal void MarkCollapsedWhitespace() => _trailingCollapsedWhitespace = true;
 
-    public void AppendCollapsedWhitespace(double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    public void AppendCollapsedWhitespace(double letterSpacing, int scopeDepth, int maximumLength, CancellationToken cancellationToken)
     {
         if (!AcceptsCollapsedWhitespace) return;
-        Append(" ", letterSpacing, scopeDepth, maximumLength, workCounter, cancellationToken);
+        Append(" ", letterSpacing, scopeDepth, maximumLength, cancellationToken);
         MarkCollapsedWhitespace();
     }
 
     /// <summary>Begins an explicit scalar scope; normalized output determines when it is consumed.</summary>
-    public void EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => EnterPositioningScope(new(scopeDepth, offset, default, -1), workCounter, cancellationToken);
+    public void EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, CancellationToken cancellationToken)
+        => EnterPositioningScope(new(scopeDepth, offset, default, -1), cancellationToken);
 
     /// <summary>Begins validated lists over the span's normalized scalar subtree.</summary>
-    public void EnterPositioningSpan(SvgTextPositionLists lists, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => EnterPositioningScope(new(scopeDepth, null, lists, -1), workCounter, cancellationToken);
+    public void EnterPositioningSpan(SvgTextPositionLists lists, int scopeDepth, CancellationToken cancellationToken)
+        => EnterPositioningScope(new(scopeDepth, null, lists, -1), cancellationToken);
 
-    private void EnterPositioningScope(SvgTextPositionScope scope, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private void EnterPositioningScope(SvgTextPositionScope scope, CancellationToken cancellationToken)
     {
         if (scope.ScopeDepth <= 0) throw new ArgumentOutOfRangeException(nameof(scope));
-        if (!ReferenceEquals(workCounter, _workCounter) || cancellationToken != _cancellationToken) throw new InvalidOperationException("Text layout buffer calls must retain their construction work context.");
-        BudgetedParserList<SvgTextPositionScope> scopes = _positioningScopes ??= new(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
+        if (cancellationToken != _cancellationToken) throw new InvalidOperationException("Text layout buffer calls must retain their construction cancellation token.");
+        BudgetedParserList<SvgTextPositionScope> scopes = _positioningScopes ??= new(_budget, SvgMemoryCategory.Parser, _cancellationToken);
         if (scopes.Count != 0 && scopes[^1].ScopeDepth >= scope.ScopeDepth) throw new InvalidOperationException("Text positioning scopes must be entered in increasing span depth.");
         scopes.Add(scope);
     }
@@ -341,7 +337,7 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
             _letterSpacingSpans = null;
             try
             {
-                OwnedParserArray<SvgTextPositionAdjustment> adjustments = ResolvePositions(text.Value, _positionSpans is {} intervals ? intervals.AsSpan() : [], _budget, _workCounter, _cancellationToken);
+                OwnedParserArray<SvgTextPositionAdjustment> adjustments = ResolvePositions(text.Value, _positionSpans is {} intervals ? intervals.AsSpan() : [], _budget, _cancellationToken);
                 return new BudgetedTextLayout(text.Value, spans.Items, adjustments.Items, text.Reservation, spans.Reservation, adjustments.Reservation);
             }
             catch
@@ -358,15 +354,15 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         finally { _positionSpans?.Dispose(); _positionSpans = null; }
 
         static OwnedParserArray<SvgTextPositionAdjustment> ResolvePositions(string value, ReadOnlySpan<SvgTextPositionSpan> spans,
-            RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+            RenderBudget budget, CancellationToken token)
         {
             if (spans.IsEmpty) return new([], null);
-            using BudgetedParserList<SvgTextPositionAdjustment> positions = new(budget, SvgMemoryCategory.Parser, work, token);
-            using BudgetedParserList<SvgTextPositionSpanCursor> active = new(budget, SvgMemoryCategory.Parser, work, token);
+            using BudgetedParserList<SvgTextPositionAdjustment> positions = new(budget, SvgMemoryCategory.Parser, token);
+            using BudgetedParserList<SvgTextPositionSpanCursor> active = new(budget, SvgMemoryCategory.Parser, token);
             int next = 0, source = 0;
             foreach (System.Text.Rune scalar in value.EnumerateRunes())
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 while (active.Count != 0 && active[^1].End <= source) active.RemoveLast();
                 while (next < spans.Length && spans[next].Start <= source)
                 {
@@ -377,7 +373,7 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
                 bool overridesDx = false, overridesDy = false;
                 for (int index = 0; index < active.Count; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgTextPositionSpanCursor cursor = active[index];
                     SvgTextPositionValue position = cursor.Next();
                     active[index] = cursor;
@@ -407,7 +403,7 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
 
     private BudgetedParserList<SvgTextLetterSpacingSpan> CreateLetterSpacingSpans(int start)
     {
-        var spans = new BudgetedParserList<SvgTextLetterSpacingSpan>(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
+        var spans = new BudgetedParserList<SvgTextLetterSpacingSpan>(_budget, SvgMemoryCategory.Parser, _cancellationToken);
         if (start != 0) spans.Add(new SvgTextLetterSpacingSpan(0, start, _defaultLetterSpacing) { WordSpacing = _defaultWordSpacing });
         return spans;
     }
@@ -433,24 +429,22 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
     private const int CopyCheckpointItems = 4_096;
     private readonly RenderBudget _budget;
     private readonly SvgMemoryCategory _category;
-    private readonly ParserWorkCounter? _workCounter;
     private readonly CancellationToken _cancellationToken;
     private T[] _items = [];
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
     internal BudgetedParserList(RenderBudget budget, SvgMemoryCategory category)
-        : this(budget, category, null, CancellationToken.None)
+        : this(budget, category, CancellationToken.None)
     {
     }
 
     /// <summary>Creates a value-type list whose exact runtime element size is charged before allocation.</summary>
-    internal BudgetedParserList(RenderBudget budget, SvgMemoryCategory category, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal BudgetedParserList(RenderBudget budget, SvgMemoryCategory category, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
         _budget = budget;
         _category = category;
-        _workCounter = workCounter;
         _cancellationToken = cancellationToken;
     }
 
@@ -483,7 +477,7 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
 
     internal ReadOnlySpan<T> AsSpan() => _items.AsSpan(0, _count);
 
-    /// <summary>Views retained slots only; growth invalidates the view. Callers charge mutation work,
+    /// <summary>Views retained slots only; growth invalidates the view. Callers observe cancellation,
     /// observe cancellation and preserve value ownership without changing the collection count.</summary>
     internal Span<T> AsMutableSpan() => _items.AsSpan(0, _count);
 
@@ -492,15 +486,15 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
         _count = 0;
     }
 
-    internal void Sort(ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal void Sort(CancellationToken cancellationToken)
     {
         if (_count < 2) return;
         Comparer<T> comparer = Comparer<T>.Default;
-        for (int root = _count / 2 - 1; root >= 0; root--) SiftDown(root, _count, comparer, workCounter, cancellationToken);
+        for (int root = _count / 2 - 1; root >= 0; root--) SiftDown(root, _count, comparer, cancellationToken);
         for (int end = _count - 1; end > 0; end--)
         {
             (_items[0], _items[end]) = (_items[end], _items[0]);
-            SiftDown(0, end, comparer, workCounter, cancellationToken);
+            SiftDown(0, end, comparer, cancellationToken);
         }
     }
 
@@ -581,35 +575,30 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
 
     private void CopyWithCheckpoints(ReadOnlySpan<T> source, Span<T> destination)
     {
-        if (_workCounter is null)
-        {
-            source.CopyTo(destination);
-            return;
-        }
         for (int offset = 0; offset < source.Length; offset += CopyCheckpointItems)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             int count = Math.Min(CopyCheckpointItems, source.Length - offset);
             source.Slice(offset, count).CopyTo(destination.Slice(offset, count));
         }
     }
 
-    private void SiftDown(int root, int length, Comparer<T> comparer, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private void SiftDown(int root, int length, Comparer<T> comparer, CancellationToken cancellationToken)
     {
         while (root < length / 2)
         {
             int child = root * 2 + 1;
-            int largest = Compare(root, child, comparer, workCounter, cancellationToken) < 0 ? child : root;
-            if (child + 1 < length && Compare(largest, child + 1, comparer, workCounter, cancellationToken) < 0) largest = child + 1;
+            int largest = Compare(root, child, comparer, cancellationToken) < 0 ? child : root;
+            if (child + 1 < length && Compare(largest, child + 1, comparer, cancellationToken) < 0) largest = child + 1;
             if (largest == root) return;
             (_items[root], _items[largest]) = (_items[largest], _items[root]);
             root = largest;
         }
     }
 
-    private int Compare(int left, int right, Comparer<T> comparer, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private int Compare(int left, int right, Comparer<T> comparer, CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         return comparer.Compare(_items[left], _items[right]);
     }
 }
@@ -649,7 +638,7 @@ internal sealed class BudgetedParserDictionary<TKey, TValue> : IDisposable where
 
     internal bool TryGetValue(TKey key, out TValue value) => _items.TryGetValue(key, out value);
 
-    /// <summary>Replaces a known entry without allocation or growth; the caller charges work and owns any value resources.</summary>
+    /// <summary>Replaces a known entry without allocation or growth; the caller owns any value resources.</summary>
     internal void Replace(TKey key, TValue value)
     {
         if (!_items.ContainsKey(key)) throw new InvalidOperationException("Only retained dictionary entries can be replaced.");

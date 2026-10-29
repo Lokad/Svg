@@ -51,28 +51,20 @@ public sealed class SvgVectorEffectTests
     }
 
     [Fact]
-    public void Instance_host_construction_releases_owners_on_work_memory_denial_and_retry()
+    public void Instance_host_construction_releases_owners_on_memory_denial_and_retry()
     {
         byte[] input = TextEncoding.UTF8.GetBytes(Document("viewBox='0 0 4 4'", "<defs><path id='p' vector-effect='inherit' d='M1 1C1 3 3 3 3 1' fill='none' stroke='red' stroke-width='.5'/></defs><use href='#p' transform='scale(1.1)' vector-effect='non-scaling-stroke'/>"));
         SvgRenderOptions options = SvgRenderOptions.Default;
         RenderBudget measured = new(8_000_000);
-        ParserWorkCounter work = new(1_000_000);
         SvgAffineTransform outputMap = SvgPreparationTestHelper.GetOutputMap(input, options, measured, CancellationToken.None);
         byte[] expected;
-        using (SvgRoot root = SvgRootParser.Parse(input, options.Limits, measured, null, work, CancellationToken.None, outputMap, null))
+        using (SvgRoot root = SvgRootParser.Parse(input, options.Limits, measured, null, CancellationToken.None, outputMap, null))
             expected = SvgConverter.ConvertToPng(root, options, measured, CancellationToken.None).ToArray();
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { 0, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(8_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgRootParser.Parse(input, options.Limits, denied, null, new(limit), CancellationToken.None, outputMap, null)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget memory = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
-            using SvgRoot root = SvgRootParser.Parse(input, options.Limits, memory, null, new(1_000_000), CancellationToken.None, outputMap, null);
+            using SvgRoot root = SvgRootParser.Parse(input, options.Limits, memory, null, CancellationToken.None, outputMap, null);
             SvgConverter.ConvertToPng(root, options, memory, CancellationToken.None);
         }).ErrorCode);
         Assert.Equal(0, memory.Snapshot().CurrentBytes);
@@ -86,7 +78,7 @@ public sealed class SvgVectorEffectTests
         RenderBudget budget = new(8_000_000);
         SvgRenderOptions options = SvgRenderOptions.Default;
         SvgAffineTransform outputMap = SvgPreparationTestHelper.GetOutputMap(input, options, budget, CancellationToken.None);
-        using (SvgRoot root = SvgRootParser.Parse(input, options.Limits, budget, null, new(1_000_000), CancellationToken.None, outputMap, null))
+        using (SvgRoot root = SvgRootParser.Parse(input, options.Limits, budget, null, CancellationToken.None, outputMap, null))
         {
             byte[] expected;
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, budget, CancellationToken.None)) expected = surface.Pixels.ToArray();

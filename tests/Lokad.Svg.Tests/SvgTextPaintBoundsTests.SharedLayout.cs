@@ -30,7 +30,7 @@ public sealed partial class SvgTextPaintBoundsTests
         Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
         double[] expected = row.GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux").EnumerateArray().Select(value => value.GetDouble()).ToArray();
         RenderBudget budget = new(8_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, new(10_000_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None))
         {
             int paintedGlyphs = 0;
             foreach (SvgGeometry geometry in root.Geometries)

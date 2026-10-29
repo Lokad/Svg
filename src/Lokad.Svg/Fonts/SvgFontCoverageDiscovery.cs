@@ -12,7 +12,7 @@ internal readonly record struct SvgFontCoverageRequest(SvgFontFaceRequest Reques
 /// output; positioning belongs to later layout and is not accepted here. Materialization releases
 /// collection storage and retains the scalar copies under one aggregate reservation through font
 /// acquisition. Callers finish all borrowers before disposal; use is confined to one operation.
-/// Every scalar and retained-entry scan observes the supplied work/token context.</remarks>
+/// Every scalar and retained-entry scan observes the supplied cancellation token context.</remarks>
 internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
 {
     private readonly record struct FontKey(string Family, int Weight, bool Italic)
@@ -25,7 +25,6 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     private readonly record struct Entry(FontKey Font, uint Scalar);
     private readonly BudgetedParserDictionary<Entry, Entry> _entries;
     private readonly RenderBudget _budget;
-    private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private SvgTextWhitespaceNormalizer _normalizer;
     private FontKey _font = new(string.Empty, 400, false);
@@ -37,9 +36,9 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     private SvgFontCoverageRequest[]? _requests;
     private bool _disposed;
 
-    internal SvgFontCoverageDiscovery(RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal SvgFontCoverageDiscovery(RenderBudget budget, CancellationToken token)
     {
-        _budget = budget; _work = work; _token = token;
+        _budget = budget; _token = token;
         _entries = new(budget, SvgMemoryCategory.Parser, 128);
     }
 
@@ -53,7 +52,7 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
         => _font = new(font.Family ?? "serif", font.Weight, font.Italic);
 
     internal void Observe(ReadOnlySpan<char> value, SvgTextWhitespaceMode mode)
-        => _normalizer.Append(value, mode, this, int.MaxValue, _work, _token);
+        => _normalizer.Append(value, mode, this, int.MaxValue, _token);
 
     internal void ObserveNormalized(SvgFontFaceRequest request, ReadOnlySpan<char> value)
         => AddScalars(new(request.Family, request.Weight, request.Italic), value);
@@ -62,10 +61,10 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (_requests is not null) throw new InvalidOperationException("Coverage collection has already finished.");
-        using BudgetedParserList<uint> scalars = new(_budget, SvgMemoryCategory.Parser, _work, _token);
+        using BudgetedParserList<uint> scalars = new(_budget, SvgMemoryCategory.Parser, _token);
         foreach (Entry entry in _entries.Values)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (entry.Font.Matches(request)) scalars.Add(entry.Scalar);
         }
         long bytes = checked(32L + sizeof(uint) * (long)scalars.Count);
@@ -95,7 +94,7 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
         SvgFontCoverageRequest[] result = new SvgFontCoverageRequest[requests.Length];
         for (int index = 0; index < requests.Length; index++)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             result[index] = new(requests[index], GetScalars(requests[index]));
         }
         _requests = result;
@@ -103,7 +102,7 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     }
 
     /// <summary>Consumes a borrowed normalized span, retaining only distinct font/scalar pairs and a pending separator owner.</summary>
-    public void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    public void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, CancellationToken cancellationToken)
     {
         if (value.IsEmpty) return;
         if (_separator is {} separator) { AddScalar(separator, 32); _separator = null; }
@@ -111,15 +110,15 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     }
 
     /// <summary>Defers a separator until subsequent text proves that it survives normalization; no caller storage is retained.</summary>
-    public void AppendCollapsedWhitespace(double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    public void AppendCollapsedWhitespace(double letterSpacing, int scopeDepth, int maximumLength, CancellationToken cancellationToken)
     {
-        workCounter.Consume(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         if (_hasOutput) _separator ??= _font;
     }
 
-    void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, CancellationToken cancellationToken)
         => throw new InvalidOperationException("Coverage discovery consumes normalized characters, not positioning events.");
-    void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionLists lists, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionLists lists, int scopeDepth, CancellationToken cancellationToken)
         => throw new InvalidOperationException("Coverage discovery consumes normalized characters, not positioning events.");
     void ISvgTextOutput.ExitPositioningSpan(int scopeDepth)
         => throw new InvalidOperationException("Coverage discovery consumes normalized characters, not positioning events.");
@@ -139,7 +138,7 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
 
     private void AddScalar(FontKey font, uint scalar)
     {
-        _work.Consume(_token);
+        _token.ThrowIfCancellationRequested();
         Entry entry = new(font, scalar);
         if (_entries.TryGetValue(entry, out _)) return;
         if (_count == SvgTextLimits.MaximumCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Font coverage needs exceed the admitted text bound.");

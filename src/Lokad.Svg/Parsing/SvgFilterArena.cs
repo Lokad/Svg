@@ -65,7 +65,6 @@ internal sealed class SvgFilterArena : IDisposable
     private readonly record struct SourceRange(int First, int End);
 
     private readonly RenderBudget.BudgetReservation _owner;
-    private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private readonly BudgetedSceneList<SvgFilterResource> _resources;
     private readonly BudgetedSceneList<SvgFilterBinding> _bindings;
@@ -77,22 +76,21 @@ internal sealed class SvgFilterArena : IDisposable
     private SvgFilterArena? _resourceSource;
     internal bool HasBindings => _bindings.Count != 0;
 
-    private SvgFilterArena(RenderBudget budget, ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation owner)
+    private SvgFilterArena(RenderBudget budget, CancellationToken token, RenderBudget.BudgetReservation owner)
     {
         _owner = owner;
-        _work = work;
         _token = token;
-        _resources = new(budget, work, token);
-        _bindings = new(budget, work, token);
+        _resources = new(budget, token);
+        _bindings = new(budget, token);
         _names = new(budget, SvgMemoryCategory.Parser, 72);
         _strings = new(budget);
     }
 
-    internal static SvgFilterArena Create(RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static SvgFilterArena Create(RenderBudget budget, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         RenderBudget.BudgetReservation owner = budget.Reserve(512, SvgMemoryCategory.Scene);
-        try { return new(budget, work, token, owner); }
+        try { return new(budget, token, owner); }
         catch { owner.Dispose(); throw; }
     }
 
@@ -102,7 +100,7 @@ internal sealed class SvgFilterArena : IDisposable
         if (_sealed || _disposed || _resourceSource is not null) throw new InvalidOperationException("Filter resource construction is closed.");
         BudgetedParserDictionary<string, int> names = _names ?? throw new InvalidOperationException("Filter names are unavailable.");
         BudgetedParserStringStore strings = _strings ?? throw new InvalidOperationException("Filter strings are unavailable.");
-        _work.Consume(_token);
+        _token.ThrowIfCancellationRequested();
         if (!names.TryAdd(strings.Copy(id), _resources.Count)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG filter ids must be unique.");
         _resources.Add(resource);
     }
@@ -143,16 +141,16 @@ internal sealed class SvgFilterArena : IDisposable
 
     /// <summary>Resolves forward output clips through the document's existing bounded clip registry before emission.</summary>
     /// <remarks>Bindings borrow parser-owned operations. Command emission adopts native clip content into the scene;
-    /// sealing drops these borrowed references before parser disposal. Work, cancellation and owners are shared.</remarks>
+    /// sealing drops these borrowed references before parser disposal. Cancellation and owners are shared.</remarks>
     internal void ResolveOutputClips(SvgDocumentState state, SvgSceneBuilder scene)
     {
         if (!_hasPendingClips) return;
         if (_sealed || _disposed) throw new InvalidOperationException("Filter construction is closed.");
-        using BudgetedParserList<SourceRange> ranges = new(state.Budget, SvgMemoryCategory.Parser, _work, _token);
+        using BudgetedParserList<SourceRange> ranges = new(state.Budget, SvgMemoryCategory.Parser, _token);
         bool indexed = false;
         for (int index = 0; index < _bindings.Count; index++)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             SvgFilterBinding binding = _bindings[index];
             if (binding.ClipReferenceId is not {} id) continue;
             if (SvgClipPathSyntax.IsDisabled(id, state))
@@ -166,10 +164,10 @@ internal sealed class SvgFilterArena : IDisposable
             try
             {
                 if (state.ObjectClips.TryGetValue(id, out SvgClipBox fractions))
-                    clip = SvgLeafMaskComposition.NewBinding(state, TargetBounds().Register(fractions, state, _work, _token), null);
+                    clip = SvgLeafMaskComposition.NewBinding(state, TargetBounds().Register(fractions, state, _token), null);
                 else if (state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon) && polygon.IsObjectBoundingBox)
-                    clip = SvgLeafMaskComposition.NewBinding(state, TargetBounds().Register(polygon, state, _work, _token), null);
-                else clip = SvgClipPathSyntax.BindResourceClip(id, binding.Transform, null, state, _work, _token);
+                    clip = SvgLeafMaskComposition.NewBinding(state, TargetBounds().Register(polygon, state, _token), null);
+                else clip = SvgClipPathSyntax.BindResourceClip(id, binding.Transform, null, state, _token);
             }
             finally { state.DefinitionReplayScene = previous; }
             _bindings[index] = binding with { ClipReferenceId = null, OutputClip = clip };
@@ -183,13 +181,13 @@ internal sealed class SvgFilterArena : IDisposable
                     throw new SvgException(SvgErrorCode.MalformedInput, "Filter output clip requires a balanced source scope.");
                 for (int commandIndex = range.First + 1; commandIndex < range.End; commandIndex++)
                 {
-                    _work.Consume(_token);
+                    _token.ThrowIfCancellationRequested();
                     SvgDrawCommand command = scene.CommandAt(commandIndex);
                     if (command.Kind == SvgDrawCommandKind.Geometry)
                     {
                         SvgGeometry geometry = scene.GeometryAt(command.GeometryIndex);
                         if (!scene.GetRecordedPaintValue(geometry.RecordedPaint).IsMarkerContent)
-                            target.Add(geometry, state, _work, _token);
+                            target.Add(geometry, state, _token);
                     }
                 }
                 return target;
@@ -202,10 +200,10 @@ internal sealed class SvgFilterArena : IDisposable
         void IndexSources()
         {
             for (int index = 0; index < _bindings.Count; index++) ranges.Add(new(-1, -1));
-            using BudgetedParserList<int> stack = new(state.Budget, SvgMemoryCategory.Parser, _work, _token);
+            using BudgetedParserList<int> stack = new(state.Budget, SvgMemoryCategory.Parser, _token);
             for (int commandIndex = 0; commandIndex < scene.CommandCount; commandIndex++)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 SvgDrawCommand command = scene.CommandAt(commandIndex);
                 if (command.Kind == SvgDrawCommandKind.BeginGroup)
                 {
@@ -255,16 +253,16 @@ internal sealed class SvgFilterArena : IDisposable
     internal void SetSourceBounds(int index, SvgPaintBounds objectBounds, SvgPaintBounds visualBounds, SvgPaintBounds? parameterObjectBounds)
     {
         if (_sealed || _disposed) throw new InvalidOperationException("Filter construction is closed.");
-        _work.Consume(_token);
+        _token.ThrowIfCancellationRequested();
         SvgFilterBinding binding = _bindings[index];
         _bindings[index] = binding with { ObjectBounds = binding.GroupSource ? objectBounds : binding.ObjectBounds,
             VisualBounds = binding.GroupSource ? visualBounds : binding.VisualBounds, ParameterObjectBounds = parameterObjectBounds };
     }
 
-    /// <summary>Validates a borrowed local resource ID before sealing, charging work/cancellation without creating a binding.</summary>
+    /// <summary>Validates a borrowed local resource ID before sealing, observing cancellation without creating a binding.</summary>
     internal int ResolveReference(string id)
     {
-        _work.Consume(_token);
+        _token.ThrowIfCancellationRequested();
         SvgFilterArena definitions = _resourceSource ?? this;
         BudgetedParserDictionary<string, int> names = definitions._names ?? throw new InvalidOperationException("Filter names are unavailable.");
         if (!names.TryGetValue(id, out int resource))
@@ -280,7 +278,7 @@ internal sealed class SvgFilterArena : IDisposable
         SvgFilterArena definitions = _resourceSource ?? this;
         for (int index = 0; index < _bindings.Count; index++)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             SvgFilterBinding binding = _bindings[index];
             int resource = binding.ResourceIndex;
             if (resource < 0) resource = binding.ReferenceId is {} id ? ResolveReference(id)

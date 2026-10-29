@@ -59,24 +59,15 @@ public sealed class SvgMarkerPaintBindingTests
         byte[] original = input.ToArray();
         byte[] expected = Render(Document(paint, stroke, "path", "marker", "alias", false));
         RenderBudget measured = new(2_000_000);
-        ParserWorkCounter work = new(100_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(2_000_000);
-            using RenderBudget.BudgetReservation borrower = denied.Reserve(73, SvgMemoryCategory.Parser);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(73, denied.Snapshot().CurrentBytes);
-        }
         for (long limit = 1; limit < measured.Snapshot().PeakBytes; limit += 512) DenyMemory(limit);
         DenyMemory(measured.Snapshot().PeakBytes - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         RenderBudget canceled = new(2_000_000);
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
-            SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, new(100_000), cancellation.Token)).CancellationToken);
+            SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, canceled.Snapshot().CurrentBytes);
         Assert.Equal(expected, Render(input));
         Assert.Equal(original, input);
@@ -87,7 +78,7 @@ public sealed class SvgMarkerPaintBindingTests
             RenderBudget denied = new(limit + 73);
             using RenderBudget.BudgetReservation borrower = denied.Reserve(73, SvgMemoryCategory.Parser);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(100_000), CancellationToken.None)).ErrorCode);
+                SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(73, denied.Snapshot().CurrentBytes);
         }
     }
@@ -103,8 +94,7 @@ public sealed class SvgMarkerPaintBindingTests
         const string host = "<line x2='1' marker-start='url(#m)'/>";
         xml = xml.Replace(host, string.Concat(Enumerable.Repeat(host, count)), StringComparison.Ordinal);
         RenderBudget budget = new(10_000_000);
-        ParserWorkCounter work = new(count * 400 + 2000);
-        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml), SvgRenderLimits.Default, budget, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

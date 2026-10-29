@@ -134,13 +134,13 @@ public sealed class SvgPatternTileCacheTests
         using SvgRoot bands = BandRoot();
         SvgGeometry[] geometries = [bands.Geometries[0], bands.Geometries[1], SvgGeometry.FromRectangle(new(0, 0, 1, 1, new(0, 0, 255, 128), true, null)), bands.Geometries[2], bands.Geometries[3]];
         SvgDrawCommand[] commands = Enumerable.Range(0, geometries.Length).Select(index => new SvgDrawCommand(SvgDrawCommandKind.Geometry, index, 255, null, -1, 255)).ToArray();
-        using SvgRoot root = new(new(8, false), new(8, false), null, geometries, commands, false, 0, null);
+        using SvgRoot root = new(new(8, false), new(8, false), null, geometries, commands, false, null);
         // An explicit inert draw between each operation disables consecutive tile
         // retention without using admission refusal to select a rendering route.
         SvgGeometry[] controlGeometries = geometries.Append(SvgGeometry.FromRectangle(new(0, 0, 0, 0, SvgColor.Transparent, true, null))).ToArray();
         SvgDrawCommand inert = new(SvgDrawCommandKind.Geometry, geometries.Length, 255, null, -1, 255);
         SvgDrawCommand[] controlCommands = commands.SelectMany(command => new[] { command, inert }).ToArray();
-        using SvgRoot control = new(new(8, false), new(8, false), null, controlGeometries, controlCommands, false, 0, null);
+        using SvgRoot control = new(new(8, false), new(8, false), null, controlGeometries, controlCommands, false, null);
         RenderBudget normal = new(10_000), unretained = new(10_000);
         using (SvgConverter.RasterizedSurface current = SvgConverter.Rasterize(root, SvgRenderOptions.Default, normal, CancellationToken.None))
         using (SvgConverter.RasterizedSurface original = SvgConverter.Rasterize(control, SvgRenderOptions.Default, unretained, CancellationToken.None))
@@ -170,6 +170,6 @@ public sealed class SvgPatternTileCacheTests
         SvgRectangle[] fills = [new(0, 0, 8, 2, default, true, null), new(0, 6, 8, 2, default, true, null), new(0, 2, 2, 4, default, true, null), new(6, 2, 2, 4, default, true, null)];
         SvgGeometry[] geometries = fills.Select(fill => SvgGeometry.FromPatternFill(Pattern(fill, "same"))).ToArray();
         SvgDrawCommand[] commands = Enumerable.Range(0, geometries.Length).Select(index => new SvgDrawCommand(SvgDrawCommandKind.Geometry, index, 255, null, -1, 255)).ToArray();
-        return new(new(8, false), new(8, false), null, geometries, commands, false, 0, null);
+        return new(new(8, false), new(8, false), null, geometries, commands, false, null);
     }
 }

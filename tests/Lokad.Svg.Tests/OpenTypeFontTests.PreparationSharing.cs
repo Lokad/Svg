@@ -14,7 +14,7 @@ public sealed partial class OpenTypeFontTests
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><text class='label'>A</text><style>.label { font-family: Example; }</style></svg>"u8.ToArray();
         var budget = new RenderBudget(8 * 1024 * 1024);
         using (SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, SvgRenderLimits.Default,
-            budget, new(long.MaxValue), CancellationToken.None))
+            budget, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
             using (RenderBudget.BudgetReservation competing = budget.Reserve(budget.AvailableBytes, SvgMemoryCategory.Parser))

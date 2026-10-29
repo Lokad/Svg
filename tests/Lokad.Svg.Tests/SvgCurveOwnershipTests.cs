@@ -50,30 +50,23 @@ public sealed class SvgCurveOwnershipTests
         Assert.NotEmpty(identity);
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
         RenderBudget measured = new(10_000_000);
-        ParserWorkCounter counter = new(1_000_000);
-        Assert.Equal(rejected ? SvgErrorCode.UnsupportedFeature : null, Parse(measured, counter));
+        Assert.Equal(rejected ? SvgErrorCode.UnsupportedFeature : null, Parse(measured));
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit <= counter.Used; limit++)
-        {
-            RenderBudget budget = new(10_000_000);
-            Assert.Equal(limit < counter.Used ? SvgErrorCode.LimitExceeded : rejected ? SvgErrorCode.UnsupportedFeature : null, Parse(budget, new(limit)));
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        }
         long peak = measured.Snapshot().PeakBytes;
         SortedSet<long> memoryLimits = new() { 1, peak - 1, peak, peak + 1 };
         for (long limit = 2048; limit < peak; limit += 2048) memoryLimits.Add(limit);
         foreach (long limit in memoryLimits)
         {
             RenderBudget budget = new(limit);
-            Assert.Equal(limit < peak ? SvgErrorCode.LimitExceeded : rejected ? SvgErrorCode.UnsupportedFeature : null, Parse(budget, new(1_000_000)));
+            Assert.Equal(limit < peak ? SvgErrorCode.LimitExceeded : rejected ? SvgErrorCode.UnsupportedFeature : null, Parse(budget));
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
 
-        SvgErrorCode? Parse(RenderBudget budget, ParserWorkCounter work)
+        SvgErrorCode? Parse(RenderBudget budget)
         {
             try
             {
-                using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, work, CancellationToken.None);
+                using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);
                 return scene.HasUnsupportedChild ? SvgErrorCode.UnsupportedFeature : null;
             }
             catch (SvgException exception) { return exception.ErrorCode; }

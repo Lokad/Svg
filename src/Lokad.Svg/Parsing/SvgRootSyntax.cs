@@ -20,9 +20,9 @@ internal readonly record struct SvgRootLength(double Value, bool IsPercentage)
 internal readonly record struct SvgRootSyntax(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox)
 {
     /// <summary>Applies the same winning dimension declarations during metadata inspection and scene parsing.</summary>
-    internal static SvgRootSyntax ParseComputed(XmlReader reader, InlineStyle inline, InlineStyle sheet, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgRootSyntax ParseComputed(XmlReader reader, InlineStyle inline, InlineStyle sheet, CancellationToken cancellationToken)
     {
-        SvgRootSyntax syntax = Parse(reader, workCounter, cancellationToken);
+        SvgRootSyntax syntax = Parse(reader, cancellationToken);
         string? width = SvgInlineStyleParser.MergeWithImportance(inline.GeometryWidth, inline.Important, InlineImportantProperties.GeometryWidth, sheet.GeometryWidth, sheet.Important);
         string? height = SvgInlineStyleParser.MergeWithImportance(inline.GeometryHeight, inline.Important, InlineImportantProperties.GeometryHeight, sheet.GeometryHeight, sheet.Important);
         return new(ParseStyleLength(width, "width") ?? syntax.Width, ParseStyleLength(height, "height") ?? syntax.Height, syntax.ViewBox);
@@ -38,14 +38,14 @@ internal readonly record struct SvgRootSyntax(SvgRootLength? Width, SvgRootLengt
         }
     }
 
-    internal static SvgRootSyntax Parse(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgRootSyntax Parse(XmlReader reader, CancellationToken cancellationToken)
     {
         // SVG 1.1 gives x and y no effect on the outermost svg element, so their
         // values are validated as finite lengths and then discarded. Nested svg
         // viewports keep their own offset handling.
         ValidateRootPosition(reader.GetAttribute("x"));
         ValidateRootPosition(reader.GetAttribute("y"));
-        return new(ParseLength("width"), ParseLength("height"), SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken));
+        return new(ParseLength("width"), ParseLength("height"), SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), cancellationToken));
 
         SvgRootLength? ParseLength(string attribute)
         {

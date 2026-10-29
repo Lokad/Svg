@@ -20,11 +20,11 @@ internal static partial class OpenTypeFont
 {
     /// <summary>Selects the bounded Windows LCD profile from borrowed gasp recommendations and the actual device size.</summary>
     /// <remarks>Adapts the pinned Skia Windows scaler. Owns no storage and performs no native calls.
-    /// Each visited range charges work and observes cancellation. Unknown versions use the native
+    /// Each visited range observes cancellation. Unknown versions use the native
     /// no-table fallback; malformed supported tables fail without reading outside their declared span.</remarks>
-    internal static OpenTypeWindowsGlyphProfile GetWindowsGlyphProfile(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, double deviceSize, ParserWorkCounter work, CancellationToken token)
+    internal static OpenTypeWindowsGlyphProfile GetWindowsGlyphProfile(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, double deviceSize, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767)
             throw new SvgException(SvgErrorCode.LimitExceeded, "The Windows font profile size exceeds its device bound.");
         if (metrics.Gasp is {} table)
@@ -43,7 +43,7 @@ internal static partial class OpenTypeFont
                 int previous = -1, selectedFlags = -1;
                 for (int index = 0; index < count; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     int maximum = ReadUInt16(data, 4 + index * 4);
                     if (maximum <= previous) throw InvalidFont("The gasp ranges must have increasing ppem bounds.");
                     if (selectedFlags < 0 && ppem <= maximum) selectedFlags = ReadUInt16(data, 6 + index * 4);

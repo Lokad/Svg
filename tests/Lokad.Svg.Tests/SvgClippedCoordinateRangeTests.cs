@@ -15,7 +15,7 @@ public sealed class SvgClippedCoordinateRangeTests
         {
             SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
             SvgAuthoredPath outline = Assert.IsType<SvgAuthoredPath>(path.StrokeOutline);
-            using SvgPreparedPathContours source = outline.PrepareSource(SvgAffineTransform.Identity, false, budget, new(1_000_000), CancellationToken.None);
+            using SvgPreparedPathContours source = outline.PrepareSource(SvgAffineTransform.Identity, false, budget, CancellationToken.None);
             SvgAnalyticContourPreparation preparation = new(source.Points, source.ContourEnds, [], false, source.Signs, SvgPolygonMapping.NativeFillEdges,
                 source.QuadSpans, source.CubicSpans, new(12, 12, 8_388_627, 20), 32, 32, source, outline.SceneMap);
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 12, 32, 12, 20, new(0, 32), new(new(0, 0, 32, 32)), SvgAnalyticPaintClip.Binary, 1_000_000, budget, out long _, out bool eligible, CancellationToken.None);

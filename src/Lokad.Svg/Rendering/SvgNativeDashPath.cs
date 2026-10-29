@@ -7,7 +7,7 @@ namespace Lokad.Svg.Rendering;
 /// <summary>Filters retained float curves into native dash verbs before stroking.</summary>
 /// <remarks>Owns temporary curve, knot, contour and interval lists; reserves their storage before allocation.
 /// The returned array transfers to one immutable authored-path owner. Every command, recursive measurement,
-/// dash interval, search, cut and copied verb charges work and checks cancellation. Per-curve scratch is bounded
+/// dash interval, search, cut and copied verb checks cancellation. Per-curve scratch is bounded
 /// stack storage. Denial releases all private output and temporary owners. Calls share no mutable state.</remarks>
 internal static class SvgNativeDashPath
 {
@@ -17,18 +17,18 @@ internal static class SvgNativeDashPath
 
     internal static OwnedParserArray<SvgAuthoredPathCommand> Filter(ReadOnlySpan<SvgAuthoredPathCommand> commands,
         ReadOnlySpan<double> intervals, double offset, double? pathLength, SvgAffineTransform pointMap, float resolutionScale,
-        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        RenderBudget budget, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         if (!(resolutionScale > 0) || !float.IsFinite(resolutionScale))
             throw new SvgException(SvgErrorCode.LimitExceeded, "Dash measurement scale exceeds the admitted numeric range.");
         // Covers five list owners and their simultaneous old/new reservation objects.
         using RenderBudget.BudgetReservation owners = budget.Reserve(1024, SvgMemoryCategory.Geometry);
-        using BudgetedParserList<Curve> curves = new(budget, SvgMemoryCategory.Geometry, work, token);
-        using BudgetedParserList<SvgCurveMeasureStep> steps = new(budget, SvgMemoryCategory.Geometry, work, token);
-        using BudgetedParserList<Contour> contours = new(budget, SvgMemoryCategory.Geometry, work, token);
-        using BudgetedParserList<float> pattern = new(budget, SvgMemoryCategory.Geometry, work, token);
-        using BudgetedParserList<SvgAuthoredPathCommand> output = new(budget, SvgMemoryCategory.Scene, work, token);
+        using BudgetedParserList<Curve> curves = new(budget, SvgMemoryCategory.Geometry, token);
+        using BudgetedParserList<SvgCurveMeasureStep> steps = new(budget, SvgMemoryCategory.Geometry, token);
+        using BudgetedParserList<Contour> contours = new(budget, SvgMemoryCategory.Geometry, token);
+        using BudgetedParserList<float> pattern = new(budget, SvgMemoryCategory.Geometry, token);
+        using BudgetedParserList<SvgAuthoredPathCommand> output = new(budget, SvgMemoryCategory.Scene, token);
         SvgDevicePoint current = default, first = default, filteredLast = default;
         float distance = 0;
         int firstCurve = 0;
@@ -39,7 +39,7 @@ internal static class SvgNativeDashPath
         Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
         foreach (SvgAuthoredPathCommand command in commands)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             switch (command.Verb)
             {
                 case SvgAuthoredPathVerb.Move:
@@ -65,7 +65,7 @@ internal static class SvgNativeDashPath
                     current = points[count - 1];
                     break;
                 case SvgAuthoredPathVerb.Arc:
-                    for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     int arcCount = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
                         (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0,
                         command.Third, arcs, token);
@@ -91,12 +91,12 @@ internal static class SvgNativeDashPath
         }
         if (active) FinishContour(false);
         double totalLength = 0;
-        foreach (Contour contour in contours.AsSpan()) { work.Consume(token); totalLength += contour.Distance; }
+        foreach (Contour contour in contours.AsSpan()) { token.ThrowIfCancellationRequested(); totalLength += contour.Distance; }
         double factor = pathLength is double declared && totalLength > 0 ? totalLength / declared : 1;
         float period = 0;
         foreach (double interval in intervals)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             float value = (float)(interval * factor);
             if (!float.IsFinite(value) || value < 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Dash intervals exceed the admitted numeric range.");
             pattern.Add(value); period += value;
@@ -116,7 +116,7 @@ internal static class SvgNativeDashPath
         float initialLength = pattern[0];
         for (int at = 0; at < pattern.Count; at++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             float gap = pattern[at];
             if (phaseOffset > gap || (phaseOffset == gap && gap != 0)) phaseOffset -= gap;
             else { initialIndex = at; initialLength = gap - phaseOffset; break; }
@@ -124,7 +124,7 @@ internal static class SvgNativeDashPath
         double dashCount = 0;
         foreach (Contour contour in contours.AsSpan())
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             dashCount += contour.Distance * (pattern.Count / 2d) / period;
             if (dashCount > 1_000_000) throw new SvgException(SvgErrorCode.LimitExceeded, "Dash construction exceeds the bounded segment count.");
             int index = initialIndex, stagnant = 0;
@@ -132,7 +132,7 @@ internal static class SvgNativeDashPath
             bool skipFirst = contour.Closed, added = false;
             while (at < contour.Distance)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 added = false;
                 if ((index & 1) == 0 && !skipFirst)
                 {
@@ -156,7 +156,7 @@ internal static class SvgNativeDashPath
 
         void FinishContour(bool closed)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (!float.IsFinite(distance)) throw new SvgException(SvgErrorCode.LimitExceeded, "Curve distances exceed the admitted numeric range.");
             if (curves.Count != firstCurve) contours.Add(new(firstCurve, curves.Count - firstCurve, distance, closed));
             firstCurve = curves.Count; distance = 0;
@@ -167,7 +167,7 @@ internal static class SvgNativeDashPath
             Span<SvgDevicePoint> mapped = stackalloc SvgDevicePoint[4];
             for (int at = 0; at < source.Length; at++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 float x = (float)source[at].X, y = (float)source[at].Y;
                 mapped[at] = new(((float)pointMap.A * x + (float)pointMap.C * y) + (float)pointMap.E,
                     ((float)pointMap.B * x + (float)pointMap.D * y) + (float)pointMap.F);
@@ -179,7 +179,7 @@ internal static class SvgNativeDashPath
                 mapped[1] = new((float)mapped[1].X + MathF.Max(1.001f, (float)mapped[1].X) * (1f / (1 << 12)), mapped[1].Y);
             Span<SvgCurveMeasureStep> measured = stackalloc SvgCurveMeasureStep[SvgCurveMeasure.MaximumStepCount];
             float initial = distance;
-            int count = SvgCurveMeasure.Measure(kind, mapped[..source.Length], weight, resolutionScale, initial, measured, out distance, work, token);
+            int count = SvgCurveMeasure.Measure(kind, mapped[..source.Length], weight, resolutionScale, initial, measured, out distance, token);
             if (count == 0) return;
             curves.Add(new(kind, weight, initial, distance, steps.Count, count, mapped[0], mapped[1], mapped[2], mapped[3]));
             steps.AddRange(measured[..count]);
@@ -187,22 +187,22 @@ internal static class SvgNativeDashPath
 
         void EmitInterval(Contour contour, float start, float stop, bool move)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             start = MathF.Max(0, start); stop = MathF.Min(contour.Distance, stop);
             if (!(start <= stop)) return;
             int firstIndex = FindCurve(contour, start), lastIndex = FindCurve(contour, stop);
             Span<SvgDevicePoint> source = stackalloc SvgDevicePoint[4], cut = stackalloc SvgDevicePoint[4];
             for (int at = firstIndex; at <= lastIndex; at++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 Curve curve = curves[at];
                 source[0] = curve.First; source[1] = curve.Second; source[2] = curve.Third; source[3] = curve.Fourth;
                 int pointCount = curve.Kind == SvgMeasuredCurveKind.Line ? 2 : curve.Kind == SvgMeasuredCurveKind.Cubic ? 4 : 3;
                 ReadOnlySpan<SvgCurveMeasureStep> knots = steps.AsSpan().Slice(curve.FirstStep, curve.StepCount);
-                float minimum = at == firstIndex ? SvgCurveMeasure.ParameterAt(knots, curve.InitialDistance, start, work, token) : 0;
-                float maximum = at == lastIndex ? SvgCurveMeasure.ParameterAt(knots, curve.InitialDistance, stop, work, token) : 1;
+                float minimum = at == firstIndex ? SvgCurveMeasure.ParameterAt(knots, curve.InitialDistance, start, token) : 0;
+                float maximum = at == lastIndex ? SvgCurveMeasure.ParameterAt(knots, curve.InitialDistance, stop, token) : 1;
                 bool valid = SvgCurveMeasure.Cut(curve.Kind, source[..pointCount], curve.Weight, minimum, maximum, cut,
-                    out SvgMeasuredCurveKind resultKind, out float resultWeight, work, token);
+                    out SvgMeasuredCurveKind resultKind, out float resultWeight, token);
                 if (move && at == firstIndex)
                 {
                     output.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, cut[0], default, default));
@@ -236,7 +236,7 @@ internal static class SvgNativeDashPath
             int low = contour.FirstCurve, high = low + contour.CurveCount - 1;
             while (low < high)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 int middle = (low + high) >> 1;
                 if (curves[middle].Distance < value) low = middle + 1; else high = middle;
             }

@@ -15,7 +15,7 @@ public sealed partial class TrueTypeHintingTests
         // scales to 21/64px and MDAP fits it to 20/64px, not zero.
         TrueTypeHintPoint[] points = [new(21, 21, 14, 14)];
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], points, [0], 48,
-            new(98304, 98304), Target with { Grid = (TrueTypeHintGrid)grid }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(98304, 98304), Target with { Grid = (TrueTypeHintGrid)grid }, new(long.MaxValue), CancellationToken.None);
         machine.Run(new byte[] { axis, 0xB0, 0, 0x2F }, TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expected, axis == 0 ? points[0].Y : points[0].X);
         Assert.Equal(21, axis == 0 ? points[0].X : points[0].Y);
@@ -31,7 +31,7 @@ public sealed partial class TrueTypeHintingTests
     public void ClearType_round_states_share_the_selected_horizontal_grid(byte round, int expected)
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], [], [], 48,
-            new(98304, 98304), Target with { Grid = TrueTypeHintGrid.ClearType }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(98304, 98304), Target with { Grid = TrueTypeHintGrid.ClearType }, new(long.MaxValue), CancellationToken.None);
         machine.Run(new byte[] { round, 0xB0, 21, 0x68, 0xB0, 0, 0x23, 0x42, 0xB8, 0xFF, 0xEB, 0x68, 0xB0, 1, 0x23, 0x42 }, TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expected, machine.Storage[0]); Assert.Equal(-expected, machine.Storage[1]);
     }
@@ -40,7 +40,7 @@ public sealed partial class TrueTypeHintingTests
     public void ClearType_preparation_rounding_remains_on_the_physical_grid()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 1, 0, 0), [], [], [], 48,
-            new(98304, 98304), Target with { Grid = TrueTypeHintGrid.ClearType }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(98304, 98304), Target with { Grid = TrueTypeHintGrid.ClearType }, new(long.MaxValue), CancellationToken.None);
         machine.Prepare(Convert.FromHexString("01B01568B0002342"), Target with { Grid = TrueTypeHintGrid.ClearType });
         Assert.Equal(0, machine.Storage[0]);
     }
@@ -52,7 +52,7 @@ public sealed partial class TrueTypeHintingTests
     {
         TrueTypeHintPoint[] points = [new(0, 0, 0, 0), new(20, 0, 20, 0)];
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], points, [1], 16,
-            new(65536, 65536), Target with { Grid = (TrueTypeHintGrid)grid }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(65536, 65536), Target with { Grid = (TrueTypeHintGrid)grid }, new(long.MaxValue), CancellationToken.None);
         machine.Run(Convert.FromHexString("B001C8"), TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expected, points[1].X);
     }
@@ -64,7 +64,7 @@ public sealed partial class TrueTypeHintingTests
     {
         TrueTypeHintPoint[] points = [new(0, 0, 0, 0), new(70, 0, 70, 0)];
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [95], points, [1], 16,
-            new(65536, 65536), Target with { Grid = (TrueTypeHintGrid)grid }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(65536, 65536), Target with { Grid = (TrueTypeHintGrid)grid }, new(long.MaxValue), CancellationToken.None);
         machine.Run(Convert.FromHexString("B10100E4"), TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expected, points[1].X);
     }
@@ -74,7 +74,7 @@ public sealed partial class TrueTypeHintingTests
     {
         RenderBudget budget = new(long.MaxValue);
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 16,
-            new(65536, 65536), Target with { Grid = (TrueTypeHintGrid)99 }, budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
+            new(65536, 65536), Target with { Grid = (TrueTypeHintGrid)99 }, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().PeakBytes);
     }
 
@@ -82,7 +82,7 @@ public sealed partial class TrueTypeHintingTests
     public void Preparation_transition_cannot_change_the_grid_policy()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 16,
-            new(65536, 65536), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(65536, 65536), Target, new(long.MaxValue), CancellationToken.None);
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => machine.Prepare(ReadOnlyMemory<byte>.Empty,
             Target with { Grid = TrueTypeHintGrid.ClearType })).ErrorCode);
     }

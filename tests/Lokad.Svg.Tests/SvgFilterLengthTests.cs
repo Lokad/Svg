@@ -61,7 +61,7 @@ public sealed class SvgFilterLengthTests
     [InlineData("scale(2) translate(33554432 0)", 67_108_856, 0)]
     public void Translate_lengths_resolve_before_composition_while_matrix_coefficients_keep_their_number_domain(string source, double x, double y)
     {
-        SvgAffineTransform transform = SvgGeometrySyntax.ParseTransform(source, new(1_000_000), CancellationToken.None);
+        SvgAffineTransform transform = SvgGeometrySyntax.ParseTransform(source, CancellationToken.None);
         Assert.Equal((x, y), (transform.E, transform.F));
     }
 
@@ -93,8 +93,7 @@ public sealed class SvgFilterLengthTests
         using XmlReader reader = XmlReader.Create(new StringReader("<filter xmlns='http://www.w3.org/2000/svg' id='f' filterUnits='userSpaceOnUse'" + region
             + "><feFlood" + region + "/></filter>"));
         Assert.True(reader.ReadToFollowing("filter"));
-        ParserWorkCounter work = new(1_000_000);
-        using SvgFilterDefinitionBuilder builder = SvgFilterDefinitionBuilder.Create(reader, budget, work, CancellationToken.None);
+        using SvgFilterDefinitionBuilder builder = SvgFilterDefinitionBuilder.Create(reader, budget, CancellationToken.None);
         Assert.True(reader.ReadToFollowing("feFlood"));
         builder.Add(reader, true);
         return builder.Finish();

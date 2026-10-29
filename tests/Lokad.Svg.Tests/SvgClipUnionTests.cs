@@ -14,7 +14,7 @@ public sealed class SvgClipUnionTests
         using (SvgAuthoredPath a = Source(false, false, budget))
         using (SvgAuthoredPath b = Source(true, false, budget))
         {
-            using (SvgAuthoredPath result = SvgClipUnion.ResolveNativeUnion(a, false, b, false, budget, new(1_000_000), CancellationToken.None))
+            using (SvgAuthoredPath result = SvgClipUnion.ResolveNativeUnion(a, false, b, false, budget, CancellationToken.None))
             {
                 SvgAuthoredPathCommand[] curves = result.Commands.ToArray().Where(command => command.Verb == SvgAuthoredPathVerb.Cubic).ToArray();
                 Assert.Equal(2, curves.Length);
@@ -24,7 +24,7 @@ public sealed class SvgClipUnionTests
                     && command.Second == new SvgDevicePoint(2.5, 0) && command.Third == new SvgDevicePoint(3, 0));
             }
             using (SvgAuthoredPath partial = Source(false, true, budget))
-            using (SvgAuthoredPath result = SvgClipUnion.ResolveNativeUnion(a, false, partial, false, budget, new(1_000_000), CancellationToken.None))
+            using (SvgAuthoredPath result = SvgClipUnion.ResolveNativeUnion(a, false, partial, false, budget, CancellationToken.None))
             {
                 SvgAuthoredPathCommand[] curves = result.Commands.ToArray().Where(command => command.Verb == SvgAuthoredPathVerb.Cubic).ToArray();
                 Assert.Equal(2, curves.Length);
@@ -37,7 +37,7 @@ public sealed class SvgClipUnionTests
 
         static SvgAuthoredPath Source(bool reflected, bool partial, RenderBudget budget)
         {
-            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, new(100_000), CancellationToken.None);
+            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, CancellationToken.None);
             commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(reflected ? 3 : 0, 0), default, default));
             commands.Add(new(SvgAuthoredPathVerb.Cubic, SvgAuthoredArcFlags.None, new(partial ? .5 : reflected ? 2 : 1, 0), new(partial ? 1 : reflected ? 1 : 2, 0), new(partial ? 1.5 : reflected ? 0 : 3, partial ? 3.375 : 27)));
             if (partial) commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(1.5, 27), default, default));
@@ -57,8 +57,7 @@ public sealed class SvgClipUnionTests
         using (SvgAuthoredPath oval = Ellipse(151, 83, 68, 43, SvgAffineTransform.FromRotationDegrees(11, 151, 83), sources))
         {
             SvgAuthoredPathCommand[] unchanged = circle.Commands.ToArray();
-            ParserWorkCounter work = new(10_000_000);
-            using (SvgAuthoredPath result = SvgClipUnion.ResolveNativeUnion(circle, false, oval, false, budget, work, CancellationToken.None))
+            using (SvgAuthoredPath result = SvgClipUnion.ResolveNativeUnion(circle, false, oval, false, budget, CancellationToken.None))
             {
                 // Independent native boundary observation; the unchanged platform
                 // PNG controls separately establish the complete raster result.
@@ -73,17 +72,15 @@ public sealed class SvgClipUnionTests
             {
                 RenderBudget denied = new(limit);
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                    SvgClipUnion.ResolveNativeUnion(circle, false, oval, false, denied, new(10_000_000), CancellationToken.None)).ErrorCode);
+                    SvgClipUnion.ResolveNativeUnion(circle, false, oval, false, denied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, denied.Snapshot().CurrentBytes);
             }
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgClipUnion.ResolveNativeUnion(circle, false, oval, false, budget, new(work.Used - 1), CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new(); cancellation.Cancel();
             Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
-                SvgClipUnion.ResolveNativeUnion(circle, false, oval, false, budget, new(10_000_000), cancellation.Token)).CancellationToken);
+                SvgClipUnion.ResolveNativeUnion(circle, false, oval, false, budget, cancellation.Token)).CancellationToken);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            using (SvgAuthoredPath retry = SvgClipUnion.ResolveNativeUnion(circle, false, oval, false, budget, new(10_000_000), CancellationToken.None))
+            using (SvgAuthoredPath retry = SvgClipUnion.ResolveNativeUnion(circle, false, oval, false, budget, CancellationToken.None))
                 Assert.Equal(new SvgDevicePoint(115.44391632080078, 115.81839752197266), retry.Commands[0].First);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             Assert.Equal(unchanged, circle.Commands.ToArray());
@@ -92,7 +89,7 @@ public sealed class SvgClipUnionTests
 
         static SvgAuthoredPath Ellipse(double x, double y, double rx, double ry, SvgAffineTransform map, RenderBudget budget)
         {
-            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, new(1_000_000), CancellationToken.None);
+            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, CancellationToken.None);
             Assert.True(SvgOrthogonalGeometryLowering.AppendNativeEllipseCommands(commands, x, y, rx, ry));
             OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
             try { return SvgAuthoredPath.CreateConvexShape(owned, map, budget); }
@@ -104,9 +101,9 @@ public sealed class SvgClipUnionTests
     public void Unit_interval_roots_preserve_crossings_and_repeated_contacts()
     {
         Span<double> roots = stackalloc double[6];
-        Assert.Equal(4, SvgClipCurve.Roots([.09375, -.78125, 2.1875, -2.5, 1], roots, new(100_000), CancellationToken.None));
+        Assert.Equal(4, SvgClipCurve.Roots([.09375, -.78125, 2.1875, -2.5, 1], roots, CancellationToken.None));
         for (int index = 0; index < 4; index++) Assert.InRange(Math.Abs(roots[index] - (index + 1) * .25), 0, 1e-13);
-        Assert.Equal(2, SvgClipCurve.Roots([.03515625, -.375, 1.375, -2, 1], roots, new(100_000), CancellationToken.None));
+        Assert.Equal(2, SvgClipCurve.Roots([.03515625, -.375, 1.375, -2, 1], roots, CancellationToken.None));
         Assert.InRange(Math.Abs(roots[0] - .25), 0, 1e-13);
         Assert.InRange(Math.Abs(roots[1] - .75), 0, 1e-13);
     }
@@ -122,7 +119,7 @@ public sealed class SvgClipUnionTests
             coefficients = next;
         }
         Span<double> roots = stackalloc double[9];
-        Assert.Equal(9, SvgClipCurve.Roots(coefficients, roots, new(100_000), CancellationToken.None));
+        Assert.Equal(9, SvgClipCurve.Roots(coefficients, roots, CancellationToken.None));
         for (int index = 0; index < 9; index++) Assert.InRange(Math.Abs(roots[index] - index * .125), 0, 1e-8);
     }
 
@@ -163,8 +160,7 @@ public sealed class SvgClipUnionTests
             new(108, 117.26829528808594), new(108, 122)
         ];
         RenderBudget budget = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgAuthoredPath output = Assert.IsType<SvgAuthoredPath>(SvgClipUnion.ResolveCrossings(input, budget, work, CancellationToken.None)))
+        using (SvgAuthoredPath output = Assert.IsType<SvgAuthoredPath>(SvgClipUnion.ResolveCrossings(input, budget, CancellationToken.None)))
         {
             Assert.Equal(expected, output.Commands.ToArray().Where(command => command.Verb != SvgAuthoredPathVerb.Close).Select(command => command.First));
             Assert.Equal(SvgAuthoredPathVerb.Close, output.Commands[^1].Verb);
@@ -175,18 +171,16 @@ public sealed class SvgClipUnionTests
         {
             RenderBudget denied = new(limit);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgClipUnion.ResolveCrossings(input, denied, new(1_000_000), CancellationToken.None)).ErrorCode);
+                SvgClipUnion.ResolveCrossings(input, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgClipUnion.ResolveCrossings(input, budget, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
-            SvgClipUnion.ResolveCrossings(input, budget, new(1_000_000), cancellation.Token)).CancellationToken);
+            SvgClipUnion.ResolveCrossings(input, budget, cancellation.Token)).CancellationToken);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        using (SvgAuthoredPath retry = Assert.IsType<SvgAuthoredPath>(SvgClipUnion.ResolveCrossings(input, budget, new(1_000_000), CancellationToken.None)))
+        using (SvgAuthoredPath retry = Assert.IsType<SvgAuthoredPath>(SvgClipUnion.ResolveCrossings(input, budget, CancellationToken.None)))
             Assert.Equal(expected, retry.Commands.ToArray().Where(command => command.Verb != SvgAuthoredPathVerb.Close).Select(command => command.First));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -196,7 +190,7 @@ public sealed class SvgClipUnionTests
     {
         SvgClipPolygon input = new([new(0, 0), new(0, 4), new(4, 0), new(8, 0), new(8, 4), new(12, 0)], [3, 6]);
         RenderBudget budget = new(1_000_000);
-        Assert.Null(SvgClipUnion.ResolveCrossings(input, budget, new(1_000_000), CancellationToken.None));
+        Assert.Null(SvgClipUnion.ResolveCrossings(input, budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 }

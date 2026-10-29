@@ -78,30 +78,30 @@ internal enum InlineImportantProperties : long
 internal static class SvgInlineStyleParser
 {
     private enum Target : byte { Presentation, DirectText, Geometry, LocalUse }
-    internal static InlineStyle Parse(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => value is null ? default : Parse(value.AsSpan(), workCounter, cancellationToken);
+    internal static InlineStyle Parse(string? value, CancellationToken cancellationToken)
+        => value is null ? default : Parse(value.AsSpan(), cancellationToken);
 
     /// <summary>Parses inline paint declarations while tolerating the direct-text font declarations handled by text syntax.</summary>
-    internal static InlineStyle Parse(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
-        => value is null ? default : Parse(value.AsSpan(), workCounter, cancellationToken, allowsDirectTextFontProperties);
+    internal static InlineStyle Parse(string? value, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
+        => value is null ? default : Parse(value.AsSpan(), cancellationToken, allowsDirectTextFontProperties);
 
-    internal static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => ParseCore(value, workCounter, cancellationToken, null, Target.Presentation);
+    internal static InlineStyle Parse(ReadOnlySpan<char> value, CancellationToken cancellationToken)
+        => ParseCore(value, cancellationToken, null, Target.Presentation);
 
-    private static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
-        => ParseCore(value, workCounter, cancellationToken, null, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
+    private static InlineStyle Parse(ReadOnlySpan<char> value, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
+        => ParseCore(value, cancellationToken, null, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
 
-    internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
-        => ParseCore(value, workCounter, cancellationToken, strings, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
+    internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
+        => ParseCore(value, cancellationToken, strings, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
 
-    internal static InlineStyle ParseGeometry(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => value is null ? default : ParseCore(value.AsSpan(), workCounter, cancellationToken, null, Target.Geometry);
+    internal static InlineStyle ParseGeometry(string? value, CancellationToken cancellationToken)
+        => value is null ? default : ParseCore(value.AsSpan(), cancellationToken, null, Target.Geometry);
 
     /// <summary>Parses use declarations once, retaining the existing paint-only and container admission rules.</summary>
-    internal static InlineStyle ParseUse(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => value is null ? default : ParseCore(value.AsSpan(), workCounter, cancellationToken, null, Target.LocalUse);
+    internal static InlineStyle ParseUse(string? value, CancellationToken cancellationToken)
+        => value is null ? default : ParseCore(value.AsSpan(), cancellationToken, null, Target.LocalUse);
 
-    private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings, Target target)
+    private static InlineStyle ParseCore(ReadOnlySpan<char> value, CancellationToken cancellationToken, BudgetedParserStringStore? strings, Target target)
     {
         bool allowsDirectTextFontProperties = target == Target.DirectText;
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null, clipRule = null, paintOrder = null;
@@ -110,10 +110,10 @@ internal static class SvgInlineStyleParser
         string? markerStart = null, markerMid = null, markerEnd = null, filter = null, overflow = null;
         InlineImportantProperties important = InlineImportantProperties.None;
         Span<char> commentScratch = stackalloc char[2 * SvgSyntaxLimits.MaximumValueTokenCharacters + 1];
-        SvgInlineDeclarationReader declarations = new(value, workCounter, cancellationToken);
+        SvgInlineDeclarationReader declarations = new(value, cancellationToken);
         while (declarations.TryRead(out ReadOnlySpan<char> rawDeclaration))
         {
-            ReadOnlySpan<char> declaration = SvgCssComments.NormalizeDeclaration(rawDeclaration, commentScratch, workCounter, cancellationToken);
+            ReadOnlySpan<char> declaration = SvgCssComments.NormalizeDeclaration(rawDeclaration, commentScratch, cancellationToken);
             if (declaration.IsEmpty) continue;
             int separator = declaration.IndexOf(':');
             if (separator <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
@@ -159,8 +159,8 @@ internal static class SvgInlineStyleParser
                 Set(ref overflow, InlineImportantProperties.Overflow, property, propertyValue, strings, ref important, false);
             }
             else if (property.Equals("preserveAspectRatio", StringComparison.OrdinalIgnoreCase)) ValidateImagePreserveAspectRatioDeclaration(propertyValue);
-            else if (target == Target.Geometry && ValidateInertTypography(property, propertyValue, workCounter, cancellationToken)) { }
-            else if (ValidateRenderingDefaults(property, propertyValue, target == Target.Geometry, workCounter, cancellationToken)) { }
+            else if (target == Target.Geometry && ValidateInertTypography(property, propertyValue, cancellationToken)) { }
+            else if (ValidateRenderingDefaults(property, propertyValue, target == Target.Geometry, cancellationToken)) { }
             else if (property.Equals("font-variant", StringComparison.OrdinalIgnoreCase)) ValidateFontVariantDeclaration(propertyValue);
             else if (property.Equals("color-interpolation", StringComparison.OrdinalIgnoreCase)) ValidateColorInterpolationDeclaration(propertyValue);
             else if (property.Equals("marker", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-start", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-mid", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-end", StringComparison.OrdinalIgnoreCase))
@@ -175,7 +175,7 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("enable-background", StringComparison.OrdinalIgnoreCase))
             {
                 TryStripImportant(propertyValue, out ReadOnlySpan<char> stripped);
-                SvgInertPresentationSyntax.ValidateBackground(stripped, workCounter, cancellationToken);
+                SvgInertPresentationSyntax.ValidateBackground(stripped, cancellationToken);
             }
             else if (allowsDirectTextFontProperties && property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) Set(ref family, InlineImportantProperties.Family, property, propertyValue, strings, ref important, false);
             else if (allowsDirectTextFontProperties && property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) Set(ref weight, InlineImportantProperties.Weight, property, propertyValue, strings, ref important, false);
@@ -249,20 +249,20 @@ internal static class SvgInlineStyleParser
             SvgTextFontSyntax.ValidateFontVariant(stripped);
         }
 
-        static bool ValidateInertTypography(ReadOnlySpan<char> property, ReadOnlySpan<char> raw, ParserWorkCounter? work, CancellationToken token)
+        static bool ValidateInertTypography(ReadOnlySpan<char> property, ReadOnlySpan<char> raw, CancellationToken token)
         {
             TryStripImportant(raw, out ReadOnlySpan<char> value);
             if (ContainsUnquotedImportant(value))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
-            return SvgInertPresentationSyntax.TryValidateTypography(property, value, work, token);
+            return SvgInertPresentationSyntax.TryValidateTypography(property, value, token);
         }
 
-        static bool ValidateRenderingDefaults(ReadOnlySpan<char> property, ReadOnlySpan<char> raw, bool isGeometry, ParserWorkCounter? work, CancellationToken token)
+        static bool ValidateRenderingDefaults(ReadOnlySpan<char> property, ReadOnlySpan<char> raw, bool isGeometry, CancellationToken token)
         {
             TryStripImportant(raw, out ReadOnlySpan<char> value);
             if (ContainsUnquotedImportant(value))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
-            return SvgInertPresentationSyntax.TryValidateRenderingDefaults(property, value, isGeometry, work, token);
+            return SvgInertPresentationSyntax.TryValidateRenderingDefaults(property, value, isGeometry, token);
         }
 
         static void ValidateColorInterpolationDeclaration(ReadOnlySpan<char> rawValue)
@@ -382,15 +382,13 @@ internal static class SvgInlineStyleParser
     internal ref struct SvgInlineDeclarationReader
     {
         private readonly ReadOnlySpan<char> _value;
-        private readonly ParserWorkCounter? _workCounter;
         private readonly CancellationToken _cancellationToken;
         private int _position;
         private int _nextCheckpoint;
 
-        internal SvgInlineDeclarationReader(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        internal SvgInlineDeclarationReader(ReadOnlySpan<char> value, CancellationToken cancellationToken)
         {
             _value = value;
-            _workCounter = workCounter;
             _cancellationToken = cancellationToken;
         }
 
@@ -409,7 +407,7 @@ internal static class SvgInlineStyleParser
                         if (character == ';') break;
                         if (character == '/' && _position + 1 < _value.Length && _value[_position + 1] == '*')
                         {
-                            _position = SvgCssComments.SkipComment(_value, _position, _workCounter, _cancellationToken);
+                            _position = SvgCssComments.SkipComment(_value, _position, _cancellationToken);
                             ConsumeCheckpoints();
                             continue;
                         }
@@ -430,7 +428,7 @@ internal static class SvgInlineStyleParser
         {
             while (_nextCheckpoint <= _value.Length && _position >= _nextCheckpoint)
             {
-                _workCounter?.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 _nextCheckpoint += 4096;
             }
         }

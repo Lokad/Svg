@@ -23,5 +23,5 @@ public class FontIntegrityBenchmarks
     }
 
     [Benchmark]
-    public int VerifyProgramHash() => SvgFontProgramIntegrity.ComputeSha256(_program, null, CancellationToken.None).Length;
+    public int VerifyProgramHash() => SvgFontProgramIntegrity.ComputeSha256(_program, CancellationToken.None).Length;
 }

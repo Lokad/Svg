@@ -17,7 +17,7 @@ public sealed partial class OpenTypeFontTests
 
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
 
-        Assert.Equal(adjustment, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, null, CancellationToken.None));
+        Assert.Equal(adjustment, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, CancellationToken.None));
         Assert.Equal(unchanged, font);
     }
 
@@ -31,7 +31,7 @@ public sealed partial class OpenTypeFontTests
         byte[] font = WithLegacyKerning(source, 1);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
 
-        Assert.Equal(-300, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, null, CancellationToken.None));
+        Assert.Equal(-300, OpenTypeFont.GetPairAdjustment(font, 1, 1, metrics, CancellationToken.None));
     }
 
     [Fact]

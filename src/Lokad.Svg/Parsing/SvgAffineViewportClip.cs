@@ -14,21 +14,21 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
     internal bool IsExclusion { get; init; }
     /// <summary>Borrows disjoint rectangular exclusions until the parser emits one bounded compound clip.</summary>
     internal ReadOnlyMemory<SvgClipBox> ExcludedBoxes { get; init; }
-    internal (SvgClipBox Bounds, int ContentIndex) Register(SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
+    internal (SvgClipBox Bounds, int ContentIndex) Register(SvgDocumentState state, SvgSceneBuilder scene, CancellationToken token)
     {
         if (!ExcludedBoxes.IsEmpty)
         {
-            using BudgetedParserList<SvgDevicePoint> vertices = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
-            using BudgetedParserList<int> ends = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
+            using BudgetedParserList<SvgDevicePoint> vertices = new(state.Budget, SvgMemoryCategory.Geometry, token);
+            using BudgetedParserList<int> ends = new(state.Budget, SvgMemoryCategory.Geometry, token);
             if (!IsExclusion) Append(Box, vertices, ends);
             foreach (SvgClipBox hole in ExcludedBoxes.Span) Append(hole, vertices, ends);
-            return RegisterContour(vertices.AsSpan(), ends.AsSpan(), Map, IsExclusion ? SvgClipContentKind.BinaryExclusion : IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, true, state, scene, work, token, DrawMap);
+            return RegisterContour(vertices.AsSpan(), ends.AsSpan(), Map, IsExclusion ? SvgClipContentKind.BinaryExclusion : IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, true, state, scene, token, DrawMap);
         }
         float left = (float)Box.X, top = (float)Box.Y, right = (float)(Box.X + Box.Width), bottom = (float)(Box.Y + Box.Height);
         // Native rectangles start at top-left. A clipped closing edge must remain adjacent
         // to the preceding vertical piece so the existing edge builder can combine them.
         ReadOnlySpan<SvgDevicePoint> points = stackalloc SvgDevicePoint[] { new(left, top), new(right, top), new(right, bottom), new(left, bottom) };
-        return RegisterContour(points, [points.Length], Map, IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, false, state, scene, work, token, DrawMap);
+        return RegisterContour(points, [points.Length], Map, IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, false, state, scene, token, DrawMap);
 
         static void Append(SvgClipBox box, BudgetedParserList<SvgDevicePoint> vertices, BudgetedParserList<int> ends)
         {
@@ -43,16 +43,16 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
     /// mapping/copying observes caller work and cancellation. The scene owns a distinct copy after
     /// success; failure releases all temporary storage. Generic path clips retain raw classification.</remarks>
     internal static (SvgClipBox Bounds, int ContentIndex) RegisterContour(ReadOnlySpan<SvgDevicePoint> source, ReadOnlySpan<int> sourceEnds,
-        SvgAffineTransform map, SvgClipContentKind kind, SvgAuthoredPath? sourcePath, SvgPaintBounds? resourceBounds, bool isEvenOdd, SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
-        => RegisterContour(source, sourceEnds, map, kind, sourcePath, resourceBounds, isEvenOdd, state, scene, work, token, null);
+        SvgAffineTransform map, SvgClipContentKind kind, SvgAuthoredPath? sourcePath, SvgPaintBounds? resourceBounds, bool isEvenOdd, SvgDocumentState state, SvgSceneBuilder scene, CancellationToken token)
+        => RegisterContour(source, sourceEnds, map, kind, sourcePath, resourceBounds, isEvenOdd, state, scene, token, null);
 
     internal static (SvgClipBox Bounds, int ContentIndex) RegisterContour(ReadOnlySpan<SvgDevicePoint> source, ReadOnlySpan<int> sourceEnds,
-        SvgAffineTransform map, SvgClipContentKind kind, SvgAuthoredPath? sourcePath, SvgPaintBounds? resourceBounds, bool isEvenOdd, SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token, SvgViewportDrawMap? drawMap)
+        SvgAffineTransform map, SvgClipContentKind kind, SvgAuthoredPath? sourcePath, SvgPaintBounds? resourceBounds, bool isEvenOdd, SvgDocumentState state, SvgSceneBuilder scene, CancellationToken token, SvgViewportDrawMap? drawMap)
     {
         if (source.Length < 3) throw new ArgumentOutOfRangeException(nameof(source));
         if (sourceEnds.IsEmpty || sourceEnds[^1] != source.Length) throw new ArgumentOutOfRangeException(nameof(sourceEnds));
         RenderBudget budget = state.Budget;
-        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, work, token);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, token);
         using RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Length) + (isEvenOdd ? 2 : 1) * ParserCollectionMemory.GetArrayByteCount<int>(sourceEnds.Length), SvgMemoryCategory.Scene);
         SvgGeometry geometry = default;
         double x1 = double.PositiveInfinity, y1 = double.PositiveInfinity, x2 = double.NegativeInfinity, y2 = double.NegativeInfinity;
@@ -64,7 +64,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             int contour = 0, contourStart = 0;
             for (int index = 0; index < source.Length; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgDevicePoint point = SvgAuthoredPath.MapPoint(map, source[index], new(0, 0));
                 if (!double.IsFinite(point.X) || !double.IsFinite(point.Y) || drawMap is null && (Math.Abs(point.X) > int.MaxValue || Math.Abs(point.Y) > int.MaxValue))
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Clip coordinates exceed the admitted numeric range.");
@@ -85,7 +85,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             if (contour != sourceEnds.Length) throw new ArgumentOutOfRangeException(nameof(sourceEnds));
             if (sourcePath is not null)
             {
-                using SvgPreparedPathContours prepared = sourcePath.Prepare(map, false, budget, work, token);
+                using SvgPreparedPathContours prepared = sourcePath.Prepare(map, false, budget, token);
                 x1 = y1 = double.PositiveInfinity;
                 x2 = y2 = double.NegativeInfinity;
                 foreach (SvgDevicePoint point in prepared.Points) Include(point);
@@ -100,20 +100,20 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
                 {
                     // Layout resource bounds use native curve extrema, then the child's map.
                     // Control bounds still govern raster construction and culling above.
-                    SvgRectangle tight = SvgPathBounds.Compute(sourcePath.Commands, work, token);
+                    SvgRectangle tight = SvgPathBounds.Compute(sourcePath.Commands, token);
                     SvgPaintBounds visual = new((float)tight.X, (float)tight.Y,
                         (float)(tight.X + tight.Width), (float)(tight.Y + tight.Height));
-                    visual = resourceBounds ?? visual.Map(sourcePath.SceneMap, work, token);
+                    visual = resourceBounds ?? visual.Map(sourcePath.SceneMap, token);
                     IncludeSource(new(visual.Left, visual.Top));
                     IncludeSource(new(visual.Right, visual.Bottom));
                 }
                 else foreach (SvgDevicePoint point in source) IncludeSource(point);
                 SvgClipBox enclosing = new(Math.Floor(sourceLeft), Math.Floor(sourceTop), Math.Ceiling(sourceRight) - Math.Floor(sourceLeft), Math.Ceiling(sourceBottom) - Math.Floor(sourceTop));
-                boundsClipContentIndex = new SvgAffineViewportClip(enclosing, map).Register(state, scene, work, token).ContentIndex;
+                boundsClipContentIndex = new SvgAffineViewportClip(enclosing, map).Register(state, scene, token).ContentIndex;
 
                 void IncludeSource(SvgDevicePoint point)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     sourceLeft = Math.Min(sourceLeft, point.X); sourceTop = Math.Min(sourceTop, point.Y);
                     sourceRight = Math.Max(sourceRight, point.X); sourceBottom = Math.Max(sourceBottom, point.Y);
                 }
@@ -124,7 +124,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             // Axis-aligned bounds also retain native coverage: its trimmed bitmap
             // bounds can clip and reconstruct a curve at a fractional root scale.
             geometry = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(points, ends, signs, new(255, 255, 255, 255), true, isEvenOdd, SvgPolygonMapping.FiniteEdges, null, reservation, budget));
-            if (sourcePath is not null) geometry = geometry with { AuthoredPath = sourcePath.Copy(map, budget, work, token) };
+            if (sourcePath is not null) geometry = geometry with { AuthoredPath = sourcePath.Copy(map, budget, token) };
             else
             {
                 OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
@@ -139,7 +139,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
 
         void Include(SvgDevicePoint point)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (!double.IsFinite(point.X) || !double.IsFinite(point.Y) || Math.Abs(point.X) > int.MaxValue || Math.Abs(point.Y) > int.MaxValue)
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Clip coordinates exceed the admitted numeric range.");
             x1 = Math.Min(x1, point.X); y1 = Math.Min(y1, point.Y);

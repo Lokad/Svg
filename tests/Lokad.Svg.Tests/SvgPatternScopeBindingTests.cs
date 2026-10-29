@@ -14,8 +14,7 @@ public sealed class SvgPatternScopeBindingTests
     public void Separate_tile_group_clips_keep_linear_parser_work(int count)
     {
         RenderBudget budget = new(30_000_000);
-        ParserWorkCounter work = new(count * 150 + 2000);
-        using (SvgRoot root = SvgRootParser.Parse(Repeated(count, true), SvgRenderLimits.Default, budget, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(Repeated(count, true), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -35,8 +34,7 @@ public sealed class SvgPatternScopeBindingTests
             xml.Append("<pattern id='p").Append(index).Append("' patternUnits='userSpaceOnUse' width='8' height='8'><g clip-path='url(#c)'><rect width='4' height='4' fill='red'/></g></pattern>");
         xml.Append("<clipPath id='c'><rect width='8' height='8'/></clipPath></defs><rect width='8' height='8' fill='url(#p0)'/></svg>");
         RenderBudget budget = new(40_000_000);
-        ParserWorkCounter work = new(count * 250 + 2000);
-        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml.ToString()), SvgRenderLimits.Default, budget, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(xml.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -62,26 +60,19 @@ public sealed class SvgPatternScopeBindingTests
     }
 
     [Fact]
-    public void Scope_binding_releases_owners_on_work_memory_denial_and_cancellation()
+    public void Scope_binding_releases_owners_on_memory_denial_and_cancellation()
     {
         byte[] input = Mixed(true);
         RenderBudget measured = new(2_000_000);
-        ParserWorkCounter work = new(100_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(2_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         RenderBudget cancelled = new(2_000_000);
-        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, new(100_000), cancellation.Token)).CancellationToken);
+        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
 
         void DenyMemory(long limit)

@@ -36,16 +36,15 @@ public sealed class SvgMarkerCanvasTests
     public void Retained_path_metadata_allows_inverse_intermediates_until_complete_device_admission()
     {
         RenderBudget budget = new(2_000_000);
-        ParserWorkCounter work = new(1_000_000);
         using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect width='2' height='2' transform='matrix(1 0 .25 1 0 0)'/></svg>"u8.ToArray(),
             SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgAuthoredPath source = Assert.Single(root.Geometries).AuthoredPath ?? throw new InvalidOperationException();
-            using SvgAuthoredPath copied = source.Copy(SvgAffineTransform.FromScale(1e20, 1e20), budget, work, CancellationToken.None);
+            using SvgAuthoredPath copied = source.Copy(SvgAffineTransform.FromScale(1e20, 1e20), budget, CancellationToken.None);
             Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
                 new SvgViewportDrawMap(copied.SceneMap, SvgAffineTransform.Identity, copied.SceneMap)
                     .Prepare(SvgAffineTransform.Identity, copied.SceneMap)).ErrorCode);
-            using SvgPreparedPathContours restored = copied.Prepare(SvgAffineTransform.FromScale(1e-20, 1e-20), false, budget, work, CancellationToken.None);
+            using SvgPreparedPathContours restored = copied.Prepare(SvgAffineTransform.FromScale(1e-20, 1e-20), false, budget, CancellationToken.None);
             Assert.Contains(new SvgDevicePoint(2, 0), restored.Points);
             Assert.Contains(new SvgDevicePoint(2.5, 2), restored.Points);
         }

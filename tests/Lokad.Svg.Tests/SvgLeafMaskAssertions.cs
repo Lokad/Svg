@@ -63,7 +63,7 @@ internal static class SvgLeafMaskAssertions
         SvgMaskContent content = storage.MaskContents[begin.MaskContentIndex];
         Assert.Equal(SvgClipContentKind.AffineViewport, content.ClipKind);
         SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(Assert.Single(content.Geometries).AuthoredPath);
-        SvgRectangle bounds = SvgPathBounds.Compute(path.Commands, new(int.MaxValue), CancellationToken.None);
+        SvgRectangle bounds = SvgPathBounds.Compute(path.Commands, CancellationToken.None);
         Assert.Equal((sourceViewport.X, sourceViewport.Y, sourceViewport.Width, sourceViewport.Height),
             (bounds.X, bounds.Y, bounds.Width, bounds.Height));
         Assert.Equal(map, path.SceneMap);

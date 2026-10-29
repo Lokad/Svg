@@ -6,7 +6,7 @@ using Lokad.Svg.Rendering;
 using System.Runtime.CompilerServices;
 
 /// <summary>Represents the parsed root viewport dimensions before scene construction.</summary>
-internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, long ParserWorkUnits, SvgSceneStorage? SceneStorage) : IDisposable
+internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, SvgSceneStorage? SceneStorage) : IDisposable
 {
     internal SvgSourceDiagnostic? UnsupportedDiagnostic { get; init; }
 
@@ -104,11 +104,11 @@ internal readonly struct SvgGeometry
     }
 
     /// <summary>Copies authored ownership to a replacement geometry, composing its additional scene placement.</summary>
-    internal SvgGeometry CopyAuthoredPathTo(SvgGeometry replacement, SvgAffineTransform placement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal SvgGeometry CopyAuthoredPathTo(SvgGeometry replacement, SvgAffineTransform placement, RenderBudget budget, CancellationToken cancellationToken)
     {
         if (replacement.AuthoredPath is not null) throw new InvalidOperationException("Replacement already owns authored geometry.");
         if (AuthoredPath is null) return replacement;
-        try { return replacement with { AuthoredPath = AuthoredPath.Copy(placement, budget, workCounter, cancellationToken) }; }
+        try { return replacement with { AuthoredPath = AuthoredPath.Copy(placement, budget, cancellationToken) }; }
         catch { replacement.Dispose(); throw; }
     }
 
@@ -1172,7 +1172,6 @@ internal sealed class SvgSceneStorage : IDisposable
 internal sealed class SvgSceneBuilder : IDisposable
 {
     private readonly RenderBudget _budget;
-    private readonly ParserWorkCounter _workCounter;
     private readonly CancellationToken _cancellationToken;
     private readonly BudgetedSceneList<SvgGeometry> _geometries;
     private BudgetedSceneList<SvgDrawCommand> _commands;
@@ -1187,27 +1186,25 @@ internal sealed class SvgSceneBuilder : IDisposable
     private RenderBudget.BudgetReservation? _recordedPaintOwner;
     private BudgetedSceneList<SvgVectorContentOwner>? _vectorContents;
     private SvgFilterArena? _filters;
-    internal SvgFilterArena Filters => _filters ??= SvgFilterArena.Create(_budget, _workCounter, _cancellationToken);
+    internal SvgFilterArena Filters => _filters ??= SvgFilterArena.Create(_budget, _cancellationToken);
 
-    internal SvgSceneBuilder(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal SvgSceneBuilder(RenderBudget budget, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        ArgumentNullException.ThrowIfNull(workCounter);
         _budget = budget;
-        _workCounter = workCounter;
         _cancellationToken = cancellationToken;
-        _geometries = new(budget, workCounter, cancellationToken);
-        _commands = new(budget, workCounter, cancellationToken);
-        _maskContents = new(budget, workCounter, cancellationToken);
+        _geometries = new(budget, cancellationToken);
+        _commands = new(budget, cancellationToken);
+        _maskContents = new(budget, cancellationToken);
         _recordedPaintOwner = budget.Reserve(RecordedPaintOwnerBytes, SvgMemoryCategory.Scene);
-        try { _recordedPaintValues = new(budget, workCounter, cancellationToken); }
+        try { _recordedPaintValues = new(budget, cancellationToken); }
         catch { _recordedPaintOwner.Dispose(); throw; }
     }
 
     /// <summary>Adopts an immutable vector-scene owner once; a failed insertion leaves disposal to the caller.</summary>
     internal void AdoptVectorContent(SvgVectorContent content)
     {
-        _vectorContents ??= new(_budget, _workCounter, _cancellationToken);
+        _vectorContents ??= new(_budget, _cancellationToken);
         _vectorContents.Add(new(content));
     }
 
@@ -1225,7 +1222,7 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     internal SvgRecordedPaint RegisterRecordedPaint(SvgRecordedPaintValue value)
     {
-        _workCounter.Consume(_cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         _recordedPaintValues.Add(value);
         return new(_recordedPaintValues.Count);
     }
@@ -1240,10 +1237,10 @@ internal sealed class SvgSceneBuilder : IDisposable
     /// <summary>Reserves one immutable recording boundary before publishing it to source contexts.</summary>
     /// <remarks>The built scene owns the reservation, including failure/disposal paths. Parent nodes
     /// remain borrowed from the same document's scene owners. Construction is parser-thread confined;
-    /// native mapping charges shared work and cancellation before allocation.</remarks>
+    /// native mapping observes cancellation before allocation.</remarks>
     internal SvgRecordedTransform? RetainRecordedTransform(SvgRecordedTransform? parent, SvgAffineTransform map, SvgViewportFrame? viewport)
     {
-        _workCounter.Consume(_cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         // Recording metadata retains finite computed intermediates; geometry
         // admission owns coordinate-range checks after child maps compose.
         if (viewport is {} frame)
@@ -1266,10 +1263,10 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     /// <summary>Reserves a shared immutable native canvas stage before publishing it to paints and references.</summary>
     /// <remarks>The scene owns this conversion-thread reservation through transfer, failure and disposal.
-    /// Callers borrow the immutable stage; completed device maps retain admission and raster work/cancellation.</remarks>
+    /// Callers borrow the immutable stage; completed device maps retain admission and raster cancellation.</remarks>
     internal SvgNativeCanvasStage RetainNativeCanvasStage(SvgViewportDrawMap map)
     {
-        _workCounter.Consume(_cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         RenderBudget.BudgetReservation reservation = _budget.Reserve(SvgNativeCanvasStage.RetainedStorageBytes, SvgMemoryCategory.Scene);
         try
         {
@@ -1354,7 +1351,7 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     internal void ChangeRecordedPaint(SvgRecordedPaint reference, SvgRecordedPaintValue value)
     {
-        _workCounter.Consume(_cancellationToken);
+        _cancellationToken.ThrowIfCancellationRequested();
         if ((uint)(reference.Identity - 1) >= (uint)_recordedPaintValues.Count) throw new InvalidOperationException("Paint mutation is outside its owned arena.");
         _recordedPaintValues[reference.Identity - 1] = value;
     }
@@ -1453,7 +1450,7 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     /// <summary>Adopts a nonempty resolved reference batch into stable slots, returning the first extra geometry index.</summary>
     /// <remarks>Adopts the input owners on entry. On failure the scene keeps adopted geometries and this method
-    /// releases the remainder. Geometry growth charges work/storage and observes cancellation. The caller
+    /// releases the remainder. Geometry growth charges storage and observes cancellation. The caller
     /// binds empty references separately and batches extra commands; one geometry needs no command expansion. Single-threaded.</remarks>
     internal int AdoptReferenceGeometries(SvgSceneSlot slot, ReadOnlySpan<SvgGeometry> applied)
     {
@@ -1468,7 +1465,7 @@ internal sealed class SvgSceneBuilder : IDisposable
             int firstGeometryIndex = _geometries.Count;
             for (; adopted < applied.Length; adopted++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 _geometries.Add(applied[adopted]);
             }
             return firstGeometryIndex;
@@ -1480,7 +1477,7 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     /// <summary>Retains placed paint-clip metadata without materializing a scalar mask's pixels.</summary>
     /// <remarks>The scene owns the new slot and any copied contours. Existing registration reserves
-    /// storage and charges work/cancellation; borrowed vector content keeps its original owner.</remarks>
+    /// storage and observes cancellation; borrowed vector content keeps its original owner.</remarks>
     internal int BindMaskPaintRegion(int index, SvgClipBox clip)
     {
         SvgMaskContent content = index < 0 ? new([], 255, true) { ConstantAlpha = 255 } : _maskContents[index];
@@ -1503,7 +1500,7 @@ internal sealed class SvgSceneBuilder : IDisposable
             copied = new SvgGeometry[content.Geometries.Length];
             for (int index = 0; index < content.Geometries.Length; index++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 if (content.Geometries[index].Kind != SvgGeometryKind.PolygonFill) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid mask content is implemented.");
                 SvgPolygonFill polygon = content.Geometries[index].Polygon;
                 long bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(polygon.ContourEnds.Length) + (polygon.Signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(polygon.Signs.Length)) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(polygon.QuadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(polygon.CubicSpans.Length));
@@ -1520,28 +1517,28 @@ internal sealed class SvgSceneBuilder : IDisposable
                         signs = new int[sourceSigns.Length];
                         for (int sign = 0; sign < signs.Length; sign++)
                         {
-                            _workCounter.Consume(_cancellationToken);
+                            _cancellationToken.ThrowIfCancellationRequested();
                             signs[sign] = sourceSigns[sign];
                         }
                     }
                     for (int point = 0; point < points.Length; point++)
                     {
-                        _workCounter.Consume(_cancellationToken);
+                        _cancellationToken.ThrowIfCancellationRequested();
                         points[point] = polygon.Points[point];
                     }
                     for (int end = 0; end < ends.Length; end++)
                     {
-                        _workCounter.Consume(_cancellationToken);
+                        _cancellationToken.ThrowIfCancellationRequested();
                         ends[end] = polygon.ContourEnds[end];
                     }
                     for (int span = 0; span < quadSpans.Length; span++)
                     {
-                        _workCounter.Consume(_cancellationToken);
+                        _cancellationToken.ThrowIfCancellationRequested();
                         quadSpans[span] = polygon.QuadSpans[span];
                     }
                     for (int span = 0; span < cubicSpans.Length; span++)
                     {
-                        _workCounter.Consume(_cancellationToken);
+                        _cancellationToken.ThrowIfCancellationRequested();
                         cubicSpans[span] = polygon.CubicSpans[span];
                     }
                     copied[index] = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(points, ends, signs, quadSpans, cubicSpans, polygon.Color, polygon.HasFill, polygon.IsEvenOdd, polygon.Mapping, polygon.Clip, reservation, _budget));
@@ -1551,7 +1548,7 @@ internal sealed class SvgSceneBuilder : IDisposable
                     reservation.Dispose();
                     throw;
                 }
-                copied[index] = content.Geometries[index].CopyAuthoredPathTo(copied[index], SvgAffineTransform.Identity, _budget, _workCounter, _cancellationToken);
+                copied[index] = content.Geometries[index].CopyAuthoredPathTo(copied[index], SvgAffineTransform.Identity, _budget, _cancellationToken);
             }
             int contentIndex = _maskContents.Count;
             _maskContents.Add(new SvgMaskContent(copied, content.Luminance, content.IsAlpha) { ClipKind = content.ClipKind, BoundsClipContentIndex = content.BoundsClipContentIndex, DrawMap = content.DrawMap });
@@ -1583,10 +1580,10 @@ internal sealed class SvgSceneBuilder : IDisposable
         void ResolveGroupSources(SvgFilterArena filters)
         {
             int depth = 0;
-            using BudgetedParserList<SvgFilterSourceScope> sources = new(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
+            using BudgetedParserList<SvgFilterSourceScope> sources = new(_budget, SvgMemoryCategory.Parser, _cancellationToken);
             foreach (SvgDrawCommand command in _commands.Items)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 if (command.Kind == SvgDrawCommandKind.BeginGroup)
                 {
                     depth++;
@@ -1623,8 +1620,8 @@ internal sealed class SvgSceneBuilder : IDisposable
                 SvgPaintBounds? parameter = null;
                 if (filters.SourceTransformAt(parent.Binding).TryInvert(out SvgAffineTransform inverse))
                     parameter = authored is {} sourceBox
-                        ? sourceBox.Bounds.MapLayout(inverse.Compose(sourceBox.SceneMap), _workCounter, _cancellationToken)
-                        : box?.MapLayout(inverse, _workCounter, _cancellationToken);
+                        ? sourceBox.Bounds.MapLayout(inverse.Compose(sourceBox.SceneMap), _cancellationToken)
+                        : box?.MapLayout(inverse, _cancellationToken);
                 sources[^1] = parent with
                 {
                     ObjectBounds = box is {} objects ? Union(parent.ObjectBounds, objects) : parent.ObjectBounds,
@@ -1645,7 +1642,7 @@ internal sealed class SvgSceneBuilder : IDisposable
             int retained = 0;
             for (int index = 0; index < _commands.Count; index++)
             {
-                _workCounter.Consume(_cancellationToken);
+                _cancellationToken.ThrowIfCancellationRequested();
                 SvgDrawCommand command = _commands[index];
                 if (command.Kind == SvgDrawCommandKind.EndGroup && retained > 0
                     && _commands[retained - 1].Kind == SvgDrawCommandKind.BeginGroup
@@ -1690,16 +1687,14 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
 {
     private const int CopyCheckpointItems = 4_096;
     private readonly RenderBudget _budget;
-    private readonly ParserWorkCounter _workCounter;
     private readonly CancellationToken _cancellationToken;
     private T[] _items = [];
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
-    internal BudgetedSceneList(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal BudgetedSceneList(RenderBudget budget, CancellationToken cancellationToken)
     {
         _budget = budget;
-        _workCounter = workCounter;
         _cancellationToken = cancellationToken;
     }
 
@@ -1726,7 +1721,7 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         _count += items.Length;
     }
 
-    /// <summary>Inserts items at the given scene position, shifting later entries right under bounded work.</summary>
+    /// <summary>Inserts items at the given scene position, shifting later entries right with cancellation checks.</summary>
     internal void Insert(int index, ReadOnlySpan<T> items)
     {
         if ((uint)index > (uint)_count) throw new ArgumentOutOfRangeException(nameof(index));
@@ -1734,7 +1729,7 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         EnsureAdditionalCapacity(items.Length);
         for (int remaining = _count - index; remaining > 0; remaining -= CopyCheckpointItems)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             int count = Math.Min(CopyCheckpointItems, remaining);
             int sourceStart = index + remaining - count;
             _items.AsSpan(sourceStart, count).CopyTo(_items.AsSpan(sourceStart + items.Length, count));
@@ -1749,7 +1744,7 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         if ((uint)count > (uint)_count) throw new ArgumentOutOfRangeException(nameof(count));
         for (int offset = count; offset < _count; offset += CopyCheckpointItems)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             _items.AsSpan(offset, Math.Min(CopyCheckpointItems, _count - offset)).Clear();
         }
         _count = count;
@@ -1805,7 +1800,7 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
     {
         for (int offset = 0; offset < source.Length; offset += CopyCheckpointItems)
         {
-            _workCounter.Consume(_cancellationToken);
+            _cancellationToken.ThrowIfCancellationRequested();
             int count = Math.Min(CopyCheckpointItems, source.Length - offset);
             source.Slice(offset, count).CopyTo(destination.Slice(offset, count));
         }

@@ -65,17 +65,15 @@ public sealed class SvgSymbolContentTests
     }
 
     [Fact]
-    public void Exponential_expansion_observes_work_limits_and_releases_partial_output()
+    public void Exponential_expansion_releases_partial_output_after_memory_refusal()
     {
         StringBuilder content = new("<use href='#s0'/>");
         for (int index = 0; index < 24; index++)
             content.Append("<symbol id='s").Append(index).Append("'><use href='#s").Append(index + 1).Append("'/><use href='#s").Append(index + 1).Append("'/></symbol>");
         content.Append("<symbol id='s24'><circle r='3'/></symbol>");
         RenderBudget budget = new(100_000_000);
-        ParserWorkCounter work = new(50_000);
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(content.ToString()), SvgRenderLimits.Default, budget, null, work, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Input(content.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.True(work.Used >= 49_999);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using (SvgRoot retry = SvgRootParser.Parse(Input("<symbol id='s'><g><circle r='3'/></g></symbol><use href='#s'/>"), SvgRenderLimits.Default, budget, CancellationToken.None))
             Assert.Single(retry.Geometries);
@@ -89,10 +87,9 @@ public sealed class SvgSymbolContentTests
     public void Cancellation_during_content_sealing_preserves_sources_for_retry(int checkpoint)
     {
         RenderBudget budget = new(1_000_000);
-        ParserWorkCounter work = new(100_000);
         SvgSymbolPresentation presentation = new(SvgPaint.Default, SvgInheritedStrokeStyle.Default, null, false, null, null, SvgPaintOpacity.Opaque);
-        using (SvgDocumentState state = new(budget, work, CancellationToken.None))
-        using (SvgSymbolDefinitionBuilder builder = SvgSymbolDefinitionBuilder.Create(budget, work, CancellationToken.None, presentation))
+        using (SvgDocumentState state = new(budget, CancellationToken.None))
+        using (SvgSymbolDefinitionBuilder builder = SvgSymbolDefinitionBuilder.Create(budget, CancellationToken.None, presentation))
         {
             SvgPolygonFill fill = SvgPolygonFill.Create([new(0, 0), new(8, 0), new(0, 8)], [3], null, new(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
             try { builder.Add(new([SvgGeometry.FromPolygonFill(fill)], false, null, null) { SymbolFillBindings = [new(true, null, null)] }); }
@@ -100,17 +97,16 @@ public sealed class SvgSymbolContentTests
             SvgSymbolContent content = builder.EnableContent();
             content.BeginGroup(2, null, presentation, new(SvgPaint.Default, false, null, null, SvgPaintOpacity.Opaque, true, null), SvgAffineTransform.Identity);
             Assert.True(content.EndGroup(2, state));
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => builder.Build(null, state, new(0), CancellationToken.None)).ErrorCode);
             long retained = budget.Snapshot().CurrentBytes;
             using CancellationTokenSource cancellation = new();
             int copied = 0;
             builder.AssemblyCheckpoint = count => { copied = count; if (count == checkpoint) cancellation.Cancel(); };
-            OperationCanceledException cancelled = Assert.ThrowsAny<OperationCanceledException>(() => builder.Build(null, state, new(100_000), cancellation.Token));
+            OperationCanceledException cancelled = Assert.ThrowsAny<OperationCanceledException>(() => builder.Build(null, state, cancellation.Token));
             Assert.Equal(checkpoint, copied);
             Assert.Equal(cancellation.Token, cancelled.CancellationToken);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             builder.AssemblyCheckpoint = null;
-            SvgDefinition definition = builder.Build(null, state, new(100_000), CancellationToken.None);
+            SvgDefinition definition = builder.Build(null, state, CancellationToken.None);
             try
             {
                 SvgSymbolContentRange range = Assert.IsType<SvgSymbolContentRange>(definition.SymbolContent);
@@ -127,11 +123,11 @@ public sealed class SvgSymbolContentTests
     {
         RenderBudget budget = new(1_000_000);
         byte[] input = Input("<symbol id='s'><g font-family='Unused'><g><circle r='3'/></g></g></symbol><use href='#s'/><text font-family='Example'>A</text>");
-        Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(100_000), budget, CancellationToken.None)).Family);
+        Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None)).Family);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         byte[] lateStyle = Input("<symbol id='s'><g/></symbol><style>rect { fill: red; }</style><rect width='4' height='4'/>");
         Assert.Equal(SvgConverter.ConvertToPng(Input("<rect width='4' height='4' fill='red'/>"), SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(lateStyle, SvgRenderOptions.Default, CancellationToken.None).ToArray());
-        Assert.Empty(SvgFontRequestDiscovery.Discover(lateStyle, SvgRenderLimits.Default, new(100_000), budget, CancellationToken.None));
+        Assert.Empty(SvgFontRequestDiscovery.Discover(lateStyle, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

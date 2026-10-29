@@ -7,7 +7,7 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgRootStyleSheetParser
 {
     /// <summary>Scans bounded XML without a DOM; the caller owns the rules and copied declaration strings.</summary>
-    internal static void Collect(ReadOnlyMemory<byte> svg, XmlReaderSettings settings, SvgRenderLimits limits, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void Collect(ReadOnlyMemory<byte> svg, XmlReaderSettings settings, SvgRenderLimits limits, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         SvgPreparationProbe.Observe(SvgPreparationPhase.StyleSheets);
@@ -20,7 +20,7 @@ internal static class SvgRootStyleSheetParser
         int rootDepth = -1, descriptionDepth = -1, nodes = 0;
         while (reader.Read())
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (reader.NodeType == XmlNodeType.EndElement)
             {
                 if (reader.Depth == descriptionDepth) descriptionDepth = -1;
@@ -43,21 +43,21 @@ internal static class SvgRootStyleSheetParser
             }
             if (reader.LocalName != "style") continue;
             ThrowIfAttributed(reader);
-            using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken);
-            SvgStyleSheet.Parse(text.Value, limits.MaximumNodes, rules, strings, budget, workCounter, cancellationToken);
+            using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, cancellationToken);
+            SvgStyleSheet.Parse(text.Value, limits.MaximumNodes, rules, strings, budget, cancellationToken);
         }
     }
 
     /// <summary>Resolves root selectors through the ordinary bounded cascade, without a parent selector context.</summary>
-    /// <remarks>Declarations borrow the caller's stylesheet store until parsing completes. Matching consumes shared work and observes cancellation; the immutable result owns no storage.</remarks>
-    internal static InlineStyle ResolveRoot(string? id, string? classes, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <remarks>Declarations borrow the caller's stylesheet store until parsing completes. Matching consumes cancellation token; the immutable result owns no storage.</remarks>
+    internal static InlineStyle ResolveRoot(string? id, string? classes, BudgetedParserList<CssRule> rules, CancellationToken cancellationToken)
     {
         SvgStyleCascade cascade = new();
         for (int index = 0; index < rules.Count; index++)
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             CssRule rule = rules[index];
-            if (rule.MatchesRoot(id, classes, workCounter, cancellationToken)) cascade.Apply(rule.Style, rule.Specificity);
+            if (rule.MatchesRoot(id, classes, cancellationToken)) cascade.Apply(rule.Style, rule.Specificity);
         }
         return cascade.ToInlineStyle();
     }
@@ -78,7 +78,7 @@ internal static class SvgRootStyleSheetParser
     }
 
     /// <summary>Consumes an already collected stylesheet with bounded scratch, without retaining its text.</summary>
-    internal static void Consume(XmlReader reader, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void Consume(XmlReader reader, RenderBudget budget, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfAttributed(reader);
@@ -91,7 +91,7 @@ internal static class SvgRootStyleSheetParser
         {
             while (subtree.Read())
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 switch (subtree.NodeType)
                 {
                     case XmlNodeType.Text:
@@ -105,7 +105,7 @@ internal static class SvgRootStyleSheetParser
                         }
                         while (true)
                         {
-                            workCounter.Consume(cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
                             if (subtree.ReadValueChunk(chunk, 0, chunk.Length) == 0) break;
                         }
                         break;

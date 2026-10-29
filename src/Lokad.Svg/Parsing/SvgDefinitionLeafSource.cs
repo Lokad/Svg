@@ -10,7 +10,7 @@ internal enum SvgSourceContourRetention : byte { None = 0, Fill = 1, Stroke = 2 
 /// <summary>Retains one validated shape's immutable attributes and authored style for instance fill and stroke construction.</summary>
 /// <remarks>The document string store retains immutable values; the document reservation list owns the reader and
 /// attribute array. This is an attribute adapter for existing leaf lowerers, with no child tree or serialized XML.
-/// Replay is confined to the parser thread. Attribute scans charge work and observe cancellation.</remarks>
+/// Replay is confined to the parser thread. Attribute scans observe cancellation.</remarks>
 internal sealed class SvgDefinitionLeafSource : XmlReader
 {
     private readonly record struct Attribute(string Name, string LocalName, string Prefix, string Namespace, string Value);
@@ -25,7 +25,6 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     private readonly string? _constructedPaintServerFill;
     private readonly IReadOnlyDictionary<string, SvgColor> _colors;
     private readonly XmlNameTable _names = new NameTable();
-    private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private int _attribute = -1;
 
@@ -33,10 +32,10 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     private SvgDefinitionLeafSource(string element, Attribute[] attributes, SvgComputedStyle authored,
         SvgInheritedStrokeStyle constructedStroke, IReadOnlyDictionary<string, SvgColor> colors,
-        ParserWorkCounter work, CancellationToken token, string? constructedFillRule, bool unconstructed, SvgSolidPaint constructedCurrentColor, string? constructedPaintServerFill, SvgPaintOrder constructedPaintOrder)
+CancellationToken token, string? constructedFillRule, bool unconstructed, SvgSolidPaint constructedCurrentColor, string? constructedPaintServerFill, SvgPaintOrder constructedPaintOrder)
     {
         _element = element; _attributes = attributes; _authored = authored;
-        _constructedStroke = constructedStroke; _constructedPaintOrder = constructedPaintOrder; _colors = colors; _work = work; _token = token;
+        _constructedStroke = constructedStroke; _constructedPaintOrder = constructedPaintOrder; _colors = colors; _token = token;
         _constructedFillRule = constructedFillRule; _unconstructed = unconstructed; _constructedCurrentColor = constructedCurrentColor; _constructedPaintServerFill = constructedPaintServerFill;
     }
 
@@ -55,7 +54,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     private static SvgDefinitionLeafSource Capture(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, bool unconstructed)
     {
-        SvgComputedStyle raw = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, context.WorkCounter, context.CancellationToken);
+        SvgComputedStyle raw = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, context.CancellationToken);
         SvgComputedStyle authored = new(Copy(raw.Color), Copy(raw.Fill), Copy(raw.FillOpacity), Copy(raw.Stroke),
             Copy(raw.Display), Copy(raw.Visibility), Copy(raw.Opacity), Copy(raw.FillRule))
         {
@@ -71,7 +70,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             string element = state.Strings.Copy(reader.LocalName);
             for (int index = 0; index < attributes.Length; index++)
             {
-                context.WorkCounter.Consume(context.CancellationToken);
+                context.CancellationToken.ThrowIfCancellationRequested();
                 reader.MoveToAttribute(index);
                 string name = Copy(reader.Name) ?? throw new InvalidOperationException();
                 string localName = reader.LocalName;
@@ -80,7 +79,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             }
             reader.MoveToElement();
             SvgInheritedStrokeStyle constructed = context.InheritedStroke.ResolveChild(authored);
-            SvgDefinitionLeafSource source = new(element, attributes, authored, constructed, context.NamedColors, context.WorkCounter, context.CancellationToken, Copy(context.InheritedFillRule), unconstructed, context.InheritedPresentation.Paint.CurrentPaint, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder);
+            SvgDefinitionLeafSource source = new(element, attributes, authored, constructed, context.NamedColors, context.CancellationToken, Copy(context.InheritedFillRule), unconstructed, context.InheritedPresentation.Paint.CurrentPaint, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder);
             state.DefinitionReservations.Add(reservation);
             return source;
         }
@@ -89,7 +88,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         string? Copy(string? value)
         {
             if (value is null) return null;
-            context.WorkCounter.Consume(context.CancellationToken);
+            context.CancellationToken.ThrowIfCancellationRequested();
             return state.Strings.Copy(value);
         }
     }
@@ -98,7 +97,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     internal bool RequiresConstruction(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, SvgMarkerStyle markers)
     {
-        _work.Consume(_token);
+        _token.ThrowIfCancellationRequested();
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
         if (_authored.InheritsOpacity || _authored.InheritsDisplay) return true;
         if (_authored.Filter is string filter && filter.Trim() != "none") return true;
@@ -125,7 +124,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             Math.Sqrt(instancePlacement.C * instancePlacement.C + instancePlacement.D * instancePlacement.D));
         if (instanceMagnification == 0) instanceMagnification = 1;
         SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity) { NonScalingStroke = parentNonScalingStroke, TextMetrics = textMetrics, OwnOpacity = parentOpacity, ElementDisplay = parentDisplay, PaintOrder = paintOrder, Markers = markers }, SvgInheritedTextStyle.Default,
-            resolved, default, _colors, _work, _token, state.OutputMagnification * instanceMagnification, fillRule)
+            resolved, default, _colors, _token, state.OutputMagnification * instanceMagnification, fillRule)
         {
             // Inverse stroke-unit intermediates remain finite until complete draw placement.
             StrokeHostMap = state.OutputMap.Compose(instancePlacement),
@@ -142,21 +141,21 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     /// <summary>Replays a referenced image through ordinary decoding/placement with the complete instance map.</summary>
     /// <remarks>Source attributes and original limits stay borrowed from this document; lengths use the live instance viewport. The caller owns
-    /// returned image/path geometry; failed decode or binding releases partial owners under existing work/cancellation.</remarks>
+    /// returned image/path geometry; failed decode or binding releases partial owners under existing cancellation.</remarks>
     internal SvgDefinition LowerImage(SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
     {
         _attribute = -1;
         SvgAffineTransform placement = SvgReferenceResolver.PlainInstancePlacement(reference, frame);
         SvgPaintableElementContext context = new(new(reference.InheritedFill, reference.IsDisplayed, reference.IsVisible, placement)
             { TextMetrics = reference.TextMetrics, OwnOpacity = reference.ElementParentOpacity, ElementDisplay = reference.ElementParentDisplay }, SvgInheritedTextStyle.Default, reference.InheritedStroke,
-            default, _colors, _work, _token, state.OutputMagnification, reference.InheritedFillRule)
+            default, _colors, _token, state.OutputMagnification, reference.InheritedFillRule)
         { AuthoredStyle = _authored, LengthBases = reference.LengthBases, RecordingScope = reference.RecordingScope };
         SvgDefinition result = SvgDefinitionParser.LowerInstanceSource(this, context, state);
         try
         {
             // The viewport clips completed source effects, preserving their paint bindings and full input bounds.
             if (frame is { HasAffineClipScope: false } viewport && viewport.Clip != SvgClipBox.Unbounded)
-                SvgPaintRecording.WrapInstance(result.Geometries.AsSpan(), SvgPaintOpacity.Opaque, state.NewRecordingScope(), viewport.Clip, state, _work, _token);
+                SvgPaintRecording.WrapInstance(result.Geometries.AsSpan(), SvgPaintOpacity.Opaque, state.NewRecordingScope(), viewport.Clip, state, _token);
             return result;
         }
         catch { foreach (SvgGeometry geometry in result.Geometries) geometry.Dispose(); throw; }
@@ -178,7 +177,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     public override string Value => _attribute < 0 ? string.Empty : _attributes[_attribute].Value;
     public override string GetAttribute(int index)
     {
-        _work.Consume(_token);
+        _token.ThrowIfCancellationRequested();
         if ((uint)index >= (uint)_attributes.Length) throw new ArgumentOutOfRangeException(nameof(index));
         return _attributes[index].Value;
     }
@@ -186,7 +185,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     {
         foreach (Attribute attribute in _attributes)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (attribute.Name == name) return attribute.Value;
         }
         return null;
@@ -195,7 +194,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     {
         foreach (Attribute attribute in _attributes)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (attribute.LocalName == name && attribute.Namespace == (namespaceURI ?? string.Empty)) return attribute.Value;
         }
         return null;
@@ -211,7 +210,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     {
         for (int index = 0; index < _attributes.Length; index++)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (_attributes[index].Name == name) { _attribute = index; return true; }
         }
         return false;
@@ -220,7 +219,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     {
         for (int index = 0; index < _attributes.Length; index++)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (_attributes[index].LocalName == name && _attributes[index].Namespace == (namespaceURI ?? string.Empty)) { _attribute = index; return true; }
         }
         return false;

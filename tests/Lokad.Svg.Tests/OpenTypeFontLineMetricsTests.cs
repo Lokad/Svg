@@ -16,16 +16,13 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         SvgTextStyle style = new(new SvgFontFaceRequest("Example", 400, false), 16, 2, 3, 0, 0, 0, SvgTextAnchor.Start, string.Empty)
         { Baseline = SvgTextBaseline.Middle };
-        ParserWorkCounter work = new(long.MaxValue);
         RenderBudget budget = new(1_000_000);
-        using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AA", snapshot, budget, work, CancellationToken.None))
+        using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AA", snapshot, budget, CancellationToken.None))
         {
             Assert.All(run.Glyphs.ToArray(), glyph => Assert.Equal(3 + expectedShift, glyph.Y));
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget denied = new(1_000_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgTextRunBuilder.Create(style, "AA", snapshot, denied, new ParserWorkCounter(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using SvgTextRun retry = SvgTextRunBuilder.Create(style, "AA", snapshot, denied, CancellationToken.None);
         Assert.All(retry.Glyphs.ToArray(), glyph => Assert.Equal(3 + expectedShift, glyph.Y));

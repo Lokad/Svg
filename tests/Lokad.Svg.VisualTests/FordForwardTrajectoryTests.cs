@@ -41,7 +41,7 @@ public sealed class FordForwardTrajectoryTests
         SvgRenderOptions options = SvgRenderOptions.Default;
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
         (double horizontalScale, double verticalScale) = SvgPreparationTestHelper.GetOutputScales(svg, options, budget, CancellationToken.None);
-        SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
+        SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
         int fills = 0;
         foreach (SvgGeometry geometry in root.Geometries)
         {
@@ -110,7 +110,7 @@ public sealed class FordForwardTrajectoryTests
         SvgRenderOptions options = new(new SvgViewport(500, 200), 1, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
         (double horizontalScale, double verticalScale) = SvgPreparationTestHelper.GetOutputScales(svg, options, budget, CancellationToken.None);
-        SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
+        SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
         List<string> fills = new();
         foreach (SvgGeometry geometry in root.Geometries)
         {
@@ -220,7 +220,7 @@ public sealed class FordForwardTrajectoryTests
         SvgRenderOptions options = SvgRenderOptions.Default;
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
         (double horizontalScale, double verticalScale) = SvgPreparationTestHelper.GetOutputScales(svg, options, budget, CancellationToken.None);
-        SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
+        SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
         int fills = 0;
         foreach (SvgGeometry geometry in root.Geometries)
         {

@@ -9,24 +9,24 @@ internal static class SvgXmlReaderPolicy
 {
     private const int PrologWorkspaceBytes = 32 * 1024;
 
-    /// <remarks>The caller retains immutable input and reserves its ordinary XML-reader workspace. This method owns and releases a fixed prolog workspace plus any allowance for unusually long declaration tokens before returning settings. Prolog traversals charge the caller's work counter and check cancellation in bounded chunks. It creates no DOM or whole-input string, never resolves a resource, and is safe for concurrent independent calls. Internal subsets and duplicate declarations are rejected before the main reader can skip them.</remarks>
-    internal static XmlReaderSettings Create(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <remarks>The caller retains immutable input and reserves its ordinary XML-reader workspace. This method owns and releases a fixed prolog workspace plus any allowance for unusually long declaration tokens before returning settings. Prolog traversals check cancellation in bounded chunks. It creates no DOM or whole-input string, never resolves a resource, and is safe for concurrent independent calls. Internal subsets and duplicate declarations are rejected before the main reader can skip them.</remarks>
+    internal static XmlReaderSettings Create(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         bool declaration;
-        try { declaration = ValidateProlog(svg, budget, workCounter, cancellationToken); }
+        try { declaration = ValidateProlog(svg, budget, cancellationToken); }
         catch (DecoderFallbackException) { throw Malformed(); }
         return new() { DtdProcessing = declaration ? DtdProcessing.Ignore : DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
 
-        static bool ValidateProlog(ReadOnlyMemory<byte> svg, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken token)
+        static bool ValidateProlog(ReadOnlyMemory<byte> svg, RenderBudget budget, CancellationToken token)
         {
             ReadOnlySpan<byte> bytes = svg.Span;
             (int stride, bool bigEndian, int offset) = Detect(bytes);
             int start = offset;
             while (IsSpace(Unit(bytes, start, stride, bigEndian)))
             {
-                if ((start - offset) % ParserWorkCounter.ByteCheckpointSize == 0) workCounter.Consume(token);
+                if ((start - offset) % 4096 == 0) token.ThrowIfCancellationRequested();
                 start += stride;
             }
             if (Unit(bytes, start, stride, bigEndian) != '<' || Unit(bytes, start + stride, stride, bigEndian) is not ('?' or '!')) return false;
@@ -39,13 +39,13 @@ internal static class SvgXmlReaderPolicy
             // Preserve the BOM, byte encoding and quoted values for BCL validation.
             if (start == offset && Match(bytes, start, stride, bigEndian, "<?xml") && IsSpace(Unit(bytes, start + 5 * stride, stride, bigEndian)))
             {
-                int length = CompactDeclaration(bytes, stride, bigEndian, offset, Span<byte>.Empty, workCounter, token);
+                int length = CompactDeclaration(bytes, stride, bigEndian, offset, Span<byte>.Empty, token);
                 // The fixed workspace covers ordinary declarations and reader buffers.
                 // Longer tokens retain their grammar and get an explicit allowance for
                 // the compact bytes and the BCL's decoded node and growth buffers.
                 if (length > 1024) reservation.Grow(16L * length);
                 byte[] compact = new byte[length];
-                CompactDeclaration(bytes, stride, bigEndian, offset, compact, workCounter, token);
+                CompactDeclaration(bytes, stride, bigEndian, offset, compact, token);
                 using ReadOnlyMemoryStream probeStream = new(compact);
                 using XmlTextReader probe = new(probeStream) { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null };
                 if (!probe.Read() || probe.NodeType != XmlNodeType.XmlDeclaration) throw Malformed();
@@ -54,7 +54,7 @@ internal static class SvgXmlReaderPolicy
 
             using ReadOnlyMemoryStream stream = new(svg);
             using StreamReader text = new(stream, encoding, true, 1024, false);
-            PrologCursor cursor = new(text, workCounter, token);
+            PrologCursor cursor = new(text, token);
             bool found = false;
             int next = cursor.Read();
             if (next == 0xfeff) next = cursor.Read();
@@ -94,7 +94,7 @@ internal static class SvgXmlReaderPolicy
             }
 
             static int CompactDeclaration(ReadOnlySpan<byte> input, int stride, bool bigEndian, int offset,
-                Span<byte> output, ParserWorkCounter counter, CancellationToken token)
+                Span<byte> output, CancellationToken token)
             {
                 int length = offset;
                 if (!output.IsEmpty) input[..offset].CopyTo(output);
@@ -102,10 +102,10 @@ internal static class SvgXmlReaderPolicy
                 bool previousSpace = false;
                 for (int position = offset; input.Length - position >= stride; position += stride)
                 {
-                    if ((position - offset) % ParserWorkCounter.ByteCheckpointSize == 0)
+                    if ((position - offset) % 4096 == 0)
                     {
                         SvgXmlPrologProbe.Checkpoint(position - offset);
-                        counter.Consume(token);
+                        token.ThrowIfCancellationRequested();
                     }
                     int value = Unit(input, position, stride, bigEndian);
                     bool space = quote == 0 && IsSpace(value);
@@ -162,15 +162,15 @@ internal static class SvgXmlReaderPolicy
     private static bool IsSpace(int value) => value is ' ' or '\t' or '\r' or '\n';
     private static SvgException Malformed() => new(SvgErrorCode.MalformedInput, "SVG XML prolog is malformed.");
 
-    private struct PrologCursor(StreamReader reader, ParserWorkCounter counter, CancellationToken token)
+    private struct PrologCursor(StreamReader reader, CancellationToken token)
     {
         private int _position;
         internal int Read()
         {
-            if (_position % ParserWorkCounter.ByteCheckpointSize == 0)
+            if (_position % 4096 == 0)
             {
                 SvgXmlPrologProbe.Checkpoint(_position);
-                counter.Consume(token);
+                token.ThrowIfCancellationRequested();
             }
             _position++;
             return reader.Read();

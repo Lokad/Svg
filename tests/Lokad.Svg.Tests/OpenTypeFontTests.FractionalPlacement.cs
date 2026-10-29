@@ -22,7 +22,7 @@ public sealed partial class OpenTypeFontTests
         SvgTextPositionAdjustment[] positions = [new(13, originX, null, 0, 40)];
         RenderBudget budget = new(long.MaxValue);
         using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(snapshot.Fonts[0], new string('A', 26), 18, originX, 80, 0, [], positions,
-            SvgTextAnchor.Start, new(scale, SvgGlyphMetricTarget.Windows, false), budget, string.Empty, new(long.MaxValue), CancellationToken.None))
+            SvgTextAnchor.Start, new(scale, SvgGlyphMetricTarget.Windows, false), budget, string.Empty, CancellationToken.None))
         {
             Assert.Equal(expectedDeviceOrigin, glyphs.Glyphs[0].X * scale, 10);
             Assert.Equal(glyphs.Glyphs[0].X, glyphs.Glyphs[13].X, 10);
@@ -51,7 +51,7 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         RenderBudget budget = new(long.MaxValue);
         using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(snapshot.Fonts[0], new string('A', 23), 24, 12.25, 32, 0, [], [], SvgTextAnchor.Start,
-            new(1, SvgGlyphMetricTarget.Windows, textPath), budget, string.Empty, new(long.MaxValue), CancellationToken.None))
+            new(1, SvgGlyphMetricTarget.Windows, textPath), budget, string.Empty, CancellationToken.None))
         {
             Assert.Equal(23, glyphs.Glyphs.Length);
             Assert.Equal(expectedX, glyphs.Glyphs[22].X);
@@ -75,7 +75,7 @@ public sealed partial class OpenTypeFontTests
         RenderBudget budget = new(long.MaxValue);
         using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(snapshot.Fonts[0], new string('A', 27), 18, 0, 0, 0, 0, true,
             [], [], [], [], SvgTextAnchor.Start, new(scale, target == "windows" ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true),
-            budget, string.Empty, new(long.MaxValue), CancellationToken.None))
+            budget, string.Empty, CancellationToken.None))
         {
             Assert.Equal(27, glyphs.PaintFragments.Length);
             for (int index = 0; index < glyphs.Glyphs.Length; index++)

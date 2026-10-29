@@ -14,7 +14,7 @@ public sealed class TrueTypeCompositeStateTests
     {
         RenderBudget budget = new(long.MaxValue);
         TrueTypeHintTarget target = new(42, TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
-        using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], ppem, new(65536, 65536), target, budget, new(long.MaxValue), CancellationToken.None))
+        using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], ppem, new(65536, 65536), target, budget, CancellationToken.None))
         {
             TrueTypeHintPoint[] points = [new(0, 0, 0, 0), default, default, default, default];
             machine.HintGlyph(ReadOnlyMemory<byte>.Empty, points, [0], false);
@@ -34,7 +34,7 @@ public sealed class TrueTypeCompositeStateTests
     public void Composite_original_distances_use_device_coordinates_and_CVT_writes_keep_font_units()
     {
         RenderBudget budget = new(long.MaxValue);
-        using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 4, 0, 0), [0], [], [], 32, new(131072, 131072), Target, budget, new(long.MaxValue), CancellationToken.None))
+        using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 4, 0, 0), [0], [], [], 32, new(131072, 131072), Target, budget, CancellationToken.None))
         {
             TrueTypeHintPoint[] points = [new(0, 0, 0, 0), new(64, 0, 64, 0), default, default, default, default];
             byte[] program = [0xB0, 0, 0xB1, 0, 1, 0x4A, 0x42, 0xB1, 0, 64, 0x70];
@@ -54,7 +54,7 @@ public sealed class TrueTypeCompositeStateTests
     public void Component_calls_preserve_control_and_storage_changes_and_restore_prepared_rounding()
     {
         RenderBudget budget = new(long.MaxValue);
-        using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 4, 0, 0), [0], [], [], 32, new(65536, 65536), Target, budget, new(long.MaxValue), CancellationToken.None))
+        using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 4, 0, 0), [0], [], [], 32, new(65536, 65536), Target, budget, CancellationToken.None))
         {
             machine.Prepare(ReadOnlyMemory<byte>.Empty, Target);
             machine.HintGlyph(new byte[] { 0xB1, 0, 27, 0x44, 0xB1, 1, 91, 0x42, 0x7A }, [new(0, 0, 0, 0), default, default, default, default], [0], false);
@@ -71,7 +71,7 @@ public sealed class TrueTypeCompositeStateTests
     public void Failed_component_unbinds_points_and_restores_prepared_graphics_state()
     {
         RenderBudget budget = new(long.MaxValue);
-        using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 4, 0, 0), [], [], [], 32, new(65536, 65536), Target, budget, new(long.MaxValue), CancellationToken.None))
+        using (TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 4, 0, 0), [], [], [], 32, new(65536, 65536), Target, budget, CancellationToken.None))
         {
             Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => machine.HintGlyph(new byte[] { 0x7A, 0x4C }, [new(35, 0, 35, 0), default, default, default, default], [0], true)).ErrorCode);
             TrueTypeHintPoint[] next = [new(35, 0, 35, 0), default, default, default, default];

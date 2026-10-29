@@ -21,7 +21,7 @@ internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY,
             : source;
 
     /// <summary>Places text after the viewport map while preserving intervening source-group transforms.</summary>
-    /// <remarks>Immutable bounded arithmetic; callers charge the mapping and observe cancellation. Singular source ancestry retains an explicit unsupported outcome.</remarks>
+    /// <remarks>Immutable bounded arithmetic; callers observe cancellation during mapping. Singular source ancestry retains an explicit unsupported outcome.</remarks>
     internal SvgAffineTransform MapText(SvgAffineTransform source)
     {
         if (TextContext?.Inheritance is not {} inherited) return SvgAffineTransform.FromScaleOffset(ScaleX, ScaleY, OffsetX, OffsetY).ComposeChecked(source);
@@ -32,13 +32,13 @@ internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY,
 
     /// <summary>Returns registry-owned viewport clips shared across glyph paints and retained text paths.</summary>
     /// <remarks>Frames and metadata belong to one conversion. Each ancestor consumes work and observes cancellation; registry teardown releases partial reservations on failure. The returned chain is borrowed until final command emission.</remarks>
-    internal static SvgLeafMaskBinding? ResolveGlyphClip(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static SvgLeafMaskBinding? ResolveGlyphClip(SvgDocumentState state, CancellationToken token)
     {
         if (state.DefinitionReplayScene is not null) return null;
         SvgLeafMaskBinding? parent = null;
         for (int index = 0; index < state.Viewports.Count; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgViewportFrame frame = state.Viewports[index];
             if (frame.Depth < state.IsolatedViewportDepth) continue;
             // A forward group clip contributes a map-only passthrough frame until
@@ -92,7 +92,7 @@ internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY,
 /// <summary>Owns one aggregate allowance for borrowed viewport style/maps and a lazily shared glyph clip chain.</summary>
 /// <remarks>The document registry owns this conversion-thread state. Fonts/strings/clip nodes remain borrowed;
 /// disposal only releases the material metadata allowance. Creation reserves before allocation and registry
-/// insertion, and failures release partial ownership. Callers charge traversal and observe cancellation.</remarks>
+/// insertion, and failures release partial ownership. Callers observe cancellation during traversal.</remarks>
 internal sealed class SvgViewportTextContext : IDisposable
 {
     private readonly RenderBudget.BudgetReservation _owner;

@@ -182,8 +182,7 @@ public sealed class SvgSymbolInstanceReferenceTests
             byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", sample.Family, sample.Name + ".svg"));
             byte[] unchanged = input.ToArray();
             RenderBudget sceneBudget = new(16_000_000);
-            ParserWorkCounter work = new(100_000_000);
-            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, work, CancellationToken.None))
+            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
             {
                 foreach (long limit in new[] { 1, sceneBudget.Snapshot().PeakBytes / 2 })
                 {
@@ -193,8 +192,6 @@ public sealed class SvgSymbolInstanceReferenceTests
                     Assert.Equal(0, denied.Snapshot().CurrentBytes);
                 }
                 RenderBudget workDenied = new(16_000_000);
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                    SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
                 RenderBudget accepted = new(16_000_000);
                 byte[] expected = SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, accepted, CancellationToken.None).ToArray();
@@ -227,8 +224,7 @@ public sealed class SvgSymbolInstanceReferenceTests
             byte[] input = File.ReadAllBytes(Path.Combine(directory, name + ".svg"));
             byte[] unchanged = input.ToArray();
             RenderBudget sceneBudget = new(16_000_000);
-            ParserWorkCounter work = new(100_000_000);
-            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, work, CancellationToken.None))
+            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
             {
                 foreach (long limit in new[] { 1, sceneBudget.Snapshot().PeakBytes / 2 })
                 {
@@ -238,8 +234,6 @@ public sealed class SvgSymbolInstanceReferenceTests
                     Assert.Equal(0, denied.Snapshot().CurrentBytes);
                 }
                 RenderBudget workDenied = new(16_000_000);
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                    SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
                 RenderBudget accepted = new(16_000_000);
                 byte[] expected = SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, accepted, CancellationToken.None).ToArray();
@@ -273,8 +267,7 @@ public sealed class SvgSymbolInstanceReferenceTests
             byte[] input = File.ReadAllBytes(Path.Combine(directory, name + ".svg"));
             byte[] unchanged = input.ToArray();
             RenderBudget sceneBudget = new(16_000_000);
-            ParserWorkCounter work = new(100_000_000);
-            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, work, CancellationToken.None))
+            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
             {
                 foreach (long limit in new[] { 1, sceneBudget.Snapshot().PeakBytes / 2 })
                 {
@@ -284,8 +277,6 @@ public sealed class SvgSymbolInstanceReferenceTests
                     Assert.Equal(0, denied.Snapshot().CurrentBytes);
                 }
                 RenderBudget workDenied = new(16_000_000);
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                    SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
                 RenderBudget accepted = new(16_000_000);
                 byte[] expected = SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, accepted, CancellationToken.None).ToArray();
@@ -320,8 +311,7 @@ public sealed class SvgSymbolInstanceReferenceTests
             byte[] input = File.ReadAllBytes(Path.Combine(directory, name + ".svg"));
             byte[] unchanged = input.ToArray();
             RenderBudget sceneBudget = new(16_000_000);
-            ParserWorkCounter work = new(100_000_000);
-            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, work, CancellationToken.None))
+            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
             {
                 foreach (long limit in new[] { 1, sceneBudget.Snapshot().PeakBytes / 2 })
                 {
@@ -331,8 +321,6 @@ public sealed class SvgSymbolInstanceReferenceTests
                     Assert.Equal(0, denied.Snapshot().CurrentBytes);
                 }
                 RenderBudget workDenied = new(16_000_000);
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                    SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
                 RenderBudget accepted = new(16_000_000);
                 byte[] expected = SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, accepted, CancellationToken.None).ToArray();

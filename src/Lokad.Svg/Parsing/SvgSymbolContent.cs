@@ -35,7 +35,7 @@ internal readonly record struct SvgSymbolContentGroup(int Depth, int Start, stri
 
 /// <summary>Owns ordered, non-rendering symbol source geometry and typed group/use nodes.</summary>
 /// <remarks>One root definition owns this object; ID aliases borrow ranges or leaf geometry. Mutable construction
-/// and sealing reserve storage and charge work before allocation/copy. Native sources stay alive through expansion,
+/// and sealing reserve storage before allocation/copy. Native sources stay alive through expansion,
 /// and every failure or cancellation releases the owning builder. The object is confined to the parser thread.</remarks>
 internal sealed class SvgSymbolContent : IDisposable
 {
@@ -48,22 +48,21 @@ internal sealed class SvgSymbolContent : IDisposable
     private SvgSymbolContentNode[]? _nodes;
     private bool _ownsLeaves;
     private bool _disposed;
-    private bool _closingAdded;
 
-    private SvgSymbolContent(RenderBudget budget, ParserWorkCounter work, CancellationToken token, SvgSymbolPresentation presentation, RenderBudget.BudgetReservation owner)
+    private SvgSymbolContent(RenderBudget budget, CancellationToken token, SvgSymbolPresentation presentation, RenderBudget.BudgetReservation owner)
     {
         _budget = budget; _owner = owner; _rootPresentation = presentation;
-        _building = new(budget, SvgMemoryCategory.Parser, work, token);
-        _groups = new(budget, SvgMemoryCategory.Parser, work, token);
+        _building = new(budget, SvgMemoryCategory.Parser, token);
+        _groups = new(budget, SvgMemoryCategory.Parser, token);
     }
 
-    internal static SvgSymbolContent Create(RenderBudget budget, ParserWorkCounter work, CancellationToken token, SvgSymbolPresentation presentation)
+    internal static SvgSymbolContent Create(RenderBudget budget, CancellationToken token, SvgSymbolPresentation presentation)
     {
         RenderBudget.BudgetReservation owner = budget.Reserve(512, SvgMemoryCategory.Parser);
         SvgSymbolContent? content = null;
         try
         {
-            content = new(budget, work, token, presentation, owner);
+            content = new(budget, token, presentation, owner);
             content._building.Add(new(SvgSymbolContentKind.Group, default, default,
                 new(presentation.Paint, presentation.HasAuthoredFill, presentation.FillOpacity, presentation.CurrentColor, presentation.SourceOpacity, !presentation.IsHidden, presentation.IsVisible)
                 { TextStyleSource = presentation.TextStyleSource, InheritsOpacity = presentation.InheritsOpacity, ElementDisplay = presentation.ElementDisplay, Markers = presentation.Markers, PaintOrder = presentation.PaintOrder, PaintServerFill = presentation.PaintServerFill, PaintServerId = presentation.PaintServerId, FillRule = presentation.FillRule, Stroke = presentation.Stroke, StrokeOpacity = presentation.Stroke.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(presentation.Stroke.StrokeOpacity) }, SvgAffineTransform.Identity, -1));
@@ -121,27 +120,25 @@ internal sealed class SvgSymbolContent : IDisposable
         return true;
     }
 
-    internal SvgSymbolContentRange Seal(ParserWorkCounter work, CancellationToken token, Action<int>? checkpoint)
+    internal SvgSymbolContentRange Seal(CancellationToken token, Action<int>? checkpoint)
     {
         if (_groups.Count != 0) throw new InvalidOperationException("Symbol groups must close before sealing.");
         if (_nodes is not null) return new(this, 0, _nodes.Length);
-        if (!_closingAdded)
-        {
-            _building.Add(new(SvgSymbolContentKind.EndGroup, default, default, default, default, -1));
-            _building[0] = _building[0] with { End = _building.Count - 1 };
-            _closingAdded = true;
-        }
-        RenderBudget.BudgetReservation owner = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgSymbolContentNode>(_building.Count), SvgMemoryCategory.Scene);
+        token.ThrowIfCancellationRequested();
+        int count = checked(_building.Count + 1);
+        RenderBudget.BudgetReservation owner = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgSymbolContentNode>(count), SvgMemoryCategory.Scene);
         try
         {
-            SvgSymbolContentNode[] nodes = new SvgSymbolContentNode[_building.Count];
+            SvgSymbolContentNode[] nodes = new SvgSymbolContentNode[count];
             for (int index = 0; index < nodes.Length; index++)
             {
-                work.Consume(token);
-                nodes[index] = _building[index];
+                token.ThrowIfCancellationRequested();
+                nodes[index] = index < _building.Count ? _building[index]
+                    : new(SvgSymbolContentKind.EndGroup, default, default, default, default, -1);
                 checkpoint?.Invoke(index + 1);
             }
             token.ThrowIfCancellationRequested();
+            nodes[0] = nodes[0] with { End = count - 1 };
             _nodes = nodes; _sealedOwner = owner;
             _building.Dispose(); _groups.Dispose();
             return new(this, 0, nodes.Length);

@@ -9,7 +9,7 @@ internal sealed record SvgTextReplayEnvironment(SvgRootAttributes Root, SvgRende
 
 /// <summary>Retains a bounded text subtree, including authored attributes, text order and source-matched CSS.</summary>
 /// <remarks>The document owns arrays and immutable strings until source expansion finishes. Capture and
-/// readers charge shared work and observe cancellation. Readers have independent cursors and never own
+/// readers observe cancellation token. Readers have independent cursors and never own
 /// fonts or glyph geometry; this source feeds the ordinary text parser rather than a second layout path.</remarks>
 internal sealed class SvgRetainedTextSource
 {
@@ -37,19 +37,18 @@ internal sealed class SvgRetainedTextSource
     private static SvgRetainedTextSource Capture(XmlReader element, SvgPaintableElementContext context,
         SvgDocumentState state, SvgRenderLimits limits, bool descendants)
     {
-        ParserWorkCounter work = context.WorkCounter;
         CancellationToken token = context.CancellationToken;
-        using BudgetedParserList<Node> nodes = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<Attribute> attributes = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<InlineStyle> styles = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<int> open = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserList<Node> nodes = new(state.Budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<Attribute> attributes = new(state.Budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<InlineStyle> styles = new(state.Budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<int> open = new(state.Budget, SvgMemoryCategory.Parser, token);
         int originalDepth = element.Depth, characters = 0, childNodes = 0, descriptionDepth = -1;
         using XmlReader? nested = descendants ? element.ReadSubtree() : null;
         XmlReader subtree = nested ?? element;
         bool next = !descendants || subtree.Read();
         while (next)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (descendants) state.CssAncestors.Observe(subtree, originalDepth);
             int depth = descendants ? subtree.Depth : 0;
             int firstAttribute = attributes.Count, styleIndex = -1;
@@ -66,12 +65,12 @@ internal sealed class SvgRetainedTextSource
                     && SvgStructuralVocabulary.IsDescriptiveElement(subtree.LocalName) && !empty)
                     descriptionDepth = depth;
                 InlineStyle sheet = depth == 0 ? context.StyleSheet
-                    : SvgStyleSheet.Resolve(subtree, state.StyleRules, state.CssAncestors, work, token);
+                    : SvgStyleSheet.Resolve(subtree, state.StyleRules, state.CssAncestors, token);
                 if (sheet != default) { styleIndex = styles.Count; styles.Add(sheet); }
                 int count = subtree.AttributeCount;
                 for (int index = 0; index < count; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     subtree.MoveToAttribute(index);
                     (int line, int position) = Location(subtree);
                     attributes.Add(new(Copy(subtree.Name), Copy(subtree.LocalName), Copy(subtree.Prefix), Copy(subtree.NamespaceURI), Copy(subtree.Value), line, position));
@@ -119,7 +118,7 @@ internal sealed class SvgRetainedTextSource
 
         string Copy(string text)
         {
-            work.ConsumeText(text.Length, token);
+            token.ThrowIfCancellationRequested();
             return state.Strings.Copy(text);
         }
 
@@ -135,14 +134,14 @@ internal sealed class SvgRetainedTextSource
     }
 
     /// <summary>Creates a parser-local cursor borrowing this document-owned source; callers dispose it on every exit.</summary>
-    internal Reader OpenReader(int depth, ParserWorkCounter work, CancellationToken token)
-        => new(this, 0, _nodes.Length - 1, depth, null, work, token);
+    internal Reader OpenReader(int depth, CancellationToken token)
+        => new(this, 0, _nodes.Length - 1, depth, null, token);
 
     /// <summary>Replays a text leaf with instance inheritance and the ordinary glyph pipeline.</summary>
     /// <remarks>The parent scene adopts the staging owner; returned glyphs borrow its immutable paints.
     /// Preparation is bounded and cancellable. Deferred paths and clip/mask scopes resolve in the source
     /// scene, then transfer through the existing leaf bindings. No pixels or intermediate bitmap are emitted.</remarks>
-    internal SvgGeometry[] Lower(SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal SvgGeometry[] Lower(SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, CancellationToken token)
     {
         SvgTextReplayEnvironment environment = state.TextReplay ?? throw new InvalidOperationException("Text expansion requires its document context.");
         SvgSceneBuilder parent = state.Scene;
@@ -152,28 +151,28 @@ internal sealed class SvgRetainedTextSource
         int previousFilterDepth = state.FilterGroupDepth;
         int previousClips = state.PendingGroupClips.Count, previousMasks = state.PendingGroupMasks.Count;
         int previousPaints = state.DeferredPaintLeaves.Count;
-        using SvgSceneBuilder staging = new(state.Budget, work, token);
+        using SvgSceneBuilder staging = new(state.Budget, token);
         SvgSceneStorage? storage = null;
         try
         {
             state.DefinitionReplayScene = staging;
             state.DirectTextReplay = previous is null || previousDirect;
             if (reference.Filter is {} ownFilter && ownFilter.Trim() != "none") state.FilterGroupDepth++;
-            // Source syntax was counted at capture. Expansion charges work and
+            // Source syntax was counted at capture. Expansion reserves
             // geometry storage without counting those lexical nodes a second time.
             state.NodeCount = 1; state.TextCharacterCount = 0;
             SvgAffineTransform placement = SvgReferenceResolver.PlainInstancePlacement(reference, frame);
-            using Reader reader = OpenReader(0, work, token); reader.MoveToContent();
+            using Reader reader = OpenReader(0, token); reader.MoveToContent();
             SvgPaintableElementContext context = new(new(reference.FillOverride ?? reference.InheritedFill, reference.IsDisplayed, reference.IsVisible, placement)
                 { RecordingTransform = reference.RecordingTransform, TextMetrics = reference.TextMetrics, OwnOpacity = reference.ElementParentOpacity, ElementDisplay = reference.ElementParentDisplay, PaintOrder = reference.InheritedPaintOrder, Markers = reference.InheritedMarkers, PaintServerFill = reference.PaintServerFill },
-                reference.InheritedTextStyle, reference.InheritedStroke, reader.StyleSheet, SvgRootParser.CssNamedColors, work, token, state.OutputMagnification, reference.InheritedFillRule)
+                reference.InheritedTextStyle, reference.InheritedStroke, reader.StyleSheet, SvgRootParser.CssNamedColors, token, state.OutputMagnification, reference.InheritedFillRule)
             { StrokeHostMap = state.OutputMap.ComposeChecked(placement), LengthBases = reference.LengthBases, RecordingScope = reference.RecordingScope };
-            SvgRenderedLeafParser.ParseResolved(reader, context, environment.Root, state, environment.Limits, state.Budget, environment.Fonts, work, token);
+            SvgRenderedLeafParser.ParseResolved(reader, context, environment.Root, state, environment.Limits, state.Budget, environment.Fonts, token);
             if (state.DeferredTextFailure is {} failure) throw failure;
-            SvgTextPathLayout.Resolve(state, new(previousPaths, previousClips, previousMasks, previousPaints), environment.Limits, work, token);
-            SvgClipPathSyntax.ResolvePendingGroupClips(state, previousClips, work, token);
-            SvgMaskSyntax.ResolvePendingGroupMasks(state, previousMasks, work, token);
-            SvgLeafMaskComposition.Emit(state, staging, work, token);
+            SvgTextPathLayout.Resolve(state, new(previousPaths, previousClips, previousMasks, previousPaints), environment.Limits, token);
+            SvgClipPathSyntax.ResolvePendingGroupClips(state, previousClips, token);
+            SvgMaskSyntax.ResolvePendingGroupMasks(state, previousMasks, token);
+            SvgLeafMaskComposition.Emit(state, staging, token);
             storage = staging.Build();
         }
         finally
@@ -193,11 +192,11 @@ internal sealed class SvgRetainedTextSource
         SvgVectorContent owner = SvgVectorContent.Create(storage ?? throw new InvalidOperationException("Text replay did not produce a scene."), state.Budget);
         try { parent.AdoptVectorContent(owner); }
         catch { owner.Dispose(); throw; }
-        using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<int> masks = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<int> masks = new(state.Budget, SvgMemoryCategory.Parser, token);
         foreach (SvgMaskContent source in owner.Scene.MaskContents)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             // Bounds clips always borrow an earlier mask with no further bounds clip.
             int bounds = source.BoundsClipContentIndex;
             if (bounds >= masks.Count) throw new InvalidOperationException("A transferred bounds clip must precede its content.");
@@ -209,12 +208,12 @@ internal sealed class SvgRetainedTextSource
             viewportClip = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
             viewportClip.Resolved = true; viewportClip.Value = 255; viewportClip.Region = viewport.Clip; viewportClip.RegionKind = SvgLayerRegionKind.Viewport;
         }
-        using BudgetedParserList<SvgLeafMaskOperationReference> scopes = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserList<SvgLeafMaskOperationReference> scopes = new(state.Budget, SvgMemoryCategory.Parser, token);
         SvgLeafMaskBinding? binding = null;
         bool bindingReady = false;
         foreach (SvgDrawCommand command in owner.Scene.Commands)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (command.Kind == SvgDrawCommandKind.BeginGroup)
             {
                 SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
@@ -242,7 +241,7 @@ internal sealed class SvgRetainedTextSource
                 binding = null;
                 for (int index = scopes.Count - 1; index >= 0; index--)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     binding = SvgLeafMaskComposition.NewBinding(state, scopes[index].Operation, binding);
                 }
                 if (viewportClip is not null) binding = SvgLeafMaskComposition.NewBinding(state, viewportClip, binding);
@@ -252,31 +251,30 @@ internal sealed class SvgRetainedTextSource
             output.Add(source with { RecordedPaint = Rebind(source.RecordedPaint), RecordedStrokePaint = Rebind(source.RecordedStrokePaint), LeafMask = binding });
         }
         if (scopes.Count != 0) throw new InvalidOperationException("Transferred text scopes must be balanced.");
-        return SvgReferenceResolver.RetainInstanceBatch(output.AsSpan(), state, work, token);
+        return SvgReferenceResolver.RetainInstanceBatch(output.AsSpan(), state, token);
 
         SvgRecordedPaint Rebind(SvgRecordedPaint paint) => paint.Identity <= 0 ? paint
             : parent.RegisterRecordedPaint(owner.Scene.RecordedPaintValues[paint.Identity - 1]);
     }
 
     /// <summary>Replays immutable tokens with ordinary XmlReader subtree and chunk semantics.</summary>
-    /// <remarks>All abstract reader contracts borrow source storage. Cursor work/cancellation use the supplied
+    /// <remarks>All abstract reader contracts borrow source storage. Cursor cancellation use the supplied
     /// conversion context; no source arrays or fonts transfer. Independent cursors may read immutable tokens,
-    /// but each cursor and its shared parser work counter remain confined to their owning parse.</remarks>
+    /// but each cursor and its cancellation token remain confined to their owning parse.</remarks>
     internal sealed class Reader : XmlReader, IXmlLineInfo
     {
         private readonly SvgRetainedTextSource _source;
         private readonly int _first, _last, _depth;
         private readonly Reader? _parent;
-        private readonly ParserWorkCounter _work;
         private readonly CancellationToken _token;
         private readonly XmlNameTable _names = new NameTable();
         private int _index, _attribute = -1, _valueOffset;
         private ReadState _state;
 
-        internal Reader(SvgRetainedTextSource source, int first, int last, int depth, Reader? parent, ParserWorkCounter work, CancellationToken token)
+        internal Reader(SvgRetainedTextSource source, int first, int last, int depth, Reader? parent, CancellationToken token)
         {
             _source = source; _first = first; _last = last; _depth = depth; _parent = parent;
-            _work = work; _token = token; _index = first; _state = ReadState.Initial;
+_token = token; _index = first; _state = ReadState.Initial;
         }
 
         private Node Current => _source._nodes[_index];
@@ -303,7 +301,7 @@ internal sealed class SvgRetainedTextSource
 
         public override bool Read()
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (_state is ReadState.Closed or ReadState.EndOfFile) return false;
             _attribute = -1; _valueOffset = 0;
             if (_state == ReadState.Initial) { _state = ReadState.Interactive; return true; }
@@ -313,9 +311,9 @@ internal sealed class SvgRetainedTextSource
 
         public override XmlReader ReadSubtree()
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (NodeType != XmlNodeType.Element) throw new InvalidOperationException("A subtree requires an element cursor.");
-            return new Reader(_source, _index, Current.End, 0, this, _work, _token);
+            return new Reader(_source, _index, Current.End, 0, this, _token);
         }
 
         public override void Close()
@@ -329,7 +327,7 @@ internal sealed class SvgRetainedTextSource
         {
             ArgumentNullException.ThrowIfNull(buffer);
             if (index < 0 || count < 0 || index > buffer.Length - count) throw new ArgumentOutOfRangeException(nameof(index));
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if (!HasValue) return 0;
             int length = Math.Min(count, Value.Length - _valueOffset);
             Value.AsSpan(_valueOffset, length).CopyTo(buffer.AsSpan(index, length));
@@ -338,7 +336,7 @@ internal sealed class SvgRetainedTextSource
 
         public override string GetAttribute(int index)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             if ((uint)index >= (uint)AttributeCount) throw new ArgumentOutOfRangeException(nameof(index));
             return _source._attributes[Current.AttributeStart + index].Value;
         }
@@ -346,7 +344,7 @@ internal sealed class SvgRetainedTextSource
         {
             for (int index = 0; index < AttributeCount; index++)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 Attribute attribute = _source._attributes[Current.AttributeStart + index];
                 if (attribute.Name == name) return attribute.Value;
             }
@@ -356,7 +354,7 @@ internal sealed class SvgRetainedTextSource
         {
             for (int index = 0; index < AttributeCount; index++)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 Attribute attribute = _source._attributes[Current.AttributeStart + index];
                 if (attribute.LocalName == name && attribute.Namespace == (namespaceURI ?? string.Empty)) return attribute.Value;
             }
@@ -371,7 +369,7 @@ internal sealed class SvgRetainedTextSource
         {
             for (int index = 0; index < AttributeCount; index++)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 if (_source._attributes[Current.AttributeStart + index].Name == name) { MoveToAttribute(index); return true; }
             }
             return false;
@@ -380,7 +378,7 @@ internal sealed class SvgRetainedTextSource
         {
             for (int index = 0; index < AttributeCount; index++)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 Attribute attribute = _source._attributes[Current.AttributeStart + index];
                 if (attribute.LocalName == name && attribute.Namespace == (namespaceURI ?? string.Empty)) { MoveToAttribute(index); return true; }
             }

@@ -20,8 +20,8 @@ public sealed partial class OpenTypeFontTests
         ushort glyph = stage == 0 ? (ushort)1 : (ushort)2;
         RenderBudget budget = new(long.MaxValue);
         TrueTypeHintTarget target = new(40, TrueTypeHintQueryFlags.None, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
-        using (OpenTypeGlyphContourStorage fitted = OpenTypeFont.GetTrueTypeContours(actual, glyph, OpenTypeFont.ParseMetrics(actual, CancellationToken.None), 15.625, target, budget, new(long.MaxValue), CancellationToken.None))
-        using (OpenTypeGlyphContourStorage authored = OpenTypeFont.GetTrueTypeContours(expected, glyph, OpenTypeFont.ParseMetrics(expected, CancellationToken.None), 15.625, target, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage fitted = OpenTypeFont.GetTrueTypeContours(actual, glyph, OpenTypeFont.ParseMetrics(actual, CancellationToken.None), 15.625, target, budget, CancellationToken.None))
+        using (OpenTypeGlyphContourStorage authored = OpenTypeFont.GetTrueTypeContours(expected, glyph, OpenTypeFont.ParseMetrics(expected, CancellationToken.None), 15.625, target, budget, CancellationToken.None))
             Assert.Equal(authored.Segments, fitted.Segments);
         Assert.Equal(unchanged, actual);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

@@ -52,8 +52,8 @@ public sealed partial class OpenTypeFontTests
         SvgTextStyle style = new(new("Example", 400, false), 37.25, 16, 24, 0, 0, 0, SvgTextAnchor.Middle, "label") { TextLength = 24 };
         RenderBudget budget = new(1_000_000);
         SvgGlyphDeviceMetrics metrics = new(1.5, SvgGlyphMetricTarget.Windows, false);
-        using (SvgTextRun natural = SvgTextRunBuilder.Create(style with { TextLength = null }, text, [], [], metrics, snapshot, budget, new(100_000), CancellationToken.None))
-        using (SvgTextRun actual = SvgTextRunBuilder.Create(style, text, [], [], metrics, snapshot, budget, new(100_000), CancellationToken.None))
+        using (SvgTextRun natural = SvgTextRunBuilder.Create(style with { TextLength = null }, text, [], [], metrics, snapshot, budget, CancellationToken.None))
+        using (SvgTextRun actual = SvgTextRunBuilder.Create(style, text, [], [], metrics, snapshot, budget, CancellationToken.None))
         {
             Assert.Single(actual.Glyphs.ToArray());
             Assert.Equal(natural.Glyphs.ToArray(), actual.Glyphs.ToArray());

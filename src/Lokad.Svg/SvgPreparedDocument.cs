@@ -4,7 +4,7 @@ using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
-/// <summary>Owns one prepared SVG/font operation and permits exactly one conversion under its shared work limit.</summary>
+/// <summary>Owns one prepared SVG/font operation and permits exactly one conversion with the retained memory owner and caller cancellation.</summary>
 public sealed class SvgPreparedDocument : IDisposable
 {
     private readonly SvgRenderOptions _options;
@@ -35,15 +35,14 @@ public sealed class SvgPreparedDocument : IDisposable
         ArgumentNullException.ThrowIfNull(provider);
         ArgumentNullException.ThrowIfNull(options);
         if (options.FontSnapshot is not null) throw new ArgumentException("Prepared document options must not supply a separate font snapshot.", nameof(options));
-        var workCounter = new ParserWorkCounter(options.Limits.MaximumWorkUnits);
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, workCounter, cancellationToken);
+        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, cancellationToken);
         options = preparation.ResolveRasterOptions(options);
-        SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(preparation, catalog, provider, options.FontSelectionPolicy, workCounter, cancellationToken).ConfigureAwait(false);
+        SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(preparation, catalog, provider, options.FontSelectionPolicy, cancellationToken).ConfigureAwait(false);
         try
         {
             SvgRenderOptions preparedOptions = options.WithFontSnapshot(snapshot);
-            SvgRoot root = LowerPrepared(svg, preparedOptions, budget, workCounter, preparation, cancellationToken);
+            SvgRoot root = LowerPrepared(svg, preparedOptions, budget, preparation, cancellationToken);
             return new SvgPreparedDocument(preparedOptions, snapshot, root, budget, null, null, null);
         }
         catch
@@ -76,8 +75,7 @@ public sealed class SvgPreparedDocument : IDisposable
             sources = resolver.OpenOperation();
             execution = resolver.Budget.CreateScope();
             RenderBudget budget = new(execution);
-            ParserWorkCounter work = new(options.Limits.MaximumWorkUnits);
-            using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, work, cancellationToken);
+            using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, cancellationToken);
             options = preparation.ResolveRasterOptions(options);
             using SvgFontCoverageDiscovery coverage = preparation.DiscoverFontCoverage();
             SvgFontCoverageRequest[] requirements = coverage.Requests;
@@ -94,10 +92,10 @@ public sealed class SvgPreparedDocument : IDisposable
                         new(exception.FontDiagnostic?.Stage ?? SvgFontFailureStage.Source, first.Family, string.Empty, string.Empty,
                             string.Empty, first.Weight, first.Italic, null, null, null), first.SourceContext?.Describe(string.Empty, string.Empty));
                 }
-                snapshot = await SvgFontSnapshot.CreateAsync(catalog, requirements, sources, options.FontSelectionPolicy, work, cancellationToken).ConfigureAwait(false);
+                snapshot = await SvgFontSnapshot.CreateAsync(catalog, requirements, sources, options.FontSelectionPolicy, cancellationToken).ConfigureAwait(false);
             }
             SvgRenderOptions preparedOptions = options.WithFontSnapshot(snapshot);
-            root = LowerPrepared(svg, preparedOptions, budget, work, preparation, cancellationToken);
+            root = LowerPrepared(svg, preparedOptions, budget, preparation, cancellationToken);
             return new(preparedOptions, snapshot, root, budget, execution, sources, resolver.Budget);
         }
         catch
@@ -111,10 +109,10 @@ public sealed class SvgPreparedDocument : IDisposable
     }
 
     private static SvgRoot LowerPrepared(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget,
-        ParserWorkCounter work, SvgDocumentPreparation preparation, CancellationToken token)
+SvgDocumentPreparation preparation, CancellationToken token)
     {
         SvgAffineTransform outputMap = preparation.GetOutputMap(options);
-        SvgRoot root = SvgRootParser.ParsePrepared(svg, options.Limits, budget, options.FontSnapshot, work, token,
+        SvgRoot root = SvgRootParser.ParsePrepared(svg, options.Limits, budget, options.FontSnapshot, token,
             outputMap, options.Viewport, options.OutputScale, preparation);
         if (!root.HasUnsupportedChild) return root;
         root.Dispose();

@@ -8,8 +8,8 @@ internal static class SvgGlyphOutline
 {
     /// <summary>Computes tight geometric glyph bounds through the shared native quadratic-bound evaluator.</summary>
     /// <remarks>Contours remain borrowed. Fixed stack commands reuse path extrema without retaining storage;
-    /// every segment/map/root visit charges the shared work counter and observes cancellation.</remarks>
-    internal static SvgRectangle Bounds(ReadOnlySpan<SvgGlyphQuadraticContour> contours, SvgAffineTransform map, ParserWorkCounter work, CancellationToken token)
+    /// every segment/map/root visit observes cancellation.</remarks>
+    internal static SvgRectangle Bounds(ReadOnlySpan<SvgGlyphQuadraticContour> contours, SvgAffineTransform map, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         double left = double.PositiveInfinity, top = double.PositiveInfinity;
@@ -20,7 +20,7 @@ internal static class SvgGlyphOutline
         {
             commands[0] = new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(segment.Start.X, segment.Start.Y), default, default);
             commands[1] = new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, new(segment.Control.X, segment.Control.Y), new(segment.End.X, segment.End.Y), default);
-            SvgRectangle box = SvgPathBounds.Compute(commands, map, work, token);
+            SvgRectangle box = SvgPathBounds.Compute(commands, map, token);
             left = Math.Min(left, box.X); top = Math.Min(top, box.Y);
             right = Math.Max(right, box.X + box.Width); bottom = Math.Max(bottom, box.Y + box.Height);
         }
@@ -29,33 +29,33 @@ internal static class SvgGlyphOutline
 
     internal static SvgGlyphQuadraticContour[] GetContours(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, CancellationToken cancellationToken)
     {
-        using SvgGlyphContourStorage storage = GetContourStorage(font, glyph, fontSize, new RenderBudget(long.MaxValue), null, cancellationToken);
+        using SvgGlyphContourStorage storage = GetContourStorage(font, glyph, fontSize, new RenderBudget(long.MaxValue), cancellationToken);
         return storage.Contours;
     }
 
     /// <summary>Converts one glyph and transfers the final contour-array scene reservation to the retained glyph geometry.</summary>
-    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-        => GetContourStorage(font, glyph, fontSize, SvgAffineTransform.Identity, budget, workCounter, cancellationToken);
+    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget, CancellationToken cancellationToken)
+        => GetContourStorage(font, glyph, fontSize, SvgAffineTransform.Identity, budget, cancellationToken);
 
     /// <summary>Applies a retained glyph-local affine map after ordinary font-unit outline conversion.</summary>
-    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, RenderBudget budget, CancellationToken cancellationToken)
     {
         double scale = Validate(font, glyph, fontSize, budget);
 
-        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, budget, workCounter, cancellationToken);
-        return TransformDecodedContours(glyph, scale, glyphMap, decoded, budget, workCounter, cancellationToken);
+        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, budget, cancellationToken);
+        return TransformDecodedContours(glyph, scale, glyphMap, decoded, budget, cancellationToken);
     }
 
     /// <summary>Converts one glyph while borrowing decoded storage that remains owned and disposed by the caller.</summary>
-    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, OpenTypeGlyphContourStorage decoded, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-        => GetContourStorage(font, glyph, fontSize, SvgAffineTransform.Identity, decoded, budget, workCounter, cancellationToken);
+    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, OpenTypeGlyphContourStorage decoded, RenderBudget budget, CancellationToken cancellationToken)
+        => GetContourStorage(font, glyph, fontSize, SvgAffineTransform.Identity, decoded, budget, cancellationToken);
 
-    /// <summary>Maps one glyph while borrowing immutable decoded contours; the returned owner reserves its final arrays and observes shared work/cancellation.</summary>
-    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, OpenTypeGlyphContourStorage decoded, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    /// <summary>Maps one glyph while borrowing immutable decoded contours; the returned owner reserves its final arrays and observes cancellation.</summary>
+    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, OpenTypeGlyphContourStorage decoded, RenderBudget budget, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(decoded);
         double scale = Validate(font, glyph, fontSize, budget);
-        return TransformDecodedContours(glyph, scale, glyphMap, decoded, budget, workCounter, cancellationToken);
+        return TransformDecodedContours(glyph, scale, glyphMap, decoded, budget, cancellationToken);
     }
 
     private static double Validate(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget)
@@ -70,7 +70,7 @@ internal static class SvgGlyphOutline
         return scale;
     }
 
-    private static SvgGlyphContourStorage TransformDecodedContours(SvgPositionedGlyph glyph, double scale, SvgAffineTransform glyphMap, OpenTypeGlyphContourStorage decoded, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static SvgGlyphContourStorage TransformDecodedContours(SvgPositionedGlyph glyph, double scale, SvgAffineTransform glyphMap, OpenTypeGlyphContourStorage decoded, RenderBudget budget, CancellationToken cancellationToken)
     {
         OpenTypeQuadraticSegment[] source = decoded.Segments;
         if (source.Length == 0) return new([], null);
@@ -83,13 +83,13 @@ internal static class SvgGlyphOutline
             int first = 0;
             for (int contourIndex = 0; contourIndex < contours.Length; contourIndex++)
             {
-                Consume();
+                cancellationToken.ThrowIfCancellationRequested();
                 int end = contourEnds[contourIndex];
                 if (end <= first || end > source.Length) throw new InvalidOperationException("Decoded glyph contour boundaries are invalid.");
                 var segments = new SvgGlyphQuadraticSegment[end - first];
                 for (int index = 0; index < segments.Length; index++)
                 {
-                    Consume();
+                    cancellationToken.ThrowIfCancellationRequested();
                     OpenTypeQuadraticSegment segment = source[first + index];
                     segments[index] = new SvgGlyphQuadraticSegment(Transform(segment.Start), Transform(segment.Control), Transform(segment.End));
                     GlyphOutlineProbe.SegmentTransformed();
@@ -118,11 +118,6 @@ internal static class SvgGlyphOutline
             return new SvgGlyphOutlinePoint(x, y);
         }
 
-        void Consume()
-        {
-            if (workCounter is null) cancellationToken.ThrowIfCancellationRequested();
-            else workCounter.Consume(cancellationToken);
-        }
     }
 }
 

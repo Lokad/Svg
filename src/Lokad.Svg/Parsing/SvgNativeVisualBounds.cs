@@ -8,7 +8,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Applies native drawing bounds to point lists and non-scaling strokes after the complete source and its markers are lowered.</summary>
 /// <remarks>Replaces culled geometry with inert anchors, retaining object bounds for
 /// enclosing resources and eligible filters. Failure releases the batch. Temporary command storage
-/// shares the parser budget/work/token. Calls are parser-thread confined; no caller storage is retained.</remarks>
+/// shares the parser memory budget and cancellation token. Calls are parser-thread confined; no caller storage is retained.</remarks>
 internal static class SvgNativeVisualBounds
 {
     internal static SvgParsedGeometry Cull(SvgParsedGeometry parsed, XmlReader reader, SvgPaintableElementContext context,
@@ -22,7 +22,6 @@ internal static class SvgNativeVisualBounds
         bool picture = state.IsResourcePicture || state.PatternDepth >= 0 || state.MaskDepth >= 0;
         if (picture && (context.CanPaintEmptyNativeBounds || reader.GetAttribute("transform") is {} ownTransform && !SvgCssWhitespace.Trim(ownTransform).AsSpan().IsEmpty))
             return parsed;
-        ParserWorkCounter work = context.WorkCounter;
         CancellationToken token = context.CancellationToken;
         try
         {
@@ -40,20 +39,20 @@ internal static class SvgNativeVisualBounds
             }
             else if (reader.LocalName == "path")
             {
-                using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumCommands, state.Budget, work, token);
-                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-                SvgPathDataParser.ParseCommands(data.Value, maximumCommands, work, token, commands);
+                using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumCommands, state.Budget, token);
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Parser, token);
+                SvgPathDataParser.ParseCommands(data.Value, maximumCommands, token, commands);
                 int count = 0;
                 for (int index = 0; index < commands.Count; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     if (commands[index].Verb == SvgAuthoredPathVerb.Move && index + 1 < commands.Count
                         && commands[index + 1].Verb == SvgAuthoredPathVerb.End)
                     { index++; continue; }
                     commands.AsMutableSpan()[count++] = commands[index];
                 }
                 while (commands.Count > count) commands.RemoveLast();
-                SvgRectangle bounds = SvgPathBounds.Compute(commands.AsSpan(), work, token);
+                SvgRectangle bounds = SvgPathBounds.Compute(commands.AsSpan(), token);
                 Union(Box(bounds.X, bounds.Y, bounds.Width, bounds.Height));
                 SvgDevicePoint current = default, first = default;
                 int moves = 0, segments = 0;
@@ -61,7 +60,7 @@ internal static class SvgNativeVisualBounds
                 Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
                 foreach (SvgAuthoredPathCommand command in commands.AsSpan())
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     switch (command.Verb)
                     {
                         case SvgAuthoredPathVerb.Move:
@@ -74,7 +73,7 @@ internal static class SvgNativeVisualBounds
                         case SvgAuthoredPathVerb.Cubic:
                             Control(command.First); Control(command.Second); Control(command.Third); current = command.Third; onlyLines = false; break;
                         case SvgAuthoredPathVerb.Arc:
-                            for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) work.Consume(token);
+                            token.ThrowIfCancellationRequested();
                             int conics = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
                                 (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0,
                                 command.Third, arcs, token);
@@ -91,11 +90,11 @@ internal static class SvgNativeVisualBounds
             else if (reader.LocalName is "polygon" or "polyline")
             {
                 using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(reader.GetAttribute("points") ?? string.Empty,
-                    reader.LocalName, maximumCommands, state.Budget, work, token, 0);
+                    reader.LocalName, maximumCommands, state.Budget, token, 0);
                 float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
                 foreach (SvgFractionalPoint point in points.AsSpan())
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     left = MathF.Min(left, (float)point.X); top = MathF.Min(top, (float)point.Y);
                     right = MathF.Max(right, (float)point.X); bottom = MathF.Max(bottom, (float)point.Y);
                     Control(new(point.X, point.Y));
@@ -115,9 +114,9 @@ internal static class SvgNativeVisualBounds
             }
             foreach (SvgGeometry geometry in parsed.Geometries)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgAuthoredPath? path = geometry.AuthoredPath?.StrokeOutline ?? geometry.AuthoredPath;
-                SvgRectangle bounds = path is null ? SvgMaskSyntax.ResourceBounds(geometry, work, token) : SvgPathBounds.Compute(path.Commands, work, token);
+                SvgRectangle bounds = path is null ? SvgMaskSyntax.ResourceBounds(geometry, token) : SvgPathBounds.Compute(path.Commands, token);
                 SvgClipBox box = Box(bounds.X, bounds.Y, bounds.Width, bounds.Height);
                 if (path is not null) box = Map(box, path.SceneMap, false);
                 Union(Map(box, inverse, false));
@@ -142,7 +141,7 @@ internal static class SvgNativeVisualBounds
             }
             for (int index = 0; index < parsed.Storage.Items.Length; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgGeometry geometry = parsed.Storage.Items[index];
                 SvgRecordedPaint recorded = geometry.RecordedPaint;
                 if (geometry.RecordedPaint.Identity > 0)
@@ -150,7 +149,7 @@ internal static class SvgNativeVisualBounds
                         with { IsEffectAnchor = true, VisualBounds = default(SvgPaintBounds) });
                 else
                 {
-                    SvgRectangle box = SvgMaskSyntax.ResourceBounds(geometry, work, token);
+                    SvgRectangle box = SvgMaskSyntax.ResourceBounds(geometry, token);
                     SvgRecordedPaintValue inert = new(state.NewPaintOperationIdentity(), 0, false, paint.Scope, paint.ElementOpacity, paint.OpacityScope)
                     { IsEffectAnchor = true, IsMarkerContent = true, ObjectBounds = new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)), VisualBounds = default(SvgPaintBounds) };
                     recorded = state.Scene.RegisterRecordedPaint(inert);
@@ -170,7 +169,7 @@ internal static class SvgNativeVisualBounds
             }
             void Control(SvgDevicePoint point)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgDevicePoint mapped = SvgAuthoredPath.MapPoint(host, point, new(0, 0));
                 controlLeft = MathF.Min(controlLeft, (float)mapped.X); controlTop = MathF.Min(controlTop, (float)mapped.Y);
                 controlRight = MathF.Max(controlRight, (float)mapped.X); controlBottom = MathF.Max(controlBottom, (float)mapped.Y);

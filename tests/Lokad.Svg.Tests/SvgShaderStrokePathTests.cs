@@ -28,8 +28,7 @@ public sealed class SvgShaderStrokePathTests
         byte[] unchanged = input.ToArray();
         SvgRenderOptions options = new(null, 4, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget budget = new(8_000_000);
-        ParserWorkCounter parsing = new(1_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, parsing, CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             byte[] expected;
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, budget, CancellationToken.None))
@@ -54,12 +53,6 @@ public sealed class SvgShaderStrokePathTests
             Assert.Equal(expected, retry.Pixels);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        foreach (long work in new[] { parsing.Used / 2, parsing.Used - 1 })
-        {
-            RenderBudget denied = new(8_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(work), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget tight = new(Math.Max(1, budget.Snapshot().PeakBytes - 1_024));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {

@@ -36,24 +36,24 @@ internal sealed class SvgDocumentState : IDisposable
     private SvgTextLayoutBounds.MetricCache? _textBoundsMetrics;
     internal SvgTextLayoutBounds.MetricCache TextBoundsMetrics => _textBoundsMetrics ??= SvgTextLayoutBounds.MetricCache.Create(Budget);
 
-    internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        : this(budget, workCounter, cancellationToken, new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken), new(budget), true)
+    internal SvgDocumentState(RenderBudget budget, CancellationToken cancellationToken)
+        : this(budget, cancellationToken, new(budget, SvgMemoryCategory.Parser, cancellationToken), new(budget), true)
     {
     }
 
     /// <summary>Uses collected style storage without copying it; borrowed stores outlive this state and are released by the caller.</summary>
-    internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore strings, bool ownsStyleStorage)
+    internal SvgDocumentState(RenderBudget budget, CancellationToken cancellationToken, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore strings, bool ownsStyleStorage)
     {
         Budget = budget;
-        _documentScene = new SvgSceneBuilder(budget, workCounter, cancellationToken);
+        _documentScene = new SvgSceneBuilder(budget, cancellationToken);
         Strings = strings;
         _ownsStyleStorage = ownsStyleStorage;
-        Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        Switches = new BudgetedParserList<SwitchScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        ClipDepths = new BudgetedParserList<int>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        Viewports = new BudgetedParserList<SvgViewportFrame>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        Switches = new BudgetedParserList<SwitchScope>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        ClipDepths = new BudgetedParserList<int>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        Viewports = new BudgetedParserList<SvgViewportFrame>(budget, SvgMemoryCategory.Parser, cancellationToken);
         StyleRules = styleRules;
-        CssAncestors = new(styleRules, budget, workCounter, cancellationToken);
+        CssAncestors = new(styleRules, budget, cancellationToken);
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         Clips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         ClipPolygons = new BudgetedParserDictionary<string, SvgClipPolygon>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
@@ -65,35 +65,35 @@ internal sealed class SvgDocumentState : IDisposable
         MaskContentBoxes = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Patterns = new BudgetedParserDictionary<string, SvgPatternTile>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
         PatternDefinitions = new(budget, SvgMemoryCategory.Parser, checked(64 + (int)ParserCollectionMemory.GetArrayByteCount<SvgPatternDefinition>(1)));
-        PendingPatternReferences = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        PendingPatternReferences = new(budget, SvgMemoryCategory.Parser, cancellationToken);
         WaitingPatternReferences = new(budget, SvgMemoryCategory.Parser, 64 + sizeof(int));
-        ReadyPatternReferences = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        ReadyPatternReferences = new(budget, SvgMemoryCategory.Parser, cancellationToken);
         Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
         RadialGradients = new BudgetedParserDictionary<string, SvgRadialGradient>(budget, SvgMemoryCategory.Parser, RadialGradientStorageBytes);
         GradientRegistrations = new(budget, SvgMemoryCategory.Parser, 64 + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgGradientRegistration>());
-        ReadyGradientHrefs = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        PendingTextRuns = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        DeferredPaintLeaves = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        DeferredClipUses = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        MaskReplayChildren = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        DeferredMaskContents = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        PatternUses = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        DeferredPatternContents = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        ReadyGradientHrefs = new(budget, SvgMemoryCategory.Parser, cancellationToken);
+        GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        PendingTextRuns = new(budget, SvgMemoryCategory.Parser, cancellationToken);
+        DeferredPaintLeaves = new(budget, SvgMemoryCategory.Parser, cancellationToken);
+        DeferredClipUses = new(budget, SvgMemoryCategory.Parser, cancellationToken);
+        MaskReplayChildren = new(budget, SvgMemoryCategory.Parser, cancellationToken);
+        DeferredMaskContents = new(budget, SvgMemoryCategory.Parser, cancellationToken);
+        PatternUses = new(budget, SvgMemoryCategory.Parser, cancellationToken);
+        DeferredPatternContents = new(budget, SvgMemoryCategory.Parser, cancellationToken);
         GroupSnapshots = new BudgetedParserDictionary<string, SvgGroupSnapshot>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         RenderedGroupDefinitions = new(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
-        GroupSnapshotStarts = new BudgetedParserList<SvgGroupSnapshotStart>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        PendingLeafClips = new BudgetedParserList<PendingLeafClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        PendingGroupClips = new BudgetedParserList<PendingGroupClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        LeafMaskOwners = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        PendingLeafMasks = new BudgetedParserList<PendingLeafMask>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        PendingGroupMasks = new BudgetedParserList<PendingGroupMask>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        EmptyGroupMaskReferences = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        PendingLinearGradientHrefs = new BudgetedParserList<PendingLinearGradientHref>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        PendingRadialGradientHrefs = new BudgetedParserList<PendingRadialGradientHref>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        MaskScopes = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        MaskScopeSnapshots = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        GroupSnapshotStarts = new BudgetedParserList<SvgGroupSnapshotStart>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        PendingLeafClips = new BudgetedParserList<PendingLeafClip>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        PendingGroupClips = new BudgetedParserList<PendingGroupClip>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        LeafMaskOwners = new(budget, SvgMemoryCategory.Parser, cancellationToken);
+        PendingLeafMasks = new BudgetedParserList<PendingLeafMask>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        PendingGroupMasks = new BudgetedParserList<PendingGroupMask>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        EmptyGroupMaskReferences = new(budget, SvgMemoryCategory.Parser, cancellationToken);
+        PendingLinearGradientHrefs = new BudgetedParserList<PendingLinearGradientHref>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        PendingRadialGradientHrefs = new BudgetedParserList<PendingRadialGradientHref>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        MaskScopes = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, cancellationToken);
+        MaskScopeSnapshots = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, cancellationToken);
     }
 
     internal RenderBudget Budget { get; }
@@ -359,14 +359,14 @@ internal sealed class SvgDocumentState : IDisposable
 
     /// <summary>Transfers an anonymous symbol's geometry only on success, keeping child-ID aliases alive through scene construction.
     /// Lazy storage and growth are budgeted; on failure the caller retains every geometry owner.</summary>
-    internal void RetainAnonymousSymbol(SvgDefinition definition, ParserWorkCounter work, CancellationToken token)
+    internal void RetainAnonymousSymbol(SvgDefinition definition, CancellationToken token)
     {
         if (_anonymousSymbols is null)
         {
             RenderBudget.BudgetReservation owner = Budget.Reserve(256, SvgMemoryCategory.Parser);
             try
             {
-                _anonymousSymbols = new(Budget, SvgMemoryCategory.Parser, work, token);
+                _anonymousSymbols = new(Budget, SvgMemoryCategory.Parser, token);
                 _anonymousSymbolOwner = owner;
             }
             catch { owner.Dispose(); throw; }
@@ -379,14 +379,14 @@ internal sealed class SvgDocumentState : IDisposable
     /// <summary>Enables graph validation only when the document retains group/use source content.</summary>
     internal bool HasRetainedSymbolContent { get; set; }
 
-    internal void ValidateSymbolReferences(ParserWorkCounter work, CancellationToken token)
+    internal void ValidateSymbolReferences(CancellationToken token)
     {
         if (!HasRetainedSymbolContent) return;
-        using SvgSymbolReferenceValidator validator = SvgSymbolReferenceValidator.Create(this, work, token);
-        foreach (SvgDefinition value in Definitions.Values) { work.Consume(token); validator.Validate(value); }
-        foreach (SvgDefinition value in RenderedGroupDefinitions.Values) { work.Consume(token); validator.Validate(value); }
+        using SvgSymbolReferenceValidator validator = SvgSymbolReferenceValidator.Create(this, token);
+        foreach (SvgDefinition value in Definitions.Values) { token.ThrowIfCancellationRequested(); validator.Validate(value); }
+        foreach (SvgDefinition value in RenderedGroupDefinitions.Values) { token.ThrowIfCancellationRequested(); validator.Validate(value); }
         if (_anonymousSymbols is not null)
-            foreach (SvgDefinition value in _anonymousSymbols.AsSpan()) { work.Consume(token); validator.Validate(value); }
+            foreach (SvgDefinition value in _anonymousSymbols.AsSpan()) { token.ThrowIfCancellationRequested(); validator.Validate(value); }
     }
 
     /// <summary>Releases definition-owned geometry reservations exactly once, covering success after scene build and failure or cancellation during teardown.</summary>

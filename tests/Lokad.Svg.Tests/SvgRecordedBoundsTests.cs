@@ -18,7 +18,7 @@ public sealed class SvgRecordedBoundsTests
     {
         byte[] input = MaskedRectangle(forward, group, copy);
         RenderBudget budget = new(10_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgDrawCommand mask = Assert.Single(scene.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
             SvgClipBox region = Assert.IsType<SvgClipBox>(mask.MaskRegion);
@@ -51,7 +51,7 @@ public sealed class SvgRecordedBoundsTests
     public void Square_dash_recording_keeps_object_and_visual_bounds_separate(bool radial, int width, bool copy)
     {
         RenderBudget budget = new(10_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(DashedLine(radial, width, copy), SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(DashedLine(radial, width, copy), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(scene.SceneStorage);
             int x = copy ? 5 : 0, y = copy ? 3 : 0;
@@ -75,27 +75,25 @@ public sealed class SvgRecordedBoundsTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Recorded_bounds_release_on_parser_work_memory_and_cancellation_denial(bool radial)
+    public void Recorded_bounds_release_on_memory_denial_and_cancellation(bool radial)
     {
         byte[] input = DashedLine(radial, 6, true);
         RenderBudget measured = new(10_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         foreach (long maximum in new[] { measured.Snapshot().PeakBytes - 1, measured.Snapshot().PeakBytes })
         {
             RenderBudget budget = new(maximum);
             if (maximum < measured.Snapshot().PeakBytes)
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None)).ErrorCode);
-            else using (SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None)) { }
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
+            else using (SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
         RenderBudget denied = new(10_000_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(1_000_000), cancellation.Token)).CancellationToken);
+        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
     }
 

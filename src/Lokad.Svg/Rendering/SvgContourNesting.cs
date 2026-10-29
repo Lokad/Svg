@@ -10,7 +10,7 @@ using Lokad.Svg.Parsing;
 /// contours; callers outside touch handling keep those outside the admitted family, while touch-resolved sets skip shared test vertices for strictly interior samples. Degenerate contours under three points never count
 /// as containers yet still receive a sign; they contribute no coverage either way.</para>
 /// <para>This runs once per contour set, not per pixel: the wiring level resolves signs, then the
-/// coverage kernel applies them. Callers charge one nesting work unit per contour pair; this resolver
+/// coverage kernel applies them. Callers check cancellation per contour pair; this resolver
 /// holds no budget itself and allocates nothing.</para>
 /// </remarks>
 internal static class SvgContourNesting
@@ -46,7 +46,7 @@ internal static class SvgContourNesting
     /// <summary>Writes nonzero-fill roles per contour into the caller roles span.</summary>
     /// <remarks>
     /// <para>Each contour scores plus one when its interior newly paints, minus one when it newly erases, and zero when the enclosing winding already decides the region: top-level contours always paint regardless of orientation, opposite-wound holes subtract, same-wound islands add nothing, and deeper stacks resolve through accumulated container orientations. Roles therefore make contour reversal unobservable while preserving holes, unlike raw signed accumulation, which cancels disjoint opposite contours sharing a pixel.</para>
-    /// <para>Like parity signs this runs once per contour set, not per pixel: the wiring level resolves roles, then the coverage kernel applies them to unsigned fan areas. Containment reuses the same first-vertex test; when skipSharedVertices is set, test vertices shared with the tested contour are skipped for strictly interior samples, so point-touching sets resolved by touch handling combine correctly while all other inputs behave exactly as before. Degenerate contours score zero. Callers charge one nesting work unit per contour pair; this resolver holds no budget itself and allocates nothing.</para>
+    /// <para>Like parity signs this runs once per contour set, not per pixel: the wiring level resolves roles, then the coverage kernel applies them to unsigned fan areas. Containment reuses the same first-vertex test; when skipSharedVertices is set, test vertices shared with the tested contour are skipped for strictly interior samples, so point-touching sets resolved by touch handling combine correctly while all other inputs behave exactly as before. Degenerate contours score zero. Callers check cancellation per contour pair; this resolver holds no budget itself and allocates nothing.</para>
     /// </remarks>
     internal static void ComputeWindingRoles(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, Span<int> roles, bool skipSharedVertices, CancellationToken cancellationToken)
     {
@@ -85,13 +85,12 @@ internal static class SvgContourNesting
 
     /// <summary>Drops bitwise-identical duplicate contours beyond their first occurrence, reporting survivors.</summary>
     /// <remarks>
-    /// <para>Coincident contours union exactly, so keeping one copy is coverage-identical while summing would double shared fringes. Touching, nested and crossing contours pass through untouched with their existing combination, as do rotated or reversed identicals (this comparison checks stored vertex order) and degenerate contours under three points (they contribute no coverage either way). Bitwise equality keeps NaN vertices unmerged. Callers charge one nesting work unit per contour pair; kept-vertex copies charge one work unit each.</para>
+    /// <para>Coincident contours union exactly, so keeping one copy is coverage-identical while summing would double shared fringes. Touching, nested and crossing contours pass through untouched with their existing combination, as do rotated or reversed identicals (this comparison checks stored vertex order) and degenerate contours under three points (they contribute no coverage either way). Bitwise equality keeps NaN vertices unmerged. Comparisons and kept-vertex copies observe cancellation.</para>
     /// </remarks>
-    internal static bool MergeIdenticalContours(SvgDevicePoint[] points, int[] ends, ParserWorkCounter workCounter, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, CancellationToken cancellationToken)
+    internal static bool MergeIdenticalContours(SvgDevicePoint[] points, int[] ends, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(ends);
-        ArgumentNullException.ThrowIfNull(workCounter);
         SvgPolygonCoverage.ValidateContourEnds(points, ends);
         bool[] keep = new bool[ends.Length];
         for (int contour = 0; contour < ends.Length; contour++) keep[contour] = true;
@@ -146,7 +145,7 @@ internal static class SvgContourNesting
             int count = ends[contour] - start;
             for (int vertex = 0; vertex < count; vertex++)
             {
-                workCounter.Consume(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
                 compactedPoints[target++] = points[start + vertex];
             }
 

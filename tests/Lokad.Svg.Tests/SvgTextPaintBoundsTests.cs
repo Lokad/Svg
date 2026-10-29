@@ -30,7 +30,7 @@ public sealed partial class SvgTextPaintBoundsTests
             text.Append("</text>");
             byte[] input = TextEncoding.UTF8.GetBytes(Document(text.ToString()));
             RenderBudget budget = new(8_000_000);
-            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, new(10_000_000), CancellationToken.None))
+            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
             {
                 SvgTextLinearShader shader = Assert.IsType<SvgTextLinearShader>(root.Geometries.ToArray()
                     .First(geometry => geometry.Kind == SvgGeometryKind.GlyphContours).Glyph.Shader);
@@ -61,10 +61,10 @@ public sealed partial class SvgTextPaintBoundsTests
         {
             byte[] input = TextEncoding.UTF8.GetBytes(row.GetProperty("source").GetString() ?? throw new InvalidDataException("Missing source path document."));
             RenderBudget budget = new(8_000_000);
-            using (SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(input, SvgRenderLimits.Default, budget, new(10_000_000), CancellationToken.None))
+            using (SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(input, SvgRenderLimits.Default, budget, CancellationToken.None))
             {
                 SvgRenderOptions options = preparation.ResolveRasterOptions(new(null, outputScale, SvgColor.Transparent, SvgRenderLimits.Default, snapshot));
-                using SvgRoot root = SvgRootParser.ParsePrepared(input, SvgRenderLimits.Default, budget, snapshot, new(10_000_000), CancellationToken.None,
+                using SvgRoot root = SvgRootParser.ParsePrepared(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None,
                     preparation.GetOutputMap(options), options.Viewport, options.OutputScale, preparation);
                 SvgTextLinearShader shader = Assert.IsType<SvgTextLinearShader>(root.Geometries.ToArray()
                     .First(geometry => geometry.Kind == SvgGeometryKind.GlyphContours).Glyph.Shader);
@@ -95,7 +95,7 @@ public sealed partial class SvgTextPaintBoundsTests
             SvgGlyphDeviceMetrics metrics = new(scale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
             RenderBudget budget = new(1_000_000);
             using (SvgTextRun run = SvgTextRunBuilder.Create(style, row.GetProperty("text").GetString() ?? throw new InvalidDataException("Missing spacing text."),
-                [], [], [], new(new(new(0, 0, 0, 255), 1), true), metrics, snapshot, budget, new(1_000_000), CancellationToken.None))
+                [], [], [], new(new(new(0, 0, 0, 255), 1), true), metrics, snapshot, budget, CancellationToken.None))
             {
                 JsonElement native = row.GetProperty(platform);
                 double[] expected = native.GetProperty("widths").EnumerateArray().Select(value => value.GetDouble()).ToArray();
@@ -111,7 +111,7 @@ public sealed partial class SvgTextPaintBoundsTests
     }
 
     [Fact]
-    public async Task Metric_scratch_releases_after_denial_work_exhaustion_cancellation_and_retry()
+    public async Task Metric_scratch_releases_after_denial_cancellation_and_retry()
     {
         using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
         RenderBudget runBudget = new(1_000_000);
@@ -121,19 +121,17 @@ public sealed partial class SvgTextPaintBoundsTests
             {
                 RenderBudget denied = new(limit);
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                    SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, denied, new(long.MaxValue), CancellationToken.None)).ErrorCode);
+                    SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, denied, CancellationToken.None)).ErrorCode);
                 Assert.Equal(0, denied.Snapshot().CurrentBytes);
             }
             RenderBudget scratch = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, scratch, new(100), CancellationToken.None)).ErrorCode);
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
             Assert.Throws<OperationCanceledException>(() =>
-                SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, scratch, new(long.MaxValue), cancellation.Token));
+                SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, scratch, cancellation.Token));
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
-            SvgRectangle box = SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, scratch, new(long.MaxValue), CancellationToken.None);
+            SvgRectangle box = SvgTextLayoutBounds.Measure(run, [], SvgAffineTransform.Identity, scratch, CancellationToken.None);
             Assert.True(box.Width > 0 && box.Height > 0);
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
         }
@@ -149,10 +147,8 @@ public sealed partial class SvgTextPaintBoundsTests
         using (SvgTextRun repeated = CreateRun(new string('A', 1_000), snapshot, runBudget))
         {
             RenderBudget singleScratch = new(1_000_000), repeatedScratch = new(1_000_000);
-            ParserWorkCounter singleWork = new(long.MaxValue), repeatedWork = new(long.MaxValue);
-            SvgTextLayoutBounds.Measure(single, [], SvgAffineTransform.Identity, singleScratch, singleWork, CancellationToken.None);
-            SvgTextLayoutBounds.Measure(repeated, [], SvgAffineTransform.Identity, repeatedScratch, repeatedWork, CancellationToken.None);
-            Assert.InRange(repeatedWork.Used - singleWork.Used, 999, 5_000);
+            SvgTextLayoutBounds.Measure(single, [], SvgAffineTransform.Identity, singleScratch, CancellationToken.None);
+            SvgTextLayoutBounds.Measure(repeated, [], SvgAffineTransform.Identity, repeatedScratch, CancellationToken.None);
             Assert.Equal(singleScratch.Snapshot().PeakBytes, repeatedScratch.Snapshot().PeakBytes);
             Assert.Equal(0, singleScratch.Snapshot().CurrentBytes);
             Assert.Equal(0, repeatedScratch.Snapshot().CurrentBytes);
@@ -169,16 +165,14 @@ public sealed partial class SvgTextPaintBoundsTests
         using (SvgTextRun second = CreateRun("A", snapshot, runBudget))
         using (SvgTextLayoutBounds.MetricCache cache = SvgTextLayoutBounds.MetricCache.Create(scratch))
         {
-            ParserWorkCounter initial = new(long.MaxValue), repeated = new(100);
-            SvgRectangle expected = SvgTextLayoutBounds.Measure(first, [], SvgAffineTransform.Identity, cache, initial, CancellationToken.None);
-            Assert.Equal(expected, SvgTextLayoutBounds.Measure(second, [], SvgAffineTransform.Identity, cache, repeated, CancellationToken.None));
-            Assert.True(repeated.Used < initial.Used / 4);
+            SvgRectangle expected = SvgTextLayoutBounds.Measure(first, [], SvgAffineTransform.Identity, cache, CancellationToken.None);
+            Assert.Equal(expected, SvgTextLayoutBounds.Measure(second, [], SvgAffineTransform.Identity, cache, CancellationToken.None));
             long held = scratch.Snapshot().CurrentBytes;
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
-            Assert.Throws<OperationCanceledException>(() => SvgTextLayoutBounds.Measure(second, [], SvgAffineTransform.Identity, cache, new(long.MaxValue), cancellation.Token));
+            Assert.Throws<OperationCanceledException>(() => SvgTextLayoutBounds.Measure(second, [], SvgAffineTransform.Identity, cache, cancellation.Token));
             Assert.Equal(held, scratch.Snapshot().CurrentBytes);
-            Assert.Equal(expected, SvgTextLayoutBounds.Measure(second, [], SvgAffineTransform.Identity, cache, new(100), CancellationToken.None));
+            Assert.Equal(expected, SvgTextLayoutBounds.Measure(second, [], SvgAffineTransform.Identity, cache, CancellationToken.None));
         }
         Assert.Equal(0, runBudget.Snapshot().CurrentBytes);
         Assert.Equal(0, scratch.Snapshot().CurrentBytes);
@@ -190,7 +184,7 @@ public sealed partial class SvgTextPaintBoundsTests
         using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
         byte[] input = TextEncoding.UTF8.GetBytes(Document("<text x='4' y='24' font-family='serif' font-size='24'>" + new string('A', 1_000) + "</text>"));
         RenderBudget budget = new(8_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, new(1_000_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
         {
             Assert.Equal(1_000, root.Geometries.Length);
             SvgRecordedPaint first = root.Geometries[0].RecordedPaint;
@@ -209,7 +203,7 @@ public sealed partial class SvgTextPaintBoundsTests
         using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
         byte[] input = TextEncoding.UTF8.GetBytes(Document("<text x='4' y='24' font-family='serif' font-size='24' textLength='4000' fill='url(#g)' stroke='url(#g)' stroke-width='.25'>" + new string('A', 128) + "</text>"));
         RenderBudget budget = new(8_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, new(300_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
             Assert.Equal(256, root.Geometries.Length);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -219,7 +213,7 @@ public sealed partial class SvgTextPaintBoundsTests
         SvgTextStyle style = new(new("serif", 400, false), 24, 0, 0, 0, 0, 0, SvgTextAnchor.Start, "");
         SvgTextGlyphPaint paint = new(new(new(0, 0, 0, 255), 1), true) { FillServer = "url(#g)" };
         SvgGlyphDeviceMetrics metrics = new(1, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, false);
-        return SvgTextRunBuilder.Create(style, text, [], [], [], paint, metrics, snapshot, budget, new(long.MaxValue), CancellationToken.None);
+        return SvgTextRunBuilder.Create(style, text, [], [], [], paint, metrics, snapshot, budget, CancellationToken.None);
     }
 
     private static ValueTask<SvgFontSnapshot> CreateSnapshotAsync()

@@ -83,17 +83,9 @@ public sealed partial class OpenTypeFontTests
         byte[] input = InstancePaintDocument("<defs><path id='s' d='M4 4H20V20H4Z' fill='url(#p)'/><clipPath id='c'><rect width='28' height='28'/></clipPath></defs><g clip-path='url(#c)'><use href='#s'/><rect x='8' y='8' width='8' height='8' fill='red'/></g><defs>" + InstancePaintResource(paint) + "</defs>");
         byte[] unchanged = input.ToArray();
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
             Assert.NotEmpty(root.Geometries.ToArray());
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(1_000_000);
-            using RenderBudget.BudgetReservation borrower = denied.Reserve(73, SvgMemoryCategory.Parser);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(73, denied.Snapshot().CurrentBytes);
-        }
         for (long limit = 1; limit < measured.Snapshot().PeakBytes; limit += 256) DenyMemory(limit);
         DenyMemory(measured.Snapshot().PeakBytes - 1);
         using CancellationTokenSource cancellation = new();
@@ -101,7 +93,7 @@ public sealed partial class OpenTypeFontTests
         RenderBudget canceled = new(1_000_000);
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, cancellation.Token)).CancellationToken);
         Assert.Equal(0, canceled.Snapshot().CurrentBytes);
-        using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, new(work.Used), CancellationToken.None))
+        using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(retry, SvgRenderOptions.Default, measured, CancellationToken.None))
             Assert.Contains(surface.Pixels, value => value != 0);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
@@ -111,7 +103,7 @@ public sealed partial class OpenTypeFontTests
         {
             RenderBudget denied = new(limit + 73);
             using RenderBudget.BudgetReservation borrower = denied.Reserve(73, SvgMemoryCategory.Parser);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(73, denied.Snapshot().CurrentBytes);
         }
     }

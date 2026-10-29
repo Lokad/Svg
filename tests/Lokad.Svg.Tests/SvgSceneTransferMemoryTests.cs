@@ -26,15 +26,14 @@ public sealed class SvgSceneTransferMemoryTests
         static void Transfer(RenderBudget budget, out bool enteredTransfer)
         {
             enteredTransfer = false;
-            ParserWorkCounter work = new(100_000);
-            using SvgDocumentState state = new(budget, work, CancellationToken.None);
-            using SvgSceneBuilder destination = new(budget, work, CancellationToken.None);
+            using SvgDocumentState state = new(budget, CancellationToken.None);
+            using SvgSceneBuilder destination = new(budget, CancellationToken.None);
             int bounds = state.Scene.AddMaskContent(new([], 255, true) { ConstantAlpha = 191 });
             int content = state.Scene.AddMaskContent(new([], 255, true) { ConstantAlpha = 127, BoundsClipContentIndex = bounds });
             SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
             operation.Resolved = true; operation.Value = 255; operation.ContentIndex = content;
             SvgLeafMaskBinding binding = SvgLeafMaskComposition.NewBinding(state, operation, null);
-            using SvgLeafMaskMapper mapper = SvgLeafMaskMapper.CreateSceneTransfer(state, state.Scene, destination, work, CancellationToken.None);
+            using SvgLeafMaskMapper mapper = SvgLeafMaskMapper.CreateSceneTransfer(state, state.Scene, destination, CancellationToken.None);
             enteredTransfer = true;
             SvgLeafMaskBinding mapped = Assert.IsType<SvgLeafMaskBinding>(mapper.Map(binding));
             Assert.Equal((byte)127, destination.MaskContentAt(mapped.Operation.ContentIndex).ConstantAlpha);

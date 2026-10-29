@@ -29,7 +29,7 @@ public sealed class FordVariantTests
             Assert.All(data.Where(char.IsLetter), command => Assert.Contains(command, new[] { 'M', 'm', 'c' }));
             SvgContourBuilder builder = new(10_000, 8);
             builder.EnableCubicSpanRetention();
-            SvgPathDataParser.ParsePath(data, SvgAffineTransform.Identity, builder, new(0.5, 64, 10_000), 1000, new(1_000_000), CancellationToken.None, null);
+            SvgPathDataParser.ParsePath(data, SvgAffineTransform.Identity, builder, new(0.5, 64, 10_000), 1000, CancellationToken.None, null);
             SvgCubicSpan[] cubics = builder.GetCubicSpans();
             Assert.Equal(fill == 0 ? 84 : 60, cubics.Length);
             Assert.Equal(2, builder.ContourCount);
@@ -58,7 +58,7 @@ public sealed class FordVariantTests
         }
         Assert.Equal(436, compared);
         XElement group = Assert.Single(source.Descendants(svg + "g"), x => x.Attribute("transform") is not null);
-        SvgAffineTransform transform = SvgGeometrySyntax.ParseTransform(group.Attribute("transform")?.Value, new(1000), CancellationToken.None);
+        SvgAffineTransform transform = SvgGeometrySyntax.ParseTransform(group.Attribute("transform")?.Value, CancellationToken.None);
         JsonElement matrix = native.RootElement.GetProperty("commandLog")[10].GetProperty("params").GetProperty("matrix44");
         Assert.Equal(0x3fac3548, BitConverter.SingleToInt32Bits((float)transform.A));
         Assert.Equal(BitConverter.SingleToInt32Bits((float)matrix[0].GetDouble()), BitConverter.SingleToInt32Bits((float)(transform.A * 2)));
@@ -85,7 +85,7 @@ public sealed class FordVariantTests
         SvgRenderOptions options = new(new SvgViewport(1000, 400), 1, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget parsing = new(options.Limits.MaximumAccountedBytes);
         (double scaleX, double scaleY) = SvgPreparationTestHelper.GetOutputScales(input, options, parsing, CancellationToken.None);
-        using SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parsing, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, scaleX, scaleY, options.Viewport);
+        using SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parsing, null, CancellationToken.None, scaleX, scaleY, options.Viewport);
         RgbaImage output = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None), 400_000);
         RgbaImage oracle = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(directory, "inv-002-1000x400-transparent.png")), 400_000);
         int witnessed = 0;
@@ -188,7 +188,7 @@ public sealed class FordVariantTests
         SvgRenderOptions options = new(new SvgViewport(1000, 400), 1, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget parsing = new(options.Limits.MaximumAccountedBytes);
         (double scaleX, double scaleY) = SvgPreparationTestHelper.GetOutputScales(input, options, parsing, CancellationToken.None);
-        using SvgRoot root = SvgRootParser.Parse(input, options.Limits, parsing, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, scaleX, scaleY, options.Viewport);
+        using SvgRoot root = SvgRootParser.Parse(input, options.Limits, parsing, null, CancellationToken.None, scaleX, scaleY, options.Viewport);
         var polygon = root.Geometries.Where(geometry => geometry.Kind == SvgGeometryKind.PolygonFill).ElementAt(1).Polygon;
         SvgDevicePoint[] points = polygon.Points.Select(point => new SvgDevicePoint(point.X * scaleX, point.Y * scaleY)).ToArray();
         SvgCubicSpan[] cubics = polygon.CubicSpans.Select(span => new SvgCubicSpan(span.Contour, span.StartIndex, span.EndIndex, new(span.FirstControl.X * scaleX, span.FirstControl.Y * scaleY), new(span.SecondControl.X * scaleX, span.SecondControl.Y * scaleY))).ToArray();

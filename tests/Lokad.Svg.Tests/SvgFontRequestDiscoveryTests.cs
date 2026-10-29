@@ -47,10 +47,9 @@ public sealed class SvgFontRequestDiscoveryTests
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
         SvgRenderLimits limits = new(1_048_576, 1_024, 16, 16, 1_024, 16, 16, 100, 16, 1);
         long workspace = SvgRootParser.GetXmlReaderWorkspaceBytes(input.Length, limits.MaximumAttributesPerElement);
-        ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
         RenderBudget budget = new(workspace);
 
-        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(input, limits, workCounter, budget, CancellationToken.None);
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(input, limits, budget, CancellationToken.None);
 
         Assert.Empty(requests);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -62,10 +61,9 @@ public sealed class SvgFontRequestDiscoveryTests
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
         SvgRenderLimits limits = new(1_048_576, 1_024, 16, 16, 1_024, 16, 16, 100, 16, 1);
         long workspace = SvgRootParser.GetXmlReaderWorkspaceBytes(input.Length, limits.MaximumAttributesPerElement);
-        ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
         RenderBudget budget = new(workspace - 1);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, limits, workCounter, budget, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, limits, budget, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -373,10 +371,9 @@ public sealed class SvgFontRequestDiscoveryTests
         }
         svg.Append("</svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
         RenderBudget budget = new(600);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(System.Text.Encoding.UTF8.GetBytes(svg.ToString()), limits, workCounter, budget, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(System.Text.Encoding.UTF8.GetBytes(svg.ToString()), limits, budget, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         RenderBudgetSnapshot snapshot = budget.Snapshot();
@@ -396,10 +393,9 @@ public sealed class SvgFontRequestDiscoveryTests
         }
         svg.Append("</svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
         RenderBudget budget = new(9000);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(System.Text.Encoding.UTF8.GetBytes(svg.ToString()), limits, workCounter, budget, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(System.Text.Encoding.UTF8.GetBytes(svg.ToString()), limits, budget, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -409,10 +405,9 @@ public sealed class SvgFontRequestDiscoveryTests
     public void Discovery_releases_its_preparation_ledger_on_success()
     {
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
         RenderBudget budget = new(limits.MaximumAccountedBytes);
 
-        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), limits, workCounter, budget, CancellationToken.None);
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), limits, budget, CancellationToken.None);
 
         SvgFontFaceRequest request = Assert.Single(requests);
         Assert.Equal("Example", request.Family);
@@ -426,12 +421,11 @@ public sealed class SvgFontRequestDiscoveryTests
     public void Discovery_observes_cancellation_and_releases_its_ledger()
     {
         SvgRenderLimits limits = SvgRenderLimits.Default;
-        ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
         RenderBudget budget = new(limits.MaximumAccountedBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
 
-        Assert.Throws<OperationCanceledException>(() => SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), limits, workCounter, budget, cancellation.Token));
+        Assert.Throws<OperationCanceledException>(() => SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), limits, budget, cancellation.Token));
 
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

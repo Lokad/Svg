@@ -98,10 +98,9 @@ public sealed class SvgRectanglePaintTests
     {
         SvgRectangle source = new(0, 0, 8, 8, new(255, 0, 0, 255), true, null) { Clip = new(1, 2, 3, 4) };
         SvgDefinition definition = new([SvgGeometry.FromRectangle(source)], false, null, null);
-        ParserWorkCounter work = new(100);
-        using SvgDocumentState state = new(new RenderBudget(10_000), work, CancellationToken.None);
+        using SvgDocumentState state = new(new RenderBudget(10_000), CancellationToken.None);
         SvgUseReference reference = new("r", 10, 12, null, null, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null, null);
-        SvgRectangle rectangle = Assert.Single(SvgReferenceResolver.Apply(definition, reference, null, state, work, CancellationToken.None)).Rectangle;
+        SvgRectangle rectangle = Assert.Single(SvgReferenceResolver.Apply(definition, reference, null, state, CancellationToken.None)).Rectangle;
         Assert.Equal((10, 12, 8, 8), (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height));
         Assert.Equal(new SvgClipBox(11, 14, 3, 4), rectangle.Clip);
     }

@@ -14,18 +14,18 @@ internal static class SvgGeometrySyntax
 {
     /// <summary>Parses an element's transform and retains its bounded source context on SVG failures.</summary>
     /// <remarks>Borrows the parser-thread reader without advancing it or retaining storage.
-    /// Numeric parsing shares the caller's work counter and cancellation token.</remarks>
-    internal static SvgAffineTransform ParseElementTransform(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// Numeric parsing observes the caller's cancellation token token.</remarks>
+    internal static SvgAffineTransform ParseElementTransform(XmlReader reader, CancellationToken cancellationToken)
     {
         string? value = reader.GetAttribute("transform");
-        try { return ParseTransform(value, workCounter, cancellationToken); }
+        try { return ParseTransform(value, cancellationToken); }
         catch (SvgException exception) { SvgSourceContext.Attach(reader, exception, "transform", value ?? string.Empty); throw; }
     }
 
-    internal static SvgAffineTransform ParseTransform(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgAffineTransform ParseTransform(string? value, CancellationToken cancellationToken)
     {
         if (value is null) return SvgAffineTransform.Identity;
-        workCounter.ConsumeBytes(value.Length, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         if (value.Length > SvgSyntaxLimits.MaximumTransformCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform values exceed the configured syntax limit.");
         ReadOnlySpan<char> input = value.AsSpan();
         SvgAffineTransform transform = SvgAffineTransform.Identity;
@@ -46,7 +46,7 @@ internal static class SvgGeometrySyntax
             int argumentsStart = position;
             while (position < input.Length && input[position] != ')') position++;
             if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transform arguments must end with ')'.");
-            SvgAffineTransform function = ParseTransformFunction(name, input[argumentsStart..position], workCounter, cancellationToken);
+            SvgAffineTransform function = ParseTransformFunction(name, input[argumentsStart..position], cancellationToken);
             // Local scale/translate lists use native float axis storage until a
             // matrix, rotation or skew promotes the list to double precision.
             // Enclosing groups still compose their finished local maps in double.
@@ -220,7 +220,7 @@ internal static class SvgGeometrySyntax
         _ => throw new InvalidOperationException("Unknown viewBox alignment.")
     };
 
-    internal static SvgViewBox? ParseViewBox(string? value, string? preserveAspectRatio, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgViewBox? ParseViewBox(string? value, string? preserveAspectRatio, CancellationToken cancellationToken)
     {
         if (value is not null && value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "viewBox values exceed the configured syntax limit.");
         if (preserveAspectRatio is not null && preserveAspectRatio.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "preserveAspectRatio values exceed the configured syntax limit.");
@@ -235,7 +235,7 @@ internal static class SvgGeometrySyntax
         while (tokens.TryReadValue(out ReadOnlySpan<char> token))
         {
             if (valueCount == values.Length || !double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double validated) || !double.IsFinite(validated)) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
-            float native = SvgFloatNumber.ReadValidated(token, workCounter, cancellationToken);
+            float native = SvgFloatNumber.ReadValidated(token, cancellationToken);
             if (!float.IsFinite(native) || valueCount >= 2 && native == 0 && validated > 0) throw new SvgException(SvgErrorCode.LimitExceeded, "viewBox values exceed the admitted float range.");
             values[valueCount++] = native;
         }
@@ -244,7 +244,7 @@ internal static class SvgGeometrySyntax
         return new SvgViewBox(values[0], values[1], values[2], values[3], horizontalAlignment, verticalAlignment, fit);
     }
 
-    private static SvgAffineTransform ParseTransformFunction(ReadOnlySpan<char> name, ReadOnlySpan<char> arguments, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgAffineTransform ParseTransformFunction(ReadOnlySpan<char> name, ReadOnlySpan<char> arguments, CancellationToken cancellationToken)
     {
         bool isMatrix = name.Equals("matrix", StringComparison.Ordinal);
         bool isTranslate = name.Equals("translate", StringComparison.Ordinal);
@@ -252,16 +252,16 @@ internal static class SvgGeometrySyntax
         bool isSkewX = name.Equals("skewX", StringComparison.Ordinal);
         bool isSkewY = name.Equals("skewY", StringComparison.Ordinal);
         if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.Ordinal) && !isRotate && !isSkewX && !isSkewY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The transform function is not supported.");
-        if (isTranslate) return ParseTranslate(arguments, workCounter, cancellationToken);
-        if (isRotate) return ParseRotate(arguments, workCounter, cancellationToken);
-        if (isSkewX || isSkewY) return ParseSkew(arguments, isSkewY, workCounter, cancellationToken);
+        if (isTranslate) return ParseTranslate(arguments, cancellationToken);
+        if (isRotate) return ParseRotate(arguments, cancellationToken);
+        if (isSkewX || isSkewY) return ParseSkew(arguments, isSkewY, cancellationToken);
         Span<double> values = stackalloc double[6];
         int valueCount = 0;
         DelimitedTokenReader tokens = new(arguments, SvgNumberListSyntax.Svg, 0);
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
             if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, isMatrix ? "matrix() requires six coordinates." : "Transforms require one or two coordinates.");
-            values[valueCount++] = ParseTransformCoordinate(value, workCounter, cancellationToken);
+            values[valueCount++] = ParseTransformCoordinate(value, cancellationToken);
         }
         if (isMatrix)
         {
@@ -281,7 +281,7 @@ internal static class SvgGeometrySyntax
         return SvgAffineTransform.FromScaleOffset(first, second, 0, 0);
     }
 
-    private static SvgAffineTransform ParseRotate(ReadOnlySpan<char> arguments, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgAffineTransform ParseRotate(ReadOnlySpan<char> arguments, CancellationToken cancellationToken)
     {
         Span<double> values = stackalloc double[3];
         int valueCount = 0;
@@ -289,13 +289,13 @@ internal static class SvgGeometrySyntax
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
             if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "rotate() requires one angle or one angle with a center point.");
-            values[valueCount++] = ParseTransformCoordinate(value, workCounter, cancellationToken);
+            values[valueCount++] = ParseTransformCoordinate(value, cancellationToken);
         }
         if (valueCount != 1 && valueCount != 3) throw new SvgException(SvgErrorCode.MalformedInput, "rotate() requires one angle or one angle with a center point.");
         return valueCount == 1 ? SvgAffineTransform.FromRotationDegrees(values[0]) : SvgAffineTransform.FromRotationDegrees(values[0], values[1], values[2]);
     }
 
-    private static SvgAffineTransform ParseSkew(ReadOnlySpan<char> arguments, bool skewY, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgAffineTransform ParseSkew(ReadOnlySpan<char> arguments, bool skewY, CancellationToken cancellationToken)
     {
         Span<double> values = stackalloc double[1];
         int valueCount = 0;
@@ -303,7 +303,7 @@ internal static class SvgGeometrySyntax
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
             if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Skew transforms require one angle.");
-            values[valueCount++] = ParseTransformCoordinate(value, workCounter, cancellationToken);
+            values[valueCount++] = ParseTransformCoordinate(value, cancellationToken);
         }
         if (valueCount != 1) throw new SvgException(SvgErrorCode.MalformedInput, "Skew transforms require one angle.");
         double slope = Math.Tan(values[0] * (Math.PI / 180d));
@@ -311,7 +311,7 @@ internal static class SvgGeometrySyntax
         return skewY ? SvgAffineTransform.FromMatrix(1, slope, 0, 1, 0, 0) : SvgAffineTransform.FromMatrix(1, 0, slope, 1, 0, 0);
     }
 
-    private static SvgAffineTransform ParseTranslate(ReadOnlySpan<char> arguments, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgAffineTransform ParseTranslate(ReadOnlySpan<char> arguments, CancellationToken cancellationToken)
     {
         Span<double> values = stackalloc double[2];
         int valueCount = 0;
@@ -319,19 +319,19 @@ internal static class SvgGeometrySyntax
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
             if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
-            values[valueCount++] = ParseTransformCoordinate(value, workCounter, cancellationToken);
+            values[valueCount++] = ParseTransformCoordinate(value, cancellationToken);
         }
         if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
         return SvgAffineTransform.FromScaleOffset(1, 1, SvgCssLength.NormalizeFixed(values[0]), valueCount == 2 ? SvgCssLength.NormalizeFixed(values[1]) : 0);
     }
 
-    private static double ParseTransformCoordinate(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static double ParseTransformCoordinate(ReadOnlySpan<char> value, CancellationToken cancellationToken)
     {
         ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform coordinate values exceed the configured syntax limit.");
         if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number transform coordinates are implemented.");
         if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite transform coordinates are implemented.");
-        float coordinate = SvgFloatNumber.ReadValidated(token, workCounter, cancellationToken);
+        float coordinate = SvgFloatNumber.ReadValidated(token, cancellationToken);
         if (!float.IsFinite(coordinate)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite transform coordinates are implemented.");
         return coordinate;
     }
@@ -416,30 +416,30 @@ internal static class SvgGeometrySyntax
 
     /// <summary>Conservatively identifies geometric fill/stroke sources without constructing render geometry.</summary>
     /// <remarks>Borrows the parser-thread reader without advancing it. Temporary point/path storage
-    /// is charged to the caller and disposed on all exits; parsing shares work and cancellation.
+    /// is charged to the caller and disposed on all exits; parsing observes cancellation.
     /// Markers, masks, filters and object bounds have independent source contracts.</remarks>
     internal static SvgGeometryPaintChannels GetPaintChannels(XmlReader reader, int maximumPathCommands,
-        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        RenderBudget budget, CancellationToken token)
     {
         if (reader.LocalName == "image") return SvgGeometryPaintChannels.None;
         if (reader.LocalName == "line") return SvgGeometryPaintChannels.Stroke;
         if (reader.LocalName is "polygon" or "polyline")
         {
             using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(
-                reader.GetAttribute("points") ?? string.Empty, reader.LocalName, maximumPathCommands, budget, work, token, 0);
+                reader.GetAttribute("points") ?? string.Empty, reader.LocalName, maximumPathCommands, budget, token, 0);
             SvgGeometryPaintChannels channels = points.Count >= 3 ? SvgGeometryPaintChannels.Fill : SvgGeometryPaintChannels.None;
             if (points.Count >= 2 || points.Count == 1 && reader.LocalName == "polygon") channels |= SvgGeometryPaintChannels.Stroke;
             return channels;
         }
         if (reader.LocalName != "path") return SvgGeometryPaintChannels.Fill | SvgGeometryPaintChannels.Stroke;
-        using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumPathCommands, budget, work, token);
-        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Parser, work, token);
-        SvgPathDataParser.ParseCommands(data.Value, maximumPathCommands, work, token, commands);
+        using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumPathCommands, budget, token);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Parser, token);
+        SvgPathDataParser.ParseCommands(data.Value, maximumPathCommands, token, commands);
         SvgGeometryPaintChannels result = SvgGeometryPaintChannels.None;
         int vertices = 0;
         foreach (SvgAuthoredPathCommand command in commands.AsSpan())
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             switch (command.Verb)
             {
                 case SvgAuthoredPathVerb.Move: vertices = 1; break;

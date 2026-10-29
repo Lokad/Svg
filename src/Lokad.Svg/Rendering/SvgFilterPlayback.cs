@@ -170,8 +170,8 @@ internal static class SvgFilterPlayback
     /// <remarks>Source/result bounds remain separate from object bounds and pixel ownership. Temporary
     /// arrays share the conversion budget, release on every exit and charge bounded graph visits.</remarks>
     internal static SvgPaintBounds SourceLayerBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
-        SvgFilterRegionContext context, SvgPaintBounds source, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
-        => SourceLayerBounds(resource, map, context, source, SvgFilterBoundsKind.Visual, budget, work, token);
+        SvgFilterRegionContext context, SvgPaintBounds source, RenderBudget budget, CancellationToken token)
+        => SourceLayerBounds(resource, map, context, source, SvgFilterBoundsKind.Visual, budget, token);
 
     /// <summary>Propagates capture hints, stored-image bounds or painted output through the same finite graph.</summary>
     /// <remarks>Stored bounds retain native kernel outsets and materialization rounding independently
@@ -179,15 +179,15 @@ internal static class SvgFilterPlayback
     /// follow the visual-bounds overload.</remarks>
     internal static SvgPaintBounds SourceLayerBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgFilterRegionContext context, SvgPaintBounds source, SvgFilterBoundsKind kind,
-        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        RenderBudget budget, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         int count = resource.Primitives.Items.Length;
         if (count == 0) return default;
         using RenderBudget.BudgetReservation owner = budget.Reserve(2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count), SvgMemoryCategory.Temporary);
         SvgPaintBounds[] regions = new SvgPaintBounds[count], bounds = new SvgPaintBounds[count];
-        PrepareRegions(resource, regions, context, work, token);
-        PrepareOutputBounds(resource, map, source, kind, regions, bounds, work, token);
+        PrepareRegions(resource, regions, context, token);
+        PrepareOutputBounds(resource, map, source, kind, regions, bounds, token);
         return kind == SvgFilterBoundsKind.Visual ? Union(source, bounds[^1]) : bounds[^1];
 
         static SvgPaintBounds Union(SvgPaintBounds first, SvgPaintBounds second)
@@ -200,12 +200,12 @@ internal static class SvgFilterPlayback
     // retains its rounding domain; borrowed arrays and graph visits stay budgeted.
     private static void PrepareOutputBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgPaintBounds source, SvgFilterBoundsKind kind, ReadOnlySpan<SvgPaintBounds> regions,
-        Span<SvgPaintBounds> bounds, ParserWorkCounter work, CancellationToken token)
+        Span<SvgPaintBounds> bounds, CancellationToken token)
     {
         int count = resource.Primitives.Items.Length;
         for (int index = 0; index < count; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgFilterPrimitive primitive = resource.Primitives.Items[index];
             SvgPaintBounds input = primitive.Input.Index < 0 ? source : bounds[primitive.Input.Index];
             SvgPaintBounds output = input;
@@ -215,7 +215,7 @@ internal static class SvgFilterPlayback
                 output = default;
                 foreach (SvgFilterInput merged in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     if (merged.Index < -2 || merged.Index >= index) throw new SvgException(SvgErrorCode.MalformedInput, "Filter source bounds require earlier merge inputs.");
                     output = Union(output, merged.Index < 0 ? source : bounds[merged.Index]);
                 }
@@ -260,14 +260,14 @@ internal static class SvgFilterPlayback
     /// budget and release on every exit; all graph visits charge work and observe cancellation. Coordinates
     /// use the caller's device grid. No pixels or caller storage are changed.</remarks>
     internal static SvgPaintBounds RequiredSourceBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
-        SvgFilterRegionContext context, SvgPaintBounds requested, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        SvgFilterRegionContext context, SvgPaintBounds requested, RenderBudget budget, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         int count = resource.Primitives.Items.Length;
         if (count == 0) return default;
         using RenderBudget.BudgetReservation owner = budget.Reserve(2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count), SvgMemoryCategory.Temporary);
         SvgPaintBounds[] regions = new SvgPaintBounds[count], requests = new SvgPaintBounds[count];
-        return PrepareRequests(resource, map, context, requested, regions, requests, Span<SvgPaintBounds>.Empty, work, token);
+        return PrepareRequests(resource, map, context, requested, regions, requests, Span<SvgPaintBounds>.Empty, token);
     }
 
     // Plans each node's requested output in the same grid as primitive regions.
@@ -275,19 +275,19 @@ internal static class SvgFilterPlayback
     // cancellation use the supplied counter. No pixel ownership is transferred.
     private static SvgPaintBounds PrepareRequests(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgFilterRegionContext context, SvgPaintBounds requested, SvgPaintBounds[] regions, SvgPaintBounds[] requests, Span<SvgPaintBounds> bounds,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
         int count = resource.Primitives.Items.Length;
         if (count == 0) return requested;
-        PrepareRegions(resource, regions, context, work, token);
+        PrepareRegions(resource, regions, context, token);
         if (context.SourceBounds is null) bounds = Span<SvgPaintBounds>.Empty;
         if (!bounds.IsEmpty && context.SourceBounds is {} content)
-            PrepareOutputBounds(resource, map, content, SvgFilterBoundsKind.StoredImage, regions, bounds, work, token);
+            PrepareOutputBounds(resource, map, content, SvgFilterBoundsKind.StoredImage, regions, bounds, token);
         requests[count - 1] = requested;
         SvgPaintBounds source = default;
         for (int index = count - 1; index >= 0; index--)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgFilterPrimitive primitive = resource.Primitives.Items[index];
             SvgPaintBounds pending = requests[index], region = regions[index];
             SvgPaintBounds output = new(MathF.Floor(MathF.Max(pending.Left, region.Left)), MathF.Floor(MathF.Max(pending.Top, region.Top)),
@@ -325,7 +325,7 @@ internal static class SvgFilterPlayback
 
             void Add(SvgFilterInput target, SvgPaintBounds bounds)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 if (target.Index < 0) source = Union(source, bounds);
                 else if (target.Index < index) requests[target.Index] = Union(requests[target.Index], bounds);
                 else throw new SvgException(SvgErrorCode.MalformedInput, "Filter source requests must refer to earlier results.");
@@ -339,7 +339,7 @@ internal static class SvgFilterPlayback
     }
 
     private static void PrepareRegions(SvgFilterResource resource, Span<SvgPaintBounds> regions,
-        SvgFilterRegionContext context, ParserWorkCounter work, CancellationToken token)
+        SvgFilterRegionContext context, CancellationToken token)
     {
         for (int index = 0; index < resource.Primitives.Items.Length; index++)
         {
@@ -363,7 +363,7 @@ internal static class SvgFilterPlayback
                 bool first = true;
                 foreach (SvgFilterInput merged in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     if (merged.Index < 0) { defaults = context.FilterRegion; break; }
                     if ((uint)merged.Index >= (uint)index) throw new SvgException(SvgErrorCode.MalformedInput, "Filter merge input is outside its earlier results.");
                     SvgPaintBounds region = regions[merged.Index];
@@ -372,13 +372,13 @@ internal static class SvgFilterPlayback
                         Math.Max(defaults.Right, region.Right), Math.Max(defaults.Bottom, region.Bottom));
                 }
             }
-            regions[index] = ResolveRegion(primitive.Region, defaults, context, work, token);
+            regions[index] = ResolveRegion(primitive.Region, defaults, context, token);
         }
 
-        static SvgPaintBounds ResolveRegion(SvgFilterPrimitiveRegion? authored, SvgPaintBounds defaults, SvgFilterRegionContext context, ParserWorkCounter work, CancellationToken token)
+        static SvgPaintBounds ResolveRegion(SvgFilterPrimitiveRegion? authored, SvgPaintBounds defaults, SvgFilterRegionContext context, CancellationToken token)
         {
             if (authored is not {} region) return defaults;
-            for (int component = 0; component < 4; component++) work.Consume(token);
+            token.ThrowIfCancellationRequested();
             double x = region.X is {} rx ? Position(rx, context.LengthBases.Width, context.Coordinates.A, context.Coordinates.E, context.NativeRegionMapping, true) : defaults.Left;
             double y = region.Y is {} ry ? Position(ry, context.LengthBases.Height, context.Coordinates.D, context.Coordinates.F, context.NativeRegionMapping, false) : defaults.Top;
             double authoredWidth = region.Width is {} rw ? Length(rw, context.LengthBases.Width) : defaults.Right - defaults.Left;
@@ -451,9 +451,7 @@ internal static class SvgFilterPlayback
         {
             if (map.Regions is {} regionContext)
             {
-                ParserWorkCounter regionWork = new(availableWork);
-                PrepareRequests(resource, map, regionContext, requestedOutput, regions, requests, imageBounds, regionWork, token);
-                work += regionWork.Used;
+                PrepareRequests(resource, map, regionContext, requestedOutput, regions, requests, imageBounds, token);
             }
             ReadOnlySpan<byte> graphic = source;
             // Regions crop evaluated outputs. Retain the painted source halo

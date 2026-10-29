@@ -26,16 +26,13 @@ public sealed class SvgFractionalInstanceStrokeTests
         byte[] input = Document("<use href='#s' stroke='red' stroke-width='2.5'/><defs><rect id='s' x='2.125' y='2.375' width='24.5' height='20.25' fill='none'/></defs>");
         byte[] unchanged = input.ToArray();
         RenderBudget baseline = new(8_000_000);
-        ParserWorkCounter work = new(1_000_000);
         byte[] expected;
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, baseline, null, work, CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, baseline, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, baseline, CancellationToken.None))
             expected = surface.Pixels.ToArray();
         Assert.Contains(expected, value => value != 0);
         Assert.Equal(0, baseline.Snapshot().CurrentBytes);
         RenderBudget denied = new(8_000_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, denied, CancellationToken.None))

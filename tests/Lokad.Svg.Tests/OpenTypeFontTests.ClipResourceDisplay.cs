@@ -107,15 +107,8 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] input = Document("<defs><clipPath id='c' style='display:none'><path d='M0 0H4V8H0Z'/><circle cx='4' cy='4' r='3'/></clipPath></defs><rect width='8' height='8' clip-path='url(#c)'/>");
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) Assert.False(root.HasUnsupportedChild);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) Assert.False(root.HasUnsupportedChild);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long allowance in new[] { 1, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(allowance), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         byte[] duplicate = Document("<defs><clipPath id='c' style='display:none'/><clipPath id='c'><rect width='8' height='8'/></clipPath></defs>");
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => Render(duplicate)).ErrorCode);
     }

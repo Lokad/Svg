@@ -144,9 +144,6 @@ public sealed class SvgDefinitionDisplayTests
         RenderBudget parser = new(1_000_000);
         using (RenderBudget.BudgetReservation held = parser.Reserve(73, SvgMemoryCategory.Parser))
         {
-            SvgRenderLimits shortParse = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, 1);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, shortParse, parser, CancellationToken.None)).ErrorCode);
             Assert.Equal(73, parser.Snapshot().CurrentBytes);
             using (SvgRoot scene = SvgRootParser.Parse(input, limits, parser, CancellationToken.None))
             {

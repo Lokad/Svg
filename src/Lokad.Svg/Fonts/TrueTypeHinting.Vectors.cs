@@ -3,7 +3,7 @@ namespace Lokad.Svg.Fonts;
 /// <remarks>Projection measures distances; freedom determines movement. Preserve their
 /// separate fixed-point rounding, including the dual projection of original points.
 /// Normalization and movement adapt FreeType 2.13.2 ttinterp.c/ftcalc.c. All state is
-/// inline and glyph-local; normalization iterations consume the existing work budget.</remarks>
+/// inline and glyph-local; normalization iterations observe cancellation.</remarks>
 internal sealed partial class TrueTypeHinting
 {
     private HintVector _projection = HintVector.XAxis, _dualProjection = HintVector.XAxis, _freedom = HintVector.XAxis;
@@ -137,7 +137,7 @@ internal sealed partial class TrueTypeHinting
         if (vy == 0) return new(vx < 0 ? -16384 : 16384, 0);
         if (_target.UsesWindowsArithmetic)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             double magnitude = Math.Sqrt((double)vx * vx + (double)vy * vy);
             return new(checked((int)Math.Round(vx * 16384d / magnitude, MidpointRounding.AwayFromZero)),
                 checked((int)Math.Round(vy * 16384d / magnitude, MidpointRounding.AwayFromZero)));
@@ -152,7 +152,7 @@ internal sealed partial class TrueTypeHinting
         uint ux, uy;
         do
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             // These modular products are the native 32-bit Newton iteration.
             unchecked
             {

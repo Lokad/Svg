@@ -60,9 +60,9 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
     /// <summary>Registers either one resolved native path or ordered native mask-source replay.</summary>
     /// <remarks>Child ranges borrow document staging. Geometry/command copies belong to a sealed vector
     /// scene adopted by the parent; no staging owner escapes parsing. All material storage reserves,
-    /// copy/replay visits charge work/token, and failures release partial builders and geometry.</remarks>
+    /// copy/replay visits observe cancellation token, and failures release partial builders and geometry.</remarks>
     internal SvgClipRegistration Register(SvgAffineTransform map, bool replaySource, SvgDocumentState state,
-        SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
+        SvgSceneBuilder scene, CancellationToken token)
     {
         if (!UsesMaskFallback)
         {
@@ -71,19 +71,19 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
             // coverage rather than adding a generic path's enclosing clip.
             if (IsObjectBoundingBox && ChildCount > 1 && !UsesNativeReplay && ResourceBounds is {} rectangle)
                 return WithoutEnclosure(new SvgAffineViewportClip(new(rectangle.Left, rectangle.Top, rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top), map)
-                    .Register(state, scene, work, token));
+                    .Register(state, scene, token));
             return WithoutEnclosure(SvgAffineViewportClip.RegisterContour(Points, ContourEnds, map,
                 IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath,
-                replaySource ? SourcePath : null, ResourceBounds, IsEvenOdd, state, scene, work, token));
+                replaySource ? SourcePath : null, ResourceBounds, IsEvenOdd, state, scene, token));
         }
         SvgClipChildRange range = Children ?? throw new InvalidOperationException("Clip fallback requires original child sources.");
         BudgetedParserList<SvgClipChild> children = state.ClipChildren ?? throw new InvalidOperationException("Clip child sources are missing.");
-        using SvgSceneBuilder builder = new(state.Budget, work, token);
+        using SvgSceneBuilder builder = new(state.Budget, token);
         for (int index = range.First; index < range.First + range.Count; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgClipChild child = children[index];
-            using SvgPreparedPathContours prepared = child.Path.Prepare(map, child.IsEvenOdd, state.Budget, work, token);
+            using SvgPreparedPathContours prepared = child.Path.Prepare(map, child.IsEvenOdd, state.Budget, token);
             if (prepared.Points.Length == 0) continue;
             long bytes = ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(prepared.Points.Length)
                 + ParserCollectionMemory.GetArrayByteCount<int>(prepared.ContourEnds.Length)
@@ -94,13 +94,13 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
             SvgGeometry geometry = default;
             try
             {
-                geometry = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(Copy<SvgDevicePoint>(prepared.Points, work, token),
-                    Copy<int>(prepared.ContourEnds, work, token), prepared.Signs is {} sourceSigns ? Copy<int>(sourceSigns, work, token) : null,
-                    Copy<SvgQuadSpan>(prepared.QuadSpans, work, token), Copy<SvgCubicSpan>(prepared.CubicSpans, work, token),
+                geometry = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(Copy<SvgDevicePoint>(prepared.Points, token),
+                    Copy<int>(prepared.ContourEnds, token), prepared.Signs is {} sourceSigns ? Copy<int>(sourceSigns, token) : null,
+                    Copy<SvgQuadSpan>(prepared.QuadSpans, token), Copy<SvgCubicSpan>(prepared.CubicSpans, token),
                     new(255, 255, 255, 255), true, child.IsEvenOdd, SvgPolygonMapping.FiniteEdges, null, reservation, state.Budget));
                 geometry = geometry with { AuthoredPath = child.PaintKind == SvgClipPaintKind.Rectangle
-                    ? child.Path.CopyRectangleFill(map, state.Budget, work, token)
-                    : child.Path.Copy(map, state.Budget, work, token) };
+                    ? child.Path.CopyRectangleFill(map, state.Budget, token)
+                    : child.Path.Copy(map, state.Budget, token) };
             }
             catch { geometry.Dispose(); reservation.Dispose(); throw; }
             builder.AddGeometry(geometry);
@@ -110,7 +110,7 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
         catch { content.Dispose(); throw; }
         SvgPaintBounds bounds = ResourceBounds ?? throw new InvalidOperationException("Clip fallback requires resource bounds.");
         SvgClipBox enclosure = new(Math.Floor(bounds.Left), Math.Floor(bounds.Top), Math.Ceiling(bounds.Right) - Math.Floor(bounds.Left), Math.Ceiling(bounds.Bottom) - Math.Floor(bounds.Top));
-        (SvgClipBox region, int boundsIndex) = new SvgAffineViewportClip(enclosure, map).Register(state, scene, work, token);
+        (SvgClipBox region, int boundsIndex) = new SvgAffineViewportClip(enclosure, map).Register(state, scene, token);
         int contentIndex = scene.AddMaskContent(new([], 255, true)
             { VectorContent = content });
         return new(region, contentIndex, boundsIndex);
@@ -118,10 +118,10 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
         static SvgClipRegistration WithoutEnclosure((SvgClipBox Bounds, int ContentIndex) registration)
             => new(registration.Bounds, registration.ContentIndex, -1);
 
-        static T[] Copy<T>(ReadOnlySpan<T> source, ParserWorkCounter work, CancellationToken token) where T : struct
+        static T[] Copy<T>(ReadOnlySpan<T> source, CancellationToken token) where T : struct
         {
             T[] output = new T[source.Length];
-            for (int index = 0; index < source.Length; index++) { work.Consume(token); output[index] = source[index]; }
+            for (int index = 0; index < source.Length; index++) { token.ThrowIfCancellationRequested(); output[index] = source[index]; }
             return output;
         }
     }

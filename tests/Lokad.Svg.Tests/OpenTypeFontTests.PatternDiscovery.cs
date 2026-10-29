@@ -107,14 +107,12 @@ public sealed partial class OpenTypeFontTests
         byte[] input = PatternFontInput("<defs>" + PatternFontDefinition(PatternFontSize, PatternFontText) + "</defs>" + PatternFontTarget);
         byte[] unchanged = input.ToArray();
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, work, measured, CancellationToken.None));
+        Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, measured, CancellationToken.None));
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(1_000_000), denied, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(1_000_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(work.Used - 1), workDenied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         (SvgFontPackCatalog catalog, CountingFontProvider provider, _) = PatternFontPack(false);
         Assert.Equal(SvgErrorCode.UnresolvedResource, (await Assert.ThrowsAsync<SvgException>(async () => await SvgPreparedDocument.CreateAsync(input, catalog, new MissingFontProvider(), SvgRenderOptions.Default, CancellationToken.None))).ErrorCode);

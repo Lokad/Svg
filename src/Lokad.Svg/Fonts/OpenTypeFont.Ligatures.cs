@@ -13,13 +13,13 @@ internal static partial class OpenTypeFont
     /// <summary>
     /// Borrows the default Latin (or DFLT) liga feature. The finite subset is one
     /// unfiltered type-4 lookup, with ordered format-1 subtables and 2–8 components.
-    /// Validation allocates no storage and charges every traversal to the caller.
+    /// Validation allocates no storage and observes caller cancellation during every traversal.
     /// Other scripts and language-specific features are not selected.
     /// </summary>
-    internal static OpenTypeGsubLigatureTable? GetLatinLigatures(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken token)
+    internal static OpenTypeGsubLigatureTable? GetLatinLigatures(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, CancellationToken token)
     {
         if (metrics.Gsub is not OpenTypeTableRange table) return null;
-        Consume(workCounter, token);
+        token.ThrowIfCancellationRequested();
         ReadOnlySpan<byte> data = bytes.Span;
         RequireTableLength(table, 10, "GSUB");
         if (ReadUInt16(data, table.Offset) != 1 || ReadUInt16(data, table.Offset + 2) != 0)
@@ -27,7 +27,7 @@ internal static partial class OpenTypeFont
         int scripts = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 4), 2, "GSUB ScriptList");
         int features = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 6), 2, "GSUB FeatureList");
         int lookups = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 8), 2, "GSUB LookupList");
-        int feature = SelectLatinFeature(data, table, scripts, features, LigatureFeatureTag, "GSUB", workCounter, token);
+        int feature = SelectLatinFeature(data, table, scripts, features, LigatureFeatureTag, "GSUB", token);
         if (feature == 0) return null;
         if (ReadUInt16(data, feature) != 0 || ReadUInt16(data, feature + 2) != 1)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "The Latin liga feature requires one lookup without feature parameters.");
@@ -45,17 +45,17 @@ internal static partial class OpenTypeFont
         int recordCount = 0;
         for (int index = 0; index < subtableCount; index++)
         {
-            Consume(workCounter, token);
+            token.ThrowIfCancellationRequested();
             int subtable = GetTableOffset(table, lookup, ReadUInt16(data, lookup + 6 + index * 2), 6, "GSUB ligature subtable");
             if (ReadUInt16(data, subtable) != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only format-1 GSUB ligature substitution is supported.");
             int coverage = GetTableOffset(table, subtable, ReadUInt16(data, subtable + 2), 4, "GSUB ligature coverage");
-            int coveredCount = ValidateGlyphCoverage(data, table, coverage, metrics.GlyphCount, workCounter, token);
+            int coveredCount = ValidateGlyphCoverage(data, table, coverage, metrics.GlyphCount, token);
             int setCount = ReadUInt16(data, subtable + 4);
             if (setCount != coveredCount) throw InvalidFont("The GSUB ligature coverage and set counts differ.");
             RequireTableRange(table, subtable, 6 + setCount * 2, "GSUB ligature sets");
             for (int setIndex = 0; setIndex < setCount; setIndex++)
             {
-                Consume(workCounter, token);
+                token.ThrowIfCancellationRequested();
                 int set = GetTableOffset(table, subtable, ReadUInt16(data, subtable + 6 + setIndex * 2), 2, "GSUB LigatureSet");
                 int count = ReadUInt16(data, set);
                 recordCount += count;
@@ -63,7 +63,7 @@ internal static partial class OpenTypeFont
                 RequireTableRange(table, set, 2 + count * 2, "GSUB LigatureSet");
                 for (int ligatureIndex = 0; ligatureIndex < count; ligatureIndex++)
                 {
-                    Consume(workCounter, token);
+                    token.ThrowIfCancellationRequested();
                     int ligature = GetTableOffset(table, set, ReadUInt16(data, set + 2 + ligatureIndex * 2), 4, "GSUB Ligature");
                     int components = ReadUInt16(data, ligature + 2);
                     if (components < 2) throw InvalidFont("A GSUB ligature needs at least two components.");
@@ -71,7 +71,7 @@ internal static partial class OpenTypeFont
                     RequireTableRange(table, ligature, 4 + (components - 1) * 2, "GSUB Ligature");
                     for (int component = 0; component < components; component++)
                     {
-                        Consume(workCounter, token);
+                        token.ThrowIfCancellationRequested();
                         int glyph = ReadUInt16(data, ligature + (component == 0 ? 0 : 2 + component * 2));
                         if (glyph == 0 || glyph >= metrics.GlyphCount) throw InvalidFont("A GSUB ligature references an invalid glyph.");
                     }
@@ -82,7 +82,7 @@ internal static partial class OpenTypeFont
     }
 
     /// <summary>Matches contiguous Basic Latin letters within one spacing/position interval, in font preference order. Borrows all inputs; bounded and cancellable.</summary>
-    internal static bool TryGetLatinLigature(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, OpenTypeGsubLigatureTable graph, string text, int start, int end, ushort firstGlyph, ParserWorkCounter? workCounter, CancellationToken token, out ushort ligatureGlyph, out int sourceLength)
+    internal static bool TryGetLatinLigature(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, OpenTypeGsubLigatureTable graph, string text, int start, int end, ushort firstGlyph, CancellationToken token, out ushort ligatureGlyph, out int sourceLength)
     {
         ligatureGlyph = 0;
         sourceLength = 0;
@@ -93,28 +93,28 @@ internal static partial class OpenTypeFont
         int subtableCount = ReadUInt16(data, graph.LookupOffset + 4);
         for (int index = 0; index < subtableCount; index++)
         {
-            Consume(workCounter, token);
+            token.ThrowIfCancellationRequested();
             int subtable = graph.LookupOffset + ReadUInt16(data, graph.LookupOffset + 6 + index * 2);
             int coverage = subtable + ReadUInt16(data, subtable + 2);
-            int covered = GetGlyphCoverageIndex(data, coverage, firstGlyph, workCounter, token);
+            int covered = GetGlyphCoverageIndex(data, coverage, firstGlyph, token);
             if (covered < 0) continue;
             int set = subtable + ReadUInt16(data, subtable + 6 + covered * 2);
             int count = ReadUInt16(data, set);
             for (int ligatureIndex = 0; ligatureIndex < count; ligatureIndex++)
             {
-                Consume(workCounter, token);
+                token.ThrowIfCancellationRequested();
                 int ligature = set + ReadUInt16(data, set + 2 + ligatureIndex * 2);
                 int components = ReadUInt16(data, ligature + 2);
                 if (components > end - start) continue;
                 int component = 1;
                 for (; component < components; component++)
                 {
-                    Consume(workCounter, token);
+                    token.ThrowIfCancellationRequested();
                     char next = text[start + component];
                     if (!IsBasicLatinLetter(next)) break;
                     while (mappedCount < component)
                     {
-                        followingGlyphs[mappedCount] = GetGlyphIndex(bytes, text[start + mappedCount + 1], metrics, workCounter, token);
+                        followingGlyphs[mappedCount] = GetGlyphIndex(bytes, text[start + mappedCount + 1], metrics, token);
                         mappedCount++;
                     }
                     if (followingGlyphs[component - 1] != ReadUInt16(data, ligature + 2 + component * 2)) break;

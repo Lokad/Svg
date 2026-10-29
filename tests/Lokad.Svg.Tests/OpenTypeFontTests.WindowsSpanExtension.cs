@@ -35,9 +35,7 @@ public sealed partial class OpenTypeFontTests
             }
         }
         byte[] unchanged = bytes.ToArray();
-        ParserWorkCounter work = new(long.MaxValue);
-        Assert.Equal(expected, OpenTypeFont.ParseMetrics(bytes, work, CancellationToken.None).ExtendWindowsLcdSpans);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.ParseMetrics(bytes, new ParserWorkCounter(work.Used - 1), CancellationToken.None)).ErrorCode);
+        Assert.Equal(expected, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None).ExtendWindowsLcdSpans);
         Assert.Equal(unchanged, bytes);
     }
 

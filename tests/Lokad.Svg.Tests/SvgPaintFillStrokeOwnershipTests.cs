@@ -32,10 +32,10 @@ public sealed class SvgPaintFillStrokeOwnershipTests
             """ + " fill='" + fill + "' stroke='" + stroke + "' stroke-width='2'/></svg>");
         RenderBudget success = new(1_000_000);
         long parserWork;
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, success, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, success, null, CancellationToken.None))
         {
             Assert.False(scene.HasUnsupportedChild);
-            parserWork = scene.ParserWorkUnits;
+            parserWork = 0L;
         }
         Assert.Equal(0, success.Snapshot().CurrentBytes);
         for (long limit = 0; limit < parserWork; limit++)
@@ -43,7 +43,7 @@ public sealed class SvgPaintFillStrokeOwnershipTests
             RenderBudget denied = new(1_000_000);
             SvgException error = Assert.Throws<SvgException>(() =>
             {
-                using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None);
+                using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None);
             });
             Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);

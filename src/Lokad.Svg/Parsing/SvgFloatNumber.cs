@@ -3,15 +3,15 @@ using System.Globalization;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Reads validated SVG numeric tokens with separately rounded float place values.</summary>
-/// <remarks>Callers retain their grammar, token bounds and finite-double validation. This bounded, allocation-free additional pass charges the shared counter and observes its cancellation token. Numeric range classification remains with the caller. There is no retained state or storage ownership.</remarks>
+/// <remarks>Callers retain their grammar, token bounds and finite-double validation. This bounded, allocation-free additional pass observes the cancellation token. Numeric range classification remains with the caller. There is no retained state or storage ownership.</remarks>
 internal static class SvgFloatNumber
 {
     /// <summary>Admits one numeric token after the caller handles grammar whitespace and units.</summary>
     internal const NumberStyles TokenStyles = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
 
-    internal static float ReadValidated(ReadOnlySpan<char> token, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static float ReadValidated(ReadOnlySpan<char> token, CancellationToken cancellationToken)
     {
-        workCounter.ConsumeBytes(checked(token.Length * 2), cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
         int signEnd = token[0] is '+' or '-' ? 1 : 0;
         int exponentAt = token.IndexOfAny('e', 'E');
         ReadOnlySpan<char> mantissa = exponentAt < 0 ? token : token[..exponentAt];

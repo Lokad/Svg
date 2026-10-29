@@ -16,7 +16,7 @@ public sealed class SvgGradientCoordinateTests
         using StringReader input = new("<linearGradient gradientTransform='" + transform + "'/>");
         using XmlReader reader = XmlReader.Create(input);
         reader.MoveToContent();
-        SvgGradientTransform map = SvgGradientSyntax.ParseLinearVector(reader, new(1000), CancellationToken.None).Transform;
+        SvgGradientTransform map = SvgGradientSyntax.ParseLinearVector(reader, CancellationToken.None).Transform;
         var point = map.Apply(3, 2);
         Assert.Equal(x, point.X, 12); Assert.Equal(y, point.Y, 12);
     }
@@ -29,7 +29,7 @@ public sealed class SvgGradientCoordinateTests
         using StringReader input = new("<radialGradient gradientTransform='" + transform + "'/>");
         using XmlReader reader = XmlReader.Create(input);
         reader.MoveToContent();
-        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgGradientSyntax.ParseRadialVector(reader, new(1000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgGradientSyntax.ParseRadialVector(reader, CancellationToken.None)).ErrorCode);
     }
 
     [Fact]
@@ -45,12 +45,10 @@ public sealed class SvgGradientCoordinateTests
             using StringReader input = new("<" + name + " gradientTransform='" + transform + "'/>");
             using XmlReader reader = XmlReader.Create(input);
             reader.MoveToContent();
-            ParserWorkCounter work = new(1000);
             SvgGradientTransform actual = name == "linearGradient"
-                ? SvgGradientSyntax.ParseLinearVector(reader, work, CancellationToken.None).Transform
-                : SvgGradientSyntax.ParseRadialVector(reader, work, CancellationToken.None).Transform;
+                ? SvgGradientSyntax.ParseLinearVector(reader, CancellationToken.None).Transform
+                : SvgGradientSyntax.ParseRadialVector(reader, CancellationToken.None).Transform;
             Assert.Equal(expected, new[] { actual.A, actual.B, actual.C, actual.D, actual.E, actual.F }.Select(value => BitConverter.SingleToUInt32Bits((float)value)));
-            Assert.True(work.Used > 0);
         }
     }
 
@@ -68,28 +66,23 @@ public sealed class SvgGradientCoordinateTests
         Assert.Equal(tokens.Length, bits.Length);
         for (int index = 0; index < tokens.Length; index++)
         {
-            ParserWorkCounter work = new(1000);
-            Assert.Equal(bits[index], BitConverter.SingleToUInt32Bits((float)SvgGradientSyntax.ParseStopOffset(tokens[index], work, CancellationToken.None)));
-            Assert.True(work.Used > 0);
+            Assert.Equal(bits[index], BitConverter.SingleToUInt32Bits((float)SvgGradientSyntax.ParseStopOffset(tokens[index], CancellationToken.None)));
         }
-        Assert.Equal(0, SvgGradientSyntax.ParseStopOffset(null, new(1000), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGradientSyntax.ParseStopOffset(".65", new(0), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, SvgGradientSyntax.ParseStopOffset(null, CancellationToken.None));
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgGradientSyntax.ParseStopOffset(".65", new(1000), cancellation.Token)).CancellationToken);
+        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgGradientSyntax.ParseStopOffset(".65", cancellation.Token)).CancellationToken);
     }
 
     [Fact]
-    public void Gradient_transform_numeric_reading_keeps_shared_denial_and_cancellation()
+    public void Gradient_transform_numeric_reading_observes_cancellation()
     {
         using StringReader input = new("<radialGradient gradientTransform='scale(1.17)'/>");
         using XmlReader reader = XmlReader.Create(input);
         reader.MoveToContent();
-        SvgException denied = Assert.Throws<SvgException>(() => SvgGradientSyntax.ParseRadialVector(reader, new(0), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        OperationCanceledException cancelled = Assert.Throws<OperationCanceledException>(() => SvgGradientSyntax.ParseRadialVector(reader, new(1000), cancellation.Token));
+        OperationCanceledException cancelled = Assert.Throws<OperationCanceledException>(() => SvgGradientSyntax.ParseRadialVector(reader, cancellation.Token));
         Assert.Equal(cancellation.Token, cancelled.CancellationToken);
     }
 
@@ -101,7 +94,7 @@ public sealed class SvgGradientCoordinateTests
         SvgGradientStop[] stops = [new(0, new(23, 169, 205, 255)) { Alpha = .27f }, new(1, new(195, 213, 55, 255)) { Alpha = .81f }];
         SvgRectangle box = new(0, 0, 640, 320, default, true, null);
         SvgCpuRasterGrid grid = new(640, 320);
-        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, new(1), new(1), CancellationToken.None);
+        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, new(1), CancellationToken.None);
         foreach (string row in rows.Skip(1))
         {
             string[] v = row.Split(',');
@@ -160,7 +153,7 @@ public sealed class SvgGradientCoordinateTests
         SvgGradientStop[] stops = [new(0, new(23, 169, 205, 255)) { Alpha = .27f }, new(1, new(195, 213, 55, 255)) { Alpha = .81f }];
         SvgRectangle box = new(0, 0, 1476, 742, default, true, null);
         SvgCpuRasterGrid grid = new(1476, 742);
-        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, new(1), new(1), CancellationToken.None);
+        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, new(1), CancellationToken.None);
         foreach (string row in rows.Skip(1))
         {
             string[] cells = row.Split(',');

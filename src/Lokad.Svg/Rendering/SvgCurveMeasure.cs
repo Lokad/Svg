@@ -19,9 +19,9 @@ internal static class SvgCurveMeasure
 
     internal static int Measure(SvgMeasuredCurveKind kind, ReadOnlySpan<SvgDevicePoint> points, float weight,
         float resolutionScale, float initialDistance, Span<SvgCurveMeasureStep> output, out float distance,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         Validate(kind, points, weight);
         if (kind == SvgMeasuredCurveKind.Conic && weight == 0) weight = 1;
         if (!(resolutionScale > 0) || !float.IsFinite(resolutionScale)) throw new ArgumentOutOfRangeException(nameof(resolutionScale));
@@ -29,24 +29,24 @@ internal static class SvgCurveMeasure
         int count = 0;
         distance = initialDistance;
         float tolerance = .5f * (1f / resolutionScale);
-        if (kind == SvgMeasuredCurveKind.Line) Append(points[0], points[1], MaximumParameter, output, ref distance, ref count, work, token);
+        if (kind == SvgMeasuredCurveKind.Line) Append(points[0], points[1], MaximumParameter, output, ref distance, ref count, token);
         else if (kind == SvgMeasuredCurveKind.Conic)
-            WalkConic(points, weight, points[0], points[2], 0, MaximumParameter, 0, tolerance, output, ref distance, ref count, work, token);
-        else WalkPolynomial(kind, points, 0, MaximumParameter, 0, tolerance, output, ref distance, ref count, work, token);
+            WalkConic(points, weight, points[0], points[2], 0, MaximumParameter, 0, tolerance, output, ref distance, ref count, token);
+        else WalkPolynomial(kind, points, 0, MaximumParameter, 0, tolerance, output, ref distance, ref count, token);
         return count;
     }
 
     /// <summary>Finds the native float parameter within one curve's cumulative distance records.</summary>
     internal static float ParameterAt(ReadOnlySpan<SvgCurveMeasureStep> steps, float initialDistance, float distance,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         if (steps.IsEmpty || !float.IsFinite(distance) || distance < initialDistance || distance > steps[^1].Distance)
             throw new ArgumentOutOfRangeException(nameof(distance));
         int low = 0, high = steps.Length - 1;
         while (low < high)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             int middle = (low + high) >> 1;
             if (steps[middle].Distance < distance) low = middle + 1; else high = middle;
         }
@@ -62,15 +62,15 @@ internal static class SvgCurveMeasure
     /// evaluation; it need not equal the chopped polynomial's intermediate endpoint after float rounding.</remarks>
     internal static bool Cut(SvgMeasuredCurveKind kind, ReadOnlySpan<SvgDevicePoint> points, float weight,
         float start, float stop, Span<SvgDevicePoint> output, out SvgMeasuredCurveKind resultKind, out float resultWeight,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         Validate(kind, points, weight);
         if (kind == SvgMeasuredCurveKind.Conic && weight == 0) weight = 1;
         if (!float.IsFinite(start) || !float.IsFinite(stop) || start < 0 || stop > 1 || start > stop)
             throw new ArgumentOutOfRangeException(nameof(start));
         if (output.Length < 4) throw new ArgumentException("A curve cut requires four caller-owned point slots.", nameof(output));
-        for (int phase = 0; phase < 16; phase++) work.Consume(token);
+        token.ThrowIfCancellationRequested();
         resultKind = kind; resultWeight = weight;
         SvgDevicePoint move = Evaluate(kind, points, weight, start);
         if (start == stop) { resultKind = SvgMeasuredCurveKind.Line; output[0] = output[1] = move; return true; }
@@ -157,9 +157,9 @@ internal static class SvgCurveMeasure
     /// <remarks>The caller normalizes the returned vector. Uses bounded scalar work and caller-owned input;
     /// no allocation or retained storage. A fully degenerate curve returns a zero vector.</remarks>
     internal static SvgDevicePoint Tangent(SvgMeasuredCurveKind kind, ReadOnlySpan<SvgDevicePoint> p, float weight,
-        float t, ParserWorkCounter work, CancellationToken token)
+        float t, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         Validate(kind, p, weight);
         if (kind == SvgMeasuredCurveKind.Conic && weight == 0) weight = 1;
         if (!float.IsFinite(t) || t < 0 || t > 1) throw new ArgumentOutOfRangeException(nameof(t));
@@ -200,9 +200,9 @@ internal static class SvgCurveMeasure
 
     private static void WalkPolynomial(SvgMeasuredCurveKind kind, ReadOnlySpan<SvgDevicePoint> p, int minimum, int maximum,
         int depth, float tolerance, Span<SvgCurveMeasureStep> output, ref float distance, ref int count,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         int n = kind == SvgMeasuredCurveKind.Quadratic ? 3 : 4;
         bool curvy;
         if (n == 3)
@@ -218,10 +218,10 @@ internal static class SvgCurveMeasure
             Span<SvgDevicePoint> halves = stackalloc SvgDevicePoint[7];
             ChopPolynomial(kind, p, .5f, halves);
             int middle = (minimum + maximum) >> 1;
-            WalkPolynomial(kind, halves[..n], minimum, middle, depth + 1, tolerance, output, ref distance, ref count, work, token);
-            WalkPolynomial(kind, halves.Slice(n - 1, n), middle, maximum, depth + 1, tolerance, output, ref distance, ref count, work, token);
+            WalkPolynomial(kind, halves[..n], minimum, middle, depth + 1, tolerance, output, ref distance, ref count, token);
+            WalkPolynomial(kind, halves.Slice(n - 1, n), middle, maximum, depth + 1, tolerance, output, ref distance, ref count, token);
         }
-        else Append(p[0], p[n - 1], maximum, output, ref distance, ref count, work, token);
+        else Append(p[0], p[n - 1], maximum, output, ref distance, ref count, token);
 
         static bool Curvy(SvgDevicePoint control, SvgDevicePoint chord, float tolerance) =>
             MathF.Max(MathF.Abs((float)control.X - (float)chord.X), MathF.Abs((float)control.Y - (float)chord.Y)) > tolerance;
@@ -229,9 +229,9 @@ internal static class SvgCurveMeasure
 
     private static void WalkConic(ReadOnlySpan<SvgDevicePoint> points, float weight, SvgDevicePoint first, SvgDevicePoint last,
         int minimum, int maximum, int depth, float tolerance, Span<SvgCurveMeasureStep> output,
-        ref float distance, ref int count, ParserWorkCounter work, CancellationToken token)
+        ref float distance, ref int count, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         int middle = (minimum + maximum) >> 1;
         SvgDevicePoint half = Evaluate(SvgMeasuredCurveKind.Conic, points, weight, ScalarParameter(middle));
         if (!float.IsFinite((float)half.X) || !float.IsFinite((float)half.Y)) return;
@@ -239,16 +239,16 @@ internal static class SvgCurveMeasure
         float dy = (float)half.Y - ((float)first.Y + (float)last.Y) * .5f;
         if (depth < 8 && ((maximum - minimum) >> 10) != 0 && MathF.Max(MathF.Abs(dx), MathF.Abs(dy)) > tolerance)
         {
-            WalkConic(points, weight, first, half, minimum, middle, depth + 1, tolerance, output, ref distance, ref count, work, token);
-            WalkConic(points, weight, half, last, middle, maximum, depth + 1, tolerance, output, ref distance, ref count, work, token);
+            WalkConic(points, weight, first, half, minimum, middle, depth + 1, tolerance, output, ref distance, ref count, token);
+            WalkConic(points, weight, half, last, middle, maximum, depth + 1, tolerance, output, ref distance, ref count, token);
         }
-        else Append(first, last, maximum, output, ref distance, ref count, work, token);
+        else Append(first, last, maximum, output, ref distance, ref count, token);
     }
 
     private static void Append(SvgDevicePoint first, SvgDevicePoint last, int parameter, Span<SvgCurveMeasureStep> output,
-        ref float distance, ref int count, ParserWorkCounter work, CancellationToken token)
+        ref float distance, ref int count, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         float dx = (float)last.X - (float)first.X, dy = (float)last.Y - (float)first.Y;
         float squared = dx * dx + dy * dy;
         float length = float.IsFinite(squared) ? MathF.Sqrt(squared) : (float)Math.Sqrt((double)dx * dx + (double)dy * dy);

@@ -51,9 +51,8 @@ public sealed class SvgMarkerSyntaxTests
         using StringReader input = new("<path xmlns='http://www.w3.org/2000/svg' d='M24 27L24 27L78 27L78 66L24 66L24 66Z'/>");
         using XmlReader reader = XmlReader.Create(input); reader.MoveToContent();
         RenderBudget budget = new(100_000);
-        ParserWorkCounter work = new(100_000);
-        using (SvgDocumentState state = new(budget, work, CancellationToken.None))
-        using (BudgetedParserList<SvgMarkerPosition> positions = SvgMarkerVertices.Read(reader, 100, state, work, CancellationToken.None))
+        using (SvgDocumentState state = new(budget, CancellationToken.None))
+        using (BudgetedParserList<SvgMarkerPosition> positions = SvgMarkerVertices.Read(reader, 100, state, CancellationToken.None))
         {
             Assert.Equal(7, positions.Count);
             Assert.Equal(new SvgDevicePoint(24, 66), positions[4].Point);
@@ -132,8 +131,7 @@ public sealed class SvgMarkerSyntaxTests
         using StringReader input = new($"<marker xmlns='http://www.w3.org/2000/svg' {attributes}/>");
         using XmlReader reader = XmlReader.Create(input);
         reader.MoveToContent();
-        ParserWorkCounter work = new(10_000);
-        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, work, CancellationToken.None);
-        return SvgMarkerSyntax.Parse(reader, style, bases, work, CancellationToken.None);
+        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, CancellationToken.None);
+        return SvgMarkerSyntax.Parse(reader, style, bases, CancellationToken.None);
     }
 }

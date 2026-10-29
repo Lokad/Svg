@@ -32,14 +32,14 @@ public sealed class SvgNativeStrokeSourceTests
     public void Copied_and_transferred_outlines_survive_the_original_scene_and_release_both_owners()
     {
         RenderBudget sceneBudget = new(1_000_000), copyBudget = new(1_000_000), preparationBudget = new(1_000_000);
-        SvgRoot scene = SvgRootParser.Parse(Input(), SvgRenderLimits.Default, sceneBudget, null, new(1_000_000), CancellationToken.None);
+        SvgRoot scene = SvgRootParser.Parse(Input(), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None);
         try
         {
             SvgAuthoredPath centerline = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries).AuthoredPath);
             SvgAuthoredPath outline = Assert.IsType<SvgAuthoredPath>(centerline.StrokeOutline);
             SvgAuthoredPathCommand[] original = outline.Commands.ToArray();
             SvgAffineTransform placement = new(-1.125, 0, 0, 1.125, 160.375, -.625);
-            using SvgAuthoredPath copied = centerline.Copy(placement, copyBudget, new(1_000_000), CancellationToken.None);
+            using SvgAuthoredPath copied = centerline.Copy(placement, copyBudget, CancellationToken.None);
             SvgAuthoredPath copiedOutline = Assert.IsType<SvgAuthoredPath>(copied.StrokeOutline);
             Assert.NotSame(outline, copiedOutline);
             Assert.Equal(placement.ComposeChecked(outline.SceneMap), copiedOutline.SceneMap);
@@ -50,8 +50,8 @@ public sealed class SvgNativeStrokeSourceTests
             Assert.True(copyBudget.Snapshot().CurrentBytes > 0);
             Assert.Equal(original, copiedOutline.Commands.ToArray());
             Assert.Same(copiedOutline, transferred.StrokeOutline);
-            Assert.Throws<InvalidOperationException>(() => transferred.PrepareSource(SvgAffineTransform.Identity, false, preparationBudget, new(1_000_000), CancellationToken.None));
-            using SvgPreparedPathContours prepared = copiedOutline.PrepareSource(SvgAffineTransform.Identity, false, preparationBudget, new(1_000_000), CancellationToken.None);
+            Assert.Throws<InvalidOperationException>(() => transferred.PrepareSource(SvgAffineTransform.Identity, false, preparationBudget, CancellationToken.None));
+            using SvgPreparedPathContours prepared = copiedOutline.PrepareSource(SvgAffineTransform.Identity, false, preparationBudget, CancellationToken.None);
             Assert.True(prepared.Points.Length > 3);
             Assert.NotEmpty(prepared.QuadSpans);
         }
@@ -61,29 +61,26 @@ public sealed class SvgNativeStrokeSourceTests
     }
 
     [Fact]
-    public void Partial_outline_copies_release_storage_after_memory_work_or_cancellation_denial()
+    public void Partial_outline_copies_release_storage_after_memory_or_cancellation_denial()
     {
         RenderBudget sceneBudget = new(1_000_000), measuredBudget = new(1_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(Input(), SvgRenderLimits.Default, sceneBudget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(Input(), SvgRenderLimits.Default, sceneBudget, null, CancellationToken.None))
         {
             SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries).AuthoredPath);
-            ParserWorkCounter measuredWork = new(1_000_000);
-            using (source.Copy(SvgAffineTransform.Identity, measuredBudget, measuredWork, CancellationToken.None)) { }
+            using (source.Copy(SvgAffineTransform.Identity, measuredBudget, CancellationToken.None)) { }
             Assert.Equal(0, measuredBudget.Snapshot().CurrentBytes);
             RenderBudget tight = new(measuredBudget.Snapshot().PeakBytes - 1);
-            SvgException memory = Assert.Throws<SvgException>(() => source.Copy(SvgAffineTransform.Identity, tight, new(1_000_000), CancellationToken.None));
+            SvgException memory = Assert.Throws<SvgException>(() => source.Copy(SvgAffineTransform.Identity, tight, CancellationToken.None));
             Assert.Equal(SvgErrorCode.LimitExceeded, memory.ErrorCode);
             Assert.Equal(0, tight.Snapshot().CurrentBytes);
             RenderBudget workBudget = new(1_000_000);
-            SvgException work = Assert.Throws<SvgException>(() => source.Copy(SvgAffineTransform.Identity, workBudget, new(measuredWork.Used - 1), CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, work.ErrorCode);
             Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
-            OperationCanceledException error = Assert.Throws<OperationCanceledException>(() => source.Copy(SvgAffineTransform.Identity, workBudget, new(1_000_000), cancellation.Token));
+            OperationCanceledException error = Assert.Throws<OperationCanceledException>(() => source.Copy(SvgAffineTransform.Identity, workBudget, cancellation.Token));
             Assert.Equal(cancellation.Token, error.CancellationToken);
             Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
-            using SvgAuthoredPath retry = source.Copy(SvgAffineTransform.Identity, workBudget, new(1_000_000), CancellationToken.None);
+            using SvgAuthoredPath retry = source.Copy(SvgAffineTransform.Identity, workBudget, CancellationToken.None);
             Assert.NotNull(retry.StrokeOutline);
         }
         Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes);
@@ -94,16 +91,13 @@ public sealed class SvgNativeStrokeSourceTests
     {
         byte[] input = Input();
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
-        SvgException memory = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, new(1_000_000), CancellationToken.None));
+        SvgException memory = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, memory.ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
         RenderBudget workBudget = new(1_000_000);
-        SvgException denied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, workBudget, null, new(work.Used - 1), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
     }
 

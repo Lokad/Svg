@@ -12,7 +12,7 @@ public sealed class SvgTextSyntaxTests
     [InlineData("font-size:14px!important;font-size:18")]
     public void Invalid_unitless_css_font_size_preserves_the_valid_declaration(string declarations)
     {
-        InlineStyle style = SvgInlineStyleParser.Parse(declarations, new ParserWorkCounter(100), CancellationToken.None, true);
+        InlineStyle style = SvgInlineStyleParser.Parse(declarations, CancellationToken.None, true);
         Assert.Equal("14px", style.TextFont.Size);
     }
 
@@ -73,26 +73,12 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
-    public void Charges_inline_font_property_scans_to_parser_work()
-    {
-        using XmlReader reader = XmlReader.Create(new StringReader("<text style='font-family: Example'/>"));
-        reader.Read();
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgTextSyntax.Parse(reader, new ParserWorkCounter(0), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-    }
-
-    [Fact]
     public void Scans_one_inline_font_declaration_set_once()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text style='font-family: Example; font-weight: 700; font-style: italic; font-size: 12'/>"));
         reader.Read();
-        var workCounter = new ParserWorkCounter(100);
 
-        SvgTextSyntax.Parse(reader, workCounter, CancellationToken.None);
-
-        Assert.Equal(1, workCounter.Used);
+        SvgTextSyntax.Parse(reader, CancellationToken.None);
     }
 
     [Fact]
@@ -161,7 +147,7 @@ public sealed class SvgTextSyntaxTests
     {
         SvgTextPositionLists lists = new("8 24 40", "28", "0 1", null, "0 10 -10");
         RenderBudget budget = new(10_000);
-        using (OwnedParserArray<SvgTextPositionAdjustment> positions = lists.Build("A😀B", [new(3, 50, null, 2, -1)], budget, new(1_000), CancellationToken.None))
+        using (OwnedParserArray<SvgTextPositionAdjustment> positions = lists.Build("A😀B", [new(3, 50, null, 2, -1)], budget, CancellationToken.None))
         {
             Assert.Equal(new SvgTextPositionAdjustment(0, 8, 28, 0, 0) { Rotation = 0 }, positions.Items[0]);
             Assert.Equal(new SvgTextPositionAdjustment(1, 24, null, 1, 0) { Rotation = 10 }, positions.Items[1]);
@@ -194,12 +180,11 @@ public sealed class SvgTextSyntaxTests
     {
         SvgTextPositionLists lists = new("1 2 3 4 5", null, null, null, "0 10");
         RenderBudget denied = new(1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => lists.Build("ABCDE", [], denied, new(100), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => lists.Build("ABCDE", [], denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(10_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => lists.Build("ABCDE", [], workDenied, new(1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
-        Assert.Throws<OperationCanceledException>(() => lists.Build("ABCDE", [], workDenied, new(100), new CancellationToken(true)));
+        Assert.Throws<OperationCanceledException>(() => lists.Build("ABCDE", [], workDenied, new CancellationToken(true)));
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
     }
 
@@ -250,7 +235,7 @@ public sealed class SvgTextSyntaxTests
         using XmlReader childReader = XmlReader.Create(new StringReader("<text font-family='Attribute' font-weight='400' style='font-family: Inline; font-size: 14'/>"));
         childReader.Read();
 
-        SvgTextInlineFontProperties inline = SvgInlineStyleParser.Parse(childReader.GetAttribute("style"), new ParserWorkCounter(10), CancellationToken.None, true).TextFont;
+        SvgTextInlineFontProperties inline = SvgInlineStyleParser.Parse(childReader.GetAttribute("style"), CancellationToken.None, true).TextFont;
         SvgInheritedTextStyle resolved = SvgTextInheritance.Resolve(childReader, ancestor, inline, null, null);
 
         Assert.Equal("Inline", resolved.Family);
@@ -297,13 +282,13 @@ public sealed class SvgTextSyntaxTests
         using XmlReader rejectedSpacing = XmlReader.Create(new StringReader("<tspan style='white-space: pre; letter-spacing: 2'/>"));
         rejectedSpacing.Read();
 
-        Assert.True(SvgTextSyntax.TryParseTspanStyle(accepted, new SvgTextSpanStyle(SvgTextWhitespaceMode.Preserve, 1), default, new ParserWorkCounter(100), CancellationToken.None, out SvgTextSpanStyle style));
+        Assert.True(SvgTextSyntax.TryParseTspanStyle(accepted, new SvgTextSpanStyle(SvgTextWhitespaceMode.Preserve, 1), default, CancellationToken.None, out SvgTextSpanStyle style));
         Assert.Equal(SvgTextWhitespaceMode.Default, style.WhitespaceMode);
         Assert.Equal(3, style.LetterSpacing);
         Assert.Equal(new SvgTextPositionOffset(0, 12, 2, -4), style.PositionOffset);
-        Assert.True(SvgTextSyntax.TryParseTspanStyle(rejected, new(SvgTextWhitespaceMode.Default, 0), default, new ParserWorkCounter(100), CancellationToken.None, out SvgTextSpanStyle fontStyle));
+        Assert.True(SvgTextSyntax.TryParseTspanStyle(rejected, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out SvgTextSpanStyle fontStyle));
         Assert.Equal(16, fontStyle.Font.FontSize);
-        Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(rejectedSpacing, SvgTextWhitespaceMode.Default, default, new ParserWorkCounter(100), CancellationToken.None, out _));
+        Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(rejectedSpacing, SvgTextWhitespaceMode.Default, default, CancellationToken.None, out _));
     }
 
     [Fact]
@@ -326,7 +311,7 @@ public sealed class SvgTextSyntaxTests
         using XmlReader reader = XmlReader.Create(new StringReader($"<tspan {axis}='{value}'/>"));
         reader.Read();
         Assert.True(SvgTextSyntax.TryParseTspanStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default,
-            new ParserWorkCounter(100), CancellationToken.None, out SvgTextSpanStyle style));
+CancellationToken.None, out SvgTextSpanStyle style));
         Assert.Equal(value, axis == "x" ? style.PositionLists.X : style.PositionLists.Y);
     }
 
@@ -340,7 +325,7 @@ public sealed class SvgTextSyntaxTests
         using XmlReader reader = XmlReader.Create(new StringReader($"<tspan {axis}='{value}'/>"));
         reader.Read();
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgTextSyntax.TryParseTspanStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default, new ParserWorkCounter(100), CancellationToken.None, out _));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgTextSyntax.TryParseTspanStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out _));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }

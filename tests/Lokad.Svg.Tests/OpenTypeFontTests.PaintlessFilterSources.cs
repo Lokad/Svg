@@ -60,18 +60,14 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public void Source_less_filtered_use_releases_parser_owners_after_late_work_failure_and_retry()
+    public void Source_less_filtered_use_releases_parser_owners_after_cancellation_and_retry()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><use filter='url(#f)'><title>caption</title></use><defs><filter id='f' filterUnits='userSpaceOnUse' width='32' height='32'><feFlood flood-color='red'/></filter></defs></svg>");
         RenderBudget budget = new(10_000_000);
-        long units;
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             Assert.False(root.HasUnsupportedChild);
-            units = root.ParserWorkUnits;
         }
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(checked((int)units - 1)), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancelled = new();
         cancelled.Cancel();

@@ -5,24 +5,18 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgNativeDashPathTests
 {
-    [Theory]
-    [InlineData(0)]
-    [InlineData(40)]
-    [InlineData(400)]
-    public void Filter_work_denial_and_cancellation_release_private_lists_and_allow_retry(int limit)
+    [Fact]
+    public void Filter_cancellation_releases_private_lists_and_allows_retry()
     {
         SvgAuthoredPathCommand[] commands = CurvedPath();
         SvgAuthoredPathCommand[] original = commands.ToArray();
         RenderBudget budget = new(1_000_000);
-        SvgException denied = Assert.Throws<SvgException>(() => Run(new(limit), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using CancellationTokenSource cancelled = new(); cancelled.Cancel();
-        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => Run(new(100_000), cancelled.Token));
+        OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => Run(cancelled.Token));
         Assert.Equal(cancelled.Token, error.CancellationToken);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         using (OwnedParserArray<SvgAuthoredPathCommand> result = SvgNativeDashPath.Filter(commands, [5, 3], .75, null,
-            SvgAffineTransform.Identity, 1, budget, new(100_000), CancellationToken.None))
+            SvgAffineTransform.Identity, 1, budget, CancellationToken.None))
         {
             Assert.Contains(result.Items, c => c.Verb == SvgAuthoredPathVerb.Conic);
             Assert.True(budget.Snapshot().CurrentBytes > 0);
@@ -30,10 +24,10 @@ public sealed class SvgNativeDashPathTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(original, commands);
 
-        void Run(ParserWorkCounter work, CancellationToken token)
+        void Run(CancellationToken token)
         {
             using OwnedParserArray<SvgAuthoredPathCommand> result = SvgNativeDashPath.Filter(commands, [5, 3], .75, null,
-                SvgAffineTransform.Identity, 1, budget, work, token);
+                SvgAffineTransform.Identity, 1, budget, token);
         }
     }
 
@@ -47,7 +41,7 @@ public sealed class SvgNativeDashPathTests
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
             using OwnedParserArray<SvgAuthoredPathCommand> result = SvgNativeDashPath.Filter(CurvedPath(), [5, 3], .75, null,
-                SvgAffineTransform.Identity, 4, budget, new(100_000), CancellationToken.None);
+                SvgAffineTransform.Identity, 4, budget, CancellationToken.None);
         });
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -59,7 +53,7 @@ public sealed class SvgNativeDashPathTests
         SvgAuthoredPathCommand[] commands = [Move(0, 0), Line(5, 0), Line(5, 4), Line(0, 4), Close()];
         RenderBudget budget = new(100_000);
         using (OwnedParserArray<SvgAuthoredPathCommand> result = SvgNativeDashPath.Filter(commands, [5, 3], 0, null,
-            SvgAffineTransform.Identity, 1, budget, new(100_000), CancellationToken.None))
+            SvgAffineTransform.Identity, 1, budget, CancellationToken.None))
         {
             Assert.Equal(2, result.Items.Count(c => c.Verb == SvgAuthoredPathVerb.Move));
             int last = Array.FindLastIndex(result.Items, c => c.Verb == SvgAuthoredPathVerb.Move);
@@ -77,7 +71,7 @@ public sealed class SvgNativeDashPathTests
         SvgAuthoredPathCommand[] commands = [Move(0, 0), Line(9, 0), End()];
         RenderBudget budget = new(100_000);
         using (OwnedParserArray<SvgAuthoredPathCommand> dots = SvgNativeDashPath.Filter(commands, [0, 3], 0, null,
-            SvgAffineTransform.Identity, 1, budget, new(100_000), CancellationToken.None))
+            SvgAffineTransform.Identity, 1, budget, CancellationToken.None))
         {
             Assert.Equal(9, dots.Items.Length);
             for (int at = 0; at < 3; at++)
@@ -88,7 +82,7 @@ public sealed class SvgNativeDashPathTests
             }
         }
         using (OwnedParserArray<SvgAuthoredPathCommand> negative = SvgNativeDashPath.Filter(commands, [5, 3], -.75, null,
-            SvgAffineTransform.Identity, 1, budget, new(100_000), CancellationToken.None))
+            SvgAffineTransform.Identity, 1, budget, CancellationToken.None))
             Assert.Equal(new SvgDevicePoint(.75f, 0), negative.Items[0].First);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -99,7 +93,7 @@ public sealed class SvgNativeDashPathTests
         SvgAuthoredPathCommand[] commands = [Move(0, 0), Line(8, 0), End(), Move(0, 2), Line(8, 2), End()];
         RenderBudget budget = new(100_000);
         using (OwnedParserArray<SvgAuthoredPathCommand> result = SvgNativeDashPath.Filter(commands, [2, 2], 0, 8,
-            SvgAffineTransform.Identity, 1, budget, new(100_000), CancellationToken.None))
+            SvgAffineTransform.Identity, 1, budget, CancellationToken.None))
         {
             Assert.Equal(6, result.Items.Length);
             Assert.Equal(new SvgDevicePoint(4, 0), result.Items[1].First);
@@ -140,17 +134,11 @@ public sealed class SvgNativeDashPathTests
         Assert.Equal(expected, asyncStream.ToArray());
 
         RenderBudget budget = new(defaults.MaximumAccountedBytes);
-        using (SvgRoot root = SvgRootParser.Parse(input, defaults, budget, null, new(defaults.MaximumWorkUnits), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, defaults, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath retained = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
             SvgAuthoredPathCommand[] original = retained.Commands.ToArray();
             long owned = budget.Snapshot().CurrentBytes;
-            SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
-                defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-                checked((int)root.ParserWorkUnits + 100), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
-            SvgException work = Assert.Throws<SvgException>(() => { using var denied = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, tight), budget, CancellationToken.None); });
-            Assert.Equal(SvgErrorCode.LimitExceeded, work.ErrorCode);
-            Assert.Equal(owned, budget.Snapshot().CurrentBytes);
             using (budget.Reserve(defaults.MaximumAccountedBytes - owned - 1024, SvgMemoryCategory.Surface))
             {
                 long padded = budget.Snapshot().CurrentBytes;

@@ -11,10 +11,10 @@ internal sealed class SvgCssAncestorContext : IDisposable
     private readonly bool _enabled;
     private int _currentDepth;
 
-    internal SvgCssAncestorContext(BudgetedParserList<CssRule> rules, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal SvgCssAncestorContext(BudgetedParserList<CssRule> rules, RenderBudget budget, CancellationToken token)
     {
-        _elements = new(budget, SvgMemoryCategory.Parser, work, token);
-        _matches = new(budget, SvgMemoryCategory.Parser, work, token);
+        _elements = new(budget, SvgMemoryCategory.Parser, token);
+        _matches = new(budget, SvgMemoryCategory.Parser, token);
         for (int index = 0; index < rules.Count; index++)
         {
             if (rules[index].HasCombinator) { _enabled = true; break; }

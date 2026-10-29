@@ -14,13 +14,12 @@ internal static class FontDiscoveryProbe
     internal static async Task<FontDiscoveryMeasurement> MeasureAsync(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
-        ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
         RenderBudget budget = new(limits.MaximumAccountedBytes);
         SvgFontFaceRequest[]? requests = null;
         SvgErrorCode? discoveryError = null;
         try
         {
-            requests = SvgFontRequestDiscovery.Discover(svg, limits, workCounter, budget, cancellationToken);
+            requests = SvgFontRequestDiscovery.Discover(svg, limits, budget, cancellationToken);
         }
         catch (OperationCanceledException)
         {

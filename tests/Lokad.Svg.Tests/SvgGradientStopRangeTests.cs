@@ -40,7 +40,7 @@ public sealed class SvgGradientStopRangeTests
         SvgGradientStop[] stops = new SvgGradientStop[256];
         for (int i = 0; i < stops.Length; i++) stops[i] = new(i / 255d, red);
         for (int i = 126; i <= 129; i++) stops[i] = new(.5, i == 129 ? cyan : red);
-        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, new(100_000), new(stops.Length * 4), CancellationToken.None);
+        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad, new(100_000), CancellationToken.None);
         SvgShaderPaint sample = ramp.SampleAbsolute(.5, 1f, 32);
         Assert.InRange(sample.Red, 0f, .01f);
         Assert.InRange(sample.Green, .99f, 1f);
@@ -88,22 +88,15 @@ public sealed class SvgGradientStopRangeTests
     {
         byte[] input = Input("<defs><linearGradient id='alias' href='#g'>" + Stops(256) + "</linearGradient><linearGradient id='g'><stop/><stop offset='1'/></linearGradient></defs><path d='M0 0H64V48H0Z' fill='url(#alias)'/>");
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
             Assert.Equal(256, GetStops(root.Geometries[0]).Length);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { 1, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, new(1_000_000), cancellation.Token)).CancellationToken);
+        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         Assert.NotEmpty(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }

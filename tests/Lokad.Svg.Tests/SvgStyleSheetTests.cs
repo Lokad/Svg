@@ -22,7 +22,7 @@ public sealed class SvgStyleSheetTests
                 SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
             Assert.Equal(new SvgViewport(8, 8), SvgConverter.InspectDimensions(input, SvgRenderOptions.Default, CancellationToken.None).LogicalViewport);
             RenderBudget budget = new(1_000_000);
-            Assert.Empty(Lokad.Svg.Fonts.SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(10_000), budget, CancellationToken.None));
+            Assert.Empty(Lokad.Svg.Fonts.SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
     }
@@ -48,7 +48,7 @@ public sealed class SvgStyleSheetTests
                 SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
             Assert.Equal(new SvgViewport(4, 4), SvgConverter.InspectDimensions(input, SvgRenderOptions.Default, CancellationToken.None).LogicalViewport);
             RenderBudget budget = new(1_000_000);
-            Assert.Empty(Lokad.Svg.Fonts.SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(10_000), budget, CancellationToken.None));
+            Assert.Empty(Lokad.Svg.Fonts.SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
     }
@@ -64,10 +64,9 @@ public sealed class SvgStyleSheetTests
     [Fact]
     public void Overflow_and_decoration_keep_independent_priority()
     {
-        ParserWorkCounter work = new(10_000);
         SvgStyleCascade cascade = new();
-        cascade.Apply(SvgInlineStyleParser.Parse("text-decoration:underline!important;overflow:visible", work, CancellationToken.None, true), new(0, 1, 0));
-        cascade.Apply(SvgInlineStyleParser.Parse("overflow:hidden", work, CancellationToken.None), new(1, 0, 0));
+        cascade.Apply(SvgInlineStyleParser.Parse("text-decoration:underline!important;overflow:visible", CancellationToken.None, true), new(0, 1, 0));
+        cascade.Apply(SvgInlineStyleParser.Parse("overflow:hidden", CancellationToken.None), new(1, 0, 0));
         InlineStyle style = cascade.ToInlineStyle();
         Assert.Equal("hidden", style.Overflow);
         Assert.Equal("underline", style.TextDecoration);
@@ -79,7 +78,7 @@ public sealed class SvgStyleSheetTests
     [InlineData("overflow:visible;overflow:hidden", "hidden")]
     [InlineData("overflow:hidden!important;overflow:visible", "hidden")]
     public void Overflow_duplicates_follow_declaration_priority(string declarations, string expected)
-        => Assert.Equal(expected, SvgInlineStyleParser.Parse(declarations, new ParserWorkCounter(1000), CancellationToken.None).Overflow);
+        => Assert.Equal(expected, SvgInlineStyleParser.Parse(declarations, CancellationToken.None).Overflow);
 
     [Fact]
     public void Cascades_each_presentation_property_by_specificity_then_source_order()
@@ -154,7 +153,7 @@ public sealed class SvgStyleSheetTests
     [InlineData("fill: red", "red", false)]
     public void Parses_important_suffix_variants(string declaration, string expectedValue, bool expectedImportant)
     {
-        InlineStyle style = SvgInlineStyleParser.Parse(declaration, new ParserWorkCounter(100), CancellationToken.None);
+        InlineStyle style = SvgInlineStyleParser.Parse(declaration, CancellationToken.None);
 
         Assert.Equal(expectedValue, style.Fill);
         Assert.Equal(expectedImportant, (style.Important & InlineImportantProperties.Fill) != 0);
@@ -163,8 +162,8 @@ public sealed class SvgStyleSheetTests
     [Fact]
     public void Important_beats_normal_within_one_declaration_block_regardless_of_order()
     {
-        InlineStyle importantFirst = SvgInlineStyleParser.Parse("fill: red !important; fill: blue", new ParserWorkCounter(100), CancellationToken.None);
-        InlineStyle importantLast = SvgInlineStyleParser.Parse("fill: red; fill: blue !important", new ParserWorkCounter(100), CancellationToken.None);
+        InlineStyle importantFirst = SvgInlineStyleParser.Parse("fill: red !important; fill: blue", CancellationToken.None);
+        InlineStyle importantLast = SvgInlineStyleParser.Parse("fill: red; fill: blue !important", CancellationToken.None);
 
         Assert.Equal("red", importantFirst.Fill);
         Assert.Equal("blue", importantLast.Fill);
@@ -189,7 +188,7 @@ public sealed class SvgStyleSheetTests
     [InlineData("fill-rule", "inherit", "inherit")]
     public void Maps_paint_keywords_to_specified_values(string property, string value, string? expected)
     {
-        InlineStyle style = SvgInlineStyleParser.Parse(property + ": " + value, new ParserWorkCounter(100), CancellationToken.None);
+        InlineStyle style = SvgInlineStyleParser.Parse(property + ": " + value, CancellationToken.None);
 
         Assert.Equal(expected, GetPaintValue(style, property));
 
@@ -212,7 +211,7 @@ public sealed class SvgStyleSheetTests
     [InlineData("display: INHERIT!important")]
     public void Retains_display_inheritance_for_parent_resolution(string declaration)
     {
-        InlineStyle style = SvgInlineStyleParser.Parse(declaration, new ParserWorkCounter(100), CancellationToken.None);
+        InlineStyle style = SvgInlineStyleParser.Parse(declaration, CancellationToken.None);
         Assert.Equal(SvgInlineStyleParser.InheritedValue, style.Display);
     }
 
@@ -326,23 +325,9 @@ public sealed class SvgStyleSheetTests
     [Fact]
     public void Rejects_empty_important_declarations()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgInlineStyleParser.Parse("fill: !important", new ParserWorkCounter(100), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgInlineStyleParser.Parse("fill: !important", CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-    }
-
-    [Fact]
-    public void Checks_stylesheet_read_work_before_allocating_text_storage()
-    {
-        using XmlReader reader = XmlReader.Create(new StringReader("<style>x</style>"));
-        Assert.True(reader.Read());
-        RenderBudget budget = new(1_000_000);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgStyleSheet.ReadElementText(reader, budget, new ParserWorkCounter(0), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Equal(0, budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Parser]);
-        Assert.Equal(0, budget.Snapshot().PeakBytes);
     }
 
     [Fact]
@@ -351,7 +336,7 @@ public sealed class SvgStyleSheetTests
         using XmlReader reader = XmlReader.Create(new StringReader("<style>" + new string(' ', 4_096) + "</style>"));
         Assert.True(reader.Read());
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgStyleSheet.ReadElementText(reader, new RenderBudget(8_223), new ParserWorkCounter(100), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgStyleSheet.ReadElementText(reader, new RenderBudget(8_223), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }

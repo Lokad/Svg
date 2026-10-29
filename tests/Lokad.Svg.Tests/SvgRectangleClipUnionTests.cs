@@ -89,24 +89,21 @@ public sealed class SvgRectangleClipUnionTests
             byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'>"
                 + (outerFirst ? outer + inner : inner + outer) + "</clipPath></defs><rect width='32' height='32' fill='red' clip-path='url(#c)'/></svg>");
             RenderBudget budget = new(1_000_000);
-            ParserWorkCounter work = new(10_000_000);
             long parserPeak;
             using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
             {
-                using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
+                using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
                 {
                     parserPeak = budget.Snapshot().PeakBytes;
                     using SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
                     Assert.Equal((byte)255, raster.Pixels[(16 * 32 + 16) * 4 + 3]);
                 }
                 Assert.Equal(73, budget.Snapshot().CurrentBytes);
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input,
-                    SvgRenderLimits.Default, budget, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
                 Assert.Equal(73, budget.Snapshot().CurrentBytes);
                 using CancellationTokenSource cancellation = new();
                 cancellation.Cancel();
                 Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input,
-                    SvgRenderLimits.Default, budget, null, new(10_000_000), cancellation.Token)).CancellationToken);
+                    SvgRenderLimits.Default, budget, null, cancellation.Token)).CancellationToken);
                 Assert.Equal(73, budget.Snapshot().CurrentBytes);
                 using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) { }
                 Assert.Equal(73, budget.Snapshot().CurrentBytes);

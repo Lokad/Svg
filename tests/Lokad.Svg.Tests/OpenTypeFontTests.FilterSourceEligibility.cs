@@ -84,7 +84,7 @@ public sealed partial class OpenTypeFontTests
         string png = Convert.ToBase64String(PngEncoder.Encode(2, 1, [255, 0, 0, 255, 0, 0, 255, 255], CancellationToken.None));
         byte[] input = Document("<image width='0' height='8' href='data:image/png;base64," + png + "'/>");
         RenderBudget budget = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             long retained = budget.Snapshot().CurrentBytes;
             using CancellationTokenSource cancelled = new(); cancelled.Cancel();

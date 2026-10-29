@@ -17,7 +17,7 @@ internal static class SvgGlyphCoverage
         private SvgGlyphOutlinePoint[]? _points;
         private readonly RenderBudget.BudgetReservation _reservation;
 
-        private PreparedContours(ReadOnlySpan<SvgGlyphQuadraticContour> contours, int pointCount, RenderBudget.BudgetReservation reservation, ParserWorkCounter work, CancellationToken token)
+        private PreparedContours(ReadOnlySpan<SvgGlyphQuadraticContour> contours, int pointCount, RenderBudget.BudgetReservation reservation, CancellationToken token)
         {
             _points = new SvgGlyphOutlinePoint[pointCount];
             int index = 0;
@@ -27,7 +27,7 @@ internal static class SvgGlyphCoverage
                 _points[index++] = segment.Start;
                 for (int step = 1; step <= QuadraticSubdivisions; step++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     double t = step / (double)QuadraticSubdivisions;
                     double inverse = 1 - t;
                     double currentX = inverse * inverse * segment.Start.X + 2 * inverse * t * segment.Control.X + t * t * segment.End.X;
@@ -41,7 +41,7 @@ internal static class SvgGlyphCoverage
 
         internal ReadOnlySpan<SvgGlyphOutlinePoint> Points => _points ?? throw new ObjectDisposedException(nameof(PreparedContours));
 
-        internal static PreparedContours? TryCreate(ReadOnlySpan<SvgGlyphQuadraticContour> contours, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        internal static PreparedContours? TryCreate(ReadOnlySpan<SvgGlyphQuadraticContour> contours, RenderBudget budget, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             long segments = GetSegmentCount(contours);
@@ -49,7 +49,7 @@ internal static class SvgGlyphCoverage
             int count = (int)segments * (QuadraticSubdivisions + 1);
             long bytes = ParserCollectionMemory.GetArrayByteCount<SvgGlyphOutlinePoint>(count) + 96;
             RenderBudget.BudgetReservation reservation = budget.Reserve(bytes, SvgMemoryCategory.Temporary);
-            try { return new(contours, count, reservation, work, token); }
+            try { return new(contours, count, reservation, token); }
             catch { reservation.Dispose(); throw; }
         }
 

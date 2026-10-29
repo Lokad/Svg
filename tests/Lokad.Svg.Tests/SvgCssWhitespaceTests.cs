@@ -74,7 +74,7 @@ public sealed class SvgCssWhitespaceTests
     [Fact]
     public void Css_whitespace_preserves_quoted_unicode_and_form_feed_separation()
     {
-        InlineStyle style = SvgInlineStyleParser.Parse("font-family:' \u00a0\u2003 ';\ffill:\fred\f!\fimportant\f", new(1000), CancellationToken.None, true);
+        InlineStyle style = SvgInlineStyleParser.Parse("font-family:' \u00a0\u2003 ';\ffill:\fred\f!\fimportant\f", CancellationToken.None, true);
         Assert.Equal("' \u00a0\u2003 '", style.TextFont.Family);
         Assert.Equal("red", style.Fill);
         Assert.NotEqual(InlineImportantProperties.None, style.Important & InlineImportantProperties.Fill);

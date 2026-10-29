@@ -4,7 +4,7 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Owns bounded native distance records for one open or closed text baseline.</summary>
 /// <remarks>The parser owns this temporary object and disposes it after placing a run. Commands are borrowed
-/// only during construction. Each command, knot, lookup and evaluation charges work and checks cancellation.
+/// only during construction. Each command, knot, lookup and evaluation checks cancellation.
 /// Failed construction releases all arrays; readers and disposal are confined to one conversion thread.</remarks>
 internal sealed class SvgMeasuredTextPath : IDisposable
 {
@@ -27,15 +27,15 @@ internal sealed class SvgMeasuredTextPath : IDisposable
     internal bool IsClosed { get; private init; }
 
     internal static SvgMeasuredTextPath Create(ReadOnlySpan<SvgAuthoredPathCommand> commands, SvgAffineTransform map,
-        double? pathLength, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        double? pathLength, RenderBudget budget, CancellationToken token)
     {
         RenderBudget.BudgetReservation owner = budget.Reserve(512, SvgMemoryCategory.Geometry);
         OwnedParserArray<Curve> ownedCurves = new([], null);
         OwnedParserArray<SvgCurveMeasureStep> ownedSteps = new([], null);
         try
         {
-            using BudgetedParserList<Curve> curves = new(budget, SvgMemoryCategory.Geometry, work, token);
-            using BudgetedParserList<SvgCurveMeasureStep> steps = new(budget, SvgMemoryCategory.Geometry, work, token);
+            using BudgetedParserList<Curve> curves = new(budget, SvgMemoryCategory.Geometry, token);
+            using BudgetedParserList<SvgCurveMeasureStep> steps = new(budget, SvgMemoryCategory.Geometry, token);
             SvgDevicePoint current = default, first = default, start = default, horizontalEnd = default;
             bool hasStart = false, horizontal = true, closed = false;
             float distance = 0;
@@ -43,7 +43,7 @@ internal sealed class SvgMeasuredTextPath : IDisposable
             Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
             foreach (SvgAuthoredPathCommand command in commands)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 if (command.Verb == SvgAuthoredPathVerb.End) continue;
                 closed = command.Verb == SvgAuthoredPathVerb.Close;
                 if (command.Verb == SvgAuthoredPathVerb.Move && !hasStart)
@@ -67,7 +67,7 @@ internal sealed class SvgMeasuredTextPath : IDisposable
                 if (command.Verb == SvgAuthoredPathVerb.Arc)
                 {
                     horizontal = false;
-                    for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     int count = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
                         (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0,
                         command.Third, arcs, token);
@@ -113,12 +113,12 @@ internal sealed class SvgMeasuredTextPath : IDisposable
                 Span<SvgDevicePoint> mapped = stackalloc SvgDevicePoint[4];
                 for (int index = 0; index < source.Length; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     mapped[index] = SvgAuthoredPath.MapPoint(map, source[index], default);
                 }
                 Span<SvgCurveMeasureStep> measured = stackalloc SvgCurveMeasureStep[SvgCurveMeasure.MaximumStepCount];
                 float initial = distance;
-                int count = SvgCurveMeasure.Measure(kind, mapped[..source.Length], weight, 1, initial, measured, out distance, work, token);
+                int count = SvgCurveMeasure.Measure(kind, mapped[..source.Length], weight, 1, initial, measured, out distance, token);
                 if (!float.IsFinite(distance)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text-path curve distances exceed the supported range.");
                 if (count == 0) return;
                 curves.Add(new(kind, weight, initial, distance, steps.Count, count, mapped[0], mapped[1], mapped[2], mapped[3]));
@@ -130,14 +130,14 @@ internal sealed class SvgMeasuredTextPath : IDisposable
 
     /// <summary>Returns a glyph-local map about its advance midpoint and the measured tangent.</summary>
     internal SvgAffineTransform GlyphMap(double midpoint, double halfAdvance, double baselineShift,
-        ParserWorkCounter work, CancellationToken token)
-        => GlyphMap(midpoint, halfAdvance, baselineShift, 0, work, token);
+CancellationToken token)
+        => GlyphMap(midpoint, halfAdvance, baselineShift, 0, token);
 
     /// <summary>Combines a normalized character rotation with the path tangent before midpoint placement.</summary>
     internal SvgAffineTransform GlyphMap(double midpoint, double halfAdvance, double baselineShift, double rotation,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         if (_owner is null) throw new InvalidOperationException("The measured text path is disposed.");
         if (!double.IsFinite(midpoint) || midpoint < 0 || midpoint > Baseline.Length)
             throw new ArgumentOutOfRangeException(nameof(midpoint));
@@ -146,16 +146,16 @@ internal sealed class SvgMeasuredTextPath : IDisposable
         float distance = (float)midpoint;
         while (low < high)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             int middle = (low + high) >> 1;
             if (curves[middle].Distance < distance) low = middle + 1; else high = middle;
         }
         Curve curve = curves[low];
         Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[4];
         points[0] = curve.First; points[1] = curve.Second; points[2] = curve.Third; points[3] = curve.Fourth;
-        float parameter = SvgCurveMeasure.ParameterAt(_steps.Items.AsSpan(curve.FirstStep, curve.StepCount), curve.InitialDistance, distance, work, token);
+        float parameter = SvgCurveMeasure.ParameterAt(_steps.Items.AsSpan(curve.FirstStep, curve.StepCount), curve.InitialDistance, distance, token);
         SvgDevicePoint position = SvgCurveMeasure.Evaluate(curve.Kind, points, curve.Weight, parameter);
-        SvgDevicePoint tangent = SvgCurveMeasure.Tangent(curve.Kind, points, curve.Weight, parameter, work, token);
+        SvgDevicePoint tangent = SvgCurveMeasure.Tangent(curve.Kind, points, curve.Weight, parameter, token);
         if (!double.IsFinite(position.X) || !double.IsFinite(position.Y) || !double.IsFinite(tangent.X) || !double.IsFinite(tangent.Y))
             throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path position or tangent exceeds the supported range.");
         // Native path measurement normalizes scalar components before scalar

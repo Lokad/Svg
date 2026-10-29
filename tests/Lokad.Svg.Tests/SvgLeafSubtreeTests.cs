@@ -31,7 +31,7 @@ public sealed class SvgLeafSubtreeTests
         reader.Read();
         reader.Read();
 
-        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, SvgRenderLimits.Default, 2, new ParserWorkCounter(100), CancellationToken.None);
+        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, SvgRenderLimits.Default, 2, CancellationToken.None);
 
         Assert.False(subtree.HasUnsupportedChildren);
         Assert.Equal(2, subtree.NodeCount);
@@ -51,7 +51,7 @@ public sealed class SvgLeafSubtreeTests
         reader.Read();
         SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, nodes, 16, 100_000, depth, attributes);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, 1, new ParserWorkCounter(100), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, 1, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
@@ -62,7 +62,7 @@ public sealed class SvgLeafSubtreeTests
         using XmlReader reader = XmlReader.Create(new StringReader("<path><g><text>ignored</text></g></path>"));
         reader.Read();
 
-        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, SvgRenderLimits.Default, 7, new ParserWorkCounter(100), CancellationToken.None);
+        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, SvgRenderLimits.Default, 7, CancellationToken.None);
 
         Assert.True(subtree.HasUnsupportedChildren);
         Assert.Equal(9, subtree.NodeCount);
@@ -75,12 +75,11 @@ public sealed class SvgLeafSubtreeTests
         const string input = "<path><!-- one --><!-- two --></path>";
         using XmlReader denied = XmlReader.Create(new StringReader(input));
         denied.Read();
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgStructuralAdmission.ConsumeLeafSubtree(denied, SvgRenderLimits.Default, 1, new ParserWorkCounter(1), CancellationToken.None)).ErrorCode);
         using XmlReader cancelled = XmlReader.Create(new StringReader(input));
         cancelled.Read();
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
 
-        Assert.Throws<OperationCanceledException>(() => SvgStructuralAdmission.ConsumeLeafSubtree(cancelled, SvgRenderLimits.Default, 1, new ParserWorkCounter(100), cancellation.Token));
+        Assert.Throws<OperationCanceledException>(() => SvgStructuralAdmission.ConsumeLeafSubtree(cancelled, SvgRenderLimits.Default, 1, cancellation.Token));
     }
 }

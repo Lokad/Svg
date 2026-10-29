@@ -16,22 +16,21 @@ internal readonly record struct SvgSymbolPresentation(SvgPaint Paint, SvgInherit
 }
 
 /// <summary>Owns one open symbol's ordered children until its complete definition transfers to the document registry.</summary>
-/// <remarks>Storage and copies charge the parser budget and work counter before allocation. Failure and cancellation
+/// <remarks>Storage and copies reserve the parser memory budget before allocation. Failure and cancellation
 /// leave children owned until retry or disposal; successful registration transfers geometry ownership and leaves child-ID aliases borrowed.</remarks>
 internal sealed class SvgSymbolDefinitionBuilder : IDisposable
 {
     private readonly BudgetedParserList<SvgDefinition> _children;
     private readonly RenderBudget.BudgetReservation _owner;
     private readonly RenderBudget _budget;
-    private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private readonly SvgSymbolPresentation _presentation;
     private SvgSymbolContent? _content;
 
-    private SvgSymbolDefinitionBuilder(RenderBudget budget, ParserWorkCounter work, CancellationToken token, SvgSymbolPresentation presentation, RenderBudget.BudgetReservation owner)
+    private SvgSymbolDefinitionBuilder(RenderBudget budget, CancellationToken token, SvgSymbolPresentation presentation, RenderBudget.BudgetReservation owner)
     {
-        _children = new(budget, SvgMemoryCategory.Parser, work, token);
-        _presentation = presentation; _budget = budget; _work = work; _token = token;
+        _children = new(budget, SvgMemoryCategory.Parser, token);
+        _presentation = presentation; _budget = budget; _token = token;
         _owner = owner;
     }
 
@@ -43,7 +42,7 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
     internal SvgSymbolContent EnableContent()
     {
         if (_content is not null) return _content;
-        SvgSymbolContent content = SvgSymbolContent.Create(_budget, _work, _token, _presentation);
+        SvgSymbolContent content = SvgSymbolContent.Create(_budget, _token, _presentation);
         try
         {
             foreach (SvgDefinition child in _children.AsSpan()) content.AddLeaf(child, child.SourceDisplayed, child.SourceVisible);
@@ -59,10 +58,10 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
     /// after each copied geometry or retained source node; a throwing observer leaves children owned by this builder and releases assembly scratch.</summary>
     internal Action<int>? AssemblyCheckpoint { private get; set; }
 
-    internal static SvgSymbolDefinitionBuilder Create(RenderBudget budget, ParserWorkCounter work, CancellationToken token, SvgSymbolPresentation presentation)
+    internal static SvgSymbolDefinitionBuilder Create(RenderBudget budget, CancellationToken token, SvgSymbolPresentation presentation)
     {
         RenderBudget.BudgetReservation owner = budget.Reserve(512, SvgMemoryCategory.Parser);
-        try { return new(budget, work, token, presentation, owner); }
+        try { return new(budget, token, presentation, owner); }
         catch { owner.Dispose(); throw; }
     }
 
@@ -73,7 +72,7 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
         if (_content is null && definition.LeafSource?.LocalName == "rect")
             foreach (SvgGeometry geometry in definition.Geometries)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 if (geometry.Kind == SvgGeometryKind.Rectangle && geometry.Rectangle.Stroke is not null
                     || geometry.AuthoredPath?.StrokeStyle?.Shape == SvgAuthoredStrokeShape.Rectangle
                     || geometry.AuthoredPath?.StrokeOutline?.StrokeStyle?.Shape == SvgAuthoredStrokeShape.Rectangle)
@@ -87,11 +86,11 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
     }
 
     /// <summary>Transfers all ordered geometry owners into one symbol, retaining separate inherited-fill bindings per child channel.</summary>
-    internal SvgDefinition Build(SvgViewBox? viewBox, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal SvgDefinition Build(SvgViewBox? viewBox, SvgDocumentState state, CancellationToken token)
     {
         if (_content is SvgSymbolContent content)
         {
-            SvgSymbolContentRange range = content.Seal(work, token, AssemblyCheckpoint);
+            SvgSymbolContentRange range = content.Seal(token, AssemblyCheckpoint);
             _content = null;
             return new([], false, null, viewBox) { SymbolContent = range };
         }
@@ -106,7 +105,7 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
         long total = 0;
         foreach (SvgDefinition child in _children.AsSpan())
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             total += child.Geometries.Length;
         }
         if (total > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Symbol geometry storage exceeds the supported range.");
@@ -129,7 +128,7 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
                 SvgSymbolFillBinding[] childBindings = child.SymbolFillBindings ?? throw new InvalidOperationException("Symbol children require inherited-fill bindings.");
                 for (int index = 0; index < child.Geometries.Length; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     geometries[offset] = child.Geometries[index];
                     bindings[offset++] = childBindings[index];
                     AssemblyCheckpoint?.Invoke(offset);
@@ -145,11 +144,11 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
 
         SvgSymbolContentRange RetainStrokeRange()
         {
-            SvgSymbolContent content = SvgSymbolContent.Create(_budget, work, token, _presentation);
+            SvgSymbolContent content = SvgSymbolContent.Create(_budget, token, _presentation);
             try
             {
                 foreach (SvgDefinition child in _children.AsSpan()) content.AddLeaf(child, child.SourceDisplayed, child.SourceVisible);
-                SvgSymbolContentRange range = content.Seal(work, token, null);
+                SvgSymbolContentRange range = content.Seal(token, null);
                 state.RetainStrokeContent(content);
                 return range;
             }

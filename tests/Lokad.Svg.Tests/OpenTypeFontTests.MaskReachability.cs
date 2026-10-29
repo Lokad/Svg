@@ -32,13 +32,11 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(catalog, new[] { new SvgFontFaceRequest("Example", 400, false) }, provider, CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
         RenderBudget budget = new(4_000_000);
-        long parseWork;
         byte[] expected;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
             using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None))
             {
-                parseWork = root.ParserWorkUnits;
                 long retained = budget.Snapshot().CurrentBytes;
                 using (SvgConverter.RasterizedSurface first = SvgConverter.Rasterize(root, options, budget, CancellationToken.None))
                 {
@@ -54,10 +52,6 @@ public sealed partial class OpenTypeFontTests
             }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             SvgRenderLimits limits = SvgRenderLimits.Default;
-            SvgRenderLimits denied = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
-                limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)(parseWork - 1)), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, denied, budget, fonts, CancellationToken.None)).ErrorCode);
-            Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using (SvgRoot retryRoot = SvgRootParser.Parse(input, limits, budget, fonts, CancellationToken.None))
             using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(retryRoot, options, budget, CancellationToken.None))
                 Assert.Equal(expected, retry.Pixels);

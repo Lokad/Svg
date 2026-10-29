@@ -8,37 +8,37 @@ internal enum TrueTypeImpliedPointRounding { Down, None, TowardZero }
 internal static partial class OpenTypeFont
 {
     /// <summary>Distinguishes program-bearing simple glyphs from previously admitted instruction-free outlines.</summary>
-    internal static bool HasTrueTypePrograms(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static bool HasTrueTypePrograms(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, CancellationToken token)
     {
         ReadOnlySpan<byte> data = bytes.Span;
         int count = ReadUInt16(data, 4);
         for (int i = 0; i < count; i++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             int entry = 12 + i * 16;
             if (ReadUInt32(data, entry) is 0x6670676D or 0x70726570 && ReadUInt32(data, entry + 12) != 0) return true;
         }
-        using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyphIndex, metrics, budget, work, token, true);
+        using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyphIndex, metrics, budget, token, true);
         if (structure.CompositeHeader is not null) return true;
         if (structure.Value.ContourEndpoints.Length == 0) return false;
         return ReadUInt16(data, structure.Value.GlyphRange.Offset + 10 + structure.Value.ContourEndpoints.Length * 2) != 0;
     }
 
     /// <summary>Returns owned instruction-fitted contours with the established integer midpoint policy.</summary>
-    internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
-        => GetTrueTypeContours(bytes, glyphIndex, metrics, deviceSize, target, TrueTypeImpliedPointRounding.Down, budget, work, token);
+    internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, RenderBudget budget, CancellationToken token)
+        => GetTrueTypeContours(bytes, glyphIndex, metrics, deviceSize, target, TrueTypeImpliedPointRounding.Down, budget, token);
 
     /// <summary>Returns owned, instruction-fitted contours with an explicit rasterizer midpoint policy.</summary>
     /// <remarks>Programs and tables borrow the unchanged supplied face. Decoder, machine and
     /// copied point/CVT storage are bounded, reserved before allocation and released on failure.
     /// The explicit target selects rasterizer queries; this internal stage draws no masks and
     /// supplies owned geometry to the managed coverage stage.</remarks>
-    internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, TrueTypeImpliedPointRounding impliedPointRounding, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
-        => GetTrueTypeContours(bytes, glyphIndex, metrics, deviceSize, target, impliedPointRounding, null, budget, work, token);
+    internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, TrueTypeImpliedPointRounding impliedPointRounding, RenderBudget budget, CancellationToken token)
+        => GetTrueTypeContours(bytes, glyphIndex, metrics, deviceSize, target, impliedPointRounding, null, budget, token);
 
     /// <summary>Fits explicit points and applies an optional Windows device matrix before constructing implied curve points.</summary>
-    /// <remarks>Shares the supplied-face interpreter and all ownership, work and cancellation contracts above. The immutable post-transform owns no storage; every transformed point charges work before contour lowering.</remarks>
-    internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, TrueTypeImpliedPointRounding impliedPointRounding, OpenTypeWindowsGlyphTransform? postTransform, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    /// <remarks>Shares the supplied-face interpreter and all ownership and cancellation contracts above. The immutable post-transform owns no storage; every transformed point observes cancellation before contour lowering.</remarks>
+    internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, TrueTypeImpliedPointRounding impliedPointRounding, OpenTypeWindowsGlyphTransform? postTransform, RenderBudget budget, CancellationToken token)
     {
         if (impliedPointRounding is not TrueTypeImpliedPointRounding.Down and not TrueTypeImpliedPointRounding.None) throw new ArgumentOutOfRangeException(nameof(impliedPointRounding));
         if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767) throw new SvgException(SvgErrorCode.LimitExceeded, "The TrueType device size exceeds its coordinate bound.");
@@ -61,16 +61,16 @@ internal static partial class OpenTypeFont
             WindowsVertical = (float)deviceSize / metrics.UnitsPerEm,
             WindowsHorizontal = (float)horizontalSize / metrics.UnitsPerEm
         };
-        using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyphIndex, metrics, budget, work, token, true);
+        using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyphIndex, metrics, budget, token, true);
         if (structure.CompositeHeader is not null)
         {
             (TrueTypeHintProfile compositeProfile, OpenTypeTableRange compositeCvt, OpenTypeTableRange compositeFont, OpenTypeTableRange compositePrep) = ReadHintTables();
-            using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), deviceScale, deviceSize, horizontalSize, target, budget, work, token);
-            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, null, target.UsesWindowsArithmetic ? OpenTypeCompositeOffsetMath.DirectWrite : OpenTypeCompositeOffsetMath.NativeLength, budget, work, token);
-            SubtractGlyphOrigin(outline.Points, outline.Phantoms?.LeftX ?? 0, work, token);
+            using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), deviceScale, deviceSize, horizontalSize, target, budget, token);
+            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, null, target.UsesWindowsArithmetic ? OpenTypeCompositeOffsetMath.DirectWrite : OpenTypeCompositeOffsetMath.NativeLength, budget, token);
+            SubtractGlyphOrigin(outline.Points, outline.Phantoms?.LeftX ?? 0, token);
             MapPoints(outline.Points);
-            using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
-            BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, impliedPointRounding, work, token);
+            using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, token);
+            BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, impliedPointRounding, token);
             OpenTypeGlyphContourStorage result = compositeSegments.Detach();
             result.SmartDropouts = fitting.GlyphSmartDropouts;
             result.SimpleDropouts = target.UsesWindowsArithmetic && fitting.GlyphSimpleDropouts;
@@ -78,7 +78,7 @@ internal static partial class OpenTypeFont
             return result;
         }
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
-        using OpenTypeGlyphPointStorage decoded = GetSimpleGlyphPoints(bytes, structure.Value, budget, work, token);
+        using OpenTypeGlyphPointStorage decoded = GetSimpleGlyphPoints(bytes, structure.Value, budget, token);
         (TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation) = ReadHintTables();
         int lengthOffset = structure.Value.GlyphRange.Offset + 10 + structure.Value.ContourEndpoints.Length * 2;
         int instructionLength = ReadUInt16(bytes.Span, lengthOffset);
@@ -93,12 +93,12 @@ internal static partial class OpenTypeFont
         int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (controlBasis >> 6) << 6 : controlBasis;
         for (int i = 0; i < cvt.Length; i++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             int value = ReadInt16(bytes.Span, cvtRange.Offset + i * 2);
             cvt[i] = target.UsesWindowsArithmetic && target.ControlScale == TrueTypeHintControlScale.FullPrecision
                 ? deviceScale.ScaleWindowsControl(value) : ScaleTrueTypeFixed(value, controlScale, target);
         }
-        for (int i = 0; i < pointCount; i++) { work.Consume(token); points[i] = new(ScaleHorizontal(decoded.Points[i].X), Scale(decoded.Points[i].Y), decoded.Points[i].X, decoded.Points[i].Y) { IsOnCurve = decoded.Points[i].IsOnCurve }; }
+        for (int i = 0; i < pointCount; i++) { token.ThrowIfCancellationRequested(); points[i] = new(ScaleHorizontal(decoded.Points[i].X), Scale(decoded.Points[i].Y), decoded.Points[i].X, decoded.Points[i].Y) { IsOnCurve = decoded.Points[i].IsOnCurve }; }
         OpenTypeGlyphHeader header = ParseGlyphHeader(bytes, structure.Value.GlyphRange) ?? throw InvalidFont("A nonempty glyph has no header.");
         int advanceIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
         int advance = ReadUInt16(bytes.Span, metrics.Hmtx.Offset + advanceIndex * 4);
@@ -116,7 +116,7 @@ internal static partial class OpenTypeFont
         // to either vertical phantom point is an explicit unsupported outcome.
         points[pointCount + 2].Unavailable = points[pointCount + 3].Unavailable = true;
         bool smartDropouts, simpleDropouts, excludeDropoutStubs;
-        using (TrueTypeHinting machine = TrueTypeHinting.Create(profile, cvt, points, structure.Value.ContourEndpoints, ppem, deviceScale, target, budget, work, token))
+        using (TrueTypeHinting machine = TrueTypeHinting.Create(profile, cvt, points, structure.Value.ContourEndpoints, ppem, deviceScale, target, budget, token))
         {
             machine.Run(bytes.Slice(fontProgram.Offset, fontProgram.Length), TrueTypeHintProgramKind.Font);
             ReadOnlyMemory<byte> prep = bytes.Slice(preparation.Offset, preparation.Length);
@@ -131,10 +131,10 @@ internal static partial class OpenTypeFont
         // Simple and composite outlines share the fitted horizontal metric origin.
         // xMin need not equal the side bearing in a valid static TrueType face.
         int fittedOrigin = points[pointCount].X;
-        for (int i = 0; i < pointCount; i++) { work.Consume(token); decoded.Points[i] = new(checked(points[i].X - fittedOrigin), points[i].Y, points[i].IsOnCurve); }
+        for (int i = 0; i < pointCount; i++) { token.ThrowIfCancellationRequested(); decoded.Points[i] = new(checked(points[i].X - fittedOrigin), points[i].Y, points[i].IsOnCurve); }
         MapPoints(decoded.Points);
-        using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, work, token);
-        BuildQuadraticContours(decoded.Points, structure.Value.ContourEndpoints, segments, true, impliedPointRounding, work, token);
+        using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, token);
+        BuildQuadraticContours(decoded.Points, structure.Value.ContourEndpoints, segments, true, impliedPointRounding, token);
         OpenTypeGlyphContourStorage fitted = segments.Detach();
         fitted.SmartDropouts = smartDropouts;
         fitted.ExcludeDropoutStubs = excludeDropoutStubs;
@@ -146,7 +146,7 @@ internal static partial class OpenTypeFont
             if (postTransform is not OpenTypeWindowsGlyphTransform transform) return;
             for (int index = 0; index < points.Length; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 points[index] = transform.ApplyFitted(points[index]);
             }
         }
@@ -167,7 +167,7 @@ internal static partial class OpenTypeFont
             RequireRange(data, 12, count * 16, "hint table directory");
             for (int i = 0; i < count; i++)
             {
-                work.Consume(token); int offset = 12 + i * 16; uint tag = ReadUInt32(data, offset);
+                token.ThrowIfCancellationRequested(); int offset = 12 + i * 16; uint tag = ReadUInt32(data, offset);
                 if (tag is not 0x6D617870 and not 0x63767420 and not 0x6670676D and not 0x70726570) continue;
                 int bit = tag switch { 0x6D617870 => 1, 0x63767420 => 2, 0x6670676D => 4, _ => 8 };
                 if ((seen & bit) != 0) throw InvalidFont("A TrueType hint table is duplicated.");

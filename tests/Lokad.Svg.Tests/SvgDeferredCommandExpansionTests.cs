@@ -14,8 +14,7 @@ public sealed class SvgDeferredCommandExpansionTests
     public void Clipped_forward_paints_stay_within_linear_work(int count)
     {
         RenderBudget budget = new(50_000_000);
-        ParserWorkCounter work = new(count * 400 + 3000);
-        using (SvgRoot root = SvgRootParser.Parse(Repeated(count, true), SvgRenderLimits.Default, budget, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(Repeated(count, true), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -31,9 +30,8 @@ public sealed class SvgDeferredCommandExpansionTests
     public void Batch_maps_original_and_new_scope_boundaries_without_touching_other_scenes()
     {
         RenderBudget budget = new(100_000);
-        ParserWorkCounter work = new(10_000);
-        using (SvgDocumentState state = new(budget, work, CancellationToken.None))
-        using (SvgSceneBuilder foreign = new(budget, work, CancellationToken.None))
+        using (SvgDocumentState state = new(budget, CancellationToken.None))
+        using (SvgSceneBuilder foreign = new(budget, CancellationToken.None))
         {
             SvgGeometry rectangle = SvgGeometry.FromRectangle(new(0, 0, 1, 1, SvgColor.Transparent, true, null));
             int first = state.Scene.AddPaintPlaceholder();
@@ -46,7 +44,7 @@ public sealed class SvgDeferredCommandExpansionTests
             state.PendingGroupClips.Add(new("c", null, SvgAffineTransform.Identity, 1, -1, 0, foreign));
             state.PendingGroupMasks.Add(new("m", 1, 3, 0, null, SvgAffineTransform.Identity, state.Scene, false));
             state.PendingGroupMasks.Add(new("m", 1, -1, 0, null, SvgAffineTransform.Identity, foreign, false));
-            using SvgPaintCommandBatch commands = new(state, state.Scene, default, state.PendingCommandEnd, work, CancellationToken.None);
+            using SvgPaintCommandBatch commands = new(state, state.Scene, default, state.PendingCommandEnd, CancellationToken.None);
             SvgPaintCommandEmission later = commands.Begin(second);
             state.Scene.AddGeometries([rectangle, rectangle]);
             state.PendingGroupClips.Add(new("c", null, SvgAffineTransform.Identity, later.TailStart, later.TailStart + 2, 0, state.Scene));
@@ -76,12 +74,11 @@ public sealed class SvgDeferredCommandExpansionTests
     public void Cancellation_before_batch_completion_releases_scratch_and_scene_owners()
     {
         RenderBudget budget = new(100_000);
-        ParserWorkCounter work = new(10_000);
         using CancellationTokenSource cancellation = new();
-        using (SvgDocumentState state = new(budget, work, cancellation.Token))
+        using (SvgDocumentState state = new(budget, cancellation.Token))
         {
             int slot = state.Scene.AddPaintPlaceholder();
-            using SvgPaintCommandBatch commands = new(state, state.Scene, default, state.PendingCommandEnd, work, cancellation.Token);
+            using SvgPaintCommandBatch commands = new(state, state.Scene, default, state.PendingCommandEnd, cancellation.Token);
             SvgPaintCommandEmission emission = commands.Begin(slot);
             commands.Retain(emission);
             cancellation.Cancel();
@@ -91,26 +88,19 @@ public sealed class SvgDeferredCommandExpansionTests
     }
 
     [Fact]
-    public void Batch_replay_releases_storage_on_work_memory_denial_and_cancellation()
+    public void Batch_replay_releases_storage_on_memory_denial_and_cancellation()
     {
         byte[] input = Mixed(true);
         RenderBudget measured = new(2_000_000);
-        ParserWorkCounter work = new(100_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) { }
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(2_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
         DenyMemory(peak - 1);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         RenderBudget cancelled = new(2_000_000);
-        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, new(100_000), cancellation.Token)).CancellationToken);
+        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, cancelled, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, cancelled.Snapshot().CurrentBytes);
 
         void DenyMemory(long limit)

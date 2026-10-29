@@ -7,7 +7,7 @@ internal static class SvgPreparationTestHelper
 {
     internal static (double Horizontal, double Vertical) GetOutputScales(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, CancellationToken token)
     {
-        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, new(options.Limits.MaximumWorkUnits), token);
+        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, token);
         SvgAffineTransform map = preparation.GetOutputMap(options);
         return (map.A, map.D);
     }

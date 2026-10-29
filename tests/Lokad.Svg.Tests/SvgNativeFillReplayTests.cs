@@ -14,20 +14,13 @@ public sealed class SvgNativeFillReplayTests
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", fileName));
         SvgRenderLimits limits = SvgRenderLimits.Default;
         RenderBudget measured = new(limits.MaximumAccountedBytes);
-        ParserWorkCounter work = new(limits.MaximumWorkUnits);
-        using (SvgRoot root = SvgRootParser.Parse(input, limits, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, limits, measured, null, CancellationToken.None))
             Assert.NotEmpty(root.Geometries);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long allowance in new[] { 0L, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(limits.MaximumAccountedBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, denied, null, new(allowance), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget memoryDenied = new(measured.Snapshot().PeakBytes - 1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, memoryDenied, null, new(limits.MaximumWorkUnits), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, memoryDenied, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, memoryDenied.Snapshot().CurrentBytes);
-        using (SvgRoot root = SvgRootParser.Parse(input, limits, measured, null, new(work.Used), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, limits, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
             Assert.Contains(surface.Pixels, value => value != 0);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
@@ -46,21 +39,14 @@ public sealed class SvgNativeFillReplayTests
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'>" + content + "</svg>");
         SvgRenderLimits defaults = SvgRenderLimits.Default;
         RenderBudget measured = new(defaults.MaximumAccountedBytes);
-        ParserWorkCounter work = new(defaults.MaximumWorkUnits);
-        using (SvgRoot root = SvgRootParser.Parse(input, defaults, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, defaults, measured, null, CancellationToken.None))
             Assert.Contains(root.Geometries, geometry => geometry.AuthoredPath is not null);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(defaults.MaximumAccountedBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, defaults, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 256) DenyMemory(limit);
         DenyMemory(peak - 1);
         RenderBudget retry = new(defaults.MaximumAccountedBytes);
-        using (SvgRoot root = SvgRootParser.Parse(input, defaults, retry, null, new(work.Used), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, defaults, retry, null, CancellationToken.None))
         {
             SvgAuthoredPath[] sources = root.Geometries.Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>().ToArray();
             SvgAuthoredPathCommand[][] commands = sources.Select(source => source.Commands.ToArray()).ToArray();
@@ -72,17 +58,6 @@ public sealed class SvgNativeFillReplayTests
                 expected = surface.Pixels.ToArray();
             }
             Assert.Equal(owned, retry.Snapshot().CurrentBytes);
-            foreach (long allowance in new[] { 1L, 64L, 512L })
-            {
-                SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
-                    defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
-                    checked((int)(root.ParserWorkUnits + allowance)), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                {
-                    using var denied = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, tight), retry, CancellationToken.None);
-                }).ErrorCode);
-                Assert.Equal(owned, retry.Snapshot().CurrentBytes);
-            }
             using (retry.Reserve(defaults.MaximumAccountedBytes - owned - 1024, SvgMemoryCategory.Surface))
             {
                 long padded = retry.Snapshot().CurrentBytes;
@@ -108,7 +83,7 @@ public sealed class SvgNativeFillReplayTests
         void DenyMemory(long limit)
         {
             RenderBudget denied = new(limit);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, defaults, denied, null, new(defaults.MaximumWorkUnits), CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, defaults, denied, null, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
     }
@@ -120,7 +95,7 @@ public sealed class SvgNativeFillReplayTests
     {
         RenderBudget budget = new(1_000_000);
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + content + "</svg>");
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgAuthoredPath source = Assert.Single(root.Geometries).AuthoredPath ?? throw new InvalidOperationException();
             Assert.Empty(source.Commands.ToArray());

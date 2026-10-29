@@ -14,18 +14,17 @@ internal static class SvgStructuralAdmission
         if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
     }
 
-    /// <summary>Consumes a geometric leaf body, admitting inert descriptions while counting every nested element and charging reader work with cancellation checks. Borrows the reader and allocates no retained storage.</summary>
-    internal static SvgLeafSubtree ConsumeLeafSubtree(XmlReader reader, SvgRenderLimits limits, int nodeCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <summary>Consumes a geometric leaf body, admitting inert descriptions while counting every nested element and checking cancellation during reading. Borrows the reader and allocates no retained storage.</summary>
+    internal static SvgLeafSubtree ConsumeLeafSubtree(XmlReader reader, SvgRenderLimits limits, int nodeCount, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(limits);
-        ArgumentNullException.ThrowIfNull(workCounter);
         int leafDepth = reader.Depth;
         int descriptionDepth = -1;
         bool hasElements = false;
         while (reader.Read())
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (reader.NodeType == XmlNodeType.Element)
             {
                 ValidateElementStructure(reader, limits);
@@ -49,11 +48,11 @@ internal static class SvgStructuralAdmission
     /// <summary>Consumes a live document leaf after its attributes are retained, updating structural counts and unsupported-child state.</summary>
     /// <remarks>Self-closing retained readers need no traversal. Live readers borrow the document's limits;
     /// the shared consumer meters every child and cancellation without allocating retained storage.</remarks>
-    internal static void ConsumeLeafChildren(XmlReader reader, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static void ConsumeLeafChildren(XmlReader reader, SvgDocumentState state, CancellationToken token)
     {
         if (reader.IsEmptyElement) return;
         SvgRenderLimits limits = state.TextReplay?.Limits ?? throw new InvalidOperationException("Leaf traversal requires document limits.");
-        SvgLeafSubtree subtree = ConsumeLeafSubtree(reader, limits, state.NodeCount, work, token);
+        SvgLeafSubtree subtree = ConsumeLeafSubtree(reader, limits, state.NodeCount, token);
         state.NodeCount = subtree.NodeCount;
         state.HasUnsupportedContent |= subtree.HasUnsupportedChildren;
     }

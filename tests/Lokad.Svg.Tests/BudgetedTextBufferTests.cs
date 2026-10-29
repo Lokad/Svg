@@ -9,19 +9,18 @@ public sealed class BudgetedTextBufferTests
     public void Collapsed_spaces_keep_the_first_span_owner_and_trim_only_the_final_separator()
     {
         RenderBudget budget = new(20_000);
-        ParserWorkCounter work = new(1_000);
         SvgInheritedTextStyle font = new("Example", 400, false, 18, SvgTextWhitespaceMode.Default, 1, SvgTextAnchor.Start) { WordSpacing = 5 };
-        using (SvgTextPaintOutput output = new(budget, 1, SvgTextPaintStyle.Default, font, work, CancellationToken.None))
+        using (SvgTextPaintOutput output = new(budget, 1, SvgTextPaintStyle.Default, font, CancellationToken.None))
         {
             SvgTextWhitespaceNormalizer parent = new(SvgTextWhitespaceMode.Default, 1, 0, false);
-            parent.Append("A ", output, 20, work, CancellationToken.None);
+            parent.Append("A ", output, 20, CancellationToken.None);
             output.EnterStyleSpan(SvgTextPaintStyle.Default, new("Example", 400, false, 18, SvgTextWhitespaceMode.Default, 1, SvgTextAnchor.Start));
-            output.EnterPositioningSpan(new SvgTextPositionLists("20 30", null, null, null, null), 1, work, CancellationToken.None);
+            output.EnterPositioningSpan(new SvgTextPositionLists("20 30", null, null, null, null), 1, CancellationToken.None);
             SvgTextWhitespaceNormalizer child = new(SvgTextWhitespaceMode.Default, 1, 1, true);
-            child.Append(" B ", output, 20, work, CancellationToken.None);
+            child.Append(" B ", output, 20, CancellationToken.None);
             output.ExitPositioningSpan(1);
             output.ExitPaintSpan();
-            parent.Append("C ", output, 20, work, CancellationToken.None);
+            parent.Append("C ", output, 20, CancellationToken.None);
             using SvgExtractedTextRun run = output.Detach(null, false);
             Assert.Equal("A B C", run.Layout.Value);
             Assert.Equal([
@@ -37,17 +36,16 @@ public sealed class BudgetedTextBufferTests
     public void Nested_lists_count_normalized_scalars_across_chunks_and_resume_ancestor_values()
     {
         RenderBudget budget = new(20_000);
-        ParserWorkCounter work = new(1_000);
-        using SvgTextLayoutBuffer buffer = new(budget, 0, work, CancellationToken.None);
-        buffer.Append("A", 0, 0, 20, work, CancellationToken.None);
-        buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30 40", null, null, null, "5 10"), 1, work, CancellationToken.None);
-        buffer.Append(" ", 0, 0, 20, work, CancellationToken.None);
-        buffer.Append("\ud83d", 0, 1, 20, work, CancellationToken.None);
-        buffer.Append("\ude00", 0, 1, 20, work, CancellationToken.None);
-        buffer.EnterPositioningSpan(new SvgTextPositionLists(null, null, "0 2", null, "0"), 2, work, CancellationToken.None);
-        buffer.Append("BC", 0, 2, 20, work, CancellationToken.None);
+        using SvgTextLayoutBuffer buffer = new(budget, 0, CancellationToken.None);
+        buffer.Append("A", 0, 0, 20, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30 40", null, null, null, "5 10"), 1, CancellationToken.None);
+        buffer.Append(" ", 0, 0, 20, CancellationToken.None);
+        buffer.Append("\ud83d", 0, 1, 20, CancellationToken.None);
+        buffer.Append("\ude00", 0, 1, 20, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionLists(null, null, "0 2", null, "0"), 2, CancellationToken.None);
+        buffer.Append("BC", 0, 2, 20, CancellationToken.None);
         buffer.ExitPositioningSpan(2);
-        buffer.Append("D", 0, 1, 20, work, CancellationToken.None);
+        buffer.Append("D", 0, 1, 20, CancellationToken.None);
         buffer.ExitPositioningSpan(1);
         using (BudgetedTextLayout text = buffer.Detach())
         {
@@ -64,30 +62,26 @@ public sealed class BudgetedTextBufferTests
     public void Scoped_list_denial_and_cancellation_release_active_and_detached_storage()
     {
         RenderBudget accepted = new(100_000);
-        ParserWorkCounter work = new(10_000);
-        Run(accepted, work, CancellationToken.None, null);
+        Run(accepted, CancellationToken.None, null);
         long peak = accepted.Snapshot().PeakBytes;
         foreach (long limit in new[] { 1, peak / 2, peak - 1 })
         {
             RenderBudget denied = new(limit);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, new(10_000), CancellationToken.None, null)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, CancellationToken.None, null)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
-        RenderBudget workDenied = new(100_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(workDenied, new(work.Used - 1), CancellationToken.None, null)).ErrorCode);
-        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
-        OperationCanceledException cancelled = Assert.Throws<OperationCanceledException>(() => Run(accepted, new(10_000), cancellation.Token, cancellation));
+        OperationCanceledException cancelled = Assert.Throws<OperationCanceledException>(() => Run(accepted, cancellation.Token, cancellation));
         Assert.Equal(cancellation.Token, cancelled.CancellationToken);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        Run(accepted, new(10_000), CancellationToken.None, null);
+        Run(accepted, CancellationToken.None, null);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
 
-        static void Run(RenderBudget budget, ParserWorkCounter work, CancellationToken token, CancellationTokenSource? cancelBeforeDetach)
+        static void Run(RenderBudget budget, CancellationToken token, CancellationTokenSource? cancelBeforeDetach)
         {
-            using SvgTextLayoutBuffer buffer = new(budget, 0, work, token);
-            buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30", null, null, null, "0 10"), 1, work, token);
-            buffer.Append("ABC", 0, 4, 1, 20, work, token);
+            using SvgTextLayoutBuffer buffer = new(budget, 0, token);
+            buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30", null, null, null, "0 10"), 1, token);
+            buffer.Append("ABC", 0, 4, 1, 20, token);
             buffer.ExitPositioningSpan(1);
             cancelBeforeDetach?.Cancel();
             using BudgetedTextLayout text = buffer.Detach();
@@ -100,7 +94,7 @@ public sealed class BudgetedTextBufferTests
         RenderBudget budget = new(1_000);
         using (var buffer = new BudgetedTextBuffer(budget))
         {
-            buffer.Append("A", 10, new ParserWorkCounter(10), CancellationToken.None);
+            buffer.Append("A", 10, CancellationToken.None);
             using BudgetedText text = buffer.Detach();
 
             Assert.Equal("A", text.Value);
@@ -115,9 +109,9 @@ public sealed class BudgetedTextBufferTests
     {
         RenderBudget budget = new(1_500);
         using var buffer = new BudgetedTextBuffer(budget);
-        buffer.Append(new string('A', 256), 512, new ParserWorkCounter(10), CancellationToken.None);
+        buffer.Append(new string('A', 256), 512, CancellationToken.None);
 
-        SvgException exception = Assert.Throws<SvgException>(() => buffer.Append("A", 512, new ParserWorkCounter(10), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => buffer.Append("A", 512, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(544, budget.Snapshot().CurrentBytes);
@@ -130,23 +124,23 @@ public sealed class BudgetedTextBufferTests
         using var buffer = new BudgetedTextBuffer(budget);
         var normalizer = new SvgTextWhitespaceNormalizer();
 
-        normalizer.Append(" \tA\r", buffer, 16, new ParserWorkCounter(20), CancellationToken.None);
-        normalizer.Append("\n A  ", buffer, 16, new ParserWorkCounter(20), CancellationToken.None);
+        normalizer.Append(" \tA\r", buffer, 16, CancellationToken.None);
+        normalizer.Append("\n A  ", buffer, 16, CancellationToken.None);
         using BudgetedText text = buffer.Detach();
 
         Assert.Equal("A A", text.Value);
         Assert.Equal(9, normalizer.SourceCharacterCount);
         using var preservedBuffer = new BudgetedTextBuffer(new RenderBudget(1_000));
         var preserved = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Preserve);
-        preserved.Append(" \tA\r", preservedBuffer, 16, new ParserWorkCounter(20), CancellationToken.None);
-        preserved.Append("\n A  ", preservedBuffer, 16, new ParserWorkCounter(20), CancellationToken.None);
+        preserved.Append(" \tA\r", preservedBuffer, 16, CancellationToken.None);
+        preserved.Append("\n A  ", preservedBuffer, 16, CancellationToken.None);
         using BudgetedText preservedText = preservedBuffer.Detach();
 
         Assert.Equal("  A   A  ", preservedText.Value);
         Assert.Equal(9, preserved.SourceCharacterCount);
         var denied = new SvgTextWhitespaceNormalizer();
         using var deniedBuffer = new BudgetedTextBuffer(new RenderBudget(1_000));
-        SvgException exception = Assert.Throws<SvgException>(() => denied.Append("     ", deniedBuffer, 4, new ParserWorkCounter(20), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => denied.Append("     ", deniedBuffer, 4, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
@@ -155,14 +149,13 @@ public sealed class BudgetedTextBufferTests
     public void Retains_only_normalized_letter_spacing_intervals_that_differ_from_the_parent_text()
     {
         RenderBudget budget = new(2_000);
-        var workCounter = new ParserWorkCounter(100);
-        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var parent = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0);
         var spaced = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 5);
 
-        parent.Append("A", buffer, 10, workCounter, CancellationToken.None);
-        spaced.Append("A", buffer, 10, workCounter, CancellationToken.None);
-        parent.Append("A", buffer, 10, workCounter, CancellationToken.None);
+        parent.Append("A", buffer, 10, CancellationToken.None);
+        spaced.Append("A", buffer, 10, CancellationToken.None);
+        parent.Append("A", buffer, 10, CancellationToken.None);
         using BudgetedTextLayout text = buffer.Detach();
 
         Assert.Equal("AAA", text.Value);
@@ -176,12 +169,11 @@ public sealed class BudgetedTextBufferTests
     public void Retains_a_positioned_span_offset_for_its_first_descendant_character()
     {
         RenderBudget budget = new(2_000);
-        var workCounter = new ParserWorkCounter(100);
-        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, false);
 
-        buffer.EnterPositioningSpan(new SvgTextPositionOffset(5, -2), 1, workCounter, CancellationToken.None);
-        descendant.Append("AA", buffer, 10, workCounter, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(5, -2), 1, CancellationToken.None);
+        descendant.Append("AA", buffer, 10, CancellationToken.None);
         buffer.ExitPositioningSpan(1);
         using BudgetedTextLayout text = buffer.Detach();
 
@@ -196,13 +188,12 @@ public sealed class BudgetedTextBufferTests
     public void Lets_a_nearer_zero_position_offset_override_an_outer_span()
     {
         RenderBudget budget = new(2_000);
-        var workCounter = new ParserWorkCounter(100);
-        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, true);
 
-        buffer.EnterPositioningSpan(new SvgTextPositionOffset(5, -2), 1, workCounter, CancellationToken.None);
-        buffer.EnterPositioningSpan(new SvgTextPositionOffset(0, 0), 2, workCounter, CancellationToken.None);
-        descendant.Append("A", buffer, 10, workCounter, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(5, -2), 1, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(0, 0), 2, CancellationToken.None);
+        descendant.Append("A", buffer, 10, CancellationToken.None);
         buffer.ExitPositioningSpan(2);
         buffer.ExitPositioningSpan(1);
         using BudgetedTextLayout text = buffer.Detach();
@@ -215,13 +206,12 @@ public sealed class BudgetedTextBufferTests
     public void Resolves_each_position_offset_axis_from_its_nearest_span()
     {
         RenderBudget budget = new(2_000);
-        var workCounter = new ParserWorkCounter(100);
-        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, true);
 
-        buffer.EnterPositioningSpan(new SvgTextPositionOffset(5, null), 1, workCounter, CancellationToken.None);
-        buffer.EnterPositioningSpan(new SvgTextPositionOffset(null, -2), 2, workCounter, CancellationToken.None);
-        descendant.Append("A", buffer, 10, workCounter, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(5, null), 1, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(null, -2), 2, CancellationToken.None);
+        descendant.Append("A", buffer, 10, CancellationToken.None);
         buffer.ExitPositioningSpan(2);
         buffer.ExitPositioningSpan(1);
         using BudgetedTextLayout text = buffer.Detach();
@@ -234,13 +224,12 @@ public sealed class BudgetedTextBufferTests
     public void Retains_absolute_zero_and_resolves_coordinates_separately_from_relative_offsets()
     {
         RenderBudget budget = new(2_000);
-        var workCounter = new ParserWorkCounter(100);
-        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, true);
 
-        buffer.EnterPositioningSpan(new SvgTextPositionOffset(12, 40, 5, null), 1, workCounter, CancellationToken.None);
-        buffer.EnterPositioningSpan(new SvgTextPositionOffset(0, null, 0, -2), 2, workCounter, CancellationToken.None);
-        descendant.Append(" AA", buffer, 10, workCounter, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(12, 40, 5, null), 1, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(0, null, 0, -2), 2, CancellationToken.None);
+        descendant.Append(" AA", buffer, 10, CancellationToken.None);
         buffer.ExitPositioningSpan(2);
         buffer.ExitPositioningSpan(1);
         using BudgetedTextLayout text = buffer.Detach();
@@ -255,15 +244,14 @@ public sealed class BudgetedTextBufferTests
     public void Empty_absolute_position_scopes_do_not_reposition_later_parent_text()
     {
         RenderBudget budget = new(2_000);
-        var workCounter = new ParserWorkCounter(100);
-        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, CancellationToken.None);
         var empty = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 1, true);
         var parent = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0);
 
-        buffer.EnterPositioningSpan(new SvgTextPositionOffset(0, 0, null, null), 1, workCounter, CancellationToken.None);
-        empty.Append(" \t", buffer, 10, workCounter, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(0, 0, null, null), 1, CancellationToken.None);
+        empty.Append(" \t", buffer, 10, CancellationToken.None);
         buffer.ExitPositioningSpan(1);
-        parent.Append("A", buffer, 10, workCounter, CancellationToken.None);
+        parent.Append("A", buffer, 10, CancellationToken.None);
         using BudgetedTextLayout text = buffer.Detach();
 
         Assert.Equal("A", text.Value);

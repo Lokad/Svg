@@ -109,14 +109,12 @@ public sealed partial class OpenTypeFontTests
         Assert.Single(SvgFontRequestDiscovery.Discover(input, CancellationToken.None));
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, fonts, work, CancellationToken.None)) { }
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, fonts, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, new(1_000_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(1_000_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, fonts, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         (SvgFontPackCatalog catalog, CountingFontProvider provider, _) = PatternFontPack(false);
         using CancellationTokenSource cancellation = new();
@@ -139,10 +137,11 @@ public sealed partial class OpenTypeFontTests
             content.Append("<pattern id='p0' width='0' height='0' patternUnits='userSpaceOnUse'><circle cx='4' cy='4' r='4' fill='red'/></pattern>");
             for (int index = 1; index <= count; index++) content.Append("<pattern id='p").Append(index).Append("' href='#p").Append(index - 1).Append("'/>");
             content.Append("<pattern id='p' href='#p").Append(count).Append("' width='16' height='16'/></defs>").Append(PatternFontTarget);
-            RenderBudget budget = new(10_000_000); ParserWorkCounter work = new(1_000_000);
-            using (SvgRoot scene = SvgRootParser.Parse(PatternFontInput(content.ToString()), SvgRenderLimits.Default, budget, null, work, CancellationToken.None)) { }
+            RenderBudget budget = new(10_000_000);
+            long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+            using (SvgRoot scene = SvgRootParser.Parse(PatternFontInput(content.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None)) { }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            return work.Used;
+            return GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
         }
     }
 

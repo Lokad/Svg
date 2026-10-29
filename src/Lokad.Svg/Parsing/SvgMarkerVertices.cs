@@ -15,17 +15,17 @@ internal static class SvgMarkerVertices
         bool StartsSubpath, bool EndsSubpath, bool Closed);
 
     internal static BudgetedParserList<SvgMarkerPosition> Read(XmlReader reader, int maximumCommands,
-        SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        SvgDocumentState state, CancellationToken token)
     {
-        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Parser, token);
         if (reader.LocalName is "polygon" or "polyline")
         {
             string values = reader.GetAttribute("points") ?? string.Empty;
             using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(values,
-                reader.LocalName, maximumCommands, state.Budget, work, token, 0);
+                reader.LocalName, maximumCommands, state.Budget, token, 0);
             for (int index = 0; index < points.Count; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 commands.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line,
                     SvgAuthoredArcFlags.None, new(points[index].X, points[index].Y), default, default));
             }
@@ -34,16 +34,16 @@ internal static class SvgMarkerVertices
         }
         else
         {
-            using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumCommands, state.Budget, work, token);
-            SvgPathDataParser.ParseCommands(data.Value, maximumCommands, work, token, commands);
+            using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumCommands, state.Budget, token);
+            SvgPathDataParser.ParseCommands(data.Value, maximumCommands, token, commands);
         }
-        using BudgetedParserList<Corner> corners = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserList<Corner> corners = new(state.Budget, SvgMemoryCategory.Parser, token);
         int subpathStart = -1;
         SvgDevicePoint current = default;
         Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
         foreach (SvgAuthoredPathCommand command in commands.AsSpan())
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             switch (command.Verb)
             {
                 case SvgAuthoredPathVerb.Move:
@@ -91,7 +91,7 @@ internal static class SvgMarkerVertices
                     if (corners.Count != 0) corners[^1] = corners[^1] with { EndsSubpath = true };
                     break;
                 case SvgAuthoredPathVerb.Arc:
-                    for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     int count = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
                         (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0,
                         command.Third, arcs, token);
@@ -103,12 +103,12 @@ internal static class SvgMarkerVertices
                     throw new InvalidOperationException("Unexpected authored marker path command.");
             }
         }
-        BudgetedParserList<SvgMarkerPosition> result = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        BudgetedParserList<SvgMarkerPosition> result = new(state.Budget, SvgMemoryCategory.Parser, token);
         try
         {
             for (int index = 0; index < corners.Count; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 Corner corner = corners[index];
                 double incoming = Angle(corner.Incoming), outgoing = Angle(corner.Outgoing);
                 double angle;

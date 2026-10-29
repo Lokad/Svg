@@ -25,7 +25,7 @@ public sealed class SvgWindowsGlyphTests
         RenderBudget budget = new(long.MaxValue);
         JsonElement origin = item.GetProperty("origin");
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
-        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
             AssertTexture(item, contours.Segments, contours.SmartDropouts);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(original, font.Bytes.ToArray());
@@ -48,7 +48,7 @@ public sealed class SvgWindowsGlyphTests
         RenderBudget budget = new(long.MaxValue);
         JsonElement origin = item.GetProperty("origin");
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
-        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
             AssertTexture(item, contours.Segments, contours.SmartDropouts);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(original, font.Bytes.ToArray());
@@ -87,17 +87,16 @@ public sealed class SvgWindowsGlyphTests
         byte[] expectedBytes = Convert.FromBase64String(item.GetProperty("rgbTextureBase64").GetString() ?? throw new InvalidDataException("Missing native texture."));
         Assert.Equal((right - left) * (bottom - top) * 3, expectedBytes.Length);
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(item.GetProperty("glyph").GetUInt16(), 0, 0, 0), item.GetProperty("deviceSize").GetDouble(), map, budget))
-        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
         {
             using RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(contours.Segments.Length * 2), SvgMemoryCategory.Temporary);
             SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[contours.Segments.Length * 2];
-            ParserWorkCounter scanWork = new(long.MaxValue);
-            SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, scanWork, CancellationToken.None);
-            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(long.MaxValue), scanWork, CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+            SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, CancellationToken.None);
+            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
             int[] rowCounts = new int[10];
             for (int y = top - 1; y <= bottom; y++)
             {
-                SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(contours.Segments, oy + y, rowCounts, scanWork, CancellationToken.None);
+                SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(contours.Segments, oy + y, rowCounts, CancellationToken.None);
                 for (int x = left - 1; x <= right; x++)
                 {
                     SvgGlyphRgbCoverage expected = default;
@@ -106,7 +105,7 @@ public sealed class SvgWindowsGlyphTests
                         int offset = ((y - top) * (right - left) + x - left) * 3;
                         expected = new(expectedBytes[offset], expectedBytes[offset + 1], expectedBytes[offset + 2]);
                     }
-                    SvgGlyphRgbCoverage actual = SvgGlyphLcdCoverage.GetCoverage(rowScans, ox + x, scratch, scanBounds, scanWork, CancellationToken.None);
+                    SvgGlyphRgbCoverage actual = SvgGlyphLcdCoverage.GetCoverage(rowScans, ox + x, scratch, scanBounds, CancellationToken.None);
                     Assert.True(expected == actual, $"{identity} ({x}, {y}): expected {expected}, actual {actual}");
                 }
             }
@@ -117,7 +116,6 @@ public sealed class SvgWindowsGlyphTests
 
     [Theory]
     [InlineData(0)]
-    [InlineData(1)]
     [InlineData(2)]
     public void Denied_windows_curve_subdivision_releases_its_owner_and_preserves_the_borrow(int boundary)
     {
@@ -133,15 +131,15 @@ public sealed class SvgWindowsGlyphTests
         }))
         {
             if (boundary == 2)
-                Assert.ThrowsAny<OperationCanceledException>(() => SvgWindowsGlyphCurves.Prepare(original, budget, new(long.MaxValue), cancellation.Token));
+                Assert.ThrowsAny<OperationCanceledException>(() => SvgWindowsGlyphCurves.Prepare(original, budget, cancellation.Token));
             else
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgWindowsGlyphCurves.Prepare(original, budget, new(boundary == 1 ? 4 : long.MaxValue), CancellationToken.None)).ErrorCode);
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgWindowsGlyphCurves.Prepare(original, budget, CancellationToken.None)).ErrorCode);
         }
         Assert.Equal(boundary == 2, observed);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(new(new(1, 1), new(18, -3), new(2, 20)), original.Segments[0]);
         RenderBudget retryBudget = new(long.MaxValue);
-        using (OpenTypeGlyphContourStorage retry = SvgWindowsGlyphCurves.Prepare(original, retryBudget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage retry = SvgWindowsGlyphCurves.Prepare(original, retryBudget, CancellationToken.None))
             Assert.True(retry.Segments.Length > original.Segments.Length);
         Assert.Equal(0, retryBudget.Snapshot().CurrentBytes);
     }
@@ -190,7 +188,7 @@ public sealed class SvgWindowsGlyphTests
             var budget = new RenderBudget(long.MaxValue);
             JsonElement origin = item.GetProperty("origin");
             using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
-            using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None))
+            using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
             {
                 Assert.True(contours.SmartDropouts);
                 AssertTexture(item, contours.Segments, contours.SmartDropouts);
@@ -225,7 +223,7 @@ public sealed class SvgWindowsGlyphTests
         using SvgFontSnapshot snapshot = await Prepare();
         var budget = new RenderBudget(long.MaxValue);
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(36, 8, 48, 30.672), 48, budget))
-        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
         {
             using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "diagnostics", "windows-lcd.json")));
             foreach (JsonElement point in native.RootElement.GetProperty("fittedPointPositions").EnumerateArray())
@@ -237,16 +235,15 @@ public sealed class SvgWindowsGlyphTests
             Assert.Equal(32, reference.Width); Assert.Equal(34, reference.Height);
             using RenderBudget.BudgetReservation scratchReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(contours.Segments.Length * 2), SvgMemoryCategory.Temporary);
             SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[contours.Segments.Length * 2];
-            ParserWorkCounter scanWork = new(long.MaxValue);
-            SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, scanWork, CancellationToken.None);
-            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(long.MaxValue), scanWork, CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+            SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, CancellationToken.None);
+            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
             int[] rowCounts = new int[10];
             for (int y = 0; y < reference.Height; y++)
             {
-                SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(contours.Segments, 14 + y, rowCounts, scanWork, CancellationToken.None);
+                SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(contours.Segments, 14 + y, rowCounts, CancellationToken.None);
                 for (int x = 0; x < reference.Width; x++)
                 {
-                    SvgGlyphRgbCoverage coverage = SvgGlyphLcdCoverage.GetCoverage(rowScans, 7 + x, scratch, scanBounds, scanWork, CancellationToken.None);
+                    SvgGlyphRgbCoverage coverage = SvgGlyphLcdCoverage.GetCoverage(rowScans, 7 + x, scratch, scanBounds, CancellationToken.None);
                     int offset = (y * reference.Width + x) * 4;
                     Assert.Equal(reference.Pixels[offset], coverage.Red);
                     Assert.Equal(reference.Pixels[offset + 1], coverage.Green);
@@ -270,7 +267,7 @@ public sealed class SvgWindowsGlyphTests
             var budget = new RenderBudget(long.MaxValue);
             JsonElement origin = item.GetProperty("origin"), bounds = item.GetProperty("coverageBounds");
             using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
-            using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None))
+            using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
             {
                 Assert.True(contours.SmartDropouts);
                 using RenderBudget.BudgetReservation scratchReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(contours.Segments.Length * 2), SvgMemoryCategory.Temporary);
@@ -279,13 +276,12 @@ public sealed class SvgWindowsGlyphTests
                 RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(directory, filename)), 256);
                 int left = bounds[0].GetInt32(), top = bounds[1].GetInt32(), right = bounds[2].GetInt32(), bottom = bounds[3].GetInt32();
                 Assert.Equal(right - left, reference.Width); Assert.Equal(bottom - top, reference.Height);
-                ParserWorkCounter scanWork = new(long.MaxValue);
-                SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, scanWork, CancellationToken.None);
-                using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(long.MaxValue), scanWork, CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+                SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, CancellationToken.None);
+                using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
                 int[] rowCounts = new int[10];
                 for (int y = top - 1; y <= bottom; y++)
                 {
-                    SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(contours.Segments, y, rowCounts, scanWork, CancellationToken.None);
+                    SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(contours.Segments, y, rowCounts, CancellationToken.None);
                     for (int x = left - 1; x <= right; x++)
                     {
                         SvgGlyphRgbCoverage expected = default;
@@ -294,7 +290,7 @@ public sealed class SvgWindowsGlyphTests
                             int offset = ((y - top) * reference.Width + x - left) * 4;
                             expected = new(reference.Pixels[offset], reference.Pixels[offset + 1], reference.Pixels[offset + 2]);
                         }
-                        Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(rowScans, x, scratch, scanBounds, scanWork, CancellationToken.None));
+                        Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(rowScans, x, scratch, scanBounds, CancellationToken.None));
                     }
                 }
             }
@@ -336,13 +332,12 @@ public sealed class SvgWindowsGlyphTests
             Assert.Equal((right - left) * (bottom - top) * 3, expectedBytes.Length);
             OpenTypeQuadraticSegment[] outline = segments.ToArray();
             SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[outline.Length * 2];
-            ParserWorkCounter scanWork = new(long.MaxValue);
-            SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(outline, true, scanWork, CancellationToken.None);
-            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(outline, new RenderBudget(long.MaxValue), scanWork, CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+            SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(outline, true, CancellationToken.None);
+            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(outline, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
             int[] rowCounts = new int[10];
             for (int y = top - 1; y <= bottom; y++)
             {
-                SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(outline, y, rowCounts, scanWork, CancellationToken.None);
+                SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(outline, y, rowCounts, CancellationToken.None);
                 for (int x = left - 1; x <= right; x++)
                 {
                     SvgGlyphRgbCoverage expected = default;
@@ -351,7 +346,7 @@ public sealed class SvgWindowsGlyphTests
                         int offset = ((y - top) * (right - left) + x - left) * 3;
                         expected = new(expectedBytes[offset], expectedBytes[offset + 1], expectedBytes[offset + 2]);
                     }
-                    Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(rowScans, x, scratch, scanBounds, scanWork, CancellationToken.None));
+                    Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(rowScans, x, scratch, scanBounds, CancellationToken.None));
                 }
             }
         }
@@ -397,13 +392,12 @@ public sealed class SvgWindowsGlyphTests
             JsonElement bounds = texture.GetProperty("coverageBounds");
             int left = bounds[0].GetInt32(), top = bounds[1].GetInt32(), right = bounds[2].GetInt32(), bottom = bounds[3].GetInt32();
             Assert.Equal((right - left) * (bottom - top) * 3, bytes.Length);
-            ParserWorkCounter scanWork = new(long.MaxValue);
-            SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(outline, false, scanWork, CancellationToken.None);
-            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(outline, new RenderBudget(long.MaxValue), scanWork, CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+            SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(outline, false, CancellationToken.None);
+            using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(outline, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
             int[] rowCounts = new int[10];
             for (int y = top - 1; y <= bottom; y++)
             {
-                SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(outline, y, rowCounts, scanWork, CancellationToken.None);
+                SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(outline, y, rowCounts, CancellationToken.None);
                 for (int x = left - 1; x <= right; x++)
                 {
                     SvgGlyphRgbCoverage expected = default;
@@ -412,7 +406,7 @@ public sealed class SvgWindowsGlyphTests
                         int offset = ((y - top) * (right - left) + x - left) * 3;
                         expected = new(bytes[offset], bytes[offset + 1], bytes[offset + 2]);
                     }
-                    Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(rowScans, x, scratch, scanBounds, scanWork, CancellationToken.None));
+                    Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(rowScans, x, scratch, scanBounds, CancellationToken.None));
                 }
             }
         }
@@ -428,7 +422,7 @@ public sealed class SvgWindowsGlyphTests
             var budget = new RenderBudget(long.MaxValue);
             JsonElement origin = item.GetProperty("origin"), points = item.GetProperty("nativeFittedF26Points");
             using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
-            using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None))
+            using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None))
             {
                 OpenTypeOutlinePoint expected = new(origin[0].GetDouble() + (points[0][0].GetDouble() + points[1][0].GetDouble()) / 128, origin[1].GetDouble() - (points[0][1].GetDouble() + points[1][1].GetDouble()) / 128);
                 Assert.Contains(contours.Segments, segment => segment.Start == expected);
@@ -440,9 +434,8 @@ public sealed class SvgWindowsGlyphTests
 
     [Theory]
     [InlineData(0)]
-    [InlineData(1)]
     [InlineData(2)]
-    public async Task Denied_windows_outline_storage_work_or_mapping_releases_scratch(int boundary)
+    public async Task Denied_windows_outline_storage_or_mapping_releases_scratch(int boundary)
     {
         using SvgFontSnapshot snapshot = await Prepare();
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
@@ -451,8 +444,8 @@ public sealed class SvgWindowsGlyphTests
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(36, 8, 48, 30.672), 48, budget))
         {
             long retained = budget.Snapshot().CurrentBytes;
-            Assert.True(source.HasTrueTypePrograms(new(long.MaxValue), new(long.MaxValue), CancellationToken.None));
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => source.CreateWindowsContours(boundary == 2 ? double.PositiveInfinity : 1, 0, 1, 0, budget, new(boundary == 1 ? 5000 : long.MaxValue), CancellationToken.None)).ErrorCode);
+            Assert.True(source.HasTrueTypePrograms(new(long.MaxValue), CancellationToken.None));
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => source.CreateWindowsContours(boundary == 2 ? double.PositiveInfinity : 1, 0, 1, 0, budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -466,13 +459,12 @@ public sealed class SvgWindowsGlyphTests
         int left = bounds[0].GetInt32(), top = bounds[1].GetInt32(), right = bounds[2].GetInt32(), bottom = bounds[3].GetInt32();
         Assert.Equal((right - left) * (bottom - top) * 3, expectedBytes.Length);
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
-        ParserWorkCounter scanWork = new(long.MaxValue);
-        SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(segments, dropouts, scanWork, CancellationToken.None);
-        using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, new RenderBudget(long.MaxValue), scanWork, CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
+        SvgGlyphLcdCoverage.DropoutBounds scanBounds = SvgGlyphLcdCoverage.PrepareBounds(segments, dropouts, CancellationToken.None);
+        using SvgGlyphLcdCoverage.ScanStorage scanStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, new RenderBudget(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Native scan preparation should fit.");
         int[] rowCounts = new int[10];
         for (int y = top - 1; y <= bottom; y++)
         {
-            SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(segments, y, rowCounts, scanWork, CancellationToken.None);
+            SvgGlyphLcdCoverage.ScanRow rowScans = scanStorage.PrepareRow(segments, y, rowCounts, CancellationToken.None);
             for (int x = left - 1; x <= right; x++)
             {
                 SvgGlyphRgbCoverage expected = default;
@@ -481,7 +473,7 @@ public sealed class SvgWindowsGlyphTests
                     int offset = ((y - top) * (right - left) + x - left) * 3;
                     expected = new(expectedBytes[offset], expectedBytes[offset + 1], expectedBytes[offset + 2]);
                 }
-                SvgGlyphRgbCoverage actual = SvgGlyphLcdCoverage.GetCoverage(rowScans, x, scratch, scanBounds, scanWork, CancellationToken.None);
+                SvgGlyphRgbCoverage actual = SvgGlyphLcdCoverage.GetCoverage(rowScans, x, scratch, scanBounds, CancellationToken.None);
                 Assert.True(expected == actual, $"{item.GetProperty("id").GetString()} ({x}, {y}): expected {expected}, actual {actual}");
             }
         }

@@ -143,8 +143,7 @@ public sealed class SvgMaskContentReplayTests
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "mask-group-documents", identity + ".svg"));
         byte[] unchanged = input.ToArray();
         RenderBudget measured = new(8_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None, 1, 1, null))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None, 1, 1, null))
         {
             long retained = measured.Snapshot().CurrentBytes;
             byte[] pixels;
@@ -160,12 +159,6 @@ public sealed class SvgMaskContentReplayTests
             Assert.Equal(pixels, retry.Pixels);
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { 0, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(8_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None, 1, 1, null)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         foreach (long limit in new[] { 16_383, measured.Snapshot().PeakBytes / 2 })
         {
             RenderBudget denied = new(limit);

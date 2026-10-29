@@ -10,12 +10,12 @@ internal static class SvgSymbolContentRenderer
     private readonly record struct Frame(SvgSymbolContentRange Range, int Next, Context Context, int OutputStart, SvgPaintOpacity Opacity, SvgRecordingScope Scope, SvgClipBox? CompositionClip, SvgAffineViewportClip? AffineClip, string? MaskReference)
     { internal SvgRetainedFilter? Filter { get; init; } internal SvgNativeClipReference? ResourceClip { get; init; } internal SvgAffineTransform MaskMap { get; init; } = SvgAffineTransform.Identity; }
 
-    internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? viewport, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? viewport, SvgDocumentState state, CancellationToken token)
     {
         ValidateRenderedGroup(definition);
         SvgSymbolContentRange root = definition.SymbolContent ?? throw new InvalidOperationException("Retained content requires a source range.");
-        using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<Frame> stack = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<Frame> stack = new(state.Budget, SvgMemoryCategory.Parser, token);
         Context context = Place(definition, reference, viewport, reference.IsDisplayed, reference.IsVisible, out SvgAffineViewportClip? affineClip);
         int previousFilterDepth = state.FilterGroupDepth;
         try
@@ -24,7 +24,7 @@ internal static class SvgSymbolContentRenderer
             stack.Add(new(root, root.Start, context, 0, SvgPaintOpacity.Opaque, definition.EstablishesViewport || definition.SymbolViewBox is not null ? state.NewRecordingScope() : reference.RecordingScope, null, affineClip, null));
             while (stack.Count > 0)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 Frame frame = stack[^1];
                 if (frame.Next == frame.Range.Start + frame.Range.Count)
                 {
@@ -36,25 +36,25 @@ internal static class SvgSymbolContentRenderer
                             // empty target carries the scope through the existing emitter.
                             output.Add(SvgPaintRecording.CreateEffectAnchor(state.Scene, state, frame.Scope));
                         }
-                        SvgPaintRecording.WrapFilter(output.AsMutableSpan().Slice(frame.OutputStart), filter, state, work, token);
+                        SvgPaintRecording.WrapFilter(output.AsMutableSpan().Slice(frame.OutputStart), filter, state, token);
                         state.FilterGroupDepth--;
                     }
                     if (frame.Context.Displayed)
-                        SvgReferenceResolver.ApplyMask(output.AsMutableSpan().Slice(frame.OutputStart), null, null, frame.MaskReference, frame.MaskMap, state, work, token);
+                        SvgReferenceResolver.ApplyMask(output.AsMutableSpan().Slice(frame.OutputStart), null, null, frame.MaskReference, frame.MaskMap, state, token);
                     Span<SvgGeometry> contents = output.AsMutableSpan().Slice(frame.OutputStart);
                     if (frame.AffineClip is not null && frame.Opacity.Value != 1)
                     {
                         // Instance opacity surrounds the instantiated viewport. Keep its
                         // clip inside that layer so nested isolation restores coverage
                         // before the outer opacity's separate byte scaling.
-                        SvgPaintRecording.WrapInstance(contents, SvgPaintOpacity.Opaque, frame.Scope, null, frame.AffineClip, state, work, token);
-                        SvgPaintRecording.WrapInstance(contents, frame.Opacity, frame.Scope, state, work, token);
+                        SvgPaintRecording.WrapInstance(contents, SvgPaintOpacity.Opaque, frame.Scope, null, frame.AffineClip, state, token);
+                        SvgPaintRecording.WrapInstance(contents, frame.Opacity, frame.Scope, state, token);
                     }
-                    else SvgPaintRecording.WrapInstance(contents, frame.Opacity, frame.Scope, frame.CompositionClip, frame.AffineClip, state, work, token);
+                    else SvgPaintRecording.WrapInstance(contents, frame.Opacity, frame.Scope, frame.CompositionClip, frame.AffineClip, state, token);
                     // A resource clip encloses group isolation. Children render
                     // into the layer before its opacity and AA clip restore once.
                     if (frame.ResourceClip is {} resourceClip)
-                        SvgClipPathSyntax.ApplyResourceClip(contents, resourceClip.Id, resourceClip.Map, state, work, token);
+                        SvgClipPathSyntax.ApplyResourceClip(contents, resourceClip.Id, resourceClip.Map, state, token);
                     stack.RemoveLast(); continue;
                 }
                 SvgSymbolContentNode node = frame.Range.Content.Nodes[frame.Next];
@@ -111,16 +111,16 @@ internal static class SvgSymbolContentRenderer
                     int start = output.Count;
                     AddMapped(target with { SymbolFillBindings = target.SourceFillBindings ?? target.SymbolFillBindings }, use, frame.Context.Clip);
                     if (use.IsDisplayed)
-                        SvgPaintRecording.WrapFilter(output.AsMutableSpan().Slice(start), use.Filter, SvgReferenceResolver.PlainInstancePlacement(use, null), use.LengthBases, state, work, token);
+                        SvgPaintRecording.WrapFilter(output.AsMutableSpan().Slice(start), use.Filter, SvgReferenceResolver.PlainInstancePlacement(use, null), use.LengthBases, state, token);
                     if (use.IsDisplayed)
                         SvgReferenceResolver.ApplyMask(output.AsMutableSpan().Slice(start), null, null, node.Reference.SourceMaskReference,
-                            SvgReferenceResolver.PlainInstancePlacement(use, null), state, work, token);
+                            SvgReferenceResolver.PlainInstancePlacement(use, null), state, token);
                     if (node.Style.ClipId is {} clipId)
-                        SvgClipPathSyntax.ApplyResourceClip(output.AsMutableSpan().Slice(start), clipId, SvgReferenceResolver.PlainInstancePlacement(use, null), state, work, token);
-                    SvgPaintRecording.WrapInstance(output.AsMutableSpan().Slice(start), useOpacity, use.RecordingScope, state, work, token);
+                        SvgClipPathSyntax.ApplyResourceClip(output.AsMutableSpan().Slice(start), clipId, SvgReferenceResolver.PlainInstancePlacement(use, null), state, token);
+                    SvgPaintRecording.WrapInstance(output.AsMutableSpan().Slice(start), useOpacity, use.RecordingScope, state, token);
                 }
             }
-            SvgGeometry[] result = SvgReferenceResolver.RetainInstanceBatch(output.AsSpan(), state, work, token);
+            SvgGeometry[] result = SvgReferenceResolver.RetainInstanceBatch(output.AsSpan(), state, token);
             output.Clear();
             return result;
         }
@@ -139,19 +139,19 @@ internal static class SvgSymbolContentRenderer
         SvgInheritedTextStyle ResolveTextStyle(SvgRetainedTextSource? source, Context inheritedContext)
         {
             if (source is null) return inheritedContext.TextStyle;
-            using SvgRetainedTextSource.Reader attributes = source.OpenReader(0, work, token); attributes.MoveToContent();
-            InlineStyle inline = SvgInlineStyleParser.Parse(attributes.GetAttribute("style"), work, token, true);
+            using SvgRetainedTextSource.Reader attributes = source.OpenReader(0, token); attributes.MoveToContent();
+            InlineStyle inline = SvgInlineStyleParser.Parse(attributes.GetAttribute("style"), token, true);
             InlineStyle sheet = attributes.StyleSheet;
             SvgComputedStyle computed = SvgComputedStyle.Resolve(attributes, inline, sheet);
             SvgInheritedPresentation inherited = new(inheritedContext.Paint, inheritedContext.Displayed, inheritedContext.Visible, SvgAffineTransform.Identity)
                 { TextMetrics = inheritedContext.TextMetrics, OwnOpacity = inheritedContext.ElementOpacity, ElementDisplay = inheritedContext.ElementDisplay, PaintOrder = inheritedContext.PaintOrder, Markers = inheritedContext.Markers, PaintServerFill = inheritedContext.PaintServerFill };
             return SvgContainerInheritance.Resolve(attributes, inline, computed, sheet, inherited, inheritedContext.FillRule,
-                inheritedContext.TextStyle, inheritedContext.Stroke, SvgRootParser.CssNamedColors, state.PaintResources, work, token).TextStyle;
+                inheritedContext.TextStyle, inheritedContext.Stroke, SvgRootParser.CssNamedColors, state.PaintResources, token).TextStyle;
         }
 
         void AddMapped(SvgDefinition source, SvgUseReference use, SvgClipBox? clip)
         {
-            SvgGeometry[] mapped = SvgReferenceResolver.ApplyFilterSource(source, use, ClipFrame(clip), state, work, token);
+            SvgGeometry[] mapped = SvgReferenceResolver.ApplyFilterSource(source, use, ClipFrame(clip), state, token);
             int transferred = 0;
             try { for (; transferred < mapped.Length; transferred++) output.Add(mapped[transferred]); }
             catch { for (int index = transferred; index < mapped.Length; index++) mapped[index].Dispose(); throw; }

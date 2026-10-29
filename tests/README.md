@@ -61,7 +61,7 @@ The [text/instance controls](Research/text-instance-composition/README.md) retai
 154 source/options records, seventeen mechanisms and explicit scalar-mask
 metadata contracts. The 768 symbol/viewport rendering pairs remain canonical;
 six selected prepared-replay cases cover font, stroke and viewport interactions.
-Existing 42/43-child work-limit checks and the general API matrix remain separate.
+Existing 42/43-child structural-admission checks and the general API matrix remain separate.
 The [fractional stroke controls](Research/fractional-text-strokes/README.md) retain
 45 independent source/options for 51 roles, all exact on both hosts. Twenty-three
 direct cases cover alignment and rounding; one dimension contract separates the
@@ -141,6 +141,10 @@ Its shared-layout fixture adds the common glyph-owner allocation path once.
 encoded-size boundaries, cancellation, backpressure and write failures. Shared-root
 stream-growth refusal cases protect cleanup without a second admission during
 compressor disposal; removed PNG fuel counters are not test contracts.
+The [parser validation map](Research/release-baselines/parser-validation.md)
+identifies the retained numerical, structural, cancellation and allocation paths
+after removing parser fuel. Actual allocation-growth checks do not establish CPU
+scaling; performance measurements belong in the benchmark harness.
 Dedicated tests retain unusual stream failures, overlap, borrowed storage,
 resource refusal, cancellation and disposal paths. Rendering fixtures do not
 each need the whole matrix. The text-node corpus still has all 594 native image

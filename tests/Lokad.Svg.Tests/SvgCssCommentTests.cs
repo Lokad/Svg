@@ -50,22 +50,21 @@ public sealed class SvgCssCommentTests
     public void Comment_only_styles_are_inert_and_quoted_family_text_remains_literal()
     {
         Assert.Equal(Render("<rect width='8' height='8'/>"), Render("<rect width='8' height='8' style='/* comment; : */'/>"));
-        InlineStyle style = SvgInlineStyleParser.Parse("font-family: '/*literal*/'; fill:/**/red", new(10_000), CancellationToken.None, true);
+        InlineStyle style = SvgInlineStyleParser.Parse("font-family: '/*literal*/'; fill:/**/red", CancellationToken.None, true);
         Assert.Equal("'/*literal*/'", style.TextFont.Family);
         Assert.Equal("red", style.Fill);
     }
 
     [Fact]
-    public void Long_comment_scans_observe_work_and_cancellation_without_owned_storage()
+    public void Long_comment_scans_observe_cancellation_without_owned_storage()
     {
         string declaration = "fill:/*" + new string('x', 65_536) + "*/red";
-        Assert.Equal("red", SvgInlineStyleParser.Parse(declaration, new(1_000), CancellationToken.None).Fill);
+        Assert.Equal("red", SvgInlineStyleParser.Parse(declaration, CancellationToken.None).Fill);
         string padding = new(' ', 65_536);
-        Assert.Equal("red", SvgInlineStyleParser.Parse("/*start*/" + padding + "fill:red" + padding + "/**/", new(1_000), CancellationToken.None).Fill);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgInlineStyleParser.Parse(declaration, new(2), CancellationToken.None)).ErrorCode);
+        Assert.Equal("red", SvgInlineStyleParser.Parse("/*start*/" + padding + "fill:red" + padding + "/**/", CancellationToken.None).Fill);
         using CancellationTokenSource cancellation = new(); cancellation.Cancel();
-        Assert.Throws<OperationCanceledException>(() => SvgInlineStyleParser.Parse(declaration, new(1_000), cancellation.Token));
-        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgInlineStyleParser.Parse("fill:/*open", new(100), CancellationToken.None)).ErrorCode);
+        Assert.Throws<OperationCanceledException>(() => SvgInlineStyleParser.Parse(declaration, cancellation.Token));
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgInlineStyleParser.Parse("fill:/*open", CancellationToken.None)).ErrorCode);
     }
 
     private static byte[] Render(string body)

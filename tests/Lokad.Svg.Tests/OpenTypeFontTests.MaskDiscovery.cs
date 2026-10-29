@@ -86,20 +86,18 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect width='32' height='32' mask='url(#m)'/><defs><mask id='m'><g font-family='Example'><text>" + new string('A', 8192) + "<tspan dx='3'>A</tspan></text></g></mask></defs></svg>");
         RenderBudget budget = new(8_000_000);
-        ParserWorkCounter measured = new(1_000_000);
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
-            Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, measured, budget, CancellationToken.None));
+            Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             RenderBudget denied = new(budget.Snapshot().PeakBytes * 3 / 4);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(1_000_000), denied, CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(measured.Used - 1), budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancelled = new(); cancelled.Cancel();
-            Assert.Equal(cancelled.Token, Assert.Throws<OperationCanceledException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(1_000_000), budget, cancelled.Token)).CancellationToken);
+            Assert.Equal(cancelled.Token, Assert.Throws<OperationCanceledException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, cancelled.Token)).CancellationToken);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(1_000_000), budget, CancellationToken.None));
+            Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, budget, CancellationToken.None));
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

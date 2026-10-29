@@ -16,8 +16,7 @@ public sealed class SvgRotatedEllipseTests
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "offset-merge-document", identity + ".svg"));
         byte[] unchanged = input.ToArray();
         RenderBudget measured = new(8_000_000);
-        ParserWorkCounter work = new(long.MaxValue);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         {
             Assert.Contains(scene.Geometries, geometry => geometry.AuthoredPath is {} source && !source.SceneMap.IsAxisAligned);
             byte[] pixels;
@@ -35,12 +34,6 @@ public sealed class SvgRotatedEllipseTests
             Assert.Equal(pixels, retry.Pixels);
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(8_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         foreach (long limit in new[] { 1, measured.Snapshot().PeakBytes / 2 })
         {
             RenderBudget denied = new(limit);

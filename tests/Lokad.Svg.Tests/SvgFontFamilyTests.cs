@@ -32,7 +32,7 @@ public sealed class SvgFontFamilyTests
     [InlineData("font-family:'A!important',Example ! important", true)]
     public void Literal_bangs_do_not_change_real_declaration_priority(string css, bool important)
     {
-        InlineStyle style = SvgInlineStyleParser.Parse(css, new ParserWorkCounter(1000), CancellationToken.None, true);
+        InlineStyle style = SvgInlineStyleParser.Parse(css, CancellationToken.None, true);
         SvgFontFaceRequest request = SvgFontFaceRequest.FromCss(style.TextFont.Family ?? throw new InvalidDataException(), 400, false);
         Assert.Equal("A!important", request.Families[0].Name);
         Assert.Equal(important, (style.Important & InlineImportantProperties.Family) != 0);
@@ -41,7 +41,7 @@ public sealed class SvgFontFamilyTests
     [Fact]
     public void An_escaped_bang_at_the_end_of_a_name_is_not_an_important_suffix()
     {
-        InlineStyle style = SvgInlineStyleParser.Parse("font-family:A\\!important", new ParserWorkCounter(1000), CancellationToken.None, true);
+        InlineStyle style = SvgInlineStyleParser.Parse("font-family:A\\!important", CancellationToken.None, true);
         Assert.Equal("A!important", Assert.Single(SvgFontFaceRequest.FromCss(style.TextFont.Family ?? throw new InvalidDataException(), 400, false).Families).Name);
         Assert.Equal(InlineImportantProperties.None, style.Important);
     }
@@ -124,12 +124,10 @@ public sealed class SvgFontFamilyTests
         string name = new(control, 1023);
         SvgFontFaceRequest request = SvgFontFaceRequest.FromCss("\"" + name + "\"", 400, false);
         Assert.Equal(4094, request.Family.Length);
-        ParserWorkCounter work = new(4094);
-        SvgFontFaceRequest inherited = SvgFontFaceRequest.FromCss(request.Family, 400, false, null, work, CancellationToken.None);
+        SvgFontFaceRequest inherited = SvgFontFaceRequest.FromCss(request.Family, 400, false, null, CancellationToken.None);
         Assert.Equal(name, Assert.Single(inherited.Families).Name);
         Assert.Equal(request.Family, inherited.Family);
         Assert.True(request.Matches(inherited));
-        Assert.Equal(4094, work.Used);
     }
 
     [Theory]
@@ -162,13 +160,12 @@ public sealed class SvgFontFamilyTests
     }
 
     [Fact]
-    public void Tokenization_is_bounded_and_observes_shared_work_and_original_cancellation()
+    public void Tokenization_observes_original_cancellation()
     {
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontFaceRequest.FromCss(new string('a', 4097), 400, false)).ErrorCode);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontFaceRequest.FromCss(string.Join(',', Enumerable.Repeat("A", 257)), 400, false)).ErrorCode);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontFaceRequest.FromCss("Example", 400, false, null, new(2), CancellationToken.None)).ErrorCode);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgFontFaceRequest.FromCss("A", 400, false, null, new(100), cancellation.Token)).CancellationToken);
+        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgFontFaceRequest.FromCss("A", 400, false, null, cancellation.Token)).CancellationToken);
     }
 }

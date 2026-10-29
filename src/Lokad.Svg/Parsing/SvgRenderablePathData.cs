@@ -7,15 +7,15 @@ namespace Lokad.Svg.Parsing;
 /// the lowering caller disposes this temporary owner after commands and geometry have transferred.</remarks>
 internal readonly record struct SvgRenderablePathData(string Value, int CommandCount, RenderBudget.BudgetReservation? Reservation) : IDisposable
 {
-    internal static SvgRenderablePathData Read(string? value, int maximumCommands, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static SvgRenderablePathData Read(string? value, int maximumCommands, RenderBudget budget, CancellationToken token)
     {
         value ??= string.Empty;
-        (int length, int count) = SvgPathDataParser.ReadRenderablePrefix(value, maximumCommands, work, token);
+        (int length, int count) = SvgPathDataParser.ReadRenderablePrefix(value, maximumCommands, token);
         // Whitespace still passes through authored scanning and work accounting.
         if (count == 0) return new(string.Empty, count, null);
         if (length == value.Length) return new(value, count, null);
         if (length == 0) return new(string.Empty, count, null);
-        work.ConsumeText(length, token);
+        token.ThrowIfCancellationRequested();
         RenderBudget.BudgetReservation reservation = budget.Reserve(32 + (long)length * sizeof(char), SvgMemoryCategory.Parser);
         try { return new(value.AsSpan(0, length).ToString(), count, reservation); }
         catch { reservation.Dispose(); throw; }

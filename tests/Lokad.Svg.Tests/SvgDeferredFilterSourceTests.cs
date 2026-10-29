@@ -14,7 +14,7 @@ public sealed class SvgDeferredFilterSourceTests
     {
         byte[] input = Build(true);
         RenderBudget budget = new(2_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(100_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             SvgFilterArena filters = root.FilterResources ?? throw new InvalidDataException("Missing filter resources.");
             SvgDrawCommand source = root.Commands.First(command => command.Kind == SvgDrawCommandKind.BeginGroup && command.RegionKind == SvgLayerRegionKind.Filter);

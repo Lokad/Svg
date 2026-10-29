@@ -7,16 +7,16 @@ internal static partial class OpenTypeFont
     /// <summary>Selects one feature through the default Latin language system, falling back to DFLT.</summary>
     /// <remarks>Feature tags can repeat across scripts. Only the selected language's feature indices
     /// select behavior; other language-specific features remain unused. Borrows validated table bytes,
-    /// allocates no storage and meters every bounded traversal against work/cancellation.</remarks>
+    /// allocates no storage and meters every bounded traversal against cancellation.</remarks>
     private static int SelectLatinFeature(ReadOnlySpan<byte> data, OpenTypeTableRange table, int scripts, int features,
-        uint featureTag, string tableName, ParserWorkCounter? work, CancellationToken token)
+        uint featureTag, string tableName, CancellationToken token)
     {
         int scriptCount = ReadUInt16(data, scripts);
         RequireTableRange(table, scripts, 2 + scriptCount * 6, tableName + " ScriptList");
         int latin = 0, fallback = 0;
         for (int index = 0; index < scriptCount; index++)
         {
-            Consume(work, token);
+            token.ThrowIfCancellationRequested();
             int record = scripts + 2 + index * 6;
             uint tag = ReadUInt32(data, record);
             if (tag != LatinScriptTag && tag != DefaultScriptTag) continue;
@@ -45,7 +45,7 @@ internal static partial class OpenTypeFont
         int feature = 0;
         for (int index = -1; index < selectedCount; index++)
         {
-            Consume(work, token);
+            token.ThrowIfCancellationRequested();
             int selected = index < 0 ? required : ReadUInt16(data, language + 6 + index * 2);
             if (selected == ushort.MaxValue && index < 0) continue;
             if (selected >= featureCount) throw InvalidFont("The " + tableName + " LangSys feature index is invalid.");

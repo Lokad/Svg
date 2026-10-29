@@ -9,9 +9,9 @@ internal sealed partial class SvgGlyphRasterSource
 {
     /// <summary>Builds a glyph-local native stroke outline and retains its integer device placement.</summary>
     /// <remarks>Prepared font bytes remain borrowed. Decoding, source verbs and stroke construction share
-    /// bounded work/cancellation and aggregate storage; the returned path is an exclusive owner.</remarks>
+    /// bounded cancellation and aggregate storage; the returned path is an exclusive owner.</remarks>
     internal SvgAuthoredPath CreateStrokePath(SvgTextStrokePaint paint, double scaleX, double offsetX, double scaleY, double offsetY,
-        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        RenderBudget budget, CancellationToken token)
     {
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
         SvgStroke strokePaint = paint.Resolve() ?? throw new InvalidOperationException("A glyph stroke requires nonzero width.");
@@ -20,7 +20,7 @@ internal sealed partial class SvgGlyphRasterSource
         if (dashes is not null)
         {
             bool hasLength = false;
-            foreach (double interval in dashes) { work.Consume(token); hasLength |= interval != 0; }
+            foreach (double interval in dashes) { token.ThrowIfCancellationRequested(); hasLength |= interval != 0; }
             // The font paint's invalid empty dash effect falls back to its solid outline.
             if (!hasLength) dashes = null;
         }
@@ -43,20 +43,20 @@ internal sealed partial class SvgGlyphRasterSource
         float phaseX = roundedX - integerX, phaseY = roundedY - integerY;
         bool windows = OperatingSystem.IsWindows();
         using OpenTypeGlyphContourStorage decoded = windows
-            ? OpenTypeFont.GetGlyphContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, work, token)
+            ? OpenTypeFont.GetGlyphContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, token)
             : strike.HasAxisAlignedOutline
-                ? OpenTypeFont.GetLatinLightContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, work, token)
-                : OpenTypeFont.GetUnhintedDeviceContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, work, token);
+                ? OpenTypeFont.GetLatinLightContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, token)
+                : OpenTypeFont.GetUnhintedDeviceContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, token);
         float pointScale = windows ? strike.DeviceSize / font.UnitsPerEm : 1f / 64;
-        using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, work, token);
+        using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, token);
         int first = 0;
         foreach (int end in decoded.ContourEnds)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             source.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, Local(decoded.Segments[first].Start), default, default));
             for (int index = first; index < end; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 OpenTypeQuadraticSegment segment = decoded.Segments[index];
                 SvgDevicePoint target = Local(segment.End);
                 if (segment.Control == segment.End) source.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, target, default, default));
@@ -81,11 +81,11 @@ internal sealed partial class SvgGlyphRasterSource
             source.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
             first = end;
         }
-        using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, work, token);
-        using BudgetedParserList<int> ends = new(budget, SvgMemoryCategory.Geometry, work, token);
-        using SvgOrthogonalGeometryLowering lowering = new(points, ends, "text", true, false, int.MaxValue, budget, work, token);
+        using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, token);
+        using BudgetedParserList<int> ends = new(budget, SvgMemoryCategory.Geometry, token);
+        using SvgOrthogonalGeometryLowering lowering = new(points, ends, "text", true, false, int.MaxValue, budget, token);
         if (dashes is not null)
-            for (int index = 0; index < dashes.Length; index++) { work.Consume(token); dashes[index] *= fontScale * strokeScale; }
+            for (int index = 0; index < dashes.Length; index++) { token.ThrowIfCancellationRequested(); dashes[index] *= fontScale * strokeScale; }
         double width = strokePaint.Width * fontScale * strokeScale;
         double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(paint.Style.Dashoffset) * fontScale * strokeScale;
         SvgParsedGeometry stroke = lowering.LowerNativeStrokeCommands(source, linear, width, width,
@@ -96,7 +96,7 @@ internal sealed partial class SvgGlyphRasterSource
         {
             if (stroke.Geometries.Length == 0) return SvgAuthoredPath.Create(new([], null), SvgAffineTransform.Identity, budget);
             SvgAuthoredPath outline = stroke.Geometries[0].AuthoredPath?.StrokeOutline ?? throw new InvalidOperationException("A glyph stroke requires a retained outline.");
-            using BudgetedParserList<SvgAuthoredPathCommand> retained = new(budget, SvgMemoryCategory.Scene, work, token);
+            using BudgetedParserList<SvgAuthoredPathCommand> retained = new(budget, SvgMemoryCategory.Scene, token);
             foreach (SvgAuthoredPathCommand command in outline.Commands) retained.Add(command);
             OwnedParserArray<SvgAuthoredPathCommand> owner = retained.Detach();
             try { return SvgAuthoredPath.Create(owner, SvgAffineTransform.FromScaleOffset(1, 1, integerX, integerY).ComposeChecked(outline.SceneMap), budget); }

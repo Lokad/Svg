@@ -17,7 +17,7 @@ public sealed class SvgStyleSheetStorageTests
         using XmlReader reader = XmlReader.Create(new StringReader("<root><style>" + css + "</style><next/></root>"));
         Assert.True(reader.ReadToFollowing("style"));
         RenderBudget budget = new(4L * length + 256);
-        using (OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, new(10_000), CancellationToken.None))
+        using (OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, CancellationToken.None))
             Assert.Equal(css, text.Value);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(XmlNodeType.EndElement, reader.NodeType);
@@ -38,13 +38,13 @@ public sealed class SvgStyleSheetStorageTests
         using (XmlReader warm = XmlReader.Create(new StringReader(xml)))
         {
             Assert.True(warm.ReadToFollowing("style"));
-            SvgRootStyleSheetParser.Consume(warm, new(16_384), new(10_000), CancellationToken.None);
+            SvgRootStyleSheetParser.Consume(warm, new(16_384), CancellationToken.None);
         }
         using XmlReader reader = XmlReader.Create(new StringReader(xml));
         Assert.True(reader.ReadToFollowing("style"));
         RenderBudget budget = new(16_384);
         long before = GC.GetAllocatedBytesForCurrentThread();
-        SvgRootStyleSheetParser.Consume(reader, budget, new(10_000), CancellationToken.None);
+        SvgRootStyleSheetParser.Consume(reader, budget, CancellationToken.None);
         long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
         Assert.True(allocated < 65_536, $"Discarding {length} characters allocated {allocated} bytes.");
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -56,23 +56,20 @@ public sealed class SvgStyleSheetStorageTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Text_readers_release_storage_on_work_denial_cancellation_and_invalid_children(bool collect)
+    public void Text_readers_release_storage_on_invalid_children_and_cancellation(bool collect)
     {
         string xml = "<style>" + new string(' ', 8192) + "<child/></style>";
-        foreach (int workLimit in new[] { 0, 1, 100 })
         {
             using XmlReader reader = XmlReader.Create(new StringReader(xml));
             Assert.True(reader.Read());
             RenderBudget budget = new(100_000);
-            if (workLimit == 100) Assert.Throws<XmlException>(() => Read(CancellationToken.None));
-            else Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Read(CancellationToken.None)).ErrorCode);
+            Assert.Throws<XmlException>(() => Read(CancellationToken.None));
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
 
             void Read(CancellationToken token)
             {
-                ParserWorkCounter work = new(workLimit);
-                if (collect) { using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, work, token); }
-                else SvgRootStyleSheetParser.Consume(reader, budget, work, token);
+                if (collect) { using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, token); }
+                else SvgRootStyleSheetParser.Consume(reader, budget, token);
             }
         }
         using XmlReader cancelled = XmlReader.Create(new StringReader(xml));
@@ -82,8 +79,8 @@ public sealed class SvgStyleSheetStorageTests
         RenderBudget cancelledBudget = new(100_000);
         OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() =>
         {
-            if (collect) { using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(cancelled, cancelledBudget, new(100), cancellation.Token); }
-            else SvgRootStyleSheetParser.Consume(cancelled, cancelledBudget, new(100), cancellation.Token);
+            if (collect) { using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(cancelled, cancelledBudget, cancellation.Token); }
+            else SvgRootStyleSheetParser.Consume(cancelled, cancelledBudget, cancellation.Token);
         });
         Assert.Equal(cancellation.Token, error.CancellationToken);
         Assert.Equal(0, cancelledBudget.Snapshot().CurrentBytes);

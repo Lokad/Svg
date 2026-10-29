@@ -71,20 +71,18 @@ public sealed class SvgRootAutoSizingTests
         byte[] input = Document("width='32' height='16'", "width:auto;height:auto", "");
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        Assert.Equal(new SvgViewport(300, 150), SvgDocumentSizing.Inspect(input, options, measured, work, CancellationToken.None).LogicalViewport);
+        Assert.Equal(new SvgViewport(300, 150), SvgDocumentSizing.Inspect(input, options, measured, CancellationToken.None).LogicalViewport);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         RenderBudget denied = new(measured.Snapshot().PeakBytes - 1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgDocumentSizing.Inspect(input, options, denied, new(1_000_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgDocumentSizing.Inspect(input, options, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget workDenied = new(1_000_000);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgDocumentSizing.Inspect(input, options, workDenied, new(work.Used - 1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgDocumentSizing.Inspect(input, options, workDenied, new(1_000_000), cancellation.Token)).CancellationToken);
+        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgDocumentSizing.Inspect(input, options, workDenied, cancellation.Token)).CancellationToken);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
-        Assert.Equal(new SvgViewport(300, 150), SvgDocumentSizing.Inspect(input, options, workDenied, new(1_000_000), CancellationToken.None).LogicalViewport);
+        Assert.Equal(new SvgViewport(300, 150), SvgDocumentSizing.Inspect(input, options, workDenied, CancellationToken.None).LogicalViewport);
         Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
     }
 

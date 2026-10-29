@@ -95,16 +95,14 @@ public sealed class SvgUseClipPlacementTests
         byte[] input = TextEncoding.UTF8.GetBytes(Document("curve", clip, true, "scale(.75)", symbol, filter, true, false));
         byte[] unchanged = input.ToArray();
         RenderBudget budget = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
         long peak;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
-            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, work, CancellationToken.None)) { peak = budget.Snapshot().PeakBytes; }
+            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)) { peak = budget.Snapshot().PeakBytes; }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new(); cancellation.Cancel();
-            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), cancellation.Token)).CancellationToken);
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, cancellation.Token)).CancellationToken);
             using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) { }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
         }

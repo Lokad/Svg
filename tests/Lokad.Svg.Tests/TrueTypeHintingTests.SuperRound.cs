@@ -30,7 +30,7 @@ public sealed partial class TrueTypeHintingTests
         // Physical-grid cases 21 -> 0/16/32/64/96 have independent DirectWrite
         // outline-mask witnesses. Boundary/sign cases follow the TrueType definition.
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 1, 0, 0), [], [], [], 48,
-            new(98304, 98304), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(98304, 98304), Target, new(long.MaxValue), CancellationToken.None);
         machine.Run(new byte[] { 0xB8, (byte)(selector >> 8), (byte)selector, 0x76,
             0xB8, (byte)(value >> 8), (byte)value, 0x68, 0xB0, 0, 0x23, 0x42 }, TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expected, machine.Storage[0]);
@@ -47,7 +47,7 @@ public sealed partial class TrueTypeHintingTests
     {
         TrueTypeHintPoint[] points = [new(21, 0, 14, 0)];
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], points, [0], 48,
-            new(98304, 98304), Target with { Grid = TrueTypeHintGrid.ClearType }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(98304, 98304), Target with { Grid = TrueTypeHintGrid.ClearType }, new(long.MaxValue), CancellationToken.None);
         machine.Run(new byte[] { 1, 0xB0, selector, 0x76, 0xB0, 0, 0x2F }, TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expected, points[0].X);
     }
@@ -56,7 +56,7 @@ public sealed partial class TrueTypeHintingTests
     public void Super_round_parameters_are_restored_between_glyph_and_composite_calls()
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 48,
-            new(98304, 98304), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(98304, 98304), Target, new(long.MaxValue), CancellationToken.None);
         machine.Prepare(Convert.FromHexString("B05876"), Target);
         TrueTypeHintPoint[] child = [new(21, 0, 14, 0), default, default, default, default];
         machine.HintGlyph(Convert.FromHexString("B00876B0002F"), child, [0], false);
@@ -76,7 +76,7 @@ public sealed partial class TrueTypeHintingTests
     public void Super_round_reserved_periods_remain_explicit_unsupported_values(byte selector)
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 48,
-            new(98304, 98304), Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+            new(98304, 98304), Target, new(long.MaxValue), CancellationToken.None);
         Assert.Equal(SvgErrorCode.UnsupportedFeature,
             Assert.Throws<SvgException>(() => machine.Run(new byte[] { 0xB0, selector, 0x76 }, TrueTypeHintProgramKind.Glyph)).ErrorCode);
     }

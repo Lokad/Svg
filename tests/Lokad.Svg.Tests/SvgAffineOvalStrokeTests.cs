@@ -16,20 +16,12 @@ public sealed class SvgAffineOvalStrokeTests
         byte[] unchanged = input.ToArray();
         SvgRenderOptions options = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget measured = new(8_000_000);
-        ParserWorkCounter work = new(1_000_000);
         byte[] expected;
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, measured, CancellationToken.None))
             expected = surface.Pixels.ToArray();
         Assert.Contains(expected, value => value != 0);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(8_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget tight = new(Math.Max(1, measured.Snapshot().PeakBytes - 4_096));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {

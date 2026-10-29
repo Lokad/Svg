@@ -65,15 +65,8 @@ public sealed partial class OpenTypeFontTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M8 8H24V24H8Z" + new string('Z', 100) + "'/></svg>");
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) Assert.False(root.HasUnsupportedChild);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) Assert.False(root.HasUnsupportedChild);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long allowance in new[] { 1, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(allowance), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         SvgRenderLimits d = SvgRenderLimits.Default;
         SvgRenderLimits limits = new(d.MaximumAccountedBytes, d.MaximumInputBytes, d.MaximumDimension, d.MaximumPixels,
             d.MaximumEncodedPngBytes, d.MaximumNodes, 8, d.MaximumWorkUnits, d.MaximumXmlDepth, d.MaximumAttributesPerElement);

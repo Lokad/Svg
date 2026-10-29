@@ -6,24 +6,24 @@ using Lokad.Svg.Rendering;
 internal static partial class OpenTypeFont
 {
     /// <summary>Identifies newly admitted composite fitting dependencies while preserving earlier instruction-free composite replay.</summary>
-    internal static bool NeedsCompositeDeviceFitting(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static bool NeedsCompositeDeviceFitting(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, CancellationToken token)
     {
-        using OpenTypeGlyphRecursionTracker active = new(MaximumCompositeGlyphDepth + 1, budget, work, token);
+        using OpenTypeGlyphRecursionTracker active = new(MaximumCompositeGlyphDepth + 1, budget, token);
         return Visit(glyphIndex, 0);
 
         bool Visit(ushort glyph, int depth)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (depth > MaximumCompositeGlyphDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph nesting depth exceeds the supported limit.");
             if (!active.TryEnter(glyph)) throw InvalidFont("The composite glyph graph contains a cycle.");
             try
             {
-                OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyph, metrics, work, token);
+                OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyph, metrics, token);
                 if (header is null || !header.Value.IsComposite) return false;
-                using OpenTypeCompositeGlyphComponentStorage components = GetBudgetedCompositeGlyphComponents(bytes, glyph, metrics, budget, work, token);
+                using OpenTypeCompositeGlyphComponentStorage components = GetBudgetedCompositeGlyphComponents(bytes, glyph, metrics, budget, token);
                 foreach (OpenTypeCompositeGlyphComponent component in components.Components)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     if ((component.Flags & (4 | 256 | 512 | 1024 | 2048 | 4096)) != 0 || Visit(component.GlyphIndex, depth + 1)) return true;
                 }
                 return false;
@@ -33,21 +33,21 @@ internal static partial class OpenTypeFont
     }
 
     /// <summary>Reads the font-unit distance from the stored outline origin to the horizontal metric origin.</summary>
-    private static int GetHorizontalOrigin(ReadOnlyMemory<byte> bytes, ushort glyph, OpenTypeFontMetrics metrics, ParserWorkCounter work, CancellationToken token)
+    private static int GetHorizontalOrigin(ReadOnlyMemory<byte> bytes, ushort glyph, OpenTypeFontMetrics metrics, CancellationToken token)
     {
-        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyph, metrics, work, token);
+        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyph, metrics, token);
         int bearingOffset = glyph < metrics.NumberOfHMetrics ? metrics.Hmtx.Offset + glyph * 4 + 2
             : metrics.Hmtx.Offset + metrics.NumberOfHMetrics * 4 + (glyph - metrics.NumberOfHMetrics) * 2;
         return (header?.XMinimum ?? 0) - ReadInt16(bytes.Span, bearingOffset);
     }
 
     /// <summary>Rebases caller-owned points after their metric origin is resolved, without retaining storage.</summary>
-    private static void SubtractGlyphOrigin(Span<OpenTypeGlyphPoint> points, int origin, ParserWorkCounter work, CancellationToken token)
+    private static void SubtractGlyphOrigin(Span<OpenTypeGlyphPoint> points, int origin, CancellationToken token)
     {
         if (origin == 0) return;
         for (int index = 0; index < points.Length; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             OpenTypeGlyphPoint point = points[index];
             long x = (long)point.X - origin;
             if (x < int.MinValue || x > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A glyph origin exceeds its signed coordinate bound.");
@@ -57,29 +57,29 @@ internal static partial class OpenTypeFont
 
     /// <summary>Assembles owned, ordered component points in font units, by unhinted device scaling, or by fitting each child before its parent.</summary>
     /// <remarks>Depth, component/point counts and cycles are bounded. Temporary and returned arrays reserve geometry bytes before allocation; every visit/copy observes work and cancellation. The optional fitter borrows one supplied face and interpreter, and never owns returned points. FreeType scales children before placement; unfitted Windows outlines retain font coordinates until assembly completes. These owners are not shared between threads.</remarks>
-    private static OpenTypeGlyphPointOutline GetGlyphPointOutline(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CompositeTrueTypeHinting? fitting, OpenTypeUnhintedDeviceScale? scaling, OpenTypeCompositeOffsetMath offsetMath, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    private static OpenTypeGlyphPointOutline GetGlyphPointOutline(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CompositeTrueTypeHinting? fitting, OpenTypeUnhintedDeviceScale? scaling, OpenTypeCompositeOffsetMath offsetMath, RenderBudget budget, CancellationToken token)
     {
-        using OpenTypeGlyphRecursionTracker active = new(MaximumCompositeGlyphDepth + 1, budget, work, token);
+        using OpenTypeGlyphRecursionTracker active = new(MaximumCompositeGlyphDepth + 1, budget, token);
         return Expand(glyphIndex, 0, fitting);
 
         OpenTypeGlyphPointOutline Expand(ushort glyph, int depth, CompositeTrueTypeHinting? fitting)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (depth > MaximumCompositeGlyphDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph nesting depth exceeds the supported limit.");
             if (!active.TryEnter(glyph)) throw InvalidFont("The composite glyph graph contains a cycle.");
             try
             {
-                OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyph, metrics, budget, work, token, true);
+                OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyph, metrics, budget, token, true);
                 if (structure.CompositeHeader is null)
                 {
                     OpenTypeGlyphPointStorage? decoded = null;
                     try
                     {
-                        decoded = GetSimpleGlyphPoints(bytes, structure.Value, budget, work, token);
+                        decoded = GetSimpleGlyphPoints(bytes, structure.Value, budget, token);
                         if (scaling is { WindowsArithmetic: false } deviceScale)
                             for (int index = 0; index < decoded.Points.Length; index++)
                             {
-                                work.Consume(token);
+                                token.ThrowIfCancellationRequested();
                                 OpenTypeGlyphPoint point = decoded.Points[index];
                                 decoded.Points[index] = new(deviceScale.ApplyHorizontal(point.X), deviceScale.Apply(point.Y), point.IsOnCurve);
                             }
@@ -98,13 +98,13 @@ internal static partial class OpenTypeFont
                 }
                 OpenTypeTableRange range = structure.Value.GlyphRange;
                 structure.Dispose();
-                using OpenTypeCompositeGlyphComponentStorage components = GetBudgetedCompositeGlyphComponents(bytes, glyph, metrics, budget, work, token);
-                using BudgetedParserList<OpenTypeGlyphPoint> points = new(budget, SvgMemoryCategory.Geometry, work, token);
-                using BudgetedParserList<ushort> ends = new(budget, SvgMemoryCategory.Geometry, work, token);
+                using OpenTypeCompositeGlyphComponentStorage components = GetBudgetedCompositeGlyphComponents(bytes, glyph, metrics, budget, token);
+                using BudgetedParserList<OpenTypeGlyphPoint> points = new(budget, SvgMemoryCategory.Geometry, token);
+                using BudgetedParserList<ushort> ends = new(budget, SvgMemoryCategory.Geometry, token);
                 OpenTypeHorizontalPhantoms? selectedMetrics = null;
                 foreach (OpenTypeCompositeGlyphComponent component in components.Components)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     using CompositeTrueTypeHinting? childFitting = fitting?.CreateComponent(component.Transform);
                     using OpenTypeGlyphPointOutline child = Expand(component.GlyphIndex, depth + 1, childFitting ?? fitting);
                     // Metrics are inherited before the component's outline transform/offset.
@@ -118,7 +118,7 @@ internal static partial class OpenTypeFont
                     int dy = fitting is not null ? fitting.ScaleOffset(component, false) : scaling is { WindowsArithmetic: false } yScale ? yScale.Apply(checked((int)Math.Round(offsetY, MidpointRounding.AwayFromZero))) : checked((int)Math.Round(offsetY, MidpointRounding.AwayFromZero));
                     foreach (OpenTypeGlyphPoint point in child.Points)
                     {
-                        work.Consume(token);
+                        token.ThrowIfCancellationRequested();
                         if (childFitting is not null && fitting is not null)
                         {
                             OpenTypeGlyphPoint source = childFitting.Unscale(point);
@@ -133,7 +133,7 @@ internal static partial class OpenTypeFont
                         int y = Transform(point.X, component.Transform.YX / ratio, point.Y, component.Transform.YY, dy);
                         points.Add(new(x, y, point.IsOnCurve));
                     }
-                    foreach (ushort end in child.Ends) { work.Consume(token); ends.Add(checked((ushort)(basePoint + end))); }
+                    foreach (ushort end in child.Ends) { token.ThrowIfCancellationRequested(); ends.Add(checked((ushort)(basePoint + end))); }
                 }
                 OwnedParserArray<OpenTypeGlyphPoint> ownedPoints = points.Detach();
                 try
@@ -155,9 +155,9 @@ internal static partial class OpenTypeFont
 
         OpenTypeHorizontalPhantoms ScaledPhantoms(ushort glyph, OpenTypeTableRange range, OpenTypeUnhintedDeviceScale scale)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             OpenTypeGlyphHeader? header = ParseGlyphHeader(bytes, range);
-            int advance = GetAdvanceWidth(bytes, glyph, metrics, work, token);
+            int advance = GetAdvanceWidth(bytes, glyph, metrics, token);
             int bearingOffset = glyph < metrics.NumberOfHMetrics ? metrics.Hmtx.Offset + glyph * 4 + 2 : metrics.Hmtx.Offset + metrics.NumberOfHMetrics * 4 + (glyph - metrics.NumberOfHMetrics) * 2;
             int origin = (header?.XMinimum ?? 0) - ReadInt16(bytes.Span, bearingOffset);
             if (scale.WindowsArithmetic) return new(origin, 0, origin + advance, 0);

@@ -37,7 +37,7 @@ public sealed class SvgObjectBoundingClipTests
         using SvgRoot root = SvgRootParser.Parse(Input(lines + normalized), SvgRenderLimits.Default, budget, CancellationToken.None);
         SvgSceneStorage storage = root.SceneStorage ?? throw new InvalidOperationException("Missing scene storage.");
         SvgAuthoredPath oval = Assert.Single(storage.MaskContents.SelectMany(mask => mask.Geometries).Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>());
-        SvgRectangle bounds = oval.SceneMap.Apply(SvgPathBounds.Compute(oval.Commands, new(100_000), CancellationToken.None));
+        SvgRectangle bounds = oval.SceneMap.Apply(SvgPathBounds.Compute(oval.Commands, CancellationToken.None));
         Assert.Equal(6.4, bounds.X, 4);
         Assert.Equal(6.4, bounds.Y, 4);
         Assert.Equal(19.2, bounds.Width, 4);
@@ -69,10 +69,10 @@ public sealed class SvgObjectBoundingClipTests
         byte[] input = Input("<defs><clipPath id='c' clipPathUnits='objectBoundingBox'><circle cx='.5' cy='.5' r='.4'/></clipPath></defs><g transform='" + transform + "' clip-path='url(#c)'><rect width='24' height='24'/></g>");
         RenderBudget budget = new(1_000_000);
         if (transform == "scale(0 1)")
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(100_000), CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
         else
         {
-            using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(100_000), CancellationToken.None);
+            using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);
             Assert.NotEmpty(scene.Geometries.ToArray());
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
             int centerX = transform == "rotate(12)" ? 9 : 14;
@@ -90,21 +90,14 @@ public sealed class SvgObjectBoundingClipTests
     {
         byte[] input = Input("<use href='#source' x='1.25' clip-path='url(#c)'/><defs><clipPath id='c' clipPathUnits='objectBoundingBox'>" + clip + "</clipPath><g id='source' stroke='red' stroke-width='6'><line x1='16' y1='4' x2='16' y2='28'/><line x1='4' y1='16' x2='28' y2='16'/></g></defs>");
         RenderBudget measured = new(1_000_000);
-        ParserWorkCounter work = new(100_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None)) Assert.NotEmpty(root.Geometries.ToArray());
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None)) Assert.NotEmpty(root.Geometries.ToArray());
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { 1, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, new(100_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, tight.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, new(100_000), cancellation.Token)).CancellationToken);
+        Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, cancellation.Token)).CancellationToken);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
     }
 
@@ -128,7 +121,7 @@ public sealed class SvgObjectBoundingClipTests
     {
         RenderBudget budget = new(1_000_000);
         byte[] input = Input("<defs>" + definitions + "</defs>");
-        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(100_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

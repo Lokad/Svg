@@ -18,19 +18,19 @@ internal static partial class SvgClipUnion
 
     /// <summary>Resolves crossings of normalized straight convex children, retaining legacy disjoint replay.</summary>
     /// <remarks>Input contours borrow staging and have the same direction. Scratch reserves before growth;
-    /// pair, winding and linking visits charge work/token. An owned result transfers to the caller;
+    /// pair, winding and linking visits observe cancellation token. An owned result transfers to the caller;
     /// null preserves the preceding route. Failure releases scratch and leaves input owners untouched.</remarks>
-    internal static SvgAuthoredPath? ResolveCrossings(SvgClipPolygon polygon, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static SvgAuthoredPath? ResolveCrossings(SvgClipPolygon polygon, RenderBudget budget, CancellationToken token)
     {
-        using BudgetedParserList<Edge> edges = new(budget, SvgMemoryCategory.Geometry, work, token);
-        using BudgetedParserList<Cut> cuts = new(budget, SvgMemoryCategory.Geometry, work, token);
+        using BudgetedParserList<Edge> edges = new(budget, SvgMemoryCategory.Geometry, token);
+        using BudgetedParserList<Cut> cuts = new(budget, SvgMemoryCategory.Geometry, token);
         int start = 0;
         for (int contour = 0; contour < polygon.ContourEnds.Length; contour++)
         {
             int end = polygon.ContourEnds[contour];
             for (int index = start; index < end; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgDevicePoint a = polygon.Points[index], b = polygon.Points[index + 1 < end ? index + 1 : start];
                 if (a == b) continue;
                 int edge = edges.Count;
@@ -45,7 +45,7 @@ internal static partial class SvgClipUnion
             Edge a = edges[left];
             for (int right = left + 1; right < edges.Count; right++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 Edge b = edges[right];
                 if (a.Contour == b.Contour) continue;
                 double ax = a.End.X - a.Start.X, ay = a.End.Y - a.Start.Y;
@@ -62,11 +62,11 @@ internal static partial class SvgClipUnion
             }
         }
         if (!crosses) return null;
-        cuts.Sort(work, token);
-        using BudgetedParserList<Boundary> boundary = new(budget, SvgMemoryCategory.Geometry, work, token);
+        cuts.Sort(token);
+        using BudgetedParserList<Boundary> boundary = new(budget, SvgMemoryCategory.Geometry, token);
         for (int index = 1; index < cuts.Count; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             Cut a = cuts[index - 1], b = cuts[index];
             if (a.Edge != b.Edge || a.Point == b.Point || a.Parameter == b.Parameter) continue;
             Edge source = edges[a.Edge];
@@ -82,7 +82,7 @@ internal static partial class SvgClipUnion
                 int winding = 0;
                 for (int vertex = first; vertex < end; vertex++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgDevicePoint p = polygon.Points[vertex], q = polygon.Points[vertex + 1 < end ? vertex + 1 : first];
                     double cross = (q.X - p.X) * (sample.Y - p.Y) - (q.Y - p.Y) * (sample.X - p.X);
                     if (p.Y <= sample.Y && q.Y > sample.Y && cross > 0) winding++;
@@ -92,7 +92,7 @@ internal static partial class SvgClipUnion
             }
             if (!covered) boundary.Add(new(a.Point, b.Point, false));
         }
-        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, work, token);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, token);
         int remaining = boundary.Count;
         while (remaining > 0)
         {
@@ -102,7 +102,7 @@ internal static partial class SvgClipUnion
             SvgDevicePoint preferred = polygon.Points[1];
             for (int index = 0; index < boundary.Count; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 Boundary candidate = boundary[index];
                 if (candidate.Emitted) continue;
                 if (seed < 0) seed = index;
@@ -114,7 +114,7 @@ internal static partial class SvgClipUnion
             int current = seed;
             while (true)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 Boundary edge = boundary[current];
                 boundary[current] = edge with { Emitted = true };
                 remaining--;
@@ -123,7 +123,7 @@ internal static partial class SvgClipUnion
                 int next = -1;
                 for (int index = 0; index < boundary.Count; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     Boundary candidate = boundary[index];
                     if (!candidate.Emitted && candidate.End == edge.Start) { next = index; break; }
                 }

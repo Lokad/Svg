@@ -170,16 +170,15 @@ public sealed class SvgDocumentDimensionsTests
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><style>svg{width:40px;height:20px}</style></svg>"u8.ToArray();
         RenderBudget budget = new(1_000_000);
-        Assert.Equal(new SvgViewport(40, 20), SvgDocumentSizing.Inspect(svg, SvgRenderOptions.Default, budget, new(10_000), CancellationToken.None).LogicalViewport);
+        Assert.Equal(new SvgViewport(40, 20), SvgDocumentSizing.Inspect(svg, SvgRenderOptions.Default, budget, CancellationToken.None).LogicalViewport);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgDocumentSizing.Inspect(svg, SvgRenderOptions.Default, budget, new(1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget denied = new(1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgDocumentSizing.Inspect(svg, SvgRenderOptions.Default, denied, new(10_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgDocumentSizing.Inspect(svg, SvgRenderOptions.Default, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         SvgException malformed = Assert.Throws<SvgException>(() => SvgDocumentSizing.Inspect(
             "<svg xmlns='http://www.w3.org/2000/svg'><style>svg{width:40px}</style><g>"u8.ToArray(),
-            SvgRenderOptions.Default, budget, new(10_000), CancellationToken.None));
+            SvgRenderOptions.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.MalformedInput, malformed.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

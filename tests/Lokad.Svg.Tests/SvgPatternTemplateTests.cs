@@ -35,28 +35,14 @@ public sealed class SvgPatternTemplateTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, identity + ".svg"));
         RenderBudget discovery = new(8_000_000);
-        ParserWorkCounter discoveryWork = new(1_000_000);
-        Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discoveryWork, discovery, CancellationToken.None));
+        Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discovery, CancellationToken.None));
         Assert.Equal(0, discovery.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < discoveryWork.Used; limit++)
-        {
-            RenderBudget denied = new(8_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(limit), denied, CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget measured = new(8_000_000);
-        ParserWorkCounter work = new(1_000_000);
         long rasterWork;
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
             rasterWork = surface.WorkUnits;
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < work.Used; limit++)
-        {
-            RenderBudget denied = new(8_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         long peak = measured.Snapshot().PeakBytes;
         for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
         DenyMemory(peak - 1);
@@ -67,7 +53,7 @@ public sealed class SvgPatternTemplateTests
                 defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
                 checked((int)limit), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
             RenderBudget budget = new(8_000_000);
-            using (SvgRoot scene = SvgRootParser.Parse(input, limits, budget, null, new(1_000_000), CancellationToken.None))
+            using (SvgRoot scene = SvgRootParser.Parse(input, limits, budget, null, CancellationToken.None))
             {
                 long retained = budget.Snapshot().CurrentBytes;
                 SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
@@ -90,7 +76,7 @@ public sealed class SvgPatternTemplateTests
             RenderBudget budget = new(limit);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
             {
-                using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None);
+                using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);
                 using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
             }).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -120,11 +106,9 @@ public sealed class SvgPatternTemplateTests
         text.Append("<pattern id='p1024' width='8' height='8' patternUnits='userSpaceOnUse'><circle cx='4' cy='4' r='2' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p0)'/></svg>");
         // The retained contexts now include independently resolved element opacity.
         RenderBudget budget = new(10_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(text.ToString()), SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(text.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan((4 * 8 + 4) * 4, 4).ToArray());
-        Assert.True(work.Used < 100_000);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -158,17 +142,10 @@ public sealed class SvgPatternTemplateTests
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", identity + ".svg"));
         SvgRenderOptions options = explicitHeight == 0 ? SvgRenderOptions.Default : new(new(width, explicitHeight), 1, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget measured = new(8_000_000);
-        ParserWorkCounter work = new(1_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, measured, CancellationToken.None))
             Assert.Equal(width, surface.Width);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        foreach (long limit in new[] { 0, work.Used / 2, work.Used - 1 })
-        {
-            RenderBudget denied = new(8_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
         RenderBudget deniedMemory = new(measured.Snapshot().PeakBytes - 1);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {

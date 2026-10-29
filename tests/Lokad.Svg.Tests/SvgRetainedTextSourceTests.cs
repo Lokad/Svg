@@ -10,16 +10,15 @@ public sealed class SvgRetainedTextSourceTests
     public void Subtree_readers_preserve_namespaces_chunks_and_parent_position()
     {
         RenderBudget budget = new(1_000_000);
-        ParserWorkCounter work = new(100_000);
-        using (SvgDocumentState state = new(budget, work, CancellationToken.None))
+        using (SvgDocumentState state = new(budget, CancellationToken.None))
         using (StringReader input = new("<text xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve'> A<![CDATA[ <B> ]]><tspan x='3'>C</tspan><textPath xlink:href='#p'>D</textPath> E</text>"))
         using (XmlReader live = XmlReader.Create(input))
         {
             live.MoveToContent();
-            SvgPaintableElementContext context = Context(work, CancellationToken.None);
+            SvgPaintableElementContext context = Context(CancellationToken.None);
             SvgRetainedTextSource source = SvgRetainedTextSource.Capture(live, context, state, SvgRenderLimits.Default);
             Assert.Equal(XmlNodeType.EndElement, live.NodeType);
-            using SvgRetainedTextSource.Reader reader = source.OpenReader(4, work, CancellationToken.None);
+            using SvgRetainedTextSource.Reader reader = source.OpenReader(4, CancellationToken.None);
             Assert.True(reader.Read()); Assert.Equal(4, reader.Depth);
             Assert.Equal("preserve", reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace"));
             using (XmlReader subtree = reader.ReadSubtree())
@@ -42,7 +41,7 @@ public sealed class SvgRetainedTextSourceTests
             }
             Assert.Equal(XmlNodeType.EndElement, reader.NodeType); Assert.Equal("text", reader.LocalName);
             Assert.Equal(4, reader.Depth); Assert.False(reader.Read()); Assert.True(reader.EOF);
-            using SvgRetainedTextSource.Reader independent = source.OpenReader(0, work, CancellationToken.None);
+            using SvgRetainedTextSource.Reader independent = source.OpenReader(0, CancellationToken.None);
             Assert.True(independent.Read()); Assert.Equal("text", independent.LocalName);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -65,13 +64,12 @@ public sealed class SvgRetainedTextSourceTests
         RenderBudget budget = new(maximumBytes);
         using CancellationTokenSource cancellation = new();
         if (cancel) cancellation.Cancel();
-        ParserWorkCounter work = new(100_000);
         try
         {
-            using SvgDocumentState state = new(budget, work, cancellation.Token);
+            using SvgDocumentState state = new(budget, cancellation.Token);
             using StringReader input = new("<text xmlns='http://www.w3.org/2000/svg'>A<tspan>B</tspan></text>");
             using XmlReader live = XmlReader.Create(input); live.MoveToContent();
-            SvgRetainedTextSource.Capture(live, Context(work, cancellation.Token), state, SvgRenderLimits.Default);
+            SvgRetainedTextSource.Capture(live, Context(cancellation.Token), state, SvgRenderLimits.Default);
             Assert.Fail("Expected bounded capture to fail.");
         }
         catch (SvgException exception) when (!cancel) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
@@ -83,49 +81,46 @@ public sealed class SvgRetainedTextSourceTests
     public void Material_capture_failure_releases_arrays_and_strings_after_partial_growth()
     {
         string svg = "<text xmlns='http://www.w3.org/2000/svg'><tspan>" + new string('A', 8192) + "</tspan><tspan dx='3'>" + new string('B', 8192) + "</tspan></text>";
-        RenderBudget accepted = new(1_000_000); ParserWorkCounter measured = new(1_000_000);
-        Capture(accepted, measured);
+        RenderBudget accepted = new(1_000_000);         Capture(accepted);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         RenderBudget denied = new(accepted.Snapshot().PeakBytes * 3 / 4);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Capture(denied, new(1_000_000))).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Capture(denied)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Capture(accepted, new(measured.Used - 1))).ErrorCode);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
-        Capture(accepted, new(1_000_000)); Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        Capture(accepted); Assert.Equal(0, accepted.Snapshot().CurrentBytes);
 
-        void Capture(RenderBudget budget, ParserWorkCounter work)
+        void Capture(RenderBudget budget)
         {
-            using SvgDocumentState state = new(budget, work, CancellationToken.None);
+            using SvgDocumentState state = new(budget, CancellationToken.None);
             using StringReader input = new(svg);
             using XmlReader live = XmlReader.Create(input); live.MoveToContent();
-            SvgRetainedTextSource.Capture(live, Context(work, CancellationToken.None), state, SvgRenderLimits.Default);
+            SvgRetainedTextSource.Capture(live, Context(CancellationToken.None), state, SvgRenderLimits.Default);
         }
     }
 
     [Fact]
     public void Canceled_replay_does_not_mutate_source_or_prevent_an_independent_retry()
     {
-        RenderBudget budget = new(1_000_000); ParserWorkCounter work = new(100_000);
-        using (SvgDocumentState state = new(budget, work, CancellationToken.None))
+        RenderBudget budget = new(1_000_000);         using (SvgDocumentState state = new(budget, CancellationToken.None))
         using (StringReader input = new("<text xmlns='http://www.w3.org/2000/svg'>ABC</text>"))
         using (XmlReader live = XmlReader.Create(input))
         {
             live.MoveToContent();
-            SvgRetainedTextSource source = SvgRetainedTextSource.Capture(live, Context(work, CancellationToken.None), state, SvgRenderLimits.Default);
+            SvgRetainedTextSource source = SvgRetainedTextSource.Capture(live, Context(CancellationToken.None), state, SvgRenderLimits.Default);
             using CancellationTokenSource cancellation = new();
-            using (SvgRetainedTextSource.Reader reader = source.OpenReader(0, work, cancellation.Token))
+            using (SvgRetainedTextSource.Reader reader = source.OpenReader(0, cancellation.Token))
             {
                 Assert.True(reader.Read()); Assert.True(reader.Read());
                 cancellation.Cancel();
                 Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => reader.ReadValueChunk(new char[1], 0, 1)).CancellationToken);
             }
-            using SvgRetainedTextSource.Reader retry = source.OpenReader(0, work, CancellationToken.None);
+            using SvgRetainedTextSource.Reader retry = source.OpenReader(0, CancellationToken.None);
             Assert.True(retry.Read()); Assert.True(retry.Read()); Assert.Equal("ABC", retry.Value);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    private static SvgPaintableElementContext Context(ParserWorkCounter work, CancellationToken token)
+    private static SvgPaintableElementContext Context(CancellationToken token)
         => new(new(SvgPaint.Default, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default,
-            SvgInheritedStrokeStyle.Default, default, SvgRootParser.CssNamedColors, work, token, 1, null);
+            SvgInheritedStrokeStyle.Default, default, SvgRootParser.CssNamedColors, token, 1, null);
 }

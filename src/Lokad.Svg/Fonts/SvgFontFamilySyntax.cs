@@ -22,7 +22,7 @@ internal static class SvgFontFamilySyntax
     internal const int MaximumCharacters = 4096;
     internal const int MaximumFamilies = 256;
 
-    internal static SvgFontFamilyList Parse(string value, ParserWorkCounter? work, CancellationToken token)
+    internal static SvgFontFamilyList Parse(string value, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(value);
         if (value.Length > MaximumCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "The CSS font-family list exceeds the supported character bound.");
@@ -109,7 +109,7 @@ internal static class SvgFontFamilySyntax
 
         char Read()
         {
-            if (work is null) token.ThrowIfCancellationRequested(); else work.Consume(token);
+            token.ThrowIfCancellationRequested();
             return value[position++];
         }
         void ReadNewline()

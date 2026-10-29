@@ -17,14 +17,14 @@ internal static class SvgContainerInheritance
         SvgInheritedTextStyle inheritedTextStyle,
         SvgInheritedStrokeStyle inheritedStroke,
         IReadOnlyDictionary<string, SvgColor> namedColors,
-        SvgPaintResourceSelection? resources, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        SvgPaintResourceSelection? resources, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(inheritedTextStyle);
         ArgumentNullException.ThrowIfNull(namedColors);
         SvgInheritedContainer painted = ResolvePaint(reader, computedStyle,
             new(inheritedPresentation, inheritedTextStyle, inheritedFillRule, inheritedPresentation.ElementOpacity.Alpha, inheritedStroke),
-            namedColors, resources, workCounter, cancellationToken);
+            namedColors, resources, cancellationToken);
         SvgInheritedTextStyle textStyle = SvgTextInheritance.Resolve(reader, inheritedTextStyle, SvgInlineStyleParser.MergeFont(inlineStyle.TextFont, inlineStyle.Important, styleSheet.TextFont, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WhiteSpace, inlineStyle.Important, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.LetterSpacing, inlineStyle.Important, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WordSpacing, inlineStyle.Important, InlineImportantProperties.WordSpacing, styleSheet.WordSpacing, styleSheet.Important));
         SvgTextPaintStyle decorationPaint = new(painted.Presentation.Paint, true, true, painted.Stroke.Stroke, SvgPaintOpacity.Opaque)
         { StrokeStyle = painted.Stroke, PaintOrder = painted.Presentation.PaintOrder };
@@ -38,14 +38,14 @@ internal static class SvgContainerInheritance
     /// The reader and metadata are borrowed on the parser thread; transforms/resource lookups share work and cancellation.</remarks>
     internal static SvgInheritedContainer ResolvePaint(XmlReader reader, SvgComputedStyle computedStyle,
         SvgInheritedContainer inherited, IReadOnlyDictionary<string, SvgColor> namedColors,
-        SvgPaintResourceSelection? resources, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        SvgPaintResourceSelection? resources, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(namedColors);
         SvgInheritedPresentation inheritedPresentation = inherited.Presentation;
         computedStyle = computedStyle.ResolveOpacity(inheritedPresentation.ElementOpacity).ResolveDisplay(inheritedPresentation.ElementDisplay);
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(computedStyle, inheritedPresentation.Paint, inheritedPresentation.PaintServerFill, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible, namedColors);
-        SvgAffineTransform transform = inheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, workCounter, cancellationToken));
+        SvgAffineTransform transform = inheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, cancellationToken));
         return new SvgInheritedContainer(
             new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform) { RecordingTransform = inheritedPresentation.RecordingTransform, TextMetrics = inheritedPresentation.TextMetrics.Enter(computedStyle.Filter, resources), OwnOpacity = computedStyle.GetOpacity(), ElementDisplay = computedStyle.GetDisplay(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(computedStyle, inheritedPresentation.Markers), PaintOrder = computedStyle.PaintOrder ?? inheritedPresentation.PaintOrder },
             inherited.TextStyle,

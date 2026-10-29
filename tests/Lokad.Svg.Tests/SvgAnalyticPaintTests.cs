@@ -153,7 +153,7 @@ public sealed class SvgAnalyticPaintTests
         });
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='4'><polygon points='0,0 64,0 0,4' fill='#003478'/></svg>"u8.ToArray();
         RenderBudget budget = new(1_000_000);
-        using SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, null, new ParserWorkCounter(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, null, CancellationToken.None);
         long preparedBytes = budget.Snapshot().CurrentBytes;
         OperationCanceledException exception = Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, source.Token));
         Assert.Equal(source.Token, exception.CancellationToken);

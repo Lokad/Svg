@@ -76,13 +76,13 @@ internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFac
     public string StableId => "lokad-svg-font-pack:" + packId + ":" + face.File.Sha256 + ":" + face.FaceIndex;
 
     public ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken)
-        => GetBytesAsync(null, false, cancellationToken);
+        => GetBytesAsync(false, cancellationToken);
 
-    /// <summary>Gets and verifies declared bytes while charging a caller-owned preparation counter when one exists.</summary>
-    internal ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-        => GetBytesAsync(workCounter, true, cancellationToken);
+    /// <summary>Verifies bytes and preserves source failures for preparation diagnostics; the caller borrows the result and owns cancellation.</summary>
+    internal ValueTask<ReadOnlyMemory<byte>> GetBytesForPreparationAsync(CancellationToken cancellationToken)
+        => GetBytesAsync(true, cancellationToken);
 
-    private ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(ParserWorkCounter? workCounter, bool classifySourceFailure, CancellationToken cancellationToken)
+    private ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(bool classifySourceFailure, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         ValueTask<ReadOnlyMemory<byte>> pending;
@@ -94,15 +94,15 @@ internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFac
         {
             throw new SvgFontProgramSourceFailure(exception);
         }
-        return pending.IsCompletedSuccessfully ? ValueTask.FromResult(Validate(pending.Result, workCounter, cancellationToken)) : AwaitAndValidate(pending, workCounter, classifySourceFailure, cancellationToken);
+        return pending.IsCompletedSuccessfully ? ValueTask.FromResult(Validate(pending.Result, cancellationToken)) : AwaitAndValidate(pending, classifySourceFailure, cancellationToken);
     }
 
-    private ValueTask<ReadOnlyMemory<byte>> AwaitAndValidate(ValueTask<ReadOnlyMemory<byte>> pending, ParserWorkCounter? workCounter, bool classifySourceFailure, CancellationToken cancellationToken)
+    private ValueTask<ReadOnlyMemory<byte>> AwaitAndValidate(ValueTask<ReadOnlyMemory<byte>> pending, bool classifySourceFailure, CancellationToken cancellationToken)
     {
-        return new ValueTask<ReadOnlyMemory<byte>>(AwaitAsync(pending, workCounter, classifySourceFailure, cancellationToken));
+        return new ValueTask<ReadOnlyMemory<byte>>(AwaitAsync(pending, classifySourceFailure, cancellationToken));
     }
 
-    private async Task<ReadOnlyMemory<byte>> AwaitAsync(ValueTask<ReadOnlyMemory<byte>> pending, ParserWorkCounter? workCounter, bool classifySourceFailure, CancellationToken cancellationToken)
+    private async Task<ReadOnlyMemory<byte>> AwaitAsync(ValueTask<ReadOnlyMemory<byte>> pending, bool classifySourceFailure, CancellationToken cancellationToken)
     {
         ReadOnlyMemory<byte> bytes;
         try { bytes = await pending.ConfigureAwait(false); }
@@ -110,13 +110,13 @@ internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFac
         {
             throw new SvgFontProgramSourceFailure(exception);
         }
-        return Validate(bytes, workCounter, cancellationToken);
+        return Validate(bytes, cancellationToken);
     }
 
-    private ReadOnlyMemory<byte> Validate(ReadOnlyMemory<byte> bytes, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private ReadOnlyMemory<byte> Validate(ReadOnlyMemory<byte> bytes, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        SvgFontProgramIntegrity.Verify(bytes, face.File, workCounter, cancellationToken);
+        SvgFontProgramIntegrity.Verify(bytes, face.File, cancellationToken);
         return bytes;
     }
 }
@@ -144,22 +144,22 @@ internal static class SvgFontSourceFailures
 /// <summary>Hashes caller-owned font bytes in bounded, cancellable checkpoints shared by source and snapshot integrity validation.</summary>
 internal static class SvgFontProgramIntegrity
 {
-    internal static void Verify(ReadOnlyMemory<byte> bytes, SvgFontPackFile file, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal static void Verify(ReadOnlyMemory<byte> bytes, SvgFontPackFile file, CancellationToken cancellationToken)
     {
         if (bytes.Length != file.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.");
-        byte[] hash = ComputeSha256(bytes, workCounter, cancellationToken);
+        byte[] hash = ComputeSha256(bytes, cancellationToken);
         if (!hash.SequenceEqual(file.Sha256Bytes)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.");
     }
 
-    internal static byte[] ComputeSha256(ReadOnlyMemory<byte> bytes, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal static byte[] ComputeSha256(ReadOnlyMemory<byte> bytes, CancellationToken cancellationToken)
     {
         using IncrementalHash hashing = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
         ReadOnlySpan<byte> programBytes = bytes.Span;
-        for (int offset = 0; offset < programBytes.Length; offset += ParserWorkCounter.ByteCheckpointSize)
+        for (int offset = 0; offset < programBytes.Length; offset += 4096)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            int length = Math.Min(ParserWorkCounter.ByteCheckpointSize, programBytes.Length - offset);
-            workCounter?.Consume(cancellationToken);
+            int length = Math.Min(4096, programBytes.Length - offset);
+            cancellationToken.ThrowIfCancellationRequested();
             hashing.AppendData(programBytes.Slice(offset, length));
             FontIntegrityProbe.HashChunkCompleted();
         }

@@ -62,18 +62,6 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Rasterization_stops_before_exceeding_the_configured_work_limit()
-    {
-        SvgRenderLimits limits = new(200_000, 1024, 16, 16, 1024, 16, 16, 20);
-        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='1'><rect width='16' height='1' fill='red'/></svg>"u8.ToArray(), options, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Contains("work", exception.Message);
-    }
-
-    [Fact]
     public void Scaled_stroke_corners_do_not_overflow()
     {
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
@@ -91,18 +79,6 @@ public sealed class PublicContractTests
         ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 32 32'><rect x='4' y='4' width='24' height='24' fill='none' stroke='red' stroke-width='2' opacity='0.5'/></svg>"u8.ToArray(), options, CancellationToken.None);
 
         Assert.True(png.Length > 0);
-    }
-
-    [Fact]
-    public void Parser_work_reduces_the_raster_work_allowance()
-    {
-        SvgRenderLimits limits = new(200_000, 1024, 16, 16, 1024, 16, 16, 5);
-        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><style>rect { fill: red; }</style><rect width='1' height='1'/></svg>"u8.ToArray(), options, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Contains("parsing work", exception.Message);
     }
 
     [Fact]
@@ -124,30 +100,6 @@ public sealed class PublicContractTests
 
             Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         }
-    }
-
-    [Fact]
-    public void Xml_reader_traversal_respects_the_public_shared_work_limit()
-    {
-        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 3);
-        SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, limits);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg'><desc>bounded metadata</desc></svg>"u8.ToArray(), options, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Contains("parsing work", exception.Message);
-    }
-
-    [Fact]
-    public void Background_initialization_respects_the_public_shared_work_limit()
-    {
-        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 4);
-        SvgRenderOptions options = new(new SvgViewport(1, 1), 1, new SvgColor(1, 2, 3, 255), limits);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), options, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Contains("Background initialization", exception.Message);
     }
 
     [Fact]

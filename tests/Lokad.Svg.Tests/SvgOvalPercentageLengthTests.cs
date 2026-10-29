@@ -18,10 +18,10 @@ public sealed class SvgOvalPercentageLengthTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='32'><rect width='3' height='4'/>" + content + "</svg>");
         RenderBudget budget = new(1_000_000);
-        Assert.Equal(error, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(error, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         byte[] valid = "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='32'><circle cx='50%' cy='50%' r='20%'/></svg>"u8.ToArray();
-        using (SvgRoot root = SvgRootParser.Parse(valid, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(valid, SvgRenderLimits.Default, budget, null, CancellationToken.None))
             Assert.NotEmpty(root.Geometries.ToArray());
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

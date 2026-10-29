@@ -18,15 +18,14 @@ internal static partial class OpenTypeFont
         internal double HorizontalRatio => _target.HorizontalRatio;
         private readonly TrueTypeHintTarget _target;
         private readonly RenderBudget _budget;
-        private readonly ParserWorkCounter _work;
         private readonly CancellationToken _token;
         private readonly TrueTypeHinting _machine;
         private readonly RenderBudget.BudgetReservation _reservation;
 
-        internal CompositeTrueTypeHinting(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation, int ppem, TrueTypeHintDeviceScale scale, double deviceSize, double horizontalSize, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        internal CompositeTrueTypeHinting(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation, int ppem, TrueTypeHintDeviceScale scale, double deviceSize, double horizontalSize, TrueTypeHintTarget target, RenderBudget budget, CancellationToken token)
         {
             _bytes = bytes; _metrics = metrics; _scale = scale; _deviceSize = deviceSize; _horizontalSize = horizontalSize;
-            _profile = profile; _cvtRange = cvtRange; _fontProgram = fontProgram; _preparation = preparation; _target = target; _budget = budget; _work = work; _token = token;
+            _profile = profile; _cvtRange = cvtRange; _fontProgram = fontProgram; _preparation = preparation; _target = target; _budget = budget; _token = token;
             _reservation = budget.Reserve(256, SvgMemoryCategory.Geometry);
             try
             {
@@ -37,12 +36,12 @@ internal static partial class OpenTypeFont
                 int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (controlBasis >> 6) << 6 : controlBasis;
                 for (int i = 0; i < count; i++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     int value = ReadInt16(bytes.Span, cvtRange.Offset + i * 2);
                     cvt[i] = target.UsesWindowsArithmetic && target.ControlScale == TrueTypeHintControlScale.FullPrecision
                         ? scale.ScaleWindowsControl(value) : Scale(value, controlScale);
                 }
-                _machine = TrueTypeHinting.Create(profile, cvt, [], [], ppem, scale, target, budget, work, token);
+                _machine = TrueTypeHinting.Create(profile, cvt, [], [], ppem, scale, target, budget, token);
                 try
                 {
                     _machine.Run(bytes.Slice(fontProgram.Offset, fontProgram.Length), TrueTypeHintProgramKind.Font);
@@ -72,7 +71,7 @@ internal static partial class OpenTypeFont
                 WindowsHorizontal = (float)x / _metrics.UnitsPerEm
             };
             return new(_bytes, _metrics, _profile, _cvtRange, _fontProgram, _preparation, checked((int)Math.Floor(y + .5)), childScale, y, x,
-                _target with { HorizontalRatio = x / y }, _budget, _work, _token);
+                _target with { HorizontalRatio = x / y }, _budget, _token);
         }
 
         /// <summary>Returns a fitted child's coordinate to native fractional font units before component placement.</summary>
@@ -96,7 +95,7 @@ internal static partial class OpenTypeFont
 
         internal int ScaleOffset(OpenTypeCompositeGlyphComponent component, bool horizontal)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             bool windows = _target.UsesWindowsArithmetic;
             bool round = (component.Flags & 4) != 0;
             OpenTypeOutlinePoint offset = component.GetOffset(OpenTypeCompositeOffsetMath.NativeLength);
@@ -125,14 +124,14 @@ internal static partial class OpenTypeFont
         /// <summary>Fits borrowed points in place and returns horizontal phantom coordinates for metric inheritance. Selected device metrics are copied without component placement; scratch is bounded and released on every exit.</summary>
         internal OpenTypeHorizontalPhantoms Fit(ushort glyph, OpenTypeGlyphPoint[] outline, ushort[] ends, OpenTypeTableRange range, OpenTypeTableRange instructions, bool composite, OpenTypeHorizontalPhantoms? selectedMetrics)
         {
-            _work.Consume(_token);
+            _token.ThrowIfCancellationRequested();
             // An instruction-free parent keeps its selected child's completed metric state.
             if (selectedMetrics is {} selected && instructions.Length == 0) return selected;
             using RenderBudget.BudgetReservation scratch = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<TrueTypeHintPoint>(outline.Length + 4), SvgMemoryCategory.Geometry);
             TrueTypeHintPoint[] points = new TrueTypeHintPoint[outline.Length + 4];
             for (int i = 0; i < outline.Length; i++)
             {
-                _work.Consume(_token);
+                _token.ThrowIfCancellationRequested();
                 OpenTypeGlyphPoint point = outline[i];
                 int vertical = composite ? point.Y : _target.UsesWindowsArithmetic ? TrueTypeHintDeviceScale.ScaleWindows(point.Y, _scale.WindowsVertical) : Scale(point.Y, _scale.Vertical);
                 points[i] = composite ? new(point.X, point.Y, point.X, point.Y) : new(ScaleHorizontal(point.X), vertical, point.X, point.Y);
@@ -152,7 +151,7 @@ internal static partial class OpenTypeFont
             points[firstPhantom + 1].X = RoundTrueTypeHorizontalMetric(initial.RightX, _target);
             points[firstPhantom + 2].Unavailable = points[firstPhantom + 3].Unavailable = true;
             _machine.HintGlyph(_bytes.Slice(instructions.Offset, instructions.Length), points, ends, composite);
-            for (int i = 0; i < outline.Length; i++) { _work.Consume(_token); outline[i] = new(points[i].X, points[i].Y, points[i].IsOnCurve); }
+            for (int i = 0; i < outline.Length; i++) { _token.ThrowIfCancellationRequested(); outline[i] = new(points[i].X, points[i].Y, points[i].IsOnCurve); }
             // The native FreeType v40 policy and instruction-free parents preserve
             // unrounded metrics; Windows parents retain their fitted sixteenth-pixel origin.
             return _target.Version == 40 || composite && instructions.Length == 0 && !_target.UsesWindowsArithmetic ? initial : new(points[firstPhantom].X, points[firstPhantom].Y, points[firstPhantom + 1].X, points[firstPhantom + 1].Y);

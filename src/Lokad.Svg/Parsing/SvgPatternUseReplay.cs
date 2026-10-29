@@ -12,7 +12,7 @@ internal readonly record struct SvgDeferredPatternContent(SvgSceneBuilder Builde
 
 /// <summary>Resolves ordered local tile instances through existing reference and premultiplied scene machinery.</summary>
 /// <remarks>References borrow document-owned strings and definitions. The staging builder retains all mapped
-/// owners until sealing or failure cleanup. Replay is parser-thread confined, charged to shared work and
+/// owners until sealing or failure cleanup. Replay is parser-thread confined, subject to cancellation and
 /// cancellation aware. Content becomes immutable before the root scene is returned.</remarks>
 internal static class SvgPatternUseReplay
 {
@@ -22,9 +22,9 @@ internal static class SvgPatternUseReplay
     }
 
     internal static void Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
-        IReadOnlyDictionary<string, SvgColor> colors, SvgSceneBuilder builder, ParserWorkCounter work, CancellationToken token)
+        IReadOnlyDictionary<string, SvgColor> colors, SvgSceneBuilder builder, CancellationToken token)
     {
-        if (SvgResourceUseReplay.RetainPattern(reader, root, state, colors, work, token) is not {} reference) return;
+        if (SvgResourceUseReplay.RetainPattern(reader, root, state, colors, token) is not {} reference) return;
         if (state.PatternUseCount == 0) state.PatternUseStart = state.PatternUses.Count;
         state.PatternUses.Add(new(reference, builder.AddPaintPlaceholder()));
         state.PatternUseCount++;
@@ -33,17 +33,17 @@ internal static class SvgPatternUseReplay
     /// <summary>Expands paint, text and uses together, locates balanced tile scopes once and compacts clip-only markers once.</summary>
     /// <remarks>Original and replay-created command ranges stay within their owning scene. Scope starts
     /// follow batch expansion directly, independently of inherited recording identities. Nested clip work
-    /// visits only the containing ranges. All scratch is budget-owned and observes work/cancellation;
+    /// visits only the containing ranges. All scratch is budget-owned and observes cancellation;
     /// failure leaves adopted scene resources with document teardown.</remarks>
-    internal static void Resolve(SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
+    internal static void Resolve(SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, CancellationToken token)
     {
         foreach (SvgDeferredPatternContent pending in state.DeferredPatternContents.AsSpan())
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgPendingCommandStart replayStart = state.PendingCommandEnd;
             if (pending.UseCount != 0 || pending.FirstCommands.Text != pending.EndCommands.Text || pending.FirstCommands.Paint != pending.EndCommands.Paint)
             {
-                using SvgPaintCommandBatch commands = new(state, pending.Builder, pending.FirstCommands, pending.EndCommands, work, token);
+                using SvgPaintCommandBatch commands = new(state, pending.Builder, pending.FirstCommands, pending.EndCommands, token);
                 int textIndex = pending.EndCommands.Text - 1;
                 int paintIndex = pending.EndCommands.Paint - 1;
                 int useIndex = pending.FirstUse + pending.UseCount - 1;
@@ -51,37 +51,37 @@ internal static class SvgPatternUseReplay
                 // no kind needs intermediate slot remapping or another scene rebuild.
                 while (textIndex >= pending.FirstCommands.Text || paintIndex >= pending.FirstCommands.Paint || useIndex >= pending.FirstUse)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     int textPosition = textIndex >= pending.FirstCommands.Text ? state.PendingTextRuns[textIndex].CommandIndex : -1;
                     int paintPosition = paintIndex >= pending.FirstCommands.Paint ? state.DeferredPaintLeaves[paintIndex].CommandIndex : -1;
                     int usePosition = useIndex >= pending.FirstUse ? state.PatternUses[useIndex].CommandIndex : -1;
                     int position = Math.Max(paintPosition, Math.Max(textPosition, usePosition));
                     SvgPaintCommandEmission emission = commands.Begin(position);
-                    if (position == paintPosition) SvgDeferredPaintLeaves.Emit(paintIndex--, root, state, limits, work, token);
-                    else if (position == textPosition) SvgTextPathLayout.Emit(state, textIndex--, limits, work, token);
-                    else SvgResourceUseReplay.AppendPatternUse(state.PatternUses[useIndex--].Use, pending.Builder, state, work, token);
+                    if (position == paintPosition) SvgDeferredPaintLeaves.Emit(paintIndex--, root, state, limits, token);
+                    else if (position == textPosition) SvgTextPathLayout.Emit(state, textIndex--, limits, token);
+                    else SvgResourceUseReplay.AppendPatternUse(state.PatternUses[useIndex--].Use, pending.Builder, state, token);
                     commands.Retain(emission);
                 }
                 Span<SvgPatternContentScope> scopes = pending.ScopeCount == 0 ? []
                     : (state.PatternScopes ?? throw new InvalidOperationException("Retained pattern scopes require their source registry.")).AsMutableSpan().Slice(pending.FirstScope, pending.ScopeCount);
                 commands.Complete(scopes);
             }
-            BindScopes(pending, replayStart, state.PendingCommandEnd, state, work, token);
+            BindScopes(pending, replayStart, state.PendingCommandEnd, state, token);
         }
 
         static void BindScopes(SvgDeferredPatternContent pending, SvgPendingCommandStart replayStart, SvgPendingCommandStart replayEnd,
-            SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+            SvgDocumentState state, CancellationToken token)
         {
             if (pending.ScopeCount == 0) return;
             SvgSceneBuilder builder = pending.Builder;
             ReadOnlySpan<SvgPatternContentScope> scopes = (state.PatternScopes
                 ?? throw new InvalidOperationException("Retained pattern scopes require their source registry.")).AsSpan().Slice(pending.FirstScope, pending.ScopeCount);
-            using BudgetedParserList<ScopeRange> ranges = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-            using BudgetedParserList<int> stack = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+            using BudgetedParserList<ScopeRange> ranges = new(state.Budget, SvgMemoryCategory.Parser, token);
+            using BudgetedParserList<int> stack = new(state.Budget, SvgMemoryCategory.Parser, token);
             int nextScope = 0;
             for (int index = 0; index < builder.CommandCount; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgDrawCommand command = builder.CommandAt(index);
                 if (command.Kind == SvgDrawCommandKind.BeginGroup)
                 {
@@ -102,7 +102,7 @@ internal static class SvgPatternUseReplay
             bool compact = false;
             for (int scopeIndex = 0; scopeIndex < scopes.Length; scopeIndex++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgPatternContentScope scope = scopes[scopeIndex];
                 ScopeRange range = ranges[scopeIndex];
                 compact |= !scope.HasOpacity && scope.MaskId is null;
@@ -110,7 +110,7 @@ internal static class SvgPatternUseReplay
                 bool clipsFilterOutput = false;
                 for (int index = range.First + 1; index < range.End; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     if (builder.CommandAt(index) is { Kind: SvgDrawCommandKind.BeginGroup, RegionKind: SvgLayerRegionKind.Filter })
                     {
                         clipsFilterOutput = true;
@@ -124,11 +124,11 @@ internal static class SvgPatternUseReplay
                     ranges[scopeIndex] = range with { ClipsFilterOutput = true };
                     continue;
                 }
-                SvgLeafMaskOperation? scopeClip = BindScopeClip(scope, range, builder, state, work, token);
+                SvgLeafMaskOperation? scopeClip = BindScopeClip(scope, range, builder, state, token);
                 SvgLeafMaskBinding? lastInner = null, lastBinding = null;
                 for (int index = range.First + 1; index < range.End; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgDrawCommand command = builder.CommandAt(index);
                     if (command.Kind != SvgDrawCommandKind.Geometry) continue;
                     SvgLeafMaskBinding? inner = builder.GeometryAt(command.GeometryIndex).LeafMask;
@@ -136,7 +136,7 @@ internal static class SvgPatternUseReplay
                     {
                         lastInner = inner;
                         lastBinding = scopeClip is null
-                            ? SvgClipPathSyntax.BindResourceClip(clipId, scope.Map, inner, state, work, token)
+                            ? SvgClipPathSyntax.BindResourceClip(clipId, scope.Map, inner, state, token)
                             : SvgLeafMaskComposition.NewBinding(state, scopeClip, inner);
                     }
                     builder.AssignLeafMask(command.GeometryIndex, lastBinding);
@@ -151,24 +151,24 @@ internal static class SvgPatternUseReplay
             {
                 for (int index = 0; index < scopes.Length; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     if (!scopes[index].HasOpacity && scopes[index].MaskId is null)
                         positions[ranges[index].First] = positions[ranges[index].End] = -1;
                 }
-                BudgetedSceneList<SvgDrawCommand> commands = new(state.Budget, work, token);
+                BudgetedSceneList<SvgDrawCommand> commands = new(state.Budget, token);
                 bool transferred = false;
                 try
                 {
                     for (int index = 0; index < count; index++)
                     {
-                        work.Consume(token);
+                        token.ThrowIfCancellationRequested();
                         bool remove = positions[index] < 0;
                         positions[index] = commands.Count;
                         if (!remove) commands.Add(builder.CommandAt(index));
                     }
                     positions[count] = commands.Count;
-                    SvgReferenceResolver.RemapPendingCommandRanges(state, builder, positions, pending.FirstCommands, pending.EndCommands, work, token);
-                    SvgReferenceResolver.RemapPendingCommandRanges(state, builder, positions, replayStart, replayEnd, work, token);
+                    SvgReferenceResolver.RemapPendingCommandRanges(state, builder, positions, pending.FirstCommands, pending.EndCommands, token);
+                    SvgReferenceResolver.RemapPendingCommandRanges(state, builder, positions, replayStart, replayEnd, token);
                     builder.AdoptCommands(commands);
                     transferred = true;
                 }
@@ -176,7 +176,7 @@ internal static class SvgPatternUseReplay
             }
             for (int index = 0; index < scopes.Length; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgPatternContentScope scope = scopes[index];
                 ScopeRange range = ranges[index];
                 if (range.ClipsFilterOutput && scope.ClipId is {} clipId)
@@ -190,7 +190,7 @@ internal static class SvgPatternUseReplay
         }
 
         static SvgLeafMaskOperation? BindScopeClip(SvgPatternContentScope clip, ScopeRange range, SvgSceneBuilder builder,
-            SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+            SvgDocumentState state, CancellationToken token)
         {
             if (clip.ClipId is not {} id || SvgClipPathSyntax.IsDisabled(id, state)) return null;
             bool rectangle = state.ObjectClips.TryGetValue(id, out SvgClipBox fractions);
@@ -205,29 +205,29 @@ internal static class SvgPatternUseReplay
                 SvgObjectBoundingClip target = new(clip.Map, null);
                 for (int index = range.First + 1; index < range.End; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgDrawCommand command = builder.CommandAt(index);
                     if (command.Kind == SvgDrawCommandKind.Geometry)
-                        target.Add(builder.GeometryAt(command.GeometryIndex), state, work, token);
+                        target.Add(builder.GeometryAt(command.GeometryIndex), state, token);
                 }
-                return rectangle ? target.Register(fractions, state, work, token) : target.Register(polygon, state, work, token);
+                return rectangle ? target.Register(fractions, state, token) : target.Register(polygon, state, token);
             }
             finally { state.DefinitionReplayScene = previous; }
         }
     }
 
     /// <summary>Seals tile scenes after all deferred masks and clips have bound to their owning builder.</summary>
-    internal static void Complete(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static void Complete(SvgDocumentState state, CancellationToken token)
     {
         foreach (SvgDeferredPatternContent pending in state.DeferredPatternContents.AsSpan())
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             for (int index = 0; index < pending.Builder.GeometryCount; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 RejectNestedPaint(pending.Builder.GeometryAt(index));
             }
-            SvgLeafMaskComposition.Emit(state, pending.Builder, work, token);
+            SvgLeafMaskComposition.Emit(state, pending.Builder, token);
             pending.Content.Complete(pending.Builder.Build());
         }
     }

@@ -29,7 +29,7 @@ public sealed class SvgPathBoundsTests
                     points.Length > 1 ? points[1] : default,
                     command.TryGetProperty("weight", out JsonElement weight) ? new(weight.GetSingle(), 0) : points.Length > 2 ? points[2] : default));
             }
-            SvgRectangle bounds = SvgPathBounds.Compute(commands.ToArray(), new(1_000_000), CancellationToken.None);
+            SvgRectangle bounds = SvgPathBounds.Compute(commands.ToArray(), CancellationToken.None);
             float[] actual = [(float)bounds.X, (float)bounds.Y, (float)bounds.Width, (float)bounds.Height];
             Assert.True(expected[id].Select(BitConverter.SingleToUInt32Bits).SequenceEqual(actual.Select(BitConverter.SingleToUInt32Bits)),
                 $"Native bounds differ for {id}.");
@@ -38,7 +38,7 @@ public sealed class SvgPathBoundsTests
     }
 
     [Fact]
-    public void Bounds_work_is_bounded_and_cancellation_preserves_its_token()
+    public void Bounds_cancellation_preserves_its_token()
     {
         SvgAuthoredPathCommand[] commands =
         [
@@ -46,14 +46,10 @@ public sealed class SvgPathBoundsTests
             new(SvgAuthoredPathVerb.Cubic, SvgAuthoredArcFlags.None, new(48.125, -12.75), new(-38.25, 48.875), new(24.375, 20.5)),
             new(SvgAuthoredPathVerb.Arc, SvgAuthoredArcFlags.Sweep, new(9.125, 14.375), new(0, 0), new(42.625, 20.5)),
         ];
-        ParserWorkCounter measured = new(1_000_000);
-        SvgPathBounds.Compute(commands, measured, CancellationToken.None);
-        Assert.True(measured.Used > commands.Length);
-        SvgException denied = Assert.Throws<SvgException>(() => SvgPathBounds.Compute(commands, new(measured.Used - 1), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+        SvgPathBounds.Compute(commands, CancellationToken.None);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
-        OperationCanceledException error = Assert.Throws<OperationCanceledException>(() => SvgPathBounds.Compute(commands, new(1_000_000), cancellation.Token));
+        OperationCanceledException error = Assert.Throws<OperationCanceledException>(() => SvgPathBounds.Compute(commands, cancellation.Token));
         Assert.Equal(cancellation.Token, error.CancellationToken);
     }
 
@@ -65,7 +61,7 @@ public sealed class SvgPathBoundsTests
             new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(0, 0), default, default),
             new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, new(4, 8), new(8, 0), default),
         ];
-        SvgRectangle bounds = SvgPathBounds.Compute(commands, new(1, 0, 1, 1, 0, 0), new(100_000), CancellationToken.None);
+        SvgRectangle bounds = SvgPathBounds.Compute(commands, new(1, 0, 1, 1, 0, 0), CancellationToken.None);
         Assert.Equal(0, bounds.X);
         Assert.Equal(0, bounds.Y);
         Assert.Equal(9, bounds.Width);
@@ -80,18 +76,17 @@ public sealed class SvgPathBoundsTests
             new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(4.125, 8.25), default, default),
             new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, new(24.75, -4.125), new(21.625, 20.375), default),
         ];
-        ParserWorkCounter work = new(1_000_000);
         // Warm the measured loop as well as the bounds implementation.
-        QueryBounds(commands, work);
-        QueryBounds(commands, work);
+        QueryBounds(commands);
+        QueryBounds(commands);
         long before = GC.GetAllocatedBytesForCurrentThread();
-        QueryBounds(commands, work);
+        QueryBounds(commands);
         Assert.Equal(before, GC.GetAllocatedBytesForCurrentThread());
 
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-        static void QueryBounds(SvgAuthoredPathCommand[] input, ParserWorkCounter counter)
+        static void QueryBounds(SvgAuthoredPathCommand[] input)
         {
-            for (int index = 0; index < 1024; index++) SvgPathBounds.Compute(input, counter, CancellationToken.None);
+            for (int index = 0; index < 1024; index++) SvgPathBounds.Compute(input, CancellationToken.None);
         }
     }
 

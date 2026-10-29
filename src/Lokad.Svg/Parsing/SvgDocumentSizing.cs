@@ -60,9 +60,9 @@ internal static class SvgDocumentSizing
 
     /// <summary>Reads bounded XML and the ordinary stylesheet cascade without lowering drawing content or accessing fonts.</summary>
     internal static SvgDocumentDimensions Inspect(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget,
-        ParserWorkCounter workCounter, CancellationToken cancellationToken)
+CancellationToken cancellationToken)
     {
-        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, workCounter, cancellationToken);
+        using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(svg, options.Limits, budget, cancellationToken);
         return preparation.InspectDimensions(options);
     }
 }

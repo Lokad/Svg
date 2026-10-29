@@ -22,7 +22,7 @@ public sealed class SvgEllipseDashSourceTests
         {
             byte[] input = System.Text.Encoding.UTF8.GetBytes(Document(shape, placement));
             RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None))
+            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
             {
                 SvgAuthoredPath centerline = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries, value => value.AuthoredPath?.StrokeStyle is not null).AuthoredPath);
                 Assert.Contains(centerline.Commands.ToArray(), command => command.Verb == SvgAuthoredPathVerb.Conic);
@@ -55,7 +55,7 @@ public sealed class SvgEllipseDashSourceTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + shape + " fill='none' stroke='blue' stroke-width='2' stroke-dasharray='3 2'/></svg>");
         RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None))
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
             Assert.All(surface.Pixels, value => Assert.Equal((byte)0, value));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

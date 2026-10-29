@@ -29,7 +29,7 @@ public sealed class SvgTransformBoundaryTests
     [MemberData(nameof(NonfiniteTransforms))]
     public void Nonfinite_native_coordinate_is_categorized_before_affine_construction(string transform)
     {
-        SvgException error = Assert.Throws<SvgException>(() => SvgGeometrySyntax.ParseTransform(transform, new(1_000_000), CancellationToken.None));
+        SvgException error = Assert.Throws<SvgException>(() => SvgGeometrySyntax.ParseTransform(transform, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
     }
 
@@ -67,18 +67,16 @@ public sealed class SvgTransformBoundaryTests
     }
 
     [Fact]
-    public void Float_validation_preserves_cancellation_work_and_authored_token_limits()
+    public void Float_validation_preserves_cancellation_and_authored_token_limits()
     {
         string transform = "translate(" + new string('0', 39) + "4)";
         using CancellationTokenSource cancellation = new(); cancellation.Cancel();
         Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
-            SvgGeometrySyntax.ParseTransform(transform, new(1_000_000), cancellation.Token)).CancellationToken);
+            SvgGeometrySyntax.ParseTransform(transform, cancellation.Token)).CancellationToken);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgGeometrySyntax.ParseTransform(transform, new(1), CancellationToken.None)).ErrorCode);
+            SvgGeometrySyntax.ParseTransform("translate(" + new string('0', SvgSyntaxLimits.MaximumValueTokenCharacters) + "4)", CancellationToken.None)).ErrorCode);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgGeometrySyntax.ParseTransform("translate(" + new string('0', SvgSyntaxLimits.MaximumValueTokenCharacters) + "4)", new(1_000_000), CancellationToken.None)).ErrorCode);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            SvgGeometrySyntax.ParseTransform(new string(' ', SvgSyntaxLimits.MaximumTransformCharacters + 1), new(1_000_000), CancellationToken.None)).ErrorCode);
+            SvgGeometrySyntax.ParseTransform(new string(' ', SvgSyntaxLimits.MaximumTransformCharacters + 1), CancellationToken.None)).ErrorCode);
         Assert.Throws<ArgumentOutOfRangeException>(() => SvgAffineTransform.FromTranslation(double.NaN, 0));
     }
 

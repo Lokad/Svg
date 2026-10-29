@@ -182,22 +182,6 @@ public sealed class SvgCssSelectorTests
         Assert.Contains("selectors", error.Message);
     }
 
-    [Fact]
-    public void Long_descendant_chains_obey_shared_work_limits_and_release_parser_storage()
-    {
-        string ancestors = string.Concat(Enumerable.Repeat("<g class='a'>", 30));
-        string endings = string.Concat(Enumerable.Repeat("</g>", 30));
-        string selector = string.Join(' ', Enumerable.Repeat(".a", 30)) + " rect";
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + ancestors + "<rect width='1' height='1'/>" + endings + "<style>" + selector + "{fill:red}</style></svg>");
-        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
-
-        SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new ParserWorkCounter(1_000), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
-        Assert.Contains("work", error.Message);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
-    }
-
     private static byte[] Render(string content)
         => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12'>" + content + "</svg>"), SvgRenderOptions.Default, CancellationToken.None).ToArray();
 }

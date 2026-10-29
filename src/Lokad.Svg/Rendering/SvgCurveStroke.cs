@@ -23,10 +23,9 @@ internal static class SvgCurveStroke
 
     internal static void Append(SvgDevicePoint start, SvgDevicePoint control, SvgDevicePoint end,
         float weight, float radius, float resolutionScale, SvgStrokeSide side,
-        BudgetedParserList<SvgStrokeCurveSegment> output, ParserWorkCounter work, CancellationToken token)
+        BudgetedParserList<SvgStrokeCurveSegment> output, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(output);
-        ArgumentNullException.ThrowIfNull(work);
         token.ThrowIfCancellationRequested();
         if (!float.IsFinite(weight) || weight < 0) throw new ArgumentOutOfRangeException(nameof(weight));
         if (!float.IsFinite(radius) || radius <= 0) throw new ArgumentOutOfRangeException(nameof(radius));
@@ -36,14 +35,13 @@ internal static class SvgCurveStroke
         float tolerance = 1 / (resolutionScale * 4);
         Construction root = Construction.Create(0, 1);
         int depth = 0;
-        Fit(conic, radius, tolerance, (int)side, ref root, ref depth, output, work, token);
+        Fit(conic, radius, tolerance, (int)side, ref root, ref depth, output, token);
     }
 
     internal static void AppendPolynomial(Curve curve, float radius, float resolutionScale, SvgStrokeSide side,
-        BudgetedParserList<SvgStrokeCurveSegment> output, ParserWorkCounter work, CancellationToken token)
+        BudgetedParserList<SvgStrokeCurveSegment> output, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(output);
-        ArgumentNullException.ThrowIfNull(work);
         token.ThrowIfCancellationRequested();
         if (curve.Kind is not SvgMeasuredCurveKind.Quadratic and not SvgMeasuredCurveKind.Cubic) throw new ArgumentException("A polynomial stroke requires a quadratic or cubic.", nameof(curve));
         if (!float.IsFinite(radius) || radius <= 0) throw new ArgumentOutOfRangeException(nameof(radius));
@@ -54,10 +52,10 @@ internal static class SvgCurveStroke
         if (curve.Kind == SvgMeasuredCurveKind.Quadratic)
         {
             Construction root = Construction.Create(0, 1);
-            Fit(curve, radius, tolerance, (int)side, ref root, ref depth, output, work, token);
+            Fit(curve, radius, tolerance, (int)side, ref root, ref depth, output, token);
             return;
         }
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         Span<float> inflections = stackalloc float[2];
         Point a = curve.First - curve.Start, b = curve.Second - curve.First * 2 + curve.Start;
         Point c = curve.End + (curve.First - curve.Second) * 3 - curve.Start;
@@ -68,7 +66,7 @@ internal static class SvgCurveStroke
             float last = index < count ? inflections[index] : 1;
             Construction root = Construction.Create(first, last);
             bool foundTangents = false;
-            FitCubic(curve, radius, tolerance, (int)side, ref root, ref depth, ref foundTangents, output, work, token);
+            FitCubic(curve, radius, tolerance, (int)side, ref root, ref depth, ref foundTangents, output, token);
             first = last;
         }
     }
@@ -189,9 +187,9 @@ internal static class SvgCurveStroke
 
     private static void Fit(Curve conic, float radius, float tolerance, int side,
         ref Construction q, ref int depth, BudgetedParserList<SvgStrokeCurveSegment> output,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         Result result = Compare(conic, radius, tolerance, side, ref q);
         if (result != Result.Split || ++depth > MaximumDepth)
         {
@@ -200,9 +198,9 @@ internal static class SvgCurveStroke
             return;
         }
         Construction half = q.FirstHalf();
-        Fit(conic, radius, tolerance, side, ref half, ref depth, output, work, token);
+        Fit(conic, radius, tolerance, side, ref half, ref depth, output, token);
         half = q.SecondHalf();
-        Fit(conic, radius, tolerance, side, ref half, ref depth, output, work, token);
+        Fit(conic, radius, tolerance, side, ref half, ref depth, output, token);
         depth--;
     }
 
@@ -312,9 +310,9 @@ internal static class SvgCurveStroke
 
     private static void FitCubic(Curve curve, float radius, float tolerance, int side,
         ref Construction q, ref int depth, ref bool foundTangents, BudgetedParserList<SvgStrokeCurveSegment> output,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         Result result = Result.Split;
         if (!foundTangents)
         {
@@ -342,10 +340,10 @@ internal static class SvgCurveStroke
         if (++depth > (foundTangents ? 24 : 15)) { Emit(q, false, output); return; }
         Construction half = q.FirstHalf();
         if (!(half.StartT < half.MidT && half.MidT < half.EndT)) { Emit(q, false, output); depth--; return; }
-        FitCubic(curve, radius, tolerance, side, ref half, ref depth, ref foundTangents, output, work, token);
+        FitCubic(curve, radius, tolerance, side, ref half, ref depth, ref foundTangents, output, token);
         half = q.SecondHalf();
         if (!(half.StartT < half.MidT && half.MidT < half.EndT)) { Emit(q, false, output); depth--; return; }
-        FitCubic(curve, radius, tolerance, side, ref half, ref depth, ref foundTangents, output, work, token);
+        FitCubic(curve, radius, tolerance, side, ref half, ref depth, ref foundTangents, output, token);
         depth--;
 
         static void Emit(Construction value, bool quadratic, BudgetedParserList<SvgStrokeCurveSegment> sink)

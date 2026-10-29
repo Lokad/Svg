@@ -20,21 +20,21 @@ internal sealed class SvgPendingTextLayout : IDisposable
     { _sources = sources; _style = style; _paint = paint; _metrics = metrics; _snapshot = snapshot; }
 
     /// <summary>Shapes the element once and emits its source ranges using scoped views that borrow the shared glyph storage.</summary>
-    internal void Emit(SvgPendingTextRun pending, SvgDocumentState state, SvgRenderLimits limits, ParserWorkCounter work, CancellationToken token)
+    internal void Emit(SvgPendingTextRun pending, SvgDocumentState state, SvgRenderLimits limits, CancellationToken token)
     {
         SvgFontSnapshot snapshot = _snapshot ?? throw new ObjectDisposedException(nameof(SvgPendingTextLayout));
         RenderBudget budget = state.Budget;
         using BudgetedTextBuffer textBuffer = new(budget);
-        using BudgetedParserList<SvgTextLetterSpacingSpan> spacing = new(budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<SvgTextPositionAdjustment> descendants = new(budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<SvgTextPaintSpan> paints = new(budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<SvgTextFontSpan> fonts = new(budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<SvgTextNodeBoundary> nodes = new(budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<SvgTextRecordingScope> recordings = new(budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserList<SvgTextLetterSpacingSpan> spacing = new(budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<SvgTextPositionAdjustment> descendants = new(budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<SvgTextPaintSpan> paints = new(budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<SvgTextFontSpan> fonts = new(budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<SvgTextNodeBoundary> nodes = new(budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<SvgTextRecordingScope> recordings = new(budget, SvgMemoryCategory.Parser, token);
         int rootFirstText = -1;
         double rootRecordingWidth = 0;
-        using BudgetedParserList<MeasuredRange> measured = new(budget, SvgMemoryCategory.Parser, work, token);
-        using BudgetedParserList<SvgTextPlacementRange> ranges = new(budget, SvgMemoryCategory.Parser, work, token);
+        using BudgetedParserList<MeasuredRange> measured = new(budget, SvgMemoryCategory.Parser, token);
+        using BudgetedParserList<SvgTextPlacementRange> ranges = new(budget, SvgMemoryCategory.Parser, token);
         SvgInheritedTextStyle defaultFont = new(_style.Font.Family, _style.Font.Weight, _style.Font.Italic,
             _style.FontSize, SvgTextWhitespaceMode.Default, _style.LetterSpacing, _style.Anchor) { WordSpacing = _style.WordSpacing };
         using RenderBudget.BudgetReservation scratchOwner = budget.Reserve(1024, SvgMemoryCategory.Parser);
@@ -44,13 +44,13 @@ internal sealed class SvgPendingTextLayout : IDisposable
         {
             foreach (SvgExtractedTextRun source in _sources.Items)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 int start = offset;
-                textBuffer.Append(source.Layout.Value, SvgTextLimits.MaximumCharacters, work, token);
+                textBuffer.Append(source.Layout.Value, SvgTextLimits.MaximumCharacters, token);
                 offset = textBuffer.Length;
                 foreach (SvgTextRecordingScope scope in source.RecordingScopes.Items)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     if (scope.IsRoot)
                     {
                         rootFirstText = rootFirstText < 0 ? checked(start + scope.FirstText) : Math.Min(rootFirstText, checked(start + scope.FirstText));
@@ -60,9 +60,9 @@ internal sealed class SvgPendingTextLayout : IDisposable
                 }
                 if (start != 0) nodes.Add(new(start, true));
                 foreach (SvgTextNodeBoundary node in source.NodeBoundaries.Items)
-                { work.Consume(token); nodes.Add(node with { Offset = checked(start + node.Offset) }); }
+                { token.ThrowIfCancellationRequested(); nodes.Add(node with { Offset = checked(start + node.Offset) }); }
                 foreach (SvgTextPositionAdjustment adjustment in source.Layout.PositionAdjustments)
-                { work.Consume(token); descendants.Add(adjustment with { Start = checked(start + adjustment.Start) }); }
+                { token.ThrowIfCancellationRequested(); descendants.Add(adjustment with { Start = checked(start + adjustment.Start) }); }
                 if (source.Layout.LetterSpacingSpans.Length == 0) AddSpacing(start, offset, _style.LetterSpacing, _style.WordSpacing);
                 else foreach (SvgTextLetterSpacingSpan span in source.Layout.LetterSpacingSpans)
                     AddSpacing(start + span.Start, start + span.End, span.LetterSpacing, span.WordSpacing);
@@ -77,7 +77,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
                 {
                     if (!state.Definitions.TryGetValue(reference.PathId, out SvgDefinition definition) || definition.LeafSource is not {} leaf)
                         throw new SvgException(SvgErrorCode.UnresolvedResource, "The local text-path reference was not found.");
-                    path = SvgTextPathLayout.ReadMeasured(leaf, limits.MaximumPathCommands, budget, work, token);
+                    path = SvgTextPathLayout.ReadMeasured(leaf, limits.MaximumPathCommands, budget, token);
                     try
                     {
                         pathOffset = reference.IsPercentage ? path.Baseline.Length * (reference.StartOffset / 100)
@@ -93,7 +93,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
             }
             if (rootFirstText >= 0) recordings.Add(new(0, offset, rootFirstText, rootRecordingWidth, true));
             using BudgetedText text = textBuffer.Detach();
-            using BudgetedParserList<SvgTextPositionAdjustment> merged = new(budget, SvgMemoryCategory.Parser, work, token);
+            using BudgetedParserList<SvgTextPositionAdjustment> merged = new(budget, SvgMemoryCategory.Parser, token);
             if (_style.PositionLists.IsEmpty)
             {
                 SvgTextPositionAdjustment first = descendants.Count != 0 && descendants[0].Start == 0
@@ -102,23 +102,23 @@ internal sealed class SvgPendingTextLayout : IDisposable
                     Dx = first.OverridesDx ? first.Dx : _style.Dx + first.Dx,
                     Dy = first.OverridesDy ? first.Dy : _style.Dy + first.Dy });
                 int initial = descendants.Count != 0 && descendants[0].Start == 0 ? 1 : 0;
-                for (int index = initial; index < descendants.Count; index++) { work.Consume(token); merged.Add(descendants[index]); }
+                for (int index = initial; index < descendants.Count; index++) { token.ThrowIfCancellationRequested(); merged.Add(descendants[index]); }
             }
             else
             {
-                using OwnedParserArray<SvgTextPositionAdjustment> positions = (_style.PositionLists with { CharacterOffset = 0 }).Build(text.Value, descendants.AsSpan(), budget, work, token);
-                foreach (SvgTextPositionAdjustment adjustment in positions.Items) { work.Consume(token); merged.Add(adjustment); }
+                using OwnedParserArray<SvgTextPositionAdjustment> positions = (_style.PositionLists with { CharacterOffset = 0 }).Build(text.Value, descendants.AsSpan(), budget, token);
+                foreach (SvgTextPositionAdjustment adjustment in positions.Items) { token.ThrowIfCancellationRequested(); merged.Add(adjustment); }
             }
-            using BudgetedParserList<SvgTextPositionAdjustment> resolved = new(budget, SvgMemoryCategory.Parser, work, token);
+            using BudgetedParserList<SvgTextPositionAdjustment> resolved = new(budget, SvgMemoryCategory.Parser, token);
             int positionIndex = 0;
             foreach (SvgTextPlacementRange range in ranges.AsSpan())
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 if (range.Path is not null && (positionIndex == merged.Count || merged[positionIndex].Start != range.Start))
                     resolved.Add(new(range.Start, 0, null, 0, 0));
                 while (positionIndex < merged.Count && merged[positionIndex].Start < range.End)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgTextPositionAdjustment adjustment = merged[positionIndex++];
                     if (range.Path is not null)
                         adjustment = adjustment with { IgnoreY = true,
@@ -133,13 +133,13 @@ internal sealed class SvgPendingTextLayout : IDisposable
                 fontIntervals = [];
             using RenderBudget.BudgetReservation sharedOwner = budget.Reserve(512, SvgMemoryCategory.Parser);
             using SvgTextRun shared = SvgTextRunBuilder.CreateShared(sharedStyle, text.Value, spacing.AsSpan(), resolved.AsSpan(), paints.AsSpan(),
-                fontIntervals, nodes.AsSpan(), ranges.AsSpan(), _paint, _metrics, snapshot, budget, work, token);
-            shared.RetainRecordingScopes(recordings.AsSpan(), _sources.Items[0].ElementStroke, budget, work, token);
+                fontIntervals, nodes.AsSpan(), ranges.AsSpan(), _paint, _metrics, snapshot, budget, token);
+            shared.RetainRecordingScopes(recordings.AsSpan(), _sources.Items[0].ElementStroke, budget, token);
             ReadOnlySpan<SvgTextPaintFragment> sharedFragments = shared.PaintFragments;
             bool needsObjectBox = pending.FilterGroupDepth > 0;
             for (int index = 0; index < shared.Glyphs.Length && !needsObjectBox; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgTextGlyphPaint paint = shared.GetGlyphPaint(index, pending.Color);
                 needsObjectBox = UsesObjectBox(paint.FillServer, state) || UsesObjectBox(paint.Stroke?.Style.Stroke, state);
             }
@@ -149,13 +149,13 @@ internal sealed class SvgPendingTextLayout : IDisposable
                 int fragmentIndex = 0;
                 for (int index = 0; index < ranges.Count; index++)
                 {
-                    work.Consume(token);
+                    token.ThrowIfCancellationRequested();
                     SvgTextPlacementRange range = ranges[index];
-                    using BudgetedParserList<SvgTextPaintFragment> viewFragments = new(budget, SvgMemoryCategory.Geometry, work, token);
+                    using BudgetedParserList<SvgTextPaintFragment> viewFragments = new(budget, SvgMemoryCategory.Geometry, token);
                     int first = -1, last = 0;
                     while (fragmentIndex < sharedFragments.Length && sharedFragments[fragmentIndex].SourceStart < range.End)
                     {
-                        work.Consume(token);
+                        token.ThrowIfCancellationRequested();
                         SvgTextPaintFragment fragment = sharedFragments[fragmentIndex++];
                         if (fragment.SourceStart < range.Start) throw new InvalidOperationException("Shared source fragments must follow their placement ranges.");
                         if (first < 0) first = fragment.Start;
@@ -167,7 +167,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
                     OwnedParserArray<SvgTextPaintFragment> fragments = viewFragments.Detach();
                     SvgTextRun view;
                     try { view = new(shared, first, last - first, fragments, sharedStyle,
-                        shared.DeviceMetrics is {} metrics ? metrics with { IsTextPath = range.Path is not null } : null, work, token); }
+                        shared.DeviceMetrics is {} metrics ? metrics with { IsTextPath = range.Path is not null } : null, token); }
                     catch { fragments.Dispose(); throw; }
                     using (view)
                     {
@@ -175,8 +175,8 @@ internal sealed class SvgPendingTextLayout : IDisposable
                         if (pass == 0)
                         {
                             SvgRectangle box = path is not null
-                                ? SvgTextPathLayout.MeasurePath(state, pending, view, path, measured[index].Offset, work, token)
-                                : SvgTextLayoutBounds.Measure(view, [], pending.Placement, state.TextBoundsMetrics, work, token);
+                                ? SvgTextPathLayout.MeasurePath(state, pending, view, path, measured[index].Offset, token)
+                                : SvgTextLayoutBounds.Measure(view, [], pending.Placement, state.TextBoundsMetrics, token);
                             if (box.Width > 0 && box.Height > 0)
                             {
                                 if (objectBox is not {} previous) objectBox = box;
@@ -193,9 +193,9 @@ internal sealed class SvgPendingTextLayout : IDisposable
                             }
                         }
                         else if (path is not null)
-                            SvgTextPathLayout.EmitPath(state, pending, view, path, measured[index].Offset, objectBox, limits, work, token);
+                            SvgTextPathLayout.EmitPath(state, pending, view, path, measured[index].Offset, objectBox, limits, token);
                         else SvgTextGlyphPainter.EmitDirect(view, pending.Placement, pending.ViewportClip, pending.Color, state,
-                            limits.MaximumPathCommands, budget, work, pending.RecordingTransform, objectBox, token);
+                            limits.MaximumPathCommands, budget, pending.RecordingTransform, objectBox, token);
                     }
                 }
             }
@@ -212,20 +212,20 @@ internal sealed class SvgPendingTextLayout : IDisposable
 
         void AddSpacing(int start, int end, double letter, double word)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (spacing.Count != 0 && spacing[^1].End == start && spacing[^1].LetterSpacing == letter && spacing[^1].WordSpacing == word)
                 spacing[^1] = spacing[^1] with { End = end };
             else spacing.Add(new(start, end, letter) { WordSpacing = word });
         }
         void AddPaint(int start, int end, SvgTextGlyphPaint paint)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (paints.Count != 0 && paints[^1].End == start && paints[^1].Paint == paint) paints[^1] = paints[^1] with { End = end };
             else paints.Add(new(start, end, paint));
         }
         void AddFont(int start, int end, SvgInheritedTextStyle font)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             if (fonts.Count != 0 && fonts[^1].End == start && fonts[^1].Font.Family == font.Family
                 && fonts[^1].Font.Weight == font.Weight && fonts[^1].Font.Italic == font.Italic && fonts[^1].Font.FontSize == font.FontSize)
                 fonts[^1] = fonts[^1] with { End = end };

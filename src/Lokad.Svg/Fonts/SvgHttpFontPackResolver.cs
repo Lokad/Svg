@@ -166,7 +166,7 @@ public sealed class SvgHttpFontPackResolver : IDisposable, IAsyncDisposable
             using CancellationTokenSource deadline = CreateDeadline();
             Uri uri = ResolveProgram(entry.File.RelativePath, _root);
             body = await DownloadAsync(uri, checked((int)entry.File.ByteSize), entry.File.ByteSize, deadline.Token).ConfigureAwait(false);
-            try { SvgFontProgramIntegrity.Verify(body.Memory, entry.File, null, deadline.Token); }
+            try { SvgFontProgramIntegrity.Verify(body.Memory, entry.File, deadline.Token); }
             catch (SvgException) { throw Failure(SvgFontFailureStage.Integrity, "The downloaded font does not match its manifest."); }
             lock (_gate) { entry.Bytes = body; body = null; TrimIdlePrograms(); }
         }

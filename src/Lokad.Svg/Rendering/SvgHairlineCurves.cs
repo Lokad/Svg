@@ -13,9 +13,9 @@ namespace Lokad.Svg.Rendering;
 internal static class SvgHairlineCurves
 {
     internal static void DrawQuadratic(ref SvgHairlineCoverage raster, scoped ReadOnlySpan<SvgDevicePoint> points,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         float x0 = (float)points[0].X, y0 = (float)points[0].Y;
         float x1 = (float)points[1].X, y1 = (float)points[1].Y;
         float x2 = (float)points[2].X, y2 = (float)points[2].Y;
@@ -24,41 +24,41 @@ internal static class SvgHairlineCurves
         int level = Math.Min(5, (33 - BitOperations.LeadingZeroCount(distance)) >> 1);
         Polynomial polynomial = new(false, 0, 0, x2 - 2 * x1 + x0, y2 - 2 * y1 + y0,
             2 * (x1 - x0), 2 * (y1 - y0), x0, y0);
-        DrawPolynomial(ref raster, points[0], points[2], 1 << level, polynomial, work, token);
+        DrawPolynomial(ref raster, points[0], points[2], 1 << level, polynomial, token);
 
         static uint Distance(float value) => value >= int.MaxValue || float.IsNaN(value) ? int.MaxValue : (uint)MathF.Ceiling(value);
     }
 
     internal static void DrawConic(ref SvgHairlineCoverage raster, scoped ReadOnlySpan<SvgDevicePoint> points, float weight,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
-        for (int phase = 0; phase < SvgRationalQuadratic.MaximumConversionWork; phase++) work.Consume(token);
+        token.ThrowIfCancellationRequested();
         Span<SvgDevicePoint> quads = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
         int count = SvgRationalQuadratic.Convert(points[0], points[1], points[2], weight,
             SvgRationalQuadratic.DeviceTolerance, quads, out _, token);
-        for (int index = 0; index < count; index++) DrawQuadratic(ref raster, quads.Slice(2 * index, 3), work, token);
+        for (int index = 0; index < count; index++) DrawQuadratic(ref raster, quads.Slice(2 * index, 3), token);
     }
 
     internal static void DrawCubic(ref SvgHairlineCoverage raster, scoped ReadOnlySpan<SvgDevicePoint> points,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
         // Reserve the constant root-solving and chopping phase before computing it.
-        for (int phase = 0; phase < 32; phase++) work.Consume(token);
-        if (Nice(points)) { DrawPiece(ref raster, points, work, token); return; }
+        token.ThrowIfCancellationRequested();
+        if (Nice(points)) { DrawPiece(ref raster, points, token); return; }
         Span<float> roots = stackalloc float[3];
         int count = SvgCurveGeometry.CubicCurvatureRoots(points, roots);
         Span<SvgDevicePoint> pieces = stackalloc SvgDevicePoint[13];
         Chop(points, roots[..count], pieces);
-        for (int index = 0; index <= count; index++) DrawPiece(ref raster, pieces.Slice(index * 3, 4), work, token);
+        for (int index = 0; index <= count; index++) DrawPiece(ref raster, pieces.Slice(index * 3, 4), token);
 
         static bool Nice(ReadOnlySpan<SvgDevicePoint> p) => Dot(p[1], p[0], p[3]) >= 0 && Dot(p[2], p[0], p[3]) >= 0
             && Dot(p[1], p[3], p[0]) >= 0 && Dot(p[2], p[3], p[0]) >= 0;
         static float Dot(SvgDevicePoint a, SvgDevicePoint pivot, SvgDevicePoint b) =>
             ((float)a.X - (float)pivot.X) * ((float)b.X - (float)pivot.X)
             + ((float)a.Y - (float)pivot.Y) * ((float)b.Y - (float)pivot.Y);
-        static void DrawPiece(ref SvgHairlineCoverage painter, scoped ReadOnlySpan<SvgDevicePoint> p, ParserWorkCounter counter, CancellationToken cancellation)
+        static void DrawPiece(ref SvgHairlineCoverage painter, scoped ReadOnlySpan<SvgDevicePoint> p, CancellationToken cancellation)
         {
-            counter.Consume(cancellation);
+            cancellation.ThrowIfCancellationRequested();
             const float third = 1f / 3, twoThirds = 2f / 3;
             float x0 = (float)p[0].X, y0 = (float)p[0].Y, x1 = (float)p[1].X, y1 = (float)p[1].Y;
             float x2 = (float)p[2].X, y2 = (float)p[2].Y, x3 = (float)p[3].X, y3 = (float)p[3].Y;
@@ -68,7 +68,7 @@ internal static class SvgHairlineCurves
             for (float tolerance = .125f; level < 9 && !(difference < tolerance); level++) tolerance *= 4;
             Polynomial polynomial = new(true, x3 + 3 * (x1 - x2) - x0, y3 + 3 * (y1 - y2) - y0,
                 3 * (x2 - 2 * x1 + x0), 3 * (y2 - 2 * y1 + y0), 3 * (x1 - x0), 3 * (y1 - y0), x0, y0);
-            DrawPolynomial(ref painter, p[0], p[3], 1 << level, polynomial, counter, cancellation);
+            DrawPolynomial(ref painter, p[0], p[3], 1 << level, polynomial, cancellation);
         }
 
         static void Chop(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<float> roots, Span<SvgDevicePoint> output)
@@ -115,10 +115,10 @@ internal static class SvgHairlineCurves
     }
 
     internal static void ExtendCaps(Span<SvgDevicePoint> points, SvgStrokeCap cap, bool first, bool last,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
         if (cap == SvgStrokeCap.Butt) return;
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         float outset = cap == SvgStrokeCap.Square ? .5f : MathF.PI / 8;
         if (first) Extend(points, 0, 1, 1);
         if (last) Extend(points, points.Length - 1, -1, -1);
@@ -129,7 +129,7 @@ internal static class SvgHairlineCurves
             float dx, dy;
             do
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 control += step;
                 dx = (float)p[endpoint].X - (float)p[control].X;
                 dy = (float)p[endpoint].Y - (float)p[control].Y;
@@ -143,7 +143,7 @@ internal static class SvgHairlineCurves
             }
             do
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 p[endpoint] = new((float)p[endpoint].X + dx * outset, (float)p[endpoint].Y + dy * outset);
                 endpoint += step;
             } while (++controls < p.Length);
@@ -158,14 +158,14 @@ internal static class SvgHairlineCurves
     }
 
     private static void DrawPolynomial(ref SvgHairlineCoverage raster, SvgDevicePoint start, SvgDevicePoint end,
-        int lines, Polynomial polynomial, ParserWorkCounter work, CancellationToken token)
+        int lines, Polynomial polynomial, CancellationToken token)
     {
         // Validate first, then replay: native drops the whole polynomial if any interior point is nonfinite.
         // Two bounded passes avoid the native cubic's 513-point stack buffer.
         float dt = 1f / lines, t = 0;
         for (int index = 1; index < lines; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             t += dt;
             SvgDevicePoint point = polynomial.Evaluate(t);
             if (!float.IsFinite((float)point.X) || !float.IsFinite((float)point.Y)) return;
@@ -173,7 +173,7 @@ internal static class SvgHairlineCurves
         t = 0;
         for (int index = 1; index <= lines; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             t += dt;
             SvgDevicePoint point = index == lines ? end : polynomial.Evaluate(t);
             raster.DrawLine(start, point);

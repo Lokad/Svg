@@ -5,36 +5,36 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Validates the deliberately narrow XML attribute subsets before element-specific lowering.</summary>
 internal static class SvgElementAttributePolicy
 {
-    internal static void ValidateRoot(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Root, "SVG root", workCounter, cancellationToken);
+    internal static void ValidateRoot(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Root, "SVG root", cancellationToken);
 
-    internal static void ValidateGroup(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Group, "Group", workCounter, cancellationToken);
+    internal static void ValidateGroup(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Group, "Group", cancellationToken);
 
     /// <summary>Validates the switch container against the shared group attribute subset.</summary>
-    internal static void ValidateSwitch(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Group, "Switch", workCounter, cancellationToken);
+    internal static void ValidateSwitch(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Group, "Switch", cancellationToken);
 
-    internal static void ValidateRectangle(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Rectangle, "Rectangle", workCounter, cancellationToken);
+    internal static void ValidateRectangle(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Rectangle, "Rectangle", cancellationToken);
 
-    internal static void ValidateLine(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Line, "Line", workCounter, cancellationToken);
+    internal static void ValidateLine(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Line, "Line", cancellationToken);
 
-    internal static void ValidateUse(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Use, "Use", workCounter, cancellationToken);
+    internal static void ValidateUse(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Use, "Use", cancellationToken);
 
-    internal static void ValidatePath(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Path, "Path", workCounter, cancellationToken);
+    internal static void ValidatePath(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Path, "Path", cancellationToken);
 
-    internal static void ValidatePointList(XmlReader reader, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.PointList, elementName, workCounter, cancellationToken);
-    internal static void ValidateCircle(XmlReader reader, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Circle, elementName, workCounter, cancellationToken);
+    internal static void ValidatePointList(XmlReader reader, string elementName, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.PointList, elementName, cancellationToken);
+    internal static void ValidateCircle(XmlReader reader, string elementName, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Circle, elementName, cancellationToken);
 
     /// <summary>Validates the initial direct-text attribute subset before text extraction and layout.</summary>
-    internal static void ValidateText(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Text, "Text", workCounter, cancellationToken);
+    internal static void ValidateText(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Text, "Text", cancellationToken);
 
     /// <summary>Validates the whitespace-and-letter-spacing nested span subset before direct-text extraction.</summary>
-    internal static void ValidateTextSpan(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.TextSpan, "Text span", workCounter, cancellationToken);
+    internal static void ValidateTextSpan(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.TextSpan, "Text span", cancellationToken);
 
-    internal static void ValidateDefinitionContainer(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void ValidateDefinitionContainer(XmlReader reader, CancellationToken cancellationToken)
     {
         if (!reader.HasAttributes) return;
         while (reader.MoveToNextAttribute())
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (reader.NamespaceURI == "http://www.w3.org/2000/xmlns/") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName == "id")
             {
@@ -46,47 +46,47 @@ internal static class SvgElementAttributePolicy
         reader.MoveToElement();
     }
 
-    internal static void ValidateMarker(XmlReader reader, ParserWorkCounter work, CancellationToken token) => Validate(reader, SvgElementKind.Marker, "marker", work, token);
+    internal static void ValidateMarker(XmlReader reader, CancellationToken token) => Validate(reader, SvgElementKind.Marker, "marker", token);
 
-    internal static void ValidateSymbol(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Symbol, "Symbol", workCounter, cancellationToken);
+    internal static void ValidateSymbol(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Symbol, "Symbol", cancellationToken);
 
-    internal static void ValidateNestedViewport(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.NestedViewport, "Nested viewport", workCounter, cancellationToken);
+    internal static void ValidateNestedViewport(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.NestedViewport, "Nested viewport", cancellationToken);
 
-    internal static void ValidateClipPath(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.ClipPath, "Clip path", workCounter, cancellationToken);
+    internal static void ValidateClipPath(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.ClipPath, "Clip path", cancellationToken);
 
-    internal static void ValidateMask(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Mask, "Mask", workCounter, cancellationToken);
+    internal static void ValidateMask(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Mask, "Mask", cancellationToken);
 
-    internal static void ValidatePattern(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Pattern, "Pattern", workCounter, cancellationToken);
+    internal static void ValidatePattern(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Pattern, "Pattern", cancellationToken);
 
-    internal static void ValidateLinearGradient(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.LinearGradient, "Linear gradient", workCounter, cancellationToken);
-    internal static void ValidateRadialGradient(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.RadialGradient, "Radial gradient", workCounter, cancellationToken);
+    internal static void ValidateLinearGradient(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.LinearGradient, "Linear gradient", cancellationToken);
+    internal static void ValidateRadialGradient(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.RadialGradient, "Radial gradient", cancellationToken);
 
-    internal static void ValidateGradientStop(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.GradientStop, "Gradient stop", workCounter, cancellationToken);
+    internal static void ValidateGradientStop(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.GradientStop, "Gradient stop", cancellationToken);
 
-    internal static void ValidateImage(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Image, "Image", workCounter, cancellationToken);
+    internal static void ValidateImage(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Image, "Image", cancellationToken);
 
-    private static void Validate(XmlReader reader, SvgElementKind kind, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void Validate(XmlReader reader, SvgElementKind kind, string elementName, CancellationToken cancellationToken)
     {
-        try { ValidateCore(reader, kind, elementName, workCounter, cancellationToken); }
+        try { ValidateCore(reader, kind, elementName, cancellationToken); }
         catch (SvgException exception) { SvgSourceContext.Attach(reader, exception); throw; }
     }
 
-    private static void ValidateCore(XmlReader reader, SvgElementKind kind, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static void ValidateCore(XmlReader reader, SvgElementKind kind, string elementName, CancellationToken cancellationToken)
     {
         if (!reader.HasAttributes) return;
         while (reader.MoveToNextAttribute())
         {
-            workCounter.Consume(cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
             if (kind == SvgElementKind.Root && reader.NamespaceURI.Length == 0
                 && reader.LocalName is "viewport-fill" or "viewport-fill-opacity")
             {
-                ValidateLegacyViewportPresentation(reader.LocalName, reader.Value, workCounter, cancellationToken);
+                ValidateLegacyViewportPresentation(reader.LocalName, reader.Value, cancellationToken);
                 continue;
             }
             if (reader.NamespaceURI.Length == 0 && kind is SvgElementKind.Rectangle or SvgElementKind.Line or SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle
                 && reader.LocalName is "font-family" or "font-size" or "font-style" or "font-weight" or "font-stretch" or "font-variant" or "text-anchor" or "writing-mode" or "letter-spacing" or "word-spacing" or "text-decoration")
             {
-                _ = SvgInertPresentationSyntax.TryValidateTypography(reader.LocalName.AsSpan(), reader.Value.AsSpan(), workCounter, cancellationToken);
+                _ = SvgInertPresentationSyntax.TryValidateTypography(reader.LocalName.AsSpan(), reader.Value.AsSpan(), cancellationToken);
                 continue;
             }
             if (IsAllowed(reader, kind))
@@ -94,7 +94,7 @@ internal static class SvgElementAttributePolicy
                 bool isInheritedStrokeStyle = reader.LocalName == "stroke-dasharray" || reader.LocalName == "stroke-dashoffset" || reader.LocalName == "stroke-linecap" || reader.LocalName == "stroke-linejoin";
                 bool isInheritedContainer = isInheritedStrokeStyle && kind is SvgElementKind.Group or SvgElementKind.Root or SvgElementKind.Use or SvgElementKind.Pattern or SvgElementKind.Marker or SvgElementKind.Text or SvgElementKind.TextSpan;
                 bool roundInstanceJoin = kind == SvgElementKind.Use && reader.LocalName == "stroke-linejoin";
-                if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader, reader.LocalName, reader.Value, kind is SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Line or SvgElementKind.Rectangle || isInheritedContainer, kind == SvgElementKind.Line || isInheritedContainer, kind == SvgElementKind.Rectangle || isInheritedContainer, (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)) || roundInstanceJoin || isInheritedContainer, kind is SvgElementKind.Path or SvgElementKind.Circle or SvgElementKind.PointList or SvgElementKind.Rectangle or SvgElementKind.Line || isInheritedContainer, workCounter, cancellationToken);
+                if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader, reader.LocalName, reader.Value, kind is SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Line or SvgElementKind.Rectangle || isInheritedContainer, kind == SvgElementKind.Line || isInheritedContainer, kind == SvgElementKind.Rectangle || isInheritedContainer, (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)) || roundInstanceJoin || isInheritedContainer, kind is SvgElementKind.Path or SvgElementKind.Circle or SvgElementKind.PointList or SvgElementKind.Rectangle or SvgElementKind.Line || isInheritedContainer, cancellationToken);
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "font-variant") SvgTextFontSyntax.ValidateFontVariant(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "color-interpolation") SvgGradientSyntax.ValidateColorInterpolation(reader.Value.AsSpan());
                         if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow")
@@ -106,7 +106,7 @@ internal static class SvgElementAttributePolicy
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "clip-rule"
                     && !SvgInlineStyleParser.TryMapPaintKeyword("clip-rule".AsSpan(), reader.Value.AsSpan(), out _)) SvgClipPathSyntax.ValidateClipRule(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName is "marker" or "marker-start" or "marker-mid" or "marker-end") SvgMarkerSyntax.ValidateValue(reader.Value.AsSpan());
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "enable-background") SvgInertPresentationSyntax.ValidateBackground(reader.Value.AsSpan(), workCounter, cancellationToken);
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "enable-background") SvgInertPresentationSyntax.ValidateBackground(reader.Value.AsSpan(), cancellationToken);
                 continue;
             }
             throw new SvgException(SvgErrorCode.UnsupportedFeature, elementName + " attribute '" + reader.Name + "' is not implemented.");
@@ -115,11 +115,11 @@ internal static class SvgElementAttributePolicy
 
         // Native SVG2 rendering ignores these SVG Tiny viewport properties. Validate
         // their bounded values without turning them into a background paint layer.
-        static void ValidateLegacyViewportPresentation(string name, string value, ParserWorkCounter work, CancellationToken token)
+        static void ValidateLegacyViewportPresentation(string name, string value, CancellationToken token)
         {
             if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport presentation exceeds the configured syntax limit.");
-            work.ConsumeText(value.Length, token);
+            token.ThrowIfCancellationRequested();
             string trimmed = value.Trim();
             if (trimmed == "inherit") return;
             if (name == "viewport-fill-opacity")

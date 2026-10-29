@@ -39,7 +39,7 @@ internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity 
 
 /// <summary>Retains native authored object bounds separately from their scene placement.</summary>
 /// <remarks>Immutable metadata owns no storage. A consumer composes into its own parameter
-/// space before narrowing bounds, charging the caller's work and cancellation.
+/// space before narrowing bounds, observing the caller's cancellation token.
 /// Metadata maps require finite arithmetic; device admission belongs to the completed draw map.</remarks>
 internal readonly record struct SvgSourceObjectBounds(SvgPaintBounds Bounds, SvgAffineTransform SceneMap);
 
@@ -47,16 +47,16 @@ internal readonly record struct SvgPaintBounds(float Left, float Top, float Righ
 {
     /// <summary>Maps an SVG layout rectangle in double precision before retaining float bounds.</summary>
     /// <remarks>Layout/filter hints follow SVG element mapping; recorded draw bounds use the software bitmap's float map.
-    /// Inputs remain borrowed, the operation allocates nothing and every corner charges work and observes cancellation.</remarks>
-    internal SvgPaintBounds MapLayout(SvgAffineTransform placement, ParserWorkCounter work, CancellationToken token)
+    /// Inputs remain borrowed, the operation allocates nothing and every corner observes cancellation.</remarks>
+    internal SvgPaintBounds MapLayout(SvgAffineTransform placement, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         var first = placement.ApplyToUserPoint(Left, Top);
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         var second = placement.ApplyToUserPoint(Right, Top);
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         var third = placement.ApplyToUserPoint(Left, Bottom);
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         var fourth = placement.ApplyToUserPoint(Right, Bottom);
         SvgPaintBounds result = new((float)Math.Min(Math.Min(first.X, second.X), Math.Min(third.X, fourth.X)),
             (float)Math.Min(Math.Min(first.Y, second.Y), Math.Min(third.Y, fourth.Y)),
@@ -67,15 +67,15 @@ internal readonly record struct SvgPaintBounds(float Left, float Top, float Righ
         return result;
     }
 
-    internal SvgPaintBounds Map(SvgAffineTransform placement, ParserWorkCounter work, CancellationToken token)
+    internal SvgPaintBounds Map(SvgAffineTransform placement, CancellationToken token)
     {
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         SvgDevicePoint first = SvgAuthoredPath.MapPoint(placement, new(Left, Top), new(0, 0));
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         SvgDevicePoint second = SvgAuthoredPath.MapPoint(placement, new(Right, Top), new(0, 0));
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         SvgDevicePoint third = SvgAuthoredPath.MapPoint(placement, new(Left, Bottom), new(0, 0));
-        work.Consume(token);
+        token.ThrowIfCancellationRequested();
         SvgDevicePoint fourth = SvgAuthoredPath.MapPoint(placement, new(Right, Bottom), new(0, 0));
         return new((float)Math.Min(Math.Min(first.X, second.X), Math.Min(third.X, fourth.X)),
             (float)Math.Min(Math.Min(first.Y, second.Y), Math.Min(third.Y, fourth.Y)),
@@ -141,7 +141,7 @@ internal static class SvgPaintRecording
         if (parsed.Geometries.Length != 0 || state.FilterGroupDepth <= 0 || !context.InheritedPresentation.IsDisplayed
             || style.GetDisplay() == SvgDisplay.None)
         {
-            SvgParsedGeometry recorded = Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+            SvgParsedGeometry recorded = Attach(parsed, source, reader.LocalName, state, context.CancellationToken);
             return (style.NonScalingStroke || reader.LocalName is "polygon" or "polyline") && !SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers
                 ? SvgNativeVisualBounds.Cull(recorded, reader, context, source, frame, maximumCommands, state) : recorded;
         }
@@ -153,21 +153,21 @@ internal static class SvgPaintRecording
                 SvgRectangle box;
                 if (reader.LocalName == "path")
                 {
-                    using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumCommands, state.Budget, context.WorkCounter, context.CancellationToken);
+                    using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumCommands, state.Budget, context.CancellationToken);
                     if (data.Value.Length == 0) return parsed;
-                    using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Parser, context.WorkCounter, context.CancellationToken);
-                    SvgPathDataParser.ParseCommands(data.Value, maximumCommands, context.WorkCounter, context.CancellationToken, commands);
-                    box = SvgPathBounds.Compute(commands.AsSpan(), context.WorkCounter, context.CancellationToken);
+                    using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Parser, context.CancellationToken);
+                    SvgPathDataParser.ParseCommands(data.Value, maximumCommands, context.CancellationToken, commands);
+                    box = SvgPathBounds.Compute(commands.AsSpan(), context.CancellationToken);
                 }
                 else if (reader.LocalName is "polygon" or "polyline")
                 {
                     using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(reader.GetAttribute("points") ?? string.Empty,
-                        reader.LocalName, maximumCommands, state.Budget, context.WorkCounter, context.CancellationToken, 0);
+                        reader.LocalName, maximumCommands, state.Budget, context.CancellationToken, 0);
                     if (points.Count == 0) return parsed;
                     float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
                     foreach (SvgFractionalPoint point in points.AsSpan())
                     {
-                        context.WorkCounter.Consume(context.CancellationToken);
+                        context.CancellationToken.ThrowIfCancellationRequested();
                         left = MathF.Min(left, (float)point.X); right = MathF.Max(right, (float)point.X);
                         top = MathF.Min(top, (float)point.Y); bottom = MathF.Max(bottom, (float)point.Y);
                     }
@@ -175,11 +175,11 @@ internal static class SvgPaintRecording
                 }
                 else return parsed;
                 bounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
-                    .Map(SvgViewportFrame.MapGeometry(context.ResolveTransform(reader), frame), context.WorkCounter, context.CancellationToken);
+                    .Map(SvgViewportFrame.MapGeometry(context.ResolveTransform(reader), frame), context.CancellationToken);
             }
             SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), 0, false, source.Scope, source.ElementOpacity, source.OpacityScope)
             { IsEffectAnchor = true, ObjectBounds = bounds, VisualBounds = source.VisualBounds ?? bounds, PaintOrder = source.PaintOrder };
-            using BudgetedGeometryBuilder anchor = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder anchor = new(state.Budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             anchor.Add(SvgGeometry.FromRectangle(default) with { RecordedPaint = state.Scene.RegisterRecordedPaint(paint) });
             parsed.Dispose();
             return new(anchor.Detach(), parsed.ElementCount);
@@ -222,7 +222,7 @@ internal static class SvgPaintRecording
             sourceObjectBox = null;
             sourceObjectMap = SvgAffineTransform.Identity;
             suppressedSource = false;
-            element.WorkCounter.Consume(element.CancellationToken);
+            element.CancellationToken.ThrowIfCancellationRequested();
             SvgPaintBounds bounds;
             switch (input.LocalName)
             {
@@ -256,11 +256,11 @@ internal static class SvgPaintRecording
             if (viewport is {} parent)
                 placement = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(placement);
             sourceObjectMap = placement;
-            return bounds.Map(placement, element.WorkCounter, element.CancellationToken);
+            return bounds.Map(placement, element.CancellationToken);
         }
     }
 
-    internal static SvgParsedGeometry Attach(SvgParsedGeometry parsed, SvgRecordedPaintStyle source, string element, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static SvgParsedGeometry Attach(SvgParsedGeometry parsed, SvgRecordedPaintStyle source, string element, SvgDocumentState state, CancellationToken token)
     {
         try
         {
@@ -274,12 +274,12 @@ internal static class SvgPaintRecording
             SvgPaintBounds? visualBounds = source.VisualBounds;
             if (parsed.SourceObjectBox is {} inputBox)
             {
-                objectBounds = inputBox.Map(parsed.SourceObjectMap, work, token);
+                objectBounds = inputBox.Map(parsed.SourceObjectMap, token);
                 if (source.StrokeBoundsInflation > 0)
                 {
                     float inflation = source.StrokeBoundsInflation;
                     visualBounds = new SvgPaintBounds(MathF.Floor(inputBox.Left - inflation), MathF.Floor(inputBox.Top - inflation),
-                        MathF.Ceiling(inputBox.Right + inflation), MathF.Ceiling(inputBox.Bottom + inflation)).Map(parsed.SourceObjectMap, work, token);
+                        MathF.Ceiling(inputBox.Right + inflation), MathF.Ceiling(inputBox.Bottom + inflation)).Map(parsed.SourceObjectMap, token);
                 }
             }
             if (objectBounds is null && values.Length != 0)
@@ -287,15 +287,15 @@ internal static class SvgPaintRecording
                 SvgGeometry first = values[0];
                 if (first.AuthoredPath is {} path)
                 {
-                    SvgRectangle box = SvgPathBounds.Compute(path.Commands, work, token);
+                    SvgRectangle box = SvgPathBounds.Compute(path.Commands, token);
                     sourceObjectBox = new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height));
                     sourceObjectMap = path.SceneMap;
-                    objectBounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)).Map(path.SceneMap, work, token);
+                    objectBounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)).Map(path.SceneMap, token);
                     if (source.StrokeBoundsInflation > 0)
                     {
                         float inflation = source.StrokeBoundsInflation;
                         visualBounds = new SvgPaintBounds(MathF.Floor((float)box.X - inflation), MathF.Floor((float)box.Y - inflation),
-                            MathF.Ceiling((float)(box.X + box.Width) + inflation), MathF.Ceiling((float)(box.Y + box.Height) + inflation)).Map(path.SceneMap, work, token);
+                            MathF.Ceiling((float)(box.X + box.Width) + inflation), MathF.Ceiling((float)(box.Y + box.Height) + inflation)).Map(path.SceneMap, token);
                     }
                 }
                 else if (element is "polygon" or "polyline")
@@ -304,7 +304,7 @@ internal static class SvgPaintRecording
                     float right = float.NegativeInfinity, bottom = float.NegativeInfinity;
                     foreach (SvgGeometry part in values)
                     {
-                        work.Consume(token);
+                        token.ThrowIfCancellationRequested();
                         if (part.RecordedPaint.IsSourceStroke) continue;
                         SvgRectangle box = part.Kind == SvgGeometryKind.GradientFill ? part.Gradient.Box
                             : part.Kind == SvgGeometryKind.RadialGradient ? part.Radial.Box : SvgMaskSyntax.BoundingBox(part);
@@ -316,7 +316,7 @@ internal static class SvgPaintRecording
             }
             for (int index = 0; index < values.Length; index++)
             {
-                work.Consume(token);
+                token.ThrowIfCancellationRequested();
                 SvgGeometry geometry = values[index];
                 if (sourceObjectBox is {} patternBox)
                 {
@@ -364,11 +364,11 @@ internal static class SvgPaintRecording
                 // Lowerers can emit several native pieces for either operation. A
                 // stable partition changes only operation order, preserving each
                 // native piece and its ordering within the fill or stroke.
-                using BudgetedParserList<SvgGeometry> ordered = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+                using BudgetedParserList<SvgGeometry> ordered = new(state.Budget, SvgMemoryCategory.Parser, token);
                 for (int pass = 0; pass < 2; pass++)
                     foreach (SvgGeometry geometry in values)
                     {
-                        work.Consume(token);
+                        token.ThrowIfCancellationRequested();
                         if (state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).IsStroke == (pass == 0)) ordered.Add(geometry);
                     }
                 ordered.AsSpan().CopyTo(values);
@@ -385,9 +385,9 @@ internal static class SvgPaintRecording
     }
 
     /// <summary>Adopts a lowered leaf batch into a replay scene, rebinding recorded paints from the document scene.</summary>
-    /// <remarks>The target owns adopted geometry. Failure disposes all source values idempotently; both builders retain their bounded work/cancellation contracts.</remarks>
+    /// <remarks>The target owns adopted geometry. Failure disposes all source values idempotently; both builders retain their bounded cancellation contracts.</remarks>
     internal static void AdoptLeafScene(SvgDefinition lowered, SvgSceneBuilder builder, SvgDocumentState state,
-        ParserWorkCounter work, CancellationToken token)
+CancellationToken token)
     {
         SvgLeafMaskMapper? masks = null;
         try
@@ -395,7 +395,7 @@ internal static class SvgPaintRecording
             foreach (SvgGeometry geometry in lowered.Geometries)
             {
                 if (geometry.LeafMask is not null && !ReferenceEquals(state.Scene, builder))
-                    masks ??= SvgLeafMaskMapper.CreateSceneTransfer(state, state.Scene, builder, work, token);
+                    masks ??= SvgLeafMaskMapper.CreateSceneTransfer(state, state.Scene, builder, token);
                 builder.AddGeometry(RebindLeafScene(geometry, state.Scene, builder, masks));
             }
         }
@@ -405,7 +405,7 @@ internal static class SvgPaintRecording
 
     /// <summary>Rebinds borrowed paints and scene-local effects before owned geometry moves into another scene.</summary>
     /// <remarks>Geometry ownership stays with the caller until adoption. Destination registration
-    /// charges bounded scene storage/work and checks cancellation; references are scene-local.</remarks>
+    /// reserves scene storage and checks cancellation; references are scene-local.</remarks>
     internal static SvgGeometry RebindLeafScene(SvgGeometry geometry, SvgSceneBuilder source, SvgSceneBuilder destination, SvgLeafMaskMapper? masks)
     {
         SvgRecordedPaint fill = geometry.RecordedPaint.Identity > 0
@@ -415,7 +415,7 @@ internal static class SvgPaintRecording
         return geometry with { RecordedPaint = fill, RecordedStrokePaint = stroke, LeafMask = masks is null ? geometry.LeafMask : masks.Map(geometry.LeafMask) };
     }
 
-    internal static void FinishScene(SvgDocumentState state, int first, ParserWorkCounter work, CancellationToken token)
+    internal static void FinishScene(SvgDocumentState state, int first, CancellationToken token)
     {
         if (first >= state.Scene.GeometryCount) return;
         SvgRecordedPaintValue source = state.Scene.GetRecordedPaintValue(state.Scene.GeometryAt(first).RecordedPaint);
@@ -427,7 +427,7 @@ internal static class SvgPaintRecording
         SvgLeafMaskBinding? lastBinding = null;
         for (int index = first; index < state.Scene.GeometryCount; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgGeometry geometry = state.Scene.GeometryAt(index);
             if (lastBinding is null || !ReferenceEquals(lastInner, geometry.LeafMask))
             {
@@ -439,7 +439,7 @@ internal static class SvgPaintRecording
         }
     }
 
-    internal static void FinishDefinition(SvgGeometry[] geometries, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static void FinishDefinition(SvgGeometry[] geometries, SvgDocumentState state, CancellationToken token)
     {
         if (geometries.Length == 0 || geometries[0].RecordedPaint.Identity == 0) return;
         SvgRecordedPaintValue source = state.Scene.GetRecordedPaintValue(geometries[0].RecordedPaint);
@@ -450,7 +450,7 @@ internal static class SvgPaintRecording
         SvgLeafMaskBinding? binding = null;
         for (int index = 0; index < geometries.Length; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgGeometry geometry = geometries[index];
             if (binding is null || !ReferenceEquals(lastInner, geometry.LeafMask))
             {
@@ -469,21 +469,21 @@ internal static class SvgPaintRecording
             state.Scene.ChangeRecordedPaint(geometry.RecordedStrokePaint, state.Scene.GetRecordedPaintValue(geometry.RecordedStrokePaint) with { ElementOpacity = SvgPaintOpacity.Opaque });
     }
 
-    internal static SvgGeometry[] WrapInstance(SvgGeometry[] geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static SvgGeometry[] WrapInstance(SvgGeometry[] geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgDocumentState state, CancellationToken token)
     {
-        WrapInstance(geometries.AsSpan(), opacity, scope, state, work, token);
+        WrapInstance(geometries.AsSpan(), opacity, scope, state, token);
         return geometries;
     }
 
-    internal static void WrapInstance(Span<SvgGeometry> geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
-        => WrapInstance(geometries, opacity, scope, null, state, work, token);
+    internal static void WrapInstance(Span<SvgGeometry> geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgDocumentState state, CancellationToken token)
+        => WrapInstance(geometries, opacity, scope, null, state, token);
 
     /// <summary>Wraps a borrowed geometry span with owned parser metadata for opacity and an optional outer viewport clip.
-    /// Metadata reserves before allocation; each geometry update charges work and cancellation. No native geometry owner changes.</summary>
-    internal static void WrapInstance(Span<SvgGeometry> geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgClipBox? viewportClip, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
-        => WrapInstance(geometries, opacity, scope, viewportClip, null, state, work, token);
+    /// Metadata reserves before allocation; each geometry update observes cancellation. No native geometry owner changes.</summary>
+    internal static void WrapInstance(Span<SvgGeometry> geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgClipBox? viewportClip, SvgDocumentState state, CancellationToken token)
+        => WrapInstance(geometries, opacity, scope, viewportClip, null, state, token);
 
-    internal static void WrapInstance(Span<SvgGeometry> geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgClipBox? viewportClip, SvgAffineViewportClip? affineViewport, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static void WrapInstance(Span<SvgGeometry> geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgClipBox? viewportClip, SvgAffineViewportClip? affineViewport, SvgDocumentState state, CancellationToken token)
     {
         if ((opacity.Value == 1 && viewportClip is null && affineViewport is null) || geometries.Length == 0) return;
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
@@ -493,35 +493,35 @@ internal static class SvgPaintRecording
         operation.RegionKind = affineViewport is not null ? SvgLayerRegionKind.AffineViewport
             : viewportClip is { Antialiasing: SvgClipAntialiasing.None } ? SvgLayerRegionKind.Bounds
             : viewportClip is null ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.Viewport;
-        WrapOperation(geometries, operation, state, work, token);
+        WrapOperation(geometries, operation, state, token);
     }
 
     /// <summary>Retains an authored local filter until its owning scene emits the completed source range.</summary>
     internal static void WrapFilter(Span<SvgGeometry> geometries, string? filter, SvgAffineTransform transform, SvgViewportLengthBases lengthBases,
-        SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        SvgDocumentState state, CancellationToken token)
     {
         if (geometries.IsEmpty) return;
         if (SvgRetainedFilter.Create(filter, transform, lengthBases, state) is {} retained)
-            WrapFilter(geometries, retained, state, work, token);
+            WrapFilter(geometries, retained, state, token);
     }
 
     /// <summary>Retains an isolated filter around an ordered borrowed batch without copying geometry or resource storage.</summary>
-    internal static void WrapFilter(Span<SvgGeometry> geometries, SvgRetainedFilter filter, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static void WrapFilter(Span<SvgGeometry> geometries, SvgRetainedFilter filter, SvgDocumentState state, CancellationToken token)
     {
         if (geometries.IsEmpty) return;
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Resolved = true; operation.PreservesIsolation = true; operation.Value = 255;
         operation.RegionKind = SvgLayerRegionKind.Filter; operation.Filter = filter; operation.RecordingScope = state.NewRecordingScope();
-        WrapOperation(geometries, operation, state, work, token);
+        WrapOperation(geometries, operation, state, token);
     }
 
-    private static void WrapOperation(Span<SvgGeometry> geometries, SvgLeafMaskOperation operation, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    private static void WrapOperation(Span<SvgGeometry> geometries, SvgLeafMaskOperation operation, SvgDocumentState state, CancellationToken token)
     {
         SvgLeafMaskBinding? lastInner = null;
         SvgLeafMaskBinding? binding = null;
         for (int index = 0; index < geometries.Length; index++)
         {
-            work.Consume(token);
+            token.ThrowIfCancellationRequested();
             SvgGeometry geometry = geometries[index];
             if (binding is null || !ReferenceEquals(lastInner, geometry.LeafMask))
             {

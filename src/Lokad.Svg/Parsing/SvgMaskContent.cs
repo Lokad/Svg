@@ -10,7 +10,7 @@ internal readonly record struct SvgMaskSourceRange(int FirstChild, int ChildCoun
 /// <summary>Retains one spatial mask evaluation for ordinary leaves, groups or affine viewport clips.</summary>
 /// <remarks>Legacy contours own reserved arrays and shared grayscale paint; vector content borrows
 /// an immutable scene adopted by its parent. Rasterization evaluates content into bounded mask/clip
-/// surfaces, with charged replay and cancellation; cleanup never observes cancellation.</remarks>
+/// surfaces, with cancellation during replay; cleanup never observes cancellation.</remarks>
 internal readonly record struct SvgMaskContent(SvgGeometry[] Geometries, byte Luminance, bool IsAlpha)
 {
     /// <summary>Marks a resource whose own display removes the binding, independently of empty mask content.</summary>

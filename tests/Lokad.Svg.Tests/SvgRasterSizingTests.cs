@@ -45,7 +45,7 @@ public sealed class SvgRasterSizingTests
         Assert.Equal(300, BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(20, 4)));
         Assert.Equal(SvgConverter.ConvertToPng(svg, new(null, .125, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None).ToArray(), png.ToArray());
         RenderBudget budget = new(32_000_000);
-        DecodedPngImage decoded = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, new(10_000_000), CancellationToken.None);
+        DecodedPngImage decoded = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, CancellationToken.None);
         using (DecodedPngRaster pixels = Assert.IsType<DecodedPngRaster>(decoded.Raster))
         {
             Assert.Equal(new byte[] { 255, 0, 0, 255 }, pixels.Pixels.AsSpan((150 * decoded.Width + 300) * 4, 4).ToArray());
@@ -119,22 +119,21 @@ public sealed class SvgRasterSizingTests
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='4800' height='2400'/>"u8.ToArray();
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, null, new(80, 60, null));
         RenderBudget budget = new(1_000_000);
-        SvgRenderOptions resolved = ResolveRasterOptions(svg, options, budget, new(10_000), CancellationToken.None);
+        SvgRenderOptions resolved = ResolveRasterOptions(svg, options, budget, CancellationToken.None);
         Assert.Equal(new SvgRasterSize(80, 40, 1d / 60), resolved.ResolvedRasterSize);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget denied = new(1);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => ResolveRasterOptions(svg, options, denied, new(10_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => ResolveRasterOptions(svg, options, denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => ResolveRasterOptions(svg, options, budget, new(1), CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => ResolveRasterOptions("<svg"u8.ToArray(), options, budget, new(10_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => ResolveRasterOptions("<svg"u8.ToArray(), options, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         SvgDocumentDimensions dimensions = SvgConverter.InspectDimensions(svg, options, CancellationToken.None);
         Assert.Equal("outputScale", Assert.Throws<ArgumentOutOfRangeException>(() => dimensions.GetRasterSize(double.NaN, options.RasterBounds, options.Limits)).ParamName);
 
-        static SvgRenderOptions ResolveRasterOptions(ReadOnlyMemory<byte> source, SvgRenderOptions renderOptions, RenderBudget renderBudget, ParserWorkCounter work, CancellationToken token)
+        static SvgRenderOptions ResolveRasterOptions(ReadOnlyMemory<byte> source, SvgRenderOptions renderOptions, RenderBudget renderBudget, CancellationToken token)
         {
-            using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(source, renderOptions.Limits, renderBudget, work, token);
+            using SvgDocumentPreparation preparation = SvgDocumentPreparation.Create(source, renderOptions.Limits, renderBudget, token);
             return preparation.ResolveRasterOptions(renderOptions);
         }
     }

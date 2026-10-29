@@ -30,7 +30,7 @@ public sealed partial class SvgTextPaintBoundsTests
         byte[] input = TextEncoding.UTF8.GetBytes(row.GetProperty("source").GetString() ?? throw new InvalidDataException("Missing source document."));
         using SvgFontSnapshot fonts = await CreateSnapshotAsync();
         RenderBudget budget = new(8_000_000);
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, new(10_000_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None))
         {
             SvgSceneStorage scene = root.SceneStorage ?? throw new InvalidDataException("Missing source paint records.");
             SvgPaintBounds? recorded = null, element = null;
@@ -55,7 +55,7 @@ public sealed partial class SvgTextPaintBoundsTests
 
     [Fact]
     [Trait("Layer", "Contracts")]
-    public async Task Recording_scope_copy_releases_after_refusal_and_partial_work_failure_then_retries_and_borrows()
+    public async Task Recording_scope_copy_releases_after_refusal_and_partial_failure_then_retries_and_borrows()
     {
         using SvgFontSnapshot fonts = await CreateSnapshotAsync();
         RenderBudget runBudget = new(1_000_000), metadata = new(1_000_000), denied = new(1);
@@ -63,17 +63,15 @@ public sealed partial class SvgTextPaintBoundsTests
         {
             SvgTextRecordingScope[] scopes = [new(0, 1, 0, 4, false), new(1, 2, 1, 2, false)];
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                run.RetainRecordingScopes(scopes, SvgTextRecordingStroke.None, denied, new(100), CancellationToken.None)).ErrorCode);
+                run.RetainRecordingScopes(scopes, SvgTextRecordingStroke.None, denied, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                run.RetainRecordingScopes(scopes, SvgTextRecordingStroke.None, metadata, new(2), CancellationToken.None)).ErrorCode);
-            Assert.True(metadata.Snapshot().PeakBytes > 0);
             Assert.Equal(0, metadata.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new();
             cancellation.Cancel();
-            Assert.Throws<OperationCanceledException>(() => run.RetainRecordingScopes(scopes, SvgTextRecordingStroke.None, metadata, new(100), cancellation.Token));
+            Assert.Throws<OperationCanceledException>(() => run.RetainRecordingScopes(scopes, SvgTextRecordingStroke.None, metadata, cancellation.Token));
             Assert.Equal(0, metadata.Snapshot().CurrentBytes);
-            run.RetainRecordingScopes(scopes, SvgTextRecordingStroke.None, metadata, new(100), CancellationToken.None);
+            run.RetainRecordingScopes(scopes, SvgTextRecordingStroke.None, metadata, CancellationToken.None);
+            Assert.True(metadata.Snapshot().PeakBytes > 0);
             scopes[1] = scopes[1] with { StrokeWidth = 99 };
             Assert.Equal(2, run.RecordingScopes[1].StrokeWidth);
             long retained = metadata.Snapshot().CurrentBytes;
@@ -81,7 +79,7 @@ public sealed partial class SvgTextPaintBoundsTests
             {
                 OwnedParserArray<SvgTextPaintFragment> fragments = new([new(0, 1, run.Glyphs[1].Advance) { SourceStart = 1, SourceEnd = 2 }],
                     runBudget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgTextPaintFragment>(1), SvgMemoryCategory.Geometry));
-                using SvgTextRun view = new(run, 1, 1, fragments, run.Style, run.DeviceMetrics, new(100), CancellationToken.None);
+                using SvgTextRun view = new(run, 1, 1, fragments, run.Style, run.DeviceMetrics, CancellationToken.None);
                 Assert.Equal(new SvgTextRecordingScope(1, 2, 1, 2, false), Assert.Single(view.RecordingScopes.ToArray()));
                 view.Dispose();
                 view.Dispose();
@@ -95,35 +93,33 @@ public sealed partial class SvgTextPaintBoundsTests
 
     [Fact]
     [Trait("Layer", "Contracts")]
-    public async Task Recording_box_scratch_releases_after_denial_cancellation_and_work_failure_then_retries()
+    public async Task Recording_box_scratch_releases_after_denial_cancellation_then_retries()
     {
         using SvgFontSnapshot fonts = await CreateSnapshotAsync();
         RenderBudget runBudget = new(1_000_000), scratch = new(1_000_000), denied = new(256);
         using (SvgTextRun run = CreateRun("Aj", fonts, runBudget))
         {
-            run.RetainRecordingScopes([new(0, 2, 0, 4, false)], SvgTextRecordingStroke.None, runBudget, new(100), CancellationToken.None);
+            run.RetainRecordingScopes([new(0, 2, 0, 4, false)], SvgTextRecordingStroke.None, runBudget, CancellationToken.None);
             using (SvgTextLayoutBounds.MetricCache limited = SvgTextLayoutBounds.MetricCache.Create(denied))
             {
                 long retained = denied.Snapshot().CurrentBytes;
                 Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                    SvgTextLayoutBounds.MeasureSourceVisual(run, [], SvgAffineTransform.Identity, limited, new(1_000_000), CancellationToken.None)).ErrorCode);
+                    SvgTextLayoutBounds.MeasureSourceVisual(run, [], SvgAffineTransform.Identity, limited, CancellationToken.None)).ErrorCode);
                 Assert.Equal(retained, denied.Snapshot().CurrentBytes);
             }
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
             using (SvgTextLayoutBounds.MetricCache cache = SvgTextLayoutBounds.MetricCache.Create(scratch))
             {
                 long retained = scratch.Snapshot().CurrentBytes;
-                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-                    SvgTextLayoutBounds.MeasureSourceVisual(run, [], SvgAffineTransform.Identity, cache, new(1), CancellationToken.None)).ErrorCode);
-                Assert.True(scratch.Snapshot().PeakBytes > retained);
                 Assert.Equal(retained, scratch.Snapshot().CurrentBytes);
                 using CancellationTokenSource cancellation = new();
                 cancellation.Cancel();
                 Assert.Throws<OperationCanceledException>(() =>
-                    SvgTextLayoutBounds.MeasureSourceVisual(run, [], SvgAffineTransform.Identity, cache, new(1_000_000), cancellation.Token));
+                    SvgTextLayoutBounds.MeasureSourceVisual(run, [], SvgAffineTransform.Identity, cache, cancellation.Token));
                 Assert.Equal(retained, scratch.Snapshot().CurrentBytes);
-                SvgRectangle result = SvgTextLayoutBounds.MeasureSourceVisual(run, [], SvgAffineTransform.Identity, cache, new(1_000_000), CancellationToken.None);
+                SvgRectangle result = SvgTextLayoutBounds.MeasureSourceVisual(run, [], SvgAffineTransform.Identity, cache, CancellationToken.None);
                 Assert.True(result.Width > 0 && result.Height > 0);
+                Assert.True(scratch.Snapshot().PeakBytes > retained);
             }
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
         }

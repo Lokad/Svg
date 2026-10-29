@@ -159,21 +159,11 @@ public sealed partial class OpenTypeFontTests
         byte[] unchanged = input.ToArray();
         RenderBudget budget = new(1_000_000);
         using RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Parser);
-        long used;
-        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             Assert.False(root.HasUnsupportedChild);
-            used = root.ParserWorkUnits;
         }
         Assert.Equal(73, budget.Snapshot().CurrentBytes);
-        foreach (long allowance in new[] { 1, used / 2, used - 1 })
-        {
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            {
-                using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(allowance), CancellationToken.None);
-            }).ErrorCode);
-            Assert.Equal(73, budget.Snapshot().CurrentBytes);
-        }
         RenderBudget tight = new(budget.Snapshot().PeakBytes - 1);
         using RenderBudget.BudgetReservation tightBorrowed = tight.Reserve(73, SvgMemoryCategory.Parser);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, CancellationToken.None)).ErrorCode);

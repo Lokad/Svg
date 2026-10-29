@@ -29,7 +29,7 @@ public sealed class SvgTransformListTests
     {
         string control = template.Replace("$", " ", StringComparison.Ordinal);
         string commas = template.Replace("$", ", ", StringComparison.Ordinal);
-        Assert.Equal(SvgGeometrySyntax.ParseTransform(control, new(10_000), CancellationToken.None), SvgGeometrySyntax.ParseTransform(commas, new(10_000), CancellationToken.None));
+        Assert.Equal(SvgGeometrySyntax.ParseTransform(control, CancellationToken.None), SvgGeometrySyntax.ParseTransform(commas, CancellationToken.None));
         foreach (string target in new[] { "shape", "linear", "radial", "pattern" })
             Assert.Equal(Render(Input(target, control)), Render(Input(target, commas)));
     }
@@ -66,13 +66,12 @@ public sealed class SvgTransformListTests
     }
 
     [Fact]
-    public void Comma_lists_observe_work_memory_cancellation_and_token_limits()
+    public void Comma_lists_observe_memory_cancellation_and_token_limits()
     {
         foreach (string target in new[] { "shape", "linear", "radial", "pattern" })
         {
             byte[] input = Input(target, "translate(2 2),scale(.8 .9)");
             RenderBudget budget = new(1_000_000);
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1), CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
             RenderBudget denied = new(1);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
