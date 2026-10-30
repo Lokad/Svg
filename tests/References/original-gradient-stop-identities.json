@@ -1,0 +1,55 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "f3c9f8dde70a73c5d62be0c9e9448e73218e84dbf5189180b5b7cfd3ad5aa1ae",
+  "referenceSha256": "3122b7c5896bc3495aa5b3897370701843e3bb760c3236b39096e31baaa3dc3e",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-gradient-stop-identities.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-gradient-stop-identities",
+  "viewport": {
+    "width": 32,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 composition isolates stop identity on linear/radial definitions and inherited stops. Both native platform contexts captured independently; identical PNG storage is shared.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "f3c9f8dde70a73c5d62be0c9e9448e73218e84dbf5189180b5b7cfd3ad5aa1ae",
+      "referenceSha256": "3122b7c5896bc3495aa5b3897370701843e3bb760c3236b39096e31baaa3dc3e",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "f3c9f8dde70a73c5d62be0c9e9448e73218e84dbf5189180b5b7cfd3ad5aa1ae",
+      "referenceSha256": "3122b7c5896bc3495aa5b3897370701843e3bb760c3236b39096e31baaa3dc3e",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  }
+}

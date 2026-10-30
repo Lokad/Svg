@@ -17287,6 +17287,26 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-radial-one-stop-alpha-direct.json",
       "referenceSha256": "02f38d0c621c8148d8a76f82c5e230015264545dd7993468d04db63c328a1442"
+    },
+    {
+      "id": "original-gradient-stop-identities",
+      "path": "original/gradient-stop-identities.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "f3c9f8dde70a73c5d62be0c9e9448e73218e84dbf5189180b5b7cfd3ad5aa1ae",
+      "materializedSha256": "f3c9f8dde70a73c5d62be0c9e9448e73218e84dbf5189180b5b7cfd3ad5aa1ae",
+      "featureTags": ["gradient", "stop-id", "metadata", "inheritance"],
+      "width": 32,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-gradient-stop-identities.json",
+      "referenceSha256": "3122b7c5896bc3495aa5b3897370701843e3bb760c3236b39096e31baaa3dc3e"
     }
   ]
 }

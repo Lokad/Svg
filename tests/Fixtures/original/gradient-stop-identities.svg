@@ -1,0 +1,16 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16">
+  <defs>
+    <linearGradient id="linear">
+      <stop id="linear-start" stop-color="#e04020"/>
+      <stop id="linear-end" offset="1" stop-color="#2040e0"/>
+    </linearGradient>
+    <radialGradient id="radial">
+      <stop id="radial-start" stop-color="#e04020"/>
+      <stop id="radial-end" offset="1" stop-color="#2040e0"/>
+    </radialGradient>
+    <linearGradient id="alias" href="#linear"/>
+  </defs>
+  <rect x="1" y="1" width="14" height="14" fill="url(#alias)"/>
+  <rect x="17" y="1" width="14" height="14" fill="url(#radial)"/>
+</svg>

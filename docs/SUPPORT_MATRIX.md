@@ -124,7 +124,8 @@ Gradient restrictions:
 - Partial radial center/radius and focal-only overrides reject. Partial linear
   vectors cannot override units or borrow another kind's vector; units cannot
   change without replacement vectors.
-- Stop color/opacity attributes and inline styles support property priority/order.
+- Stops accept bounded `id` metadata. Color/opacity attributes and inline styles
+  support property priority/order.
   Stylesheet stop declarations, resource/stop `currentColor`, gradient-container
   `color` and linearRGB gradient interpolation reject.
 

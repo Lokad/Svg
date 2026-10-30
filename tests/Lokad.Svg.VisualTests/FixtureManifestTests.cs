@@ -95,6 +95,21 @@ public sealed class FixtureManifestTests
             Assert.Equal(RequiredString(metadataRoot, "referenceSha256"), referenceHash);
             Assert.Equal(RequiredString(fixture, "referenceSha256"), referenceHash);
 
+            if (metadataRoot.TryGetProperty("platformCaptures", out JsonElement platforms))
+            {
+                foreach (string platform in new[] { "win64", "linux64" })
+                {
+                    JsonElement capture = platforms.GetProperty(platform);
+                    Assert.Equal(platform, RequiredString(capture, "platform"));
+                    Assert.Equal(Hash(svg), RequiredString(capture, "inputSha256"));
+                    Assert.Equal(referenceHash, RequiredString(capture, "referenceSha256"));
+                    Assert.Equal(3, capture.GetProperty("freshProcessCaptures").GetInt32());
+                    Assert.Equal("healthy", RequiredString(capture, "captureStartupHealth"));
+                    Assert.True(capture.GetProperty("captureProfilesCleaned").GetBoolean());
+                    Assert.Matches("^[0-9a-f]{64}$", RequiredString(capture, "chromeExecutableSha256"));
+                }
+            }
+
             RgbaImage reference = PngRgbaDecoder.Decode(referenceBytes, expectedPixels);
             Assert.Equal(width, reference.Width);
             Assert.Equal(height, reference.Height);

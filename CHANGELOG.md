@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Accept bounded identity metadata on gradient stops; preserve stop values and
+  inherited linear/radial painting.
 - Share polygon contour storage across paint bindings and transfer its memory
   charge during repainting and mask stamping, avoiding refusal caused by charging
   reused arrays twice. Preserve source ownership when paint or placement fails.

@@ -14,9 +14,17 @@ combined diagnostic pass took 62.21 s, including retrieval and process startup.
 These are initial outcomes, **not 136 accepted browser matches** or a throughput
 benchmark. Each original still needs rendering qualification.
 
+The matched-viewport pass accounts for all 204 originals with healthy captures on
+both hosts: 130 of the 136 rendered inputs are exact; six differ. It took 773.47 s
+and retained no SVG payload files. Stop-ID admission is now corrected through the
+shared attribute policy. All 204 originals were revalidated in 51.64 s; every
+previously rendered PNG remains byte-identical. The resulting 144 renders contain
+130 exact and 14 differing inputs per host, with 60 still rejected. These counts
+retain explicit font/resource/static-state qualifications in the ledger.
+
 | First blocking area | Originals | Required review |
 | --- | ---: | --- |
-| Gradient-stop `id` attributes | 13 | Admit valid identity metadata without changing stop values, inheritance or resource lookup. |
+| Gradient-stop `id` attributes | 13 | Admission fixed. One original CC0 fixture covers linear/radial and inherited stops, with separate native platform provenance; direct identifier boundaries retain numeric values. Eight originals now render inexactly; five expose subsequent filter, pattern or color gates. |
 | Fixed units in stroke offsets | 3 | Reuse a consistent length model; isolate units from dash geometry and raster rounding. |
 | Other gradient declarations | 5 | Partial radial vectors, percentage coordinates, invalid attributes and invalid units need separate valid/invalid controls. |
 | Required fonts | 9 | Supply declared programs explicitly; distinguish SVG-font previews from font-free geometry. |
@@ -47,6 +55,12 @@ remain unqualified for renderer acceptance. A separate canvas exploration makes
 the absolute fractional control exact but changes viewBox-only sizing, so it
 cannot substitute for the screenshot recipe. See the
 [capture model record](capture-model.json) for identities and measurements.
+
+The stop-ID correction is protected by the
+[orthogonal fixture](../../Fixtures/original/gradient-stop-identities.svg) and
+[native provenance](../../References/original-gradient-stop-identities.json).
+The original-to-fixture map and all thirteen follow-up outcomes are in the ledger;
+the remaining image differences and later rejections are open work.
 
 Group confirmed differences by shared mechanism and compose small original fixtures
 with their original-to-fixture mapping, licenses and independent native references.
