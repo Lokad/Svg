@@ -1014,5 +1014,55 @@
     "allPassed": true,
     "scope": "Investigation only; not full qualification."
   },
-  "nextModelQuestion": "Distinguish image/container CSS layout from authored SVG user space and destination raster. A direct-document DOM probe resolves 17.4 x 11.4 to a 17.390625 x 11.390625 layout box (1/64 units); for viewBox 0 0 24 16 its scale is 0.7119140625, x offset 0.15234375. A companion with that viewBox map and corresponding destination projection matched one healthy Windows image capture, but still needs independent platform triples. No universal quantization or stretching rule is established."
+  "nextModelQuestion": "Distinguish image/container CSS layout from authored SVG user space and destination raster. A direct-document DOM probe resolves 17.4 x 11.4 to a 17.390625 x 11.390625 layout box (1/64 units); for viewBox 0 0 24 16 its scale is 0.7119140625, x offset 0.15234375. A companion with that viewBox map and corresponding destination projection matched one healthy Windows image capture, but still needs independent platform triples. No universal quantization or stretching rule is established.",
+  "scimitarIntegerRootIsolation": {
+    "sourceBaseline": "8f02b9205b2de8dd1ea92f7617d0c3573047584b",
+    "name": "scimitar.svg",
+    "sourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+    "variantSourceSha256": "809cbb10ee0bed328198c8a16a70475e1b5f769da14867122a74145a78320184",
+    "recipe": "Change only root width/height declarations from 466.11172x265.35126 to 466x265, preserving every other byte. No viewBox. Transparent capture; image and screenshot viewports both 466x265, DPR 1. Source downloaded/hash-checked into bounded RAM and discarded.",
+    "originalComparisons": {
+      "windows": {
+        "status": "different",
+        "changedPixels": 36363,
+        "maximumError": 137,
+        "totalChannelError": 386847
+      },
+      "linux": {
+        "status": "different",
+        "changedPixels": 36363,
+        "maximumError": 137,
+        "totalChannelError": 386847
+      }
+    },
+    "variantComparisons": [
+      {
+        "host": "windows",
+        "originalSourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+        "variantSourceSha256": "809cbb10ee0bed328198c8a16a70475e1b5f769da14867122a74145a78320184",
+        "sourceSvgFilesRetained": 0,
+        "nativeFreshProcesses": 1,
+        "nativeStartupHealth": "healthy",
+        "nativeProfilesCleaned": true,
+        "changedPixels": 277,
+        "maximumError": 56,
+        "totalChannelError": 1898,
+        "librarySha256": "83076619c36f35e9481de69a7b4e8cc658899edd758a79e9acc29c308633f316"
+      },
+      {
+        "host": "linux",
+        "originalSourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+        "variantSourceSha256": "809cbb10ee0bed328198c8a16a70475e1b5f769da14867122a74145a78320184",
+        "sourceSvgFilesRetained": 0,
+        "nativeFreshProcesses": 1,
+        "nativeStartupHealth": "healthy",
+        "nativeProfilesCleaned": true,
+        "changedPixels": 277,
+        "maximumError": 56,
+        "totalChannelError": 1898,
+        "librarySha256": "83076619c36f35e9481de69a7b4e8cc658899edd758a79e9acc29c308633f316"
+      }
+    ],
+    "qualification": "One fresh healthy/profile-cleaned exploratory capture per platform. Root/recording projection and remaining rendering errors are separate; 277 pixels /1,898 total error remain. No original/reference admission, layout/fitting change or output-stretch prototype promotion."
+  }
 }

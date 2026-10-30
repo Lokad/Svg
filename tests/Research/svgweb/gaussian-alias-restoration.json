@@ -1,0 +1,445 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "8f02b9205b2de8dd1ea92f7617d0c3573047584b",
+  "closedScope": [
+    "Ordinary terminal Gaussian aliases consume retained SourceAlpha/linearRGB color-filter shaders instead of treating their stored texels as an ordinary packed image.",
+    "Captured affine sources preserve pending filter metadata for their later sampler. Nonopaque terminal output materializes the filter before packed paint-alpha/clip restoration.",
+    "A stack texel serves nonopaque aliases; no full-surface allocation or new owner is introduced. Opaque stored shader paints share the existing restoration branch."
+  ],
+  "regressions": {
+    "tests": "../../Lokad.Svg.Tests/SvgFilterAliasRestorationTests.cs",
+    "cases": 5,
+    "beforeFailed": 3,
+    "beforePassedControls": 2,
+    "beforeSeconds": 0.309,
+    "focusedAfter": {
+      "cases": 144,
+      "passed": 144,
+      "seconds": 0.304,
+      "selection": "Alias restoration, source coverage, image storage and exclusive bitmap replay."
+    },
+    "qualification": "Before/after selections differ; these are functional xUnit durations, not a performance comparison. Input graphs remain distinct despite identical resulting texels."
+  },
+  "nativeContext": {
+    "width": 1,
+    "height": 1,
+    "deviceScaleFactor": 1,
+    "background": "transparent",
+    "pins": {
+      "windows": {
+        "platform": "win64",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "captureRecipeRevision": "3",
+        "freshProcessCaptures": 3,
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true
+      },
+      "linux": {
+        "platform": "linux64",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "captureRecipeRevision": "3",
+        "freshProcessCaptures": 3,
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true
+      }
+    },
+    "qualification": "All numerical inputs have fresh healthy/profile-cleaned native platform triples; shared PNG bytes retain independent source hashes and capture records."
+  },
+  "numericalControls": [
+    {
+      "id": "zero",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><filter id='f'><feGaussianBlur stdDeviation='0'/></filter></defs><rect width='1' height='1' fill='#7f7f7f'/><rect width='1' height='1' fill='black' fill-opacity='.00392156862745098' filter='url(#f)'/></svg>\n",
+      "sourceSha256": "d621fa99f1dfe2272bc09603354eedb548d45386c511ad25fd329ba5278f062c",
+      "reference": "black-linear-texel.png",
+      "referenceSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+      "nativeRgba": [
+        127,
+        127,
+        127,
+        255
+      ],
+      "beforeChangedPixels": {
+        "windows": 1,
+        "linux": 1
+      },
+      "afterChangedPixelsPerPlatform": 0,
+      "freshNativeProcessesPerPlatform": 3,
+      "captures": {
+        "windows": [
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "linux": [
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "role": "Exact zero Gaussian retains linearRGB source-filter restoration."
+    },
+    {
+      "id": "below-threshold",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><filter id='f'><feGaussianBlur stdDeviation='.02999999'/></filter></defs><rect width='1' height='1' fill='#7f7f7f'/><rect width='1' height='1' fill='black' fill-opacity='.00392156862745098' filter='url(#f)'/></svg>\n",
+      "sourceSha256": "8f873bc493f22d873c8bc114df28edd1a5bbb7f686c3227c63b86ffeaf17941f",
+      "reference": "black-linear-texel.png",
+      "referenceSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+      "nativeRgba": [
+        127,
+        127,
+        127,
+        255
+      ],
+      "beforeChangedPixels": {
+        "windows": 1,
+        "linux": 1
+      },
+      "afterChangedPixelsPerPlatform": 0,
+      "freshNativeProcessesPerPlatform": 3,
+      "captures": {
+        "windows": [
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "linux": [
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "role": "An effective-zero positive deviation preserves its own native bounds/alias selection."
+    },
+    {
+      "id": "source-alpha",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><filter id='f'><feGaussianBlur stdDeviation='0' in='SourceAlpha'/></filter></defs><rect width='1' height='1' fill='#7f7f7f'/><rect width='1' height='1' fill='red' fill-opacity='.00392156862745098' filter='url(#f)'/></svg>\n",
+      "sourceSha256": "d4b791d3f79e50a3ead00ef6fec4cf026cf404ce5d15c309219b60d488f2faf7",
+      "reference": "black-linear-texel.png",
+      "referenceSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+      "nativeRgba": [
+        127,
+        127,
+        127,
+        255
+      ],
+      "beforeChangedPixels": {
+        "windows": 1,
+        "linux": 1
+      },
+      "afterChangedPixelsPerPlatform": 0,
+      "freshNativeProcessesPerPlatform": 3,
+      "captures": {
+        "windows": [
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "linux": [
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "role": "SourceAlpha retains a shader independently of RGB transfer."
+    },
+    {
+      "id": "nonopaque",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><filter id='f'><feGaussianBlur stdDeviation='0'/></filter></defs><rect width='1' height='1' fill='#ffffff'/><rect width='1' height='1' fill='black' fill-opacity='.00392156862745098' opacity='.625' filter='url(#f)'/></svg>\n",
+      "sourceSha256": "b7c1523ecd4415d854bb27d3d501a08e6c5071c6a4311a5b2096e6c732809bee",
+      "reference": "gaussian-alias-nonopaque-texel.png",
+      "referenceSha256": "fbc4a7cb850c9e2eb46749ce91b3d34c54a7649aba1163fafae64a2b1a6a93af",
+      "nativeRgba": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "beforeChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "afterChangedPixelsPerPlatform": 0,
+      "freshNativeProcessesPerPlatform": 3,
+      "captures": {
+        "windows": [
+          {
+            "pngSha256": "fbc4a7cb850c9e2eb46749ce91b3d34c54a7649aba1163fafae64a2b1a6a93af",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "fbc4a7cb850c9e2eb46749ce91b3d34c54a7649aba1163fafae64a2b1a6a93af",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "fbc4a7cb850c9e2eb46749ce91b3d34c54a7649aba1163fafae64a2b1a6a93af",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "linux": [
+          {
+            "pngSha256": "fbc4a7cb850c9e2eb46749ce91b3d34c54a7649aba1163fafae64a2b1a6a93af",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "fbc4a7cb850c9e2eb46749ce91b3d34c54a7649aba1163fafae64a2b1a6a93af",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "fbc4a7cb850c9e2eb46749ce91b3d34c54a7649aba1163fafae64a2b1a6a93af",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "role": "White backdrop distinguishes materialization plus packed paint alpha from a fused floating opacity."
+    },
+    {
+      "id": "srgb",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><filter id='f' color-interpolation-filters='sRGB'><feGaussianBlur stdDeviation='0'/></filter></defs><rect width='1' height='1' fill='#7f7f7f'/><rect width='1' height='1' fill='black' fill-opacity='.00392156862745098' filter='url(#f)'/></svg>\n",
+      "sourceSha256": "bc2b1a9361067efdddfbd80ca4c7a58629da82d096de99b00b21c50af5d0472b",
+      "reference": "gaussian-alias-srgb-texel.png",
+      "referenceSha256": "69887393f97052cfd2529ba2a11b84bc6a7e13f7f85268a16346f4345ac87fe1",
+      "nativeRgba": [
+        126,
+        126,
+        126,
+        255
+      ],
+      "beforeChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "afterChangedPixelsPerPlatform": 0,
+      "freshNativeProcessesPerPlatform": 3,
+      "captures": {
+        "windows": [
+          {
+            "pngSha256": "69887393f97052cfd2529ba2a11b84bc6a7e13f7f85268a16346f4345ac87fe1",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "69887393f97052cfd2529ba2a11b84bc6a7e13f7f85268a16346f4345ac87fe1",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "69887393f97052cfd2529ba2a11b84bc6a7e13f7f85268a16346f4345ac87fe1",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "linux": [
+          {
+            "pngSha256": "69887393f97052cfd2529ba2a11b84bc6a7e13f7f85268a16346f4345ac87fe1",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "69887393f97052cfd2529ba2a11b84bc6a7e13f7f85268a16346f4345ac87fe1",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "69887393f97052cfd2529ba2a11b84bc6a7e13f7f85268a16346f4345ac87fe1",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "role": "Explicit sRGB retains the packed image route when no color-filter shader remains."
+    }
+  ],
+  "rendering": {
+    "fixture": "../../Fixtures/original/filter-gaussian-alias-backdrop.svg",
+    "reference": "../../References/original-filter-gaussian-alias-backdrop.json",
+    "sourceSha256": "d674cd5fdacdab32b8f99939b5a20855b91fed8c85f8284baacb07ed97fa76ed",
+    "nativePngSha256": "fa16fd8890870b1cc44f1f36cfd51c8e773f536b06145275f611115b20ea5c6c",
+    "freshNativeProcessesPerPlatform": 3,
+    "beforeChangedPixelsPerPlatform": 118,
+    "afterChangedPixelsPerPlatform": 0,
+    "role": "A curved source over a nonconstant backdrop protects ordinary terminal restoration and source construction together."
+  },
+  "validation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 4475,
+      "seconds": 19.844599100062624,
+      "librarySha256": "3394858ca3e19c576a0416cea4d52e973340e72d0c7709e97da945866d3e10ac"
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 10801,
+      "seconds": 38.55022530001588,
+      "librarySha256": "3394858ca3e19c576a0416cea4d52e973340e72d0c7709e97da945866d3e10ac"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 4475,
+      "seconds": 27.359453900018707,
+      "librarySha256": "beb718f11dc40ae39e3f09b9a9d84acb8a8e166bf82fe11cf11db159e4e20f8c"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 10801,
+      "seconds": 42.21331949997693,
+      "librarySha256": "beb718f11dc40ae39e3f09b9a9d84acb8a8e166bf82fe11cf11db159e4e20f8c"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 4475,
+      "seconds": 17.39221128,
+      "librarySha256": "3394858ca3e19c576a0416cea4d52e973340e72d0c7709e97da945866d3e10ac"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 10801,
+      "seconds": 65.955174567,
+      "librarySha256": "3394858ca3e19c576a0416cea4d52e973340e72d0c7709e97da945866d3e10ac"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 4475,
+      "seconds": 23.91131116,
+      "librarySha256": "beb718f11dc40ae39e3f09b9a9d84acb8a8e166bf82fe11cf11db159e4e20f8c"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 10801,
+      "seconds": 41.670102281999995,
+      "librarySha256": "beb718f11dc40ae39e3f09b9a9d84acb8a8e166bf82fe11cf11db159e4e20f8c"
+    }
+  ],
+  "qualification": "Affected core plus all broad symbol/reference, filter, clip, mask and high-level font-layout consumers on Windows/Linux and .NET 10/11. Final production PNGs match the approved prototype and all previous SVGWeb outcomes/diagnostics. Full native builds/package CI follows promotion. Existing targets, tolerances, text layout and uniform fitting remain unchanged.",
+  "originalReplay": {
+    "replay": {
+      "files": 204,
+      "seconds": 63.65490179997869,
+      "sourceSvgFilesRetained": 0
+    },
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 148,
+        "approvedPrototypePngsMatched": 148,
+        "changedOutcomesOrDiagnostics": []
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 148,
+        "approvedPrototypePngsMatched": 148,
+        "changedOutcomesOrDiagnostics": []
+      }
+    }
+  },
+  "remainingScope": "Complete Gallardo/Scimitar originals and fractional-root/container mapping remain open. This closes the retained color-filter consumer gap, not those original rendering areas."
+}

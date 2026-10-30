@@ -870,6 +870,12 @@ public static partial class SvgConverter
                 restoreBottom = Math.Min(restoreBottom, ClampCeiling(opacityExtent.Bottom, outputHeight));
             }
             SvgFilterUniformPaint? uniformPaint = filtered.ColorSpace == SvgFilterColorSpace.Srgb && command.SourceOpacity.Value * foldedOpacity == 1 ? filtered.UniformPaint : null;
+            // Aliases keep source color filters instead of converted texels.
+            // Consume them at final restoration; captured affine sources still
+            // defer the filter to their later image sampler.
+            bool finalSourceColorFilter = (frame?.FilterBinding is not {} retainedFilter || retainedFilter.Index != command.MaskContentIndex)
+                && filtered.SamplingColorFilter is SvgFilterDeferredColorFilter.SourceAlpha or SvgFilterDeferredColorFilter.LinearRgbRoundTrip;
+            Span<byte> aliasPixel = stackalloc byte[4];
             for (int y = restoreTop; y < restoreBottom; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -893,15 +899,31 @@ public static partial class SvgConverter
                         continue;
                     }
                     float opacity = command.SourceOpacity.Value * foldedOpacity;
+                    scoped ReadOnlySpan<byte> restoredPixel = filtered.Pixels.AsSpan(origin, 4);
+                    SvgShaderPaint? terminalPaint = filtered.Samples?[origin / 4];
+                    if (finalSourceColorFilter)
+                    {
+                        const float byteScale = 1f / 255f;
+                        SvgShaderPaint sourcePaint = filtered.SamplingColorFilter == SvgFilterDeferredColorFilter.SourceAlpha
+                            ? new(0, 0, 0, restoredPixel[3] * byteScale)
+                            : new(restoredPixel[0] * byteScale, restoredPixel[1] * byteScale, restoredPixel[2] * byteScale, restoredPixel[3] * byteScale);
+                        terminalPaint = filtered.SamplingColorFilter == SvgFilterDeferredColorFilter.LinearRgbRoundTrip
+                            ? SvgFilterColorTransfer.Convert(SvgFilterColorTransfer.Convert(sourcePaint, SvgFilterColorSpace.LinearRgb), SvgFilterColorSpace.Srgb)
+                            : sourcePaint;
+                    }
                     // Native nonopaque restoration materializes the converted image
                     // before packed paint-alpha modulation. Opaque shader results
                     // retain their unquantized transfer route.
-                    if (filtered.ColorSpace == SvgFilterColorSpace.Srgb && filtered.Samples is {} shaderSamples && opacity == 1)
+                    if (filtered.ColorSpace == SvgFilterColorSpace.Srgb && terminalPaint is {} sample && opacity == 1)
                     {
-                        SvgShaderPaint sample = shaderSamples[origin / 4];
-                        new SvgShaderPaint(sample.Red * opacity, sample.Green * opacity, sample.Blue * opacity, sample.Alpha * opacity)
-                            .Blend(destination.AsSpan(target, 4), activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[target + 3]);
+                        sample.Blend(destination.AsSpan(target, 4), activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[target + 3]);
                         continue;
+                    }
+                    if (finalSourceColorFilter && terminalPaint is {} aliasPaint)
+                    {
+                        aliasPixel.Clear();
+                        aliasPaint.Blend(aliasPixel, 255);
+                        restoredPixel = aliasPixel;
                     }
                     // A stored filter image uses native packed-lane alpha modulation;
                     // unquantized shader results above retain their separate float route.
@@ -909,12 +931,12 @@ public static partial class SvgConverter
                     if (activeViewportClip.Length != 0)
                     {
                         byte clip = activeViewportClip[target + 3];
-                        if (clip != 0) BlendClippedLayerPixel(destination.AsSpan(target, 4), filtered.Pixels.AsSpan(origin, 4), (byte)(opacityScale - 1), 255, clip);
+                        if (clip != 0) BlendClippedLayerPixel(destination.AsSpan(target, 4), restoredPixel, (byte)(opacityScale - 1), 255, clip);
                         continue;
                     }
                     // Global bitmap alpha keeps source and backdrop products
                     // together until the final packed shift.
-                    RestoreOpacityLayerPixel(destination.AsSpan(target, 4), filtered.Pixels.AsSpan(origin, 4), (byte)(opacityScale - 1));
+                    RestoreOpacityLayerPixel(destination.AsSpan(target, 4), restoredPixel, (byte)(opacityScale - 1));
                 }
             }
             return end + 1;

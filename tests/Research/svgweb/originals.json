@@ -10119,5 +10119,40 @@
       }
     },
     "qualification": "Every prior exact image, outcome and source/font diagnostic is unchanged. All 148 rendered PNGs match the approved prototype; 146 match the previous production revision. Only car and Gallardo change, both with lower total error. No original becomes exact or admitted; functional timing is not throughput evidence."
+  },
+  "gaussianAliasRestorationFollowup": {
+    "sourceBaseline": "8f02b9205b2de8dd1ea92f7617d0c3573047584b",
+    "evidence": "gaussian-alias-restoration.json",
+    "files": 204,
+    "sourceHashesRechecked": true,
+    "sourceSvgFilesRetained": 0,
+    "seconds": 63.65490179997869,
+    "platforms": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 148,
+        "approvedPrototypePngsMatched": 148,
+        "changedOutcomesOrDiagnostics": []
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 148,
+        "approvedPrototypePngsMatched": 148,
+        "changedOutcomesOrDiagnostics": []
+      }
+    },
+    "qualification": "All 148 rendered PNGs remain byte-identical per host. Every outcome and source/font diagnostic is unchanged. Numerical/canonical alias controls close the independently reproduced final-consumer gap; originals remain exploratory rather than admitted."
   }
 }

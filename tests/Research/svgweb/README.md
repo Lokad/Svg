@@ -61,6 +61,13 @@ shortcut that discarded linearRGB shader rounding for black input. One canonical
 existing ownership checks. The redundant RGB scan is removed; color, alpha and
 transport coverage retain their separate responsibilities.
 
+The [Gaussian-alias record](gaussian-alias-restoration.json) closes ordinary final
+restoration ignoring retained color-filter shaders. Five independent one-pixel
+controls preserve zero/effective-zero deviations, SourceAlpha, nonopaque paint
+alpha and explicit sRGB. A separate curved-source fixture has native platform
+triples. Affine captures keep their deferred state; nonopaque aliases use one stack
+texel. All 204 original outcomes and 148 rendered PNGs stay unchanged per host.
+
 The [radial source-binding record](radial-source-binding.json) closes loss of local
 gradient transforms when axis-resolved paints bind to skewed shapes. Four canonical
 controls preserve direct, clipped, inherited-stop and translated path placement with
