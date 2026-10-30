@@ -118,7 +118,9 @@ internal static class SvgResourceUseReplay
                 for (int point = 0; point < points.Length; point++) { token.ThrowIfCancellationRequested(); copy[point] = points[point]; }
                 SvgClipPolygon polygon = new(copy, [copy.Length]) { IsEvenOdd = pending.Use.IsEvenOdd };
                 SvgAuthoredPath? copied = path?.Copy(SvgAffineTransform.Identity, state.Budget, token);
-                try { state.ClipPolygons.Replace(pending.Id, polygon with { SourcePath = copied }); }
+                // Referenced contours retain the same authored construction as
+                // direct clip children, including their controls and placement.
+                try { state.ClipPolygons.Replace(pending.Id, polygon with { SourcePath = copied, UsesNativeReplay = copied is not null }); }
                 catch { copied?.Dispose(); throw; }
             }
             finally { foreach (SvgGeometry geometry in mapped) geometry.Dispose(); }

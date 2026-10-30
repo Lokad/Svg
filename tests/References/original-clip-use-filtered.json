@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "7fd39f366e8939ed6a80f01d97e2e2b71d17586c39080230d2c1f7c6d803673c",
+  "referenceSha256": "035468162e4cba97ca807ca3eee12845c6ec5129949a571672f996fd9adf5e98",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-clip-use-filtered.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-clip-use-filtered",
+  "viewport": {
+    "width": 780,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 referenced clip control. A curved use clip surrounds a colored filtered source across bitmap boundaries. Three fresh healthy captures on each platform; reference bytes are independent of the implementation.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "7fd39f366e8939ed6a80f01d97e2e2b71d17586c39080230d2c1f7c6d803673c",
+      "referenceSha256": "035468162e4cba97ca807ca3eee12845c6ec5129949a571672f996fd9adf5e98",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "7fd39f366e8939ed6a80f01d97e2e2b71d17586c39080230d2c1f7c6d803673c",
+      "referenceSha256": "035468162e4cba97ca807ca3eee12845c6ec5129949a571672f996fd9adf5e98",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 780,
+    "height": 600
+  }
+}

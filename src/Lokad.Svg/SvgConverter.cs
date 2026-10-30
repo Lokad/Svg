@@ -279,6 +279,8 @@ public static partial class SvgConverter
         // separate from the physical bitmap origin.
         internal bool SingleBitmap { get; init; }
         internal SvgAnalyticClipBounds? ContentClip { get; init; }
+        /// <summary>Retains source-image padding for edge construction independently of captured content and filter requests.</summary>
+        internal SvgAnalyticClipBounds? ConstructionClip { get; init; }
         // Keep the parent's rounded CTM before changing to the source device.
         internal SvgCpuBitmapOrigin? ParentOrigin { get; init; }
         internal SvgCpuBitmapOrigin CaptureOrigin { get; init; }
@@ -763,15 +765,15 @@ public static partial class SvgConverter
             SvgRenderLimits sourceLimits = limits;
             SvgRenderOptions sourceOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, sourceLimits, options.FontSnapshot);
             SvgRoot borrowed = root with { Commands = sourceCommands};
-            // The source image hint owns construction clipping, including its
-            // transparent padding; retain one guard pixel on the capture surface.
-            SvgAnalyticClipBounds sourceContentClip = new(1, 1, sw + 1, sh + 1);
+            // Captured content governs image extents and nested filter requests;
+            // construction separately retains the source image hint's padding.
+            SvgAnalyticClipBounds sourceContentClip = SourceContentClip(sourceCaptureBounds, new((int)left - 1, (int)top - 1), sw + 2, sh + 2);
             if (primitiveMap.Regions is {} capturedRegion)
                 primitiveMap = primitiveMap with { Regions = capturedRegion with { CapturedSourceBounds = new(
                     (float)(left - frameLeft + sourceContentClip.Left - 1), (float)(top - frameTop + sourceContentClip.Top - 1),
                     (float)(left - frameLeft + sourceContentClip.Right - 1), (float)(top - frameTop + sourceContentClip.Bottom - 1)) } };
             RasterFrame captureFrame = new(sw + 2, sh + 2, horizontalScale, horizontalOffset - left + 1, verticalScale, verticalOffset - top + 1)
-            { SingleBitmap = true, ContentClip = sourceContentClip, ParentOrigin = destinationBitmap?.Origin ?? new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left - 1, (int)top - 1)) };
+            { SingleBitmap = true, ContentClip = sourceContentClip, ConstructionClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = destinationBitmap?.Origin ?? new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left - 1, (int)top - 1)) };
             // Region coordinates belong to the padded filter bitmap; sampled
             // source-image transforms retain their separate capture domain.
             if (primitiveMap.Regions is {} nativeRegions)
@@ -2128,8 +2130,10 @@ public static partial class SvgConverter
 
         SvgCpuRasterContext LayerRasterContext(SvgCpuRasterContext tile)
         {
-            SvgAnalyticClipBounds bitmap = new(Math.Max(tile.BitmapClip.Left, layerBounds.Left), Math.Max(tile.BitmapClip.Top, layerBounds.Top),
-                Math.Min(tile.BitmapClip.Right, layerBounds.Right), Math.Min(tile.BitmapClip.Bottom, layerBounds.Bottom));
+            SvgAnalyticClipBounds constructionBounds = frame is { ContentClip: {} content, ConstructionClip: {} construction } && content == layerBounds
+                ? construction : layerBounds;
+            SvgAnalyticClipBounds bitmap = new(Math.Max(tile.BitmapClip.Left, constructionBounds.Left), Math.Max(tile.BitmapClip.Top, constructionBounds.Top),
+                Math.Min(tile.BitmapClip.Right, constructionBounds.Right), Math.Min(tile.BitmapClip.Bottom, constructionBounds.Bottom));
             SvgAnalyticClipBounds interior = new(Math.Max(tile.Interior.Left, layerBounds.Left), Math.Max(tile.Interior.Top, layerBounds.Top),
                 Math.Min(tile.Interior.Right, layerBounds.Right), Math.Min(tile.Interior.Bottom, layerBounds.Bottom));
             return new(bitmap, interior) { ConstructionOrigin = frame?.ContentClip is not null ? tile.Origin : null };

@@ -1,0 +1,473 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "77128b0c6de6f7a1020dbb2b1afe0e44c580620c",
+  "closedScope": [
+    "Referenced clip children retain authored path commands and use placement through the existing registration path. The copied path was already owned; registration no longer substitutes flattened chords.",
+    "Filter source construction padding is independent of captured content, rescaling extents and nested filter requests. Bitmap interiors retain exclusive output ownership."
+  ],
+  "mechanisms": {
+    "test": "../../Lokad.Svg.Tests/SvgResourceUseReplayTests.cs",
+    "cases": [
+      "Quadratic",
+      "Cubic",
+      "Arc"
+    ],
+    "before": "All three fail because the registered native clip contains only Move/Line/Close commands.",
+    "after": "Each retains its authored verb and fractional .25/.5 placement.",
+    "ownership": "One representative forward referenced cubic clip joins existing sampled parser-memory refusal, raster refusal, cancellation, unchanged borrowed commands and retry coverage in SvgCurvedClipSourceTests. No fixture/API matrix added."
+  },
+  "fixtures": [
+    {
+      "fixture": "../../Fixtures/original/clip-use-curve.svg",
+      "reference": "../../References/original-clip-use-curve.json",
+      "sourceSha256": "029f6b675ce2c83413e1c76eb4cb8f9a3f769163f4307d6a3e1a4fe62a24d341",
+      "nativePngSha256": "3792564561f240d70aba2f42bf2e7a49df054c4479f9f7bba49cb807deb35eaa",
+      "nativeFreshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 422,
+        "linux": 422
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "role": "Original CC0 referenced clip control. Forward reference retains cubic and quadratic controls and fractional use placement. Three fresh healthy captures on each platform; reference bytes are independent of the implementation."
+    },
+    {
+      "fixture": "../../Fixtures/original/clip-use-filtered.svg",
+      "reference": "../../References/original-clip-use-filtered.json",
+      "sourceSha256": "7fd39f366e8939ed6a80f01d97e2e2b71d17586c39080230d2c1f7c6d803673c",
+      "nativePngSha256": "035468162e4cba97ca807ca3eee12845c6ec5129949a571672f996fd9adf5e98",
+      "nativeFreshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 1628,
+        "linux": 1628
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "role": "Original CC0 referenced clip control. A curved use clip surrounds a colored filtered source across bitmap boundaries. Three fresh healthy captures on each platform; reference bytes are independent of the implementation."
+    }
+  ],
+  "fullValidation": "filter-source-capture.json",
+  "originalIsolations": {
+    "name": "gallardo.svg",
+    "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "recipe": "For each filtered consumer, preserve root attributes, its complete ancestor attribute chain, and its subtree. Recursively copy url(#id) and local href dependencies into defs. Serialize with Python ElementTree defaults in bounded RAM. Preserve source order. No hosted SVG payload files retained.",
+    "reference": "One fresh healthy/profile-cleaned Windows capture per isolation before the change. Final replay reuses those independent images. Exploratory original mapping, not original admission. Both canonical controls above have native Windows/Linux triples.",
+    "nativeCaptureQualification": "153.0.8010.52 / Chromium 1681091 / recipe 3 / transparent / DPR 1 / 1901x1018 image and screenshot viewports",
+    "beforeExact": 26,
+    "afterExact": 28,
+    "cases": [
+      {
+        "id": "path5398",
+        "variantSourceSha256": "450b403dc8a43311ad7d629aef2c3bb5aa186a868ab9ed39f468349d126be5d5",
+        "beforeChangedPixels": 2,
+        "afterChangedPixels": 2,
+        "beforeTotalChannelError": 7,
+        "afterTotalChannelError": 7
+      },
+      {
+        "id": "path7090",
+        "variantSourceSha256": "0dd02502cabc7bfcaa9b57a994f0038bb9fdc245abf315ad92d64fcb30343863",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path3850",
+        "variantSourceSha256": "8bc0c8d316f234f50a6a7c5e0b63df8cc20d7316ab57740be05d6a3c87ef4b79",
+        "beforeChangedPixels": 158,
+        "afterChangedPixels": 10,
+        "beforeTotalChannelError": 14483,
+        "afterTotalChannelError": 10
+      },
+      {
+        "id": "path3222",
+        "variantSourceSha256": "1eb11b864f2022b3794c32579b4cc9e27dd8cd1ce89e5ea976a199ee184001f8",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path3198",
+        "variantSourceSha256": "dbf86823758199c929e7b10f552280b3f31b06c266adeac64f78ea6d67bdb040",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "use4125",
+        "variantSourceSha256": "a8cb631b57b880a1ef46212f4985ee2f5bd0ac760eec1159ada52139e6499d12",
+        "beforeChangedPixels": 9,
+        "afterChangedPixels": 9,
+        "beforeTotalChannelError": 435,
+        "afterTotalChannelError": 435
+      },
+      {
+        "id": "path3000",
+        "variantSourceSha256": "eefe364a84ec3149b5b129f70965ed26cb855676010b51cec0118d5bfdb0ef37",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path3986",
+        "variantSourceSha256": "9bd527f54e6cbecf584639a5a687347ffcff2057614a08b94d56006622d04fe4",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path4014",
+        "variantSourceSha256": "b284584450d97dfa14c7b45d411893e8b95bce1caf5169742a06b73a648800b1",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "use4143",
+        "variantSourceSha256": "1f4b320a069c31152b5d4e0d5a7069d897d61f09eda2520b67916ed14756999d",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "use3857",
+        "variantSourceSha256": "a30c812f31cece3016049d52a5c3b9958311e66d5c717309be6ef08b13f27c66",
+        "beforeChangedPixels": 4,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 5,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path5120",
+        "variantSourceSha256": "69cae08a5ba10e1c41365ddb3cf955c84e884b4551908970a0ce43ac5eefc971",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path5164",
+        "variantSourceSha256": "50ab39b41b6e7182813de77f2c463d522aa37fd354377bce622e2c0b162d2c66",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path4827",
+        "variantSourceSha256": "c0dc5f0d4bd853946b3b93e3b4584bb25c12b444222ad38b5bf41220c4e2840f",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path3258",
+        "variantSourceSha256": "402f1b5649457a797dab32eef53e1b33e4babef109d7a804c37c57cbb70aec9c",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path3424",
+        "variantSourceSha256": "e41fcbe246650c04c4ca7b984e0bae796092e7728b0329e0258bf31487789a3c",
+        "beforeChangedPixels": 1,
+        "afterChangedPixels": 1,
+        "beforeTotalChannelError": 1,
+        "afterTotalChannelError": 1
+      },
+      {
+        "id": "path4386",
+        "variantSourceSha256": "cdaae245d3ad89edaf03c770377aa0a9929d669ed846ade897345c9f81d649f1",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path4896",
+        "variantSourceSha256": "35af227acd7c9e09414197d606a291761910279668623f9847ae9d529992fb07",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path5036",
+        "variantSourceSha256": "d2f1b05a3b1abace13455f69187f758e02aa2f2e511767435ed31a8880fca3b8",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path5200",
+        "variantSourceSha256": "085c75d47cf7a335cc1267cd7b893200ca8ebbe44d9ac646beb98ab4af99640b",
+        "beforeChangedPixels": 588,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 32131,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path5263",
+        "variantSourceSha256": "3d16f655ae9b987d1e5e34064695a9f6665590d76389e90ecdb7104d116572c0",
+        "beforeChangedPixels": 281,
+        "afterChangedPixels": 2,
+        "beforeTotalChannelError": 21264,
+        "afterTotalChannelError": 256
+      },
+      {
+        "id": "path3321",
+        "variantSourceSha256": "dd743846bd1413a6e8d62b614b4273e31953a8bff62ce13de48173b1a5aa07f4",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path4085",
+        "variantSourceSha256": "23de717428a2267da14a50b53826a77c9fb02d76c79033f21c0836ea0d305ef9",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "use4171",
+        "variantSourceSha256": "d8b3497cac756115a7d41535e1c4815ca6344f4ab90f1564a248d3753a6fc6aa",
+        "beforeChangedPixels": 41,
+        "afterChangedPixels": 41,
+        "beforeTotalChannelError": 173,
+        "afterTotalChannelError": 173
+      },
+      {
+        "id": "path4221",
+        "variantSourceSha256": "0a74a12d776e04606dbca8249b8a72c8fff7d1222949b45edffa94c82e84ac68",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path4539",
+        "variantSourceSha256": "44febe220d3d1fc5320b90199556aec779be829198500f20a2290f553217a75f",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path4605",
+        "variantSourceSha256": "c5507be7b4641bdf5285ef51cf2fc0cd3c23859e3a41f9db68db9ee6694b398b",
+        "beforeChangedPixels": 103,
+        "afterChangedPixels": 103,
+        "beforeTotalChannelError": 310,
+        "afterTotalChannelError": 310
+      },
+      {
+        "id": "g4663",
+        "variantSourceSha256": "8f72b16a38185ea4a1984c029e5435b3b21bd86dca9e77338dd74bb72fcd1ac8",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path4788",
+        "variantSourceSha256": "cec18668800c3d1dfef9e3079dad70b1f99354d70e80229f11f3abb83f7b2ab6",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path3921",
+        "variantSourceSha256": "c4388d50259988d18b98aeab2c7fad7623791a906fc99187cc437b0fdeca2fc6",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "use4958",
+        "variantSourceSha256": "f0cafd9823e718467d7b6bd23c777fc5c651b653404caef1509ccde133c0a22f",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path5282",
+        "variantSourceSha256": "278d5a32d1b7df73b9a8f259acf012fb7d12f8a197f82e0491e239ff265ab4b5",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path3942",
+        "variantSourceSha256": "1d08428f6f69216abbcefc90b45a739f08c7a8a7bc1f15a17f3205212f384968",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path3960",
+        "variantSourceSha256": "e211ac98b2df16ab6694bb948237cf0327ab1a80c8870a593d0049883ea2a7cb",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      },
+      {
+        "id": "path4075",
+        "variantSourceSha256": "5ed57c410e1f15a7883e59ba02f1d9c08c09d5b2f7876fffeed9d866ffcbe4b4",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 0,
+        "afterTotalChannelError": 0
+      }
+    ]
+  },
+  "originalReplay": {
+    "replay": {
+      "files": 204,
+      "seconds": 68.98790359986015,
+      "sourceSvgFilesRetained": 0
+    },
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 145,
+        "changed": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 14467,
+              "maximumError": 255,
+              "totalChannelError": 30021
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 14469,
+              "maximumError": 255,
+              "totalChannelError": 30023
+            }
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 9817,
+              "maximumError": 18,
+              "totalChannelError": 19250
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 9058,
+              "maximumError": 18,
+              "totalChannelError": 15845
+            }
+          },
+          {
+            "name": "rg1024_green_grapes.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631689
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631690
+            }
+          }
+        ]
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 145,
+        "changed": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 14467,
+              "maximumError": 255,
+              "totalChannelError": 30021
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 14469,
+              "maximumError": 255,
+              "totalChannelError": 30023
+            }
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 9817,
+              "maximumError": 18,
+              "totalChannelError": 19250
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 9058,
+              "maximumError": 18,
+              "totalChannelError": 15845
+            }
+          },
+          {
+            "name": "rg1024_green_grapes.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631689
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631690
+            }
+          }
+        ]
+      }
+    }
+  },
+  "remainingScope": [
+    "The complete gallardo.svg, scimitar.svg and fractional-root fitting remain inexact. Isolated clip/source closure does not admit those originals.",
+    "Existing text layout, uniform fitting, all expected reference images and tolerances remain unchanged.",
+    "The current replay improves Gallardo but adds two and one total error units to the already-inexact car.svg and grapes original respectively. Retain their rendering/sampling interactions as open research. Functional elapsed times are not performance measurements."
+  ]
+}

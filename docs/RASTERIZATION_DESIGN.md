@@ -149,6 +149,7 @@ operands share native normalization; other unions use bounded boundary operation
 More than 42 children use painted replay, preserving each child's authored paint
 kind and a separate enclosing clip. Ordinary masks composite children in source
 order before alpha/luminance conversion.
+Referenced clip children retain authored verbs and placement through registration.
 
 [Filter playback](../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs) retains result
 dependencies, primitive regions, operating spaces and source placement. Requested
@@ -158,7 +159,8 @@ the captured subset; offsets/aliases can retain deferred sampled images until a
 consumer requires pixels.
 Axis and transformed effects capture input for each bordered destination bitmap;
 only its interior owns restored pixels. Source construction retains image-hint
-padding, and cancellation/refusal restores the enclosing invocation clip.
+padding independently of captured-content extents and nested filter requests;
+cancellation/refusal restores the enclosing invocation clip.
 The bounds query distinguishes deferred paint, padded images and cropped images.
 Cropping invalidates transparent-padding knowledge. Affine restoration uses the
 active clip for edge construction and replays coverage with the sampled paint.

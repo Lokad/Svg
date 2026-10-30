@@ -8,12 +8,11 @@ this directory contains metadata and original orthogonal controls, not the hoste
 SVG collection.
 
 The current default-path review has 148 rendered inputs per host: 132 exact and
-16 different, with 56 rejected. Filter source capture preserves every prior exact
-result and 143 PNGs byte-for-byte; car, gallardo, pencil and eggs improve. Grapes
-retains a fractional-root interaction: its integer-root isolation improves from
-31,543 to 8,878 total error while the original's error increases by 421.
-These transparent, unsupplied-font/resource observations are neither whole-corpus
-reference admission nor throughput measurements. The ledger retains every follow-up.
+16 different, with 56 rejected. The latest clip/capture replay preserves every
+prior exact image and 145 PNGs byte-for-byte. Gallardo's total channel error falls
+from 19,250 to 15,845; the already-inexact car and grapes originals gain two and
+one error units respectively. These transparent, unsupplied-font/resource outcomes
+are exploratory, not whole-corpus admission or throughput measurements.
 
 | Initial first blocker | Originals | Current responsibility |
 | --- | ---: | --- |
@@ -40,12 +39,19 @@ opacity and unit-blur targets, now canonical regressions, plus independent opaqu
 and enclosing-group controls. The full filter/root milestone remains open;
 rendering successfully does not admit an original as exact.
 
-The [source-capture record](filter-source-capture.json) closes whole-canvas capture
-and tight-ink clipping of curved filter sources. Three CC0 references protect a
-copying blur kernel, a real three-box blur and untiled image padding against native
-platform triples. A direct translucent-flood mechanism protects exclusive output
-ownership at bitmap borders. Primitive, text and deferred graph paths retain their
-own numerical stages; existing references remain unchanged.
+The [source-capture record](filter-source-capture.json) retains three CC0 native
+platform triples for copying/three-box blur and untiled image padding, plus a
+translucent-flood mechanism for exclusive bitmap interiors. Construction padding
+is separate from captured content and nested requests; seven existing crop,
+rescaling and nested-effect targets remain exact. Full core/native qualification
+includes the broad symbol/reference bank on both hosts and supported runtimes.
+
+The [referenced-clip record](clip-use-construction.json) closes substitution of
+flattened chords for copied authored clip paths. Three failing-before mechanisms
+protect quadratic/cubic/arc verbs and fractional placement; two canonical native
+platform triples protect plain clipping and a colored filter interaction. All 35
+Gallardo filter consumers are mapped individually. Their isolated results and
+the complete original remain separate acceptance responsibilities.
 
 The [radial source-binding record](radial-source-binding.json) closes loss of local
 gradient transforms when axis-resolved paints bind to skewed shapes. Four canonical

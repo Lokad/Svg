@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Preserve authored curves and placement in referenced clip children.
 - Capture filtered sources per destination bitmap and preserve source-image padding
   during curve construction; restore each output pixel once across bitmap borders.
 - Bind radial path fills through retained definition, local and drawing maps for

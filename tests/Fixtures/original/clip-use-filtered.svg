@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='780' height='600'><defs><path id='s' d='M40 360C80 30 500 80 650 400Q260 520 40 360Z'/><clipPath id='c'><use href='#s' x='3.25' y='.5'/></clipPath><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='780' height='600'><feGaussianBlur stdDeviation='12'/></filter></defs><g clip-path='url(#c)'><path d='M10 10H770V590H10Z' fill='#2556dd' filter='url(#f)'/></g></svg>

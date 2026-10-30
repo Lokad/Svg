@@ -6,6 +6,24 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgResourceUseReplayTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("M3 24Q16 0 29 24Z", "Quadratic")]
+    [InlineData("M3 24C3 0 29 0 29 24Z", "Cubic")]
+    [InlineData("M3 24A13 13 0 0 1 29 24Z", "Arc")]
+    public void Referenced_clip_registration_preserves_authored_curve_verbs(string data, string verb)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><use href='#s' x='.25' y='.5'/></clipPath><path id='s' d='" + data + "'/></defs><rect width='32' height='32' clip-path='url(#c)'/></svg>");
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgSceneStorage storage = root.SceneStorage ?? throw new InvalidOperationException("Missing scene storage.");
+        SvgAuthoredPath path = Assert.Single(storage.MaskContents.Where(mask => mask.ClipKind == SvgClipContentKind.ClipPath)
+            .SelectMany(mask => mask.Geometries)
+            .Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>());
+        SvgAuthoredPathVerb expected = Enum.Parse<SvgAuthoredPathVerb>(verb);
+        Assert.Contains(path.Commands.ToArray(), command => command.Verb == expected);
+        Assert.Equal(SvgAffineTransform.FromTranslation(.25, .5), path.SceneMap);
+    }
+
+    [Theory]
     [InlineData("<mask id='m'><use href='#missing'/></mask>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<clipPath id='c'><use href='#missing'/></clipPath>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<mask id='m'><use href='#s'/></mask><mask id='m'/>", SvgErrorCode.MalformedInput)]

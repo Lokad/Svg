@@ -25,6 +25,8 @@ source graphs, allocation paths, native companions, platform differences and
 exclusions. Rendering fixtures do not each need all twelve API forms.
 Shared data factories can have `MemberData` consumers in other partial class
 files; include those consumers when selecting affected checks.
+Filter and clip integration includes `SvgSymbolInstanceReferenceTests`: its
+shared bank contains crop, rescaling and nested-effect regressions.
 
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;

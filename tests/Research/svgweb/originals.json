@@ -9893,5 +9893,130 @@
     "seconds": 47.235317200189456,
     "evidence": "filter-source-capture.json",
     "qualification": "All prior exact images remain exact, every outcome/diagnostic category is unchanged, and 143 PNGs are byte-identical per host. car.svg, gallardo.svg, pencil.svg and rg1024_eggs.svg improve. The already-inexact fractional-root grapes original gains 421 total error units; its independent integer-root isolation improves materially. Neither original becomes admitted exact. Functional timings are not throughput evidence."
+  },
+  "clipUseConstructionFollowup": {
+    "sourceBaseline": "77128b0c6de6f7a1020dbb2b1afe0e44c580620c",
+    "evidence": "clip-use-construction.json",
+    "files": 204,
+    "sourceHashesRechecked": true,
+    "sourceSvgFilesRetained": 0,
+    "seconds": 68.98790359986015,
+    "platforms": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 145,
+        "changed": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 14467,
+              "maximumError": 255,
+              "totalChannelError": 30021
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 14469,
+              "maximumError": 255,
+              "totalChannelError": 30023
+            }
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 9817,
+              "maximumError": 18,
+              "totalChannelError": 19250
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 9058,
+              "maximumError": 18,
+              "totalChannelError": 15845
+            }
+          },
+          {
+            "name": "rg1024_green_grapes.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631689
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631690
+            }
+          }
+        ]
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 145,
+        "changed": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 14467,
+              "maximumError": 255,
+              "totalChannelError": 30021
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 14469,
+              "maximumError": 255,
+              "totalChannelError": 30023
+            }
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 9817,
+              "maximumError": 18,
+              "totalChannelError": 19250
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 9058,
+              "maximumError": 18,
+              "totalChannelError": 15845
+            }
+          },
+          {
+            "name": "rg1024_green_grapes.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631689
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631690
+            }
+          }
+        ]
+      }
+    },
+    "qualification": "Every prior exact image and outcome/diagnostic category is preserved. Gallardo improves; car/grapes retain the explicitly recorded +2/+1 total-error changes. Default-path exploratory evidence is not whole-corpus admission or throughput measurement."
   }
 }

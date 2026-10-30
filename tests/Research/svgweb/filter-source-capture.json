@@ -482,5 +482,94 @@
       }
     ],
     "inference": "Native-correct filter capture interacts with the independently recorded fractional root layout/fitting discrepancy. The integer-root isolation improves from 8,221 to 4,073 changed pixels and from 31,543 to 8,878 total error on each host."
+  },
+  "qualificationRepair": {
+    "sourceBaseline": "77128b0c6de6f7a1020dbb2b1afe0e44c580620c",
+    "failedCi": {
+      "run": 41115880702,
+      "status": "terminal failure; closed, do not repoll",
+      "reason": "Affected selection omitted SvgSymbolInstanceReferenceTests, whose shared bank retained seven exact crop/rescaling/nested-filter interactions. All seven failed after construction padding also changed captured-content extents."
+    },
+    "fix": "Keep the captured-content clip for actual writes, rescaled input bounds and nested filter requests. A distinct source construction clip retains image-hint padding only for geometry construction in that outer capture scope. Bitmap output interiors remain exclusive.",
+    "retainedCases": [
+      "filter-regions/cropped-blur-composition",
+      "filter-regions/displaced-blur-composition",
+      "filter-regions/cropped-blur-transparent",
+      "filter-regions/displaced-blur-transparent",
+      "filter-regions/rescaled-blur-srgb",
+      "filter-regions/rescaled-blur-srgb-opacity",
+      "effects-marker-sheet/nested-filter-halo"
+    ],
+    "referencesChanged": 0,
+    "newSourceControlsStillExact": 3,
+    "selection": "Category!=Research; complete core and native projects, including all broad symbol/reference cases.",
+    "validation": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 32894,
+        "seconds": 74.9360108000692,
+        "librarySha256": "e3f11fb0d215dddf84a307a063095af49eedb65d41aed7345dfbc7229004ea48"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 39149,
+        "seconds": 100.34513820009306,
+        "librarySha256": "e3f11fb0d215dddf84a307a063095af49eedb65d41aed7345dfbc7229004ea48"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 32894,
+        "seconds": 72.61027689999901,
+        "librarySha256": "cad3453e5111547bf4b0d4097d020efc53758cd8d8a2d77f490a0f4b1cebf411"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 39149,
+        "seconds": 89.80895529990084,
+        "librarySha256": "cad3453e5111547bf4b0d4097d020efc53758cd8d8a2d77f490a0f4b1cebf411"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 32894,
+        "seconds": 60.297405575,
+        "librarySha256": "e3f11fb0d215dddf84a307a063095af49eedb65d41aed7345dfbc7229004ea48"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 39149,
+        "seconds": 230.113131775,
+        "librarySha256": "e3f11fb0d215dddf84a307a063095af49eedb65d41aed7345dfbc7229004ea48"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 32894,
+        "seconds": 52.205196656999995,
+        "librarySha256": "cad3453e5111547bf4b0d4097d020efc53758cd8d8a2d77f490a0f4b1cebf411"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 39149,
+        "seconds": 153.24661347400001,
+        "librarySha256": "cad3453e5111547bf4b0d4097d020efc53758cd8d8a2d77f490a0f4b1cebf411"
+      }
+    ],
+    "qualification": "Portable Release binaries on both local hosts/runtimes; matching full native CI builds and package qualification follow promotion. Elapsed times are functional checks under concurrency, not benchmarks.",
+    "related": "clip-use-construction.json"
   }
 }

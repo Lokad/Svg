@@ -18019,6 +18019,57 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-source-padding.json",
       "referenceSha256": "1a982d9dd518ec9f421548a40b4694012b6b9b349a6eff7a1a5ca16256d7151a"
+    },
+    {
+      "id": "original-clip-use-curve",
+      "path": "original/clip-use-curve.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "029f6b675ce2c83413e1c76eb4cb8f9a3f769163f4307d6a3e1a4fe62a24d341",
+      "materializedSha256": "029f6b675ce2c83413e1c76eb4cb8f9a3f769163f4307d6a3e1a4fe62a24d341",
+      "featureTags": [
+        "clip",
+        "use",
+        "curve",
+        "rounding"
+      ],
+      "width": 192,
+      "height": 128,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-clip-use-curve.json",
+      "referenceSha256": "3792564561f240d70aba2f42bf2e7a49df054c4479f9f7bba49cb807deb35eaa"
+    },
+    {
+      "id": "original-clip-use-filtered",
+      "path": "original/clip-use-filtered.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "7fd39f366e8939ed6a80f01d97e2e2b71d17586c39080230d2c1f7c6d803673c",
+      "materializedSha256": "7fd39f366e8939ed6a80f01d97e2e2b71d17586c39080230d2c1f7c6d803673c",
+      "featureTags": [
+        "clip",
+        "use",
+        "curve",
+        "rounding",
+        "filter"
+      ],
+      "width": 780,
+      "height": 600,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-clip-use-filtered.json",
+      "referenceSha256": "035468162e4cba97ca807ca3eee12845c6ec5129949a571672f996fd9adf5e98"
     }
   ]
 }

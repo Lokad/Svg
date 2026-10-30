@@ -10,6 +10,7 @@ public sealed class SvgCurvedClipSourceTests
     [InlineData("<defs><clipPath id='c'><path d='M3 24 Q16 0 29 24'/></clipPath></defs><g transform='rotate(12 16 16)' clip-path='url(#c)'><path d='M0 0H32V32H0Z'/></g>")]
     [InlineData("<defs><clipPath id='unused'><path d='M3 24 C3 0 29 0 29 24'/></clipPath></defs><rect width='32' height='32'/>")]
     [InlineData("<defs><clipPath><path d='M3 24 A13 13 0 0 1 29 24'/></clipPath></defs><rect width='32' height='32'/>")]
+    [InlineData("<defs><clipPath id='c'><use href='#s' x='.25' y='.5'/></clipPath><path id='s' d='M3 24C3 0 29 0 29 24Z'/></defs><rect width='32' height='32' clip-path='url(#c)'/>")]
     [InlineData("bowtie-leaf")]
     [InlineData("bowtie-oval-strokes")]
     [InlineData("star-evenodd")]
