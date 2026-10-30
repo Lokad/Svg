@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "701f2b08f2d89442661cb9408e7c085997983ce1",
+  "closedScope": [
+    "Original path boxes no longer depend on which lowered piece appears first. Non-painting fills retain bounds through the existing effect-anchor role.",
+    "A shared primitive materialization rule and bounds query retain deferred paint, preserved padding and cropped images separately from operating color space.",
+    "Cropped affine images use antialiased image edges with the actual clip construction bounds; coverage replays with its sampled paint.",
+    "Source aliases retain the sampling color filter across the general graph and the source-offset fast path; affine restoration no longer tests for a terminal offset primitive."
+  ],
+  "nativeSource": {
+    "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkImageFilterTypes.cpp",
+    "revision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "concepts": [
+      "PixelBoundary after a strict crop",
+      "image-versus-transparent-outset drawing",
+      "independent layer crop and sampled paint"
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "original-filter-clipped-stroke-source",
+      "fixture": "../../Fixtures/original/filter-clipped-stroke-source.svg",
+      "provenance": "../../References/original-filter-clipped-stroke-source.json",
+      "sourceSha256": "9665c23dde247110352afd348714d3b53a611067aa57d5eb0a70b6d9d50c969d",
+      "nativePngSha256": "92a3cd8b3c4cd4e28a281449c4eaa5ddf9207d57cfe0357a9ae11ef6ac6015c3",
+      "freshProcessesPerPlatform": 3,
+      "beforeImageModelChangePixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "afterChangePixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "original-filter-affine-cropped-stroke",
+      "fixture": "../../Fixtures/original/filter-affine-cropped-stroke.svg",
+      "provenance": "../../References/original-filter-affine-cropped-stroke.json",
+      "sourceSha256": "a6425b2439bf0d32f9568464f0e9289a0a535a81522c0e8bd2b4616259df94c9",
+      "nativePngSha256": "d732267835ec404dc2c979b90f41ba6224b13d063c3049f638342a68e4deaf05",
+      "freshProcessesPerPlatform": 3,
+      "beforeImageModelChangePixels": {
+        "windows": 19,
+        "linux": 19
+      },
+      "afterChangePixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "original-filter-affine-unclipped-stroke",
+      "fixture": "../../Fixtures/original/filter-affine-unclipped-stroke.svg",
+      "provenance": "../../References/original-filter-affine-unclipped-stroke.json",
+      "sourceSha256": "ddc1eb16123b35e1ef8d18c4ae7ca71f37ce628f8474e7af8d3d2a92952fb830",
+      "nativePngSha256": "090f0c52692fe256c1eeaf7452cb5a061da9eebee4c025507b6d7e6b59d22d50",
+      "freshProcessesPerPlatform": 3,
+      "beforeImageModelChangePixels": {
+        "windows": 20,
+        "linux": 20
+      },
+      "afterChangePixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "original-filter-affine-padded-stroke",
+      "fixture": "../../Fixtures/original/filter-affine-padded-stroke.svg",
+      "provenance": "../../References/original-filter-affine-padded-stroke.json",
+      "sourceSha256": "fbf0486462d52f33950b179a551b46aae61257ebdc820ea2e67c5b3462480197",
+      "nativePngSha256": "92d3b8455c08a79ad13f6951b6b665347acdd708a3166ba4ec7242fd23d09895",
+      "freshProcessesPerPlatform": 3,
+      "beforeImageModelChangePixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "afterChangePixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "original-filter-affine-alpha-stroke",
+      "fixture": "../../Fixtures/original/filter-affine-alpha-stroke.svg",
+      "provenance": "../../References/original-filter-affine-alpha-stroke.json",
+      "sourceSha256": "3de0f1cc12359812949aaae31fac7bf47d9bcd215591be219e74c8a4e648cbcc",
+      "nativePngSha256": "e5b6f2a727badd45f4b019fa57aa6d4000be365c2f35bd2faa114d9bd0ce2dbc",
+      "freshProcessesPerPlatform": 3,
+      "beforeImageModelChangePixels": {
+        "windows": 20,
+        "linux": 20
+      },
+      "afterChangePixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "original-filter-affine-zero-blur",
+      "fixture": "../../Fixtures/original/filter-affine-zero-blur.svg",
+      "provenance": "../../References/original-filter-affine-zero-blur.json",
+      "sourceSha256": "115c8cdeeb3297a6aa86c4b2b97335258bf072be5b4d89bb43abdd6ebd025a10",
+      "nativePngSha256": "9c982177a13692d10b8db6ba50b26375d3fcb708f8d036f2562287bce74b0be0",
+      "freshProcessesPerPlatform": 3,
+      "beforeImageModelChangePixels": {
+        "windows": 7,
+        "linux": 7
+      },
+      "afterChangePixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    }
+  ],
+  "beforeEvidence": {
+    "recordingRegression": "../../Lokad.Svg.Tests/SvgClippedPathRecordingTests.cs: unclipped passes and clipped loses its object box before the recording change.",
+    "imagePrototypeLibrarySha256": "b52125a4315a10f51dcd369c702783f919a5be91c4daa4a4c6b600c8969b8476",
+    "qualification": "Image before/after counts compare the retained source-recording prototype to the qualified shared image model. Padded and axis-aligned controls remain distinct even though both stages are exact."
+  },
+  "mechanisms": [
+    "../../Lokad.Svg.Tests/SvgClippedPathRecordingTests.cs",
+    "../../Lokad.Svg.Tests/SvgFilterImageStorageTests.cs"
+  ],
+  "coverage": "Six independent browser references run through the canonical conversion path. Direct tests separate source boxes, float materialization boundaries, storage/alias propagation, and metadata cancellation/refusal/retry. Existing API/ownership and filter banks remain intact; no fixture/API cross product or reference rewrite.",
+  "qualification": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "scope": "core",
+      "passed": 4075,
+      "seconds": 16.811359399929643,
+      "librarySha256": "f72c1311a2acae389eab30c9eee8e59916f620ea51c16c11881d790d4bee2b0e"
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "scope": "native",
+      "passed": 9079,
+      "seconds": 25.51548620010726,
+      "librarySha256": "f72c1311a2acae389eab30c9eee8e59916f620ea51c16c11881d790d4bee2b0e"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "scope": "core",
+      "passed": 4075,
+      "seconds": 20.282627400010824,
+      "librarySha256": "dd308bad740eba4fa4c10ccbdc303e499a786b83a81748dc0e28f0bdc57e63c6"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "scope": "native",
+      "passed": 9079,
+      "seconds": 39.06465839990415,
+      "librarySha256": "dd308bad740eba4fa4c10ccbdc303e499a786b83a81748dc0e28f0bdc57e63c6"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "scope": "core",
+      "passed": 4075,
+      "seconds": 18.806336854,
+      "librarySha256": "f72c1311a2acae389eab30c9eee8e59916f620ea51c16c11881d790d4bee2b0e"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "scope": "native",
+      "passed": 9079,
+      "seconds": 47.499273337,
+      "librarySha256": "f72c1311a2acae389eab30c9eee8e59916f620ea51c16c11881d790d4bee2b0e"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "scope": "core",
+      "passed": 4075,
+      "seconds": 16.111803419999998,
+      "librarySha256": "dd308bad740eba4fa4c10ccbdc303e499a786b83a81748dc0e28f0bdc57e63c6"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "scope": "native",
+      "passed": 9079,
+      "seconds": 34.205601795999996,
+      "librarySha256": "dd308bad740eba4fa4c10ccbdc303e499a786b83a81748dc0e28f0bdc57e63c6"
+    }
+  ],
+  "originalReplay": {
+    "files": 204,
+    "complete": {
+      "files": 204,
+      "seconds": 59.65847990009934,
+      "sourceSvgFilesRetained": 0
+    },
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 54,
+          "rendered": 147,
+          "exact": 132,
+          "different": 15,
+          "MalformedInput": 3
+        },
+        "priorRenderedUnchanged": 145,
+        "priorRenderedChanged": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 32138,
+              "maximumError": 255,
+              "totalChannelError": 115691
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 32132,
+              "maximumError": 255,
+              "totalChannelError": 115676
+            },
+            "outcome": "rendered"
+          }
+        ],
+        "newRendered": [
+          {
+            "name": "scimitar.svg",
+            "comparison": {
+              "status": "different",
+              "changedPixels": 36370,
+              "maximumError": 137,
+              "totalChannelError": 387025
+            }
+          }
+        ],
+        "lost": [],
+        "worse": [],
+        "changedOutcomesOrDiagnostics": [
+          {
+            "name": "scimitar-anim.svg",
+            "outcome": "UnsupportedFeature",
+            "message": "This SVG child element is not implemented yet."
+          },
+          {
+            "name": "scimitar.svg",
+            "outcome": "rendered",
+            "message": null
+          }
+        ],
+        "librarySha256": "f72c1311a2acae389eab30c9eee8e59916f620ea51c16c11881d790d4bee2b0e"
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 54,
+          "rendered": 147,
+          "exact": 132,
+          "different": 15,
+          "MalformedInput": 3
+        },
+        "priorRenderedUnchanged": 145,
+        "priorRenderedChanged": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 32138,
+              "maximumError": 255,
+              "totalChannelError": 115691
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 32132,
+              "maximumError": 255,
+              "totalChannelError": 115676
+            },
+            "outcome": "rendered"
+          }
+        ],
+        "newRendered": [
+          {
+            "name": "scimitar.svg",
+            "comparison": {
+              "status": "different",
+              "changedPixels": 36370,
+              "maximumError": 137,
+              "totalChannelError": 387025
+            }
+          }
+        ],
+        "lost": [],
+        "worse": [],
+        "changedOutcomesOrDiagnostics": [
+          {
+            "name": "scimitar-anim.svg",
+            "outcome": "UnsupportedFeature",
+            "message": "This SVG child element is not implemented yet."
+          },
+          {
+            "name": "scimitar.svg",
+            "outcome": "rendered",
+            "message": null
+          }
+        ],
+        "librarySha256": "f72c1311a2acae389eab30c9eee8e59916f620ea51c16c11881d790d4bee2b0e"
+      }
+    }
+  },
+  "captureAdmission": "Three fresh healthy captures per fixture on each platform, with stable PNG bytes and cleaned profiles. One earlier exploratory qualification attempt hit a terminal 10-second CDP request timeout during concurrent testing; it supplied no admitted reference. The successful repeat ran serially.",
+  "openScope": [
+    "gallardo.svg still rejects affine image-edge construction.",
+    "scimitar.svg now renders but differs; scimitar-anim.svg advances to an unsupported-child gate.",
+    "Other original filter/root/fitting, fonts/resources and deterministic static states remain individually open; this does not close the full filter milestone or admit the whole hosted collection."
+  ],
+  "timingScope": "Functional validation elapsed under concurrent local execution, including runner startup; not quiet-VM performance measurements. Linux local checks execute portable binaries; matching CI independently builds/packages on both hosts."
+}

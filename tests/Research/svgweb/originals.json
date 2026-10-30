@@ -9753,5 +9753,24 @@
     "filesRevalidatedPerHost": 204,
     "evidence": "paint-references.json",
     "qualification": "Every original hash rechecked. Prior rendered PNGs are byte-identical; other outcome categories and comparisons remain unchanged. Fresh native triples use the same inspected 300x150 logical viewport and reproduce the existing target. No hosted payload retention or whole-corpus reference admission."
+  },
+  "filterImageModel": {
+    "sourceBaseline": "701f2b08f2d89442661cb9408e7c085997983ce1",
+    "librarySha256": "f72c1311a2acae389eab30c9eee8e59916f620ea51c16c11881d790d4bee2b0e",
+    "filesRevalidatedPerHost": 204,
+    "renderedPerHost": 147,
+    "exactPerHost": 132,
+    "differentPerHost": 15,
+    "rejectedPerHost": 57,
+    "priorRenderedPngsByteIdenticalPerHost": 145,
+    "improvedPriorRendered": [
+      "car.svg"
+    ],
+    "newlyRenderedNotAccepted": [
+      "scimitar.svg"
+    ],
+    "seconds": 59.65847990009934,
+    "evidence": "filter-image-model.json",
+    "qualification": "Every original hash rechecked. All prior exact images remain exact; 145 prior PNGs are byte-identical and car.svg has lower error. scimitar.svg newly renders but remains inexact; its animation companion advances to another gate. No hosted payload files retained, reference rewrites or whole-corpus admission."
   }
 }

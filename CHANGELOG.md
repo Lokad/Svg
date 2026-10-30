@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve source path bounds across clipped stroke lowering; retain filter image
+  padding, cropping and sampling colour transfer through affine restoration.
 - Resolve explicit local paint fallbacks consistently across fills, strokes,
   inherited/instanced content and prepared text, preserving selective font acquisition.
 - Resolve gradient percentages and defaults in each definition or alias viewport;

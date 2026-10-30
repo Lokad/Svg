@@ -276,6 +276,9 @@ Zero-size basic shapes and images without usable sources suppress their own
 filters; enclosing groups/uses can still filter transparent input. Empty groups
 run their filters. Paintless paths/lines/nonempty point lists retain source bounds
 for ancestor effects; empty basic shapes and absent images do not enlarge them.
+Clipped strokes retain their original source boxes. Crops of materialized images
+discard transparent-padding assumptions; rotated restoration retains the active
+clip bounds and the sampling colour transfer of zero-effect aliases.
 
 Drop shadows admit mapped/rounded deviations through 135 device pixels per axis;
 larger deviations reject. Gaussian blur rescales larger deviations and saturates

@@ -12,6 +12,7 @@ constant shader construction and low-precision pixel replay, bilinear repeat
 image-shader sampling, four-bit clamped bitmap sampling and covered bitmap blending, and
 linear/radial gradient coordinate construction and straight open-stroke
 normalization and join construction, clipped image-shader layer restoration,
+materialized-image padding and crop-state propagation,
 rational round caps/joins, SVG endpoint-arc construction and conic subdivision,
 live convex curve advancement, curve measurement and dash cutting, tight source-curve paint bounds,
 native clip-union rational subdivision and pre-intersection quadratic/conic splitting,

@@ -284,8 +284,18 @@ internal static class SvgPaintRecording
             }
             if (objectBounds is null && values.Length != 0)
             {
-                SvgGeometry first = values[0];
-                if (first.AuthoredPath is {} path)
+                // A non-painting fill can precede the stroke that retains the
+                // authored centerline. Bounds belong to the source element,
+                // independently of the lowered drawing order.
+                SvgAuthoredPath? sourcePath = null;
+                foreach (SvgGeometry geometry in values)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (geometry.AuthoredPath is not {} candidate) continue;
+                    sourcePath = candidate;
+                    break;
+                }
+                if (sourcePath is {} path)
                 {
                     SvgRectangle box = SvgPathBounds.Compute(path.Commands, token);
                     sourceObjectBox = new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height));
@@ -377,7 +387,17 @@ internal static class SvgPaintRecording
 
             SvgRecordedPaint GetPaint(ref SvgRecordedPaint cached, SvgPaintOperationIdentity identity, float alpha, bool foldable)
             {
-                if (cached.Identity == 0) cached = state.Scene.RegisterRecordedPaint(new(identity, alpha, foldable, source.Scope, source.ElementOpacity, source.OpacityScope) { RecordingTransform = source.RecordingTransform, PaintOrder = source.PaintOrder, IsStroke = identity == strokeId, IsEffectAnchor = source.IsSuppressedSource, VisualBounds = source.IsSuppressedSource ? null : visualBounds, ObjectBounds = source.IsSuppressedSource ? null : objectBounds, SourceObjectBounds = !source.IsSuppressedSource && sourceObjectBox is {} rawBox ? new(rawBox, sourceObjectMap) : null });
+                if (cached.Identity == 0)
+                {
+                    bool anchor = source.IsSuppressedSource || identity == fillId && !source.HasFillOperation;
+                    cached = state.Scene.RegisterRecordedPaint(new(identity, alpha, foldable, source.Scope, source.ElementOpacity, source.OpacityScope)
+                    {
+                        RecordingTransform = source.RecordingTransform, PaintOrder = source.PaintOrder, IsStroke = identity == strokeId,
+                        IsEffectAnchor = anchor, VisualBounds = anchor ? null : visualBounds,
+                        ObjectBounds = source.IsSuppressedSource ? null : objectBounds,
+                        SourceObjectBounds = !source.IsSuppressedSource && sourceObjectBox is {} rawBox ? new(rawBox, sourceObjectMap) : null
+                    });
+                }
                 return cached;
             }
         }

@@ -24,6 +24,12 @@ internal readonly record struct SvgFilterPrimitive(SvgFilterPrimitiveKind Kind, 
     internal SvgFilterComposition Composition { get; init; }
     internal int MergeFirst { get; init; }
     internal int MergeCount { get; init; }
+
+    /// <summary>Identifies native pixel-image construction; aliases and uniform flood paint retain their prior representation.</summary>
+    internal bool MaterializesImage(SvgGaussianDeviation deviation)
+        => Kind == SvgFilterPrimitiveKind.GaussianBlur && (deviation.Horizontal > .03f || deviation.Vertical > .03f)
+            || Kind == SvgFilterPrimitiveKind.Merge && MergeCount != 1
+            || Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend or SvgFilterPrimitiveKind.DropShadow;
 }
 internal readonly record struct SvgFilterAdmission(SvgErrorCode Code, string Message);
 internal readonly record struct SvgFilterResource(SvgFilterRegion Region, SvgFilterUnits PrimitiveUnits, SvgFilterColorSpace ColorSpace,

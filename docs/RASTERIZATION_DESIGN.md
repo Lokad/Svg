@@ -151,6 +151,10 @@ output, native image hints, captured content, cropped storage and padded scratch
 are separate. Parent capture includes filtered child output. Rescaled kernels read
 the captured subset; offsets/aliases can retain deferred sampled images until a
 consumer requires pixels.
+The bounds query distinguishes deferred paint, padded images and cropped images.
+Cropping invalidates transparent-padding knowledge. Affine restoration uses the
+active clip for edge construction and replays coverage with the sampled paint.
+Zero-effect aliases retain their sampling color filter across ordinary and fast paths.
 
 Fixed lengths and translate arguments resolve within native CSS layout range
 before placement. Object boxes compose into filter parameter space before float

@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><defs><filter id='f'><feGaussianBlur stdDeviation='.5'/></filter><clipPath id='c'><rect x='12' y='4' width='40' height='36'/></clipPath></defs><path d='M8 32C16 8 40 8 56 32' fill='none' stroke='blue' stroke-width='5' clip-path='url(#c)' filter='url(#f)'/></svg>

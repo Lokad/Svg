@@ -7,9 +7,10 @@ Bodies are fetched into bounded memory and discarded. Ordinary tests are offline
 this directory contains metadata and original orthogonal controls, not the hosted
 SVG collection.
 
-The current default-path review has 146 rendered inputs per host: 132 exact and
-14 different, with 58 rejected. The complete paint-reference replay took 65.84 s;
-all 145 earlier rendered PNGs remain byte-identical. Each source hash is rechecked.
+The current default-path review has 147 rendered inputs per host: 132 exact and
+15 different, with 57 rejected. The shared filter-image replay took 59.66 s;
+all prior exact images remain exact. Of 146 prior renders, 145 PNGs are unchanged
+and `car.svg` improves. `scimitar.svg` newly renders but remains inexact.
 These observations use transparent output without supplied fonts/resources; they
 are neither whole-corpus reference admission nor throughput measurements. The
 ledger retains earlier passes and every follow-up outcome.
@@ -29,6 +30,11 @@ Counts classify the initial first blocker. Removing one can reveal another.
 Parsing success, ambient font substitution and unexplained pixel differences do
 not close a gap. Font declarations are lexical inventory, not resolved requests;
 resource roles distinguish navigation from image/CSS/media dependencies.
+
+The [filter-image model](filter-image-model.json) closes retained path boxes,
+materialized-image crop/padding and alias sampling through affine restoration.
+Six CC0 references have independent platform triples. The full filter/root
+milestone remains open; exploratory original outcomes are recorded separately.
 
 The [paint-reference record](paint-references.json) maps four CC0 controls to native
 platform triples. Paint fallbacks share lexical parsing and completed resource

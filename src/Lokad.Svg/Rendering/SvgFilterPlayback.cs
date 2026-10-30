@@ -1,6 +1,7 @@
 // Packed multiply blending adapts pinned SkRasterPipeline_opts.h.
 // Nearest sprite translation admission follows pinned SkMatrix.cpp.
-// Copyright 2018, 2022 Google LLC. See THIRD_PARTY_NOTICES.txt.
+// Materialized image padding and crop state follow pinned SkImageFilterTypes.cpp.
+// Copyright 2018, 2019, 2022 Google LLC. See THIRD_PARTY_NOTICES.txt.
 using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
@@ -26,6 +27,12 @@ internal enum SvgFilterDeferredColorFilter : byte { None, SourceAlpha, LinearRgb
 internal enum SvgFilterImageSampling : byte { Nearest, Linear }
 
 internal enum SvgFilterBoundsKind : byte { Visual, StoredImage, Output }
+
+/// <summary>Distinguishes deferred paint from materialized images with preserved or cropped padding.</summary>
+internal enum SvgFilterImageStorage : byte { Deferred, Padded, Cropped }
+
+/// <summary>Retains logical image bounds and storage history independently of pixel allocation and color space.</summary>
+internal readonly record struct SvgFilterImageBounds(SvgPaintBounds Bounds, SvgFilterImageStorage Storage);
 
 /// <summary>Retains one integer-offset source branch and its composed intermediate crop.</summary>
 internal readonly record struct SvgOffsetFilterPlacement(double X, double Y, bool AlphaOnly, SvgPaintBounds Clip);
@@ -186,7 +193,7 @@ internal static class SvgFilterPlayback
         using RenderBudget.BudgetReservation owner = budget.Reserve(2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count), SvgMemoryCategory.Temporary);
         SvgPaintBounds[] regions = new SvgPaintBounds[count], bounds = new SvgPaintBounds[count];
         PrepareRegions(resource, regions, context, token);
-        PrepareOutputBounds(resource, map, source, kind, regions, bounds, token);
+        PrepareOutputBounds(resource, map, source, kind, regions, bounds, Span<SvgFilterImageStorage>.Empty, token);
         return kind == SvgFilterBoundsKind.Visual ? Union(source, bounds[^1]) : bounds[^1];
 
         static SvgPaintBounds Union(SvgPaintBounds first, SvgPaintBounds second)
@@ -195,11 +202,29 @@ internal static class SvgFilterPlayback
                 : new(MathF.Min(first.Left, second.Left), MathF.Min(first.Top, second.Top), MathF.Max(first.Right, second.Right), MathF.Max(first.Bottom, second.Bottom));
     }
 
+    /// <summary>Propagates stored image bounds without mistaking cropped padding for a transparent outset.</summary>
+    /// <remarks>Resources remain borrowed. Temporary bounds/storage arrays are admitted before allocation,
+    /// released on every exit and visited with cancellation. Returned metadata owns no storage.</remarks>
+    internal static SvgFilterImageBounds SourceImageBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
+        SvgFilterRegionContext context, SvgPaintBounds source, RenderBudget budget, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        int count = resource.Primitives.Items.Length;
+        if (count == 0) return new(default, SvgFilterImageStorage.Deferred);
+        using RenderBudget.BudgetReservation owner = budget.Reserve(2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count)
+            + ParserCollectionMemory.GetArrayByteCount<SvgFilterImageStorage>(count), SvgMemoryCategory.Temporary);
+        SvgPaintBounds[] regions = new SvgPaintBounds[count], bounds = new SvgPaintBounds[count];
+        SvgFilterImageStorage[] storage = new SvgFilterImageStorage[count];
+        PrepareRegions(resource, regions, context, token);
+        PrepareOutputBounds(resource, map, source, SvgFilterBoundsKind.StoredImage, regions, bounds, storage, token);
+        return new(bounds[^1], storage[^1]);
+    }
+
     // Propagates possible output bounds before request planning. The kind
     // retains its rounding domain; borrowed arrays and graph visits stay budgeted.
     private static void PrepareOutputBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgPaintBounds source, SvgFilterBoundsKind kind, ReadOnlySpan<SvgPaintBounds> regions,
-        Span<SvgPaintBounds> bounds, CancellationToken token)
+        Span<SvgPaintBounds> bounds, Span<SvgFilterImageStorage> storage, CancellationToken token)
     {
         int count = resource.Primitives.Items.Length;
         for (int index = 0; index < count; index++)
@@ -207,6 +232,8 @@ internal static class SvgFilterPlayback
             token.ThrowIfCancellationRequested();
             SvgFilterPrimitive primitive = resource.Primitives.Items[index];
             SvgPaintBounds input = primitive.Input.Index < 0 ? source : bounds[primitive.Input.Index];
+            float sigmaX = (float)Math.Min(532, Math.Abs(primitive.SigmaX * map.ScaleX));
+            float sigmaY = (float)Math.Min(532, Math.Abs(primitive.SigmaY * map.ScaleY));
             SvgPaintBounds output = input;
             if (primitive.Kind == SvgFilterPrimitiveKind.Flood) output = regions[index];
             else if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
@@ -229,8 +256,6 @@ internal static class SvgFilterPlayback
                 bool shifted = primitive.Kind is SvgFilterPrimitiveKind.Offset or SvgFilterPrimitiveKind.DropShadow;
                 float dx = shifted ? (float)(primitive.OffsetX * map.ScaleX) : 0, dy = shifted ? (float)(primitive.OffsetY * map.ScaleY) : 0;
                 if (!float.IsFinite(dx) || !float.IsFinite(dy)) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source bounds exceed the coordinate range.");
-                float sigmaX = (float)Math.Min(532, Math.Abs(primitive.SigmaX * map.ScaleX));
-                float sigmaY = (float)Math.Min(532, Math.Abs(primitive.SigmaY * map.ScaleY));
                 // Native capture hints and stored image extents use separate
                 // rounding, including materialized identity pixel kernels.
                 float rx = 3f * sigmaX, ry = 3f * sigmaY;
@@ -244,6 +269,22 @@ internal static class SvgFilterPlayback
             }
             bounds[index] = kind == SvgFilterBoundsKind.StoredImage
                 ? Intersect(RoundLayerBounds(output), RoundLayerBounds(regions[index])) : Intersect(output, regions[index]);
+            if (!storage.IsEmpty)
+            {
+                SvgFilterImageStorage image = primitive.Input.Index < 0 ? SvgFilterImageStorage.Deferred : storage[primitive.Input.Index];
+                bool materialized = primitive.MaterializesImage(new(sigmaX, sigmaY));
+                if (materialized) image = SvgFilterImageStorage.Padded;
+                else if (primitive.Kind == SvgFilterPrimitiveKind.Flood) image = SvgFilterImageStorage.Deferred;
+                else if (primitive.Kind == SvgFilterPrimitiveKind.Merge && primitive.MergeCount == 1)
+                {
+                    SvgFilterInput merged = resource.MergeInputs.Items[primitive.MergeFirst];
+                    image = merged.Index < 0 ? SvgFilterImageStorage.Deferred : storage[merged.Index];
+                }
+                // Deferred paint keeps its original drawing path. A strict subset
+                // of a materialized image no longer has a known clear pixel outset.
+                if (image != SvgFilterImageStorage.Deferred && bounds[index] != RoundLayerBounds(output)) image = SvgFilterImageStorage.Cropped;
+                storage[index] = image;
+            }
         }
 
         static SvgPaintBounds Intersect(SvgPaintBounds first, SvgPaintBounds second)
@@ -281,7 +322,7 @@ internal static class SvgFilterPlayback
         PrepareRegions(resource, regions, context, token);
         if (context.SourceBounds is null) bounds = Span<SvgPaintBounds>.Empty;
         if (!bounds.IsEmpty && context.SourceBounds is {} content)
-            PrepareOutputBounds(resource, map, content, SvgFilterBoundsKind.StoredImage, regions, bounds, token);
+            PrepareOutputBounds(resource, map, content, SvgFilterBoundsKind.StoredImage, regions, bounds, Span<SvgFilterImageStorage>.Empty, token);
         requests[count - 1] = requested;
         SvgPaintBounds source = default;
         for (int index = count - 1; index >= 0; index--)
@@ -937,12 +978,8 @@ internal static class SvgFilterPlayback
                     linear[index] = destinationLinear;
                 }
                 else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter primitive is not implemented.");
-                bool materialized = primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur
-                    && (deviation.Horizontal > .03f || deviation.Vertical > .03f)
-                    || primitive.Kind == SvgFilterPrimitiveKind.Merge && primitive.MergeCount != 1
-                    || primitive.Kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend
-                        or SvgFilterPrimitiveKind.Flood or SvgFilterPrimitiveKind.DropShadow;
-                if (materialized && map.Regions is not null && deferredImage is null)
+                bool clipsStoredPixels = primitive.MaterializesImage(deviation) || primitive.Kind == SvgFilterPrimitiveKind.Flood;
+                if (clipsStoredPixels && map.Regions is not null && deferredImage is null)
                 {
                     token.ThrowIfCancellationRequested();
                     SvgPaintBounds extent = imageBounds[index], wanted = requests[index];
@@ -1041,9 +1078,13 @@ internal static class SvgFilterPlayback
         void RetainSampling(int index, SvgFilterInput reference, bool nearest)
         {
             token.ThrowIfCancellationRequested();
+            SvgFilterPrimitive primitive = resource.Primitives.Items[index];
             SvgFilterDeferredColorFilter colorFilter = reference == SvgFilterInput.SourceAlpha
                 ? SvgFilterDeferredColorFilter.SourceAlpha
                 : reference.Index >= 0 ? outputs[reference.Index].SamplingColorFilter : SvgFilterDeferredColorFilter.None;
+            if (colorFilter == SvgFilterDeferredColorFilter.None && reference.Index < 0
+                && (primitive.ColorSpace ?? resource.ColorSpace) == SvgFilterColorSpace.LinearRgb)
+                colorFilter = SvgFilterDeferredColorFilter.LinearRgbRoundTrip;
             SvgFilterImageSampling sampling = reference.Index >= 0
                 ? outputs[reference.Index].FilterImageSampling : SvgFilterImageSampling.Linear;
             if (nearest)
@@ -1052,7 +1093,6 @@ internal static class SvgFilterPlayback
                 sampling = SvgFilterImageSampling.Nearest;
             }
             outputs[index] = outputs[index] with { SamplingColorFilter = colorFilter, FilterImageSampling = sampling };
-            SvgFilterPrimitive primitive = resource.Primitives.Items[index];
             if (primitive.Kind is SvgFilterPrimitiveKind.GaussianBlur or SvgFilterPrimitiveKind.Merge
                 && reference.Index >= 0 && sampledOffsets[reference.Index] is not null && map.Regions is not null)
                 RetainSampledImage(index, reference, new(1, 0, 0, 0, 1, 0), imageBounds[reference.Index], true);
