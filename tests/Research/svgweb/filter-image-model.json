@@ -314,5 +314,106 @@
     "scimitar.svg now renders but differs; scimitar-anim.svg advances to an unsupported-child gate.",
     "Other original filter/root/fitting, fonts/resources and deterministic static states remain individually open; this does not close the full filter milestone or admit the whole hosted collection."
   ],
-  "timingScope": "Functional validation elapsed under concurrent local execution, including runner startup; not quiet-VM performance measurements. Linux local checks execute portable binaries; matching CI independently builds/packages on both hosts."
+  "timingScope": "Functional validation elapsed under concurrent local execution, including runner startup; not quiet-VM performance measurements. Linux local checks execute portable binaries; matching CI independently builds/packages on both hosts.",
+  "promotionCorrection": {
+    "failedSource": "bb622d0c19a253b3bfa85123f3dff98870648659",
+    "failedCiRun": 41083809104,
+    "failure": "Both CI hosts exposed three existing polygon mask/use source-paint region assertions. Later retained stroke centerlines must not replace the separately retained primitive/point-list source bounds and actual outline coverage.",
+    "fix": "Search later retained stroke centerlines only for path sources. Other elements retain their established primitive/point-list bounds. All three original assertions and six native references remain unchanged.",
+    "regressions": [
+      "SvgUseInstanceTests.Applies_a_gray_mask_to_a_gradient_outline_use_instance",
+      "SvgUseInstanceTests.Applies_a_gray_mask_to_a_radial_outline_use_instance",
+      "SvgUseInstanceTests.Applies_a_gray_mask_to_a_pattern_outline_use_instance"
+    ],
+    "qualification": [
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 18.24154349998571,
+        "librarySha256": "eb254599d0c34e2628b51737309d1357c97777fc52b9aa844fba3690887fd1cf"
+      },
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 72.86098619992845,
+        "librarySha256": "eb254599d0c34e2628b51737309d1357c97777fc52b9aa844fba3690887fd1cf"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 23.370245300000533,
+        "librarySha256": "30401b43848cee781121673b11ef501d514c30fe4e44c7b841334d2649e44c1f"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 33.15181410009973,
+        "librarySha256": "30401b43848cee781121673b11ef501d514c30fe4e44c7b841334d2649e44c1f"
+      },
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "layer": "all-non-research-core",
+        "passed": 32887,
+        "seconds": 68.31508360011503,
+        "librarySha256": "eb254599d0c34e2628b51737309d1357c97777fc52b9aa844fba3690887fd1cf"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 20.763972117,
+        "librarySha256": "eb254599d0c34e2628b51737309d1357c97777fc52b9aa844fba3690887fd1cf"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 73.246925364,
+        "librarySha256": "eb254599d0c34e2628b51737309d1357c97777fc52b9aa844fba3690887fd1cf"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 18.437178891000002,
+        "librarySha256": "30401b43848cee781121673b11ef501d514c30fe4e44c7b841334d2649e44c1f"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 59.921345025,
+        "librarySha256": "30401b43848cee781121673b11ef501d514c30fe4e44c7b841334d2649e44c1f"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "layer": "all-non-research-core",
+        "passed": 32887,
+        "seconds": 53.074464182,
+        "librarySha256": "eb254599d0c34e2628b51737309d1357c97777fc52b9aa844fba3690887fd1cf"
+      }
+    ],
+    "originalReplay": {
+      "filesPerHost": 204,
+      "renderedPngsUnchangedPerHost": 147,
+      "outcomesAndDiagnosticsUnchanged": true,
+      "sourceSvgFilesRetained": 0,
+      "seconds": 55.85172799997963
+    },
+    "scope": "Functional checks under concurrent workstation load. Linux uses portable binaries; matching CI independently builds and packages on both hosts."
+  }
 }

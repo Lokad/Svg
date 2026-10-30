@@ -284,16 +284,19 @@ internal static class SvgPaintRecording
             }
             if (objectBounds is null && values.Length != 0)
             {
-                // A non-painting fill can precede the stroke that retains the
-                // authored centerline. Bounds belong to the source element,
-                // independently of the lowered drawing order.
-                SvgAuthoredPath? sourcePath = null;
-                foreach (SvgGeometry geometry in values)
+                // A path's non-painting fill can precede its retained centerline.
+                // Other elements retain primitive or point-list bounds separately;
+                // their lowered stroke paths must not replace those source bounds.
+                SvgAuthoredPath? sourcePath = values[0].AuthoredPath;
+                if (sourcePath is null && element == "path")
                 {
-                    token.ThrowIfCancellationRequested();
-                    if (geometry.AuthoredPath is not {} candidate) continue;
-                    sourcePath = candidate;
-                    break;
+                    foreach (SvgGeometry geometry in values)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (geometry.AuthoredPath is not { StrokeStyle: not null } candidate) continue;
+                        sourcePath = candidate;
+                        break;
+                    }
                 }
                 if (sourcePath is {} path)
                 {
