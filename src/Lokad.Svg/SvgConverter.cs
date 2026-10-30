@@ -336,7 +336,7 @@ public static partial class SvgConverter
             foreach (SvgGeometry geometry in root.Geometries)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (geometry.Kind == SvgGeometryKind.PatternFill && !TryMapPatternTile(geometry.Pattern, GetRecordedPaintValue(geometry.RecordedPaint).RecordingTransform, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
+                if (geometry.Kind == SvgGeometryKind.PatternFill && !TryMapPatternTile(geometry.Pattern, GetRecordedPaintValue(geometry.RecordedPaint).RecordingTransform, SvgAffineTransform.Identity, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
                 bool isCurveFill = (geometry.Kind == SvgGeometryKind.PolygonFill && geometry.Polygon.Mapping == SvgPolygonMapping.FlattenedCurves)
                     || (geometry.Kind == SvgGeometryKind.GradientPolygon && geometry.GradientPolygon.Mapping == SvgPolygonMapping.FlattenedCurves)
                     || (geometry.Kind == SvgGeometryKind.RadialPolygon && geometry.RadialPolygon.Mapping == SvgPolygonMapping.FlattenedCurves);
@@ -3962,7 +3962,7 @@ public static partial class SvgConverter
             using RenderBudget.BudgetReservation sourcePatternOwner = budget.Reserve(512, SvgMemoryCategory.Geometry);
             SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null) { ContentPaint = outline.ContentPaint, VectorContent = outline.VectorContent, ContentViewBox = outline.ContentViewBox, Coordinates = outline.Coordinates, PaintMatrices = outline.PaintMatrices, ShaderPlacement = outline.ShaderPlacement };
             using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(source) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
-            if (!TryMapPatternTile(source, activePaint.RecordingTransform, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
+            if (!TryMapPatternTile(source, activePaint.RecordingTransform, SvgAffineTransform.Identity, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry tile = mappedTile ?? source;
             using SvgPatternTileLease texture = BorrowPatternTile(source, tile, false);
             byte[] blitted = texture.Surface.Pixels;
@@ -4011,7 +4011,7 @@ public static partial class SvgConverter
         bool NeedsPatternMapping(SvgPatternGeometry pattern)
             => pattern.Coordinates is not null || pattern.VectorContent is not null || horizontalScale != 1 || verticalScale != 1 || horizontalOffset != 0 || verticalOffset != 0 || pattern.ShaderPlacement != SvgAffineTransform.Identity;
 
-        bool TryMapPatternTile(SvgPatternGeometry pattern, SvgRecordedTransform? recording, out SvgPatternGeometry? mapped)
+        bool TryMapPatternTile(SvgPatternGeometry pattern, SvgRecordedTransform? recording, SvgAffineTransform glyphMap, out SvgPatternGeometry? mapped)
         {
             mapped = null;
             if (pattern.Coordinates?.IsEmpty == true) return true;
@@ -4038,14 +4038,19 @@ public static partial class SvgConverter
                 if (pattern.PaintMatrices is {} stages)
                 {
                     SvgAffineTransform target = stages.Target, local = stages.Pattern;
+                    if (glyphMap != SvgAffineTransform.Identity)
+                    {
+                        // Glyph drawing and local paint narrow separately. Flattening
+                        // their mathematical cancellation changes picture texture sizes.
+                        local = SvgTextShader.RebaseLocal(glyphMap, target, local);
+                        target = glyphMap;
+                    }
                     drawMap = SvgShaderMatrix.Concat(outputMap, new((float)target.A, (float)target.C, (float)target.E, (float)target.B, (float)target.D, (float)target.F));
                     SvgShaderMatrix external = frame is null
                         ? new((float)options.OutputScale, 0, 0, 0, (float)options.OutputScale, 0) : outputMap;
                     if (recording is not null)
                     {
-                        {
-                            if (!recording.TryMap(external, patternRootMap, target, budget, cancellationToken, out drawMap)) return false;
-                        }
+                        if (!recording.TryMap(external, patternRootMap, target, budget, cancellationToken, out drawMap)) return false;
                     }
                     else if (patternRootMap != SvgAffineTransform.Identity)
                     {
@@ -4058,8 +4063,7 @@ public static partial class SvgConverter
                 SvgShaderMatrix map = SvgShaderMatrix.Concat(drawMap, localMap);
                 // Picture tiles retain their source axes. Rotation/reflection change the
                 // sampling matrix, while column lengths choose the bounded texture scale.
-                (float rasterScaleX, float rasterScaleY) = positiveAxis
-                    ? (map.ScaleX, map.ScaleY) : map.GetPictureScale();
+                (float rasterScaleX, float rasterScaleY) = map.GetPictureScale();
                 double pixelsX = MathF.Ceiling(width * rasterScaleX), pixelsY = MathF.Ceiling(height * rasterScaleY);
                 if (pixelsX <= 0 || pixelsY <= 0 || pixelsX > options.Limits.MaximumDimension || pixelsY > options.Limits.MaximumDimension)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile dimensions exceed the configured limit.");
@@ -4072,8 +4076,8 @@ public static partial class SvgConverter
                     VectorContent = pattern.VectorContent, ContentViewBox = coordinates.ContentViewBox,
                     ShaderPlacement = SvgAffineTransform.FromScaleOffset(1, 1, originX, originY),
                     RasterSourceBox = new(0, 0, width, height, SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None),
-                    NativeImageMap = positiveAxis && IsDeviceInteger(tileWidth) && IsDeviceInteger(tileHeight) ? null : drawMap,
-                    NativeImageLocal = positiveAxis && IsDeviceInteger(tileWidth) && IsDeviceInteger(tileHeight) ? null : imageLocal,
+                    NativeImageMap = drawMap,
+                    NativeImageLocal = imageLocal,
                 };
                 return true;
             }
@@ -4094,7 +4098,7 @@ public static partial class SvgConverter
         {
             if ((!pattern.Fill.HasFill && pattern.Stroke is null) || pattern.Coordinates?.IsEmpty == true) return;
             using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(pattern) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
-            if (!TryMapPatternTile(pattern, activePaint.RecordingTransform, out SvgPatternGeometry? mapped)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
+            if (!TryMapPatternTile(pattern, activePaint.RecordingTransform, SvgAffineTransform.Identity, out SvgPatternGeometry? mapped)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry source = mapped ?? pattern;
             if (pass != SvgPaintPass.Stroke && source.Fill.HasFill)
             {
@@ -4481,7 +4485,7 @@ public static partial class SvgConverter
             SvgPatternGeometry? originalPattern = glyph.Shader is SvgTextPatternShader patternPaint ? patternPaint.Pattern : null;
             if (originalPattern is not null)
             {
-                if (!TryMapPatternTile(originalPattern, activePaint.RecordingTransform, out SvgPatternGeometry? mapped))
+                if (!TryMapPatternTile(originalPattern, activePaint.RecordingTransform, glyph.Source?.GlyphMap ?? SvgAffineTransform.Identity, out SvgPatternGeometry? mapped))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text pattern coordinates are not finite and invertible.");
                 if (originalPattern.Coordinates?.IsEmpty == true) return;
                 glyphPattern = mapped ?? originalPattern;
@@ -4490,15 +4494,13 @@ public static partial class SvgConverter
             SvgGradientPaintMatrices? textMatrices = null;
             if (glyphLinear?.SourcePaint?.Data is {} textSource && glyph.Source is { GlyphMap: var glyphMap } && glyphMap != SvgAffineTransform.Identity)
             {
-                if (!glyphMap.TryInvert(out SvgAffineTransform inverse)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text shader placement must be invertible.");
-                SvgAffineTransform local = inverse.ComposeChecked(textSource.Referencing).ComposeChecked(new(textSource.Local.A, textSource.Local.B, textSource.Local.C, textSource.Local.D, textSource.Local.E, textSource.Local.F));
+                SvgAffineTransform local = SvgTextShader.RebaseLocal(glyphMap, textSource.Referencing, new(textSource.Local.A, textSource.Local.B, textSource.Local.C, textSource.Local.D, textSource.Local.E, textSource.Local.F));
                 textMatrices = new(new((float)local.A, (float)local.C, (float)local.E, (float)local.B, (float)local.D, (float)local.F), glyphMap);
             }
             if (glyphRadial is { NativePaintMatrices: {} radialMatrices } radial && glyph.Source is { GlyphMap: var radialGlyphMap } && radialGlyphMap != SvgAffineTransform.Identity)
             {
-                if (!radialGlyphMap.TryInvert(out SvgAffineTransform inverse)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text shader placement must be invertible.");
                 SvgShaderMatrix matrix = radialMatrices.Local;
-                SvgAffineTransform local = inverse.ComposeChecked(radialMatrices.Referencing).ComposeChecked(new(matrix.ScaleX, matrix.SkewY, matrix.SkewX, matrix.ScaleY, matrix.TranslateX, matrix.TranslateY));
+                SvgAffineTransform local = SvgTextShader.RebaseLocal(radialGlyphMap, radialMatrices.Referencing, new(matrix.ScaleX, matrix.SkewY, matrix.SkewX, matrix.ScaleY, matrix.TranslateX, matrix.TranslateY));
                 glyphRadial = radial with { NativePaintMatrices = new(new((float)local.A, (float)local.C, (float)local.E, (float)local.B, (float)local.D, (float)local.F), radialGlyphMap) };
             }
             bool constantGlyphFactory = glyphLinear is {} factoryLinear ? SvgShaderCoordinates.IsConstantFactory(factoryLinear)

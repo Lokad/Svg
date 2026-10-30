@@ -69,6 +69,7 @@
   <ItemGroup>
     <None Include="../Research/text-node-boundaries/*.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/text-node-boundaries/capture.json" Link="TestData/text-node-boundaries/capture.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-paint-bounds/precision-residuals/inputs/spacing-paint-45-control.svg" Link="TestData/text-node-boundaries/pattern-texture-resize.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/text-paint-bounds/shared-layout-inputs/r144-consumer-6-candidate.svg" Link="TestData/text-node-boundaries/shared-layout.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/static-css-document/font-pack.json" Link="TestData/text-node-boundaries/font-pack.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/pattern-source-selection/*.svg" Link="TestData/pattern-source-selection/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

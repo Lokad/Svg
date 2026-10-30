@@ -10,6 +10,8 @@
   contours during temporary inherited-fill preparation, preserving source ownership.
 - Remove the obsolete destructive polygon-clip backend; retain native clip scenes
   and their source geometry, transforms and coverage.
+- Preserve recorded path-baseline metrics and per-glyph pattern matrices through
+  texture sizing and sampling, correcting fractional-scale text paint seams.
 
 Development targets 0.4.0. Published 0.3.0 and its source tag remain unchanged.
 

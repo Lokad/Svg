@@ -18,9 +18,20 @@ internal readonly record struct SvgTextDecorationPlacement(SvgDevicePoint Origin
 
 /// <summary>Borrows one immutable scene-owned text paint; variants contain exactly one bound paint source.</summary>
 /// <remarks>Implementations retain no parser state or font ownership. Scene construction reserves metadata
-/// and dominant stop/tile storage before publication. Raster replay borrows the value, charges sampling
-/// and observes cancellation; immutable variants support concurrent independent conversions.</remarks>
-internal abstract record SvgTextShader;
+/// and dominant stop/tile storage before publication. Raster replay borrows the value, admits temporary
+/// sampling storage through the operation's budget and observes cancellation. Immutable variants
+/// support concurrent independent conversions.</remarks>
+internal abstract record SvgTextShader
+{
+    /// <summary>Retains the glyph drawing stage separately from the shader-local stage before float narrowing.</summary>
+    /// <remarks>Bounded, allocation-free arithmetic. No owners or cancellation state are retained.</remarks>
+    internal static SvgAffineTransform RebaseLocal(SvgAffineTransform glyphMap, SvgAffineTransform referencing, SvgAffineTransform local)
+    {
+        if (!glyphMap.TryInvert(out SvgAffineTransform inverse))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text shader placement must be invertible.");
+        return inverse.ComposeChecked(referencing).ComposeChecked(local);
+    }
+}
 internal sealed record SvgTextLinearShader(SvgLinearGradient Gradient) : SvgTextShader;
 internal sealed record SvgTextRadialShader(SvgRadialGradient Gradient) : SvgTextShader;
 internal sealed record SvgTextPatternShader(SvgPatternGeometry Pattern) : SvgTextShader;

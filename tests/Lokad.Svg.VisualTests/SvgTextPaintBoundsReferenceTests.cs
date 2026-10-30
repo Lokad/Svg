@@ -45,6 +45,102 @@ public sealed class SvgTextPaintBoundsReferenceTests
     public Task Filter_source_recording_matches_each_native_source_image(string id)
         => AssertNativeImage("filter-source-images.json", id, false);
 
+    public static IEnumerable<object[]> PatternMatrixCases()
+    {
+        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "precision-pattern-images.json")));
+        foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
+            yield return [row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing pattern matrix case id.")];
+    }
+
+    [Theory]
+    [MemberData(nameof(PatternMatrixCases))]
+    [Trait("Layer", "Rendering")]
+    public Task Glyph_pattern_matrices_match_each_original_native_image(string id)
+        => AssertNativeImage("precision-pattern-images.json", id, false);
+
+    [Fact]
+    [Trait("Layer", "Integrity")]
+    public void Pattern_matrix_originals_retain_native_context_fonts_and_stable_platform_triples()
+    {
+        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "precision-pattern-images.json")));
+        JsonElement root = data.RootElement;
+        Assert.Equal(26, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(13, root.GetProperty("pairs").GetArrayLength());
+        Dictionary<string, JsonElement> cases = root.GetProperty("cases").EnumerateArray()
+            .ToDictionary(row => Required(row, "id"), StringComparer.Ordinal);
+        Dictionary<string, byte[]> programs = new(StringComparer.Ordinal);
+        foreach (JsonElement font in root.GetProperty("nativeCapture").GetProperty("fonts").EnumerateArray())
+        {
+            byte[] bytes = File.ReadAllBytes(Path.Combine(Folder(), Required(font, "path")));
+            Assert.Equal(font.GetProperty("bytes").GetInt32(), bytes.Length);
+            Assert.Equal(Required(font, "sha256"), Convert.ToHexStringLower(SHA256.HashData(bytes)));
+            programs.Add(Required(font, "family"), bytes);
+        }
+        Assert.Equal(2, root.GetProperty("nativeCapture").GetProperty("fonts").GetArrayLength());
+        byte[] css = System.Text.Encoding.UTF8.GetBytes("<style>@font-face{font-family:ReviewFont;font-weight:400;src:url(data:font/ttf;base64,"
+            + Convert.ToBase64String(programs["ReviewFont"]) + ")}</style><style>@font-face{font-family:ReviewMono;font-weight:700;src:url(data:font/ttf;base64,"
+            + Convert.ToBase64String(programs["ReviewMono"]) + ")}</style>");
+        Assert.Equal(cases.Keys.Order(StringComparer.Ordinal), root.GetProperty("pairs").EnumerateArray()
+            .SelectMany(pair => new[] { Required(pair, "candidate"), Required(pair, "control") }).Order(StringComparer.Ordinal));
+        foreach (JsonElement row in cases.Values)
+        {
+            byte[] source = File.ReadAllBytes(Path.Combine(Folder(), Required(row, "input")));
+            Assert.Equal(Required(row, "sourceSha256"), Convert.ToHexStringLower(SHA256.HashData(source)));
+            Assert.Equal(1.5, row.GetProperty("outputScale").GetDouble());
+            Assert.True(row.GetProperty("font").GetBoolean());
+            string native = System.Text.Encoding.UTF8.GetString(source)
+                .Replace("font-family='serif'", "font-family='ReviewFont'", StringComparison.Ordinal)
+                .Replace("font-family='monospace'", "font-family='ReviewMono'", StringComparison.Ordinal);
+            int insertion = native.IndexOf('>') + 1;
+            Assert.True(insertion > 0);
+            using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+            hash.AppendData(System.Text.Encoding.UTF8.GetBytes(native[..insertion]));
+            hash.AppendData(css);
+            hash.AppendData(System.Text.Encoding.UTF8.GetBytes(native[insertion..]));
+            Assert.Equal(Required(row, "nativeSourceSha256"), Convert.ToHexStringLower(hash.GetHashAndReset()));
+            Assert.NotEqual(Required(row.GetProperty("references").GetProperty("windows"), "rgbaSha256"),
+                Required(row.GetProperty("references").GetProperty("linux"), "rgbaSha256"));
+        }
+        foreach (string host in new[] { "windows", "linux" })
+        {
+            foreach (JsonElement row in cases.Values)
+            {
+                JsonElement image = row.GetProperty("references").GetProperty(host);
+                byte[] png = File.ReadAllBytes(Path.Combine(Folder(), Required(image, "path")));
+                Assert.Equal(Required(image, "sha256"), Convert.ToHexStringLower(SHA256.HashData(png)));
+                RgbaImage decoded = PngRgbaDecoder.Decode(png, 32_768);
+                Assert.Equal(Required(image, "rgbaSha256"), Convert.ToHexStringLower(SHA256.HashData(decoded.Pixels)));
+                Assert.Equal(240, decoded.Width);
+                Assert.Equal(120, decoded.Height);
+                JsonElement hashes = image.GetProperty("processPngSha256");
+                Assert.Equal(3, hashes.GetArrayLength());
+                foreach (JsonElement hash in hashes.EnumerateArray()) Assert.Equal(Required(image, "sha256"), hash.GetString());
+            }
+            JsonElement launches = root.GetProperty("nativeCapture").GetProperty("launches").GetProperty(host);
+            Assert.Equal(3, launches.GetArrayLength());
+            foreach (JsonElement launch in launches.EnumerateArray())
+            {
+                Assert.Equal("healthy", Required(launch, "startupHealth"));
+                Assert.True(launch.GetProperty("profileCleaned").GetBoolean());
+                Assert.False(launch.GetProperty("stderrTruncated").GetBoolean());
+                Assert.Equal(0, launch.GetProperty("sandboxAccessFailures").GetInt32());
+                Assert.Equal(0, launch.GetProperty("networkServiceCrashes").GetInt32());
+            }
+            foreach (JsonElement pair in root.GetProperty("pairs").EnumerateArray())
+            {
+                JsonElement candidate = cases[Required(pair, "candidate")], control = cases[Required(pair, "control")];
+                Assert.Equal("candidate", Required(candidate, "role"));
+                Assert.Equal("control", Required(control, "role"));
+                Assert.Equal(Required(candidate, "originalName"), Required(control, "originalName"));
+                Assert.NotEqual(Required(candidate.GetProperty("references").GetProperty(host), "rgbaSha256"),
+                    Required(control.GetProperty("references").GetProperty(host), "rgbaSha256"));
+            }
+        }
+
+        static string Required(JsonElement value, string property)
+            => value.GetProperty(property).GetString() ?? throw new InvalidDataException("Missing pattern capture value.");
+    }
+
     private static async Task AssertNativeImage(string captureFile, string id, bool replayPrepared)
     {
         using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), captureFile)));

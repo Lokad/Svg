@@ -124,6 +124,43 @@ public sealed class SvgTextNodeMetricsTests
         Assert.Equal(expected, SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
     }
 
+    [Fact]
+    public async Task Glyph_pattern_texture_resize_preserves_refusal_cleanup_and_prepared_retry()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(Folder, "pattern-texture-resize.svg")), unchanged = input.ToArray();
+        FontProvider provider = new();
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog.Value, provider, CancellationToken.None);
+        SvgRenderOptions options = new(null, 1.5, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(8_000_000));
+        using (SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parser, fonts, CancellationToken.None))
+        {
+            RenderBudget raster = new RenderBudget(new HostMemoryBudget(8_000_000));
+            byte[] pixels;
+            using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, raster, CancellationToken.None))
+                pixels = surface.Pixels.ToArray();
+            Assert.Equal(0, raster.Snapshot().CurrentBytes);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(raster.Snapshot().PeakBytes - 1));
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+                SvgConverter.Rasterize(scene, options, denied, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+            using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(scene, options, raster, CancellationToken.None))
+                Assert.Equal(pixels, retry.Pixels);
+            Assert.Equal(0, raster.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+        byte[] expected = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog.Value, provider,
+            new(null, 1.5, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None);
+        using CancellationTokenSource canceled = new();
+        canceled.Cancel();
+        Assert.Equal(canceled.Token, Assert.ThrowsAny<OperationCanceledException>(() => prepared.ConvertToPng(canceled.Token)).CancellationToken);
+        Assert.Throws<ObjectDisposedException>(() => prepared.ConvertToPng(CancellationToken.None));
+        using SvgPreparedDocument preparedRetry = await SvgPreparedDocument.CreateAsync(input, Catalog.Value, provider,
+            new(null, 1.5, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None);
+        Assert.Equal(expected, preparedRetry.ConvertToPng(CancellationToken.None).ToArray());
+        Assert.Equal(unchanged, input);
+    }
+
     private static byte[] ReadInput(JsonElement row)
         => File.ReadAllBytes(Path.Combine(Folder, row.GetProperty("input").GetString() ?? throw new InvalidDataException("Missing input.")));
 

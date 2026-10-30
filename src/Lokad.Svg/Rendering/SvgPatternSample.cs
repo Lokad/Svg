@@ -3,8 +3,8 @@ using Lokad.Svg.Parsing;
 namespace Lokad.Svg.Rendering;
 
 /// <summary>Prepares picture texture addresses for optional bilinear interpolation.</summary>
-/// <remarks>Owns no storage. The caller retains the texture and mutable coordinate cache, charges
-/// four interpolation units before Sample when filtering is required, and checks cancellation.
+/// <remarks>Owns no storage. The caller retains the admitted texture and draw-local mutable
+/// coordinate cache and checks cancellation before sampling.
 /// Prepared addresses are valid only for the same validated texture dimensions.</remarks>
 internal readonly record struct SvgPatternSample(int First, int Second, int Third, int Fourth, float FractionX, float FractionY)
 {

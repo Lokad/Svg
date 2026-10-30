@@ -66,6 +66,12 @@ the 65 [original text additions](text-acceptance.md) and 196
 [path-baseline additions](text-baseline-paint.md). All original declarations remain
 mapped; their representative contracts stay separate from rendering.
 
+Separately, the [text-pattern matrix cohort](text-pattern-matrices.md) adds 26
+original rendering cases through the existing two-font canonical harness, with
+11 direct matrix/boundary mechanisms and one resized-texture ownership interaction.
+The cases reuse committed source/reference files; they do not expand the paint-bank
+or twelve-form API matrix. Native provenance remains a separate integrity check.
+
 ## Local setup-cost check
 
 Three fresh .NET 11 Windows processes enumerated `Cases()` and `ResearchCases()`
