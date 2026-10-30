@@ -1,0 +1,18 @@
+{
+  "packageVersion": "0.4.0-dev.1",
+  "librarySourceCommit": "544b741742a35a5f9ec858d382ec9539d9f50416",
+  "packageSha256": "04d2130b984986944c7865a0f5a8bf255dd04a6e3ce83d7baf0a87c06138fa79",
+  "symbolPackageSha256": "935e1d50e324de2289a5a98e2efe274202710611023bfc296bab0564652bd237",
+  "frameworks": [
+    {
+      "targetFramework": "net11.0",
+      "librarySha256": "5f1b0864391cd092109357d4023aa5c952068c320521ede983c56af1dc0b5f7a"
+    },
+    {
+      "targetFramework": "net10.0",
+      "librarySha256": "76b27d8960f8079c4f6491cc34a49df194d3b96227c60b211b9a68cb2d1b00b8"
+    }
+  ],
+  "runtimePackageDependencies": [],
+  "publicationPerformed": false
+}

@@ -14,6 +14,10 @@ Install [Lokad.Svg from NuGet](https://www.nuget.org/packages/Lokad.Svg):
 dotnet add package Lokad.Svg --version 0.3.0
 ```
 
+This command selects the published release. The HTTP resolver, shared admission,
+owned-result API and .NET 11 asset described below belong to the development
+build; use a qualified development package for that integration flow.
+
 [CHANGELOG](CHANGELOG.md) records release notes.
 
 `SvgConverter` provides synchronous and asynchronous output to independently

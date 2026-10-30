@@ -1,9 +1,6 @@
 using Lokad.Svg;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Testing;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text.Json;
 
 ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
 ReadOnlySpan<byte> pngSignature = [137, 80, 78, 71, 13, 10, 26, 10];
@@ -89,36 +86,4 @@ if (resolution.IsFallback || resolution.Face.File.RelativePath != "files/example
 
 Console.WriteLine("Installed package font-pack catalog scenario passed.");
 
-await RunHttpFontSmokeAsync();
-
-static async Task RunHttpFontSmokeAsync()
-{
-    byte[] font = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "assets", "Primary.ttf"));
-    byte[] manifest = JsonSerializer.SerializeToUtf8Bytes(new
-    {
-        packId = "smoke",
-        files = new[] { new { relativePath = "Primary.ttf", byteSize = font.Length, sha256 = Convert.ToHexString(SHA256.HashData(font)) } },
-        families = new[] { new { requestedFamily = "Example", resolvedFamily = "Example", relativeFontFile = "Primary.ttf" } }
-    });
-    using var handler = new HttpFontSmokeHandler(manifest, font);
-    using var client = new HttpClient(handler);
-    using var budget = new TestMemoryBudget(8_000_000);
-    await using var resolver = SvgHttpFontPackResolver.Create("smoke", new("https://fonts.invalid/smoke/"), client,
-        new(TimeSpan.FromSeconds(5), 1, TimeSpan.Zero, 4096, 1_000_000, 1_000_000), budget);
-    byte[] shape = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8'/></svg>"u8.ToArray();
-    using (SvgPreparedDocument free = await SvgPreparedDocument.CreateAsync(shape, resolver, SvgRenderOptions.Default, CancellationToken.None))
-    using (SvgPngResult image = await free.ConvertToOwnedPngAsync(CancellationToken.None))
-    {
-        if (handler.Requests != 0 || image.Memory.IsEmpty) throw new InvalidOperationException("Font-free HTTP preparation acquired resources or lost its output.");
-    }
-    byte[] text = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text x='2' y='24' font-family='Example' font-size='20'>A</text></svg>"u8.ToArray();
-    using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(text, resolver, SvgRenderOptions.Default, CancellationToken.None);
-    using SvgPngResult result = document.ConvertToOwnedPng(CancellationToken.None);
-    if (handler.Requests != 2 || result.Memory.Length < 8 || !result.Memory.Span[..8].SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }))
-        throw new InvalidOperationException("Installed HTTP font acquisition did not produce a PNG.");
-    await resolver.DisposeAsync();
-    if (budget.Reserved != result.Memory.Length) throw new InvalidOperationException("The retained PNG lost its sibling-scope charge.");
-    result.Dispose();
-    if (budget.Reserved != 0 || budget.Disposed) throw new InvalidOperationException("Installed HTTP cleanup did not preserve the borrowed root.");
-    Console.WriteLine("Installed package HTTP fonts, font-free independence and retained-output ownership passed.");
-}
+await HttpFontQualification.RunAsync();

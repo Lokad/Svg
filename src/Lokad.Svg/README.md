@@ -21,17 +21,31 @@ File.WriteAllBytes("output.png", png.ToArray());
 The subset includes affine geometry, local instances, gradients/patterns,
 clips/masks, embedded base64 PNGs, static CSS, markers, selected filters and
 supplied-font text. Unsupported visible features report `SvgException`.
-Rendering applies explicit memory/work limits and cancellation.
+Rendering applies size/structural limits, optional host memory admission and cancellation.
 
 Outputs support owned memory, caller memory and writable streams, synchronously
 or asynchronously. Text needs an explicit font catalog and font-program provider.
 `SvgPreparedDocument.CreateAsync` prepares a document for one conversion; the host
-owns font sources, resource acquisition and caching.
+supplies font sources or configures the HTTP resolver below.
 
 The opt-in `SvgHttpFontPackResolver` uses a caller-owned HttpClient and
 `IMemoryBudget` for shared acquisition/cache admission. Prepare through its
 document overload and use `ConvertToOwnedPng`/`ConvertToOwnedPngAsync`; dispose the
 returned `SvgPngResult` after its readers/writes finish to release the PNG charge.
+Cache and operation owners share one root allowance. Keep the operation parent
+alive through every result reader, including awaited asynchronous writes:
+
+```csharp
+using var document = await SvgPreparedDocument.CreateAsync(
+    svg, resolver, renderOptions.WithMemoryBudget(operationBudget), cancellationToken);
+using SvgPngResult result = await document.ConvertToOwnedPngAsync(cancellationToken);
+await destination.WriteAsync(result.Memory, cancellationToken);
+```
+
+Caller-memory and asynchronous stream conversion avoid transferring an owned PNG;
+each prepared document permits one conversion. Resolver shutdown waits for its I/O
+and leaves existing prepared borrowers usable; their font charges remain until
+they finish. Caller-owned clients, destinations and parent budgets remain borrowed.
 
 This package includes CHANGELOG.md, LICENSE.txt and THIRD_PARTY_NOTICES.txt.
 The repository contains the detailed support matrix, contributor documentation

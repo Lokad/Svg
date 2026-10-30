@@ -20,6 +20,8 @@ residuals through separate layout/paint metrics, with straight-path and hanging 
 local paint before texture sizing and removes the integer-tile sampling shortcut.
 [Shared paint stages](paint-stages.md) unifies native drawing preparation for text
 gradients and patterns, including group, instance and symbol recording.
+[Governed host qualification](host-api-qualification.md) maps resolver, admission,
+shutdown and asynchronous output contracts to source and installed-package evidence.
 
 The outstanding review starts at these committed collections:
 

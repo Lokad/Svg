@@ -17,17 +17,22 @@ await using var resolver = SvgHttpFontPackResolver.Create(
     "approved-pack", new Uri("https://fonts.example/approved-pack/"), httpClient,
     new SvgHttpFontAcquisitionOptions(
         TimeSpan.FromSeconds(30), 3, TimeSpan.FromMilliseconds(100),
-        1_048_576, 33_554_432, 67_108_864), memoryBudget);
+        1_048_576, 33_554_432, 67_108_864), cacheBudget);
 using var document = await SvgPreparedDocument.CreateAsync(
-    svg, resolver, renderOptions, cancellationToken);
+    svg, resolver, renderOptions.WithMemoryBudget(operationBudget), cancellationToken);
 using SvgPngResult png = await document.ConvertToOwnedPngAsync(cancellationToken);
 await destination.WriteAsync(png.Memory, cancellationToken);
 ```
 
 The document uses `renderOptions.MemoryBudget` when supplied, otherwise the
-resolver budget. The host must supply owners sharing one root; the library neither
+resolver budget. `cacheBudget` and `operationBudget` are host-owned scopes sharing
+one root allowance; the library neither
 infers ancestry nor copies a remaining balance. Keep that document/result owner
-alive until borrowers finish.
+alive until borrowers finish. A result's scope is a sibling of the prepared
+document's execution scope beneath that supplied owner. Disposing the prepared
+document does not refund a live result; disposing its supplied parent would
+invalidate the result's admission. Finish writes before disposing either owner.
+Destinations retaining bytes afterward account for their own storage.
 
 Use `renderOptions.WithFontSelectionPolicy` for explicit generic mappings and
 ordered fallback restrictions. Catalogs, selection and TrueType validation share
@@ -61,6 +66,24 @@ retention. Active programs stay pinned and charged; they also retain document
 face/byte bounds. Refused admission ends the operation without eviction, waiting
 or fallback. Disposal never disposes the borrowed client or root budget.
 
+Resolver shutdown closes new preparations and cancels shared acquisition.
+`DisposeAsync` also waits for outstanding I/O. Already-prepared documents can
+still convert once; borrowed programs stay charged until their final document
+finishes. Owned PNG results remain independent of resolver shutdown.
+
 Use `ConvertToOwnedPng`/`ConvertToOwnedPngAsync` for governed retained output.
 Caller-memory and stream methods remain available. Governed bare-memory output
 rejects because its charge could not follow the returned storage lifetime.
+Choose one conversion per prepared document:
+
+```csharp
+int bytesWritten = document.ConvertToPng(destinationMemory, cancellationToken);
+// Alternatively, use a fresh prepared document for asynchronous stream output:
+int streamedBytes = await otherDocument.ConvertToPngAsync(destinationStream, cancellationToken);
+```
+
+The stream path honors asynchronous writes and backpressure and leaves the
+destination open. Handle `OperationCanceledException`, `SvgErrorCode` and
+`SvgException.FontDiagnostic`/`SourceDiagnostic`; do not classify failures by
+parsing exception text. Cancellation ends the operation after active users and
+cleanup finish; it does not transfer or dispose caller-owned output storage.
