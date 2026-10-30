@@ -1184,25 +1184,18 @@ internal static class SvgReferenceResolver
         catch { foreach (SvgGeometry geometry in geometries) geometry.Dispose(); throw; }
     }
 
-    /// <summary>Owns only newly recolored fill channels; authored stroke and fill channels remain borrowed from the definition.</summary>
+    /// <summary>Owns only a temporary geometry-reference array; all contour and paint storage stays borrowed from the definition.</summary>
+    /// <remarks>The definition outlives this synchronous mapping scope. Construction and disposal belong to the conversion thread; disposal never releases definition payloads.</remarks>
     private readonly struct InstanceFillGeometries : IDisposable
     {
         private readonly RenderBudget.BudgetReservation? _owner;
-        private readonly SvgSymbolFillBinding[]? _bindings;
-        internal InstanceFillGeometries(SvgGeometry[] geometries, SvgSymbolFillBinding[]? bindings, RenderBudget.BudgetReservation? owner)
+        internal InstanceFillGeometries(SvgGeometry[] geometries, RenderBudget.BudgetReservation? owner)
         {
             Geometries = geometries;
-            _bindings = bindings;
             _owner = owner;
         }
         internal SvgGeometry[] Geometries { get; }
-        public void Dispose()
-        {
-            if (_owner is null) return;
-            for (int index = 0; index < Geometries.Length; index++)
-                if (_bindings is null || _bindings[index].ResolvesFill) Geometries[index].Dispose();
-            _owner.Dispose();
-        }
+        public void Dispose() => _owner?.Dispose();
     }
 
     private static InstanceFillGeometries ApplyInstanceFill(SvgDefinition definition, SvgUseReference reference, SvgDocumentState state, CancellationToken token)
@@ -1210,7 +1203,7 @@ internal static class SvgReferenceResolver
         SvgSymbolFillBinding[]? bindings = definition.SymbolFillBindings;
         if (bindings is null)
         {
-            if (reference.FillOverride is null) return new(definition.Geometries, null, null);
+            if (reference.FillOverride is null) return new(definition.Geometries, null);
             if (definition.Geometries.Length != 1 || !definition.AllowsInstanceFillOverride)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible single-geometry definition.");
         }
@@ -1222,13 +1215,12 @@ internal static class SvgReferenceResolver
                 token.ThrowIfCancellationRequested();
                 resolvesFill |= binding.ResolvesFill;
             }
-            if (!resolvesFill) return new(definition.Geometries, bindings, null);
+            if (!resolvesFill) return new(definition.Geometries, null);
         }
         RenderBudget.BudgetReservation owner = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(definition.Geometries.Length), SvgMemoryCategory.Parser);
         SvgGeometry[] sources;
         try { sources = new SvgGeometry[definition.Geometries.Length]; }
         catch { owner.Dispose(); throw; }
-        int retained = 0;
         try
         {
             for (int index = 0; index < sources.Length; index++)
@@ -1243,21 +1235,18 @@ internal static class SvgReferenceResolver
                     {
                         fill = bindings[index].Resolve(fill, reference.InheritedStrokeOpacity);
                     }
-                    sources[index] = Recolor(source, fill, bindings is null ? null : bindings[index], reference.FillOverride ?? reference.InheritedFill, reference.InheritedStrokeOpacity, state);
+                    sources[index] = Recolor(source, fill, bindings is null ? null : bindings[index], reference.FillOverride ?? reference.InheritedFill, reference.InheritedStrokeOpacity);
                 }
-                retained++;
             }
-            return new(sources, bindings, owner);
+            return new(sources, owner);
         }
         catch
         {
-            for (int index = 0; index < retained; index++)
-                if (bindings is null || bindings[index].ResolvesFill) sources[index].Dispose();
             owner.Dispose();
             throw;
         }
 
-        static SvgGeometry Recolor(SvgGeometry source, SvgPaint fill, SvgSymbolFillBinding? binding, SvgPaint instancePaint, SvgPaintOpacity inheritedStrokeOpacity, SvgDocumentState document)
+        static SvgGeometry Recolor(SvgGeometry source, SvgPaint fill, SvgSymbolFillBinding? binding, SvgPaint instancePaint, SvgPaintOpacity inheritedStrokeOpacity)
         {
             SvgColor color = SvgPaintResolver.ResolveFillColor(fill, 255);
             SvgStroke? stroke = source.Kind == SvgGeometryKind.Rectangle ? source.Rectangle.Stroke : null;
@@ -1268,10 +1257,18 @@ internal static class SvgReferenceResolver
                 SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(source.Rectangle with { Color = color, HasFill = fill.HasFill, Stroke = stroke }) with { SolidPaint = source.SolidPaint is null ? null : SvgPaintResolver.ResolveSolidPaint(fill) },
                 SvgGeometryKind.OrthogonalBand => SvgGeometry.FromOrthogonalBand(source.Rectangle with { Color = color, HasFill = fill.HasFill }),
                 SvgGeometryKind.AxisAlignedLine => SvgGeometry.FromAxisAlignedLine(source.AxisAlignedLine with { Color = color, IsPainted = fill.HasFill }),
-                SvgGeometryKind.PolygonFill => SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(source.Polygon.Points, source.Polygon.ContourEnds, source.Polygon.Signs, source.Polygon.QuadSpans, source.Polygon.CubicSpans, color, fill.HasFill, source.Polygon.IsEvenOdd, source.Polygon.Mapping, source.Polygon.Clip, null, document.Budget)),
+                SvgGeometryKind.PolygonFill => BorrowPolygon(source.Polygon, color, fill.HasFill),
                 SvgGeometryKind.GradientStroke => SvgGeometry.FromGradientStroke(new(source.GradientStroke.Fill with { Color = color, HasFill = fill.HasFill }, source.GradientStroke.Top, source.GradientStroke.Bottom, source.GradientStroke.Left, source.GradientStroke.Right, source.GradientStroke.Gradient, source.GradientStroke.Box, source.GradientStroke.Opacity, source.GradientStroke.HasStroke)),
                 _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inherited fill on this symbol geometry is not implemented."),
             };
+
+            // This non-owning binding dies with InstanceFillGeometries, before its definition.
+            static SvgGeometry BorrowPolygon(SvgPolygonFill source, SvgColor color, bool hasFill)
+            {
+                SvgPolygonContours contours = source.Contours;
+                contours.RelinquishOwnership();
+                return SvgGeometry.FromPolygonFill(new SvgPolygonFill(contours, color, hasFill, source.IsEvenOdd, source.Mapping, source.Clip));
+            }
         }
     }
 

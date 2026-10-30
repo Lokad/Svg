@@ -255,7 +255,7 @@ internal sealed class SvgPolygonFill : ISvgGeometryContent
         Clip = clip;
     }
 
-    /// <summary>Borrows the payload during repaint construction; the receiver adopts ownership only after success.</summary>
+    /// <summary>Borrows the payload without changing this owner's charge; replacements adopt it after construction, while temporary bindings clear their borrowed ownership.</summary>
     internal SvgPolygonContours Contours => _contours;
 
     /// <summary>Completes a successful repaint handoff without refunding its live contour storage.</summary>

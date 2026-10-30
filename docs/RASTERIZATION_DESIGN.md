@@ -34,6 +34,8 @@ Use and symbol mapping reserve the receiving contour payload before allocating
 points or curves, then transfer that same charge to the completed binding. Failed
 mapping releases the reservation. Borrowed contour ends/signs remain accounted for
 in the result because definition storage is released before the scene's lifetime ends.
+Temporary inherited-fill bindings borrow definition contours only during mapping.
+Their batch owns its reference array; the definition retains its contour charge.
 
 Prepared-document font discovery borrows the same collected styles, reader
 workspace and active budget used by lowering. Discovery control storage is

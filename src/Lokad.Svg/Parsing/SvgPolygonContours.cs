@@ -64,7 +64,7 @@ internal struct SvgPolygonContours : IDisposable
         if (isEvenOdd) ArgumentNullException.ThrowIfNull(signs);
     }
 
-    /// <summary>Relinquishes a charge after another binding adopts this payload; the borrowed arrays remain readable.</summary>
+    /// <summary>Clears this value's ownership while arrays remain readable; the original owner or a receiving binding must keep their charge alive.</summary>
     internal void RelinquishOwnership() => _reservation = null;
 
     /// <summary>Releases this owner's charge exactly once, after borrowers finish; leaves immutable array metadata readable.</summary>

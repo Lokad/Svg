@@ -6,7 +6,8 @@
   charge during repainting and mask stamping, avoiding refusal caused by charging
   reused arrays twice. Preserve source ownership when paint or placement fails.
 - Transfer instance-mapping reservations to retained polygons instead of charging
-  the same mapped arrays as both temporary and scene storage.
+  the same mapped arrays as both temporary and scene storage. Borrow definition
+  contours during temporary inherited-fill preparation, preserving source ownership.
 
 Development targets 0.4.0. Published 0.3.0 and its source tag remain unchanged.
 

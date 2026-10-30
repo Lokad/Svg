@@ -52,3 +52,13 @@ Instance-handoff qualification passes 7,277 affected core and 1,938 native/captu
 checks on Windows/Linux under .NET 11/.NET 10. The focused ownership/budget set
 passes 94 checks. Both affected projects build without warnings for each target;
 all existing affected test sources and independent references are unchanged.
+
+[Inherited-fill ownership checks](../../Lokad.Svg.Tests/SvgInheritedContourOwnershipTests.cs)
+retain six recorded inputs: ordinary use/symbol with authored, tight overridden
+and roomy overridden fill. Baseline `7bbf3b67a` refuses both tight overrides;
+the other four controls and two numeric-failure/retry checks pass. Borrowing admits
+all eight. A ninth check covers partial preparation with recolored, authored and
+unsupported channels, preserving original owners and analytic spans for retry.
+The temporary batch now owns only its reference array; its ownership flags and
+per-geometry cleanup loop are removed. Definition and mapped-output charges remain.
+All 7,286 affected core and 1,938 native checks pass per Windows/Linux .NET 11/.NET 10.
