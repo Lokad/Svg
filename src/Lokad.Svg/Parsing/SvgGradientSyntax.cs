@@ -428,7 +428,7 @@ internal static class SvgGradientSyntax
         return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(gradient, box, fill, fillOpacity, painted ? stroke : null, state.Budget));
     }
 
-    /// <summary>Lowers one radial-gradient-filled orthogonal path or point-list shape into radial-evaluated rectangle bands sharing the shape box.</summary>
+    /// <summary>Lowers a radial path through retained source commands, or a point-list fill through its shared shape box.</summary>
     internal static SvgParsedGeometry LowerRadialBands(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgRadialGradient gradient, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame)
     {
         SvgStrokeStyleSyntax.SvgAdmittedStroke? bandStroke = null;
@@ -440,8 +440,7 @@ internal static class SvgGradientSyntax
             bandStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, bandStrokeShape, elementName, elementName == "polyline");
         }
         SvgAffineTransform transform = context.ResolveTransform(reader);
-        bool bindSourceMap = !transform.IsAxisAligned;
-        if (!bindSourceMap) gradient = MapRadialReference(transform, gradient, frame);
+        if (!isPath && transform.IsAxisAligned) gradient = MapRadialReference(transform, gradient, frame);
         bool painted = SvgPresentationResolver.IsPainted(style, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
@@ -463,14 +462,10 @@ internal static class SvgGradientSyntax
             using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             try
             {
-                SvgRectangle paintBox;
-                if (bindSourceMap)
-                {
-                    SvgAuthoredPath sourcePath = filled.Geometries[0].AuthoredPath ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine radial path paints require retained source commands.");
-                    paintBox = gradient.IsUserSpace ? default : SvgPathBounds.Compute(sourcePath.Commands, context.CancellationToken);
-                    gradient = BindRadialSourceMap(gradient, paintBox, sourcePath.SceneMap, context.CancellationToken);
-                }
-                else paintBox = gradient.IsUserSpace ? default : SvgOrthogonalShapeParser.BoxFromFilledGeometryBounds(filled, context.CancellationToken);
+                // Axis and skewed placement retain the same definition/local/reference stages.
+                SvgAuthoredPath sourcePath = filled.Geometries[0].AuthoredPath ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial path paints require retained source commands.");
+                SvgRectangle paintBox = gradient.IsUserSpace ? default : SvgPathBounds.Compute(sourcePath.Commands, context.CancellationToken);
+                gradient = BindRadialSourceMap(gradient, paintBox, sourcePath.SceneMap, context.CancellationToken);
                 foreach (SvgGeometry existing in filled.Geometries)
                 {
                     SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, gradient, paintBox, opacity, budget));

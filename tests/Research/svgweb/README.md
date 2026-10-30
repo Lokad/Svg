@@ -8,12 +8,12 @@ this directory contains metadata and original orthogonal controls, not the hoste
 SVG collection.
 
 The current default-path review has 148 rendered inputs per host: 132 exact and
-16 different, with 56 rejected. The radial source-binding replay took 55.02 s under
-concurrent local execution: 145 prior PNGs are unchanged; `car.svg`, `gallardo.svg`
-and `scimitar.svg` improve but remain inexact. All prior exact images remain exact.
-These observations use transparent output without supplied fonts/resources; they
-are neither whole-corpus reference admission nor throughput measurements. The
-ledger retains earlier passes and every follow-up outcome.
+16 different, with 56 rejected. The shared path-binding replay preserves every prior
+exact result and 145 PNGs byte-for-byte; `car.svg` and `gallardo.svg` improve. Three
+changed bytes in the already-inexact grapes original interact with fractional root
+mapping; an independent integer-root isolation makes all three pixels exact.
+These transparent, unsupplied-font/resource observations are neither whole-corpus
+reference admission nor throughput measurements. The ledger retains every follow-up.
 
 | Initial first blocker | Originals | Current responsibility |
 | --- | ---: | --- |
@@ -41,11 +41,11 @@ and enclosing-group controls. The full filter/root milestone remains open;
 rendering successfully does not admit an original as exact.
 
 The [radial source-binding record](radial-source-binding.json) closes loss of local
-gradient transforms when axis-resolved paints bind to skewed shapes. Three canonical
-controls preserve direct, clipped and inherited-stop paths with native platform
-triples. A separate [translated-axis witness](radial-translated-axis.svg) still
-differs at two pixels; its independent target is retained as research. Mechanisms
-protect definition coordinates, inverse mapping and local/reference separation.
+gradient transforms when axis-resolved paints bind to skewed shapes. Four canonical
+controls preserve direct, clipped, inherited-stop and translated path placement with
+native platform triples. Axis and skewed paths share source binding; the former
+translated-axis research witness and target moved unchanged into canonical coverage.
+Mechanisms protect definition coordinates, inverse mapping and local/reference separation.
 
 The [paint-reference record](paint-references.json) maps four CC0 controls to native
 platform triples. Paint fallbacks share lexical parsing and completed resource

@@ -17919,6 +17919,31 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-radial-source-inherited-clip.json",
       "referenceSha256": "30c6df626eb35138d5758482c99302a0b3559762deccf75b5d5bc86156e71a23"
+    },
+    {
+      "id": "original-radial-source-translated",
+      "path": "original/radial-source-translated.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "95194e0f8197f8485a55fd2e0901160e4d0b3768bb0f3ce4b804a62c25f9424d",
+      "materializedSha256": "95194e0f8197f8485a55fd2e0901160e4d0b3768bb0f3ce4b804a62c25f9424d",
+      "featureTags": [
+        "gradient",
+        "radial",
+        "transform",
+        "rounding"
+      ],
+      "width": 96,
+      "height": 80,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-radial-source-translated.json",
+      "referenceSha256": "613c895de440bd41601b1070c97a6ff3aabcd11d2f6c059224fbec7facd62597"
     }
   ]
 }

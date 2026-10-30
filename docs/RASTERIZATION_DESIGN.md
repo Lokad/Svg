@@ -119,6 +119,7 @@ equivalence does not establish identical pixels.
 Radial source binding uses retained definition coordinates and the local gradient
 transform before composing object bounds and drawing placement. Axis-resolved
 circle coordinates cannot replace that definition when a general source map is needed.
+Path fills share this binding for axis and skewed drawing placement.
 
 Gradient preparation preserves float stop order, hard/flat boundaries, duplicate
 groups, implicit endpoints and periodic normalization. Factory means use authored

@@ -32,4 +32,19 @@ public sealed class SvgRadialSourceBindingTests
         Assert.Equal((40d, 60d, 27d), (original.CenterX, original.CenterY, original.Radius));
         Assert.False(original.HasGeneralTransform);
     }
+
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void Axis_placed_paths_bind_definition_coordinates_before_drawing_placement()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='96' height='80'><defs><radialGradient id='r' gradientUnits='userSpaceOnUse' cx='40' cy='35' r='27' gradientTransform='matrix(1 0 0 2 0 -10)'><stop stop-color='black'/><stop offset='1' stop-color='white'/></radialGradient></defs><path d='M0 0 H80 V70 H0 Z' fill='url(#r)' transform='translate(5 4)'/></svg>"u8.ToArray();
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgRadialGradient gradient = Assert.Single(root.Geometries).RadialPolygon.Gradient;
+        Assert.True(gradient.HasGeneralTransform);
+        Assert.Equal((40d, 35d, 27d), (gradient.CenterX, gradient.CenterY, gradient.Radius));
+        Assert.Equal(new SvgGradientTransform(1, 0, 0, .5, -5, 3), gradient.Inverse);
+        SvgGradientPaintMatrices matrices = Assert.IsType<SvgGradientPaintMatrices>(gradient.NativePaintMatrices);
+        Assert.Equal(new SvgShaderMatrix(1, 0, 0, 0, 2, -10), matrices.Local);
+        Assert.Equal(SvgAffineTransform.FromScaleOffset(1, 1, 5, 4), matrices.Referencing);
+    }
 }

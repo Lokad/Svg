@@ -9841,5 +9841,30 @@
     "seconds": 55.01937720016576,
     "evidence": "radial-source-binding.json",
     "qualification": "No prior exact image loss, increased total error or changed outcome/diagnostic category. 145 rendered PNGs remain byte-identical per host. car.svg, gallardo.svg and scimitar.svg improve but remain inexact. This is not whole-corpus reference admission."
+  },
+  "radialAxisPathBinding": {
+    "sourceBaseline": "3bba28f1793564c49503aff8052892de2b65f712",
+    "librarySha256": "52101bd4feb7e203ed015fb75ecc17f5ad8fe301b53228c1cbdb269f2326518f",
+    "filesRevalidatedPerHost": 204,
+    "renderedPerHost": 148,
+    "exactPerHost": 132,
+    "differentPerHost": 16,
+    "rejectedPerHost": 56,
+    "priorRenderedPngsByteIdenticalPerHost": 145,
+    "improvedPriorRendered": [
+      "car.svg",
+      "gallardo.svg"
+    ],
+    "fractionalRootInteraction": {
+      "name": "rg1024_green_grapes.svg",
+      "changedBytes": 3,
+      "totalChannelErrorBefore": 631265,
+      "totalChannelErrorAfter": 631268,
+      "integerRootIsolation": "All three changed pixels match an independent native capture exactly on each host; see radial-source-binding.json."
+    },
+    "sourceSvgFilesRetained": 0,
+    "seconds": 64.62343770009466,
+    "evidence": "radial-source-binding.json",
+    "qualification": "All prior exact images remain exact; outcome and diagnostic categories are unchanged. 145 PNGs remain byte-identical per host. car.svg/gallardo.svg improve. rg1024_green_grapes.svg has three changed bytes with three more units of error against its fractional-root reference; the independent integer-root isolation below makes all three changed pixels exact. Fractional root mapping remains open; neither original is admitted as exact."
   }
 }

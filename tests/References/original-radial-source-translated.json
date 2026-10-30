@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "95194e0f8197f8485a55fd2e0901160e4d0b3768bb0f3ce4b804a62c25f9424d",
+  "referenceSha256": "613c895de440bd41601b1070c97a6ff3aabcd11d2f6c059224fbec7facd62597",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-radial-source-translated.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-radial-source-translated",
+  "viewport": {
+    "width": 96,
+    "height": 80,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 radial source-binding control. Translated path placement retains the definition and local anisotropic transform as separate float stages. Three fresh healthy captures on each platform; source and native PNG bytes moved unchanged from the research witness.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "95194e0f8197f8485a55fd2e0901160e4d0b3768bb0f3ce4b804a62c25f9424d",
+      "referenceSha256": "613c895de440bd41601b1070c97a6ff3aabcd11d2f6c059224fbec7facd62597",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "95194e0f8197f8485a55fd2e0901160e4d0b3768bb0f3ce4b804a62c25f9424d",
+      "referenceSha256": "613c895de440bd41601b1070c97a6ff3aabcd11d2f6c059224fbec7facd62597",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 96,
+    "height": 80
+  }
+}
