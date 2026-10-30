@@ -933,19 +933,32 @@ internal static class SvgGradientSyntax
 
     /// <summary>Binds one radial definition to its source object box and composed drawing map.</summary>
     /// <remarks>Immutable and allocation-free. Source bounds precede affine placement; shader-local and
-    /// reference matrices stay distinct for native float concatenation. The inverse supports the existing
+    /// reference matrices stay distinct for native float concatenation. Retained definition coordinates
+    /// replace axis-resolved coordinates before binding so the local transform is applied exactly once.
+    /// The inverse supports the existing
     /// focal evaluator. The caller checks cancellation during this bounded setup; singular maps reject without owned storage.</remarks>
     internal static SvgRadialGradient BindRadialSourceMap(SvgRadialGradient gradient, SvgRectangle sourceBox, SvgAffineTransform sceneMap, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         if (!gradient.IsUserSpace && (sourceBox.Width <= 0 || sourceBox.Height <= 0)) return gradient with { IsEmpty = true };
+        SvgGradientTransform localInverse = gradient.HasGeneralTransform ? gradient.Inverse : SvgGradientTransform.Identity;
+        SvgShaderMatrix local = gradient.NativePaintMatrices?.Local ?? new(1, 0, 0, 0, 1, 0);
+        if (gradient.SourceDefinition is {} definition)
+        {
+            SvgGradientTransform transform = definition.Transform;
+            if (!transform.TryInvert(out localInverse))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular radial gradient definition map.");
+            local = new((float)transform.A, (float)transform.C, (float)transform.E,
+                (float)transform.B, (float)transform.D, (float)transform.F);
+            gradient = gradient with { CenterX = definition.CenterX, CenterY = definition.CenterY, Radius = definition.Radius,
+                FocalX = definition.FocalX, FocalY = definition.FocalY, FocalRadius = definition.FocalRadius,
+                ReferenceScaleX = 1, ReferenceScaleY = 1 };
+        }
         SvgGradientTransform objectMap = gradient.IsUserSpace ? SvgGradientTransform.Identity
             : new(sourceBox.Width, 0, 0, sourceBox.Height, sourceBox.X, sourceBox.Y);
         SvgGradientTransform reference = new(sceneMap.A, sceneMap.B, sceneMap.C, sceneMap.D, sceneMap.E, sceneMap.F);
         if (!SvgGradientTransform.Compose(reference, objectMap).TryInvert(out SvgGradientTransform inverse))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular radial paint referencing maps are not implemented.");
-        SvgGradientTransform localInverse = gradient.HasGeneralTransform ? gradient.Inverse : SvgGradientTransform.Identity;
-        SvgShaderMatrix local = gradient.NativePaintMatrices?.Local ?? new(1, 0, 0, 0, 1, 0);
         SvgShaderMatrix nativeObject = new((float)objectMap.A, 0, (float)objectMap.E, 0, (float)objectMap.D, (float)objectMap.F);
         SvgAffineTransform nativeReference = sceneMap;
         return gradient with { IsUserSpace = true, HasGeneralTransform = true,

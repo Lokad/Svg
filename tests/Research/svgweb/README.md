@@ -8,7 +8,7 @@ this directory contains metadata and original orthogonal controls, not the hoste
 SVG collection.
 
 The current default-path review has 148 rendered inputs per host: 132 exact and
-16 different, with 56 rejected. The bitmap restoration replay took 117.02 s under
+16 different, with 56 rejected. The radial source-binding replay took 55.02 s under
 concurrent local execution: 145 prior PNGs are unchanged; `car.svg`, `gallardo.svg`
 and `scimitar.svg` improve but remain inexact. All prior exact images remain exact.
 These observations use transparent output without supplied fonts/resources; they
@@ -39,6 +39,13 @@ The [bitmap restoration record](filter-bitmap-restoration.json) retains the orig
 opacity and unit-blur targets, now canonical regressions, plus independent opaque
 and enclosing-group controls. The full filter/root milestone remains open;
 rendering successfully does not admit an original as exact.
+
+The [radial source-binding record](radial-source-binding.json) closes loss of local
+gradient transforms when axis-resolved paints bind to skewed shapes. Three canonical
+controls preserve direct, clipped and inherited-stop paths with native platform
+triples. A separate [translated-axis witness](radial-translated-axis.svg) still
+differs at two pixels; its independent target is retained as research. Mechanisms
+protect definition coordinates, inverse mapping and local/reference separation.
 
 The [paint-reference record](paint-references.json) maps four CC0 controls to native
 platform triples. Paint fallbacks share lexical parsing and completed resource

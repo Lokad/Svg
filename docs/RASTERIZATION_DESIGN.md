@@ -116,6 +116,10 @@ consumers distinct. Premultiplication, coverage scaling, color transfer,
 source-over and byte storage round at their actual stages. Continuous geometric
 equivalence does not establish identical pixels.
 
+Radial source binding uses retained definition coordinates and the local gradient
+transform before composing object bounds and drawing placement. Axis-resolved
+circle coordinates cannot replace that definition when a general source map is needed.
+
 Gradient preparation preserves float stop order, hard/flat boundaries, duplicate
 groups, implicit endpoints and periodic normalization. Factory means use authored
 stops; conical visibility is applied before spreading. Alpha precision depends on

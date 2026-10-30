@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "2f1fbd070919e31fd58466d56ac414c1c57671692b64fc7283d6a0dfbb6de0d3",
+  "referenceSha256": "30c6df626eb35138d5758482c99302a0b3559762deccf75b5d5bc86156e71a23",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-radial-source-inherited-clip.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-radial-source-inherited-clip",
+  "viewport": {
+    "width": 96,
+    "height": 80,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 radial source-binding control. Clipped skewed radial source inheriting alpha stops from a linear template. Three fresh healthy captures on each platform.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "2f1fbd070919e31fd58466d56ac414c1c57671692b64fc7283d6a0dfbb6de0d3",
+      "referenceSha256": "30c6df626eb35138d5758482c99302a0b3559762deccf75b5d5bc86156e71a23",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "2f1fbd070919e31fd58466d56ac414c1c57671692b64fc7283d6a0dfbb6de0d3",
+      "referenceSha256": "30c6df626eb35138d5758482c99302a0b3559762deccf75b5d5bc86156e71a23",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 96,
+    "height": 80
+  }
+}

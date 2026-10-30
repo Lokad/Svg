@@ -17844,6 +17844,81 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-affine-group-opacity.json",
       "referenceSha256": "9d997c1e491fe21657e1faa09c13fdd9ca48fa6d74ea77ac9d64be5da132c0ac"
+    },
+    {
+      "id": "original-radial-source-skew",
+      "path": "original/radial-source-skew.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "e3fdc67f1ede757bdf1ac5605e61719f5598eff9bc423969b33086f05ba1c553",
+      "materializedSha256": "e3fdc67f1ede757bdf1ac5605e61719f5598eff9bc423969b33086f05ba1c553",
+      "featureTags": [
+        "gradient",
+        "radial",
+        "transform"
+      ],
+      "width": 96,
+      "height": 80,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-radial-source-skew.json",
+      "referenceSha256": "7a7d7d38f430ae58560df0ba71876d9f1b2a33b6dc7ce8e63eaed7231d58fe6b"
+    },
+    {
+      "id": "original-radial-source-clip",
+      "path": "original/radial-source-clip.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "42a757c5cb106ebd260f88004aa81ff6a1fc51cc00a58e0f39d97ad53b22721b",
+      "materializedSha256": "42a757c5cb106ebd260f88004aa81ff6a1fc51cc00a58e0f39d97ad53b22721b",
+      "featureTags": [
+        "gradient",
+        "radial",
+        "transform",
+        "clip"
+      ],
+      "width": 96,
+      "height": 80,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-radial-source-clip.json",
+      "referenceSha256": "30c6df626eb35138d5758482c99302a0b3559762deccf75b5d5bc86156e71a23"
+    },
+    {
+      "id": "original-radial-source-inherited-clip",
+      "path": "original/radial-source-inherited-clip.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "2f1fbd070919e31fd58466d56ac414c1c57671692b64fc7283d6a0dfbb6de0d3",
+      "materializedSha256": "2f1fbd070919e31fd58466d56ac414c1c57671692b64fc7283d6a0dfbb6de0d3",
+      "featureTags": [
+        "gradient",
+        "radial",
+        "transform",
+        "clip",
+        "inheritance"
+      ],
+      "width": 96,
+      "height": 80,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-radial-source-inherited-clip.json",
+      "referenceSha256": "30c6df626eb35138d5758482c99302a0b3559762deccf75b5d5bc86156e71a23"
     }
   ]
 }

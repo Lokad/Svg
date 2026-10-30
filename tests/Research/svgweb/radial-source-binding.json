@@ -1,0 +1,354 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "324c3897eb1aa45b80d5dacef1bf095cbac1f9d7",
+  "closedScope": [
+    "General radial source binding starts from retained raw coordinates and the local definition transform. Object-box and referencing placement remain separate.",
+    "Direct skew, clipping and inherited-stop interactions have independent exact native triples. Existing rendering paths and reference images are preserved."
+  ],
+  "mechanism": "../../Lokad.Svg.Tests/SvgRadialSourceBindingTests.cs",
+  "failingBefore": "Binding_an_axis_resolved_paint_keeps_definition_coordinates_and_local_map_separate: expected center/focus y=35, actual=60 after a local y-scale of 2 and translation -10.",
+  "fixtures": [
+    {
+      "id": "skew",
+      "fixtureId": "original-radial-source-skew",
+      "fixture": "../../Fixtures/original/radial-source-skew.svg",
+      "provenance": "../../References/original-radial-source-skew.json",
+      "sourceSha256": "e3fdc67f1ede757bdf1ac5605e61719f5598eff9bc423969b33086f05ba1c553",
+      "nativePngSha256": "7a7d7d38f430ae58560df0ba71876d9f1b2a33b6dc7ce8e63eaed7231d58fe6b",
+      "freshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 1387,
+        "linux": 1387
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "clip-skew",
+      "fixtureId": "original-radial-source-clip",
+      "fixture": "../../Fixtures/original/radial-source-clip.svg",
+      "provenance": "../../References/original-radial-source-clip.json",
+      "sourceSha256": "42a757c5cb106ebd260f88004aa81ff6a1fc51cc00a58e0f39d97ad53b22721b",
+      "nativePngSha256": "30c6df626eb35138d5758482c99302a0b3559762deccf75b5d5bc86156e71a23",
+      "freshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 1290,
+        "linux": 1290
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "inherited-clip-skew",
+      "fixtureId": "original-radial-source-inherited-clip",
+      "fixture": "../../Fixtures/original/radial-source-inherited-clip.svg",
+      "provenance": "../../References/original-radial-source-inherited-clip.json",
+      "sourceSha256": "2f1fbd070919e31fd58466d56ac414c1c57671692b64fc7283d6a0dfbb6de0d3",
+      "nativePngSha256": "30c6df626eb35138d5758482c99302a0b3559762deccf75b5d5bc86156e71a23",
+      "freshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 1290,
+        "linux": 1290
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    }
+  ],
+  "openTranslatedAxis": {
+    "source": "radial-translated-axis.svg",
+    "nativeReference": "radial-translated-axis.native.png",
+    "sourceSha256": "95194e0f8197f8485a55fd2e0901160e4d0b3768bb0f3ce4b804a62c25f9424d",
+    "nativePngSha256": "613c895de440bd41601b1070c97a6ff3aabcd11d2f6c059224fbec7facd62597",
+    "freshProcessesPerPlatform": 3,
+    "platformTargetsIdentical": true,
+    "changedPixelsBeforeAndAfterPerPlatform": 2,
+    "maximumChannelError": 1,
+    "pixels": [
+      {
+        "x": 31,
+        "y": 39,
+        "candidate": [
+          70,
+          77,
+          88,
+          255
+        ],
+        "native": [
+          71,
+          77,
+          89,
+          255
+        ]
+      },
+      {
+        "x": 49,
+        "y": 39,
+        "candidate": [
+          24,
+          26,
+          30,
+          255
+        ],
+        "native": [
+          23,
+          26,
+          29,
+          255
+        ]
+      }
+    ],
+    "admission": "Research witness only; do not accept inexact or rewrite the target.",
+    "remainingScope": "The translated axis representation still flattens the local transform. Fractional root/filter/flood/offset/shadow discrepancies in original documents remain open."
+  },
+  "validation": {
+    "checks": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "scope": "core",
+        "passed": 2448,
+        "seconds": 12.709557000081986,
+        "librarySha256": "74ec88f166ae387888a34a5bc80ee0bd519740dfc16c5131f87ec427ae255279"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "scope": "native",
+        "passed": 699,
+        "seconds": 25.598779499996454,
+        "librarySha256": "74ec88f166ae387888a34a5bc80ee0bd519740dfc16c5131f87ec427ae255279"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "scope": "core",
+        "passed": 2448,
+        "seconds": 15.186252899933606,
+        "librarySha256": "deb12acf957182959286b37ddc02d9ac30946fa8c624b89ef3a657cce958e406"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "scope": "native",
+        "passed": 699,
+        "seconds": 24.327914000023156,
+        "librarySha256": "deb12acf957182959286b37ddc02d9ac30946fa8c624b89ef3a657cce958e406"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "scope": "core",
+        "passed": 2448,
+        "seconds": 11.776442855999989,
+        "librarySha256": "74ec88f166ae387888a34a5bc80ee0bd519740dfc16c5131f87ec427ae255279"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "scope": "native",
+        "passed": 699,
+        "seconds": 29.062927296999987,
+        "librarySha256": "74ec88f166ae387888a34a5bc80ee0bd519740dfc16c5131f87ec427ae255279"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "scope": "core",
+        "passed": 2448,
+        "seconds": 10.857962291000007,
+        "librarySha256": "deb12acf957182959286b37ddc02d9ac30946fa8c624b89ef3a657cce958e406"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "scope": "native",
+        "passed": 699,
+        "seconds": 29.640560176000008,
+        "librarySha256": "deb12acf957182959286b37ddc02d9ac30946fa8c624b89ef3a657cce958e406"
+      }
+    ],
+    "coreSelection": "Gradient, Radial, SvgRootParserTests, SvgShapeElementsTests, SvgUseInstanceTests and SvgMask; excludes Category=Research.",
+    "nativeSelection": "Gradient, Radial, FixtureManifestTests, SvgTextPaintBoundsReferenceTests, SvgFontLayoutDiagramTests, SvgUseInstance and SvgLeafMask.",
+    "allBuildsWarningFree": true,
+    "coverage": "One failing-before mechanism protects raw coordinates, focus/radius, inverse, local/reference matrix separation and immutability. Three independent canonical fixtures protect skew, clip and cross-kind inherited stops. Existing API/ownership paths and all native targets remain unchanged.",
+    "timingScope": "Functional elapsed under concurrent workstation execution, not a controlled performance comparison. Linux local validation uses portable assemblies built on Windows; CI builds each native host."
+  },
+  "originalReplay": {
+    "filesPerHost": 204,
+    "sourceHashesRechecked": true,
+    "hostedSvgPayloadFilesRetained": 0,
+    "seconds": 55.01937720016576,
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorRenderedUnchanged": 145,
+        "priorRenderedChanged": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 32075,
+              "maximumError": 255,
+              "totalChannelError": 115591
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 27603,
+              "maximumError": 255,
+              "totalChannelError": 71156
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 46472,
+              "maximumError": 255,
+              "totalChannelError": 339640
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 42526,
+              "maximumError": 255,
+              "totalChannelError": 104989
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "scimitar.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 36365,
+              "maximumError": 137,
+              "totalChannelError": 386850
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 36363,
+              "maximumError": 137,
+              "totalChannelError": 386847
+            },
+            "outcome": "rendered"
+          }
+        ],
+        "newRendered": [],
+        "lost": [],
+        "worse": [],
+        "changedOutcomesOrDiagnostics": [],
+        "librarySha256": "74ec88f166ae387888a34a5bc80ee0bd519740dfc16c5131f87ec427ae255279"
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorRenderedUnchanged": 145,
+        "priorRenderedChanged": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 32075,
+              "maximumError": 255,
+              "totalChannelError": 115591
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 27603,
+              "maximumError": 255,
+              "totalChannelError": 71156
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 46472,
+              "maximumError": 255,
+              "totalChannelError": 339640
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 42526,
+              "maximumError": 255,
+              "totalChannelError": 104989
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "scimitar.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 36365,
+              "maximumError": 137,
+              "totalChannelError": 386850
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 36363,
+              "maximumError": 137,
+              "totalChannelError": 386847
+            },
+            "outcome": "rendered"
+          }
+        ],
+        "newRendered": [],
+        "lost": [],
+        "worse": [],
+        "changedOutcomesOrDiagnostics": [],
+        "librarySha256": "74ec88f166ae387888a34a5bc80ee0bd519740dfc16c5131f87ec427ae255279"
+      }
+    },
+    "qualification": "No prior exact image loss, increased total error or changed outcome/diagnostic category. 145 rendered PNGs remain byte-identical per host. car.svg, gallardo.svg and scimitar.svg improve but remain inexact. This is not whole-corpus reference admission."
+  },
+  "originalMapping": {
+    "gallardo.svg": {
+      "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+      "definition": "radialGradient3825",
+      "target": "path4094",
+      "definitionTransform": [
+        1,
+        0,
+        0,
+        1.402597,
+        0,
+        -270.1008
+      ],
+      "drawingTransform": [
+        0.728694,
+        0,
+        0.121593,
+        0.827829,
+        333.4781,
+        155.9436
+      ],
+      "filterFreeExploration": {
+        "variantSourceSha256": "35247df120a07ff8075bb6d79e75cc23c65940e3702f3aa0bab159820e9e533c",
+        "changedPixelsBefore": 4507,
+        "changedPixelsAfter": 561,
+        "totalChannelErrorBefore": 239827,
+        "totalChannelErrorAfter": 5176,
+        "freshNativeCapturesPerHost": 1,
+        "qualification": "Exploratory original only. All filter declarations overridden to none without retaining hosted payload bytes. No reference admission."
+      },
+      "remainingScope": "Original filter/root and residual paint differences remain open."
+    }
+  }
+}

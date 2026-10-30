@@ -9822,5 +9822,24 @@
     "seconds": 52.915413100039586,
     "evidence": "filter-bitmap-restoration.json",
     "qualification": "Every source hash rechecked. All 148 rendered PNGs and every outcome/diagnostic category remain unchanged while existing patterned/supplied-font native references are restored. No target changes or whole-corpus reference admission."
+  },
+  "radialSourceBinding": {
+    "sourceBaseline": "324c3897eb1aa45b80d5dacef1bf095cbac1f9d7",
+    "librarySha256": "74ec88f166ae387888a34a5bc80ee0bd519740dfc16c5131f87ec427ae255279",
+    "filesRevalidatedPerHost": 204,
+    "renderedPerHost": 148,
+    "exactPerHost": 132,
+    "differentPerHost": 16,
+    "rejectedPerHost": 56,
+    "priorRenderedPngsByteIdenticalPerHost": 145,
+    "improvedPriorRendered": [
+      "car.svg",
+      "gallardo.svg",
+      "scimitar.svg"
+    ],
+    "sourceSvgFilesRetained": 0,
+    "seconds": 55.01937720016576,
+    "evidence": "radial-source-binding.json",
+    "qualification": "No prior exact image loss, increased total error or changed outcome/diagnostic category. 145 rendered PNGs remain byte-identical per host. car.svg, gallardo.svg and scimitar.svg improve but remain inexact. This is not whole-corpus reference admission."
   }
 }

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve radial definition coordinates and local gradient transforms when
+  binding skewed shapes, including clipped and inherited paints.
 - Preserve source path bounds across clipped stroke lowering; retain filter image
   padding, cropping and sampling colour transfer through affine restoration.
 - Compose affine image placement in the owning bitmap and store enclosing-opacity
