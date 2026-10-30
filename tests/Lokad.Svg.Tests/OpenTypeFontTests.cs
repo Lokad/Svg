@@ -11,7 +11,8 @@ namespace Lokad.Svg.Tests;
 public sealed partial class OpenTypeFontTests
 {
     [Fact]
-    public void Validates_core_standalone_TrueType_metrics_without_copying_bytes()
+    [Trait("Layer", "Mechanism")]
+    public void Validates_core_standalone_TrueType_metrics()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
 
@@ -24,6 +25,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0x74746366u, SvgErrorCode.UnsupportedFeature)]
     [InlineData(0x4F54544Fu, SvgErrorCode.UnsupportedFeature)]
     public void Rejects_unsupported_font_containers(uint scalerType, SvgErrorCode expectedCode)
@@ -37,6 +39,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_invalid_table_ranges_and_core_metrics()
     {
         byte[] range = CreateFont(1024, 3, 2, 0);
@@ -48,6 +51,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Validates_optional_name_metadata_and_all_supported_OS2_versions()
     {
         foreach (ushort version in new ushort[] { 0, 1, 2, 3, 4, 5 })
@@ -59,6 +63,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_invalid_optional_name_and_OS2_metadata()
     {
         byte[] unsortedNames = CreateFontWithMetadata(5);
@@ -88,6 +93,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Checks_cancellation_before_font_parsing()
     {
         using CancellationTokenSource cancellation = new();
@@ -99,6 +105,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Observes_cancellation_between_SFNT_directory_records()
     {
         using CancellationTokenSource cancellation = new();
@@ -108,6 +115,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Metrics_backed_font_readers_observe_cancellation_without_a_work_counter()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);
@@ -121,6 +129,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Active_composite_glyph_cycle_scans_check_cancellation()
     {
         using (var tracker = new OpenTypeGlyphRecursionTracker(3, null, CancellationToken.None))
@@ -138,6 +147,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Cmap_lookup_observes_cancellation_after_its_no_counter_entry_probe()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);
@@ -149,6 +159,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Maps_a_BMP_scalar_through_a_format_4_cmap()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);
@@ -158,6 +169,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData((uint)64, (ushort)0)]
     [InlineData((uint)65, (ushort)1)]
     [InlineData((uint)66, (ushort)0)]
@@ -168,6 +180,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Reuses_snapshot_validated_metrics_for_cmap_and_advance_queries()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);
@@ -180,7 +193,8 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Text_layout_preserves_cmap_and_advance_results()
+    [Trait("Layer", "Contract")]
+    public async Task Text_layout_releases_single_glyph_position_storage()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 0))], CancellationToken.None);
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
@@ -194,6 +208,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Text_layout_observes_cancellation_at_the_cmap_lookup_checkpoint()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 0))], CancellationToken.None);
@@ -204,6 +219,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Text_layout_reuses_the_cmap_lookup_for_repeated_scalars_within_one_run()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 0))], CancellationToken.None);
@@ -220,6 +236,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Maps_a_supplementary_scalar_through_a_format_12_cmap()
     {
         byte[] font = CreateFormat12Font();
@@ -229,6 +246,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(0x1F5FFu, (ushort)0)]
     [InlineData(0x1F600u, (ushort)2)]
     [InlineData(0x1F601u, (ushort)0)]
@@ -238,6 +256,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Maps_a_BMP_scalar_through_a_format_12_cmap_when_format_4_is_absent()
     {
         byte[] font = CreateFormat12Font();
@@ -249,6 +268,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Accepts_a_unicode_platform_zero_format_4_cmap_but_not_a_windows_symbol_cmap()
     {
         byte[] unicode = CreateFont(1024, 3, 2, 0);
@@ -261,12 +281,14 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_a_surrogate_code_point_as_a_non_scalar_value()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => OpenTypeFont.GetGlyphIndex(CreateFont(1024, 3, 2, 0), 0xD800, CancellationToken.None));
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_a_format_12_cmap_with_a_length_smaller_than_its_header()
     {
         byte[] font = CreateFormat12Font();
@@ -278,6 +300,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData((ushort)0)]
     [InlineData((ushort)1)]
     [InlineData((ushort)2)]
@@ -306,6 +329,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_a_format_4_declared_length_that_truncates_its_segment_arrays()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);
@@ -318,6 +342,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_a_format_4_range_offset_that_starts_after_its_declared_payload()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);
@@ -330,6 +355,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Categorizes_a_format_12_glyph_index_overflow_as_malformed_input()
     {
         byte[] font = CreateFormat12Font();
@@ -342,6 +368,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_a_later_malformed_format_12_group_even_when_an_earlier_group_matches()
     {
         byte[] font = CreateFormat12FontWithLaterMalformedGroup();
@@ -352,6 +379,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_a_format_4_range_offset_that_points_before_its_glyph_index_array()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);
@@ -364,6 +392,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_malformed_format_4_segments_even_when_the_requested_scalar_bypasses_them()
     {
         byte[] unordered = CreateFont(1024, 3, 2, 0);
@@ -380,6 +409,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Reads_hmtx_advances_including_the_final_shared_advance()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);
@@ -390,6 +420,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Validates_loca_ranges_before_exposing_borrowed_glyf_bytes()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -402,6 +433,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Reads_the_fixed_header_of_a_nonempty_glyph()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -424,6 +456,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Reads_simple_glyph_contours_without_retaining_hint_instructions()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -441,6 +474,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Decodes_simple_glyph_coordinate_deltas_and_on_curve_flags()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -461,6 +495,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Builds_quadratic_contours_with_implied_on_curve_midpoints()
     {
         OpenTypeGlyphPoint[] points = [new(0, 0, true), new(4, 4, false), new(8, 0, false), new(12, 0, true)];
@@ -473,6 +508,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Builds_quadratic_contours_for_degenerate_point_configurations()
     {
         Assert.Empty(OpenTypeFont.BuildQuadraticContours([new OpenTypeGlyphPoint(3, 7, true)], [0], CancellationToken.None));
@@ -485,6 +521,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Segment_building_is_repeatable()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -505,6 +542,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Combines_simple_glyph_data_into_quadratic_contours()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -525,6 +563,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_truncated_simple_glyph_flags_and_invalid_contour_endpoints()
     {
         byte[] truncated = CreateFont(1024, 3, 2, 1);
@@ -558,6 +597,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(SimpleGlyphPointDefect.TruncatedFlags)]
     [InlineData(SimpleGlyphPointDefect.FlagRepeatOverflow)]
     [InlineData(SimpleGlyphPointDefect.TruncatedCoordinates)]
@@ -603,6 +643,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Reads_composite_glyph_component_offsets_and_scale()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -624,6 +665,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData((ushort)8192)]
     [InlineData((ushort)1024)]
     [InlineData((ushort)2048)]
@@ -656,6 +698,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Conflicting_composite_offset_flags_are_malformed_and_release_decoder_owners()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -668,6 +711,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_a_composite_component_with_conflicting_scale_encodings()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -686,6 +730,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_point_matched_composite_glyph_components_on_all_decode_paths()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -703,6 +748,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_truncated_composite_glyph_transforms_on_all_decode_paths()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -722,6 +768,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Validates_composite_glyph_references_during_expansion_not_inspection()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -741,6 +788,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Validates_empty_composite_programs_and_preserves_unhinted_outline_inspection()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -762,6 +810,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_truncated_composite_glyph_instructions_as_malformed_input()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -786,6 +835,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(CompositeGlyphComponentDefect.TruncatedComponent)]
     [InlineData(CompositeGlyphComponentDefect.TruncatedArguments)]
     [InlineData(CompositeGlyphComponentDefect.TruncatedInstructions)]
@@ -832,6 +882,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Expands_composite_glyphs_with_their_affine_transform()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -860,6 +911,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Expands_composite_glyphs_with_the_OpenType_scale01_matrix_coefficient()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -894,6 +946,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Expands_composite_glyphs_with_the_OpenType_scale10_matrix_coefficient()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -928,6 +981,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Expands_nested_composite_glyph_transforms_in_parent_order()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -971,6 +1025,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Expands_composite_glyphs_with_a_two_by_two_rotation_matrix()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -1005,6 +1060,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_a_cycle_in_composite_glyph_references()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -1021,12 +1077,11 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Creates_a_bounded_snapshot_from_verified_caller_owned_font_bytes()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
-        string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(bytes);
         SvgFontProgramResolution resolution = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new SvgMemoryFontProgramSource("caller-font", bytes));
 
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None);
@@ -1038,6 +1093,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_observes_cancellation_between_integrity_hash_chunks()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1053,6 +1109,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_hashes_a_manifest_bound_program_once()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1068,6 +1125,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Manifest_bound_source_observes_cancellation_between_integrity_hash_chunks()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1083,6 +1141,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_does_not_expose_its_prepared_face_array_for_mutation()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
@@ -1093,6 +1152,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_rejects_access_after_disposal()
     {
         var snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
@@ -1104,6 +1164,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_invalidates_escaped_prepared_font_handles_on_disposal()
     {
         SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
@@ -1117,6 +1178,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_disposal_does_not_revoke_already_escaped_caller_memory()
     {
         var escapedViews = new List<ReadOnlyMemory<byte>>();
@@ -1136,6 +1198,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_acquires_one_program_once_for_multiple_same_face_aliases()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1153,6 +1216,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_rejects_a_nonzero_face_index_for_a_standalone_font()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1168,6 +1232,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Request_based_snapshot_rejects_a_nonzero_face_index_before_provider_access()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1184,6 +1249,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Request_based_snapshot_does_not_reject_an_unused_unsupported_face()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1199,6 +1265,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_attaches_format_context_to_an_unsupported_font_program()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1211,6 +1278,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_attaches_integrity_context_when_bound_font_bytes_change()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1224,6 +1292,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_validates_every_selected_declaration_when_program_bytes_are_deduplicated()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1242,6 +1311,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_checks_its_face_limit_before_reading_any_font_source()
     {
         SvgFontProgramResolution[] resolutions = new SvgFontProgramResolution[257];
@@ -1252,6 +1322,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Request_based_snapshot_rejects_declared_programs_over_its_byte_limit_before_provider_access()
     {
         const string Hash = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
@@ -1266,6 +1337,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Request_based_snapshot_rejects_conflicting_same_hash_sizes_before_provider_access()
     {
         const string Hash = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
@@ -1281,6 +1353,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_resolves_requests_and_selectively_acquires_distinct_programs()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1298,7 +1371,8 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public void Bind_rejects_a_foreign_face_after_metering_the_full_scan()
+    [Trait("Layer", "Contract")]
+    public void Bind_rejects_a_face_from_another_catalog()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
         string hash = Convert.ToHexString(SHA256.HashData(bytes));
@@ -1312,6 +1386,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Bind_observes_cancellation_during_the_provenance_scan()
     {
         (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
@@ -1323,6 +1398,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task AcquireAsync_observes_cancellation_before_reporting_a_foreign_face()
     {
         byte[] bytes = CreateTriangleFont();
@@ -1341,6 +1417,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_rejects_a_selected_collection_face_before_acquisition()
     {
         byte[] font = CreateTriangleFont();
@@ -1354,12 +1431,11 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Request_based_snapshot_reports_a_bounded_missing_source_diagnostic()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
-        string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(bytes);
 
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(catalog, [new SvgFontFaceRequest("Example", 400, false)], new MissingFontProvider(), CancellationToken.None));
 
@@ -1370,6 +1446,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(SvgErrorCode.UnresolvedResource, false)]
     [InlineData(SvgErrorCode.UnresolvedResource, true)]
     [InlineData(SvgErrorCode.LimitExceeded, false)]
@@ -1377,9 +1454,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Snapshot_classifies_bound_source_failures_by_origin(SvgErrorCode errorCode, bool throwsSynchronously)
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
-        string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(bytes);
         SvgFontProgramResolution resolution = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new FailingFontSource(errorCode, throwsSynchronously));
 
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None));
@@ -1395,6 +1470,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(SvgErrorCode.UnresolvedResource, false)]
     [InlineData(SvgErrorCode.UnresolvedResource, true)]
     [InlineData(SvgErrorCode.LimitExceeded, false)]
@@ -1402,9 +1478,7 @@ public sealed partial class OpenTypeFontTests
     public async Task Snapshot_classifies_provider_failures_by_origin(SvgErrorCode errorCode, bool throwsSynchronously)
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
-        string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(bytes);
 
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(catalog, [new SvgFontFaceRequest("Example", 400, false)], new FailingFontProvider(errorCode, throwsSynchronously), CancellationToken.None));
 
@@ -1419,12 +1493,11 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_discovers_and_prepares_a_selected_font()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
-        string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(bytes);
         var source = new CountingFontSource(bytes);
 
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None);
@@ -1434,12 +1507,11 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_rejects_an_invalid_root_before_font_acquisition()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
-        string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(bytes);
         var source = new CountingFontSource(bytes);
 
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg' width='0'><text font-family='Example'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
@@ -1449,13 +1521,12 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_reports_selected_face_for_metric_format_failure()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
         bytes[0] ^= 0xff;
-        string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(bytes);
         var source = new CountingFontSource(bytes);
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray();
         SvgRenderLimits limits = new(1_024, 16, 256, 1_024, 16, 16);
@@ -1470,6 +1541,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_verifies_integrity_before_metric_parsing()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1489,6 +1561,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_does_not_acquire_fonts_for_inert_definition_text()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1504,6 +1577,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_acquires_the_font_for_text_with_a_stylesheet_spaced_span()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1519,6 +1593,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g font-family='Example' font-size='100'><text y='3'>A</text></g></svg>", "Example", 1, 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><a font-family='Example' font-size='100'><text y='3'>A</text></a></svg>", "Example", 1, 1, true, false)]
@@ -1691,6 +1766,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Unused_root_list_values_preserve_the_original_scalar_font_and_output()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' x='1 2' y='3'>A</text></svg>"u8.ToArray();
@@ -1706,6 +1782,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Original_single_glyph_spacing_length_preserves_the_face_and_natural_output()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' textLength='50'>A</text></svg>"u8.ToArray();
@@ -1719,6 +1796,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Original_span_style_request_reuses_one_regular_program_without_synthetic_italic()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>A<tspan font-style='italic'>A</tspan></text></svg>"u8.ToArray();
@@ -1734,6 +1812,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Original_span_stylesheet_preserves_initial_generic_and_child_font_requests()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.s { font-family: Example; font-size: 100; }</style><text y='3'>A<tspan class='s'>A</tspan></text></svg>"u8.ToArray();
@@ -1750,6 +1829,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Original_late_group_font_rule_ignores_unitless_size_and_preserves_acquisition()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g><style>g { font-family: Example; font-size: 100; }</style><text y='3'>A</text></g></svg>"u8.ToArray();
@@ -1763,6 +1843,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' width='1' height='1'/></defs><style>g { font-family: Example; }</style><g><text font-family='Example'>A</text></g></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s'><line x1='0' y1='0' x2='1' y2='0' stroke='red' stroke-width='2'/></symbol></defs><style>g { font-family: Example; }</style><g><text font-family='Example'>A</text></g></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><rect id='r' width='1' height='1'/></defs><style>.u { opacity: 0.5; }</style><use href='#r' class='u'/><text font-family='Example' font-size='100' y='3'>A</text></svg>")]
@@ -1781,6 +1862,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' font-size='0'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='-5' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>A</text></svg> trailing", SvgErrorCode.MalformedInput)]
@@ -1813,6 +1895,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5' class='rt'><style>.rt { opacity: 0.5; }</style><text font-family='Example' font-size='100' y='3'>A</text></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><svg width='5' height='5'><rect width='1' height='1'/></svg><text font-family='Example' font-size='100' y='3'>A</text><style>svg>svg{fill:red}</style></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><rect id='r' width='1' height='1'/></defs><text font-family='Example' font-size='100' y='3'>A</text><style>svg>defs{fill:red}</style></svg>")]
@@ -1830,6 +1913,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData(0, 61)]
     [InlineData(1, 62)]
     [InlineData(2, 63)]
@@ -1843,12 +1927,17 @@ public sealed partial class OpenTypeFontTests
         ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None);
 
         Assert.True(DecodeAlpha(png, 1, 5) > 0);
+        byte[] pixels = SvgRasterTestHelper.DecodeRgba(png, out int width, out int height);
+        Assert.Equal((64, 8), (width, height));
+        // Keep each original row-format guard while scanning one decoded image.
+        for (int row = 0; row < height; row++)
+            Assert.Equal(DecodeAlpha(png, 0, row), pixels[row * width * 4 + 3]);
         int rightmost = -1;
         for (int x = 0; x < 64; x++)
         {
             for (int y = 0; y < 8; y++)
             {
-                if (DecodeAlpha(png, x, y) > 0)
+                if (pixels[(y * width + x) * 4 + 3] > 0)
                 {
                     rightmost = x;
                 }
@@ -1859,6 +1948,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("g.outer text>tspan.target", "<tspan class='target'{0}>AA</tspan>")]
     [InlineData(".outer text tspan.target", "<tspan><tspan class='target'{0}>AA</tspan></tspan>")]
     public async Task Text_subtree_selectors_preserve_absolute_ancestor_depth(string selector, string span)
@@ -1883,6 +1973,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Text_element_opacity_matches_a_group_around_its_glyph_drawing()
     {
         async Task<byte> RenderAlphaAsync(string svg)
@@ -1904,6 +1995,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_use_applies_enclosing_group_transform()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><defs><rect id='r' width='2' height='2' fill='red'/></defs><g transform='translate(1)'><use href='#r'/></g></svg>");
@@ -1918,6 +2010,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_viewport_clips_rendered_content_to_its_box()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><svg x='8' y='8' width='32' height='32'><rect width='64' height='64' fill='red'/></svg></svg>");
@@ -1933,6 +2026,7 @@ public sealed partial class OpenTypeFontTests
 
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>A<text font-family='Example'>A</text></text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><circle cx='1' cy='1' r='1' fill='url(#g)'/><text font-family='Unused'>x</text></svg>", SvgErrorCode.UnsupportedFeature, "Unused", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'>A</text><circle cx='1' cy='1' r='1' fill='url(#g)'/></svg>", SvgErrorCode.UnsupportedFeature, "Unused", 1, 1)]
@@ -1995,6 +2089,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='c'><rect x='1' y='1' width='3' height='3'/></clipPath></defs><g clip-path='url(#c)'><text font-family='Example'>A</text></g><text font-family='Example' font-size='100' y='3'>A</text></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m'><rect x='1' y='1' width='3' height='3' fill='#ffffff'/></mask></defs><text font-family='Example' font-size='100' y='3' mask='url(#m)'>A</text><text font-family='Example' font-size='100' y='4'>A</text></svg>")]
     public async Task Original_glyph_resource_inputs_preserve_discovery_pixels_and_cleanup(string svg)
@@ -2016,6 +2111,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Text_path_resource_scope_keeps_multiple_runs_and_following_siblings_in_source_order()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -2034,6 +2130,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Original_viewport_stroke_preserves_following_font_discovery_and_loading()
     {
         const string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><svg x='1' y='1' width='3' height='3'><rect width='5' height='5' fill='red' stroke='blue' stroke-width='2'/></svg><text font-family='Example' font-size='100' y='3'>A</text></svg>";
@@ -2050,6 +2147,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Original_colored_mask_preserves_following_font_discovery_and_loading()
     {
         const string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m'><rect x='1' y='1' width='3' height='3' fill='#ff0000'/></mask></defs><rect width='5' height='5' fill='red' mask='url(#m)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>";
@@ -2066,6 +2164,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Discovery_and_lowering_agree_on_multi_rectangle_clips()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='c'><rect x='1' y='1' width='2' height='2'/><rect x='3' y='3' width='1' height='1'/></clipPath></defs><g clip-path='url(#c)'><rect width='5' height='5' fill='red'/></g><text font-family='Example' font-size='100' y='3'>A</text></svg>");
@@ -2081,6 +2180,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><pattern id='p'><text font-family='Unused'>x</text></pattern><rect width='5' height='5' fill='url(#p)'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><pattern id='p' width='0' height='8'><text font-family='Unused'><tspan>x</tspan></text></pattern><rect width='5' height='5' fill='url(#p)'/></svg>")]
     public async Task Empty_pattern_text_does_not_request_font_programs(string svg)
@@ -2097,6 +2197,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData(false)]
     [InlineData(true)]
     public async Task Pattern_text_discovery_matches_lowering_through_definition_and_viewport_scopes(bool nestedViewport)
@@ -2115,6 +2216,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Object_box_patterns_preserve_following_font_discovery_and_lowering()
     {
         const string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><pattern id='p' width='2' height='2'><rect width='1' height='1' fill='red'/></pattern></defs><rect width='5' height='5' fill='url(#p)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>";
@@ -2131,6 +2233,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example'><tspan rotate='5'>A</tspan></text></svg>", "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' rotate='5'>A</text></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example'>A<tspan rotate='1'>A</tspan></text></svg>", "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' rotate='0 1'>AA</text></svg>")]
     public async Task Nested_rotations_acquire_the_same_supplied_face_and_match_equivalent_root_lists(string svg, string expectedSvg)
@@ -2147,6 +2250,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><mask id='m'><rect width='1' height='1' fill='white'/></mask><rect width='5' height='5' fill='red' mask='url(#m)'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m'><rect x='1' y='1' width='3' height='3' fill='#ffffff'/></mask></defs><g mask='url(#m)'><rect width='5' height='5' fill='red'/></g><text font-family='Example' font-size='100' y='3'>A</text></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><rect width='5' height='5' fill='red' mask='url(#m)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>")]
@@ -2164,6 +2268,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><pattern id='p' width='2' height='2' patternUnits='userSpaceOnUse'><rect width='1' height='1' fill='red'/></pattern></defs><line x1='0' y1='0' x2='4' y2='0' stroke='red' stroke-width='2' fill='url(#p)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><line x1='0' y1='0' x2='4' y2='0' stroke='red' stroke-width='2' fill='url(#g)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>")]
     public async Task Line_fill_servers_are_inert_and_preserve_following_font_requests(string svg)
@@ -2178,6 +2283,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>", 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect width='5' height='5' fill='red'/></svg>", 2, true, true)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect width='5' height='5' fill='red'/></svg>", 1, false, false)]
@@ -2223,6 +2329,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan>A</tspan></text></svg>", 3, true)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan>A</tspan></text></svg>", 2, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g><text font-family='Example' font-size='100' y='3'>A</text></g></svg>", 3, true)]
@@ -2259,6 +2366,7 @@ public sealed partial class OpenTypeFontTests
         }
     }
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'/></svg>")]
     public async Task Discovery_and_lowering_agree_on_reader_workspace_denial(string svg)
@@ -2279,6 +2387,7 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(0, source.RequestCount);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Painted_text_pixels_carry_the_declared_fill_color()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' fill='red'>A</text></svg>");
@@ -2297,6 +2406,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Text_opacity_composes_multiplicatively_over_paint_and_coverage()
     {
         byte[] fillInput = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' fill='red' fill-opacity='0.5'>A</text></svg>");
@@ -2314,6 +2424,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Admitted_fill_rules_render_identically_on_simple_geometry()
     {
         ReadOnlyMemory<byte> nonzero = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect width='2' height='2' fill='red' fill-rule='nonzero'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
@@ -2323,6 +2434,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Clamps_stacked_translucent_rectangle_composites_to_opaque_channels()
     {
         ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect x='14' y='8' width='12' height='48' fill='#ff0000' fill-opacity='0.5'/><rect x='24' y='24' width='16' height='16' fill='#ffcc00' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
@@ -2337,6 +2449,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Discovery_and_preparation_observe_cancellation_together()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>");
@@ -2350,6 +2463,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' transform='scale(2)'>A</text></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><g transform='scale(2)'><text font-family='Unused'>x</text></g></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><a transform='scale(2)'><text font-family='Unused'>x</text></a></svg>")]
@@ -2388,16 +2502,23 @@ public sealed partial class OpenTypeFontTests
     private static (SvgFontPackCatalog Catalog, CountingFontProvider Provider, CountingFontSource Source) CreateUnusedFontPack()
         => CreateExamplePack([0]);
 
-    private static (SvgFontPackCatalog Catalog, CountingFontProvider Provider, CountingFontSource Source) CreateExamplePack(byte[] font)
+    /// <summary>Creates a fresh catalog with the standard Example declaration; catalog identity is never shared.</summary>
+    private static SvgFontPackCatalog CreateExampleCatalog(byte[] font)
     {
         string hash = Convert.ToHexString(SHA256.HashData(font));
         string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + font.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        return SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+    }
+
+    private static (SvgFontPackCatalog Catalog, CountingFontProvider Provider, CountingFontSource Source) CreateExamplePack(byte[] font)
+    {
+        SvgFontPackCatalog catalog = CreateExampleCatalog(font);
         var source = new CountingFontSource(font);
         return (catalog, new CountingFontProvider(source), source);
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Empty_direct_text_does_not_acquire_or_require_a_font()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2416,6 +2537,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_acquires_the_supplied_face_for_scaled_text()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2431,12 +2553,11 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Stylesheet_group_font_properties_are_shared_by_snapshot_preparation_and_rendering()
     {
         byte[] bytes = CreateTriangleFont();
-        string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(bytes);
         var source = new CountingFontSource(bytes);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>g { font-family: Example; font-size: 100; }</style><g><text y='3'>A</text></g></svg>"u8.ToArray();
 
@@ -2450,12 +2571,11 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Direct_inline_font_properties_override_a_stylesheet_group_font_family()
     {
         byte[] bytes = CreateTriangleFont();
-        string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(bytes);
         var source = new CountingFontSource(bytes);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>g { font-family: Missing; font-size: 100; }</style><g><text style='font-family: Example' y='3'>A</text></g></svg>"u8.ToArray();
 
@@ -2469,12 +2589,11 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Stylesheet_font_properties_follow_selector_specificity_per_property()
     {
         byte[] bytes = CreateTriangleFont();
-        string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(bytes);
         var source = new CountingFontSource(bytes);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>g { font-family: Missing; font-size: 100; } .preferred { font-family: Example; }</style><g class='preferred'><text y='3'>A</text></g></svg>"u8.ToArray();
 
@@ -2488,6 +2607,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Stylesheet_font_weight_and_style_select_the_matching_prepared_face()
     {
         byte[] bytes = CreateTriangleFont();
@@ -2509,6 +2629,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_does_not_acquire_fonts_for_stylesheet_hidden_text()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2524,6 +2645,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Hidden_text_with_an_empty_prepared_snapshot_does_not_require_a_font_at_conversion()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2542,6 +2664,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Nonpainting_text_with_an_empty_prepared_snapshot_retains_validation_without_requiring_a_font()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2560,6 +2683,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Inherited_nonpainting_text_with_an_empty_prepared_snapshot_does_not_require_a_font()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2578,6 +2702,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Root_inherited_nonpainting_text_with_an_empty_prepared_snapshot_does_not_require_a_font()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2596,6 +2721,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Stylesheet_inherited_nonpainting_text_with_an_empty_prepared_snapshot_does_not_require_a_font()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2614,6 +2740,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_does_not_acquire_fonts_after_unsupported_sibling_content()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2629,6 +2756,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<rect><animate/></rect>", 0)]
     [InlineData("<g><style>rect { fill: red; }</style></g>", 1)]
     public async Task Svg_based_snapshot_acquires_fonts_only_after_admitted_content(string content, int expectedFonts)
@@ -2647,6 +2775,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_rejects_definition_container_attributes_before_font_acquisition()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2662,6 +2791,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("vector-effect='non-scaling-stroke'", true)]
     [InlineData("transform-origin='center'", false)]
     public async Task Svg_based_snapshot_validates_definition_child_attributes_before_font_acquisition(string attributes, bool supported)
@@ -2688,6 +2818,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_rejects_unsupported_text_attributes_before_font_acquisition()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2703,6 +2834,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_rejects_invalid_text_fill_rules_before_font_acquisition()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2718,6 +2850,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_rejects_unsupported_group_presentation_before_font_acquisition()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2733,6 +2866,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<g stroke='red' stroke-dasharray='1% 1'><text font-family='Unused'>x</text></g>")]
     [InlineData("<text font-family='Unused' stroke='red' stroke-dasharray='1% 1'>x</text>")]
     [InlineData("<text font-family='Unused' fill='not-a-color'>x</text>")]
@@ -2751,6 +2885,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Original_nested_opacity_acquires_the_selected_program()
     {
         const string content = "<g opacity='0.5'><g opacity='0.5'><text font-family='Unused'>x</text></g></g>";
@@ -2766,6 +2901,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<g stroke='red' stroke-dasharray='1 1'><text font-family='Unused'>x</text></g>")]
     [InlineData("<text font-family='Unused' stroke='red' stroke-dasharray='1 1'>x</text>")]
     public async Task Original_dashed_text_inputs_acquire_the_selected_program_and_lower(string content)
@@ -2788,6 +2924,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_rejects_stylesheet_group_presentation_before_font_acquisition()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2803,6 +2940,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_rejects_an_unsupported_late_stylesheet_before_font_acquisition()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2818,6 +2956,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Lays_out_verified_glyph_advances_and_reports_missing_glyphs()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2835,6 +2974,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Text_run_glyph_diagnostics_retain_the_bounded_source_element_id()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
@@ -2848,6 +2988,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Direct_text_missing_prepared_face_diagnostics_retain_the_bounded_source_element_id()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -2861,6 +3002,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Lays_out_supplementary_scalars_with_utf16_span_bookkeeping()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFormat12Font())], CancellationToken.None);
@@ -2877,6 +3019,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Kerned_pair_adjustments_shift_rendered_pixels_relative_to_unadjusted_text()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'>AA</text></svg>");
@@ -2895,6 +3038,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Gpos_pair_adjustments_shift_rendered_pixels_relative_to_unadjusted_text()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'>AA</text></svg>");
@@ -2914,6 +3058,7 @@ public sealed partial class OpenTypeFontTests
 
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Letter_spacing_shifts_rendered_glyphs_relative_to_unspaced_text()
     {
         byte[] plain = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'>AA</text></svg>");
@@ -2932,6 +3077,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Positions_direct_glyph_runs_for_admitted_text_anchors()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
@@ -2946,6 +3092,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Snapshot_finds_a_prepared_face_by_case_insensitive_request()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2963,7 +3110,8 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Snapshot_font_lookup_preserves_selected_face()
+    [Trait("Layer", "Contract")]
+    public async Task Snapshot_font_lookup_observes_caller_cancellation()
     {
         byte[] regular = CreateFont(1024, 3, 2, 1);
         byte[] bold = CreateFont(1024, 3, 2, 1);
@@ -2974,6 +3122,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Render_options_retain_the_caller_owned_font_snapshot()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2985,12 +3134,11 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Prepared_document_retains_a_lowered_direct_text_scene()
     {
         byte[] font = CreateTriangleFont();
-        string hash = Convert.ToHexString(SHA256.HashData(font));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + font.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(font);
         var provider = new CountingFontProvider(new CountingFontSource(font));
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
@@ -3004,22 +3152,26 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Prepared_scaled_circle_matches_direct_conversion()
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><circle cx='4' cy='4' r='3' fill='red'/></svg>"u8.ToArray();
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
         ReadOnlyMemory<byte> direct = SvgConverter.ConvertToPng(svg, options, CancellationToken.None);
-        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateUnusedFontPack();
         using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(svg, catalog, provider, options, CancellationToken.None);
         ReadOnlyMemory<byte> prepared = document.ConvertToPng(CancellationToken.None);
 
         Assert.True(direct.Span.SequenceEqual(prepared.Span));
+        Assert.Equal(0, provider.RequestCount);
+        Assert.Equal(0, source.RequestCount);
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Disposed_document_detaches_its_retained_scene()
     {
-        using SvgPreparedDocument document = await CreateSceneDocumentAsync(CreateSceneSvg());
+        using SvgPreparedDocument document = await CreateFontFreeSceneDocumentAsync(CreateSceneSvg());
 
         Assert.NotNull(document.RetainedSceneGeometries);
         document.Dispose();
@@ -3032,38 +3184,39 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Successful_outputs_detach_the_retained_scene()
     {
         byte[] svg = CreateSceneSvg();
-        using SvgPreparedDocument owned = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument owned = await CreateFontFreeSceneDocumentAsync(svg);
         ReadOnlyMemory<byte> ownedPng = owned.ConvertToPng(CancellationToken.None);
 
         Assert.True(ownedPng.Length > 0);
         Assert.Null(owned.RetainedSceneGeometries);
-        using SvgPreparedDocument callerMemory = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument callerMemory = await CreateFontFreeSceneDocumentAsync(svg);
         byte[] destination = new byte[1_000_000];
         int written = callerMemory.ConvertToPng(destination, CancellationToken.None);
 
         Assert.True(written > 0);
         Assert.Null(callerMemory.RetainedSceneGeometries);
-        using SvgPreparedDocument stream = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument stream = await CreateFontFreeSceneDocumentAsync(svg);
         using MemoryStream streamDestination = new();
         int streamed = stream.ConvertToPng(streamDestination, CancellationToken.None);
 
         Assert.True(streamed > 0);
         Assert.Null(stream.RetainedSceneGeometries);
-        using SvgPreparedDocument ownedAsync = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument ownedAsync = await CreateFontFreeSceneDocumentAsync(svg);
         ReadOnlyMemory<byte> ownedAsyncPng = await ownedAsync.ConvertToPngAsync(CancellationToken.None);
 
         Assert.True(ownedAsyncPng.Length > 0);
         Assert.Null(ownedAsync.RetainedSceneGeometries);
-        using SvgPreparedDocument callerMemoryAsync = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument callerMemoryAsync = await CreateFontFreeSceneDocumentAsync(svg);
         byte[] asyncDestination = new byte[1_000_000];
         int asyncWritten = await callerMemoryAsync.ConvertToPngAsync(asyncDestination, CancellationToken.None);
 
         Assert.True(asyncWritten > 0);
         Assert.Null(callerMemoryAsync.RetainedSceneGeometries);
-        using SvgPreparedDocument streamAsync = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument streamAsync = await CreateFontFreeSceneDocumentAsync(svg);
         using MemoryStream asyncStreamDestination = new();
         int asyncStreamed = await streamAsync.ConvertToPngAsync(asyncStreamDestination, CancellationToken.None);
 
@@ -3072,30 +3225,31 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Failed_outputs_detach_the_retained_scene()
     {
         byte[] svg = CreateSceneSvg();
-        using SvgPreparedDocument callerMemory = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument callerMemory = await CreateFontFreeSceneDocumentAsync(svg);
 
         Assert.Throws<SvgException>(() => callerMemory.ConvertToPng(new byte[1], CancellationToken.None));
         Assert.Null(callerMemory.RetainedSceneGeometries);
-        using SvgPreparedDocument cancelled = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument cancelled = await CreateFontFreeSceneDocumentAsync(svg);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
 
         Assert.Throws<OperationCanceledException>(() => cancelled.ConvertToPng(cancellation.Token));
         Assert.Null(cancelled.RetainedSceneGeometries);
-        using SvgPreparedDocument syncStream = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument syncStream = await CreateFontFreeSceneDocumentAsync(svg);
         using FailingSceneWriteStream syncDestination = new();
 
         Assert.Throws<IOException>(() => syncStream.ConvertToPng(syncDestination, CancellationToken.None));
         Assert.Null(syncStream.RetainedSceneGeometries);
-        using SvgPreparedDocument asyncStream = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument asyncStream = await CreateFontFreeSceneDocumentAsync(svg);
         using FailingSceneWriteStream asyncDestination = new();
 
         await Assert.ThrowsAsync<IOException>(async () => await asyncStream.ConvertToPngAsync(asyncDestination, CancellationToken.None));
         Assert.Null(asyncStream.RetainedSceneGeometries);
-        using SvgPreparedDocument asyncCancelled = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument asyncCancelled = await CreateFontFreeSceneDocumentAsync(svg);
         using CancellationTokenSource asyncCancellation = new();
         asyncCancellation.Cancel();
 
@@ -3103,26 +3257,26 @@ public sealed partial class OpenTypeFontTests
 
         Assert.Equal(asyncCancellation.Token, asyncFailure.CancellationToken);
         Assert.Null(asyncCancelled.RetainedSceneGeometries);
-        using SvgPreparedDocument memorySync = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument memorySync = await CreateFontFreeSceneDocumentAsync(svg);
         using CancellationTokenSource memoryCancellation = new();
         memoryCancellation.Cancel();
 
         Assert.Throws<OperationCanceledException>(() => memorySync.ConvertToPng(new byte[1_000_000], memoryCancellation.Token));
         Assert.Null(memorySync.RetainedSceneGeometries);
-        using SvgPreparedDocument streamSync = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument streamSync = await CreateFontFreeSceneDocumentAsync(svg);
         using CancellationTokenSource streamCancellation = new();
         streamCancellation.Cancel();
         using MemoryStream streamDestination = new();
 
         Assert.Throws<OperationCanceledException>(() => streamSync.ConvertToPng(streamDestination, streamCancellation.Token));
         Assert.Null(streamSync.RetainedSceneGeometries);
-        using SvgPreparedDocument memoryAsync = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument memoryAsync = await CreateFontFreeSceneDocumentAsync(svg);
         using CancellationTokenSource memoryAsyncCancellation = new();
         memoryAsyncCancellation.Cancel();
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await memoryAsync.ConvertToPngAsync(new byte[1_000_000], memoryAsyncCancellation.Token));
         Assert.Null(memoryAsync.RetainedSceneGeometries);
-        using SvgPreparedDocument streamAsync = await CreateSceneDocumentAsync(svg);
+        using SvgPreparedDocument streamAsync = await CreateFontFreeSceneDocumentAsync(svg);
         using CancellationTokenSource streamAsyncCancellation = new();
         streamAsyncCancellation.Cancel();
         using MemoryStream asyncStreamDestination = new();
@@ -3132,9 +3286,10 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Converted_document_releases_its_geometry_arrays_for_collection()
     {
-        using SvgPreparedDocument document = await CreateSceneDocumentAsync(CreateSceneSvg());
+        using SvgPreparedDocument document = await CreateFontFreeSceneDocumentAsync(CreateSceneSvg());
         WeakReference geometries = TrackSceneArrays(document);
         ReadOnlyMemory<byte> png = document.ConvertToPng(CancellationToken.None);
 
@@ -3145,9 +3300,10 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Disposed_document_releases_its_geometry_arrays_for_collection()
     {
-        using SvgPreparedDocument document = await CreateSceneDocumentAsync(CreateSceneSvg());
+        using SvgPreparedDocument document = await CreateFontFreeSceneDocumentAsync(CreateSceneSvg());
         WeakReference geometries = TrackSceneArrays(document);
         document.Dispose();
         CollectAggressively();
@@ -3173,6 +3329,23 @@ public sealed partial class OpenTypeFontTests
         return await SvgPreparedDocument.CreateAsync(svg, catalog, provider, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None);
     }
 
+    private static async Task<SvgPreparedDocument> CreateFontFreeSceneDocumentAsync(byte[] svg)
+    {
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateUnusedFontPack();
+        SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(svg, catalog, provider, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None);
+        try
+        {
+            Assert.Equal(0, provider.RequestCount);
+            Assert.Equal(0, source.RequestCount);
+            return document;
+        }
+        catch
+        {
+            document.Dispose();
+            throw;
+        }
+    }
+
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static WeakReference TrackSceneArrays(SvgPreparedDocument document) => new(document.RetainedSceneGeometries);
 
@@ -3190,12 +3363,11 @@ public sealed partial class OpenTypeFontTests
         public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken) => ValueTask.FromException(new IOException("destination write failed"));
     }
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Svg_based_snapshot_skips_whitespace_only_direct_text_before_acquisition()
     {
         byte[] font = CreateTriangleFont();
-        string hash = Convert.ToHexString(SHA256.HashData(font));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + font.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontPackCatalog catalog = CreateExampleCatalog(font);
         var provider = new CountingFontProvider(new CountingFontSource(font));
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'> \t\r\n </text></svg>"u8.ToArray();
 
@@ -3206,6 +3378,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData(" \tA \r\n")]
     [InlineData(" \t<![CDATA[A]]> \r\n")]
     public async Task Direct_text_normalizes_default_whitespace_before_layout(string content)
@@ -3221,6 +3394,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Direct_text_honors_admitted_xml_space_modes()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
@@ -3234,6 +3408,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Direct_text_honors_bounded_css_whitespace_declarations()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
@@ -3261,6 +3436,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Root_xml_space_seeds_descendant_whitespace_inheritance()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
@@ -3272,6 +3448,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Root_inline_whitespace_overrides_root_xml_space()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
@@ -3283,6 +3460,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Group_xml_space_seeds_descendant_whitespace_inheritance()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
@@ -3294,6 +3472,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Group_inline_whitespace_overrides_group_xml_space()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
@@ -3305,6 +3484,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Group_invalid_xml_space_fails_fast()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
@@ -3315,6 +3495,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Direct_text_spans_inherit_and_override_admitted_xml_space_modes()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
@@ -3334,6 +3515,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Nested_default_xml_space_collapses_with_siblings_and_preserves_span_edge_spaces()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleAAndSpaceFont())], CancellationToken.None);
@@ -3348,16 +3530,18 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("<tspan font-family='Example'>A</tspan><tspan font-family='Spacer'> </tspan><tspan font-family='Example'>A</tspan>", "Example,Spacer")]
     [InlineData("<tspan font-family='Example'>A</tspan><tspan font-family='Spacer'> </tspan>", "Example")]
     [InlineData("<tspan font-family='Spacer'> </tspan><tspan font-family='Example'>A</tspan>", "Example")]
-    public void Discovery_acquires_a_separator_only_face_only_when_its_space_survives(string content, string expected)
+    public void Discovery_requests_a_separator_only_face_only_when_its_space_survives(string content, string expected)
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'>" + content + "</text></svg>");
         Assert.Equal(expected, string.Join(',', SvgFontRequestDiscovery.Discover(svg, CancellationToken.None).Select(request => request.Family)));
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Word_spacing_cascade_keeps_root_inheritance_importance_and_span_zero_distinct()
     {
         const string actual = "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='40' class='owner' word-spacing='30' style='word-spacing:20px'><style>.owner{word-spacing:7px!important}.label{word-spacing:9px!important}.zero{word-spacing:normal}</style><g><text font-family='Example' font-size='10' y='12'>A A</text><text class='label' font-family='Example' font-size='10' y='30' style='word-spacing:3px'>A A<tspan class='zero'> A A</tspan> A</text></g></svg>";
@@ -3372,6 +3556,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Direct_text_reuses_a_contiguous_decoded_glyph_outline()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3387,6 +3572,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Direct_text_applies_scalar_letter_spacing_between_glyphs()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3405,6 +3591,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Nested_tspan_applies_scalar_letter_spacing_without_changing_the_parent_text_chunk_anchor()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3423,6 +3610,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Nested_tspan_applies_scalar_dx_and_dy_to_its_first_descendant_glyph()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3443,6 +3631,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("start", 200, 310, 370)]
     [InlineData("middle", 170, 250, 310)]
     [InlineData("end", 140, 190, 250)]
@@ -3462,6 +3651,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("start", 200, 260, 320)]
     [InlineData("middle", 170, 200, 260)]
     [InlineData("end", 140, 140, 200)]
@@ -3476,6 +3666,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData(false)]
     [InlineData(true)]
     public async Task Absolute_chunk_boundaries_stop_pair_adjustment_without_disabling_pairs_inside_the_next_chunk(bool gpos)
@@ -3487,6 +3678,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Absolute_and_relative_span_coordinates_continue_into_later_parent_text()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3498,6 +3690,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Direct_text_applies_validated_legacy_kerning_between_adjacent_glyphs()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleKernFont())], CancellationToken.None);
@@ -3517,6 +3710,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Direct_text_applies_validated_GPOS_pair_adjustments_between_adjacent_glyphs()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleGposFont())], CancellationToken.None);
@@ -3536,6 +3730,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Default_text_preserves_inter_word_whitespace_around_a_visible_nested_span()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleAAndSpaceFont())], CancellationToken.None);
@@ -3548,6 +3743,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Converts_direct_text_and_its_immediate_shape_sibling_through_every_public_output_form()
     {
         byte[] font = CreateTriangleFont();
@@ -3586,6 +3782,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Preserves_an_immediate_shape_sibling_after_direct_cdata_text()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3599,6 +3796,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Preserves_an_outer_shape_sibling_after_direct_text_in_a_group()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3612,6 +3810,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Preserves_an_immediate_shape_sibling_after_direct_text_with_a_comment()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3625,6 +3824,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Rejects_a_malformed_tail_after_direct_text()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3636,6 +3836,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Rejects_an_unsupported_sibling_after_direct_text()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3647,6 +3848,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Converts_direct_text_with_admitted_inline_font_properties()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3660,6 +3862,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Converts_direct_text_with_root_and_group_inherited_font_properties()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3672,6 +3875,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Concurrent_direct_text_conversions_share_an_immutable_snapshot_safely()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3685,6 +3889,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Converts_direct_text_with_a_true_quadratic_glyph_segment()
     {
         byte[] font = CreateTriangleFont();
@@ -3704,6 +3909,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Converts_direct_text_with_fractional_coordinates()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3716,6 +3922,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Categorizes_overflowing_direct_text_offsets_as_a_limit()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3728,6 +3935,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Rejects_nonfinite_transformed_glyph_coordinates_before_rasterization()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3740,6 +3948,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Retained_glyph_contours_hold_and_release_scene_budget_ownership()
     {
         SvgGlyphQuadraticContour[] contours = [new SvgGlyphQuadraticContour([new SvgGlyphQuadraticSegment(new(0, 0), new(1, 0), new(1, 0))])];
@@ -3754,6 +3963,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Failed_scene_transfer_releases_detached_glyph_contour_ownership()
     {
         SvgGlyphQuadraticContour[] contours = [new SvgGlyphQuadraticContour([new SvgGlyphQuadraticSegment(new(0, 0), new(1, 0), new(1, 0))])];
@@ -3773,6 +3983,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Glyph_outline_decoding_and_final_contours_observe_the_memory_limit()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3786,6 +3997,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Glyph_expansion_observes_cancellation_at_its_entry_checkpoint()
     {
         byte[] font = CreateTriangleFont();
@@ -3797,6 +4009,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Glyph_expansion_observes_cancellation_after_exact_segment_allocation_before_copying()
     {
         byte[] font = CreateTriangleFont();
@@ -3818,6 +4031,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Glyph_expansion_observes_cancellation_after_exact_contour_boundary_allocation_before_copying()
     {
         byte[] font = CreateTriangleFont();
@@ -3839,6 +4053,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Glyph_outline_releases_transformation_storage_after_refusal()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3861,6 +4076,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Glyph_outline_observes_cancellation_during_transformation()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3881,6 +4097,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Direct_text_lowering_releases_scene_and_parser_reservations_when_transformation_is_cancelled()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3902,6 +4119,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Glyph_outline_transfers_final_contour_scene_ownership_to_retained_geometry()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -3927,6 +4145,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Budgeted_simple_glyph_decoder_observes_and_releases_each_owned_temporary_array()
     {
         byte[] font = CreateTriangleFont();
@@ -3977,6 +4196,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Budgeted_composite_decoder_observes_and_releases_component_storage()
     {
         byte[] font = CreateTriangleFont();
@@ -4017,6 +4237,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Glyph_contour_transfer_rejects_reuse_after_transfer_or_disposal()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4041,6 +4262,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Failed_scene_insertion_releases_transferred_glyph_contour_ownership()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4072,6 +4294,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Parser_failure_after_retaining_a_glyph_contour_releases_its_scene_budget()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4089,6 +4312,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Reads_direct_text_in_bounded_reader_chunks()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4100,6 +4324,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("clip-path='url(#missing)'")]
     [InlineData("fill-rule='positive'")]
     public async Task Rejects_unimplemented_direct_text_attributes(string attribute)
@@ -4114,6 +4339,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Rejects_invalid_xml_space_before_direct_text_layout()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4125,6 +4351,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public async Task Concatenates_nested_attribute_free_direct_text_spans()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4137,6 +4364,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Rejects_unadmitted_direct_text_span_attributes_and_preserves_attribute_limits()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4155,6 +4383,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Attribute_free_direct_text_spans_respect_the_remaining_node_and_depth_limits()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4174,6 +4403,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Rejects_direct_text_before_materializing_more_than_the_admitted_character_limit()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4186,6 +4416,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Rejects_document_text_that_exceeds_the_aggregate_admitted_character_limit()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4200,6 +4431,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Builds_a_simple_text_run_from_one_prepared_face()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -4221,6 +4453,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Text_run_releases_the_cached_outline_when_its_enumerator_stops_early()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4243,6 +4476,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Converts_glyph_outlines_from_font_units_to_svg_coordinates()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -4267,6 +4501,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Borrowed_glyph_decoding_needs_only_final_contour_storage_and_remains_unchanged()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -4290,6 +4525,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Multi_contour_glyphs_keep_affine_mapping_and_release_numeric_failure_storage()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateOriginReturningContourFont())], CancellationToken.None);
@@ -4313,6 +4549,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public async Task Preserves_structural_glyph_contours_when_their_segments_revisit_the_start_point()
     {
         byte[] bytes = CreateOriginReturningContourFont();
@@ -4341,6 +4578,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("windows", false, 18, 12, 110.59185791015625)]
     [InlineData("linux", false, 18, 12, 110.587646484375)]
     [InlineData("windows", true, 18, 12, 110.625)]
@@ -4365,6 +4603,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("windows")]
     [InlineData("linux")]
     public async Task Device_layout_rounds_paint_origins_without_changing_semantic_absolute_and_relative_positions(string target)
@@ -4384,6 +4623,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Device_layout_releases_owned_positions_on_numeric_denial()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1000, 3, 2, 1))], CancellationToken.None);
@@ -4644,25 +4884,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     private static byte DecodeAlpha(ReadOnlyMemory<byte> png, int x, int y)
-    {
-        int width = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(16, 4));
-        int height = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(20, 4));
-        if ((uint)x >= (uint)width || (uint)y >= (uint)height) throw new ArgumentOutOfRangeException(nameof(x));
-        using var compressed = new MemoryStream();
-        for (int offset = 8; offset < png.Length;)
-        {
-            int length = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(offset, 4));
-            if (png.Span.Slice(offset + 4, 4).SequenceEqual("IDAT"u8)) compressed.Write(png.Span.Slice(offset + 8, length));
-            offset += length + 12;
-        }
-        compressed.Position = 0;
-        using var zlib = new ZLibStream(compressed, CompressionMode.Decompress);
-        byte[] pixels = new byte[checked((width * 4 + 1) * height)];
-        zlib.ReadExactly(pixels);
-        int row = y * (width * 4 + 1);
-        if (pixels[row] != 0) throw new InvalidDataException("Test PNG decoder expects an unfiltered scanline.");
-        return pixels[row + 1 + x * 4 + 3];
-    }
+        => DecodePixel(png, x, y).Alpha;
 
     private static SvgColor DecodePixel(ReadOnlyMemory<byte> image, int x, int y)
     {
@@ -4875,6 +5097,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text text-decoration='underline' font-family='Example' font-size='100' y='3'>A</text></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text style='text-decoration: underline' font-family='Example' font-size='100' y='3'>A</text></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.l { text-decoration: underline; }</style><a class='l'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>")]

@@ -33,6 +33,8 @@ For pattern selection, `FullyQualifiedName~Pattern_child_content_selects_the_dis
 selects direct discovery; include the raster and prepared siblings for integration.
 The [case map](Research/release-baselines/test-responsibilities.md#pattern-source-and-target-selection)
 explains the routine prepared subset and extended `Category=Research` companions.
+Use `FullyQualifiedName~OpenTypeFontTests&Layer=Mechanism` for direct font work;
+include contract/rendering siblings when changing shared font preparation or fixtures.
 
 ## Development checks
 

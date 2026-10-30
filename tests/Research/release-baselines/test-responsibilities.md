@@ -588,6 +588,45 @@ established. All 78 focused cases, 98 native-image checks, two provenance checks
 and six capture-format/ownership contracts pass on each host/runtime pair. Both
 affected builds are warning-free.
 
+## Core OpenType roles and fixtures
+
+The baseline is `ef5bf5a96`. All 524 cases in
+[the main OpenType file](../../Lokad.Svg.Tests/OpenTypeFontTests.cs) remain:
+120 Mechanism, 364 Contract and 40 Rendering, across 235 methods. Five corrected
+names change seven IDs; the other 517 IDs remain, including cases whose truncated
+display names coincide. Test data, expected values and platform tolerances remain.
+Metrics no longer claim to measure copying; singleton storage, foreign-catalog
+validation, lookup cancellation and request discovery have names matching their
+assertions. A snapshot supplying glyphs does not itself make a case a contract.
+
+Twelve repeated catalog setups use one fresh-catalog recipe, also used by the
+existing pack helper. Hashing and manifest/parse inputs expand to the original
+statements at the original point. The deliberately stale hash, foreign catalogs,
+custom declarations and aliases remain explicit. The general scene factory still
+supports text-bearing consumers in other partial files. Only the five known
+shape-scene ownership tests use a counted unused-font factory; it disposes the
+document if an assertion fails before ownership transfers to the caller.
+
+Alpha sampling delegates to the unchanged color decoder, retaining its bounds,
+stream lifetime and unfiltered-row guards. The three spacing cases scan one
+decoded image instead of inflating PNG for every pixel. Their original sample
+and every row-format guard remain. A temporary audit compared all 1,536 scanned
+alpha values with the original decoder on each OS. Expanding the small setup
+helpers and reversing the documented names/traits/scan change restores the entire
+original source file exactly. No production, reference or text-layout change occurs.
+
+The six successful and nine failed retained-scene output paths, escaped font
+memory, source cancellation/integrity, early enumerator cleanup, exact glyph
+budgets, transfer failures and independent device/semantic positions remain.
+Three fresh sequential Windows .NET 11 processes measure 9.29/9.60 seconds median
+before/after for all 524 cases; the 120-case mechanism selection measures 7.54.
+These include discovery/host/TRX and exclude build. There is no overall speedup
+claim; the separated mechanism selection avoids rendering and acquisition work.
+All 12,857 OpenType cases, including other partial files and extended matrices,
+pass on Windows/Linux under both runtimes. The 187 supplied-font label/document,
+text-path, curved-text, kerning and public font-host integration checks also pass
+per combination. Both affected builds are warning-free.
+
 ## Gradient-template responsibilities
 
 The baseline is `5a847bd79`. All 866 original case IDs remain. The
