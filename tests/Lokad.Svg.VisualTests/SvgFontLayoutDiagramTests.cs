@@ -413,6 +413,7 @@ public sealed class SvgFontLayoutDiagramTests
 
     [Theory]
     [MemberData(nameof(AffineSourceCases))]
+    [Trait("Layer", "Rendering")]
     public Task Declared_affine_source_document_and_controls_match_frozen_references(string identity)
         => ValidateDeclared(Path.Combine(ResearchCorpus.Root, "affine-source-exit-sheet"), identity, [new("Example", 400, false)]);
 
@@ -707,7 +708,8 @@ public sealed class SvgFontLayoutDiagramTests
         {
             RgbaImage expected = PngRgbaDecoder.Decode(reference, SvgRenderLimits.Default.MaximumPixels);
             RgbaImage actual = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray(), SvgRenderLimits.Default.MaximumPixels);
-            Assert.True(PixelComparer.Compare(expected, actual).IsExact);
+            PixelComparison comparison = PixelComparer.Compare(expected, actual);
+            Assert.True(comparison.IsExact, identity + " differs from its reference: " + JsonSerializer.Serialize(comparison));
         }
         Assert.Equal(unchanged, input);
     }

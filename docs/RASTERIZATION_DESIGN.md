@@ -158,6 +158,7 @@ Sampling subtracts the destination bitmap origin before concatenating the stored
 image origin. Geometry keeps its canvas placement. Materialized and deferred
 images share that map order; enclosing opacity stores covered, converted pixels
 before applying packed row alpha, as ordinary layers do.
+Packed and floating shader samplers retain their independent matrix arithmetic.
 An inverse tile enclosure can reach a source whose restored image misses the tile;
 empty destination areas return before capture or edge preparation.
 Zero-effect aliases retain their sampling color filter across ordinary and fast paths.

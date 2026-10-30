@@ -1167,9 +1167,13 @@ public static partial class SvgConverter
                             if (opacityLayer) opacityPixel.Clear();
                             byte paintCoverage = opacityLayer ? (byte)255 : clipCoverage;
                             float px = x + .5f - bitmap.Origin.X, py = y + .5f - bitmap.Origin.Y;
-                            (float u, float v) = imageInverse.Map(px, py);
+                            // Packed sampling retains its map arithmetic; floating
+                            // shader transfers use the fused map below.
+                            float u = px * imageInverse.ScaleX + (py * imageInverse.SkewX + imageInverse.TranslateX);
+                            float v = px * imageInverse.SkewY + (py * imageInverse.ScaleY + imageInverse.TranslateY);
                             if (floatingSamples)
                             {
+                                (u, v) = imageInverse.Map(px, py);
                                 SvgCpuBitmapOrigin sampleOrigin = new((int)nativeImage.Left - 1 - (int)left, (int)nativeImage.Top - 1 - (int)top);
                                 if (imageEdges)
                                 {
@@ -1496,7 +1500,8 @@ public static partial class SvgConverter
                             {
                                 if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                                 float px = x + .5f - deviceOrigin.X, py = y + .5f - deviceOrigin.Y;
-                                (float u, float v) = inverse.Map(px, py);
+                                float u = px * inverse.ScaleX + (py * inverse.SkewX + inverse.TranslateX);
+                                float v = px * inverse.SkewY + (py * inverse.ScaleY + inverse.TranslateY);
                                 if (image.FilterColorSpace == SvgFilterColorSpace.LinearRgb
                                     || deferred.ColorFilter is SvgFilterDeferredColorFilter.SourceAlpha or SvgFilterDeferredColorFilter.LinearRgbRoundTrip)
                                 {

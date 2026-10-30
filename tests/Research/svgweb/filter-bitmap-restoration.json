@@ -309,5 +309,129 @@
     "The full filter/root milestone stays open. car.svg, gallardo.svg and scimitar.svg improve but remain different.",
     "Fractional root layout/fitting, original filter/source interactions and explicit fonts/resources/static-state admission retain their own closure criteria."
   ],
-  "timingScope": "Functional elapsed under concurrent workstation execution, including runner startup. Replay took 117.02 s versus 56.40 s in the prior run; these runs are not controlled performance measurements. Dedicated quiet-VM timing remains unmeasured."
+  "timingScope": "Functional elapsed under concurrent workstation execution, including runner startup. Replay took 117.02 s versus 56.40 s in the prior run; these runs are not controlled performance measurements. Dedicated quiet-VM timing remains unmeasured.",
+  "promotionRepair": {
+    "failedSource": "3652550cca2445411fb2d2f7f6521f557df1ad2e",
+    "failedCiRun": 41095850845,
+    "failures": {
+      "windows": [
+        "affine-source-exit-sheet/patterned-source",
+        "affine-source-exit-sheet/supplied-font-source"
+      ],
+      "linux": [
+        "affine-source-exit-sheet/patterned-source"
+      ]
+    },
+    "cause": "Matrix origin placement is shared, but packed and floating shader samplers retain their separate arithmetic. Unifying their arithmetic altered existing small affine patterned and supplied-font source references.",
+    "fix": "Preserve the packed sampler map and the fused shader map independently. Keep the earlier bitmap-origin order and opacity store. Text layout and all source/reference images are unchanged.",
+    "testResponsibilities": "The existing affine source method is explicitly Layer=Rendering; failed declared-image assertions now include pixel-difference metadata. Affected native qualification includes the whole SvgFontLayoutDiagramTests class.",
+    "qualification": [
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 20.4594479999505,
+        "librarySha256": "33ca1d72b043de82b2086ee39890f24f1b7b0f0aad759d209e02ae1b967d08af"
+      },
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "layer": "native",
+        "passed": 9173,
+        "seconds": 31.06209270004183,
+        "librarySha256": "33ca1d72b043de82b2086ee39890f24f1b7b0f0aad759d209e02ae1b967d08af"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 18.453012800076976,
+        "librarySha256": "79970723549147d4936956832dc1c9ea72a485f2fa9244314da7f6024e430c84"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "layer": "native",
+        "passed": 9173,
+        "seconds": 27.454096799949184,
+        "librarySha256": "79970723549147d4936956832dc1c9ea72a485f2fa9244314da7f6024e430c84"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 18.763375265,
+        "librarySha256": "33ca1d72b043de82b2086ee39890f24f1b7b0f0aad759d209e02ae1b967d08af"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "layer": "native",
+        "passed": 9173,
+        "seconds": 49.910261176,
+        "librarySha256": "33ca1d72b043de82b2086ee39890f24f1b7b0f0aad759d209e02ae1b967d08af"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 14.729675610000005,
+        "librarySha256": "79970723549147d4936956832dc1c9ea72a485f2fa9244314da7f6024e430c84"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "layer": "native",
+        "passed": 9173,
+        "seconds": 33.274801179,
+        "librarySha256": "79970723549147d4936956832dc1c9ea72a485f2fa9244314da7f6024e430c84"
+      }
+    ],
+    "originalReplay": {
+      "files": 204,
+      "complete": {
+        "files": 204,
+        "seconds": 52.915413100039586,
+        "sourceSvgFilesRetained": 0
+      },
+      "hosts": {
+        "windows": {
+          "counts": {
+            "UnsupportedFeature": 53,
+            "rendered": 148,
+            "exact": 132,
+            "different": 16,
+            "MalformedInput": 3
+          },
+          "priorRenderedUnchanged": 148,
+          "priorRenderedChanged": [],
+          "newRendered": [],
+          "lost": [],
+          "worse": [],
+          "changedOutcomesOrDiagnostics": [],
+          "librarySha256": "33ca1d72b043de82b2086ee39890f24f1b7b0f0aad759d209e02ae1b967d08af"
+        },
+        "linux": {
+          "counts": {
+            "UnsupportedFeature": 53,
+            "rendered": 148,
+            "exact": 132,
+            "different": 16,
+            "MalformedInput": 3
+          },
+          "priorRenderedUnchanged": 148,
+          "priorRenderedChanged": [],
+          "newRendered": [],
+          "lost": [],
+          "worse": [],
+          "changedOutcomesOrDiagnostics": [],
+          "librarySha256": "33ca1d72b043de82b2086ee39890f24f1b7b0f0aad759d209e02ae1b967d08af"
+        }
+      }
+    }
+  }
 }

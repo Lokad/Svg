@@ -9808,5 +9808,19 @@
     "seconds": 117.02294100006111,
     "evidence": "filter-bitmap-restoration.json",
     "qualification": "Every original hash rechecked. All prior exact images remain exact, 145 prior PNGs are byte-identical and three have lower error. No changed outcome/diagnostic categories, source payload retention, reference rewrites or whole-corpus admission."
+  },
+  "bitmapSamplerArithmetic": {
+    "sourceBaseline": "3652550cca2445411fb2d2f7f6521f557df1ad2e",
+    "librarySha256": "33ca1d72b043de82b2086ee39890f24f1b7b0f0aad759d209e02ae1b967d08af",
+    "filesRevalidatedPerHost": 204,
+    "renderedPerHost": 148,
+    "exactPerHost": 132,
+    "differentPerHost": 16,
+    "rejectedPerHost": 56,
+    "priorRenderedPngsByteIdenticalPerHost": 148,
+    "sourceSvgFilesRetained": 0,
+    "seconds": 52.915413100039586,
+    "evidence": "filter-bitmap-restoration.json",
+    "qualification": "Every source hash rechecked. All 148 rendered PNGs and every outcome/diagnostic category remain unchanged while existing patterned/supplied-font native references are restored. No target changes or whole-corpus reference admission."
   }
 }
