@@ -86,6 +86,8 @@ drawing bounds use native integer saturation/culling; resource pictures keep loc
 visual bounds. Culled drawings retain inert anchors when ancestor effects can
 generate pixels from transparent input. Markers share a scene-owned canvas stage
 across contours and paints, independently of viewport clipping.
+Leaf polygon clips bind native clip coverage while retaining source contours and
+shader coordinates; they do not geometrically intersect flattened paint vertices.
 
 Mask paint clips enclose the union of the resource region and target visual bounds
 in source space. Instance replay transfers local visual bounds and materialized

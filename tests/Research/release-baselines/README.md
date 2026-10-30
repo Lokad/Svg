@@ -8,6 +8,8 @@ Reference images remain beside their existing licensed source collections.
 
 [Polygon contour ownership](contour-ownership.md) records the shared paint-binding
 storage contract and its failing-before refusal, transfer and retry witnesses.
+[Leaf clip retirement](clip-retirement.md) records producer/reachability evidence
+for removing the obsolete destructive intersection backend.
 [Resource selection](resource-selection.md) maps R74's original acceptance inputs
 to direct mechanisms, existing acquisition contracts and independent native images.
 
