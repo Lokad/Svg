@@ -1,0 +1,6 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="40">
+  <defs><filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter></defs>
+  <path transform="translate(.25) scale(1 .23)" d="M4 4H76V100H4L8 96C16 90 38 81 48 78C58 75 33 69 20 65C7 61 27 18 38 8Z" fill="#80b2ed"/>
+  <path transform="translate(80.25) scale(1 .23)" d="M4 4H76V100H4L8 96C16 90 38 81 48 78C58 75 33 69 20 65C7 61 27 18 38 8Z" fill="#80b2ed" opacity=".52" filter="url(#soft)"/>
+</svg>

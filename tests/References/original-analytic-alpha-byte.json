@@ -1,0 +1,55 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+  "referenceSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-analytic-alpha-byte.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-analytic-alpha-byte",
+  "viewport": {
+    "width": 160,
+    "height": 40,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 cubic control. Left: opaque direct paint. Right: the same geometry through Gaussian blur and element opacity. Native byte-alpha narrowing precedes additive accumulation; the blurred companion protects propagation from source coverage. Three fresh healthy/profile-cleaned native captures per platform.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+      "referenceSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+      "referenceSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  }
+}

@@ -1,0 +1,563 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "cb26e582e679112cb5a31e8baa1d84ac91432b5c",
+  "closedScope": [
+    "Analytic triangle/trapezoid alpha is a byte before additive saturation. Native approximation underflow wraps at that boundary instead of subtracting signed coverage. Fixed-point positions and addition sums remain wide.",
+    "The two temporary alpha arrays use byte elements across single, compound and clipped construction. Existing reservation, cancellation, direct/pair/mask dispatch and owner lifetimes are retained. No new owner or allocation path."
+  ],
+  "nativeArithmetic": "SkScan_AAAPath.cpp at the BSD revision already recorded in THIRD_PARTY_NOTICES.txt; SkAlpha locals, parameters and scratch narrow before safely_add_alpha. Existing adaptation is corrected, without a new algorithm or tolerance.",
+  "sourceDiagnostic": {
+    "original": "gallardo.svg",
+    "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "consumer": "path4605",
+    "unfilteredSourcePixel": [
+      849,
+      73
+    ],
+    "beforeSourceAlpha": 85,
+    "nativeSourceAlpha": 133,
+    "trace": "A quarter strip supplies byte alpha64, then64, then36. The final triangle pair supplies integer -1. Managed signed addition reduced164 to163; native byte255 saturates the accumulated coverage to255 before element opacity.",
+    "payloadsRetained": 0
+  },
+  "regressions": {
+    "mechanismTest": "../../Lokad.Svg.Tests/SvgAnalyticAlphaByteTests.cs",
+    "mechanismBeforeAfter": [
+      {
+        "phase": "before",
+        "exitCode": 1,
+        "counters": {
+          "total": "1",
+          "executed": "1",
+          "passed": "0",
+          "failed": "1",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        },
+        "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa",
+        "functionalTestDuration": "00:00:00.2131564"
+      },
+      {
+        "phase": "after",
+        "exitCode": 0,
+        "counters": {
+          "total": "1",
+          "executed": "1",
+          "passed": "1",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        },
+        "librarySha256": "00ca2805ee82504528eb2b32343a607b7abe6868d43a6f72cb8e96dcb1339b83",
+        "functionalTestDuration": "00:00:00.2184480"
+      }
+    ],
+    "renderingFixture": "../../Fixtures/original/analytic-alpha-byte.svg",
+    "nativeReference": "../../References/original-analytic-alpha-byte.json",
+    "sourceSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+    "referenceSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534",
+    "roles": [
+      "Direct cubic fringe at native byte approximation boundary.",
+      "Same geometry through Gaussian blur and element opacity, protecting source coverage propagation."
+    ],
+    "captures": [
+      {
+        "host": "windows",
+        "capture": 0,
+        "sourceSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+        "pngSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534",
+        "decodedSha256": "d448a878258104deaa9324d3e73bb1676472c14a757cf17451e44785e0ce956b",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "windows",
+        "capture": 1,
+        "sourceSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+        "pngSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534",
+        "decodedSha256": "d448a878258104deaa9324d3e73bb1676472c14a757cf17451e44785e0ce956b",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "windows",
+        "capture": 2,
+        "sourceSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+        "pngSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534",
+        "decodedSha256": "d448a878258104deaa9324d3e73bb1676472c14a757cf17451e44785e0ce956b",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "capture": 0,
+        "sourceSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+        "pngSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534",
+        "decodedSha256": "d448a878258104deaa9324d3e73bb1676472c14a757cf17451e44785e0ce956b",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "capture": 1,
+        "sourceSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+        "pngSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534",
+        "decodedSha256": "d448a878258104deaa9324d3e73bb1676472c14a757cf17451e44785e0ce956b",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "capture": 2,
+        "sourceSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+        "pngSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534",
+        "decodedSha256": "d448a878258104deaa9324d3e73bb1676472c14a757cf17451e44785e0ce956b",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ],
+    "platformBeforeAfter": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa",
+        "sourceSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+        "changedPixels": 16,
+        "maximumError": 120,
+        "totalChannelError": 377,
+        "directRgba": [
+          128,
+          178,
+          236,
+          135
+        ],
+        "referenceDirectRgba": [
+          128,
+          178,
+          237,
+          255
+        ]
+      },
+      {
+        "host": "windows",
+        "phase": "after",
+        "librarySha256": "00ca2805ee82504528eb2b32343a607b7abe6868d43a6f72cb8e96dcb1339b83",
+        "sourceSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "directRgba": [
+          128,
+          178,
+          237,
+          255
+        ],
+        "referenceDirectRgba": [
+          128,
+          178,
+          237,
+          255
+        ]
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa",
+        "sourceSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+        "changedPixels": 16,
+        "maximumError": 120,
+        "totalChannelError": 377,
+        "directRgba": [
+          128,
+          178,
+          236,
+          135
+        ],
+        "referenceDirectRgba": [
+          128,
+          178,
+          237,
+          255
+        ]
+      },
+      {
+        "host": "linux",
+        "phase": "after",
+        "librarySha256": "00ca2805ee82504528eb2b32343a607b7abe6868d43a6f72cb8e96dcb1339b83",
+        "sourceSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "directRgba": [
+          128,
+          178,
+          237,
+          255
+        ],
+        "referenceDirectRgba": [
+          128,
+          178,
+          237,
+          255
+        ]
+      }
+    ],
+    "countChange": "One separately selected core mechanism. One canonical exact fixture added to the existing manifest traversal; no new native xUnit fact. Fixture/API matrices, reference replacements and batched count reduction are not introduced.",
+    "ownershipCoverage": "SvgAnalyticPaintTests retain scratch admission, direct span/operation growth including simultaneous old/new backing, cancellation during construction/replay and cleanup. Complete core qualification passes unchanged alongside the new mechanism."
+  },
+  "storage": {
+    "changedArrays": 2,
+    "beforeElementType": "int",
+    "afterElementType": "byte",
+    "arrayLength": "rowWidth + 4",
+    "accountedPayloadReductionBytes": "6 * (rowWidth + 4) per prepared walker",
+    "exampleRowWidth": 256,
+    "exampleReductionBytes": 1560,
+    "qualification": "Array count and conservative headers are unchanged. ScratchByteCount charges the actual element type. Existing edge, event, scene and destination owners are unchanged; no timing or process-memory speedup claim."
+  },
+  "qualification": [
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "layer": "core",
+      "checks": 32913,
+      "elapsedSeconds": 71.2639782000333,
+      "librarySha256": "00ca2805ee82504528eb2b32343a607b7abe6868d43a6f72cb8e96dcb1339b83"
+    },
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "layer": "native",
+      "checks": 39151,
+      "elapsedSeconds": 87.26119829993695,
+      "librarySha256": "00ca2805ee82504528eb2b32343a607b7abe6868d43a6f72cb8e96dcb1339b83"
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "layer": "core",
+      "checks": 6196,
+      "elapsedSeconds": 23.77254519984126,
+      "librarySha256": "81d37150ffb385f2b713409a4f04d2f8c9c38ddd94277793b09640251c162b30"
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "layer": "native",
+      "checks": 10803,
+      "elapsedSeconds": 27.505999899934977,
+      "librarySha256": "81d37150ffb385f2b713409a4f04d2f8c9c38ddd94277793b09640251c162b30"
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "layer": "core",
+      "checks": 32913,
+      "elapsedSeconds": 50.506757545999996,
+      "librarySha256": "00ca2805ee82504528eb2b32343a607b7abe6868d43a6f72cb8e96dcb1339b83"
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "layer": "native",
+      "checks": 39151,
+      "elapsedSeconds": 193.26082350299998,
+      "librarySha256": "00ca2805ee82504528eb2b32343a607b7abe6868d43a6f72cb8e96dcb1339b83"
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "layer": "core",
+      "checks": 6196,
+      "elapsedSeconds": 18.527655311999993,
+      "librarySha256": "81d37150ffb385f2b713409a4f04d2f8c9c38ddd94277793b09640251c162b30"
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "layer": "native",
+      "checks": 10803,
+      "elapsedSeconds": 36.049575938000004,
+      "librarySha256": "81d37150ffb385f2b713409a4f04d2f8c9c38ddd94277793b09640251c162b30"
+    }
+  ],
+  "timingQualification": "Functional elapsed times on a busy shared host. Before/after tests prove the regression, not a performance comparison. No benchmark run.",
+  "allOriginals": {
+    "sourceHashesRecheckedPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "context": "Default static transparent output, scale1, no supplied fonts/resources. Reuses independently captured matching image-viewport native images; new small fixture has fresh triples per platform.",
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        },
+        "unchangedPngs": 146,
+        "changed": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 8576,
+              "maximumError": 255,
+              "totalChannelError": 13924
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 8542,
+              "maximumError": 255,
+              "totalChannelError": 13801
+            }
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 204,
+              "maximumError": 18,
+              "totalChannelError": 359
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 130,
+              "maximumError": 18,
+              "totalChannelError": 267
+            }
+          }
+        ],
+        "worse": []
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        },
+        "unchangedPngs": 146,
+        "changed": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 8576,
+              "maximumError": 255,
+              "totalChannelError": 13924
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 8542,
+              "maximumError": 255,
+              "totalChannelError": 13801
+            }
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 204,
+              "maximumError": 18,
+              "totalChannelError": 359
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 130,
+              "maximumError": 18,
+              "totalChannelError": 267
+            }
+          }
+        ],
+        "worse": []
+      }
+    },
+    "outcomeOrDiagnosticChanges": [],
+    "lostExactImages": [],
+    "wholeCorpusAdmission": false
+  },
+  "isolatedGallardoConsumers": {
+    "mapping": "clip-use-construction.json",
+    "replayed": 35,
+    "referenceScope": "Existing one healthy/profile-cleaned Windows capture per isolation. Exploratory original mapping; separate from canonical native platform triples.",
+    "exactAfter": 29,
+    "changed": [
+      {
+        "id": "path4605",
+        "variantSourceSha256": "c5507be7b4641bdf5285ef51cf2fc0cd3c23859e3a41f9db68db9ee6694b398b",
+        "beforeChangedPixels": 103,
+        "afterChangedPixels": 0,
+        "beforeTotalChannelError": 310,
+        "afterTotalChannelError": 0
+      }
+    ],
+    "remaining": [
+      {
+        "id": "path5398",
+        "changedPixels": 2,
+        "totalChannelError": 7
+      },
+      {
+        "id": "path3850",
+        "changedPixels": 10,
+        "totalChannelError": 10
+      },
+      {
+        "id": "use4125",
+        "changedPixels": 9,
+        "totalChannelError": 435
+      },
+      {
+        "id": "path3424",
+        "changedPixels": 1,
+        "totalChannelError": 1
+      },
+      {
+        "id": "path5263",
+        "changedPixels": 2,
+        "totalChannelError": 256
+      },
+      {
+        "id": "use4171",
+        "changedPixels": 41,
+        "totalChannelError": 173
+      }
+    ]
+  },
+  "remainingAcceptance": {
+    "fullGallardo": {
+      "changedPixels": 130,
+      "totalChannelError": 267,
+      "overlapWithUnfilteredMismatchPositions": 70
+    },
+    "unfilteredGallardo": {
+      "changedPixels": 72,
+      "totalChannelError": 182,
+      "unchangedByThisFix": true
+    },
+    "fullScimitar": {
+      "changedPixels": 221,
+      "totalChannelError": 1216
+    },
+    "otherOriginals": [
+      {
+        "name": "alphachannel.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 255,
+        "totalChannelError": 259
+      },
+      {
+        "name": "car.svg",
+        "status": "different",
+        "changedPixels": 8542,
+        "maximumError": 255,
+        "totalChannelError": 13801
+      },
+      {
+        "name": "compuserver_msn_Ford_Focus.svg",
+        "status": "different",
+        "changedPixels": 412,
+        "maximumError": 10,
+        "totalChannelError": 1197
+      },
+      {
+        "name": "gallardo.svg",
+        "status": "different",
+        "changedPixels": 130,
+        "maximumError": 18,
+        "totalChannelError": 267
+      },
+      {
+        "name": "opensearch.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 223,
+        "totalChannelError": 231
+      },
+      {
+        "name": "pencil.svg",
+        "status": "different",
+        "changedPixels": 3,
+        "maximumError": 6,
+        "totalChannelError": 23
+      },
+      {
+        "name": "php.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 1,
+        "totalChannelError": 2
+      },
+      {
+        "name": "radialgradient2.svg",
+        "status": "different",
+        "changedPixels": 11,
+        "maximumError": 2,
+        "totalChannelError": 15
+      },
+      {
+        "name": "rg1024_Presentation_with_girl.svg",
+        "status": "different",
+        "changedPixels": 174,
+        "maximumError": 14,
+        "totalChannelError": 821
+      },
+      {
+        "name": "rg1024_Ufo_in_metalic_style.svg",
+        "status": "different",
+        "changedPixels": 30,
+        "maximumError": 1,
+        "totalChannelError": 63
+      },
+      {
+        "name": "rg1024_eggs.svg",
+        "status": "different",
+        "changedPixels": 134,
+        "maximumError": 6,
+        "totalChannelError": 399
+      },
+      {
+        "name": "rg1024_green_grapes.svg",
+        "status": "different",
+        "changedPixels": 2756,
+        "maximumError": 255,
+        "totalChannelError": 7042
+      },
+      {
+        "name": "scimitar.svg",
+        "status": "different",
+        "changedPixels": 221,
+        "maximumError": 33,
+        "totalChannelError": 1216
+      },
+      {
+        "name": "scion.svg",
+        "status": "different",
+        "changedPixels": 2,
+        "maximumError": 5,
+        "totalChannelError": 22
+      }
+    ],
+    "scope": "This closes the analytic byte-alpha mismatch and its mapped consumer. Full filter/original acceptance, supplied fonts/resources and static-state gates remain open."
+  }
+}

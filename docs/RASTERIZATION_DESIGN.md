@@ -61,6 +61,9 @@ intervals using native fixed-point advancement. Rectangle/frame, hairline,
 convex/compound and fallback routes have distinct eligibility and arithmetic.
 Whole-path bounds choose direct/run versus mask painting; clipped bounds limit
 storage. Direct events and pending additive runs preserve their order.
+Triangle and trapezoid alpha narrows to a byte before additive saturation, including
+wrapped approximation results. Temporary alpha rows use byte storage; fixed-point
+geometry and accumulation sums retain their wider arithmetic.
 
 Finite source coordinates and emitted fixed-point edges have different admission
 rules. Clipped construction validates endpoints/controls in bitmap-local and

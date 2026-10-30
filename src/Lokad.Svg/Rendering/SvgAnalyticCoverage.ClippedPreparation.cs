@@ -156,8 +156,8 @@ internal ref partial struct SvgAnalyticCoverage
                 edges[index].Next = index + 1 == edges.Length ? tail : edges[index + 1];
             }
             byte[] row = new byte[width + 2];
-            int[] temp = new int[width + 4];
-            int[] alphas = new int[width + 4];
+            byte[] temp = new byte[width + 4];
+            byte[] alphas = new byte[width + 4];
             eligible = true;
             bool skipIntersect = nativePointCount > (long)(Math.Min(yEnd, clip.Bottom) - Math.Max(yStart, clip.Top)) * 2;
             return new(edges, head, tail, row, temp, alphas, xStart, width, Math.Min(yEnd, clip.Bottom), skipIntersect, isEvenOdd, convex, rawBox, useRunBlitter, usesHorizontalClip, paintClip, new(clip.Left, clip.Right), budget, scratch);

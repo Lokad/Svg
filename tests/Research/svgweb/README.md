@@ -11,7 +11,7 @@ The current default-path review has148 rendered inputs per host:134 exact and14
 different, with56 rejected. Shared root-image layout improves ten originals without
 losing an exact image or changing outcomes/diagnostics. `gaussian2.svg` and
 `lineargradient3.svg` are now exact against native platform triples. UFO's remaining
-total channel error is63; Scimitar's is1,216 and Gallardo's is359. These observations
+total channel error is63; Scimitar's is1,216 and Gallardo's is267. These observations
 use transparent output with no supplied fonts/resources; they do not admit other
 contexts or close the whole corpus.
 
@@ -114,6 +114,14 @@ rounding without a full-canvas mask. [Clip replay state](clip-replay-state.json)
 keeps coverage separate from allocation enclosures. [Earlier viewport experiments](root-viewport-review.json)
 and [stage prototypes](root-image-stages.json) preserve the rejected output-only
 stretch and context differences. Full Scimitar/Gallardo acceptance remains open.
+
+The [analytic alpha record](analytic-alpha-bytes.json) closes signed integer
+intermediates bypassing native byte narrowing before accumulation. One direct
+cubic mechanism and an independently captured direct/blur fixture protect that
+stage. Byte scratch replaces integer scratch under the existing owner. All204
+originals are rechecked per host:146 PNGs stay unchanged, car/Gallardo improve,
+and no exact result or diagnostic changes. Seven isolated Gallardo consumers and
+the complete filter/original milestone remain unresolved.
 
 Group confirmed gaps by mechanism and retain original-to-fixture mappings,
 licenses and failing-before evidence. Reference admission requires three fresh

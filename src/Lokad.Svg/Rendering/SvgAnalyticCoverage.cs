@@ -157,7 +157,7 @@ internal ref partial struct SvgAnalyticCoverage
     private readonly AnalyticEdge? _head;
     private readonly AnalyticEdge? _tail;
     private readonly byte[] _row;
-    private readonly int[] _temp;
+    private readonly byte[] _temp;
     private readonly int _xStart;
     private readonly int _width;
     private readonly int _stopY;
@@ -170,7 +170,7 @@ internal ref partial struct SvgAnalyticCoverage
     private int _rectangleRow;
     private readonly int _leftClip;
     private readonly int _rightClip;
-    private readonly int[] _alphas;
+    private readonly byte[] _alphas;
     private readonly bool _skipIntersect;
     private readonly RenderBudget.BudgetReservation? _reservation;
     private readonly RenderBudget? _budget;
@@ -196,7 +196,7 @@ internal ref partial struct SvgAnalyticCoverage
     /// <summary>Native horizontal rectangle and AA clip wrappers forward fringe pairs as ordinary runs.</summary>
     internal readonly SvgAnalyticPaintKind PairPaintKind => _usesHorizontalClip || _forceRle ? SvgAnalyticPaintKind.Direct : SvgAnalyticPaintKind.Pair;
 
-    private SvgAnalyticCoverage(AnalyticEdge[] edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, int[] temp, int[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, bool rawBox, bool useRunBlitter, bool usesHorizontalClip, SvgAnalyticPaintClip paintClip, SvgAnalyticScanWindow window, RenderBudget budget, RenderBudget.BudgetReservation? reservation)
+    private SvgAnalyticCoverage(AnalyticEdge[] edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, byte[] temp, byte[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, bool rawBox, bool useRunBlitter, bool usesHorizontalClip, SvgAnalyticPaintClip paintClip, SvgAnalyticScanWindow window, RenderBudget budget, RenderBudget.BudgetReservation? reservation)
     {
         _edges = edges;
         _head = head;
@@ -1276,7 +1276,7 @@ internal ref partial struct SvgAnalyticCoverage
         // Edges carry 36 integers, two links and an object header (176 bytes on
         // x64); 32 more bytes cover references during list growth and ToArray.
         // The old 80-byte envelope predates retained live-curve snapshots.
-        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 2) + ParserCollectionMemory.GetArrayByteCount<int>(rowWidth + 4) + ParserCollectionMemory.GetArrayByteCount<int>(rowWidth + 4) + 32 + ((long)pointCount + maximumCurveEdges + 2) * 208); }
+        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 2) + ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 4) + ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 4) + 32 + ((long)pointCount + maximumCurveEdges + 2) * 208); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic coverage storage exceeds the supported accounting range."); }
         return bytes;
     }
@@ -1593,8 +1593,8 @@ internal ref partial struct SvgAnalyticCoverage
                 if (multiEdges.Length > 0) { multiEdges[^1].Next = multiTail; multiTail.Prev = multiEdges[^1]; }
                 else multiTail.Prev = multiHead;
                 byte[] multiRow = new byte[multiWidth + 2];
-                int[] multiTemp = new int[multiWidth + 4];
-                int[] multiAlphas = new int[multiWidth + 4];
+                byte[] multiTemp = new byte[multiWidth + 4];
+                byte[] multiAlphas = new byte[multiWidth + 4];
                 eligible = true;
                 bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
                 cancellationToken.ThrowIfCancellationRequested();
@@ -1752,8 +1752,8 @@ internal ref partial struct SvgAnalyticCoverage
             if (edges.Length > 0) { edges[^1].Next = tail; tail.Prev = edges[^1]; }
             else tail.Prev = head;
             byte[] row = new byte[width + 2];
-            int[] temp = new int[width + 4];
-            int[] alphas = new int[width + 4];
+            byte[] temp = new byte[width + 4];
+            byte[] alphas = new byte[width + 4];
             eligible = true;
             bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
             cancellationToken.ThrowIfCancellationRequested();
@@ -1801,45 +1801,48 @@ internal ref partial struct SvgAnalyticCoverage
         preparation.NativePointCount = count;
         return count;
     }
-    private static int TrapezoidToAlpha(int first, int second) => (int)(((long)(first + second) / 2) >> 8);
-    private static int PartialTriangleToAlpha(int edge, int inverseDY)
+    // These are native byte-alpha boundaries. Narrow before accumulation: an
+    // approximated partial triangle can exceed its strip alpha, wrapping the
+    // subtraction to a byte before the additive blitter saturates the sum.
+    private static byte TrapezoidToAlpha(int first, int second) => unchecked((byte)(((long)(first + second) / 2) >> 8));
+    private static byte PartialTriangleToAlpha(int edge, int inverseDY)
     {
         long scaled = ((long)(edge >> 11)) * (edge >> 11) * (inverseDY >> 11);
-        return (int)((scaled >> 8) & 0xFF);
+        return unchecked((byte)(scaled >> 8));
     }
-    private static int PartialAlpha(int alpha, int partialHeight) => FixedRoundToInt(alpha * partialHeight);
+    private static byte PartialAlpha(byte alpha, int partialHeight) => unchecked((byte)FixedRoundToInt(alpha * partialHeight));
     /// <summary>Truncates axis-aligned box-row coverage like Chrome: pure horizontal partial rows evaluate floor of coverage times 255 (127.5 to 127) while slanted rows keep the pinned rounding that 22 diagonal exact fixtures verify.</summary>
-    private static int PartialAlphaTrunc(int alpha, int partialHeight) => (int)(((long)alpha * partialHeight) >> 16);
-    private static int PartialAlphaFull(int alpha, int fullAlpha) => (alpha * fullAlpha) >> 8;
-    private static int FixedToAlpha(int value) => PartialAlpha(255, value);
-    private static int FixedToAlphaTrunc(int value) => PartialAlphaTrunc(255, value);
-    private void AddMask(int x, int alpha)
+    private static byte PartialAlphaTrunc(byte alpha, int partialHeight) => unchecked((byte)(((long)alpha * partialHeight) >> 16));
+    private static byte PartialAlphaFull(byte alpha, byte fullAlpha) => (byte)((alpha * fullAlpha) >> 8);
+    private static byte FixedToAlpha(int value) => PartialAlpha(255, value);
+    private static byte FixedToAlphaTrunc(int value) => PartialAlphaTrunc(255, value);
+    private void AddMask(int x, byte alpha)
     {
         if (x < 0 || x >= _width) return;
         int offset = x + 1;
         int sum = _row[offset] + alpha;
         _row[offset] = sum > 255 ? (byte)255 : (byte)sum;
     }
-    private void SetMask(int x, int alpha)
+    private void SetMask(int x, byte alpha)
     {
         if (x < 0 || x >= _width) return;
         if (_useRunBlitter) { RecordDirectPaint(x, alpha, SvgAnalyticPaintKind.Direct); return; }
-        _row[x + 1] = (byte)alpha;
+        _row[x + 1] = alpha;
     }
-    private void ComputeAboveLine(int destination, int l, int r, int inverseDY, int fullAlpha)
+    private void ComputeAboveLine(int destination, int l, int r, int inverseDY, byte fullAlpha)
     {
         int count = FixedCeilToInt(r);
         if (count == 0) return;
-        if (count == 1) { _temp[destination] = PartialAlphaFull(((1 << 17) - l - r) >> 9, fullAlpha); return; }
+        if (count == 1) { _temp[destination] = PartialAlphaFull(unchecked((byte)(((1 << 17) - l - r) >> 9)), fullAlpha); return; }
         int first = Fixed1 - l;
         int last = r - ((count - 1) << 16);
         int firstH = FixedMul(first, inverseDY);
-        _temp[destination] = FixedMul(first, firstH) >> 9;
+        _temp[destination] = unchecked((byte)(FixedMul(first, firstH) >> 9));
         int alpha16 = firstH + (inverseDY >> 1);
-        for (int index = 1; index < count - 1; index++) { _temp[destination + index] = alpha16 >> 8; alpha16 += inverseDY; }
-        _temp[destination + count - 1] = fullAlpha - PartialTriangleToAlpha(last, inverseDY);
+        for (int index = 1; index < count - 1; index++) { _temp[destination + index] = unchecked((byte)(alpha16 >> 8)); alpha16 += inverseDY; }
+        _temp[destination + count - 1] = unchecked((byte)(fullAlpha - PartialTriangleToAlpha(last, inverseDY)));
     }
-    private void ComputeBelowLine(int destination, int l, int r, int inverseDY, int fullAlpha)
+    private void ComputeBelowLine(int destination, int l, int r, int inverseDY, byte fullAlpha)
     {
         int count = FixedCeilToInt(r);
         if (count == 0) return;
@@ -1847,18 +1850,18 @@ internal ref partial struct SvgAnalyticCoverage
         int first = Fixed1 - l;
         int last = r - ((count - 1) << 16);
         int lastH = FixedMul(last, inverseDY);
-        _temp[destination + count - 1] = FixedMul(last, lastH) >> 9;
+        _temp[destination + count - 1] = unchecked((byte)(FixedMul(last, lastH) >> 9));
         int alpha16 = lastH + (inverseDY >> 1);
-        for (int index = count - 2; index > 0; index--) { _temp[destination + index] = (alpha16 >> 8) & 0xFF; alpha16 += inverseDY; }
-        _temp[destination] = fullAlpha - PartialTriangleToAlpha(first, inverseDY);
+        for (int index = count - 2; index > 0; index--) { _temp[destination + index] = unchecked((byte)(alpha16 >> 8)); alpha16 += inverseDY; }
+        _temp[destination] = unchecked((byte)(fullAlpha - PartialTriangleToAlpha(first, inverseDY)));
     }
-    private void BlitSingleAlpha(int x, int alpha, int fullAlpha, bool noRealBlitter)
+    private void BlitSingleAlpha(int x, byte alpha, byte fullAlpha, bool noRealBlitter)
     {
         if (fullAlpha == 255 && !noRealBlitter) SetMask(x, alpha);
         else AddMask(x, PartialAlphaFull(alpha, fullAlpha));
     }
     /// <summary>Retains direct pair interpolation on the run route, or accumulates coverage on the mask/forced-additive route.</summary>
-    private void BlitTwoAlphas(int x, int first, int second, int fullAlpha, bool noRealBlitter)
+    private void BlitTwoAlphas(int x, byte first, byte second, byte fullAlpha, bool noRealBlitter)
     {
         if (_useRunBlitter && fullAlpha == 255 && !noRealBlitter)
         {
@@ -1870,7 +1873,7 @@ internal ref partial struct SvgAnalyticCoverage
         AddMask(x, first);
         AddMask(x + 1, second);
     }
-    private void BlitFullAlpha(int x, int length, int fullAlpha, bool noRealBlitter)
+    private void BlitFullAlpha(int x, int length, byte fullAlpha, bool noRealBlitter)
     {
         if (_useRunBlitter && fullAlpha == 255 && !noRealBlitter) { RecordDirectSpan(x, length); return; }
         for (int index = 0; index < length; index++)
@@ -1878,7 +1881,7 @@ internal ref partial struct SvgAnalyticCoverage
             AddMask(x + index, fullAlpha);
         }
     }
-    private void BlitAaaRow(int upperLeft, int upperRight, int lowerLeft, int lowerRight, int leftDY, int rightDY, int fullAlpha, bool noRealBlitter)
+    private void BlitAaaRow(int upperLeft, int upperRight, int lowerLeft, int lowerRight, int leftDY, int rightDY, byte fullAlpha, bool noRealBlitter)
     {
         int left = FixedFloorToInt(upperLeft);
         int right = FixedCeilToInt(lowerRight);
@@ -1891,8 +1894,8 @@ internal ref partial struct SvgAnalyticCoverage
         {
             int first = (upperFloor << 16) + Fixed1 - upperLeft;
             int second = lowerLeft - upperLeft - first;
-            int firstAlpha = fullAlpha - PartialTriangleToAlpha(first, leftDY);
-            int secondAlpha = PartialTriangleToAlpha(second, leftDY);
+            byte firstAlpha = unchecked((byte)(fullAlpha - PartialTriangleToAlpha(first, leftDY)));
+            byte secondAlpha = PartialTriangleToAlpha(second, leftDY);
             if (_alphas[0] > firstAlpha) _alphas[0] -= firstAlpha; else _alphas[0] = 0;
             if (_alphas[1] > secondAlpha) _alphas[1] -= secondAlpha; else _alphas[1] = 0;
         }
@@ -1911,8 +1914,8 @@ internal ref partial struct SvgAnalyticCoverage
         {
             int first = (rightFloor << 16) + Fixed1 - upperRight;
             int second = lowerRight - upperRight - first;
-            int firstAlpha = PartialTriangleToAlpha(first, rightDY);
-            int secondAlpha = fullAlpha - PartialTriangleToAlpha(second, rightDY);
+            byte firstAlpha = PartialTriangleToAlpha(first, rightDY);
+            byte secondAlpha = unchecked((byte)(fullAlpha - PartialTriangleToAlpha(second, rightDY)));
             if (_alphas[length - 2] > firstAlpha) _alphas[length - 2] -= firstAlpha; else _alphas[length - 2] = 0;
             if (_alphas[length - 1] > secondAlpha) _alphas[length - 1] -= secondAlpha; else _alphas[length - 1] = 0;
         }
@@ -1937,7 +1940,7 @@ internal ref partial struct SvgAnalyticCoverage
         if (secondLeft > secondRight) (secondLeft, secondRight) = (secondRight, secondLeft);
         return (Math.Max(firstLeft, secondLeft) + Math.Min(firstRight, secondRight)) / 2;
     }
-    private void BlitTrapezoidRow(int upperLeft, int upperRight, int lowerLeft, int lowerRight, int leftDY, int rightDY, int fullAlpha, bool noRealBlitter)
+    private void BlitTrapezoidRow(int upperLeft, int upperRight, int lowerLeft, int lowerRight, int leftDY, int rightDY, byte fullAlpha, bool noRealBlitter)
     {
         if (upperLeft > upperRight) return;
         if (lowerLeft > lowerRight) lowerLeft = lowerRight = ApproximateIntersection(upperLeft, lowerLeft, upperRight, lowerRight);
@@ -1956,7 +1959,7 @@ internal ref partial struct SvgAnalyticCoverage
                 {
                     int first = joinLeft - Fixed1 - upperLeft;
                     int second = lowerLeft - upperLeft - first;
-                    BlitTwoAlphas((upperLeft >> 16) - _xStart, PartialTriangleToAlpha(first, leftDY), fullAlpha - PartialTriangleToAlpha(second, leftDY), fullAlpha, noRealBlitter);
+                    BlitTwoAlphas((upperLeft >> 16) - _xStart, PartialTriangleToAlpha(first, leftDY), unchecked((byte)(fullAlpha - PartialTriangleToAlpha(second, leftDY))), fullAlpha, noRealBlitter);
                 }
                 else BlitAaaRow(upperLeft, joinLeft, lowerLeft, joinLeft, leftDY, int.MaxValue, fullAlpha, noRealBlitter);
             }
@@ -1969,7 +1972,7 @@ internal ref partial struct SvgAnalyticCoverage
                 {
                     int first = joinRight + Fixed1 - upperRight;
                     int second = lowerRight - upperRight - first;
-                    BlitTwoAlphas((joinRight >> 16) - _xStart, fullAlpha - PartialTriangleToAlpha(first, rightDY), PartialTriangleToAlpha(second, rightDY), fullAlpha, noRealBlitter);
+                    BlitTwoAlphas((joinRight >> 16) - _xStart, unchecked((byte)(fullAlpha - PartialTriangleToAlpha(first, rightDY))), PartialTriangleToAlpha(second, rightDY), fullAlpha, noRealBlitter);
                 }
                 else BlitAaaRow(joinRight, upperRight, joinRight, lowerRight, int.MaxValue, rightDY, fullAlpha, noRealBlitter);
             }
@@ -2124,7 +2127,7 @@ internal ref partial struct SvgAnalyticCoverage
             // Strip gaps from snapped-edge events land on quarter, half or full quanta and take the shift-capped path; fractional gaps (unreachable while every event Y stays a quarter multiple) advance proportionally instead of taking bit-mangled shifts, which keeps stepping exact once edge endpoints desnap.
             SelectStripStep(nextY - y, out int shift, out int advance);
             if (shift == 2) nextY = y + (Fixed1 >> 2);
-            int fullAlpha = FixedToAlpha(nextY - y);
+            byte fullAlpha = FixedToAlpha(nextY - y);
             while (current is AnalyticEdge cursor && cursor.UpperY <= y)
             {
                 winding += cursor.Winding;
@@ -2295,7 +2298,7 @@ internal ref partial struct SvgAnalyticCoverage
         }
         // A slanted convex path can acquire a rectangular strip through clipping.
         // Its native walker rounds; raw boxes retain their separate calibration.
-        static int ToAlpha(int value, bool rawBox) => rawBox ? FixedToAlphaTrunc(value) : FixedToAlpha(value);
+        static byte ToAlpha(int value, bool rawBox) => rawBox ? FixedToAlphaTrunc(value) : FixedToAlpha(value);
     }
     private (int Left, int Rite, int Y) SlopeFlow(int left, int rite, int deltaLeft, int deltaRite, int leftDY, int rightDY, int y, int localBot, int target, CancellationToken cancellationToken)
     {

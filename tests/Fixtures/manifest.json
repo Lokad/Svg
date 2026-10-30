@@ -18197,6 +18197,32 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-root-fractional-viewbox.json",
       "referenceSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6"
+    },
+    {
+      "id": "original-analytic-alpha-byte",
+      "path": "original/analytic-alpha-byte.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+      "materializedSha256": "960a7839ea24e2833e4d743c9530a98ce24b3b801e01660a741c4b419fb73459",
+      "featureTags": [
+        "path",
+        "coverage",
+        "rounding",
+        "filter",
+        "opacity"
+      ],
+      "width": 160,
+      "height": 40,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-analytic-alpha-byte.json",
+      "referenceSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534"
     }
   ]
 }

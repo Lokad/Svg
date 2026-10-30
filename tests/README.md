@@ -27,6 +27,10 @@ Shared data factories can have `MemberData` consumers in other partial class
 files; include those consumers when selecting affected checks.
 Filter and clip integration includes `SvgSymbolInstanceReferenceTests`: its
 shared bank contains crop, rescaling and nested-effect regressions.
+The [analytic byte-alpha mechanism](Lokad.Svg.Tests/SvgAnalyticAlphaByteTests.cs)
+walks a cubic directly; its [native fixture](Fixtures/original/analytic-alpha-byte.svg)
+adds the specific blur/opacity interaction through canonical conversion. Existing
+analytic ownership tests retain scratch admission, growth, cancellation and cleanup.
 
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;

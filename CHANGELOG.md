@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep analytic coverage intermediates as byte alpha before additive accumulation,
+  preserving cubic fringes and filtered sources while reducing row scratch storage.
 - Preserve fractional root image layout before uniform output scaling, and apply
   image-boundary coverage at each paint or isolated-layer restoration without a
   full-canvas clip allocation.
