@@ -25,11 +25,12 @@ internal readonly record struct SvgGradientStop(double Offset, SvgColor Color)
 }
 
 /// <summary>Retains one parsed linear-gradient definition with attribute explicitness for href inheritance.</summary>
-internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasX1, bool HasY1, bool HasX2, bool HasY2)
+internal readonly record struct SvgGradientTemplate(SvgLinearGradientCoordinates Coordinates, bool IsUserSpace, SvgGradientTransform Transform,
+    bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href)
 {
     /// <summary>Retains resource display while forward stop and vector references are unresolved.</summary>
     internal bool IsAvailable { get; init; } = true;
-    internal bool HasPercentageCoordinates { get; init; }
+    internal SvgViewportLengthBases LengthBases { get; init; }
 }
 
 /// <summary>Retains one bounded radial gradient with a strictly inside focal point, contained focal circle and referencing scale record, with an inverse paint map for general transforms.</summary>
@@ -48,28 +49,26 @@ internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, 
 }
 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
-internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasCenterX, bool HasCenterY, bool HasRadius, bool HasFocalX, bool HasFocalY, bool HasFocalRadius)
+internal readonly record struct SvgRadialTemplate(SvgRadialGradientCoordinates Coordinates, bool IsUserSpace, SvgGradientTransform Transform,
+    bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href)
 {
-    internal bool HasCompleteVector => HasCenterX && HasCenterY && HasRadius;
-    internal bool HasCoordinateOverrides => HasCenterX || HasCenterY || HasRadius || HasFocalX || HasFocalY || HasFocalRadius;
-
     /// <summary>Retains resource display while forward stop and vector references are unresolved.</summary>
     internal bool IsAvailable { get; init; } = true;
-    internal bool HasPercentageCoordinates { get; init; }
-    internal SvgRadialFocalFields PercentageFocalFields { get; init; }
+    internal SvgViewportLengthBases LengthBases { get; init; }
 }
 
-[Flags]
-internal enum SvgRadialFocalFields : byte { None = 0, X = 1, Y = 2, Radius = 4 }
-
-/// <summary>Shares the unplaced radial vector and its local definition map under scene ownership.</summary>
+/// <summary>Shares unplaced radial coordinates and their authored lengths under scene ownership.</summary>
 /// <remarks>Immutable metadata owns no arrays. The scene reserves before construction and retains
-/// the allowance through disposal; aliases never recover original coordinates by inverting rounded paint.</remarks>
+/// the allowance through disposal; aliases never invert rounded paint to recover authored lengths.</remarks>
 internal sealed record SvgRadialGradientSource(double CenterX, double CenterY, double Radius,
-    double FocalX, double FocalY, double FocalRadius, SvgGradientTransform Transform,
-    bool HasFocalX, bool HasFocalY, bool HasFocalRadius, SvgRadialFocalFields PercentageFocalFields)
+    double FocalX, double FocalY, double FocalRadius, SvgGradientTransform Transform, SvgRadialGradientCoordinates Coordinates)
 {
-    internal static long RetainedStorageBytes => 64L + 6 * sizeof(double) + 3 * sizeof(bool) + sizeof(byte) + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgGradientTransform>();
+    internal bool HasFocalX => Coordinates.FocalX.IsSpecified;
+    internal bool HasFocalY => Coordinates.FocalY.IsSpecified;
+    internal bool HasFocalRadius => Coordinates.FocalRadius.IsSpecified;
+    internal static long RetainedStorageBytes => 64L + 6 * sizeof(double)
+        + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgRadialGradientCoordinates>()
+        + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgGradientTransform>();
 }
 
 /// <summary>Retains one pending linear template and the next alias waiting on the same target.</summary>
@@ -158,22 +157,12 @@ internal static class SvgGradientSyntax
         if (units is not null && !units.Equals("objectBoundingBox", StringComparison.Ordinal) && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only objectBoundingBox and userSpaceOnUse gradient units are implemented.");
         string? spread = reader.GetAttribute("spreadMethod");
         SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
-        string? rawX1 = reader.GetAttribute("x1");
-        string? rawY1 = reader.GetAttribute("y1");
-        string? rawX2 = reader.GetAttribute("x2");
-        string? rawY2 = reader.GetAttribute("y2");
-        int vectorCount = (rawX1 is null ? 0 : 1) + (rawY1 is null ? 0 : 1) + (rawX2 is null ? 0 : 1) + (rawY2 is null ? 0 : 1);
-        bool hasPercentageCoordinates = ContainsPercentage(rawX1) || ContainsPercentage(rawY1) || ContainsPercentage(rawX2) || ContainsPercentage(rawY2);
-        ValidateCoordinateUnits(isUserSpace, hasPercentageCoordinates);
-        double x1 = ParseAxis(rawX1 ?? "0");
-        double y1 = ParseAxis(rawY1 ?? "0");
-        double x2 = ParseAxis(rawX2 ?? (isUserSpace ? "0" : "1"));
-        double y2 = ParseAxis(rawY2 ?? "0");
+        SvgLinearGradientCoordinates coordinates = new(SvgGradientLength.Parse(reader.GetAttribute("x1")), SvgGradientLength.Parse(reader.GetAttribute("y1")),
+            SvgGradientLength.Parse(reader.GetAttribute("x2")), SvgGradientLength.Parse(reader.GetAttribute("y2")));
         string? transformValue = reader.GetAttribute("gradientTransform");
         SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue, cancellationToken);
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
-        return new SvgGradientTemplate(x1, y1, x2, y2, isUserSpace, gradientTransform, transformValue is not null, vectorCount, units is not null, spreadMethod, spread is not null, href, rawX1 is not null, rawY1 is not null, rawX2 is not null, rawY2 is not null)
-        { HasPercentageCoordinates = hasPercentageCoordinates };
+        return new(coordinates, isUserSpace, gradientTransform, transformValue is not null, units is not null, spreadMethod, spread is not null, href);
     }
 
     internal static SvgRadialTemplate ParseRadialVector(XmlReader reader, CancellationToken cancellationToken)
@@ -186,35 +175,13 @@ internal static class SvgGradientSyntax
         SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
         string? transformValue = reader.GetAttribute("gradientTransform");
         SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue, cancellationToken);
-        string? rawFocalRadius = reader.GetAttribute("fr");
-        string? rawCenterX = reader.GetAttribute("cx");
-        string? rawCenterY = reader.GetAttribute("cy");
-        string? rawRadius = reader.GetAttribute("r");
-        string? rawFocalX = reader.GetAttribute("fx");
-        string? rawFocalY = reader.GetAttribute("fy");
-        SvgRadialFocalFields percentageFocalFields = (ContainsPercentage(rawFocalX) ? SvgRadialFocalFields.X : SvgRadialFocalFields.None)
-            | (ContainsPercentage(rawFocalY) ? SvgRadialFocalFields.Y : SvgRadialFocalFields.None)
-            | (ContainsPercentage(rawFocalRadius) ? SvgRadialFocalFields.Radius : SvgRadialFocalFields.None);
-        bool hasPercentageCoordinates = ContainsPercentage(rawCenterX) || ContainsPercentage(rawCenterY) || ContainsPercentage(rawRadius) || percentageFocalFields != SvgRadialFocalFields.None;
-        ValidateCoordinateUnits(isUserSpace, hasPercentageCoordinates);
-        double centerX = ParseAxis(rawCenterX ?? (isUserSpace ? "0" : "0.5"));
-        double centerY = ParseAxis(rawCenterY ?? (isUserSpace ? "0" : "0.5"));
-        double radius = ParseAxis(rawRadius ?? (isUserSpace ? "0" : "0.5"));
-        if (radius < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Radial gradient radius cannot be negative.");
-        double focalX = rawFocalX is null ? centerX : ParseAxis(rawFocalX);
-        double focalY = rawFocalY is null ? centerY : ParseAxis(rawFocalY);
-        double focalRadius = rawFocalRadius is null ? 0 : ParseAxis(rawFocalRadius);
-        if (focalRadius < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Focal radius cannot be negative.");
+        SvgRadialGradientCoordinates coordinates = new(SvgGradientLength.Parse(reader.GetAttribute("cx")), SvgGradientLength.Parse(reader.GetAttribute("cy")),
+            SvgGradientLength.Parse(reader.GetAttribute("r")), SvgGradientLength.Parse(reader.GetAttribute("fx")),
+            SvgGradientLength.Parse(reader.GetAttribute("fy")), SvgGradientLength.Parse(reader.GetAttribute("fr")));
+        if (coordinates.Radius.Value < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Radial gradient radius cannot be negative.");
+        if (coordinates.FocalRadius.Value < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Focal radius cannot be negative.");
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
-        return new SvgRadialTemplate(centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, gradientTransform, transformValue is not null, units is not null, spreadMethod, spread is not null, href, rawCenterX is not null, rawCenterY is not null, rawRadius is not null, rawFocalX is not null, rawFocalY is not null, rawFocalRadius is not null)
-        { HasPercentageCoordinates = hasPercentageCoordinates, PercentageFocalFields = percentageFocalFields };
-    }
-
-    /// <summary>Applies the same percentage boundary to explicit and resolved template units.</summary>
-    internal static void ValidateCoordinateUnits(bool isUserSpace, bool hasPercentageCoordinates)
-    {
-        if (isUserSpace && hasPercentageCoordinates)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage userSpaceOnUse gradient coordinates, including nonzero initial values, are not implemented.");
+        return new(coordinates, isUserSpace, gradientTransform, transformValue is not null, units is not null, spreadMethod, spread is not null, href);
     }
 
     private static SvgGradientTransform ParseGradientTransform(string? value, CancellationToken cancellationToken)
@@ -313,7 +280,6 @@ internal static class SvgGradientSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only sRGB color interpolation is implemented.");
     }
 
-    private static bool ContainsPercentage(string? value) => value is not null && value.AsSpan().Trim(SvgCssWhitespace.Characters).EndsWith("%");
 
     internal static string ParsePaintId(string? value)
     {
@@ -1250,23 +1216,4 @@ internal static class SvgGradientSyntax
         return SvgLeafParser.ParseRectangleStroke(strokeColor, style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.Width, placement.Height, opacity, painted);
     }
 
-    private static double ParseAxis(string value)
-    {
-        ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
-        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient coordinate values exceed the configured syntax limit.");
-        bool percentage = token.EndsWith("%");
-        if (percentage) token = token[..^1];
-        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient coordinates must be finite bounded numbers.");
-        // The native CSS length fast path retains at most seven fractional digits.
-        int decimalAt = token.IndexOf('.');
-        if (token[0] != '+' && token.IndexOfAny('e', 'E') < 0 && decimalAt >= 0 && token.Length - decimalAt - 1 >= 7)
-        {
-            double whole = decimalAt == 0 || decimalAt == 1 && token[0] == '-' ? 0 : Math.Abs(double.Parse(token[..decimalAt], SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture));
-            int fraction = 0;
-            for (int digit = decimalAt + 1; digit <= decimalAt + 7; digit++) fraction = fraction * 10 + token[digit] - '0';
-            result = whole + fraction * Math.BitIncrement(1e-7);
-            if (token[0] == '-') result = -result;
-        }
-        return percentage ? (float)result / 100f : result;
-    }
 }

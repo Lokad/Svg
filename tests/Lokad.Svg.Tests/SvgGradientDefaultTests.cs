@@ -27,21 +27,38 @@ public sealed class SvgGradientDefaultTests
     public static IEnumerable<object[]> ImplicitPercentages()
     {
         foreach (string attributes in new[] { "", "x1='2'", "y1='2' y2='20'", "x1='0' y1='0' y2='0'" })
-            yield return ["<linearGradient id='p' gradientUnits='userSpaceOnUse' " + attributes + "><stop stop-color='red'/></linearGradient>"];
+            yield return ["<linearGradient id='p' gradientUnits='userSpaceOnUse' " + attributes + "><stop stop-color='red'/></linearGradient>",
+                true, attributes.Contains("x1='2'", StringComparison.Ordinal) ? 2 : 0,
+                attributes.Contains("y1='2'", StringComparison.Ordinal) ? 2 : 0, 32,
+                attributes.Contains("y2='20'", StringComparison.Ordinal) ? 20 : 0];
         foreach (string attributes in new[] { "", "cx='16'", "cy='16' r='8'", "cx='16' r='8'", "cx='16' cy='16'" })
-            yield return ["<radialGradient id='p' gradientUnits='userSpaceOnUse' " + attributes + "><stop stop-color='red'/></radialGradient>"];
-        yield return ["<radialGradient id='base' gradientUnits='userSpaceOnUse' cx='16' cy='16' r='8'><stop stop-color='red'/></radialGradient><linearGradient id='p' href='#base'/>"];
-        yield return ["<linearGradient id='base' gradientUnits='userSpaceOnUse' x2='32'><stop stop-color='red'/></linearGradient><radialGradient id='p' href='#base'/>"];
+            yield return ["<radialGradient id='p' gradientUnits='userSpaceOnUse' " + attributes + "><stop stop-color='red'/></radialGradient>",
+                false, 16, 16, attributes.Contains("r='8'", StringComparison.Ordinal) ? 8 : 16, 0];
+        yield return ["<radialGradient id='base' gradientUnits='userSpaceOnUse' cx='16' cy='16' r='8'><stop stop-color='red'/></radialGradient><linearGradient id='p' href='#base'/>", true, 0, 0, 32, 0];
+        yield return ["<linearGradient id='base' gradientUnits='userSpaceOnUse' x2='32'><stop stop-color='red'/></linearGradient><radialGradient id='p' href='#base'/>", false, 16, 16, 16, 0];
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [MemberData(nameof(ImplicitPercentages))]
-    public void Nonzero_initial_user_space_percentages_retain_the_explicit_percentage_boundary(string gradients)
+    public void Initial_user_space_percentages_resolve_before_constant_paint_lowering(string gradients, bool linear, double x, double y, double extent, double endY)
     {
         byte[] svg = Input("<defs>" + gradients + "</defs><rect width='32' height='32' fill='url(#p)'/>");
-        RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
-        SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            SvgGeometry geometry = Assert.Single(root.Geometries);
+            if (linear)
+            {
+                SvgLinearPaintMap source = Assert.IsType<SvgLinearPaintMap>(geometry.Gradient.Gradient.SourcePaint);
+                Assert.Equal((x, y, extent, endY), (source.Data.X1, source.Data.Y1, source.Data.X2, source.Data.Y2));
+            }
+            else
+            {
+                SvgRadialGradientSource source = Assert.IsType<SvgRadialGradientSource>(geometry.Radial.Gradient.SourceDefinition);
+                Assert.Equal((x, y, extent), (source.CenterX, source.CenterY, source.Radius));
+            }
+        }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

@@ -87,6 +87,8 @@ fresh-process image/Blob captures, a viewport-versus-screenshot control and clea
 contracts. The [SVGWeb capture record](Research/svgweb/capture-model.json) retains
 individual platform contexts and unresolved fractional sizing; ordinary tests do
 not fetch the hosted sample collection.
+The [gradient-length record](Research/svgweb/gradient-lengths.json) separates direct
+unit/rounding/ownership mechanisms from five canonical native rendering fixtures.
 
 | Source of truth | Responsibility |
 | --- | --- |

@@ -3257,11 +3257,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_percentage_user_space_gradient_coordinates()
+    public void Lowers_percentage_user_space_gradient_coordinates()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0%' y1='0%' x2='100%' y2='0%'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgLinearGradient gradient = Assert.Single(root.Geometries).Gradient.Gradient;
+        Assert.Equal((0, 0, 300, 0), (gradient.X1, gradient.Y1, gradient.X2, gradient.Y2));
     }
 
     [Fact]
@@ -3432,19 +3433,21 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_partial_vector_overrides_with_unit_overrides()
+    public void Lowers_partial_vector_overrides_with_unit_overrides()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='b'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='c' href='#b' gradientUnits='userSpaceOnUse' x1='1'/></defs><rect width='5' height='5' fill='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='b'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='c' href='#b' gradientUnits='userSpaceOnUse' x1='1'/></defs><rect width='5' height='5' fill='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgLinearGradient gradient = Assert.Single(root.Geometries).Gradient.Gradient;
+        Assert.Equal((1, 0, 300, 0), (gradient.X1, gradient.Y1, gradient.X2, gradient.Y2));
     }
 
     [Fact]
-    public void Rejects_unit_overrides_without_vector_with_href()
+    public void Lowers_unit_overrides_without_vector_with_href()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='b'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='c' href='#b' gradientUnits='userSpaceOnUse'/></defs><rect width='8' height='8' fill='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='b'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='c' href='#b' gradientUnits='userSpaceOnUse'/></defs><rect width='8' height='8' fill='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgLinearGradient gradient = Assert.Single(root.Geometries).Gradient.Gradient;
+        Assert.Equal((0, 0, 300, 0), (gradient.X1, gradient.Y1, gradient.X2, gradient.Y2));
     }
 
     [Fact]
@@ -3890,11 +3893,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_percentage_userspace_radial_coordinates()
+    public void Lowers_percentage_userspace_radial_coordinates()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='50%' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='50%' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        SvgRadialGradient gradient = Assert.Single(root.Geometries).Radial.Gradient;
+        Assert.Equal((150, 4, 4), (gradient.CenterX, gradient.CenterY, gradient.Radius));
     }
     [Fact]
     public void Admits_nonuniform_userspace_radial_fills_through_recorded_scales()

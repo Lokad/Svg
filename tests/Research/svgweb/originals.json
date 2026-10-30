@@ -8599,7 +8599,22 @@
             }
           }
         }
-      }
+      },
+      "afterGradientLengthResolution": {
+        "windows": {
+          "outcome": "UnsupportedFeature",
+          "message": "Only defined local pattern or gradient references are implemented."
+        },
+        "linux": {
+          "outcome": "UnsupportedFeature",
+          "message": "Only defined local pattern or gradient references are implemented."
+        }
+      },
+      "orthogonalFixtures": [
+        "../../Fixtures/original/linear-gradient-definition-viewport.svg",
+        "../../Fixtures/original/linear-gradient-alias-viewport.svg",
+        "../../Fixtures/original/gradient-template-units.svg"
+      ]
     },
     {
       "name": "ubuntu.svg",
@@ -9711,5 +9726,18 @@
     "seconds": 54.92820860003121,
     "orthogonalFixture": "../../Fixtures/original/radial-coordinate-inheritance.svg",
     "qualification": "Every source hash rechecked. intertwingly.svg is newly exact against three fresh healthy native captures per host; all other outcomes, diagnostics and previously rendered PNG bytes are unchanged. Existing matchedViewportReview and stop-ID follow-ups remain valid. Hosted SVG payload files retained: zero. No whole-corpus reference admission."
+  },
+  "gradientLengthResolution": {
+    "sourceBaseline": "c66849df550b7ccc3f1f1807ac1ca622c17077a3",
+    "librarySha256": "b5bd2184553ab75416b31825e861eed2e00627f8da55f45f3a2082b84bb9b606",
+    "filesRevalidatedPerHost": 204,
+    "renderedPerHost": 145,
+    "exactPerHost": 131,
+    "differentPerHost": 14,
+    "rejectedPerHost": 59,
+    "priorRenderedPngsByteIdenticalPerHost": 145,
+    "seconds": 56.93375720013864,
+    "evidence": "gradient-lengths.json",
+    "qualification": "Every source hash rechecked. All previously rendered PNG bytes and original outcome categories remain unchanged. twitter.svg advances from initial-percentage rejection to the separate URL-paint fallback boundary. Earlier original observations remain valid except that diagnostic update. Hosted SVG payload files retained: zero; no whole-corpus reference admission."
   }
 }

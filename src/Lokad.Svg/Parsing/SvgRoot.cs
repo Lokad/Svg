@@ -1242,15 +1242,14 @@ internal sealed class SvgSceneBuilder : IDisposable
     }
 
     /// <summary>Reserves immutable radial definition coordinates separately from mapped paint storage.</summary>
-    internal SvgRadialGradientSource RetainRadialSource(SvgRadialTemplate template)
+    internal SvgRadialGradientSource RetainRadialSource(SvgRadialTemplate template, (double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius) vector)
     {
         RenderBudget.BudgetReservation reservation = _budget.Reserve(SvgRadialGradientSource.RetainedStorageBytes, SvgMemoryCategory.Scene);
         try
         {
-            SvgRadialGradientSource source = new(template.CenterX, template.CenterY, template.Radius,
-                template.HasFocalX ? template.FocalX : template.CenterX, template.HasFocalY ? template.FocalY : template.CenterY,
-                template.FocalRadius, template.HasTransform ? template.Transform : SvgGradientTransform.Identity,
-                template.HasFocalX, template.HasFocalY, template.HasFocalRadius, template.PercentageFocalFields);
+            SvgRadialGradientSource source = new(vector.CenterX, vector.CenterY, vector.Radius,
+                vector.FocalX, vector.FocalY, vector.FocalRadius, template.HasTransform ? template.Transform : SvgGradientTransform.Identity,
+                template.Coordinates);
             _paintReservations.Add(reservation);
             return source;
         }

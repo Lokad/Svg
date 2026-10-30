@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "c66849df550b7ccc3f1f1807ac1ca622c17077a3",
+  "model": "Retain authored units and missing/default state through href inheritance. Resolve lengths in each gradient definition or alias viewport before local and referencing transforms. Cross-kind templates share common attributes/stops, then use their own coordinate defaults.",
+  "fixtures": [
+    {
+      "fixture": "../../Fixtures/original/linear-gradient-definition-viewport.svg",
+      "provenance": "../../References/original-linear-gradient-definition-viewport.json",
+      "sourceSha256": "db7ff44c08339226c4ea18501e4ef5cffe96e0d81e7577dd1fc925b722135ce6",
+      "nativePngSha256": "e723fd246a196f374c729b40baaf6b68bbc1a7f9cbd7b36618796909131a8a31",
+      "freshProcessesPerPlatform": 3
+    },
+    {
+      "fixture": "../../Fixtures/original/radial-gradient-definition-viewport.svg",
+      "provenance": "../../References/original-radial-gradient-definition-viewport.json",
+      "sourceSha256": "b77e7107259a99b364552d708e3119e1780228fecaa9da096691a0cba0104062",
+      "nativePngSha256": "f1a388783c43edd9ca0e2791169249ad6cdf1252dd05b5d6c40f3faadeb4a337",
+      "freshProcessesPerPlatform": 3
+    },
+    {
+      "fixture": "../../Fixtures/original/linear-gradient-alias-viewport.svg",
+      "provenance": "../../References/original-linear-gradient-alias-viewport.json",
+      "sourceSha256": "cff1d63ae813899251a5b4b1186ee994a355e046ca026a3dbb9e74c61101956f",
+      "nativePngSha256": "a386eb455523cd132411d3e6e920d412ee9af281d730ac9367cbbcb10eacd126",
+      "freshProcessesPerPlatform": 3
+    },
+    {
+      "fixture": "../../Fixtures/original/radial-gradient-alias-viewport.svg",
+      "provenance": "../../References/original-radial-gradient-alias-viewport.json",
+      "sourceSha256": "4d7d4e6afbd97e107fb89198cb9c172640f06f0300614986c943492092500e9c",
+      "nativePngSha256": "7c2f400517f84f3c48071efdce271a538a64b703be296fcc7920fb2012474822",
+      "freshProcessesPerPlatform": 3
+    },
+    {
+      "fixture": "../../Fixtures/original/gradient-template-units.svg",
+      "provenance": "../../References/original-gradient-template-units.json",
+      "sourceSha256": "279deff5da28e58263aa57a92446da67aefe6277e756503482124401acbaeaf8",
+      "nativePngSha256": "69347c2f4ba444cc0f798a8d08080741594819320b2a30f6c1fbd7de5f1d8927",
+      "freshProcessesPerPlatform": 3
+    }
+  ],
+  "scopeControls": [
+    {
+      "kind": "linear",
+      "host": "windows",
+      "left": "definition-explicit",
+      "right": "percentage",
+      "changedPixels": 0
+    },
+    {
+      "kind": "linear",
+      "host": "windows",
+      "left": "nested-alias",
+      "right": "explicit",
+      "changedPixels": 0
+    },
+    {
+      "kind": "linear",
+      "host": "linux",
+      "left": "definition-explicit",
+      "right": "percentage",
+      "changedPixels": 0
+    },
+    {
+      "kind": "linear",
+      "host": "linux",
+      "left": "nested-alias",
+      "right": "explicit",
+      "changedPixels": 0
+    },
+    {
+      "kind": "radial",
+      "host": "windows",
+      "left": "definition-explicit",
+      "right": "percentage",
+      "changedPixels": 0
+    },
+    {
+      "kind": "radial",
+      "host": "windows",
+      "left": "nested-alias",
+      "right": "explicit",
+      "changedPixels": 0
+    },
+    {
+      "kind": "radial",
+      "host": "linux",
+      "left": "definition-explicit",
+      "right": "percentage",
+      "changedPixels": 0
+    },
+    {
+      "kind": "radial",
+      "host": "linux",
+      "left": "nested-alias",
+      "right": "explicit",
+      "changedPixels": 0
+    }
+  ],
+  "nativeFloatBoundary": {
+    "sourceSha256": "b77e7107259a99b364552d708e3119e1780228fecaa9da096691a0cba0104062",
+    "measurements": [
+      {
+        "host": "windows",
+        "radius": 25.2982234954834,
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "windows",
+        "radius": 25.2982234954834,
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "windows",
+        "radius": 25.2982234954834,
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "radius": 25.2982234954834,
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "radius": 25.2982234954834,
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "radius": 25.2982234954834,
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ],
+    "expectedFloatRadius": 25.2982234954834,
+    "numericCompanionRadius": 25.298221588134766,
+    "comparison": "The two radii can paint equal small images. The mechanism test separately pins native float multiplication before division, using independent DOM evidence.",
+    "measurementMode": "Direct SVG document DOM; 64x32 viewport, DPR1, three fresh healthy processes per platform. These metrics do not replace the independent image references."
+  },
+  "failingBefore": {
+    "viewportAndUnitOverrideMechanisms": 6,
+    "nativeFixtures": 5,
+    "outcome": "UnsupportedFeature before the shared length model; all five fixtures now match independent native pixels on both hosts.",
+    "fixtures": [
+      {
+        "fixture": "linear-gradient-definition-viewport",
+        "outcome": "UnsupportedFeature",
+        "message": "Percentage userSpaceOnUse gradient coordinates, including nonzero initial values, are not implemented.",
+        "sourceSha256": "db7ff44c08339226c4ea18501e4ef5cffe96e0d81e7577dd1fc925b722135ce6",
+        "librarySha256": "76aa2f50012969edf128f17937939377708176e08a4e0a9a959cb77d63ba3640"
+      },
+      {
+        "fixture": "radial-gradient-definition-viewport",
+        "outcome": "UnsupportedFeature",
+        "message": "Percentage userSpaceOnUse gradient coordinates, including nonzero initial values, are not implemented.",
+        "sourceSha256": "b77e7107259a99b364552d708e3119e1780228fecaa9da096691a0cba0104062",
+        "librarySha256": "76aa2f50012969edf128f17937939377708176e08a4e0a9a959cb77d63ba3640"
+      },
+      {
+        "fixture": "linear-gradient-alias-viewport",
+        "outcome": "UnsupportedFeature",
+        "message": "Percentage userSpaceOnUse gradient coordinates, including nonzero initial values, are not implemented.",
+        "sourceSha256": "cff1d63ae813899251a5b4b1186ee994a355e046ca026a3dbb9e74c61101956f",
+        "librarySha256": "76aa2f50012969edf128f17937939377708176e08a4e0a9a959cb77d63ba3640"
+      },
+      {
+        "fixture": "radial-gradient-alias-viewport",
+        "outcome": "UnsupportedFeature",
+        "message": "Percentage userSpaceOnUse gradient coordinates, including nonzero initial values, are not implemented.",
+        "sourceSha256": "4d7d4e6afbd97e107fb89198cb9c172640f06f0300614986c943492092500e9c",
+        "librarySha256": "76aa2f50012969edf128f17937939377708176e08a4e0a9a959cb77d63ba3640"
+      },
+      {
+        "fixture": "gradient-template-units",
+        "outcome": "UnsupportedFeature",
+        "message": "Gradient unit overrides without vector overrides are not implemented.",
+        "sourceSha256": "279deff5da28e58263aa57a92446da67aefe6277e756503482124401acbaeaf8",
+        "librarySha256": "76aa2f50012969edf128f17937939377708176e08a4e0a9a959cb77d63ba3640"
+      }
+    ]
+  },
+  "openOriginal": "twitter.svg advances from initial percentage rejection to URL-paint fallback syntax. The original uses stroke=\"url(#tgrad) #0EE\"; keep that distinct paint-resolution gap open. No original SVG payload files retained.",
+  "qualification": {
+    "observations": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "scope": "core",
+        "passed": 2053,
+        "seconds": 12.415613899938762,
+        "librarySha256": "b5bd2184553ab75416b31825e861eed2e00627f8da55f45f3a2082b84bb9b606"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "scope": "native",
+        "passed": 567,
+        "seconds": 21.108020799933,
+        "librarySha256": "b5bd2184553ab75416b31825e861eed2e00627f8da55f45f3a2082b84bb9b606"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "scope": "core",
+        "passed": 2053,
+        "seconds": 12.453225799836218,
+        "librarySha256": "62d3403e81cabd79ddc76e387d3526bd2dbd604ccc1499eee68df253514ab8e4"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "scope": "native",
+        "passed": 567,
+        "seconds": 20.08521690010093,
+        "librarySha256": "62d3403e81cabd79ddc76e387d3526bd2dbd604ccc1499eee68df253514ab8e4"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "scope": "core",
+        "passed": 2053,
+        "seconds": 14.65159266,
+        "librarySha256": "b5bd2184553ab75416b31825e861eed2e00627f8da55f45f3a2082b84bb9b606"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "scope": "native",
+        "passed": 567,
+        "seconds": 31.361917195000004,
+        "librarySha256": "b5bd2184553ab75416b31825e861eed2e00627f8da55f45f3a2082b84bb9b606"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "scope": "core",
+        "passed": 2053,
+        "seconds": 13.722582068000001,
+        "librarySha256": "62d3403e81cabd79ddc76e387d3526bd2dbd604ccc1499eee68df253514ab8e4"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "scope": "native",
+        "passed": 567,
+        "seconds": 25.563585504000002,
+        "librarySha256": "62d3403e81cabd79ddc76e387d3526bd2dbd604ccc1499eee68df253514ab8e4"
+      }
+    ],
+    "allBuildsWarningFree": true,
+    "timingScope": "Functional validation under concurrent execution; not throughput or quiet-VM performance measurement. Linux local runs use portable binaries built on Windows; matching CI independently builds each host."
+  },
+  "originalReplay": {
+    "filesPerHost": 204,
+    "renderedPerHost": 145,
+    "exactPerHost": 131,
+    "differentPerHost": 14,
+    "rejectedPerHost": 59,
+    "priorPngsByteIdenticalPerHost": 145,
+    "seconds": 56.93375720013864,
+    "hostedSvgPayloadFilesRetained": 0
+  }
+}

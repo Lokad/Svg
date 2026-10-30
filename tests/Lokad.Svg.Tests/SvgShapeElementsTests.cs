@@ -254,16 +254,13 @@ public sealed class SvgShapeElementsTests
 
     [Fact]
     [Trait("Layer", "Mechanism")]
-    public void Linear_partial_vector_with_radial_href_stays_unsupported()
+    public void Linear_partial_vector_with_radial_href_uses_linear_defaults()
     {
-        // Partial vector overrides have no cross-type meaning, mirroring
-        // the partial radial vector gate in the other direction.
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"l\" href=\"#r\" x1=\"0\"/></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Partial gradient vector overrides with cross-type gradient references are not implemented.", rejected.Message);
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgLinearGradient gradient = Assert.Single(root.Geometries).Gradient.Gradient;
+        Assert.Equal((0, 0, 1, 0), (gradient.X1, gradient.Y1, gradient.X2, gradient.Y2));
     }
 
     [Fact]

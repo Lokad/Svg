@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "db7ff44c08339226c4ea18501e4ef5cffe96e0d81e7577dd1fc925b722135ce6",
+  "referenceSha256": "e723fd246a196f374c729b40baaf6b68bbc1a7f9cbd7b36618796909131a8a31",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-linear-gradient-definition-viewport.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-linear-gradient-definition-viewport",
+  "viewport": {
+    "width": 64,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 gradient length composition: linear-gradient-definition-viewport. Independent fresh platform triples; numeric companions and native DOM length evidence are retained in the SVGWeb gradient-length review.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "db7ff44c08339226c4ea18501e4ef5cffe96e0d81e7577dd1fc925b722135ce6",
+      "referenceSha256": "e723fd246a196f374c729b40baaf6b68bbc1a7f9cbd7b36618796909131a8a31",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "db7ff44c08339226c4ea18501e4ef5cffe96e0d81e7577dd1fc925b722135ce6",
+      "referenceSha256": "e723fd246a196f374c729b40baaf6b68bbc1a7f9cbd7b36618796909131a8a31",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 64,
+    "height": 32
+  }
+}

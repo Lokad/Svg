@@ -1,0 +1,19 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="linearUnits" href="#linearBase" gradientUnits="userSpaceOnUse"/>
+    <radialGradient id="radialUnits" href="#radialBase" gradientUnits="userSpaceOnUse"/>
+    <linearGradient id="linearCross" href="#radialBase" gradientUnits="userSpaceOnUse" x1="0" y1="16"/>
+    <radialGradient id="radialCross" href="#linearBase" gradientUnits="userSpaceOnUse" cx="24" cy="24"/>
+    <linearGradient id="linearBase" x1=".5" y1="0" x2="100%" y2="0">
+      <stop stop-color="#e04020"/><stop offset="1" stop-color="#2040e0"/>
+    </linearGradient>
+    <radialGradient id="radialBase" cx="75%" cy="25%" r="25%">
+      <stop stop-color="#20a040"/><stop offset="1" stop-color="#e08020"/>
+    </radialGradient>
+  </defs>
+  <rect width="16" height="16" fill="url(#linearUnits)"/>
+  <rect x="16" width="16" height="16" fill="url(#radialUnits)"/>
+  <rect y="16" width="16" height="16" fill="url(#linearCross)"/>
+  <rect x="16" y="16" width="16" height="16" fill="url(#radialCross)"/>
+</svg>

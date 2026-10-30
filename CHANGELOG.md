@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Resolve gradient percentages and defaults in each definition or alias viewport;
+  retain authored units through unit overrides and partial cross-kind templates.
 - Inherit radial center, radius and focal coordinates independently, retaining
   original definition coordinates and sharing storage only for unchanged aliases.
 - Accept bounded identity metadata on gradient stops; preserve stop values and

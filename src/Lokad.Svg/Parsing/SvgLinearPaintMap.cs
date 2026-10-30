@@ -5,7 +5,10 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains source gradient endpoints and separate local and referencing transforms.</summary>
 internal readonly record struct SvgLinearPaintMapData(double X1, double Y1, double X2, double Y2,
-    SvgGradientTransform Local, SvgAffineTransform Referencing, bool IsMapped);
+    SvgGradientTransform Local, SvgAffineTransform Referencing, bool IsMapped)
+{
+    internal SvgLinearGradientCoordinates Coordinates { get; init; }
+}
 
 /// <summary>Shares immutable source paint coordinates owned by the enclosing scene.</summary>
 /// <remarks>The scene reserves storage before construction and releases it on failure, cancellation

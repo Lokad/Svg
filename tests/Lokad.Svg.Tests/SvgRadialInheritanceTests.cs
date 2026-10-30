@@ -69,27 +69,25 @@ public sealed class SvgRadialInheritanceTests
 
     [Fact]
     [Trait("Layer", "Mechanism")]
-    public void A_partial_focus_keeps_the_inherited_user_space_percentage_boundary()
+    public void A_partial_focus_resolves_inherited_user_space_percentages()
     {
         byte[] input = Document("<radialGradient id='base' gradientUnits='userSpaceOnUse' cx='16' cy='16' r='16'>"
             + Stops + "</radialGradient><radialGradient id='g' href='#base' fx='50%'/>");
-        RenderBudget budget = new(new HostMemoryBudget(268_435_456));
-        SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
-        Assert.Contains("Percentage userSpaceOnUse", error.Message);
-        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.Equal(16, Assert.Single(root.Geometries).Radial.Gradient.FocalX);
     }
 
     [Theory]
     [Trait("Layer", "Mechanism")]
-    [InlineData("radialGradient", "gradientUnits='userSpaceOnUse' cx='16'")]
-    [InlineData("linearGradient", "cx='.4'")]
-    public void Partial_vectors_keep_unimplemented_unit_changes_and_cross_type_inheritance_explicit(string parent, string attributes)
+    [InlineData("radialGradient", "gradientUnits='userSpaceOnUse' cx='16'", 16, 16, 16)]
+    [InlineData("linearGradient", "cx='.4'", .4, .5, .5)]
+    public void Partial_vectors_keep_inherited_units_and_cross_type_defaults(string parent, string attributes, double x, double y, double radius)
     {
         byte[] input = Document("<" + parent + " id='base'>" + Stops + "</" + parent + ">"
             + "<radialGradient id='g' href='#base' " + attributes + "/>");
-        SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgRadialGradientSource source = Assert.IsType<SvgRadialGradientSource>(Assert.Single(root.Geometries).Radial.Gradient.SourceDefinition);
+        Assert.Equal((x, y, radius), (source.CenterX, source.CenterY, source.Radius));
     }
 
     private static byte[] Document(string definitions)

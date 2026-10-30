@@ -2,97 +2,63 @@
 
 [Originals](originals.json) accounts for all 204 direct `.svg` entries in the
 [hosted directory](https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/): URL,
-original byte hash/size, root declarations, lexical font/resource use and initial
-library outcome. SVG bodies are fetched into bounded memory and discarded; this
-directory contains metadata, not the hosted collection. Ordinary tests are offline.
+source hash/size, root declarations, lexical font/resource use and platform outcomes.
+Bodies are fetched into bounded memory and discarded. Ordinary tests are offline;
+this directory contains metadata and original orthogonal controls, not the hosted
+SVG collection.
 
-The first original-byte pass uses one `SvgConverter.ConvertToPng` call with default
-options, transparent output and no supplied fonts/resources. All 204 were attempted
-on Windows and Linux against the library identity recorded in the ledger: 136
-rendered and 68 rejected on each host, with identical outcome categories. The
-combined diagnostic pass took 62.21 s, including retrieval and process startup.
-These are initial outcomes, **not 136 accepted browser matches** or a throughput
-benchmark. Each original still needs rendering qualification.
+The current default-path review has 145 rendered inputs per host: 131 exact and
+14 different, with 59 rejected. The complete gradient-length replay took 56.93 s;
+all 145 earlier rendered PNGs remain byte-identical. Each source hash is rechecked.
+These observations use transparent output without supplied fonts/resources; they
+are neither whole-corpus reference admission nor throughput measurements. The
+ledger retains earlier passes and every follow-up outcome.
 
-The matched-viewport pass accounts for all 204 originals with healthy captures on
-both hosts: 130 of the 136 rendered inputs are exact; six differ. It took 773.47 s
-and retained no SVG payload files. Stop-ID admission is now corrected through the
-shared attribute policy. All 204 originals were revalidated in 51.64 s; every
-previously rendered PNG remains byte-identical. The resulting 144 renders contain
-130 exact and 14 differing inputs per host, with 60 still rejected. These counts
-retain explicit font/resource/static-state qualifications in the ledger.
-
-Per-field radial inheritance is also corrected. The complete follow-up pass took
-54.93 s: 145 rendered, 131 exact/14 different and 59 rejected per host. All 144
-earlier rendered PNGs and every other outcome/diagnostic remain unchanged.
-`intertwingly.svg` now matches three fresh healthy native captures per platform;
-its source is fetched and hash-checked in memory. The
-[original CC0 fixture](../../Fixtures/original/radial-coordinate-inheritance.svg)
-isolates center/radius overrides, default foci, a chained forward alias and a
-focal-only override, with [independent native provenance](../../References/original-radial-coordinate-inheritance.json).
-Direct mechanisms cover all six coordinates before transforms, changed-source
-ownership and the retained unit boundaries. Partial radial inheritance is closed;
-percentage unit binding and the other gradient declaration gates remain open.
-The affected 2,028 core and 567 native/provenance checks pass on Windows/Linux
-and .NET 10/11, with warning-free builds. Nine focused cases failed before the
-correction. Functional suite observations were 10.5–13.5 s for core and 20.2–30.4 s
-for native checks under concurrent execution; these are not throughput benchmarks.
-
-| First blocking area | Originals | Required review |
+| Initial first blocker | Originals | Current responsibility |
 | --- | ---: | --- |
-| Gradient-stop `id` attributes | 13 | Admission fixed. One original CC0 fixture covers linear/radial and inherited stops, with separate native platform provenance; direct identifier boundaries retain numeric values. Eight originals now render inexactly; five expose subsequent filter, pattern or color gates. |
-| Fixed units in stroke offsets | 3 | Reuse a consistent length model; isolate units from dash geometry and raster rounding. |
-| Other gradient declarations | 5 | Partial radial inheritance is fixed. Percentage coordinates, invalid attributes and invalid units still need separate valid/invalid controls. |
-| Required fonts | 9 | Supply declared programs explicitly; distinguish SVG-font previews from font-free geometry. |
-| Root events | 10 | Static-state rendering and an explicit interaction limitation; no script execution in conversion. |
-| Child-content rejection | 11 | Inspect the actual parent/state; the reported child is not necessarily the shared cause. |
-| External raster content | 3 | Bind each actual resource and host acquisition/materialization separately. |
-| Remaining boundaries | 14 | CSS, clip composition, authoring attributes, XML declarations and duplicate IDs retain individual diagnostics in the ledger. |
+| Gradient-stop `id` | 13 | Admission fixed, with direct identifier boundaries and an exact linear/radial/inherited-stop fixture. Eight originals render inexactly; five expose filter, pattern or color gates. |
+| Fixed units in stroke offsets | 3 | Share a length model; keep units separate from dash geometry and rounding. |
+| Other gradient declarations | 5 | Partial radial inheritance, percentages, defaults and unit overrides are fixed. `twitter.svg` advances to URL-paint fallback syntax; invalid attributes/units remain individually classified. |
+| Required fonts | 9 | Supply programs explicitly; distinguish SVG-font previews from font-free geometry. |
+| Root events | 10 | Qualify static state and document actual interaction limits. |
+| Unsupported children | 11 | Inspect parent/traversal state before attributing the failure to the reported child. |
+| External raster content | 3 | Bind actual resources explicitly and qualify host materialization. |
+| Other boundaries | 14 | Retain CSS, clip composition, authoring attributes, XML and duplicate-ID diagnostics. |
 
-Counts classify the first blocker only. Removing one can reveal another. Do not
-treat current unsupported behavior, parsing success, machine-font substitution or
-an unexplained image difference as closure. Font declarations are lexical inventory,
-not resolved requests; external-reference uses distinguish navigation from image,
-CSS or media dependencies without fetching them implicitly.
+Counts classify the initial first blocker. Removing one can reveal another.
+Parsing success, ambient font substitution and unexplained pixel differences do
+not close a gap. Font declarations are lexical inventory, not resolved requests;
+resource roles distinguish navigation from image/CSS/media dependencies.
 
-Original browser exploration uses the pinned image/screenshot path independently
-on each platform. Root sizing must be matched explicitly: a viewBox-only image's
-intrinsic CSS size can differ from the library's default 300×150 viewport. Preserve
-original bytes/options and label any viewport materialization. Scripts are inactive
-in image documents; animation still needs a declared frozen state. Ambient fonts
-and unresolved resources cannot qualify a target.
+The [gradient-length record](gradient-lengths.json) maps five original CC0 fixtures
+to independent native platform references. Typed lengths retain number/percentage
+intent and missing/default state through inheritance. Definitions and nested aliases
+resolve in their own viewports before placement; unit overrides reinterpret the
+inherited lengths, while cross-kind templates use their own coordinate defaults.
+Mechanisms protect all coordinates, float boundaries, ownership and invalid focal
+circles; most rendering uses the canonical conversion path. A native DOM probe
+pins an intermediate radius that equal small images alone could not distinguish.
 
-The named image-viewport mode has three fresh healthy captures per platform for
-12 calibration contexts, including the three original samples `aa.svg`,
-`accessible.svg` and `android.svg`, Blob transport and opaque backgrounds. The
-three originals are exact at the default 300×150 logical viewport. Fractional,
-percentage and CSS-size controls retain their 26/90/90-pixel differences; they
-remain unqualified for renderer acceptance. A separate canvas exploration makes
-the absolute fractional control exact but changes viewBox-only sizing, so it
-cannot substitute for the screenshot recipe. See the
-[capture model record](capture-model.json) for identities and measurements.
+The earlier [radial inheritance fixture](../../Fixtures/original/radial-coordinate-inheritance.svg)
+protects per-field overrides and changed-source ownership; `intertwingly.svg` is
+exact against three fresh healthy captures on each host. The
+[stop-identity fixture](../../Fixtures/original/gradient-stop-identities.svg) protects
+stop metadata independently. Every existing target remains unchanged.
 
-The stop-ID correction is protected by the
-[orthogonal fixture](../../Fixtures/original/gradient-stop-identities.svg) and
-[native provenance](../../References/original-gradient-stop-identities.json).
-The original-to-fixture map and all thirteen follow-up outcomes are in the ledger;
-the remaining image differences and later rejections are open work.
+[Capture calibration](capture-model.json) retains independent image/Blob,
+background and viewport contexts. Match the logical image viewport separately
+from screenshot dimensions, preserve original bytes/options, and label any static
+state or resource materialization. Scripts are inactive in image documents;
+animation, ambient fonts and unresolved resources still need explicit qualification.
 
-Group confirmed differences by shared mechanism and compose small original fixtures
-with their original-to-fixture mapping, licenses and independent native references.
-Keep distinct interactions and failing-before evidence. Admission still requires
-three fresh healthy captures per platform and exact established comparison rules;
-single exploratory screenshots are not regression references. Recheck all originals
-after shared fixes. [Tool procedure](../../../tools/README.md#hosted-svgweb-inventory)
-reproduces the metadata inventory without retaining SVG files.
+The [root viewport investigation](root-viewport-review.json) remains research.
+An output-only projection improved exploratory matches but conflicts with uniform
+fitting and retains a painted viewBox counterexample. Preserve layout, fitting and
+all targets while reviewing container layout and image projection as shared stages.
 
-The [root viewport investigation](root-viewport-review.json) retains four original
-CC0 controls and their explicit-map companions. Three fresh captures on each host
-agree for the solid, percentage and scaled pairs; the painted viewBox pair differs
-by eight pixels. An output projection prototype improved the complete original
-replay from 130 to 133 exact matches per host without losing an exact match or
-increasing total error, but remains research: per-axis stretching conflicts with
-uniform raster fitting, and the viewBox counterexample needs a consistent model
-of container layout and image projection. Production drawing and all targets are
-unchanged. The record includes inputs, capture hashes, comparison results and the
-limited checks; it does not admit these controls as rendering references.
+Group confirmed gaps by mechanism and retain original-to-fixture mappings,
+licenses and failing-before evidence. Reference admission requires three fresh
+healthy captures per platform and exact established comparisons. Recheck all
+originals after shared fixes. The
+[tool procedure](../../../tools/README.md#hosted-svgweb-inventory) reproduces the
+inventory without retaining SVG files.

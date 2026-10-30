@@ -125,7 +125,7 @@ public sealed class SvgGradientTemplateAttributeTests
         using (SvgSceneBuilder scene = new(budget, CancellationToken.None))
         {
             long before = budget.Snapshot().CurrentBytes;
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => scene.RetainRadialSource(default)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => scene.RetainRadialSource(default, default)).ErrorCode);
             Assert.Equal(before, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

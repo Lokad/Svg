@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "4d7d4e6afbd97e107fb89198cb9c172640f06f0300614986c943492092500e9c",
+  "referenceSha256": "7c2f400517f84f3c48071efdce271a538a64b703be296fcc7920fb2012474822",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-radial-gradient-alias-viewport.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-radial-gradient-alias-viewport",
+  "viewport": {
+    "width": 64,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 gradient length composition: radial-gradient-alias-viewport. Independent fresh platform triples; numeric companions and native DOM length evidence are retained in the SVGWeb gradient-length review.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "4d7d4e6afbd97e107fb89198cb9c172640f06f0300614986c943492092500e9c",
+      "referenceSha256": "7c2f400517f84f3c48071efdce271a538a64b703be296fcc7920fb2012474822",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "4d7d4e6afbd97e107fb89198cb9c172640f06f0300614986c943492092500e9c",
+      "referenceSha256": "7c2f400517f84f3c48071efdce271a538a64b703be296fcc7920fb2012474822",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 64,
+    "height": 32
+  }
+}

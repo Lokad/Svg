@@ -121,7 +121,7 @@ bordered tile geometry, legacy sRGB color normalization and SVG text-fragment
 paint positioning, ordered text strokes, solid SVG text-decoration
 metrics/rectangle placement, source text paint boxes and drawing-rectangle enclosure,
 character fragment spacing, non-scaling-stroke drawing bounds and CSS gradient-coordinate
-decimal parsing and functional-color alpha precision.
+decimal parsing, gradient percentage resolution and functional-color alpha precision.
 Embedded-image decoded-view dimensions and draw-stage selection also adapt
 cc/tiles/mipmap_util.cc, cc/tiles/software_image_decode_cache_utils.cc,
 cc/paint/draw_image.cc, cc/paint/paint_op.cc and cc/paint/paint_flags.cc
