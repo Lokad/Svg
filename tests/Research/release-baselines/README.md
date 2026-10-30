@@ -6,6 +6,9 @@ hashes and qualification selections. These are inherited release results, not
 new measurements. Use `git show v0.3.0:path/to/file` to inspect an original file.
 Reference images remain beside their existing licensed source collections.
 
+[Polygon contour ownership](contour-ownership.md) records the shared paint-binding
+storage contract and its failing-before refusal, transfer and retry witnesses.
+
 The outstanding review starts at these committed collections:
 
 | Findings | Evidence and next review |

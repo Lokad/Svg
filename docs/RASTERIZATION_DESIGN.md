@@ -22,6 +22,15 @@ and deferred opacity bind at replay. Resource references borrow their scene;
 sealed child scenes retain storage after parser staging ends. Partial construction
 and failure release owners deterministically.
 
+Solid, linear, radial and pattern polygon bindings use one
+[contour payload](../src/Lokad.Svg/Parsing/SvgPolygonContours.cs) for points, contour
+ends, winding signs and analytic spans. Repainting and mask stamping transfer its
+existing scene charge after construction succeeds; they do not reserve the same
+arrays again. Radial paint has a separate charge, and rejected paint admission or
+vector placement leaves the source owner intact. Empty pattern paint disables
+filling while retaining geometry. Mapping, clips, paint state and authored-path
+ownership remain separate; mask snapshots still copy genuinely independent data.
+
 Prepared-document font discovery borrows the same collected styles, reader
 workspace and active budget used by lowering. Discovery control storage is
 temporary; selected font bytes stay alive through the prepared operation.

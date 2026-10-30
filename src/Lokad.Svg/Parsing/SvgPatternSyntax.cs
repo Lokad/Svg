@@ -118,7 +118,7 @@ internal static class SvgPatternSyntax
             {
                 foreach (SvgGeometry existing in filled.Geometries)
                 {
-                    SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform, budget));
+                    SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform));
                     try { repainted.Add(repaint); }
                     catch { repaint.Dispose(); throw; }
                 }
@@ -148,7 +148,7 @@ internal static class SvgPatternSyntax
             try
             {
                 using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
-                foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform, budget)));
+                foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform)));
                 white.Dispose();
                 return SvgGradientSyntax.AppendPaintFillStroke(new SvgParsedGeometry(repainted.Detach(), white.ElementCount) { SourceObjectBox = pointObjectBox, SourceObjectMap = pointObjectMap }, reader, context, elementName, isPath, points, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
             }

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Share polygon contour storage across paint bindings and transfer its memory
+  charge during repainting and mask stamping, avoiding refusal caused by charging
+  reused arrays twice. Preserve source ownership when paint or placement fails.
+
 Development targets 0.4.0. Published 0.3.0 and its source tag remain unchanged.
 
 - Multi-target .NET 10 and .NET 11; use the pinned .NET 11 RC SDK for development

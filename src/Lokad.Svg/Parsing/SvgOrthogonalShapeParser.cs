@@ -198,9 +198,9 @@ internal static class SvgOrthogonalShapeParser
                         using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
                         foreach (SvgGeometry existing in stroked.Geometries)
                         {
-                            if (paintPathOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, pathGradient, pathBox, pathStrokeShape.Presentation.Opacity, budget)));
+                            if (paintPathOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, pathGradient, pathBox, pathStrokeShape.Presentation.Opacity)));
                             else if (paintPathRadial) repainted.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, pathCircle, pathBox, pathStrokeShape.Presentation.Opacity, budget)));
-                            else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, pathStrokeShape.Presentation.Opacity, SvgViewportFrame.MapGeometry(pathStrokeShape.Transform, frame), budget)));
+                            else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, pathStrokeShape.Presentation.Opacity, SvgViewportFrame.MapGeometry(pathStrokeShape.Transform, frame))));
                         }
                         stroked.Dispose();
                         stroked = new SvgParsedGeometry(repainted.Detach(), stroked.ElementCount);
@@ -344,9 +344,9 @@ internal static class SvgOrthogonalShapeParser
                         using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
                         foreach (SvgGeometry existing in stroked.Geometries)
                         {
-                            if (paintOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, strokeGradient, strokeBox, strokeShape.Presentation.Opacity, budget)));
+                            if (paintOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, strokeGradient, strokeBox, strokeShape.Presentation.Opacity)));
                             else if (paintRadialOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, strokeCircle, strokeBox, strokeShape.Presentation.Opacity, budget)));
-                            else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeShape.Presentation.Opacity, SvgViewportFrame.MapGeometry(strokeShape.Transform, frame), budget)));
+                            else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeShape.Presentation.Opacity, SvgViewportFrame.MapGeometry(strokeShape.Transform, frame))));
                         }
                         stroked.Dispose();
                         stroked = new SvgParsedGeometry(repainted.Detach(), stroked.ElementCount);
@@ -398,9 +398,9 @@ internal static class SvgOrthogonalShapeParser
                 foreach (SvgGeometry existing in source.Geometries)
                 {
                     context.CancellationToken.ThrowIfCancellationRequested();
-                    SvgGeometry mapped = linear ? existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, box, opacity, budget))
+                    SvgGeometry mapped = linear ? existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, box, opacity))
                         : radial ? existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, circle, box, opacity, budget))
-                        : existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, patternMap, budget));
+                        : existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, patternMap));
                     try { repainted.Add(mapped); }
                     catch { mapped.Dispose(); throw; }
                 }
@@ -508,7 +508,7 @@ internal static class SvgOrthogonalShapeParser
                 SvgAuthoredPath path = geometry.AuthoredPath ?? throw new InvalidOperationException("Mapped strokes require retained source commands.");
                 SvgRectangle box = path.StrokeStyle?.SourceBounds ?? SvgPathBounds.Compute(path.Commands, token);
                 SvgGeometry mapped = geometry.TransferAuthoredPathTo(linear
-                    ? SvgGradientPolygon.RepaintOutline(geometry.Polygon, SvgGradientSyntax.BindLinearSourceMap(gradient, box, path.SceneMap, state, token), box, opacity, state.Budget)
+                    ? SvgGradientPolygon.RepaintOutline(geometry.Polygon, SvgGradientSyntax.BindLinearSourceMap(gradient, box, path.SceneMap, state, token), box, opacity)
                     : SvgRadialPolygon.RepaintOutline(geometry.Polygon, SvgGradientSyntax.BindRadialSourceMap(radial, box, path.SceneMap, token), box, opacity, state.Budget));
                 try { repainted.Add(mapped); }
                 catch { mapped.Dispose(); throw; }

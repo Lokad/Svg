@@ -625,7 +625,7 @@ internal static class SvgGradientSyntax
                 }
                 foreach (SvgGeometry existing in filled.Geometries)
                 {
-                    SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, paintBox, opacity, budget));
+                    SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, paintBox, opacity));
                     try { repainted.Add(repaint); }
                     catch { repaint.Dispose(); throw; }
                 }
@@ -748,7 +748,7 @@ internal static class SvgGradientSyntax
             SvgRectangle paintBox = strokeBox;
             using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             byte strokeOpacity = strokeShape.Presentation.Opacity;
-            foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, outline, paintBox, strokeOpacity, budget)));
+            foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, outline, paintBox, strokeOpacity)));
             int whiteCount = white.ElementCount;
             white.Dispose();
             whiteReleased = true;
@@ -771,7 +771,7 @@ internal static class SvgGradientSyntax
             using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             byte strokeOpacity = strokeShape.Presentation.Opacity;
             SvgAffineTransform placement = SvgViewportFrame.MapGeometry(strokeShape.Transform, frame);
-            foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, placement, budget)));
+            foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, placement)));
             int whiteCount = white.ElementCount;
             white.Dispose();
             whiteReleased = true;
