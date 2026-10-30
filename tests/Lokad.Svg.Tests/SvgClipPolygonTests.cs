@@ -176,9 +176,4 @@ public sealed class SvgClipPolygonTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 5, 1));
     }
 
-    private static SvgColor Pixel(byte[] pixels, int width, int x, int y)
-    {
-        int offset = (y * width + x) * 4;
-        return new SvgColor(pixels[offset], pixels[offset + 1], pixels[offset + 2], pixels[offset + 3]);
-    }
 }

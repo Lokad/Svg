@@ -445,9 +445,4 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(expected, actual);
     }
 
-    private static SvgColor Pixel(byte[] pixels, int width, int x, int y)
-    {
-        int offset = (y * width + x) * 4;
-        return new SvgColor(pixels[offset], pixels[offset + 1], pixels[offset + 2], pixels[offset + 3]);
-    }
 }

@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgUseInstanceTests
 {
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Direct_use_matches_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
@@ -16,6 +17,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_group_use_matches_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='2' height='2' fill='red'/><rect x='2' width='2' height='2' fill='red'/><rect y='4' width='2' height='2' fill='red'/><rect x='2' y='4' width='2' height='2' fill='red'/></svg>", out _, out _);
@@ -25,6 +27,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rotated_polygon_use_matches_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='4,4 12,4 4,12' fill='red'/></svg>", out _, out _);
@@ -36,6 +39,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Matrix_rotation_use_matches_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='1,7 1,3 5,7' fill='red'/></svg>", out _, out _);
@@ -45,6 +49,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Degenerate_fill_use_with_round_dots_renders()
     {
         // The degenerate fill channel lowers to an empty fill while
@@ -60,6 +65,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Transformed_group_use_matches_oracle_fringe()
     {
         // Staged oracle runs tu2-o1..o2 agree 2/2 byte-identical
@@ -74,6 +80,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Magnified_curve_use_replays_authored_curves_at_the_instance_scale()
     {
         byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs><use href=\"#q\" transform=\"scale(8)\"/></svg>", out _, out _);
@@ -83,6 +90,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Magnified_polygon_use_matches_direct_rendering()
     {
         // Straight outlines map exactly under affine instance transforms,
@@ -94,6 +102,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Reflected_curve_use_matches_direct_rendering()
     {
         // Unit-magnitude instance scales never magnify the flattening budget,
@@ -105,6 +114,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Reflected_cubic_use_matches_direct_rendering()
     {
         // Use-instance placement maps retained cubic controls alongside
@@ -117,6 +127,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Magnified_symbol_curve_use_replays_authored_curves_at_the_instance_scale()
     {
         byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><symbol id=\"s\" viewBox=\"0 0 8 8\"><path d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></symbol></defs><use href=\"#s\" width=\"64\" height=\"64\"/></svg>", out _, out _);
@@ -126,6 +137,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Magnified_symbol_polygon_use_matches_direct_rendering()
     {
         // Straight symbol content maps exactly under viewBox magnification,
@@ -137,6 +149,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Unmagnified_symbol_curve_use_matches_direct_rendering()
     {
         // Unit symbol maps never magnify the flattening budget, so
@@ -148,6 +161,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Curve_use_in_scaled_viewport_replays_at_the_complete_source_scale()
     {
         // The viewport map participates in authored curve replay rather than
@@ -160,6 +174,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("<rect id='p' x='4' y='3' width='8' height='6' fill='#297fb3' stroke='red' stroke-width='2'/>")]
     [InlineData("<path id='p' d='M4,12 Q10,1 16,12 Z' fill='#297fb3' stroke='red' stroke-width='1.5'/>")]
     [InlineData("<circle id='p' cx='10' cy='8' r='4' fill='#297fb3' stroke='red' stroke-width='2'/>")]
@@ -181,6 +196,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Definitions_in_scaled_viewports_exclude_the_definition_location_map()
     {
         byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><svg x='8' y='6' width='48' height='36' viewBox='0 0 16 12'><defs><rect id='p' x='2' y='1' width='4' height='3' fill='red'/></defs></svg><use href='#p' x='1' y='2'/></svg>", out _, out _);
@@ -189,6 +205,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("<linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient>")]
     [InlineData("<radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient>")]
     [InlineData("<pattern id='g' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern>")]
@@ -203,6 +220,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_magnified_curve_use_replays_authored_curves_at_the_instance_scale()
     {
         byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><use href=\"#q\" transform=\"scale(8)\"/><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs></svg>", out _, out _);
@@ -212,6 +230,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Pattern_path_use_matches_direct_rendering()
     {
         string pattern = "<defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs>";
@@ -222,6 +241,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void OutputScale_use_matches_enlarged_direct_rendering()
     {
         byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='r' x='8' y='8' width='48' height='48' fill='red'/></defs><use href='#r'/></svg>");
@@ -235,6 +255,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void OutputScale_symbol_matches_enlarged_direct_rendering()
     {
         string symbol = "<defs><symbol id='s' viewBox='0 0 8 8'><rect x='1' y='1' width='6' height='6' fill='red'/></symbol></defs>";
@@ -249,6 +270,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Use_offset_matches_shifted_rendering()
     {
         byte[] shifted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='2,1 6,1 2,5' fill='red'/></svg>", out _, out _);
@@ -258,6 +280,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Use_scale_matches_scaled_rendering()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
@@ -267,6 +290,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_reference_matches_backward_reference()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><use href='#p'/></svg>", out _, out _);
@@ -276,6 +300,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Orthogonal_bands_instance_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red'/></svg>", out _, out _);
@@ -285,6 +310,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dashed_line_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>", out _, out _);
@@ -294,6 +320,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Square_capped_dashed_line_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-linecap='square'/></svg>", out _, out _);
@@ -303,6 +330,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Non_uniform_dashed_line_use_matches_scaled_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='8 8'/></svg>", out _, out _);
@@ -312,6 +340,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_dashed_line_matches_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>", out _, out _);
@@ -321,6 +350,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_width_use_stroke_override_paints_fill_only()
     {
         // A zero-width stroke override on the use element resolves to no override, so the instance renders its fill exactly like the unstyled definition.
@@ -331,6 +361,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stroked_definition_instances_both_geometries()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);
@@ -340,6 +371,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Use_opacity_matches_fill_opacity()
     {
         byte[] faded = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' fill-opacity='0.5'/></svg>", out _, out _);
@@ -349,6 +381,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Use_clip_matches_direct_clip()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='4' y='0' width='4' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
@@ -358,6 +391,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Circle_definition_instances()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><circle cx='8' cy='8' r='6' fill='red'/></svg>", out _, out _);
@@ -367,6 +401,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Root_rect_definition_use_matches_defs_twin()
     {
         byte[] rooted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect id='r' x='0' y='0' width='4' height='4' fill='red'/><use href='#r' x='4' y='4'/></svg>", out _, out _);
@@ -376,6 +411,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Root_circle_definition_use_matches_defs_twin()
     {
         byte[] rooted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><circle id='c' cx='4' cy='4' r='3' fill='red'/><use href='#c' x='8' y='8'/></svg>", out _, out _);
@@ -385,6 +421,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_multi_geometry_use_matches_backward_reference()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 8,8 0,8' fill='red' stroke='blue' stroke-width='2'/></defs><use href='#p'/></svg>", out _, out _);
@@ -394,6 +431,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_bands_use_preserves_following_content_order()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red'/></defs><use href='#p'/><rect x='4' y='0' width='4' height='8' fill='blue'/></svg>", out _, out _);
@@ -403,6 +441,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void ViewBox_less_symbol_polygon_instances_directly()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
@@ -412,6 +451,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_polygon_matches_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
@@ -421,6 +461,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_symbol_polygon_matches_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
@@ -430,6 +471,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Offset_symbol_polygon_matches_shifted_rendering()
     {
         byte[] shifted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='2,1 6,1 2,5' fill='red'/></svg>", out _, out _);
@@ -439,6 +481,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_polygon_viewBox_origin_matches_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><polygon points='0,0 4,0 0,4' fill='red'/></svg>", out _, out _);
@@ -448,6 +491,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_polygon_opacity_matches_fill_opacity()
     {
         byte[] faded = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' fill-opacity='0.5'/></svg>", out _, out _);
@@ -457,6 +501,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_symbol_polygon_matches_backward_reference()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><use href='#s' width='8' height='8'/></svg>", out _, out _);
@@ -466,6 +511,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_path_matches_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>", out _, out _);
@@ -475,6 +521,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_orthogonal_band_matches_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='red'/></svg>", out _, out _);
@@ -484,6 +531,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Non_uniform_symbol_polygon_stays_unsupported()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4'><defs><symbol id='s' viewBox='0 0 4 4' preserveAspectRatio='none'><polygon points='0,0 4,0 0,4' fill='red'/></symbol></defs><use href='#s' width='8' height='4'/></svg>");
@@ -494,6 +542,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Authored_polygon_fill_wins_over_use_fill()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><use href='#p' fill='blue'/></svg>");
@@ -503,6 +552,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void White_masked_polygon_matches_unmasked_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
@@ -512,6 +562,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Masked_polygon_use_matches_masked_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><polygon points='0,0 8,0 0,8' fill='red' mask='url(#m)'/></svg>", out _, out _);
@@ -521,6 +572,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fill_override_on_unstyled_polygon_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='blue'/></svg>", out _, out _);
@@ -530,6 +582,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_polygon_use_inside_masked_group_matches_backward()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><g mask='url(#m)'><use href='#p'/></g></svg>", out _, out _);
@@ -539,6 +592,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_viewport_polygon_use_matches_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><svg x='4' y='0' width='12' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg></svg>", out _, out _);
@@ -548,6 +602,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_filled_polygon_use_matches_shifted_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polygon points='8,0 16,0 16,4 12,4 12,8 8,8' fill='url(#g)'/></svg>", out _, out _);
@@ -557,6 +612,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nonuniform_userspace_gradient_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='16'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='16'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><g transform='scale(2, 1)'><rect x='0' y='0' width='16' height='16' fill='url(#g)'/></g></svg>", out _, out _);
@@ -566,6 +622,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nonuniform_userspace_gradient_bands_match_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='8'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g transform='scale(2, 1)'><polygon points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#g)'/></g></svg>", out _, out _);
@@ -575,6 +632,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Radial_filled_polygon_use_matches_shifted_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><polygon points='8,0 16,0 16,4 12,4 12,8 8,8' fill='url(#g)'/></svg>", out _, out _);
@@ -584,6 +642,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Userspace_radial_use_matches_shifted_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='12' cy='4' r='8'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><polygon points='8,0 16,0 16,4 12,4 12,8 8,8' fill='url(#g)'/></svg>", out _, out _);
@@ -593,6 +652,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_radial_use_matches_direct_use()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#g)'/></defs><use href='#p'/></svg>", out _, out _);
@@ -602,6 +662,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Radial_bands_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,0 H8 V8 H0 Z' fill='url(#g)'/></svg>", out _, out _);
@@ -611,6 +672,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Paintserver_radial_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='8' height='8' fill='url(#g)'/></svg>", out _, out _);
@@ -620,6 +682,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void White_masked_radial_matches_unmasked_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='8' height='8' fill='url(#g)'/></svg>", out _, out _);
@@ -629,6 +692,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Masked_radial_use_matches_masked_direct_rendering()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><polygon points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#g)' mask='url(#m)'/></svg>", out _, out _);
@@ -638,6 +702,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Radial_stroke_rect_use_matches_shifted_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='8' y='0' width='8' height='8' fill='red' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -647,6 +712,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Clipped_symbol_use_matches_clipped_direct_use()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='0' y='0' width='4' height='8'/></clipPath></defs><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/></defs><use href='#r' clip-path='url(#c)'/></svg>", out _, out _);
@@ -656,6 +722,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Object_bounding_box_clipped_symbol_renders_kept_half()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 8 8'><rect x='0' y='0' width='8' height='8' fill='red'/></symbol></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='1'/></clipPath></defs><use href='#s' width='8' height='8' clip-path='url(#window)'/></svg>", out _, out _);
@@ -665,6 +732,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_object_bounding_box_clipped_use_matches_backward()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='1'/></clipPath></defs><use href='#r' clip-path='url(#window)'/></svg>", out _, out _);
@@ -674,6 +742,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_object_bounding_box_clipped_symbol_matches_backward()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 8 8'><rect x='0' y='0' width='8' height='8' fill='red'/></symbol></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='1'/></clipPath></defs><use href='#s' width='8' height='8' clip-path='url(#window)'/></svg>", out _, out _);
@@ -683,6 +752,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_clip_path_definition_use_matches_backward()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/></defs><defs><clipPath id='c'><rect x='0' y='0' width='4' height='8'/></clipPath></defs><use href='#r' clip-path='url(#c)'/></svg>", out _, out _);
@@ -692,6 +762,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_object_bounding_box_clip_definition_use_matches_backward()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='1'/></clipPath></defs><use href='#r' clip-path='url(#window)'/></svg>", out _, out _);
@@ -701,6 +772,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_mask_definition_use_matches_backward()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><use href='#p' mask='url(#m)'/></svg>", out _, out _);
@@ -710,6 +782,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_mask_definition_symbol_matches_backward()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><use href='#s' width='8' height='8' mask='url(#m)'/></svg>", out _, out _);
@@ -719,6 +792,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_custom_region_mask_use_matches_backward()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/></defs><defs><mask id='m' maskUnits='userSpaceOnUse' x='2' y='2' width='4' height='4'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><use href='#r' mask='url(#m)'/></svg>", out _, out _);
@@ -728,6 +802,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_gradient_use_matches_direct_use()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#g)'/></defs><use href='#p'/></svg>", out _, out _);
@@ -737,6 +812,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_stroke_line_use_matches_shifted_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='8' y1='0' x2='16' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><line x1='8' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -746,6 +822,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_outline_polygon_use_matches_shifted_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='8' y1='0' x2='16' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polygon points='8,0 16,0 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -755,6 +832,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Radial_outline_polygon_use_matches_shifted_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='12' cy='4' r='8'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><polygon points='8,0 16,0 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -764,6 +842,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Pattern_outline_polygon_use_matches_shifted_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><polygon points='8,0 16,0 8,8' fill='none' stroke='url(#p)' stroke-width='2'/></svg>", out _, out _);
@@ -773,6 +852,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Lowers_pattern_outline_uses_through_instance_placement()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></defs><use href='#q' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -785,6 +865,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Applies_a_gray_mask_to_a_pattern_outline_use_instance()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern><mask id='fade'><rect x='-4' y='-4' width='24' height='16' fill='#808080'/></mask></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></defs><use href='#q' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -796,6 +877,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Lowers_radial_outline_uses_through_instance_placement()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -808,6 +890,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Lowers_bounding_box_radial_outline_uses_through_instance_placement()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -818,6 +901,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Applies_a_gray_mask_to_a_radial_outline_use_instance()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient><mask id='fade'><rect x='-4' y='-4' width='24' height='16' fill='#808080'/></mask></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -829,6 +913,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Lowers_gradient_outline_uses_through_instance_placement()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -842,6 +927,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Lowers_bounding_box_outline_uses_through_instance_placement()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -852,6 +938,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Applies_a_gray_mask_to_a_gradient_outline_use_instance()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><mask id='fade'><rect x='-4' y='-4' width='24' height='16' fill='#808080'/></mask></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -863,6 +950,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_stroke_rect_use_matches_shifted_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='8' y1='0' x2='16' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect x='8' y='0' width='8' height='8' fill='red' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -872,6 +960,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Pattern_filled_polygon_use_matches_shifted_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><polygon points='8,0 16,0 16,4 12,4 12,8 8,8' fill='url(#p)'/></svg>", out _, out _);
@@ -881,6 +970,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_pattern_use_matches_direct_use()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><polygon points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#p)'/></svg>", out _, out _);
@@ -890,6 +980,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_gradient_outline_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -899,6 +990,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_symbol_gradient_outline_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polygon points='0,0 16,0 0,16' fill='none' stroke='url(#g)' stroke-width='4'/></svg>", out _, out _);
@@ -908,6 +1000,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_radial_outline_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -917,6 +1010,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_symbol_radial_outline_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='8' cy='8' r='8'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><polygon points='0,0 16,0 0,16' fill='none' stroke='url(#g)' stroke-width='4'/></svg>", out _, out _);
@@ -926,6 +1020,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_pattern_outline_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></svg>", out _, out _);
@@ -935,6 +1030,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_symbol_pattern_outline_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='16' height='16' fill='red'/></pattern></defs><polygon points='0,0 16,0 0,16' fill='none' stroke='url(#p)' stroke-width='4'/></svg>", out _, out _);
@@ -944,6 +1040,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("<defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' transform='scale(2,1)'/>")]
     [InlineData("<defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' transform='scale(2,1)'/>")]
     [InlineData("<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></defs><use href='#q' transform='scale(2,1)'/>")]
@@ -957,6 +1054,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("<defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' transform='scale(2,1)'/>")]
     [InlineData("<defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' transform='scale(2,1)'/>")]
     [InlineData("<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' transform='scale(2,1)'/>")]
@@ -970,6 +1068,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Lowers_symbol_pattern_outline_uses_through_viewbox_mapping()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></symbol></defs><use href='#s' width='16' height='16'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -984,6 +1083,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Non_uniform_symbol_pattern_outline_uses_stay_unsupported()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><defs><symbol id='s' viewBox='0 0 8 8' preserveAspectRatio='none'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></symbol></defs><use href='#s' width='16' height='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
@@ -992,6 +1092,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Lowers_symbol_radial_outline_uses_through_viewbox_mapping()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='16' height='16'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -1003,6 +1104,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Non_uniform_symbol_radial_outline_uses_stay_unsupported()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><symbol id='s' viewBox='0 0 8 8' preserveAspectRatio='none'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='16' height='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
@@ -1011,6 +1113,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Lowers_symbol_gradient_outline_uses_through_viewbox_mapping()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='16' height='16'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -1022,6 +1125,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Non_uniform_symbol_outline_uses_stay_unsupported()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 8 8' preserveAspectRatio='none'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='16' height='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
@@ -1030,6 +1134,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Nonuniform_symbol_radial_contours_record_viewbox_scales()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><symbol id='s' viewBox='0 0 8 8' preserveAspectRatio='none'><polygon points='0,0 8,0 8,8 0,8' fill='url(#g)'/></symbol></defs><use href='#s' width='16' height='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -1046,6 +1151,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_symbol_pattern_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><polygon points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#p)'/></svg>", out _, out _);
@@ -1055,6 +1161,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Non_integer_symbol_pattern_stays_unsupported()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' x='1' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#p)'/></symbol></defs><use href='#s' width='4' height='4'/></svg>");
@@ -1065,6 +1172,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_symbol_pattern_matches_backward_reference()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#p)'/></symbol></defs><use href='#s' width='8' height='8'/></svg>", out _, out _);
@@ -1074,6 +1182,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stroked_rect_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);
@@ -1083,6 +1192,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_stroked_rect_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='0' y='0' width='16' height='16' fill='red' stroke='blue' stroke-width='4'/></svg>", out _, out _);
@@ -1092,6 +1202,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Offset_stroked_rect_use_matches_shifted()
     {
         byte[] shifted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='1' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);
@@ -1101,6 +1212,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Non_uniform_stroked_rect_use_renders_native_frame()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></defs><use href='#r' transform='scale(2,1)'/></svg>");
@@ -1111,6 +1223,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_stroked_rect_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);
@@ -1120,6 +1233,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_symbol_stroked_rect_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='4'/></svg>", out _, out _);
@@ -1129,6 +1243,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Non_uniform_symbol_stroked_rect_renders_native_frame()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 8 4' preserveAspectRatio='none'><rect x='0' y='0' width='8' height='4' fill='red' stroke='blue' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8'/></svg>");
@@ -1139,6 +1254,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_stroked_rect_clips_stroke_to_viewport()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 8 8'><rect x='4' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8'/></svg>", out _, out _);
@@ -1152,6 +1268,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Non_uniform_instance_symbol_stroke_renders_native_frame()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><symbol id='s' viewBox='0 0 8 8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' transform='scale(2,1)'/></svg>");
@@ -1162,6 +1279,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_symbol_stroke_scale_renders_native_frame()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12'><defs><symbol id='s' viewBox='0 0 8 8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></symbol></defs><use href='#s' width='12' height='12'/></svg>");
@@ -1172,6 +1290,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_stroked_polygon_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);
@@ -1181,6 +1300,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_symbol_stroked_polygon_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' stroke='blue' stroke-width='4'/></svg>", out _, out _);
@@ -1190,6 +1310,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Symbol_gradient_stroke_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect x='0' y='0' width='8' height='8' fill='red' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1199,6 +1320,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Two_forward_multi_uses_preserve_document_order()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 8,8 0,8' fill='red' stroke='blue' stroke-width='2'/></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='green'/></defs><use href='#p'/><rect x='4' y='0' width='4' height='8' fill='yellow'/><use href='#q'/></svg>", out _, out _);
@@ -1208,6 +1330,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_gradient_polygon_use_matches_backward()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#g)'/></defs><use href='#p' x='8'/></svg>", out _, out _);
@@ -1217,6 +1340,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_use_of_use_reference()
     {
         // Use elements never register as definitions, so chained
@@ -1229,6 +1353,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_forward_use_of_use_reference()
     {
         // Forward chained references defer and then reject at document end
@@ -1241,6 +1366,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_duplicate_definition_ids_across_defs_and_root()
     {
         // Direct-root geometry registers exactly like defs-held geometry,
@@ -1253,6 +1379,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Image_definition_replay_preserves_original_source_pixels()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><image id='m' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8'/></defs><use href='#m'/></svg>");
@@ -1265,6 +1392,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Paint_server_definitions_cannot_be_use_geometry_targets()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='m'><stop stop-color='red'/></linearGradient></defs><use href='#m'/></svg>"u8.ToArray();
@@ -1274,6 +1402,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Masked_forward_use_matches_masked_backward()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><use href='#p' mask='url(#m)'/></svg>", out _, out _);
@@ -1283,6 +1412,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Translucent_fade_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><polygon points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></svg>", out _, out _);
@@ -1292,6 +1422,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Translucent_fade_forward_use_matches_backward()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><defs><polygon id='p' points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></defs><use href='#p'/></svg>", out _, out _);
@@ -1301,6 +1432,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Translucent_fade_symbol_use_matches_direct_use()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><defs><polygon id='p' points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></defs><use href='#p'/></svg>", out _, out _);
@@ -1310,6 +1442,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void White_masked_fade_matches_unmasked_fade()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><polygon points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></svg>", out _, out _);
@@ -1319,6 +1452,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_viewport_fade_use_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><svg x='8' y='0' width='16' height='16'><polygon points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></svg></svg>", out _, out _);
@@ -1328,6 +1462,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Transformed_definition_use_matches_direct_rendering()
     {
         // Definitions lower under the element-local transform exactly once: the rotated
@@ -1339,6 +1474,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Translated_group_use_matches_direct_rendering()
     {
         // Translated ancestors un-bake exactly: the root-level use clones the inner group
@@ -1350,6 +1486,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Minified_source_ancestors_do_not_reduce_replayed_group_curves()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='scale(0.5)'><g id='a'><path d='M0,0 Q16,16 32,0 Z' fill='red'/></g></g><use href='#a'/></svg>");
@@ -1359,6 +1496,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Translated_source_ancestors_do_not_enter_group_paint_servers()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g transform='translate(4,0)'><g id='a'><rect width='8' height='8' fill='url(#g)'/></g></g><use href='#a'/></svg>");
@@ -1368,6 +1506,7 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_stroke_replay_preserves_local_transforms_without_source_ancestors()
     {
         // The ancestor cancels only during original rendering. The clone retains
@@ -1378,9 +1517,4 @@ public sealed class SvgUseInstanceTests
             SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
-    private static SvgColor Pixel(byte[] pixels, int width, int x, int y)
-    {
-        int offset = (y * width + x) * 4;
-        return new SvgColor(pixels[offset], pixels[offset + 1], pixels[offset + 2], pixels[offset + 3]);
-    }
 }

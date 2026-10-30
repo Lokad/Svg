@@ -355,16 +355,4 @@ public sealed class SvgCurveFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 7));
     }
 
-    private static SvgColor Pixel(byte[] pixels, int width, int x, int y)
-    {
-        int offset = (y * width + x) * 4;
-        return new SvgColor(pixels[offset], pixels[offset + 1], pixels[offset + 2], pixels[offset + 3]);
-    }
-
-    private static long AlphaSum(byte[] pixels)
-    {
-        long total = 0;
-        for (int index = 3; index < pixels.Length; index += 4) total += pixels[index];
-        return total;
-    }
 }

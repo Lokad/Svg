@@ -57,4 +57,17 @@ internal static class SvgRasterTestHelper
         height = image.Height;
         return image.Pixels;
     }
+
+    internal static SvgColor Pixel(byte[] pixels, int width, int x, int y)
+    {
+        int offset = (y * width + x) * 4;
+        return new SvgColor(pixels[offset], pixels[offset + 1], pixels[offset + 2], pixels[offset + 3]);
+    }
+
+    internal static long AlphaSum(byte[] pixels)
+    {
+        long total = 0;
+        for (int index = 3; index < pixels.Length; index += 4) total += pixels[index];
+        return total;
+    }
 }

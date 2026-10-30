@@ -588,6 +588,40 @@ established. All 78 focused cases, 98 native-image checks, two provenance checks
 and six capture-format/ownership contracts pass on each host/runtime pair. Both
 affected builds are warning-free.
 
+## Paint, shape and instance responsibilities
+
+The baseline is `7a65f6ddc`. All 683 original case IDs across
+[stroke](../../Lokad.Svg.Tests/SvgStrokeFillTests.cs),
+[shape](../../Lokad.Svg.Tests/SvgShapeElementsTests.cs),
+[polygon](../../Lokad.Svg.Tests/SvgPolygonFillTests.cs) and
+[instance](../../Lokad.Svg.Tests/SvgUseInstanceTests.cs) tests remain:
+46 Mechanism, 636 Rendering and one Contract, across 663 methods. Pure admission,
+direct coverage rows and retained map metadata are separate from pixel checks.
+Mixed paint/style-admission regressions and accepted-input PNG companions retain
+their original assertions together. These banks already use canonical raster
+comparisons; their inputs, exact fringe values and complete PNG checks are unchanged.
+
+Eight identical pixel samplers and four identical `long` alpha accumulators move
+intact into [the existing raster helper](../../Lokad.Svg.Tests/SvgRasterTestHelper.cs).
+This includes the clip, curve, mask and CSS consumers already importing that helper;
+their test bodies are unchanged. There is no new fixture framework. Removing only
+traits, restoring the sampling bodies and unwrapping the owner scope reproduces
+every original source file exactly, including test data and assertions.
+
+The typed-polygon storage test now keeps its fill owner alive through the field
+and borrowed-array identity checks, then disposes it and verifies release. The new
+release assertion fails before that fix with 116 scene bytes still charged and
+passes afterward. It does not remove the existing geometry/error checks or change
+production ownership. No renderer, reference, tolerance or text-layout change occurs.
+
+Three fresh sequential Windows .NET 11 processes measure 6.99/7.17 seconds median
+before/after for all 683 cases; the 46-case mechanism selection measures 6.72.
+Costs include discovery/host/TRX and exclude build. There is no material speedup
+claim; this pass separates responsibilities and removes identical helper copies.
+All 861 affected checks and 1,788 independent shape/stroke/instance, point-list,
+provenance and capture checks pass on Windows/Linux under both supported runtimes.
+Both affected builds are warning-free.
+
 ## Core OpenType roles and fixtures
 
 The baseline is `ef5bf5a96`. All 524 cases in

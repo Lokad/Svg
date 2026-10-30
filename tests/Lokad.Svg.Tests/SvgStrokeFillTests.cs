@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStrokeFillTests
 {
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Open_polyline_stroke_makes_butt_band()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,0 4,0 8,0' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -16,6 +17,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Closed_square_stroke_makes_ring()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -28,6 +30,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Open_path_stroke_miters()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,4' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -40,6 +43,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Closed_triangle_stroke_rings_diagonal()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -52,6 +56,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fill_and_stroke_combine_in_paint_order()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);
@@ -62,6 +67,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Duplicate_straight_strokes_union_to_single_coverage()
     {
         // Bitwise-identical outline loops merge instead of over-painting shared fringe.
@@ -74,6 +80,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Contained_stroke_rings_survive_crossing_union()
     {
         // Native directed outlines preserve both rings and the crossing band.
@@ -86,6 +93,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Overlapping_stroke_rings_union_without_overlap()
     {
         // Sibling-subpath bands separate per subpath and combine by winding, so each band survives the other ring's hole; the pinned oracle paints the full overlap zone opaque (research-twin-stroke-rings-16x16 graduates exact).
@@ -99,6 +107,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Sibling_subpath_strokes_union_like_separate_elements()
     {
         // On integer geometry the single-path twin rings render byte-identical to two separately painted ring elements, locking band-union semantics at the API level.
@@ -109,6 +118,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Self_crossing_star_stroke_renders_without_denial()
     {
         // Clean multi-loop outlines pass through separation with roles only.
@@ -123,6 +133,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Curved_stroke_matches_native_offset_coverage()
     {
         // The original quadratic's offset outline matches the complete pinned
@@ -135,6 +146,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Open_polyline_and_closed_polygon_stroke_differently()
     {
         byte[] open = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -144,6 +156,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fill_rule_does_not_change_stroke_outlines()
     {
         byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -153,6 +166,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_style_width_matches_direct_attribute()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' style='stroke-width:4'/></svg>", out _, out _);
@@ -162,6 +176,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_width_overrides_attribute()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' style='stroke-width:6'/></svg>", out _, out _);
@@ -171,6 +186,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_attribute_width_inherits_to_line()
     {
         byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke-width='4'><line x1='2' y1='8' x2='14' y2='8' stroke='red'/></g></svg>", out _, out _);
@@ -180,6 +196,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stylesheet_class_width_applies_to_line()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><style>.w { stroke-width: 4; }</style><line class='w' x1='2' y1='8' x2='14' y2='8' stroke='red'/></svg>", out _, out _);
@@ -189,6 +206,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Root_style_width_applies_to_line()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' style='stroke-width:4'><line x1='2' y1='8' x2='14' y2='8' stroke='red'/></svg>", out _, out _);
@@ -198,6 +216,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rect_inline_width_matches_direct_attribute()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='12' height='12' fill='red' stroke='blue' style='stroke-width:4'/></svg>", out _, out _);
@@ -207,6 +226,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_miterlimit_matches_direct_attribute()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='0,0 16,0 8,16' fill='red' stroke='blue' stroke-width='4' style='stroke-miterlimit:10'/></svg>", out _, out _);
@@ -216,6 +236,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_attribute_miterlimit_inherits()
     {
         byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke-miterlimit='10'><polygon points='0,0 16,0 8,16' fill='red' stroke='blue' stroke-width='4'/></g></svg>", out _, out _);
@@ -225,6 +246,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Line_style_opacity_scales_alpha()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' style='stroke-opacity:0.5'/></svg>", out _, out _);
@@ -235,6 +257,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_style_opacity_inherits_to_line()
     {
         byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g style='stroke-opacity:0.5'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2'/></g></svg>", out _, out _);
@@ -244,6 +267,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stroke_opacity_on_fill_less_rect_matches_element_opacity()
     {
         // Rectangle stroke bands are butt-jointed without overlap, so a
@@ -256,6 +280,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stroke_opacity_on_butt_line_matches_element_opacity()
     {
         // Butt-capped line bands never overlap, so stroke opacity
@@ -267,6 +292,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stroke_opacity_on_polygon_outline_matches_element_opacity()
     {
         // Polygon outline fills inherit the same single-coverage paint,
@@ -278,6 +304,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stroke_opacity_on_path_outline_matches_element_opacity()
     {
         // Path outline fills share the polygon machinery, so both opacity
@@ -289,6 +316,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stroke_opacity_on_circle_ring_matches_element_opacity()
     {
         // Opposite-wound ring fills cover each pixel once, so stroke
@@ -301,6 +329,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stroke_opacity_on_filled_rect_paints_blended_band()
     {
         // Translucent bands composite once over the fill with no corner
@@ -315,6 +344,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_stroke_paint_inherits_to_line()
     {
         byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke='red'><line x1='2' y1='8' x2='14' y2='8' stroke-width='2'/></g></svg>", out _, out _);
@@ -324,6 +354,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inner_none_blocks_group_stroke()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke='red'><g stroke='none'><line x1='2' y1='8' x2='14' y2='8' stroke-width='2'/></g></g></svg>");
@@ -333,6 +364,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Root_stroke_attribute_inherits_to_line()
     {
         byte[] rooted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' stroke='red'><line x1='2' y1='8' x2='14' y2='8' stroke-width='2'/></svg>", out _, out _);
@@ -342,6 +374,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Invalid_group_stroke_value_stays_unsupported()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke='banana'><line x1='2' y1='8' x2='14' y2='8' stroke-width='2'/></g></svg>");
@@ -352,6 +385,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Odd_integer_stroke_widths_paint()
     {
         // The shared outline kernel maps half-integer offsets exactly like fractional geometry.
@@ -364,6 +398,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Negative_stroke_width_stays_unsupported()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='-1'/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
@@ -372,6 +407,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_path_stroke_paints_nothing()
     {
         // A zero width disables the stroke, so the path paints nothing like the pinned oracle (fully transparent 16x16 triple).
@@ -381,6 +417,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_closed_strokes_paint_nothing()
     {
         // Every solid spelling paints nothing at zero width, matching the path oracle by the same empty-stroke rule.
@@ -400,6 +437,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_width_wins_over_dashes()
     {
         // Zero disables the stroke before dash handling, so a dashed zero-width path paints nothing.
@@ -409,6 +447,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_gradient_path_stroke_paints_fill_only()
     {
         // A zero width disables paint-server strokes exactly like solid ones, so the fill renders alone like its stroke-none twin.
@@ -420,6 +459,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_paint_strokes_paint_fill_only_across_spellings()
     {
         // Every paint-server spelling paints only its fill at zero width, matching stroke-none or solid-zero twins by the shared empty-stroke rule.
@@ -446,6 +486,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_radial_and_pattern_strokes_paint_fill_only()
     {
         // Radial and pattern strokes share the gradient zero-width path, so each spelling matches its solid-zero or stroke-none twin.
@@ -470,6 +511,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_paint_width_wins_over_dashes()
     {
         // Zero disables paint-server strokes before dash handling on every kernel, so dashed zero-width paints leave nothing behind.
@@ -481,6 +523,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_gradient_use_stroke_paints_fill_only()
     {
         // A zero-width paint-server stroke override on use resolves to no override, so the instance renders its fill alone.
@@ -492,6 +535,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_width_with_missing_paint_paints_fill_only()
     {
         // An unresolvable paint never evaluates when the width is zero, so path, rect, circle, and line renders match their fill-only twins.
@@ -511,6 +555,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_inherited_paint_stroke_paints_fill_only()
     {
         // An inherited paint-server stroke paints nothing at zero width, so the grouped path matches its direct stroke-none twin.
@@ -521,6 +566,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_combined_and_rounded_paint_strokes_paint_fill_only()
     {
         // Rounded rectangles and combined gradient fills also lose only the stroke at zero width, matching their stroke-none twins.
@@ -538,6 +584,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_solid_strokes_over_paint_fills_paint_fill_only()
     {
         // Paint-filled ellipses and circles skip their combination gates at zero width, so the fill renders alone like its stroke-none twin.
@@ -559,6 +606,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_paint_strokes_over_pattern_fills_paint_fill_only()
     {
         // Pattern-filled shapes lose only the paint stroke at zero width, matching fill-only twins through the shared band paths.
@@ -573,6 +621,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_stroke_composes_over_gradient_fill()
     {
         // A linear-gradient stroke outlines a linear-gradient fill through white-outline repaint, so outer bands read the stroke paint while the interior reads the fill ramp.
@@ -590,6 +639,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_stroke_outlines_curved_gradient_path()
     {
         // The same white-outline repaint serves curved fills, so the arch renders both paints where the fill-only twin shows fill alone.
@@ -601,6 +651,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_stroke_supports_dashes_and_polylines()
     {
         // Dash cutting and point-list lowering ride the shared white outline, so dashed paths and polygons render both paints.
@@ -614,6 +665,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Non_linear_fills_accept_gradient_strokes_and_missing_paints_reject()
     {
         // Fill and stroke keep their own paint while missing resources still reject.
@@ -643,6 +695,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Radial_stroke_composes_over_gradient_fill()
     {
         // A radial-gradient stroke outlines a linear-gradient fill through white-outline repaint, so outer bands read the radial paint while the interior reads the fill ramp.
@@ -663,6 +716,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Radial_stroke_outlines_curved_gradient_path()
     {
         // The same white-outline repaint serves curved fills for radial strokes, so the arch renders both paints where the fill-only twin shows fill alone.
@@ -674,6 +728,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Radial_stroke_supports_dashes_and_polylines()
     {
         // Dash cutting and point-list lowering ride the shared radial white outline, so dashed paths and polygons render both paints.
@@ -687,6 +742,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_stroke_width_renders_ring()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2.5'/></svg>", out _, out _);
@@ -697,6 +753,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_dashed_path_renders_runs()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 H8' fill='none' stroke='red' stroke-width='2.5' stroke-dasharray='2.5 2.5'/></svg>", out _, out _);
@@ -707,6 +764,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_gradient_stroke_repaints_outline()
     {
         byte[] fractional = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,0 H16 V16 H0 Z' fill='red' stroke='url(#g)' stroke-width='2.5'/></svg>", out _, out _);
@@ -718,6 +776,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-linejoin='bevel'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-linejoin='bevel'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-miterlimit='0.5'/></svg>")]
@@ -737,6 +796,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stroke_under_anisotropic_transform_preserves_source_width()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><g transform='scale(2,1)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2'/></g></svg>");
@@ -749,6 +809,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_cap_extends_past_tip()
     {
         byte[] round = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polyline points='2,2 12,2 12,6' fill='none' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>", out _, out _);
@@ -759,6 +820,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Square_cap_extends_past_tip()
     {
         byte[] square = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polyline points='2,2 12,2 12,6' fill='none' stroke='red' stroke-width='4' stroke-linecap='square'/></svg>", out _, out _);
@@ -769,6 +831,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Square_caps_match_butt_on_closed_contours()
     {
         byte[] square = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-linecap='square'/></svg>", out _, out _);
@@ -778,6 +841,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_square_dash_matches_solid_square_line()
     {
         byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-dasharray='8' stroke-linecap='square'/></svg>", out _, out _);
@@ -787,6 +851,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Square_dash_extends_past_butt_tip()
     {
         byte[] square = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='2' y1='4' x2='14' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-linecap='square'/></svg>", out _, out _);
@@ -796,6 +861,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(butt, 16, 1, 4));
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Negative_dash_offset_wraps_phase()
     {
         byte[] negative = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-dashoffset='-2'/></svg>", out _, out _);
@@ -805,6 +871,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_capped_line_matches_line_with_circle_tips()
     {
         byte[] round = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='2' y1='4' x2='14' y2='4' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>", out _, out _);
@@ -817,6 +884,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dashed_open_polyline_paints_runs()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polyline points='2,2 12,2 12,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4'/></svg>", out _, out _);
@@ -828,6 +896,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dash_offset_shifts_phase()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polyline points='2,2 12,2 12,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='6,2' stroke-dashoffset='2'/></svg>", out _, out _);
@@ -837,6 +906,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_caps_apply_to_each_dash()
     {
         byte[] round = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polyline points='2,2 12,2 12,6' fill='none' stroke='red' stroke-width='2' stroke-linecap='round' stroke-dasharray='4,4'/></svg>", out _, out _);
@@ -848,6 +918,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dashed_path_stroke_paints_runs()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M2,2 H12 V6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4'/></svg>", out _, out _);
@@ -857,6 +928,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dashed_diagonal_vertex_run_survives_overlap()
     {
         // The dash run starting on the diagonal just past the vertex
@@ -869,6 +941,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dashed_diagonal_path_run_matches_polyline()
     {
         // The path lowering shares the dashed vertex-adjacent run with
@@ -881,6 +954,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rotated_open_spoke_paints_with_stable_width()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M8,8 L8,0' stroke='red' stroke-width='2' fill='none' transform='rotate(90,8,8)'/></svg>", out _, out _);
@@ -890,6 +964,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Solid_bowtie_stroke_paints_both_halves()
     {
         // Solid stroke outlines union across the crossing like dashes;
@@ -903,6 +978,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Filled_bowtie_stroke_covers_both_halves()
     {
         // Solid stroke over a filled crossing reaches both halves in paint order.
@@ -914,6 +990,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dashed_bowtie_matches_path_twin()
     {
         // Dashed outlines agree across polygon and path lowerings on crossing input.
@@ -925,6 +1002,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dashed_diagonal_polygon_run_survives_overlap()
     {
         // The closed dashed triangle keeps the same vertex-adjacent
@@ -936,6 +1014,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dashed_fractional_polygon_differs_from_solid()
     {
         byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0.5 7.5,0.5 7.5,7.5 0.5,7.5' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4'/></svg>", out _, out _);
@@ -945,6 +1024,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Path_length_scales_dash_pattern()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polyline points='2,2 12,2 12,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4' pathLength='28'/></svg>", out _, out _);
@@ -956,6 +1036,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_path_length_renders_solid_stroke()
     {
         byte[] pinned = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='blue' stroke='red' stroke-width='2' stroke-dasharray='4,4' pathLength='0'/></svg>", out _, out _);
@@ -965,6 +1046,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_path_length_with_zero_dash_paints_no_stroke()
     {
         byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='blue' stroke='red' stroke-width='2' stroke-dasharray='0,4' pathLength='0'/></svg>", out _, out _);
@@ -974,6 +1056,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_negative_path_lengths()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4 8,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4' pathLength='-2'/></svg>");
@@ -984,6 +1067,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_non_numeric_path_lengths()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4 8,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4' pathLength='10px'/></svg>");
@@ -994,6 +1078,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Odd_dasharray_doubles()
     {
         byte[] odd = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polyline points='2,2 12,2 12,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4,4'/></svg>", out _, out _);
@@ -1003,6 +1088,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void All_zero_dash_preserves_solid_stroke()
     {
         byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='blue' stroke='red' stroke-width='2' stroke-dasharray='0,0'/></svg>", out _, out _);
@@ -1012,6 +1098,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_negative_dash_entries()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,-1'/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
@@ -1020,6 +1107,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_overlong_dash_arrays()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2' stroke-dasharray='1,1,1,1,1,1,1,1,1'/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
@@ -1028,6 +1116,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_percentage_dash_entries()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2' stroke-dasharray='50%,2'/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
@@ -1036,6 +1125,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_dashes_with_round_caps_paint_separated_dots()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2' stroke-linecap='round' stroke-dasharray='0,4'/></svg>", out int width, out int height);
@@ -1047,6 +1137,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nonscaling_uniform_stroke_matches_explicit()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' vector-effect='non-scaling-stroke'/></g></svg>", out _, out _);
@@ -1056,6 +1147,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nonscaling_nonuniform_stroke_matches_explicit()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2,1)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' vector-effect='non-scaling-stroke'/></g></svg>", out _, out _);
@@ -1065,6 +1157,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nonscaling_dashed_stroke_matches_explicit()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2' vector-effect='non-scaling-stroke'/></g></svg>", out _, out _);
@@ -1075,6 +1168,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nonscaling_circle_stroke_matches_explicit()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2)'><circle cx='8' cy='8' r='6' fill='none' stroke='red' stroke-width='2' vector-effect='non-scaling-stroke'/></g></svg>", out _, out _);
@@ -1084,6 +1178,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nonuniform_dashed_nonscaling_stroke_preserves_device_width()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2,1)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2' vector-effect='non-scaling-stroke'/></g></svg>");
@@ -1099,6 +1194,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Rejects_unknown_vector_effects()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' vector-effect='non-rotation'/></svg>");
@@ -1109,6 +1205,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Non_scaling_rectangle_stroke_preserves_fill_and_outline()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' vector-effect='non-scaling-stroke'/></svg>");
@@ -1119,6 +1216,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_join_differs_from_miter()
     {
         byte[] round = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polyline points='2,14 8,2 14,14' fill='none' stroke='red' stroke-width='4' stroke-linejoin='round'/></svg>", out _, out _);
@@ -1128,6 +1226,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_cap_on_rectangle_stroke_renders_as_butt()
     {
         byte[] butt = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\"/></svg>");
@@ -1140,6 +1239,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Square_cap_on_rectangle_stroke_renders_as_butt()
     {
         byte[] butt = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\"/></svg>");
@@ -1152,6 +1252,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rectangle_dasharray_preserves_ink_and_gaps()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/></svg>");
@@ -1162,6 +1263,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_rectangle_dasharray_preserves_ink_and_gaps()
     {
         // Inline dash lists retain the same source stroke semantics as attributes.
@@ -1173,6 +1275,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_dash_list_on_polygon_stroke_matches_attribute()
     {
         // Inline dash lists flow through the cascade into the admitted
@@ -1186,6 +1289,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stylesheet_dash_list_on_polygon_stroke_matches_attribute()
     {
         // Stylesheet dash lists resolve through the same cascade into the
@@ -1199,6 +1303,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_neutralized_dasharray_on_rectangle_stroke_matches_solid()
     {
         // Validation honors inline overrides of rejected attribute
@@ -1212,6 +1317,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_neutralized_linejoin_on_rectangle_stroke_matches_miter()
     {
         // The rectangle band gate evaluates the inline-neutralized join,
@@ -1225,6 +1331,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_only_linejoin_on_unstroked_rect_matches_plain()
     {
         // Inline stroke declarations without an attribute spelling stay
@@ -1239,6 +1346,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stylesheet_neutralized_dasharray_on_rectangle_stroke_matches_solid()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><style>rect { stroke-dasharray: none; }</style><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/></svg>");
@@ -1249,6 +1357,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_linecap_on_line_stroke_matches_attribute()
     {
         // Linecap style overrides evaluate through the cascade exactly
@@ -1260,6 +1369,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_dasharray_on_line_stroke_matches_attribute()
     {
         // An inline neutralized dasharray renders the solid line exactly
@@ -1271,6 +1381,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_dashoffset_on_line_stroke_matches_attribute()
     {
         // Dashoffset style overrides shift dash runs exactly like the
@@ -1282,6 +1393,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_dash_and_cap_on_gradient_line_matches_attribute()
     {
         // The gradient-stroke routers and band gates evaluate effective
@@ -1295,6 +1407,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_cap_on_gradient_line_matches_attribute()
     {
         // The gradient round-cap path honors the style cap, rendering
@@ -1307,6 +1420,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_fill_with_solid_stroke_paints_band_over_fill()
     {
         // Gradient-filled bands compose with an admitted solid stroke
@@ -1319,6 +1433,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_fill_with_solid_stroke_path_matches_polygon()
     {
         // Paths and polygons share the fill-plus-stroke lowering, so the
@@ -1330,6 +1445,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Radial_fill_with_solid_stroke_paints_band_over_fill()
     {
         // Radial-filled bands compose with an admitted solid stroke
@@ -1343,6 +1459,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Pattern_fill_with_solid_stroke_paints_band_over_fill()
     {
         // Pattern-filled bands compose with an admitted solid stroke
@@ -1355,6 +1472,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Pattern_fill_with_solid_stroke_path_matches_polygon()
     {
         // Paths and polygons share the pattern fill-plus-stroke
@@ -1367,6 +1485,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Pattern_fill_with_solid_stroke_on_curved_path_paints_outline()
     {
         // Curved pattern fills compose with solid outlines through
@@ -1381,6 +1500,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Pattern_fill_with_solid_stroke_on_diagonal_paints_outline()
     {
         // Diagonal outlines compose the same way; the axis-aligned
@@ -1394,6 +1514,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Radial_fill_with_solid_stroke_path_matches_polygon()
     {
         // Paths and polygons share the radial fill-plus-stroke lowering,
@@ -1405,6 +1526,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_fill_with_solid_stroke_on_curved_path_paints_outline()
     {
         // Curved fills compose with solid outlines through flattened
@@ -1419,6 +1541,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_fill_with_solid_stroke_on_diagonal_paints_outline()
     {
         // Diagonal outlines compose the same way; the axis-aligned left
@@ -1432,6 +1555,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dasharray_on_line_stroke_renders_runs()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></svg>", out _, out _);
@@ -1447,6 +1571,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Style_butt_cap_overrides_square_attribute_on_lines()
     {
         byte[] square = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='1' y1='4' x2='6' y2='4' stroke='red' stroke-width='2' stroke-linecap='square'/></svg>", out _, out _);
@@ -1457,6 +1582,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(styled, 8, 0, 4));
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Style_none_dasharray_overrides_attribute_dashes()
     {
         byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></svg>", out _, out _);
@@ -1466,6 +1592,7 @@ public sealed class SvgStrokeFillTests
         Assert.NotEqual(dashed, styled);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Style_dashoffset_matches_attribute_offset()
     {
         byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>", out _, out _);
@@ -1475,6 +1602,7 @@ public sealed class SvgStrokeFillTests
         Assert.NotEqual(plain, offsetStyle);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dasharray_on_circle_strokes_paints_runs()
     {
         byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><circle cx='4' cy='4' r='3' fill='red'/></svg>", out _, out _);
@@ -1484,6 +1612,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_dasharray_matches_direct_attribute()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2' style='stroke-dasharray: 2,2'/></svg>", out _, out _);
@@ -1493,6 +1622,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_join_on_line_stroke_is_inert()
     {
         const string input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-linejoin='round'/></svg>";
@@ -1502,6 +1632,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_cap_on_gradient_stroke_renders_as_butt()
     {
         byte[] butt = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"2\"/></svg>");
@@ -1514,6 +1645,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_round_cap_matches_direct_on_polygon()
     {
         byte[] styled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><polygon points=\"0,0 8,0 8,8 0,8\" fill=\"none\" stroke=\"red\" stroke-width=\"2\" style=\"stroke-linecap: round\"/></svg>", out _, out _);
@@ -1522,6 +1654,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, styled);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_round_join_matches_direct_on_polygon()
     {
         byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><g stroke-linejoin=\"round\"><polygon points=\"0,0 8,0 8,8 0,8\" fill=\"none\" stroke=\"red\" stroke-width=\"2\"/></g></svg>", out _, out _);
@@ -1531,6 +1664,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_cap_on_symbol_rectangle_renders_as_butt()
     {
         byte[] butt = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><defs><symbol id=\"s\" viewBox=\"0 0 8 8\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\"/></symbol></defs><use href=\"#s\" width=\"8\" height=\"8\"/></svg>");
@@ -1543,6 +1677,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_caps_and_joins_render_identical_on_circle_strokes()
     {
         byte[] butt = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><circle cx=\"32\" cy=\"32\" r=\"20\" fill=\"red\" stroke=\"blue\" stroke-width=\"8\"/></svg>");
@@ -1555,6 +1690,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bevel_joins_render_identical_on_circle_strokes()
     {
         byte[] butt = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><circle cx=\"32\" cy=\"32\" r=\"20\" fill=\"red\" stroke=\"blue\" stroke-width=\"8\"/></svg>");
@@ -1567,6 +1703,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bevel_joins_render_identical_on_ellipse_strokes()
     {
         byte[] butt = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><ellipse cx=\"32\" cy=\"32\" rx=\"20\" ry=\"12\" fill=\"red\" stroke=\"blue\" stroke-width=\"8\"/></svg>");
@@ -1579,6 +1716,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_caps_and_joins_render_identical_on_ellipse_strokes()
     {
         byte[] butt = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><ellipse cx=\"32\" cy=\"32\" rx=\"20\" ry=\"12\" fill=\"red\" stroke=\"blue\" stroke-width=\"8\"/></svg>");
@@ -1591,6 +1729,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Circle_stroke_renders_ring()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><circle cx='8' cy='8' r='6' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);
@@ -1601,6 +1740,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_stop_gradient_stroke_matches_solid_stroke()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><rect x='1' y='1' width='6' height='6' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1609,6 +1749,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solid, gradient);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Degenerate_gradient_stroke_matches_end_stop_solid_stroke()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='1' y1='1' x2='1' y2='1'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='1' y='1' width='6' height='6' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1618,6 +1759,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Degenerate_box_linear_gradient_path_stroke_paints_nothing()
     {
         // A horizontal path has a zero-height objectBoundingBox, so its gradient stroke covers nothing.
@@ -1627,6 +1769,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Degenerate_box_linear_gradient_vertical_path_stroke_paints_nothing()
     {
         // A vertical path has a zero-width objectBoundingBox, so its gradient stroke covers nothing.
@@ -1636,6 +1779,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Degenerate_box_radial_gradient_path_stroke_paints_nothing()
     {
         // The zero-area box rule also applies to radial objectBoundingBox paints on degenerate paths.
@@ -1645,6 +1789,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Userspace_linear_gradient_path_stroke_paints_band()
     {
         // UserSpaceOnUse paints do not use the bounding box, so the same degenerate path still paints its band.
@@ -1656,6 +1801,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Degenerate_box_linear_gradient_path_use_paints_nothing()
     {
         // Instanced degenerate paths share the paint box, so the use instance also paints nothing.
@@ -1665,6 +1811,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_fill_with_single_stop_stroke_matches_solid_stroke_pair()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='s'><stop offset='0.3' stop-color='#00ff00'/></linearGradient></defs><rect x='1' y='1' width='6' height='6' fill='url(#g)' stroke='url(#s)' stroke-width='2'/></svg>", out _, out _);
@@ -1674,6 +1821,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Solid_pattern_stroke_matches_solid_stroke()
     {
         byte[] pattern = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect x='1' y='1' width='6' height='6' fill='none' stroke='url(#p)' stroke-width='2'/></svg>", out _, out _);
@@ -1683,6 +1831,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_fill_with_solid_pattern_stroke_matches_solid_pair()
     {
         byte[] pattern = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='#00ff00'/></pattern></defs><rect x='1' y='1' width='6' height='6' fill='url(#g)' stroke='url(#p)' stroke-width='2'/></svg>", out _, out _);
@@ -1692,6 +1841,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Pattern_fill_with_single_stop_stroke_matches_solid_pair()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='#ff0000'/></pattern><linearGradient id='s'><stop offset='0.3' stop-color='#00ff00'/></linearGradient></defs><rect x='1' y='1' width='6' height='6' fill='url(#p)' stroke='url(#s)' stroke-width='2'/></svg>", out _, out _);
@@ -1701,6 +1851,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Pattern_fill_with_pattern_stroke_matches_solid_pair()
     {
         byte[] pattern = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='f' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='#ff0000'/></pattern><pattern id='s' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='#0000ff'/></pattern></defs><rect x='1' y='1' width='6' height='6' fill='url(#f)' stroke='url(#s)' stroke-width='2'/></svg>", out _, out _);
@@ -1710,6 +1861,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Square_cap_line_matches_extended_butt_line()
     {
         byte[] square = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='2' y1='4' x2='6' y2='4' stroke='red' stroke-width='2' stroke-linecap='square'/></svg>", out _, out _);
@@ -1719,6 +1871,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Path_length_scaled_dash_line_matches_manual_dashes()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 2' pathLength='8'/></svg>", out _, out _);
@@ -1728,6 +1881,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Path_length_scaled_gradient_dash_line_matches_manual_dashes()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-dasharray='4 2' pathLength='8'/></svg>", out _, out _);
@@ -1737,6 +1891,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Solid_tile_dashed_pattern_line_matches_dashed_solid_line()
     {
         byte[] pattern = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#p)' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
@@ -1746,6 +1901,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_stop_dashed_gradient_line_matches_dashed_solid_line()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='0'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
@@ -1755,6 +1911,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_stop_dashed_radial_line_matches_dashed_solid_line()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='8' cy='4' r='8'><stop offset='0.3' stop-color='#ff0000'/></radialGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
@@ -1764,6 +1921,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Full_dash_line_matches_solid_line()
     {
         byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='16'/></svg>", out _, out _);
@@ -1773,6 +1931,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Diagonal_gradient_polygon_paints_coverage()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>", out _, out _);
@@ -1784,6 +1943,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_stop_diagonal_gradient_matches_solid_fill()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>", out _, out _);
@@ -1793,6 +1953,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_outline_paints_stroke_coverage()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1802,6 +1963,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_stop_outline_matches_solid_outline()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0.3' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1811,6 +1973,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_outline_on_diagonal_path_paints_coverage()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,0 L8,0 L0,8 Z' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1820,6 +1983,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Diagonal_radial_polygon_paints_coverage()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>", out _, out _);
@@ -1831,6 +1995,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_stop_diagonal_radial_matches_solid_fill()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0.3' stop-color='#ff0000'/></radialGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>", out _, out _);
@@ -1840,6 +2005,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bounding_box_path_outline_matches_userspace_twin()
     {
         byte[] boxed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,0 L8,0 L0,8 Z' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1849,6 +2015,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bounding_box_radial_path_outline_matches_userspace_twin()
     {
         byte[] boxed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,0 L8,0 L0,8 Z' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1858,6 +2025,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bounding_box_curved_path_outline_matches_userspace_twin()
     {
         byte[] boxed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1867,6 +2035,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bounding_box_fractional_path_outline_matches_userspace_twin()
     {
         byte[] boxed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0.5,0 L8,0 L0,8 Z' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1875,6 +2044,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(userSpace, boxed);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_polygon_outline_matches_userspace_twin()
     {
         byte[] boxed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0.5,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1884,6 +2054,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_stop_fractional_outline_matches_solid_outline()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0.3' stop-color='#0000ff'/></linearGradient></defs><polygon points='0.5,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1892,6 +2063,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solid, gradient);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_stop_bounding_box_outline_on_path_matches_solid_outline()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0.3' stop-color='#0000ff'/></linearGradient></defs><path d='M0,0 L8,0 L0,8 Z' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1900,6 +2072,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solid, gradient);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Solid_tile_pattern_outline_matches_solid_outline()
     {
         byte[] pattern = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></svg>", out _, out _);
@@ -1909,6 +2082,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Empty_tile_pattern_outline_paints_no_stroke()
     {
         byte[] pattern = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='e' width='8' height='8' patternUnits='userSpaceOnUse'></pattern></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#e)' stroke-width='2'/></svg>", out _, out _);
@@ -1917,6 +2091,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(bare, pattern);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_stop_radial_outline_matches_solid_outline()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0.3' stop-color='#0000ff'/></radialGradient></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
@@ -1926,6 +2101,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Default_mask_on_horizontal_line_has_zero_object_height()
     {
         // The default mask uses the unstroked object box. A horizontal line has zero height; browser captures paint nothing.
@@ -1937,6 +2113,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void White_mask_on_path_matches_unmasked_rendering()
     {
         // A white luminance mask is the identity on filled paths, so
@@ -1948,6 +2125,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void White_masked_gradient_outline_matches_unmasked_outline()
     {
         byte[] masked = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><mask id='m'><rect x='-8' y='-8' width='24' height='24' fill='#ffffff'/></mask></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2' mask='url(#m)'/></svg>", out _, out _);
@@ -1957,6 +2135,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gray_masked_group_outline_preserves_pixels_when_the_mask_definition_moves_forward()
     {
         byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><mask id='m'><rect x='-8' y='-8' width='24' height='24' fill='#808080'/></mask></defs><g mask='url(#m)'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></g></svg>", out _, out _);
@@ -1966,6 +2145,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bounding_box_mask_region_matches_userspace_region()
     {
         byte[] boxed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m' x='0.25' y='0.25' width='0.5' height='0.5'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>", out _, out _);
@@ -1975,6 +2155,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Offset_viewport_gradient_fill_matches_direct_fill()
     {
         byte[] nested = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><svg x='8' y='0' width='8' height='8'><rect width='8' height='8' fill='url(#g)'/></svg></svg>", out _, out _);
@@ -1984,6 +2165,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Scaled_viewport_gradient_fill_matches_direct_fill()
     {
         byte[] nested = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><svg x='0' y='0' width='16' height='8' viewBox='0 0 8 8' preserveAspectRatio='none'><rect width='8' height='8' fill='url(#g)'/></svg></svg>", out _, out _);
@@ -1993,6 +2175,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Offset_viewport_radial_fill_matches_direct_fill()
     {
         byte[] nested = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><svg x='8' y='0' width='8' height='8'><rect width='8' height='8' fill='url(#g)'/></svg></svg>", out _, out _);
@@ -2002,6 +2185,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_style_linecap_overrides_cap_attribute()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='4' y1='8' x2='12' y2='8' stroke='red' stroke-width='4' stroke-linecap='square' style='stroke-linecap:butt'/></svg>", out _, out _);
@@ -2011,6 +2195,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_style_dasharray_none_overrides_dash_attribute()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4' style='stroke-dasharray:none'/></svg>", out _, out _);
@@ -2020,6 +2205,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_style_dashoffset_overrides_offset_attribute()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4' style='stroke-dashoffset:3'/></svg>", out _, out _);
@@ -2028,6 +2214,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(plain, styled);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stylesheet_dasharray_matches_dash_attribute()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><style>.dsw { stroke-dasharray: 4 4; }</style><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' class='dsw'/></svg>", out _, out _);
@@ -2037,6 +2224,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Important_inline_dasharray_overrides_dash_attribute()
     {
         byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='none' style='stroke-dasharray:4 4 !important'/></svg>", out _, out _);
@@ -2046,6 +2234,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_dasharray_is_inherited_by_line()
     {
         byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke-dasharray='4 4'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2'/></g></svg>", out _, out _);
@@ -2055,6 +2244,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Use_instance_dash_matches_direct_dash()
     {
         byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><line id='l' x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></defs><use href='#l'/></svg>", out _, out _);
@@ -2064,6 +2254,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void OutputScale_dashed_line_matches_scaled_pattern_direct_rendering()
     {
         byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><line x1='8' y1='32' x2='56' y2='32' stroke='red' stroke-width='4' stroke-dasharray='8 4'/></svg>");
@@ -2077,6 +2268,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void OutputScale_dash_offset_matches_scaled_direct_rendering()
     {
         byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><line x1='8' y1='32' x2='56' y2='32' stroke='red' stroke-width='4' stroke-dasharray='8 4' stroke-dashoffset='3'/></svg>");
@@ -2090,6 +2282,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void OutputScale_dashed_polygon_matches_scaled_pattern_direct_rendering()
     {
         byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><polygon points='8,56 32,8 56,56' fill='none' stroke='red' stroke-width='4' stroke-dasharray='8 4'/></svg>");
@@ -2102,6 +2295,7 @@ public sealed class SvgStrokeFillTests
         Assert.True(scaledPng.Span.SequenceEqual(directPng.Span));
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_linecap_inherits_to_line()
     {
         byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><g stroke-linecap=\"round\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\"/></g></svg>", out _, out _);
@@ -2110,6 +2304,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, grouped);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Inline_style_linecap_matches_direct_attribute()
     {
         byte[] styled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\" style=\"stroke-linecap:round\"/></svg>", out _, out _);
@@ -2118,6 +2313,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, styled);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Stylesheet_class_linecap_applies_to_line()
     {
         byte[] styled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><style>.c { stroke-linecap: round; }</style><line class=\"c\" x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\"/></svg>", out _, out _);
@@ -2126,6 +2322,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, styled);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Root_attribute_linecap_inherits_to_line()
     {
         byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" stroke-linecap=\"round\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\"/></svg>", out _, out _);
@@ -2134,6 +2331,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, grouped);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_linejoin_inherits_to_path()
     {
         byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><g stroke-linejoin=\"round\"><path d=\"M2,2 L14,2 L14,14\" fill=\"none\" stroke=\"red\" stroke-width=\"2\"/></g></svg>", out _, out _);
@@ -2142,6 +2340,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, grouped);
     }
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Invalid_inline_linecap_still_rejects()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\" style=\"stroke-linecap:foo\"/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
@@ -2149,6 +2348,7 @@ public sealed class SvgStrokeFillTests
         Assert.Contains("stroke linecaps", exception.Message);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rect_inline_width_without_stroke_renders_fill_only()
     {
         byte[] styled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" style=\"stroke-width:2\"/></svg>", out _, out _);
@@ -2157,6 +2357,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(plain, styled);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Circle_attribute_width_without_stroke_renders_fill_only()
     {
         byte[] styled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"5\" fill=\"red\" stroke-width=\"2\"/></svg>", out _, out _);
@@ -2165,6 +2366,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(plain, styled);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_paint_with_leaf_width_strokes_rect()
     {
         byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><g stroke=\"blue\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" stroke-width=\"2\"/></g></svg>", out _, out _);
@@ -2173,6 +2375,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, grouped);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_paint_with_leaf_width_strokes_circle()
     {
         byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><g stroke=\"blue\"><circle cx=\"8\" cy=\"8\" r=\"5\" fill=\"red\" stroke-width=\"2\"/></g></svg>", out _, out _);
@@ -2181,6 +2384,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, grouped);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bevel_join_cuts_outer_miter_tip()
     {
         byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M8,8 L32,8 L32,32 L56,32\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\"/></svg>", out _, out _);
@@ -2190,6 +2394,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bevel_join_matches_miter_on_straight_runs()
     {
         byte[] beveled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M8,8 L32,8 L32,32 L56,32\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\"/></svg>", out _, out _);
@@ -2201,6 +2406,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bevel_join_renders_curved_corners()
     {
         byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M8,8 L32,8 Q32,32 56,32 L56,56\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\"/></svg>", out _, out _);
@@ -2213,6 +2419,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bevel_join_renders_closed_loops()
     {
         byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M8,8 L56,8 L56,56 L8,56 Z\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\"/></svg>", out _, out _);
@@ -2225,6 +2432,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bevel_join_renders_dashed_runs()
     {
         byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M8,8 L32,8 L32,32 L56,32\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\" stroke-dasharray=\"12 6\"/></svg>", out _, out _);
@@ -2235,6 +2443,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Validates_trailing_XML_after_bevel_polygon_strokes()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><polygon points=\"8,8 32,8 32,32\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\"/>");
@@ -2244,6 +2453,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Relative_moveto_offsets_from_open_subpath_end()
     {
         byte[] relative = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\"><path d=\"M8,36h184m0,64H8\" stroke=\"#036\" stroke-width=\"2\"/></svg>", out _, out _);
@@ -2252,6 +2462,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(absolute, relative);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bare_moveto_with_butt_caps_is_noop()
     {
         byte[] dotted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><path d='M192,100H8M0,0' stroke='#036' stroke-width='2'/></svg>", out _, out _);
@@ -2260,6 +2471,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(plain, dotted);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_path_gradient_fill_matches_solid_coverage()
     {
         byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0H4.5H8V8H0Z\" fill=\"url(#g)\"/></svg>", out _, out _);
@@ -2274,6 +2486,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solidAlpha, paintedAlpha);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Curved_path_gradient_fill_matches_solid_coverage()
     {
         byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M2,2 Q8,0 14,2 L14,14 L2,14 Z\" fill=\"url(#g)\"/></svg>", out _, out _);
@@ -2288,6 +2501,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solidAlpha, paintedAlpha);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_stop_fractional_gradient_matches_solid_fill()
     {
         byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0H4.5H8V8H0Z\" fill=\"url(#g)\"/></svg>", out _, out _);
@@ -2296,6 +2510,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solid, painted);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Degenerate_reflected_gradient_uses_mean_color_on_fractional_path()
     {
         byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"0\" spreadMethod=\"reflect\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0H4.5H8V8H0Z\" fill=\"url(#g)\"/></svg>", out _, out _);
@@ -2303,6 +2518,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solid, painted);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Sign_abutted_coordinates_match_spaced_twin()
     {
         byte[] abutted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M48,40l8-8L56,48Z\" fill=\"red\"/></svg>", out _, out _);
@@ -2311,6 +2527,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(spaced, abutted);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Sign_abutted_coordinates_match_spaced_twin_after_relative_moveto()
     {
         byte[] abutted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"m48,40l8-8L56,48Z\" fill=\"red\"/></svg>", out _, out _);
@@ -2319,6 +2536,7 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(spaced, abutted);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Multi_subpath_stroke_only_paints_all_subpaths()
     {
         // Unpainted fills skip fill validation (degenerate subpaths enclose no area), so every
@@ -2331,6 +2549,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Open_compound_gradient_stroke_uses_the_complete_centerline_box()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='90' height='60'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g fill='none'><path stroke='url(#g)' stroke-width='12' d='m0 0 45 30h45M0 60l45-30'/></g></svg>");
@@ -2344,6 +2563,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Degenerate_subpath_with_mask_stays_unsupported()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='90' height='60'><defs><mask id='m'><rect width='90' height='60' fill='#ffffff'/></mask></defs><g fill='none'><path stroke='#007749' stroke-width='12' mask='url(#m)' d='m0 0 45 30h45M0 60l45-30'/></g></svg>");
@@ -2354,6 +2574,7 @@ public sealed class SvgStrokeFillTests
         Assert.Contains("closed axis-aligned integer path contours", rejected.Message);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Round_cap_dot_renders_disc()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M8,4h0' fill='none' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>", out _, out _);
@@ -2367,6 +2588,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Butt_dot_renders_nothing()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M8,4h0' fill='none' stroke='red' stroke-width='4'/></svg>", out _, out _);
@@ -2375,6 +2597,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Square_cap_dot_renders_square()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M8,4h0' fill='none' stroke='red' stroke-width='4' stroke-linecap='square'/></svg>", out _, out _);
@@ -2389,6 +2612,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Zero_length_dash_run_paints_nothing()
     {
         byte[] full = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,8 H14' fill='none' stroke='#000' stroke-width='4' stroke-dasharray='4 2' stroke-linecap='round'/></svg>", out _, out _);
@@ -2398,6 +2622,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Bare_moveto_is_empty_but_zero_segment_round_caps_paint_a_dot()
     {
         byte[] bare = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M8,4' fill='none' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>", out _, out _);
@@ -2409,6 +2634,7 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Mixed_square_and_dot_fill_drops_dot()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M0,0 H8 V8 H0 Z M12,4h0' fill='red'/></svg>", out _, out _);
@@ -2417,17 +2643,5 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 12, 4));
     }
 
-    private static SvgColor Pixel(byte[] pixels, int width, int x, int y)
-    {
-        int offset = (y * width + x) * 4;
-        return new SvgColor(pixels[offset], pixels[offset + 1], pixels[offset + 2], pixels[offset + 3]);
-    }
-
-    private static long AlphaSum(byte[] pixels)
-    {
-        long total = 0;
-        for (int index = 3; index < pixels.Length; index += 4) total += pixels[index];
-        return total;
-    }
 }
 

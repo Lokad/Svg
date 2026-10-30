@@ -7,29 +7,34 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgPolygonFillTests
 {
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Polygon_fill_retains_typed_points_with_scene_storage()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
         int[] ends = [3];
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.QuarterEdges, null, null, budget);
+        using (SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.QuarterEdges, null, null, budget))
+        {
+            Assert.True(budget.Snapshot().CurrentBytes > 0);
+            SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
 
-        SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
-
-        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
-        Assert.Same(points, geometry.Polygon.Points);
-        Assert.Same(ends, geometry.Polygon.ContourEnds);
-        Assert.Null(geometry.Polygon.Signs);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
-        Assert.True(geometry.Polygon.HasFill);
-        Assert.False(geometry.Polygon.IsEvenOdd);
-        Assert.Equal(SvgPolygonMapping.QuarterEdges, geometry.Polygon.Mapping);
-        Assert.Null(geometry.Polygon.Clip);
-        Assert.Throws<InvalidOperationException>(() => _ = SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null)).Polygon);
-        Assert.Throws<InvalidOperationException>(() => _ = default(SvgGeometry).Polygon);
+            Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+            Assert.Same(points, geometry.Polygon.Points);
+            Assert.Same(ends, geometry.Polygon.ContourEnds);
+            Assert.Null(geometry.Polygon.Signs);
+            Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
+            Assert.True(geometry.Polygon.HasFill);
+            Assert.False(geometry.Polygon.IsEvenOdd);
+            Assert.Equal(SvgPolygonMapping.QuarterEdges, geometry.Polygon.Mapping);
+            Assert.Null(geometry.Polygon.Clip);
+            Assert.Throws<InvalidOperationException>(() => _ = SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null)).Polygon);
+            Assert.Throws<InvalidOperationException>(() => _ = default(SvgGeometry).Polygon);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Right_triangle_renders_analytic_coverage()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out int width, out int height);
@@ -44,6 +49,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Winding_direction_does_not_change_solid_fill()
     {
         byte[] counterClockwise = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
@@ -53,6 +59,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Even_odd_matches_nonzero_on_simple_contours()
     {
         byte[] nonzero = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
@@ -62,6 +69,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Diagonal_polyline_closes_fill_like_polygon()
     {
         byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
@@ -71,6 +79,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Diagonal_path_renders_closed_fill()
     {
         byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
@@ -80,6 +89,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Unclosed_nonfinal_diagonal_subpath_seals_like_closepath()
     {
         byte[] closed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z M2,1 L4,1 L2,3 Z' fill='red'/></svg>", out _, out _);
@@ -89,6 +99,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Explicit_return_to_start_seals_like_closepath()
     {
         byte[] closed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>", out _, out _);
@@ -98,6 +109,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_same_wound_nonzero_triangle_fills_outer()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z M2,1 L4,1 L2,3 Z' fill='red'/></svg>", out _, out _);
@@ -107,6 +119,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Self_intersecting_diagonal_polygon_paints_union()
     {
         // A single closed contour crossing only itself paints its unsigned
@@ -121,6 +134,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Evenodd_bowtie_paints_union()
     {
         // Each lobe winds once, so even-odd paints both split loops like nonzero.
@@ -132,6 +146,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Gradient_bowtie_paints_both_lobes()
     {
         // The crossing split feeds the shared gradient repaint, so both
@@ -147,6 +162,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Radial_bowtie_paints_both_lobes()
     {
         // The crossing split feeds the shared radial repaint, so both
@@ -161,6 +177,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Pattern_bowtie_matches_solid_bowtie()
     {
         // A solid pattern tile repaints the split loops exactly like a solid fill.
@@ -171,6 +188,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Retraced_spike_renders_main_triangle()
     {
         byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 4,4 0,8' fill='red'/></svg>", out _, out _);
@@ -182,6 +200,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("0,0 8,8 8,8")]
     [InlineData("0.5,0.5 7.5,0.5")]
     [InlineData("0.5,0.5 0.5,0.5 0.5,0.5")]
@@ -194,6 +213,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void ViewBox_scale_maps_polygon_edges()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out int width, out int height);
@@ -206,6 +226,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Clip_path_intersects_polygon_bounds()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='4' y='0' width='4' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
@@ -216,6 +237,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Root_xy_leaves_clipped_polygon_untouched()
     {
         byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='4' y='0' width='4' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
@@ -225,6 +247,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Open_line_path_strokes_band()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 L8,4' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -237,6 +260,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Open_line_default_fill_paints_nothing_extra()
     {
         byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 L8,4' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -246,6 +270,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Two_open_subpaths_stroke_cross()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 H8 M4,0 V8' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -256,6 +281,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Closed_spike_strokes()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M4,0 L4,8 Z' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -265,6 +291,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Single_point_fill_renders_nothing()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M4,4' fill='red'/></svg>", out _, out _);
@@ -273,6 +300,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Mixed_open_closed_path_drops_open_segment()
     {
         byte[] mixed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M0,4 L8,4' fill='red' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -283,6 +311,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Open_polyline_matches_open_path()
     {
         byte[] polyline = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -292,6 +321,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Diagonal_open_path_strokes()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,8' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -300,6 +330,7 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 7));
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void ZContinued_fill_matches_explicit_moveto_twin()
     {
         byte[] continued = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M5,5 H15 V15 Z h10 v10 z' fill='red'/></svg>", out _, out _);
@@ -309,6 +340,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Dangling_path_syntax_does_not_hide_malformed_xml()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 Z h' fill='red'/>");
@@ -319,6 +351,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData(" h")]
     [InlineData("0")]
     public void Invalid_tail_after_close_renders_completed_prefix(string tail)
@@ -331,6 +364,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_clip_path_scales_edge_pixels()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='1.5' y='0' width='5' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
@@ -342,6 +376,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_clip_scales_gradient_alpha()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><clipPath id='c'><rect x='1.5' y='0' width='5' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='url(#g)' clip-path='url(#c)'/></svg>", out _, out _);
@@ -352,6 +387,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_clip_scales_radial_alpha()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient><clipPath id='c'><rect x='1.5' y='0' width='5' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='url(#g)' clip-path='url(#c)'/></svg>", out _, out _);
@@ -362,6 +398,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void ViewBox_scaled_clip_path_keeps_mapped_region()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><clipPath id='c'><rect width='8' height='16'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='red' clip-path='url(#c)'/></svg>", out int width, out int height);
@@ -375,6 +412,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void ViewBox_scaled_clip_matches_direct_rendering()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><clipPath id='c'><rect width='8' height='16'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
@@ -384,6 +422,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_viewport_clip_matches_clip_path_rendering()
     {
         byte[] clipped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><clipPath id='c'><rect width='8' height='16'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
@@ -393,6 +432,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Offset_nested_viewport_matches_shifted_clip_rendering()
     {
         // A nonzero viewport origin shifts polygon content and
@@ -404,6 +444,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void OutputScale_viewBox_clip_matches_enlarged_direct_rendering()
     {
         // Clip boxes map through the output transform with the
@@ -420,6 +461,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void OutputScale_fractional_clip_matches_integer_direct_rendering()
     {
         // Fractional clip edges scale per-pixel coverage exactly
@@ -436,6 +478,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void ViewBox_scaled_offset_viewport_matches_shifted_clip_rendering()
     {
         // Viewport origins compose through the root viewBox map
@@ -447,6 +490,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Disjoint_opposite_contours_paint()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M .1 .1 L .4 .1 L .1 .4 Z M .6 .6 L .6 .9 L .9 .6 Z' fill='red'/></svg>", out int width, out int height);
@@ -462,6 +506,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Contour_reversal_keeps_disjoint_paint()
     {
         byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M .1 .1 L .4 .1 L .1 .4 Z M .6 .6 L .6 .9 L .9 .6 Z' fill='red'/></svg>", out _, out _);
@@ -471,6 +516,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void ViewBox_scaled_gradient_clip_matches_direct_rendering()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><clipPath id='c'><rect width='8' height='16'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='url(#g)' clip-path='url(#c)'/></svg>", out _, out _);
@@ -480,6 +526,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void OutputScale_clip_matches_enlarged_direct_rendering()
     {
         string clip64 = "<defs><clipPath id='c'><rect x='16' y='16' width='32' height='32'/></clipPath></defs>";
@@ -495,6 +542,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void OutputScale_gradient_clip_matches_enlarged_direct_rendering()
     {
         string paint64 = "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><clipPath id='c'><rect x='16' y='16' width='32' height='32'/></clipPath></defs>";
@@ -510,6 +558,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_clip_path_on_polygon_matches_backward_clip()
     {
         byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/><defs><clipPath id='c'><rect x='4' y='0' width='4' height='8'/></clipPath></defs></svg>", out _, out _);
@@ -521,6 +570,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_gray_mask_on_group_matches_backward_mask()
     {
         byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g mask='url(#m)'><polygon points='0,0 8,0 0,8' fill='red'/></g><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>", out _, out _);
@@ -530,6 +580,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_gray_mask_on_polygon_matches_backward_mask()
     {
         byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' mask='url(#m)'/><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>", out _, out _);
@@ -539,6 +590,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_custom_region_mask_on_rect_matches_backward_mask()
     {
         byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#m)'/><defs><mask id='m' maskUnits='userSpaceOnUse' x='2' y='2' width='4' height='4'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs></svg>", out _, out _);
@@ -548,6 +600,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_clip_path_on_group_matches_backward_clip()
     {
         byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g clip-path='url(#c)'><polygon points='0,0 8,0 0,8' fill='red'/></g><defs><clipPath id='c'><rect x='4' y='0' width='4' height='8'/></clipPath></defs></svg>", out _, out _);
@@ -559,6 +612,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_full_fraction_clip_on_curved_path_matches_unclipped_fill()
     {
         byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 Q4,-4 8,8' fill='red' clip-path='url(#window)'/><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs></svg>", out _, out _);
@@ -568,6 +622,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_bounding_box_clip_on_polygon_matches_backward_clip()
     {
         byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red' clip-path='url(#window)'/><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs></svg>", out _, out _);
@@ -577,6 +632,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Full_fraction_clip_on_curved_path_matches_unclipped_fill()
     {
         byte[] clipped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs><path d='M0,8 Q4,-4 8,8' fill='red' clip-path='url(#window)'/></svg>", out _, out _);
@@ -586,6 +642,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nonzero_opposite_wound_hole_stays_open()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M2,2 L2,6 L6,2 Z' fill='red'/></svg>", out _, out _);
@@ -597,6 +654,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Even_odd_same_wound_hole_stays_open()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M2,2 L6,2 L2,6 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
@@ -607,6 +665,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nonzero_same_wound_overlap_fills()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M2,2 L6,2 L2,6 Z' fill='red'/></svg>", out _, out _);
@@ -616,6 +675,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Touching_hole_renders()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 L8,0 L8,8 L0,8 Z M0,4 L4,2 L4,6 Z' fill='red'/></svg>", out _, out _);
@@ -624,6 +684,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Disjoint_triangles_union_sums_coverage()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,0 L0,4 Z M4,4 L8,4 L4,8 Z' fill='red'/></svg>", out _, out _);
@@ -635,6 +696,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_square_renders_analytic_coverage()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L4.5,0.5 L4.5,4.5 L0.5,4.5 Z' fill='red'/></svg>", out _, out _);
@@ -648,6 +710,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_triangle_renders_analytic_coverage()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L4.5,0.5 L0.5,4.5 Z' fill='red'/></svg>", out _, out _);
@@ -662,6 +725,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Half_phase_walker_bar_truncates_fringe_bytes()
     {
         // Axis-aligned box partial rows truncate like Chrome (127.5 to 127),
@@ -676,6 +740,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Quarter_phase_walker_bar_truncates_fringe_bytes()
     {
         // Quarter-phase box fringe truncates (63.75 to 63), matching
@@ -690,6 +755,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Eighth_phase_walker_bars_render_true_fractional_truncation()
     {
         // Proven axis-aligned boxes walk desnapped events, so eighth phases
@@ -707,6 +773,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_viewBox_matches_integer_rendering()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 4 4'><path d='M0.5,0.5 L3.5,0.5 L0.5,3.5 Z' fill='red'/></svg>", out _, out _);
@@ -716,6 +783,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_open_stroke_makes_band()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L4.5,0.5 L7.5,0.5' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -730,6 +798,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_bowtie_paints_union()
     {
         // A zero signed-area authored ring still paints both filled lobes.
@@ -743,6 +812,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Double_crossing_diagonal_contour_paints_union()
     {
         // A single closed contour with two interior crossings splits twice
@@ -762,6 +832,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Double_crossing_evenodd_contour_stays_unsupported()
     {
         // First-vertex parity signs are meaningless for vertex-sharing loops,
@@ -775,6 +846,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Disjoint_triangle_and_bowtie_paint_union()
     {
         // A clean contour copies through beside a split one; disjoint regions
@@ -790,6 +862,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Relative_moveto_implicit_pairs_match_absolute_twin()
     {
         // The integer tokenizer accumulates a first-subpath lowercase moveto
@@ -801,6 +874,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Uppercase_moveto_implicit_pairs_stay_absolute()
     {
         // Control: an uppercase moveto keeps implicit pairs absolute per spec.
@@ -811,6 +885,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_relative_moveto_implicit_pairs_match_absolute_twin()
     {
         // Same moveto accumulation through the fractional path lowering.
@@ -821,6 +896,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Second_subpath_relative_moveto_implicit_pairs_match_absolute_twin()
     {
         // The integer tokenizer resolves every lowercase moveto, not just the
@@ -832,6 +908,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Relative_moveto_after_closepath_starts_from_subpath_start()
     {
         // A relative moveto after closepath resolves from the subpath start,
@@ -844,6 +921,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Forward_cross_type_gradient_href_resolves()
     {
         // Forward hrefs resolve in document order like backward ones;
@@ -856,6 +934,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Double_crossing_gradient_evenodd_contour_stays_unsupported()
     {
         // First-vertex parity signs are meaningless for vertex-sharing
@@ -869,6 +948,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Double_crossing_radial_evenodd_contour_stays_unsupported()
     {
         // First-vertex parity signs are meaningless for vertex-sharing
@@ -882,6 +962,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_polygon_matches_equivalent_path()
     {
         byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0.5 7.5,0.5 0.5,7.5' fill='red'/></svg>", out _, out _);
@@ -891,6 +972,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_polyline_closes_fill_like_polygon()
     {
         byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0.5 7.5,0.5 0.5,7.5' fill='red'/></svg>", out _, out _);
@@ -900,6 +982,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Fractional_point_list_stroke_matches_path_stroke()
     {
         byte[] polyline = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0.5,0.5 7.5,0.5 7.5,7.5' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
@@ -909,6 +992,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Fractional_point_list_truncation_is_malformed()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0.5 7.5' fill='red'/></svg>");
@@ -919,6 +1003,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Fractional_point_list_garbage_is_malformed()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0.5 hello,1' fill='red'/></svg>");
@@ -929,6 +1014,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Disjoint_opposite_contours_ignore_reversal()
     {
         byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M .1 .1 L .4 .1 L .1 .4 Z M .6 .6 L .6 .9 L .9 .6 Z' fill='red'/></svg>", out _, out _);
@@ -939,6 +1025,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Evenodd_counter_hole_stays_transparent()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 H0 Z M2,2 H6 V6 H2 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
@@ -949,6 +1036,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nonzero_nested_contour_paints_interior()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 H0 Z M2,2 H6 V6 H2 Z' fill='red' fill-rule='nonzero'/></svg>", out _, out _);
@@ -958,6 +1046,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Group_evenodd_opens_child_counter()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g fill-rule='evenodd'><path d='M0,0 H8 V8 H0 Z M2,2 H6 V6 H2 Z' fill='red'/></g></svg>", out _, out _);
@@ -967,6 +1056,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_group_inner_rule_wins()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g fill-rule='evenodd'><g fill-rule='nonzero'><path d='M0,0 H8 V8 H0 Z M2,2 H6 V6 H2 Z' fill='red'/></g></g></svg>", out _, out _);
@@ -975,6 +1065,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_group_inherits_outer_rule()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g fill-rule='evenodd'><g><path d='M0,0 H8 V8 H0 Z M2,2 H6 V6 H2 Z' fill='red'/></g></g></svg>", out _, out _);
@@ -983,6 +1074,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Root_style_fill_rule_applies_to_leaf()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' style='fill-rule:evenodd'><path d='M0,0 H8 V8 H0 Z M2,2 H6 V6 H2 Z' fill='red'/></svg>", out _, out _);
@@ -991,6 +1083,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Root_attribute_fill_rule_applies_to_leaf()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' fill-rule='evenodd'><path d='M0,0 H8 V8 H0 Z M2,2 H6 V6 H2 Z' fill='red'/></svg>", out _, out _);
@@ -999,6 +1092,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Invalid_group_fill_rule_stays_unsupported()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g fill-rule='bogus'><path d='M0,0 H8 V8 H0 Z' fill='red'/></g></svg>");
@@ -1009,13 +1103,8 @@ public sealed class SvgPolygonFillTests
         Assert.Contains("Only nonzero and evenodd fill rules are implemented.", rejected.Message);
     }
 
-    private static SvgColor Pixel(byte[] pixels, int width, int x, int y)
-    {
-        int offset = (y * width + x) * 4;
-        return new SvgColor(pixels[offset], pixels[offset + 1], pixels[offset + 2], pixels[offset + 3]);
-    }
-
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Corner_touching_siblings_paint_union()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H4 V4 H0 Z M4,4 H8 V8 H4 Z' fill='red'/></svg>", out _, out _);
@@ -1026,6 +1115,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Relative_absolute_touch_twins_paint_union()
     {
         byte[] relative = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='m0,0 l8,0 l0,8 l-8,0 z m8,4 l4,-4 l0,8 z' fill='red'/></svg>", out _, out _);
@@ -1038,6 +1128,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_touch_hole_stays_empty()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 H0 Z M0,0 L1,4 L4,1 Z' fill='red'/></svg>", out _, out _);
@@ -1048,6 +1139,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Evenodd_touch_hole_stays_empty()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 H0 Z M0,0 L1,4 L4,1 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
@@ -1057,6 +1149,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Self_touch_hourglass_paints_both_lobes()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,0 L2,2 L4,4 L0,4 L2,2' fill='red'/></svg>", out _, out _);
@@ -1067,6 +1160,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Coincident_edge_overlap_retains_directed_coverage()
     {
         // Three fresh browser captures pin the complete directed-path image.
@@ -1079,6 +1173,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Crossing_plus_touch_at_split_vertex_paints_union()
     {
         // Planar split: the triangle corner (2,2) is bitwise-identical to the
@@ -1096,6 +1191,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Pentagram_paints_full_star()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><polygon points='50,0 21,91 98,35 2,35 79,91' fill='red'/></svg>", out _, out _);
@@ -1109,6 +1205,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Crossing_squares_paint_union()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M0,0 H8 V8 H0 Z M4,2 H12 V8 H4 Z' fill='red'/></svg>", out _, out _);
@@ -1120,6 +1217,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Mixed_crossing_and_corner_touch_paints_union()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M8,0 L16,0 L16,8 L8,8 Z M4,4 L12,4 L4,12 Z' fill='red'/></svg>", out _, out _);
@@ -1132,6 +1230,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Evenodd_crossing_triangles_clear_lens()
     {
         byte[] nonzero = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 L11,3 L4,12 Z M7,0 L15,5 L9,13 Z' fill='red'/></svg>", out _, out _);
@@ -1149,6 +1248,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Evenodd_mixed_crossing_and_corner_touch_paints_solos()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M8,0 L16,0 L16,8 L8,8 Z M4,4 L12,4 L4,12 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
@@ -1160,6 +1260,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Shared_two_span_pair_retains_whole_path_antialiasing()
     {
         byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,0 L10,0 L10,4 L6,6 L10,8 L10,10 L0,10 Z M10,0 L16,0 L16,10 L10,10 Z' fill='red'/></svg>", out _, out _);
@@ -1173,6 +1274,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Shared_two_span_evenodd_retains_whole_path_antialiasing()
     {
         byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,0 L10,0 L10,4 L6,6 L10,8 L10,10 L0,10 Z M10,0 L16,0 L16,10 L10,10 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
@@ -1186,6 +1288,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_span_sharing_evenodd_keeps_hole_empty()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,0 L16,0 L16,16 L0,16 Z M4,0 L12,0 L12,8 L8,12 L4,8 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
@@ -1197,6 +1300,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Shared_single_span_evenodd_retains_whole_path_antialiasing()
     {
         byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,8 L8,8 L4,14 Z M0,8 L4,2 L8,8 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
@@ -1210,6 +1314,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dust_spike_drops_leaving_main_lobe()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L2,1 L4,0 L2,1 L2,4 Z' fill='red'/></svg>", out _, out _);
@@ -1219,6 +1324,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Identical_diagonal_duplicates_render_once()
     {
         // Coincident merge runs before classification, so repeated identical
@@ -1233,6 +1339,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Editor_namedview_paints_nothing()
     {
         byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8' fill='red'/></svg>", out _, out _);
@@ -1242,6 +1349,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Percentage_root_matches_explicit_viewport_render()
     {
         byte[] explicitPixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='300' height='150'><rect width='300' height='150' fill='red'/></svg>", out int explicitWidth, out int explicitHeight);
@@ -1253,6 +1361,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Block_display_paints_like_inline()
     {
         byte[] inlinePixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8' fill='red'/></svg>", out _, out _);
@@ -1262,6 +1371,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rotated_square_paints_diamond()
     {
         // Axis-aligned integer paths route to the diagonal fill path under
@@ -1277,6 +1387,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Skewed_path_paints_parallelogram()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M4,4 H12 V12 H4 Z' fill='red' transform='skewX(45)'/></svg>", out _, out _);
@@ -1286,6 +1397,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rotated_rectangle_paints_its_interior()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='4' y='4' width='8' height='8' fill='red' transform='rotate(30)'/></svg>", out int width, out int height);
@@ -1296,6 +1408,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rotated_ellipse_paints_its_mapped_interior()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='red' transform='rotate(30)'/></svg>", out int width, out int height);
@@ -1306,6 +1419,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rotated_pattern_rectangle_preserves_placement_and_solid_tile_ink()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p)' transform='rotate(30)'/></svg>");
@@ -1316,6 +1430,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Custom_region_masks_clip_group_content()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><mask id='m' maskUnits='userSpaceOnUse' x='4' y='4' width='8' height='8'><rect x='0' y='0' width='16' height='16' fill='#ffffff'/></mask></defs><g mask='url(#m)'><rect x='0' y='0' width='16' height='16' fill='red'/></g></svg>", out _, out _);
@@ -1328,6 +1443,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Custom_region_masks_combine_with_mask_value()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><mask id='m' maskUnits='userSpaceOnUse' x='4' y='4' width='8' height='8'><rect x='0' y='0' width='16' height='16' fill='#808080'/></mask></defs><g mask='url(#m)'><rect x='0' y='0' width='16' height='16' fill='red'/></g></svg>", out _, out _);
@@ -1337,6 +1453,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Custom_region_masks_combine_with_group_opacity()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><mask id='m' maskUnits='userSpaceOnUse' x='4' y='4' width='8' height='8'><rect x='0' y='0' width='16' height='16' fill='#ffffff'/></mask></defs><g opacity='0.5' mask='url(#m)'><rect x='0' y='0' width='16' height='16' fill='red'/></g></svg>", out _, out _);
@@ -1346,6 +1463,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Explicitly_closed_empty_leaf_matches_self_closing_twin()
     {
         // An explicitly closed leaf with an element-free subtree renders exactly like the self-closing form.
@@ -1356,6 +1474,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Offscreen_doubly_reflected_pattern_paints_nothing()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p)' transform='scale(-1,-1)'/></svg>");
@@ -1367,6 +1486,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rotated_rectangle_gradient_paints_in_source_coordinates()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' transform='rotate(30)'/></svg>");
@@ -1379,6 +1499,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Non_uniform_general_transform_paints_union()
     {
         // Fills need no uniformity: areas sum regardless of stretch. Staged oracle
@@ -1392,6 +1513,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Non_uniform_rotated_stroke_preserves_native_source_width()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,8 H14' stroke='red' stroke-width='2' fill='none' transform='rotate(30) scale(2,1)'/></svg>");
@@ -1402,6 +1524,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Rotation_matrix_matches_direct_rendering()
     {
         // Exact rotation matrices parse as similarities and map path
@@ -1413,6 +1536,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Translated_gradient_ancestor_matches_baked_twin()
     {
         // Translated-ancestor userSpaceOnUse composition evaluates exactly like
@@ -1424,6 +1548,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Degenerate_ring_renders_empty()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 2,0 0,0 0,2' fill='red'/></svg>", out _, out _);
@@ -1432,6 +1557,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dropped_degenerate_line_leaves_fractional_fill_untouched()
     {
         byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2.5,2.5 L14.5,2.5 L2.5,14.5 Z' fill='red'/></svg>", out _, out _);
@@ -1443,6 +1569,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Dropped_degenerate_dot_leaves_fractional_fill_untouched()
     {
         byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2.5,2.5 L14.5,2.5 L2.5,14.5 Z' fill='red'/></svg>", out _, out _);
@@ -1451,14 +1578,8 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(plain, pixels);
     }
 
-    private static long AlphaSum(byte[] pixels)
-    {
-        long total = 0;
-        for (int index = 3; index < pixels.Length; index += 4) total += pixels[index];
-        return total;
-    }
-
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Split_vertical_edge_walks_like_unsplit_edge()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
@@ -1476,6 +1597,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Coincident_shared_edge_retains_directed_coverage()
     {
         // Three fresh browser captures pin the complete directed-path image.
@@ -1488,6 +1610,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Contained_double_strike_retains_authored_winding()
     {
         // Three fresh browser captures pin the complete directed-path image.
@@ -1500,6 +1623,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Nested_touching_hole_stays_unsupported()
     {
         // Nested loops sharing one coincident span keep hole roles through the fan path.
@@ -1510,6 +1634,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Multi_span_nested_island_drops_like_outer()
     {
         // A nested island sharing several boundary spans drops, keeping the outer fill.
@@ -1520,6 +1645,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Adjacent_squares_splice_like_outer()
     {
         // Adjacent loops sharing single spans splice sequentially into the union boundary.
@@ -1530,6 +1656,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Opposite_adjacent_triangles_retain_directed_edges()
     {
         // Three fresh browser captures pin the complete directed-path image.
@@ -1540,6 +1667,7 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 16, 8, 8));
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Retraced_span_plus_crossing_unions_like_outline()
     {
         // A single loop retracing one span across a crossing subdivides,
@@ -1559,6 +1687,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Variant_envelope_arcs_render_with_fringe_pins()
     {
         // Near-duplicate variant arcs conform span-by-span into exact duplicates,
@@ -1575,6 +1704,7 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Variant_arc_pair_retains_both_directed_contours()
     {
         // The native winding renderer keeps this formerly rejected variant pair
@@ -1591,6 +1721,7 @@ public sealed class SvgPolygonFillTests
         Assert.True(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).Length > 0);
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Touching_letter_parts_union_like_outline()
     {
         // Two letter fragments sharing vertices link their boundary arcs
@@ -1604,6 +1735,7 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 736, 370));
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Second_touching_letter_pair_unions_like_outline()
     {
         // A second touching letter pair links through the same shared-vertex arc surgery.
@@ -1617,6 +1749,7 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 736, 370));
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Chained_letter_triple_unions_like_outline()
     {
         // Three letter fragments sharing an opposite-directed edge chain splice
@@ -1630,6 +1763,7 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 736, 370));
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Evenodd_crossing_ring_pair_fills_like_outline()
     {
         // An even-odd ring pair with only strict crossings subdivides both
@@ -1643,6 +1777,7 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 599, 399));
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Crossing_stroke_outlines_union_like_outline()
     {
         // Whisker stroke outlines with strict inter-loop crossings take
@@ -1657,6 +1792,7 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 799, 479));
     }
     [Fact]
+    [Trait("Layer", "Rendering")]
     public void Self_crossing_loop_fills_like_outline()
     {
         // A single self-crossing fill takes the analytic edges walker
