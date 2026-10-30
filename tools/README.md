@@ -192,6 +192,26 @@ artifacts; summarize conclusions in the change description. Update
 [the design](../docs/RASTERIZATION_DESIGN.md) only for lasting architectural changes
 and [the test guide](../tests/README.md) only for collection/admission changes.
 
+## Hosted SVGWeb inventory
+
+The optional standard-library Python procedure inventories every direct `.svg`
+entry in the W3C-hosted SVGWeb directory. It fetches at most four documents at a
+time, caps each response at 8 MiB and writes JSON metadata only. It never writes
+SVG bodies or fetches their external dependencies. Select a new output path:
+
+```powershell
+python -B tools/inventory-svgweb.py artifacts/research/svgweb-inventory.json
+```
+
+Compare names and original byte hashes with the
+[committed ledger](../tests/Research/svgweb/originals.json); additions, removals and
+changed inputs need explicit accounting. HTTP/XML failures stay in the output.
+Tag/attribute counts, lexical `font-family` declarations and external-reference
+uses support triage; they do not resolve CSS, prove dependencies available or
+establish rendering correctness. This live-endpoint procedure is outside normal
+builds/tests. The [review record](../tests/Research/svgweb/README.md) defines the
+remaining original-rendering and orthogonal-fixture work.
+
 ## Smoke checks and CI evidence
 
 The memory probe supplies a host budget with `--memory-budget-bytes`; it does not

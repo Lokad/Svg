@@ -1,0 +1,3753 @@
+{
+  "schemaVersion": 1,
+  "directory": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/",
+  "retrievedUtc": "2026-10-30T09:59:21.839145+00:00",
+  "indexSha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+  "files": 204,
+  "totalSourceBytes": 3379939,
+  "sourceSvgFilesRetained": 0,
+  "sourceVersion": "0.4.0-dev.1+544b741742a35a5f9ec858d382ec9539d9f50416",
+  "librarySha256": "5f1b0864391cd092109357d4023aa5c952068c320521ede983c56af1dc0b5f7a",
+  "validation": {
+    "windows": ".NET 11.0.0-rc.3.26522.148",
+    "linux": ".NET 11.0.0-rc.3.26522.148",
+    "options": "Default; no supplied fonts or external resources",
+    "canonicalCall": "SvgConverter.ConvertToPng(originalBytes, SvgRenderOptions.Default, CancellationToken)",
+    "qualification": "Every sample remains pending acceptance: dimensions/fonts/resources/static state and independent native differences require triage. Initial default attempts supply no fonts or external resources; a render alone does not pass the original.",
+    "outcomesPerHost": {
+      "UnsupportedFeature": 65,
+      "rendered": 136,
+      "MalformedInput": 3
+    },
+    "sweepSeconds": 62.20903979986906
+  },
+  "samples": [
+    {
+      "name": "410.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/410.svg",
+      "bytes": 313,
+      "sourceSha256": "5fba6c8c0d7da11542e4a8f9ad9754868000926a7436481115b820900eb0491b",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {
+        "text": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG text requires a prepared font snapshot.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 4,
+        "LinePosition": 4
+      }
+    },
+    {
+      "name": "AJ_Digital_Camera.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/AJ_Digital_Camera.svg",
+      "bytes": 132619,
+      "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+      "dimensions": {
+        "width": "406.25000",
+        "height": "206.25000"
+      },
+      "cssFontFamilyDeclarations": [
+        "Arial Narrow",
+        "Bitstream Vera Sans",
+        "Bitstream Vera Serif"
+      ],
+      "features": {
+        "linearGradient": 135,
+        "radialGradient": 40
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Only bare-number and px dash offsets are implemented."
+    },
+    {
+      "name": "DroidSans-Bold.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/DroidSans-Bold.svg",
+      "bytes": 29099,
+      "sourceSha256": "b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed",
+      "fontFamilies": [
+        "Droid Sans"
+      ],
+      "cssFontFamilyDeclarations": [
+        "Droid Sans"
+      ],
+      "features": {
+        "font": 1,
+        "font-face": 1,
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG text requires a prepared font snapshot.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 177,
+        "LinePosition": 2
+      }
+    },
+    {
+      "name": "DroidSans.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/DroidSans.svg",
+      "bytes": 29093,
+      "sourceSha256": "258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b",
+      "fontFamilies": [
+        "Droid Sans"
+      ],
+      "cssFontFamilyDeclarations": [
+        "Droid Sans"
+      ],
+      "features": {
+        "font": 1,
+        "font-face": 1,
+        "text": 4
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG text requires a prepared font snapshot.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 173,
+        "LinePosition": 6
+      }
+    },
+    {
+      "name": "DroidSansMono.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/DroidSansMono.svg",
+      "bytes": 19104,
+      "sourceSha256": "c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d",
+      "fontFamilies": [
+        "Droid Sans Mono"
+      ],
+      "cssFontFamilyDeclarations": [
+        "Droid Sans Mono"
+      ],
+      "features": {
+        "font": 1,
+        "font-face": 1,
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG text requires a prepared font snapshot.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 135,
+        "LinePosition": 2
+      }
+    },
+    {
+      "name": "DroidSerif-Bold.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/DroidSerif-Bold.svg",
+      "bytes": 39859,
+      "sourceSha256": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+      "fontFamilies": [
+        "Droid Serif"
+      ],
+      "cssFontFamilyDeclarations": [
+        "Droid Serif"
+      ],
+      "features": {
+        "font": 1,
+        "font-face": 1,
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG text requires a prepared font snapshot.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 225,
+        "LinePosition": 2
+      }
+    },
+    {
+      "name": "DroidSerif-BoldItalic.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/DroidSerif-BoldItalic.svg",
+      "bytes": 44315,
+      "sourceSha256": "ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0f424f7f259",
+      "fontFamilies": [
+        "Droid Serif"
+      ],
+      "cssFontFamilyDeclarations": [
+        "Droid Serif"
+      ],
+      "features": {
+        "font": 1,
+        "font-face": 1,
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG text requires a prepared font snapshot.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 241,
+        "LinePosition": 2
+      }
+    },
+    {
+      "name": "DroidSerif-Italic.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/DroidSerif-Italic.svg",
+      "bytes": 29621,
+      "sourceSha256": "e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73",
+      "fontFamilies": [
+        "Droid Serif"
+      ],
+      "cssFontFamilyDeclarations": [
+        "Droid Serif"
+      ],
+      "features": {
+        "font": 1,
+        "font-face": 1,
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG text requires a prepared font snapshot.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 183,
+        "LinePosition": 2
+      }
+    },
+    {
+      "name": "DroidSerif-Regular.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/DroidSerif-Regular.svg",
+      "bytes": 39583,
+      "sourceSha256": "451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3",
+      "fontFamilies": [
+        "Droid Serif"
+      ],
+      "cssFontFamilyDeclarations": [
+        "Droid Serif"
+      ],
+      "features": {
+        "font": 1,
+        "font-face": 1,
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG text requires a prepared font snapshot.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 224,
+        "LinePosition": 2
+      }
+    },
+    {
+      "name": "Steps.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/Steps.svg",
+      "bytes": 16453,
+      "sourceSha256": "bb86d3eca3502649661d892cbfdb8ad604611b3cdf48b5f131461536476715af",
+      "dimensions": {
+        "width": "600",
+        "height": "600"
+      },
+      "fontFamilies": [
+        "sans-serif"
+      ],
+      "eventHandlers": 7,
+      "features": {
+        "script": 1,
+        "text": 21
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG root attribute 'onload' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "svg",
+        "AttributeName": "onload",
+        "AttributeValue": "NewGame()",
+        "LineNumber": 3,
+        "LinePosition": 123
+      }
+    },
+    {
+      "name": "USStates.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/USStates.svg",
+      "bytes": 90035,
+      "sourceSha256": "615f7c8c43e4d7181969496643ed8f35d74fc29fea391c8d8dd219aa6547136b",
+      "dimensions": {
+        "width": "1000",
+        "height": "600"
+      },
+      "fontFamilies": [
+        "sans-serif"
+      ],
+      "eventHandlers": 154,
+      "features": {
+        "script": 1,
+        "text": 9
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG root attribute 'onload' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "svg",
+        "AttributeName": "onload",
+        "AttributeValue": "loaded()",
+        "LineNumber": 2,
+        "LinePosition": 6
+      }
+    },
+    {
+      "name": "aa.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/aa.svg",
+      "bytes": 993,
+      "sourceSha256": "5d40c766974abadc07c16bfdc76a25b5669cb6c876ab2a7e86536e2deec47bd2",
+      "dimensions": {
+        "viewBox": "0 0 112 90"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "48f8f3813ca9ebc8ed7a5d335b40093e6f381af3e51ad399f6614c2f0ee01233",
+        "linux": "48f8f3813ca9ebc8ed7a5d335b40093e6f381af3e51ad399f6614c2f0ee01233"
+      }
+    },
+    {
+      "name": "accessible.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/accessible.svg",
+      "bytes": 764,
+      "sourceSha256": "41d806f0d8184d3af20c7ba1492487abee4901f79201178979478189b60aae93",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "b3b692763ede3b5d4da1a2f1e54fbdbccdaa7261aa29f2baea609836d3ff5803",
+        "linux": "b3b692763ede3b5d4da1a2f1e54fbdbccdaa7261aa29f2baea609836d3ff5803"
+      }
+    },
+    {
+      "name": "acid.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/acid.svg",
+      "bytes": 1720,
+      "sourceSha256": "9c57a55325c11464d4fc42506dbe53fd9f027db2294abcc3170c300847d34a76",
+      "dimensions": {
+        "viewBox": "0 0 108 95"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "bb2ec9b41e636c3727e9f4fa50ca3da0bbe0414c626158302854c5089461d4c7",
+        "linux": "bb2ec9b41e636c3727e9f4fa50ca3da0bbe0414c626158302854c5089461d4c7"
+      }
+    },
+    {
+      "name": "adobe.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/adobe.svg",
+      "bytes": 149,
+      "sourceSha256": "a5ac85d3f1100b493898d4ebbd1b64a03d1b9c42115582eb069158aebc85ce2e",
+      "dimensions": {
+        "viewBox": "0 0 105 93"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "5a6782b45db4f13f6b4bf49add1c8b0294f7eea1d22277e4c03d0fa337bb9dbb",
+        "linux": "5a6782b45db4f13f6b4bf49add1c8b0294f7eea1d22277e4c03d0fa337bb9dbb"
+      }
+    },
+    {
+      "name": "alphachannel.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/alphachannel.svg",
+      "bytes": 263,
+      "sourceSha256": "c4a92f8cd118d53f42aba99bd85b354b10d48d98e33712efa080813c88f07496",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "8e17af08b8bca5f551876820577b73feb9b8a1a303e5a2e128a4da7754fe383b",
+        "linux": "8e17af08b8bca5f551876820577b73feb9b8a1a303e5a2e128a4da7754fe383b"
+      }
+    },
+    {
+      "name": "android.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/android.svg",
+      "bytes": 471,
+      "sourceSha256": "064fa084add47a04179444b6654d776250d3d3eb66a49f56233bc59ac1870025",
+      "dimensions": {
+        "viewBox": "0 0 96 105"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "5c259aa14292353b31609cffc11b5965ac0fa0ffad63a1ba76778f7cca4fb6c0",
+        "linux": "5c259aa14292353b31609cffc11b5965ac0fa0ffad63a1ba76778f7cca4fb6c0"
+      }
+    },
+    {
+      "name": "anim1.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/anim1.svg",
+      "bytes": 4953,
+      "sourceSha256": "3bf2ce86dc2e904a95ecb7617fed044d694ff7c8ca2700dd42d69043e3e0475e",
+      "dimensions": {
+        "width": "480",
+        "height": "360",
+        "viewBox": "0 0 480 360"
+      },
+      "fontFamilies": [
+        "Arial"
+      ],
+      "features": {
+        "animate": 5,
+        "text": 14
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "This SVG child element is not implemented yet.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 20,
+        "LinePosition": 18
+      }
+    },
+    {
+      "name": "anim2.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/anim2.svg",
+      "bytes": 5356,
+      "sourceSha256": "b8d377c37778c3e8231ce916d3b01dcf430a0535ba002126aaa25d909a6e4bf9",
+      "dimensions": {
+        "width": "480",
+        "height": "360",
+        "viewBox": "0 0 480 360"
+      },
+      "fontFamilies": [
+        "Arial"
+      ],
+      "features": {
+        "animateTransform": 6,
+        "text": 14
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "This SVG child element is not implemented yet.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 22,
+        "LinePosition": 18
+      }
+    },
+    {
+      "name": "anim3.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/anim3.svg",
+      "bytes": 4200,
+      "sourceSha256": "3c26307c866001375a1e6228f8e14a733db3e9446c98bc29bd6e5a11208be345",
+      "dimensions": {
+        "width": "480",
+        "height": "360",
+        "viewBox": "0 0 480 360"
+      },
+      "fontFamilies": [
+        "Arial"
+      ],
+      "features": {
+        "animateTransform": 6,
+        "text": 6
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "This SVG child element is not implemented yet.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 20,
+        "LinePosition": 18
+      }
+    },
+    {
+      "name": "atom.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/atom.svg",
+      "bytes": 504,
+      "sourceSha256": "19ce57a65b56111e30619a82d65007f2608ef6292fe39c8a5d2ee74863980b48",
+      "dimensions": {
+        "viewBox": "-52 -53 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "74cc50d335617a3b3db468c518c478ac8c1895599586bb87f66736f700d104df",
+        "linux": "74cc50d335617a3b3db468c518c478ac8c1895599586bb87f66736f700d104df"
+      }
+    },
+    {
+      "name": "basura.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/basura.svg",
+      "bytes": 659,
+      "sourceSha256": "75cbd02dd0939bd1644ffe90f2ec8b4fabdcb97d0a053bf8c217b27d3d2359d8",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "9d2d6f069e9f7bcd8c95340700e1023c1c532ba97c4e9c0488b5722992e59bce",
+        "linux": "9d2d6f069e9f7bcd8c95340700e1023c1c532ba97c4e9c0488b5722992e59bce"
+      }
+    },
+    {
+      "name": "beacon.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/beacon.svg",
+      "bytes": 363,
+      "sourceSha256": "16f7022960bfd009be08fc41e7e74bcfa09e94cc7d73e806dfb90ac8b7031873",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "f4147835625d423a8aea30f8d1009869fd74a1d4cfdde1445dc6a3e627982d84",
+        "linux": "f4147835625d423a8aea30f8d1009869fd74a1d4cfdde1445dc6a3e627982d84"
+      }
+    },
+    {
+      "name": "betterplace.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/betterplace.svg",
+      "bytes": 165,
+      "sourceSha256": "142e0d84ea9875379869f593a0c6fc430fd8a103b7bc6ae909542492cb24b3f4",
+      "dimensions": {
+        "viewBox": "0 0 93 107"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "e04e96302f6abf023cfbab1135713a881befe2f8672899a335d31b7ff12d0b24",
+        "linux": "e04e96302f6abf023cfbab1135713a881befe2f8672899a335d31b7ff12d0b24"
+      }
+    },
+    {
+      "name": "blocks_game.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/blocks_game.svg",
+      "bytes": 14420,
+      "sourceSha256": "4594f838008d371765539a53e53b52706e6afec99bf5fc38347e2a3ee142817c",
+      "eventHandlers": 1,
+      "features": {
+        "script": 1,
+        "text": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG root attribute 'onload' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "svg",
+        "AttributeName": "onload",
+        "AttributeValue": "loaded();",
+        "LineNumber": 14,
+        "LinePosition": 6
+      }
+    },
+    {
+      "name": "bloglines.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/bloglines.svg",
+      "bytes": 238,
+      "sourceSha256": "4bb1b6ee3347cd5dfe48f6755eb0504058dd59d3e78a653678d55271b3c85324",
+      "fontFamilies": [
+        "courier"
+      ],
+      "features": {
+        "text": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG root attribute 'viewbox' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "svg",
+        "AttributeName": "viewbox",
+        "AttributeValue": "-1 -1 15 15",
+        "LineNumber": 1,
+        "LinePosition": 41
+      }
+    },
+    {
+      "name": "bozo.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/bozo.svg",
+      "bytes": 807,
+      "sourceSha256": "239431753644a5c07d1244fd5be09c3ef1d30072a663a01effc4d2e75c7bf138",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "externalReferenceUses": [
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://www.tbray.org/ongoing/When/200x/2004/01/11/PostelPilgrim"
+        }
+      ],
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "9d381930b586a5e89cc58c2c58e2ba79092c12d9c6b30f88123534ea74a93bdf",
+        "linux": "9d381930b586a5e89cc58c2c58e2ba79092c12d9c6b30f88123534ea74a93bdf"
+      }
+    },
+    {
+      "name": "bzr.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/bzr.svg",
+      "bytes": 487,
+      "sourceSha256": "5092702b6ca45d24c1a0a8dbbed6c39d50ea552c0dc07a1f24609304711720bb",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "dfb9af83e08cc5add3cb8ed9d6f9e02f33a8446ca5dfe3286860ad9a51daf88d",
+        "linux": "dfb9af83e08cc5add3cb8ed9d6f9e02f33a8446ca5dfe3286860ad9a51daf88d"
+      }
+    },
+    {
+      "name": "bzrfeed.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/bzrfeed.svg",
+      "bytes": 1034,
+      "sourceSha256": "43c451059eb34f961bd6d6c65fc8d370f862a0410b6ef720b5e39d5f62610474",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "601ad442313ea1b3e31c9f433bc2d0638fddb09eec5f519bddbb6601514aff4b",
+        "linux": "601ad442313ea1b3e31c9f433bc2d0638fddb09eec5f519bddbb6601514aff4b"
+      }
+    },
+    {
+      "name": "ca.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ca.svg",
+      "bytes": 535,
+      "sourceSha256": "6824a065c4f9a5a5d30e302a304c707f7e0a4a11b4e5bacb8e7ec0a9b87a6f87",
+      "dimensions": {
+        "viewBox": "0 0 123 82"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "e8943009eef51b7fa3231cc3b21408673fcdfa9551128c127e40f0f8a0392f6d",
+        "linux": "e8943009eef51b7fa3231cc3b21408673fcdfa9551128c127e40f0f8a0392f6d"
+      }
+    },
+    {
+      "name": "car.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/car.svg",
+      "bytes": 527014,
+      "sourceSha256": "47ad3675940bd4017e2fb6d8f8f34d183fa23c9ee5a13983b48966e1c2364195",
+      "dimensions": {
+        "width": "900",
+        "height": "600"
+      },
+      "features": {
+        "filter": 56,
+        "linearGradient": 320,
+        "radialGradient": 90
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop4401",
+        "AttributeName": "id",
+        "AttributeValue": "stop4401",
+        "LineNumber": 33,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "cartman.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/cartman.svg",
+      "bytes": 1148,
+      "sourceSha256": "da19d0d824caf7529060b4c4f6abac452267eb2b396d9158319ecce09776ac1d",
+      "dimensions": {
+        "viewBox": "0 0 104 97"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "17e2f3183837e349f7e7e97cba2429fcfe202695c7b3be3133b11f4dd85434da",
+        "linux": "17e2f3183837e349f7e7e97cba2429fcfe202695c7b3be3133b11f4dd85434da"
+      }
+    },
+    {
+      "name": "caution.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/caution.svg",
+      "bytes": 422,
+      "sourceSha256": "6bf3b7028d2f9b9f50ebad5da6d91beb4fa8782c03663fa58829dcfb5a3f2d8d",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "9a3b22ffd1b7431406e01590bb172d6d63aa0a99c31c2a5402b0dc2913b6f3bc",
+        "linux": "9a3b22ffd1b7431406e01590bb172d6d63aa0a99c31c2a5402b0dc2913b6f3bc"
+      }
+    },
+    {
+      "name": "cc.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/cc.svg",
+      "bytes": 374,
+      "sourceSha256": "205c4ee1fb5b28b062336976db8907ddbee7a35cd9441e050b2f1075eb781656",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "0d3d531886a6929fe314cb5f01c2fa6447347a0a72c02253ea6d9110af9d7d79",
+        "linux": "0d3d531886a6929fe314cb5f01c2fa6447347a0a72c02253ea6d9110af9d7d79"
+      }
+    },
+    {
+      "name": "ch.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ch.svg",
+      "bytes": 351,
+      "sourceSha256": "dc50a0466fbdee376ab0bb2871e9b94ef19ceb198a16c4d0ae709a0e189f85d9",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "99fa68ef43a9a931e5391b9373a26ea73233f64b42cbfa70b85101db8487ab1e",
+        "linux": "99fa68ef43a9a931e5391b9373a26ea73233f64b42cbfa70b85101db8487ab1e"
+      }
+    },
+    {
+      "name": "check.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/check.svg",
+      "bytes": 301,
+      "sourceSha256": "513052c815cefcf53f9e4fbf840b49eccfa1e4f2057c57fd84e96251f49ad154",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "d60d3728335e8a44d1aa5449c088edadd9090c5a91e243101beca0eb5ea9039c",
+        "linux": "d60d3728335e8a44d1aa5449c088edadd9090c5a91e243101beca0eb5ea9039c"
+      }
+    },
+    {
+      "name": "circles1.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/circles1.svg",
+      "bytes": 678,
+      "sourceSha256": "32b93f88e6bdfdbe053142fba23a1afc8a48125890daa8c882aa5554fc155aed",
+      "features": {},
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Only bounded SVG element, ID, class, id/class attribute, descendant and child selectors are implemented."
+    },
+    {
+      "name": "clippath.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/clippath.svg",
+      "bytes": 2398,
+      "sourceSha256": "67d1c392cfb54f80356f90cc37ee8daa6056e8cb5d72cb2486f1d5339681ff25",
+      "dimensions": {
+        "width": "744.09448819",
+        "height": "1052.3622047"
+      },
+      "features": {
+        "clipPath": 5,
+        "filter": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Only single-element clip content is implemented."
+    },
+    {
+      "name": "compass.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/compass.svg",
+      "bytes": 313,
+      "sourceSha256": "3d9b33b71f6d3bb7fff60bd01203e78ea14ac29b7ac0046f81d97926c7099591",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "73b8b6d2cdc132ddec78768cd2a138f586edf38896a100e554618dca5cb7494b",
+        "linux": "73b8b6d2cdc132ddec78768cd2a138f586edf38896a100e554618dca5cb7494b"
+      }
+    },
+    {
+      "name": "compuserver_msn_Ford_Focus.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/compuserver_msn_Ford_Focus.svg",
+      "bytes": 325953,
+      "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+      "dimensions": {
+        "width": "548.95361",
+        "height": "303.17667",
+        "viewBox": "0 0 215.9 279.4"
+      },
+      "features": {
+        "clipPath": 2,
+        "linearGradient": 21
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop15",
+        "AttributeName": "id",
+        "AttributeValue": "stop15",
+        "LineNumber": 477,
+        "LinePosition": 4
+      }
+    },
+    {
+      "name": "copyleft.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/copyleft.svg",
+      "bytes": 207,
+      "sourceSha256": "9d32eda0f8cbc13d0bd55be6916f6721e260704bd845ea854a8098269eff2ee5",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "ef6f8d52d88962a73df2dc53baa378e46e6c4e8bd2ad6feea33f54f4809a65e9",
+        "linux": "ef6f8d52d88962a73df2dc53baa378e46e6c4e8bd2ad6feea33f54f4809a65e9"
+      }
+    },
+    {
+      "name": "copyright.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/copyright.svg",
+      "bytes": 208,
+      "sourceSha256": "caa218fa8ca023c1a39cf95423821c96cc8cfbbdb63286820c4ef40dc866107f",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "fcf523d98009ae9f7952bd4917ecc1539d2db9e43b09f29b0f0c1fd39743b035",
+        "linux": "fcf523d98009ae9f7952bd4917ecc1539d2db9e43b09f29b0f0c1fd39743b035"
+      }
+    },
+    {
+      "name": "couch.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/couch.svg",
+      "bytes": 793,
+      "sourceSha256": "95713b0e7365f34613a6e7534721fd07a158e0cc68a4af4bf6ae39a5c13429d2",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "6f56c1e1483618910119de1f1bd014e3086e68a4e09dd964e4ff81cd6ff15f46",
+        "linux": "6f56c1e1483618910119de1f1bd014e3086e68a4e09dd964e4ff81cd6ff15f46"
+      }
+    },
+    {
+      "name": "couchdb.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/couchdb.svg",
+      "bytes": 447,
+      "sourceSha256": "68fafb32fa339421175f8281d8883623b29475c8bc9755afba3851706157da86",
+      "dimensions": {
+        "viewBox": "0 0 135 74"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "9d1d33382431ab15f7a81d99128a347e7d0db1fe928bddcb4eb9a97db923af21",
+        "linux": "9d1d33382431ab15f7a81d99128a347e7d0db1fe928bddcb4eb9a97db923af21"
+      }
+    },
+    {
+      "name": "cygwin.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/cygwin.svg",
+      "bytes": 349,
+      "sourceSha256": "0b7354ea9a95f740d0d312b2a787d3374d6026ae44b29167eae4f76e037aac60",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "41380ba1a46d95e7abee61be499f1184b06d6964c13ea969ef825a0c2fdad568",
+        "linux": "41380ba1a46d95e7abee61be499f1184b06d6964c13ea969ef825a0c2fdad568"
+      }
+    },
+    {
+      "name": "debian.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/debian.svg",
+      "bytes": 1322,
+      "sourceSha256": "f09226ad1a23f7ecfded2b4bc0e972f362f283feed49b0e7ce9924005bd308f0",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "c30d0e8a621c62178aeef87c34edfe0de1e59e1e92b4255025219e0a256dc810",
+        "linux": "c30d0e8a621c62178aeef87c34edfe0de1e59e1e92b4255025219e0a256dc810"
+      }
+    },
+    {
+      "name": "decimal.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/decimal.svg",
+      "bytes": 142,
+      "sourceSha256": "d0aba26e5d909c9f3e359a21a0b55b1bdea7c13cb843127bb8ffb8f6fd2b096b",
+      "dimensions": {
+        "viewBox": "0 0 125 80"
+      },
+      "fontFamilies": [
+        "serif"
+      ],
+      "features": {
+        "text": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG text requires a prepared font snapshot.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 2,
+        "LinePosition": 4
+      }
+    },
+    {
+      "name": "dh.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/dh.svg",
+      "bytes": 343,
+      "sourceSha256": "ab22a44eeaa3c048d18ba344658d1b63c5d79491c8e70b70f18061889f26aa2a",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "c603c7097c50f974493c6f8c9cf42fe9bdff38275839cf7c34a139a3c93e48e7",
+        "linux": "c603c7097c50f974493c6f8c9cf42fe9bdff38275839cf7c34a139a3c93e48e7"
+      }
+    },
+    {
+      "name": "digg.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/digg.svg",
+      "bytes": 339,
+      "sourceSha256": "d42f887036d7b9db4fbc5171e318cb44dfa6d15caf836411a3d9a5e30764f040",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "34ff883fa85d132b06f3be3e6b259343856fb4f762ad1f186434f27c475f9998",
+        "linux": "34ff883fa85d132b06f3be3e6b259343856fb4f762ad1f186434f27c475f9998"
+      }
+    },
+    {
+      "name": "displayWebStats.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/displayWebStats.svg",
+      "bytes": 85737,
+      "sourceSha256": "bd78273e2605d4d039c766f2d5a1c294e21df06a8261b4cca1a1e15b9b7c3869",
+      "dimensions": {
+        "viewBox": "-50 -30 800 450"
+      },
+      "externalReferenceUses": [
+        {
+          "element": "script",
+          "attribute": "href",
+          "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/webstats/smil.user.js"
+        },
+        {
+          "element": "script",
+          "attribute": "href",
+          "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/webstats/webstats-data.php"
+        },
+        {
+          "element": "script",
+          "attribute": "href",
+          "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/webstats/webstats-points-of-interest.js"
+        },
+        {
+          "element": "script",
+          "attribute": "href",
+          "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/webstats/dragsvg.js"
+        },
+        {
+          "element": "script",
+          "attribute": "href",
+          "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/webstats/webstats2.js"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://ajaxian.com/archives/the-state-of-svg-browser-support-using-flash-for-svg-in-internet-explorer"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://blog.codedread.com/archives/2008/03/26/acid3-neck-and-neck/"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://blog.codedread.com/archives/2008/02/18/new-xhtmlsvg-theme/"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://www.codedread.com/svg-support.php"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://blog.codedread.com/archives/2007/05/23/thoughts-on-the-lost-season-3-finale/"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://operawatch.com/news/2007/04/how-opera-ranks-with-its-svg-implementation-best-native-implementation.html"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://www.codedread.com/displayWebStats.php"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://blog.codedread.com/archives/2006/02/07/opera-9-tp2-a-long-wait/"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://blog.codedread.com/archives/2006/01/12/pretty-web-statistics-in-svg/"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://blog.codedread.com/archives/2007/01/19/guide-to-deploying-svg-with-html/"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://www.codedread.com/yastframe.php"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://blog.codedread.com/archives/2005/10/26/the-opera-bandwagon/"
+        }
+      ],
+      "eventHandlers": 5,
+      "features": {
+        "animate": 53,
+        "animateTransform": 2,
+        "clipPath": 1,
+        "linearGradient": 6,
+        "radialGradient": 1,
+        "script": 5,
+        "set": 4,
+        "text": 99
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG root attribute 'onload' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "svg",
+        "ElementId": "svgsvg",
+        "AttributeName": "onload",
+        "AttributeValue": "loaded();",
+        "LineNumber": 3,
+        "LinePosition": 182
+      }
+    },
+    {
+      "name": "dojo.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/dojo.svg",
+      "bytes": 789,
+      "sourceSha256": "0051fc94d81d40964e5b006dcc9d9e1b9083a32205fba9ad4d2c5900ef34df0c",
+      "dimensions": {
+        "viewBox": "0 0 121 83"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "c2301f7cd747c52b4804e89bc5daccde5b742307fb9adf6fc9558cea20aa86db",
+        "linux": "c2301f7cd747c52b4804e89bc5daccde5b742307fb9adf6fc9558cea20aa86db"
+      }
+    },
+    {
+      "name": "dst.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/dst.svg",
+      "bytes": 794,
+      "sourceSha256": "22260e340cb19324cc40cabc591a5b841556026fa710085a8073d4d535db5c88",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "c0877450de416afe90ed33644ee74acbb75ce46ce6efe49838e6d03c37dbc47a",
+        "linux": "c0877450de416afe90ed33644ee74acbb75ce46ce6efe49838e6d03c37dbc47a"
+      }
+    },
+    {
+      "name": "duck.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/duck.svg",
+      "bytes": 530,
+      "sourceSha256": "06c2e984b85481f89ad1a8538d1eeb44c9433c05f1ffa33df2f445834894efe2",
+      "dimensions": {
+        "viewBox": "0 0 300 200"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "ae6aa31a1e941f3f2b2fa37f16e6b3342f32d9c1caa11ad61b7c22c595963329",
+        "linux": "ae6aa31a1e941f3f2b2fa37f16e6b3342f32d9c1caa11ad61b7c22c595963329"
+      }
+    },
+    {
+      "name": "duke.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/duke.svg",
+      "bytes": 1495,
+      "sourceSha256": "ec8d296f2113fc9957b82075003bfb57264b269c08f729f989066225b283a1f9",
+      "dimensions": {
+        "viewBox": "0 0 75 136"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4cbf912e85ea79afa8a9f671216ed3ab5608945900b5422ea44b6d73f7fd2aff",
+        "linux": "4cbf912e85ea79afa8a9f671216ed3ab5608945900b5422ea44b6d73f7fd2aff"
+      }
+    },
+    {
+      "name": "dukechain.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/dukechain.svg",
+      "bytes": 2247,
+      "sourceSha256": "25698948a4a6dfcadaa239f3bb600094faf5832023c8bb56d0cc2aecec751dba",
+      "dimensions": {
+        "viewBox": "0 0 102 136"
+      },
+      "externalReferenceUses": [
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://intertwingly.net/svg/dukechain.svg"
+        },
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://sun.com/"
+        }
+      ],
+      "features": {},
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Group attribute 'xlink:title' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "a",
+        "AttributeName": "xlink:title",
+        "AttributeValue": "J2SE",
+        "LineNumber": 3,
+        "LinePosition": 102
+      }
+    },
+    {
+      "name": "easypeasy.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/easypeasy.svg",
+      "bytes": 506,
+      "sourceSha256": "c8c96cd96022e502e5cf4ec526ca28f2c971ac4c809a59e7e00c41e690174991",
+      "dimensions": {
+        "viewBox": "0 0 110 91"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "8d624fdce21eb1e0943ce3af607fed504def7ba2644fb04adb1e9bcf98158b84",
+        "linux": "8d624fdce21eb1e0943ce3af607fed504def7ba2644fb04adb1e9bcf98158b84"
+      }
+    },
+    {
+      "name": "eee.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/eee.svg",
+      "bytes": 920,
+      "sourceSha256": "86c92337c1094c8ce9e565d6d281c5ba4e940c350433521a8682e5c6251a74e5",
+      "dimensions": {
+        "viewBox": "0 0 121 83"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "2c643b0e1b58a25c33fed3223d6d971fabead118d227ae718632fbd6ae1b5246",
+        "linux": "2c643b0e1b58a25c33fed3223d6d971fabead118d227ae718632fbd6ae1b5246"
+      }
+    },
+    {
+      "name": "eff.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/eff.svg",
+      "bytes": 281,
+      "sourceSha256": "8e2bd7c8aa09f33e5c5ea7a9a04c7b04357d99228e970add4f7afd54a410467f",
+      "dimensions": {
+        "viewBox": "0 0 120 84"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "2d3a51cb0c1ddd97742ead9ebbf6dc605dd64bb6e99a3aab7f2a72cd4880a792",
+        "linux": "2d3a51cb0c1ddd97742ead9ebbf6dc605dd64bb6e99a3aab7f2a72cd4880a792"
+      }
+    },
+    {
+      "name": "erlang.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/erlang.svg",
+      "bytes": 238,
+      "sourceSha256": "1177682f480d8275d8ea66937ec6d452b2f2c83298c426f0e906bb80929ecc8b",
+      "dimensions": {
+        "viewBox": "0 0 125 80"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "d7a29931a4cf873a2d482d0c2e0bb0433dee6834a3fe0bf92e4fe424e06d66a4",
+        "linux": "d7a29931a4cf873a2d482d0c2e0bb0433dee6834a3fe0bf92e4fe424e06d66a4"
+      }
+    },
+    {
+      "name": "evol.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/evol.svg",
+      "bytes": 367,
+      "sourceSha256": "1049e49ea1bb318b2a5bdc6e197090686ad680421530e518bdc4aaefd65c998c",
+      "dimensions": {
+        "viewBox": "0 0 167 60"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "54f4251cd08169fecce94bd8cdfa6b3b9c1ed53edc15347192480514ebb884a3",
+        "linux": "54f4251cd08169fecce94bd8cdfa6b3b9c1ed53edc15347192480514ebb884a3"
+      }
+    },
+    {
+      "name": "facebook.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/facebook.svg",
+      "bytes": 305,
+      "sourceSha256": "b747e9df8379a3f74de3afa6b900fbe60d2b921c44a912ba1523512155c075fb",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "7ae7c8483281758d139fec64ebcfd51c633c1c0767f71380893f473ffe497046",
+        "linux": "7ae7c8483281758d139fec64ebcfd51c633c1c0767f71380893f473ffe497046"
+      }
+    },
+    {
+      "name": "faux-art.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/faux-art.svg",
+      "bytes": 5503,
+      "sourceSha256": "acda01733d4a1a89b1d59b3859d06a188d9a73cb8e1d47f06afd131457c87817",
+      "dimensions": {
+        "width": "148",
+        "height": "200",
+        "viewBox": "60 500 654 400"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'float' is not implemented."
+    },
+    {
+      "name": "fb.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/fb.svg",
+      "bytes": 294,
+      "sourceSha256": "cfebf907220de04b4964ee922b29c5f6f5230aa091bbf53acf5a6f3327206b1f",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "6563cea9d7737941790f775eeffb9857b112648c5cc9d6e6f54c67d1884742ff",
+        "linux": "6563cea9d7737941790f775eeffb9857b112648c5cc9d6e6f54c67d1884742ff"
+      }
+    },
+    {
+      "name": "feed.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/feed.svg",
+      "bytes": 302,
+      "sourceSha256": "7a2fc9b2f2938d648a19e9fab65caa7aee32205a0866d46f57c2cabed87717b3",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "13dab05472ed295b93a37d9d7d2b35fc3e2eb1064a61d8e25c90b12189a4436c",
+        "linux": "13dab05472ed295b93a37d9d7d2b35fc3e2eb1064a61d8e25c90b12189a4436c"
+      }
+    },
+    {
+      "name": "feedsync.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/feedsync.svg",
+      "bytes": 350,
+      "sourceSha256": "79bdf1b7929216309febe0d7c13f0f60fc0edb663f4ea69ab4c79a69aba27c65",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "a0192c594d96849eacfee453364ecef0f7bff1e168101462b4deaceb79ac33f3",
+        "linux": "a0192c594d96849eacfee453364ecef0f7bff1e168101462b4deaceb79ac33f3"
+      }
+    },
+    {
+      "name": "fsm.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/fsm.svg",
+      "bytes": 987,
+      "sourceSha256": "1b3b1d211921c5c109cc22440682292ed648e4ff305b615a108fb9f052bf44c1",
+      "dimensions": {
+        "viewBox": "0 0 150 66"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "823bdf89a8206568ae98c39bb0707eca7aabc51efcd4664aeafb2e1f99a3b349",
+        "linux": "823bdf89a8206568ae98c39bb0707eca7aabc51efcd4664aeafb2e1f99a3b349"
+      }
+    },
+    {
+      "name": "gallardo.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/gallardo.svg",
+      "bytes": 340873,
+      "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+      "dimensions": {
+        "width": "1901",
+        "height": "1018",
+        "viewBox": "0 0 1901 1018"
+      },
+      "features": {
+        "clipPath": 7,
+        "filter": 33,
+        "linearGradient": 255,
+        "radialGradient": 26
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop3933",
+        "AttributeName": "id",
+        "AttributeValue": "stop3933",
+        "LineNumber": 33,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "gaussian1.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/gaussian1.svg",
+      "bytes": 11098,
+      "sourceSha256": "b42317c5ef25185d178126be853f02660b5300feab1bbcd1ae5a9e1d1e661395",
+      "dimensions": {
+        "width": "744.09448819",
+        "height": "1052.3622047"
+      },
+      "features": {
+        "clipPath": 2,
+        "filter": 12
+      },
+      "defaultLibraryOutcome": "MalformedInput",
+      "message": "SVG definition ids must be unique."
+    },
+    {
+      "name": "gaussian2.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/gaussian2.svg",
+      "bytes": 2035,
+      "sourceSha256": "db74351406922d841cf9186cadaacf2787cccfaf3ed99e34a27d6e0b5f48616c",
+      "dimensions": {
+        "width": "744.09448819",
+        "height": "1052.3622047"
+      },
+      "features": {
+        "clipPath": 2,
+        "filter": 1
+      },
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "9f4f92b308e35a368cdcc593cdde28cbe60685604adbd11a22edf06bf21c641d",
+        "linux": "9f4f92b308e35a368cdcc593cdde28cbe60685604adbd11a22edf06bf21c641d"
+      }
+    },
+    {
+      "name": "gaussian3.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/gaussian3.svg",
+      "bytes": 2242,
+      "sourceSha256": "4c28ca520cd369783795ac17c0ea9ba96d0a5471e7c456ea6b35fdeea59ea9c8",
+      "dimensions": {
+        "width": "744.09448819",
+        "height": "1052.3622047"
+      },
+      "features": {
+        "clipPath": 2,
+        "filter": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "circle attribute 'width' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "circle",
+        "AttributeName": "width",
+        "AttributeValue": "110",
+        "LineNumber": 16,
+        "LinePosition": 42
+      }
+    },
+    {
+      "name": "gcheck.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/gcheck.svg",
+      "bytes": 594,
+      "sourceSha256": "f323ce4f30cd795b61ff2c72f3273ee6c134fea3134c7c37c775f1d62f881f6b",
+      "dimensions": {
+        "viewBox": "0 5 110 90"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4daeda72740de80737df3f06d8423ae161cbca3e81f634895359abf1a05b2e93",
+        "linux": "4daeda72740de80737df3f06d8423ae161cbca3e81f634895359abf1a05b2e93"
+      }
+    },
+    {
+      "name": "genshi.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/genshi.svg",
+      "bytes": 273,
+      "sourceSha256": "acf784edcd69e0c6401cb04323caccc9860e41145cc872173fb01be9f7562507",
+      "dimensions": {
+        "viewBox": "0 0 70 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "1cedf4c673a62a28de049fe56c2b83b72f9c537c6e3681b8dde62665f51bf6d2",
+        "linux": "1cedf4c673a62a28de049fe56c2b83b72f9c537c6e3681b8dde62665f51bf6d2"
+      }
+    },
+    {
+      "name": "git.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/git.svg",
+      "bytes": 240,
+      "sourceSha256": "ca2295ac600795d9b01c23e4a7b373860083364734baea5b0ff8f676f3008f0f",
+      "dimensions": {
+        "viewBox": "0 0 120 70"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "ff1f50d94b46df04e9ab8bc7736f57e6218b0099b1759d0207f5363bc824796d",
+        "linux": "ff1f50d94b46df04e9ab8bc7736f57e6218b0099b1759d0207f5363bc824796d"
+      }
+    },
+    {
+      "name": "gnome2.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/gnome2.svg",
+      "bytes": 344,
+      "sourceSha256": "3e0c3af2df61f283ea255dc169da5d71b46b1ee679eb25905124114ae06b5827",
+      "dimensions": {
+        "viewBox": "0 0 91 109"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "5d74d68689bb24d6d3aaf39b2328b357de190f4cd875be4ad39dd71f94e30c94",
+        "linux": "5d74d68689bb24d6d3aaf39b2328b357de190f4cd875be4ad39dd71f94e30c94"
+      }
+    },
+    {
+      "name": "google.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/google.svg",
+      "bytes": 331,
+      "sourceSha256": "a068d9d29635b0cd8b7d2b6ace6f0920636e389c90a143c178341b2e049152c1",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "0fb78fb36cdccf4f6fc199b293b648e832e35b34fe17d6fc9ad02a5a7b4ff101",
+        "linux": "0fb78fb36cdccf4f6fc199b293b648e832e35b34fe17d6fc9ad02a5a7b4ff101"
+      }
+    },
+    {
+      "name": "gpg.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/gpg.svg",
+      "bytes": 459,
+      "sourceSha256": "f95b91ae49dc7046edb88d5163d4570bcebea91dd9bcd63b6fbb6246c145cc7e",
+      "dimensions": {
+        "viewBox": "0 0 87 115"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "599de35aa0b4fb7c688cdf5eca4fde4186d79b9bcd22024fe8bff02e26ceb8ec",
+        "linux": "599de35aa0b4fb7c688cdf5eca4fde4186d79b9bcd22024fe8bff02e26ceb8ec"
+      }
+    },
+    {
+      "name": "gump-bench.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/gump-bench.svg",
+      "bytes": 2370,
+      "sourceSha256": "3ff2eca7907b92351489bc93048e01fcf19855d2f22390829de31c835fe04d25",
+      "dimensions": {
+        "width": "200",
+        "height": "100",
+        "viewBox": "190 40 10 200"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "ce903004fec859318d68da5eb454c07006ccc96579509d41f35695cb5617bcae",
+        "linux": "ce903004fec859318d68da5eb454c07006ccc96579509d41f35695cb5617bcae"
+      }
+    },
+    {
+      "name": "heart.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/heart.svg",
+      "bytes": 187,
+      "sourceSha256": "d5cf70843fa076085a261432cce3972c72bcc1bddc9d4693e7403cd5c532f106",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "68b19f645f84b35a2fad4894e0433c3fb4b14431d4671292b7749b1a05b536f7",
+        "linux": "68b19f645f84b35a2fad4894e0433c3fb4b14431d4671292b7749b1a05b536f7"
+      }
+    },
+    {
+      "name": "heliocentric.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/heliocentric.svg",
+      "bytes": 733,
+      "sourceSha256": "3da871aad37a413cedf1d834a6b430cdcd34540ec635e55095d9abb6f819a284",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "175da0c1866e0906b7a85b54bdb6843d925c723da77e6a6d6d3ea3aa506163c1",
+        "linux": "175da0c1866e0906b7a85b54bdb6843d925c723da77e6a6d6d3ea3aa506163c1"
+      }
+    },
+    {
+      "name": "helloworld.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/helloworld.svg",
+      "bytes": 1405,
+      "sourceSha256": "7bef17011e3c570fa07f5fe8671917e1df854bb9c0b67d1efbd105773fd5eb08",
+      "dimensions": {
+        "width": "200",
+        "height": "300"
+      },
+      "cssFontFamilyDeclarations": [
+        "serif"
+      ],
+      "eventHandlers": 1,
+      "features": {
+        "script": 1,
+        "text": 2
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG root attribute 'onload' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "svg",
+        "AttributeName": "onload",
+        "AttributeValue": "loaded()",
+        "LineNumber": 8,
+        "LinePosition": 6
+      }
+    },
+    {
+      "name": "hg0.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/hg0.svg",
+      "bytes": 1687,
+      "sourceSha256": "15b075026d0eeac815809389832825ad0953fa5bbe6b9bf2fc13d98e1fa3f281",
+      "dimensions": {
+        "viewBox": "0 0 103 98"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "e4389dfcc57eba264b33e40b0b26bcabcf4e59f3be313c08cfea3a3136ba7613",
+        "linux": "e4389dfcc57eba264b33e40b0b26bcabcf4e59f3be313c08cfea3a3136ba7613"
+      }
+    },
+    {
+      "name": "http.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/http.svg",
+      "bytes": 708,
+      "sourceSha256": "fed9b7f158602855f53d030a57921a781f6c13fac9dc9bc88a271b90ba590860",
+      "dimensions": {
+        "viewBox": "0 0 130 77"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "3805bf3ca9d3b6dcda866131ca891259f90eea26c6b7c6bc5623c7a1a63acd14",
+        "linux": "3805bf3ca9d3b6dcda866131ca891259f90eea26c6b7c6bc5623c7a1a63acd14"
+      }
+    },
+    {
+      "name": "ibm.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ibm.svg",
+      "bytes": 4474,
+      "sourceSha256": "30c3df3ed0fd18a51aac9f184c3b88498803672e139476847844b84067db8e56",
+      "dimensions": {
+        "viewBox": "0 0 148 68"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4341890618926e4609efcc3a280fda5f86bf3f99ab20c3835793b76c3dab56b9",
+        "linux": "4341890618926e4609efcc3a280fda5f86bf3f99ab20c3835793b76c3dab56b9"
+      }
+    },
+    {
+      "name": "ie-lock.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ie-lock.svg",
+      "bytes": 775,
+      "sourceSha256": "8989a844103b2b3cb7305c5319c6e8affb37f5bca77b2eeec17f0da7cf9386c8",
+      "dimensions": {
+        "viewBox": "0 0 90 110"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "8fba018d1fd552d35c2475662d123a6a318ef2762b8f83019add200ee872d987",
+        "linux": "8fba018d1fd552d35c2475662d123a6a318ef2762b8f83019add200ee872d987"
+      }
+    },
+    {
+      "name": "ielock.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ielock.svg",
+      "bytes": 847,
+      "sourceSha256": "abcfd183fae0abb52384039278c22d815ceca32a2cf23a64a6e338e43c46839b",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "dfe2c602e6d9aad5f1ef3dd897134edb2e591e15eba9c43a99d90d2ea46b1cfb",
+        "linux": "dfe2c602e6d9aad5f1ef3dd897134edb2e591e15eba9c43a99d90d2ea46b1cfb"
+      }
+    },
+    {
+      "name": "ietf.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ietf.svg",
+      "bytes": 644,
+      "sourceSha256": "5a5999832e05e4fe841f7720cb8b1a737f37437b815bf9959bd97ab3df9abfa3",
+      "dimensions": {
+        "viewBox": "0 0 175 57"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "9338711eab7b4d787ea1a7dffb6499175572a58414a7a0722ca1248c2f9e0832",
+        "linux": "9338711eab7b4d787ea1a7dffb6499175572a58414a7a0722ca1248c2f9e0832"
+      }
+    },
+    {
+      "name": "image.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/image.svg",
+      "bytes": 787,
+      "sourceSha256": "6c183668da499d712611df9dfb85820f7d92e5b0813d2edc5927e93d4f4ac052",
+      "dimensions": {
+        "width": "1901",
+        "height": "1018"
+      },
+      "externalReferenceUses": [
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://farm1.static.flickr.com/234/535566372_33c1025c7b_o.jpg"
+        },
+        {
+          "element": "image",
+          "attribute": "href",
+          "url": "http://farm1.static.flickr.com/234/535566372_33c1025c7b_o.jpg"
+        }
+      ],
+      "features": {
+        "image": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Only base64 PNG data-URI embedded images are implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "image",
+        "ElementId": "bar",
+        "LineNumber": 15,
+        "LinePosition": 8
+      }
+    },
+    {
+      "name": "instiki.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/instiki.svg",
+      "bytes": 785,
+      "sourceSha256": "c300292ecd593084b7614a7158e2b263a27d7d326060bbc21bef0072831bdf2c",
+      "dimensions": {
+        "viewBox": "0 0 96 105"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4f8bbd7d6d38d84b18f5770800af87b705fbc51be8d513b666dca3ef5d25e9af",
+        "linux": "4f8bbd7d6d38d84b18f5770800af87b705fbc51be8d513b666dca3ef5d25e9af"
+      }
+    },
+    {
+      "name": "integral.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/integral.svg",
+      "bytes": 386,
+      "sourceSha256": "93de1af0e0c12139350afb3f70e630abc1428c2bd3c4dfb8ce8dedff0ca3feec",
+      "dimensions": {
+        "viewBox": "0 0 55 182"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "01a61847e3211f014e2e8dd560c5e5dccc40c7752785b7cb9551f1c1e2574589",
+        "linux": "01a61847e3211f014e2e8dd560c5e5dccc40c7752785b7cb9551f1c1e2574589"
+      }
+    },
+    {
+      "name": "intertwingly.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/intertwingly.svg",
+      "bytes": 962,
+      "sourceSha256": "00c6fc74a41890c599bb0ba891b55eb6f9e90aa2edf1fa3556cf440e0ad8cdda",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {
+        "radialGradient": 4
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Partial radial vector overrides are not implemented."
+    },
+    {
+      "name": "irony.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/irony.svg",
+      "bytes": 264,
+      "sourceSha256": "d9bfed4343de91fbc8d57908ecfcc6cb3858d83a2f07a9bda00a372ee12feec9",
+      "dimensions": {
+        "viewBox": "0 0 75 113"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "58ec24d552b10c7d07f80c0748786865fe2526be2bbffd9a52df7dafae23b340",
+        "linux": "58ec24d552b10c7d07f80c0748786865fe2526be2bbffd9a52df7dafae23b340"
+      }
+    },
+    {
+      "name": "italian-flag.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/italian-flag.svg",
+      "bytes": 287,
+      "sourceSha256": "277332ec341949c65be6329dd5087f87ce24f7309de9630e5ff4aedfa091e971",
+      "dimensions": {
+        "viewBox": "0 0 120 80"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "c362470b18f68fa450232b24fd2581a458c5796c16b723dbc2a1660c46032db8",
+        "linux": "c362470b18f68fa450232b24fd2581a458c5796c16b723dbc2a1660c46032db8"
+      }
+    },
+    {
+      "name": "iw.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/iw.svg",
+      "bytes": 201,
+      "sourceSha256": "910bd53b4f8bf05289658dee068a2e7b69a9fdcb230497760177621bf4eeebf7",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "8bd3d877165317bdef8e9a26b7d8331f3370a7a800def416e3a3b193eb00be50",
+        "linux": "8bd3d877165317bdef8e9a26b7d8331f3370a7a800def416e3a3b193eb00be50"
+      }
+    },
+    {
+      "name": "jabber.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/jabber.svg",
+      "bytes": 510,
+      "sourceSha256": "dc97fb24dcddaf1a12007d526d6667fa7e95ff7839c7be51c0ee7f9372d8c259",
+      "dimensions": {
+        "viewBox": "0 0 80 120"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "9d11910506516d544cf53ec19ef67725ae219ab97caebfed4a99665f50d88e71",
+        "linux": "9d11910506516d544cf53ec19ef67725ae219ab97caebfed4a99665f50d88e71"
+      }
+    },
+    {
+      "name": "jquery.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/jquery.svg",
+      "bytes": 227,
+      "sourceSha256": "2d1518565e768366e28dedbe48e2324ff92ec822dad7e317297e8c5ae29e201d",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "54d5eaf42d77858fbd9ad7ac6108754fd89c104f2d2cedad15ffaf86bfecfc2c",
+        "linux": "54d5eaf42d77858fbd9ad7ac6108754fd89c104f2d2cedad15ffaf86bfecfc2c"
+      }
+    },
+    {
+      "name": "json.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/json.svg",
+      "bytes": 472,
+      "sourceSha256": "1373dc8f37f33ef64be5129b44bf05de3a88308d467c2e625457b58ceba56b74",
+      "dimensions": {
+        "viewBox": "0 0 100 102"
+      },
+      "features": {
+        "radialGradient": 1
+      },
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "a674cdf1872d2b2930444356577e23ef04946247b71977ff94d7ce76ae48f130",
+        "linux": "a674cdf1872d2b2930444356577e23ef04946247b71977ff94d7ce76ae48f130"
+      }
+    },
+    {
+      "name": "jsonatom.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/jsonatom.svg",
+      "bytes": 792,
+      "sourceSha256": "5d9b555e5a318c18b9433d942b5e64344d637acce617b8352a3678403d8b0acf",
+      "dimensions": {
+        "viewBox": "0 0 100 102"
+      },
+      "features": {
+        "radialGradient": 1
+      },
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "59f23ed52ac6d86a576b18d1eb3903ec85dcf2768c2fb6c6e9b12129fe714c74",
+        "linux": "59f23ed52ac6d86a576b18d1eb3903ec85dcf2768c2fb6c6e9b12129fe714c74"
+      }
+    },
+    {
+      "name": "juanmontoya_lingerie.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/juanmontoya_lingerie.svg",
+      "bytes": 381228,
+      "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
+      "dimensions": {
+        "width": "858.02069",
+        "height": "1074.1064"
+      },
+      "features": {
+        "filter": 44,
+        "linearGradient": 76,
+        "mask": 2,
+        "pattern": 3,
+        "radialGradient": 4
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Only bare-number and px dash offsets are implemented."
+    },
+    {
+      "name": "legal.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/legal.svg",
+      "bytes": 663,
+      "sourceSha256": "6f4531cb013ee136b8faca607088ec84ff59398100c7185b42875d276be9bae1",
+      "dimensions": {
+        "viewBox": "0 0 104 96"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "2dfe76fc02b50977adb50924f3d55b1919003418dea10ed2d2e5265ed6a95823",
+        "linux": "2dfe76fc02b50977adb50924f3d55b1919003418dea10ed2d2e5265ed6a95823"
+      }
+    },
+    {
+      "name": "lineargradient1.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/lineargradient1.svg",
+      "bytes": 3129,
+      "sourceSha256": "759375607f7c9f50783ca570fa4505ef3a812cd650ad278f832a06b58d71be4c",
+      "dimensions": {
+        "width": "744.09448819",
+        "height": "1052.3622047"
+      },
+      "features": {
+        "linearGradient": 5
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Linear gradient attribute 'x3' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "linearGradient",
+        "ElementId": "linearGradient3193",
+        "AttributeName": "x3",
+        "AttributeValue": "328.57143",
+        "LineNumber": 24,
+        "LinePosition": 8
+      }
+    },
+    {
+      "name": "lineargradient2.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/lineargradient2.svg",
+      "bytes": 3148,
+      "sourceSha256": "f15c67aa22a778e513ec8868383fa811934ce0aa6691d4f32f28e2c0542e738d",
+      "dimensions": {
+        "width": "744.09448819",
+        "height": "1052.3622047"
+      },
+      "features": {
+        "linearGradient": 5
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Linear gradient attribute 'x3' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "linearGradient",
+        "ElementId": "linearGradient3193",
+        "AttributeName": "x3",
+        "AttributeValue": "328.57143",
+        "LineNumber": 24,
+        "LinePosition": 8
+      }
+    },
+    {
+      "name": "lineargradient3.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/lineargradient3.svg",
+      "bytes": 1485,
+      "sourceSha256": "0867f531eb2b72ebd59e637803735ad3fc725f04479c9d9f47d023819a72bfc8",
+      "dimensions": {
+        "width": "744.09448819",
+        "height": "1052.3622047"
+      },
+      "features": {
+        "linearGradient": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop3195",
+        "AttributeName": "id",
+        "AttributeValue": "stop3195",
+        "LineNumber": 31,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "lineargradient4.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/lineargradient4.svg",
+      "bytes": 1462,
+      "sourceSha256": "3fd8d08cc3c709ca731add9416396f1352118223bc01fdeea92c95a12fc1d824",
+      "dimensions": {
+        "width": "744.09448819",
+        "height": "1052.3622047"
+      },
+      "features": {
+        "linearGradient": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Only objectBoundingBox and userSpaceOnUse gradient units are implemented."
+    },
+    {
+      "name": "m.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/m.svg",
+      "bytes": 319,
+      "sourceSha256": "8ccf306ae03a59510c1e2d875e87525b1535939fcb710165b9c02b2e4d175c7c",
+      "dimensions": {
+        "viewBox": "0 0 102 98"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "fc72ab7fe8c764dfa77be7a78edb1bde32c4180294a0b90bcabe5ac03a3e4671",
+        "linux": "fc72ab7fe8c764dfa77be7a78edb1bde32c4180294a0b90bcabe5ac03a3e4671"
+      }
+    },
+    {
+      "name": "mac.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/mac.svg",
+      "bytes": 295,
+      "sourceSha256": "ccdbb05687ede2d6aa77fd89bc2d642f07db21224d37f2e4a4c2402315ed9e75",
+      "dimensions": {
+        "viewBox": "0 0 90 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "9e94ac6e21c84772fd306eb27fe5d748f2ad823a74c52e0e4af451f761f43789",
+        "linux": "9e94ac6e21c84772fd306eb27fe5d748f2ad823a74c52e0e4af451f761f43789"
+      }
+    },
+    {
+      "name": "mail.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/mail.svg",
+      "bytes": 388,
+      "sourceSha256": "1c8ef5528e884229921196bf3e005a949ada628d39061a27f0a18935a1dbabb4",
+      "dimensions": {
+        "viewBox": "0 0 80 120"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'float' is not implemented."
+    },
+    {
+      "name": "mars.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/mars.svg",
+      "bytes": 199,
+      "sourceSha256": "44d03ed12c9861d4021a0f52aa80f924553bf1de8f71230a7d802f4d687252c8",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "eaa71c7b2242d2277ed41cb64656a8db3f659430a5ea8c2bb29ae3eb19fc9203",
+        "linux": "eaa71c7b2242d2277ed41cb64656a8db3f659430a5ea8c2bb29ae3eb19fc9203"
+      }
+    },
+    {
+      "name": "masking-path-04-b.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/masking-path-04-b.svg",
+      "bytes": 4787,
+      "sourceSha256": "cbc79d87c656da74497bb2169c23c9b2fe7ba7d16c595d232f63b92d78058b3c",
+      "dimensions": {
+        "width": "100%",
+        "height": "100%",
+        "viewBox": "0 0 480 360"
+      },
+      "fontFamilies": [
+        "Impact"
+      ],
+      "externalReferenceUses": [
+        {
+          "element": "image",
+          "attribute": "href",
+          "url": "https://dev.w3.org/SVG/tools/svgweb/samples/images/bluesquidj.png"
+        }
+      ],
+      "features": {
+        "clipPath": 1,
+        "image": 2,
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Only base64 PNG data-URI embedded images are implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "image",
+        "LineNumber": 68,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "mememe.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/mememe.svg",
+      "bytes": 549,
+      "sourceSha256": "330caa04d76c790da18789a3ed62f5d963b8ae5721be4ebb5265892984baebac",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "8ee901de4bfc43ea9a7dfea072e411565dd1db936e2ba590c70c9e3b114b4380",
+        "linux": "8ee901de4bfc43ea9a7dfea072e411565dd1db936e2ba590c70c9e3b114b4380"
+      }
+    },
+    {
+      "name": "microformat.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/microformat.svg",
+      "bytes": 352,
+      "sourceSha256": "7b486beecc5f05968bec8adffa0473876baf86321ebcf7f154cc92e0f688f0ee",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "1724d8460f3703aec8390378ef25e72fae29ea54ed11343715be1e91e73dfab3",
+        "linux": "1724d8460f3703aec8390378ef25e72fae29ea54ed11343715be1e91e73dfab3"
+      }
+    },
+    {
+      "name": "mono.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/mono.svg",
+      "bytes": 397,
+      "sourceSha256": "550a4da8aad4dedefcfd0c7cf2d98ce97b8e307a6aee0450a27e42c7e6661fcf",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "46187a6d0921093f9dc56035bc3195e1b3af4fc0d38668bc7bb59e2df596619d",
+        "linux": "46187a6d0921093f9dc56035bc3195e1b3af4fc0d38668bc7bb59e2df596619d"
+      }
+    },
+    {
+      "name": "moonlight.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/moonlight.svg",
+      "bytes": 398,
+      "sourceSha256": "8210fa478bb50f2ede8d0699faef20cffa3a207dd4eaf1a5f99992877aaf1176",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "cad9cb37e6ee4950d959ebd2739940c3e61ca9a5ad2acac880172ac507816cde",
+        "linux": "cad9cb37e6ee4950d959ebd2739940c3e61ca9a5ad2acac880172ac507816cde"
+      }
+    },
+    {
+      "name": "mouseEvents.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/mouseEvents.svg",
+      "bytes": 1436,
+      "sourceSha256": "c31b67fe446a89a252df7e156dcb63e15bee5bddf141cdb77a8201bbc1310ba7",
+      "eventHandlers": 5,
+      "features": {
+        "script": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG root attribute 'onload' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "svg",
+        "AttributeName": "onload",
+        "AttributeValue": "onLoad();",
+        "LineNumber": 5,
+        "LinePosition": 2
+      }
+    },
+    {
+      "name": "mozilla.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/mozilla.svg",
+      "bytes": 1755,
+      "sourceSha256": "70b5b05204313cac470c5e4efdaa7b97af899dd6d64edc4c078ded51dbeae411",
+      "dimensions": {
+        "viewBox": "0 0 133 78"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4cb7660bb7340816923d248edd6d25b735c602e0c1037b6f2da1212b0104fbbf",
+        "linux": "4cb7660bb7340816923d248edd6d25b735c602e0c1037b6f2da1212b0104fbbf"
+      }
+    },
+    {
+      "name": "msft.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/msft.svg",
+      "bytes": 388,
+      "sourceSha256": "b83838e47dd1b9b9bc425a77241e7399a735ea7e06daf5a90267f473238691ca",
+      "dimensions": {
+        "viewBox": "0 0 105 95"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4d6e92d26cf5a928a89911c286123ecac67fcc9833993dd6d80d2cbb64cf3698",
+        "linux": "4d6e92d26cf5a928a89911c286123ecac67fcc9833993dd6d80d2cbb64cf3698"
+      }
+    },
+    {
+      "name": "msie.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/msie.svg",
+      "bytes": 384,
+      "sourceSha256": "0bc7d465effca9e0ebbd623274ec538ea1e2e20ab9274f7fa2712df02c976698",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "93093f0d21bcce97a61e512713ffec39f38964a22297f162b4b9a1174eb6c122",
+        "linux": "93093f0d21bcce97a61e512713ffec39f38964a22297f162b4b9a1174eb6c122"
+      }
+    },
+    {
+      "name": "mt.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/mt.svg",
+      "bytes": 270,
+      "sourceSha256": "e9e6e6c49538cb28b6b157fa6c55c2c385a2930fa275cb84320ea253cb03e794",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "03567449dfa305bf883b518a2c8c3f72ef155bd3cb5f0bcc437f39a61e3b9aa0",
+        "linux": "03567449dfa305bf883b518a2c8c3f72ef155bd3cb5f0bcc437f39a61e3b9aa0"
+      }
+    },
+    {
+      "name": "mudflap.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/mudflap.svg",
+      "bytes": 649,
+      "sourceSha256": "70c9ca3be2d0e0354803c9bac9694a70383beedd4814251b68ae050ad1f8b156",
+      "dimensions": {
+        "viewBox": "0 0 120 80"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "cc7d4cee5139abba99c1bf5b4e741eed9d87a2913d196cf4e0f0ea9dab5fd8d0",
+        "linux": "cc7d4cee5139abba99c1bf5b4e741eed9d87a2913d196cf4e0f0ea9dab5fd8d0"
+      }
+    },
+    {
+      "name": "myspace.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/myspace.svg",
+      "bytes": 351,
+      "sourceSha256": "8891134ac560e385991eaf6b6db6e324a9cd2ad8f652317ea13a2a19f00dcaf9",
+      "dimensions": {
+        "viewBox": "0 0 92 108"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "aa70e6fb203cf9d891321ec5301af74c9f46b05bfe8c4947b16a4022e722c274",
+        "linux": "aa70e6fb203cf9d891321ec5301af74c9f46b05bfe8c4947b16a4022e722c274"
+      }
+    },
+    {
+      "name": "mysvg.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/mysvg.svg",
+      "bytes": 480,
+      "sourceSha256": "3976da5079172c8ea5edea4f2b8a3628b366816361796544fc499b3f8bc2f688",
+      "dimensions": {
+        "width": "250",
+        "height": "150"
+      },
+      "fontFamilies": [
+        "Verdana"
+      ],
+      "features": {
+        "text": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'border' is not implemented."
+    },
+    {
+      "name": "no.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/no.svg",
+      "bytes": 304,
+      "sourceSha256": "cc93ec3657cac31f767290afe63d23a643b7f548eff3c66437bb1e5701742227",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4880ed227af2332018c3eac766ee502f8a70263fb9271f4e1248555ffcee5768",
+        "linux": "4880ed227af2332018c3eac766ee502f8a70263fb9271f4e1248555ffcee5768"
+      }
+    },
+    {
+      "name": "ny1.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ny1.svg",
+      "bytes": 8792,
+      "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+      "dimensions": {
+        "width": "600px",
+        "height": "388px"
+      },
+      "cssFontFamilyDeclarations": [
+        "Georgia, \"Times New Roman\", Times, serif",
+        "sans-serif"
+      ],
+      "features": {
+        "text": 50
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'text-transform' is not implemented."
+    },
+    {
+      "name": "obama.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/obama.svg",
+      "bytes": 365,
+      "sourceSha256": "ee506028df1784db0a76bf7966e3b6cf49f3491a41e99472db46b939b95ef092",
+      "dimensions": {
+        "viewBox": "0 0 102 102"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "0bfe9cdaf8ca1f2c85a59efab4de7cce96344691d2b6864ca84ae80c67a203a4",
+        "linux": "0bfe9cdaf8ca1f2c85a59efab4de7cce96344691d2b6864ca84ae80c67a203a4"
+      }
+    },
+    {
+      "name": "odf.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/odf.svg",
+      "bytes": 184,
+      "sourceSha256": "831817a358826ad7a9f402c7cf9c07baca2782b5b94940515de8720c1c475b4a",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "a8d10131293d477d7bb19b4f29b94e2e069da28099a454786bf18a60ec2987d1",
+        "linux": "a8d10131293d477d7bb19b4f29b94e2e069da28099a454786bf18a60ec2987d1"
+      }
+    },
+    {
+      "name": "open-clipart.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/open-clipart.svg",
+      "bytes": 1005,
+      "sourceSha256": "c2747cc29a888eb92c3bde7b7aa0e5e4b46ea84dac33920ec3b8fe178a093ec7",
+      "dimensions": {
+        "viewBox": "-80 -20 260 200"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "82c25971b22aa08fb3883b298482de56151914241480bede5383ee63c7ab82a9",
+        "linux": "82c25971b22aa08fb3883b298482de56151914241480bede5383ee63c7ab82a9"
+      }
+    },
+    {
+      "name": "openid.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/openid.svg",
+      "bytes": 213,
+      "sourceSha256": "1424282d8662a1583c93c618b227f1d1491d802cd40f1e703422fcae52ebddcc",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "6a4dd95387651392f021c7970b820a0f0250fc89f436acc5c5e809c5b766c241",
+        "linux": "6a4dd95387651392f021c7970b820a0f0250fc89f436acc5c5e809c5b766c241"
+      }
+    },
+    {
+      "name": "opensearch.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/opensearch.svg",
+      "bytes": 1058,
+      "sourceSha256": "9768b7d43abec9daf285246b44a99bd0b1088746717af54a41379aba23d987b5",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {
+        "linearGradient": 1
+      },
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "052832ce95b1c6a4483b7b9db2accf88f14b8920f240b9e1e5fa70ad37cdb9fa",
+        "linux": "052832ce95b1c6a4483b7b9db2accf88f14b8920f240b9e1e5fa70ad37cdb9fa"
+      }
+    },
+    {
+      "name": "openweb.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/openweb.svg",
+      "bytes": 215,
+      "sourceSha256": "398867ff5670a9b3cddf28c77eb24541b42cf4d108c08275837a92ae43710279",
+      "dimensions": {
+        "viewBox": "0 0 84 118"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "a17a705026a47da8bba5f6aca4d6620bdd00a733c08cacb7c2f35892a8e4aa2c",
+        "linux": "a17a705026a47da8bba5f6aca4d6620bdd00a733c08cacb7c2f35892a8e4aa2c"
+      }
+    },
+    {
+      "name": "opera.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/opera.svg",
+      "bytes": 817,
+      "sourceSha256": "146397424ed27aaebe76f52045269ce274397b40fcb72b24818c81dfd665fcb9",
+      "dimensions": {
+        "viewBox": "0 0 106 94"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "41fe70cbec6a8b22aebd941a2515b90bad6f698907006671df625f465bd6195d",
+        "linux": "41fe70cbec6a8b22aebd941a2515b90bad6f698907006671df625f465bd6195d"
+      }
+    },
+    {
+      "name": "osa.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/osa.svg",
+      "bytes": 627,
+      "sourceSha256": "499ae1a2aba5fa8e2a8b23b5a233310db7d4b24205681d9018bfd881d4104bb8",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4d98282cd55cee2691113e3c97f8bb106b30de72196ba14ff3c6385272b3712a",
+        "linux": "4d98282cd55cee2691113e3c97f8bb106b30de72196ba14ff3c6385272b3712a"
+      }
+    },
+    {
+      "name": "oscon.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/oscon.svg",
+      "bytes": 281,
+      "sourceSha256": "e265238fd7c1eb1bb7272d2d4646f93bee75392edb4e01404a3136b19f673ee7",
+      "dimensions": {
+        "viewBox": "0 0 96 111"
+      },
+      "externalReferenceUses": [
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://conferences.oreilly.com/oscon"
+        },
+        {
+          "element": "image",
+          "attribute": "href",
+          "url": "http://en.oreilly.com/oscon2008/public/asset/asset/765"
+        }
+      ],
+      "features": {
+        "image": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Only base64 PNG data-URI embedded images are implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "image",
+        "LineNumber": 3,
+        "LinePosition": 6
+      }
+    },
+    {
+      "name": "osi.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/osi.svg",
+      "bytes": 182,
+      "sourceSha256": "44aa48e314f6b0b7019cd56db4b317675ecdc719881a2b3c683883766f9da85a",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "a126835a11a65d110fd6b888f313ce14dff923eca68caffb2fe220df264c205b",
+        "linux": "a126835a11a65d110fd6b888f313ce14dff923eca68caffb2fe220df264c205b"
+      }
+    },
+    {
+      "name": "padlock.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/padlock.svg",
+      "bytes": 573,
+      "sourceSha256": "128cec5522771632f26e69664440597574221dd9e3c3a66540c4be0f4f66dc72",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4f84b1eeae59438d461dd98e492eb3f3b68ae923d279fa3244ad820026a31e30",
+        "linux": "4f84b1eeae59438d461dd98e492eb3f3b68ae923d279fa3244ad820026a31e30"
+      }
+    },
+    {
+      "name": "patch.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/patch.svg",
+      "bytes": 462,
+      "sourceSha256": "aaae91eb88edd85883bf15e587654f56e5da4dc94857e44d6a781b4912298250",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "7674671367670c06aa915b58b90bd7ae3c459d86b4d8f5560780f03192a114cf",
+        "linux": "7674671367670c06aa915b58b90bd7ae3c459d86b4d8f5560780f03192a114cf"
+      }
+    },
+    {
+      "name": "paths-data-08-t.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/paths-data-08-t.svg",
+      "bytes": 5630,
+      "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+      "dimensions": {
+        "width": "100%",
+        "height": "100%",
+        "viewBox": "0 0 480 360"
+      },
+      "fontFamilies": [
+        "Arial"
+      ],
+      "features": {
+        "text": 5
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "This SVG child element is not implemented yet.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 50,
+        "LinePosition": 4
+      }
+    },
+    {
+      "name": "paths-data-09-t.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/paths-data-09-t.svg",
+      "bytes": 5486,
+      "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+      "dimensions": {
+        "width": "100%",
+        "height": "100%",
+        "viewBox": "0 0 480 360"
+      },
+      "fontFamilies": [
+        "Arial"
+      ],
+      "features": {
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "This SVG child element is not implemented yet.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 50,
+        "LinePosition": 4
+      }
+    },
+    {
+      "name": "pdftk.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/pdftk.svg",
+      "bytes": 296,
+      "sourceSha256": "4e79686c30e9490c116094018d35ff171780b741ec8c1185b3e5de8736d7cdd6",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "2cbce7d18ea601fd5eeb4fd76715d8fce002d0fda235a91bbb8aa4a0e8a984c2",
+        "linux": "2cbce7d18ea601fd5eeb4fd76715d8fce002d0fda235a91bbb8aa4a0e8a984c2"
+      }
+    },
+    {
+      "name": "pencil.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/pencil.svg",
+      "bytes": 8147,
+      "sourceSha256": "a736c186252db9b9ec97ab780601513f1771c3a8f85035d35c07afcae2a96c81",
+      "dimensions": {
+        "width": "371.56079",
+        "height": "562.51685"
+      },
+      "features": {
+        "filter": 1
+      },
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "04d81cebd24a1ddc53b3393d7398cad7ce7a598b7422efb7732b33ae5175dd26",
+        "linux": "04d81cebd24a1ddc53b3393d7398cad7ce7a598b7422efb7732b33ae5175dd26"
+      }
+    },
+    {
+      "name": "penrose-staircase.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/penrose-staircase.svg",
+      "bytes": 3896,
+      "sourceSha256": "e2ea3dbb00aa2f8476c5bd02fcd60c39c62280db0dbcf69061f0c861d4a6705c",
+      "dimensions": {
+        "viewBox": "0 0 372 283"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "18a09b78c2bff44b626ed4e284d8d245f9f6b86e018dd30e324b445f67984de2",
+        "linux": "18a09b78c2bff44b626ed4e284d8d245f9f6b86e018dd30e324b445f67984de2"
+      }
+    },
+    {
+      "name": "penrose-tiling.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/penrose-tiling.svg",
+      "bytes": 1593,
+      "sourceSha256": "6ed1535de70e89cc866c7209bffb97de14a295c4e0d1a66b8147fefbf6b71771",
+      "dimensions": {
+        "viewBox": "-80 -80 160 160"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "80fb37fe3d4f99ba40fdde209178f8b0abfde83662503cff2a110f75c973c9da",
+        "linux": "80fb37fe3d4f99ba40fdde209178f8b0abfde83662503cff2a110f75c973c9da"
+      }
+    },
+    {
+      "name": "photos.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/photos.svg",
+      "bytes": 12283,
+      "sourceSha256": "e693ebedc37daae273f7b2f3b09eb76e1a2a9a35490b05b05e1fa816bca8ada9",
+      "eventHandlers": 1,
+      "features": {
+        "script": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG root attribute 'onload' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "svg",
+        "ElementId": "canvas",
+        "AttributeName": "onload",
+        "AttributeValue": "loaded()",
+        "LineNumber": 8,
+        "LinePosition": 2
+      }
+    },
+    {
+      "name": "php.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/php.svg",
+      "bytes": 877,
+      "sourceSha256": "5099fa1fa1569849d7a0f00f0119da9e7f6d1672f7b627c65a18189c8cb6c7c0",
+      "dimensions": {
+        "viewBox": "0 0 136 72"
+      },
+      "features": {
+        "radialGradient": 1
+      },
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "6dfd95cff778939a9a811408bbe00118a97422e6c12310d746f28fdb589a9ceb",
+        "linux": "6dfd95cff778939a9a811408bbe00118a97422e6c12310d746f28fdb589a9ceb"
+      }
+    },
+    {
+      "name": "poi.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/poi.svg",
+      "bytes": 217,
+      "sourceSha256": "489baa6c11d7e2952a3dc28f741bcca91a2148674ce8048926a56a23fa07272e",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "a1da7b2870ab219d628b19cfe23d8969cd1c9c88ca17f189456ac5cc67163f3d",
+        "linux": "a1da7b2870ab219d628b19cfe23d8969cd1c9c88ca17f189456ac5cc67163f3d"
+      }
+    },
+    {
+      "name": "preserveAspectRatio.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/preserveAspectRatio.svg",
+      "bytes": 4052,
+      "sourceSha256": "1a567ae0ddcfb78474a7313673960004ef67bade3d0b8eea9719bee934888dcd",
+      "dimensions": {
+        "width": "450px",
+        "height": "300px"
+      },
+      "features": {
+        "text": 19
+      },
+      "defaultLibraryOutcome": "MalformedInput",
+      "message": "SVG XML internal DTD subsets are not admitted."
+    },
+    {
+      "name": "pservers-grad-03-b-anim.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/pservers-grad-03-b-anim.svg",
+      "bytes": 6161,
+      "sourceSha256": "36726fb7ab5239ee321b72027eddc7dcf5dfedb0ee60250e64102a93f04816e2",
+      "dimensions": {
+        "width": "100%",
+        "height": "100%",
+        "viewBox": "0 0 480 360"
+      },
+      "fontFamilies": [
+        "Arial"
+      ],
+      "features": {
+        "animate": 12,
+        "pattern": 2,
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "This SVG child element is not implemented yet.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 87,
+        "LinePosition": 4
+      }
+    },
+    {
+      "name": "pservers-grad-03-b.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/pservers-grad-03-b.svg",
+      "bytes": 3951,
+      "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+      "dimensions": {
+        "width": "100%",
+        "height": "100%",
+        "viewBox": "0 0 480 360"
+      },
+      "fontFamilies": [
+        "Arial"
+      ],
+      "features": {
+        "pattern": 2,
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "This SVG child element is not implemented yet.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 57,
+        "LinePosition": 4
+      }
+    },
+    {
+      "name": "pull.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/pull.svg",
+      "bytes": 462,
+      "sourceSha256": "cb9263d7f5da168b005edf1d3499e278a53a78bc1a2ed1f59faea71d28adacc9",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "7e55dd69c1ba305fdf732ef0fcbb08a434ad00e80dbd870e34aa24f65f0942c0",
+        "linux": "7e55dd69c1ba305fdf732ef0fcbb08a434ad00e80dbd870e34aa24f65f0942c0"
+      }
+    },
+    {
+      "name": "python.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/python.svg",
+      "bytes": 911,
+      "sourceSha256": "4bc7481c92154bec18c06fdfca9f27e995ef9d0f373c8aafcd338ebb02dadd69",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {
+        "linearGradient": 2
+      },
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "a2b345cf107b8f84e64959148494ce5d6342fbc7388d9b8e8b3da6cdc3a413ae",
+        "linux": "a2b345cf107b8f84e64959148494ce5d6342fbc7388d9b8e8b3da6cdc3a413ae"
+      }
+    },
+    {
+      "name": "rack.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rack.svg",
+      "bytes": 373,
+      "sourceSha256": "7e2884333e42e617ac8d28297de1c78a28760f5ec778f02fb902610fa98974fe",
+      "dimensions": {
+        "viewBox": "0 0 90 111"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "39161eda116695b0647a5f15b9628768dd4850fe2a8c3c6471e134ac56bd946c",
+        "linux": "39161eda116695b0647a5f15b9628768dd4850fe2a8c3c6471e134ac56bd946c"
+      }
+    },
+    {
+      "name": "radialgradient1.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/radialgradient1.svg",
+      "bytes": 3321,
+      "sourceSha256": "fee0748155f0fc67217ad83fc631021dc9510ea3f60f1218e1005fb1be8ddb24",
+      "dimensions": {
+        "width": "406.25000",
+        "height": "206.25000"
+      },
+      "features": {
+        "linearGradient": 1,
+        "radialGradient": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Only bare-number and px dash offsets are implemented."
+    },
+    {
+      "name": "radialgradient2.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/radialgradient2.svg",
+      "bytes": 2567,
+      "sourceSha256": "855888af9d4245c6d7b3a0f4456bf715b9bb26407ed873f529888b6b5983657d",
+      "dimensions": {
+        "width": "744.09448819",
+        "height": "1052.3622047"
+      },
+      "features": {
+        "linearGradient": 2,
+        "radialGradient": 2
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop3195",
+        "AttributeName": "id",
+        "AttributeValue": "stop3195",
+        "LineNumber": 21,
+        "LinePosition": 67
+      }
+    },
+    {
+      "name": "rails.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rails.svg",
+      "bytes": 880,
+      "sourceSha256": "ec1f8ac247d7430b16848251398cf7c1fa5cfc13b45c0fb94f406e454d90d563",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "054dfdba0e95bb7c226b65ee4d3197cbe34af17b1e37ec59bcc76cebf9884ea5",
+        "linux": "054dfdba0e95bb7c226b65ee4d3197cbe34af17b1e37ec59bcc76cebf9884ea5"
+      }
+    },
+    {
+      "name": "raleigh.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/raleigh.svg",
+      "bytes": 375,
+      "sourceSha256": "c6ead6872f5e1436568c4ed0be67af54d7395ee041e26422904144991aa5045f",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "010a3e5f384185ad08df50dce230086d54ff3cb7a1baefab3c1a710acd50351f",
+        "linux": "010a3e5f384185ad08df50dce230086d54ff3cb7a1baefab3c1a710acd50351f"
+      }
+    },
+    {
+      "name": "rdf.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rdf.svg",
+      "bytes": 770,
+      "sourceSha256": "7cd85d6950b83b63a5b2e4211fcc890d1a5c135fa42269de2adebe71932427c7",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "a25c048390934bb36cae4c23e8b12ff2d929581a1e2cb708cd0f00a3df15d0d4",
+        "linux": "a25c048390934bb36cae4c23e8b12ff2d929581a1e2cb708cd0f00a3df15d0d4"
+      }
+    },
+    {
+      "name": "rectangles.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rectangles.svg",
+      "bytes": 653,
+      "sourceSha256": "09b5f6137b5f0dc3ca233f85f08723564135e18a93237cc6b235ca9eef6c00e3",
+      "dimensions": {
+        "width": "200",
+        "height": "200"
+      },
+      "eventHandlers": 5,
+      "features": {},
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG root attribute 'onclick' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "svg",
+        "AttributeName": "onclick",
+        "AttributeValue": "document.svgOnClick(evt, this)",
+        "LineNumber": 6,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "rest.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rest.svg",
+      "bytes": 522,
+      "sourceSha256": "83e80cc89490581556df2c93ad232e69c7e74f141ff4633937b9c16b11b164e3",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4c18384ff59e8663157415dcbbb20b414334b132b74ce96bea099dde2b9a5bc2",
+        "linux": "4c18384ff59e8663157415dcbbb20b414334b132b74ce96bea099dde2b9a5bc2"
+      }
+    },
+    {
+      "name": "rfeed.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rfeed.svg",
+      "bytes": 302,
+      "sourceSha256": "3362e7b5af2db4df10e81accaf40d051256b7ebc298c86c07a2d29b7e67d84fc",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "898c8ac89da9c5e75d5fcff62bb8a2465c84414e4a921fc438ad995035c42574",
+        "linux": "898c8ac89da9c5e75d5fcff62bb8a2465c84414e4a921fc438ad995035c42574"
+      }
+    },
+    {
+      "name": "rg1024_Presentation_with_girl.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rg1024_Presentation_with_girl.svg",
+      "bytes": 79182,
+      "sourceSha256": "995e2656447b8da3e849fd762d4b9d51bc5ff7982107fc24deacb8659b43d15c",
+      "dimensions": {
+        "width": "305.60663",
+        "height": "397.8302"
+      },
+      "cssFontFamilyDeclarations": [
+        "Bitstream Vera Sans"
+      ],
+      "features": {
+        "linearGradient": 67,
+        "radialGradient": 11
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop4918",
+        "AttributeName": "id",
+        "AttributeValue": "stop4918",
+        "LineNumber": 84,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "rg1024_Ufo_in_metalic_style.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rg1024_Ufo_in_metalic_style.svg",
+      "bytes": 13166,
+      "sourceSha256": "516d45ddddc69f032bde79c0c4885cadbe23aa9c2e70cd5553b7b291b61e1cb4",
+      "dimensions": {
+        "width": "729.48969",
+        "height": "379.48499"
+      },
+      "features": {
+        "linearGradient": 14,
+        "radialGradient": 2
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop4076",
+        "AttributeName": "id",
+        "AttributeValue": "stop4076",
+        "LineNumber": 28,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "rg1024_eggs.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rg1024_eggs.svg",
+      "bytes": 42268,
+      "sourceSha256": "e261178649854a75edf284155b349f12019643f668114a998c8c36f1d60d1cb3",
+      "dimensions": {
+        "width": "430.8902",
+        "height": "473.55905"
+      },
+      "features": {
+        "filter": 4,
+        "linearGradient": 31,
+        "radialGradient": 26
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop5615",
+        "AttributeName": "id",
+        "AttributeValue": "stop5615",
+        "LineNumber": 31,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "rg1024_green_grapes.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rg1024_green_grapes.svg",
+      "bytes": 73520,
+      "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+      "dimensions": {
+        "width": "557.90326",
+        "height": "781.49402"
+      },
+      "features": {
+        "filter": 2,
+        "linearGradient": 31,
+        "radialGradient": 9
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop10379",
+        "AttributeName": "id",
+        "AttributeValue": "stop10379",
+        "LineNumber": 366,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "rg1024_metal_effect.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rg1024_metal_effect.svg",
+      "bytes": 55748,
+      "sourceSha256": "bea3712e842b247bfab90ab373355fffe3be933f8a33df55ea193036e0812983",
+      "dimensions": {
+        "width": "445",
+        "height": "479"
+      },
+      "cssFontFamilyDeclarations": [
+        "Bitstream Vera Sans"
+      ],
+      "features": {
+        "filter": 6,
+        "linearGradient": 16,
+        "pattern": 11,
+        "radialGradient": 2
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop4094",
+        "AttributeName": "id",
+        "AttributeValue": "stop4094",
+        "LineNumber": 61,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "ruby.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ruby.svg",
+      "bytes": 1072,
+      "sourceSha256": "e377ec225ceeee47a29c0c3592ad50584d5e6847d869f9a5fe1b464779ac6bc1",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "3f3c9997e061cf9b4b78a6f717bb800ab27663c555b18a8244c18d52addc8acc",
+        "linux": "3f3c9997e061cf9b4b78a6f717bb800ab27663c555b18a8244c18d52addc8acc"
+      }
+    },
+    {
+      "name": "rubyforge.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/rubyforge.svg",
+      "bytes": 252,
+      "sourceSha256": "ffa640c9cac6df529da0d203f6764731ba08ae660bafb37475563802ad98afbd",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "9202324b77e0d1c8364a4c063e40e748a1dbccf42ee8b3a9035afd9f7c28a432",
+        "linux": "9202324b77e0d1c8364a4c063e40e748a1dbccf42ee8b3a9035afd9f7c28a432"
+      }
+    },
+    {
+      "name": "scimitar-anim.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/scimitar-anim.svg",
+      "bytes": 99313,
+      "sourceSha256": "177834a4c8cb24612d33866ce0de51eb79c5c785d701609df71f7808d1ade572",
+      "dimensions": {
+        "width": "466.11172",
+        "height": "265.35126"
+      },
+      "externalReferenceUses": [
+        {
+          "element": "audio",
+          "attribute": "href",
+          "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/poker_music.mp3"
+        }
+      ],
+      "features": {
+        "animateTransform": 7,
+        "audio": 1,
+        "clipPath": 9,
+        "filter": 7,
+        "linearGradient": 82,
+        "radialGradient": 7
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop2363",
+        "AttributeName": "id",
+        "AttributeValue": "stop2363",
+        "LineNumber": 23,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "scimitar.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/scimitar.svg",
+      "bytes": 96937,
+      "sourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+      "dimensions": {
+        "width": "466.11172",
+        "height": "265.35126"
+      },
+      "features": {
+        "clipPath": 9,
+        "filter": 7,
+        "linearGradient": 82,
+        "radialGradient": 7
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop2363",
+        "AttributeName": "id",
+        "AttributeValue": "stop2363",
+        "LineNumber": 19,
+        "LinePosition": 10
+      }
+    },
+    {
+      "name": "scion.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/scion.svg",
+      "bytes": 1339,
+      "sourceSha256": "39b6486403588426bca3e9cbf470e5bea69d4ca565a1e6237111e666a01808cb",
+      "dimensions": {
+        "viewBox": "0 0 120 83"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "ef2855a317ca61b7adda7e6b3a89dd69c18f1e3a2da48061661d841a4fa7b5dc",
+        "linux": "ef2855a317ca61b7adda7e6b3a89dd69c18f1e3a2da48061661d841a4fa7b5dc"
+      }
+    },
+    {
+      "name": "semweb.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/semweb.svg",
+      "bytes": 257,
+      "sourceSha256": "ca2342bc648e2055ea2ff921d0d909464c8575ba14b65e1bbb55b759640621a2",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "91ec0615798625431e19250ec317a06a40db173b957ae008311ec1276cbe6b31",
+        "linux": "91ec0615798625431e19250ec317a06a40db173b957ae008311ec1276cbe6b31"
+      }
+    },
+    {
+      "name": "shapes-polygon-01-t.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/shapes-polygon-01-t.svg",
+      "bytes": 5447,
+      "sourceSha256": "ba00b071ec66e3b98ac2de924563f69d72e714ab02adbbe1dd1266b418ea144e",
+      "dimensions": {
+        "width": "100%",
+        "height": "100%",
+        "viewBox": "0 0 480 360"
+      },
+      "features": {
+        "text": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "This SVG child element is not implemented yet.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "ElementId": "revision",
+        "LineNumber": 70,
+        "LinePosition": 3
+      }
+    },
+    {
+      "name": "shapes-polyline-01-t.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/shapes-polyline-01-t.svg",
+      "bytes": 6196,
+      "sourceSha256": "3d636692e459edc01b768cc607b0b1b3fcd06c379616a3771a06ae8dfc8324ca",
+      "dimensions": {
+        "width": "100%",
+        "height": "100%",
+        "viewBox": "0 0 480 360"
+      },
+      "features": {
+        "text": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "This SVG child element is not implemented yet.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "ElementId": "revision",
+        "LineNumber": 81,
+        "LinePosition": 3
+      }
+    },
+    {
+      "name": "smile.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/smile.svg",
+      "bytes": 824,
+      "sourceSha256": "e3d8f00248a02b117b030e0bb64beab3f492727e9298706c768ce7849fce7e33",
+      "dimensions": {
+        "width": "850px",
+        "height": "700px"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "MalformedInput",
+      "message": "SVG XML internal DTD subsets are not admitted."
+    },
+    {
+      "name": "snake.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/snake.svg",
+      "bytes": 5821,
+      "sourceSha256": "52ac4b0c97fdd51ec9a93a618389164f3ebe60bd2cc0caabe781a1e011343072",
+      "dimensions": {
+        "width": "600",
+        "height": "500"
+      },
+      "fontFamilies": [
+        "sans-serif"
+      ],
+      "eventHandlers": 1,
+      "features": {
+        "script": 1,
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG root attribute 'onload' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "svg",
+        "AttributeName": "onload",
+        "AttributeValue": "Init()",
+        "LineNumber": 3,
+        "LinePosition": 123
+      }
+    },
+    {
+      "name": "star.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/star.svg",
+      "bytes": 184,
+      "sourceSha256": "20a60ffa611d75706135caf3b0fad1116b40cc39bb078e782074e82a95d6034d",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "1e8ca59ab217ba26854a9ba6e4c14c562e8a4bfa27dae113f2ac91e4e056f79d",
+        "linux": "1e8ca59ab217ba26854a9ba6e4c14c562e8a4bfa27dae113f2ac91e4e056f79d"
+      }
+    },
+    {
+      "name": "svg.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/svg.svg",
+      "bytes": 546,
+      "sourceSha256": "f367188940f36e0053777941ea72820d272dacc5e2fadaf03ba837b55947081a",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "9ba32e3633726806dc788447d8fa7fca21dc25f1c0ac0e17a7b5abd9dd8cf718",
+        "linux": "6270d140b852258201361b48813bfde0aaa5185afb7e6ce1d7234703ebbc89c0"
+      }
+    },
+    {
+      "name": "svg2009.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/svg2009.svg",
+      "bytes": 65730,
+      "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+      "dimensions": {
+        "width": "850",
+        "height": "200"
+      },
+      "fontFamilies": [
+        "Droid Sans"
+      ],
+      "cssFontFamilyDeclarations": [
+        "Droid Sans",
+        "Myriad Pro"
+      ],
+      "features": {
+        "animate": 2,
+        "animateTransform": 9,
+        "clipPath": 2,
+        "filter": 2,
+        "font": 1,
+        "font-face": 1,
+        "linearGradient": 16,
+        "text": 3
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'text-align' is not implemented."
+    },
+    {
+      "name": "svg_header-clean.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/svg_header-clean.svg",
+      "bytes": 35963,
+      "sourceSha256": "a21b909c5be692400d1bd913142f0a77300c4275bb0b8b2f5a509a166460c81d",
+      "dimensions": {
+        "width": "850",
+        "height": "200"
+      },
+      "features": {
+        "linearGradient": 2
+      },
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "3aac39420d740294856083a8a4ded3ed21575be74e0fd626361cbfd18b2733ed",
+        "linux": "3aac39420d740294856083a8a4ded3ed21575be74e0fd626361cbfd18b2733ed"
+      }
+    },
+    {
+      "name": "sync.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/sync.svg",
+      "bytes": 542,
+      "sourceSha256": "97a7764e7cad67eb26a2593972eed2fadb281edc67963e34da3c7e6134e4009f",
+      "dimensions": {
+        "viewBox": "0 0 104 94"
+      },
+      "features": {
+        "radialGradient": 1
+      },
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "3831f5cceae2d3763b3add75b90fc38b4f25e69352083bd57d05795e5e910bd2",
+        "linux": "3831f5cceae2d3763b3add75b90fc38b4f25e69352083bd57d05795e5e910bd2"
+      }
+    },
+    {
+      "name": "tiger.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/tiger.svg",
+      "bytes": 96719,
+      "sourceSha256": "e14dab6b4811a6a12abf9aefe69b5e4d5e8af43f9e1cc2dc22416eebf87ed0c7",
+      "dimensions": {
+        "height": "800"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "8eadc69305176d3fcf1d74a629ae03e25b0a535d42738c98909cf42fdd2340c0",
+        "linux": "8eadc69305176d3fcf1d74a629ae03e25b0a535d42738c98909cf42fdd2340c0"
+      }
+    },
+    {
+      "name": "tommek_Car.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/tommek_Car.svg",
+      "bytes": 338964,
+      "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+      "dimensions": {
+        "width": "1052.3622",
+        "height": "744.09448"
+      },
+      "features": {
+        "filter": 45,
+        "linearGradient": 229,
+        "radialGradient": 63
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Gradient stop attribute 'id' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "stop",
+        "ElementId": "stop9677",
+        "AttributeName": "id",
+        "AttributeValue": "stop9677",
+        "LineNumber": 6,
+        "LinePosition": 81
+      }
+    },
+    {
+      "name": "twitter.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/twitter.svg",
+      "bytes": 383,
+      "sourceSha256": "7b8528ea4e031671eb7927b22055b8a9f7d6ab9e9eaa972e0d8151f84ea05aa4",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {
+        "linearGradient": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Percentage userSpaceOnUse gradient coordinates, including nonzero initial values, are not implemented."
+    },
+    {
+      "name": "ubuntu.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ubuntu.svg",
+      "bytes": 1095,
+      "sourceSha256": "ec649901a66983ab09d9ac57a4880f105c76c649bd002195132eac90a792f876",
+      "dimensions": {
+        "viewBox": "-70 -70 140 140"
+      },
+      "externalReferenceUses": [
+        {
+          "element": "a",
+          "attribute": "href",
+          "url": "http://www.ubuntu.com/"
+        }
+      ],
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "5470022570846c51022b9666d79b30d17e69beedbad87c6ed11f108efba04dd7",
+        "linux": "5470022570846c51022b9666d79b30d17e69beedbad87c6ed11f108efba04dd7"
+      }
+    },
+    {
+      "name": "unicode-han.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/unicode-han.svg",
+      "bytes": 546,
+      "sourceSha256": "20fee257568bc9aac7f3432c0c8ef5376e3adaa96cd44773609b15dbeea39dce",
+      "dimensions": {
+        "viewBox": "0 250 400 150"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "cbfe31345d65dd798247c17e5333c5ca2617fba358e84a789b68c6a1d64775e7",
+        "linux": "cbfe31345d65dd798247c17e5333c5ca2617fba358e84a789b68c6a1d64775e7"
+      }
+    },
+    {
+      "name": "unicode.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/unicode.svg",
+      "bytes": 233,
+      "sourceSha256": "3c09b79badce6892168fcc606ad95f985f879b17b006ebed9bad2bab0901f557",
+      "dimensions": {
+        "viewBox": "0 0 115 87"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "14c762278dbe727cc200890aa576b0bd856fec8e9aa5e554fd7a1a180c2356b1",
+        "linux": "14c762278dbe727cc200890aa576b0bd856fec8e9aa5e554fd7a1a180c2356b1"
+      }
+    },
+    {
+      "name": "usaf.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/usaf.svg",
+      "bytes": 528,
+      "sourceSha256": "2d8c49fccefcab8d73affb9e129578dc8063d7432f085a931e268e2f1bf833a7",
+      "dimensions": {
+        "viewBox": "0 0 104 96"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "5607e4a2938526d89457781d3193fe5bf3b7ba5e6ab24978aea9c181c87a6361",
+        "linux": "5607e4a2938526d89457781d3193fe5bf3b7ba5e6ab24978aea9c181c87a6361"
+      }
+    },
+    {
+      "name": "utensils.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/utensils.svg",
+      "bytes": 382,
+      "sourceSha256": "f05f3f2cd96130ea8ced315dfd83af629d10036f168532e63455f0db2dc3dccb",
+      "dimensions": {
+        "viewBox": "0 0 160 62"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "c91d2c05901d24879a0174e4812120860f08a2c2e31df21baa1cea2b2c64bde0",
+        "linux": "c91d2c05901d24879a0174e4812120860f08a2c2e31df21baa1cea2b2c64bde0"
+      }
+    },
+    {
+      "name": "venus.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/venus.svg",
+      "bytes": 233,
+      "sourceSha256": "faf9a00555543c528ae294337167c588883ab6d4ddff450525bf198f5ccca63b",
+      "dimensions": {
+        "viewBox": "0 0 80 125"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4802842f6c381ebe9b9a548746410853ce20139822a63ce3fa95522d615fc544",
+        "linux": "4802842f6c381ebe9b9a548746410853ce20139822a63ce3fa95522d615fc544"
+      }
+    },
+    {
+      "name": "video1.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/video1.svg",
+      "bytes": 5286,
+      "sourceSha256": "e6941453371664e5d392af70aab97cc2d9d02ca0b406324553dcaaaf0e38fcff",
+      "dimensions": {
+        "width": "480",
+        "height": "360",
+        "viewBox": "0 0 480 360"
+      },
+      "fontFamilies": [
+        "Arial"
+      ],
+      "externalReferenceUses": [
+        {
+          "element": "video",
+          "attribute": "href",
+          "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/20051210-w50s.flv"
+        }
+      ],
+      "features": {
+        "animate": 6,
+        "animateTransform": 7,
+        "text": 6,
+        "video": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "This SVG child element is not implemented yet.",
+      "sourceDiagnostic": {
+        "ElementName": "text",
+        "LineNumber": 45,
+        "LinePosition": 18
+      }
+    },
+    {
+      "name": "videos.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/videos.svg",
+      "bytes": 10486,
+      "sourceSha256": "30527d7b7fd44e93209a9a5227fbe2be75f26c9bd9acaf365c90ab30f169cd76",
+      "eventHandlers": 1,
+      "features": {
+        "script": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "SVG root attribute 'onload' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "svg",
+        "ElementId": "root",
+        "AttributeName": "onload",
+        "AttributeValue": "loaded()",
+        "LineNumber": 7,
+        "LinePosition": 2
+      }
+    },
+    {
+      "name": "vmware.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/vmware.svg",
+      "bytes": 297,
+      "sourceSha256": "79503bd3a923498432c9923635fe1e3fa7a04b189e001034ff30ec0c2866fa86",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "81d4497f12a577ffa33a830bca2e98cdbaf4bdd06e0c48bb0d2d0e86a422197e",
+        "linux": "81d4497f12a577ffa33a830bca2e98cdbaf4bdd06e0c48bb0d2d0e86a422197e"
+      }
+    },
+    {
+      "name": "vnu.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/vnu.svg",
+      "bytes": 493,
+      "sourceSha256": "d33b894ed602d9f8a804170649fab2c5bfa12743ee480071274a0f9edf969e6c",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "302c65bd46bf6bbe3cfd2f777c89141e6d0a83e4841df45b47fe2ab06bb4d5e8",
+        "linux": "302c65bd46bf6bbe3cfd2f777c89141e6d0a83e4841df45b47fe2ab06bb4d5e8"
+      }
+    },
+    {
+      "name": "vote.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/vote.svg",
+      "bytes": 920,
+      "sourceSha256": "871e72f5226eaeece7c517c1f25123adb9db5f442b21c87af7ac46711fbd5eac",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "b562169ebe835e7b1d8760c9dd27db9396f459dfc86f6f786ffdd626b24478ab",
+        "linux": "b562169ebe835e7b1d8760c9dd27db9396f459dfc86f6f786ffdd626b24478ab"
+      }
+    },
+    {
+      "name": "w3c.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/w3c.svg",
+      "bytes": 351,
+      "sourceSha256": "733bd2700bd9c9bf0f4da6c4bc8106b65da9a734d759ac9f38c12a3000c34386",
+      "dimensions": {
+        "viewBox": "0 0 131 76"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "f8eb3eb8aada8af3b16ba64c4bf7a1b3d5db8fe094c66098f7f76b2cde95399a",
+        "linux": "f8eb3eb8aada8af3b16ba64c4bf7a1b3d5db8fe094c66098f7f76b2cde95399a"
+      }
+    },
+    {
+      "name": "whatwg.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/whatwg.svg",
+      "bytes": 273,
+      "sourceSha256": "a38b3b8cccbe0490da5065903476e0f7a89d7c8b8e2480bc8f9e44c9711b713b",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "cf3b6799ce6cfc8c3898f237683a81a87b5250c4476a6fbd7b56e4e0d98ee085",
+        "linux": "cf3b6799ce6cfc8c3898f237683a81a87b5250c4476a6fbd7b56e4e0d98ee085"
+      }
+    },
+    {
+      "name": "why.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/why.svg",
+      "bytes": 423,
+      "sourceSha256": "7cc83adcf8c08a6e69f94da70e2e8eb93a42897ec092ddc3fd1d6838a4ce42bf",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "Path attribute 'xlink:title' is not implemented.",
+      "sourceDiagnostic": {
+        "ElementName": "path",
+        "AttributeName": "xlink:title",
+        "AttributeValue": "Chunky Bacon!",
+        "LineNumber": 6,
+        "LinePosition": 74
+      }
+    },
+    {
+      "name": "wii.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/wii.svg",
+      "bytes": 325,
+      "sourceSha256": "a90e98cd4b57c5d0eddd9e2379ae73cb7e342e4c497c2ab366880aca2b0e4673",
+      "dimensions": {
+        "viewBox": "0 0 143 70"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "02dbda6c55c3b843a0779b3eae70878b9d08b0ecf640c89e9f7d15fe35c8745a",
+        "linux": "02dbda6c55c3b843a0779b3eae70878b9d08b0ecf640c89e9f7d15fe35c8745a"
+      }
+    },
+    {
+      "name": "wikimedia.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/wikimedia.svg",
+      "bytes": 273,
+      "sourceSha256": "08540fec71d4fb8fc18c1607186dd4925d6f3b01547047c8124592b6d39ff125",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "0cc2d0465a27337fedb47221b64aae4d42fb2d3712b58e4e7730f639b98da2af",
+        "linux": "0cc2d0465a27337fedb47221b64aae4d42fb2d3712b58e4e7730f639b98da2af"
+      }
+    },
+    {
+      "name": "wireless.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/wireless.svg",
+      "bytes": 306,
+      "sourceSha256": "f5981a57300428166ec20c031291e89a794cbbd3786642fd58b2a901ce273d5e",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "a6a2d61d41feb9e6bd148a61f8e66b2702c443cb6ae839f8b82ac3065b03adfb",
+        "linux": "a6a2d61d41feb9e6bd148a61f8e66b2702c443cb6ae839f8b82ac3065b03adfb"
+      }
+    },
+    {
+      "name": "wp.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/wp.svg",
+      "bytes": 404,
+      "sourceSha256": "52a5127d6b45d1efe4f82499e2fe3c0c375d021b4a10b081e14a807a8faf9d4b",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "5b4f5fb70b92577086cd393974a3ee1b9992237bed7d1e9515960e53a0dbeb61",
+        "linux": "5b4f5fb70b92577086cd393974a3ee1b9992237bed7d1e9515960e53a0dbeb61"
+      }
+    },
+    {
+      "name": "wso2.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/wso2.svg",
+      "bytes": 583,
+      "sourceSha256": "3e6b9d97eb7bdd5e20e6b031040d86f54dd1b8d2362fd863a75af27d87323b30",
+      "dimensions": {
+        "viewBox": "0 0 150 70"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "a5e0f1fdbb02d61261e8fc6b5c9ecfb84d5d64b5c4bd5f8c9225f57c9b2549b5",
+        "linux": "a5e0f1fdbb02d61261e8fc6b5c9ecfb84d5d64b5c4bd5f8c9225f57c9b2549b5"
+      }
+    },
+    {
+      "name": "x11.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/x11.svg",
+      "bytes": 290,
+      "sourceSha256": "3e84d54927b69c7177ea2b5162bbe55a0ff02bec0f843d0c047db5df0fa31d6f",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "externalReferenceUses": [
+        {
+          "element": "audio",
+          "attribute": "href",
+          "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/sounds/poker_music.mp3"
+        }
+      ],
+      "features": {
+        "audio": 1
+      },
+      "defaultLibraryOutcome": "UnsupportedFeature",
+      "message": "This SVG child element is not implemented yet.",
+      "sourceDiagnostic": {
+        "ElementName": "audio",
+        "LineNumber": 3,
+        "LinePosition": 4
+      }
+    },
+    {
+      "name": "yadis.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/yadis.svg",
+      "bytes": 634,
+      "sourceSha256": "5e2517e5a3727593ea2bed8076666e443aeb2997aeead98b16c2b06cba4f8944",
+      "dimensions": {
+        "viewBox": "0 0 83 121"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "e19f464d99d1ab8d497bed4a8450d08a395823308fe0ef3d748cb66540faa048",
+        "linux": "e19f464d99d1ab8d497bed4a8450d08a395823308fe0ef3d748cb66540faa048"
+      }
+    },
+    {
+      "name": "yahoo.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/yahoo.svg",
+      "bytes": 401,
+      "sourceSha256": "e4b80cd348a3814b491ef4717149c801f806cc4b710cb9d1245903d959e5e3af",
+      "dimensions": {
+        "viewBox": "0 0 133 75"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "5fc9e85c2bf0ad2ed551d6b626abf44241835165624e6a5cec9b8bd0e1d73862",
+        "linux": "5fc9e85c2bf0ad2ed551d6b626abf44241835165624e6a5cec9b8bd0e1d73862"
+      }
+    },
+    {
+      "name": "yinyang.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/yinyang.svg",
+      "bytes": 282,
+      "sourceSha256": "449465bd5efcefe106d1115fd00f732c25e883e507cfb543eca8e0cb1759b495",
+      "dimensions": {
+        "viewBox": "0 0 100 100"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "1c1a04c48a7015f011e31f3b6031b2d6de619c4d326182d994d09c9778949d16",
+        "linux": "1c1a04c48a7015f011e31f3b6031b2d6de619c4d326182d994d09c9778949d16"
+      }
+    },
+    {
+      "name": "zillow.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/zillow.svg",
+      "bytes": 293,
+      "sourceSha256": "592a6d49c149c0df4e029b7a4f52acb40410df916ea6c19c68de28ff6970a1b3",
+      "dimensions": {
+        "viewBox": "0 0 111 90"
+      },
+      "features": {},
+      "defaultLibraryOutcome": "rendered",
+      "libraryPngSha256": {
+        "windows": "4a0df56f730fe674107044898089582314af25ef1414995f6eca99cc8e586a86",
+        "linux": "4a0df56f730fe674107044898089582314af25ef1414995f6eca99cc8e586a86"
+      }
+    }
+  ]
+}

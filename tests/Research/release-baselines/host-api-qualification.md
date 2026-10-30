@@ -36,6 +36,11 @@ took 6.90 s. Linux deployed-consumer executions took 6.93 s on .NET 11 and 6.88 
 on .NET 10, including WSL/process startup. These are single functional-validation
 observations, not renderer throughput or a before/after speed comparison.
 
+Matching full CI run `41037024871` passed at
+`85b78c24ec33937301cd707dfb42ab86bcd59bd1` on Windows and Linux, including both
+target runtimes and Linux-native package restore/build/execution. This closes the
+host qualification handoff.
+
 Source implementation, candidate qualification and publication are separate.
 This work performs no NuGet publication and does not change the published release.
 Quiet-machine benchmarking remains outside this functional qualification.

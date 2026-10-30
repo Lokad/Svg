@@ -14,3 +14,7 @@ retain original source/options/reference bytes when promoting a useful control.
 the manifest. Its historical auto-image reference stays diagnostic; explicit
 viewport acceptance is separately declared. Use each entry's recorded outcome
 rather than treating historical rejections as a current support boundary.
+
+[Hosted SVGWeb review](svgweb/README.md) keeps per-original metadata and outcomes
+without importing the remote SVG collection. Its initial diagnostic ledger is
+separate from accepted offline rendering regressions.
