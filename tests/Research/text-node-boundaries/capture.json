@@ -2065,6 +2065,102 @@
           "networkServiceCrashes": 0
         }
       ]
+    },
+    "r48-fragment-screen": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    },
+    "r49-paint-return": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
     }
   },
   "cases": [
@@ -15078,6 +15174,1371 @@
           "reference": "references/100c222e6b5226b1b13aa7f8a9b70498214a216a24e13791ac9421b2dcde235d.png",
           "referenceSha256": "100c222e6b5226b1b13aa7f8a9b70498214a216a24e13791ac9421b2dcde235d",
           "rgbaSha256": "a40dc615321b8c79eab69e3cc7621e88e05b0a219be6031451d55b15032fd6a0"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-563-candidate",
+      "input": "original-r48-matrix-563-candidate.svg",
+      "sourceSha256": "183677b4b0f1ae90228bc2232ce02ddc71f8acef24b92658747f3632305c997c",
+      "nativeSourceSha256": "fa18677e33c943173d9f8ee0e07f5d63329273d723ab562462889bba2b85cbef",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/25d363aef6618b13dd9594924054cb5bc52ce3c04b34cfed87628307c90d9823.png",
+          "referenceSha256": "25d363aef6618b13dd9594924054cb5bc52ce3c04b34cfed87628307c90d9823",
+          "rgbaSha256": "f875ae5b8c57cf98e954381c70aefd4180320d76e87cd337acc2b9e7085dda4d"
+        },
+        "linux": {
+          "reference": "references/e4c743a4e5ba7904da9d46ed66aa4ac20dca0a2cea891a87bc79689d35797206.png",
+          "referenceSha256": "e4c743a4e5ba7904da9d46ed66aa4ac20dca0a2cea891a87bc79689d35797206",
+          "rgbaSha256": "78bb38bb669d9f0c122f4edc31136a7f19953606d4e1cd21113104b0449ad15e"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-563-control",
+      "input": "original-r48-matrix-563-control.svg",
+      "sourceSha256": "9b9663a6ffad8645bb8d677834fda250e5e7c9068e25a8f3ad4c09680a93a00b",
+      "nativeSourceSha256": "89b274c0ac5c2f4ba258a6e689cd42e4010b77d7ef60aa6cf9521155db06b59b",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/25d363aef6618b13dd9594924054cb5bc52ce3c04b34cfed87628307c90d9823.png",
+          "referenceSha256": "25d363aef6618b13dd9594924054cb5bc52ce3c04b34cfed87628307c90d9823",
+          "rgbaSha256": "f875ae5b8c57cf98e954381c70aefd4180320d76e87cd337acc2b9e7085dda4d"
+        },
+        "linux": {
+          "reference": "references/e4c743a4e5ba7904da9d46ed66aa4ac20dca0a2cea891a87bc79689d35797206.png",
+          "referenceSha256": "e4c743a4e5ba7904da9d46ed66aa4ac20dca0a2cea891a87bc79689d35797206",
+          "rgbaSha256": "78bb38bb669d9f0c122f4edc31136a7f19953606d4e1cd21113104b0449ad15e"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-376-candidate",
+      "input": "original-r48-matrix-376-candidate.svg",
+      "sourceSha256": "03e17e0e4bb6d50cb1db86a4158a2be321d5c23152377a453648247fe73cd082",
+      "nativeSourceSha256": "66eaf33b0391a87a9e7f271daaa0ac8539372e9b5f6d10e1d164ce2fcc6e60d7",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/a60b9778895bf90058293de32e2b43347342a37a19aeaf400b52fd37abae9f7d.png",
+          "referenceSha256": "a60b9778895bf90058293de32e2b43347342a37a19aeaf400b52fd37abae9f7d",
+          "rgbaSha256": "938b95494e3111cf7e2b01b959457553c286f9a57eae423de63d0b8a75c20e36"
+        },
+        "linux": {
+          "reference": "references/9aea022a0825c565f913405f76c1e153f6023d596b7daf00206872253018c121.png",
+          "referenceSha256": "9aea022a0825c565f913405f76c1e153f6023d596b7daf00206872253018c121",
+          "rgbaSha256": "3a84adb78984d82dfe976b7d6ddc7cfcde22e9ddab6d7f69ccada39c2376a16c"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-376-control",
+      "input": "original-r48-matrix-376-control.svg",
+      "sourceSha256": "cee98b5d11e825c75e16626f1eaf7951f42cf171982e230555ee9cf540d35950",
+      "nativeSourceSha256": "37f860cedbe78c82eec99222d777c4c5192df2f4b61d3111c69ca0faa5a7721d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/a60b9778895bf90058293de32e2b43347342a37a19aeaf400b52fd37abae9f7d.png",
+          "referenceSha256": "a60b9778895bf90058293de32e2b43347342a37a19aeaf400b52fd37abae9f7d",
+          "rgbaSha256": "938b95494e3111cf7e2b01b959457553c286f9a57eae423de63d0b8a75c20e36"
+        },
+        "linux": {
+          "reference": "references/9aea022a0825c565f913405f76c1e153f6023d596b7daf00206872253018c121.png",
+          "referenceSha256": "9aea022a0825c565f913405f76c1e153f6023d596b7daf00206872253018c121",
+          "rgbaSha256": "3a84adb78984d82dfe976b7d6ddc7cfcde22e9ddab6d7f69ccada39c2376a16c"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-285-candidate",
+      "input": "original-r48-matrix-285-candidate.svg",
+      "sourceSha256": "90ddcfd060755f70e654cf1e104e8e355840c05a7c43a5f481557c93ab0cdcda",
+      "nativeSourceSha256": "4d67807792bfedbe69a434fb00ea0b809390c05414108a197c660654b3f06d3d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7b1ee4bc2d52e84f3390684016502e79f8993f1d6368097d30a9ffb580520fc6.png",
+          "referenceSha256": "7b1ee4bc2d52e84f3390684016502e79f8993f1d6368097d30a9ffb580520fc6",
+          "rgbaSha256": "fd0cf6b89b6f0234522bf96b15be95498890aa1b1a2d93241437f35b4067c120"
+        },
+        "linux": {
+          "reference": "references/cba567c7d89ed3c15fd3ea83165b425a0220fc78a1286ee31b21eb8752e39803.png",
+          "referenceSha256": "cba567c7d89ed3c15fd3ea83165b425a0220fc78a1286ee31b21eb8752e39803",
+          "rgbaSha256": "b4ad7f231390e5cd06aa8d9e9393c69f8fe184baa7a69b1e889a36cc121eeab6"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-285-control",
+      "input": "original-r48-matrix-285-control.svg",
+      "sourceSha256": "3e88bacb75f5dcad05cd5321bb5cea02e92426d4ce8fe6b67f74647bf787f45f",
+      "nativeSourceSha256": "337160286154aa308f9f3c407bfca9d535ac3d9fc794404d678e8f799c52083a",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7b1ee4bc2d52e84f3390684016502e79f8993f1d6368097d30a9ffb580520fc6.png",
+          "referenceSha256": "7b1ee4bc2d52e84f3390684016502e79f8993f1d6368097d30a9ffb580520fc6",
+          "rgbaSha256": "fd0cf6b89b6f0234522bf96b15be95498890aa1b1a2d93241437f35b4067c120"
+        },
+        "linux": {
+          "reference": "references/cba567c7d89ed3c15fd3ea83165b425a0220fc78a1286ee31b21eb8752e39803.png",
+          "referenceSha256": "cba567c7d89ed3c15fd3ea83165b425a0220fc78a1286ee31b21eb8752e39803",
+          "rgbaSha256": "b4ad7f231390e5cd06aa8d9e9393c69f8fe184baa7a69b1e889a36cc121eeab6"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-669-candidate",
+      "input": "original-r48-matrix-669-candidate.svg",
+      "sourceSha256": "6d28030edc96675712fc84b85445203e7a022afb30790b05ed2208e63359f4e3",
+      "nativeSourceSha256": "649fcbf5c8f8a00eba478fe195046f4d8d374d8e1d59e2b4d694588bbaa27cc6",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/f2820f26a9d979f22c4eab3385b1935715619366a279a7769eb6944a1060cfe0.png",
+          "referenceSha256": "f2820f26a9d979f22c4eab3385b1935715619366a279a7769eb6944a1060cfe0",
+          "rgbaSha256": "86c1d09bf1e3d977c02bd530a7d5e3cb8a4a5fb34d0a4aedf6ab9b7036a0b5a8"
+        },
+        "linux": {
+          "reference": "references/381447b1d6aba4e9fec824c380cb0607bcb7bdcb7de533c05d58d9e39794b235.png",
+          "referenceSha256": "381447b1d6aba4e9fec824c380cb0607bcb7bdcb7de533c05d58d9e39794b235",
+          "rgbaSha256": "a0ae3928b6f5e4951d40acfe30e0aa61e9c4cf1e6a08239aeee84483312a71bc"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-669-control",
+      "input": "original-r48-matrix-669-control.svg",
+      "sourceSha256": "b35a5ed25d576eb95e22976fadc16b91a363ad87cb2067f673303ca38f4c42a3",
+      "nativeSourceSha256": "58c084678b1a6a2ae31a522fb1c57c166f1fa07ac0d421ed3b5ab3cfe07ffcb0",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/f2820f26a9d979f22c4eab3385b1935715619366a279a7769eb6944a1060cfe0.png",
+          "referenceSha256": "f2820f26a9d979f22c4eab3385b1935715619366a279a7769eb6944a1060cfe0",
+          "rgbaSha256": "86c1d09bf1e3d977c02bd530a7d5e3cb8a4a5fb34d0a4aedf6ab9b7036a0b5a8"
+        },
+        "linux": {
+          "reference": "references/381447b1d6aba4e9fec824c380cb0607bcb7bdcb7de533c05d58d9e39794b235.png",
+          "referenceSha256": "381447b1d6aba4e9fec824c380cb0607bcb7bdcb7de533c05d58d9e39794b235",
+          "rgbaSha256": "a0ae3928b6f5e4951d40acfe30e0aa61e9c4cf1e6a08239aeee84483312a71bc"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-690-candidate",
+      "input": "original-r48-matrix-690-candidate.svg",
+      "sourceSha256": "6f766bafbb9bcd50498c9e862449e748214f6119cf511b0f5de7872205f8460e",
+      "nativeSourceSha256": "ef138d60326ef2ee2360f29e5621589757d5e9a1d8e242b7f3ab8c895d8cd051",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/edf3778d2a522b7741813bf9077376e4546e9737698d6468e2629edf2a68bb52.png",
+          "referenceSha256": "edf3778d2a522b7741813bf9077376e4546e9737698d6468e2629edf2a68bb52",
+          "rgbaSha256": "0b013828b63319b93ca9d7e5c8ffc0ddda7aafb75e8bf9378ae39edf93d3044b"
+        },
+        "linux": {
+          "reference": "references/e9e94953c0e2a17b8a8b23988566dc34bc1c451a32bb1b660b48e765a3e0eddb.png",
+          "referenceSha256": "e9e94953c0e2a17b8a8b23988566dc34bc1c451a32bb1b660b48e765a3e0eddb",
+          "rgbaSha256": "47c8b254feab89d828af476338ebc66a968694b1ef1ae450476a46fd7a9d4c8e"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-690-control",
+      "input": "original-r48-matrix-690-control.svg",
+      "sourceSha256": "c04d94d736aaedc640c91b248e25196d8b079afbc8f141128c00829989990165",
+      "nativeSourceSha256": "0074c3304662251481f04078950246d1467f64f1139ddc5accafebe7336f0128",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/edf3778d2a522b7741813bf9077376e4546e9737698d6468e2629edf2a68bb52.png",
+          "referenceSha256": "edf3778d2a522b7741813bf9077376e4546e9737698d6468e2629edf2a68bb52",
+          "rgbaSha256": "0b013828b63319b93ca9d7e5c8ffc0ddda7aafb75e8bf9378ae39edf93d3044b"
+        },
+        "linux": {
+          "reference": "references/e9e94953c0e2a17b8a8b23988566dc34bc1c451a32bb1b660b48e765a3e0eddb.png",
+          "referenceSha256": "e9e94953c0e2a17b8a8b23988566dc34bc1c451a32bb1b660b48e765a3e0eddb",
+          "rgbaSha256": "47c8b254feab89d828af476338ebc66a968694b1ef1ae450476a46fd7a9d4c8e"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-679-candidate",
+      "input": "original-r48-matrix-679-candidate.svg",
+      "sourceSha256": "bb72e300eacc4212df6abc8273ed60b1a782ca92020f9b8f3ff4ffdbd9d8ade9",
+      "nativeSourceSha256": "e8687b5fd5d19d71479d6ac22f61c8bf1d0f8888a6e6fb8d14e712bafa7bd643",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/0c4662f3ae3533f11a91a521d09d92a22a53ee51cc12cc277e464e527fb98dae.png",
+          "referenceSha256": "0c4662f3ae3533f11a91a521d09d92a22a53ee51cc12cc277e464e527fb98dae",
+          "rgbaSha256": "2c196ac2526fa22324ccacd9512b6568ea1bb0377f1f5c9908b4695e593c2919"
+        },
+        "linux": {
+          "reference": "references/63d0dda07da00d4bc1659163cea87cc6cfe67fb3c6264c59acb380363c84894e.png",
+          "referenceSha256": "63d0dda07da00d4bc1659163cea87cc6cfe67fb3c6264c59acb380363c84894e",
+          "rgbaSha256": "e41a06b357f1e2bcea67e72abec83d03be200cf234ca627f72aeb5a48d58aa69"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-679-control",
+      "input": "original-r48-matrix-679-control.svg",
+      "sourceSha256": "3510843b395e3e7b5e04e4f47847b710233feec011bb167c5b83cacc5171bbf0",
+      "nativeSourceSha256": "982bcbc9ec599faa5d4dc3aecc4b677fe7fa6db525a9d0e7b49471df65d939f7",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/0c4662f3ae3533f11a91a521d09d92a22a53ee51cc12cc277e464e527fb98dae.png",
+          "referenceSha256": "0c4662f3ae3533f11a91a521d09d92a22a53ee51cc12cc277e464e527fb98dae",
+          "rgbaSha256": "2c196ac2526fa22324ccacd9512b6568ea1bb0377f1f5c9908b4695e593c2919"
+        },
+        "linux": {
+          "reference": "references/63d0dda07da00d4bc1659163cea87cc6cfe67fb3c6264c59acb380363c84894e.png",
+          "referenceSha256": "63d0dda07da00d4bc1659163cea87cc6cfe67fb3c6264c59acb380363c84894e",
+          "rgbaSha256": "e41a06b357f1e2bcea67e72abec83d03be200cf234ca627f72aeb5a48d58aa69"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-698-candidate",
+      "input": "original-r48-matrix-698-candidate.svg",
+      "sourceSha256": "1b62793ef176d533479b787191b02ab56e905592d656d3a7dad98c83228732b4",
+      "nativeSourceSha256": "5db065c9bdd6627c87c9edaa8337806fd474ebff28829a07fdd58785d76098cf",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/462c82ab89aea42f3c708ef43188b93089f966ac0a4d810b224de21d157f12d6.png",
+          "referenceSha256": "462c82ab89aea42f3c708ef43188b93089f966ac0a4d810b224de21d157f12d6",
+          "rgbaSha256": "bcbfc4ee5ad09b8141e5eb3b6aad5f1cbee4f092445077462946032cd019f529"
+        },
+        "linux": {
+          "reference": "references/22df819e88688340b82a2557e6af7b33181597b56e6d10e9e2f32fb2efcd6509.png",
+          "referenceSha256": "22df819e88688340b82a2557e6af7b33181597b56e6d10e9e2f32fb2efcd6509",
+          "rgbaSha256": "61b728a8bb8e5a7f4dcd105a4327e91f79d11e9ba32d01df0bf92e638e7a8c88"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-698-control",
+      "input": "original-r48-matrix-698-control.svg",
+      "sourceSha256": "2ae102b0562654cf4ca5b7541108338ce5f897405cbe914daef68ad01107f8f1",
+      "nativeSourceSha256": "5768091f1aebf31277564e4ca1cc66679b25fb7eddd4aa93f87c70b566680d1f",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/462c82ab89aea42f3c708ef43188b93089f966ac0a4d810b224de21d157f12d6.png",
+          "referenceSha256": "462c82ab89aea42f3c708ef43188b93089f966ac0a4d810b224de21d157f12d6",
+          "rgbaSha256": "bcbfc4ee5ad09b8141e5eb3b6aad5f1cbee4f092445077462946032cd019f529"
+        },
+        "linux": {
+          "reference": "references/22df819e88688340b82a2557e6af7b33181597b56e6d10e9e2f32fb2efcd6509.png",
+          "referenceSha256": "22df819e88688340b82a2557e6af7b33181597b56e6d10e9e2f32fb2efcd6509",
+          "rgbaSha256": "61b728a8bb8e5a7f4dcd105a4327e91f79d11e9ba32d01df0bf92e638e7a8c88"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-702-candidate",
+      "input": "original-r48-matrix-702-candidate.svg",
+      "sourceSha256": "c4ad566ef8d70cd678d9401c6a4b5e0f0ee511f12f3b36ebfd8b88b6389f68bd",
+      "nativeSourceSha256": "b1fe9a6df335c4c33ae130b4abfb60131d67d9b9f639d0cd047d582ba02b5737",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/a570f2b000c14f3944f58c78477a56457122986fbac8ce23b461c17fe3aa2b8a.png",
+          "referenceSha256": "a570f2b000c14f3944f58c78477a56457122986fbac8ce23b461c17fe3aa2b8a",
+          "rgbaSha256": "d01f04cfaeb452216e5812f28487c91f60cbe98b9b9e9c5e8cf6605cddcbc36f"
+        },
+        "linux": {
+          "reference": "references/30cb0295aaea91ada5e3358882f4519cf2c638e83498bec193c95fcafc8e1685.png",
+          "referenceSha256": "30cb0295aaea91ada5e3358882f4519cf2c638e83498bec193c95fcafc8e1685",
+          "rgbaSha256": "17c8c72abb9f11502ed925a59cf71338efaec7f1421ee1c26821208554874fd9"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-702-control",
+      "input": "original-r48-matrix-702-control.svg",
+      "sourceSha256": "efbd2e45f3a64ac30a7a1a605972e3ab20e5ee62292bf3abe619b6283eb6d7d3",
+      "nativeSourceSha256": "df3c07861a1f03619a50e98d12110ff846f9e84193f868f7d2eb6f7aaa4e9a3a",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/a570f2b000c14f3944f58c78477a56457122986fbac8ce23b461c17fe3aa2b8a.png",
+          "referenceSha256": "a570f2b000c14f3944f58c78477a56457122986fbac8ce23b461c17fe3aa2b8a",
+          "rgbaSha256": "d01f04cfaeb452216e5812f28487c91f60cbe98b9b9e9c5e8cf6605cddcbc36f"
+        },
+        "linux": {
+          "reference": "references/30cb0295aaea91ada5e3358882f4519cf2c638e83498bec193c95fcafc8e1685.png",
+          "referenceSha256": "30cb0295aaea91ada5e3358882f4519cf2c638e83498bec193c95fcafc8e1685",
+          "rgbaSha256": "17c8c72abb9f11502ed925a59cf71338efaec7f1421ee1c26821208554874fd9"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-703-candidate",
+      "input": "original-r48-matrix-703-candidate.svg",
+      "sourceSha256": "d463d9a5d32674131f0da8498541f59ba0e4333ce3930b643145a0723eb5cf45",
+      "nativeSourceSha256": "32370d049d7a5f1a836bb412922763359531cb74c6d07825035786317aad82ee",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/ce9719615abf54e834c77a93855cf9915ee905562b5a0ef035a79c39fd482456.png",
+          "referenceSha256": "ce9719615abf54e834c77a93855cf9915ee905562b5a0ef035a79c39fd482456",
+          "rgbaSha256": "cb6e4e96cd23364f78792fe4fedbdcaa6fff436882bf9f53173f10bc0b7f978b"
+        },
+        "linux": {
+          "reference": "references/d60836890091865e1dc4f17d51456ceed7afb67f7f3f9d3ada6d57abdc1ae79e.png",
+          "referenceSha256": "d60836890091865e1dc4f17d51456ceed7afb67f7f3f9d3ada6d57abdc1ae79e",
+          "rgbaSha256": "89344bae97226ad7cb0af21803b845178e9d783fe2664a20f4ceea66dfec7bb3"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-703-control",
+      "input": "original-r48-matrix-703-control.svg",
+      "sourceSha256": "6036e58a1a2ad880fa25d5c1ab386800738efd4f4822d43283cad012201d15d9",
+      "nativeSourceSha256": "1f73d0de28807fa330ae67b752586f1fdeb816c81eaa49429a041164382e6d7e",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/57c0083fb601428107e8ab59bbcb5369cbf476911e3cea1d3294ee9612191cea.png",
+          "referenceSha256": "57c0083fb601428107e8ab59bbcb5369cbf476911e3cea1d3294ee9612191cea",
+          "rgbaSha256": "4198582ceff34bf69dbe8961acc8e750aaf39c88c4e941fe33bc401ed52edfe7"
+        },
+        "linux": {
+          "reference": "references/c5eefedcd401fb19400c13ac903ea0b2aade0a8c15f1f606dd7dcedce7ee3bb3.png",
+          "referenceSha256": "c5eefedcd401fb19400c13ac903ea0b2aade0a8c15f1f606dd7dcedce7ee3bb3",
+          "rgbaSha256": "eb8b32d7e2501be14a48def5bd7e26f9042844a65a5183cfdd1ac74ad6a12a44"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-704-candidate",
+      "input": "original-r48-matrix-704-candidate.svg",
+      "sourceSha256": "a2b36b80bdce228aab411817c2098b241cad24995117699f7835bebfae6d4b0f",
+      "nativeSourceSha256": "f34cafbf2d4bcfa67c18f38739194faefb522723c4b4c97741ad496506309bc1",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/ae0dd33751a0bab99cc8f2655f120292cf8874085b8fad02848096c70c792af1.png",
+          "referenceSha256": "ae0dd33751a0bab99cc8f2655f120292cf8874085b8fad02848096c70c792af1",
+          "rgbaSha256": "10adbe964db1fd09abb98a39e681223fada2414b5559e12a2799b2525b389e04"
+        },
+        "linux": {
+          "reference": "references/080ef3e6ba07cacb3c8921e041b125fb5477ca1948d8259eb8f8cf5eaaa12852.png",
+          "referenceSha256": "080ef3e6ba07cacb3c8921e041b125fb5477ca1948d8259eb8f8cf5eaaa12852",
+          "rgbaSha256": "6a2a459d1e591bf9926679c2b833d7db64d39d3104f107f76bb87c8623f62911"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-704-control",
+      "input": "original-r48-matrix-704-control.svg",
+      "sourceSha256": "b7629815ba0081aa1515e27d001294583b073b3ac66fd709a8a83069283a1187",
+      "nativeSourceSha256": "b2f95cf80550995ea965d86b4ab9a80f601e3ed6df837b847ad5df87b43d47ee",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/ae0dd33751a0bab99cc8f2655f120292cf8874085b8fad02848096c70c792af1.png",
+          "referenceSha256": "ae0dd33751a0bab99cc8f2655f120292cf8874085b8fad02848096c70c792af1",
+          "rgbaSha256": "10adbe964db1fd09abb98a39e681223fada2414b5559e12a2799b2525b389e04"
+        },
+        "linux": {
+          "reference": "references/080ef3e6ba07cacb3c8921e041b125fb5477ca1948d8259eb8f8cf5eaaa12852.png",
+          "referenceSha256": "080ef3e6ba07cacb3c8921e041b125fb5477ca1948d8259eb8f8cf5eaaa12852",
+          "rgbaSha256": "6a2a459d1e591bf9926679c2b833d7db64d39d3104f107f76bb87c8623f62911"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-705-candidate",
+      "input": "original-r48-matrix-705-candidate.svg",
+      "sourceSha256": "199fa3c932e8a7275ace8501c4372672ce417dcf6ffb4f07c0d79bbbd0aeb106",
+      "nativeSourceSha256": "81870aacd01219be7afd25b20bc78850bd0e9e35e461b00f4f2a0a042a871d24",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/eed51d530fbdef4e98abe242d475410931caff92fc714809327670c5b847aee5.png",
+          "referenceSha256": "eed51d530fbdef4e98abe242d475410931caff92fc714809327670c5b847aee5",
+          "rgbaSha256": "5697beafdf8be3cb8fd3a52be205a4dbec3a65aab60141835d42d7501e1193b7"
+        },
+        "linux": {
+          "reference": "references/94db9c8d6dff0c3e9e47e55145669f92fc5821e9a1db605ca67673ef1b8ccdb9.png",
+          "referenceSha256": "94db9c8d6dff0c3e9e47e55145669f92fc5821e9a1db605ca67673ef1b8ccdb9",
+          "rgbaSha256": "4078da8ba166252e7f0d45b8cf21f4086ce2582aabfdf5017c7dfc129f694d3f"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-705-control",
+      "input": "original-r48-matrix-705-control.svg",
+      "sourceSha256": "7e2b6cffda2caf226839baad0549ee934e0d6e29272ab09b057adf15345310ee",
+      "nativeSourceSha256": "8ef3d546e7cf0027f273e2d890dfd9d47c02820cbcd3743ab62462ca2e7c3d2d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/497e8ff4a14201bb035444b2d8d1de6229b95e432fea8b0c502cb9923f98fe41.png",
+          "referenceSha256": "497e8ff4a14201bb035444b2d8d1de6229b95e432fea8b0c502cb9923f98fe41",
+          "rgbaSha256": "787b7dce07d1bcea95f3cc31fb2c8d11580466937de8c1cc509eecc605e1a240"
+        },
+        "linux": {
+          "reference": "references/8f93afe1a8e92b20311e11d80615ee1a89ef5d706177e65655c9bfa0d100e0a7.png",
+          "referenceSha256": "8f93afe1a8e92b20311e11d80615ee1a89ef5d706177e65655c9bfa0d100e0a7",
+          "rgbaSha256": "c7a8acabf151014f56763e930097633eece7b620942d759e4b7c32c967cae107"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-706-candidate",
+      "input": "original-r48-matrix-706-candidate.svg",
+      "sourceSha256": "5197e7473d533af94b6ac554904fb4bf62d613fed26e65e89227766a522f3ef6",
+      "nativeSourceSha256": "9bfac5b130ff377939b99dcd3f6f8ef182800883ed7067bc541652b7fe2f314b",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/08fb00cd627da8d9a0f21067ec5662b312c4f6b34a8ecf835957523dbcebb6e4.png",
+          "referenceSha256": "08fb00cd627da8d9a0f21067ec5662b312c4f6b34a8ecf835957523dbcebb6e4",
+          "rgbaSha256": "05329f69fb2d9a6cef4e43b7e0c031929bc4518ed1b60a795fb94ce9ad818d23"
+        },
+        "linux": {
+          "reference": "references/ec03ee43ad70a7f6fb36d41b6cade3658b6f123f69394c4d5da12ebfcbde1806.png",
+          "referenceSha256": "ec03ee43ad70a7f6fb36d41b6cade3658b6f123f69394c4d5da12ebfcbde1806",
+          "rgbaSha256": "d79d0fd602e4bd5f85364f4d9d78ec5899badfde61691f3fab3497af113e0a8d"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-706-control",
+      "input": "original-r48-matrix-706-control.svg",
+      "sourceSha256": "f68aabbf8fc4610044d544b46f04e621599b98d3e6c17cc6fd8d180791e4ddbc",
+      "nativeSourceSha256": "cb7685340d6f18f5f51d15a57d0f6f81ee9714cab609e06a980746d58feb96c2",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/08fb00cd627da8d9a0f21067ec5662b312c4f6b34a8ecf835957523dbcebb6e4.png",
+          "referenceSha256": "08fb00cd627da8d9a0f21067ec5662b312c4f6b34a8ecf835957523dbcebb6e4",
+          "rgbaSha256": "05329f69fb2d9a6cef4e43b7e0c031929bc4518ed1b60a795fb94ce9ad818d23"
+        },
+        "linux": {
+          "reference": "references/ec03ee43ad70a7f6fb36d41b6cade3658b6f123f69394c4d5da12ebfcbde1806.png",
+          "referenceSha256": "ec03ee43ad70a7f6fb36d41b6cade3658b6f123f69394c4d5da12ebfcbde1806",
+          "rgbaSha256": "d79d0fd602e4bd5f85364f4d9d78ec5899badfde61691f3fab3497af113e0a8d"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-707-candidate",
+      "input": "original-r48-matrix-707-candidate.svg",
+      "sourceSha256": "f21943da05cf5788b5437bdc39efd2fee4fd247b008828cd0be7c0084547e66e",
+      "nativeSourceSha256": "fa7b9c8f4e725d7fd52df237ca8426fee4f50edfbba10cb61ec44a4bdc11995d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/16f384e0f75407abc32e3e588f3c45f3fec9cdf3ffa4ac609f01ce845cbfa3ca.png",
+          "referenceSha256": "16f384e0f75407abc32e3e588f3c45f3fec9cdf3ffa4ac609f01ce845cbfa3ca",
+          "rgbaSha256": "0a59857e83dc1bd5a3cca3de9372b6446c3d3d74053344edc2a2ad96364417d4"
+        },
+        "linux": {
+          "reference": "references/3b63ab1af5d03d33bf8eb8e8629bf3645b36a4d5440e9e244828774885dfeda0.png",
+          "referenceSha256": "3b63ab1af5d03d33bf8eb8e8629bf3645b36a4d5440e9e244828774885dfeda0",
+          "rgbaSha256": "e8f0e188142986b11910a9f9763d76cca3e38892f2244512d8d09c1fcfd13f73"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-707-control",
+      "input": "original-r48-matrix-707-control.svg",
+      "sourceSha256": "61ed5e2501d930ffde3d4454574e47690dbb07e677f43c7058195e907fa68b2f",
+      "nativeSourceSha256": "dc1c221be0dc3a86472cf5fd8f3cb24a196e236c227105678fac1f51cf4baf4c",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/65fd71dc869f88016ebd16c5f2a2ad60fa40258ccefebc5577dcd90e176bc693.png",
+          "referenceSha256": "65fd71dc869f88016ebd16c5f2a2ad60fa40258ccefebc5577dcd90e176bc693",
+          "rgbaSha256": "7e09b7a6d39992c0992b69766ffe152211f72b1531effd240d76c97c2681b9cf"
+        },
+        "linux": {
+          "reference": "references/7cc9f715dfeea46d3b6d6f2168e31f3b6ad2a2399d799a9443f299fd0285824c.png",
+          "referenceSha256": "7cc9f715dfeea46d3b6d6f2168e31f3b6ad2a2399d799a9443f299fd0285824c",
+          "rgbaSha256": "684a201b7d8c03ee5c4a980b5fe089b42896f98dd22162abd874419d635656b5"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-160-candidate",
+      "input": "original-r48-matrix-160-candidate.svg",
+      "sourceSha256": "8e8f3b95a44002a6acba6cebabaeac63948f859c0a25adb1a2ff073e72f87a41",
+      "nativeSourceSha256": "ddbb65a2873df0f0fa6801ef6e43213a0a71c317aa47f5eb21fde1d43a58be24",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/46ebbf344cc0dc881e17fdd1e369bd89a8a642a5ec1c4461e3368f8199717c9b.png",
+          "referenceSha256": "46ebbf344cc0dc881e17fdd1e369bd89a8a642a5ec1c4461e3368f8199717c9b",
+          "rgbaSha256": "1e121853ecf2e7a5d2071e8c803d240276b88bad9344d16b516f5eae9198b859"
+        },
+        "linux": {
+          "reference": "references/0c97b3f0f55ab183b373077a390378c6bdbb7b53b8fe4ad8b30e6396190d338b.png",
+          "referenceSha256": "0c97b3f0f55ab183b373077a390378c6bdbb7b53b8fe4ad8b30e6396190d338b",
+          "rgbaSha256": "2bd482b225bae21863e7815554409d4c33fcd16fa36ca80c6bcff428ddad7f53"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-160-control",
+      "input": "original-r48-matrix-160-control.svg",
+      "sourceSha256": "842bc095974be508838a2d85fd14a6b4892670aab3a306db45f7d45f296d89ff",
+      "nativeSourceSha256": "b943645f4df3da5cfcf1e5432c465851566a15412948f69067035117582240ea",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/46ebbf344cc0dc881e17fdd1e369bd89a8a642a5ec1c4461e3368f8199717c9b.png",
+          "referenceSha256": "46ebbf344cc0dc881e17fdd1e369bd89a8a642a5ec1c4461e3368f8199717c9b",
+          "rgbaSha256": "1e121853ecf2e7a5d2071e8c803d240276b88bad9344d16b516f5eae9198b859"
+        },
+        "linux": {
+          "reference": "references/0c97b3f0f55ab183b373077a390378c6bdbb7b53b8fe4ad8b30e6396190d338b.png",
+          "referenceSha256": "0c97b3f0f55ab183b373077a390378c6bdbb7b53b8fe4ad8b30e6396190d338b",
+          "rgbaSha256": "2bd482b225bae21863e7815554409d4c33fcd16fa36ca80c6bcff428ddad7f53"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-592-candidate",
+      "input": "original-r48-matrix-592-candidate.svg",
+      "sourceSha256": "26920440a3d4630cf0b00a017434c4ee5982f743f8b7d5544a96f18454d528d6",
+      "nativeSourceSha256": "d0cbc8398cfb50eea9fc17a77090eacdeb803b9b2a1cd21871e1a4c30732b1af",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/edff9ecd6e510ea73ad4a621b7279ae7739bbb29802ed2f37fbdbbc727e77f4f.png",
+          "referenceSha256": "edff9ecd6e510ea73ad4a621b7279ae7739bbb29802ed2f37fbdbbc727e77f4f",
+          "rgbaSha256": "94818cf0828356f93fe37fbd31a314d92f85e774717b1917fc31b53538cf242e"
+        },
+        "linux": {
+          "reference": "references/07ae2c4d0873a8696c14b019cf2a44a4e25d3da7102a5422791101fca823f628.png",
+          "referenceSha256": "07ae2c4d0873a8696c14b019cf2a44a4e25d3da7102a5422791101fca823f628",
+          "rgbaSha256": "7ed20de6e490198527756aa0434232a135fbeb5fd9767dc13e96cd1de9b97ad7"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-592-control",
+      "input": "original-r48-matrix-592-control.svg",
+      "sourceSha256": "6cc19c6d1cf53b7c962e4b5e7b209d5b4126b1c123e4921c61a5215342a11494",
+      "nativeSourceSha256": "932bdad6d99eb050eeda696582a64d86c9fb664595156d81175e5434522407e1",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/edff9ecd6e510ea73ad4a621b7279ae7739bbb29802ed2f37fbdbbc727e77f4f.png",
+          "referenceSha256": "edff9ecd6e510ea73ad4a621b7279ae7739bbb29802ed2f37fbdbbc727e77f4f",
+          "rgbaSha256": "94818cf0828356f93fe37fbd31a314d92f85e774717b1917fc31b53538cf242e"
+        },
+        "linux": {
+          "reference": "references/07ae2c4d0873a8696c14b019cf2a44a4e25d3da7102a5422791101fca823f628.png",
+          "referenceSha256": "07ae2c4d0873a8696c14b019cf2a44a4e25d3da7102a5422791101fca823f628",
+          "rgbaSha256": "7ed20de6e490198527756aa0434232a135fbeb5fd9767dc13e96cd1de9b97ad7"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-662-candidate",
+      "input": "original-r48-matrix-662-candidate.svg",
+      "sourceSha256": "ccb372c4f6d71ac7b7d42ce67e4cbd211277b385a83071f6779d89eb4f078c06",
+      "nativeSourceSha256": "9c1999f626c4edd862adf5362b4e20adb337ed8fb9688560cfbda03259c7aee4",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/3709ed8bc3c109bbbaf35d8c6237d52fce351e814e6f784cb1aab500e90ae139.png",
+          "referenceSha256": "3709ed8bc3c109bbbaf35d8c6237d52fce351e814e6f784cb1aab500e90ae139",
+          "rgbaSha256": "65c56e59fc1342c6ba7dd49851034c310561fe0717c7bea1ae7d05468bcb0736"
+        },
+        "linux": {
+          "reference": "references/6fee9b23b00d3169c4c02db8141e2db962194ead85361648251def161dd77f84.png",
+          "referenceSha256": "6fee9b23b00d3169c4c02db8141e2db962194ead85361648251def161dd77f84",
+          "rgbaSha256": "bf9c4d663572845a6bb13e6437dbcaeb1f2d8cd2e9a4bcd87bb78a72cefba1fb"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-662-control",
+      "input": "original-r48-matrix-662-control.svg",
+      "sourceSha256": "241cf1b8968613709c7b5212f86f597617908e4a11cc3e9f87122252e25abd15",
+      "nativeSourceSha256": "f05a37e71636d5d142565f31b1b1d0ab4ab31f0da71e92304e3e8bde9a0cc741",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/3709ed8bc3c109bbbaf35d8c6237d52fce351e814e6f784cb1aab500e90ae139.png",
+          "referenceSha256": "3709ed8bc3c109bbbaf35d8c6237d52fce351e814e6f784cb1aab500e90ae139",
+          "rgbaSha256": "65c56e59fc1342c6ba7dd49851034c310561fe0717c7bea1ae7d05468bcb0736"
+        },
+        "linux": {
+          "reference": "references/6fee9b23b00d3169c4c02db8141e2db962194ead85361648251def161dd77f84.png",
+          "referenceSha256": "6fee9b23b00d3169c4c02db8141e2db962194ead85361648251def161dd77f84",
+          "rgbaSha256": "bf9c4d663572845a6bb13e6437dbcaeb1f2d8cd2e9a4bcd87bb78a72cefba1fb"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-680-candidate",
+      "input": "original-r48-matrix-680-candidate.svg",
+      "sourceSha256": "583446026594edc988b68bcdbf0a616d159ffe2d512a993b81fbc88d54506968",
+      "nativeSourceSha256": "f75f5e1af9a9669476823cf39695acf41a1372c0d64f45efd8f354464904b08e",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/244a7ae509fb74c8bf7e767aab410cc13bc52e99b9fca1313b6d5e030b6ee9f5.png",
+          "referenceSha256": "244a7ae509fb74c8bf7e767aab410cc13bc52e99b9fca1313b6d5e030b6ee9f5",
+          "rgbaSha256": "bd7612e6ef1952ad1375c78c4c417c92f5a3a7e93b2a7abeea389afd348b36e7"
+        },
+        "linux": {
+          "reference": "references/d8a34ba668dab6a67311db99698a343ea7d4f2d5936e2f81ff74a529f44ff594.png",
+          "referenceSha256": "d8a34ba668dab6a67311db99698a343ea7d4f2d5936e2f81ff74a529f44ff594",
+          "rgbaSha256": "70d54860338780d13a024d6ea3bc5188e9fb682e16f0a8d04e7c6bb9dd6b7b88"
+        }
+      }
+    },
+    {
+      "id": "original-r48-matrix-680-control",
+      "input": "original-r48-matrix-680-control.svg",
+      "sourceSha256": "593f5386242080d86bdcb099ea619def2981d422df4e86298e17b3e7160f843e",
+      "nativeSourceSha256": "a6567a8ecda222dc2cd125ec0666d6dd0434d5cc741e480dbeabc3ec7c8f2153",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/244a7ae509fb74c8bf7e767aab410cc13bc52e99b9fca1313b6d5e030b6ee9f5.png",
+          "referenceSha256": "244a7ae509fb74c8bf7e767aab410cc13bc52e99b9fca1313b6d5e030b6ee9f5",
+          "rgbaSha256": "bd7612e6ef1952ad1375c78c4c417c92f5a3a7e93b2a7abeea389afd348b36e7"
+        },
+        "linux": {
+          "reference": "references/d8a34ba668dab6a67311db99698a343ea7d4f2d5936e2f81ff74a529f44ff594.png",
+          "referenceSha256": "d8a34ba668dab6a67311db99698a343ea7d4f2d5936e2f81ff74a529f44ff594",
+          "rgbaSha256": "70d54860338780d13a024d6ea3bc5188e9fb682e16f0a8d04e7c6bb9dd6b7b88"
+        }
+      }
+    },
+    {
+      "id": "original-text-path-straight-0352-candidate",
+      "input": "original-text-path-straight-0352-candidate.svg",
+      "sourceSha256": "5d2a993afb4c614de37009d639fb203be86334e1dd78982191c58803d53ac8fa",
+      "nativeSourceSha256": "9eef68a50983f28790ec60f073ca48291ff46ad3369f807d4a902ab79dd38e5a",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/581b70552deee603fe343e25957e799df558ef604bed95713d7c025153eec18c.png",
+          "referenceSha256": "581b70552deee603fe343e25957e799df558ef604bed95713d7c025153eec18c",
+          "rgbaSha256": "def612b238474334f905be8a7b98d5fef188f78448da0d82219cd8dd0d69b648"
+        },
+        "linux": {
+          "reference": "references/fe9df1a55cb6ea936338f797e7cd3232a66027914725d10a1084177648ef32d5.png",
+          "referenceSha256": "fe9df1a55cb6ea936338f797e7cd3232a66027914725d10a1084177648ef32d5",
+          "rgbaSha256": "7e7dec567b4df5105059a78f66dc79e46057a79ac752dfd016db614a33bd208d"
+        }
+      }
+    },
+    {
+      "id": "original-text-path-straight-0352-control",
+      "input": "original-text-path-straight-0352-control.svg",
+      "sourceSha256": "d208ba94872fc6eed1ae8ff651751b99cca42457313dce91db8369dd906a4657",
+      "nativeSourceSha256": "b6370b3bfe58a9edf7488dd3d3268bc5f8540f347a30deed2f297fa841af18f5",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/8da7e9d3076c74eeb755d407661136d95372aba121951187546cff776e30654c.png",
+          "referenceSha256": "8da7e9d3076c74eeb755d407661136d95372aba121951187546cff776e30654c",
+          "rgbaSha256": "d33191f041c6f2390cc3a2c767312ef50c2df30aa60e2ecbfb4b9792a8d1dd29"
+        },
+        "linux": {
+          "reference": "references/8cbc9f7aa8fae24491392cb42f97b0dc53fd89be939f6fa1c3be1a2f15014d36.png",
+          "referenceSha256": "8cbc9f7aa8fae24491392cb42f97b0dc53fd89be939f6fa1c3be1a2f15014d36",
+          "rgbaSha256": "f2c2c07235f9133035a9fb5cae9e2320fd7edad2ff4885299ab2eed93f7d7c87"
+        }
+      }
+    },
+    {
+      "id": "original-text-hidden-cursor-186-candidate",
+      "input": "original-text-hidden-cursor-186-candidate.svg",
+      "sourceSha256": "dd8b1c61ec99b7dc80ca37887676079b8d647977892b671df2c11928d30fbefc",
+      "nativeSourceSha256": "d1c16f4cd24e93495a325d92de8f418fcd31c321df4da935dc861cfb885f13b8",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/49e176447b22d8a0b956cd0b88f47d4095d855b74758b62c1e638e5f9cf6f56b.png",
+          "referenceSha256": "49e176447b22d8a0b956cd0b88f47d4095d855b74758b62c1e638e5f9cf6f56b",
+          "rgbaSha256": "a5b0891d67e3012dbb3691acbbb3776829c58478b2289fd56c62ae1a76d8ecd7"
+        },
+        "linux": {
+          "reference": "references/cf84041873cee26e239ca93c16fad18f5f223860f3f3b355e65fd6b67e1aea83.png",
+          "referenceSha256": "cf84041873cee26e239ca93c16fad18f5f223860f3f3b355e65fd6b67e1aea83",
+          "rgbaSha256": "08086d892767b9e887b79b893f99bf875496f67eca531d7aff26a7044c8cd867"
+        }
+      }
+    },
+    {
+      "id": "original-text-hidden-cursor-186-control",
+      "input": "original-text-hidden-cursor-186-control.svg",
+      "sourceSha256": "f5ae3ca0b2228107bdb89e36c52d9260c7a4325af8f15babd930fbcd8e3cda29",
+      "nativeSourceSha256": "d0ed3eb0386b3db32b1a9307676d772c8fca9887fd130e6b879677f00a69ca67",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7911e92c833bde1c38d80186880e26f4c263a6614dcf3a47fc9c0e3f8ace72e9.png",
+          "referenceSha256": "7911e92c833bde1c38d80186880e26f4c263a6614dcf3a47fc9c0e3f8ace72e9",
+          "rgbaSha256": "ddb68bd863a1dc761f64d60e070b351b9edf93b1e55f6da628699b50abf1e04a"
+        },
+        "linux": {
+          "reference": "references/7661a95b38ca15ef85cef26fa221fc3ca2be2f8d2b6d26f6efc8cb75b5c1de0c.png",
+          "referenceSha256": "7661a95b38ca15ef85cef26fa221fc3ca2be2f8d2b6d26f6efc8cb75b5c1de0c",
+          "rgbaSha256": "b501f06b54696de15f8d9b2ba19af77fabd26dcae66be69afdaca11baf24d6cb"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-0-candidate",
+      "input": "original-text-nested-paint-0-candidate.svg",
+      "sourceSha256": "8b483625a7ec559216235454d1d7739ad3fd2033190980652dd622a383e0ca2f",
+      "nativeSourceSha256": "a7f1aaa465a8a23e8fcd9884919e011875efd65490b1a3cf3206f7ef2657202d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/49e176447b22d8a0b956cd0b88f47d4095d855b74758b62c1e638e5f9cf6f56b.png",
+          "referenceSha256": "49e176447b22d8a0b956cd0b88f47d4095d855b74758b62c1e638e5f9cf6f56b",
+          "rgbaSha256": "a5b0891d67e3012dbb3691acbbb3776829c58478b2289fd56c62ae1a76d8ecd7"
+        },
+        "linux": {
+          "reference": "references/cf84041873cee26e239ca93c16fad18f5f223860f3f3b355e65fd6b67e1aea83.png",
+          "referenceSha256": "cf84041873cee26e239ca93c16fad18f5f223860f3f3b355e65fd6b67e1aea83",
+          "rgbaSha256": "08086d892767b9e887b79b893f99bf875496f67eca531d7aff26a7044c8cd867"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-0-control",
+      "input": "original-text-nested-paint-0-control.svg",
+      "sourceSha256": "cbb3422418f4c1cde50703548bd61b7f47b46ceaf95d2b4ca85504292ca4abad",
+      "nativeSourceSha256": "74f4240b5b670c08b9f1c8c042a59df61eb8682af06e5331766a4fffcc930d5c",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7.png",
+          "referenceSha256": "77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7",
+          "rgbaSha256": "eb53e8254ada0666a7be1d946ecf60e2dff08a3639b87a237b1c23f00ab07cf6"
+        },
+        "linux": {
+          "reference": "references/70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457.png",
+          "referenceSha256": "70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457",
+          "rgbaSha256": "53ff3d414d40d70431d01c6aa09f568e53c37a4f558c6215e5df2829071bacda"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-1-candidate",
+      "input": "original-text-nested-paint-1-candidate.svg",
+      "sourceSha256": "7bb4b10f484c3f514d2f507146d011e64f931ad5e6288304c39e3d42ae41ddb5",
+      "nativeSourceSha256": "ea78a57ed4c2281755865ca050ffb8394b79e136e4610b926f846a85a5ad1fb2",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7.png",
+          "referenceSha256": "77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7",
+          "rgbaSha256": "eb53e8254ada0666a7be1d946ecf60e2dff08a3639b87a237b1c23f00ab07cf6"
+        },
+        "linux": {
+          "reference": "references/70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457.png",
+          "referenceSha256": "70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457",
+          "rgbaSha256": "53ff3d414d40d70431d01c6aa09f568e53c37a4f558c6215e5df2829071bacda"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-2-candidate",
+      "input": "original-text-nested-paint-2-candidate.svg",
+      "sourceSha256": "4b4a90610e3c09d6f324edd1021bef571dde333864e22cfea080fd12d29025f9",
+      "nativeSourceSha256": "ae3ff459aca2ce0c39f8d7fb038e6560b4e7ce4dee12809536a9526274ce447b",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb.png",
+          "referenceSha256": "14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb",
+          "rgbaSha256": "40ee0eb27f735725e6fac6f5420596729263efa893c430310b1aea5317365ad4"
+        },
+        "linux": {
+          "reference": "references/13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647.png",
+          "referenceSha256": "13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647",
+          "rgbaSha256": "27ba8337f149f6ed5869610eb1f0b741d7f59d83664da887b5b2b5986ff467da"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-2-control",
+      "input": "original-text-nested-paint-2-control.svg",
+      "sourceSha256": "0a82d0c5482325c91cb7e0f49824a9379f562361d8cf7f6e3bf807261ec68db4",
+      "nativeSourceSha256": "4d0c6cf3ac9eca88a9a73127565124d82fef0d4ce1a69542a1407a7926b62838",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb.png",
+          "referenceSha256": "14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb",
+          "rgbaSha256": "40ee0eb27f735725e6fac6f5420596729263efa893c430310b1aea5317365ad4"
+        },
+        "linux": {
+          "reference": "references/13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647.png",
+          "referenceSha256": "13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647",
+          "rgbaSha256": "27ba8337f149f6ed5869610eb1f0b741d7f59d83664da887b5b2b5986ff467da"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-3-candidate",
+      "input": "original-text-nested-paint-3-candidate.svg",
+      "sourceSha256": "8954f41734ac3f69d41ae103c24f285c78b2de71fead0a5e84cbaed9a67cf5ab",
+      "nativeSourceSha256": "a955379bb879de5788534b61659bc4820bb6bf7f8f13ac702fe66a20265d4c1f",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb.png",
+          "referenceSha256": "14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb",
+          "rgbaSha256": "40ee0eb27f735725e6fac6f5420596729263efa893c430310b1aea5317365ad4"
+        },
+        "linux": {
+          "reference": "references/13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647.png",
+          "referenceSha256": "13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647",
+          "rgbaSha256": "27ba8337f149f6ed5869610eb1f0b741d7f59d83664da887b5b2b5986ff467da"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-4-candidate",
+      "input": "original-text-nested-paint-4-candidate.svg",
+      "sourceSha256": "78d3822144192bbc2dbb8b499fa9c7277b6f7b8dd98c8e9f436185373248e893",
+      "nativeSourceSha256": "b2c2d0dd31d3b50af9c51d0ada6c5e0f459c29fc09cb2db91dbe6311d38e61de",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585.png",
+          "referenceSha256": "7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585",
+          "rgbaSha256": "5a4638c634e63dcde2107c89352fc1c3c67e18d03f9fb849dbc8c46b51799374"
+        },
+        "linux": {
+          "reference": "references/b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec.png",
+          "referenceSha256": "b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec",
+          "rgbaSha256": "0c22d98f2099ec86b5bce48da860f9174f55eeffcb1da9177f917a645eb7d908"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-4-control",
+      "input": "original-text-nested-paint-4-control.svg",
+      "sourceSha256": "70ae0c69da69696448ff5198713ba34ce5071b74762c1f6c6e745e31e0ca1b4c",
+      "nativeSourceSha256": "3147635d2e7e3798a07e3832293425452c6199356c906bf87735c93776c7be3d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585.png",
+          "referenceSha256": "7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585",
+          "rgbaSha256": "5a4638c634e63dcde2107c89352fc1c3c67e18d03f9fb849dbc8c46b51799374"
+        },
+        "linux": {
+          "reference": "references/b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec.png",
+          "referenceSha256": "b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec",
+          "rgbaSha256": "0c22d98f2099ec86b5bce48da860f9174f55eeffcb1da9177f917a645eb7d908"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-5-candidate",
+      "input": "original-text-nested-paint-5-candidate.svg",
+      "sourceSha256": "f8a4eccf28a8792202760be6d8e642d66c38d3c1321ddb29c17aa45f3c428c8e",
+      "nativeSourceSha256": "a08b0706b4373ab6f7f31ebabf7377b0dae42464075fb22fff773ef6529d0702",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585.png",
+          "referenceSha256": "7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585",
+          "rgbaSha256": "5a4638c634e63dcde2107c89352fc1c3c67e18d03f9fb849dbc8c46b51799374"
+        },
+        "linux": {
+          "reference": "references/b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec.png",
+          "referenceSha256": "b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec",
+          "rgbaSha256": "0c22d98f2099ec86b5bce48da860f9174f55eeffcb1da9177f917a645eb7d908"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-6-candidate",
+      "input": "original-text-nested-paint-6-candidate.svg",
+      "sourceSha256": "40a65547316d0afb219515115e16266a2735395040f4dcfcab0162caa9a3e071",
+      "nativeSourceSha256": "9a439d2c19d1ce61fdc51dc48ab0b60863254977daf601d53d2562351ce20424",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/49e176447b22d8a0b956cd0b88f47d4095d855b74758b62c1e638e5f9cf6f56b.png",
+          "referenceSha256": "49e176447b22d8a0b956cd0b88f47d4095d855b74758b62c1e638e5f9cf6f56b",
+          "rgbaSha256": "a5b0891d67e3012dbb3691acbbb3776829c58478b2289fd56c62ae1a76d8ecd7"
+        },
+        "linux": {
+          "reference": "references/cf84041873cee26e239ca93c16fad18f5f223860f3f3b355e65fd6b67e1aea83.png",
+          "referenceSha256": "cf84041873cee26e239ca93c16fad18f5f223860f3f3b355e65fd6b67e1aea83",
+          "rgbaSha256": "08086d892767b9e887b79b893f99bf875496f67eca531d7aff26a7044c8cd867"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-6-control",
+      "input": "original-text-nested-paint-6-control.svg",
+      "sourceSha256": "f8872da0555e1f504259e2b23d7483d2608886405139d49a01309f54bd78a67c",
+      "nativeSourceSha256": "0d4319505651ab201d67ab1dce01671e344ae6c1cba7158b4c3974a9795a6836",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7.png",
+          "referenceSha256": "77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7",
+          "rgbaSha256": "eb53e8254ada0666a7be1d946ecf60e2dff08a3639b87a237b1c23f00ab07cf6"
+        },
+        "linux": {
+          "reference": "references/70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457.png",
+          "referenceSha256": "70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457",
+          "rgbaSha256": "53ff3d414d40d70431d01c6aa09f568e53c37a4f558c6215e5df2829071bacda"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-7-candidate",
+      "input": "original-text-nested-paint-7-candidate.svg",
+      "sourceSha256": "a4c72d2ee9f485aa099bee513dff7d4a413a70c950c3db77b452853a1fb193d0",
+      "nativeSourceSha256": "444f93ae7018c062c4152dd8026e19fdd32fc113c7a56c3f77505a6df10e2d7b",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7.png",
+          "referenceSha256": "77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7",
+          "rgbaSha256": "eb53e8254ada0666a7be1d946ecf60e2dff08a3639b87a237b1c23f00ab07cf6"
+        },
+        "linux": {
+          "reference": "references/70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457.png",
+          "referenceSha256": "70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457",
+          "rgbaSha256": "53ff3d414d40d70431d01c6aa09f568e53c37a4f558c6215e5df2829071bacda"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-8-candidate",
+      "input": "original-text-nested-paint-8-candidate.svg",
+      "sourceSha256": "b580abe5a8ca1a8f6bfff2b8f4eb781acc22d56e54f998d9b1d1e95506000db9",
+      "nativeSourceSha256": "8b0a9883251dd2d9546a45d384d880b41b1ec800c0519911ddf5a1c4579db4bb",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb.png",
+          "referenceSha256": "14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb",
+          "rgbaSha256": "40ee0eb27f735725e6fac6f5420596729263efa893c430310b1aea5317365ad4"
+        },
+        "linux": {
+          "reference": "references/13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647.png",
+          "referenceSha256": "13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647",
+          "rgbaSha256": "27ba8337f149f6ed5869610eb1f0b741d7f59d83664da887b5b2b5986ff467da"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-8-control",
+      "input": "original-text-nested-paint-8-control.svg",
+      "sourceSha256": "1a357dcc6e014a63252a081a5c12612cab8bd3c462d2bc59bc9a407c467af7be",
+      "nativeSourceSha256": "9b15043539fe594063931020a244c2a141d6b8525d0fee83b22bc983c51e1e1a",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb.png",
+          "referenceSha256": "14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb",
+          "rgbaSha256": "40ee0eb27f735725e6fac6f5420596729263efa893c430310b1aea5317365ad4"
+        },
+        "linux": {
+          "reference": "references/13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647.png",
+          "referenceSha256": "13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647",
+          "rgbaSha256": "27ba8337f149f6ed5869610eb1f0b741d7f59d83664da887b5b2b5986ff467da"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-9-candidate",
+      "input": "original-text-nested-paint-9-candidate.svg",
+      "sourceSha256": "17ad3c513c4438ce282f1dad10352225d6b6500342f7c23084d74cadcbcf3b5a",
+      "nativeSourceSha256": "485c6f847da3f94e9e272e4b5c1aa6734adf5f20b6cf0bb3a0324fbd8b444bd6",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb.png",
+          "referenceSha256": "14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb",
+          "rgbaSha256": "40ee0eb27f735725e6fac6f5420596729263efa893c430310b1aea5317365ad4"
+        },
+        "linux": {
+          "reference": "references/13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647.png",
+          "referenceSha256": "13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647",
+          "rgbaSha256": "27ba8337f149f6ed5869610eb1f0b741d7f59d83664da887b5b2b5986ff467da"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-10-candidate",
+      "input": "original-text-nested-paint-10-candidate.svg",
+      "sourceSha256": "d31a604d7dab2b1cab09a6230e1bd763cc1633cb05bda8941fd30cf4f46390f9",
+      "nativeSourceSha256": "b534edcadd11b922b201bfb3908d8b73bb71e8f6d5c0c8dcc4ae8f2a4db0e6cb",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585.png",
+          "referenceSha256": "7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585",
+          "rgbaSha256": "5a4638c634e63dcde2107c89352fc1c3c67e18d03f9fb849dbc8c46b51799374"
+        },
+        "linux": {
+          "reference": "references/b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec.png",
+          "referenceSha256": "b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec",
+          "rgbaSha256": "0c22d98f2099ec86b5bce48da860f9174f55eeffcb1da9177f917a645eb7d908"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-10-control",
+      "input": "original-text-nested-paint-10-control.svg",
+      "sourceSha256": "c705882a1b1a65dd4472cb3dfb1341c7608e906d2b0ed6cb225bbe5b69a67eb3",
+      "nativeSourceSha256": "8e8156978134ad1388b0aced8997573702af6296c904694f7645e080e65ae0b6",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585.png",
+          "referenceSha256": "7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585",
+          "rgbaSha256": "5a4638c634e63dcde2107c89352fc1c3c67e18d03f9fb849dbc8c46b51799374"
+        },
+        "linux": {
+          "reference": "references/b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec.png",
+          "referenceSha256": "b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec",
+          "rgbaSha256": "0c22d98f2099ec86b5bce48da860f9174f55eeffcb1da9177f917a645eb7d908"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-11-candidate",
+      "input": "original-text-nested-paint-11-candidate.svg",
+      "sourceSha256": "489a130546c1e97fe645b891c1e2f4d676b2050369c8f6d3ef4c11bc4fd0d9c7",
+      "nativeSourceSha256": "741bcd78d5454f97c339f91a552f77c1c1cec0375a495c0648e4ee438a83f70e",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585.png",
+          "referenceSha256": "7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585",
+          "rgbaSha256": "5a4638c634e63dcde2107c89352fc1c3c67e18d03f9fb849dbc8c46b51799374"
+        },
+        "linux": {
+          "reference": "references/b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec.png",
+          "referenceSha256": "b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec",
+          "rgbaSha256": "0c22d98f2099ec86b5bce48da860f9174f55eeffcb1da9177f917a645eb7d908"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-12-candidate",
+      "input": "original-text-nested-paint-12-candidate.svg",
+      "sourceSha256": "e52d532f6c290a7d7ad5104ac3a0b11160bbe3a7ee363c4588858bed0f93ef73",
+      "nativeSourceSha256": "cc77adefe6dfa5a8c097b3bac66594afa6ab04cee5b298fc64c5b8c098c8cb0d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/49e176447b22d8a0b956cd0b88f47d4095d855b74758b62c1e638e5f9cf6f56b.png",
+          "referenceSha256": "49e176447b22d8a0b956cd0b88f47d4095d855b74758b62c1e638e5f9cf6f56b",
+          "rgbaSha256": "a5b0891d67e3012dbb3691acbbb3776829c58478b2289fd56c62ae1a76d8ecd7"
+        },
+        "linux": {
+          "reference": "references/cf84041873cee26e239ca93c16fad18f5f223860f3f3b355e65fd6b67e1aea83.png",
+          "referenceSha256": "cf84041873cee26e239ca93c16fad18f5f223860f3f3b355e65fd6b67e1aea83",
+          "rgbaSha256": "08086d892767b9e887b79b893f99bf875496f67eca531d7aff26a7044c8cd867"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-12-control",
+      "input": "original-text-nested-paint-12-control.svg",
+      "sourceSha256": "96485075c444e7063f029c87091d2f9c796c137472736e3b108ca677861a7920",
+      "nativeSourceSha256": "99ede6d029989adc6401d267a3d5e4012f62cf619a54f07b485ba47e42c9804d",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7.png",
+          "referenceSha256": "77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7",
+          "rgbaSha256": "eb53e8254ada0666a7be1d946ecf60e2dff08a3639b87a237b1c23f00ab07cf6"
+        },
+        "linux": {
+          "reference": "references/70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457.png",
+          "referenceSha256": "70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457",
+          "rgbaSha256": "53ff3d414d40d70431d01c6aa09f568e53c37a4f558c6215e5df2829071bacda"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-13-candidate",
+      "input": "original-text-nested-paint-13-candidate.svg",
+      "sourceSha256": "a2572d86256f980fca30b15c7d2548a4dd6d930c5f4a26aa12871da5910e1f13",
+      "nativeSourceSha256": "0f6cbeb2cf99161de2156931a9c105645c46557504686e095979681a5296de4b",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7.png",
+          "referenceSha256": "77366f3f763094ce3eacc050f9388d7515e0a49d0c5b5a7d15389040846ce0d7",
+          "rgbaSha256": "eb53e8254ada0666a7be1d946ecf60e2dff08a3639b87a237b1c23f00ab07cf6"
+        },
+        "linux": {
+          "reference": "references/70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457.png",
+          "referenceSha256": "70937f12c937cc2b8277592c0ff116210660f7a9af0cd9cda7f643dd6fc7b457",
+          "rgbaSha256": "53ff3d414d40d70431d01c6aa09f568e53c37a4f558c6215e5df2829071bacda"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-14-candidate",
+      "input": "original-text-nested-paint-14-candidate.svg",
+      "sourceSha256": "3c2ef7d447b8231895602d88416c35a4a4de2e4a9c1d81fcf45fe32b68091bd3",
+      "nativeSourceSha256": "eefc7df986348a3adf3bb1b1fbb4a75259bc7fb03d2299a6912dcba29dd5fa4a",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb.png",
+          "referenceSha256": "14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb",
+          "rgbaSha256": "40ee0eb27f735725e6fac6f5420596729263efa893c430310b1aea5317365ad4"
+        },
+        "linux": {
+          "reference": "references/13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647.png",
+          "referenceSha256": "13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647",
+          "rgbaSha256": "27ba8337f149f6ed5869610eb1f0b741d7f59d83664da887b5b2b5986ff467da"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-14-control",
+      "input": "original-text-nested-paint-14-control.svg",
+      "sourceSha256": "9d6ba8150f25d7842ff59d8bbc493c20dcfd6a9f8de550615f80f9a99f3d26fe",
+      "nativeSourceSha256": "271442f2b50f3245aa3a88be24c1a38982734fbaeb9e8523138fbf0d6991cbed",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb.png",
+          "referenceSha256": "14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb",
+          "rgbaSha256": "40ee0eb27f735725e6fac6f5420596729263efa893c430310b1aea5317365ad4"
+        },
+        "linux": {
+          "reference": "references/13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647.png",
+          "referenceSha256": "13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647",
+          "rgbaSha256": "27ba8337f149f6ed5869610eb1f0b741d7f59d83664da887b5b2b5986ff467da"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-15-candidate",
+      "input": "original-text-nested-paint-15-candidate.svg",
+      "sourceSha256": "dbadce2ca86f464d6cafd070664c690444e9beee60eb75d44d345c7a07c48608",
+      "nativeSourceSha256": "6df3e5f0a8644e38849dfdfd3379307567b0706162b384176dc6db509238f281",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb.png",
+          "referenceSha256": "14485129e10720f876eae84e669c71a5009ba07183534555cb8d9b7b21d74cdb",
+          "rgbaSha256": "40ee0eb27f735725e6fac6f5420596729263efa893c430310b1aea5317365ad4"
+        },
+        "linux": {
+          "reference": "references/13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647.png",
+          "referenceSha256": "13eb619680fcb7465619dbbae94c5396bc20d64e8ac06448fd47f5479d3eb647",
+          "rgbaSha256": "27ba8337f149f6ed5869610eb1f0b741d7f59d83664da887b5b2b5986ff467da"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-16-candidate",
+      "input": "original-text-nested-paint-16-candidate.svg",
+      "sourceSha256": "b5fcf9a04d7877aabb8b5bb7f54db381426ed9857b8ac449de9b4dba63f7be64",
+      "nativeSourceSha256": "145c891802115d98995bd802df119a370a83b86fb5065e5e698cc40b15ce18c1",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585.png",
+          "referenceSha256": "7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585",
+          "rgbaSha256": "5a4638c634e63dcde2107c89352fc1c3c67e18d03f9fb849dbc8c46b51799374"
+        },
+        "linux": {
+          "reference": "references/b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec.png",
+          "referenceSha256": "b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec",
+          "rgbaSha256": "0c22d98f2099ec86b5bce48da860f9174f55eeffcb1da9177f917a645eb7d908"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-16-control",
+      "input": "original-text-nested-paint-16-control.svg",
+      "sourceSha256": "b1d184722b77bbb8ff8ac8903e8cbb600153f5b85c3f9f06e24b23dab092a44f",
+      "nativeSourceSha256": "89c14eb56359eec9f287168b4dea7a1c0f24fa554906bd0dfb0577cf0e9610c5",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585.png",
+          "referenceSha256": "7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585",
+          "rgbaSha256": "5a4638c634e63dcde2107c89352fc1c3c67e18d03f9fb849dbc8c46b51799374"
+        },
+        "linux": {
+          "reference": "references/b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec.png",
+          "referenceSha256": "b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec",
+          "rgbaSha256": "0c22d98f2099ec86b5bce48da860f9174f55eeffcb1da9177f917a645eb7d908"
+        }
+      }
+    },
+    {
+      "id": "original-text-nested-paint-17-candidate",
+      "input": "original-text-nested-paint-17-candidate.svg",
+      "sourceSha256": "31033cf65c78e67111fc86e1050a57a1f82b6218d64a4b1f3f9968e0ba0bc93e",
+      "nativeSourceSha256": "b2010e98385ab07440f917f1b095ee9c06a158221839ad07204121a178b83c85",
+      "nativeFontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "font": true,
+      "scale": 1,
+      "platforms": {
+        "windows": {
+          "reference": "references/7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585.png",
+          "referenceSha256": "7e89bad3dbc815e97da49e47f36dc9dc3ffaf547feb11f3372662d7d6f94c585",
+          "rgbaSha256": "5a4638c634e63dcde2107c89352fc1c3c67e18d03f9fb849dbc8c46b51799374"
+        },
+        "linux": {
+          "reference": "references/b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec.png",
+          "referenceSha256": "b3930ab9d6e3f672603d6233749223954de14e315ad6b5e39a33e0d3d339f2ec",
+          "rgbaSha256": "0c22d98f2099ec86b5bce48da860f9174f55eeffcb1da9177f917a645eb7d908"
         }
       }
     }

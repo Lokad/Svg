@@ -4,14 +4,19 @@ The [capture](capture.json) binds each SVG, supplied [Noto Sans font](../supplie
 and independent Windows/Linux image to three healthy, stable Chrome launches.
 Cases cover comments, descriptions, CDATA, empty and ordinary spans, kerning,
 ligatures, long reader chunks, hidden paint returns, resource replay and fitting.
+The [original acceptance map](original-acceptance.json) preserves 76 historical
+declarations through 67 canonical cases, including unequal native companions.
+[Scope and validation](../release-baselines/text-acceptance.md) distinguish this
+accepted cohort from the remaining precision/raster review.
 Text nodes retain fragment width rounding. Comments preserve shaping; spans
 follow native shaping boundaries when screen font scaling changes the compared
 fonts. Controls include unit scale, reflections, a quarter turn, relative
 positioning, fitted text paths and replay through uses, symbols, patterns and masks.
 Relative-position cases also cover offsets inside `fi`/`ffi` clusters, zero list
 entries, glyphless nodes and source prefixes before a following glyph. Fitting
-controls vary node form, anchor, positive/negative offsets and gradient paint;
-their images are checked through direct and prepared rendering, limits and retry.
+controls vary node form, anchor, positive/negative offsets and gradient paint.
+Each retains canonical rendering; representative ownership/replay contracts cover
+prepared rendering, limits, cancellation and retry separately.
 Anchored rectangle cases cover half-grid widths, fractional relative offsets,
 backtracking and nonintegral author origins through both root lists and spans.
 

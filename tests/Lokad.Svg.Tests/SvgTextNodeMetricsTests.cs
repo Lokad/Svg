@@ -10,17 +10,16 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgTextNodeMetricsTests
 {
     private static readonly string Folder = Path.Combine(AppContext.BaseDirectory, "TestData", "text-node-boundaries");
-    private static readonly byte[] FontBytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-paint-bounds", "sans.ttf"));
-    private static readonly SvgFontPackCatalog Catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(Folder, "font-pack.json")), "public-noto-sans");
-    private static readonly IReadOnlyDictionary<string, JsonElement> Rows;
+    private static readonly Lazy<byte[]> FontBytes = new(static () => File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-paint-bounds", "sans.ttf")));
+    private static readonly Lazy<SvgFontPackCatalog> Catalog = new(static () => SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(Folder, "font-pack.json")), "public-noto-sans"));
 
-    static SvgTextNodeMetricsTests()
+    private static readonly Lazy<IReadOnlyDictionary<string, JsonElement>> Rows = new(static () =>
     {
         using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder, "capture.json")));
-        Rows = capture.RootElement.GetProperty("cases").EnumerateArray()
+        return capture.RootElement.GetProperty("cases").EnumerateArray()
             .Concat(capture.RootElement.GetProperty("knownDifferences").EnumerateArray())
             .ToDictionary(row => row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing case ID."), row => row.Clone());
-    }
+    });
 
     // Every capture remains a canonical rendering regression in
     // SvgPaintInputReferenceTests. These inputs exercise distinct replay paths.
@@ -64,12 +63,12 @@ public sealed class SvgTextNodeMetricsTests
     [MemberData(nameof(ReplayCases))]
     public async Task Node_metrics_preserve_platform_pixels_and_prepared_replay(string id)
     {
-        JsonElement row = Rows[id];
+        JsonElement row = Rows.Value[id];
         byte[] input = ReadInput(row), unchanged = input.ToArray();
         Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
-        Assert.Equal(row.GetProperty("nativeFontSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(FontBytes)));
+        Assert.Equal(row.GetProperty("nativeFontSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(FontBytes.Value)));
         FontProvider provider = new();
-        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog, provider, CancellationToken.None);
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog.Value, provider, CancellationToken.None);
         Assert.Equal(1, provider.Requests);
         double outputScale = row.GetProperty("scale").GetDouble();
         SvgRenderOptions options = new(null, outputScale, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
@@ -87,7 +86,7 @@ public sealed class SvgTextNodeMetricsTests
         Assert.Equal(0, raster.Snapshot().CurrentBytes);
         byte[] expected = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         FontProvider preparedProvider = new();
-        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog, preparedProvider,
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog.Value, preparedProvider,
             new(null, outputScale, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None);
         Assert.Equal(1, preparedProvider.Requests);
         Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
@@ -98,9 +97,9 @@ public sealed class SvgTextNodeMetricsTests
     [MemberData(nameof(OwnershipCases))]
     public async Task Node_metadata_releases_owned_storage_after_limits_cancellation_and_retry(string id)
     {
-        byte[] input = ReadInput(Rows[id]);
+        byte[] input = ReadInput(Rows.Value[id]);
         FontProvider provider = new();
-        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog, provider, CancellationToken.None);
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog.Value, provider, CancellationToken.None);
         RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, fonts, CancellationToken.None)) { }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
@@ -139,7 +138,7 @@ public sealed class SvgTextNodeMetricsTests
         {
             cancellationToken.ThrowIfCancellationRequested();
             Interlocked.Increment(ref _requests);
-            return ValueTask.FromResult<ISvgFontProgramSource?>(new SvgMemoryFontProgramSource("public-noto-sans", FontBytes));
+            return ValueTask.FromResult<ISvgFontProgramSource?>(new SvgMemoryFontProgramSource("public-noto-sans", FontBytes.Value));
         }
     }
 }
