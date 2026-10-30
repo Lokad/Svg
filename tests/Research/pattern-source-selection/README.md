@@ -13,3 +13,8 @@ their round-cap paint dependencies.
 native pixels and source/font hashes. [Dependency and ownership tests](../../Lokad.Svg.Tests/SvgPatternFontReachabilityTests.cs)
 check provider counts, font-free rendering of dormant sources, prepared output,
 denial, cancellation, cleanup and retry.
+
+[Direct selection mechanisms](../../Lokad.Svg.Tests/SvgPatternSelectionMechanismTests.cs)
+retain the original 512 acceptance inputs without font loading or rendering.
+The [acceptance map](../release-baselines/resource-selection.md) relates those
+source graphs to the native, acquisition and explicit-exclusion responsibilities.

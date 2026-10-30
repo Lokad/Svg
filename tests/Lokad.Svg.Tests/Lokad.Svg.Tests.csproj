@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="TestData/filter-alpha-boundaries.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/pattern-selection-acceptance.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <None Include="../Research/text-node-boundaries/*.svg" Link="TestData/text-node-boundaries/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

@@ -31,6 +31,9 @@ Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 a layer filter does not replace affected unclassified tests or full qualification.
 For pattern selection, `FullyQualifiedName~Pattern_child_content_selects_the_discovered_font`
 selects direct discovery; include the raster and prepared siblings for integration.
+`FullyQualifiedName~SvgPatternSelectionMechanismTests` selects the original resource
+acceptance inputs without loading fonts. The [acceptance map](Research/release-baselines/resource-selection.md)
+keeps their native, acquisition and explicit-exclusion responsibilities separate.
 The [case map](Research/release-baselines/test-responsibilities.md#pattern-source-and-target-selection)
 explains the routine prepared subset and extended `Category=Research` companions.
 Use `FullyQualifiedName~OpenTypeFontTests&Layer=Mechanism` for direct font work;

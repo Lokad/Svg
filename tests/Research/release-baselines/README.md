@@ -8,6 +8,8 @@ Reference images remain beside their existing licensed source collections.
 
 [Polygon contour ownership](contour-ownership.md) records the shared paint-binding
 storage contract and its failing-before refusal, transfer and retry witnesses.
+[Resource selection](resource-selection.md) maps R74's original acceptance inputs
+to direct mechanisms, existing acquisition contracts and independent native images.
 
 The outstanding review starts at these committed collections:
 
@@ -16,7 +18,7 @@ The outstanding review starts at these committed collections:
 | R48/R49/R60/R61; R103/R104/R108 | [Text fragments](../text-node-boundaries/README.md): original node/anchor/phase and fitting witnesses, retaining platform differences. |
 | R54/R55/R69; R85/R86 | [Color alpha](../gradient-color-alpha/README.md), [shader strokes](../shader-hairlines/capture.json): bounds/maps, focal arithmetic and nonconstant paints. |
 | R70 | [Decorations](../stroked-decorations/README.md): glyph intersections through paint, font and effect scopes. |
-| R74/C04 | [Resource selection](../pattern-source-selection/README.md), [instance composition](../text-instance-composition/README.md): live font dependencies and explicit nested-viewport exclusions. |
+| R74/C04 | [Reviewed selection failures closed](resource-selection.md); nested SVG in retained definitions remains a documented exclusion with its native control. |
 | D01-D03 | [Support](../../../docs/SUPPORT_MATRIX.md), API and documentation agreement as the next-release contracts change. |
 
 These are review entry points, not claims that every historical private witness

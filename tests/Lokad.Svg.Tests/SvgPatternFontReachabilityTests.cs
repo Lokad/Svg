@@ -9,8 +9,8 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgPatternFontReachabilityTests
 {
     private static readonly string Folder = Path.Combine(AppContext.BaseDirectory, "TestData", "pattern-source-selection");
-    private static readonly byte[] FontBytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-paint-bounds", "sans.ttf"));
-    private static readonly SvgFontPackCatalog Catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(Folder, "font-pack.json")), "public-noto-sans");
+    private static readonly Lazy<byte[]> FontBytes = new(static () => File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-paint-bounds", "sans.ttf")));
+    private static readonly Lazy<SvgFontPackCatalog> Catalog = new(static () => SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(Folder, "font-pack.json")), "public-noto-sans"));
     private static readonly IReadOnlyDictionary<string, JsonElement> Rows;
 
     static SvgPatternFontReachabilityTests()
@@ -25,19 +25,21 @@ public sealed class SvgPatternFontReachabilityTests
         foreach (string id in Rows.Keys) yield return [id];
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public async Task Geometry_typography_stays_inert_during_pattern_selection()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(Folder, "inert-typography.svg"));
         FontProvider provider = new();
-        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog, provider, CancellationToken.None);
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog.Value, provider, CancellationToken.None);
         Assert.Equal(0, provider.Requests);
         byte[] direct = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
-        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog.Value, provider, SvgRenderOptions.Default, CancellationToken.None);
         Assert.Equal(0, provider.Requests);
         Assert.Equal(direct, prepared.ConvertToPng(CancellationToken.None).ToArray());
     }
 
+    [Trait("Layer", "Contract")]
     [Theory]
     [MemberData(nameof(Cases))]
     public async Task Only_sampled_pattern_sources_acquire_font_programs(string id)
@@ -47,7 +49,7 @@ public sealed class SvgPatternFontReachabilityTests
         Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
         int expectedPrograms = row.GetProperty("expectedFontPrograms").GetInt32();
         FontProvider provider = new();
-        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog, provider, CancellationToken.None);
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog.Value, provider, CancellationToken.None);
         Assert.Equal(expectedPrograms, provider.Requests);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
         RenderBudget parser = new RenderBudget(new HostMemoryBudget(8_000_000)), raster = new RenderBudget(new HostMemoryBudget(8_000_000));
@@ -61,13 +63,14 @@ public sealed class SvgPatternFontReachabilityTests
         if (expectedPrograms == 0)
             Assert.Equal(direct, SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         FontProvider preparedProvider = new();
-        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog, preparedProvider, SvgRenderOptions.Default, CancellationToken.None);
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog.Value, preparedProvider, SvgRenderOptions.Default, CancellationToken.None);
         Assert.Equal(expectedPrograms, preparedProvider.Requests);
         Assert.Equal(direct, prepared.ConvertToPng(CancellationToken.None).ToArray());
         Assert.Equal(unchanged, input);
-        Assert.Equal(row.GetProperty("nativeFontSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(FontBytes)));
+        Assert.Equal(row.GetProperty("nativeFontSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(FontBytes.Value)));
     }
 
+    [Trait("Layer", "Contract")]
     [Theory]
     [MemberData(nameof(Cases))]
     public async Task Source_visits_release_owned_storage_after_denial_and_cancellation(string id)
@@ -75,7 +78,7 @@ public sealed class SvgPatternFontReachabilityTests
         JsonElement row = Rows[id];
         byte[] input = ReadInput(row);
         FontProvider provider = new();
-        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog, provider, CancellationToken.None);
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog.Value, provider, CancellationToken.None);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(8_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None)) { }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -112,7 +115,7 @@ public sealed class SvgPatternFontReachabilityTests
         {
             cancellationToken.ThrowIfCancellationRequested();
             Interlocked.Increment(ref _requests);
-            return ValueTask.FromResult<ISvgFontProgramSource?>(new SvgMemoryFontProgramSource("public-noto-sans", FontBytes));
+            return ValueTask.FromResult<ISvgFontProgramSource?>(new SvgMemoryFontProgramSource("public-noto-sans", FontBytes.Value));
         }
     }
 }
