@@ -42,7 +42,23 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
         Assert.Equal(Banks.Sum(bank => bank.CaseIds.Count), all.Length);
         Assert.Equal(all.Length, all.Distinct().Count());
         foreach (PaintReferenceBank bank in Banks)
-            Assert.Equal(bank.CaseIds.Count, all.Count(key => key.Item1 == bank.Name));
+        {
+            string folder = Folder(bank.Name);
+            using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "capture.json")));
+            HashSet<string> expected = capture.RootElement.GetProperty("cases").EnumerateArray()
+                .Select(row => row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing native case ID."))
+                .ToHashSet(StringComparer.Ordinal);
+            string resolutionPath = Path.Combine(folder, "resolved-known-differences.json");
+            if (File.Exists(resolutionPath))
+            {
+                using JsonDocument resolution = JsonDocument.Parse(File.ReadAllBytes(resolutionPath));
+                expected.UnionWith(resolution.RootElement.GetProperty("resolvedHistoricalIds").EnumerateArray()
+                    .Select(id => id.GetString() ?? throw new InvalidDataException("Missing resolved case ID.")));
+            }
+            Assert.Equal(expected.Count, bank.CaseIds.Count);
+            Assert.True(expected.SetEquals(bank.CaseIds));
+            Assert.Equal(expected.Count, all.Count(key => key.Item1 == bank.Name));
+        }
     }
 
     [Theory]

@@ -48,17 +48,20 @@ This pass removes no case and introduces no batched rendering assertion.
 | gradient-factory-colors | 5,201 | 0 |
 | linear-periodic-stops | 1,734 | 0 |
 | gradient-stop-preparation | 7,242 | 0 |
-| gradient-color-alpha | 8,760 | 1,300 |
+| gradient-color-alpha | 8,904 | 1,300 |
 | filter-uniform-precision | 4,534 | 3,716 |
 | solid-paint-alpha | 2,361 | 0 |
 | pattern-source-selection | 54 | 0 |
 | text-node-boundaries | 594 | 0 |
 | hairline-clip-rounding | 24 | 0 |
-| **Total** | **34,065** | **7,269** |
+| **Total** | **34,209** | **7,269** |
 
 The separate partition check adds one integrity case. The filter-uniform bank
 includes 1,206 resolved historical cases, including its two routine shadow cases;
 no historical status record or independent reference was rewritten.
+The gradient-color-alpha bank adds 144 resolved historical cases through its
+hash-bound status record. The discovery measurements below retain their original
+41,334-case selection; current selection totals 41,478 rendering cases.
 
 ## Local setup-cost check
 

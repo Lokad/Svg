@@ -13,7 +13,7 @@ compact pixel storage, and SVG layout bounds from stored-image bounds.
 
 [Image tests](../../Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs) verify
 source and reference hashes before comparing pixels. [Ownership tests](../../Lokad.Svg.Tests/SvgUniformFilterOwnershipTests.cs)
-cover native pixels, memory/work denial, cancellation, cleanup and retry.
+cover native pixels, memory refusal, cancellation, cleanup and retry.
 `knownDifferences` preserves the original mismatches separately for each host.
 The separate [current status](resolved-known-differences.json) binds that unchanged
 capture by hash: all 1,206 historical differences now have exact image assertions
@@ -24,10 +24,11 @@ equality with their controls. The focused
 [opacity and sampling witnesses](../filter-opacity-sampling/README.md) exercise
 the shared correction during routine development.
 
-Routine rendering retains 4,532 cases, preserving graph topology, operands,
+Routine rendering retains 4,534 cases, preserving graph topology, operands,
 color space, crops, backdrops, placement and scale. The [research selection](research-cases.json)
-retains the other 2,512 numerical/context combinations as individually discovered
-`Category=Research` tests, included in unfiltered CI. Selection groups alpha
+retains 2,512 numerical/context combinations; the status record adds 1,204
+historical regressions. All remain individually discovered `Category=Research`
+tests, included in unfiltered CI. Selection groups alpha
 values by zero, opaque, tiny (at most 1/255), low, midpoint, high and near-opaque
 (at least 254/255), separately for numeric, percentage, exponent and hex grammar;
 RGB/HSL channels and source structure stay distinct. It does not compare images.

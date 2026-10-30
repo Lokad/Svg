@@ -41,16 +41,16 @@ internal sealed class PaintReferenceBank
         foreach (CaseIdentity? row in data.Cases ?? throw new InvalidDataException("Missing native cases."))
             AddId(row?.Id ?? throw new InvalidDataException("Missing native case id."));
 
-        if (Name == "filter-uniform-precision")
+        if (Name is "filter-uniform-precision" or "gradient-color-alpha")
         {
             using JsonDocument status = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder, "resolved-known-differences.json")));
             string captureText = TextEncoding.UTF8.GetString(bytes).Replace("\r\n", "\n", StringComparison.Ordinal);
             string captureHash = Convert.ToHexStringLower(SHA256.HashData(TextEncoding.UTF8.GetBytes(captureText)));
             if (status.RootElement.GetProperty("sourceCaptureSha256").GetString() != captureHash)
-                throw new InvalidDataException("Historical filter capture changed after its status audit.");
+                throw new InvalidDataException("Historical paint capture changed after its status audit.");
             HashSet<string> resolved = ReadIds(status.RootElement.GetProperty("resolvedHistoricalIds"));
             HashSet<string> routine = ReadIds(status.RootElement.GetProperty("routineHistoricalIds"));
-            foreach (CaseIdentity? row in data.KnownDifferences ?? throw new InvalidDataException("Missing historical filter cases."))
+            foreach (CaseIdentity? row in data.KnownDifferences ?? throw new InvalidDataException("Missing historical paint cases."))
             {
                 string id = row?.Id ?? throw new InvalidDataException("Missing historical filter id.");
                 if (!resolved.Remove(id)) continue;
@@ -58,7 +58,7 @@ internal sealed class PaintReferenceBank
                 if (!routine.Remove(id)) research.Add(id);
             }
             if (resolved.Count != 0 || routine.Count != 0)
-                throw new InvalidDataException("Resolved filter status names an unknown historical input.");
+                throw new InvalidDataException("Resolved paint status names an unknown historical input.");
         }
 
         if (Name is "gradient-color-alpha" or "filter-uniform-precision" or "filter-source-composition")
@@ -94,7 +94,7 @@ internal sealed class PaintReferenceBank
         Dictionary<string, JsonElement> rows = new(StringComparer.Ordinal);
         foreach (JsonElement row in root.GetProperty("cases").EnumerateArray())
             rows.Add(RequiredId(row), row);
-        if (Name == "filter-uniform-precision")
+        if (Name is "filter-uniform-precision" or "gradient-color-alpha")
             foreach (JsonElement row in root.GetProperty("knownDifferences").EnumerateArray())
             {
                 string id = RequiredId(row);
