@@ -322,9 +322,9 @@ public static partial class SvgConverter
         {
         }
         (double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
-        (double patternRootScaleX, double patternRootOffsetX, double patternRootScaleY, double patternRootOffsetY) = GetViewBoxTransform(root.ViewBox, width, height, 1);
-        SvgAffineTransform patternRootMap = frame is null
-            ? SvgAffineTransform.FromScaleOffset(patternRootScaleX, patternRootScaleY, patternRootOffsetX, patternRootOffsetY)
+        (double rootScaleX, double rootOffsetX, double rootScaleY, double rootOffsetY) = GetViewBoxTransform(root.ViewBox, width, height, 1);
+        SvgAffineTransform authoredRootMap = frame is null
+            ? SvgAffineTransform.FromScaleOffset(rootScaleX, rootScaleY, rootOffsetX, rootOffsetY)
             : SvgAffineTransform.Identity;
         if (frame is {} filterFrame) (horizontalScale, horizontalOffset, verticalScale, verticalOffset) = (filterFrame.ScaleX, filterFrame.OffsetX, filterFrame.ScaleY, filterFrame.OffsetY);
         if (!double.IsFinite(horizontalScale) || !double.IsFinite(horizontalOffset) || !double.IsFinite(verticalScale) || !double.IsFinite(verticalOffset) || horizontalScale <= 0 || verticalScale <= 0)
@@ -3035,15 +3035,15 @@ public static partial class SvgConverter
             return viewport.Prepare(output, target);
         }
 
-        SvgAffineTransform? NativeViewportReference(SvgAffineTransform target)
+        SvgShaderMatrix? NativeViewportReference(SvgAffineTransform target)
         {
             if (activeViewportDrawMap is null) return null;
             SvgAffineTransform output = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (sourcePlacement != SvgAffineTransform.Identity) output = output.ComposeChecked(sourcePlacement);
-            return MapSourceTransform(output, target);
+            return SvgShaderMatrix.FromAffine(MapSourceTransform(output, target));
         }
 
-        SvgAffineTransform? NativeRadialViewportReference(SvgRadialGradient gradient, SvgRectangle box)
+        SvgShaderMatrix? NativeRadialViewportReference(SvgRadialGradient gradient, SvgRectangle box)
         {
             if (activeViewportDrawMap is null || gradient.NativePaintMatrices is not {} matrices) return null;
             SvgAffineTransform target = matrices.Referencing;
@@ -4011,6 +4011,23 @@ public static partial class SvgConverter
         bool NeedsPatternMapping(SvgPatternGeometry pattern)
             => pattern.Coordinates is not null || pattern.VectorContent is not null || horizontalScale != 1 || verticalScale != 1 || horizontalOffset != 0 || verticalOffset != 0 || pattern.ShaderPlacement != SvgAffineTransform.Identity;
 
+        // Picture and glyph shaders share the native drawing stages. Local paint
+        // matrices stay separate until sampling; no source or layout bounds change.
+        bool TryMapShaderDraw(SvgAffineTransform target, SvgRecordedTransform? recording, out SvgShaderMatrix drawing)
+        {
+            SvgShaderMatrix output = new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset);
+            if (sourcePlacement != SvgAffineTransform.Identity)
+                output = SvgShaderMatrix.Concat(output, SvgShaderMatrix.FromAffine(sourcePlacement));
+            drawing = SvgShaderMatrix.Concat(output, SvgShaderMatrix.FromAffine(target));
+            SvgShaderMatrix external = frame is null
+                ? new((float)options.OutputScale, 0, 0, 0, (float)options.OutputScale, 0) : output;
+            if (recording is not null)
+                return recording.TryMap(external, authoredRootMap, target, budget, cancellationToken, out drawing);
+            if (authoredRootMap != SvgAffineTransform.Identity)
+                drawing = SvgShaderMatrix.Concat(external, SvgShaderMatrix.FromAffine(authoredRootMap.Compose(target)));
+            return drawing.IsFinite;
+        }
+
         bool TryMapPatternTile(SvgPatternGeometry pattern, SvgRecordedTransform? recording, SvgAffineTransform glyphMap, out SvgPatternGeometry? mapped)
         {
             mapped = null;
@@ -4030,11 +4047,8 @@ public static partial class SvgConverter
             if (pattern.VectorContent is not null)
             {
                 float width = (float)coordinates.Width, height = (float)coordinates.Height;
-                SvgShaderMatrix outputMap = new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset);
                 SvgShaderMatrix localMap = new((float)shader.A, (float)shader.C, (float)shader.E, (float)shader.B, (float)shader.D, (float)shader.F);
-                if (sourcePlacement != SvgAffineTransform.Identity)
-                    outputMap = SvgShaderMatrix.Concat(outputMap, new((float)sourcePlacement.A, (float)sourcePlacement.C, (float)sourcePlacement.E, (float)sourcePlacement.B, (float)sourcePlacement.D, (float)sourcePlacement.F));
-                SvgShaderMatrix drawMap = outputMap;
+                SvgShaderMatrix drawMap;
                 if (pattern.PaintMatrices is {} stages)
                 {
                     SvgAffineTransform target = stages.Target, local = stages.Pattern;
@@ -4045,20 +4059,14 @@ public static partial class SvgConverter
                         local = SvgTextShader.RebaseLocal(glyphMap, target, local);
                         target = glyphMap;
                     }
-                    drawMap = SvgShaderMatrix.Concat(outputMap, new((float)target.A, (float)target.C, (float)target.E, (float)target.B, (float)target.D, (float)target.F));
-                    SvgShaderMatrix external = frame is null
-                        ? new((float)options.OutputScale, 0, 0, 0, (float)options.OutputScale, 0) : outputMap;
-                    if (recording is not null)
-                    {
-                        if (!recording.TryMap(external, patternRootMap, target, budget, cancellationToken, out drawMap)) return false;
-                    }
-                    else if (patternRootMap != SvgAffineTransform.Identity)
-                    {
-                        SvgAffineTransform reference = patternRootMap.Compose(target);
-                        drawMap = SvgShaderMatrix.Concat(external,
-                            new((float)reference.A, (float)reference.C, (float)reference.E, (float)reference.B, (float)reference.D, (float)reference.F));
-                    }
+                    if (!TryMapShaderDraw(target, recording, out drawMap)) return false;
                     localMap = new((float)local.A, (float)local.C, (float)local.E, (float)local.B, (float)local.D, (float)local.F);
+                }
+                else
+                {
+                    drawMap = new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset);
+                    if (sourcePlacement != SvgAffineTransform.Identity)
+                        drawMap = SvgShaderMatrix.Concat(drawMap, SvgShaderMatrix.FromAffine(sourcePlacement));
                 }
                 SvgShaderMatrix map = SvgShaderMatrix.Concat(drawMap, localMap);
                 // Picture tiles retain their source axes. Rotation/reflection change the
@@ -4505,9 +4513,17 @@ public static partial class SvgConverter
             }
             bool constantGlyphFactory = glyphLinear is {} factoryLinear ? SvgShaderCoordinates.IsConstantFactory(factoryLinear)
                 : glyphRadial is {} factoryRadial && SvgShaderCoordinates.IsConstantFactory(factoryRadial);
+            SvgShaderMatrix? glyphReference = null;
+            if (!constantGlyphFactory && (glyphLinear is not null || glyphRadial is not null)
+                && glyph.Source is { GlyphMap: var paintGlyphMap } && paintGlyphMap != SvgAffineTransform.Identity)
+            {
+                if (!TryMapShaderDraw(paintGlyphMap, activePaint.RecordingTransform, out SvgShaderMatrix drawing))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text shader placement must be finite and invertible.");
+                glyphReference = drawing;
+            }
             SvgShaderCoordinates glyphCoordinates = constantGlyphFactory ? default : glyphLinear is {} linearCoordinates
-                ? SvgShaderCoordinates.CreateLinear(linearCoordinates, default, horizontalScale, verticalScale, horizontalOffset, verticalOffset, textMatrices, sourcePlacement)
-                : glyphRadial is {} radialCoordinates ? SvgShaderCoordinates.CreateRadial(radialCoordinates, default, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement)
+                ? SvgShaderCoordinates.CreateLinear(linearCoordinates, default, horizontalScale, verticalScale, horizontalOffset, verticalOffset, textMatrices, sourcePlacement, glyphReference)
+                : glyphRadial is {} radialCoordinates ? SvgShaderCoordinates.CreateRadial(radialCoordinates, default, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement, glyphReference)
                 : glyphPattern?.NativeImageMap is {} imageMap ? SvgShaderCoordinates.CreateImage(imageMap, glyphPattern.NativeImageLocal ?? throw new InvalidOperationException("Text image sampling requires its local matrix.")) : default;
             SvgColor glyphFactoryLuminance = default;
             SvgShaderPaint glyphFactoryColor = default;

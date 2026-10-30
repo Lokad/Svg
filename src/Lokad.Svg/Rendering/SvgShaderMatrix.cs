@@ -11,6 +11,10 @@ internal readonly record struct SvgShaderMatrix(float ScaleX, float SkewX, float
     internal bool IsFinite => float.IsFinite(ScaleX) && float.IsFinite(SkewX) && float.IsFinite(TranslateX)
         && float.IsFinite(SkewY) && float.IsFinite(ScaleY) && float.IsFinite(TranslateY);
 
+    /// <summary>Narrows one admitted affine stage to native float storage without composing it with another stage.</summary>
+    internal static SvgShaderMatrix FromAffine(SvgAffineTransform matrix)
+        => new((float)matrix.A, (float)matrix.C, (float)matrix.E, (float)matrix.B, (float)matrix.D, (float)matrix.F);
+
     internal static SvgShaderMatrix Concat(SvgShaderMatrix outer, SvgShaderMatrix inner)
     {
         if (outer.SkewX == 0 && outer.SkewY == 0 && inner.SkewX == 0 && inner.SkewY == 0)

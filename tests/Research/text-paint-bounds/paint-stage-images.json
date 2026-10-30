@@ -1,0 +1,670 @@
+{
+  "schemaVersion": 1,
+  "scope": "Shared native drawing matrices for glyph paints: two original radial pairs and three orthogonal group/use/symbol scope pairs.",
+  "baselineCommit": "d01c7c4f1943d3d8d624e44af26e13629fa1c2f6",
+  "nativeCapture": {
+    "browser": "Chrome for Testing 153.0.8010.52",
+    "recipe": "Exact original SVG Image to transparent 160*scale by 80*scale canvas; DPR1; two separate weighted ReviewFont/ReviewMono style elements; only family names substituted.",
+    "scriptSha256": "c4add05ecb17d7a85efcd0326cd546a8e85999f9c4e90cccae1c8566ea90abaf",
+    "fonts": [
+      {
+        "family": "ReviewFont",
+        "bytes": 569208,
+        "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+        "path": "../supplied-font-labels/fonts/NotoSans-Regular.ttf"
+      },
+      {
+        "family": "ReviewMono",
+        "bytes": 525664,
+        "sha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc",
+        "path": "../supplied-font-documents/fonts/NotoSansMono-Bold.ttf"
+      }
+    ],
+    "launches": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    },
+    "executableSha256": {
+      "windows": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "linux": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+    }
+  },
+  "originalReview": {
+    "manifest": "precision-residuals.json",
+    "screenedInputs": 960,
+    "retainedOriginalInputs": 39,
+    "fullyExactOriginalIds": [
+      "spacing-paint-9-candidate",
+      "spacing-paint-9-control",
+      "spacing-paint-45-candidate",
+      "spacing-paint-45-control",
+      "spacing-paint-47-candidate",
+      "spacing-paint-47-control",
+      "spacing-paint-69-candidate",
+      "spacing-paint-69-control",
+      "spacing-paint-71-candidate",
+      "spacing-paint-71-control",
+      "spacing-paint-117-candidate",
+      "spacing-paint-117-control",
+      "spacing-paint-119-candidate",
+      "spacing-paint-119-control",
+      "spacing-paint-165-candidate",
+      "spacing-paint-165-control",
+      "spacing-paint-167-candidate",
+      "spacing-paint-167-control",
+      "spacing-paint-232-candidate",
+      "spacing-paint-357-candidate",
+      "spacing-paint-357-control",
+      "spacing-paint-359-candidate",
+      "spacing-paint-359-control",
+      "spacing-paint-421-control",
+      "spacing-paint-453-candidate",
+      "spacing-paint-453-control",
+      "spacing-paint-455-candidate",
+      "spacing-paint-455-control",
+      "spacing-paint-477-candidate",
+      "spacing-paint-477-control",
+      "spacing-paint-479-candidate"
+    ],
+    "remainingOriginalIds": [
+      "spacing-paint-219-control",
+      "spacing-paint-224-control",
+      "spacing-paint-232-control",
+      "spacing-paint-233-candidate",
+      "spacing-paint-233-control",
+      "spacing-paint-430-candidate",
+      "spacing-paint-430-control",
+      "spacing-paint-479-control"
+    ],
+    "qualificationByHost": {
+      "windows": {
+        "host": "windows",
+        "beforeExact": 952,
+        "exact": 955,
+        "gains": 3,
+        "losses": 0,
+        "worse": 0
+      },
+      "linux": {
+        "host": "linux",
+        "beforeExact": 955,
+        "exact": 955,
+        "gains": 0,
+        "losses": 0,
+        "worse": 0
+      }
+    },
+    "remainingByHost": {
+      "windows": [
+        {
+          "id": "spacing-paint-219-control",
+          "pixels": 1,
+          "alpha": 0,
+          "sum": 1
+        },
+        {
+          "id": "spacing-paint-224-control",
+          "pixels": 1,
+          "alpha": 0,
+          "sum": 1
+        },
+        {
+          "id": "spacing-paint-430-candidate",
+          "pixels": 1,
+          "alpha": 0,
+          "sum": 4
+        },
+        {
+          "id": "spacing-paint-430-control",
+          "pixels": 1,
+          "alpha": 0,
+          "sum": 4
+        },
+        {
+          "id": "spacing-paint-479-control",
+          "pixels": 1,
+          "alpha": 1,
+          "sum": 2
+        }
+      ],
+      "linux": [
+        {
+          "id": "spacing-paint-232-control",
+          "pixels": 1,
+          "alpha": 0,
+          "sum": 1
+        },
+        {
+          "id": "spacing-paint-233-candidate",
+          "pixels": 1,
+          "alpha": 0,
+          "sum": 8
+        },
+        {
+          "id": "spacing-paint-233-control",
+          "pixels": 1,
+          "alpha": 0,
+          "sum": 4
+        },
+        {
+          "id": "spacing-paint-430-candidate",
+          "pixels": 1,
+          "alpha": 0,
+          "sum": 4
+        },
+        {
+          "id": "spacing-paint-430-control",
+          "pixels": 1,
+          "alpha": 0,
+          "sum": 4
+        }
+      ]
+    }
+  },
+  "pairs": [
+    {
+      "originalName": "spacing-paint-421",
+      "candidate": "spacing-paint-421-candidate",
+      "control": "spacing-paint-421-control"
+    },
+    {
+      "originalName": "spacing-paint-9",
+      "candidate": "spacing-paint-9-candidate",
+      "control": "spacing-paint-9-control"
+    },
+    {
+      "originalName": "draw-group-linear",
+      "candidate": "draw-group-linear-candidate",
+      "control": "draw-group-linear-control",
+      "nativeEqual": {
+        "windows": true,
+        "linux": true
+      }
+    },
+    {
+      "originalName": "draw-symbol-linear",
+      "candidate": "draw-symbol-linear-candidate",
+      "control": "draw-symbol-linear-control",
+      "nativeEqual": {
+        "windows": true,
+        "linux": true
+      }
+    },
+    {
+      "originalName": "draw-use-radial",
+      "candidate": "draw-use-radial-candidate",
+      "control": "draw-use-radial-control",
+      "nativeEqual": {
+        "windows": true,
+        "linux": true
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "spacing-paint-9-candidate",
+      "originalName": "spacing-paint-9",
+      "role": "candidate",
+      "group": "fraction-radial-objectBoundingBox-fill-1.5",
+      "input": "precision-residuals/inputs/spacing-paint-9-candidate.svg",
+      "sourceSha256": "14ec4abeed0427ea67b8105c240b724689a33b1868a40e6e2d10908e2e18917d",
+      "nativeSourceSha256": "2ff20b381ad9d6c4507de7a1fa0759e704384e08b31f552fc52a6ddbc2003599",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "precision-residuals/references/4827285f3dab55c022a40a7a86282b2393b67cb4e0428a5fdf94850f377e3d33.png",
+          "sha256": "4827285f3dab55c022a40a7a86282b2393b67cb4e0428a5fdf94850f377e3d33",
+          "rgbaSha256": "a634ecb0f440668c7717c6841b9e0f5528c9e94df2a40290684d8c307848aa6d",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "4827285f3dab55c022a40a7a86282b2393b67cb4e0428a5fdf94850f377e3d33",
+            "4827285f3dab55c022a40a7a86282b2393b67cb4e0428a5fdf94850f377e3d33",
+            "4827285f3dab55c022a40a7a86282b2393b67cb4e0428a5fdf94850f377e3d33"
+          ]
+        },
+        "linux": {
+          "path": "precision-residuals/references/f2aaa3269ab05f6fcc63cc24571cb1f4ad7c7d0710d80ad8facb1a387e9f2853.png",
+          "sha256": "f2aaa3269ab05f6fcc63cc24571cb1f4ad7c7d0710d80ad8facb1a387e9f2853",
+          "rgbaSha256": "b91890fc9eed544432c1bf961d98354ce72cf0ed4199b786ab2417f71da273ec",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "f2aaa3269ab05f6fcc63cc24571cb1f4ad7c7d0710d80ad8facb1a387e9f2853",
+            "f2aaa3269ab05f6fcc63cc24571cb1f4ad7c7d0710d80ad8facb1a387e9f2853",
+            "f2aaa3269ab05f6fcc63cc24571cb1f4ad7c7d0710d80ad8facb1a387e9f2853"
+          ]
+        }
+      }
+    },
+    {
+      "id": "spacing-paint-9-control",
+      "originalName": "spacing-paint-9",
+      "role": "control",
+      "group": "fraction-radial-objectBoundingBox-fill-1.5",
+      "input": "precision-residuals/inputs/spacing-paint-9-control.svg",
+      "sourceSha256": "d854b280ffe520a6b879f22791a0df084aa75db53373176d1d4d4eb26faf70f3",
+      "nativeSourceSha256": "7f99ed9dc7e2efee374dc75dbeeaebbfd0491275d3876608219062613f40c3db",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "precision-residuals/references/e3293892b608494214cec9ecf418b6a49659a01c3d7a4be1e303a4927e40cbd2.png",
+          "sha256": "e3293892b608494214cec9ecf418b6a49659a01c3d7a4be1e303a4927e40cbd2",
+          "rgbaSha256": "c34fba87922ac41647426d245e2e9fe012a646a594fc20f86a6e16eebd67dfa8",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "e3293892b608494214cec9ecf418b6a49659a01c3d7a4be1e303a4927e40cbd2",
+            "e3293892b608494214cec9ecf418b6a49659a01c3d7a4be1e303a4927e40cbd2",
+            "e3293892b608494214cec9ecf418b6a49659a01c3d7a4be1e303a4927e40cbd2"
+          ]
+        },
+        "linux": {
+          "path": "precision-residuals/references/268fa506820d41b7392c28e4e4796e84bddd93c93d94e0aff9b8d459d08a273c.png",
+          "sha256": "268fa506820d41b7392c28e4e4796e84bddd93c93d94e0aff9b8d459d08a273c",
+          "rgbaSha256": "f2401f5abbc1cf32291874e95dae15ae18f0f1071d2e4e27bdedeb13a6028a60",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "268fa506820d41b7392c28e4e4796e84bddd93c93d94e0aff9b8d459d08a273c",
+            "268fa506820d41b7392c28e4e4796e84bddd93c93d94e0aff9b8d459d08a273c",
+            "268fa506820d41b7392c28e4e4796e84bddd93c93d94e0aff9b8d459d08a273c"
+          ]
+        }
+      }
+    },
+    {
+      "id": "spacing-paint-421-candidate",
+      "originalName": "spacing-paint-421",
+      "role": "candidate",
+      "group": "matrix-radial-userSpaceOnUse-fill-1.5",
+      "input": "paint-stage-inputs/spacing-paint-421-candidate.svg",
+      "sourceSha256": "9244edcb403596aa91d1d15984dda280da0b7a933b1f1f23315b686948b17d50",
+      "nativeSourceSha256": "68d5d439474fdb800310a40a10dbd169f32ca3e2addfff1b88276116b7625f55",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "paint-stage-references/3a18ef5bd35cc6cc99dd1fad31ddc5601344cd43f61521fbdb352166dc209e6b.png",
+          "sha256": "3a18ef5bd35cc6cc99dd1fad31ddc5601344cd43f61521fbdb352166dc209e6b",
+          "rgbaSha256": "4ea3d84b9e8095eedf75d2b571ea9fe7b0bbf25c5c7e53db059d9429c4be4351",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "3a18ef5bd35cc6cc99dd1fad31ddc5601344cd43f61521fbdb352166dc209e6b",
+            "3a18ef5bd35cc6cc99dd1fad31ddc5601344cd43f61521fbdb352166dc209e6b",
+            "3a18ef5bd35cc6cc99dd1fad31ddc5601344cd43f61521fbdb352166dc209e6b"
+          ]
+        },
+        "linux": {
+          "path": "paint-stage-references/ee6f0bf89bf5c00c7025dda33d19a1d484cdc6c8b015eeb769c4cb35229c4663.png",
+          "sha256": "ee6f0bf89bf5c00c7025dda33d19a1d484cdc6c8b015eeb769c4cb35229c4663",
+          "rgbaSha256": "277b4ddc1647a0c0ddb369433dcb381ef8bb3003f3decc80894dd7346e1d8c8c",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "ee6f0bf89bf5c00c7025dda33d19a1d484cdc6c8b015eeb769c4cb35229c4663",
+            "ee6f0bf89bf5c00c7025dda33d19a1d484cdc6c8b015eeb769c4cb35229c4663",
+            "ee6f0bf89bf5c00c7025dda33d19a1d484cdc6c8b015eeb769c4cb35229c4663"
+          ]
+        }
+      }
+    },
+    {
+      "id": "spacing-paint-421-control",
+      "originalName": "spacing-paint-421",
+      "role": "control",
+      "group": "matrix-radial-userSpaceOnUse-fill-1.5",
+      "input": "precision-residuals/inputs/spacing-paint-421-control.svg",
+      "sourceSha256": "9928198b6206e9164692673024e34166d54dc09faca0e91bc06c5cd547df9297",
+      "nativeSourceSha256": "c194fa97a89a7baf90c40a3e037adaa2f8e98617b25112f4bb8e7229b92ff8fa",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "precision-residuals/references/ae316da9d1f9f4a3fc060e1665d3513ce48a34d9a92c28487e9c718f8e2cadd1.png",
+          "sha256": "ae316da9d1f9f4a3fc060e1665d3513ce48a34d9a92c28487e9c718f8e2cadd1",
+          "rgbaSha256": "e2ccce17600aad8db5af03990ee369351fdc4ff38ae5d15b93540df8862dccb0",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "ae316da9d1f9f4a3fc060e1665d3513ce48a34d9a92c28487e9c718f8e2cadd1",
+            "ae316da9d1f9f4a3fc060e1665d3513ce48a34d9a92c28487e9c718f8e2cadd1",
+            "ae316da9d1f9f4a3fc060e1665d3513ce48a34d9a92c28487e9c718f8e2cadd1"
+          ]
+        },
+        "linux": {
+          "path": "precision-residuals/references/a3d1feedd61e7690704083fe727948f5b311768fa813822e5d2496e0f28899b4.png",
+          "sha256": "a3d1feedd61e7690704083fe727948f5b311768fa813822e5d2496e0f28899b4",
+          "rgbaSha256": "9acc210e1a557e9cb4d7138e67f66e1bfc5dd4bbee9e304f6451b0b00c1ffe75",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "a3d1feedd61e7690704083fe727948f5b311768fa813822e5d2496e0f28899b4",
+            "a3d1feedd61e7690704083fe727948f5b311768fa813822e5d2496e0f28899b4",
+            "a3d1feedd61e7690704083fe727948f5b311768fa813822e5d2496e0f28899b4"
+          ]
+        }
+      }
+    },
+    {
+      "id": "draw-group-linear-candidate",
+      "originalName": "draw-group-linear",
+      "role": "candidate",
+      "group": "group-draw-stage",
+      "input": "paint-stage-inputs/draw-group-linear-candidate.svg",
+      "sourceSha256": "37f3292d1229566b17afd52a64df88e5c3244ee6a186896029764b51e671841f",
+      "nativeSourceSha256": "cacff92fde5178f0681eb57b0eeda561d370e37ec6ebca6d90e1d14af440cf45",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "paint-stage-references/5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1.png",
+          "sha256": "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+          "rgbaSha256": "31ffb7a9864b0eace13db587bb766a44af6a7b2dc81e3a35a47ebb823d07203d",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1"
+          ]
+        },
+        "linux": {
+          "path": "paint-stage-references/6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871.png",
+          "sha256": "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+          "rgbaSha256": "22d27b92a067e285df2f3dac697483caed66702a3ee21082535451b9198aa0dc",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871"
+          ]
+        }
+      }
+    },
+    {
+      "id": "draw-group-linear-control",
+      "originalName": "draw-group-linear",
+      "role": "control",
+      "group": "group-draw-stage",
+      "input": "paint-stage-inputs/draw-group-linear-control.svg",
+      "sourceSha256": "57f72f0f13035d703542cf2db948b9cbf5b3ebac9a7894fcc3053d914b75d492",
+      "nativeSourceSha256": "bc5f575ccd8705f495e238bc1fdaf4191b5b048c3991e9495e3b1c884fb1f02d",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "paint-stage-references/5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1.png",
+          "sha256": "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+          "rgbaSha256": "31ffb7a9864b0eace13db587bb766a44af6a7b2dc81e3a35a47ebb823d07203d",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1"
+          ]
+        },
+        "linux": {
+          "path": "paint-stage-references/6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871.png",
+          "sha256": "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+          "rgbaSha256": "22d27b92a067e285df2f3dac697483caed66702a3ee21082535451b9198aa0dc",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871"
+          ]
+        }
+      }
+    },
+    {
+      "id": "draw-use-radial-candidate",
+      "originalName": "draw-use-radial",
+      "role": "candidate",
+      "group": "use-draw-stage",
+      "input": "paint-stage-inputs/draw-use-radial-candidate.svg",
+      "sourceSha256": "504d2e3f5caa1f5b80cb5e74e8980dc3aefe2823cc7f44b166df448a69f64a77",
+      "nativeSourceSha256": "7cb8003a8c3ffc9e0161e8578763f03f2e205bfbc779986b1573356d37a2309f",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "paint-stage-references/9308c04cfa0c46affb6a9acdc8351746c66011ebc42586cfa36f864a6f5ff4bd.png",
+          "sha256": "9308c04cfa0c46affb6a9acdc8351746c66011ebc42586cfa36f864a6f5ff4bd",
+          "rgbaSha256": "d6f8782f14767f25d60687b2d294001d8560d05ccb5f41d4d2513e2abe311148",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "9308c04cfa0c46affb6a9acdc8351746c66011ebc42586cfa36f864a6f5ff4bd",
+            "9308c04cfa0c46affb6a9acdc8351746c66011ebc42586cfa36f864a6f5ff4bd",
+            "9308c04cfa0c46affb6a9acdc8351746c66011ebc42586cfa36f864a6f5ff4bd"
+          ]
+        },
+        "linux": {
+          "path": "paint-stage-references/122f3034163fa4343a288aa6a000755d5c8f8d412dd4f91625256fb649ab86e7.png",
+          "sha256": "122f3034163fa4343a288aa6a000755d5c8f8d412dd4f91625256fb649ab86e7",
+          "rgbaSha256": "d71c72f0572bbdc99d67c36d97f02a4a069cdd2991444b416160ac709cd802ad",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "122f3034163fa4343a288aa6a000755d5c8f8d412dd4f91625256fb649ab86e7",
+            "122f3034163fa4343a288aa6a000755d5c8f8d412dd4f91625256fb649ab86e7",
+            "122f3034163fa4343a288aa6a000755d5c8f8d412dd4f91625256fb649ab86e7"
+          ]
+        }
+      }
+    },
+    {
+      "id": "draw-use-radial-control",
+      "originalName": "draw-use-radial",
+      "role": "control",
+      "group": "use-draw-stage",
+      "input": "paint-stage-inputs/draw-use-radial-control.svg",
+      "sourceSha256": "221ebfca37308e9c93142ed17cd8697fca33079fee6906b4c5138f6412d36b97",
+      "nativeSourceSha256": "a540576bb20c8338a0c21ab1997c2ad94026fb2b6750add0b18aa020c345bcce",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "paint-stage-references/9308c04cfa0c46affb6a9acdc8351746c66011ebc42586cfa36f864a6f5ff4bd.png",
+          "sha256": "9308c04cfa0c46affb6a9acdc8351746c66011ebc42586cfa36f864a6f5ff4bd",
+          "rgbaSha256": "d6f8782f14767f25d60687b2d294001d8560d05ccb5f41d4d2513e2abe311148",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "9308c04cfa0c46affb6a9acdc8351746c66011ebc42586cfa36f864a6f5ff4bd",
+            "9308c04cfa0c46affb6a9acdc8351746c66011ebc42586cfa36f864a6f5ff4bd",
+            "9308c04cfa0c46affb6a9acdc8351746c66011ebc42586cfa36f864a6f5ff4bd"
+          ]
+        },
+        "linux": {
+          "path": "paint-stage-references/122f3034163fa4343a288aa6a000755d5c8f8d412dd4f91625256fb649ab86e7.png",
+          "sha256": "122f3034163fa4343a288aa6a000755d5c8f8d412dd4f91625256fb649ab86e7",
+          "rgbaSha256": "d71c72f0572bbdc99d67c36d97f02a4a069cdd2991444b416160ac709cd802ad",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "122f3034163fa4343a288aa6a000755d5c8f8d412dd4f91625256fb649ab86e7",
+            "122f3034163fa4343a288aa6a000755d5c8f8d412dd4f91625256fb649ab86e7",
+            "122f3034163fa4343a288aa6a000755d5c8f8d412dd4f91625256fb649ab86e7"
+          ]
+        }
+      }
+    },
+    {
+      "id": "draw-symbol-linear-candidate",
+      "originalName": "draw-symbol-linear",
+      "role": "candidate",
+      "group": "symbol-draw-stage",
+      "input": "paint-stage-inputs/draw-symbol-linear-candidate.svg",
+      "sourceSha256": "8c8ea8c5a00cd211ef702003d1e099a339790d22c2488b78b2160a5d34bd9674",
+      "nativeSourceSha256": "228afbff2c5b1cedf38e03ab356cff403ccbd7977eba157f2c4d02b994521153",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "paint-stage-references/5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1.png",
+          "sha256": "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+          "rgbaSha256": "31ffb7a9864b0eace13db587bb766a44af6a7b2dc81e3a35a47ebb823d07203d",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1"
+          ]
+        },
+        "linux": {
+          "path": "paint-stage-references/6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871.png",
+          "sha256": "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+          "rgbaSha256": "22d27b92a067e285df2f3dac697483caed66702a3ee21082535451b9198aa0dc",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871"
+          ]
+        }
+      }
+    },
+    {
+      "id": "draw-symbol-linear-control",
+      "originalName": "draw-symbol-linear",
+      "role": "control",
+      "group": "symbol-draw-stage",
+      "input": "paint-stage-inputs/draw-symbol-linear-control.svg",
+      "sourceSha256": "c8dbf0aa18bfc5af3f32f973a18e3bd120872af3dd675c51d748273e841af9d1",
+      "nativeSourceSha256": "06c199b5861459df8c0a1079aa65fbf0a8bc85bf8879d253fd3af44b0107f261",
+      "font": true,
+      "outputScale": 1.5,
+      "references": {
+        "windows": {
+          "path": "paint-stage-references/5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1.png",
+          "sha256": "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+          "rgbaSha256": "31ffb7a9864b0eace13db587bb766a44af6a7b2dc81e3a35a47ebb823d07203d",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1",
+            "5464de0c6033415b1c60040948efadef8f1542bbe859e10b0a90f31e414ed3b1"
+          ]
+        },
+        "linux": {
+          "path": "paint-stage-references/6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871.png",
+          "sha256": "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+          "rgbaSha256": "22d27b92a067e285df2f3dac697483caed66702a3ee21082535451b9198aa0dc",
+          "width": 240,
+          "height": 120,
+          "processPngSha256": [
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871",
+            "6045a5fb5503ef72d4c98a7646872e3cfdf6a28f20570029c8fd46e00b067871"
+          ]
+        }
+      }
+    }
+  ],
+  "scopeCapture": {
+    "scriptSha256": "dd067093e9a06a01f591d92989c8d4ff99b3ecf0430d83682440ea2048d3ad3b",
+    "launches": {
+      "windows": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ],
+      "linux": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0
+        }
+      ]
+    }
+  }
+}

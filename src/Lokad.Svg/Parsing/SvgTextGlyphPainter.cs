@@ -153,7 +153,7 @@ internal static class SvgTextGlyphPainter
                     glyph.Shader = shader;
                     try
                     {
-                        SvgRecordedTransform? shaderRecording = shader is SvgTextPatternShader ? recording : null;
+                        SvgRecordedTransform? shaderRecording = shader is null ? null : recording;
                         SvgGeometry geometry = Record(glyph, run, placement, paths, shaderRecording, state, fallback, paint.FillPaint, ref prepared, token);
                         if (pathClip is not null) geometry = geometry with { LeafMask = pathClip };
                         state.Scene.AddGeometry(geometry);
@@ -184,7 +184,7 @@ internal static class SvgTextGlyphPainter
                 glyph.Shader = shader;
                 try
                 {
-                    SvgRecordedTransform? shaderRecording = shader is SvgTextPatternShader ? recording : null;
+                    SvgRecordedTransform? shaderRecording = shader is null ? null : recording;
                     SvgGeometry geometry = Record(glyph, run, placement, paths, shaderRecording, state, fallback, stroke.ResolvePaint(), ref prepared, token);
                     if (pathClip is not null) geometry = geometry with { LeafMask = pathClip };
                     state.Scene.AddGeometry(geometry);

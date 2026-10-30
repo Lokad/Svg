@@ -12,6 +12,8 @@
   and their source geometry, transforms and coverage.
 - Preserve recorded path-baseline metrics and per-glyph pattern matrices through
   texture sizing and sampling, correcting fractional-scale text paint seams.
+- Share native drawing-stage preparation across text gradients and patterns;
+  retain paint-server recording scopes independently of pattern-content selection.
 
 Development targets 0.4.0. Published 0.3.0 and its source tag remain unchanged.
 

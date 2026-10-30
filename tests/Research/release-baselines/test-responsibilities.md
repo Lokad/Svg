@@ -71,6 +71,11 @@ original rendering cases through the existing two-font canonical harness, with
 11 direct matrix/boundary mechanisms and one resized-texture ownership interaction.
 The cases reuse committed source/reference files; they do not expand the paint-bank
 or twelve-form API matrix. Native provenance remains a separate integrity check.
+The [shared paint-stage cohort](paint-stages.md) adds four original radial inputs
+and six orthogonal scope controls through the same canonical harness, plus one
+deep-recording ownership interaction. Existing rendering case names and assertions
+remain; the five corpus enumerators and two matching provenance recipes share small
+local helpers.
 
 ## Local setup-cost check
 

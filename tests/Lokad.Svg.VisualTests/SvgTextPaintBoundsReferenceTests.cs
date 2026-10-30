@@ -8,11 +8,7 @@ namespace Lokad.Svg.VisualTests;
 public sealed class SvgTextPaintBoundsReferenceTests
 {
     public static IEnumerable<object[]> Cases()
-    {
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "image-capture.json")));
-        foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
-            yield return [row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing case id.")];
-    }
+        => CaptureCases("image-capture.json");
 
     [Theory]
     [MemberData(nameof(Cases))]
@@ -20,11 +16,7 @@ public sealed class SvgTextPaintBoundsReferenceTests
         => AssertNativeImage("image-capture.json", id, true);
 
     public static IEnumerable<object[]> SharedLayoutCases()
-    {
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "shared-layout-images.json")));
-        foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
-            yield return [row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing shared case id.")];
-    }
+        => CaptureCases("shared-layout-images.json");
 
     [Theory]
     [MemberData(nameof(SharedLayoutCases))]
@@ -33,11 +25,7 @@ public sealed class SvgTextPaintBoundsReferenceTests
         => AssertNativeImage("shared-layout-images.json", id, false);
 
     public static IEnumerable<object[]> FilterSourceCases()
-    {
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "filter-source-images.json")));
-        foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
-            yield return [row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing source image id.")];
-    }
+        => CaptureCases("filter-source-images.json");
 
     [Theory]
     [MemberData(nameof(FilterSourceCases))]
@@ -46,11 +34,7 @@ public sealed class SvgTextPaintBoundsReferenceTests
         => AssertNativeImage("filter-source-images.json", id, false);
 
     public static IEnumerable<object[]> PatternMatrixCases()
-    {
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "precision-pattern-images.json")));
-        foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
-            yield return [row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing pattern matrix case id.")];
-    }
+        => CaptureCases("precision-pattern-images.json");
 
     [Theory]
     [MemberData(nameof(PatternMatrixCases))]
@@ -58,14 +42,37 @@ public sealed class SvgTextPaintBoundsReferenceTests
     public Task Glyph_pattern_matrices_match_each_original_native_image(string id)
         => AssertNativeImage("precision-pattern-images.json", id, false);
 
+    public static IEnumerable<object[]> PaintStageCases() => CaptureCases("paint-stage-images.json");
+
+    [Theory]
+    [MemberData(nameof(PaintStageCases))]
+    [Trait("Layer", "Rendering")]
+    public Task Shared_paint_stages_match_each_native_image(string id)
+        => AssertNativeImage("paint-stage-images.json", id, false);
+
+    private static IEnumerable<object[]> CaptureCases(string file)
+    {
+        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), file)));
+        foreach (JsonElement row in data.RootElement.GetProperty("cases").EnumerateArray())
+            yield return [row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing native case id.")];
+    }
+
     [Fact]
     [Trait("Layer", "Integrity")]
     public void Pattern_matrix_originals_retain_native_context_fonts_and_stable_platform_triples()
+        => AssertPreciseSourceCapture("precision-pattern-images.json", 26, 13);
+
+    [Fact]
+    [Trait("Layer", "Integrity")]
+    public void Shared_paint_stages_retain_native_context_fonts_and_stable_platform_triples()
+        => AssertPreciseSourceCapture("paint-stage-images.json", 10, 5);
+
+    private static void AssertPreciseSourceCapture(string file, int caseCount, int pairCount)
     {
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), "precision-pattern-images.json")));
+        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), file)));
         JsonElement root = data.RootElement;
-        Assert.Equal(26, root.GetProperty("cases").GetArrayLength());
-        Assert.Equal(13, root.GetProperty("pairs").GetArrayLength());
+        Assert.Equal(caseCount, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(pairCount, root.GetProperty("pairs").GetArrayLength());
         Dictionary<string, JsonElement> cases = root.GetProperty("cases").EnumerateArray()
             .ToDictionary(row => Required(row, "id"), StringComparer.Ordinal);
         Dictionary<string, byte[]> programs = new(StringComparer.Ordinal);
@@ -132,8 +139,9 @@ public sealed class SvgTextPaintBoundsReferenceTests
                 Assert.Equal("candidate", Required(candidate, "role"));
                 Assert.Equal("control", Required(control, "role"));
                 Assert.Equal(Required(candidate, "originalName"), Required(control, "originalName"));
-                Assert.NotEqual(Required(candidate.GetProperty("references").GetProperty(host), "rgbaSha256"),
-                    Required(control.GetProperty("references").GetProperty(host), "rgbaSha256"));
+                bool equal = Required(candidate.GetProperty("references").GetProperty(host), "rgbaSha256")
+                    == Required(control.GetProperty("references").GetProperty(host), "rgbaSha256");
+                Assert.Equal(pair.TryGetProperty("nativeEqual", out JsonElement expected) && expected.GetProperty(host).GetBoolean(), equal);
             }
         }
 

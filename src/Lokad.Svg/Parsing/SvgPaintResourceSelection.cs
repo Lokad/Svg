@@ -55,8 +55,9 @@ internal sealed class SvgPaintResourceSelection : IDisposable
 
     internal bool RequiresPatternContent(string? id) => id is not null && _selection.TryGetValue(id, out Selection value) && value == Selection.NeededContent;
 
-    /// <summary>Reports conservatively selected pattern content that may need native recording transforms.</summary>
-    internal bool HasPatternContent { get; private set; }
+    /// <summary>Retains draw stages conservatively when a fill or stroke can reference a paint server.</summary>
+    /// <remarks>This metadata flag does not select resource content or acquire fonts; those use the resolved consumer index.</remarks>
+    internal bool HasPaintServerReferences { get; private set; }
 
     internal bool IsPatternDisplayed(string? id) => id is null || !_selection.TryGetValue(id, out Selection value) || value != Selection.DisabledResource;
 
@@ -215,7 +216,6 @@ internal sealed class SvgPaintResourceSelection : IDisposable
                 if (item.State == Resolution.Ready && item.Width > 0 && item.Height > 0 && item.Source >= 0 && (consumers is not null ? actualReferences : references).TryGetValue(item.Id, out _))
                 {
                     result._selection.TryAdd(patterns[item.Source].Id, Selection.NeededContent);
-                    result.HasPatternContent = true;
                 }
             }
             foreach (PatternEffect effect in effects.AsSpan())
@@ -249,6 +249,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
                             || (SvgGeometrySyntax.GetPaintChannels(reader, limits.MaximumPathCommands, budget, token) & (stroke ? SvgGeometryPaintChannels.Stroke : SvgGeometryPaintChannels.Fill)) == 0) return;
                     }
                     references.TryAdd(strings.Copy(id), true);
+                    result.HasPaintServerReferences = true;
                 }
             }
 

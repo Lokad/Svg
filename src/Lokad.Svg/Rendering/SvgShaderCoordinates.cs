@@ -10,7 +10,7 @@ internal readonly record struct SvgGradientPaintMatrices(SvgShaderMatrix Local, 
 
 /// <summary>Carries a radial coordinate and the native cone's visibility mask before spreading.</summary>
 /// <remarks>Visible positions may include positive infinity at a cone boundary. Callers apply
-/// the mask before sampling the ramp and retain coverage, work, cancellation and owner lifetimes.</remarks>
+/// the mask before sampling the ramp and retain coverage, cancellation and owner lifetimes.</remarks>
 internal readonly record struct SvgRadialShaderSample(double Position, bool IsVisible);
 
 /// <summary>Prepares native float gradient or image coordinates for one raster draw.</summary>
@@ -58,7 +58,7 @@ internal struct SvgShaderCoordinates
     }
 
     /// <summary>Classifies the native factory from borrowed definition coordinates before local or instance placement.</summary>
-    /// <remarks>Allocation-free bounded float arithmetic; callers own work and cancellation at draw/record traversal.</remarks>
+    /// <remarks>Allocation-free bounded float arithmetic; callers check cancellation at draw/record traversal.</remarks>
     internal static bool IsConstantFactory(SvgLinearGradient gradient)
     {
         double x1 = gradient.X1, y1 = gradient.Y1, x2 = gradient.X2, y2 = gradient.Y2;
@@ -72,7 +72,7 @@ internal struct SvgShaderCoordinates
     }
 
     /// <summary>Classifies a native constant conical factory independently of spatial mapping and cone sampling.</summary>
-    /// <remarks>Borrowed definition metadata is immutable. The caller owns bounded traversal work and cancellation.</remarks>
+    /// <remarks>Borrowed definition metadata is immutable. The caller checks cancellation during bounded traversal.</remarks>
     internal static bool IsConstantFactory(SvgRadialGradient gradient)
     {
         double x = gradient.CenterX, y = gradient.CenterY, radius = gradient.Radius;
@@ -95,22 +95,17 @@ internal struct SvgShaderCoordinates
         => new(new(1, 0, 0, 0, 1, 0), paintMap, imageLocal);
 
     internal static SvgShaderCoordinates CreateLinear(SvgLinearGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset)
-        => CreateLinear(gradient, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, null);
+        => CreateLinear(gradient, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, null, SvgAffineTransform.Identity, null);
 
-    internal static SvgShaderCoordinates CreateLinear(SvgLinearGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset, SvgGradientPaintMatrices? textMatrices)
-        => CreateLinear(gradient, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, textMatrices, SvgAffineTransform.Identity);
-
-    internal static SvgShaderCoordinates CreateLinear(SvgLinearGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset, SvgGradientPaintMatrices? textMatrices, SvgAffineTransform sourcePlacement)
-        => CreateLinear(gradient, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, textMatrices, sourcePlacement, null);
-
-    internal static SvgShaderCoordinates CreateLinear(SvgLinearGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset, SvgGradientPaintMatrices? textMatrices, SvgAffineTransform sourcePlacement, SvgAffineTransform? nativeReference)
+    /// <summary>Prepares linear sampling; an explicit native reference is already the complete float drawing matrix.</summary>
+    /// <remarks>The drawing and local stages remain separate. Preparation owns no storage; callers retain all paints and cancellation.</remarks>
+    internal static SvgShaderCoordinates CreateLinear(SvgLinearGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset, SvgGradientPaintMatrices? textMatrices, SvgAffineTransform sourcePlacement, SvgShaderMatrix? nativeReference)
     {
         if (gradient.SourcePaint?.Data is { IsMapped: true } source)
         {
             SvgAffineTransform output = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (sourcePlacement != SvgAffineTransform.Identity) output = output.ComposeChecked(sourcePlacement);
-            SvgAffineTransform reference = nativeReference ?? output.ComposeChecked(textMatrices?.Referencing ?? source.Referencing);
-            SvgShaderMatrix paint = new((float)reference.A, (float)reference.C, (float)reference.E, (float)reference.B, (float)reference.D, (float)reference.F);
+            SvgShaderMatrix paint = nativeReference ?? SvgShaderMatrix.FromAffine(output.ComposeChecked(textMatrices?.Referencing ?? source.Referencing));
             SvgShaderMatrix local = textMatrices?.Local ?? new((float)source.Local.A, (float)source.Local.C, (float)source.Local.E, (float)source.Local.B, (float)source.Local.D, (float)source.Local.F);
             return Linear((float)source.X1, (float)source.Y1, (float)source.X2, (float)source.Y2, paint, local);
         }
@@ -140,12 +135,11 @@ internal struct SvgShaderCoordinates
     }
 
     internal static SvgShaderCoordinates CreateRadial(SvgRadialGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset)
-        => CreateRadial(gradient, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, SvgAffineTransform.Identity);
+        => CreateRadial(gradient, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, SvgAffineTransform.Identity, null);
 
-    internal static SvgShaderCoordinates CreateRadial(SvgRadialGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset, SvgAffineTransform sourcePlacement)
-        => CreateRadial(gradient, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement, null);
-
-    internal static SvgShaderCoordinates CreateRadial(SvgRadialGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset, SvgAffineTransform sourcePlacement, SvgAffineTransform? nativeReference)
+    /// <summary>Prepares radial sampling; an explicit native reference is already the complete float drawing matrix.</summary>
+    /// <remarks>The drawing and local stages remain separate. Preparation owns no storage; callers retain all paints and cancellation.</remarks>
+    internal static SvgShaderCoordinates CreateRadial(SvgRadialGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset, SvgAffineTransform sourcePlacement, SvgShaderMatrix? nativeReference)
     {
         if (gradient.HasGeneralTransform && gradient.NativePaintMatrices is {} matrices)
         {
@@ -155,8 +149,7 @@ internal struct SvgShaderCoordinates
             float ty = gradient.IsUserSpace ? (float)verticalOffset : (float)box.Y * (float)verticalScale + (float)verticalOffset;
             SvgAffineTransform output = SvgAffineTransform.FromScaleOffset(sx, sy, tx, ty);
             if (sourcePlacement != SvgAffineTransform.Identity) output = output.ComposeChecked(sourcePlacement);
-            SvgAffineTransform reference = nativeReference ?? output.ComposeChecked(matrices.Referencing);
-            SvgShaderMatrix ctm = new((float)reference.A, (float)reference.C, (float)reference.E, (float)reference.B, (float)reference.D, (float)reference.F);
+            SvgShaderMatrix ctm = nativeReference ?? SvgShaderMatrix.FromAffine(output.ComposeChecked(matrices.Referencing));
             return Circle((float)gradient.CenterX, (float)gradient.CenterY, (float)gradient.Radius,
                 (float)gradient.FocalX, (float)gradient.FocalY, (float)gradient.FocalRadius, ctm, matrices.Local);
         }
@@ -246,8 +239,8 @@ internal struct SvgShaderCoordinates
     }
 
     /// <summary>Evaluates the admitted two-circle fallback after the caller maps into gradient coordinates.</summary>
-    /// <remarks>Allocation-free scalar arithmetic shared by geometry and glyph paints. The caller charges
-    /// sampling and observes cancellation. Native float dispatch stays with each paint consumer.</remarks>
+    /// <remarks>Allocation-free scalar arithmetic shared by geometry and glyph paints. The caller
+    /// observes cancellation during sampling. Native float dispatch stays with each paint consumer.</remarks>
     internal static double EvaluateRadial(SvgDevicePoint ray, SvgDevicePoint offset, double radius, double focalRadius)
     {
         if (offset.X == 0 && offset.Y == 0)

@@ -47,12 +47,9 @@ CancellationToken token, out SvgShaderMatrix result)
         {
             SvgAffineTransform stage = stages[stageIndex];
             if (stageIndex == 0 && initial != SvgAffineTransform.Identity) stage = initial.Compose(stage);
-            result = SvgShaderMatrix.Concat(result, Narrow(stage));
+            result = SvgShaderMatrix.Concat(result, SvgShaderMatrix.FromAffine(stage));
         }
-        result = SvgShaderMatrix.Concat(result, Narrow(inverse.Compose(target)));
+        result = SvgShaderMatrix.Concat(result, SvgShaderMatrix.FromAffine(inverse.Compose(target)));
         return result.IsFinite;
-
-        static SvgShaderMatrix Narrow(SvgAffineTransform value)
-            => new((float)value.A, (float)value.C, (float)value.E, (float)value.B, (float)value.D, (float)value.F);
     }
 }

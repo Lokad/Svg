@@ -15,7 +15,7 @@ internal readonly record struct SvgCpuRasterContext(SvgAnalyticClipBounds Bitmap
 internal readonly record struct SvgCpuBitmapOrigin(int X, int Y);
 
 /// <summary>Enumerates the pinned CPU compositor's raster contexts without allocating a tile tape.</summary>
-/// <remarks>Settings match the declared Windows software oracle: default 256 and maximum untiled 512, with one border texel. Contexts are canvas-clamped; interiors partition the canvas and bitmap clips overlap. Enumeration skips interiors outside the requested drawing bounds. Callers charge each visited context, construction and paint; the grid owns no storage and is immutable.</remarks>
+/// <remarks>Settings match the declared Windows software oracle: default 256 and maximum untiled 512, with one border texel. Contexts are canvas-clamped; interiors partition the canvas and bitmap clips overlap. Enumeration skips interiors outside the requested drawing bounds. Callers retain destination/coverage storage and check cancellation during traversal; the grid owns no storage and is immutable.</remarks>
 internal readonly struct SvgCpuRasterGrid
 {
     private readonly int _width;
@@ -70,8 +70,8 @@ internal readonly struct SvgCpuRasterGrid
     }
 
     /// <summary>Finds the owning bitmap for an in-canvas pixel without allocating a context tape.</summary>
-    /// <remarks>The final bitmap owns the remaining border pixels. Callers charge
-    /// raster work and check cancellation; lookup is immutable and allocation-free.</remarks>
+    /// <remarks>The final bitmap owns the remaining border pixels. Callers check
+    /// cancellation during raster traversal; lookup is immutable and allocation-free.</remarks>
     internal SvgCpuBitmapOrigin GetBitmapOrigin(int x, int y)
         => new(Math.Min(x - 1, _width - 3) / (_tileWidth - 2) * (_tileWidth - 2),
             Math.Min(y - 1, _height - 3) / (_tileHeight - 2) * (_tileHeight - 2));

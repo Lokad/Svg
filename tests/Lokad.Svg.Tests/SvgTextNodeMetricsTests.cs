@@ -164,6 +164,45 @@ public sealed class SvgTextNodeMetricsTests
     private static byte[] ReadInput(JsonElement row)
         => File.ReadAllBytes(Path.Combine(Folder, row.GetProperty("input").GetString() ?? throw new InvalidDataException("Missing input.")));
 
+    [Fact]
+    public async Task Deep_glyph_gradient_recording_releases_draw_scratch_on_refusal_cancellation_and_retry()
+    {
+        const int depth = 80;
+        const string definitions = "<defs><path id='baseline' d='M4 36Q70 8 140 36'/><radialGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient><clipPath id='c'><rect width='160' height='80'/></clipPath></defs>";
+        string opens = string.Concat(Enumerable.Range(0, depth)
+            .Select(index => "<g clip-path='url(#c)' transform='scale(" + (index % 2 == 0 ? "2" : ".5") + ")'>"));
+        string closes = string.Concat(Enumerable.Repeat("</g>", depth));
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'>" + definitions + opens
+            + "<text font-family='serif' font-size='24' fill='url(#p)'><textPath href='#baseline'>AVj</textPath></text>" + closes + "</svg>");
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, Catalog.Value, new FontProvider(), CancellationToken.None);
+        SvgRenderOptions options = new(null, 1.5, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
+        RenderBudget parser = new RenderBudget(new HostMemoryBudget(8_000_000));
+        using (SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parser, fonts, CancellationToken.None))
+        {
+            SvgGeometry glyph = scene.Geometries.First(geometry => geometry.Kind == SvgGeometryKind.GlyphContours);
+            SvgSceneStorage storage = scene.SceneStorage ?? throw new InvalidOperationException("Expected an owned scene.");
+            SvgRecordedTransform recording = storage.RecordedPaintValues[glyph.RecordedPaint.Identity - 1].RecordingTransform
+                ?? throw new InvalidOperationException("Expected retained glyph draw stages.");
+            Assert.Equal(depth, recording.Count);
+            RenderBudget raster = new RenderBudget(new HostMemoryBudget(8_000_000));
+            byte[] pixels;
+            using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, raster, CancellationToken.None))
+                pixels = surface.Pixels.ToArray();
+            Assert.Equal(0, raster.Snapshot().CurrentBytes);
+            RenderBudget denied = new RenderBudget(new HostMemoryBudget(raster.Snapshot().PeakBytes - 1));
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(scene, options, denied, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+            using CancellationTokenSource canceled = new();
+            canceled.Cancel();
+            Assert.Equal(canceled.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.Rasterize(scene, options, raster, canceled.Token)).CancellationToken);
+            Assert.Equal(0, raster.Snapshot().CurrentBytes);
+            using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(scene, options, raster, CancellationToken.None))
+                Assert.Equal(pixels, retry.Pixels);
+            Assert.Equal(0, raster.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
     private sealed class FontProvider : ISvgFontProgramSourceProvider
     {
         private int _requests;

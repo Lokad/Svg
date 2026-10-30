@@ -30,13 +30,17 @@ Shared shader bounds do not replace each fragment's local drawing enclosure.
 [Precision residuals](precision-residuals.json) retain 39 original paint/fitting
 inputs with independent images and exact font/capture bindings. Its observations
 preserve the original 31 Windows and 34 Linux differences. The
-[pattern-matrix acceptance record](precision-pattern-images.json) now closes 28
-of the 39 inputs on both hosts and retains the remaining 11 explicitly. Thirteen
-complete original pairs add 26 canonical rendering cases using these same source
-and image files. Three fresh, healthy captures per host reproduce every promoted
-PNG byte. Both font styles, unequal companions and platform differences remain.
-[The shared correction and validation](../release-baselines/text-pattern-matrices.md)
-describe the scope; remaining differences keep their original independent targets.
+[pattern-matrix acceptance record](precision-pattern-images.json) closes 13
+complete original pairs with 26 canonical rendering cases. These reuse the same
+source and image files. The subsequent [shared paint-stage record](paint-stage-images.json)
+has 31 of the 39 original inputs exact on both hosts and lists the remaining 8.
+Two original radial pairs and three orthogonal group/use/symbol pairs add 10
+individual image cases. Three fresh, healthy captures per host reproduce every
+original promoted PNG byte. Both font styles, unequal companions, meaningful equal
+scope controls and platform differences remain. The
+[shared pattern correction](../release-baselines/text-pattern-matrices.md) and
+[drawing-stage model](../release-baselines/paint-stages.md) describe the scope;
+remaining differences keep their original independent targets.
 
 [Filter-source images](filter-source-images.json) retain 135 independently captured
 inputs through one canonical conversion path. They cover direct/path text,
