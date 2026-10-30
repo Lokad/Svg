@@ -5,12 +5,14 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgContourNestingTests
 {
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Nested_hole_alternates()
     {
         Assert.Equal([1, -1], ParitySigns(OuterWithSameWoundHole()));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Sibling_contours_stay_positive()
     {
@@ -19,6 +21,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, 1], ParitySigns(points, [4, 8]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Triple_nesting_alternates()
     {
@@ -27,6 +30,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, -1, 1], ParitySigns(points, [4, 8, 12]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Signs_follow_geometry_not_order()
     {
@@ -35,6 +39,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([-1, 1], ParitySigns(points, [4, 8]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Degenerate_contour_never_contains()
     {
@@ -43,6 +48,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, 1, -1], ParitySigns(points, [4, 6, 10]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Nesting_rejects_mismatched_shapes()
     {
@@ -53,12 +59,14 @@ public sealed class SvgContourNestingTests
         Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeParitySigns(points, [3], new int[2], false, CancellationToken.None));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Empty_set_is_noop()
     {
         SvgContourNesting.ComputeParitySigns([], [], [], false, CancellationToken.None);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Nesting_precancelled_token_throws()
     {
@@ -75,6 +83,7 @@ public sealed class SvgContourNestingTests
         return (points, [4, 8]);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Identical_twins_merge_to_first()
     {
@@ -87,6 +96,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal(square, kept);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Distinct_siblings_pass_through_untouched()
     {
@@ -98,6 +108,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([4, 8], ends);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Short_duplicates_stay()
     {
@@ -107,6 +118,7 @@ public sealed class SvgContourNestingTests
         Assert.False(merged);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rotated_identical_stays_for_spatial_identity()
     {
@@ -119,6 +131,7 @@ public sealed class SvgContourNestingTests
         Assert.False(merged);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Merge_rejects_mismatched_shapes()
     {
@@ -138,6 +151,7 @@ public sealed class SvgContourNestingTests
         return ParitySigns(contours.Points, contours.Ends);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Disjoint_opposite_contours_share_positive_roles()
     {
@@ -146,6 +160,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, 1], WindingRoles(points, [3, 6]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Contour_reversal_keeps_roles()
     {
@@ -154,6 +169,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, 1], WindingRoles(points, [3, 6]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Nested_opposite_hole_subtracts()
     {
@@ -162,6 +178,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, -1], WindingRoles(points, [4, 8]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Same_wound_nesting_adds_nothing()
     {
@@ -170,6 +187,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, 0], WindingRoles(points, [4, 8]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Island_hole_triple_resolves_through_winding()
     {
@@ -178,6 +196,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, 0, 0], WindingRoles(points, [4, 8, 12]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Hole_island_triple_repaints()
     {
@@ -186,6 +205,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, -1, 1], WindingRoles(points, [4, 8, 12]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Single_clockwise_contour_paints()
     {
@@ -194,6 +214,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1], WindingRoles(points, [3]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Degenerate_contour_scores_zero_role()
     {
@@ -202,6 +223,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, 0], WindingRoles(points, [4, 6]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Winding_roles_reject_mismatched_shapes()
     {
@@ -212,6 +234,7 @@ public sealed class SvgContourNestingTests
         Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeWindingRoles(points, [3], new int[2], false, CancellationToken.None));
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Winding_precancelled_token_throws()
     {
@@ -236,6 +259,7 @@ public sealed class SvgContourNestingTests
         return roles;
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Touching_nested_pair_alternates_through_unshared_vertices()
     {
@@ -244,6 +268,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, -1], ParitySignsSkipping(points, [4, 7]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Corner_touching_siblings_share_positive_roles()
     {
@@ -252,6 +277,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, 1], WindingRolesSkipping(points, [4, 8]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Nested_touch_hole_subtracts()
     {
@@ -260,6 +286,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, -1], WindingRolesSkipping(points, [4, 7]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Fully_shared_loops_report_uncontained()
     {
@@ -269,6 +296,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, 1], WindingRolesSkipping(points, [4, 7]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Boundary_first_vertex_skips_to_off_boundary_sample()
     {
@@ -278,6 +306,7 @@ public sealed class SvgContourNestingTests
         Assert.Equal([1, 1], WindingRolesSkipping(points, [4, 7]));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Shared_first_vertex_keeps_positive_roles()
     {

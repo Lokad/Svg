@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgPathDataParserTests
 {
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Null_and_empty_draw_nothing()
     {
@@ -13,6 +14,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal(0, Parse("  \t\n ").ContourCount);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Absolute_triangle_is_exact()
     {
@@ -22,6 +24,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Relative_triangle_matches_absolute()
     {
@@ -30,6 +33,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Implicit_lineto_after_moveto_is_exact()
     {
@@ -38,6 +42,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Implicit_repeated_lineto_is_exact()
     {
@@ -46,6 +51,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(4, 4)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Horizontal_vertical_square_is_exact()
     {
@@ -54,6 +60,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Relative_horizontal_vertical_is_exact()
     {
@@ -62,6 +69,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(1, 1), new SvgDevicePoint(8, 1), new SvgDevicePoint(8, 8), new SvgDevicePoint(1, 8)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Fractional_exponent_numbers_are_exact()
     {
@@ -70,6 +78,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0.5, 0), new SvgDevicePoint(8.25, 0.5)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Sign_abutment_splits_numbers()
     {
@@ -78,6 +87,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(1, 1), new SvgDevicePoint(9, -2)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Transform_maps_vertices()
     {
@@ -87,6 +97,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(2, 3), new SvgDevicePoint(4, 6)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Two_moves_make_two_contours()
     {
@@ -97,6 +108,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal(new SvgDevicePoint(16, 24), builder.GetContour(1)[^1]);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Unclosed_contour_seals_implicitly()
     {
@@ -106,6 +118,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Repeated_closepath_is_noop()
     {
@@ -115,6 +128,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Absolute_cubic_chains_flattened_points()
     {
@@ -123,6 +137,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(6, 4), new SvgDevicePoint(0, 8)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Relative_cubic_matches_absolute()
     {
@@ -131,6 +146,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(6, 4), new SvgDevicePoint(0, 8)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Smooth_cubic_reflects_previous_control()
     {
@@ -142,6 +158,7 @@ public sealed class SvgPathDataParserTests
         Assert.True(contour.Length >= 4);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Smooth_cubic_without_previous_uses_current()
     {
@@ -153,6 +170,7 @@ public sealed class SvgPathDataParserTests
         Assert.True(contour.Length >= 2);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Absolute_quadratic_chains_flattened_points()
     {
@@ -161,6 +179,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(8, 0)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Relative_quadratic_matches_absolute()
     {
@@ -169,6 +188,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(8, 0)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Smooth_quadratic_reflects_previous_control()
     {
@@ -180,6 +200,7 @@ public sealed class SvgPathDataParserTests
         Assert.True(contour.Length >= 3);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Smooth_quadratic_without_previous_draws_line()
     {
@@ -188,6 +209,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)], builder.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Arc_lowering_brackets_exact_endpoints()
     {
@@ -199,6 +221,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal(new SvgDevicePoint(0, 8), contour[^1]);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Abutted_arc_flags_match_spaced_flags()
     {
@@ -208,6 +231,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal(spaced.GetContour(0).ToArray(), abutted.GetContour(0).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Relative_arc_matches_absolute()
     {
@@ -218,6 +242,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal(new SvgDevicePoint(0, 8), contour[^1]);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Arc_radii_scale_from_the_source_frame()
     {
@@ -232,6 +257,7 @@ public sealed class SvgPathDataParserTests
             Assert.InRange(Math.Abs(point.X * point.X + point.Y * point.Y - 256), 0, .0001);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Truncated_curves_are_malformed()
     {
@@ -249,6 +275,7 @@ public sealed class SvgPathDataParserTests
         return builder;
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Structural_violations_are_malformed()
     {
@@ -262,12 +289,14 @@ public sealed class SvgPathDataParserTests
         Assert.Equal(SvgErrorCode.MalformedInput, ParseError("M0 0L1e 0"));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Relative_overflow_is_LimitExceeded()
     {
         Assert.Equal(SvgErrorCode.LimitExceeded, ParseError("m1e308 0l1e308 0Z"));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Command_budget_denies()
     {
@@ -276,6 +305,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgPathDataParser.ParsePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 1, CancellationToken.None, null)).ErrorCode);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Precancelled_token_throws()
     {
@@ -298,6 +328,7 @@ public sealed class SvgPathDataParserTests
         return Assert.Throws<SvgException>(() => Parse(value)).ErrorCode;
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void ZContinued_lineto_resumes_at_subpath_start()
     {
@@ -307,6 +338,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal(builder.GetContour(0).ToArray(), builder.GetContour(1).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void ZContinued_curve_resumes_at_subpath_start()
     {
@@ -316,6 +348,7 @@ public sealed class SvgPathDataParserTests
         Assert.Equal(new SvgDevicePoint(0, 0), builder.GetContour(1)[0]);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void ZContinued_arc_resumes_at_subpath_start()
     {
@@ -325,12 +358,14 @@ public sealed class SvgPathDataParserTests
         Assert.Equal(new SvgDevicePoint(0, 0), builder.GetContour(1)[0]);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Dangling_curve_after_close_stays_malformed()
     {
         Assert.Equal(SvgErrorCode.MalformedInput, ParseError("M0,0 L8,8 Z Q"));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Single_closed_subpath_reads_closed_single()
     {
@@ -339,6 +374,7 @@ public sealed class SvgPathDataParserTests
         Assert.True(SvgPathDataParser.IsSingleClosedPath("M1e-2,0 L2,2e0 A24,24 0 1 1 5,5 Z", CancellationToken.None));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Open_or_multi_subpaths_read_not_closed_single()
     {

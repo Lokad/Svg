@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgStyleSheetTests
 {
+    [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData("<style xmlns='http://www.w3.org/2000/svg'>$</style>")]
     [InlineData("<s:style xmlns:s='http://www.w3.org/2000/svg'>$</s:style>")]
@@ -28,6 +29,7 @@ public sealed class SvgStyleSheetTests
         }
     }
 
+    [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData("<style/>")]
     [InlineData("<style xmlns='http://www.w3.org/2000/svg'/>")]
@@ -54,6 +56,7 @@ public sealed class SvgStyleSheetTests
         }
     }
 
+    [Trait("Layer", "Rendering")]
     [Fact]
     public void Removing_a_selector_comment_does_not_introduce_a_descendant_combinator()
     {
@@ -62,6 +65,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(RenderPixels(prefix + "rect.label" + suffix, out _, out _), RenderPixels(prefix + "rect/**/.label" + suffix, out _, out _));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Overflow_and_decoration_keep_independent_priority()
     {
@@ -74,6 +78,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(InlineImportantProperties.TextDecoration, style.Important);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("overflow:visible!important;overflow:hidden", "visible")]
     [InlineData("overflow:visible;overflow:hidden", "hidden")]
@@ -81,6 +86,7 @@ public sealed class SvgStyleSheetTests
     public void Overflow_duplicates_follow_declaration_priority(string declarations, string expected)
         => Assert.Equal(expected, SvgInlineStyleParser.Parse(declarations, CancellationToken.None).Overflow);
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Cascades_each_presentation_property_by_specificity_then_source_order()
     {
@@ -102,6 +108,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal("evenodd", style.FillRule);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Cascades_css_whitespace_by_specificity_then_source_order()
     {
@@ -113,6 +120,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal("normal", cascade.ToInlineStyle().WhiteSpace);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Important_stylesheet_declarations_beat_higher_specificity_normal_declarations()
     {
@@ -126,6 +134,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(InlineImportantProperties.Fill, style.Important);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Later_important_stylesheet_declarations_win_source_order_ties()
     {
@@ -136,6 +145,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal("blue", cascade.ToInlineStyle().Fill);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Normal_stylesheet_declarations_do_not_override_earlier_important_ones()
     {
@@ -146,6 +156,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal("red", cascade.ToInlineStyle().Fill);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("fill: red !important", "red", true)]
     [InlineData("fill: red!important", "red", true)]
@@ -160,6 +171,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(expectedImportant, (style.Important & InlineImportantProperties.Fill) != 0);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Important_beats_normal_within_one_declaration_block_regardless_of_order()
     {
@@ -170,6 +182,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal("blue", importantLast.Fill);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("fill", "inherit", "inherit")]
     [InlineData("fill", "initial", "black")]
@@ -207,6 +220,7 @@ public sealed class SvgStyleSheetTests
         };
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("display: inherit")]
     [InlineData("display: INHERIT!important")]
@@ -216,6 +230,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(SvgInlineStyleParser.InheritedValue, style.Display);
     }
 
+    [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData("fill", "red", "inherit", "green")]
     [InlineData("fill", "red", "unset", "green")]
@@ -245,6 +260,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(RenderPixels(expected, out _, out _), RenderPixels(actual, out _, out _));
     }
 
+    [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData("fill: blue; fill: inherit !important; fill: red", "fill: inherit !important")]
     [InlineData("fill: blue !important; fill: inherit !important", "fill: inherit !important")]
@@ -257,6 +273,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(RenderPixels(prefix + expectedStyle + suffix, out _, out _), RenderPixels(prefix + declarations + suffix, out _, out _));
     }
 
+    [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData("fill", "blue", "green")]
     [InlineData("stroke", "blue", "green")]
@@ -275,6 +292,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(RenderPixels(expected, out _, out _), RenderPixels(actual, out _, out _));
     }
 
+    [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData("clip-rule='inherit'")]
     [InlineData("clip-rule='nonzero' style='clip-rule:inherit!important'")]
@@ -290,6 +308,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal((byte)255, actual[(10 * 40 + 10) * 4 + 3]);
     }
 
+    [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData("stroke-linecap", "round", "inherit")]
     [InlineData("stroke-linejoin", "round", "inherit")]
@@ -302,6 +321,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(RenderPixels(prefix + property + "='" + parent + "'" + suffix, out _, out _), RenderPixels(prefix + property + "='" + keyword + "'" + suffix, out _, out _));
     }
 
+    [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData("stroke", "green", "none")]
     [InlineData("stroke-width", "4", "1")]
@@ -323,6 +343,7 @@ public sealed class SvgStyleSheetTests
             RenderPixels(prefix + property + "='" + parent + "' style='" + property + ":initial!important'" + suffix, out _, out _));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_empty_important_declarations()
     {
@@ -331,6 +352,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Reserves_stylesheet_text_storage_before_incremental_reading()
     {
@@ -341,6 +363,7 @@ public sealed class SvgStyleSheetTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
+    [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -353,6 +376,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(expected, actual);
     }
 
+    [Trait("Layer", "Rendering")]
     [Theory]
     [InlineData(1, false)]
     [InlineData(2, false)]
@@ -368,6 +392,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(expected, SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Partial_late_stylesheet_rejection_releases_parser_storage()
     {
@@ -378,6 +403,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("<style/>", false)]
     [InlineData("<style media='screen'/>", true)]
@@ -408,6 +434,7 @@ public sealed class SvgStyleSheetTests
         }
     }
 
+    [Trait("Layer", "Rendering")]
     [Fact]
     public void Defs_stylesheet_class_applies_to_polygon()
     {
@@ -422,6 +449,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(new SvgColor(0, 255, 0, 255), Pixel(pixels, width, 4, 4));
     }
 
+    [Trait("Layer", "Rendering")]
     [Fact]
     public void Defs_stylesheet_wins_source_order_over_root_stylesheet()
     {
@@ -434,6 +462,7 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(blue, 8, 4, 4));
     }
 
+    [Trait("Layer", "Rendering")]
     [Fact]
     public void Root_and_late_definition_stylesheets_keep_source_order()
     {

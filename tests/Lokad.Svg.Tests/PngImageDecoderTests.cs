@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 
 public sealed class PngImageDecoderTests
 {
+    [Trait("Layer", "Contract")]
     [Theory]
     [InlineData(64)]
     [InlineData(256)]
@@ -58,9 +59,10 @@ public sealed class PngImageDecoderTests
         yield return ["missing-image-data", BuildPng([rgb[0], rgb[2]])];
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [MemberData(nameof(InvalidChunkStructures))]
-    public async Task Invalid_chunk_structures_fail_before_public_output(string scenario, byte[] png)
+    public void Invalid_chunk_structures_release_decoder_storage(string scenario, byte[] png)
     {
         Assert.NotEmpty(scenario);
         byte[] unchanged = png.ToArray();
@@ -69,11 +71,20 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, error.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, png);
+    }
+
+    [Trait("Layer", "Contract")]
+    [Theory]
+    [MemberData(nameof(InvalidChunkStructures))]
+    public async Task Invalid_chunk_structures_fail_before_public_output(string scenario, byte[] png)
+    {
+        Assert.NotEmpty(scenario);
         byte[] svg = ImageSvg(Convert.ToBase64String(png));
         foreach (OutputForm form in Enum.GetValues<OutputForm>())
             Assert.Equal(SvgErrorCode.MalformedInput, (await Assert.ThrowsAsync<SvgException>(() => ConvertPublicPng(svg, form))).ErrorCode);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public async Task Adjacent_image_chunks_and_valid_ancillary_placement_preserve_public_pixels()
     {
@@ -87,6 +98,7 @@ public sealed class PngImageDecoderTests
             Assert.Equal(expected, (await ConvertPublicPng(ImageSvg(Convert.ToBase64String(split)), form)).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Palette_before_transparency_retains_truecolor_and_indexed_alpha()
     {
@@ -98,6 +110,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(new SvgColor(255, 0, 0, 128), DecodeBuilt(BuildPng(indexed)));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData(0)]
     [InlineData(2)]
@@ -129,6 +142,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(expected, DecodeBuilt(BuildPng(chunks)));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("", SvgErrorCode.MalformedInput)]
     [InlineData("080808", SvgErrorCode.MalformedInput)]
@@ -142,6 +156,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(expected, DecodeBuiltError(BuildPng(chunks)));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("before-header")]
     [InlineData("duplicate")]
@@ -162,6 +177,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(BuildPng(chunks)));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Orientation_metadata_remains_an_explicit_format_boundary()
     {
@@ -170,6 +186,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, DecodeBuiltError(BuildPng(chunks)));
     }
 
+    [Trait("Layer", "Contract")]
     [Theory]
     [InlineData(0)]
     [InlineData(2)]
@@ -212,6 +229,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(unchanged, png);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Uniform_png_does_not_retain_a_pixel_surface()
     {
@@ -222,6 +240,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void A_later_bad_row_releases_the_already_decoded_raster()
     {
@@ -237,8 +256,9 @@ public sealed class PngImageDecoderTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
-    public void Later_work_denial_releases_pixels_and_allows_an_unchanged_retry()
+    public void Repeated_decoding_releases_pixels_and_preserves_the_result()
     {
         byte[] png = BuildPng([
             new("IHDR", TestIhdr(2, 2, 6)),
@@ -255,6 +275,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData(0)]
     [InlineData(1)]
@@ -271,6 +292,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(new SvgColor(120, 120, 120, (byte)alpha), DecodeBuilt(png));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Grayscale_alpha_rejects_redundant_transparency_metadata()
     {
@@ -287,6 +309,7 @@ public sealed class PngImageDecoderTests
     private const string RedPixel = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==";
     private const string Wide16384 = "iVBORw0KGgoAAAANSUhEUgAAQAAAAAABCAYAAAAmn7ZYAAABVklEQVR4nO3SMQ0AAACDMPyb3oz0wABpq8kDBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYICBAzvUh3LqxPMyAAAAAElFTkSuQmCC";
     private const string RgbaWithTransparency = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAnRSTlMAAHaTzTgAAAANSURBVHicY/jPwPAfAAUAAf+JmT0dAAAAAElFTkSuQmCC";
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Decodes_a_solid_rgba_pixel()
     {
@@ -295,6 +318,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), color);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Decodes_a_transparent_gray_pixel_through_transparency()
     {
@@ -303,6 +327,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(new SvgColor(128, 128, 128, 0), color);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAIAAAB7QOjdAAAADUlEQVR4nGP4zwAE/wEHAAH/4iOeWQAAAABJRU5ErkJggg==")]
     [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAMAAADD/I+4AAAABlBMVEX/AAAAAP9sof2OAAAAC0lEQVR4nGNgYAQAAAQAAr96P0oAAAAASUVORK5CYII=")]
@@ -321,6 +346,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_interlaced_data()
     {
@@ -329,6 +355,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Decodes_a_solid_palette_pixel()
     {
@@ -337,6 +364,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), color);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Decodes_a_palette_pixel_through_palette_transparency()
     {
@@ -347,6 +375,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(new SvgColor(0, 255, 0, 128), color);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Decodes_a_transparent_palette_pixel()
     {
@@ -357,6 +386,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(new SvgColor(0, 255, 0, 0), color);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAABlBMVEX/AAAA/wDSh+9xAAAADklEQVR4nGNgZWVgZQUAAEIAFbGAWJQAAAAASUVORK5CYII=", SvgErrorCode.MalformedInput)]
     [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAAC0lEQVR4nGNgAAEAAAYAAf6MZ8gAAAAASUVORK5CYII=", SvgErrorCode.MalformedInput)]
@@ -371,6 +401,7 @@ public sealed class PngImageDecoderTests
     }
 
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_color_managed_data()
     {
@@ -379,6 +410,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_a_broken_integrity_check()
     {
@@ -387,6 +419,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_truncated_data()
     {
@@ -395,6 +428,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Categorizes_corrupt_compressed_pixels_as_malformed()
     {
@@ -403,6 +437,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_unknown_critical_chunks()
     {
@@ -411,6 +446,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Ignores_unknown_ancillary_chunks()
     {
@@ -419,6 +455,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), color);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public async Task Corrupt_images_fail_identically_in_all_six_api_forms()
     {
@@ -441,6 +478,7 @@ public sealed class PngImageDecoderTests
         }
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Recomputed_crc_matches_stored_integrity()
     {
@@ -454,18 +492,21 @@ public sealed class PngImageDecoderTests
         }
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Built_rgb_decodes_red()
     {
         Assert.Equal(new SvgColor(255, 0, 0, 255), DecodeBuilt(BuiltRgb()));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Built_palette_decodes_red()
     {
         Assert.Equal(new SvgColor(255, 0, 0, 255), DecodeBuilt(BuiltPalette()));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_idat_before_plte()
     {
@@ -475,12 +516,14 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(reordered));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_missing_iend()
     {
         Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(DropChunk(BuiltRgb(), "IEND")));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_trailing_bytes_after_iend()
     {
@@ -491,6 +534,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(trailed));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_second_ihdr()
     {
@@ -500,6 +544,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(doubled));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_truncated_chunk_header()
     {
@@ -510,6 +555,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(cut));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_overlong_chunk_length()
     {
@@ -521,6 +567,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(patched));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_empty_pixel_stream()
     {
@@ -534,6 +581,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(png));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_late_transparency()
     {
@@ -548,6 +596,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(png));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_ancillary_after_end()
     {
@@ -560,6 +609,7 @@ public sealed class PngImageDecoderTests
     private static async Task<ReadOnlyMemory<byte>> ConvertPublicPng(byte[] svg, OutputForm form)
     {
         byte[] memoryDestination = new byte[1_024];
+        Array.Fill(memoryDestination, (byte)0xA5);
         using MemoryStream streamDestination = new();
         try
         {
@@ -584,7 +634,7 @@ public sealed class PngImageDecoderTests
         }
         catch (SvgException)
         {
-            Assert.All(memoryDestination, value => Assert.Equal(0, value));
+            Assert.All(memoryDestination, value => Assert.Equal((byte)0xA5, value));
             Assert.Equal(0, streamDestination.Length);
             throw;
         }
@@ -592,6 +642,7 @@ public sealed class PngImageDecoderTests
 
     private enum OutputForm { Owned, OwnedAsync, Memory, MemoryAsync, Stream, StreamAsync }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Denied_idat_storage_rejects_decode_without_retention()
     {
@@ -604,6 +655,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Denied_pixel_storage_rejects_decode_without_retention()
     {
@@ -618,6 +670,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Cancelled_decode_throws_operation_cancelled()
     {
@@ -626,8 +679,9 @@ public sealed class PngImageDecoderTests
         Assert.Throws<OperationCanceledException>(() => Decode(png, new RenderBudget(new HostMemoryBudget(100_000)), new CancellationToken(true)));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
-    public void Wider_rows_consume_more_decoder_work()
+    public void Narrow_and_wide_uniform_rows_decode_the_same_color()
     {
         byte[] small = System.Convert.FromBase64String(RedPixel);
         byte[] large = System.Convert.FromBase64String(Wide16384);
@@ -636,6 +690,7 @@ public sealed class PngImageDecoderTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Decode(large, new RenderBudget(new HostMemoryBudget(1_000_000)), CancellationToken.None));
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Malformed_transparency_stays_malformed_with_tight_budget()
     {

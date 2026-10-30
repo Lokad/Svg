@@ -622,6 +622,40 @@ All 861 affected checks and 1,788 independent shape/stroke/instance, point-list,
 provenance and capture checks pass on Windows/Linux under both supported runtimes.
 Both affected builds are warning-free.
 
+## Syntax, selection, coverage and PNG responsibilities
+
+The baseline is `e80b6a178`. All 344 original cases across
+[path parsing](../../Lokad.Svg.Tests/SvgPathDataParserTests.cs),
+[font discovery](../../Lokad.Svg.Tests/SvgFontRequestDiscoveryTests.cs),
+[CSS](../../Lokad.Svg.Tests/SvgStyleSheetTests.cs),
+[coverage](../../Lokad.Svg.Tests/SvgPolygonCoverageTests.cs),
+[nesting](../../Lokad.Svg.Tests/SvgContourNestingTests.cs) and
+[PNG decoding](../../Lokad.Svg.Tests/PngImageDecoderTests.cs) remain. Two PNG names
+now describe repeated decoding and wide-row color checks instead of removed work
+quotas; 342 IDs remain unchanged. Separating the fifteen malformed-chunk decoder
+checks from their public-output checks yields 359 cases: 253 Mechanism, 46 Contract
+and 60 Rendering. Every malformed input still exercises all six public forms.
+
+Direct winding, coverage and parser boundaries keep their exact vectors and
+tolerances. Discovery retains borrowed-array identity, refusal, cancellation and
+release paths. CSS keeps namespace/source-order interactions and actual encoded
+XML inputs. PNG keeps independently specified premultiplied bytes for all five
+color formats, fragmented-IDAT growth, late-row cleanup, uniform/varied storage
+and repeated decoding. Public memory destinations now use a nonzero sentinel so
+an erroneous zero write cannot pass the untouched-destination check. Stream-empty
+checks and all positive segmented-IDAT output comparisons remain.
+
+Reversing traits, the decoder/API split, two names and sentinel strengthening
+restores all six original files exactly. No production, reference, tolerance or
+text-layout change occurs. Three fresh sequential Windows .NET 11 processes
+measure 6.95/8.07 seconds median before/after for the complete selection; the
+253-case mechanism selection measures 6.46. These include discovery/host/TRX and
+exclude build. Whole-area validation is slower in this measurement; the benefit
+is independent focused selection, with no overall speedup claim.
+All 359 affected cases and 219 independent image/path/CSS/marker, provenance and
+capture checks pass on Windows/Linux under both supported runtimes. Both affected
+builds are warning-free.
+
 ## Core OpenType roles and fixtures
 
 The baseline is `ef5bf5a96`. All 524 cases in

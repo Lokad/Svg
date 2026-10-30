@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgFontRequestDiscoveryTests
 {
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("marker-length-angle-units")]
     [InlineData("marker-overflow-cascade")]
@@ -17,6 +18,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, CancellationToken.None)).Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("<text>A</text>", "serif")]
     [InlineData("<g font-family='Example'><text>A</text></g>", "Example")]
@@ -29,6 +31,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(expected.Length == 0 ? [] : new[] { expected }, requests.Select(static request => request.Family).ToArray());
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("12pt")]
     [InlineData("1pc")]
@@ -41,6 +44,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("serif", Assert.Single(SvgFontRequestDiscovery.Discover(input, CancellationToken.None)).Family);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Repeated_discovery_borrows_the_committed_request_array_without_another_charge()
     {
@@ -58,6 +62,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(0, host.Reserved);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Does_not_reserve_a_direct_text_chunk_without_eligible_text()
     {
@@ -72,6 +77,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Denied_reader_workspace_rejects_discovery_without_retention()
     {
@@ -86,6 +92,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Discovers_text_through_ignored_accessibility_attributes()
     {
@@ -94,6 +101,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Example", request.Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Discovers_text_with_noop_stroke_styles()
     {
@@ -102,6 +110,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Example", request.Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Discovers_text_with_default_font_variant()
     {
@@ -110,6 +119,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Example", request.Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_small_caps_font_variants_before_acquisition()
     {
@@ -118,6 +128,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Discovers_text_with_ui_behavior_attributes()
     {
@@ -126,6 +137,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Example", request.Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Discovers_text_around_hidden_overflow_viewports()
     {
@@ -134,6 +146,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Example", request.Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Discovers_text_on_versioned_roots()
     {
@@ -142,6 +155,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Example", request.Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Skips_font_requests_for_whitespace_only_text_and_discovers_normalized_attribute_free_span_content()
     {
@@ -154,6 +168,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Preserved", preserved.Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Discovers_whitespace_preserved_by_a_nested_xml_space_span()
     {
@@ -162,6 +177,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Preserved", request.Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Skips_whitespace_trimmed_by_a_nested_default_xml_space_span()
     {
@@ -170,6 +186,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Empty(requests);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Discovers_whitespace_preserved_by_bounded_css_whitespace_declarations()
     {
@@ -190,6 +207,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Empty(cssOverride);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Restores_the_active_direct_text_candidate_after_nested_attribute_free_spans()
     {
@@ -200,6 +218,7 @@ public sealed class SvgFontRequestDiscoveryTests
             second => Assert.Equal("Second", second.Family));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Discovers_both_styles_for_the_original_italic_span()
     {
@@ -212,6 +231,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(new[] { ("Example", 700, false), ("Example", 700, true) }, requests.Select(request => (request.Family, request.Weight, request.Italic)));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Discovers_family_lists_without_silently_selecting_one()
     {
@@ -219,6 +239,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(new[] { "First", "Second" }, request.Families.Select(family => family.Name));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Inline_text_style_overrides_presentation_attributes()
     {
@@ -229,6 +250,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.True(request.Italic);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Uses_the_last_inline_font_declaration_for_each_property()
     {
@@ -239,6 +261,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.True(request.Italic);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("font-family:", SvgErrorCode.UnsupportedFeature)]
     [InlineData("font-family:: Example", SvgErrorCode.MalformedInput)]
@@ -249,6 +272,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(expectedErrorCode, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Deduplicates_case_insensitive_equivalent_font_requests()
     {
@@ -259,6 +283,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.False(request.Italic);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_a_non_svg_root_instead_of_discovering_foreign_text()
     {
@@ -267,6 +292,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Applies_caller_selected_structural_limits_during_discovery()
     {
@@ -277,6 +303,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Ignores_font_requests_from_inert_definition_content()
     {
@@ -285,6 +312,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Empty(requests);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("title")]
     [InlineData("desc")]
@@ -296,6 +324,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Empty(requests);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Retains_the_outer_inert_boundary_after_a_nested_inert_element()
     {
@@ -304,6 +333,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Empty(requests);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("symbol")]
     [InlineData("unsupported-container")]
@@ -314,6 +344,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Empty(requests);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Finds_nested_text_using_the_root_fallback_viewport()
     {
@@ -321,6 +352,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Unused", Assert.Single(requests).Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Does_not_discover_fonts_from_unrenderable_span_children()
     {
@@ -329,6 +361,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Empty(requests);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("rotate(5)")]
     [InlineData("scale(2)")]
@@ -339,6 +372,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Unused", Assert.Single(requests).Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Discovers_fonts_from_text_with_an_inherited_identity_transform()
     {
@@ -347,6 +381,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Example", request.Family);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Rejects_an_invalid_inherited_font_size_with_the_renderer_font_inheritance_rules()
     {
@@ -355,6 +390,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Theory]
     [InlineData("display='none'")]
     [InlineData("visibility='hidden'")]
@@ -366,6 +402,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Empty(requests);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Applies_the_renderer_stylesheet_cascade_when_discovering_hidden_text()
     {
@@ -373,6 +410,7 @@ public sealed class SvgFontRequestDiscoveryTests
 
         Assert.Empty(requests);
     }
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Discovery_budgets_ancestor_control_storage()
     {
@@ -398,6 +436,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.True(snapshot.PeakBytes > 0 || snapshot.DeniedReservationCount > 0);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Discovery_budgets_distinct_request_keys()
     {
@@ -418,6 +457,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Discovery_releases_its_preparation_ledger_on_success()
     {
@@ -434,6 +474,7 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal(0, snapshot.DeniedReservationCount);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Discovery_observes_cancellation_and_releases_its_ledger()
     {

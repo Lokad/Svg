@@ -5,6 +5,7 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgPolygonCoverageTests
 {
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Fully_covered_pixel_reports_unit_coverage()
     {
@@ -13,6 +14,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(1, SvgPolygonCoverage.GetExactCoverage(triangle, 0, 0, CancellationToken.None), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Diagonal_edge_splits_boundary_pixel_in_half()
     {
@@ -21,6 +23,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(0.5, SvgPolygonCoverage.GetExactCoverage(triangle, 7, 0, CancellationToken.None), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Pixel_outside_the_polygon_reports_zero()
     {
@@ -29,6 +32,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(0, SvgPolygonCoverage.GetExactCoverage(triangle, 7, 7, CancellationToken.None), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Reversed_orientation_reports_identical_coverage()
     {
@@ -45,6 +49,7 @@ public sealed class SvgPolygonCoverageTests
         }
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Pixel_coverages_sum_to_the_shoelace_area()
     {
@@ -53,6 +58,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(32, SumCoverages(triangle, -1, 9, -1, 9), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Research_triangle_coverages_sum_to_its_area()
     {
@@ -61,6 +67,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(17.5, SumCoverages(triangle, 0, 8, 0, 8), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Concave_quad_coverages_sum_to_its_area()
     {
@@ -69,6 +76,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(12, SumCoverages(dart, -1, 5, -1, 5), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Short_contours_enclose_no_area()
     {
@@ -77,6 +85,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(0, SvgPolygonCoverage.GetExactCoverage(segment, 0, 0, CancellationToken.None), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Collinear_triangle_covers_nothing()
     {
@@ -85,6 +94,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(0, SumCoverages(flat, -1, 9, -1, 9), precision: 10);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Precancelled_token_throws()
     {
@@ -106,6 +116,7 @@ public sealed class SvgPolygonCoverageTests
         return total;
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Fractional_phase_triangle_preserves_area()
     {
@@ -114,6 +125,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(32, SumCoverages(triangle, 0, 9, 0, 9), precision: 9);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Scaled_research_triangle_preserves_scaled_area()
     {
@@ -125,6 +137,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(70, SumCoverages(triangle, 0, 16, 0, 16), precision: 9);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Reflected_triangle_preserves_area()
     {
@@ -135,6 +148,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(32, SumCoverages(triangle, -1, 9, -1, 9), precision: 9);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Winding_preserves_orientation_sign()
     {
@@ -145,6 +159,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(-32, SumWinding(clockwise, [3], -1, 9, -1, 9), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Opposite_wound_hole_subtracts()
     {
@@ -153,6 +168,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(48, SumWinding(points, [4, 8], -1, 9, -1, 9), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Same_wound_overlap_adds()
     {
@@ -161,6 +177,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(80, SumWinding(points, [4, 8], -1, 9, -1, 9), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Disjoint_contours_add()
     {
@@ -169,6 +186,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(32, SumWinding(points, [4, 8], -1, 13, -1, 13), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Disjoint_opposite_contours_add_unsigned_role_areas()
     {
@@ -177,6 +195,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(0.09, SvgPolygonCoverage.GetWindingCoverage(points, [3, 6], [1, 1], 0, 0, CancellationToken.None), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Reversed_contours_keep_role_coverage()
     {
@@ -185,6 +204,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(0.09, SvgPolygonCoverage.GetWindingCoverage(points, [3, 6], [1, 1], 0, 0, CancellationToken.None), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Hole_roles_subtract()
     {
@@ -194,6 +214,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(1, SvgPolygonCoverage.GetWindingCoverage(points, [4, 8], [1, -1], 1, 1, CancellationToken.None), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Roles_reject_mismatched_shapes()
     {
@@ -203,6 +224,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetWindingCoverage(points, [3], [2], 0, 0, CancellationToken.None));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Short_and_empty_contours_contribute_zero()
     {
@@ -212,6 +234,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(32, SumWinding(points, [0, 2, 5], -1, 9, -1, 9), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Hole_pixel_cancels_exactly()
     {
@@ -222,6 +245,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(1, SvgPolygonCoverage.GetWindingCoverage(points, ends, 1, 1, CancellationToken.None), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Invalid_ends_are_rejected()
     {
@@ -233,6 +257,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetWindingCoverage(points, [2], 0, 0, CancellationToken.None));
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Winding_precancelled_token_throws()
     {
@@ -243,6 +268,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Throws<OperationCanceledException>(() => SvgPolygonCoverage.GetWindingCoverage(points, [3], 0, 0, cancelled.Token));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Same_wound_hole_subtracts_under_evenodd()
     {
@@ -251,6 +277,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(48, SumEvenOdd(points, [4, 8], [1, -1], -1, 9, -1, 9), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Opposite_wound_hole_matches_winding()
     {
@@ -259,6 +286,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(48, SumEvenOdd(points, [4, 8], [1, -1], -1, 9, -1, 9), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Resolved_parity_drives_hole()
     {
@@ -271,6 +299,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(48, SumEvenOdd(points, ends, signs, -1, 9, -1, 9), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Zero_sign_masks_contour()
     {
@@ -279,6 +308,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(64, SumEvenOdd(points, [4, 8], [1, 0], -1, 9, -1, 9), precision: 10);
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Invalid_sign_is_rejected()
     {
@@ -288,6 +318,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetEvenOddCoverage(points, [3], [1, -1], 0, 0, CancellationToken.None));
     }
 
+    [Trait("Layer", "Mechanism")]
     [Fact]
     public void Evenodd_hole_pixel_contrasts_winding()
     {
@@ -299,6 +330,7 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(2, SvgPolygonCoverage.GetWindingCoverage(points, ends, 4, 4, CancellationToken.None), precision: 10);
     }
 
+    [Trait("Layer", "Contract")]
     [Fact]
     public void Evenodd_precancelled_token_throws()
     {
