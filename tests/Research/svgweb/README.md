@@ -8,9 +8,9 @@ this directory contains metadata and original orthogonal controls, not the hoste
 SVG collection.
 
 The current default-path review has 148 rendered inputs per host: 132 exact and
-16 different, with 56 rejected. The empty-tile replay took 56.40 s and preserved
-all 147 prior PNGs. `gallardo.svg` now renders but remains inexact, as does
-`scimitar.svg`. All prior exact images remain exact.
+16 different, with 56 rejected. The bitmap restoration replay took 117.02 s under
+concurrent local execution: 145 prior PNGs are unchanged; `car.svg`, `gallardo.svg`
+and `scimitar.svg` improve but remain inexact. All prior exact images remain exact.
 These observations use transparent output without supplied fonts/resources; they
 are neither whole-corpus reference admission nor throughput measurements. The
 ledger retains earlier passes and every follow-up outcome.
@@ -35,9 +35,10 @@ The [filter-image model](filter-image-model.json) closes retained path boxes,
 materialized-image crop/padding and alias sampling through affine restoration.
 Seven CC0 references have independent platform triples. Empty affine destination
 tiles skip capture and edge preparation while intersecting tiles retain painting.
-The [opacity/kernel residuals](filter-image-residuals/README.md) retain their own
-native targets. The full filter/root milestone remains open; rendering successfully
-does not admit an original as exact.
+The [bitmap restoration record](filter-bitmap-restoration.json) retains the original
+opacity and unit-blur targets, now canonical regressions, plus independent opaque
+and enclosing-group controls. The full filter/root milestone remains open;
+rendering successfully does not admit an original as exact.
 
 The [paint-reference record](paint-references.json) maps four CC0 controls to native
 platform triples. Paint fallbacks share lexical parsing and completed resource

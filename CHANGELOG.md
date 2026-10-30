@@ -4,6 +4,8 @@
 
 - Preserve source path bounds across clipped stroke lowering; retain filter image
   padding, cropping and sampling colour transfer through affine restoration.
+- Compose affine image placement in the owning bitmap and store enclosing-opacity
+  pixels before packed alpha modulation.
 - Skip empty affine-filter restoration areas within software tiles, preserving
   painting in intersecting tiles.
 - Resolve explicit local paint fallbacks consistently across fills, strokes,

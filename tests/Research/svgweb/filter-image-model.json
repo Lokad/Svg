@@ -589,7 +589,8 @@
         }
       }
     },
-    "residuals": "filter-image-residuals/README.md",
-    "remainingScope": "gallardo.svg renders but is still different. The original coloured-opacity control remains inexact at 3,475 pixels with maximum alpha error 1; the opaque unit-blur control retains one alpha difference. Their native targets remain unchanged and are not admitted exact references. The half-unit opaque sRGB control independently isolates empty-tile admission. Other filter/root/static-state work stays open."
-  }
+    "residuals": "filter-bitmap-restoration.json",
+    "remainingScope": "Destination admission is closed. Bitmap sampling and opacity follow-up is recorded in filter-bitmap-restoration.json; the original gallardo/scimitar/filter/root/static-state gaps remain open."
+  },
+  "bitmapRestoration": "filter-bitmap-restoration.json"
 }

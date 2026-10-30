@@ -9789,5 +9789,24 @@
     "seconds": 56.397760099964216,
     "evidence": "filter-image-model.json",
     "qualification": "Every source hash rechecked. Prior outcomes and all 147 rendered PNGs remain unchanged. gallardo.svg renders after skipping empty destination tiles, but is not accepted exact. Source payload files retained: zero; no reference rewrites or whole-corpus admission."
+  },
+  "bitmapFilterRestoration": {
+    "sourceBaseline": "1f7151047edcb6c434bc23161d00669bcb281c4c",
+    "librarySha256": "c1bee3305439a2ad8aa014a3caaf2c53825dd5593a5a91c82a895ca5b8f9f7d4",
+    "filesRevalidatedPerHost": 204,
+    "renderedPerHost": 148,
+    "exactPerHost": 132,
+    "differentPerHost": 16,
+    "rejectedPerHost": 56,
+    "priorRenderedPngsByteIdenticalPerHost": 145,
+    "improvedPriorRendered": [
+      "car.svg",
+      "gallardo.svg",
+      "scimitar.svg"
+    ],
+    "sourceSvgFilesRetained": 0,
+    "seconds": 117.02294100006111,
+    "evidence": "filter-bitmap-restoration.json",
+    "qualification": "Every original hash rechecked. All prior exact images remain exact, 145 prior PNGs are byte-identical and three have lower error. No changed outcome/diagnostic categories, source payload retention, reference rewrites or whole-corpus admission."
   }
 }

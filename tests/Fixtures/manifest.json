@@ -17742,6 +17742,108 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-affine-empty-tile.json",
       "referenceSha256": "3a05338de11e4391b1cf26570e2b775b819d9e08f6a995d941e7091457fc7a15"
+    },
+    {
+      "id": "original-filter-affine-layer-opacity",
+      "path": "original/filter-affine-layer-opacity.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "0a3f06c634a93a22176c7f6a1fead8b3ac375fd588b8c4477acbffb159b7c583",
+      "materializedSha256": "0a3f06c634a93a22176c7f6a1fead8b3ac375fd588b8c4477acbffb159b7c583",
+      "featureTags": [
+        "filter",
+        "transform",
+        "tiling",
+        "opacity",
+        "color"
+      ],
+      "width": 600,
+      "height": 600,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-affine-layer-opacity.json",
+      "referenceSha256": "9d997c1e491fe21657e1faa09c13fdd9ca48fa6d74ea77ac9d64be5da132c0ac"
+    },
+    {
+      "id": "original-filter-affine-unit-blur",
+      "path": "original/filter-affine-unit-blur.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "95194c4e92332952a5ccfda0981f6be8d3a210a67573289ec448440b36783b4c",
+      "materializedSha256": "95194c4e92332952a5ccfda0981f6be8d3a210a67573289ec448440b36783b4c",
+      "featureTags": [
+        "filter",
+        "transform",
+        "tiling",
+        "sampling"
+      ],
+      "width": 600,
+      "height": 600,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-affine-unit-blur.json",
+      "referenceSha256": "47a4037824c458adbfeb8712c44bd7995234b944fea3010b0f0f188cc85e5bfb"
+    },
+    {
+      "id": "original-filter-affine-opaque-color",
+      "path": "original/filter-affine-opaque-color.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "b976be080e44590bfaee2d0fe7b5a16e9231adcbca0080012fc311979896f316",
+      "materializedSha256": "b976be080e44590bfaee2d0fe7b5a16e9231adcbca0080012fc311979896f316",
+      "featureTags": [
+        "filter",
+        "transform",
+        "tiling",
+        "color"
+      ],
+      "width": 600,
+      "height": 600,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-affine-opaque-color.json",
+      "referenceSha256": "c7e7cdcd87b7172e8474b09f2349a218e7c9ef3d13002e6e33958ffa925341e9"
+    },
+    {
+      "id": "original-filter-affine-group-opacity",
+      "path": "original/filter-affine-group-opacity.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "db33a7059ab71d0f87b832739ff54f7a02333dbb9b5934bfc17e2995f22cd8da",
+      "materializedSha256": "db33a7059ab71d0f87b832739ff54f7a02333dbb9b5934bfc17e2995f22cd8da",
+      "featureTags": [
+        "filter",
+        "transform",
+        "tiling",
+        "opacity",
+        "composition"
+      ],
+      "width": 600,
+      "height": 600,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-affine-group-opacity.json",
+      "referenceSha256": "9d997c1e491fe21657e1faa09c13fdd9ca48fa6d74ea77ac9d64be5da132c0ac"
     }
   ]
 }

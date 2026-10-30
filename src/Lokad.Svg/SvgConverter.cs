@@ -885,9 +885,7 @@ public static partial class SvgConverter
                     }
                     // Global bitmap alpha keeps source and backdrop products
                     // together until the final packed shift.
-                    new SvgConstantShaderPaint(filtered.Pixels[origin], filtered.Pixels[origin + 1],
-                        filtered.Pixels[origin + 2], filtered.Pixels[origin + 3])
-                        .BlendBitmap(destination.AsSpan(target, 4), (byte)(opacityScale - 1));
+                    RestoreOpacityLayerPixel(destination.AsSpan(target, 4), filtered.Pixels.AsSpan(origin, 4), (byte)(opacityScale - 1));
                 }
             }
             return end + 1;
@@ -1088,8 +1086,6 @@ public static partial class SvgConverter
                     // Native drawSpecial composes the stored image origin and
                     // transparent one-pixel outset before inverting its matrix.
                     // Subtracting that origin after inverse mapping changes phase.
-                    SvgAffineTransform sourceDevice = new SvgAffineTransform(remainder.ScaleX, remainder.SkewY, remainder.SkewX, remainder.ScaleY, remainder.TranslateX, remainder.TranslateY)
-                        .ComposeNative(SvgAffineTransform.FromTranslation(nativeSource.Left - 1, nativeSource.Top - 1));
                     if (image.DeferredImage is {} deferred)
                     {
                         SvgPaintBounds requested = SvgFilterPlayback.RoundLayerBounds(desired);
@@ -1098,7 +1094,8 @@ public static partial class SvgConverter
                         SvgPaintBounds existing = deferred.Clip;
                         deferred = deferred with { Clip = new(MathF.Max(existing.Left, logical.Left - (float)left), MathF.Max(existing.Top, logical.Top - (float)top),
                             MathF.Min(existing.Right, logical.Right - (float)left), MathF.Min(existing.Bottom, logical.Bottom - (float)top)) };
-                        RestoreDeferredImage(image, deferred, sourceDevice, nativeSource, new((int)left, (int)top), new(restoreLeft, restoreTop, restoreRight, restoreBottom));
+                        RestoreDeferredImage(image, deferred, remainder, nativeSource, new((int)left, (int)top), bitmap.Origin,
+                            new(restoreLeft, restoreTop, restoreRight, restoreBottom));
                         return;
                     }
                     if (resource.Primitives.Items.Length > 0 && resource.Primitives.Items[^1].Kind == SvgFilterPrimitiveKind.Flood)
@@ -1106,14 +1103,13 @@ public static partial class SvgConverter
                         RestoreFlood(image, nativeImage, remainder, new((int)left, (int)top), new(restoreLeft, restoreTop, restoreRight, restoreBottom));
                         return;
                     }
-                    SvgShaderMatrix imageToDevice = SvgShaderMatrix.Concat(
-                        new((float)sourceDevice.A, (float)sourceDevice.C, (float)sourceDevice.E, (float)sourceDevice.B, (float)sourceDevice.D, (float)sourceDevice.F),
-                        new(1, 0, nativeImage.Left - (nativeSource.Left - 1), 0, 1, nativeImage.Top - (nativeSource.Top - 1)));
+                    SvgShaderMatrix subset = new(1, 0, nativeImage.Left - (nativeSource.Left - 1), 0, 1, nativeImage.Top - (nativeSource.Top - 1));
+                    SvgShaderMatrix edgeDevice = SvgShaderMatrix.Concat(SourceDeviceMap(remainder, nativeSource, new(0, 0)), subset);
+                    SvgShaderMatrix imageToDevice = SvgShaderMatrix.Concat(SourceDeviceMap(remainder, nativeSource, bitmap.Origin), subset);
 
                     // A crop discards padding knowledge. Only preserved padding can
                     // supply transparent-border sampling instead of an AA image edge.
                     bool imageEdges = storedImage.Storage == SvgFilterImageStorage.Cropped || RequiresImageEdges(remainder);
-                    SvgShaderMatrix edgeDevice = imageToDevice;
                     if (!imageEdges) imageToDevice = imageToDevice with
                     {
                         TranslateX = imageToDevice.TranslateX + (-imageToDevice.ScaleX - imageToDevice.SkewX),
@@ -1124,6 +1120,7 @@ public static partial class SvgConverter
                         || image.SamplingColorFilter is SvgFilterDeferredColorFilter.SourceAlpha or SvgFilterDeferredColorFilter.LinearRgbRoundTrip || imageEdges
                         && (resource.Primitives.Items[^1].ColorSpace ?? resource.ColorSpace) == SvgFilterColorSpace.LinearRgb;
                     int opacity = Math.Clamp((int)MathF.Floor(command.SourceOpacity.Value * foldedOpacity * 255 + .5f), 0, 255);
+                    bool opacityLayer = command.SourceOpacity.Value * foldedOpacity < 1;
                     Span<SvgDevicePoint> edgePoints = stackalloc SvgDevicePoint[4];
                     float imageWidth = nativeImage.Right - nativeImage.Left, imageHeight = nativeImage.Bottom - nativeImage.Top;
                     SvgAffineTransform edgeMap = new(edgeDevice.ScaleX, edgeDevice.SkewY, edgeDevice.SkewX, edgeDevice.ScaleY, edgeDevice.TranslateX, edgeDevice.TranslateY);
@@ -1152,6 +1149,7 @@ public static partial class SvgConverter
                         new(restoreLeft, restoreRight), new SvgAnalyticClipContext(edgeArea), edgePaintClip,
                         budget, out edgeEligible, cancellationToken) : default;
                     if (!edgeEligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine filter image edges are outside the retained boundary.");
+                    Span<byte> opacityPixel = stackalloc byte[4];
                     for (int y = restoreTop; y < restoreBottom; y++)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
@@ -1162,14 +1160,16 @@ public static partial class SvgConverter
                         for (int x = restoreLeft; x < restoreRight; x++)
                         {
                             if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-                            byte edgeCoverage = 255;
-                            if (activeViewportClip.Length != 0) edgeCoverage = (byte)((edgeCoverage * activeViewportClip[(y * outputWidth + x) * 4 + 3] + 127) / 255);
-                            float px = x + .5f, py = y + .5f;
-                            float u = px * imageInverse.ScaleX + (py * imageInverse.SkewX + imageInverse.TranslateX);
-                            float v = px * imageInverse.SkewY + (py * imageInverse.ScaleY + imageInverse.TranslateY);
+                            int target = (y * outputWidth + x) * 4;
+                            byte clipCoverage = activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[target + 3];
+                            Span<byte> destinationPixel = destination.AsSpan(target, 4);
+                            Span<byte> paintTarget = opacityLayer ? opacityPixel : destinationPixel;
+                            if (opacityLayer) opacityPixel.Clear();
+                            byte paintCoverage = opacityLayer ? (byte)255 : clipCoverage;
+                            float px = x + .5f - bitmap.Origin.X, py = y + .5f - bitmap.Origin.Y;
+                            (float u, float v) = imageInverse.Map(px, py);
                             if (floatingSamples)
                             {
-                                (u, v) = imageInverse.Map(px, py);
                                 SvgCpuBitmapOrigin sampleOrigin = new((int)nativeImage.Left - 1 - (int)left, (int)nativeImage.Top - 1 - (int)top);
                                 if (imageEdges)
                                 {
@@ -1178,34 +1178,49 @@ public static partial class SvgConverter
                                     sampleOrigin = new((int)nativeImage.Left - (int)left, (int)nativeImage.Top - (int)top);
                                 }
                                 SvgShaderPaint floating = SvgShaderPaint.SampleAffine(image.Pixels, image.Width, image.Height, u, v,
-                                    sampleOrigin, opacity / 255f);
+                                    sampleOrigin, 1f);
                                 // Operating-space transfers precede the store. A retained
                                 // alpha shader only requires floating sampling.
                                 if (image.FilterColorSpace == SvgFilterColorSpace.LinearRgb)
                                     floating = SvgFilterColorTransfer.Convert(floating, SvgFilterColorSpace.Srgb);
                                 else if (image.SamplingColorFilter != SvgFilterDeferredColorFilter.SourceAlpha)
                                     floating = SvgFilterColorTransfer.Convert(SvgFilterColorTransfer.Convert(floating, SvgFilterColorSpace.LinearRgb), SvgFilterColorSpace.Srgb);
-                                if (imageEdges) edgeWalker.PaintPixel(x - restoreLeft, destination.AsSpan((y * outputWidth + x) * 4, 4), SvgAnalyticPaint.Shader(floating),
-                                    SvgAnalyticClipCoverage.FromMask(activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[(y * outputWidth + x) * 4 + 3]));
-                                else floating.Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), edgeCoverage);
-                                continue;
+                                if (imageEdges) edgeWalker.PaintPixel(x - restoreLeft, paintTarget, SvgAnalyticPaint.Shader(floating), SvgAnalyticClipCoverage.FromMask(paintCoverage));
+                                else floating.Blend(paintTarget, paintCoverage);
                             }
-                            // Clamp at the native image subset; missing compact-frame
-                            // texels stay transparent, even when its border is colored.
-                            SvgConstantShaderPaint sample = imageEdges
-                                ? SvgConstantShaderPaint.SampleAffine(image.Pixels, image.Width, image.Height,
-                                    Math.Clamp(u, .5f, imageWidth - .5f), Math.Clamp(v, .5f, imageHeight - .5f), true,
-                                    new((int)nativeImage.Left - (int)left, (int)nativeImage.Top - (int)top))
-                                : SvgConstantShaderPaint.SampleAffine(image.Pixels, image.Width, image.Height, u, v, true,
-                                    new((int)nativeImage.Left - 1 - (int)left, (int)nativeImage.Top - 1 - (int)top));
-                            sample = new((byte)((sample.Red * opacity + 255) >> 8), (byte)((sample.Green * opacity + 255) >> 8),
-                                (byte)((sample.Blue * opacity + 255) >> 8), (byte)((sample.Alpha * opacity + 255) >> 8));
-                            int target = (y * outputWidth + x) * 4;
-                            if (imageEdges) edgeWalker.PaintPixel(x - restoreLeft, destination.AsSpan(target, 4), SvgAnalyticPaint.Constant(sample), SvgAnalyticClipCoverage.FromMask(activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[target + 3]));
-                            else sample.Blend(destination.AsSpan(target, 4), edgeCoverage);
+                            else
+                            {
+                                // Clamp at the native subset; missing compact-frame
+                                // texels stay transparent, even when its border is colored.
+                                SvgConstantShaderPaint sample = imageEdges
+                                    ? SvgConstantShaderPaint.SampleAffine(image.Pixels, image.Width, image.Height,
+                                        Math.Clamp(u, .5f, imageWidth - .5f), Math.Clamp(v, .5f, imageHeight - .5f), true,
+                                        new((int)nativeImage.Left - (int)left, (int)nativeImage.Top - (int)top))
+                                    : SvgConstantShaderPaint.SampleAffine(image.Pixels, image.Width, image.Height, u, v, true,
+                                        new((int)nativeImage.Left - 1 - (int)left, (int)nativeImage.Top - 1 - (int)top));
+                                if (imageEdges) edgeWalker.PaintPixel(x - restoreLeft, paintTarget, SvgAnalyticPaint.Constant(sample), SvgAnalyticClipCoverage.FromMask(paintCoverage));
+                                else sample.Blend(paintTarget, paintCoverage);
+                            }
+                            if (opacityLayer)
+                            {
+                                // The enclosing layer stores converted/covered pixels
+                                // before packed paint-alpha modulation.
+                                if (activeViewportClip.Length == 0) RestoreOpacityLayerPixel(destinationPixel, opacityPixel, (byte)opacity);
+                                else BlendClippedLayerPixel(destinationPixel, opacityPixel, (byte)opacity, 255, clipCoverage);
+                            }
                         }
                     }
                     return;
+                }
+
+                // Image origins concatenate after the destination bitmap's origin.
+                // This pure setup owns no storage; the caller admits its finite map.
+                static SvgShaderMatrix SourceDeviceMap(SvgShaderMatrix transform, SvgPaintBounds source, SvgCpuBitmapOrigin origin)
+                {
+                    SvgAffineTransform placed = new SvgAffineTransform(transform.ScaleX, transform.SkewY, transform.SkewX, transform.ScaleY,
+                        transform.TranslateX - origin.X, transform.TranslateY - origin.Y)
+                        .ComposeNative(SvgAffineTransform.FromTranslation(source.Left - 1, source.Top - 1));
+                    return new((float)placed.A, (float)placed.C, (float)placed.E, (float)placed.B, (float)placed.D, (float)placed.F);
                 }
 
                 // Native min/max affine singular scales (SkMatrix.cpp) and the
@@ -1285,8 +1300,7 @@ public static partial class SvgConverter
                                 {
                                     clipPixel.Clear();
                                     paint.Blend(clipPixel, coverage);
-                                    new SvgConstantShaderPaint(clipPixel[0], clipPixel[1], clipPixel[2], clipPixel[3])
-                                        .BlendBitmap(target, (byte)opacity);
+                                    RestoreOpacityLayerPixel(target, clipPixel, (byte)opacity);
                                 }
                                 else paint.Blend(target, coverage);
                             }
@@ -1324,19 +1338,19 @@ public static partial class SvgConverter
 
                 // Restores one retained source image; storage stays with its captured
                 // surface. Native image/crop coverage share the existing bounded walker.
-                void RestoreDeferredImage(RasterizedSurface image, SvgFilterDeferredImage deferred, SvgAffineTransform sourceDevice,
-                    SvgPaintBounds nativeSource, SvgCpuBitmapOrigin frameOrigin, SvgAnalyticClipBounds area)
+                void RestoreDeferredImage(RasterizedSurface image, SvgFilterDeferredImage deferred, SvgShaderMatrix transform,
+                    SvgPaintBounds nativeSource, SvgCpuBitmapOrigin frameOrigin, SvgCpuBitmapOrigin deviceOrigin, SvgAnalyticClipBounds area)
                 {
-                    SvgShaderMatrix device = new((float)sourceDevice.A, (float)sourceDevice.C, (float)sourceDevice.E,
-                        (float)sourceDevice.B, (float)sourceDevice.D, (float)sourceDevice.F);
+                    SvgShaderMatrix device = SourceDeviceMap(transform, nativeSource, new(0, 0));
                     SvgShaderMatrix forward = SvgShaderMatrix.Concat(device, deferred.ImageToSource);
+                    SvgShaderMatrix samplingForward = SvgShaderMatrix.Concat(SourceDeviceMap(transform, nativeSource, deviceOrigin), deferred.ImageToSource);
                     bool linear = deferred.Sampling == SvgFilterImageSampling.Linear;
                     bool floatingSamples = linear && (resource.Primitives.Items[^1].ColorSpace ?? resource.ColorSpace) == SvgFilterColorSpace.LinearRgb;
-                    SvgShaderMatrix sampling = linear ? forward with
+                    SvgShaderMatrix sampling = linear ? samplingForward with
                     {
-                        TranslateX = forward.TranslateX + (-forward.ScaleX - forward.SkewX),
-                        TranslateY = forward.TranslateY + (-forward.SkewY - forward.ScaleY)
-                    } : forward;
+                        TranslateX = samplingForward.TranslateX + (-samplingForward.ScaleX - samplingForward.SkewX),
+                        TranslateY = samplingForward.TranslateY + (-samplingForward.SkewY - samplingForward.ScaleY)
+                    } : samplingForward;
                     if (!sampling.TryInvert(out SvgShaderMatrix inverse)) return;
                     float sourceWidth = deferred.SourceBounds.Right - deferred.SourceBounds.Left;
                     float sourceHeight = deferred.SourceBounds.Bottom - deferred.SourceBounds.Top;
@@ -1481,9 +1495,8 @@ public static partial class SvgConverter
                             for (int x = area.Left; x < area.Right; x++)
                             {
                                 if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-                                float px = x + .5f, py = y + .5f;
-                                float u = px * inverse.ScaleX + (py * inverse.SkewX + inverse.TranslateX);
-                                float v = px * inverse.SkewY + (py * inverse.ScaleY + inverse.TranslateY);
+                                float px = x + .5f - deviceOrigin.X, py = y + .5f - deviceOrigin.Y;
+                                (float u, float v) = inverse.Map(px, py);
                                 if (image.FilterColorSpace == SvgFilterColorSpace.LinearRgb
                                     || deferred.ColorFilter is SvgFilterDeferredColorFilter.SourceAlpha or SvgFilterDeferredColorFilter.LinearRgbRoundTrip)
                                 {
@@ -1519,8 +1532,7 @@ public static partial class SvgConverter
                                     {
                                         edgePixel.Clear();
                                         sampled.Blend(edgePixel, sampledCoverage);
-                                        new SvgConstantShaderPaint(edgePixel[0], edgePixel[1], edgePixel[2], edgePixel[3])
-                                            .BlendBitmap(opacityTarget, (byte)opacity);
+                                        RestoreOpacityLayerPixel(opacityTarget, edgePixel, (byte)opacity);
                                     }
                                     else sampled.Blend(opacityTarget, sampledCoverage);
                                     continue;
@@ -1539,8 +1551,7 @@ public static partial class SvgConverter
                                     {
                                         edgePixel.Clear();
                                         sampled.Blend(edgePixel, clipCoverage);
-                                        new SvgConstantShaderPaint(edgePixel[0], edgePixel[1], edgePixel[2], edgePixel[3])
-                                            .BlendBitmap(opacityTarget, (byte)opacity);
+                                        RestoreOpacityLayerPixel(opacityTarget, edgePixel, (byte)opacity);
                                     }
                                     else sampled.Blend(opacityTarget, clipCoverage);
                                     continue;
@@ -1566,8 +1577,7 @@ public static partial class SvgConverter
                                     edgePixel.Clear();
                                     if (linear) sample.Blend(edgePixel, coverage);
                                     else walker.PaintPixel(x - area.Left, edgePixel, SvgAnalyticPaint.Constant(sample), SvgAnalyticClipCoverage.FromMask(coverage));
-                                    new SvgConstantShaderPaint(edgePixel[0], edgePixel[1], edgePixel[2], edgePixel[3])
-                                        .BlendBitmap(target, (byte)opacity);
+                                    RestoreOpacityLayerPixel(target, edgePixel, (byte)opacity);
                                 }
                                 else if (linear) sample.Blend(target, coverage);
                                 else walker.PaintPixel(x - area.Left, target, SvgAnalyticPaint.Constant(sample), SvgAnalyticClipCoverage.FromMask(coverage));
@@ -2832,6 +2842,11 @@ public static partial class SvgConverter
 
 
         }
+
+        // Restores a quantized layer using the native packed row's paint alpha.
+        // Storage remains borrowed; the surrounding raster loop observes cancellation.
+        static void RestoreOpacityLayerPixel(Span<byte> destination, ReadOnlySpan<byte> source, byte opacity)
+            => new SvgConstantShaderPaint(source[0], source[1], source[2], source[3]).BlendBitmap(destination, opacity);
 
         static void BlendClippedLayerPixel(Span<byte> destination, ReadOnlySpan<byte> source, byte opacity, byte maskAlpha, byte coverage)
         {

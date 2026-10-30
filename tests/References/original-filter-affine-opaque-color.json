@@ -4,28 +4,27 @@
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
   "captureRecipeRevision": "3",
-  "inputSha256": "95194c4e92332952a5ccfda0981f6be8d3a210a67573289ec448440b36783b4c",
-  "referenceSha256": "47a4037824c458adbfeb8712c44bd7995234b944fea3010b0f0f188cc85e5bfb",
-  "freshProcessCaptures": 1,
+  "inputSha256": "b976be080e44590bfaee2d0fe7b5a16e9231adcbca0080012fc311979896f316",
+  "referenceSha256": "c7e7cdcd87b7172e8474b09f2349a218e7c9ef3d13002e6e33958ffa925341e9",
+  "freshProcessCaptures": 3,
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "deviceScaleFactor": 1,
-  "referencePng": "affine-unit-blur.native.png",
+  "referencePng": "original-filter-affine-opaque-color.png",
   "background": "transparent",
-  "decodedPixelStability": "Not established: one exploratory capture per platform.",
-  "fixtureId": "affine-unit-blur",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-affine-opaque-color",
   "viewport": {
     "width": 600,
     "height": 600,
     "deviceScaleFactor": 1
   },
-  "selection": "Unresolved affine filter stage research, not an admitted exact reference. Independent native target stays unchanged. Source is own CC0 work; no hosted artwork retained.",
+  "selection": "Original CC0 bitmap-local affine filter control: opaque. Three fresh healthy captures on each platform. Sampling composes the destination bitmap origin before the stored image origin; enclosing opacity stores pixels before packed alpha.",
   "comparison": {
-    "exact": false,
-    "changedPixelCount": 1,
-    "maximumChannelError": 1,
-    "maximumAlphaError": 1,
-    "totalChannelError": 1
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
   },
   "platformCaptures": {
     "win64": {
@@ -34,9 +33,9 @@
       "chromiumRevision": "1681091",
       "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
       "captureRecipeRevision": "3",
-      "inputSha256": "95194c4e92332952a5ccfda0981f6be8d3a210a67573289ec448440b36783b4c",
-      "referenceSha256": "47a4037824c458adbfeb8712c44bd7995234b944fea3010b0f0f188cc85e5bfb",
-      "freshProcessCaptures": 1,
+      "inputSha256": "b976be080e44590bfaee2d0fe7b5a16e9231adcbca0080012fc311979896f316",
+      "referenceSha256": "c7e7cdcd87b7172e8474b09f2349a218e7c9ef3d13002e6e33958ffa925341e9",
+      "freshProcessCaptures": 3,
       "captureStartupHealth": "healthy",
       "captureProfilesCleaned": true
     },
@@ -46,9 +45,9 @@
       "chromiumRevision": "1681091",
       "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
       "captureRecipeRevision": "3",
-      "inputSha256": "95194c4e92332952a5ccfda0981f6be8d3a210a67573289ec448440b36783b4c",
-      "referenceSha256": "47a4037824c458adbfeb8712c44bd7995234b944fea3010b0f0f188cc85e5bfb",
-      "freshProcessCaptures": 1,
+      "inputSha256": "b976be080e44590bfaee2d0fe7b5a16e9231adcbca0080012fc311979896f316",
+      "referenceSha256": "c7e7cdcd87b7172e8474b09f2349a218e7c9ef3d13002e6e33958ffa925341e9",
+      "freshProcessCaptures": 3,
       "captureStartupHealth": "healthy",
       "captureProfilesCleaned": true
     }

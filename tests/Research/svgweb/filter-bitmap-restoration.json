@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "1f7151047edcb6c434bc23161d00669bcb281c4c",
+  "sourceBaselineCi": {
+    "runId": 41088907503,
+    "conclusion": "success"
+  },
+  "closedScope": [
+    "Materialized and deferred affine images compose the destination bitmap origin before the image origin, preserving native sampling phase. Geometric image edges retain canvas placement.",
+    "Enclosing opacity stores converted/covered pixels before packed row alpha. Ordinary, affine, flood and deferred paths share the same packed restore helper.",
+    "Four independent canonical controls cover a packed unit-blur image, floating opaque colour, filter-target opacity and enclosing-group opacity. Direct/group images happen to match but protect different execution paths."
+  ],
+  "nativeSource": {
+    "revision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "files": [
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkImageFilterTypes.cpp",
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/shaders/SkImageShader.cpp",
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/opts/SkRasterPipeline_opts.h"
+    ]
+  },
+  "fixtures": [
+    {
+      "id": "colour",
+      "fixtureId": "original-filter-affine-layer-opacity",
+      "fixture": "../../Fixtures/original/filter-affine-layer-opacity.svg",
+      "provenance": "../../References/original-filter-affine-layer-opacity.json",
+      "sourceSha256": "0a3f06c634a93a22176c7f6a1fead8b3ac375fd588b8c4477acbffb159b7c583",
+      "nativePngSha256": "9d997c1e491fe21657e1faa09c13fdd9ca48fa6d74ea77ac9d64be5da132c0ac",
+      "freshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 3475,
+        "linux": 3475
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "unit-blur",
+      "fixtureId": "original-filter-affine-unit-blur",
+      "fixture": "../../Fixtures/original/filter-affine-unit-blur.svg",
+      "provenance": "../../References/original-filter-affine-unit-blur.json",
+      "sourceSha256": "95194c4e92332952a5ccfda0981f6be8d3a210a67573289ec448440b36783b4c",
+      "nativePngSha256": "47a4037824c458adbfeb8712c44bd7995234b944fea3010b0f0f188cc85e5bfb",
+      "freshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 1,
+        "linux": 1
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "opaque",
+      "fixtureId": "original-filter-affine-opaque-color",
+      "fixture": "../../Fixtures/original/filter-affine-opaque-color.svg",
+      "provenance": "../../References/original-filter-affine-opaque-color.json",
+      "sourceSha256": "b976be080e44590bfaee2d0fe7b5a16e9231adcbca0080012fc311979896f316",
+      "nativePngSha256": "c7e7cdcd87b7172e8474b09f2349a218e7c9ef3d13002e6e33958ffa925341e9",
+      "freshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 15,
+        "linux": 15
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "outer-opacity",
+      "fixtureId": "original-filter-affine-group-opacity",
+      "fixture": "../../Fixtures/original/filter-affine-group-opacity.svg",
+      "provenance": "../../References/original-filter-affine-group-opacity.json",
+      "sourceSha256": "db33a7059ab71d0f87b832739ff54f7a02333dbb9b5934bfc17e2995f22cd8da",
+      "nativePngSha256": "9d997c1e491fe21657e1faa09c13fdd9ca48fa6d74ea77ac9d64be5da132c0ac",
+      "freshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 15,
+        "linux": 15
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    }
+  ],
+  "qualification": {
+    "selectedStages": {
+      "host": "windows",
+      "tfm": "net11.0",
+      "passed": 255,
+      "seconds": 12.673143499996513,
+      "librarySha256": "c1bee3305439a2ad8aa014a3caaf2c53825dd5593a5a91c82a895ca5b8f9f7d4"
+    },
+    "affected": [
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 27.589717000024393,
+        "librarySha256": "c1bee3305439a2ad8aa014a3caaf2c53825dd5593a5a91c82a895ca5b8f9f7d4"
+      },
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 158.31103500002064,
+        "librarySha256": "c1bee3305439a2ad8aa014a3caaf2c53825dd5593a5a91c82a895ca5b8f9f7d4"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 51.21759030013345,
+        "librarySha256": "37ba8979c2808bf84b1fa290316a4ddd53f7ad25626a09717a8c1fdc5740094a"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 79.39892950002104,
+        "librarySha256": "37ba8979c2808bf84b1fa290316a4ddd53f7ad25626a09717a8c1fdc5740094a"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 24.782067146,
+        "librarySha256": "c1bee3305439a2ad8aa014a3caaf2c53825dd5593a5a91c82a895ca5b8f9f7d4"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 155.915131193,
+        "librarySha256": "c1bee3305439a2ad8aa014a3caaf2c53825dd5593a5a91c82a895ca5b8f9f7d4"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 62.450067878,
+        "librarySha256": "37ba8979c2808bf84b1fa290316a4ddd53f7ad25626a09717a8c1fdc5740094a"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 73.734241424,
+        "librarySha256": "37ba8979c2808bf84b1fa290316a4ddd53f7ad25626a09717a8c1fdc5740094a"
+      }
+    ],
+    "originalReplay": {
+      "files": 204,
+      "complete": {
+        "files": 204,
+        "seconds": 117.02294100006111,
+        "sourceSvgFilesRetained": 0
+      },
+      "hosts": {
+        "windows": {
+          "counts": {
+            "UnsupportedFeature": 53,
+            "rendered": 148,
+            "exact": 132,
+            "different": 16,
+            "MalformedInput": 3
+          },
+          "priorRenderedUnchanged": 145,
+          "priorRenderedChanged": [
+            {
+              "name": "car.svg",
+              "before": {
+                "status": "different",
+                "changedPixels": 32132,
+                "maximumError": 255,
+                "totalChannelError": 115676
+              },
+              "after": {
+                "status": "different",
+                "changedPixels": 32075,
+                "maximumError": 255,
+                "totalChannelError": 115591
+              },
+              "outcome": "rendered"
+            },
+            {
+              "name": "gallardo.svg",
+              "before": {
+                "status": "different",
+                "changedPixels": 54476,
+                "maximumError": 255,
+                "totalChannelError": 353433
+              },
+              "after": {
+                "status": "different",
+                "changedPixels": 46472,
+                "maximumError": 255,
+                "totalChannelError": 339640
+              },
+              "outcome": "rendered"
+            },
+            {
+              "name": "scimitar.svg",
+              "before": {
+                "status": "different",
+                "changedPixels": 36370,
+                "maximumError": 137,
+                "totalChannelError": 387025
+              },
+              "after": {
+                "status": "different",
+                "changedPixels": 36365,
+                "maximumError": 137,
+                "totalChannelError": 386850
+              },
+              "outcome": "rendered"
+            }
+          ],
+          "newRendered": [],
+          "lost": [],
+          "worse": [],
+          "changedOutcomesOrDiagnostics": [],
+          "librarySha256": "c1bee3305439a2ad8aa014a3caaf2c53825dd5593a5a91c82a895ca5b8f9f7d4"
+        },
+        "linux": {
+          "counts": {
+            "UnsupportedFeature": 53,
+            "rendered": 148,
+            "exact": 132,
+            "different": 16,
+            "MalformedInput": 3
+          },
+          "priorRenderedUnchanged": 145,
+          "priorRenderedChanged": [
+            {
+              "name": "car.svg",
+              "before": {
+                "status": "different",
+                "changedPixels": 32132,
+                "maximumError": 255,
+                "totalChannelError": 115676
+              },
+              "after": {
+                "status": "different",
+                "changedPixels": 32075,
+                "maximumError": 255,
+                "totalChannelError": 115591
+              },
+              "outcome": "rendered"
+            },
+            {
+              "name": "gallardo.svg",
+              "before": {
+                "status": "different",
+                "changedPixels": 54476,
+                "maximumError": 255,
+                "totalChannelError": 353433
+              },
+              "after": {
+                "status": "different",
+                "changedPixels": 46472,
+                "maximumError": 255,
+                "totalChannelError": 339640
+              },
+              "outcome": "rendered"
+            },
+            {
+              "name": "scimitar.svg",
+              "before": {
+                "status": "different",
+                "changedPixels": 36370,
+                "maximumError": 137,
+                "totalChannelError": 387025
+              },
+              "after": {
+                "status": "different",
+                "changedPixels": 36365,
+                "maximumError": 137,
+                "totalChannelError": 386850
+              },
+              "outcome": "rendered"
+            }
+          ],
+          "newRendered": [],
+          "lost": [],
+          "worse": [],
+          "changedOutcomesOrDiagnostics": [],
+          "librarySha256": "c1bee3305439a2ad8aa014a3caaf2c53825dd5593a5a91c82a895ca5b8f9f7d4"
+        }
+      }
+    }
+  },
+  "captureAdmission": "Three fresh healthy processes per control per platform; stable PNG bytes, cleaned profiles and pinned executable identities. Both former research PNGs are byte-identical after moving into canonical references. Their old inexact observations remain in sourceBaseline history and beforeChangedPixels above.",
+  "testResponsibilities": "Canonical conversion per source/options/platform. Existing direct numerical and representative API/ownership coverage is retained; no fixture-by-API product or reference rewrite.",
+  "remainingScope": [
+    "The full filter/root milestone stays open. car.svg, gallardo.svg and scimitar.svg improve but remain different.",
+    "Fractional root layout/fitting, original filter/source interactions and explicit fonts/resources/static-state admission retain their own closure criteria."
+  ],
+  "timingScope": "Functional elapsed under concurrent workstation execution, including runner startup. Replay took 117.02 s versus 56.40 s in the prior run; these runs are not controlled performance measurements. Dedicated quiet-VM timing remains unmeasured."
+}

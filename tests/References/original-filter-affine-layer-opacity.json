@@ -10,22 +10,21 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "deviceScaleFactor": 1,
-  "referencePng": "affine-colour-opacity.native.png",
+  "referencePng": "original-filter-affine-layer-opacity.png",
   "background": "transparent",
   "decodedPixelStability": "identical",
-  "fixtureId": "affine-colour-opacity",
+  "fixtureId": "original-filter-affine-layer-opacity",
   "viewport": {
     "width": 600,
     "height": 600,
     "deviceScaleFactor": 1
   },
-  "selection": "Unresolved affine filter stage research, not an admitted exact reference. Independent native target stays unchanged. Source is own CC0 work; no hosted artwork retained.",
+  "selection": "Original CC0 bitmap-local affine filter control: colour. Three fresh healthy captures on each platform. Sampling composes the destination bitmap origin before the stored image origin; enclosing opacity stores pixels before packed alpha.",
   "comparison": {
-    "exact": false,
-    "changedPixelCount": 3475,
-    "maximumChannelError": 255,
-    "maximumAlphaError": 1,
-    "totalChannelError": 42606
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
   },
   "platformCaptures": {
     "win64": {

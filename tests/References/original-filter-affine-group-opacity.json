@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "db33a7059ab71d0f87b832739ff54f7a02333dbb9b5934bfc17e2995f22cd8da",
+  "referenceSha256": "9d997c1e491fe21657e1faa09c13fdd9ca48fa6d74ea77ac9d64be5da132c0ac",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-affine-group-opacity.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-affine-group-opacity",
+  "viewport": {
+    "width": 600,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 bitmap-local affine filter control: outer-opacity. Three fresh healthy captures on each platform. Sampling composes the destination bitmap origin before the stored image origin; enclosing opacity stores pixels before packed alpha.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "db33a7059ab71d0f87b832739ff54f7a02333dbb9b5934bfc17e2995f22cd8da",
+      "referenceSha256": "9d997c1e491fe21657e1faa09c13fdd9ca48fa6d74ea77ac9d64be5da132c0ac",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "db33a7059ab71d0f87b832739ff54f7a02333dbb9b5934bfc17e2995f22cd8da",
+      "referenceSha256": "9d997c1e491fe21657e1faa09c13fdd9ca48fa6d74ea77ac9d64be5da132c0ac",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 600,
+    "height": 600
+  }
+}

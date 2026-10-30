@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "95194c4e92332952a5ccfda0981f6be8d3a210a67573289ec448440b36783b4c",
+  "referenceSha256": "47a4037824c458adbfeb8712c44bd7995234b944fea3010b0f0f188cc85e5bfb",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-affine-unit-blur.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-affine-unit-blur",
+  "viewport": {
+    "width": 600,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 bitmap-local affine filter control: unit-blur. Three fresh healthy captures on each platform. Sampling composes the destination bitmap origin before the stored image origin; enclosing opacity stores pixels before packed alpha.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "95194c4e92332952a5ccfda0981f6be8d3a210a67573289ec448440b36783b4c",
+      "referenceSha256": "47a4037824c458adbfeb8712c44bd7995234b944fea3010b0f0f188cc85e5bfb",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "95194c4e92332952a5ccfda0981f6be8d3a210a67573289ec448440b36783b4c",
+      "referenceSha256": "47a4037824c458adbfeb8712c44bd7995234b944fea3010b0f0f188cc85e5bfb",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 600,
+    "height": 600
+  }
+}
