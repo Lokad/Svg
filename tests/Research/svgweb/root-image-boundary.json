@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "b4205d500c53a48cbb7741f4f3bd9031acf3d007",
+  "status": "Unresolved root image boundary; independently qualified research targets, not a promoted root mapping or original admission.",
+  "browserPins": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3"
+    }
+  },
+  "nativeRecipe": {
+    "id": "canvas-drawImage-research-v1",
+    "description": "Use the capture-tool source at 8ee104296 with the private canvas evaluation described in root-image-stages.json. Decode the unchanged SVG Image, then drawImage(image,0,0,25.5,16.5) on a transparent 26x17 canvas at DPR1; remove the visible image element before screenshot. The destination equals the integer natural 17x11 image size times uniform scale1.5.",
+    "captureSourceSha256": "b78b33e800d16e4c8f7f121fab723fe982431f6d379780b382c5843419043216",
+    "capturesPerPlatform": 3,
+    "hosts": [
+      "windows",
+      "linux"
+    ],
+    "healthyProfilesCleaned": true,
+    "scope": "Explicit canvas destination context. It is not interchangeable with CSS image resizing or capture recipe3, and does not define a universal root scaling rule."
+  },
+  "cases": [
+    {
+      "id": "overflow",
+      "license": "CC0-1.0",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17' height='11'><rect x='-2' y='-2' width='30' height='30' fill='#2080c0'/><rect x='8' y='4' width='20' height='20' fill='#c04020'/></svg>\n",
+      "sourceSha256": "04b17af711bc298091e39a04c598b187a47844db4faa1e72247ba3358343187e",
+      "nativeTarget": "root-image-boundary-overflow.png",
+      "nativeTargetSha256": "a53b37344d427e9e7fc0cda1fcf307ae3cdbd9efe16ea0fb41a1dee1b32d1a72",
+      "hosts": {
+        "windows": {
+          "captures": [
+            {
+              "pngSha256": "a53b37344d427e9e7fc0cda1fcf307ae3cdbd9efe16ea0fb41a1dee1b32d1a72",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a53b37344d427e9e7fc0cda1fcf307ae3cdbd9efe16ea0fb41a1dee1b32d1a72",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a53b37344d427e9e7fc0cda1fcf307ae3cdbd9efe16ea0fb41a1dee1b32d1a72",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "nativeSha256": "a53b37344d427e9e7fc0cda1fcf307ae3cdbd9efe16ea0fb41a1dee1b32d1a72"
+        },
+        "linux": {
+          "captures": [
+            {
+              "pngSha256": "a53b37344d427e9e7fc0cda1fcf307ae3cdbd9efe16ea0fb41a1dee1b32d1a72",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a53b37344d427e9e7fc0cda1fcf307ae3cdbd9efe16ea0fb41a1dee1b32d1a72",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a53b37344d427e9e7fc0cda1fcf307ae3cdbd9efe16ea0fb41a1dee1b32d1a72",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "nativeSha256": "a53b37344d427e9e7fc0cda1fcf307ae3cdbd9efe16ea0fb41a1dee1b32d1a72"
+        }
+      },
+      "before": {
+        "librarySha256": "17f45bac3c7b79ff3d8ae5f875dfec36a34f09cbe6c2bd108348cc572a25148b",
+        "changedPixels": 42,
+        "allDifferencesOnImageBoundary": true,
+        "nativeRight": [
+          138,
+          85,
+          85,
+          192
+        ],
+        "libraryRight": [
+          192,
+          64,
+          32,
+          255
+        ],
+        "nativeCorner": [
+          123,
+          91,
+          100,
+          112
+        ],
+        "libraryCorner": [
+          192,
+          64,
+          32,
+          255
+        ]
+      },
+      "existingClipCompanion": {
+        "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='26' height='17'><defs><clipPath id='viewport'><rect width='25.5' height='16.5'/></clipPath></defs><g clip-path='url(#viewport)'><g transform='scale(1.5)'><rect x='-2' y='-2' width='30' height='30' fill='#2080c0'/><rect x='8' y='4' width='20' height='20' fill='#c04020'/></g></g></svg>\n",
+        "sourceSha256": "6551a2be65312a03e3cd2fc4e5e99be384534a7909262c606918753414192719",
+        "qualification": [
+          {
+            "host": "windows",
+            "sourceSha256": "6551a2be65312a03e3cd2fc4e5e99be384534a7909262c606918753414192719",
+            "pngSha256": "e30c0489821981b64a8c57b9ee23d82112561867ea3fdcdf464889a90969f9fe",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+          },
+          {
+            "host": "linux",
+            "sourceSha256": "6551a2be65312a03e3cd2fc4e5e99be384534a7909262c606918753414192719",
+            "pngSha256": "e30c0489821981b64a8c57b9ee23d82112561867ea3fdcdf464889a90969f9fe",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+          }
+        ]
+      },
+      "postStateConsolidation": [
+        {
+          "host": "windows",
+          "sourceSha256": "04b17af711bc298091e39a04c598b187a47844db4faa1e72247ba3358343187e",
+          "pngSha256": "f1d51eb0bac311926ac9a9c236d279e547fc6008f34887b86f6bf679f03b7ed6",
+          "changedPixels": 42,
+          "maximumError": 143,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        },
+        {
+          "host": "linux",
+          "sourceSha256": "04b17af711bc298091e39a04c598b187a47844db4faa1e72247ba3358343187e",
+          "pngSha256": "f1d51eb0bac311926ac9a9c236d279e547fc6008f34887b86f6bf679f03b7ed6",
+          "changedPixels": 42,
+          "maximumError": 143,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        }
+      ]
+    },
+    {
+      "id": "group",
+      "license": "CC0-1.0",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17' height='11'><g opacity='.73'><rect x='-2' y='-2' width='30' height='30' fill='#2080c0'/><rect x='8' y='4' width='20' height='20' fill='#c04020'/></g></svg>\n",
+      "sourceSha256": "66a2ff310948737cfbfc69ea5186163bc33f3faedb129025ed5462fd4acb7b20",
+      "nativeTarget": "root-image-boundary-group.png",
+      "nativeTargetSha256": "6a658840ddd1c0001b07f8f3d6860ffccb3872e48177baa49a16ff162771a29f",
+      "hosts": {
+        "windows": {
+          "captures": [
+            {
+              "pngSha256": "6a658840ddd1c0001b07f8f3d6860ffccb3872e48177baa49a16ff162771a29f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6a658840ddd1c0001b07f8f3d6860ffccb3872e48177baa49a16ff162771a29f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6a658840ddd1c0001b07f8f3d6860ffccb3872e48177baa49a16ff162771a29f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "nativeSha256": "6a658840ddd1c0001b07f8f3d6860ffccb3872e48177baa49a16ff162771a29f"
+        },
+        "linux": {
+          "captures": [
+            {
+              "pngSha256": "6a658840ddd1c0001b07f8f3d6860ffccb3872e48177baa49a16ff162771a29f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6a658840ddd1c0001b07f8f3d6860ffccb3872e48177baa49a16ff162771a29f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6a658840ddd1c0001b07f8f3d6860ffccb3872e48177baa49a16ff162771a29f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "nativeSha256": "6a658840ddd1c0001b07f8f3d6860ffccb3872e48177baa49a16ff162771a29f"
+        }
+      },
+      "before": {
+        "librarySha256": "17f45bac3c7b79ff3d8ae5f875dfec36a34f09cbe6c2bd108348cc572a25148b",
+        "changedPixels": 42,
+        "allDifferencesOnImageBoundary": true,
+        "nativeRight": [
+          192,
+          63,
+          30,
+          93
+        ],
+        "libraryRight": [
+          192,
+          63,
+          32,
+          186
+        ],
+        "nativeCorner": [
+          190,
+          60,
+          27,
+          47
+        ],
+        "libraryCorner": [
+          192,
+          63,
+          32,
+          186
+        ]
+      },
+      "existingClipCompanion": {
+        "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='26' height='17'><defs><clipPath id='viewport'><rect width='25.5' height='16.5'/></clipPath></defs><g clip-path='url(#viewport)'><g transform='scale(1.5)'><g opacity='.73'><rect x='-2' y='-2' width='30' height='30' fill='#2080c0'/><rect x='8' y='4' width='20' height='20' fill='#c04020'/></g></g></g></svg>\n",
+        "sourceSha256": "b3dec95041470423bb1eacee5daef33314d733d4cfba6ac6f65ad12ed58e7815",
+        "qualification": [
+          {
+            "host": "windows",
+            "sourceSha256": "b3dec95041470423bb1eacee5daef33314d733d4cfba6ac6f65ad12ed58e7815",
+            "pngSha256": "f27d9b26d0b0c6ffa67a6e62ffdd38ec0d169256ffdc98bf58b35c78797ebc68",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+          },
+          {
+            "host": "linux",
+            "sourceSha256": "b3dec95041470423bb1eacee5daef33314d733d4cfba6ac6f65ad12ed58e7815",
+            "pngSha256": "f27d9b26d0b0c6ffa67a6e62ffdd38ec0d169256ffdc98bf58b35c78797ebc68",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+          }
+        ]
+      },
+      "postStateConsolidation": [
+        {
+          "host": "windows",
+          "sourceSha256": "66a2ff310948737cfbfc69ea5186163bc33f3faedb129025ed5462fd4acb7b20",
+          "pngSha256": "648dc5e4d86a0a49101208b636f9be81abade035d5f5d8d9c6bd3b2fcea21c80",
+          "changedPixels": 42,
+          "maximumError": 139,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        },
+        {
+          "host": "linux",
+          "sourceSha256": "66a2ff310948737cfbfc69ea5186163bc33f3faedb129025ed5462fd4acb7b20",
+          "pngSha256": "648dc5e4d86a0a49101208b636f9be81abade035d5f5d8d9c6bd3b2fcea21c80",
+          "changedPixels": 42,
+          "maximumError": 139,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        }
+      ]
+    }
+  ],
+  "interpretation": "Overlapping direct paints intersect the image boundary per draw (right-edge alpha192). An enclosing opacity group paints internally and intersects the boundary at restoration (right-edge alpha93 at opacity.73). Both retain corner coverage and shader/packed rounding. A terminal image-alpha multiplication cannot represent both. The existing clip-path machinery reproduces both targets exactly on both platforms.",
+  "nextAcceptance": [
+    "Preserve the source image boundary independently of logical sizing, authored viewBox and output pixel dimensions.",
+    "Keep uniform output scaling and all current text/native targets unchanged.",
+    "Consolidate clip-state save/restore before extending its representation. Preserve allocation enclosures while clearing coverage for isolated sources.",
+    "Use existing per-draw and group-restore clip behavior; do not add a final pixel correction or a new clip framework.",
+    "Avoid allocating a full-surface tape solely for a thin rectangular fringe. Keep per-bitmap border coverage separate from canvas-owned pixels.",
+    "Qualify mask/filter source isolation, binary and AA clips, overlapping paints, group restoration, memory refusal/cancellation/cleanup and retry.",
+    "Recheck all204 hosted originals without retaining their source collection; run milestone native/runtime/package qualification before root promotion."
+  ],
+  "rootModelReview": "root-image-stages.json"
+}

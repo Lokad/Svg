@@ -267,9 +267,14 @@ public static partial class SvgConverter
     /// <summary>Restores one borrowed clip state and owns its replacement coverage until scope exit.
     /// A default frame marks an equivalent clip and owns nothing. The command walker charges
     /// metadata growth and visits, checks cancellation, and releases frames without cancellation.</summary>
-    private readonly record struct ViewportClipFrame(byte[] PreviousPixels, bool PreviousBinary, bool PreviousRectangle,
-        SvgAnalyticClipBounds? PreviousBounds, SvgCpuClipCoverage? PreviousCoverage,
-        RenderBudget.BudgetReservation? Reservation, SvgCpuClipCoverage? Coverage, SvgViewportDrawMap? PreviousDrawMap);
+    private readonly record struct ViewportClipFrame(ViewportClipState Previous,
+        RenderBudget.BudgetReservation? Reservation, SvgCpuClipCoverage? Coverage);
+
+    /// <summary>Borrows one replay scope's coverage, enclosure and drawing map; its frame owns replacement storage.</summary>
+    /// <remarks>Conversion-thread state only. An isolated group can clear the pixel tape while retaining
+    /// the allocation enclosure. Finish every borrower before releasing the frame's coverage and reservation.</remarks>
+    private record struct ViewportClipState(byte[] Pixels, bool IsBinary, bool IsRectangle,
+        SvgAnalyticClipBounds? Bounds, SvgCpuClipCoverage? Coverage, SvgViewportDrawMap? DrawMap);
 
     private enum SourceImageBoundsKind { Recorded, Element }
 
@@ -353,16 +358,12 @@ public static partial class SvgConverter
         bool maskClipAntialiased = false;
         bool maskLuminanceLayer = false;
         bool collectingViewportClip = false;
-        byte[] activeViewportClip = [];
-        bool activeViewportIsBinary = true;
-        bool activeViewportIsRectangle = false;
-        SvgCpuClipCoverage? collectingClipCoverage = null, activeViewportCoverage = null, activeConstructionCoverage = null;
+        ViewportClipState activeViewport = new([], true, false, null, null, null);
+        SvgCpuClipCoverage? collectingClipCoverage = null, activeConstructionCoverage = null;
         byte[] activeConstructionClip = [];
         SvgAnalyticClipBounds? activeConstructionBounds = null;
         SvgCpuClipCoverage? clipWindowCoverage = null;
         SvgAnalyticClipBounds? clipWindowBounds = null;
-        SvgAnalyticClipBounds? activeViewportBounds = null;
-        SvgViewportDrawMap? activeViewportDrawMap = null;
         SvgRecordedPaintValue activePaint = default;
         SvgRecordedPaintValue activeStrokePaint = default;
         SvgPatternTileCache? patternTileCache = null;
@@ -613,7 +614,7 @@ public static partial class SvgConverter
                 sourceRight = Math.Max(sourceRight, Math.Ceiling(nested.Right)); sourceBottom = Math.Max(sourceBottom, Math.Ceiling(nested.Bottom));
             }
             SvgPaintBounds sourceCaptureBounds = new((float)sourceLeft, (float)sourceTop, (float)sourceRight, (float)sourceBottom);
-            bool boundedSource = activeViewportBounds is not null || layerBounds.Left != 0 || layerBounds.Top != 0
+            bool boundedSource = activeViewport.Bounds is not null || layerBounds.Left != 0 || layerBounds.Top != 0
                 || layerBounds.Right != outputWidth || layerBounds.Bottom != outputHeight;
             // Offset replay captures source ink; its native image hint and output
             // clip are computed separately. Enlarging this ink box changes curves.
@@ -674,7 +675,7 @@ public static partial class SvgConverter
             // entire halo makes large blurs needlessly consume unnecessary storage and traversal.
             double requestedLeft = Math.Max(region.Left, layerBounds.Left), requestedTop = Math.Max(region.Top, layerBounds.Top);
             double requestedRight = Math.Min(region.Right, layerBounds.Right), requestedBottom = Math.Min(region.Bottom, layerBounds.Bottom);
-            if (activeViewportBounds is {} filterClip)
+            if (activeViewport.Bounds is {} filterClip)
             {
                 requestedLeft = Math.Max(requestedLeft, filterClip.Left); requestedTop = Math.Max(requestedTop, filterClip.Top);
                 requestedRight = Math.Min(requestedRight, filterClip.Right); requestedBottom = Math.Min(requestedBottom, filterClip.Bottom);
@@ -799,7 +800,7 @@ public static partial class SvgConverter
                     requestedTop = Math.Max(layerBounds.Top, gridRegion.Top + frameTop);
                     requestedRight = Math.Min(layerBounds.Right, gridRegion.Right + frameLeft);
                     requestedBottom = Math.Min(layerBounds.Bottom, gridRegion.Bottom + frameTop);
-                    if (activeViewportBounds is {} nativeClip)
+                    if (activeViewport.Bounds is {} nativeClip)
                     {
                         requestedLeft = Math.Max(requestedLeft, nativeClip.Left); requestedTop = Math.Max(requestedTop, nativeClip.Top);
                         requestedRight = Math.Min(requestedRight, nativeClip.Right); requestedBottom = Math.Min(requestedBottom, nativeClip.Bottom);
@@ -890,7 +891,7 @@ public static partial class SvgConverter
                         if (sx >= MathF.Floor(bounds.Left) && sx < MathF.Ceiling(bounds.Right) && sy >= MathF.Floor(bounds.Top) && sy < MathF.Ceiling(bounds.Bottom))
                         {
                             byte coverage = uniform.Coverage is {} edge ? edge.GetAlpha(sx, sy) : (byte)255;
-                            if (activeViewportClip.Length != 0) coverage = (byte)((coverage * activeViewportClip[target + 3] + 127) / 255);
+                            if (activeViewport.Pixels.Length != 0) coverage = (byte)((coverage * activeViewport.Pixels[target + 3] + 127) / 255);
                             if (coverage == 0) continue;
                             if (uniform.Coverage is not null) uniform.Paint.AsConstant(1f).BlendBitmap(destination.AsSpan(target, 4), coverage);
                             else if (uniform.HighPrecision) uniform.Paint.Blend(destination.AsSpan(target, 4), coverage);
@@ -916,7 +917,7 @@ public static partial class SvgConverter
                     // retain their unquantized transfer route.
                     if (filtered.ColorSpace == SvgFilterColorSpace.Srgb && terminalPaint is {} sample && opacity == 1)
                     {
-                        sample.Blend(destination.AsSpan(target, 4), activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[target + 3]);
+                        sample.Blend(destination.AsSpan(target, 4), activeViewport.Pixels.Length == 0 ? (byte)255 : activeViewport.Pixels[target + 3]);
                         continue;
                     }
                     if (finalSourceColorFilter && terminalPaint is {} aliasPaint)
@@ -928,9 +929,9 @@ public static partial class SvgConverter
                     // A stored filter image uses native packed-lane alpha modulation;
                     // unquantized shader results above retain their separate float route.
                     int opacityScale = Math.Clamp((int)MathF.Floor(opacity * 255 + .5f), 0, 255) + 1;
-                    if (activeViewportClip.Length != 0)
+                    if (activeViewport.Pixels.Length != 0)
                     {
-                        byte clip = activeViewportClip[target + 3];
+                        byte clip = activeViewport.Pixels[target + 3];
                         if (clip != 0) BlendClippedLayerPixel(destination.AsSpan(target, 4), restoredPixel, (byte)(opacityScale - 1), 255, clip);
                         continue;
                     }
@@ -1076,7 +1077,7 @@ public static partial class SvgConverter
                     if (nativeImage.Right <= nativeImage.Left || nativeImage.Bottom <= nativeImage.Top) return;
                     SvgPaintBounds desired = new(Math.Max(layerBounds.Left, bitmap.BitmapClip.Left), Math.Max(layerBounds.Top, bitmap.BitmapClip.Top),
                         Math.Min(layerBounds.Right, bitmap.BitmapClip.Right), Math.Min(layerBounds.Bottom, bitmap.BitmapClip.Bottom));
-                    if (activeViewportBounds is {} clip)
+                    if (activeViewport.Bounds is {} clip)
                         desired = new(MathF.Max(desired.Left, clip.Left), MathF.Max(desired.Top, clip.Top), MathF.Min(desired.Right, clip.Right), MathF.Min(desired.Bottom, clip.Bottom));
                     desired = desired.Map(new(inverse.ScaleX, inverse.SkewY, inverse.SkewX, inverse.ScaleY, inverse.TranslateX, inverse.TranslateY), cancellationToken);
                     bool deferredSource = resource.Primitives.Items.Length > 0 && resource.Primitives.Items[^1].Kind == SvgFilterPrimitiveKind.Offset
@@ -1180,7 +1181,7 @@ public static partial class SvgConverter
                     edgePoints[2] = SvgAuthoredPath.MapPoint(edgeMap, new(imageWidth, imageHeight), new(0, 0));
                     edgePoints[3] = SvgAuthoredPath.MapPoint(edgeMap, new(0, imageHeight), new(0, 0));
                     SvgAnalyticClipBounds edgeArea = new(restoreLeft, restoreTop, restoreRight, restoreBottom);
-                    if (activeViewportBounds is {} imageClip)
+                    if (activeViewport.Bounds is {} imageClip)
                         edgeArea = new(Math.Max(edgeArea.Left, imageClip.Left), Math.Max(edgeArea.Top, imageClip.Top),
                             Math.Min(edgeArea.Right, imageClip.Right), Math.Min(edgeArea.Bottom, imageClip.Bottom));
                     SvgAnalyticClipBounds dispatch = new(
@@ -1194,7 +1195,7 @@ public static partial class SvgConverter
                     bool edgeEligible = true;
                     // Image geometry is antialiased independently of clip type;
                     // only an actual AA clip selects its RLE accumulation path.
-                    SvgAnalyticPaintClip edgePaintClip = activeViewportClip.Length != 0 && !activeViewportIsBinary
+                    SvgAnalyticPaintClip edgePaintClip = activeViewport.Pixels.Length != 0 && !activeViewport.IsBinary
                         ? SvgAnalyticPaintClip.Antialiased : SvgAnalyticPaintClip.Binary;
                     using SvgAnalyticCoverage edgeWalker = imageEdges ? SvgAnalyticCoverage.Prepare(ref edgePreparation, restoreLeft, restoreRight, restoreTop, restoreBottom,
                         new(restoreLeft, restoreRight), new SvgAnalyticClipContext(edgeArea), edgePaintClip,
@@ -1212,7 +1213,7 @@ public static partial class SvgConverter
                         {
                             if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                             int target = (y * outputWidth + x) * 4;
-                            byte clipCoverage = activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[target + 3];
+                            byte clipCoverage = activeViewport.Pixels.Length == 0 ? (byte)255 : activeViewport.Pixels[target + 3];
                             Span<byte> destinationPixel = destination.AsSpan(target, 4);
                             Span<byte> paintTarget = opacityLayer ? opacityPixel : destinationPixel;
                             if (opacityLayer) opacityPixel.Clear();
@@ -1260,7 +1261,7 @@ public static partial class SvgConverter
                             {
                                 // The enclosing layer stores converted/covered pixels
                                 // before packed paint-alpha modulation.
-                                if (activeViewportClip.Length == 0) RestoreOpacityLayerPixel(destinationPixel, opacityPixel, (byte)opacity);
+                                if (activeViewport.Pixels.Length == 0) RestoreOpacityLayerPixel(destinationPixel, opacityPixel, (byte)opacity);
                                 else BlendClippedLayerPixel(destinationPixel, opacityPixel, (byte)opacity, 255, clipCoverage);
                             }
                         }
@@ -1349,7 +1350,7 @@ public static partial class SvgConverter
                                     walker.PaintPixel(x - area.Left, clipPixel, SvgAnalyticPaint.Solid(new(0, 0, 0, 255)), SvgAnalyticClipCoverage.Full);
                                     coverage = clipPixel[3];
                                 }
-                                if (activeViewportClip.Length != 0) coverage = (byte)((coverage * activeViewportClip[(y * outputWidth + x) * 4 + 3] + 127) / 255);
+                                if (activeViewport.Pixels.Length != 0) coverage = (byte)((coverage * activeViewport.Pixels[(y * outputWidth + x) * 4 + 3] + 127) / 255);
                                 Span<byte> target = destination.AsSpan((y * outputWidth + x) * 4, 4);
                                 if (opacityLayer)
                                 {
@@ -1506,7 +1507,7 @@ public static partial class SvgConverter
                         }
                         if (!linear)
                         {
-                            SvgAnalyticPaintClip imagePaintClip = deferred.Constant is not null || cropped || activeViewportClip.Length != 0 && !activeViewportIsBinary
+                            SvgAnalyticPaintClip imagePaintClip = deferred.Constant is not null || cropped || activeViewport.Pixels.Length != 0 && !activeViewport.IsBinary
                                 ? SvgAnalyticPaintClip.Antialiased : SvgAnalyticPaintClip.Binary;
                             walker = SvgAnalyticCoverage.Prepare(ref imagePreparation, area.Left, area.Right, area.Top, area.Bottom,
                                 new(area.Left, area.Right), new SvgAnalyticClipContext(imageClip, bitmap.Origin), imagePaintClip,
@@ -1582,7 +1583,7 @@ public static partial class SvgConverter
                                         walker.PaintPixel(x - area.Left, edgePixel, SvgAnalyticPaint.Solid(new(0, 0, 0, 255)), SvgAnalyticClipCoverage.Full);
                                         sampledCoverage = (byte)((sampledCoverage * edgePixel[3] + 127) / 255);
                                     }
-                                    if (activeViewportClip.Length != 0) sampledCoverage = (byte)((sampledCoverage * activeViewportClip[(y * outputWidth + x) * 4 + 3] + 127) / 255);
+                                    if (activeViewport.Pixels.Length != 0) sampledCoverage = (byte)((sampledCoverage * activeViewport.Pixels[(y * outputWidth + x) * 4 + 3] + 127) / 255);
                                     Span<byte> opacityTarget = destination.AsSpan((y * outputWidth + x) * 4, 4);
                                     if (command.SourceOpacity.Value * foldedOpacity < 1)
                                     {
@@ -1599,7 +1600,7 @@ public static partial class SvgConverter
                                     // samples through interpolation and the final store.
                                     (u, v) = inverse.Map(px, py);
                                     byte clipCoverage = cropped ? cropRow[(x - area.Left) * 4 + 3] : (byte)255;
-                                    if (activeViewportClip.Length != 0) clipCoverage = (byte)((clipCoverage * activeViewportClip[(y * outputWidth + x) * 4 + 3] + 127) / 255);
+                                    if (activeViewport.Pixels.Length != 0) clipCoverage = (byte)((clipCoverage * activeViewport.Pixels[(y * outputWidth + x) * 4 + 3] + 127) / 255);
                                     SvgShaderPaint sampled = SvgShaderPaint.SampleAffine(image.Pixels, image.Width, image.Height, u, v,
                                         new((int)deferred.SourceBounds.Left - 1, (int)deferred.SourceBounds.Top - 1), 1f);
                                     Span<byte> opacityTarget = destination.AsSpan((y * outputWidth + x) * 4, 4);
@@ -1626,7 +1627,7 @@ public static partial class SvgConverter
                                         ? new(image.Pixels[at], image.Pixels[at + 1], image.Pixels[at + 2], image.Pixels[at + 3]) : default;
                                 }
                                 byte coverage = cropped ? cropRow[(x - area.Left) * 4 + 3] : (byte)255;
-                                if (activeViewportClip.Length != 0) coverage = (byte)((coverage * activeViewportClip[(y * outputWidth + x) * 4 + 3] + 127) / 255);
+                                if (activeViewport.Pixels.Length != 0) coverage = (byte)((coverage * activeViewport.Pixels[(y * outputWidth + x) * 4 + 3] + 127) / 255);
                                 Span<byte> target = destination.AsSpan((y * outputWidth + x) * 4, 4);
                                 if (command.SourceOpacity.Value * foldedOpacity < 1)
                                 {
@@ -1724,7 +1725,7 @@ public static partial class SvgConverter
                 SvgRoot scene = root with { Commands = commands};
                 SvgAnalyticClipBounds requested = new(Math.Max(layerBounds.Left, ClampFloor(region.Left, outputWidth)), Math.Max(layerBounds.Top, ClampFloor(region.Top, outputHeight)),
                     Math.Min(layerBounds.Right, ClampCeiling(region.Right, outputWidth)), Math.Min(layerBounds.Bottom, ClampCeiling(region.Bottom, outputHeight)));
-                if (activeViewportBounds is {} viewport)
+                if (activeViewport.Bounds is {} viewport)
                     requested = new(Math.Max(requested.Left, viewport.Left), Math.Max(requested.Top, viewport.Top), Math.Min(requested.Right, viewport.Right), Math.Min(requested.Bottom, viewport.Bottom));
                 if (requested.Right <= requested.Left || requested.Bottom <= requested.Top) return true;
                 foreach (SvgCpuRasterContext bitmap in rasterGrid.GetContexts(requested))
@@ -1732,7 +1733,7 @@ public static partial class SvgConverter
                     cancellationToken.ThrowIfCancellationRequested();
                     SvgAnalyticClipBounds clip = new(Math.Max(requested.Left, bitmap.BitmapClip.Left), Math.Max(requested.Top, bitmap.BitmapClip.Top),
                         Math.Min(requested.Right, bitmap.BitmapClip.Right), Math.Min(requested.Bottom, bitmap.BitmapClip.Bottom));
-                    if (activeViewportCoverage is {} coverage && coverage.TryGetBounds(bitmap.BitmapClip, out SvgAnalyticClipBounds bounded))
+                    if (activeViewport.Coverage is {} coverage && coverage.TryGetBounds(bitmap.BitmapClip, out SvgAnalyticClipBounds bounded))
                         clip = new(Math.Max(clip.Left, bounded.Left), Math.Max(clip.Top, bounded.Top), Math.Min(clip.Right, bounded.Right), Math.Min(clip.Bottom, bounded.Bottom));
                     if (clip.Right <= clip.Left || clip.Bottom <= clip.Top) continue;
                     SvgRenderLimits original = options.Limits;
@@ -1756,7 +1757,7 @@ public static partial class SvgConverter
                         {
                             int at = ((y - oy) * result.Width + x - ox) * 4;
                             int destinationIndex = (y * outputWidth + x) * 4;
-                            byte alpha = activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[destinationIndex + 3];
+                            byte alpha = activeViewport.Pixels.Length == 0 ? (byte)255 : activeViewport.Pixels[destinationIndex + 3];
                             if (alpha != 0) BlendClippedLayerPixel(destination.AsSpan(destinationIndex, 4), result.Pixels.AsSpan(at, 4), 255, 255, alpha);
                         }
                     }
@@ -1826,7 +1827,7 @@ public static partial class SvgConverter
                 }
                 SvgAnalyticClipBounds requested = new(Math.Max(layerBounds.Left, ClampFloor(region.Left, outputWidth)), Math.Max(layerBounds.Top, ClampFloor(region.Top, outputHeight)),
                     Math.Min(layerBounds.Right, ClampCeiling(region.Right, outputWidth)), Math.Min(layerBounds.Bottom, ClampCeiling(region.Bottom, outputHeight)));
-                if (activeViewportBounds is {} outputClip)
+                if (activeViewport.Bounds is {} outputClip)
                     requested = new(Math.Max(requested.Left, outputClip.Left), Math.Max(requested.Top, outputClip.Top),
                         Math.Min(requested.Right, outputClip.Right), Math.Min(requested.Bottom, outputClip.Bottom));
                 if (requested.Right <= requested.Left || requested.Bottom <= requested.Top) return true;
@@ -1877,7 +1878,7 @@ public static partial class SvgConverter
                         MathF.Min(requested.Right, tile.BitmapClip.Right), MathF.Min(requested.Bottom, tile.BitmapClip.Bottom));
                     // Each compositor bitmap owns its clipped request and image origin.
                     cancellationToken.ThrowIfCancellationRequested();
-                    if (activeViewportCoverage is {} clipCoverage && clipCoverage.TryGetBounds(tile.BitmapClip, out SvgAnalyticClipBounds bitmapClip))
+                    if (activeViewport.Coverage is {} clipCoverage && clipCoverage.TryGetBounds(tile.BitmapClip, out SvgAnalyticClipBounds bitmapClip))
                         requestedSource = new(MathF.Max(requestedSource.Left, bitmapClip.Left), MathF.Max(requestedSource.Top, bitmapClip.Top),
                             MathF.Min(requestedSource.Right, bitmapClip.Right), MathF.Min(requestedSource.Bottom, bitmapClip.Bottom));
                     if (requestedSource.Right <= requestedSource.Left || requestedSource.Bottom <= requestedSource.Top) continue;
@@ -1953,7 +1954,7 @@ public static partial class SvgConverter
                         cancellationToken.ThrowIfCancellationRequested();
                         for (int x = restoreLeft; x < restoreRight; x++)
                         {
-                            byte coverage = activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[(y * outputWidth + x) * 4 + 3];
+                            byte coverage = activeViewport.Pixels.Length == 0 ? (byte)255 : activeViewport.Pixels[(y * outputWidth + x) * 4 + 3];
                             // The packed blitter consumes nonzero AA runs. A zero
                             // run must leave an already-painted backdrop untouched.
                             if (coverage == 0) continue;
@@ -2145,7 +2146,7 @@ public static partial class SvgConverter
             bool painted = SvgHairlineStroke.TryRasterize(source,
                 SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(sourcePlacement),
                 ref shader, clip is {} bounds ? MapClipBounds(bounds, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
-                clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewportClip, activeViewportIsBinary,
+                clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewport.Pixels, activeViewport.IsBinary,
                 destination, outputWidth, outputHeight, cancellationToken);
             return painted;
         }
@@ -2581,7 +2582,7 @@ public static partial class SvgConverter
                             && (uint)command.MaskContentIndex < (uint)maskStorage.MaskContents.Length && maskStorage.MaskContents[command.MaskContentIndex].UsesAffineTarget;
                         bool paintedClipMask = command.RegionKind == SvgLayerRegionKind.ClipMask;
                         SvgAnalyticClipBounds layer = affineViewportClip ? previousLayer : LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion, command.RegionKind);
-                        if (activeViewportBounds is {} inheritedBounds)
+                        if (activeViewport.Bounds is {} inheritedBounds)
                         {
                             int left = Math.Max(layer.Left, inheritedBounds.Left), top = Math.Max(layer.Top, inheritedBounds.Top);
                             layer = new(left, top, Math.Max(left, Math.Min(layer.Right, inheritedBounds.Right)), Math.Max(top, Math.Min(layer.Bottom, inheritedBounds.Bottom)));
@@ -2625,9 +2626,7 @@ public static partial class SvgConverter
                             try
                             {
                                 byte[] clipPixels = new byte[surfaceByteCount];
-                                byte[] previousClip = activeViewportClip;
-                                bool previousBinary = activeViewportIsBinary;
-                                bool previousRectangle = activeViewportIsRectangle;
+                                ViewportClipState previousViewport = activeViewport;
                                 bool binaryClip;
                                 if (viewportContent is {} clipContent)
                                     clipCoverage = RasterizeMaskContent(clipContent, clipPixels, true, clipContent.ClipKind is SvgClipContentKind.AffineViewport or SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion ? layer : previousLayer, SvgAnalyticPaintClip.Antialiased, [], out binaryClip);
@@ -2651,44 +2650,37 @@ public static partial class SvgConverter
                                         }
                                     }
                                 }
-                                if (previousClip.Length != 0 && (viewportContent is not {} boundedClip || boundedClip.BoundsClipContentIndex < 0))
+                                if (previousViewport.Pixels.Length != 0 && (viewportContent is not {} boundedClip || boundedClip.BoundsClipContentIndex < 0))
                                 {
                                     for (int pixel = 0; pixel < pixelCount; pixel++)
                                     {
                                         cancellationToken.ThrowIfCancellationRequested();
                                         int offset = pixel * 4 + 3;
-                                        clipPixels[offset] = (byte)((clipPixels[offset] * previousClip[offset] + 127) / 255);
+                                        clipPixels[offset] = (byte)((clipPixels[offset] * previousViewport.Pixels[offset] + 127) / 255);
                                     }
                                     if (clipCoverage is not null)
                                     {
-                                        clipCoverage.IntersectAndTrim(activeViewportCoverage, previousClip, clipPixels, outputWidth,
+                                        clipCoverage.IntersectAndTrim(previousViewport.Coverage, previousViewport.Pixels, clipPixels, outputWidth,
                                             cancellationToken);
                                     }
                                 }
                                 layer = CoverageBounds(clipPixels, layer, out bool rectangleClip);
-                                SvgAnalyticClipBounds? previousBounds = activeViewportBounds;
-                                SvgCpuClipCoverage? previousCoverage = activeViewportCoverage;
-                                bool equivalent = binaryClip && previousBinary && rectangleClip && previousRectangle && previousBounds == layer
-                                    && (viewportContent?.DrawMap is null || viewportContent?.DrawMap == activeViewportDrawMap);
+                                bool equivalent = binaryClip && previousViewport.IsBinary && rectangleClip && previousViewport.IsRectangle && previousViewport.Bounds == layer
+                                    && (viewportContent?.DrawMap is null || viewportContent?.DrawMap == activeViewport.DrawMap);
                                 clipFrames ??= new(budget, SvgMemoryCategory.Surface, cancellationToken);
                                 cancellationToken.ThrowIfCancellationRequested();
                                 int beforeCount = clipFrames.Count;
                                 try
                                 {
-                                    clipFrames.Add(equivalent ? default : new(previousClip, previousBinary, previousRectangle,
-                                        previousBounds, previousCoverage, clipReservation, clipCoverage, activeViewportDrawMap));
+                                    clipFrames.Add(equivalent ? default : new(previousViewport, clipReservation, clipCoverage));
                                 }
                                 finally
                                 {
                                     transferred = !equivalent && clipFrames.Count > beforeCount;
                                 }
                                 if (equivalent) continue;
-                                activeViewportCoverage = clipCoverage;
-                                activeViewportClip = clipPixels;
-                                activeViewportIsBinary = binaryClip && previousBinary;
-                                activeViewportIsRectangle = rectangleClip;
-                                activeViewportBounds = layer;
-                                activeViewportDrawMap = viewportContent?.DrawMap ?? activeViewportDrawMap;
+                                activeViewport = new(clipPixels, binaryClip && previousViewport.IsBinary, rectangleClip,
+                                    layer, clipCoverage, viewportContent?.DrawMap ?? previousViewport.DrawMap);
                                 continue;
                             }
                             finally
@@ -2698,17 +2690,15 @@ public static partial class SvgConverter
                         }
                         using RenderBudget.BudgetReservation groupReservation = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
                         byte[] groupPixels = new byte[checked(pixelCount * 4)];
-                        byte[] parentViewportClip = activeViewportClip;
+                        ViewportClipState parentViewport = activeViewport;
+                        byte[] parentViewportClip = parentViewport.Pixels;
                         // A native layer can restore as a sprite when its entire
                         // bitmap lies inside opaque runs of an otherwise AA clip.
-                        bool parentRequiresShader = !paintedClipMask && parentViewportClip.Length != 0 && !activeViewportIsBinary
+                        bool parentRequiresShader = !paintedClipMask && parentViewportClip.Length != 0 && !activeViewport.IsBinary
                             && !IsOpaqueClipRectangle(parentViewportClip, layer);
-                        bool sourcePreviousBinary = activeViewportIsBinary, sourcePreviousRectangle = activeViewportIsRectangle;
-                        SvgAnalyticClipBounds? sourcePreviousBounds = activeViewportBounds;
-                        SvgCpuClipCoverage? sourcePreviousCoverage = activeViewportCoverage;
                         byte[] sourcePaintClipPixels = [];
                         RenderBudget.BudgetReservation? sourcePaintClipOwner = null;
-                        activeViewportClip = paintedClipMask ? parentViewportClip : [];
+                        activeViewport = parentViewport with { Pixels = paintedClipMask ? parentViewportClip : [] };
                         layerBounds = layer;
                         // An inner isolated surface paints before its parent's clip;
                         // folded single paints keep the existing consumer instead.
@@ -2754,16 +2744,14 @@ public static partial class SvgConverter
                         using RenderBudget.BudgetReservation? sourcePaintClipLease = sourcePaintClipOwner;
                         if (sourcePaintClipPixels.Length != 0)
                         {
-                            activeViewportClip = sourcePaintClipPixels;
-                            activeViewportIsBinary = false; activeViewportIsRectangle = true;
-                            activeViewportBounds = layer; activeViewportCoverage = null;
+                            activeViewport.Pixels = sourcePaintClipPixels;
+                            activeViewport.IsBinary = false; activeViewport.IsRectangle = true;
+                            activeViewport.Bounds = layer; activeViewport.Coverage = null;
                         }
                         try { index = RenderCommands(index, groupPixels, true); }
                         finally
                         {
-                            layerBounds = previousLayer; activeViewportClip = parentViewportClip; maskClipAntialiased = previousMaskClip;
-                            activeViewportIsBinary = sourcePreviousBinary; activeViewportIsRectangle = sourcePreviousRectangle;
-                            activeViewportBounds = sourcePreviousBounds; activeViewportCoverage = sourcePreviousCoverage;
+                            layerBounds = previousLayer; activeViewport = parentViewport; maskClipAntialiased = previousMaskClip;
                         }
                         // Skia hard-rectangle clipping rounds each mapped edge to the nearest integer
                         // (Copyright 2006 The Android Open Source Project; see THIRD_PARTY_NOTICES.txt);
@@ -2876,12 +2864,7 @@ public static partial class SvgConverter
             void RestoreViewportClip(ViewportClipFrame saved)
             {
                 if (saved.Reservation is not {} reservation) return;
-                activeViewportClip = saved.PreviousPixels;
-                activeViewportIsBinary = saved.PreviousBinary;
-                activeViewportIsRectangle = saved.PreviousRectangle;
-                activeViewportBounds = saved.PreviousBounds;
-                activeViewportDrawMap = saved.PreviousDrawMap;
-                activeViewportCoverage = saved.PreviousCoverage;
+                activeViewport = saved.Previous;
                 saved.Coverage?.Dispose();
                 reservation.Dispose();
             }
@@ -2930,21 +2913,20 @@ public static partial class SvgConverter
             binaryViewport = content.ClipKind is SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion;
             ReleasePatternTile();
             nextPatternTile = null;
-            byte[] previousClip = activeViewportClip, previousConstruction = activeConstructionClip;
-            SvgAnalyticClipBounds? previousBounds = activeViewportBounds, previousConstructionBounds = activeConstructionBounds;
-            SvgCpuClipCoverage? previousCollected = collectingClipCoverage, previousCoverage = activeViewportCoverage,
-                previousConstructionCoverage = activeConstructionCoverage;
+            ViewportClipState previousViewport = activeViewport;
+            byte[] previousConstruction = activeConstructionClip;
+            SvgAnalyticClipBounds? previousConstructionBounds = activeConstructionBounds;
+            SvgCpuClipCoverage? previousCollected = collectingClipCoverage, previousConstructionCoverage = activeConstructionCoverage;
             SvgCpuClipCoverage? previousWindowCoverage = clipWindowCoverage;
             SvgAnalyticClipBounds? previousWindowBounds = clipWindowBounds;
             // A native clip builds within the parent bitmap's nonzero bounds.
             // Coverage intersects afterward; the bitmap origin stays unchanged.
-            clipWindowCoverage = viewport ? previousCoverage ?? clipWindowCoverage : null;
-            clipWindowBounds = viewport ? previousBounds ?? clipWindowBounds : null;
+            clipWindowCoverage = viewport ? previousViewport.Coverage ?? clipWindowCoverage : null;
+            clipWindowBounds = viewport ? previousViewport.Bounds ?? clipWindowBounds : null;
             SvgCpuClipCoverage? previousLayerClipCoverage = layerClipCoverage;
-            if (!viewport) layerClipCoverage = previousCoverage ?? layerClipCoverage;
+            if (!viewport) layerClipCoverage = previousViewport.Coverage ?? layerClipCoverage;
             float previousOpacity = foldedOpacity;
             bool previousCollector = collectingViewportClip;
-            bool previousBinary = activeViewportIsBinary, previousRectangle = activeViewportIsRectangle;
 
             bool previousMaskClip = maskClipAntialiased;
             // Alpha-only mask replay retains the source's native paint-clip consumer.
@@ -2954,8 +2936,7 @@ public static partial class SvgConverter
             maskLuminanceLayer = content.UsesAffineTarget && !content.IsAlpha;
             SvgAnalyticClipBounds previousLayer = layerBounds;
             SvgRoot previousRoot = root;
-            SvgViewportDrawMap? previousDrawMap = activeViewportDrawMap;
-            activeViewportDrawMap = viewport ? content.DrawMap ?? previousDrawMap : null;
+            activeViewport.DrawMap = viewport ? content.DrawMap ?? previousViewport.DrawMap : null;
             double previousScaleX = horizontalScale, previousScaleY = verticalScale, previousOffsetX = horizontalOffset, previousOffsetY = verticalOffset;
             SvgAffineTransform maskMap = content.CoordinateMap;
             if (!maskMap.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned mask replay maps are implemented.");
@@ -2963,11 +2944,11 @@ public static partial class SvgConverter
             verticalOffset += maskMap.F * verticalScale;
             horizontalScale *= maskMap.A;
             verticalScale *= maskMap.D;
-            activeViewportClip = []; activeViewportBounds = null; activeViewportCoverage = null; foldedOpacity = 1;
+            activeViewport.Pixels = []; activeViewport.Bounds = null; activeViewport.Coverage = null; foldedOpacity = 1;
             if (!viewport && content.IsAlpha && sourcePaintClipPixels.Length != 0)
             {
-                activeViewportClip = sourcePaintClipPixels; activeViewportBounds = contentBounds;
-                activeViewportIsBinary = false; activeViewportIsRectangle = true;
+                activeViewport.Pixels = sourcePaintClipPixels; activeViewport.Bounds = contentBounds;
+                activeViewport.IsBinary = false; activeViewport.IsRectangle = true;
             }
             activeConstructionClip = []; activeConstructionBounds = null; activeConstructionCoverage = null;
             collectingViewportClip = viewport; collectingClipCoverage = null;
@@ -2982,7 +2963,7 @@ public static partial class SvgConverter
                     coverage = new(rasterGrid, budget);
                     collectingClipCoverage = coverage;
                 }
-                if (viewport && activeViewportIsBinary && content.ClipKind == SvgClipContentKind.AffineViewport
+                if (viewport && activeViewport.IsBinary && content.ClipKind == SvgClipContentKind.AffineViewport
                     && content.Geometries.Length == 1 && content.Geometries[0].AuthoredPath is { IsKnownConvex: true } rectangle
                     && rectangle.Commands.Length == 5)
                 {
@@ -3002,17 +2983,17 @@ public static partial class SvgConverter
                     // Native clipPath constructs against the already clipped enclosing rectangle.
                     // Its bounds and border bytes belong to each bitmap; its alpha remains separate.
                     boundsCoverage = RasterizeMaskContent(storage.MaskContents[content.BoundsClipContentIndex], boundsPixels, true, contentBounds, SvgAnalyticPaintClip.Antialiased, [], out _);
-                    if (viewport && previousClip.Length != 0)
+                    if (viewport && previousViewport.Pixels.Length != 0)
                     {
                         for (int pixel = 0; pixel < pixelCount; pixel++)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             int offset = pixel * 4 + 3;
-                            boundsPixels[offset] = (byte)((boundsPixels[offset] * previousClip[offset] + 127) / 255);
+                            boundsPixels[offset] = (byte)((boundsPixels[offset] * previousViewport.Pixels[offset] + 127) / 255);
                         }
                         if (boundsCoverage is not null)
                         {
-                            boundsCoverage.IntersectAndTrim(previousCoverage, previousClip, boundsPixels, outputWidth,
+                            boundsCoverage.IntersectAndTrim(previousViewport.Coverage, previousViewport.Pixels, boundsPixels, outputWidth,
                                 cancellationToken);
                         }
                     }
@@ -3068,13 +3049,11 @@ public static partial class SvgConverter
                 collectingClipCoverage = previousCollected;
                 activeConstructionClip = previousConstruction; activeConstructionBounds = previousConstructionBounds;
                 activeConstructionCoverage = previousConstructionCoverage;
-                activeViewportClip = previousClip; activeViewportBounds = previousBounds; activeViewportCoverage = previousCoverage;
+                activeViewport = previousViewport;
                 foldedOpacity = previousOpacity; collectingViewportClip = previousCollector; root = previousRoot;
-                activeViewportDrawMap = previousDrawMap;
                 horizontalScale = previousScaleX; verticalScale = previousScaleY; horizontalOffset = previousOffsetX; verticalOffset = previousOffsetY;
                 layerBounds = previousLayer;
                 maskClipAntialiased = previousMaskClip;
-                activeViewportIsBinary = previousBinary; activeViewportIsRectangle = previousRectangle;
                 maskLuminanceLayer = previousLuminanceLayer;
                 ReleasePatternTile();
             }
@@ -3102,14 +3081,14 @@ public static partial class SvgConverter
 
         SvgAffineTransform MapSourceTransform(SvgAffineTransform output, SvgAffineTransform target)
         {
-            if (activeViewportDrawMap is not {} viewport) return output.ComposeChecked(target);
+            if (activeViewport.DrawMap is not {} viewport) return output.ComposeChecked(target);
             cancellationToken.ThrowIfCancellationRequested();
             return viewport.Prepare(output, target);
         }
 
         SvgShaderMatrix? NativeViewportReference(SvgAffineTransform target)
         {
-            if (activeViewportDrawMap is null) return null;
+            if (activeViewport.DrawMap is null) return null;
             SvgAffineTransform output = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (sourcePlacement != SvgAffineTransform.Identity) output = output.ComposeChecked(sourcePlacement);
             return SvgShaderMatrix.FromAffine(MapSourceTransform(output, target));
@@ -3117,7 +3096,7 @@ public static partial class SvgConverter
 
         SvgShaderMatrix? NativeRadialViewportReference(SvgRadialGradient gradient, SvgRectangle box)
         {
-            if (activeViewportDrawMap is null || gradient.NativePaintMatrices is not {} matrices) return null;
+            if (activeViewport.DrawMap is null || gradient.NativePaintMatrices is not {} matrices) return null;
             SvgAffineTransform target = matrices.Referencing;
             // Object-box matrices reference normalized paint coordinates. Convert
             // those to scene units before shared viewport draw preparation.
@@ -3132,10 +3111,10 @@ public static partial class SvgConverter
             if (!reusablePattern || patternTileCache is {} retained && !retained.MatchesSource(geometry.Pattern)) ReleasePatternTile();
             SvgRecordedPaintValue previousPaint = activePaint;
             SvgRecordedPaintValue previousStroke = activeStrokePaint;
-            SvgViewportDrawMap? previousDrawMap = activeViewportDrawMap;
+            SvgViewportDrawMap? previousDrawMap = activeViewport.DrawMap;
             activePaint = GetRecordedPaintValue(geometry.RecordedPaint);
             activeStrokePaint = GetRecordedPaintValue(geometry.RecordedStrokePaint);
-            activeViewportDrawMap = activePaint.DrawMap?.Map ?? activeViewportDrawMap;
+            activeViewport.DrawMap = activePaint.DrawMap?.Map ?? activeViewport.DrawMap;
             try
             {
                 bool combined = geometry.Kind switch
@@ -3154,7 +3133,7 @@ public static partial class SvgConverter
                 }
                 else RasterizeGeometryCore(geometry, destination, SvgPaintPass.All);
             }
-            finally { activePaint = previousPaint; activeStrokePaint = previousStroke; activeViewportDrawMap = previousDrawMap; }
+            finally { activePaint = previousPaint; activeStrokePaint = previousStroke; activeViewport.DrawMap = previousDrawMap; }
         }
 
         void RasterizeGeometryCore(SvgGeometry geometry, byte[] destination, SvgPaintPass pass)
@@ -3167,7 +3146,7 @@ public static partial class SvgConverter
                 bool rendered = stroke.HasFill && SvgHairlineStroke.TryRasterize(centerline,
                     SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(sourcePlacement), ResolveSolidColor(stroke.Color), surfaceMode == RasterSurfaceMode.PremultipliedPattern ? PatternSolidPaint(stroke.Color) : null,
                     stroke.Clip is SvgClipBox clip ? MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
-                    stroke.Clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewportClip, activeViewportIsBinary, destination, outputWidth, outputHeight, cancellationToken);
+                    stroke.Clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewport.Pixels, activeViewport.IsBinary, destination, outputWidth, outputHeight, cancellationToken);
                 if (rendered) return;
             }
             switch (geometry.Kind)
@@ -3544,7 +3523,7 @@ public static partial class SvgConverter
             if (replay is not null)
             {
                 bool binaryViewport = clip is {} binaryClip && (binaryClip.Antialiasing & SvgClipAntialiasing.Binary) != 0
-                    || activeViewportClip.Length != 0 && activeViewportIsBinary;
+                    || activeViewport.Pixels.Length != 0 && activeViewport.IsBinary;
                 SvgAffineTransform outputMap = coordinateSpace == PathCoordinateSpace.Device ? SvgAffineTransform.Identity : binaryViewport
                     ? SvgAffineTransform.FromScaleOffset((float)horizontalScale, (float)verticalScale, (float)horizontalOffset, (float)verticalOffset)
                     : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
@@ -3692,7 +3671,7 @@ public static partial class SvgConverter
         // Borrow the current viewport tape; its scope owner charges preparation/intersection and
         // releases it after command replay. Each raster consumer's existing pixel charge covers lookup.
         byte ViewportAlpha(byte alpha, int x, int y)
-            => activeViewportClip.Length == 0 ? alpha : (byte)((alpha * activeViewportClip[(y * outputWidth + x) * 4 + 3] + 127) / 255);
+            => activeViewport.Pixels.Length == 0 ? alpha : (byte)((alpha * activeViewport.Pixels[(y * outputWidth + x) * 4 + 3] + 127) / 255);
 
         bool IsOpaqueClipRectangle(byte[] pixels, SvgAnalyticClipBounds bounds)
         {
@@ -3711,8 +3690,8 @@ public static partial class SvgConverter
         {
             SvgAnalyticClipCoverage coverage = raster.Clip is null ? SvgAnalyticClipCoverage.Full
                 : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y);
-            return activeViewportClip.Length == 0 ? coverage
-                : SvgAnalyticClipCoverage.FromMask(coverage.Apply(activeViewportClip[(y * outputWidth + x) * 4 + 3]));
+            return activeViewport.Pixels.Length == 0 ? coverage
+                : SvgAnalyticClipCoverage.FromMask(coverage.Apply(activeViewport.Pixels[(y * outputWidth + x) * 4 + 3]));
         }
 
         SvgAnalyticClipBounds CoverageBounds(byte[] pixels, SvgAnalyticClipBounds area, out bool rectangle)
@@ -3740,12 +3719,12 @@ public static partial class SvgConverter
 
         SvgAnalyticClipBounds? ActiveClipBounds(SvgCpuRasterContext context)
         {
-            SvgCpuClipCoverage? coverage = activeConstructionClip.Length != 0 ? activeConstructionCoverage : activeViewportCoverage;
-            SvgAnalyticClipBounds? current = activeConstructionClip.Length != 0 ? activeConstructionBounds : activeViewportBounds;
+            SvgCpuClipCoverage? coverage = activeConstructionClip.Length != 0 ? activeConstructionCoverage : activeViewport.Coverage;
+            SvgAnalyticClipBounds? current = activeConstructionClip.Length != 0 ? activeConstructionBounds : activeViewport.Bounds;
             if (coverage is not null && coverage.TryGetBounds(context.BitmapClip, out SvgAnalyticClipBounds local)) current = local;
             else
             {
-                byte[] tape = activeConstructionClip.Length != 0 ? activeConstructionClip : activeViewportClip;
+                byte[] tape = activeConstructionClip.Length != 0 ? activeConstructionClip : activeViewport.Pixels;
                 if (tape.Length != 0 && current is {} bounds)
                 {
                     int left = Math.Max(bounds.Left, context.BitmapClip.Left), top = Math.Max(bounds.Top, context.BitmapClip.Top);
@@ -3765,13 +3744,13 @@ public static partial class SvgConverter
         {
             if (collectingViewportClip || maskClipAntialiased) return SvgAnalyticPaintClip.Antialiased;
             SvgAnalyticPaintClip paintClip = raster.GetPaintClip(context);
-            if (activeViewportClip.Length == 0 || activeViewportIsBinary) return paintClip;
+            if (activeViewport.Pixels.Length == 0 || activeViewport.IsBinary) return paintClip;
             SvgAnalyticClipBounds clip = context.BitmapClip;
-            if (activeViewportBounds is {} bounds)
+            if (activeViewport.Bounds is {} bounds)
                 clip = new(Math.Max(clip.Left, bounds.Left), Math.Max(clip.Top, bounds.Top), Math.Min(clip.Right, bounds.Right), Math.Min(clip.Bottom, bounds.Bottom));
             // Native raster clips collapse a wholly opaque rectangular bitmap
             // intersection to BW. Preserve its ordinary mask/run material routing.
-            return IsOpaqueClipRectangle(activeViewportClip, clip) ? paintClip : SvgAnalyticPaintClip.Antialiased;
+            return IsOpaqueClipRectangle(activeViewport.Pixels, clip) ? paintClip : SvgAnalyticPaintClip.Antialiased;
         }
 
         void RasterizePolygonFill(SvgPolygonFill polygon, SvgAuthoredPath? authoredPath, byte[] destination, ReadOnlySpan<byte> fontPreblend)
@@ -3797,7 +3776,7 @@ public static partial class SvgConverter
             SvgAnalyticPaint analyticPaint = fontPreblend.Length == 0 ? glyphPaint : SvgAnalyticPaint.Solid(new SvgColor(0, 0, 0, 255));
             // Rectangle construction already handles its own clip wrapper. Only
             // complex binary regions forward fringe pairs as ordinary alpha runs.
-            if (activeViewportClip.Length != 0 && activeViewportIsBinary && !activeViewportIsRectangle && !maskLuminanceLayer) analyticPaint = analyticPaint.ThroughBinaryRegion();
+            if (activeViewport.Pixels.Length != 0 && activeViewport.IsBinary && !activeViewport.IsRectangle && !maskLuminanceLayer) analyticPaint = analyticPaint.ThroughBinaryRegion();
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
@@ -3855,7 +3834,7 @@ public static partial class SvgConverter
                         }
                         else if (useAnalytic) traversal.PaintPixel(x, destination.AsSpan(offset, 4), analyticPaint, PolygonClipCoverage(raster, x, y));
                         else if (surfaceMode == RasterSurfaceMode.PremultipliedPattern) analyticPaint.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
-                        else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(polygon.Color, pixelCoverage * (activeViewportClip.Length == 0 ? 1 : activeViewportClip[offset + 3] / 255.0)));
+                        else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(polygon.Color, pixelCoverage * (activeViewport.Pixels.Length == 0 ? 1 : activeViewport.Pixels[offset + 3] / 255.0)));
                     }
                 }
                 if (collectingClipCoverage is not null && useAnalytic)
@@ -4949,7 +4928,7 @@ public static partial class SvgConverter
         {
             if (source is not { IsRectangleFill: true }) return null;
             // Retained canvas stages already prepared this map; rebuilding it loses their rounding.
-            if (sourcePlacement == SvgAffineTransform.Identity && activeViewportDrawMap is null)
+            if (sourcePlacement == SvgAffineTransform.Identity && activeViewport.DrawMap is null)
                 map = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(source.SceneMap);
             if (!map.PreservesAxisAlignedRectangles) return null;
             SvgRectanglePathRecognizer recognizer = new();
@@ -5067,9 +5046,9 @@ public static partial class SvgConverter
             int startX = Math.Max(raster.Left, layerBounds.Left), endX = Math.Min(raster.Right, layerBounds.Right);
             int startY = Math.Max(raster.Top, layerBounds.Top), endY = Math.Min(raster.Bottom, layerBounds.Bottom);
             if (startX >= endX || startY >= endY) return;
-            if (activeViewportClip.Length != 0 && activeViewportIsBinary)
+            if (activeViewport.Pixels.Length != 0 && activeViewport.IsBinary)
             {
-                SvgBinaryClipRectangles regions = new(activeViewportClip, outputWidth, outputHeight, new(0, 0, outputWidth, outputHeight),
+                SvgBinaryClipRectangles regions = new(activeViewport.Pixels, outputWidth, outputHeight, new(0, 0, outputWidth, outputHeight),
                     new(startX, startY, endX, endY), cancellationToken);
                 while (regions.MoveNext())
                 {

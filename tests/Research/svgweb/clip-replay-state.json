@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "b4205d500c53a48cbb7741f4f3bd9031acf3d007",
+  "scope": "Closed clip-state consolidation prerequisite. No root image boundary, map, text layout or output-scaling behavior changed.",
+  "change": "Replace six separately captured active viewport fields with one borrowed value containing pixels, binary/rectangle classification, allocation bounds, per-bitmap coverage and drawing map. Clip frames, opacity groups and mask/clip replay snapshot and restore that value together. Frames retain the existing replacement reservations and coverage owner.",
+  "representationContracts": [
+    "State borrows storage; it is not a second owner or cache.",
+    "The conversion thread alone mutates active replay state. Every borrower finishes before its frame releases storage.",
+    "An isolated layer may clear pixel coverage while retaining the allocation enclosure. These are separate responsibilities.",
+    "Per-bitmap borders and canvas-owned coverage remain separate.",
+    "Equivalent frames retain their default no-owner sentinel; cancellation, refusal, unwinding and retry use the existing ownership paths."
+  ],
+  "footprint": {
+    "method": "Unsafe.SizeOf on each actual private ViewportClipFrame type, loaded separately from frozen before/after assemblies under net11.0.",
+    "hosts": [
+      "windows-x64",
+      "linux-x64"
+    ],
+    "beforeFrameBytes": 208,
+    "afterFrameBytes": 208,
+    "beforeFrameFields": 8,
+    "afterFrameFields": 3,
+    "borrowedStateBytes": 192,
+    "newStorageOwners": 0,
+    "newPixelBuffers": 0
+  },
+  "codeReduction": {
+    "addedLines": 91,
+    "removedLines": 112,
+    "scope": "Production source before documentation. Line count is descriptive; the closure criterion is consistent state restoration and unchanged output/ownership."
+  },
+  "qualification": {
+    "windows": {
+      "net11.0": {
+        "core": {
+          "checks": 6079,
+          "passed": 6079,
+          "seconds": 35.061733999988064,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        },
+        "native": {
+          "checks": 39149,
+          "passed": 39149,
+          "seconds": 225.94263629987836,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        }
+      },
+      "net10.0": {
+        "core": {
+          "checks": 6079,
+          "passed": 6079,
+          "seconds": 26.041503499960527,
+          "librarySha256": "51b74d40ce20972e23b1c3fc29524b8f50e1139031439e7d90dd2859dffa1401"
+        },
+        "native": {
+          "checks": 10801,
+          "passed": 10801,
+          "seconds": 33.02618720009923,
+          "librarySha256": "51b74d40ce20972e23b1c3fc29524b8f50e1139031439e7d90dd2859dffa1401"
+        }
+      }
+    },
+    "linux": {
+      "net11.0": {
+        "core": {
+          "checks": 6079,
+          "passed": 6079,
+          "seconds": 30.499091954999997,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        },
+        "native": {
+          "checks": 39149,
+          "passed": 39149,
+          "seconds": 248.264821024,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        }
+      },
+      "net10.0": {
+        "core": {
+          "checks": 6079,
+          "passed": 6079,
+          "seconds": 23.327139521999996,
+          "librarySha256": "51b74d40ce20972e23b1c3fc29524b8f50e1139031439e7d90dd2859dffa1401"
+        },
+        "native": {
+          "checks": 10801,
+          "passed": 10801,
+          "seconds": 45.099723553000004,
+          "librarySha256": "51b74d40ce20972e23b1c3fc29524b8f50e1139031439e7d90dd2859dffa1401"
+        }
+      }
+    }
+  },
+  "testScope": {
+    "core": "All non-research classes matching Clip, Mask, Viewport, Filter or RenderBudget. Preserves the existing direct numerical, source/clip, opacity, cancellation, memory refusal, cleanup and retry cases.",
+    "nativeNet11": "Entire non-research rendering bank, including source-capture, symbol/reference, text paint and platform targets.",
+    "nativeNet10": "Affected Filter/Clip/Mask, complete symbol/reference bank, fixture manifest, text paint and font-layout diagrams.",
+    "fixturesOrApiMatricesAdded": 0,
+    "referencesOrTolerancesChanged": 0,
+    "timingScope": "Functional qualification on the busy workstation. Different selections and concurrent loads are not performance or speedup measurements."
+  },
+  "originalReplay": {
+    "receipt": {
+      "files": 204,
+      "seconds": 60.197307399939746,
+      "sourceSvgFilesRetained": 0
+    },
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "previousPngsByteIdentical": 148,
+        "changedOutcomesOrDiagnosticsOrComparisons": []
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "previousPngsByteIdentical": 148,
+        "changedOutcomesOrDiagnosticsOrComparisons": []
+      }
+    },
+    "scope": "All204 original source hashes rechecked per host; no hosted payload retained. Every148 PNG and all outcomes/diagnostics/comparisons remain unchanged. Exploratory exact is not original admission."
+  },
+  "boundaryControlReplay": {
+    "evidence": "root-image-boundary.json",
+    "comparisons": [
+      {
+        "id": "overflow",
+        "host": "windows",
+        "original": {
+          "sourceSha256": "04b17af711bc298091e39a04c598b187a47844db4faa1e72247ba3358343187e",
+          "pngSha256": "f1d51eb0bac311926ac9a9c236d279e547fc6008f34887b86f6bf679f03b7ed6",
+          "changedPixels": 42,
+          "maximumError": 143,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        },
+        "existingClip": {
+          "sourceSha256": "6551a2be65312a03e3cd2fc4e5e99be384534a7909262c606918753414192719",
+          "pngSha256": "e30c0489821981b64a8c57b9ee23d82112561867ea3fdcdf464889a90969f9fe",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        }
+      },
+      {
+        "id": "overflow",
+        "host": "linux",
+        "original": {
+          "sourceSha256": "04b17af711bc298091e39a04c598b187a47844db4faa1e72247ba3358343187e",
+          "pngSha256": "f1d51eb0bac311926ac9a9c236d279e547fc6008f34887b86f6bf679f03b7ed6",
+          "changedPixels": 42,
+          "maximumError": 143,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        },
+        "existingClip": {
+          "sourceSha256": "6551a2be65312a03e3cd2fc4e5e99be384534a7909262c606918753414192719",
+          "pngSha256": "e30c0489821981b64a8c57b9ee23d82112561867ea3fdcdf464889a90969f9fe",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        }
+      },
+      {
+        "id": "group",
+        "host": "windows",
+        "original": {
+          "sourceSha256": "66a2ff310948737cfbfc69ea5186163bc33f3faedb129025ed5462fd4acb7b20",
+          "pngSha256": "648dc5e4d86a0a49101208b636f9be81abade035d5f5d8d9c6bd3b2fcea21c80",
+          "changedPixels": 42,
+          "maximumError": 139,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        },
+        "existingClip": {
+          "sourceSha256": "b3dec95041470423bb1eacee5daef33314d733d4cfba6ac6f65ad12ed58e7815",
+          "pngSha256": "f27d9b26d0b0c6ffa67a6e62ffdd38ec0d169256ffdc98bf58b35c78797ebc68",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        }
+      },
+      {
+        "id": "group",
+        "host": "linux",
+        "original": {
+          "sourceSha256": "66a2ff310948737cfbfc69ea5186163bc33f3faedb129025ed5462fd4acb7b20",
+          "pngSha256": "648dc5e4d86a0a49101208b636f9be81abade035d5f5d8d9c6bd3b2fcea21c80",
+          "changedPixels": 42,
+          "maximumError": 139,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        },
+        "existingClip": {
+          "sourceSha256": "b3dec95041470423bb1eacee5daef33314d733d4cfba6ac6f65ad12ed58e7815",
+          "pngSha256": "f27d9b26d0b0c6ffa67a6e62ffdd38ec0d169256ffdc98bf58b35c78797ebc68",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+        }
+      }
+    ],
+    "scope": "Both existing-clip companions stay exact on both platforms; the actual root-boundary inputs retain their known42-pixel failures. The representation change does not claim to fix that defect."
+  },
+  "nextAcceptance": "Reuse this consistent clip state for a compact analytic rectangle boundary when justified. Preserve independent direct-paint and opacity-restoration behavior, source isolation and uniform scaling; do not add unconditional full-surface coverage tapes or a terminal alpha correction."
+}

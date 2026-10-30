@@ -90,6 +90,8 @@ Leaf polygon clips bind native clip coverage while retaining source contours and
 shader coordinates; they do not geometrically intersect flattened paint vertices.
 An unpainted fill retained for a clipped stroke does not require curve source
 commands for viewport admission; the painted stroke keeps its own source commands.
+Replay scopes save and restore clip coverage, allocation enclosures and drawing maps
+together; their frames own replacement storage while the active state borrows it.
 
 Mask paint clips enclose the union of the resource region and target visual bounds
 in source space. Instance replay transfers local visual bounds and materialized

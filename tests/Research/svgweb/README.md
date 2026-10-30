@@ -115,6 +115,14 @@ scale into authored text-paint stages; its root prototypes remain unpromoted.
 The independent [viewport-admission repair](root-viewport-admission.json) protects
 an unpainted fill retained alongside a clipped stroke. A direct mechanism keeps the
 painted-curve guard, and one canonical native fixture protects the actual interaction.
+The [image-boundary controls](root-image-boundary.json) retain separate native
+platform triples for overlapping draws and opacity-group restoration at fractional
+canvas extents. Existing clip-path companions match both exactly; the root boundary
+itself remains unresolved. Preserve these contexts when choosing the shared fix.
+The [clip-state consolidation](clip-replay-state.json) keeps coverage, allocation
+enclosures and drawing maps in one borrowed replay value. Frames keep their existing
+storage ownership; clip/group/mask scopes restore the whole value. All existing
+native targets and 148 original PNGs stay unchanged; this prerequisite adds no root fix.
 
 Group confirmed gaps by mechanism and retain original-to-fixture mappings,
 licenses and failing-before evidence. Reference admission requires three fresh
