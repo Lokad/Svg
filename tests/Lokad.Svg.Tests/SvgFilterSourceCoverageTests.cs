@@ -81,11 +81,29 @@ public sealed class SvgFilterSourceCoverageTests
         Assert.Equal(expected, actual);
     }
 
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void Black_linear_blur_keeps_shader_rounding_over_an_opaque_backdrop()
+    {
+        RenderBudget parser = new(new HostMemoryBudget(1_000_000));
+        using SvgRoot scene = Parse("<feGaussianBlur stdDeviation='.4'/>", parser);
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame([0, 0, 0, 1], 1, 1,
+            Resource(scene), new(1, 1), budget, CancellationToken.None);
+        SvgShaderPaint sample = Assert.Single(Assert.IsType<SvgShaderPaint[]>(result.Samples));
+        byte[] backdrop = [127, 127, 127, 255];
+        sample.Blend(backdrop, 255);
+        // The independent one-pixel native control retains 127; packed bitmap
+        // restoration truncates these lanes to 126 despite unchanged black RGB.
+        Assert.Equal(new byte[] { 127, 127, 127, 255 }, backdrop);
+    }
+
     [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
     [Trait("Layer", "Contract")]
-    public void Aliased_source_memory_refusal_cancellation_and_retry_release_temporary_owners(bool materialized)
+    public void Aliased_source_memory_refusal_cancellation_and_retry_release_temporary_owners(bool materialized, bool black)
     {
         RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
         string graph = materialized ? "<feGaussianBlur stdDeviation='.4 0'/><feOffset dy='.5'/>"
@@ -93,12 +111,14 @@ public sealed class SvgFilterSourceCoverageTests
         using (SvgRoot scene = Parse(graph, parser))
         {
             SvgFilterResource resource = Resource(scene);
-            byte[] source = [253, 0, 1, 255, 253, 0, 1, 255];
+            byte[] source = black ? [0, 0, 0, 255, 0, 0, 0, 255] : [253, 0, 1, 255, 253, 0, 1, 255];
+            byte[] unchanged = source.ToArray();
             RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
             byte[] expected;
             using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), budget, CancellationToken.None))
             {
-                expected = result.Pixels.ToArray();                 Assert.Equal(materialized, result.Samples is not null);
+                expected = result.Pixels.ToArray();
+                Assert.Equal(materialized, result.Samples is not null);
             }
             if (!materialized) Assert.Equal(new byte[] { 127, 0, 1, 128, 253, 0, 1, 255 }, expected);
             Assert.Equal(128, expected[3]);
@@ -116,7 +136,7 @@ public sealed class SvgFilterSourceCoverageTests
             using (SvgFilterResult retry = SvgFilterPlayback.ApplyFullFrame(source, 1, 2, resource, new(1, 1), budget, CancellationToken.None))
                 Assert.Equal(expected, retry.Pixels);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
-            Assert.Equal(new byte[] { 253, 0, 1, 255, 253, 0, 1, 255 }, source);
+            Assert.Equal(unchanged, source);
         }
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }

@@ -18070,6 +18070,31 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-clip-use-filtered.json",
       "referenceSha256": "035468162e4cba97ca807ca3eee12845c6ec5129949a571672f996fd9adf5e98"
+    },
+    {
+      "id": "original-filter-black-linear-backdrop",
+      "path": "original/filter-black-linear-backdrop.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "4a178e49103eed148b1abba0423ffe78441b35100b8565318d6d5e999d9fb647",
+      "materializedSha256": "4a178e49103eed148b1abba0423ffe78441b35100b8565318d6d5e999d9fb647",
+      "featureTags": [
+        "filter",
+        "color",
+        "alpha",
+        "rounding"
+      ],
+      "width": 96,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-black-linear-backdrop.json",
+      "referenceSha256": "889e7cc7f32d8f8b4bfa30fec2038e7e809c4586395498eb87fe46218f6774dd"
     }
   ]
 }

@@ -182,7 +182,9 @@ Uniform flood alpha stays at pipeline precision through graph evaluation.
 Operating color space travels with stored/deferred images; composing compatible
 transforms cannot erase a required transfer. Image drawing transfers color before
 edge coverage and uses destination clipping. Shader consumers retain separate
-sampling rules. Enclosing opacity first materializes sampling/color/crop coverage,
+sampling rules. Black RGB retains its color-conversion stage because shader
+restoration and packed bitmap restoration round differently over a backdrop.
+Enclosing opacity first materializes sampling/color/crop coverage,
 then applies bitmap alpha; its painted extent bounds restoration.
 
 ## Supplied fonts

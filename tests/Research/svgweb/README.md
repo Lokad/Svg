@@ -8,11 +8,12 @@ this directory contains metadata and original orthogonal controls, not the hoste
 SVG collection.
 
 The current default-path review has 148 rendered inputs per host: 132 exact and
-16 different, with 56 rejected. The latest clip/capture replay preserves every
-prior exact image and 145 PNGs byte-for-byte. Gallardo's total channel error falls
-from 19,250 to 15,845; the already-inexact car and grapes originals gain two and
-one error units respectively. These transparent, unsupplied-font/resource outcomes
-are exploratory, not whole-corpus admission or throughput measurements.
+16 different, with 56 rejected. The latest black-filter stage replay preserves every
+prior exact image and 146 PNGs byte-for-byte. Car's total channel error falls from
+30,023 to 13,924; Gallardo's falls from 15,845 to 359 (204 differing pixels).
+Outcomes and source/font diagnostics remain unchanged. These transparent,
+unsupplied-font/resource observations are exploratory, not whole-corpus admission
+or throughput measurements.
 
 | Initial first blocker | Originals | Current responsibility |
 | --- | ---: | --- |
@@ -52,6 +53,13 @@ protect quadratic/cubic/arc verbs and fractional placement; two canonical native
 platform triples protect plain clipping and a colored filter interaction. All 35
 Gallardo filter consumers are mapped individually. Their isolated results and
 the complete original remain separate acceptance responsibilities.
+
+The [black-filter stage record](black-linear-stages.json) closes the content-dependent
+shortcut that discarded linearRGB shader rounding for black input. One canonical
+96x64 native platform triple protects backdrop composition; a retained independent
+1x1 triple supplies the direct numerical expectation. One black case extends the
+existing ownership checks. The redundant RGB scan is removed; color, alpha and
+transport coverage retain their separate responsibilities.
 
 The [radial source-binding record](radial-source-binding.json) closes loss of local
 gradient transforms when axis-resolved paints bind to skewed shapes. Four canonical

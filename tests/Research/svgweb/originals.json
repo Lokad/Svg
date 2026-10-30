@@ -10018,5 +10018,106 @@
       }
     },
     "qualification": "Every prior exact image and outcome/diagnostic category is preserved. Gallardo improves; car/grapes retain the explicitly recorded +2/+1 total-error changes. Default-path exploratory evidence is not whole-corpus admission or throughput measurement."
+  },
+  "blackLinearStagesFollowup": {
+    "sourceBaseline": "68acc3b4a33c7a8fde23c6947c8917d97fb90f23",
+    "evidence": "black-linear-stages.json",
+    "files": 204,
+    "sourceHashesRechecked": true,
+    "sourceSvgFilesRetained": 0,
+    "seconds": 68.04753690003417,
+    "platforms": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 146,
+        "approvedPrototypePngsMatched": 148,
+        "changed": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 14469,
+              "maximumError": 255,
+              "totalChannelError": 30023
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 8576,
+              "maximumError": 255,
+              "totalChannelError": 13924
+            }
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 9058,
+              "maximumError": 18,
+              "totalChannelError": 15845
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 204,
+              "maximumError": 18,
+              "totalChannelError": 359
+            }
+          }
+        ],
+        "worse": [],
+        "changedOutcomesOrDiagnostics": []
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 146,
+        "approvedPrototypePngsMatched": 148,
+        "changed": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 14469,
+              "maximumError": 255,
+              "totalChannelError": 30023
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 8576,
+              "maximumError": 255,
+              "totalChannelError": 13924
+            }
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 9058,
+              "maximumError": 18,
+              "totalChannelError": 15845
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 204,
+              "maximumError": 18,
+              "totalChannelError": 359
+            }
+          }
+        ],
+        "worse": [],
+        "changedOutcomesOrDiagnostics": []
+      }
+    },
+    "qualification": "Every prior exact image, outcome and source/font diagnostic is unchanged. All 148 rendered PNGs match the approved prototype; 146 match the previous production revision. Only car and Gallardo change, both with lower total error. No original becomes exact or admitted; functional timing is not throughput evidence."
   }
 }

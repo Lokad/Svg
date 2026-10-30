@@ -607,8 +607,11 @@ internal static class SvgFilterPlayback
                     if (colorSpace == SvgFilterColorSpace.LinearRgb && (deviation.Horizontal > .03f || deviation.Vertical > .03f))
                     {
                         if (inputLinear) linear[index] = true;
-                        else if (HasColor(input))
+                        else
                         {
+                            // Black RGB is unchanged by conversion, but retaining
+                            // the working space also preserves shader restoration
+                            // and its rounding over an existing backdrop.
                             if (primitive.Input == SvgFilterInput.SourceGraphic)
                             {
                                 if (outputs[count + 1].Pixels is null)
@@ -1371,17 +1374,6 @@ internal static class SvgFilterPlayback
             SvgShaderPaint sample = new(input[offset] * byteScale, input[offset + 1] * byteScale,
                 input[offset + 2] * byteScale, input[offset + 3] * byteScale);
             return linear == (destination == SvgFilterColorSpace.LinearRgb) ? sample : SvgFilterColorTransfer.Convert(sample, destination);
-        }
-
-        bool HasColor(ReadOnlySpan<byte> input)
-        {
-            token.ThrowIfCancellationRequested();
-            for (int offset = 0; offset < bytes; offset += 4)
-            {
-                token.ThrowIfCancellationRequested();
-                if (input[offset] != 0 || input[offset + 1] != 0 || input[offset + 2] != 0) return true;
-            }
-            return false;
         }
 
         void ConvertColor(ReadOnlySpan<byte> input, Span<byte> output, SvgFilterColorSpace destination)

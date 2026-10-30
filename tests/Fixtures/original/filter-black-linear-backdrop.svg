@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='96' height='64'><defs><linearGradient id='g'><stop stop-color='#f2f2f2'/><stop offset='1' stop-color='#203040'/></linearGradient><filter id='f'><feGaussianBlur stdDeviation='1.8'/></filter></defs><rect width='96' height='64' fill='url(#g)'/><path d='M18 12H78V52H18Z' fill='black' filter='url(#f)'/></svg>

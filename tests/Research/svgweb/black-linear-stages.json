@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "68acc3b4a33c7a8fde23c6947c8917d97fb90f23",
+  "closedScope": [
+    "Black Gaussian input retains its declared linearRGB working space and final shader-restoration rounding. Zero RGB lanes do not make this numerical stage redundant.",
+    "The full-frame HasColor scan and content-dependent branch are removed. Black and colored input share existing conversion, scratch reservations, cancellation and cleanup. No new execution path or allocation owner."
+  ],
+  "mechanism": {
+    "test": "../../Lokad.Svg.Tests/SvgFilterSourceCoverageTests.cs",
+    "numerical": "Black_linear_blur_keeps_shader_rounding_over_an_opaque_backdrop",
+    "ownership": "Existing alias/materialization ownership setup gains one black-input case; sampled peak-minus-one refusal, cancellation, zero outstanding reservations, unchanged borrowed source and identical retry remain protected. No fixture/API product added.",
+    "before": {
+      "passed": 123,
+      "failed": 2,
+      "seconds": 0.261
+    },
+    "after": {
+      "passed": 125,
+      "failed": 0,
+      "seconds": 0.249
+    },
+    "timingQualification": "Reported xUnit test execution durations only; build, discovery and launch are excluded. Functional timings are not performance measurements."
+  },
+  "rendering": {
+    "fixture": "../../Fixtures/original/filter-black-linear-backdrop.svg",
+    "reference": "../../References/original-filter-black-linear-backdrop.json",
+    "sourceSha256": "4a178e49103eed148b1abba0423ffe78441b35100b8565318d6d5e999d9fb647",
+    "nativePngSha256": "889e7cc7f32d8f8b4bfa30fec2038e7e809c4586395498eb87fe46218f6774dd",
+    "freshNativeProcessesPerPlatform": 3,
+    "beforeChangedPixelsPerPlatform": 701,
+    "afterChangedPixelsPerPlatform": 0,
+    "purpose": "An opaque black filtered path over a nonconstant colored backdrop retains the shader round trip. Canonical ordinary conversion; existing color/alpha/filter banks protect other numerical and composition stages."
+  },
+  "texel": {
+    "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><filter id='f'><feGaussianBlur stdDeviation='.4'/></filter></defs><rect width='1' height='1' fill='#7f7f7f'/><rect width='1' height='1' fill='black' fill-opacity='.00392156862745098' filter='url(#f)'/></svg>\n",
+    "sourceSha256": "05724010b35da82800c89785cff32d30cd0a6e283cdca5410cff0a6e572210d0",
+    "reference": "black-linear-texel.png",
+    "referenceSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+    "license": "CC0-1.0; original source carries its SPDX dedication.",
+    "logicalViewport": [
+      1,
+      1
+    ],
+    "screenshot": [
+      1,
+      1
+    ],
+    "background": "transparent",
+    "deviceScaleFactor": 1,
+    "pins": {
+      "windows": {
+        "platform": "win64",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "captureRecipeRevision": "3",
+        "freshProcessCaptures": 3,
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true
+      },
+      "linux": {
+        "platform": "linux64",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "captureRecipeRevision": "3",
+        "freshProcessCaptures": 3,
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true
+      }
+    },
+    "nativeCaptures": {
+      "windows": [
+        {
+          "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linux": [
+        {
+          "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bba767dfca63972496c3b284a51f5a5c6242afc5e54cc8db9a896fae09311bb5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    "beforeRgba": [
+      126,
+      126,
+      126,
+      255
+    ],
+    "nativeAndAfterRgba": [
+      127,
+      127,
+      127,
+      255
+    ],
+    "role": "Independent numerical witness for a copying .4 Gaussian kernel, black alpha 1/255 and opaque gray backdrop. It supplies the expected rounding value for the direct mechanism, separate from transport and fixture rendering."
+  },
+  "validation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 32896,
+      "seconds": 71.69160989997908,
+      "librarySha256": "83076619c36f35e9481de69a7b4e8cc658899edd758a79e9acc29c308633f316"
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 39149,
+      "seconds": 98.69123080000281,
+      "librarySha256": "83076619c36f35e9481de69a7b4e8cc658899edd758a79e9acc29c308633f316"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 32896,
+      "seconds": 65.05860250000842,
+      "librarySha256": "5691fd5f566764d1de5bb931a2e8b6d729bc1d943ae6417863326cd52395f33b"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 39149,
+      "seconds": 79.21458210004494,
+      "librarySha256": "5691fd5f566764d1de5bb931a2e8b6d729bc1d943ae6417863326cd52395f33b"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 32896,
+      "seconds": 54.536443247,
+      "librarySha256": "83076619c36f35e9481de69a7b4e8cc658899edd758a79e9acc29c308633f316"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 39149,
+      "seconds": 203.086040189,
+      "librarySha256": "83076619c36f35e9481de69a7b4e8cc658899edd758a79e9acc29c308633f316"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 32896,
+      "seconds": 46.527391767,
+      "librarySha256": "5691fd5f566764d1de5bb931a2e8b6d729bc1d943ae6417863326cd52395f33b"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 39149,
+      "seconds": 142.24739886600003,
+      "librarySha256": "5691fd5f566764d1de5bb931a2e8b6d729bc1d943ae6417863326cd52395f33b"
+    }
+  ],
+  "qualification": "Complete non-research core/native projects, including all symbol/reference, font-layout, filter, clip, mask, alpha, ownership and public-contract consumers. Local Linux uses portable Release binaries; matching CI builds and package qualification follow the promotion. References/tolerances and text layout unchanged. All times are concurrent functional checks, not benchmarks.",
+  "originalReplay": {
+    "sourceBaseline": "68acc3b4a33c7a8fde23c6947c8917d97fb90f23",
+    "replay": {
+      "files": 204,
+      "seconds": 68.04753690003417,
+      "sourceSvgFilesRetained": 0
+    },
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 146,
+        "approvedPrototypePngsMatched": 148,
+        "changed": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 14469,
+              "maximumError": 255,
+              "totalChannelError": 30023
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 8576,
+              "maximumError": 255,
+              "totalChannelError": 13924
+            }
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 9058,
+              "maximumError": 18,
+              "totalChannelError": 15845
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 204,
+              "maximumError": 18,
+              "totalChannelError": 359
+            }
+          }
+        ],
+        "worse": [],
+        "changedOutcomesOrDiagnostics": []
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorPngsByteIdentical": 146,
+        "approvedPrototypePngsMatched": 148,
+        "changed": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 14469,
+              "maximumError": 255,
+              "totalChannelError": 30023
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 8576,
+              "maximumError": 255,
+              "totalChannelError": 13924
+            }
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 9058,
+              "maximumError": 18,
+              "totalChannelError": 15845
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 204,
+              "maximumError": 18,
+              "totalChannelError": 359
+            }
+          }
+        ],
+        "worse": [],
+        "changedOutcomesOrDiagnostics": []
+      }
+    }
+  },
+  "originalMapping": {
+    "name": "gallardo.svg",
+    "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "affectedConsumer": "path3321",
+    "filter": "filter3952",
+    "sigma": 6.568345,
+    "finding": "The isolated black source was exact on transparency. Its opaque restoration over other painted content skipped the linearRGB shader stage. The whole-original improvement and own backdrop controls identify the missing stage.",
+    "remainingChangedPixels": 204,
+    "remainingTotalChannelError": 359,
+    "unfilteredOverlapPixels": 70,
+    "qualification": "Original review is exploratory and retains independent unchanged browser targets. The remaining original/filter/root/gradient gaps are not closed by this scoped correction."
+  }
+}

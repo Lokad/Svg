@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "4a178e49103eed148b1abba0423ffe78441b35100b8565318d6d5e999d9fb647",
+  "referenceSha256": "889e7cc7f32d8f8b4bfa30fec2038e7e809c4586395498eb87fe46218f6774dd",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-black-linear-backdrop.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-black-linear-backdrop",
+  "viewport": {
+    "width": 96,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 black-blur control. An opaque black source retains linearRGB conversion and shader rounding over a nonconstant colored backdrop. Three fresh healthy/profile-cleaned captures on each native platform; reference bytes are independent of implementation output.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "4a178e49103eed148b1abba0423ffe78441b35100b8565318d6d5e999d9fb647",
+      "referenceSha256": "889e7cc7f32d8f8b4bfa30fec2038e7e809c4586395498eb87fe46218f6774dd",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "4a178e49103eed148b1abba0423ffe78441b35100b8565318d6d5e999d9fb647",
+      "referenceSha256": "889e7cc7f32d8f8b4bfa30fec2038e7e809c4586395498eb87fe46218f6774dd",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 96,
+    "height": 64
+  }
+}
