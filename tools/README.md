@@ -221,6 +221,10 @@ uses support triage; they do not resolve CSS, prove dependencies available or
 establish rendering correctness. This live-endpoint procedure is outside normal
 builds/tests. The [review record](../tests/Research/svgweb/README.md) defines the
 remaining original-rendering and orthogonal-fixture work.
+Keep CSS image resizing separate from canvas drawing destinations. The committed
+[root-boundary recipe](../tests/Research/svgweb/root-image-boundary.json) specifies
+its fractional canvas extent and independent native triples; substituting the same
+numbers as CSS image dimensions changes the capture context.
 
 ## Smoke checks and CI evidence
 

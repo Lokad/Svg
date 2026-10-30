@@ -18147,6 +18147,56 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-root-inert-curve.json",
       "referenceSha256": "735cc896820424fc874cc90e251bf9209ea9a58c45ba3041b5b40e0dc50ea8d7"
+    },
+    {
+      "id": "original-root-fractional-absolute",
+      "path": "original/root-fractional-absolute.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "77ce6cc8c76844ace2858f0043abd93bf2ffc8040055b04a14c27cb362d57699",
+      "materializedSha256": "77ce6cc8c76844ace2858f0043abd93bf2ffc8040055b04a14c27cb362d57699",
+      "featureTags": [
+        "viewport",
+        "rounding",
+        "rectangle"
+      ],
+      "width": 17,
+      "height": 11,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-root-fractional-absolute.json",
+      "referenceSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707"
+    },
+    {
+      "id": "original-root-fractional-viewbox",
+      "path": "original/root-fractional-viewbox.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+      "materializedSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+      "featureTags": [
+        "viewport",
+        "rounding",
+        "gradient",
+        "clip",
+        "opacity"
+      ],
+      "width": 17,
+      "height": 11,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-root-fractional-viewbox.json",
+      "referenceSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6"
     }
   ]
 }

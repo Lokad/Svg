@@ -87,8 +87,12 @@ configuration or `external/` checkout.
 Browser-tool qualification is separate from renderer acceptance. Its smoke keeps
 fresh-process image/Blob captures, a viewport-versus-screenshot control and cleanup
 contracts. The [SVGWeb capture record](Research/svgweb/capture-model.json) retains
-individual platform contexts and unresolved fractional sizing; ordinary tests do
-not fetch the hosted sample collection.
+individual platform contexts; ordinary tests do not fetch the hosted sample collection.
+Root-image checks separate [layout mechanisms](Lokad.Svg.Tests/SvgRootImageMapTests.cs),
+[representative ownership](Lokad.Svg.Tests/SvgRootImageBoundaryOwnershipTests.cs) and
+[independent rendering](Lokad.Svg.VisualTests/SvgRootImageBoundaryReferenceTests.cs).
+Fractional-root fixtures retain their original browser targets, including the
+painted viewBox counterexample.
 The [gradient-length record](Research/svgweb/gradient-lengths.json) separates direct
 unit/rounding/ownership mechanisms from five canonical native rendering fixtures.
 

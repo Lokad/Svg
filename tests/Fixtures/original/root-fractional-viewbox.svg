@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4' viewBox='0 0 24 16'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></svg>

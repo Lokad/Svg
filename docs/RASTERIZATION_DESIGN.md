@@ -75,6 +75,7 @@ sampling/blend semantics.
 | Domain | Invariant |
 | --- | --- |
 | Logical viewport/viewBox | Own percentage bases and layout; output density does not resize them. |
+| Root image layout/projection | Keep CSS subpixel layout, natural image normalization and uniform external output scaling in separate maps. Its image boundary is independent of raster allocation. |
 | Source/instance map | Preserve authored placement and resource inheritance; local aliases exclude source ancestors. |
 | Object box | Measures pre-clip geometry/layout for normalized paints/resources. |
 | Visual/drawing enclosure | Includes painted stroke/effect extents and source-space enclosure before placement. |
@@ -92,6 +93,10 @@ An unpainted fill retained for a clipped stroke does not require curve source
 commands for viewport admission; the painted stroke keeps its own source commands.
 Replay scopes save and restore clip coverage, allocation enclosures and drawing maps
 together; their frames own replacement storage while the active state borrows it.
+Canvas coverage borrows either a tape or one analytic rectangle. Rectangles share
+the existing clip rounding and binary-region behavior without a full-surface tape.
+Direct draws consume image-boundary coverage separately; isolated groups consume
+it at restoration. Source captures clear coverage while retaining their enclosure.
 
 Mask paint clips enclose the union of the resource region and target visual bounds
 in source space. Instance replay transfers local visual bounds and materialized

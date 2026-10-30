@@ -131,9 +131,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
     {
         SvgRootSyntax root = ReadRoot(false);
         SvgViewport viewport = SvgDocumentSizing.Resolve(options.Viewport, root.Width, root.Height, root.ViewBox).LogicalViewport;
-        if (root.ViewBox is not SvgViewBox box) return SvgAffineTransform.FromScale(options.OutputScale, options.OutputScale);
-        (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(box, viewport.Width, viewport.Height);
-        return SvgAffineTransform.FromScaleOffset(scaleX * options.OutputScale, scaleY * options.OutputScale, offsetX * options.OutputScale, offsetY * options.OutputScale);
+        return SvgRootImageMap.Resolve(root.ViewBox, viewport, options.OutputScale).Combined;
     }
 
     private SvgRootSyntax ReadRoot(bool inspectStructure)

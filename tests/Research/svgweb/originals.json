@@ -1943,6 +1943,20 @@
           "maximumError": 255,
           "libraryPngSha256": "66fb6955d4b01d72fa8a38e7dc34476fbd8b5aa0ee35b8bb5d2db6c1208960f0"
         }
+      },
+      "rootImageModel": {
+        "windows": {
+          "status": "different",
+          "changedPixels": 412,
+          "maximumError": 10,
+          "totalChannelError": 1197
+        },
+        "linux": {
+          "status": "different",
+          "changedPixels": 412,
+          "maximumError": 10,
+          "totalChannelError": 1197
+        }
       }
     },
     {
@@ -3335,6 +3349,20 @@
               "totalChannelError": 15145
             }
           }
+        }
+      },
+      "rootImageModel": {
+        "windows": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        },
+        "linux": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
         }
       }
     },
@@ -4854,6 +4882,20 @@
           "changedPixels": 3383,
           "maximumError": 223,
           "libraryPngSha256": "4bd9a546e7b668b72cc37e7695c6766129196947f0f84c57c7ecdf16f1432bf0"
+        }
+      },
+      "rootImageModel": {
+        "windows": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        },
+        "linux": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
         }
       }
     },
@@ -6474,6 +6516,20 @@
             }
           }
         }
+      },
+      "rootImageModel": {
+        "windows": {
+          "status": "different",
+          "changedPixels": 3,
+          "maximumError": 6,
+          "totalChannelError": 23
+        },
+        "linux": {
+          "status": "different",
+          "changedPixels": 3,
+          "maximumError": 6,
+          "totalChannelError": 23
+        }
       }
     },
     {
@@ -7098,6 +7154,20 @@
           "maximumError": 255,
           "libraryPngSha256": "05f9ff540cfda947c52d0d99f5652af0265fd6d5c711912faa71e21daa8af1eb"
         }
+      },
+      "rootImageModel": {
+        "windows": {
+          "status": "different",
+          "changedPixels": 11,
+          "maximumError": 2,
+          "totalChannelError": 15
+        },
+        "linux": {
+          "status": "different",
+          "changedPixels": 11,
+          "maximumError": 2,
+          "totalChannelError": 15
+        }
       }
     },
     {
@@ -7429,6 +7499,20 @@
           "maximumError": 255,
           "libraryPngSha256": "e71e7bea2fd7bd44c129862d4291d5dd39f2d1a600e81f570c6d2cd33b23ce6d"
         }
+      },
+      "rootImageModel": {
+        "windows": {
+          "status": "different",
+          "changedPixels": 174,
+          "maximumError": 14,
+          "totalChannelError": 821
+        },
+        "linux": {
+          "status": "different",
+          "changedPixels": 174,
+          "maximumError": 14,
+          "totalChannelError": 821
+        }
       }
     },
     {
@@ -7495,6 +7579,20 @@
           "changedPixels": 76552,
           "maximumError": 255,
           "libraryPngSha256": "4e3fa4edc2fc88956d267734c9cf8bbaf98faa22518d90c71e5a6eddaca54bb1"
+        }
+      },
+      "rootImageModel": {
+        "windows": {
+          "status": "different",
+          "changedPixels": 30,
+          "maximumError": 1,
+          "totalChannelError": 63
+        },
+        "linux": {
+          "status": "different",
+          "changedPixels": 30,
+          "maximumError": 1,
+          "totalChannelError": 63
         }
       }
     },
@@ -7564,6 +7662,20 @@
           "maximumError": 255,
           "libraryPngSha256": "a8409d95c01d413b85d03022adf4a23b2745e7bc644752ef994073bf2fdf469f"
         }
+      },
+      "rootImageModel": {
+        "windows": {
+          "status": "different",
+          "changedPixels": 134,
+          "maximumError": 6,
+          "totalChannelError": 399
+        },
+        "linux": {
+          "status": "different",
+          "changedPixels": 134,
+          "maximumError": 6,
+          "totalChannelError": 399
+        }
       }
     },
     {
@@ -7631,6 +7743,20 @@
           "changedPixels": 63774,
           "maximumError": 255,
           "libraryPngSha256": "985aef1042389e7fdef8c3d9f5f22379b367d1c4cedba98d3f4d61bb1da0dd2c"
+        }
+      },
+      "rootImageModel": {
+        "windows": {
+          "status": "different",
+          "changedPixels": 2756,
+          "maximumError": 255,
+          "totalChannelError": 7042
+        },
+        "linux": {
+          "status": "different",
+          "changedPixels": 2756,
+          "maximumError": 255,
+          "totalChannelError": 7042
         }
       }
     },
@@ -7938,7 +8064,21 @@
         },
         "mechanism": "A clipped stroke can retain an unpainted fill without source commands. Only the painted channel should require those commands under nonuniform root mapping.",
         "fixture": "../../Fixtures/original/root-inert-curve.svg",
-        "acceptance": "This admission defect is separate from the default fractional-root image mismatch. Root mapping prototypes remain research; the original is not admitted as exact."
+        "acceptance": "Shared root image layout/projection/boundary is qualified in root-image-model.json. This original remains inexact at221 pixels/1,216 total channel error; full filter/original acceptance stays open."
+      },
+      "rootImageModel": {
+        "windows": {
+          "status": "different",
+          "changedPixels": 221,
+          "maximumError": 33,
+          "totalChannelError": 1216
+        },
+        "linux": {
+          "status": "different",
+          "changedPixels": 221,
+          "maximumError": 33,
+          "totalChannelError": 1216
+        }
       }
     },
     {
@@ -10170,5 +10310,44 @@
       }
     },
     "qualification": "All 148 rendered PNGs remain byte-identical per host. Every outcome and source/font diagnostic is unchanged. Numerical/canonical alias controls close the independently reproduced final-consumer gap; originals remain exploratory rather than admitted."
+  },
+  "rootImageModelResolution": {
+    "sourceBaseline": "910fed90e2e4adfc73abaa858ef2b349721d3a6b",
+    "evidence": "root-image-model.json",
+    "allSourceHashesRecheckedPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        },
+        "previousPngsByteIdentical": 138,
+        "changedOutcomesOrDiagnostics": [],
+        "increasedTotalErrors": [],
+        "lostExactImages": []
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        },
+        "previousPngsByteIdentical": 138,
+        "changedOutcomesOrDiagnostics": [],
+        "increasedTotalErrors": [],
+        "lostExactImages": []
+      }
+    },
+    "newlyExactOriginals": [
+      "gaussian2.svg",
+      "lineargradient3.svg"
+    ],
+    "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   }
 }

@@ -23,7 +23,7 @@ public sealed class SvgHairlineCoverageTests
         {
             byte[] destination = new byte[64 * 64 * 4];
             SvgHairlineCoverage walker = new(destination, 64, 64, SvgAnalyticPaint.Solid(new(255, 0, 0, 208)),
-                null, SvgClipAntialiasing.None, mask, binary, new(new(0, 0, 64, 64), new(0, 0, 64, 64)),
+                null, SvgClipAntialiasing.None, new(mask), binary, new(new(0, 0, 64, 64), new(0, 0, 64, 64)),
                 CancellationToken.None);
             SvgDevicePoint[] corners = [new(13.410023945401651, 53.04681908123335), new(19.327956946071712, 48.14011700656239),
                 new(20.093880441919556, 49.06389103300366), new(14.175947441249495, 53.97059310767462)];
@@ -54,7 +54,7 @@ public sealed class SvgHairlineCoverageTests
         {
             byte[] destination = new byte[64 * 64 * 4];
             Assert.True(SvgHairlineStroke.TryRasterize(path, SvgAffineTransform.FromScale(1.5, 1.5), new(255, 0, 0, 255), null,
-                null, SvgClipAntialiasing.None, mask, binary, destination, 64, 64, CancellationToken.None));
+                null, SvgClipAntialiasing.None, new(mask), binary, destination, 64, 64, CancellationToken.None));
             return destination;
         }
     }

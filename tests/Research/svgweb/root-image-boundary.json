@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "b4205d500c53a48cbb7741f4f3bd9031acf3d007",
-  "status": "Unresolved root image boundary; independently qualified research targets, not a promoted root mapping or original admission.",
+  "status": "Root image boundary fixed through shared analytic coverage; original independent targets are unchanged.",
   "browserPins": {
     "windows": {
       "version": "153.0.8010.52",
@@ -278,5 +278,10 @@
     "Qualify mask/filter source isolation, binary and AA clips, overlapping paints, group restoration, memory refusal/cancellation/cleanup and retry.",
     "Recheck all204 hosted originals without retaining their source collection; run milestone native/runtime/package qualification before root promotion."
   ],
-  "rootModelReview": "root-image-stages.json"
+  "rootModelReview": "root-image-stages.json",
+  "resolution": {
+    "evidence": "root-image-model.json",
+    "test": "../../Lokad.Svg.VisualTests/SvgRootImageBoundaryReferenceTests.cs",
+    "scope": "Both overlap/group controls now exact on both native hosts. Direct/group ownership checks admit only existing surfaces, with refusal/cancellation/cleanup/retry preserved."
+  }
 }

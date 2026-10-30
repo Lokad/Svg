@@ -60,16 +60,16 @@ internal sealed class SvgCpuClipCoverage : IDisposable
     }
 
     /// <summary>Reads this bitmap's border or borrows the caller's owned interior pixel.</summary>
-    internal byte GetAlpha(SvgAnalyticClipBounds bitmap, byte[] tape, int width, int x, int y)
+    internal byte GetAlpha(SvgAnalyticClipBounds bitmap, SvgRasterClipMask tape, int width, int x, int y)
     {
         int border = BorderIndex(bitmap, x, y);
         int index = _grid.GetContextIndex(new(bitmap.Left, bitmap.Top));
         return border >= 0 && _contexts[index].Prepared && _contexts[index].Bitmap == bitmap
-            ? _borders[index * _borderLength + border] : tape[(y * width + x) * 4 + 3];
+            ? _borders[index * _borderLength + border] : tape.GetAlpha(width, x, y);
     }
 
     /// <summary>Intersects local borders and trims bounds after the caller intersects canvas interiors.</summary>
-    internal void IntersectAndTrim(SvgCpuClipCoverage? previous, byte[] previousTape, byte[] intersectedTape,
+    internal void IntersectAndTrim(SvgCpuClipCoverage? previous, SvgRasterClipMask previousTape, byte[] intersectedTape,
         int width, CancellationToken token)
     {
         for (int index = 0; index < _contexts.Length; index++)
@@ -90,7 +90,7 @@ internal sealed class SvgCpuClipCoverage : IDisposable
                     if (border >= 0)
                     {
                         int offset = index * _borderLength + border;
-                        byte inherited = previous is null ? previousTape[(y * width + x) * 4 + 3]
+                        byte inherited = previous is null ? previousTape.GetAlpha(width, x, y)
                             : previous.GetAlpha(bitmap, previousTape, width, x, y);
                         alpha = (byte)((_borders[offset] * inherited + 127) / 255);
                         _borders[offset] = alpha;

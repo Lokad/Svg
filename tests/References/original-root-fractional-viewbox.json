@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+  "referenceSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-root-fractional-viewbox.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-root-fractional-viewbox",
+  "viewport": {
+    "width": 17,
+    "height": 11,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 fractional-root painted viewBox counterexample control. Reuses the unchanged source and independently qualified native platform triples in Research/svgweb/root-viewport-review.json. Existing native target bytes are preserved.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+      "referenceSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+      "referenceSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 17.4,
+    "height": 11.4
+  }
+}

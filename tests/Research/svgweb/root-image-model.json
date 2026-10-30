@@ -1,0 +1,1045 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "910fed90e2e4adfc73abaa858ef2b349721d3a6b",
+  "status": "Closed shared root-image layout, projection and boundary slice. Full filter/original acceptance remains open.",
+  "model": {
+    "logicalSizing": "InspectDimensions, percentage bases and text layout stay unchanged.",
+    "layout": "Use floor(float(logicalAxis)*64)/64 for image layout. Map an authored viewBox there; absent a viewBox use its float source dimensions. Keep this map separate from external shader placement.",
+    "projection": "Normalize to round(logicalAxis) natural image extents, then apply OutputScale uniformly. Pixel canvas dimensions still follow the existing logical sizing/rounding plan and can include padding.",
+    "boundary": "Clip to the projected image extent, independently of the allocated canvas. Opaque complete coverage collapses to the existing no-extra-clip path.",
+    "admission": "Tiny natural sizes and logical sizes outside finite CSS float layout retain legacy map/admission with no synthetic image boundary. Existing fitted-empty viewport behavior remains separate.",
+    "sampling": "A borrowed stack-only sampler reads either the existing RGBA tape or one analytic rectangle using the same native clip coverage. Root edges allocate no canvas-sized mask.",
+    "scope": "Direct paints consume coverage per draw; opacity groups consume it at restoration. Filter/mask source scopes clear active coverage while retaining allocation enclosures and restoring the whole borrowed state.",
+    "binaryAndOpaque": "Analytic binary regions intersect in constant work. Opaque rectangle classification checks its corners; complex tapes keep their existing band scans and per-bitmap border coverage."
+  },
+  "implementation": [
+    "../../../src/Lokad.Svg/Rendering/SvgRootImageMap.cs",
+    "../../../src/Lokad.Svg/Rendering/SvgRasterClipMask.cs",
+    "../../../src/Lokad.Svg/SvgConverter.cs"
+  ],
+  "responsibilities": {
+    "mechanisms": {
+      "test": "../../Lokad.Svg.Tests/SvgRootImageMapTests.cs",
+      "purpose": "Independent native viewBox coefficients, stable source layout under uniform output scaling, an overflowing single-paint shortcut and the admitted subpixel-natural-size fallback."
+    },
+    "binaryRegions": {
+      "test": "../../Lokad.Svg.Tests/SvgBinaryClipRectanglesTests.cs",
+      "purpose": "Retain complete binary tape bands/cancellation; independently exercise nearly integral analytic bounds and requested bitmap intersection."
+    },
+    "contracts": {
+      "test": "../../Lokad.Svg.Tests/SvgRootImageBoundaryOwnershipTests.cs",
+      "cases": 2,
+      "directRasterPeakBytes": 1768,
+      "groupRasterPeakBytes": 3536,
+      "purpose": "Distinct direct/isolated allocation paths, root clip borrowing, exact-budget refusal, cleanup and retry; one cancellation during admitted background storage. Scene storage remains borrowed and unchanged."
+    },
+    "rendering": {
+      "test": "../../Lokad.Svg.VisualTests/SvgRootImageBoundaryReferenceTests.cs",
+      "cases": 2,
+      "evidence": "root-image-boundary.json",
+      "purpose": "Canonical conversion at scale1.5 against independent platform triples. Preserve overlapping direct paints versus opacity-group restoration."
+    },
+    "fractionalFixtures": [
+      {
+        "id": "absolute",
+        "fixtureId": "original-root-fractional-absolute",
+        "fixture": "tests/Fixtures/original/root-fractional-absolute.svg",
+        "sourceSha256": "77ce6cc8c76844ace2858f0043abd93bf2ffc8040055b04a14c27cb362d57699",
+        "nativeTargetSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+        "nativeTriples": {
+          "windows": {
+            "freshProcesses": 3,
+            "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+            "pairChangedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ]
+          },
+          "linux": {
+            "freshProcesses": 3,
+            "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+            "pairChangedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ]
+          }
+        },
+        "imageViewport": [
+          17.4,
+          11.4
+        ],
+        "screenshot": [
+          17,
+          11
+        ]
+      },
+      {
+        "id": "paint",
+        "fixtureId": "original-root-fractional-viewbox",
+        "fixture": "tests/Fixtures/original/root-fractional-viewbox.svg",
+        "sourceSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+        "nativeTargetSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+        "nativeTriples": {
+          "windows": {
+            "freshProcesses": 3,
+            "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+            "pairChangedPixels": 8,
+            "captures": [
+              {
+                "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ]
+          },
+          "linux": {
+            "freshProcesses": 3,
+            "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+            "pairChangedPixels": 8,
+            "captures": [
+              {
+                "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ]
+          }
+        },
+        "imageViewport": [
+          17.4,
+          11.4
+        ],
+        "screenshot": [
+          17,
+          11
+        ]
+      }
+    ],
+    "matrix": "No fixture by API-form cross product. Existing ownership/API contracts remain; all former targets and tolerances are unchanged. Adding two assets to the existing manifest does not add xUnit facts or hide a reduction in test counts."
+  },
+  "beforeAfterChecks": {
+    "source": "Frozen baseline and candidate libraries substituted only after prior borrowers finished; every test-library file restored byte-for-byte after consumers ended.",
+    "results": [
+      {
+        "phase": "before",
+        "kind": "core",
+        "exitCode": 1,
+        "counters": {
+          "total": "2",
+          "executed": "2",
+          "passed": "0",
+          "failed": "2",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        },
+        "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+      },
+      {
+        "phase": "before",
+        "kind": "native",
+        "exitCode": 1,
+        "counters": {
+          "total": "2",
+          "executed": "2",
+          "passed": "0",
+          "failed": "2",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        },
+        "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+      },
+      {
+        "phase": "after",
+        "kind": "core",
+        "exitCode": 0,
+        "counters": {
+          "total": "2",
+          "executed": "2",
+          "passed": "2",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        },
+        "librarySha256": "0bb400575c203b922b2d47c39ee0bfcca38f05b7fd9aeb78795b6cc245fcd9e5"
+      },
+      {
+        "phase": "after",
+        "kind": "native",
+        "exitCode": 0,
+        "counters": {
+          "total": "2",
+          "executed": "2",
+          "passed": "2",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        },
+        "librarySha256": "0bb400575c203b922b2d47c39ee0bfcca38f05b7fd9aeb78795b6cc245fcd9e5"
+      }
+    ],
+    "timing": {
+      "before": {
+        "core": {
+          "checks": 2,
+          "passed": 0,
+          "failed": 2,
+          "runnerSeconds": 7.325324
+        },
+        "native": {
+          "checks": 2,
+          "passed": 0,
+          "failed": 2,
+          "runnerSeconds": 8.101576
+        }
+      },
+      "after": {
+        "core": {
+          "checks": 2,
+          "passed": 2,
+          "failed": 0,
+          "runnerSeconds": 7.551882
+        },
+        "native": {
+          "checks": 2,
+          "passed": 2,
+          "failed": 0,
+          "runnerSeconds": 9.57071
+        }
+      }
+    },
+    "timingScope": "Same focused selectors; functional runner times include discovery/startup. The busy host and concurrent work do not establish a performance change."
+  },
+  "finalNativeComparisons": [
+    {
+      "id": "overflow",
+      "host": "windows",
+      "sourceSha256": "04b17af711bc298091e39a04c598b187a47844db4faa1e72247ba3358343187e",
+      "before": {
+        "changedPixels": 42,
+        "maximumError": 143,
+        "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+      },
+      "after": {
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+      }
+    },
+    {
+      "id": "overflow",
+      "host": "linux",
+      "sourceSha256": "04b17af711bc298091e39a04c598b187a47844db4faa1e72247ba3358343187e",
+      "before": {
+        "changedPixels": 42,
+        "maximumError": 143,
+        "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+      },
+      "after": {
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+      }
+    },
+    {
+      "id": "group",
+      "host": "windows",
+      "sourceSha256": "66a2ff310948737cfbfc69ea5186163bc33f3faedb129025ed5462fd4acb7b20",
+      "before": {
+        "changedPixels": 42,
+        "maximumError": 139,
+        "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+      },
+      "after": {
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+      }
+    },
+    {
+      "id": "group",
+      "host": "linux",
+      "sourceSha256": "66a2ff310948737cfbfc69ea5186163bc33f3faedb129025ed5462fd4acb7b20",
+      "before": {
+        "changedPixels": 42,
+        "maximumError": 139,
+        "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+      },
+      "after": {
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+      }
+    },
+    {
+      "id": "root-fractional-absolute",
+      "host": "windows",
+      "sourceSha256": "77ce6cc8c76844ace2858f0043abd93bf2ffc8040055b04a14c27cb362d57699",
+      "before": {
+        "changedPixels": 26,
+        "maximumError": 255,
+        "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+      },
+      "after": {
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+      }
+    },
+    {
+      "id": "root-fractional-absolute",
+      "host": "linux",
+      "sourceSha256": "77ce6cc8c76844ace2858f0043abd93bf2ffc8040055b04a14c27cb362d57699",
+      "before": {
+        "changedPixels": 26,
+        "maximumError": 255,
+        "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+      },
+      "after": {
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+      }
+    },
+    {
+      "id": "root-fractional-viewbox",
+      "host": "windows",
+      "sourceSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+      "before": {
+        "changedPixels": 88,
+        "maximumError": 217,
+        "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+      },
+      "after": {
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+      }
+    },
+    {
+      "id": "root-fractional-viewbox",
+      "host": "linux",
+      "sourceSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+      "before": {
+        "changedPixels": 88,
+        "maximumError": 217,
+        "librarySha256": "ac27a205e1016e478d9cee1d4974e9ad75cbb9eb2ec8f93c45b37d95d417eee9"
+      },
+      "after": {
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+      }
+    }
+  ],
+  "footprint": {
+    "scope": "Measured private value layouts on Windows x64/net11. Root coverage itself borrows rectangle values and creates no new owner or pixel buffer.",
+    "previousClipFrameBytes": 208,
+    "currentClipFrameBytes": 256,
+    "borrowedClipStateBytes": 240,
+    "accounting": "Existing frame-array reservations use actual element sizes; the extra nullable rectangle metadata is charged at growth. Root coverage needs no new frame allocation. Direct/group raster-only peak checks prove no hidden clip tape."
+  },
+  "qualification": {
+    "windows": {
+      "net11.0": {
+        "core": {
+          "checks": 32912,
+          "passed": 32912,
+          "seconds": 75.71649120002985,
+          "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+        },
+        "native": {
+          "checks": 39151,
+          "passed": 39151,
+          "seconds": 105.25192270008847,
+          "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+        }
+      },
+      "net10.0": {
+        "core": {
+          "checks": 6186,
+          "passed": 6186,
+          "seconds": 30.813765899976715,
+          "librarySha256": "b47ee347e39fedcb6561be1af69b90fa21e16c15ab635a6a48a5a3c15bd88282"
+        },
+        "native": {
+          "checks": 10803,
+          "passed": 10803,
+          "seconds": 29.57961259991862,
+          "librarySha256": "b47ee347e39fedcb6561be1af69b90fa21e16c15ab635a6a48a5a3c15bd88282"
+        }
+      }
+    },
+    "linux": {
+      "net11.0": {
+        "core": {
+          "checks": 32912,
+          "passed": 32912,
+          "seconds": 56.775211753,
+          "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+        },
+        "native": {
+          "checks": 39151,
+          "passed": 39151,
+          "seconds": 216.31876971999998,
+          "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+        }
+      },
+      "net10.0": {
+        "core": {
+          "checks": 6186,
+          "passed": 6186,
+          "seconds": 21.413488059000002,
+          "librarySha256": "b47ee347e39fedcb6561be1af69b90fa21e16c15ab635a6a48a5a3c15bd88282"
+        },
+        "native": {
+          "checks": 10803,
+          "passed": 10803,
+          "seconds": 50.122100333999995,
+          "librarySha256": "b47ee347e39fedcb6561be1af69b90fa21e16c15ab635a6a48a5a3c15bd88282"
+        }
+      }
+    }
+  },
+  "originalReplay": {
+    "replay": {
+      "files": 204,
+      "seconds": 71.4459253998939,
+      "sourceSvgFilesRetained": 0
+    },
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        },
+        "previousPngsByteIdentical": 138,
+        "changedOutcomesOrDiagnostics": [],
+        "increasedTotalErrors": [],
+        "lostExactImages": [],
+        "changedComparisons": [
+          {
+            "name": "compuserver_msn_Ford_Focus.svg",
+            "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+            "before": {
+              "status": "different",
+              "changedPixels": 18879,
+              "maximumError": 255,
+              "totalChannelError": 460296
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 412,
+              "maximumError": 10,
+              "totalChannelError": 1197
+            }
+          },
+          {
+            "name": "gaussian2.svg",
+            "sourceSha256": "db74351406922d841cf9186cadaacf2787cccfaf3ed99e34a27d6e0b5f48616c",
+            "before": {
+              "status": "different",
+              "changedPixels": 1115,
+              "maximumError": 255,
+              "totalChannelError": 15145
+            },
+            "after": {
+              "status": "exact",
+              "changedPixels": 0,
+              "maximumError": 0,
+              "totalChannelError": 0
+            }
+          },
+          {
+            "name": "lineargradient3.svg",
+            "sourceSha256": "0867f531eb2b72ebd59e637803735ad3fc725f04479c9d9f47d023819a72bfc8",
+            "before": {
+              "status": "different",
+              "changedPixels": 3383,
+              "maximumError": 223,
+              "totalChannelError": 127096
+            },
+            "after": {
+              "status": "exact",
+              "changedPixels": 0,
+              "maximumError": 0,
+              "totalChannelError": 0
+            }
+          },
+          {
+            "name": "pencil.svg",
+            "sourceSha256": "a736c186252db9b9ec97ab780601513f1771c3a8f85035d35c07afcae2a96c81",
+            "before": {
+              "status": "different",
+              "changedPixels": 13149,
+              "maximumError": 255,
+              "totalChannelError": 309467
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 3,
+              "maximumError": 6,
+              "totalChannelError": 23
+            }
+          },
+          {
+            "name": "radialgradient2.svg",
+            "sourceSha256": "855888af9d4245c6d7b3a0f4456bf715b9bb26407ed873f529888b6b5983657d",
+            "before": {
+              "status": "different",
+              "changedPixels": 12002,
+              "maximumError": 255,
+              "totalChannelError": 283637
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 11,
+              "maximumError": 2,
+              "totalChannelError": 15
+            }
+          },
+          {
+            "name": "rg1024_Presentation_with_girl.svg",
+            "sourceSha256": "995e2656447b8da3e849fd762d4b9d51bc5ff7982107fc24deacb8659b43d15c",
+            "before": {
+              "status": "different",
+              "changedPixels": 9421,
+              "maximumError": 255,
+              "totalChannelError": 446989
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 174,
+              "maximumError": 14,
+              "totalChannelError": 821
+            }
+          },
+          {
+            "name": "rg1024_Ufo_in_metalic_style.svg",
+            "sourceSha256": "516d45ddddc69f032bde79c0c4885cadbe23aa9c2e70cd5553b7b291b61e1cb4",
+            "before": {
+              "status": "different",
+              "changedPixels": 76552,
+              "maximumError": 255,
+              "totalChannelError": 902323
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 30,
+              "maximumError": 1,
+              "totalChannelError": 63
+            }
+          },
+          {
+            "name": "rg1024_eggs.svg",
+            "sourceSha256": "e261178649854a75edf284155b349f12019643f668114a998c8c36f1d60d1cb3",
+            "before": {
+              "status": "different",
+              "changedPixels": 42827,
+              "maximumError": 255,
+              "totalChannelError": 652994
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 134,
+              "maximumError": 6,
+              "totalChannelError": 399
+            }
+          },
+          {
+            "name": "rg1024_green_grapes.svg",
+            "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+            "before": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631690
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 2756,
+              "maximumError": 255,
+              "totalChannelError": 7042
+            }
+          },
+          {
+            "name": "scimitar.svg",
+            "sourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+            "before": {
+              "status": "different",
+              "changedPixels": 36363,
+              "maximumError": 137,
+              "totalChannelError": 386847
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 221,
+              "maximumError": 33,
+              "totalChannelError": 1216
+            }
+          }
+        ]
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        },
+        "previousPngsByteIdentical": 138,
+        "changedOutcomesOrDiagnostics": [],
+        "increasedTotalErrors": [],
+        "lostExactImages": [],
+        "changedComparisons": [
+          {
+            "name": "compuserver_msn_Ford_Focus.svg",
+            "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+            "before": {
+              "status": "different",
+              "changedPixels": 18879,
+              "maximumError": 255,
+              "totalChannelError": 460296
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 412,
+              "maximumError": 10,
+              "totalChannelError": 1197
+            }
+          },
+          {
+            "name": "gaussian2.svg",
+            "sourceSha256": "db74351406922d841cf9186cadaacf2787cccfaf3ed99e34a27d6e0b5f48616c",
+            "before": {
+              "status": "different",
+              "changedPixels": 1115,
+              "maximumError": 255,
+              "totalChannelError": 15145
+            },
+            "after": {
+              "status": "exact",
+              "changedPixels": 0,
+              "maximumError": 0,
+              "totalChannelError": 0
+            }
+          },
+          {
+            "name": "lineargradient3.svg",
+            "sourceSha256": "0867f531eb2b72ebd59e637803735ad3fc725f04479c9d9f47d023819a72bfc8",
+            "before": {
+              "status": "different",
+              "changedPixels": 3383,
+              "maximumError": 223,
+              "totalChannelError": 127096
+            },
+            "after": {
+              "status": "exact",
+              "changedPixels": 0,
+              "maximumError": 0,
+              "totalChannelError": 0
+            }
+          },
+          {
+            "name": "pencil.svg",
+            "sourceSha256": "a736c186252db9b9ec97ab780601513f1771c3a8f85035d35c07afcae2a96c81",
+            "before": {
+              "status": "different",
+              "changedPixels": 13149,
+              "maximumError": 255,
+              "totalChannelError": 309467
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 3,
+              "maximumError": 6,
+              "totalChannelError": 23
+            }
+          },
+          {
+            "name": "radialgradient2.svg",
+            "sourceSha256": "855888af9d4245c6d7b3a0f4456bf715b9bb26407ed873f529888b6b5983657d",
+            "before": {
+              "status": "different",
+              "changedPixels": 12002,
+              "maximumError": 255,
+              "totalChannelError": 283637
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 11,
+              "maximumError": 2,
+              "totalChannelError": 15
+            }
+          },
+          {
+            "name": "rg1024_Presentation_with_girl.svg",
+            "sourceSha256": "995e2656447b8da3e849fd762d4b9d51bc5ff7982107fc24deacb8659b43d15c",
+            "before": {
+              "status": "different",
+              "changedPixels": 9421,
+              "maximumError": 255,
+              "totalChannelError": 446989
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 174,
+              "maximumError": 14,
+              "totalChannelError": 821
+            }
+          },
+          {
+            "name": "rg1024_Ufo_in_metalic_style.svg",
+            "sourceSha256": "516d45ddddc69f032bde79c0c4885cadbe23aa9c2e70cd5553b7b291b61e1cb4",
+            "before": {
+              "status": "different",
+              "changedPixels": 76552,
+              "maximumError": 255,
+              "totalChannelError": 902323
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 30,
+              "maximumError": 1,
+              "totalChannelError": 63
+            }
+          },
+          {
+            "name": "rg1024_eggs.svg",
+            "sourceSha256": "e261178649854a75edf284155b349f12019643f668114a998c8c36f1d60d1cb3",
+            "before": {
+              "status": "different",
+              "changedPixels": 42827,
+              "maximumError": 255,
+              "totalChannelError": 652994
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 134,
+              "maximumError": 6,
+              "totalChannelError": 399
+            }
+          },
+          {
+            "name": "rg1024_green_grapes.svg",
+            "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+            "before": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631690
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 2756,
+              "maximumError": 255,
+              "totalChannelError": 7042
+            }
+          },
+          {
+            "name": "scimitar.svg",
+            "sourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+            "before": {
+              "status": "different",
+              "changedPixels": 36363,
+              "maximumError": 137,
+              "totalChannelError": 386847
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 221,
+              "maximumError": 33,
+              "totalChannelError": 1216
+            }
+          }
+        ]
+      }
+    }
+  },
+  "floatSourceConsistency": {
+    "scope": "Use the same float source basis for synthetic root dimensions as native viewBox inputs.",
+    "evidence": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        },
+        "increasedTotalErrors": [],
+        "changes": [
+          {
+            "name": "rg1024_Ufo_in_metalic_style.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 333,
+              "maximumError": 255,
+              "totalChannelError": 5323
+            },
+            "nativeFloatSource": {
+              "status": "different",
+              "changedPixels": 30,
+              "maximumError": 1,
+              "totalChannelError": 63
+            }
+          }
+        ]
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        },
+        "increasedTotalErrors": [],
+        "changes": [
+          {
+            "name": "rg1024_Ufo_in_metalic_style.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 333,
+              "maximumError": 255,
+              "totalChannelError": 5323
+            },
+            "nativeFloatSource": {
+              "status": "different",
+              "changedPixels": 30,
+              "maximumError": 1,
+              "totalChannelError": 63
+            }
+          }
+        ]
+      }
+    },
+    "result": "UFO falls from333 differing pixels/5,323 total channel error to30/63; no other original comparison increases or changes."
+  },
+  "newlyExactOriginals": {
+    "rows": [
+      {
+        "name": "gaussian2.svg",
+        "sourceSha256": "db74351406922d841cf9186cadaacf2787cccfaf3ed99e34a27d6e0b5f48616c",
+        "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/gaussian2.svg",
+        "imageViewport": [
+          744.09448819,
+          1052.3622047
+        ],
+        "sourceSvgFilesRetained": 0,
+        "hosts": {
+          "windows": {
+            "captures": [
+              {
+                "pngSha256": "7f259a2a730d14530f5d3335d7481d4aba499e49329e86bc28354b02a70d63f4",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "7f259a2a730d14530f5d3335d7481d4aba499e49329e86bc28354b02a70d63f4",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "7f259a2a730d14530f5d3335d7481d4aba499e49329e86bc28354b02a70d63f4",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ],
+            "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+          },
+          "linux": {
+            "captures": [
+              {
+                "pngSha256": "7f259a2a730d14530f5d3335d7481d4aba499e49329e86bc28354b02a70d63f4",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "7f259a2a730d14530f5d3335d7481d4aba499e49329e86bc28354b02a70d63f4",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "7f259a2a730d14530f5d3335d7481d4aba499e49329e86bc28354b02a70d63f4",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ],
+            "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+          }
+        },
+        "screenshot": [
+          744,
+          1052
+        ]
+      },
+      {
+        "name": "lineargradient3.svg",
+        "sourceSha256": "0867f531eb2b72ebd59e637803735ad3fc725f04479c9d9f47d023819a72bfc8",
+        "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/lineargradient3.svg",
+        "imageViewport": [
+          744.09448819,
+          1052.3622047
+        ],
+        "sourceSvgFilesRetained": 0,
+        "hosts": {
+          "windows": {
+            "captures": [
+              {
+                "pngSha256": "feedc63823259728b287832c9bfce6aa0a463f62996558bb168665f0ea4bb511",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "feedc63823259728b287832c9bfce6aa0a463f62996558bb168665f0ea4bb511",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "feedc63823259728b287832c9bfce6aa0a463f62996558bb168665f0ea4bb511",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ],
+            "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+          },
+          "linux": {
+            "captures": [
+              {
+                "pngSha256": "feedc63823259728b287832c9bfce6aa0a463f62996558bb168665f0ea4bb511",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "feedc63823259728b287832c9bfce6aa0a463f62996558bb168665f0ea4bb511",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "feedc63823259728b287832c9bfce6aa0a463f62996558bb168665f0ea4bb511",
+                "changedPixels": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ],
+            "librarySha256": "4fc3ef283764e3d6313765798eb99980da51931baec0ef743ccf7f2a748ebcaa"
+          }
+        },
+        "screenshot": [
+          744,
+          1052
+        ]
+      }
+    ],
+    "seconds": 43.79015749995597
+  },
+  "remaining": [
+    "Gallardo remains204 pixels/359 total channel error;70 positions also differ unfiltered.",
+    "Scimitar improves to221 pixels/1,216 total channel error but is not admitted exact.",
+    "All remaining fourteen default rendered differences and fifty-six rejections retain W1 review; exact defaults do not close other fonts/resources/static-state contexts.",
+    "Full coherent filter milestone and broader roadmap remain active."
+  ]
+}

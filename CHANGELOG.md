@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve fractional root image layout before uniform output scaling, and apply
+  image-boundary coverage at each paint or isolated-layer restoration without a
+  full-canvas clip allocation.
 - Admit nonuniform viewport maps of clipped strokes with an unpainted fill channel;
   retain source-command requirements for painted curves.
 - Preserve color-filter shader rounding when black or SourceAlpha filter results

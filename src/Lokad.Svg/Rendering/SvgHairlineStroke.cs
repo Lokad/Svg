@@ -7,7 +7,7 @@ namespace Lokad.Svg.Rendering;
 
 /// <summary>Dispatches retained centerlines to native thin-stroke curve and line coverage.</summary>
 /// <remarks>Allocates no storage and borrows immutable commands, the caller's surface and optional
-/// canvas-sized RGBA clip tape. Each bordered CPU bitmap constructs curves in local coordinates
+/// canvas-sized RGBA clip tape or analytic rectangle. Each bordered CPU bitmap constructs curves in local coordinates
 /// and paints only its owned interior. The caller keeps the clip tape alive throughout replay;
 /// pixel visits include its rounded clip-alpha product. Bounds, context visits, commands, closure
 /// lookahead and coverage consume cancellable work. Wider strokes keep their outline route.
@@ -17,7 +17,7 @@ internal static class SvgHairlineStroke
 {
     internal static bool TryRasterize(SvgAuthoredPath path, SvgAffineTransform outputMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
-        ReadOnlySpan<byte> viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, CancellationToken cancellationToken)
+        SvgRasterClipMask viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, CancellationToken cancellationToken)
         => TryRasterizeCore(path, outputMap, color, constantPaint, Span<SvgShaderSampler>.Empty,
             clip, antialiasing, viewportMask, binaryViewport, destination, width, height, cancellationToken);
 
@@ -27,13 +27,13 @@ internal static class SvgHairlineStroke
     /// This synchronous call retains no sampler reference and shares geometry work/cancellation.</remarks>
     internal static bool TryRasterize(SvgAuthoredPath path, SvgAffineTransform outputMap, ref SvgShaderSampler shader,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
-        ReadOnlySpan<byte> viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, CancellationToken cancellationToken)
+        SvgRasterClipMask viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, CancellationToken cancellationToken)
         => TryRasterizeCore(path, outputMap, default, null, MemoryMarshal.CreateSpan(ref shader, 1),
             clip, antialiasing, viewportMask, binaryViewport, destination, width, height, cancellationToken);
 
     private static bool TryRasterizeCore(SvgAuthoredPath path, SvgAffineTransform outputMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
         Span<SvgShaderSampler> shaders, (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
-        ReadOnlySpan<byte> viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, CancellationToken cancellationToken)
+        SvgRasterClipMask viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, CancellationToken cancellationToken)
     {
         if (path.StrokeStyle is not SvgAuthoredStrokeStyle style) return false;
         cancellationToken.ThrowIfCancellationRequested();
@@ -43,7 +43,7 @@ internal static class SvgHairlineStroke
         float lengthX = FastLength((float)widthMap.A * strokeWidth, (float)widthMap.B * strokeWidth);
         float lengthY = FastLength((float)widthMap.C * strokeWidth, (float)widthMap.D * strokeWidth);
         if (!(lengthX <= 1 && lengthY <= 1)) return false;
-        if (!viewportMask.IsEmpty && viewportMask.Length != checked(width * height * 4))
+        if (!viewportMask.Pixels.IsEmpty && viewportMask.Pixels.Length != checked(width * height * 4))
             throw new ArgumentException("Viewport mask must match the destination canvas.", nameof(viewportMask));
         scoped ReadOnlySpan<SvgAuthoredPathCommand> commands = path.Commands;
         Span<SvgAuthoredPathCommand> rectangleCommands = stackalloc SvgAuthoredPathCommand[5];
@@ -90,9 +90,9 @@ internal static class SvgHairlineStroke
             SvgCpuBitmapOrigin origin = new(context.BitmapClip.Left, context.BitmapClip.Top);
             // Native AA clip wrappers preserve scalar dispatch unless the entire
             // expanded path fits one opaque row band, including its full row shape.
-            ReadOnlySpan<byte> paintMask = !binaryViewport && !viewportMask.IsEmpty
+            SvgRasterClipMask paintMask = !binaryViewport && !viewportMask.IsEmpty
                 && ContainsPath(viewportMask, width, commands, map, style.Cap, context.BitmapClip, cancellationToken)
-                ? [] : viewportMask;
+                ? SvgRasterClipMask.Empty : viewportMask;
             SvgHairlineCoverage raster = shaders.IsEmpty
                 ? new(destination, width, height, paint, clip, antialiasing, paintMask, binaryViewport, context, cancellationToken)
                 : new(destination, width, height, shaders, clip, antialiasing, paintMask, binaryViewport, context, cancellationToken);
@@ -178,7 +178,7 @@ internal static class SvgHairlineStroke
         }
         return true;
 
-        static bool ContainsPath(ReadOnlySpan<byte> mask, int width, ReadOnlySpan<SvgAuthoredPathCommand> commands,
+        static bool ContainsPath(SvgRasterClipMask mask, int width, ReadOnlySpan<SvgAuthoredPathCommand> commands,
             SvgAffineTransform map, SvgStrokeCap cap, SvgAnalyticClipBounds bitmap, CancellationToken token)
         {
             float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
@@ -217,7 +217,7 @@ internal static class SvgHairlineStroke
             for (int x = xStart; x < xEnd; x++)
             {
                 token.ThrowIfCancellationRequested();
-                if (mask[(yStart * width + x) * 4 + 3] != 255) return false;
+                if (mask.GetAlpha(width, x, yStart) != 255) return false;
             }
             // Native quickContains requires one complete compressed row band,
             // whose last row also contains the exclusive bottom boundary.
@@ -225,7 +225,7 @@ internal static class SvgHairlineStroke
                 for (int x = bitmap.Left; x < bitmap.Right; x++)
                 {
                     token.ThrowIfCancellationRequested();
-                    if (mask[(yStart * width + x) * 4 + 3] != mask[(y * width + x) * 4 + 3]) return false;
+                    if (mask.GetAlpha(width, x, yStart) != mask.GetAlpha(width, x, y)) return false;
                 }
             return true;
 

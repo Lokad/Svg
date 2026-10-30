@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "3bfa1bab592f038c5f8afd6d65a5f3b70a2c7746",
-  "status": "Research; output-only prototype not promoted",
+  "status": "Shared root image model qualified in root-image-model.json; output-only prototype remains rejected.",
   "reason": "Per-axis projection conflicts with documented uniform raster fitting and leaves a painted viewBox counterexample. Preserve layout and existing targets; review image/container layout, viewBox mapping and raster projection separately.",
   "sourceSvgCollectionRetained": false,
   "browserPins": {
@@ -1065,5 +1065,6 @@
     ],
     "qualification": "One fresh healthy/profile-cleaned exploratory capture per platform. Root/recording projection and remaining rendering errors are separate; 277 pixels /1,898 total error remain. No original/reference admission, layout/fitting change or output-stretch prototype promotion."
   },
-  "continuedInvestigation": "root-image-stages.json"
+  "continuedInvestigation": "root-image-stages.json",
+  "resolution": "root-image-model.json"
 }

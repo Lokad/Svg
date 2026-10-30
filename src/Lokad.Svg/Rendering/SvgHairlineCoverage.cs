@@ -21,16 +21,16 @@ internal ref struct SvgHairlineCoverage
     private SvgAnalyticClipBounds? _binaryBounds;
     private readonly (double Left, double Top, double Right, double Bottom)? _clip;
     private readonly SvgClipAntialiasing _antialiasing;
-    private readonly ReadOnlySpan<byte> _viewportMask;
+    private readonly SvgRasterClipMask _viewportMask;
     private readonly CancellationToken _token;
 
     internal SvgHairlineCoverage(Span<byte> destination, int width, int height, SvgAnalyticPaint paint,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
 CancellationToken cancellationToken)
-        : this(destination, width, height, paint, clip, antialiasing, ReadOnlySpan<byte>.Empty, cancellationToken) { }
+        : this(destination, width, height, paint, clip, antialiasing, SvgRasterClipMask.Empty, cancellationToken) { }
 
     internal SvgHairlineCoverage(Span<byte> destination, int width, int height, SvgAnalyticPaint paint,
-        (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, ReadOnlySpan<byte> viewportMask,
+        (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, SvgRasterClipMask viewportMask,
 CancellationToken cancellationToken)
         : this(destination, width, height, paint, clip, antialiasing, viewportMask, false,
             new(new(0, 0, width, height), new(0, 0, width, height)), cancellationToken)
@@ -42,7 +42,7 @@ CancellationToken cancellationToken)
 
     /// <summary>Borrows a canvas while constructing local coverage in one bordered bitmap and painting only its owned interior.</summary>
     internal SvgHairlineCoverage(Span<byte> destination, int width, int height, SvgAnalyticPaint paint,
-        (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, ReadOnlySpan<byte> viewportMask, bool binaryViewport,
+        (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, SvgRasterClipMask viewportMask, bool binaryViewport,
         SvgCpuRasterContext context, CancellationToken cancellationToken)
     {
         _origin = new(context.BitmapClip.Left, context.BitmapClip.Top);
@@ -51,7 +51,7 @@ CancellationToken cancellationToken)
         _interior = context.Interior;
         _bitmapWidth = context.BitmapClip.Right - context.BitmapClip.Left;
         _bitmapHeight = context.BitmapClip.Bottom - context.BitmapClip.Top;
-        if (!viewportMask.IsEmpty && viewportMask.Length != checked(width * height * 4)) throw new ArgumentException("Viewport mask must match the destination canvas.", nameof(viewportMask));
+        if (!viewportMask.Pixels.IsEmpty && viewportMask.Pixels.Length != checked(width * height * 4)) throw new ArgumentException("Viewport mask must match the destination canvas.", nameof(viewportMask));
         _viewportMask = viewportMask; _binaryViewport = binaryViewport;
         _rectangularViewport = true;
         if (binaryViewport && !viewportMask.IsEmpty)
@@ -68,7 +68,7 @@ CancellationToken cancellationToken)
     /// <remarks>The caller retains its ramp/texture owners and sampler storage until replay finishes.
     /// Geometry/pixel visits and optional sampling observe the same cancellation token.</remarks>
     internal SvgHairlineCoverage(Span<byte> destination, int width, int height, Span<SvgShaderSampler> shaders,
-        (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, ReadOnlySpan<byte> viewportMask, bool binaryViewport,
+        (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, SvgRasterClipMask viewportMask, bool binaryViewport,
         SvgCpuRasterContext context, CancellationToken cancellationToken)
         : this(destination, width, height, default(SvgAnalyticPaint), clip, antialiasing, viewportMask, binaryViewport, context, cancellationToken)
     {
@@ -198,7 +198,7 @@ CancellationToken cancellationToken)
         }
         if (!_viewportMask.IsEmpty)
         {
-            alpha = (byte)((alpha * _viewportMask[(y * _width + x) * 4 + 3] + 127) / 255);
+            alpha = (byte)((alpha * _viewportMask.GetAlpha(_width, x, y) + 127) / 255);
             if (!_binaryViewport) kind = SvgAnalyticPaintKind.Direct;
         }
         if (alpha == 0) return;

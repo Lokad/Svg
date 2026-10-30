@@ -45,6 +45,9 @@ in sizing; winning root `auto`/`inherit` dimensions resolve as 100%.
 Child percentages use the logical viewport, or viewBox user-space dimensions.
 Nested viewports keep their own percentage bases, aspect mapping and physical
 clips. Raster scaling does not change logical layout or those bases.
+The natural image viewport rounds before uniform output scaling; extra pixels in
+the final raster are padding. Tiny or very large logical sizes retain their admitted
+sizing behavior when native image layout cannot represent them.
 
 `InspectDimensions` reads bounded XML/CSS and returns resolved dimensions,
 viewBox/aspect mapping and sizing provenance without preparing fonts, geometry or

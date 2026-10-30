@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "8ee104296896bc6cf16bbcb252477bb67a6a0d29",
-  "status": "Research. No root mapping or output-scale implementation promoted.",
+  "status": "Historical isolated prototypes; current shared layout/projection/boundary resolution is in root-image-model.json.",
   "scope": "Separate native image container layout, authored viewBox/synthetic viewBox, destination pixel projection and external output scaling. Logical layout and uniform fitting are unchanged in production.",
   "sourceSvgCollectionRetained": false,
   "browserPins": {
@@ -1004,5 +1004,6 @@
     "Resolve canvas/output scaling versus CSS image resizing and root/source clipping with explicit independent contexts. No single output-only stretching rule is accepted.",
     "Retain the painted viewBox counterexample and the distinct zero-fill/painted-curve guard mechanisms.",
     "Recheck all 204 originals, including previous exact files, and qualify full affected native host/runtime/package paths before promotion."
-  ]
+  ],
+  "resolution": "root-image-model.json"
 }
