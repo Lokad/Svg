@@ -2383,6 +2383,11 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(unchanged, input);
     }
 
+    // Keep valid selection metadata and a counted source, without constructing an
+    // unused TrueType font. Any accidental program consumption fails validation.
+    private static (SvgFontPackCatalog Catalog, CountingFontProvider Provider, CountingFontSource Source) CreateUnusedFontPack()
+        => CreateExamplePack([0]);
+
     private static (SvgFontPackCatalog Catalog, CountingFontProvider Provider, CountingFontSource Source) CreateExamplePack(byte[] font)
     {
         string hash = Convert.ToHexString(SHA256.HashData(font));

@@ -16,10 +16,93 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [MemberData(nameof(PatternOverrideCases))]
-    public async Task Pattern_child_elements_override_parent_content_without_requesting_the_parent_font(string mode, string content, bool forward, string consumer)
+    public void Pattern_child_content_selects_the_discovered_font(string mode, string content, bool forward, string consumer)
     {
-        bool inherits = mode is "empty-self" or "empty-balanced" or "whitespace" or "comment" or "cdata-whitespace" or "cdata-text";
+        PatternOverrideDocuments documents = PatternOverrideDocumentsFor(mode, content, forward, consumer);
+        byte[] unchanged = documents.Input.ToArray();
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(documents.Input, CancellationToken.None);
+        if (documents.Inherits) Assert.Equal("Example", Assert.Single(requests).Family);
+        else Assert.Empty(requests);
+        Assert.Equal(unchanged, documents.Input);
+    }
+
+    [Theory]
+    [Trait("Layer", "Rendering")]
+    [MemberData(nameof(PatternOverrideCases))]
+    public async Task Pattern_child_content_preserves_the_selected_source_pixels(string mode, string content, bool forward, string consumer)
+    {
+        PatternOverrideDocuments documents = PatternOverrideDocumentsFor(mode, content, forward, consumer);
+        byte[] unchanged = documents.Input.ToArray();
+        if (!documents.Inherits)
+        {
+            SvgRasterTestHelper.AssertPixelsEqual(documents.Expected, documents.Input, SvgRenderOptions.Default);
+        }
+        else
+        {
+            byte[] font = CreateTriangleFont();
+            var (catalog, _, _) = CreateExamplePack(font);
+            using SvgFontSnapshot fonts = await CreatePatternControlFonts(catalog, font);
+            SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
+            SvgRasterTestHelper.AssertPixelsEqual(documents.Expected, documents.Input, options);
+        }
+        Assert.Equal(unchanged, documents.Input);
+    }
+
+    // All font-bearing and active-filter interactions stay routine. The remaining
+    // child spellings each keep all four parent graphs through one prepared path;
+    // discovery and canonical rendering retain every consumer/order combination.
+    public static IEnumerable<object[]> PreparedPatternOverrideCases(bool research)
+    {
+        foreach (object[] row in PatternOverrideCases())
+        {
+            bool routine = PatternInheritsContent((string)row[0]) || (string)row[0] == "own-filter"
+                || !(bool)row[2] && (string)row[3] == "fill";
+            if (routine != research) yield return row;
+        }
+    }
+
+    [Theory]
+    [Trait("Layer", "Contract")]
+    [MemberData(nameof(PreparedPatternOverrideCases), false)]
+    public Task Prepared_pattern_children_acquire_only_selected_fonts_and_replay(string mode, string content, bool forward, string consumer)
+        => AssertPreparedPatternOverride(mode, content, forward, consumer);
+
+    [Theory]
+    [Trait("Layer", "Contract")]
+    [Trait("Category", "Research")]
+    [MemberData(nameof(PreparedPatternOverrideCases), true)]
+    public Task Extended_prepared_pattern_children_preserve_source_selection(string mode, string content, bool forward, string consumer)
+        => AssertPreparedPatternOverride(mode, content, forward, consumer);
+
+    private static async Task AssertPreparedPatternOverride(string mode, string content, bool forward, string consumer)
+    {
+        PatternOverrideDocuments documents = PatternOverrideDocumentsFor(mode, content, forward, consumer);
+        byte[] unchanged = documents.Input.ToArray();
+        byte[] font = documents.Inherits ? CreateTriangleFont() : [0];
+        var (catalog, provider, _) = CreateExamplePack(font);
+        using SvgFontSnapshot? fonts = documents.Inherits ? await CreatePatternControlFonts(catalog, font) : null;
+        SvgRenderOptions options = fonts is null ? SvgRenderOptions.Default : new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
+        byte[] expected = SvgConverter.ConvertToPng(documents.Expected, options, CancellationToken.None).ToArray();
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(documents.Input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(documents.Inherits ? 1 : 0, provider.RequestCount);
+        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
+        Assert.Equal(unchanged, documents.Input);
+    }
+
+    /// <summary>Returns a caller-owned control snapshot; its provider is separate from the prepared input's counted provider.</summary>
+    private static ValueTask<SvgFontSnapshot> CreatePatternControlFonts(SvgFontPackCatalog catalog, byte[] font)
+        => SvgFontSnapshot.CreateAsync(catalog, new[] { new SvgFontFaceRequest("Example", 400, false) }, new CountingFontProvider(new CountingFontSource(font)), CancellationToken.None);
+
+    private readonly record struct PatternOverrideDocuments(byte[] Input, byte[] Expected, bool Inherits);
+
+    private static bool PatternInheritsContent(string mode)
+        => mode is "empty-self" or "empty-balanced" or "whitespace" or "comment" or "cdata-whitespace" or "cdata-text";
+
+    private static PatternOverrideDocuments PatternOverrideDocumentsFor(string mode, string content, bool forward, string consumer)
+    {
+        bool inherits = PatternInheritsContent(mode);
         string family = inherits ? "Example" : "Unavailable";
         string child = mode switch
         {
@@ -49,23 +132,13 @@ public sealed partial class OpenTypeFontTests
         }
         const string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>";
         string definitions = "<defs>" + resources + (forward ? alias + source : source + alias) + "</defs>";
-        byte[] input = System.Text.Encoding.UTF8.GetBytes(prefix + (forward ? target + definitions : definitions + target) + "</svg>"), unchanged = input.ToArray();
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(prefix + (forward ? target + definitions : definitions + target) + "</svg>");
         byte[] expectedInput = System.Text.Encoding.UTF8.GetBytes(prefix + (inherits ? "<defs>" + controlResources + source + "</defs>" : "") + control + "</svg>");
-        (var catalog, var provider, _) = CreateExamplePack(CreateTriangleFont());
-        using SvgFontSnapshot? fonts = inherits ? await SvgFontSnapshot.CreateAsync(catalog, new[] { new SvgFontFaceRequest("Example", 400, false) }, new CountingFontProvider(new CountingFontSource(CreateTriangleFont())), CancellationToken.None) : null;
-        SvgRenderOptions options = fonts is null ? SvgRenderOptions.Default : new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts);
-        byte[] expected = SvgConverter.ConvertToPng(expectedInput, options, CancellationToken.None).ToArray();
-        Assert.Equal(expected, SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
-        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(input, CancellationToken.None);
-        if (inherits) Assert.Equal("Example", Assert.Single(requests).Family);
-        else Assert.Empty(requests);
-        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
-        Assert.Equal(inherits ? 1 : 0, provider.RequestCount);
-        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
-        Assert.Equal(unchanged, input);
+        return new(input, expectedInput, inherits);
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("<rect width='32' height='32' mask='url(#missing)'/>")]
     [InlineData("<g mask='url(#missing)'><rect width='32' height='32'/></g>")]
     [InlineData("<rect width='32' height='32' filter='url(#missing)'/>")]
@@ -81,13 +154,14 @@ public sealed partial class OpenTypeFontTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(4_000_000));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        (var catalog, var provider, _) = CreateExamplePack(CreateTriangleFont());
+        (var catalog, var provider, _) = CreateUnusedFontPack();
         SvgException error = await Assert.ThrowsAsync<SvgException>(async () => await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
         Assert.Equal(0, provider.RequestCount);
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("<g display='none' mask='url(#missing)'/>")]
     [InlineData("<rect width='32' height='32' display='none' filter='url(#missing)'/>")]
     [InlineData("<g visibility='hidden'><rect width='32' height='32' mask='url(#missing)'/></g>")]
@@ -99,6 +173,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Pattern_source_selection_and_effect_validation_release_borrowed_storage_on_denial_and_retry()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><mask id='m'><rect width='32' height='32' fill='white'/></mask><filter id='f'><feFlood flood-color='blue'/></filter><pattern id='p' width='32' height='32' patternUnits='userSpaceOnUse'><g mask='url(#m)' filter='url(#f)'><text font-family='Unavailable'>" + new string('A', 8192) + "</text></g></pattern><pattern id='a' href='#p'><title>inert</title></pattern></defs><rect width='32' height='32' fill='url(#a)'/></svg>");

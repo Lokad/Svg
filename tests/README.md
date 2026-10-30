@@ -29,6 +29,10 @@ files; include those consumers when selecting affected checks.
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;
 a layer filter does not replace affected unclassified tests or full qualification.
+For pattern selection, `FullyQualifiedName~Pattern_child_content_selects_the_discovered_font`
+selects direct discovery; include the raster and prepared siblings for integration.
+The [case map](Research/release-baselines/test-responsibilities.md#pattern-source-and-target-selection)
+explains the routine prepared subset and extended `Category=Research` companions.
 
 ## Development checks
 

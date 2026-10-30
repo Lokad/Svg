@@ -30,7 +30,7 @@ public sealed partial class OpenTypeFontTests
         byte[] control = Input("<" + child + " id='g' gradientTransform='" + (replacement ? childTransform : transform) + "' " + attributes + ">" + stops + "</" + child + ">");
         byte[] expected = Render(control);
         Assert.Equal(expected, Render(input));
-        (var catalog, var provider, _) = CreateFontFreeGradientPack();
+        (var catalog, var provider, _) = CreateUnusedFontPack();
         using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
         Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
         Assert.Equal(0, provider.RequestCount);
@@ -92,7 +92,7 @@ public sealed partial class OpenTypeFontTests
         byte[] input = Document(alias + middle + parent);
         byte[] control = Document(standalone);
         var (catalog, provider, _) = context is "text" or "textstroke"
-            ? CreateExamplePack(CreateTriangleFont()) : CreateFontFreeGradientPack();
+            ? CreateExamplePack(CreateTriangleFont()) : CreateUnusedFontPack();
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(control, catalog, provider, CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         byte[] expected = SvgConverter.ConvertToPng(control, options, CancellationToken.None).ToArray();
@@ -135,7 +135,7 @@ public sealed partial class OpenTypeFontTests
         byte[] input = Document(forward ? alias + middle + parent : parent + middle + alias);
         byte[] expected = Render(Document(standalone));
         Assert.Equal(expected, Render(input));
-        (var catalog, var provider, _) = CreateFontFreeGradientPack();
+        (var catalog, var provider, _) = CreateUnusedFontPack();
         using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
         Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
         Assert.Equal(0, provider.RequestCount);
@@ -145,8 +145,4 @@ public sealed partial class OpenTypeFontTests
         static byte[] Document(string definitions) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + definitions + "</defs><rect x='4' y='4' width='24' height='24' fill='url(#g)'/></svg>");
     }
 
-    // Keep valid selection metadata and a counted source, without constructing an
-    // unused TrueType font. Any accidental program consumption fails validation.
-    private static (SvgFontPackCatalog Catalog, CountingFontProvider Provider, CountingFontSource Source) CreateFontFreeGradientPack()
-        => CreateExamplePack([0]);
 }

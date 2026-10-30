@@ -615,3 +615,42 @@ both runtimes. Integration retains the independent radial-axis and gradient-repl
 images, provenance checks, rectangle shader frames and capture contracts. Both
 affected builds are warning-free. Production, references, tolerances and text layout
 are unchanged.
+
+## Pattern source and target selection
+
+The baseline is `8c883b8db`. All 1,054 original cases are mapped: 526 keep their
+identity; the 528 mixed override rows become separate
+[discovery, raster and prepared checks](../../Lokad.Svg.Tests/OpenTypeFontTests.PatternOverrides.cs)
+using the original data provider, source expressions, controls and loop axes.
+Input immutability is checked after each operation. Responsibility counts are
+528 Mechanism, 532 Rendering, 750 routine Contract and 300 extended Contract cases.
+
+Every override graph retains routine discovery and exact canonical pixels. The
+routine prepared bank retains all 144 inherited-font and 24 active-filter rows,
+across every parent graph, order and consumer. Each remaining authored-child mode
+keeps all four parent graphs through one prepared path, adding 60 rows. The other
+300 font-free consumer/order combinations remain `Category=Research` and execute
+in full qualification. Selection depends on authored-child and consumer paths,
+not equality of resulting images. All 528 prepared checks retain complete PNG
+comparison and counted acquisition, with an independent provider for the control.
+
+The [empty-target contracts](../../Lokad.Svg.Tests/OpenTypeFontTests.EmptyPatternTargets.cs)
+retain all 504 empty and eight live rows, both definition orders, raw rendering,
+snapshot emptiness, prepared replay and positive font controls. Nine rejection,
+four inert-effect rendering and one borrowed-storage/refusal/cancellation/retry
+case remain. Shared builders in other partial files are unchanged. Moving the
+existing counted unused-font fixture intact avoids 897 unnecessary TrueType
+constructions across the full selection; real fonts remain on every acquiring path.
+
+A temporary reintroduction of the historical descriptive-child omission makes
+72 of the 528 direct discovery cases fail; all pass after byte-exact restoration.
+Production, native references, tolerances and text layout are unchanged.
+Three fresh sequential Windows .NET 11 processes measure 9.02/7.01 seconds median
+for the same 528 inputs through the old mixed/new direct-discovery selection.
+Whole-area routine validation measures 12.07/12.91 seconds before/after; a full
+2,110-case run takes 13.08 seconds. Costs include discovery/host/TRX and exclude
+build. The benefit is faster focused investigation; broader validation is slightly
+slower. This is not a renderer throughput measurement.
+All 2,989 affected pattern/gradient cases and 72 independent pattern/empty-contour,
+provenance and capture checks pass on Windows/Linux under both runtimes. Both
+affected builds are warning-free.

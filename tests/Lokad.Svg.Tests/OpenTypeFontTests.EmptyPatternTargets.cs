@@ -14,10 +14,11 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [MemberData(nameof(EmptyPatternTargets))]
     public async Task Empty_primitive_pattern_paints_need_no_tile_fonts(string target, string role, string content, string consumer)
     {
-        (var catalog, var provider, _) = CreateExamplePack(CreateTriangleFont());
+        (var catalog, var provider, _) = CreateUnusedFontPack();
         string emptyShape = Shape(false);
         string visibleShape = Shape(true);
         string emptyBody = Body(emptyShape);
@@ -68,6 +69,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("text", false)]
     [InlineData("text", true)]
     [InlineData("use", false)]
