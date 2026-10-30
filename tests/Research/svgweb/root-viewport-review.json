@@ -1,0 +1,1018 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "3bfa1bab592f038c5f8afd6d65a5f3b70a2c7746",
+  "status": "Research; output-only prototype not promoted",
+  "reason": "Per-axis projection conflicts with documented uniform raster fitting and leaves a painted viewBox counterexample. Preserve layout and existing targets; review image/container layout, viewBox mapping and raster projection separately.",
+  "sourceSvgCollectionRetained": false,
+  "browserPins": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3"
+    }
+  },
+  "qualificationSeconds": 68.07301219995134,
+  "cases": [
+    {
+      "id": "absolute",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4'><rect x='2' y='3' width='8' height='5' fill='red'/></svg>\n",
+      "image": [
+        17.4,
+        11.4
+      ],
+      "pixels": [
+        17,
+        11
+      ],
+      "pair": "absolute-mapped",
+      "sourceSha256": "77ce6cc8c76844ace2858f0043abd93bf2ffc8040055b04a14c27cb362d57699",
+      "hosts": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+          "pairChangedPixels": 0,
+          "captures": [
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+          "pairChangedPixels": 0,
+          "captures": [
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "absolute-mapped",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17' height='11'><g transform='scale(0.9770114942528736 0.9649122807017544)'><rect x='2' y='3' width='8' height='5' fill='red'/></g></svg>\n",
+      "image": [
+        17,
+        11
+      ],
+      "pixels": [
+        17,
+        11
+      ],
+      "sourceSha256": "da6e56e04328a05edb7b0b57cbbdd565412bac35079106aaf2600becd2ba9f6f",
+      "hosts": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+          "captures": [
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+          "captures": [
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "percentage",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='50%' height='75%' viewBox='0 0 20 20'><rect x='2' y='4' width='8' height='12' fill='red'/></svg>\n",
+      "image": [
+        150,
+        112.5
+      ],
+      "pixels": [
+        150,
+        113
+      ],
+      "pair": "percentage-mapped",
+      "sourceSha256": "b06d49ed765fe756fdf48bdcc38c5f212c76ff5fa97ef1158dbbb44a1b509805",
+      "hosts": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+          "pairChangedPixels": 0,
+          "captures": [
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+          "pairChangedPixels": 0,
+          "captures": [
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "percentage-mapped",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='150' height='113'><g transform='scale(1 1.0044444444444445)'><g transform='translate(18.75 0) scale(5.625)'><rect x='2' y='4' width='8' height='12' fill='red'/></g></g></svg>\n",
+      "image": [
+        150,
+        113
+      ],
+      "pixels": [
+        150,
+        113
+      ],
+      "sourceSha256": "8d81b54c59f08bc859146d79f5e769f677ffd7584b174447006eb17c008b9780",
+      "hosts": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+          "captures": [
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+          "captures": [
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "scaled",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4'><rect x='2' y='3' width='8' height='5' fill='red'/></svg>\n",
+      "image": [
+        26.1,
+        17.1
+      ],
+      "pixels": [
+        26,
+        17
+      ],
+      "pair": "scaled-mapped",
+      "sourceSha256": "77ce6cc8c76844ace2858f0043abd93bf2ffc8040055b04a14c27cb362d57699",
+      "hosts": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+          "pairChangedPixels": 0,
+          "captures": [
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+          "pairChangedPixels": 0,
+          "captures": [
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "scaled-mapped",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='26' height='17'><g transform='scale(1.4942528735632186 1.4912280701754386)'><rect x='2' y='3' width='8' height='5' fill='red'/></g></svg>\n",
+      "image": [
+        26,
+        17
+      ],
+      "pixels": [
+        26,
+        17
+      ],
+      "sourceSha256": "ba49c3eb69bc0afcba40e0eaf4efb0a9ebc1d560da6e02d54d9abb47ec0be94a",
+      "hosts": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+          "captures": [
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+          "captures": [
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ba4f062f406b504138c4703078062a72c518119cc8ff7fdb655cc38fb9024d9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "paint",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4' viewBox='0 0 24 16'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></svg>\n",
+      "image": [
+        17.4,
+        11.4
+      ],
+      "pixels": [
+        17,
+        11
+      ],
+      "pair": "paint-mapped",
+      "sourceSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+      "hosts": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+          "pairChangedPixels": 8,
+          "captures": [
+            {
+              "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+          "pairChangedPixels": 8,
+          "captures": [
+            {
+              "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "paint-mapped",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17' height='11'><g transform='scale(0.9770114942528736 0.9649122807017544)'><g transform='translate(.15 0) scale(.7125)'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></g></g></svg>\n",
+      "image": [
+        17,
+        11
+      ],
+      "pixels": [
+        17,
+        11
+      ],
+      "sourceSha256": "cd0628cafcab988ef5909e81d04846780b9a671628f94cfad8ec0388a8f01249",
+      "hosts": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "8b1754c68f82fde6d0df76405843711f995004b621927bd6e073709159bda7fb",
+          "captures": [
+            {
+              "pngSha256": "8b1754c68f82fde6d0df76405843711f995004b621927bd6e073709159bda7fb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b1754c68f82fde6d0df76405843711f995004b621927bd6e073709159bda7fb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b1754c68f82fde6d0df76405843711f995004b621927bd6e073709159bda7fb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "8b1754c68f82fde6d0df76405843711f995004b621927bd6e073709159bda7fb",
+          "captures": [
+            {
+              "pngSha256": "8b1754c68f82fde6d0df76405843711f995004b621927bd6e073709159bda7fb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b1754c68f82fde6d0df76405843711f995004b621927bd6e073709159bda7fb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b1754c68f82fde6d0df76405843711f995004b621927bd6e073709159bda7fb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "originalReplay": {
+    "files": 204,
+    "seconds": 55.123470599995926,
+    "summary": {
+      "windows": {
+        "before": {
+          "UnsupportedFeature": 57,
+          "exact": 130,
+          "different": 14,
+          "MalformedInput": 3
+        },
+        "prototype": {
+          "UnsupportedFeature": 57,
+          "exact": 133,
+          "different": 11,
+          "MalformedInput": 3
+        },
+        "lostExactMatches": [],
+        "increasedTotalError": []
+      },
+      "linux": {
+        "before": {
+          "UnsupportedFeature": 57,
+          "exact": 130,
+          "different": 14,
+          "MalformedInput": 3
+        },
+        "prototype": {
+          "UnsupportedFeature": 57,
+          "exact": 133,
+          "different": 11,
+          "MalformedInput": 3
+        },
+        "lostExactMatches": [],
+        "increasedTotalError": []
+      }
+    },
+    "originalDifferences": [
+      {
+        "name": "alphachannel.svg",
+        "host": "windows",
+        "sourceSha256": "c4a92f8cd118d53f42aba99bd85b354b10d48d98e33712efa080813c88f07496",
+        "before": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 255,
+          "totalChannelError": 259
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 255,
+          "totalChannelError": 259
+        }
+      },
+      {
+        "name": "car.svg",
+        "host": "windows",
+        "sourceSha256": "47ad3675940bd4017e2fb6d8f8f34d183fa23c9ee5a13983b48966e1c2364195",
+        "before": {
+          "status": "different",
+          "changedPixels": 32138,
+          "maximumError": 255,
+          "totalChannelError": 115691
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 32138,
+          "maximumError": 255,
+          "totalChannelError": 115691
+        }
+      },
+      {
+        "name": "compuserver_msn_Ford_Focus.svg",
+        "host": "windows",
+        "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+        "before": {
+          "status": "different",
+          "changedPixels": 18879,
+          "maximumError": 255,
+          "totalChannelError": 460296
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 3091,
+          "maximumError": 66,
+          "totalChannelError": 9756
+        }
+      },
+      {
+        "name": "gaussian2.svg",
+        "host": "windows",
+        "sourceSha256": "db74351406922d841cf9186cadaacf2787cccfaf3ed99e34a27d6e0b5f48616c",
+        "before": {
+          "status": "different",
+          "changedPixels": 1115,
+          "maximumError": 255,
+          "totalChannelError": 15145
+        },
+        "prototype": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      },
+      {
+        "name": "lineargradient3.svg",
+        "host": "windows",
+        "sourceSha256": "0867f531eb2b72ebd59e637803735ad3fc725f04479c9d9f47d023819a72bfc8",
+        "before": {
+          "status": "different",
+          "changedPixels": 3383,
+          "maximumError": 223,
+          "totalChannelError": 127096
+        },
+        "prototype": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      },
+      {
+        "name": "opensearch.svg",
+        "host": "windows",
+        "sourceSha256": "9768b7d43abec9daf285246b44a99bd0b1088746717af54a41379aba23d987b5",
+        "before": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 223,
+          "totalChannelError": 231
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 223,
+          "totalChannelError": 231
+        }
+      },
+      {
+        "name": "pencil.svg",
+        "host": "windows",
+        "sourceSha256": "a736c186252db9b9ec97ab780601513f1771c3a8f85035d35c07afcae2a96c81",
+        "before": {
+          "status": "different",
+          "changedPixels": 13153,
+          "maximumError": 255,
+          "totalChannelError": 309563
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 18,
+          "maximumError": 18,
+          "totalChannelError": 256
+        }
+      },
+      {
+        "name": "php.svg",
+        "host": "windows",
+        "sourceSha256": "5099fa1fa1569849d7a0f00f0119da9e7f6d1672f7b627c65a18189c8cb6c7c0",
+        "before": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 2
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 2
+        }
+      },
+      {
+        "name": "radialgradient2.svg",
+        "host": "windows",
+        "sourceSha256": "855888af9d4245c6d7b3a0f4456bf715b9bb26407ed873f529888b6b5983657d",
+        "before": {
+          "status": "different",
+          "changedPixels": 12002,
+          "maximumError": 255,
+          "totalChannelError": 283637
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 11,
+          "maximumError": 2,
+          "totalChannelError": 15
+        }
+      },
+      {
+        "name": "rg1024_Presentation_with_girl.svg",
+        "host": "windows",
+        "sourceSha256": "995e2656447b8da3e849fd762d4b9d51bc5ff7982107fc24deacb8659b43d15c",
+        "before": {
+          "status": "different",
+          "changedPixels": 9421,
+          "maximumError": 255,
+          "totalChannelError": 446989
+        },
+        "prototype": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      },
+      {
+        "name": "rg1024_Ufo_in_metalic_style.svg",
+        "host": "windows",
+        "sourceSha256": "516d45ddddc69f032bde79c0c4885cadbe23aa9c2e70cd5553b7b291b61e1cb4",
+        "before": {
+          "status": "different",
+          "changedPixels": 76552,
+          "maximumError": 255,
+          "totalChannelError": 902323
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 65,
+          "maximumError": 1,
+          "totalChannelError": 167
+        }
+      },
+      {
+        "name": "rg1024_eggs.svg",
+        "host": "windows",
+        "sourceSha256": "e261178649854a75edf284155b349f12019643f668114a998c8c36f1d60d1cb3",
+        "before": {
+          "status": "different",
+          "changedPixels": 44185,
+          "maximumError": 255,
+          "totalChannelError": 679246
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 8413,
+          "maximumError": 255,
+          "totalChannelError": 110082
+        }
+      },
+      {
+        "name": "rg1024_green_grapes.svg",
+        "host": "windows",
+        "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+        "before": {
+          "status": "different",
+          "changedPixels": 63774,
+          "maximumError": 255,
+          "totalChannelError": 631265
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 6733,
+          "maximumError": 255,
+          "totalChannelError": 26971
+        }
+      },
+      {
+        "name": "scion.svg",
+        "host": "windows",
+        "sourceSha256": "39b6486403588426bca3e9cbf470e5bea69d4ca565a1e6237111e666a01808cb",
+        "before": {
+          "status": "different",
+          "changedPixels": 2,
+          "maximumError": 5,
+          "totalChannelError": 22
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 2,
+          "maximumError": 5,
+          "totalChannelError": 22
+        }
+      },
+      {
+        "name": "alphachannel.svg",
+        "host": "linux",
+        "sourceSha256": "c4a92f8cd118d53f42aba99bd85b354b10d48d98e33712efa080813c88f07496",
+        "before": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 255,
+          "totalChannelError": 259
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 255,
+          "totalChannelError": 259
+        }
+      },
+      {
+        "name": "car.svg",
+        "host": "linux",
+        "sourceSha256": "47ad3675940bd4017e2fb6d8f8f34d183fa23c9ee5a13983b48966e1c2364195",
+        "before": {
+          "status": "different",
+          "changedPixels": 32138,
+          "maximumError": 255,
+          "totalChannelError": 115691
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 32138,
+          "maximumError": 255,
+          "totalChannelError": 115691
+        }
+      },
+      {
+        "name": "compuserver_msn_Ford_Focus.svg",
+        "host": "linux",
+        "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+        "before": {
+          "status": "different",
+          "changedPixels": 18879,
+          "maximumError": 255,
+          "totalChannelError": 460296
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 3091,
+          "maximumError": 66,
+          "totalChannelError": 9756
+        }
+      },
+      {
+        "name": "gaussian2.svg",
+        "host": "linux",
+        "sourceSha256": "db74351406922d841cf9186cadaacf2787cccfaf3ed99e34a27d6e0b5f48616c",
+        "before": {
+          "status": "different",
+          "changedPixels": 1115,
+          "maximumError": 255,
+          "totalChannelError": 15145
+        },
+        "prototype": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      },
+      {
+        "name": "lineargradient3.svg",
+        "host": "linux",
+        "sourceSha256": "0867f531eb2b72ebd59e637803735ad3fc725f04479c9d9f47d023819a72bfc8",
+        "before": {
+          "status": "different",
+          "changedPixels": 3383,
+          "maximumError": 223,
+          "totalChannelError": 127096
+        },
+        "prototype": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      },
+      {
+        "name": "opensearch.svg",
+        "host": "linux",
+        "sourceSha256": "9768b7d43abec9daf285246b44a99bd0b1088746717af54a41379aba23d987b5",
+        "before": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 223,
+          "totalChannelError": 231
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 223,
+          "totalChannelError": 231
+        }
+      },
+      {
+        "name": "pencil.svg",
+        "host": "linux",
+        "sourceSha256": "a736c186252db9b9ec97ab780601513f1771c3a8f85035d35c07afcae2a96c81",
+        "before": {
+          "status": "different",
+          "changedPixels": 13153,
+          "maximumError": 255,
+          "totalChannelError": 309563
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 18,
+          "maximumError": 18,
+          "totalChannelError": 256
+        }
+      },
+      {
+        "name": "php.svg",
+        "host": "linux",
+        "sourceSha256": "5099fa1fa1569849d7a0f00f0119da9e7f6d1672f7b627c65a18189c8cb6c7c0",
+        "before": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 2
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 2
+        }
+      },
+      {
+        "name": "radialgradient2.svg",
+        "host": "linux",
+        "sourceSha256": "855888af9d4245c6d7b3a0f4456bf715b9bb26407ed873f529888b6b5983657d",
+        "before": {
+          "status": "different",
+          "changedPixels": 12002,
+          "maximumError": 255,
+          "totalChannelError": 283637
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 11,
+          "maximumError": 2,
+          "totalChannelError": 15
+        }
+      },
+      {
+        "name": "rg1024_Presentation_with_girl.svg",
+        "host": "linux",
+        "sourceSha256": "995e2656447b8da3e849fd762d4b9d51bc5ff7982107fc24deacb8659b43d15c",
+        "before": {
+          "status": "different",
+          "changedPixels": 9421,
+          "maximumError": 255,
+          "totalChannelError": 446989
+        },
+        "prototype": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      },
+      {
+        "name": "rg1024_Ufo_in_metalic_style.svg",
+        "host": "linux",
+        "sourceSha256": "516d45ddddc69f032bde79c0c4885cadbe23aa9c2e70cd5553b7b291b61e1cb4",
+        "before": {
+          "status": "different",
+          "changedPixels": 76552,
+          "maximumError": 255,
+          "totalChannelError": 902323
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 65,
+          "maximumError": 1,
+          "totalChannelError": 167
+        }
+      },
+      {
+        "name": "rg1024_eggs.svg",
+        "host": "linux",
+        "sourceSha256": "e261178649854a75edf284155b349f12019643f668114a998c8c36f1d60d1cb3",
+        "before": {
+          "status": "different",
+          "changedPixels": 44185,
+          "maximumError": 255,
+          "totalChannelError": 679246
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 8413,
+          "maximumError": 255,
+          "totalChannelError": 110082
+        }
+      },
+      {
+        "name": "rg1024_green_grapes.svg",
+        "host": "linux",
+        "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+        "before": {
+          "status": "different",
+          "changedPixels": 63774,
+          "maximumError": 255,
+          "totalChannelError": 631265
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 6733,
+          "maximumError": 255,
+          "totalChannelError": 26971
+        }
+      },
+      {
+        "name": "scion.svg",
+        "host": "linux",
+        "sourceSha256": "39b6486403588426bca3e9cbf470e5bea69d4ca565a1e6237111e666a01808cb",
+        "before": {
+          "status": "different",
+          "changedPixels": 2,
+          "maximumError": 5,
+          "totalChannelError": 22
+        },
+        "prototype": {
+          "status": "different",
+          "changedPixels": 2,
+          "maximumError": 5,
+          "totalChannelError": 22
+        }
+      }
+    ]
+  },
+  "limitedPrototypeChecks": {
+    "host": "Windows",
+    "framework": "net11.0",
+    "sizingMechanisms": 45,
+    "nativeAndTextPaintChecks": 559,
+    "fittingChecks": 3,
+    "allPassed": true,
+    "scope": "Investigation only; not full qualification."
+  },
+  "nextModelQuestion": "Distinguish image/container CSS layout from authored SVG user space and destination raster. A direct-document DOM probe resolves 17.4 x 11.4 to a 17.390625 x 11.390625 layout box (1/64 units); for viewBox 0 0 24 16 its scale is 0.7119140625, x offset 0.15234375. A companion with that viewBox map and corresponding destination projection matched one healthy Windows image capture, but still needs independent platform triples. No universal quantization or stretching rule is established."
+}

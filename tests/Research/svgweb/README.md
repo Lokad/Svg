@@ -69,3 +69,14 @@ three fresh healthy captures per platform and exact established comparison rules
 single exploratory screenshots are not regression references. Recheck all originals
 after shared fixes. [Tool procedure](../../../tools/README.md#hosted-svgweb-inventory)
 reproduces the metadata inventory without retaining SVG files.
+
+The [root viewport investigation](root-viewport-review.json) retains four original
+CC0 controls and their explicit-map companions. Three fresh captures on each host
+agree for the solid, percentage and scaled pairs; the painted viewBox pair differs
+by eight pixels. An output projection prototype improved the complete original
+replay from 130 to 133 exact matches per host without losing an exact match or
+increasing total error, but remains research: per-axis stretching conflicts with
+uniform raster fitting, and the viewBox counterexample needs a consistent model
+of container layout and image projection. Production drawing and all targets are
+unchanged. The record includes inputs, capture hashes, comparison results and the
+limited checks; it does not admit these controls as rendering references.
