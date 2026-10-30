@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "9bfd05c979efac5d2cdd9b40233308016e2db712",
+  "scope": "Resolve the paint review synthetic-font false lead before adding filter special cases. No production change.",
+  "composition": {
+    "prefix": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='96' height='48' font-family='Example' font-size='24'>",
+    "definitions": "<linearGradient id='g'><stop stop-color='blue'/><stop offset='1' stop-color='red'/></linearGradient><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='96' height='48'><feOffset dx='0' dy='0'/></filter>",
+    "suffix": "</svg>\n",
+    "nativeFontInsertion": "One @font-face style immediately after the SVG root start tag; family Example, weight400, data:font/ttf;base64 of the exact program."
+  },
+  "font": {
+    "path": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "family": "Example",
+    "weight": 400
+  },
+  "capture": {
+    "platforms": {
+      "windows": {
+        "platform": "win64",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "captureRecipeRevision": "3"
+      },
+      "linux": {
+        "platform": "linux64",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "captureRecipeRevision": "3"
+      }
+    },
+    "freshProcessesPerCasePerPlatform": 1,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "imageViewport": {
+      "width": 96,
+      "height": 48
+    },
+    "screenshot": {
+      "width": 96,
+      "height": 48
+    },
+    "background": "transparent",
+    "qualification": "Exploratory source-isolation evidence, not canonical reference admission. All eight own inputs are retained separately; identical PNG bytes share storage only. Platform differences are preserved."
+  },
+  "librarySha256": "74afb0bd3907d61ca3bce44b4d7e07f4d79b52db3acb1e899cf478677b647312",
+  "cases": [
+    {
+      "id": "solid-plain",
+      "body": "<text x='8' y='34' fill='blue'>A</text>",
+      "sourceSha256": "318622ba044d6383d7ccf88086b42e0e84616d04fd26069a0b57df79b60f20e4",
+      "nativeSourceSha256": "b159600c34631f2143c787e971a92e13ef52c4372fee218fe6f1706431ca03c7",
+      "platforms": {
+        "windows": {
+          "png": "filter-source-references/f1cacbe2ab7b777c7983.png",
+          "sha256": "f1cacbe2ab7b777c7983a456b304e78309b269bf874d2746c36083b6c8c7828d",
+          "visiblePixels": 133,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 0,
+          "libraryChangedFromUnfiltered": 0
+        },
+        "linux": {
+          "png": "filter-source-references/d8edf55bfe2c769f68e8.png",
+          "sha256": "d8edf55bfe2c769f68e8d208c54b37c617e4b5aa5d9c27d5e3284b9e1a7dd644",
+          "visiblePixels": 117,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 0,
+          "libraryChangedFromUnfiltered": 0
+        }
+      }
+    },
+    {
+      "id": "solid-own",
+      "body": "<text x='8' y='34' fill='blue' filter='url(#f)'>A</text>",
+      "sourceSha256": "bb3638c91f0884418a6ef5495578fd868f3c51fc1b38030fd966f920c097a30c",
+      "nativeSourceSha256": "36694b9c5d6c0722ccfbd37ba4531b5215ac9626f52d0462798af9d688965200",
+      "platforms": {
+        "windows": {
+          "png": "filter-source-references/f1cacbe2ab7b777c7983.png",
+          "sha256": "f1cacbe2ab7b777c7983a456b304e78309b269bf874d2746c36083b6c8c7828d",
+          "visiblePixels": 133,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 0,
+          "libraryChangedFromUnfiltered": 0
+        },
+        "linux": {
+          "png": "filter-source-references/d8edf55bfe2c769f68e8.png",
+          "sha256": "d8edf55bfe2c769f68e8d208c54b37c617e4b5aa5d9c27d5e3284b9e1a7dd644",
+          "visiblePixels": 117,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 0,
+          "libraryChangedFromUnfiltered": 0
+        }
+      }
+    },
+    {
+      "id": "solid-group",
+      "body": "<g filter='url(#f)'><text x='8' y='34' fill='blue'>A</text></g>",
+      "sourceSha256": "5cb830f8e2069ecbacf3a65e18e8f67d6acfe2213cc9dce286e7ef1b9771eaaf",
+      "nativeSourceSha256": "750caacb767409da168ab0f070653216f9ed1ded0b0e5c3c5ada0e5d01156be8",
+      "platforms": {
+        "windows": {
+          "png": "filter-source-references/f1cacbe2ab7b777c7983.png",
+          "sha256": "f1cacbe2ab7b777c7983a456b304e78309b269bf874d2746c36083b6c8c7828d",
+          "visiblePixels": 133,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 0,
+          "libraryChangedFromUnfiltered": 0
+        },
+        "linux": {
+          "png": "filter-source-references/d8edf55bfe2c769f68e8.png",
+          "sha256": "d8edf55bfe2c769f68e8d208c54b37c617e4b5aa5d9c27d5e3284b9e1a7dd644",
+          "visiblePixels": 117,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 0,
+          "libraryChangedFromUnfiltered": 0
+        }
+      }
+    },
+    {
+      "id": "gradient-plain",
+      "body": "<text x='8' y='34' fill='url(#g)'>A</text>",
+      "sourceSha256": "ec59ec1449de34fc4479ca28477c1d8b02f91a4cb20298a532654866fb75161c",
+      "nativeSourceSha256": "185c944ce386d64e40434bb3c98be9f711c578344f7e80f4e421a5132b51a84c",
+      "platforms": {
+        "windows": {
+          "png": "filter-source-references/8f4a641eef4f195833d8.png",
+          "sha256": "8f4a641eef4f195833d8140bbc3d52e73520414645814dab6d02543feb904d54",
+          "visiblePixels": 133,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 0,
+          "libraryChangedFromUnfiltered": 0
+        },
+        "linux": {
+          "png": "filter-source-references/0c8122d2b35666e6443d.png",
+          "sha256": "0c8122d2b35666e6443d60ff79c5d8cfa02e48c172fe3928c5fb444c2658a892",
+          "visiblePixels": 117,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 0,
+          "libraryChangedFromUnfiltered": 0
+        }
+      }
+    },
+    {
+      "id": "gradient-own",
+      "body": "<text x='8' y='34' fill='url(#g)' filter='url(#f)'>A</text>",
+      "sourceSha256": "822f814bd75418e4e823c5a653aea9d1654dd536b7e1563f767ea24a5a9c250a",
+      "nativeSourceSha256": "9a6d21aab6abfe66e27ad8f8f17b25ac9aa81b32ec273cfa1b664759b7655847",
+      "platforms": {
+        "windows": {
+          "png": "filter-source-references/196d775282b142ad04c2.png",
+          "sha256": "196d775282b142ad04c23c92cb7e9c886b3b09bcb2ae7ac26807b368d0fd020f",
+          "visiblePixels": 133,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 63,
+          "libraryChangedFromUnfiltered": 63
+        },
+        "linux": {
+          "png": "filter-source-references/df8585c9e68c75383811.png",
+          "sha256": "df8585c9e68c7538381115ce510b6a3c2d743b18524599834813967aaf6817d6",
+          "visiblePixels": 117,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 41,
+          "libraryChangedFromUnfiltered": 41
+        }
+      }
+    },
+    {
+      "id": "gradient-group",
+      "body": "<g filter='url(#f)'><text x='8' y='34' fill='url(#g)'>A</text></g>",
+      "sourceSha256": "273873cfdaaa62a3d419200610b85fa2f85cfbff720a05814eee0ab71d568e25",
+      "nativeSourceSha256": "f2fdf3f0fe05a9b9065ef075750d3769afec3b4ec6c6ea232a003cac11e54b1f",
+      "platforms": {
+        "windows": {
+          "png": "filter-source-references/196d775282b142ad04c2.png",
+          "sha256": "196d775282b142ad04c23c92cb7e9c886b3b09bcb2ae7ac26807b368d0fd020f",
+          "visiblePixels": 133,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 63,
+          "libraryChangedFromUnfiltered": 63
+        },
+        "linux": {
+          "png": "filter-source-references/df8585c9e68c75383811.png",
+          "sha256": "df8585c9e68c7538381115ce510b6a3c2d743b18524599834813967aaf6817d6",
+          "visiblePixels": 117,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 41,
+          "libraryChangedFromUnfiltered": 41
+        }
+      }
+    },
+    {
+      "id": "span-none-group",
+      "body": "<g filter='url(#f)'><text x='8' y='34' fill='none'><tspan fill='url(#g)'>A</tspan></text></g>",
+      "sourceSha256": "51a723fb2411b4865812b4d53a710afef30e1cbf4530063bab89a566d20ced93",
+      "nativeSourceSha256": "6ee889a185cea7f9dfabe32c2793b1cf74e8db8417e4bfc478b7dd807c8375c9",
+      "platforms": {
+        "windows": {
+          "png": "filter-source-references/196d775282b142ad04c2.png",
+          "sha256": "196d775282b142ad04c23c92cb7e9c886b3b09bcb2ae7ac26807b368d0fd020f",
+          "visiblePixels": 133,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 63,
+          "libraryChangedFromUnfiltered": 63
+        },
+        "linux": {
+          "png": "filter-source-references/df8585c9e68c75383811.png",
+          "sha256": "df8585c9e68c7538381115ce510b6a3c2d743b18524599834813967aaf6817d6",
+          "visiblePixels": 117,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": 41,
+          "libraryChangedFromUnfiltered": 41
+        }
+      }
+    },
+    {
+      "id": "shape-group",
+      "body": "<g filter='url(#f)'><rect x='8' y='10' width='16' height='24' fill='url(#g)'/></g>",
+      "sourceSha256": "6b67897a869a7f639b508fedc1e646d4cc53cd980143f857abfc95a2f1cf9aab",
+      "nativeSourceSha256": "58c03e85af7f291eab94533452d0f5f5997f61bd9d39ee70ffdf7fc3492a6f8e",
+      "platforms": {
+        "windows": {
+          "png": "filter-source-references/7d1aba86dac33f7eab7f.png",
+          "sha256": "7d1aba86dac33f7eab7f11ddce5aaba2bdd359d089ee0e30f31fb397625383c5",
+          "visiblePixels": 384,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": null,
+          "libraryChangedFromUnfiltered": null
+        },
+        "linux": {
+          "png": "filter-source-references/7d1aba86dac33f7eab7f.png",
+          "sha256": "7d1aba86dac33f7eab7f11ddce5aaba2bdd359d089ee0e30f31fb397625383c5",
+          "visiblePixels": 384,
+          "libraryChangedPixels": 0,
+          "nativeChangedFromUnfiltered": null,
+          "libraryChangedFromUnfiltered": null
+        }
+      }
+    }
+  ],
+  "syntheticFontControl": {
+    "generator": "../../Lokad.Svg.Tests/OpenTypeFontTests.cs: CreateTriangleFont",
+    "authoredContourBox": [
+      10,
+      10,
+      20,
+      20
+    ],
+    "originalGlyphBox": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "correctedGlyphBox": [
+      10,
+      10,
+      20,
+      20
+    ],
+    "observations": [
+      {
+        "font": "original",
+        "host": "windows",
+        "visiblePixels": {
+          "solid-plain": 3,
+          "solid-filtered": 3,
+          "gradient-plain": 0,
+          "gradient-filtered": 0
+        },
+        "changedPixels": {
+          "solid": 0,
+          "gradient": 0
+        }
+      },
+      {
+        "font": "original",
+        "host": "linux",
+        "visiblePixels": {
+          "solid-plain": 3,
+          "solid-filtered": 3,
+          "gradient-plain": 0,
+          "gradient-filtered": 0
+        },
+        "changedPixels": {
+          "solid": 0,
+          "gradient": 0
+        }
+      },
+      {
+        "font": "corrected-glyph-box",
+        "host": "windows",
+        "visiblePixels": {
+          "solid-plain": 3,
+          "solid-filtered": 3,
+          "gradient-plain": 3,
+          "gradient-filtered": 3
+        },
+        "changedPixels": {
+          "solid": 0,
+          "gradient": 1
+        }
+      },
+      {
+        "font": "corrected-glyph-box",
+        "host": "linux",
+        "visiblePixels": {
+          "solid-plain": 3,
+          "solid-filtered": 3,
+          "gradient-plain": 3,
+          "gradient-filtered": 3
+        },
+        "changedPixels": {
+          "solid": 0,
+          "gradient": 0
+        }
+      }
+    ],
+    "conclusion": "The original test font makes object-box gradients blank with and without filters. Correcting only its glyph box makes both visible. The corrected tiny-font Windows images differ by one color pixel across the filter color-transfer stage; no synthetic-font native reference or equality claim is made.",
+    "testChange": "The representative prepared-text test now supplies the actual contour box, uses a nested available gradient over a none fallback under an offset filter, compares against the same filtered context without fallback, and requires visible output."
+  },
+  "focusedQualification": [
+    {
+      "host": "windows",
+      "framework": "net11",
+      "passed": 41
+    },
+    {
+      "host": "windows",
+      "framework": "net10",
+      "passed": 41
+    },
+    {
+      "host": "linux",
+      "framework": "net11",
+      "passed": 41
+    },
+    {
+      "host": "linux",
+      "framework": "net10",
+      "passed": 41
+    }
+  ]
+}

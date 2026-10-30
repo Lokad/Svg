@@ -33,9 +33,11 @@ resource roles distinguish navigation from image/CSS/media dependencies.
 The [paint-reference record](paint-references.json) maps four CC0 controls to native
 platform triples. Paint fallbacks share lexical parsing and completed resource
 availability across lowering, retained content and font selection. Empty content
-and an unavailable server remain distinct. The record also retains an unresolved
-text/filter witness for the shared filter milestone; equal blank controls do not
-qualify that interaction.
+and an unavailable server remain distinct. The
+[filter-source review](filter-source-review.json) closes the apparent blank-text
+witness as missing bounds in its synthetic test font. Eight valid-font controls
+are independently exact on each host. These single-process exploratory captures
+preserve platform differences and do not constitute new reference admission.
 
 The [gradient-length record](gradient-lengths.json) maps five original CC0 fixtures
 to independent native platform references. Typed lengths retain number/percentage

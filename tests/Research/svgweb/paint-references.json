@@ -146,11 +146,11 @@
     },
     "qualification": "Every original hash rechecked. Prior rendered PNGs are byte-identical; other outcome categories and comparisons remain unchanged. Fresh native triples use the same inspected 300x150 logical viewport and reproduce the existing target. No hosted payload retention or whole-corpus reference admission."
   },
-  "openTextFilterWitness": {
-    "status": "Investigation remains open; no native font-backed reference admitted.",
+  "textFilterWitness": {
+    "status": "CLOSED as a synthetic-font test precondition; no production fix required.",
     "fontProgram": "CreateTriangleFont in ../../Lokad.Svg.Tests/OpenTypeFontTests.cs",
     "document": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' font-family='Example' font-size='200'><defs><linearGradient id='g'><stop stop-color='blue'/><stop offset='1' stop-color='red'/></linearGradient><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feOffset dx='0' dy='0'/></filter></defs><g filter='url(#f)'><text x='1' y='14' fill='none'><tspan fill='url(#g)'>A</tspan></text></g></svg>",
     "observation": "Prepared rendering was blank both with and without an explicit URL fallback, even with a default-filled text parent. Font discovery/acquisition succeeded. Equal blank controls are insufficient proof; this case is not counted as closed fallback/rendering coverage.",
-    "closure": "Supply the exact synthetic font to an independent browser, isolate solid versus shader/pending-text and direct versus enclosing filter behavior, then repair shared filter source/bounds stages without changing layout or references."
+    "resolution": "filter-source-review.json"
   }
 }
