@@ -280,7 +280,7 @@ internal static class SvgGaussianBlur
         if (source.Overlaps(destination)) throw new ArgumentException("The filter source and destination must be independent frames.");
         token.ThrowIfCancellationRequested();
         BoxKernel horizontal = Kernel(deviation.Horizontal), vertical = Kernel(deviation.Vertical);
-        if (horizontal.Identity && vertical.Identity) {}        if (horizontal.Identity && vertical.Identity)
+        if (horizontal.Identity && vertical.Identity)
         {
             source.CopyTo(destination);
             token.ThrowIfCancellationRequested();

@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "03241b61ad035539cd28186bb95234be8dfb485a723d95d1bbbf0be54a5932e9",
+  "referenceSha256": "c0318c303fa6c991b679c82abe15f138d5c81530c3474ec5a3ebaa5cbd6447d1",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-curve-source-half.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-curve-source-half",
+  "viewport": {
+    "width": 1901,
+    "height": 1018,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 filter source-capture control. A large curved source with a copying blur kernel still needs per-bitmap source capture. Three fresh healthy captures on each platform; all reference bytes independent of the implementation.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "03241b61ad035539cd28186bb95234be8dfb485a723d95d1bbbf0be54a5932e9",
+      "referenceSha256": "c0318c303fa6c991b679c82abe15f138d5c81530c3474ec5a3ebaa5cbd6447d1",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "03241b61ad035539cd28186bb95234be8dfb485a723d95d1bbbf0be54a5932e9",
+      "referenceSha256": "c0318c303fa6c991b679c82abe15f138d5c81530c3474ec5a3ebaa5cbd6447d1",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 1901,
+    "height": 1018
+  }
+}

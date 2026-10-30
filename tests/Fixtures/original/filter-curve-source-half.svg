@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='1901' height='1018'><defs><filter id='f'><feGaussianBlur stdDeviation='.5'/></filter></defs><path d='M120 880 C300 350 1500 600 1760 900 L1350 860 C980 760 580 1100 120 880Z' fill='black' opacity='1' filter='url(#f)'/></svg>

@@ -1,0 +1,486 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "f2b55adbd8321265b98b049bfb613ab3a985d663",
+  "closedScope": [
+    "Axis-aligned filters request and capture input in each bordered destination bitmap, while restoration owns only its interior. Layer clip state is restored on every exit.",
+    "Source construction uses the source image hint with transparent padding rather than truncating curves to tight ink bounds.",
+    "Existing primitive, glyph, direct/deferred and transformed-filter paths retain their independent numerical stages. Gaussian kernels, opacity math, text layout and existing references are unchanged."
+  ],
+  "fixtures": [
+    {
+      "id": "half",
+      "fixtureId": "original-filter-curve-source-half",
+      "fixture": "../../Fixtures/original/filter-curve-source-half.svg",
+      "provenance": "../../References/original-filter-curve-source-half.json",
+      "sourceSha256": "03241b61ad035539cd28186bb95234be8dfb485a723d95d1bbbf0be54a5932e9",
+      "nativePngSha256": "c0318c303fa6c991b679c82abe15f138d5c81530c3474ec5a3ebaa5cbd6447d1",
+      "freshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 4089,
+        "linux": 4089
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "role": "A large curved source with a copying blur kernel still needs per-bitmap source capture."
+    },
+    {
+      "id": "shadow",
+      "fixtureId": "original-filter-curve-source-shadow",
+      "fixture": "../../Fixtures/original/filter-curve-source-shadow.svg",
+      "provenance": "../../References/original-filter-curve-source-shadow.json",
+      "sourceSha256": "e8b5355a4cec0486cde41d4d4ddd5ca960fdc4a7bf63d9ec8787760b1210c0a4",
+      "nativePngSha256": "6a8310d7d5303107be4e881fed4b5d54ce760953acfb4b66a2564c24a09423f8",
+      "freshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 83564,
+        "linux": 83564
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "role": "A large curved source with a three-box blur retains native source coverage."
+    },
+    {
+      "id": "small-concave",
+      "fixtureId": "original-filter-source-padding",
+      "fixture": "../../Fixtures/original/filter-source-padding.svg",
+      "provenance": "../../References/original-filter-source-padding.json",
+      "sourceSha256": "6c6dd7f2cc6b4677a51edaa5da2660447294274991d0d4d87d78009cd385e224",
+      "nativePngSha256": "1a982d9dd518ec9f421548a40b4694012b6b9b349a6eff7a1a5ca16256d7151a",
+      "freshProcessesPerPlatform": 3,
+      "beforeChangedPixels": {
+        "windows": 1,
+        "linux": 1
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "role": "An untiled curved source retains the image hint padding during edge construction."
+    }
+  ],
+  "mechanism": "../../Lokad.Svg.Tests/SvgFilterBitmapReplayTests.cs",
+  "mechanismContract": "A translucent full-canvas flood owns each output pixel exactly once, including adjacent bitmap borders.",
+  "cleanup": "Remove nine empty post-fuel guards while preserving adjacent cancellation checks.",
+  "remainingScope": "Original filter/crop/flood/offset/shadow and fractional-root discrepancies remain open; canonical controls do not close whole documents.",
+  "validation": {
+    "checks": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "scope": "core",
+        "passed": 4517,
+        "seconds": 16.564071599859744,
+        "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "scope": "native",
+        "passed": 9173,
+        "seconds": 29.05078940000385,
+        "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "scope": "core",
+        "passed": 4517,
+        "seconds": 17.559787399834022,
+        "librarySha256": "876cf5203d41d12e7d8fe2b3113378d5a4ca9229c49fe3af28b8b0b128f87eb7"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "scope": "native",
+        "passed": 9173,
+        "seconds": 26.303988199913874,
+        "librarySha256": "876cf5203d41d12e7d8fe2b3113378d5a4ca9229c49fe3af28b8b0b128f87eb7"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "scope": "core",
+        "passed": 4517,
+        "seconds": 15.444371795999999,
+        "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "scope": "native",
+        "passed": 9173,
+        "seconds": 44.441124846,
+        "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "scope": "core",
+        "passed": 4517,
+        "seconds": 13.334976886,
+        "librarySha256": "876cf5203d41d12e7d8fe2b3113378d5a4ca9229c49fe3af28b8b0b128f87eb7"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "scope": "native",
+        "passed": 9173,
+        "seconds": 33.625479805999994,
+        "librarySha256": "876cf5203d41d12e7d8fe2b3113378d5a4ca9229c49fe3af28b8b0b128f87eb7"
+      }
+    ],
+    "coreSelection": "SvgFilter, SvgGaussianBlur, SvgClippedPathRecordingTests, SvgRecordedBoundsTests, SvgDeferredFilterSourceTests, SvgInertPaintTests, SvgPaintOrderTests, SvgUseInstanceTests and SvgMask; excludes Category=Research.",
+    "nativeSelection": "Filter, Clip, Mask, FixtureManifestTests, SvgTextPaintBoundsReferenceTests and all SvgFontLayoutDiagramTests.",
+    "allBuildsWarningFree": true,
+    "existingReferencesChanged": 0,
+    "timingScope": "Functional elapsed during concurrent workstation execution, not a controlled performance comparison. Linux local runs use portable Windows-built assemblies; milestone CI builds each host independently.",
+    "prototypeEquivalence": "Final cleanup and loop-range simplification preserve all 148 prototype original PNGs per host byte-for-byte."
+  },
+  "originalReplay": {
+    "filesPerHost": 204,
+    "sourceHashesRechecked": true,
+    "hostedSvgPayloadFilesRetained": 0,
+    "beforeSeconds": 64.62343770009466,
+    "afterSeconds": 47.235317200189456,
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorRenderedUnchanged": 143,
+        "priorRenderedChanged": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 27601,
+              "maximumError": 255,
+              "totalChannelError": 71154
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 14467,
+              "maximumError": 255,
+              "totalChannelError": 30021
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 42522,
+              "maximumError": 255,
+              "totalChannelError": 104985
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 9817,
+              "maximumError": 18,
+              "totalChannelError": 19250
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "pencil.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 13153,
+              "maximumError": 255,
+              "totalChannelError": 309563
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 13149,
+              "maximumError": 255,
+              "totalChannelError": 309467
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "rg1024_eggs.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 44185,
+              "maximumError": 255,
+              "totalChannelError": 679246
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 42827,
+              "maximumError": 255,
+              "totalChannelError": 652994
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "rg1024_green_grapes.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 63774,
+              "maximumError": 255,
+              "totalChannelError": 631268
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631689
+            },
+            "outcome": "rendered"
+          }
+        ],
+        "newRendered": [],
+        "lost": [],
+        "worse": [
+          {
+            "name": "rg1024_green_grapes.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 63774,
+              "maximumError": 255,
+              "totalChannelError": 631268
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631689
+            },
+            "outcome": "rendered"
+          }
+        ],
+        "changedOutcomesOrDiagnostics": [],
+        "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89"
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "priorRenderedUnchanged": 143,
+        "priorRenderedChanged": [
+          {
+            "name": "car.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 27601,
+              "maximumError": 255,
+              "totalChannelError": 71154
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 14467,
+              "maximumError": 255,
+              "totalChannelError": 30021
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 42522,
+              "maximumError": 255,
+              "totalChannelError": 104985
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 9817,
+              "maximumError": 18,
+              "totalChannelError": 19250
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "pencil.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 13153,
+              "maximumError": 255,
+              "totalChannelError": 309563
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 13149,
+              "maximumError": 255,
+              "totalChannelError": 309467
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "rg1024_eggs.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 44185,
+              "maximumError": 255,
+              "totalChannelError": 679246
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 42827,
+              "maximumError": 255,
+              "totalChannelError": 652994
+            },
+            "outcome": "rendered"
+          },
+          {
+            "name": "rg1024_green_grapes.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 63774,
+              "maximumError": 255,
+              "totalChannelError": 631268
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631689
+            },
+            "outcome": "rendered"
+          }
+        ],
+        "newRendered": [],
+        "lost": [],
+        "worse": [
+          {
+            "name": "rg1024_green_grapes.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 63774,
+              "maximumError": 255,
+              "totalChannelError": 631268
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 63754,
+              "maximumError": 255,
+              "totalChannelError": 631689
+            },
+            "outcome": "rendered"
+          }
+        ],
+        "changedOutcomesOrDiagnostics": [],
+        "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89"
+      }
+    },
+    "qualification": "All prior exact images remain exact, every outcome/diagnostic category is unchanged, and 143 PNGs are byte-identical per host. car.svg, gallardo.svg, pencil.svg and rg1024_eggs.svg improve. The already-inexact fractional-root grapes original gains 421 total error units; its independent integer-root isolation improves materially. Neither original becomes admitted exact. Functional timings are not throughput evidence."
+  },
+  "originalMapping": {
+    "name": "gallardo.svg",
+    "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "sourceElement": "path7090",
+    "filter": "filter3933",
+    "stdDeviation": 22.417147,
+    "recipe": "Retain root attributes, filter3933, path7090 and its complete ancestor attribute chain. Serialize XML in bounded RAM; retain no hosted payload. The unmodulated variant changes only target opacity to 1.",
+    "nativeReferenceFreshProcessesPerPlatform": 1,
+    "referenceQualification": "Healthy and profile-cleaned on both platforms. Original isolation is exploratory, not reference admission; independent CC0 controls have native platform triples.",
+    "beforeChangedPixelsPerPlatform": {
+      "normal": 21888,
+      "unmodulated": 29293
+    },
+    "after": [
+      {
+        "id": "normal",
+        "host": "windows",
+        "variantSourceSha256": "0dd02502cabc7bfcaa9b57a994f0038bb9fdc245abf315ad92d64fcb30343863",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89",
+        "hostedSvgPayloadFilesRetained": 0
+      },
+      {
+        "id": "normal",
+        "host": "linux",
+        "variantSourceSha256": "0dd02502cabc7bfcaa9b57a994f0038bb9fdc245abf315ad92d64fcb30343863",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89",
+        "hostedSvgPayloadFilesRetained": 0
+      },
+      {
+        "id": "unmodulated",
+        "host": "windows",
+        "variantSourceSha256": "7f7de097f35c4ca87de3a8c7bea2992eecdff9918c2582ef85b04adacdc26733",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89",
+        "hostedSvgPayloadFilesRetained": 0
+      },
+      {
+        "id": "unmodulated",
+        "host": "linux",
+        "variantSourceSha256": "7f7de097f35c4ca87de3a8c7bea2992eecdff9918c2582ef85b04adacdc26733",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89",
+        "hostedSvgPayloadFilesRetained": 0
+      }
+    ],
+    "remainingScope": "The complete original still differs by 19,250 total channel units. Unfiltered geometry, other filter/clip interactions and fractional root fitting remain individually accountable."
+  },
+  "fractionalRootInteraction": {
+    "name": "rg1024_green_grapes.svg",
+    "calibration": "radial-source-binding.json",
+    "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+    "variantSourceSha256": "6de16e4fc1ddaf108610d119947de09308242aad2adaa78c4ba54ab023df826d",
+    "recipe": "Change only root width/height from 557.90326x781.49402 to 558x781. Preserve all remaining source bytes and use transparent output, DPR 1, with matching 558x781 logical image and screenshot viewports. Source is fetched into bounded RAM and discarded.",
+    "freshNativeReferenceProcessesPerPlatform": 1,
+    "admission": "Exploratory original isolation only; preserve uniform fitting, layout and all exact references.",
+    "outcomes": [
+      {
+        "host": "windows",
+        "variantSourceSha256": "6de16e4fc1ddaf108610d119947de09308242aad2adaa78c4ba54ab023df826d",
+        "sourceSvgFilesRetained": 0,
+        "nativeCaptures": 1,
+        "outcomes": {
+          "before": {
+            "changedPixels": 8221,
+            "maximumError": 255,
+            "totalChannelError": 31543,
+            "librarySha256": "52101bd4feb7e203ed015fb75ecc17f5ad8fe301b53228c1cbdb269f2326518f"
+          },
+          "after": {
+            "changedPixels": 4073,
+            "maximumError": 255,
+            "totalChannelError": 8878,
+            "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89"
+          }
+        }
+      },
+      {
+        "host": "linux",
+        "variantSourceSha256": "6de16e4fc1ddaf108610d119947de09308242aad2adaa78c4ba54ab023df826d",
+        "sourceSvgFilesRetained": 0,
+        "nativeCaptures": 1,
+        "outcomes": {
+          "before": {
+            "changedPixels": 8221,
+            "maximumError": 255,
+            "totalChannelError": 31543,
+            "librarySha256": "52101bd4feb7e203ed015fb75ecc17f5ad8fe301b53228c1cbdb269f2326518f"
+          },
+          "after": {
+            "changedPixels": 4073,
+            "maximumError": 255,
+            "totalChannelError": 8878,
+            "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89"
+          }
+        }
+      }
+    ],
+    "inference": "Native-correct filter capture interacts with the independently recorded fractional root layout/fitting discrepancy. The integer-root isolation improves from 8,221 to 4,073 changed pixels and from 31,543 to 8,878 total error on each host."
+  }
+}

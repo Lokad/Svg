@@ -1597,7 +1597,7 @@ internal ref partial struct SvgAnalyticCoverage
                 int[] multiAlphas = new int[multiWidth + 4];
                 eligible = true;
                 bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
-                if (useRunBlitter) {}                cancellationToken.ThrowIfCancellationRequested();
+                cancellationToken.ThrowIfCancellationRequested();
                 return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, false, useRunBlitter, false, paintClip, window, budget, multiScratch);
             }
             catch { multiScratch?.Dispose(); throw; }
@@ -1756,7 +1756,7 @@ internal ref partial struct SvgAnalyticCoverage
             int[] alphas = new int[width + 4];
             eligible = true;
             bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
-            if (useRunBlitter) {}            cancellationToken.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
             return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, desnapBox, useRunBlitter, false, paintClip, window, budget, scratch);
         }
         catch { scratch?.Dispose(); throw; }

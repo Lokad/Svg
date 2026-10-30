@@ -9866,5 +9866,32 @@
     "seconds": 64.62343770009466,
     "evidence": "radial-source-binding.json",
     "qualification": "All prior exact images remain exact; outcome and diagnostic categories are unchanged. 145 PNGs remain byte-identical per host. car.svg/gallardo.svg improve. rg1024_green_grapes.svg has three changed bytes with three more units of error against its fractional-root reference; the independent integer-root isolation below makes all three changed pixels exact. Fractional root mapping remains open; neither original is admitted as exact."
+  },
+  "filterSourceCapture": {
+    "sourceBaseline": "f2b55adbd8321265b98b049bfb613ab3a985d663",
+    "librarySha256": "f7fcce23a37a29b4ce6571c146ea6ede9a59580fd3d8c383ff2575c68abfea89",
+    "filesRevalidatedPerHost": 204,
+    "renderedPerHost": 148,
+    "exactPerHost": 132,
+    "differentPerHost": 16,
+    "rejectedPerHost": 56,
+    "priorRenderedPngsByteIdenticalPerHost": 143,
+    "improvedPriorRendered": [
+      "car.svg",
+      "gallardo.svg",
+      "pencil.svg",
+      "rg1024_eggs.svg"
+    ],
+    "fractionalRootInteraction": {
+      "name": "rg1024_green_grapes.svg",
+      "totalChannelErrorBefore": 631268,
+      "totalChannelErrorAfter": 631689,
+      "integerRootErrorBefore": 31543,
+      "integerRootErrorAfter": 8878
+    },
+    "sourceSvgFilesRetained": 0,
+    "seconds": 47.235317200189456,
+    "evidence": "filter-source-capture.json",
+    "qualification": "All prior exact images remain exact, every outcome/diagnostic category is unchanged, and 143 PNGs are byte-identical per host. car.svg, gallardo.svg, pencil.svg and rg1024_eggs.svg improve. The already-inexact fractional-root grapes original gains 421 total error units; its independent integer-root isolation improves materially. Neither original becomes admitted exact. Functional timings are not throughput evidence."
   }
 }

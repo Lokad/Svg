@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "6c6dd7f2cc6b4677a51edaa5da2660447294274991d0d4d87d78009cd385e224",
+  "referenceSha256": "1a982d9dd518ec9f421548a40b4694012b6b9b349a6eff7a1a5ca16256d7151a",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-source-padding.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-source-padding",
+  "viewport": {
+    "width": 190,
+    "height": 102,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 filter source-capture control. An untiled curved source retains the image hint padding during edge construction. Three fresh healthy captures on each platform; all reference bytes independent of the implementation.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "6c6dd7f2cc6b4677a51edaa5da2660447294274991d0d4d87d78009cd385e224",
+      "referenceSha256": "1a982d9dd518ec9f421548a40b4694012b6b9b349a6eff7a1a5ca16256d7151a",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "6c6dd7f2cc6b4677a51edaa5da2660447294274991d0d4d87d78009cd385e224",
+      "referenceSha256": "1a982d9dd518ec9f421548a40b4694012b6b9b349a6eff7a1a5ca16256d7151a",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 190,
+    "height": 102
+  }
+}

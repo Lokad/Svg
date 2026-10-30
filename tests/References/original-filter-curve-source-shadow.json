@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "e8b5355a4cec0486cde41d4d4ddd5ca960fdc4a7bf63d9ec8787760b1210c0a4",
+  "referenceSha256": "6a8310d7d5303107be4e881fed4b5d54ce760953acfb4b66a2564c24a09423f8",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-curve-source-shadow.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-curve-source-shadow",
+  "viewport": {
+    "width": 1901,
+    "height": 1018,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 filter source-capture control. A large curved source with a three-box blur retains native source coverage. Three fresh healthy captures on each platform; all reference bytes independent of the implementation.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "e8b5355a4cec0486cde41d4d4ddd5ca960fdc4a7bf63d9ec8787760b1210c0a4",
+      "referenceSha256": "6a8310d7d5303107be4e881fed4b5d54ce760953acfb4b66a2564c24a09423f8",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "e8b5355a4cec0486cde41d4d4ddd5ca960fdc4a7bf63d9ec8787760b1210c0a4",
+      "referenceSha256": "6a8310d7d5303107be4e881fed4b5d54ce760953acfb4b66a2564c24a09423f8",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 1901,
+    "height": 1018
+  }
+}
