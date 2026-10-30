@@ -8,6 +8,7 @@ public sealed class SvgGradientTemplateAttributeTests
     private const string Stops = "<stop stop-color='red'/><stop offset='1' stop-color='blue'/>";
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("linearGradient", "units")]
     [InlineData("linearGradient", "transform")]
     [InlineData("linearGradient", "spread")]
@@ -21,11 +22,12 @@ public sealed class SvgGradientTemplateAttributeTests
         foreach (bool ownStops in new[] { false, true })
         {
             var documents = Documents(kind, attribute, forward, middle, ownStops);
-            Assert.Equal(Render(documents.Expected), Render(documents.Actual));
+            SvgRasterTestHelper.AssertPixelsEqual(documents.Expected, documents.Actual, SvgRenderOptions.Default);
         }
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("linearGradient", "matrix(1 .2 .1 1 2 0)")]
     [InlineData("radialGradient", "matrix(1 .2 .1 1 2 0)")]
     [InlineData("linearGradient", "translate(4 0) scale(1.25 .75)")]
@@ -45,6 +47,7 @@ public sealed class SvgGradientTemplateAttributeTests
     }
 
     [Theory]
+    [Trait("Layer", "Rendering")]
     [InlineData("linearGradient")]
     [InlineData("radialGradient")]
     public void Complete_explicit_attributes_and_stops_override_templates_without_a_dependency(string kind)
@@ -52,13 +55,14 @@ public sealed class SvgGradientTemplateAttributeTests
         string coordinates = kind == "linearGradient" ? "x1='0' y1='0' x2='16' y2='0'" : "cx='12' cy='16' r='8'";
         string attributes = coordinates + " gradientUnits='userSpaceOnUse' gradientTransform='translate(4 0)' spreadMethod='reflect'";
         string explicitGradient = "<" + kind + " id='g' " + attributes + ">" + Stops + "</" + kind + ">";
-        Assert.Equal(Render(Document(explicitGradient)), Render(Document(explicitGradient.Replace("id='g'", "id='g' href='#missing'", StringComparison.Ordinal))));
+        SvgRasterTestHelper.AssertPixelsEqual(Document(explicitGradient), Document(explicitGradient.Replace("id='g'", "id='g' href='#missing'", StringComparison.Ordinal)), SvgRenderOptions.Default);
         string parentCoordinates = kind == "linearGradient" ? "x1='0' y1='0' x2='1' y2='0'" : "cx='.5' cy='.5' r='.5'";
         string parent = "<" + kind + " id='base' " + parentCoordinates + " gradientUnits='objectBoundingBox' gradientTransform='translate(.25 0)' spreadMethod='repeat'><stop stop-color='black'/></" + kind + ">";
-        Assert.Equal(Render(Document(explicitGradient)), Render(Document(parent + explicitGradient.Replace("id='g'", "id='g' href='#base'", StringComparison.Ordinal))));
+        SvgRasterTestHelper.AssertPixelsEqual(Document(explicitGradient), Document(parent + explicitGradient.Replace("id='g'", "id='g' href='#base'", StringComparison.Ordinal)), SvgRenderOptions.Default);
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("linearGradient", "x1='0' y1='0' x2='16' y2='0'")]
     [InlineData("radialGradient", "cx='12' cy='16' r='8'")]
     public void Own_stops_and_full_coordinates_still_require_missing_template_attributes(string kind, string coordinates)
@@ -73,6 +77,7 @@ public sealed class SvgGradientTemplateAttributeTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("linearGradient")]
     [InlineData("radialGradient")]
     public void Template_resolution_releases_owners_on_denial_and_cancellation(string kind)
@@ -93,6 +98,7 @@ public sealed class SvgGradientTemplateAttributeTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Radial_aliases_share_raw_definition_storage_until_the_map_changes()
     {
         const string definitions = "<radialGradient id='base' cx='.4' cy='.5' r='.3' fx='.35' gradientTransform='matrix(1 0 .5 1 0 0)'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient><radialGradient id='alias' href='#base'/><radialGradient id='g' href='#alias' gradientTransform='translate(.1 0)'/>";
@@ -112,6 +118,7 @@ public sealed class SvgGradientTemplateAttributeTests
     }
 
     [Fact]
+    [Trait("Layer", "Contract")]
     public void Denied_radial_definition_storage_preserves_the_scene_owner()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(SvgSceneBuilder.RecordedPaintOwnerBytes + SvgRadialGradientSource.RetainedStorageBytes - 1));
@@ -122,6 +129,16 @@ public sealed class SvgGradientTemplateAttributeTests
             Assert.Equal(before, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [Trait("Layer", "Rendering")]
+    [InlineData("linearGradient", "transform", true, true, true)]
+    [InlineData("radialGradient", "units", false, true, false)]
+    public void Complete_png_full_coordinates_preserve_template_attributes(string kind, string attribute, bool forward, bool middle, bool ownStops)
+    {
+        var documents = Documents(kind, attribute, forward, middle, ownStops);
+        SvgRasterTestHelper.AssertPngEqual(documents.Expected, documents.Actual, SvgRenderOptions.Default);
     }
 
     private static (byte[] Actual, byte[] Expected) Documents(string kind, string attribute, bool forward, bool middle, bool ownStops)

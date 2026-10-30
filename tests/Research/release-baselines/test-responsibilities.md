@@ -587,3 +587,31 @@ median, including discovery/host/TRX and excluding build; no material speedup is
 established. All 78 focused cases, 98 native-image checks, two provenance checks
 and six capture-format/ownership contracts pass on each host/runtime pair. Both
 affected builds are warning-free.
+
+## Gradient-template responsibilities
+
+The baseline is `5a847bd79`. All 866 original case IDs remain. The
+[template-map regressions](../../Lokad.Svg.Tests/OpenTypeFontTests.GradientTemplateMaps.cs)
+keep all 824 raw/prepared complete-PNG comparisons, including cross-kind aliases,
+local-map replacement, focal-field masks, text, masks and markers. Their original
+failure was fixed by `1c3791fd5`; shared lowering alone does not justify dropping
+prepared cases. On 760 font-free rows, a counted one-byte unused source replaces
+construction of a TrueType program. Unexpected consumption fails; zero-request
+assertions remain, with the missing alias assertion added. Text still uses real fonts.
+
+The [attribute](../../Lokad.Svg.Tests/SvgGradientTemplateAttributeTests.cs) and
+[unit](../../Lokad.Svg.Tests/SvgGradientTemplateUnitTests.cs) tests separate parser
+rejection from positive rendering. All 192 positive pairs use exact dimensions
+and canonical RGBA; eight affine PNG cases, refusal/cancellation/retry, shared
+definition identity and stream-empty/retry checks remain. Two original-matrix PNG
+representatives and eleven separate positive-rendering identities yield 879 cases:
+21 Mechanism, 853 Rendering and five Contract. Shared builders preserve the original
+source expressions and loop axes; this is not a reduction inferred from equal images.
+
+Three fresh sequential Windows .NET 11 processes measure 9.25/9.21 seconds median,
+including discovery/host/TRX and excluding build. No material speedup is established.
+All 879 affected cases and 2,393 integration checks pass on Windows/Linux under
+both runtimes. Integration retains the independent radial-axis and gradient-replay
+images, provenance checks, rectangle shader frames and capture contracts. Both
+affected builds are warning-free. Production, references, tolerances and text layout
+are unchanged.
