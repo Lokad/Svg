@@ -5,7 +5,8 @@
     "Original path boxes no longer depend on which lowered piece appears first. Non-painting fills retain bounds through the existing effect-anchor role.",
     "A shared primitive materialization rule and bounds query retain deferred paint, preserved padding and cropped images separately from operating color space.",
     "Cropped affine images use antialiased image edges with the actual clip construction bounds; coverage replays with its sampled paint.",
-    "Source aliases retain the sampling color filter across the general graph and the source-offset fast path; affine restoration no longer tests for a terminal offset primitive."
+    "Source aliases retain the sampling color filter across the general graph and the source-offset fast path; affine restoration no longer tests for a terminal offset primitive.",
+    "Empty affine destination areas return before source capture and edge preparation; nonempty software tiles retain painting."
   ],
   "nativeSource": {
     "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkImageFilterTypes.cpp",
@@ -107,6 +108,23 @@
       "beforeImageModelChangePixels": {
         "windows": 7,
         "linux": 7
+      },
+      "afterChangePixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "original-filter-affine-empty-tile",
+      "fixture": "../../Fixtures/original/filter-affine-empty-tile.svg",
+      "provenance": "../../References/original-filter-affine-empty-tile.json",
+      "sourceSha256": "c0bdd1f1729d3e58210b023f7b514bf77d06554a00057f8684f89b343fb5926b",
+      "nativePngSha256": "3a05338de11e4391b1cf26570e2b775b819d9e08f6a995d941e7091457fc7a15",
+      "freshProcessesPerPlatform": 3,
+      "beforeOutcome": {
+        "host": "windows",
+        "exception": "ArgumentOutOfRangeException",
+        "parameter": "window"
       },
       "afterChangePixels": {
         "windows": 0,
@@ -310,7 +328,7 @@
   },
   "captureAdmission": "Three fresh healthy captures per fixture on each platform, with stable PNG bytes and cleaned profiles. One earlier exploratory qualification attempt hit a terminal 10-second CDP request timeout during concurrent testing; it supplied no admitted reference. The successful repeat ran serially.",
   "openScope": [
-    "gallardo.svg still rejects affine image-edge construction.",
+    "gallardo.svg now renders after empty-tile admission but remains different; its original rendering gap is not closed.",
     "scimitar.svg now renders but differs; scimitar-anim.svg advances to an unsupported-child gate.",
     "Other original filter/root/fitting, fonts/resources and deterministic static states remain individually open; this does not close the full filter milestone or admit the whole hosted collection."
   ],
@@ -414,6 +432,164 @@
       "sourceSvgFilesRetained": 0,
       "seconds": 55.85172799997963
     },
-    "scope": "Functional checks under concurrent workstation load. Linux uses portable binaries; matching CI independently builds and packages on both hosts."
+    "scope": "Functional checks under concurrent workstation load. Linux uses portable binaries; matching CI independently builds and packages on both hosts.",
+    "ci": {
+      "runId": 41086189810,
+      "sourceRevision": "854e39db2a0e8b90a9adbdd96e8596c6338439dd",
+      "conclusion": "success",
+      "platforms": [
+        "windows",
+        "linux"
+      ],
+      "scope": "Independent platform builds, extensive .NET 11, representative .NET 10 and installed-package/tool gates."
+    }
+  },
+  "emptyRestoration": {
+    "sourceBaseline": "854e39db2a0e8b90a9adbdd96e8596c6338439dd",
+    "cause": "An inverse axis-aligned tile enclosure can overlap filter source bounds while the transformed stored image misses the destination interior. Empty restoration must terminate before capture and analytic edge construction. No nonempty edge eligibility or numerical boundary is relaxed.",
+    "beforeLibrarySha256": "eb254599d0c34e2628b51737309d1357c97777fc52b9aa844fba3690887fd1cf",
+    "beforeBuildIdentity": "Frozen pre-commit build containing the point-list correction; embedded informational revision is bb622d0c19a253b3bfa85123f3dff98870648659.",
+    "qualification": [
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 18.484408299904317,
+        "librarySha256": "3c9de2dfa5874daf52d34487e9a4eb0e0dbb1856fe2b9f1af726974e0af70920"
+      },
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 28.248875399818644,
+        "librarySha256": "3c9de2dfa5874daf52d34487e9a4eb0e0dbb1856fe2b9f1af726974e0af70920"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 18.223526999820024,
+        "librarySha256": "eb608722091c1513a4de0a265f4a5a32c824e714c26ca15cfa1e62df84794d63"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 27.20971000008285,
+        "librarySha256": "eb608722091c1513a4de0a265f4a5a32c824e714c26ca15cfa1e62df84794d63"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 16.447434831000002,
+        "librarySha256": "3c9de2dfa5874daf52d34487e9a4eb0e0dbb1856fe2b9f1af726974e0af70920"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 45.666452626,
+        "librarySha256": "3c9de2dfa5874daf52d34487e9a4eb0e0dbb1856fe2b9f1af726974e0af70920"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "layer": "core",
+        "passed": 4498,
+        "seconds": 13.930131262999996,
+        "librarySha256": "eb608722091c1513a4de0a265f4a5a32c824e714c26ca15cfa1e62df84794d63"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "layer": "native",
+        "passed": 9079,
+        "seconds": 37.911203137,
+        "librarySha256": "eb608722091c1513a4de0a265f4a5a32c824e714c26ca15cfa1e62df84794d63"
+      }
+    ],
+    "originalReplay": {
+      "files": 204,
+      "complete": {
+        "files": 204,
+        "seconds": 56.397760099964216,
+        "sourceSvgFilesRetained": 0
+      },
+      "hosts": {
+        "windows": {
+          "counts": {
+            "UnsupportedFeature": 53,
+            "rendered": 148,
+            "exact": 132,
+            "different": 16,
+            "MalformedInput": 3
+          },
+          "priorRenderedUnchanged": 147,
+          "priorRenderedChanged": [],
+          "newRendered": [
+            {
+              "name": "gallardo.svg",
+              "comparison": {
+                "status": "different",
+                "changedPixels": 54476,
+                "maximumError": 255,
+                "totalChannelError": 353433
+              }
+            }
+          ],
+          "lost": [],
+          "worse": [],
+          "changedOutcomesOrDiagnostics": [
+            {
+              "name": "gallardo.svg",
+              "outcome": "rendered",
+              "message": null
+            }
+          ],
+          "librarySha256": "3c9de2dfa5874daf52d34487e9a4eb0e0dbb1856fe2b9f1af726974e0af70920"
+        },
+        "linux": {
+          "counts": {
+            "UnsupportedFeature": 53,
+            "rendered": 148,
+            "exact": 132,
+            "different": 16,
+            "MalformedInput": 3
+          },
+          "priorRenderedUnchanged": 147,
+          "priorRenderedChanged": [],
+          "newRendered": [
+            {
+              "name": "gallardo.svg",
+              "comparison": {
+                "status": "different",
+                "changedPixels": 54476,
+                "maximumError": 255,
+                "totalChannelError": 353433
+              }
+            }
+          ],
+          "lost": [],
+          "worse": [],
+          "changedOutcomesOrDiagnostics": [
+            {
+              "name": "gallardo.svg",
+              "outcome": "rendered",
+              "message": null
+            }
+          ],
+          "librarySha256": "3c9de2dfa5874daf52d34487e9a4eb0e0dbb1856fe2b9f1af726974e0af70920"
+        }
+      }
+    },
+    "residuals": "filter-image-residuals/README.md",
+    "remainingScope": "gallardo.svg renders but is still different. The original coloured-opacity control remains inexact at 3,475 pixels with maximum alpha error 1; the opaque unit-blur control retains one alpha difference. Their native targets remain unchanged and are not admitted exact references. The half-unit opaque sRGB control independently isolates empty-tile admission. Other filter/root/static-state work stays open."
   }
 }

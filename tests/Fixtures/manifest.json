@@ -17716,6 +17716,32 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-affine-zero-blur.json",
       "referenceSha256": "9c982177a13692d10b8db6ba50b26375d3fcb708f8d036f2562287bce74b0be0"
+    },
+    {
+      "id": "original-filter-affine-empty-tile",
+      "path": "original/filter-affine-empty-tile.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "c0bdd1f1729d3e58210b023f7b514bf77d06554a00057f8684f89b343fb5926b",
+      "materializedSha256": "c0bdd1f1729d3e58210b023f7b514bf77d06554a00057f8684f89b343fb5926b",
+      "featureTags": [
+        "filter",
+        "transform",
+        "clip",
+        "tiling",
+        "bounds"
+      ],
+      "width": 600,
+      "height": 600,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-affine-empty-tile.json",
+      "referenceSha256": "3a05338de11e4391b1cf26570e2b775b819d9e08f6a995d941e7091457fc7a15"
     }
   ]
 }

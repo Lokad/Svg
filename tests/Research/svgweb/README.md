@@ -7,10 +7,10 @@ Bodies are fetched into bounded memory and discarded. Ordinary tests are offline
 this directory contains metadata and original orthogonal controls, not the hosted
 SVG collection.
 
-The current default-path review has 147 rendered inputs per host: 132 exact and
-15 different, with 57 rejected. The shared filter-image replay took 59.66 s;
-all prior exact images remain exact. Of 146 prior renders, 145 PNGs are unchanged
-and `car.svg` improves. `scimitar.svg` newly renders but remains inexact.
+The current default-path review has 148 rendered inputs per host: 132 exact and
+16 different, with 56 rejected. The empty-tile replay took 56.40 s and preserved
+all 147 prior PNGs. `gallardo.svg` now renders but remains inexact, as does
+`scimitar.svg`. All prior exact images remain exact.
 These observations use transparent output without supplied fonts/resources; they
 are neither whole-corpus reference admission nor throughput measurements. The
 ledger retains earlier passes and every follow-up outcome.
@@ -33,8 +33,11 @@ resource roles distinguish navigation from image/CSS/media dependencies.
 
 The [filter-image model](filter-image-model.json) closes retained path boxes,
 materialized-image crop/padding and alias sampling through affine restoration.
-Six CC0 references have independent platform triples. The full filter/root
-milestone remains open; exploratory original outcomes are recorded separately.
+Seven CC0 references have independent platform triples. Empty affine destination
+tiles skip capture and edge preparation while intersecting tiles retain painting.
+The [opacity/kernel residuals](filter-image-residuals/README.md) retain their own
+native targets. The full filter/root milestone remains open; rendering successfully
+does not admit an original as exact.
 
 The [paint-reference record](paint-references.json) maps four CC0 controls to native
 platform triples. Paint fallbacks share lexical parsing and completed resource

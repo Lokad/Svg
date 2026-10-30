@@ -279,6 +279,8 @@ for ancestor effects; empty basic shapes and absent images do not enlarge them.
 Clipped strokes retain their original source boxes. Crops of materialized images
 discard transparent-padding assumptions; rotated restoration retains the active
 clip bounds and the sampling colour transfer of zero-effect aliases.
+Empty tile restoration paints nothing. Some affine filter opacity/kernel combinations
+still have [rounding differences](../tests/Research/svgweb/filter-image-residuals/README.md).
 
 Drop shadows admit mapped/rounded deviations through 135 device pixels per axis;
 larger deviations reject. Gaussian blur rescales larger deviations and saturates

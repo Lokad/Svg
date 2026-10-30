@@ -9772,5 +9772,22 @@
     "seconds": 59.65847990009934,
     "evidence": "filter-image-model.json",
     "qualification": "Every original hash rechecked. All prior exact images remain exact; 145 prior PNGs are byte-identical and car.svg has lower error. scimitar.svg newly renders but remains inexact; its animation companion advances to another gate. No hosted payload files retained, reference rewrites or whole-corpus admission."
+  },
+  "emptyFilterRestoration": {
+    "sourceBaseline": "854e39db2a0e8b90a9adbdd96e8596c6338439dd",
+    "librarySha256": "3c9de2dfa5874daf52d34487e9a4eb0e0dbb1856fe2b9f1af726974e0af70920",
+    "filesRevalidatedPerHost": 204,
+    "renderedPerHost": 148,
+    "exactPerHost": 132,
+    "differentPerHost": 16,
+    "rejectedPerHost": 56,
+    "priorRenderedPngsByteIdenticalPerHost": 147,
+    "newlyRenderedNotAccepted": [
+      "gallardo.svg"
+    ],
+    "sourceSvgFilesRetained": 0,
+    "seconds": 56.397760099964216,
+    "evidence": "filter-image-model.json",
+    "qualification": "Every source hash rechecked. Prior outcomes and all 147 rendered PNGs remain unchanged. gallardo.svg renders after skipping empty destination tiles, but is not accepted exact. Source payload files retained: zero; no reference rewrites or whole-corpus admission."
   }
 }

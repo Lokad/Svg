@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "c0bdd1f1729d3e58210b023f7b514bf77d06554a00057f8684f89b343fb5926b",
+  "referenceSha256": "3a05338de11e4391b1cf26570e2b775b819d9e08f6a995d941e7091457fc7a15",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-affine-empty-tile.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-affine-empty-tile",
+  "viewport": {
+    "width": 600,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 affine filter/tile control. A sheared inverse tile enclosure reaches the source while its restored image misses that tile. Empty restoration is a no-op; retained tiles must paint exactly. Opaque sRGB isolates destination admission from the separately retained colour/opacity rounding investigation.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "c0bdd1f1729d3e58210b023f7b514bf77d06554a00057f8684f89b343fb5926b",
+      "referenceSha256": "3a05338de11e4391b1cf26570e2b775b819d9e08f6a995d941e7091457fc7a15",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "c0bdd1f1729d3e58210b023f7b514bf77d06554a00057f8684f89b343fb5926b",
+      "referenceSha256": "3a05338de11e4391b1cf26570e2b775b819d9e08f6a995d941e7091457fc7a15",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 600,
+    "height": 600
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "0a3f06c634a93a22176c7f6a1fead8b3ac375fd588b8c4477acbffb159b7c583",
+  "referenceSha256": "9d997c1e491fe21657e1faa09c13fdd9ca48fa6d74ea77ac9d64be5da132c0ac",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "affine-colour-opacity.native.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "affine-colour-opacity",
+  "viewport": {
+    "width": 600,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Unresolved affine filter stage research, not an admitted exact reference. Independent native target stays unchanged. Source is own CC0 work; no hosted artwork retained.",
+  "comparison": {
+    "exact": false,
+    "changedPixelCount": 3475,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 1,
+    "totalChannelError": 42606
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "0a3f06c634a93a22176c7f6a1fead8b3ac375fd588b8c4477acbffb159b7c583",
+      "referenceSha256": "9d997c1e491fe21657e1faa09c13fdd9ca48fa6d74ea77ac9d64be5da132c0ac",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "0a3f06c634a93a22176c7f6a1fead8b3ac375fd588b8c4477acbffb159b7c583",
+      "referenceSha256": "9d997c1e491fe21657e1faa09c13fdd9ca48fa6d74ea77ac9d64be5da132c0ac",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 600,
+    "height": 600
+  }
+}

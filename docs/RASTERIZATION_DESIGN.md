@@ -154,6 +154,8 @@ consumer requires pixels.
 The bounds query distinguishes deferred paint, padded images and cropped images.
 Cropping invalidates transparent-padding knowledge. Affine restoration uses the
 active clip for edge construction and replays coverage with the sampled paint.
+An inverse tile enclosure can reach a source whose restored image misses the tile;
+empty destination areas return before capture or edge preparation.
 Zero-effect aliases retain their sampling color filter across ordinary and fast paths.
 
 Fixed lengths and translate arguments resolve within native CSS layout range

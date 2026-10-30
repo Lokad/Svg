@@ -1076,6 +1076,9 @@ public static partial class SvgConverter
                         restoreRight = Math.Max(restoreLeft, Math.Min(restoreRight, ClampCeiling(paintBounds.Right, outputWidth)));
                         restoreBottom = Math.Max(restoreTop, Math.Min(restoreBottom, ClampCeiling(paintBounds.Bottom, outputHeight)));
                     }
+                    // An inverse tile enclosure can overlap the source even when
+                    // its restored image misses this tile entirely.
+                    if (restoreRight <= restoreLeft || restoreBottom <= restoreTop) return;
                     SvgRenderLimits layerLimits = limits;
                     SvgRoot borrowed = root with { Geometries = geometries, Commands = commands};
                     using RasterizedSurface image = Rasterize(borrowed, new(options.Viewport, options.OutputScale, SvgColor.Transparent, layerLimits, options.FontSnapshot),
