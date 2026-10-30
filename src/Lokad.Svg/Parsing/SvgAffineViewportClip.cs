@@ -41,7 +41,8 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
     /// <summary>Registers borrowed source contours with the shared native clip-content owner.</summary>
     /// <remarks>Callers validate contour admission. Commands and arrays reserve before allocation;
     /// mapping/copying observes caller work and cancellation. The scene owns a distinct copy after
-    /// success; failure releases all temporary storage. Generic path clips retain raw classification.</remarks>
+    /// success; failure releases all temporary storage. Generic path clips materialize child
+    /// coordinates before reference placement, retaining curves and raw classification.</remarks>
     internal static (SvgClipBox Bounds, int ContentIndex) RegisterContour(ReadOnlySpan<SvgDevicePoint> source, ReadOnlySpan<int> sourceEnds,
         SvgAffineTransform map, SvgClipContentKind kind, SvgAuthoredPath? sourcePath, SvgPaintBounds? resourceBounds, bool isEvenOdd, SvgDocumentState state, SvgSceneBuilder scene, CancellationToken token)
         => RegisterContour(source, sourceEnds, map, kind, sourcePath, resourceBounds, isEvenOdd, state, scene, token, null);
@@ -124,7 +125,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             // Axis-aligned bounds also retain native coverage: its trimmed bitmap
             // bounds can clip and reconstruct a curve at a fractional root scale.
             geometry = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(points, ends, signs, new(255, 255, 255, 255), true, isEvenOdd, SvgPolygonMapping.FiniteEdges, null, reservation, budget));
-            if (sourcePath is not null) geometry = geometry with { AuthoredPath = sourcePath.Copy(map, budget, token) };
+            if (sourcePath is not null) geometry = geometry with { AuthoredPath = kind == SvgClipContentKind.ClipPath ? BakeClipSource(sourcePath, map, budget, token) : sourcePath.Copy(map, budget, token) };
             else
             {
                 OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
@@ -136,6 +137,59 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             return (new(x1, y1, x2 - x1, y2 - y1), contentIndex);
         }
         finally { geometry.Dispose(); }
+
+        // Materialize the child path in resource coordinates before the reference
+        // map reaches a device bitmap. Copy into the registered geometry's command
+        // owner; source commands remain borrowed and unchanged during copying.
+        static SvgAuthoredPath BakeClipSource(SvgAuthoredPath source, SvgAffineTransform placement, RenderBudget budget, CancellationToken token)
+        {
+            using BudgetedParserList<SvgAuthoredPathCommand> output = new(budget, SvgMemoryCategory.Scene, token);
+            SvgDevicePoint current = default, first = default;
+            Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
+            foreach (SvgAuthoredPathCommand command in source.Commands)
+            {
+                token.ThrowIfCancellationRequested();
+                switch (command.Verb)
+                {
+                    case SvgAuthoredPathVerb.Move:
+                    case SvgAuthoredPathVerb.Line:
+                        output.Add(command with { First = SvgAuthoredPath.MapPoint(source.SceneMap, command.First, new(0, 0)) });
+                        current = command.First;
+                        if (command.Verb == SvgAuthoredPathVerb.Move) first = current;
+                        break;
+                    case SvgAuthoredPathVerb.Quadratic:
+                    case SvgAuthoredPathVerb.Conic:
+                        output.Add(command with { First = SvgAuthoredPath.MapPoint(source.SceneMap, command.First, new(0, 0)), Second = SvgAuthoredPath.MapPoint(source.SceneMap, command.Second, new(0, 0)) });
+                        current = command.Second;
+                        break;
+                    case SvgAuthoredPathVerb.Cubic:
+                        output.Add(command with { First = SvgAuthoredPath.MapPoint(source.SceneMap, command.First, new(0, 0)), Second = SvgAuthoredPath.MapPoint(source.SceneMap, command.Second, new(0, 0)), Third = SvgAuthoredPath.MapPoint(source.SceneMap, command.Third, new(0, 0)) });
+                        current = command.Third;
+                        break;
+                    case SvgAuthoredPathVerb.Arc:
+                        int count = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
+                            (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0, command.Third, arcs, token);
+                        if (count == 0) output.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, SvgAuthoredPath.MapPoint(source.SceneMap, command.Third, new(0, 0)), default, default));
+                        else for (int index = 0; index < count; index++)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            output.Add(new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None,
+                                SvgAuthoredPath.MapPoint(source.SceneMap, arcs[index].Control, new(0, 0)),
+                                SvgAuthoredPath.MapPoint(source.SceneMap, arcs[index].End, new(0, 0)), new(arcs[index].Weight, 0)));
+                        }
+                        current = command.Third;
+                        break;
+                    case SvgAuthoredPathVerb.End:
+                    case SvgAuthoredPathVerb.Close:
+                        output.Add(command);current = first;
+                        break;
+                    default:throw new InvalidOperationException("Invalid clip source verb.");
+                }
+            }
+            OwnedParserArray<SvgAuthoredPathCommand> owned = output.Detach();
+            try { return SvgAuthoredPath.Create(owned, placement, budget); }
+            catch { owned.Dispose(); throw; }
+        }
 
         void Include(SvgDevicePoint point)
         {

@@ -9,8 +9,8 @@ public sealed class SvgResourceUseReplayTests
     [Trait("Layer", "Mechanism")]
     [InlineData("M3 24Q16 0 29 24Z", "Quadratic")]
     [InlineData("M3 24C3 0 29 0 29 24Z", "Cubic")]
-    [InlineData("M3 24A13 13 0 0 1 29 24Z", "Arc")]
-    public void Referenced_clip_registration_preserves_authored_curve_verbs(string data, string verb)
+    [InlineData("M3 24A13 13 0 0 1 29 24Z", "Conic")]
+    public void Referenced_clip_registration_preserves_native_curves_and_local_placement(string data, string verb)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><use href='#s' x='.25' y='.5'/></clipPath><path id='s' d='" + data + "'/></defs><rect width='32' height='32' clip-path='url(#c)'/></svg>");
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
@@ -19,8 +19,24 @@ public sealed class SvgResourceUseReplayTests
             .SelectMany(mask => mask.Geometries)
             .Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>());
         SvgAuthoredPathVerb expected = Enum.Parse<SvgAuthoredPathVerb>(verb);
-        Assert.Contains(path.Commands.ToArray(), command => command.Verb == expected);
-        Assert.Equal(SvgAffineTransform.FromTranslation(.25, .5), path.SceneMap);
+        // Native clip construction materializes the child placement before
+        // reference/device mapping. Curves retain controls; arcs normalize to
+        // rational conics, never flattened chords. These are exact operands.
+        Assert.Equal(SvgAffineTransform.Identity, path.SceneMap);
+        SvgAuthoredPathCommand move = new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(3.25, 24.5), default, default);
+        SvgAuthoredPathCommand close = new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default);
+        SvgAuthoredPathCommand[] commands = expected switch
+        {
+            SvgAuthoredPathVerb.Quadratic => [move,
+                new(expected, SvgAuthoredArcFlags.None, new(16.25, .5), new(29.25, 24.5), default), close],
+            SvgAuthoredPathVerb.Cubic => [move,
+                new(expected, SvgAuthoredArcFlags.None, new(3.25, .5), new(29.25, .5), new(29.25, 24.5)), close],
+            SvgAuthoredPathVerb.Conic => [move,
+                new(expected, SvgAuthoredArcFlags.None, new(3.25, 11.5), new(16.25, 11.5), new(.70710677f, 0)),
+                new(expected, SvgAuthoredArcFlags.None, new(29.25, 11.5), new(29.25, 24.5), new(.70710677f, 0)), close],
+            _ => throw new InvalidOperationException("Unexpected native curve."),
+        };
+        Assert.Equal(commands, path.Commands.ToArray());
     }
 
     [Theory]

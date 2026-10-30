@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Materialize clip-child transforms before reference and device placement,
+  retaining curve controls, conic arcs and independent clip enclosures.
 - Keep analytic coverage intermediates as byte alpha before additive accumulation,
   preserving cubic fringes and filtered sources while reducing row scratch storage.
 - Preserve fractional root image layout before uniform output scaling, and apply

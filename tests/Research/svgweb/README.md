@@ -7,11 +7,11 @@ Bodies are fetched into bounded memory and discarded. Ordinary tests are offline
 this directory contains metadata and original orthogonal controls, not the hosted
 SVG collection.
 
-The current default-path review has148 rendered inputs per host:134 exact and14
-different, with56 rejected. Shared root-image layout improves ten originals without
+The current default-path review has 148 rendered inputs per host: 134 exact and 14
+different, with 56 rejected. Shared root-image layout improves ten originals without
 losing an exact image or changing outcomes/diagnostics. `gaussian2.svg` and
 `lineargradient3.svg` are now exact against native platform triples. UFO's remaining
-total channel error is63; Scimitar's is1,216 and Gallardo's is267. These observations
+total channel error is63; Scimitar's is1,216 and Gallardo's is186. These observations
 use transparent output with no supplied fonts/resources; they do not admit other
 contexts or close the whole corpus.
 
@@ -122,6 +122,14 @@ stage. Byte scratch replaces integer scratch under the existing owner. All204
 originals are rechecked per host:146 PNGs stay unchanged, car/Gallardo improve,
 and no exact result or diagnostic changes. Seven isolated Gallardo consumers and
 the complete filter/original milestone remain unresolved.
+
+The [clip source record](clip-source-placement.json) separates child-local
+materialization from reference/device mapping. Exact curve-operand mechanisms,
+one representative ownership case and a placed-arc native platform triple protect
+the stage. The [280-leaf paint map](gallardo-paint-map.csv) retains the broader
+investigation; its58 native isolations remain exploratory. Gallardo improves to
+106 differing pixels, with147 other rendered PNGs unchanged per host. Its distinct
+cubic clipped-target discrepancy remains open.
 
 Group confirmed gaps by mechanism and retain original-to-fixture mappings,
 licenses and failing-before evidence. Reference admission requires three fresh

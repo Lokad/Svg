@@ -18223,6 +18223,31 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-analytic-alpha-byte.json",
       "referenceSha256": "1bfbf9993302de35e6a4c34996574c94c4fcd57cb6e73771c955f3db69447534"
+    },
+    {
+      "id": "original-clip-local-placement",
+      "path": "original/clip-local-placement.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "b36ee0887468e39cda6313272c31e9be83b077733164608af050fdb6955fe9ab",
+      "materializedSha256": "b36ee0887468e39cda6313272c31e9be83b077733164608af050fdb6955fe9ab",
+      "featureTags": [
+        "clip",
+        "arc",
+        "transform",
+        "rounding"
+      ],
+      "width": 96,
+      "height": 128,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-clip-local-placement.json",
+      "referenceSha256": "70a68b17a10a1fe03d163ba470a8784bcc5d50474a8c20fc9a548ef562df9e1a"
     }
   ]
 }

@@ -14,7 +14,8 @@
     ],
     "before": "All three fail because the registered native clip contains only Move/Line/Close commands.",
     "after": "Each retains its authored verb and fractional .25/.5 placement.",
-    "ownership": "One representative forward referenced cubic clip joins existing sampled parser-memory refusal, raster refusal, cancellation, unchanged borrowed commands and retry coverage in SvgCurvedClipSourceTests. No fixture/API matrix added."
+    "ownership": "One representative forward referenced cubic clip joins existing sampled parser-memory refusal, raster refusal, cancellation, unchanged borrowed commands and retry coverage in SvgCurvedClipSourceTests. No fixture/API matrix added.",
+    "currentContract": "clip-source-placement.json: registered native curves now include materialized child placement and rational conics for arcs; exact operand checks replace the old deferred SceneMap assertion. Curve-versus-chord regressions remain protected."
   },
   "fixtures": [
     {

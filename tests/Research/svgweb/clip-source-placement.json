@@ -1,0 +1,345 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "0fb2c896d40e2b4c664ef04e1f329001d8f76ac6",
+  "closedScope": [
+    "Generic clip children materialize their local transform into resource-coordinate curve commands before reference placement and device-bitmap mapping. Arcs normalize to rational conics using the existing endpoint converter. Ordinary paint mapping is unchanged.",
+    "Registration uses the existing owned command copy. Borrowed source commands remain unchanged; growth reserves before allocation and failure releases partial owners. Resource layout bounds, construction enclosures and actual sampled coverage remain separate."
+  ],
+  "regression": {
+    "fixture": "../../Fixtures/original/clip-local-placement.svg",
+    "reference": "../../References/original-clip-local-placement.json",
+    "sourceSha256": "b36ee0887468e39cda6313272c31e9be83b077733164608af050fdb6955fe9ab",
+    "referenceSha256": "70a68b17a10a1fe03d163ba470a8784bcc5d50474a8c20fc9a548ef562df9e1a",
+    "freshNativeProcessesPerPlatform": 3,
+    "nativeStartupHealth": "healthy",
+    "nativeProfilesCleaned": true,
+    "decodedPixelsIdenticalAcrossAllSix": true,
+    "context": "153.0.8010.52 / Chromium1681091 / recipe3 / transparent / DPR1 / image and screenshot96x128. Exact browser executable identities are in the linked reference metadata.",
+    "platformBeforeAfter": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "00ca2805ee82504528eb2b32343a607b7abe6868d43a6f72cb8e96dcb1339b83",
+        "sourceSha256": "b36ee0887468e39cda6313272c31e9be83b077733164608af050fdb6955fe9ab",
+        "changedPixels": 205,
+        "maximumError": 50,
+        "totalChannelError": 1307
+      },
+      {
+        "host": "windows",
+        "phase": "after",
+        "librarySha256": "6a463bd9ff3579caf26151f9eeadc15437bd37fde64669946fbe396a7994d3ea",
+        "sourceSha256": "b36ee0887468e39cda6313272c31e9be83b077733164608af050fdb6955fe9ab",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "00ca2805ee82504528eb2b32343a607b7abe6868d43a6f72cb8e96dcb1339b83",
+        "sourceSha256": "b36ee0887468e39cda6313272c31e9be83b077733164608af050fdb6955fe9ab",
+        "changedPixels": 205,
+        "maximumError": 50,
+        "totalChannelError": 1307
+      },
+      {
+        "host": "linux",
+        "phase": "after",
+        "librarySha256": "6a463bd9ff3579caf26151f9eeadc15437bd37fde64669946fbe396a7994d3ea",
+        "sourceSha256": "b36ee0887468e39cda6313272c31e9be83b077733164608af050fdb6955fe9ab",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      }
+    ]
+  },
+  "mechanism": {
+    "test": "../../Lokad.Svg.Tests/SvgResourceUseReplayTests.cs",
+    "selection": "Referenced_clip_registration_preserves_native_curves_and_local_placement",
+    "cases": [
+      "Quadratic controls",
+      "Cubic controls",
+      "Two rational arc conics"
+    ],
+    "contract": "The child translation is now in exact registered operands; SceneMap retains only reference placement. Full command arrays, controls, endpoints and conic weights are asserted. The three former chord regressions still fail when their curves are discarded; the old representation also fails all three new stage assertions.",
+    "beforeAfter": [
+      {
+        "phase": "before",
+        "exitCode": 1,
+        "librarySha256": "00ca2805ee82504528eb2b32343a607b7abe6868d43a6f72cb8e96dcb1339b83",
+        "testDurations": [
+          "00:00:00.0048232",
+          "00:00:00.0043424",
+          "00:00:00.2702395"
+        ],
+        "checks": {
+          "total": 3,
+          "passed": 0,
+          "failed": 3
+        }
+      },
+      {
+        "phase": "after",
+        "exitCode": 0,
+        "librarySha256": "6a463bd9ff3579caf26151f9eeadc15437bd37fde64669946fbe396a7994d3ea",
+        "testDurations": [
+          "00:00:00.3540356",
+          "00:00:00.0046949",
+          "00:00:00.0051317"
+        ],
+        "checks": {
+          "total": 3,
+          "passed": 3,
+          "failed": 0
+        }
+      }
+    ]
+  },
+  "ownership": {
+    "tests": "../../Lokad.Svg.Tests/SvgCurvedClipSourceTests.cs",
+    "addedCase": "One active arc child with a large local translation and separate reference translation. Joins existing sampled parser refusal, raster refusal, cancellation, unchanged retained commands, cleanup and retry. No fixture/API product.",
+    "ownerChanges": "No new owner type or retained path copy. Arc normalization may grow the existing command array; its actual capacity and simultaneous growth remain admitted under the existing scene budget."
+  },
+  "countChange": "Three existing mechanism rows now assert exact native operands; one ownership row added. One canonical fixture joins existing manifest traversal, without adding a native xUnit fact. No test count reduction claimed.",
+  "qualification": [
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "layer": "core",
+      "checks": 32914,
+      "elapsedSeconds": 68.71919410000555,
+      "librarySha256": "6a463bd9ff3579caf26151f9eeadc15437bd37fde64669946fbe396a7994d3ea"
+    },
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "layer": "native",
+      "checks": 39151,
+      "elapsedSeconds": 90.6397527998779,
+      "librarySha256": "6a463bd9ff3579caf26151f9eeadc15437bd37fde64669946fbe396a7994d3ea"
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "layer": "core",
+      "checks": 6197,
+      "elapsedSeconds": 23.352244399953634,
+      "librarySha256": "259c61a8f58a50277fd2ae1233a8f69bb068499f255dc238f969b47e6c3faed6"
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "layer": "native",
+      "checks": 10803,
+      "elapsedSeconds": 27.440958800027147,
+      "librarySha256": "259c61a8f58a50277fd2ae1233a8f69bb068499f255dc238f969b47e6c3faed6"
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "layer": "core",
+      "checks": 32914,
+      "elapsedSeconds": 52.214614746,
+      "librarySha256": "6a463bd9ff3579caf26151f9eeadc15437bd37fde64669946fbe396a7994d3ea"
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "layer": "native",
+      "checks": 39151,
+      "elapsedSeconds": 174.267818755,
+      "librarySha256": "6a463bd9ff3579caf26151f9eeadc15437bd37fde64669946fbe396a7994d3ea"
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "layer": "core",
+      "checks": 6197,
+      "elapsedSeconds": 18.401696501000004,
+      "librarySha256": "259c61a8f58a50277fd2ae1233a8f69bb068499f255dc238f969b47e6c3faed6"
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "layer": "native",
+      "checks": 10803,
+      "elapsedSeconds": 35.572353706,
+      "librarySha256": "259c61a8f58a50277fd2ae1233a8f69bb068499f255dc238f969b47e6c3faed6"
+    }
+  ],
+  "timingQualification": "Functional elapsed times on a busy host; not performance comparisons. No benchmarks. Previous milestone timings remain in analytic-alpha-bytes.json.",
+  "originalReview": {
+    "windows": {
+      "sourceHashesRechecked": 204,
+      "unchangedPngs": 147,
+      "changed": [
+        {
+          "name": "gallardo.svg",
+          "before": {
+            "status": "different",
+            "changedPixels": 130,
+            "maximumError": 18,
+            "totalChannelError": 267
+          },
+          "after": {
+            "status": "different",
+            "changedPixels": 106,
+            "maximumError": 18,
+            "totalChannelError": 186
+          }
+        }
+      ],
+      "increasedErrors": [],
+      "lostExacts": []
+    },
+    "linux": {
+      "sourceHashesRechecked": 204,
+      "unchangedPngs": 147,
+      "changed": [
+        {
+          "name": "gallardo.svg",
+          "before": {
+            "status": "different",
+            "changedPixels": 130,
+            "maximumError": 18,
+            "totalChannelError": 267
+          },
+          "after": {
+            "status": "different",
+            "changedPixels": 106,
+            "maximumError": 18,
+            "totalChannelError": 186
+          }
+        }
+      ],
+      "increasedErrors": [],
+      "lostExacts": []
+    }
+  },
+  "defaultContext": "Static transparent output, scale1, no supplied fonts/resources. All204 original source hashes rechecked per host in bounded RAM and discarded; no hosted SVG bodies retained. Outcomes/diagnostics unchanged;148 rendered/134 exploratory exact/14 different/56 rejected. This is not whole-corpus admission.",
+  "gallardoUnfiltered": {
+    "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "variantSourceSha256": "35247df120a07ff8075bb6d79e75cc23c65940e3702f3aa0bab159820e9e533c",
+    "recipe": "Replace exactly35 filter:url(...) style declarations with filter:none, preserving all other source bytes.",
+    "before": {
+      "changedPixels": 72,
+      "channelError": 182
+    },
+    "after": {
+      "changedPixels": 48,
+      "channelError": 101
+    },
+    "remainingFullOriginalOverlap": 46,
+    "referenceScope": "Existing single fresh healthy/profile-cleaned native image per platform; exploratory original mapping."
+  },
+  "paintMap": {
+    "file": "gallardo-paint-map.csv",
+    "sha256": "1cebb66f91c3ba38e1d55f779ca8825ac82da55d0fee1d3b60631197e5cb14bd",
+    "sourceLibrarySha256": "00ca2805ee82504528eb2b32343a607b7abe6868d43a6f72cb8e96dcb1339b83",
+    "visibleLeaves": 280,
+    "nativeCandidates": 58,
+    "recipe": "After the35 filter replacements, enumerate path/rect/circle/ellipse/polygon/polyline/line/use/text/image leaves outside definition/clip/mask/filter/pattern/marker/symbol subtrees. Preserve root attributes, each ancestor attribute chain and the leaf. Recursively copy local url(#id)/href dependencies into defs and serialize with ElementTree defaults. Compare each isolated alpha against the72 complete-original mismatch positions; capture every nonzero candidate.",
+    "referenceScope": "One fresh healthy/profile-cleaned Windows process for each of58 candidates;153.0.8010.52, recipe3, DPR1, transparent1901x1018 image/screenshot viewports. Source fragments discarded. Empty CSV native fields mean not captured, not exact. Isolation equality does not establish redundant coverage or complete-original acceptance.",
+    "nativeVariantComparisons": [
+      {
+        "id": "path4120",
+        "variant": "unclipped",
+        "variantSourceSha256": "1fafa3291125fa8584351dd05f9e376d6b0c5c3b0d67806769d57a3bed9b8272",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeChannelError": 0,
+        "afterChannelError": 0
+      },
+      {
+        "id": "path4120",
+        "variant": "solid-clipped",
+        "variantSourceSha256": "7d3ca213c0b8ba2fe848333b384c63adf870d8d69fbc616afe2c622eb1c9a636",
+        "beforeChangedPixels": 11,
+        "afterChangedPixels": 0,
+        "beforeChannelError": 128,
+        "afterChannelError": 0
+      },
+      {
+        "id": "path4120",
+        "variant": "solid-unclipped",
+        "variantSourceSha256": "d46ab6e3bbf4388046ee23a369513231b5211146390b0dc3d320d2dbcff93e4e",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeChannelError": 0,
+        "afterChannelError": 0
+      },
+      {
+        "id": "path4122",
+        "variant": "unclipped",
+        "variantSourceSha256": "063bd8a70178166ca926db207edbaaa9a6f0e6071304a42fb296a3695d420613",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeChannelError": 0,
+        "afterChannelError": 0
+      },
+      {
+        "id": "path4122",
+        "variant": "solid-clipped",
+        "variantSourceSha256": "5b1e850f6c99e60b305be6bb5af255ecf83eb96f364e4dfbb10d7b128fa25990",
+        "beforeChangedPixels": 9,
+        "afterChangedPixels": 0,
+        "beforeChannelError": 58,
+        "afterChannelError": 0
+      },
+      {
+        "id": "path4122",
+        "variant": "solid-unclipped",
+        "variantSourceSha256": "b9e1fba7ae0df29c2253bd20a18fff5e21ca698f66b94c67746022f1416ba75f",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeChannelError": 0,
+        "afterChannelError": 0
+      },
+      {
+        "id": "path4218",
+        "variant": "unclipped",
+        "variantSourceSha256": "0ca8e6ac7b7a48be0f20b99841512ae6829dfcb14417596725eaf55cfe2e9403",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeChannelError": 0,
+        "afterChannelError": 0
+      },
+      {
+        "id": "path4218",
+        "variant": "solid-clipped",
+        "variantSourceSha256": "a132b6d219c208af5834074b98992424f942c654e67034facf5f675e29d7ef8b",
+        "beforeChangedPixels": 24,
+        "afterChangedPixels": 24,
+        "beforeChannelError": 1980,
+        "afterChannelError": 1980
+      },
+      {
+        "id": "path4218",
+        "variant": "solid-unclipped",
+        "variantSourceSha256": "55e203677ebf94660aa8e2663dc2d971b4f4eca7bc1f53e4ba461f7468b579dd",
+        "beforeChangedPixels": 0,
+        "afterChangedPixels": 0,
+        "beforeChannelError": 0,
+        "afterChannelError": 0
+      }
+    ]
+  },
+  "rejectedExperiments": {
+    "removeEnclosure": "Does not fix the arc clip and regresses the cubic mask by29 pixels/727 alpha error. Retain the independent enclosure.",
+    "targetBoundsNarrowing": "Does not fix the cubic clipped target. Not promoted.",
+    "simpleOwnIntegerEllipse": "An unplaced96x128 integer ellipse mask and ordinary paint are exact; placement/stage interaction is required to expose the confirmed regression."
+  },
+  "remaining": {
+    "gallardo": {
+      "changedPixels": 106,
+      "channelError": 186
+    },
+    "scimitar": {
+      "changedPixels": 221,
+      "channelError": 1216
+    },
+    "cubicTarget": "path4218 is exact unclipped; its clip3833 mask and ordinary source painting are exact. Its clipped solid target still differs by24 pixels/1,980 channel error; original gradient target differs by24/1,593. Standalone native alpha multiplication differs from actual clipped-target alpha at25 positions/max13, so its consumer construction/dispatch remains separate. These variants have one Windows native capture each, not platform admission.",
+    "scope": "Full filter/original acceptance, remaining14 rendered differences, fonts/resources and static-state gates stay open."
+  }
+}

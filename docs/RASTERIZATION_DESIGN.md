@@ -79,7 +79,7 @@ sampling/blend semantics.
 | --- | --- |
 | Logical viewport/viewBox | Own percentage bases and layout; output density does not resize them. |
 | Root image layout/projection | Keep CSS subpixel layout, natural image normalization and uniform external output scaling in separate maps. Its image boundary is independent of raster allocation. |
-| Source/instance map | Preserve authored placement and resource inheritance; local aliases exclude source ancestors. |
+| Source/instance map | Preserve authored placement and resource inheritance; local aliases exclude source ancestors. Clip children materialize into resource coordinates before reference placement and device mapping. |
 | Object box | Measures pre-clip geometry/layout for normalized paints/resources. |
 | Visual/drawing enclosure | Includes painted stroke/effect extents and source-space enclosure before placement. |
 | Construction/dispatch bounds | Decide edge admission and raster route independently of clipped storage. |

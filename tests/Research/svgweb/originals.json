@@ -10351,8 +10351,8 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "analytic-alpha-bytes.json",
-    "sourceBaseline": "cb26e582e679112cb5a31e8baa1d84ac91432b5c",
+    "evidence": "clip-source-placement.json",
+    "sourceBaseline": "0fb2c896d40e2b4c664ef04e1f329001d8f76ac6",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10362,9 +10362,8 @@
       "UnsupportedFeature": 53,
       "MalformedInput": 3
     },
-    "previousPngsByteIdenticalPerHost": 146,
+    "previousPngsByteIdenticalPerHost": 147,
     "changedOriginals": [
-      "car.svg",
       "gallardo.svg"
     ],
     "lostExactImages": [],
