@@ -24,6 +24,7 @@ internal static class SvgDeferredPaintLeaves
     {
         if (!SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)) return false;
         SvgComputedStyle style = context.ResolveStyle(reader);
+        _ = SvgPaintResolver.ResolveFallbacks(ref style, state.PaintResources, context.NamedColors, reader.LocalName);
         SvgMarkerStyle markers = SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers);
         return Missing(style.Fill) || Missing(style.Stroke ?? context.InheritedStroke.Stroke) || MissingMarker(markers.Start)
             || MissingMarker(markers.End) || reader.LocalName != "line" && MissingMarker(markers.Mid);
@@ -40,7 +41,7 @@ internal static class SvgDeferredPaintLeaves
         {
             if (!SvgMarkerStyle.Active(value)) return false;
             context.CancellationToken.ThrowIfCancellationRequested();
-            string id = SvgGradientSyntax.ParsePaintId(value);
+            string id = SvgLocalUrl.ParseRequiredId(value);
             // Retained marker content can depend on definitions declared after its host.
             return !state.Definitions.TryGetValue(id, out SvgDefinition definition) || definition.Marker is null
                 || definition.SymbolContent is not null;

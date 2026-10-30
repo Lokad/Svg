@@ -54,7 +54,7 @@ internal static class SvgMaskContentReplay
         // Shader strokes and unresolved fills need the ordinary geometry route.
         // The single-color shortcut cannot resolve independent or forward paints.
         string? fillServer = source.AuthoredStyle.Fill ?? context.InheritedPresentation.PaintServerFill;
-        bool pendingFill = fillServer is not null && SvgLocalUrl.TryParseId(fillServer, out string fillId)
+        bool pendingFill = fillServer is not null && SvgPaintReference.TryParseId(fillServer, out string fillId)
             && !state.Gradients.TryGetValue(fillId, out _) && !state.RadialGradients.TryGetValue(fillId, out _) && !state.Patterns.TryGetValue(fillId, out _);
         bool requiresReplay = pendingFill || SvgGradientSyntax.IsGradientStrokeUrl(source.AuthoredStyle.Stroke ?? context.InheritedStroke.Stroke);
         if (!requiresReplay && reader.LocalName is "rect" or "circle" && !SvgGradientSyntax.IsGradientFill(source.AuthoredStyle.Fill))

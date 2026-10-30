@@ -99,13 +99,14 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     }
 
     /// <summary>Resolves direct text paint and retains its inline font declarations from the same bounded style scan.</summary>
-    internal SvgResolvedDirectTextElement ResolveTextShape(XmlReader reader)
+    internal SvgResolvedDirectTextElement ResolveTextShape(XmlReader reader, SvgPaintResourceSelection? resources)
     {
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), CancellationToken, true);
         SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyle.Resolve(reader, inline, StyleSheet));
         style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity).ResolveDisplay(InheritedPresentation.ElementDisplay) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         SvgComputedStyle textStyle = style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
         if (textStyle.Fill is null && InheritedPresentation.PaintServerFill is string fill) textStyle = textStyle with { Fill = fill };
+        _ = SvgPaintResolver.ResolveFallbacks(ref textStyle, resources, NamedColors, reader.LocalName);
         // Stroke is validated on emitted content after a child span can replace it.
         textStyle = textStyle with { Stroke = textStyle.Stroke ?? InheritedStroke.Stroke };
         return new SvgResolvedDirectTextElement(new SvgResolvedPaintableElement(textStyle, ResolveTransform(reader), ResolvePresentation(SvgTextPaintStyle.ForColorResolution(textStyle) with { Stroke = "none", Linecap = null, Linejoin = null, Dasharray = null, Dashoffset = null, Width = null, Miterlimit = null, StrokeOpacity = null }, false), OutputMagnification), SvgInlineStyleParser.MergeFont(inline.TextFont, inline.Important, StyleSheet.TextFont, StyleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inline.WhiteSpace, inline.Important, InlineImportantProperties.WhiteSpace, StyleSheet.WhiteSpace, StyleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inline.LetterSpacing, inline.Important, InlineImportantProperties.LetterSpacing, StyleSheet.LetterSpacing, StyleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inline.WordSpacing, inline.Important, InlineImportantProperties.WordSpacing, StyleSheet.WordSpacing, StyleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inline.TextDecoration, inline.Important, InlineImportantProperties.TextDecoration, StyleSheet.TextDecoration, StyleSheet.Important));

@@ -7,8 +7,8 @@ Bodies are fetched into bounded memory and discarded. Ordinary tests are offline
 this directory contains metadata and original orthogonal controls, not the hosted
 SVG collection.
 
-The current default-path review has 145 rendered inputs per host: 131 exact and
-14 different, with 59 rejected. The complete gradient-length replay took 56.93 s;
+The current default-path review has 146 rendered inputs per host: 132 exact and
+14 different, with 58 rejected. The complete paint-reference replay took 65.84 s;
 all 145 earlier rendered PNGs remain byte-identical. Each source hash is rechecked.
 These observations use transparent output without supplied fonts/resources; they
 are neither whole-corpus reference admission nor throughput measurements. The
@@ -18,7 +18,7 @@ ledger retains earlier passes and every follow-up outcome.
 | --- | ---: | --- |
 | Gradient-stop `id` | 13 | Admission fixed, with direct identifier boundaries and an exact linear/radial/inherited-stop fixture. Eight originals render inexactly; five expose filter, pattern or color gates. |
 | Fixed units in stroke offsets | 3 | Share a length model; keep units separate from dash geometry and rounding. |
-| Other gradient declarations | 5 | Partial radial inheritance, percentages, defaults and unit overrides are fixed. `twitter.svg` advances to URL-paint fallback syntax; invalid attributes/units remain individually classified. |
+| Other gradient declarations | 5 | Partial radial inheritance, percentages, defaults, unit overrides and explicit paint fallback are fixed. `twitter.svg` is exact on both hosts; invalid attributes/units remain individually classified. |
 | Required fonts | 9 | Supply programs explicitly; distinguish SVG-font previews from font-free geometry. |
 | Root events | 10 | Qualify static state and document actual interaction limits. |
 | Unsupported children | 11 | Inspect parent/traversal state before attributing the failure to the reported child. |
@@ -29,6 +29,13 @@ Counts classify the initial first blocker. Removing one can reveal another.
 Parsing success, ambient font substitution and unexplained pixel differences do
 not close a gap. Font declarations are lexical inventory, not resolved requests;
 resource roles distinguish navigation from image/CSS/media dependencies.
+
+The [paint-reference record](paint-references.json) maps four CC0 controls to native
+platform triples. Paint fallbacks share lexical parsing and completed resource
+availability across lowering, retained content and font selection. Empty content
+and an unavailable server remain distinct. The record also retains an unresolved
+text/filter witness for the shared filter milestone; equal blank controls do not
+qualify that interaction.
 
 The [gradient-length record](gradient-lengths.json) maps five original CC0 fixtures
 to independent native platform references. Typed lengths retain number/percentage

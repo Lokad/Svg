@@ -15,7 +15,7 @@ internal static class SvgDocumentTraversal
             if (reader.NodeType != XmlNodeType.Element) continue;
             SvgStructuralAdmission.ValidateElementStructure(reader, limits);
             SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
-            SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, styleRules, cancellationToken);
+            SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, styleRules, paintResources, cancellationToken);
             return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, root, outputMap, explicitViewport, styleRules, styleStrings, rasterScale, paintResources);
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");

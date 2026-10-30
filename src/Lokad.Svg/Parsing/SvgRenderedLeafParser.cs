@@ -394,11 +394,11 @@ CancellationToken cancellationToken)
             case "text":
             {
                 static bool HasServer(SvgTextGlyphPaint paint) => paint.FillServer is not null
-                    || paint.HasStroke && paint.Stroke?.Style.Stroke is {} stroke && SvgLocalUrl.TryParseId(stroke, out _);
+                    || paint.HasStroke && paint.Stroke?.Style.Stroke is {} stroke && SvgPaintReference.TryParseId(stroke, out _);
 
                 // Fail fast with the conversion-level category: the operation is already rejected as unsupported, so a later font lookup must not surface UnresolvedResource instead.
                 if (state.HasUnsupportedContent) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
-                SvgResolvedDirectTextElement resolvedText = context.ResolveTextShape(reader);
+                SvgResolvedDirectTextElement resolvedText = context.ResolveTextShape(reader, state.PaintResources);
                 SvgResolvedPaintableElement textElement = resolvedText.PaintableElement;
                 string? textClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 if (textClip is not null) textClip = state.Strings.Copy(textClip);
@@ -418,10 +418,10 @@ CancellationToken cancellationToken)
                 // ResolveTextShape validates fill-rule syntax; SVG text keeps glyph winding independent of that property.
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing, resolvedText.WordSpacing);
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
-                SvgTextPaintStyle textPaint = SvgTextPaintStyle.ResolveElement(textElement.Style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.InheritedStroke.Stroke);
+                SvgTextPaintStyle textPaint = SvgTextPaintStyle.ResolveElement(textElement.Style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.InheritedStroke.Stroke, state.PaintResources);
                 textPaint = textPaint with { TextOpacity = SvgPaintOpacity.Opaque, StrokeStyle = context.InheritedStroke.ResolveChild(textElement.Style), PaintOrder = textElement.Style.PaintOrder ?? context.InheritedPresentation.PaintOrder };
                 textPaint = textPaint with { Decoration = SvgTextDecorationSyntax.Resolve(resolvedText.TextDecoration ?? reader.GetAttribute("text-decoration"), context.InheritedTextStyle.Decoration, (textPaint with { IsDisplayed = true, IsVisible = true }).GlyphPaint) };
-                textPaint = textPaint.ResolveResources(context.TextMetrics.NeedsBounds ? null : state.PaintResources, context.TextMetrics.CanSuppress);
+                textPaint = textPaint.ResolveResources(state.PaintResources, context.TextMetrics.NeedsBounds, context.TextMetrics.CanSuppress);
                 using BudgetedParserList<SvgExtractedTextRun> textRuns = new(budget, SvgMemoryCategory.Parser, cancellationToken);
                 try
                 {

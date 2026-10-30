@@ -284,14 +284,14 @@ internal static class SvgGradientSyntax
     internal static string ParsePaintId(string? value)
     {
         if (value is null) throw new SvgException(SvgErrorCode.MalformedInput, "A paint server reference is required.");
-        if (!SvgLocalUrl.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");
+        if (!SvgPaintReference.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");
         return id;
     }
 
     internal static string ParseGradientId(string? value)
     {
         if (value is null) throw new SvgException(SvgErrorCode.MalformedInput, "A gradient reference is required.");
-        if (!SvgLocalUrl.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local gradient references are implemented.");
+        if (!SvgPaintReference.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local gradient references are implemented.");
         return id;
     }
 
@@ -304,7 +304,7 @@ internal static class SvgGradientSyntax
     }
 
     internal static bool IsGradientFill(string? fill)
-        => fill is not null && fill.StartsWith("url(", StringComparison.OrdinalIgnoreCase);
+        => SvgPaintReference.IsReference(fill);
 
     internal static double ParseStopOffset(string? value, CancellationToken cancellationToken)
     {
@@ -853,7 +853,7 @@ internal static class SvgGradientSyntax
     }
 
     internal static bool IsGradientStrokeUrl(string? stroke)
-        => stroke is not null && stroke.StartsWith("url(", StringComparison.OrdinalIgnoreCase);
+        => SvgPaintReference.IsReference(stroke);
 
     /// <summary>Inverts one axis-aligned scale-plus-offset map, refusing singular scales.</summary>
     internal static bool TryInvertAxisMap(double scaleX, double scaleY, double offsetX, double offsetY, out SvgGradientTransform inverse)

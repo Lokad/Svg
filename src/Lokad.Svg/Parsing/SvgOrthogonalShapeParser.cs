@@ -20,7 +20,7 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePathCore(XmlReader reader, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName)) context = context with { AuthoredStyle = style };
+        if (SvgPaintResolver.ResolvePaintServers(ref style, state, reader.LocalName, context.NamedColors)) context = context with { AuthoredStyle = style };
         using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.CancellationToken);
         string d = renderData.Value;
         if (d.Length == 0)
@@ -269,7 +269,7 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePointListCore(XmlReader reader, string elementName, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName)) context = context with { AuthoredStyle = style };
+        if (SvgPaintResolver.ResolvePaintServers(ref style, state, reader.LocalName, context.NamedColors)) context = context with { AuthoredStyle = style };
         if (SvgGradientSyntax.IsGradientFill(style.Fill) && SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)
             && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width))
         {
@@ -439,7 +439,7 @@ internal static class SvgOrthogonalShapeParser
         string? strokePaint = style.Stroke;
         return strokePaint is not null
             && SvgGradientSyntax.IsGradientStrokeUrl(strokePaint)
-            && SvgLocalUrl.TryParseId(strokePaint, out string outlinePaintId)
+            && SvgPaintReference.TryParseId(strokePaint, out string outlinePaintId)
             && state.RadialGradients.TryGetValue(outlinePaintId, out circle);
     }
 
@@ -536,7 +536,7 @@ internal static class SvgOrthogonalShapeParser
         string? strokePaint = style.Stroke;
         return strokePaint is not null
             && SvgGradientSyntax.IsGradientStrokeUrl(strokePaint)
-            && SvgLocalUrl.TryParseId(strokePaint, out string outlinePaintId)
+            && SvgPaintReference.TryParseId(strokePaint, out string outlinePaintId)
             && state.Gradients.TryGetValue(outlinePaintId, out gradient);
     }
 

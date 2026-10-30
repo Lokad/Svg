@@ -67,12 +67,12 @@ internal static class SvgPatternSyntax
     internal static string ParsePatternId(string? value)
     {
         if (value is null) throw new SvgException(SvgErrorCode.MalformedInput, "A pattern reference is required.");
-        if (!SvgLocalUrl.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local pattern references are implemented.");
+        if (!SvgPaintReference.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local pattern references are implemented.");
         return id;
     }
 
     internal static bool IsPatternFill(string? fill)
-        => fill is not null && fill.StartsWith("url(", StringComparison.OrdinalIgnoreCase);
+        => SvgPaintReference.IsReference(fill);
 
     /// <summary>Lowers one pattern-filled orthogonal path or point-list shape into pattern-evaluated rectangle bands.</summary>
     internal static SvgParsedGeometry LowerPatternBands(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame)
@@ -276,7 +276,7 @@ internal static class SvgPatternSyntax
     /// <summary>Reports whether a stroke references a locally defined pattern tile.</summary>
     internal static bool IsPatternStroke(string? stroke, SvgDocumentState state)
     {
-        if (stroke is null || !stroke.StartsWith("url(", StringComparison.OrdinalIgnoreCase)) return false;
+        if (!SvgPaintReference.IsReference(stroke)) return false;
         return state.Patterns.TryGetValue(ParsePatternId(stroke), out _);
     }
 

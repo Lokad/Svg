@@ -17463,6 +17463,106 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-gradient-template-units.json",
       "referenceSha256": "69347c2f4ba444cc0f798a8d08080741594819320b2a30f6c1fbd7de5f1d8927"
+    },
+    {
+      "id": "original-paint-fallback-fill",
+      "path": "original/paint-fallback-fill.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "ed820a3ea013c090e9ac8d3be4e4f11f46e78c9fcc38c40aa9098ef73a83de3c",
+      "materializedSha256": "ed820a3ea013c090e9ac8d3be4e4f11f46e78c9fcc38c40aa9098ef73a83de3c",
+      "featureTags": [
+        "paint",
+        "gradient",
+        "fallback",
+        "alpha"
+      ],
+      "width": 64,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-paint-fallback-fill.json",
+      "referenceSha256": "93e062d076bce6339165bc7ba7215e309f17297d6dc557eb35a69d58056a1d62"
+    },
+    {
+      "id": "original-paint-fallback-pattern-validity",
+      "path": "original/paint-fallback-pattern-validity.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "383abd0d64a9a5bcadfda3d93570a2e001b4e4f4ce02d0fc5b720cf8eea56cd5",
+      "materializedSha256": "383abd0d64a9a5bcadfda3d93570a2e001b4e4f4ce02d0fc5b720cf8eea56cd5",
+      "featureTags": [
+        "paint",
+        "pattern",
+        "fallback",
+        "display"
+      ],
+      "width": 64,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-paint-fallback-pattern-validity.json",
+      "referenceSha256": "9fdd165fb4f52ae4110cd7922d157151fe2c3be4dc1bb186428805ae00ec246f"
+    },
+    {
+      "id": "original-paint-fallback-stroke",
+      "path": "original/paint-fallback-stroke.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "0554394f85267f19bfa6a34769e941a28c64826a60415f6eba18bde20100bc60",
+      "materializedSha256": "0554394f85267f19bfa6a34769e941a28c64826a60415f6eba18bde20100bc60",
+      "featureTags": [
+        "paint",
+        "gradient",
+        "stroke",
+        "fallback"
+      ],
+      "width": 32,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-paint-fallback-stroke.json",
+      "referenceSha256": "1d3e6eee7e266ff10f3c7934cb26f196379aa407f3a1c83735ed1fc531abac05"
+    },
+    {
+      "id": "original-paint-url-lexical",
+      "path": "original/paint-url-lexical.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "49690f90570d3c4cb8e120305cec6bdd363be25ed98fb86e901d9ec1e1ebe9fa",
+      "materializedSha256": "49690f90570d3c4cb8e120305cec6bdd363be25ed98fb86e901d9ec1e1ebe9fa",
+      "featureTags": [
+        "paint",
+        "gradient",
+        "fallback",
+        "local-url"
+      ],
+      "width": 32,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-paint-url-lexical.json",
+      "referenceSha256": "ecdac939ca0adb45dff965fe6cb81668a233ecd00ce0b401ab4420682fdf72d9"
     }
   ]
 }

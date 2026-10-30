@@ -204,7 +204,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
 
         static bool UsesObjectBox(string? value, SvgDocumentState state)
         {
-            if (value is null || !SvgLocalUrl.TryParseId(value, out string id)) return false;
+            if (value is null || !SvgPaintReference.TryParseId(value, out string id)) return false;
             return state.Gradients.TryGetValue(id, out SvgLinearGradient linear) && !linear.IsUserSpace && !linear.IsEmpty
                 || state.RadialGradients.TryGetValue(id, out SvgRadialGradient radial) && !radial.IsUserSpace && !radial.IsEmpty
                 || state.Patterns.TryGetValue(id, out SvgPatternTile pattern) && pattern.Coordinates is not null;

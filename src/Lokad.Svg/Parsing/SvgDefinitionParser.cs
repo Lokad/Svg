@@ -115,7 +115,7 @@ internal static class SvgDefinitionParser
                 || MissingPaint(retainedStyle.Stroke ?? context.InheritedStroke.Stroke);
             bool MissingPaint(string? value)
             {
-                if (value is null || !SvgLocalUrl.TryParseId(value, out string paintId)) return false;
+                if (value is null || !SvgPaintReference.TryParseId(value, out string paintId)) return false;
                 cancellationToken.ThrowIfCancellationRequested();
                 return !state.Gradients.TryGetValue(paintId, out _) && !state.RadialGradients.TryGetValue(paintId, out _)
                     && !state.Patterns.TryGetValue(paintId, out _);
@@ -169,6 +169,7 @@ internal static class SvgDefinitionParser
             InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, state, cancellationToken);
             SvgPaintableElementContext markerContext = marker ? SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken) : default;
             SvgComputedStyle style = marker ? markerContext.ResolveStyle(reader, true) : SvgComputedStyleResolver.Resolve(reader, sheet, cancellationToken, true).ResolveDisplay(SvgDisplay.Inline);
+            _ = SvgPaintResolver.ResolveFallbacks(ref style, state.PaintResources, namedColors, reader.LocalName);
             state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, style, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), markerContext.InheritedTextStyle, markerContext.StyleSheet, cancellationToken) with { IsAvailable = state.DefinitionResourcesDisplayed } : null;
             SvgPaint inheritedPaint = marker ? markerContext.InheritedPresentation.Paint : SvgPaint.Default;
             // Pinned Chrome honors display on symbol instances, but ignores it on marker definitions.
@@ -1764,8 +1765,8 @@ CancellationToken cancellationToken)
 
     internal static void RejectPatternContentPaint(SvgComputedStyle style, SvgDocumentState state)
     {
-        if (style.Fill is {} fill && SvgLocalUrl.TryParseId(fill, out string fillId) && (fillId == state.PatternId || state.Patterns.TryGetValue(fillId, out _))
-            || style.Stroke is {} stroke && SvgLocalUrl.TryParseId(stroke, out string strokeId) && (strokeId == state.PatternId || state.Patterns.TryGetValue(strokeId, out _)))
+        if (style.Fill is {} fill && SvgPaintReference.TryParseId(fill, out string fillId) && (fillId == state.PatternId || state.Patterns.TryGetValue(fillId, out _))
+            || style.Stroke is {} stroke && SvgPaintReference.TryParseId(stroke, out string strokeId) && (strokeId == state.PatternId || state.Patterns.TryGetValue(strokeId, out _)))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern paints inside pattern content are not implemented.");
     }
 
@@ -1907,7 +1908,7 @@ CancellationToken cancellationToken)
         // while source aliases must exclude their definition ancestors.
         SvgComputedStyle authored = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, token);
         SvgComputedStyle style = context.InheritedStroke.ApplyTo(authored).ResolveDisplay(SvgDisplay.Inline);
-        _ = SvgPaintResolver.RemoveInertServers(ref style, state, reader.LocalName);
+        _ = SvgPaintResolver.ResolvePaintServers(ref style, state, reader.LocalName, context.NamedColors);
         SvgSymbolPresentation symbol = includesSymbolPresentation ? (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol fills require a presentation context.")).Presentation : default;
         bool inherited = reader.LocalName != "line" && style.Fill is null && (!includesSymbolPresentation || !symbol.HasAuthoredFill);
         SvgPaintOpacity? opacity = style.FillOpacity is null ? (includesSymbolPresentation ? symbol.FillOpacity : null) : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
@@ -1937,7 +1938,7 @@ CancellationToken cancellationToken)
                     continue;
                 }
                 bool hasStroke = strokeChannel || definition.Geometries[index].RecordedStrokePaint.Identity != 0;
-                bindings[index] = new(inherited && !strokeChannel, opacity, color) { AuthoredFill = strokeChannel ? null : authoredFill, AuthoredStroke = hasStroke ? authoredStroke : null, StrokeOpacity = authoredStrokeOpacity, IsStroke = strokeChannel, IsPainted = isPainted, IsPaintServer = !strokeChannel && (SvgPatternSyntax.IsPatternFill(style.Fill) || style.Fill is null && context.InheritedPresentation.PaintServerFill is not null), IsStrokePaintServer = hasStroke && stroke is not null && SvgLocalUrl.TryParseId(stroke, out _) };
+                bindings[index] = new(inherited && !strokeChannel, opacity, color) { AuthoredFill = strokeChannel ? null : authoredFill, AuthoredStroke = hasStroke ? authoredStroke : null, StrokeOpacity = authoredStrokeOpacity, IsStroke = strokeChannel, IsPainted = isPainted, IsPaintServer = !strokeChannel && (SvgPatternSyntax.IsPatternFill(style.Fill) || style.Fill is null && context.InheritedPresentation.PaintServerFill is not null), IsStrokePaintServer = hasStroke && stroke is not null && SvgPaintReference.TryParseId(stroke, out _) };
             }
             state.DefinitionReservations.Add(reservation);
             return definition with { SymbolFillBindings = bindings };

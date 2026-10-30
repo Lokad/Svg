@@ -11,14 +11,15 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
     private bool InactiveFill { get; init; }
     private bool InactiveStroke { get; init; }
     private bool SuppressFilter { get; init; }
+    private bool PreserveBounds { get; init; }
 
     /// <summary>Borrows preparation metadata through extraction; emitted glyph paint retains no index or owner.</summary>
-    internal SvgTextPaintStyle ResolveResources(SvgPaintResourceSelection? resources, bool suppressFilter)
+    internal SvgTextPaintStyle ResolveResources(SvgPaintResourceSelection? resources, bool preserveBounds, bool suppressFilter)
         => this with
         {
-            Resources = resources, SuppressFilter = suppressFilter,
-            InactiveFill = resources?.IsInactivePaint(FillServer) == true,
-            InactiveStroke = resources?.IsInactivePaint(Stroke) == true
+            Resources = resources, PreserveBounds = preserveBounds, SuppressFilter = suppressFilter,
+            InactiveFill = !preserveBounds && resources?.IsInactivePaint(FillServer) == true,
+            InactiveStroke = !preserveBounds && resources?.IsInactivePaint(Stroke) == true
         };
     internal string? FillServer { get; init; }
     internal SvgInheritedStrokeStyle StrokeStyle { get; init; }
@@ -48,22 +49,25 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
         }
     }
 
-    internal static SvgTextPaintStyle ResolveElement(SvgComputedStyle style, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisible, string? inheritedStroke)
+    internal static SvgTextPaintStyle ResolveElement(SvgComputedStyle style, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisible, string? inheritedStroke, SvgPaintResourceSelection? resources)
     {
+        style = style with { Stroke = style.Stroke ?? inheritedStroke };
+        _ = SvgPaintResolver.ResolveFallbacks(ref style, resources, SvgRootParser.CssNamedColors, "text");
         ValidateStyle(style);
         SvgResolvedPresentation resolved = SvgPresentationResolver.Resolve(ForColorResolution(style), inheritedPaint, inheritedDisplayed, inheritedVisible, SvgRootParser.CssNamedColors);
         return new(resolved.Paint, resolved.IsDisplayed, resolved.IsVisible, style.Stroke ?? inheritedStroke, style.GetOpacity())
-        { ElementDisplay = style.GetDisplay(), FillServer = IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
+        { Resources = resources, ElementDisplay = style.GetDisplay(), FillServer = IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
     }
 
     internal static SvgTextPaintStyle ResolveSpan(SvgComputedStyle style, SvgTextPaintStyle inherited)
     {
         style = style.ResolveDisplay(inherited.ElementDisplay);
+        _ = SvgPaintResolver.ResolveFallbacks(ref style, inherited.Resources, SvgRootParser.CssNamedColors, "tspan");
         ValidateStyle(style);
         SvgResolvedPresentation resolved = SvgPresentationResolver.Resolve(ForColorResolution(style), inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, SvgRootParser.CssNamedColors);
         SvgTextPaintStyle result = new(resolved.Paint, resolved.IsDisplayed, resolved.IsVisible, style.Stroke ?? inherited.Stroke, inherited.TextOpacity)
         { ElementDisplay = style.GetDisplay(), FillServer = style.Fill is null ? inherited.FillServer : IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = inherited.StrokeStyle.ResolveChild(style), PaintOrder = style.PaintOrder ?? inherited.PaintOrder, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
-        return result.ResolveResources(inherited.Resources, inherited.SuppressFilter);
+        return result.ResolveResources(inherited.Resources, inherited.PreserveBounds, inherited.SuppressFilter);
     }
 
     internal void ValidateEmission()
@@ -84,7 +88,7 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
     internal static SvgComputedStyle ForColorResolution(SvgComputedStyle style)
         => IsLocalFill(style.Fill) ? style with { Fill = "white" } : style;
 
-    internal static bool IsLocalFill(string? fill) => fill is not null && SvgLocalUrl.TryParseId(fill, out _);
+    internal static bool IsLocalFill(string? fill) => fill is not null && SvgPaintReference.TryParseId(fill, out _);
 
     private static void ValidateStyle(SvgComputedStyle style)
     {
@@ -114,7 +118,7 @@ internal readonly record struct SvgTextStrokePaint(SvgInheritedStrokeStyle Style
     internal double FontScale { get; init; } = 1;
     internal SvgSolidPaint ResolvePaint()
     {
-        SvgSolidPaint source = Style.Stroke is {} value && SvgLocalUrl.TryParseId(value, out _)
+        SvgSolidPaint source = Style.Stroke is {} value && SvgPaintReference.TryParseId(value, out _)
             ? new(new(255, 255, 255, 255), 1)
             : SvgPaintResolver.ResolveStrokePaint(Style.Stroke ?? "none", null, Paint, SvgRootParser.CssNamedColors);
         return source with { Alpha = source.Alpha * SvgColorParser.ParsePaintOpacity(Style.StrokeOpacity).Value * Opacity.Value };
@@ -131,7 +135,7 @@ internal readonly record struct SvgTextStrokePaint(SvgInheritedStrokeStyle Style
         _ = SvgStrokeStyleSyntax.ParseDashoffset(Style.Dashoffset);
         // A shader supplies color at replay. White retains the independent
         // stroke/element opacity while the shared outline uses only the width.
-        SvgColor color = Style.Stroke is {} value && SvgLocalUrl.TryParseId(value, out _)
+        SvgColor color = Style.Stroke is {} value && SvgPaintReference.TryParseId(value, out _)
             ? new SvgColor(255, 255, 255, 255)
             : SvgPaintResolver.ResolveStrokeColor(Style.Stroke ?? "none", null, Paint, SvgRootParser.CssNamedColors);
         color = SvgPaintResolver.ApplyOpacity(color, Style.StrokeOpacity is null ? (byte)255 : SvgColorParser.ParseOpacity(Style.StrokeOpacity));

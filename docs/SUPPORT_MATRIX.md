@@ -110,6 +110,14 @@ and syntax-dependent alpha precision. Degenerate paints use terminal pad colors
 or periodic mean colors. Empty paint servers suppress only their own channel;
 independent strokes, markers and effects remain active.
 
+Fill and stroke accept local `url(#id)` with an explicit color, `currentColor`
+or `none` fallback. Available servers retain their paint; missing/wrong-kind
+targets and unavailable pattern tiles use the fallback. A valid empty gradient
+or a pattern with empty drawing content paints transparently instead. Invalid
+syntax, unsupported servers and missing targets without fallback still reject.
+Quoted URLs and adjacent color functions are accepted. Effect/marker URLs do
+not accept paint fallbacks.
+
 Coordinates accept numbers and percentages. Each gradient definition or alias
 resolves percentages in its own viewport; radial radii use the normalized diagonal.
 Templates preserve units through inheritance and unit overrides. Cross-kind

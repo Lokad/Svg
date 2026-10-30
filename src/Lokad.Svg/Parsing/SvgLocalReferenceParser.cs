@@ -11,10 +11,12 @@ internal static class SvgLocalReferenceParser
         SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, baseWidth, baseHeight, context.CancellationToken);
         SvgComputedStyle authored = context.AuthoredStyle ?? throw new InvalidOperationException("Use declarations must be prepared before reference parsing.");
         authored = authored.ResolveDisplay(context.InheritedPresentation.ElementDisplay);
+        _ = SvgPaintResolver.ResolveFallbacks(ref authored, state.PaintResources, context.NamedColors, reader.LocalName);
         if (syntax.Id.Length == 0 && (state.ClipPathDepth >= 0 || authored.Filter is null
             || SvgCssWhitespace.Trim(authored.Filter).Equals("none", StringComparison.OrdinalIgnoreCase)
             || !context.InheritedPresentation.IsDisplayed || authored.GetDisplay() == SvgDisplay.None)) return null;
         SvgComputedStyle style = context.ResolveStyle(reader);
+        _ = SvgPaintResolver.ResolveFallbacks(ref style, state.PaintResources, context.NamedColors, reader.LocalName);
         SvgMarkerStyle markers = SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers);
         if (state.MarkerDefinition is not null && markers.HasMarkers)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on use instances inside marker content are not implemented.");

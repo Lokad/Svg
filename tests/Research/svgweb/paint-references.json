@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "b6ee3c42c510298fc0f999ae4b672553cce81710",
+  "model": "Parse paint URL/fallback separately from whole-value effect URLs. Resolve explicit fallbacks against completed resource headers before inheritance, recording, font selection or lowering. Preserve the original declaration when a server is available. Never catch rendering, cancellation or admission errors as fallback.",
+  "fixtures": [
+    {
+      "fixture": "../../Fixtures/original/paint-fallback-fill.svg",
+      "provenance": "../../References/original-paint-fallback-fill.json",
+      "sourceSha256": "ed820a3ea013c090e9ac8d3be4e4f11f46e78c9fcc38c40aa9098ef73a83de3c",
+      "nativePngSha256": "93e062d076bce6339165bc7ba7215e309f17297d6dc557eb35a69d58056a1d62",
+      "freshProcessesPerPlatform": 3
+    },
+    {
+      "fixture": "../../Fixtures/original/paint-fallback-pattern-validity.svg",
+      "provenance": "../../References/original-paint-fallback-pattern-validity.json",
+      "sourceSha256": "383abd0d64a9a5bcadfda3d93570a2e001b4e4f4ce02d0fc5b720cf8eea56cd5",
+      "nativePngSha256": "9fdd165fb4f52ae4110cd7922d157151fe2c3be4dc1bb186428805ae00ec246f",
+      "freshProcessesPerPlatform": 3
+    },
+    {
+      "fixture": "../../Fixtures/original/paint-fallback-stroke.svg",
+      "provenance": "../../References/original-paint-fallback-stroke.json",
+      "sourceSha256": "0554394f85267f19bfa6a34769e941a28c64826a60415f6eba18bde20100bc60",
+      "nativePngSha256": "1d3e6eee7e266ff10f3c7934cb26f196379aa407f3a1c83735ed1fc531abac05",
+      "freshProcessesPerPlatform": 3
+    },
+    {
+      "fixture": "../../Fixtures/original/paint-url-lexical.svg",
+      "provenance": "../../References/original-paint-url-lexical.json",
+      "sourceSha256": "49690f90570d3c4cb8e120305cec6bdd363be25ed98fb86e901d9ec1e1ebe9fa",
+      "nativePngSha256": "ecdac939ca0adb45dff965fe6cb81668a233ecd00ce0b401ab4420682fdf72d9",
+      "freshProcessesPerPlatform": 3
+    }
+  ],
+  "behaviors": {
+    "fill": "Available gradient, missing color/none/currentColor, wrong-kind target, empty gradient, quoted URL and functional alpha.",
+    "pattern": "Zero/missing dimensions, no element content and hidden resource use fallback. An empty group or hidden drawing child is available but transparent. A drawable tile ignores fallback.",
+    "stroke": "Available user-space gradient with round caps retains its gradient.",
+    "lexical": "Adjacent color functions, quoted closing parenthesis and a once-decoded escaped closing parenthesis.",
+    "alphaWitness": {
+      "source": "rgba(10,200,40,.5)",
+      "nativeStraightRgba": [
+        10,
+        199,
+        40,
+        128
+      ]
+    },
+    "strictBoundaries": "Missing targets without explicit fallback, external URLs, invalid colors, unsupported resource syntax and effect/marker fallback tails still reject."
+  },
+  "tests": {
+    "mechanism": "../../Lokad.Svg.Tests/SvgPaintReferenceTests.cs",
+    "inheritanceAndAdmission": "../../Lokad.Svg.Tests/SvgPaintFallbackTests.cs",
+    "preparedFonts": "../../Lokad.Svg.Tests/OpenTypeFontTests.PaintFallback.cs",
+    "failingBefore": "Eight original fill/stroke/inheritance cases failed on the baseline. All four admitted fixtures also reject with the frozen baseline library on each host.",
+    "focusedAfter": 41,
+    "qualification": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "scope": "core",
+        "passed": 17090,
+        "seconds": 43.67439269996248,
+        "librarySha256": "74afb0bd3907d61ca3bce44b4d7e07f4d79b52db3acb1e899cf478677b647312"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "scope": "native",
+        "passed": 2366,
+        "seconds": 26.380411899881437,
+        "librarySha256": "74afb0bd3907d61ca3bce44b4d7e07f4d79b52db3acb1e899cf478677b647312"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "scope": "core",
+        "passed": 17090,
+        "seconds": 43.92856659996323,
+        "librarySha256": "eef441949be2e784d19a97da27d4696258022eb43c30086e205169063113b7bc"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "scope": "native",
+        "passed": 2366,
+        "seconds": 25.799281700048596,
+        "librarySha256": "eef441949be2e784d19a97da27d4696258022eb43c30086e205169063113b7bc"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "scope": "core",
+        "passed": 17090,
+        "seconds": 40.493719401,
+        "librarySha256": "74afb0bd3907d61ca3bce44b4d7e07f4d79b52db3acb1e899cf478677b647312"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "scope": "native",
+        "passed": 2366,
+        "seconds": 40.209997650999995,
+        "librarySha256": "74afb0bd3907d61ca3bce44b4d7e07f4d79b52db3acb1e899cf478677b647312"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "scope": "core",
+        "passed": 17090,
+        "seconds": 33.977586755999994,
+        "librarySha256": "eef441949be2e784d19a97da27d4696258022eb43c30086e205169063113b7bc"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "scope": "native",
+        "passed": 2366,
+        "seconds": 34.118059067000004,
+        "librarySha256": "eef441949be2e784d19a97da27d4696258022eb43c30086e205169063113b7bc"
+      }
+    ],
+    "timingScope": "Functional validation under concurrent local execution, including test-runner startup; not quiet-VM performance measurements. Final mechanism, rendering and original replay share the same NET11 production assembly."
+  },
+  "originalReplay": {
+    "filesPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "seconds": 65.84219780005515,
+    "renderedPerHost": 146,
+    "exactPerHost": 132,
+    "differentPerHost": 14,
+    "rejectedPerHost": 58,
+    "priorRenderedPngsByteIdenticalPerHost": 145,
+    "librarySha256": "74afb0bd3907d61ca3bce44b4d7e07f4d79b52db3acb1e899cf478677b647312",
+    "newExactOriginal": {
+      "name": "twitter.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/twitter.svg",
+      "sourceSha256": "7b8528ea4e031671eb7927b22055b8a9f7d6ab9e9eaa972e0d8151f84ea05aa4",
+      "imageViewport": {
+        "width": 300,
+        "height": 150
+      },
+      "nativePngSha256": "72ec04cae68602ce75f5b61221b2d3c4074886513ee8ef489d4e624f348a35ba",
+      "freshHealthyCapturesPerPlatform": 3,
+      "changedPixelsPerPlatform": 0
+    },
+    "qualification": "Every original hash rechecked. Prior rendered PNGs are byte-identical; other outcome categories and comparisons remain unchanged. Fresh native triples use the same inspected 300x150 logical viewport and reproduce the existing target. No hosted payload retention or whole-corpus reference admission."
+  },
+  "openTextFilterWitness": {
+    "status": "Investigation remains open; no native font-backed reference admitted.",
+    "fontProgram": "CreateTriangleFont in ../../Lokad.Svg.Tests/OpenTypeFontTests.cs",
+    "document": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' font-family='Example' font-size='200'><defs><linearGradient id='g'><stop stop-color='blue'/><stop offset='1' stop-color='red'/></linearGradient><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feOffset dx='0' dy='0'/></filter></defs><g filter='url(#f)'><text x='1' y='14' fill='none'><tspan fill='url(#g)'>A</tspan></text></g></svg>",
+    "observation": "Prepared rendering was blank both with and without an explicit URL fallback, even with a default-filled text parent. Font discovery/acquisition succeeded. Equal blank controls are insufficient proof; this case is not counted as closed fallback/rendering coverage.",
+    "closure": "Supply the exact synthetic font to an independent browser, isolate solid versus shader/pending-text and direct versus enclosing filter behavior, then repair shared filter source/bounds stages without changing layout or references."
+  }
+}

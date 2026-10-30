@@ -9739,5 +9739,19 @@
     "seconds": 56.93375720013864,
     "evidence": "gradient-lengths.json",
     "qualification": "Every source hash rechecked. All previously rendered PNG bytes and original outcome categories remain unchanged. twitter.svg advances from initial-percentage rejection to the separate URL-paint fallback boundary. Earlier original observations remain valid except that diagnostic update. Hosted SVG payload files retained: zero; no whole-corpus reference admission."
+  },
+  "paintReferenceFallback": {
+    "sourceSvgFilesRetained": 0,
+    "seconds": 65.84219780005515,
+    "renderedPerHost": 146,
+    "exactPerHost": 132,
+    "differentPerHost": 14,
+    "rejectedPerHost": 58,
+    "priorRenderedPngsByteIdenticalPerHost": 145,
+    "librarySha256": "74afb0bd3907d61ca3bce44b4d7e07f4d79b52db3acb1e899cf478677b647312",
+    "sourceBaseline": "b6ee3c42c510298fc0f999ae4b672553cce81710",
+    "filesRevalidatedPerHost": 204,
+    "evidence": "paint-references.json",
+    "qualification": "Every original hash rechecked. Prior rendered PNGs are byte-identical; other outcome categories and comparisons remain unchanged. Fresh native triples use the same inspected 300x150 logical viewport and reproduce the existing target. No hosted payload retention or whole-corpus reference admission."
   }
 }

@@ -83,7 +83,7 @@ internal static class SvgTextGlyphPainter
             if (fragment.Start == fragment.End) continue;
             SvgTextShader? shader = null;
             SvgTextGlyphPaint fragmentPaint = run.GetGlyphPaint(fragment.Start, fallback);
-            if (fragmentPaint.HasStroke && fragmentPaint.Stroke is {} fragmentStroke && fragmentStroke.Style.Stroke is {} strokeValue && SvgLocalUrl.TryParseId(strokeValue, out _))
+            if (fragmentPaint.HasStroke && fragmentPaint.Stroke is {} fragmentStroke && fragmentStroke.Style.Stroke is {} strokeValue && SvgPaintReference.TryParseId(strokeValue, out _))
                 shader = Bind(strokeValue, run, placement, pathPlacements, state, ref prepared, token);
             // A direct run shares each paint pass. Path text paints independently
             // placed glyphs, so an adjacent glyph's stroke follows the prior fill.
@@ -196,7 +196,7 @@ internal static class SvgTextGlyphPainter
         static SvgTextShader Bind(string value, SvgTextRun run, SvgAffineTransform placement, ReadOnlySpan<SvgPlacedTextGlyph> paths,
             SvgDocumentState state, ref SvgTextPaintPreparation prepared, CancellationToken token)
         {
-            if (!SvgLocalUrl.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local text paints are implemented.");
+            if (!SvgPaintReference.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local text paints are implemented.");
             if (state.Gradients.TryGetValue(id, out SvgLinearGradient linear))
             {
                 SvgRectangle box = linear.IsUserSpace || linear.IsEmpty ? default : prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, paths, placement, state.TextBoundsMetrics, token));

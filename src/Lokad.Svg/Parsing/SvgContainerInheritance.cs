@@ -44,6 +44,7 @@ internal static class SvgContainerInheritance
         ArgumentNullException.ThrowIfNull(namedColors);
         SvgInheritedPresentation inheritedPresentation = inherited.Presentation;
         computedStyle = computedStyle.ResolveOpacity(inheritedPresentation.ElementOpacity).ResolveDisplay(inheritedPresentation.ElementDisplay);
+        _ = SvgPaintResolver.ResolveFallbacks(ref computedStyle, resources, namedColors, reader.LocalName);
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(computedStyle, inheritedPresentation.Paint, inheritedPresentation.PaintServerFill, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible, namedColors);
         SvgAffineTransform transform = inheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, cancellationToken));
         return new SvgInheritedContainer(

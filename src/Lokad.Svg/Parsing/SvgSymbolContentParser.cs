@@ -24,6 +24,7 @@ internal static class SvgSymbolContentParser
         InlineStyle inline = reader.LocalName == "use" ? SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), token)
             : SvgInlineStyleParser.Parse(reader.GetAttribute("style"), token, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet);
+        _ = SvgPaintResolver.ResolveFallbacks(ref style, state.PaintResources, colors, reader.LocalName);
         SvgPaintOpacity? strokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
         SvgMarkerStyle markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, token);
         bool displayed = (style.GetSourceDisplay() != SvgDisplay.None);

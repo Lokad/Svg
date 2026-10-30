@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "383abd0d64a9a5bcadfda3d93570a2e001b4e4f4ce02d0fc5b720cf8eea56cd5",
+  "referenceSha256": "9fdd165fb4f52ae4110cd7922d157151fe2c3be4dc1bb186428805ae00ec246f",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-paint-fallback-pattern-validity.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-paint-fallback-pattern-validity",
+  "viewport": {
+    "width": 64,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 paint-reference control: paint-fallback-pattern-validity. Three fresh healthy native captures on each platform; no hosted SVG payload retained.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "383abd0d64a9a5bcadfda3d93570a2e001b4e4f4ce02d0fc5b720cf8eea56cd5",
+      "referenceSha256": "9fdd165fb4f52ae4110cd7922d157151fe2c3be4dc1bb186428805ae00ec246f",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "383abd0d64a9a5bcadfda3d93570a2e001b4e4f4ce02d0fc5b720cf8eea56cd5",
+      "referenceSha256": "9fdd165fb4f52ae4110cd7922d157151fe2c3be4dc1bb186428805ae00ec246f",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 64,
+    "height": 16
+  }
+}

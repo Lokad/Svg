@@ -18,17 +18,18 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
     internal double? UserViewportHeight => ViewBox?.Height ?? SvgDocumentSizing.ResolveViewportSide(Height, ContainingViewport?.Height, 150);
 
     /// <summary>Applies the collected root stylesheet before inherited presentation and intrinsic dimensions are resolved.</summary>
-    internal static SvgRootAttributes Parse(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, BudgetedParserList<CssRule> rules, CancellationToken cancellationToken)
+    internal static SvgRootAttributes Parse(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, BudgetedParserList<CssRule> rules, SvgPaintResourceSelection? resources, CancellationToken cancellationToken)
     {
         SvgElementAttributePolicy.ValidateRoot(reader, cancellationToken);
         InlineStyle sheet = SvgRootStyleSheetParser.ResolveRoot(reader.GetAttribute("id"), reader.GetAttribute("class"), rules, cancellationToken);
-        return ParseValues(reader, namedColors, sheet, cancellationToken);
+        return ParseValues(reader, namedColors, sheet, resources, cancellationToken);
     }
 
-    private static SvgRootAttributes ParseValues(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, InlineStyle sheet, CancellationToken cancellationToken)
+    private static SvgRootAttributes ParseValues(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, InlineStyle sheet, SvgPaintResourceSelection? resources, CancellationToken cancellationToken)
     {
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet).ResolveOpacity(SvgPaintOpacity.Opaque).ResolveDisplay(SvgDisplay.Inline);
+        _ = SvgPaintResolver.ResolveFallbacks(ref style, resources, namedColors, reader.LocalName);
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, null, true, true, namedColors);
         SvgTextWhitespaceMode rootWhitespace = ValidateXmlSpace(reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace"));
         SvgRootSyntax syntax = SvgRootSyntax.ParseComputed(reader, inline, sheet, cancellationToken);

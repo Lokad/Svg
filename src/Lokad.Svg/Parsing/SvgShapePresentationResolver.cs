@@ -17,7 +17,7 @@ internal static class SvgShapePresentationResolver
         if (!allowsPaintedStroke) SvgPresentationResolver.ValidateStroke(style.Stroke);
         SvgColor color = SvgPaintResolver.ResolveFillColor(presentation.Paint, presentation.Opacity);
         // A zero width paints nothing for any paint, so paint-server urls bypass resolution exactly like the admitted stroke maps them to no-stroke.
-        SvgColor? strokeColor = allowsPaintedStroke && !(SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width) && style.Stroke is not null && SvgLocalUrl.TryParseId(style.Stroke, out _)) ? ResolveStrokeColor(style.Stroke, style.Color, inheritedPaint, namedColors) : null;
+        SvgColor? strokeColor = allowsPaintedStroke && !(SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width) && style.Stroke is not null && SvgPaintReference.TryParseId(style.Stroke, out _)) ? ResolveStrokeColor(style.Stroke, style.Color, inheritedPaint, namedColors) : null;
         if (strokeColor is not null && style.StrokeOpacity is not null) strokeColor = SvgPaintResolver.ApplyOpacity(strokeColor.Value, SvgColorParser.ParseOpacity(style.StrokeOpacity));
         return new SvgResolvedShapePresentation(presentation.Paint, color, strokeColor, presentation.Opacity, presentation.IsPainted);
     }

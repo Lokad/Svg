@@ -296,7 +296,7 @@ internal static class SvgMarkerRenderer
             {
                 if (!SvgMarkerStyle.Active(value)) return;
                 token.ThrowIfCancellationRequested();
-                string id = SvgGradientSyntax.ParsePaintId(value);
+                string id = SvgLocalUrl.ParseRequiredId(value);
                 if (!state.Definitions.TryGetValue(id, out SvgDefinition source) || source.Marker is not {} marker)
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local marker references are implemented.");
                 if (!marker.IsAvailable || marker.Width == 0 || marker.Height == 0 || marker.StrokeWidthUnits && width == 0

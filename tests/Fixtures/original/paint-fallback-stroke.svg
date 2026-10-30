@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='32' height='16'><defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="0" y1="8" x2="32" y2="8"><stop stop-color="#e04020"/><stop offset="1" stop-color="#2040e0"/></linearGradient></defs><path d="M2 8H30" fill="none" stroke="url(#g) #0ee" stroke-width="4" stroke-linecap="round"/></svg>

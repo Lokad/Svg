@@ -11,6 +11,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
 {
     private enum Resolution { New, Visiting, Ready, Invalid }
     private enum Selection { NeededContent, DisabledResource }
+    private enum PaintAvailability { Available, Unavailable }
     private enum EffectKind { Mask, Filter }
     private readonly record struct EffectReference(string Id, EffectKind Kind);
     private readonly record struct PatternEffect(int Pattern, EffectReference Reference);
@@ -18,18 +19,25 @@ internal sealed class SvgPaintResourceSelection : IDisposable
     private readonly record struct Scope(int Depth, bool Drawing, bool Definitions, bool Switch, bool Consumed, int Pattern, int PatternOwner, bool Displayed, bool Visible, bool Inert, SvgDisplay ElementDisplay);
     private readonly BudgetedParserDictionary<string, Selection> _selection;
     private readonly BudgetedParserList<EffectReference> _unusedEffects;
-    private readonly BudgetedParserDictionary<string, bool> _displayedPaints;
+    private readonly BudgetedParserDictionary<string, PaintAvailability> _paints;
     private readonly BudgetedParserDictionary<string, bool> _inactiveFilters;
     private readonly CancellationToken _token;
     private readonly RenderBudget.BudgetReservation _owner;
 
-    /// <summary>Returns true only for a defined paint whose own resource display prevents painting.</summary>
+    /// <summary>Returns true for a declared paint disabled by display or an unavailable pattern tile.</summary>
     internal bool IsInactivePaint(string? value)
     {
-        if (value is null || !SvgLocalUrl.TryParseId(value, out string id)) return false;
+        if (value is null || !SvgPaintReference.TryParseId(value, out string id)) return false;
         _token.ThrowIfCancellationRequested();
-        return _displayedPaints.TryGetValue(id, out bool displayed) && !displayed || !IsPatternDisplayed(id);
+        return _paints.TryGetValue(id, out PaintAvailability available) && available == PaintAvailability.Unavailable || !IsPatternDisplayed(id);
     }
+    /// <summary>Checks completed headers without constructing paint, acquiring fonts or masking admission errors.</summary>
+    internal bool CanResolvePaint(string id)
+    {
+        _token.ThrowIfCancellationRequested();
+        return _paints.TryGetValue(id, out PaintAvailability available) && available == PaintAvailability.Available;
+    }
+
     internal bool IsInactiveFilter(string? value)
     {
         if (value is null || !SvgLocalUrl.TryParseId(value, out string id)) return false;
@@ -38,16 +46,16 @@ internal sealed class SvgPaintResourceSelection : IDisposable
     }
     internal void ValidateTextPaint(string? value)
     {
-        if (value is null || !SvgLocalUrl.TryParseId(value, out string id)) return;
+        if (value is null || !SvgPaintReference.TryParseId(value, out string id)) return;
         _token.ThrowIfCancellationRequested();
-        if (!_displayedPaints.TryGetValue(id, out _))
+        if (!_paints.TryGetValue(id, out _))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text paint requires a defined local paint server.");
     }
 
     private SvgPaintResourceSelection(RenderBudget budget, CancellationToken token, RenderBudget.BudgetReservation owner)
     {
         _owner = owner; _token = token;
-        _displayedPaints = new(budget, SvgMemoryCategory.Parser, 96);
+        _paints = new(budget, SvgMemoryCategory.Parser, 96);
         _inactiveFilters = new(budget, SvgMemoryCategory.Parser, 96);
         _selection = new(budget, SvgMemoryCategory.Parser, 96);
         _unusedEffects = new(budget, SvgMemoryCategory.Parser, token);
@@ -146,7 +154,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
                     {
                         if (!available) result._inactiveFilters.TryAdd(resourceId, true);
                     }
-                    else result._displayedPaints.TryAdd(resourceId, available);
+                    else result._paints.TryAdd(resourceId, available ? PaintAvailability.Available : PaintAvailability.Unavailable);
                 }
                 ObservePaint(paint, false); ObservePaint(paint, true);
                 int pattern = -1;
@@ -200,6 +208,8 @@ internal sealed class SvgPaintResourceSelection : IDisposable
                         Source = !displayed ? -1 : item.HasChildElements ? position : parent?.Source ?? -1 };
                     patterns[position] = item;
                     if (valid && !displayed) result._selection.TryAdd(item.Id, Selection.DisabledResource);
+                    if (valid && (item.Width is not > 0 || item.Height is not > 0 || item.Source < 0))
+                        result._paints.Replace(item.Id, PaintAvailability.Unavailable);
                 }
             }
             using BudgetedParserDictionary<string, bool> actualReferences = new(budget, SvgMemoryCategory.Parser, 96);
@@ -234,7 +244,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
             {
                 string? value = stroke ? paint.Stroke : paint.Fill;
                 // Declared empty geometry cannot sample its own paint, including through an instance.
-                if (value is not null && SvgLocalUrl.TryParseId(value, out string id) && !references.TryGetValue(id, out _)
+                if (value is not null && SvgPaintReference.TryParseId(value, out string id) && !references.TryGetValue(id, out _)
                     && (!SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) || SvgMaskSyntax.HasPaintableTarget(reader, true, null)))
                 {
                     // A primitive's own channel declarations survive instance inheritance.
@@ -259,7 +269,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
 
     public void Dispose()
     {
-        _inactiveFilters.Dispose(); _displayedPaints.Dispose(); _unusedEffects.Dispose();
+        _inactiveFilters.Dispose(); _paints.Dispose(); _unusedEffects.Dispose();
         _selection.Dispose(); _owner.Dispose();
     }
 }

@@ -14,14 +14,27 @@ internal static class SvgLocalUrl
     internal static string? GetReference(string? value)
         => value is null || SvgCssWhitespace.Trim(value.AsSpan()).Equals("none", StringComparison.OrdinalIgnoreCase) ? null : value;
 
+    /// <summary>Requires one complete local URL for a marker or effect, with no paint fallback tail.</summary>
+    internal static string ParseRequiredId(string? value)
+    {
+        if (value is null) throw new SvgException(SvgErrorCode.MalformedInput, "A local URL reference is required.");
+        if (!TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only complete local URL references are implemented.");
+        return id;
+    }
+
     /// <summary>Extracts the referenced identifier from url spellings with optional quotes and surrounding whitespace.</summary>
     internal static bool TryParseId(string value, out string id)
+        => TryParseId(value.AsSpan(), out id);
+
+    internal static bool TryParseId(ReadOnlySpan<char> value, out string id)
     {
         id = "";
-        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value.AsSpan());
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
         if (token.Length < 7 || !token.StartsWith("url(".AsSpan(), StringComparison.OrdinalIgnoreCase) || !token.EndsWith(")".AsSpan(), StringComparison.Ordinal)) return false;
         ReadOnlySpan<char> inner = SvgCssWhitespace.Trim(token[4..^1]);
-        if (inner.Length >= 2 && (inner[0] == (char)34 || inner[0] == (char)39) && inner[^1] == inner[0]) inner = inner[1..^1].TrimEnd(SvgCssWhitespace.Characters);
+        bool quoted = inner.Length >= 2 && (inner[0] == (char)34 || inner[0] == (char)39) && inner[^1] == inner[0];
+        if (quoted) inner = inner[1..^1].TrimEnd(SvgCssWhitespace.Characters);
+        else if (inner.IndexOfAny('(', ')') >= 0) return false;
         if (inner.Length < 2 || inner[0] != (char)35) return false;
         ReadOnlySpan<char> reference = inner[1..];
         if (reference.IsEmpty || reference.IndexOfAny((char)34, (char)39) >= 0 || reference.IndexOfAny(SvgCssWhitespace.Characters) >= 0 || reference.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) return false;

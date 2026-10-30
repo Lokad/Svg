@@ -203,8 +203,9 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         }
         void Queue(string? value, bool paint)
         {
-            if (value is null || !SvgLocalUrl.TryParseId(value, out string id)) return;
-            QueueId(id, paint);
+            if (value is null) return;
+            bool local = paint ? SvgPaintReference.TryParseId(value, out string id) : SvgLocalUrl.TryParseId(value, out id);
+            if (local) QueueId(id, paint);
         }
         void QueueId(string id, bool paint)
         {
@@ -540,18 +541,18 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         // Font discovery borrows text paint but leaves effects to scene lowering.
         SvgComputedStyle authoredStyle = context.ResolveStyle(reader, true);
         context = context with { AuthoredStyle = authoredStyle with { Filter = null } };
-        SvgResolvedDirectTextElement resolved = context.ResolveTextShape(reader);
+        SvgResolvedDirectTextElement resolved = context.ResolveTextShape(reader, _state.PaintResources);
         SvgTextStyle style = SvgTextSyntax.Parse(reader, resolved.InlineFont, inherited.TextStyle, resolved.LetterSpacing, resolved.WordSpacing);
         SvgTextWhitespaceMode whitespace = SvgTextSyntax.ParseWhitespaceMode(reader, resolved.WhiteSpace, inherited.TextStyle.WhitespaceMode);
         SvgTextPaintStyle paint = SvgTextPaintStyle.ResolveElement(resolved.PaintableElement.Style with { Filter = null }, inherited.Presentation.Paint,
-            inherited.Presentation.IsDisplayed, inherited.Presentation.IsVisible, inherited.Stroke.Stroke);
+            inherited.Presentation.IsDisplayed, inherited.Presentation.IsVisible, inherited.Stroke.Stroke, _state.PaintResources);
         paint = paint with { StrokeStyle = inherited.Stroke.ResolveChild(resolved.PaintableElement.Style), PaintOrder = resolved.PaintableElement.Style.PaintOrder ?? inherited.Presentation.PaintOrder };
         paint = paint with { Decoration = SvgTextDecorationSyntax.Resolve(resolved.TextDecoration ?? reader.GetAttribute("text-decoration"), inherited.TextStyle.Decoration,
             (paint with { IsDisplayed = true, IsVisible = true }).GlyphPaint) };
         SvgInheritedTextStyle font = new(style.Font.Family, style.Font.Weight, style.Font.Italic, style.FontSize, whitespace, style.LetterSpacing, style.Anchor)
             { WordSpacing = style.WordSpacing, Decoration = paint.Decoration };
         SvgTextMetricScope metrics = inherited.Presentation.TextMetrics.Enter(authoredStyle.Filter, _state.PaintResources);
-        paint = paint.ResolveResources(metrics.NeedsBounds ? null : _state.PaintResources, metrics.CanSuppress);
+        paint = paint.ResolveResources(_state.PaintResources, metrics.NeedsBounds, metrics.CanSuppress);
         using BudgetedParserList<SvgExtractedTextRun> runs = new(_state.Budget, SvgMemoryCategory.Parser, _token);
         try
         {
@@ -591,8 +592,8 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
 
         void ObservePaint(SvgTextGlyphPaint glyph)
         {
-            if (glyph.FillServer is {} fill && SvgLocalUrl.TryParseId(fill, out string fillId)) addPaint(fillId);
-            if (glyph.HasStroke && glyph.Stroke?.Style.Stroke is {} stroke && SvgLocalUrl.TryParseId(stroke, out string id)) addPaint(id);
+            if (glyph.FillServer is {} fill && SvgPaintReference.TryParseId(fill, out string fillId)) addPaint(fillId);
+            if (glyph.HasStroke && glyph.Stroke?.Style.Stroke is {} stroke && SvgPaintReference.TryParseId(stroke, out string id)) addPaint(id);
         }
     }
 

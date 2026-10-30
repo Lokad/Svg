@@ -30,7 +30,7 @@ public sealed class SvgPaintableElementContextTests
         Assert.True(reader.Read());
         SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, default, new Dictionary<string, SvgColor>(), CancellationToken.None, 1.0, null);
 
-        SvgResolvedDirectTextElement element = context.ResolveTextShape(reader);
+        SvgResolvedDirectTextElement element = context.ResolveTextShape(reader, null);
 
         Assert.Equal("#f00", element.PaintableElement.Style.Fill);
         Assert.Equal("Example", element.InlineFont.Family);

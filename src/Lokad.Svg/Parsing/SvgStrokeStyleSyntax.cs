@@ -150,7 +150,7 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Rejects paint-server strokes before color resolution, keeping solid colors and currentColor admitted.</summary>
     internal static void RejectPaintServerStroke(string? stroke, string elementName)
     {
-        if (stroke is not null && SvgLocalUrl.TryParseId(stroke, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern and gradient strokes on " + elementName + " elements are not implemented.");
+        if (stroke is not null && SvgPaintReference.TryParseId(stroke, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern and gradient strokes on " + elementName + " elements are not implemented.");
     }
 
     /// <summary>Parses a nonnegative finite stroke width for the shared outline kernel, which maps fractional offsets exactly like fractional geometry. Zero flows to callers as no-stroke; negatives stay denied.</summary>
