@@ -82,6 +82,12 @@ standalone offline directory containing binaries, references, font licenses and
 the managed font host. Ordinary checks need no downloads, live browser, private
 configuration or `external/` checkout.
 
+Browser-tool qualification is separate from renderer acceptance. Its smoke keeps
+fresh-process image/Blob captures, a viewport-versus-screenshot control and cleanup
+contracts. The [SVGWeb capture record](Research/svgweb/capture-model.json) retains
+individual platform contexts and unresolved fractional sizing; ordinary tests do
+not fetch the hosted sample collection.
+
 | Source of truth | Responsibility |
 | --- | --- |
 | [Fixture manifest](Fixtures/manifest.json) | Original CC0 inputs, independent support/fidelity statuses and oracle identities. |

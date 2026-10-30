@@ -108,6 +108,20 @@ public sealed class DevToolsConnectionTests
         await Assert.ThrowsAsync<InvalidDataException>(async () => await ChromeSvgCapture.CaptureAsync("missing", "<svg/>"u8.ToArray(), width, height, ChromeSvgCapture.CaptureBackground.Transparent, CancellationToken.None));
     }
 
+    [Theory]
+    [InlineData(0, 1)]
+    [InlineData(1, -1)]
+    [InlineData(double.NaN, 1)]
+    [InlineData(1, double.PositiveInfinity)]
+    [InlineData(16_385, 1)]
+    [InlineData(1, 16_385)]
+    public async Task Invalid_image_viewports_fail_before_launch(double width, double height)
+    {
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            await ChromeSvgCapture.CaptureAtViewportAsync("missing", "<svg/>"u8.ToArray(), 16, 16,
+                new(width, height), ChromeSvgCapture.CaptureBackground.Transparent, CancellationToken.None));
+    }
+
     [Fact]
     public void Rejects_protocol_error_responses()
     {

@@ -1,3 +1,3 @@
-// Tests inject WebSocket frames directly to validate the bounded CDP transport
-// without launching a network listener or a Chrome process.
+// Tests inject WebSocket frames and validate capture boundaries/failed launches
+// without depending on a browser installation or network listener.
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Lokad.Svg.VisualTests")]

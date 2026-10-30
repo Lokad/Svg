@@ -118,14 +118,24 @@ tools/capture-chrome.ps1 -InputPath tests/Research/circle-6x6.svg -OutputPath ar
   phase can differ from page screenshots across compositor seams. Keep them as
   exploratory evidence until each proposed reference is independently qualified
   through `ChromeSvgCapture`; preserve naturally unequal profiles separately.
-- [ChromeSvgCapture](Lokad.Svg.Chrome/ChromeSvgCapture.cs) renders an unstyled block
-  `img` and screenshots the page's top-left with `captureBeyondViewport=false`.
+- [ChromeSvgCapture](Lokad.Svg.Chrome/ChromeSvgCapture.cs) ordinarily renders an
+  unstyled block `img` and screenshots the page's top-left with
+  `captureBeyondViewport=false`.
   Explicit root dimensions determine intrinsic size: smaller screenshots crop,
   larger ones add background. ViewBox-only inputs negotiate image size by ratio;
   use matching-aspect integer-scale viewports. Fractional ratios can still negotiate
   fractional CSS sizes. If explicit conversion sizing needs a root-only capture
   materialization, declare it separately, retain the original and old reference,
   and qualify the matching viewport contract before admission.
+- For an explicit image viewport, pass both `-ImageViewportWidth` and
+  `-ImageViewportHeight` to `capture-chrome.ps1`; the stdin CLI accepts
+  `--image-viewport <CSS-width> <CSS-height>` after its optional background.
+  This sets the image element's CSS width/height while preserving SVG bytes.
+  Screenshot width/height remain independent crop/padding dimensions, not an
+  output scale. Record both viewports and the named mode in provenance; do not
+  relabel intrinsic-image references. Use the renderer's actual rounded raster
+  size rather than a ceiling. Fractional image sizes can add native resampling;
+  qualify them separately before treating a difference as a renderer bug.
 - Capture limits are 8 MiB SVG input, 16,384 pixels per side and 8,388,608 pixels
   total. Screenshot JSON transport allows 64 MiB including PNG base64; other
   replies/commands/events remain bounded at 16 MiB. These limits belong to the
@@ -224,6 +234,10 @@ they may cancel in a later phase.
 The Chrome smoke requires exactly three fresh-process captures, each exact
 against its stored reference and byte-identical to the others. It also checks
 child failure/parent timeout, destination preservation and profile/root cleanup.
+One additional viewport/crop control reuses an independent transparent reference
+and fails if the explicit image viewport is ignored. Process shutdown observes
+native exit separately from redirected-pipe completion, with bounded termination,
+drain and profile cleanup before accepting any PNG.
 
 ```powershell
 tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests

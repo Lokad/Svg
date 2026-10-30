@@ -1,6 +1,7 @@
 namespace Lokad.Svg.Chrome;
 
 using System.Runtime.InteropServices;
+using System.Globalization;
 
 internal static class Program
 {
@@ -12,10 +13,31 @@ internal static class Program
             return 0;
         }
 
-        if ((arguments.Length != 3 && (arguments.Length != 4 || (arguments[3] != "white" && arguments[3] != "black"))) || !int.TryParse(arguments[1], out int width) || !int.TryParse(arguments[2], out int height))
+        const string usage = "Usage: Lokad.Svg.Chrome <path-to-pinned-chrome> <width> <height> [white|black] [--image-viewport <CSS-width> <CSS-height>] < svg > capture.png";
+        if (arguments.Length is not (3 or 4 or 6 or 7) || !int.TryParse(arguments[1], out int width) || !int.TryParse(arguments[2], out int height))
         {
-            Console.Error.WriteLine("Usage: Lokad.Svg.Chrome <path-to-pinned-chrome> <width> <height> [white|black] < svg > capture.png");
+            Console.Error.WriteLine(usage);
             return 2;
+        }
+
+        bool hasBackground = arguments.Length is 4 or 7;
+        if (hasBackground && arguments[3] is not ("white" or "black"))
+        {
+            Console.Error.WriteLine(usage);
+            return 2;
+        }
+        ChromeSvgCapture.ImageViewport? imageViewport = null;
+        if (arguments.Length is 6 or 7)
+        {
+            int index = hasBackground ? 4 : 3;
+            if (arguments[index] != "--image-viewport"
+                || !double.TryParse(arguments[index + 1], NumberStyles.Float, CultureInfo.InvariantCulture, out double cssWidth)
+                || !double.TryParse(arguments[index + 2], NumberStyles.Float, CultureInfo.InvariantCulture, out double cssHeight))
+            {
+                Console.Error.WriteLine(usage);
+                return 2;
+            }
+            imageViewport = new(cssWidth, cssHeight);
         }
 
         try
@@ -23,11 +45,13 @@ internal static class Program
             using CancellationTokenSource cancellation = new(TimeSpan.FromSeconds(30));
             byte[] svg = await ChromeSvgCapture.ReadSvgAsync(Console.OpenStandardInput(), cancellation.Token);
             ChromeSvgCapture.CaptureBackground background = ChromeSvgCapture.CaptureBackground.Transparent;
-            if (arguments.Length == 4)
+            if (hasBackground)
             {
                 background = arguments[3] == "black" ? ChromeSvgCapture.CaptureBackground.Black : ChromeSvgCapture.CaptureBackground.White;
             }
-            byte[] png = await ChromeSvgCapture.CaptureAsync(arguments[0], svg, width, height, background, cancellation.Token);
+            byte[] png = imageViewport is {} viewport
+                ? await ChromeSvgCapture.CaptureAtViewportAsync(arguments[0], svg, width, height, viewport, background, cancellation.Token)
+                : await ChromeSvgCapture.CaptureAsync(arguments[0], svg, width, height, background, cancellation.Token);
             await Console.OpenStandardOutput().WriteAsync(png, cancellation.Token);
             return 0;
         }

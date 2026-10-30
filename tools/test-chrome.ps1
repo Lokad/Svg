@@ -129,6 +129,25 @@ for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++)
     if ((Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash.ToLowerInvariant() -cne $candidateHashes[0]) { throw 'Large SVG Blob capture changed the established image recipe pixels.' }
 }
 
+# A square viewBox in a 300x150 image starts its red content at x=75. A 16x16
+# screenshot is therefore transparent. Without the named image viewport this
+# same source fills the screenshot, so the control detects an ignored CLI option.
+$viewportSource = Join-Path $ResultsDirectory "image-viewport-$captureId.svg"
+$viewportSvg = [IO.File]::ReadAllText($fixture).Replace('width="2" height="2"', 'viewBox="0 0 2 2"', [StringComparison]::Ordinal)
+if ($viewportSvg -ceq [IO.File]::ReadAllText($fixture)) { throw 'The viewport control no longer matches its source fixture.' }
+[IO.File]::WriteAllText($viewportSource, $viewportSvg, [Text.UTF8Encoding]::new($false))
+$viewportReference = Join-Path $PSScriptRoot '../tests/References/original-zero-path-stroke-16x16.png'
+$viewportHashes = [Collections.Generic.List[string]]::new()
+for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++) {
+    $candidate = Join-Path $ResultsDirectory "image-viewport-$captureId-$attempt.png"
+    & (Join-Path $PSScriptRoot 'capture-chrome-process.ps1') -ChromeExecutable $executable -InputFile $viewportSource -OutputFile $candidate -Width 16 -Height 16 -Background transparent -CaptureTimeoutMilliseconds $CaptureTimeoutMilliseconds -TargetFramework $TargetFramework -ImageViewportWidth 300 -ImageViewportHeight 150
+    & dotnet $diffTool $viewportReference $candidate
+    if ($LASTEXITCODE -ne 0) { throw 'Explicit image viewport did not preserve its letterbox and screenshot crop.' }
+    $hash = (Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($viewportHashes.Count -gt 0 -and $hash -cne $viewportHashes[0]) { throw 'Explicit image viewport captures differ across fresh processes.' }
+    $viewportHashes.Add($hash)
+}
+
 $fingerprint = [ordered]@{
     schemaVersion = 4
     pinSha256 = (Get-FileHash -LiteralPath $PinPath -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -161,6 +180,13 @@ $fingerprint = [ordered]@{
     candidatePngs = @($candidates | ForEach-Object { [IO.Path]::GetFileName($_) })
     candidateSha256 = @($candidateHashes)
     captureDiagnostics = @($captureDiagnostics)
+    imageViewportControl = @{
+        sourceSha256 = (Get-FileHash -LiteralPath $viewportSource -Algorithm SHA256).Hash.ToLowerInvariant()
+        referenceSha256 = (Get-FileHash -LiteralPath $viewportReference -Algorithm SHA256).Hash.ToLowerInvariant()
+        imageViewport = @{ width = 300; height = 150 }
+        screenshot = @{ width = 16; height = 16 }
+        candidateSha256 = @($viewportHashes)
+    }
 }
 $fingerprintPath = Join-Path $ResultsDirectory "pinned-chrome-smoke-$captureId.json"
 

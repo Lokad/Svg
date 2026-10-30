@@ -87,9 +87,16 @@ internal sealed class ChromeProcess : IAsyncDisposable
         {
             if (!_process.HasExited)
             {
-                Task exit = _process.WaitForExitAsync();
-                if (await Task.WhenAny(exit, Task.Delay(500)) != exit) _process.Kill(true);
-                await exit.WaitAsync(TimeSpan.FromSeconds(5));
+                // Native exit and redirected-pipe completion have separate owners.
+                // An asynchronous exit callback can remain pending after HasExited;
+                // do not mistake that callback for a live process or skip draining.
+                if (!await WaitForProcessExitAsync(TimeSpan.FromMilliseconds(500)))
+                {
+                    try { _process.Kill(true); }
+                    catch (InvalidOperationException) when (_process.HasExited) { }
+                }
+                if (!await WaitForProcessExitAsync(TimeSpan.FromSeconds(5)))
+                    throw new TimeoutException("Chrome did not exit after termination.");
             }
             // Descendants must not keep inherited pipe handles open indefinitely.
             try { await Task.WhenAll(_stderrDrain, _stdoutDrain).WaitAsync(TimeSpan.FromSeconds(5)); }
@@ -113,6 +120,17 @@ internal sealed class ChromeProcess : IAsyncDisposable
                 _drainCancellation.Dispose();
                 Console.Error.WriteLine(_diagnostics.CreateReport(_executableName, _clock.ElapsedMilliseconds, _debuggerReadyMilliseconds, profileCleaned));
             }
+        }
+
+        async Task<bool> WaitForProcessExitAsync(TimeSpan timeout)
+        {
+            Stopwatch wait = Stopwatch.StartNew();
+            while (!_process.HasExited)
+            {
+                if (wait.Elapsed >= timeout) return false;
+                await Task.Delay(25);
+            }
+            return true;
         }
     }
 

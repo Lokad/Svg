@@ -1,0 +1,435 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "0a683747e763fbf7542d605c2b0b42395cd5ba5b",
+  "candidate": "CaptureAtViewportAsync / --image-viewport and separate native exit observation; library rendering unchanged.",
+  "nativeRecipe": "Pinned recipe-3 screenshot setup with explicit image CSS dimensions; original SVG bytes unchanged. This named mode does not relabel intrinsic-image references.",
+  "qualificationSeconds": 169.59386110003106,
+  "browserPins": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3"
+    }
+  },
+  "lifecycle": {
+    "platform": "Windows",
+    "freshProcessTrialsPerVariant": 24,
+    "priorFailures": 2,
+    "candidateFailures": 0,
+    "observedFailure": "HasExited was true while the asynchronous exit task remained incomplete after its five-second wait. Profile cleanup then failed.",
+    "candidatePolicy": "Poll native exit under the original 500ms grace / five-second termination bounds; retain independent five-second pipe drain and existing bounded profile cleanup.",
+    "validationTime": "Sum of elapsed child-process observations under two concurrent trials; not renderer throughput.",
+    "priorSummedProcessSeconds": 148.774,
+    "candidateSummedProcessSeconds": 65.546
+  },
+  "cases": [
+    {
+      "name": "square",
+      "sourceSha256": "64211590f8d8ebdb4a98bd8b7cbef518edf10ee4d3ba070f992376a87903bec1",
+      "sourceBytes": 118,
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "screenshot": [
+        300,
+        150
+      ],
+      "background": "transparent",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><rect x='2' y='4' width='8' height='12' fill='red'/></svg>",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "0ab50880e5c0836233bb94c21a89e5e48c79ed43a16d2a013d01f3d6ee1e059e",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "0ab50880e5c0836233bb94c21a89e5e48c79ed43a16d2a013d01f3d6ee1e059e",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "wide",
+      "sourceSha256": "7e7eb3b5d2fd008bdddb7de36a9c66c4bb31a41bb23dd641053e9bf0a4010fff",
+      "sourceBytes": 118,
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "screenshot": [
+        300,
+        150
+      ],
+      "background": "transparent",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 20'><rect x='2' y='4' width='8' height='12' fill='red'/></svg>",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "4d924c63d1d32bc7c7394f3b825e29849c338d1d6c3f4c7895facf469acbb659",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "4d924c63d1d32bc7c7394f3b825e29849c338d1d6c3f4c7895facf469acbb659",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "fractional",
+      "sourceSha256": "2f0f8c0a10666fa325dcd50dbf70252883b268efaa67899300c4ec2cf8571fbf",
+      "sourceBytes": 124,
+      "logicalViewport": [
+        17.4,
+        11.4
+      ],
+      "screenshot": [
+        17,
+        11
+      ],
+      "background": "transparent",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4'><rect x='2' y='3' width='8' height='5' fill='red'/></svg>",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+          "comparison": {
+            "changedPixels": 26,
+            "maximumError": 255
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "20ddd6d97027c8333df2b3cff0dbed79605acf0407b137e2e8f0385777f47707",
+          "comparison": {
+            "changedPixels": 26,
+            "maximumError": 255
+          }
+        }
+      }
+    },
+    {
+      "name": "percent",
+      "sourceSha256": "e35943b4f560e5aa2d110f2926827e16061954d785185e511fbeac21799a807e",
+      "sourceBytes": 143,
+      "logicalViewport": [
+        150,
+        112.5
+      ],
+      "screenshot": [
+        150,
+        113
+      ],
+      "background": "transparent",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='50%' height='75%' viewBox='0 0 20 20'><rect x='2' y='4' width='8' height='12' fill='red'/></svg>",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+          "comparison": {
+            "changedPixels": 90,
+            "maximumError": 255
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+          "comparison": {
+            "changedPixels": 90,
+            "maximumError": 255
+          }
+        }
+      }
+    },
+    {
+      "name": "style",
+      "sourceSha256": "a5b30e5341b7bec815be39028c06936c9484ce3b0fbcc94d44284c0f2da80ace",
+      "sourceBytes": 181,
+      "logicalViewport": [
+        150,
+        112.5
+      ],
+      "screenshot": [
+        150,
+        113
+      ],
+      "background": "transparent",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 20 20'><style>svg{width:50%;height:75%}</style><rect x='2' y='4' width='8' height='12' fill='red'/></svg>",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+          "comparison": {
+            "changedPixels": 90,
+            "maximumError": 255
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "d3aa6ba259c9df70d4c42ead49cc357d058e74a72e03258d17645909a4650688",
+          "comparison": {
+            "changedPixels": 90,
+            "maximumError": 255
+          }
+        }
+      }
+    },
+    {
+      "name": "physical",
+      "sourceSha256": "03576f63e5b972014a9cd1363bfbe3b402c705c1f43e7b198f96ae7c925d30b7",
+      "sourceBytes": 123,
+      "logicalViewport": [
+        96,
+        48
+      ],
+      "screenshot": [
+        96,
+        48
+      ],
+      "background": "transparent",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='1in' height='.5in'><rect x='2' y='3' width='8' height='5' fill='red'/></svg>",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "714d696955b3a8b5723d210180c94334a5b4d47fcfa638171ac0b4d7c35fa59c",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "714d696955b3a8b5723d210180c94334a5b4d47fcfa638171ac0b4d7c35fa59c",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "aa.svg",
+      "sourceSha256": "5d40c766974abadc07c16bfdc76a25b5669cb6c876ab2a7e86536e2deec47bd2",
+      "sourceBytes": 993,
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "screenshot": [
+        300,
+        150
+      ],
+      "background": "transparent",
+      "sourceUrl": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/aa.svg",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "52738a48295e52f60b2209a6a7e423370cfac52e8481f02fb65deac5af077db9",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "52738a48295e52f60b2209a6a7e423370cfac52e8481f02fb65deac5af077db9",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "accessible.svg",
+      "sourceSha256": "41d806f0d8184d3af20c7ba1492487abee4901f79201178979478189b60aae93",
+      "sourceBytes": 764,
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "screenshot": [
+        300,
+        150
+      ],
+      "background": "transparent",
+      "sourceUrl": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/accessible.svg",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "8c92af405cb4acb7e2e517db306624b49e21d57d1dc9eff09e21469c1b6f2d45",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "8c92af405cb4acb7e2e517db306624b49e21d57d1dc9eff09e21469c1b6f2d45",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "android.svg",
+      "sourceSha256": "064fa084add47a04179444b6654d776250d3d3eb66a49f56233bc59ac1870025",
+      "sourceBytes": 471,
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "screenshot": [
+        300,
+        150
+      ],
+      "background": "transparent",
+      "sourceUrl": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/android.svg",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "1751fba9b2c73d983e21dbc2da1a0496a4ad660cf4f64f460c90971cf0c83612",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "1751fba9b2c73d983e21dbc2da1a0496a4ad660cf4f64f460c90971cf0c83612",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "blob-square",
+      "sourceSha256": "ac0298c1e3a48ff973837b15b0a373bb7f2ec4f0adbd52dda85caa720fc34730",
+      "sourceBytes": 1300125,
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "screenshot": [
+        300,
+        150
+      ],
+      "background": "transparent",
+      "sourceRecipe": "Insert an XML comment containing 1300000 ASCII spaces before the square source root.",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "0ab50880e5c0836233bb94c21a89e5e48c79ed43a16d2a013d01f3d6ee1e059e",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "0ab50880e5c0836233bb94c21a89e5e48c79ed43a16d2a013d01f3d6ee1e059e",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "square-white",
+      "sourceSha256": "64211590f8d8ebdb4a98bd8b7cbef518edf10ee4d3ba070f992376a87903bec1",
+      "sourceBytes": 118,
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "screenshot": [
+        300,
+        150
+      ],
+      "background": "white",
+      "sourceRecipe": "Use square source unchanged.",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "63c8133112528cdacc324bf248a7fd898ac5850aa4ad99231f02c449fe6ebb5c",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "63c8133112528cdacc324bf248a7fd898ac5850aa4ad99231f02c449fe6ebb5c",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "square-black",
+      "sourceSha256": "64211590f8d8ebdb4a98bd8b7cbef518edf10ee4d3ba070f992376a87903bec1",
+      "sourceBytes": 118,
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "screenshot": [
+        300,
+        150
+      ],
+      "background": "black",
+      "sourceRecipe": "Use square source unchanged.",
+      "platforms": {
+        "windows": {
+          "freshProcesses": 3,
+          "pngSha256": "9c51755b855ca4e57350eb45cd8b3f3fef43d719d389a41e979e200784e21395",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        },
+        "linux": {
+          "freshProcesses": 3,
+          "pngSha256": "9c51755b855ca4e57350eb45cd8b3f3fef43d719d389a41e979e200784e21395",
+          "comparison": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Fractional/percentage/CSS-size controls remain unqualified for renderer acceptance; their exact differences are retained.",
+    "Canvas exploration makes the absolute fractional control exact but changes viewBox-only and percentage sizing; it is not a substitute reference path.",
+    "This is capture-model qualification, not acceptance of all 204 hosted originals. No SVG collection or new golden PNGs are imported."
+  ]
+}

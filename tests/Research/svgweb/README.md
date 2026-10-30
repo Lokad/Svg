@@ -38,6 +38,16 @@ original bytes/options and label any viewport materialization. Scripts are inact
 in image documents; animation still needs a declared frozen state. Ambient fonts
 and unresolved resources cannot qualify a target.
 
+The named image-viewport mode has three fresh healthy captures per platform for
+12 calibration contexts, including the three original samples `aa.svg`,
+`accessible.svg` and `android.svg`, Blob transport and opaque backgrounds. The
+three originals are exact at the default 300×150 logical viewport. Fractional,
+percentage and CSS-size controls retain their 26/90/90-pixel differences; they
+remain unqualified for renderer acceptance. A separate canvas exploration makes
+the absolute fractional control exact but changes viewBox-only sizing, so it
+cannot substitute for the screenshot recipe. See the
+[capture model record](capture-model.json) for identities and measurements.
+
 Group confirmed differences by shared mechanism and compose small original fixtures
 with their original-to-fixture mapping, licenses and independent native references.
 Keep distinct interactions and failing-before evidence. Admission still requires

@@ -7,12 +7,16 @@ param(
     [Parameter(Mandatory = $true)] [string] $Background,
     [Parameter(Mandatory = $true)] [int] $CaptureTimeoutMilliseconds,
     [ValidateSet('net11.0', 'net10.0')]
-    [string] $TargetFramework = 'net11.0'
+    [string] $TargetFramework = 'net11.0',
+    [Nullable[double]] $ImageViewportWidth,
+    [Nullable[double]] $ImageViewportHeight
 )
 # Internal process wrapper. The caller authenticates Chrome through setup-chrome.ps1;
 # one batch can reuse that installation while every capture owns a fresh process/profile.
 $ErrorActionPreference = 'Stop'
 if ($Width -le 0 -or $Height -le 0 -or $CaptureTimeoutMilliseconds -le 0) { throw 'Capture dimensions and timeout must be positive.' }
+if (($null -eq $ImageViewportWidth) -ne ($null -eq $ImageViewportHeight)) { throw 'Supply both image viewport dimensions.' }
+if ($null -ne $ImageViewportWidth -and (-not [double]::IsFinite($ImageViewportWidth) -or $ImageViewportWidth -le 0 -or $ImageViewportWidth -gt 16384 -or -not [double]::IsFinite($ImageViewportHeight) -or $ImageViewportHeight -le 0 -or $ImageViewportHeight -gt 16384)) { throw 'Image viewport dimensions must be finite, positive and within the capture side limit.' }
 if ($InputFile -eq $OutputFile) { throw 'Capture must not overwrite its SVG input.' }
 $chromeTool = Join-Path $PSScriptRoot "Lokad.Svg.Chrome/bin/Release/$TargetFramework/Lokad.Svg.Chrome.dll"
 if (-not (Test-Path -LiteralPath $chromeTool)) { throw "Chrome tool is not built: $chromeTool" }
@@ -29,6 +33,11 @@ $start.ArgumentList.Add($ChromeExecutable)
 $start.ArgumentList.Add($Width.ToString([Globalization.CultureInfo]::InvariantCulture))
 $start.ArgumentList.Add($Height.ToString([Globalization.CultureInfo]::InvariantCulture))
 if ($Background -ne 'transparent') { $start.ArgumentList.Add($Background) }
+if ($null -ne $ImageViewportWidth) {
+    $start.ArgumentList.Add('--image-viewport')
+    $start.ArgumentList.Add($ImageViewportWidth.ToString('R', [Globalization.CultureInfo]::InvariantCulture))
+    $start.ArgumentList.Add($ImageViewportHeight.ToString('R', [Globalization.CultureInfo]::InvariantCulture))
+}
 # The parent owns this private temporary root even when its child is forcibly
 # terminated before ChromeProcess can run its profile cleanup.
 $captureTempParent = [IO.Path]::TrimEndingDirectorySeparator([IO.Path]::GetFullPath([IO.Path]::GetTempPath()))
