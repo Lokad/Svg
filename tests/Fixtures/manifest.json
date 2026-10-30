@@ -17307,6 +17307,32 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-gradient-stop-identities.json",
       "referenceSha256": "3122b7c5896bc3495aa5b3897370701843e3bb760c3236b39096e31baaa3dc3e"
+    },
+    {
+      "id": "original-radial-coordinate-inheritance",
+      "path": "original/radial-coordinate-inheritance.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "ab499f1ea67b6a2e194ed16fa36489b0300457c57014f2f4ac7f7bfc1f95d052",
+      "materializedSha256": "ab499f1ea67b6a2e194ed16fa36489b0300457c57014f2f4ac7f7bfc1f95d052",
+      "featureTags": [
+        "gradient",
+        "radial",
+        "inheritance",
+        "forward-reference",
+        "focal-point"
+      ],
+      "width": 32,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-radial-coordinate-inheritance.json",
+      "referenceSha256": "1fcaebda58f6f49abf158f9e4ceaffaa2cc3eb88f8c544760d7e39afe949d7d9"
     }
   ]
 }

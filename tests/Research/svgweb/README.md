@@ -22,11 +22,27 @@ previously rendered PNG remains byte-identical. The resulting 144 renders contai
 130 exact and 14 differing inputs per host, with 60 still rejected. These counts
 retain explicit font/resource/static-state qualifications in the ledger.
 
+Per-field radial inheritance is also corrected. The complete follow-up pass took
+54.93 s: 145 rendered, 131 exact/14 different and 59 rejected per host. All 144
+earlier rendered PNGs and every other outcome/diagnostic remain unchanged.
+`intertwingly.svg` now matches three fresh healthy native captures per platform;
+its source is fetched and hash-checked in memory. The
+[original CC0 fixture](../../Fixtures/original/radial-coordinate-inheritance.svg)
+isolates center/radius overrides, default foci, a chained forward alias and a
+focal-only override, with [independent native provenance](../../References/original-radial-coordinate-inheritance.json).
+Direct mechanisms cover all six coordinates before transforms, changed-source
+ownership and the retained unit boundaries. Partial radial inheritance is closed;
+percentage unit binding and the other gradient declaration gates remain open.
+The affected 2,028 core and 567 native/provenance checks pass on Windows/Linux
+and .NET 10/11, with warning-free builds. Nine focused cases failed before the
+correction. Functional suite observations were 10.5–13.5 s for core and 20.2–30.4 s
+for native checks under concurrent execution; these are not throughput benchmarks.
+
 | First blocking area | Originals | Required review |
 | --- | ---: | --- |
 | Gradient-stop `id` attributes | 13 | Admission fixed. One original CC0 fixture covers linear/radial and inherited stops, with separate native platform provenance; direct identifier boundaries retain numeric values. Eight originals now render inexactly; five expose subsequent filter, pattern or color gates. |
 | Fixed units in stroke offsets | 3 | Reuse a consistent length model; isolate units from dash geometry and raster rounding. |
-| Other gradient declarations | 5 | Partial radial vectors, percentage coordinates, invalid attributes and invalid units need separate valid/invalid controls. |
+| Other gradient declarations | 5 | Partial radial inheritance is fixed. Percentage coordinates, invalid attributes and invalid units still need separate valid/invalid controls. |
 | Required fonts | 9 | Supply declared programs explicitly; distinguish SVG-font previews from font-free geometry. |
 | Root events | 10 | Static-state rendering and an explicit interaction limitation; no script execution in conversion. |
 | Child-content rejection | 11 | Inspect the actual parent/state; the reported child is not necessarily the shared cause. |

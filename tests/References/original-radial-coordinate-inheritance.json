@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "ab499f1ea67b6a2e194ed16fa36489b0300457c57014f2f4ac7f7bfc1f95d052",
+  "referenceSha256": "1fcaebda58f6f49abf158f9e4ceaffaa2cc3eb88f8c544760d7e39afe949d7d9",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-radial-coordinate-inheritance.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-radial-coordinate-inheritance",
+  "viewport": {
+    "width": 32,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 composition isolates forward center/radius overrides, focus defaults, a chained alias and a focal-only override. Separate native platform captures share identical PNG storage.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "ab499f1ea67b6a2e194ed16fa36489b0300457c57014f2f4ac7f7bfc1f95d052",
+      "referenceSha256": "1fcaebda58f6f49abf158f9e4ceaffaa2cc3eb88f8c544760d7e39afe949d7d9",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "ab499f1ea67b6a2e194ed16fa36489b0300457c57014f2f4ac7f7bfc1f95d052",
+      "referenceSha256": "1fcaebda58f6f49abf158f9e4ceaffaa2cc3eb88f8c544760d7e39afe949d7d9",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 32,
+    "height": 16
+  }
+}

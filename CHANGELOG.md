@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Inherit radial center, radius and focal coordinates independently, retaining
+  original definition coordinates and sharing storage only for unchanged aliases.
 - Accept bounded identity metadata on gradient stops; preserve stop values and
   inherited linear/radial painting.
 - Share polygon contour storage across paint bindings and transfer its memory

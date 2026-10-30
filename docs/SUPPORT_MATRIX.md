@@ -112,7 +112,8 @@ independent strokes, markers and effects remain active.
 
 Radial focal circles must be contained; zero-radius foci may lie on the outer
 circle. Outside foci and tangential nonzero focal circles reject. Templates retain
-declared focal coordinates; absent foci follow the effective center. A child's
+each center, radius and focal override independently; absent foci follow the
+effective center. A child's
 transform replaces its parent's; cross-kind templates share stops/common attributes
 but use the child's default vector.
 
@@ -121,9 +122,8 @@ Gradient restrictions:
 - User-space percentages reject, including inherited focal percentages after a
   unit change. Omitted linear x2 and radial cx/cy/r therefore need numeric values
   or a same-kind numeric template. Object-box defaults are accepted.
-- Partial radial center/radius and focal-only overrides reject. Partial linear
-  vectors cannot override units or borrow another kind's vector; units cannot
-  change without replacement vectors.
+- Partial linear/radial vectors cannot override units or borrow another kind's
+  coordinates; units cannot change without replacement vectors.
 - Stops accept bounded `id` metadata. Color/opacity attributes and inline styles
   support property priority/order.
   Stylesheet stop declarations, resource/stop `currentColor`, gradient-container

@@ -1392,12 +1392,10 @@ CancellationToken cancellationToken)
         cancellationToken.ThrowIfCancellationRequested();
         SvgRadialTemplate template = state.RadialGradient ?? throw new InvalidOperationException("Radial gradient registration requires gradient dimensions.");
         if (state.GradientStops.Count > SvgGradientSyntax.MaximumGradientStops) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient stop count exceeds the supported limit.");
-        if (template.Href is not null && template.VectorCount > 0 && template.VectorCount < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial vector overrides are not implemented.");
-        if (template.Href is not null && template.VectorCount == 0 && (template.HasFocalX || template.HasFocalY || template.HasFocalRadius)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial vector overrides are not implemented.");
-        if (template.Href is not null && template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial unit overrides without vector overrides are not implemented.");
-        bool inheritAttributes = template.VectorCount == 3 && (!template.HasUnits || !template.HasTransform || !template.HasSpread);
-        bool inheritFocal = template.VectorCount == 3 && (!template.HasFocalX || !template.HasFocalY || !template.HasFocalRadius);
-        if (!state.ThrowOnMissingGradientHref && template.Href is not null && (state.GradientStops.Count == 0 || template.VectorCount == 0 || inheritAttributes || inheritFocal))
+        if (template.Href is not null && template.HasUnits && !template.HasCompleteVector) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial unit overrides require a complete center and radius.");
+        bool inheritAttributes = template.HasCompleteVector && (!template.HasUnits || !template.HasTransform || !template.HasSpread);
+        bool inheritFocal = template.HasCompleteVector && (!template.HasFocalX || !template.HasFocalY || !template.HasFocalRadius);
+        if (!state.ThrowOnMissingGradientHref && template.Href is not null && (state.GradientStops.Count == 0 || !template.HasCompleteVector || inheritAttributes || inheritFocal))
         {
             string hrefId = SvgGradientSyntax.ParseGradientHrefId(template.Href);
             if (!state.Gradients.TryGetValue(hrefId, out _) && !state.RadialGradients.TryGetValue(hrefId, out _))
@@ -1412,23 +1410,23 @@ CancellationToken cancellationToken)
             && state.RadialGradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(vectorHref), out SvgRadialGradient parentGradient))
         {
             SvgRadialGradientSource original = parentGradient.SourceDefinition ?? throw new InvalidOperationException("Registered radial gradients retain their definition coordinates.");
-            bool inheritVector = template.VectorCount == 0;
-            if (inheritVector && !template.HasTransform) inheritedSource = original;
+            if (!template.HasCoordinateOverrides && !template.HasTransform) inheritedSource = original;
             SvgRadialFocalFields ownFocalFields = (template.HasFocalX ? SvgRadialFocalFields.X : SvgRadialFocalFields.None)
                 | (template.HasFocalY ? SvgRadialFocalFields.Y : SvgRadialFocalFields.None)
                 | (template.HasFocalRadius ? SvgRadialFocalFields.Radius : SvgRadialFocalFields.None);
             SvgRadialFocalFields inheritedPercentages = original.PercentageFocalFields & ~ownFocalFields;
             template = template with
             {
-                CenterX = inheritVector ? original.CenterX : template.CenterX,
-                CenterY = inheritVector ? original.CenterY : template.CenterY,
-                Radius = inheritVector ? original.Radius : template.Radius,
+                CenterX = template.HasCenterX ? template.CenterX : original.CenterX,
+                CenterY = template.HasCenterY ? template.CenterY : original.CenterY,
+                Radius = template.HasRadius ? template.Radius : original.Radius,
                 FocalX = template.HasFocalX ? template.FocalX : original.FocalX,
                 FocalY = template.HasFocalY ? template.FocalY : original.FocalY,
                 FocalRadius = template.HasFocalRadius ? template.FocalRadius : original.FocalRadius,
                 HasFocalX = template.HasFocalX || original.HasFocalX,
                 HasFocalY = template.HasFocalY || original.HasFocalY,
-                HasFocalRadius = template.HasFocalRadius || original.HasFocalRadius, VectorCount = 3,
+                HasFocalRadius = template.HasFocalRadius || original.HasFocalRadius,
+                HasCenterX = true, HasCenterY = true, HasRadius = true,
                 HasPercentageCoordinates = template.HasPercentageCoordinates || inheritedPercentages != SvgRadialFocalFields.None,
                 PercentageFocalFields = template.PercentageFocalFields | inheritedPercentages,
                 IsUserSpace = template.HasUnits ? template.IsUserSpace : parentGradient.IsUserSpace,
@@ -1436,7 +1434,9 @@ CancellationToken cancellationToken)
                 Transform = template.HasTransform ? template.Transform : original.Transform, HasTransform = true, Href = null,
             };
         }
-        if (template.Href is {} href && (inheritAttributes || template.VectorCount == 0
+        if (template.Href is not null && template.HasCoordinateOverrides && !template.HasCompleteVector)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial coordinates with cross-type gradient references are not implemented.");
+        if (template.Href is {} href && (inheritAttributes || !template.HasCompleteVector
             && state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(href), out _)))
         {
             var inherited = ResolveGradientTemplateAttributes(href, state);
@@ -1473,7 +1473,7 @@ CancellationToken cancellationToken)
             double radius = template.Radius;
             double focalRadius = template.FocalRadius;
             bool isUserSpace = template.IsUserSpace;
-            bool usesInitialVector = template.VectorCount < 3;
+            bool usesInitialVector = !template.HasCompleteVector;
             double referenceScaleX = 1;
             double referenceScaleY = 1;
             SvgGradientSpread spread = template.Spread;

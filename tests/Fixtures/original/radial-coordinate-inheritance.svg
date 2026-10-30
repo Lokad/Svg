@@ -1,0 +1,16 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16">
+  <defs>
+    <radialGradient id="shift" href="#base" cx=".3"/>
+    <radialGradient id="radius" href="#shift" r=".65"/>
+    <radialGradient id="focus" href="#base" fx=".25"/>
+    <radialGradient id="base" cx=".5" cy=".5" r=".5">
+      <stop stop-color="#e04020"/>
+      <stop offset="1" stop-color="#2040e0"/>
+    </radialGradient>
+  </defs>
+  <rect width="8" height="16" fill="url(#base)"/>
+  <rect x="8" width="8" height="16" fill="url(#shift)"/>
+  <rect x="16" width="8" height="16" fill="url(#radius)"/>
+  <rect x="24" width="8" height="16" fill="url(#focus)"/>
+</svg>

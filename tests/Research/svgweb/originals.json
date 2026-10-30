@@ -4266,7 +4266,38 @@
             }
           }
         }
-      }
+      },
+      "afterRadialCoordinateInheritance": {
+        "windows": {
+          "outcome": "rendered",
+          "comparison": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "libraryPngSha256": "2a486cdb05a0ea9757184c9266c7b500280234c5ea485e7ea35f4102d169cf86",
+          "nativePngSha256": "50cb2f6d91e3878a8bf28681c5e58b5e8ce8f9ac4550bf623e48c300b79c2388",
+          "freshNativeProcesses": 3,
+          "nativeStartupHealth": "healthy",
+          "nativeProfilesCleaned": true
+        },
+        "linux": {
+          "outcome": "rendered",
+          "comparison": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "libraryPngSha256": "2a486cdb05a0ea9757184c9266c7b500280234c5ea485e7ea35f4102d169cf86",
+          "nativePngSha256": "50cb2f6d91e3878a8bf28681c5e58b5e8ce8f9ac4550bf623e48c300b79c2388",
+          "freshNativeProcesses": 3,
+          "nativeStartupHealth": "healthy",
+          "nativeProfilesCleaned": true
+        }
+      },
+      "orthogonalFixture": "../../Fixtures/original/radial-coordinate-inheritance.svg"
     },
     {
       "name": "irony.svg",
@@ -9667,5 +9698,18 @@
     "seconds": 51.64061070000753,
     "nativeReferences": "Unchanged independent matched-viewport captures above.",
     "qualification": "All source hashes rechecked; stop-ID follow-ups override the initial outcomes for those 13 sources. Other original outcomes and all previously rendered PNG bytes are unchanged. No whole-corpus reference admission."
+  },
+  "radialCoordinateInheritance": {
+    "sourceBaseline": "10730534dd90dd7d3072a68dee93d6a7f0025add",
+    "librarySha256": "a5065dfaa0add75b03087c8f80561a9f1955fd03ed6841a1ad62d8ca16fed929",
+    "filesRevalidatedPerHost": 204,
+    "renderedPerHost": 145,
+    "exactPerHost": 131,
+    "differentPerHost": 14,
+    "rejectedPerHost": 59,
+    "priorRenderedPngsByteIdenticalPerHost": 144,
+    "seconds": 54.92820860003121,
+    "orthogonalFixture": "../../Fixtures/original/radial-coordinate-inheritance.svg",
+    "qualification": "Every source hash rechecked. intertwingly.svg is newly exact against three fresh healthy native captures per host; all other outcomes, diagnostics and previously rendered PNG bytes are unchanged. Existing matchedViewportReview and stop-ID follow-ups remain valid. Hosted SVG payload files retained: zero. No whole-corpus reference admission."
   }
 }
