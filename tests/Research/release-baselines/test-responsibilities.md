@@ -52,18 +52,19 @@ This pass removes no case and introduces no batched rendering assertion.
 | filter-uniform-precision | 4,534 | 3,716 |
 | solid-paint-alpha | 2,361 | 0 |
 | pattern-source-selection | 54 | 0 |
-| text-node-boundaries | 659 | 0 |
+| text-node-boundaries | 855 | 0 |
 | hairline-clip-rounding | 24 | 0 |
-| **Total** | **34,274** | **7,269** |
+| **Total** | **34,470** | **7,269** |
 
 The separate partition check adds one integrity case. The filter-uniform bank
 includes 1,206 resolved historical cases, including its two routine shadow cases;
 no historical status record or independent reference was rewritten.
 The gradient-color-alpha bank adds 144 resolved historical cases through its
 hash-bound status record. The discovery measurements below retain their original
-41,334-case selection; current selection totals 41,543 rendering cases, including
-the 65 [original text additions](text-acceptance.md). All 76 original declarations
-remain mapped; their representative contracts stay separate from rendering.
+41,334-case selection; current selection totals 41,739 rendering cases, including
+the 65 [original text additions](text-acceptance.md) and 196
+[path-baseline additions](text-baseline-paint.md). All original declarations remain
+mapped; their representative contracts stay separate from rendering.
 
 ## Local setup-cost check
 

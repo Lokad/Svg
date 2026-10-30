@@ -148,6 +148,11 @@ CancellationToken token)
     {
         SvgTextPathBaseline baseline = measured.Baseline;
         double pathScale = run.DeviceMetrics?.Scale ?? state.OutputTextScale;
+        double recordedFontScale = run.Style.Baseline == SvgTextBaseline.Alphabetic ? 1 : SvgGlyphDeviceMetrics.GetScreenScale(pending.Placement);
+        SvgGlyphMetricTarget metricTarget = run.DeviceMetrics?.Target ?? (OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux);
+        SvgGlyphFontStyle baselineFont = default;
+        bool hasBaselineFont = false;
+        double baselinePaintDelta = 0;
         using BudgetedParserList<SvgPlacedTextGlyph> placements = new(state.Budget, SvgMemoryCategory.Geometry, token);
         int glyphIndex = 0;
         foreach (SvgPositionedGlyph glyph in run.Glyphs)
@@ -197,6 +202,23 @@ CancellationToken token)
                 sourceMap = SvgAffineTransform.FromTranslation(sourceX / (double)scale, sourceY / (double)scale);
                 placed = placed with { X = sourceMap.E, Y = sourceMap.F };
             }
+            // Source boxes keep fractional baseline layout. Path glyphs and
+            // decorations paint from the recorded font's integer baseline.
+            double paintedBaseline = glyph.Y;
+            if (run.Style.Baseline != SvgTextBaseline.Alphabetic)
+            {
+                if (!hasBaselineFont || glyphFont != baselineFont)
+                {
+                    double layout = SvgTextBaselineMetrics.Create(glyphFont, run.Style.Baseline, pathScale, metricTarget, token).LayoutShift;
+                    double paintedShift = SvgTextBaselineMetrics.Create(glyphFont, run.Style.Baseline, recordedFontScale, metricTarget, token).PathPaintShift;
+                    baselinePaintDelta = paintedShift - layout;
+                    baselineFont = glyphFont;
+                    hasBaselineFont = true;
+                }
+                paintedBaseline += baselinePaintDelta;
+                if (horizontalPlacement) placed = placed with { Y = placed.Y + baselinePaintDelta };
+                else glyphMap = glyphMap.ComposeChecked(SvgAffineTransform.FromTranslation(0, baselinePaintDelta));
+            }
             SvgTextDecorationPlacement decoration = default;
             if (paint.Decoration is not null)
             {
@@ -209,7 +231,7 @@ CancellationToken token)
                 else
                 {
                     double scale = pathScale;
-                    SvgDevicePoint center = glyphMap.Apply(paintHalfAdvance, -glyph.Y);
+                    SvgDevicePoint center = glyphMap.Apply(paintHalfAdvance, -paintedBaseline);
                     float cx = (float)center.X * (float)scale, cy = (float)center.Y * (float)scale;
                     float size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(glyphFont.FontSize * scale);
                     float ascent = OperatingSystem.IsWindows()
@@ -234,7 +256,7 @@ CancellationToken token)
             else if (!horizontalPlacement && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
             {
                 SvgGlyphDeviceMetrics metrics = new(pathScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
-                glyphMap = metrics.PlaceTextPathPaint(glyphMap, paintHalfAdvance, glyph.Y, glyphFont.FontSize, glyphFont.Font.Metrics);
+                glyphMap = metrics.PlaceTextPathPaint(glyphMap, paintHalfAdvance, paintedBaseline, glyphFont.FontSize, glyphFont.Font.Metrics);
             }
             if (glyphMap == SvgAffineTransform.Identity && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
             {

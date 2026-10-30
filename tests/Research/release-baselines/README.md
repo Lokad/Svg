@@ -14,12 +14,14 @@ for removing the obsolete destructive intersection backend.
 to direct mechanisms, existing acquisition contracts and independent native images.
 [Original text acceptance](text-acceptance.md) preserves 76 fragment and paint-return
 declarations, their unequal companions and separate platform references.
+[Text-path baseline painting](text-baseline-paint.md) closes the original patterned
+residuals through separate layout/paint metrics, with straight-path and hanging controls.
 
 The outstanding review starts at these committed collections:
 
 | Findings | Evidence and next review |
 | --- | --- |
-| R48/R49/R60/R61; R103/R104/R108 | [Text acceptance scope](text-acceptance.md): the promoted fragment/paint-return cohort passes; broader node/anchor/phase, fitting and raster residuals remain open. |
+| R48/R49/R60/R61; R103/R104/R108 | [Text acceptance scope](text-acceptance.md) and [path-baseline correction](text-baseline-paint.md) close their named cohorts. Broader node/anchor/phase work and [39 paint/fitting witnesses](../text-paint-bounds/precision-residuals.json) remain open. |
 | R54/R55/R69; R85/R86 | [Color alpha](../gradient-color-alpha/README.md), [shader strokes](../shader-hairlines/capture.json): bounds/maps, focal arithmetic and nonconstant paints. |
 | R70 | [Decorations](../stroked-decorations/README.md): glyph intersections through paint, font and effect scopes. |
 | R74/C04 | [Reviewed selection failures closed](resource-selection.md); nested SVG in retained definitions remains a documented exclusion with its native control. |

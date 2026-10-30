@@ -8,6 +8,9 @@ The [original acceptance map](original-acceptance.json) preserves 76 historical
 declarations through 67 canonical cases, including unequal native companions.
 [Scope and validation](../release-baselines/text-acceptance.md) distinguish this
 accepted cohort from the remaining precision/raster review.
+The [path-baseline acceptance](path-baseline-acceptance.json) adds 120 original
+declarations and 84 independent diagnostics. [Baseline evidence](../release-baselines/text-baseline-paint.md)
+separates fractional layout/source bounds from recorded integer path painting.
 Text nodes retain fragment width rounding. Comments preserve shaping; spans
 follow native shaping boundaries when screen font scaling changes the compared
 fonts. Controls include unit scale, reflections, a quarter turn, relative

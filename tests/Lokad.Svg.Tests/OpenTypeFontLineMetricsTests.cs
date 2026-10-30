@@ -7,6 +7,47 @@ namespace Lokad.Svg.Tests;
 public sealed partial class OpenTypeFontTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("windows", (int)SvgTextBaseline.Middle, 1, 6.4375, 6)]
+    [InlineData("linux", (int)SvgTextBaseline.Middle, 1, 6.4375, 6)]
+    [InlineData("windows", (int)SvgTextBaseline.Middle, 1.5, 6.427083333333333, 6)]
+    [InlineData("linux", (int)SvgTextBaseline.Middle, 1.5, 6.427083333333333, 6)]
+    [InlineData("windows", (int)SvgTextBaseline.Hanging, 1, 20.796875, 21)]
+    [InlineData("linux", (int)SvgTextBaseline.Hanging, 1, 20.796875, 21)]
+    [InlineData("windows", (int)SvgTextBaseline.Hanging, 1.5, 20.270833333333332, 21)]
+    [InlineData("linux", (int)SvgTextBaseline.Hanging, 1.5, 20.270833333333332, 21)]
+    public async Task Baseline_layout_and_recorded_path_paint_keep_their_independent_metrics(
+        string target, int baseline, double outputScale, double expectedLayout, double expectedPaint)
+    {
+        byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "text-paint-bounds", "sans.ttf"));
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
+        SvgGlyphFontStyle font = new(Assert.Single(snapshot.Fonts), 24);
+        SvgGlyphMetricTarget platform = target == "windows" ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux;
+        SvgTextBaselineMetrics layout = SvgTextBaselineMetrics.Create(font, (SvgTextBaseline)baseline, outputScale, platform, CancellationToken.None);
+        SvgTextBaselineMetrics recording = SvgTextBaselineMetrics.Create(font, (SvgTextBaseline)baseline, 1, platform, CancellationToken.None);
+        Assert.Equal(expectedLayout, layout.LayoutShift);
+        Assert.Equal(expectedPaint, recording.PathPaintShift);
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData(7.9999, 1)]
+    [InlineData(8, 2)]
+    [InlineData(8.0001, 2)]
+    [InlineData(11.9999, 2)]
+    [InlineData(12, 3)]
+    [InlineData(12.0001, 3)]
+    public async Task Path_baseline_integer_boundaries_are_measured_at_the_recorded_font_size(double size, double expected)
+    {
+        byte[] bytes = CreateFontWithMetadata(2);
+        WriteUInt16(bytes, FindTableOffset(bytes, 0x4F532F32) + 86, 512);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
+        SvgTextBaselineMetrics metrics = SvgTextBaselineMetrics.Create(new(Assert.Single(snapshot.Fonts), size),
+            SvgTextBaseline.Middle, 1, SvgGlyphMetricTarget.Windows, CancellationToken.None);
+        Assert.Equal(expected, metrics.PathPaintShift);
+    }
+
+    [Theory]
     [InlineData((ushort)0, 4)]
     [InlineData((ushort)2, 6)]
     public async Task Middle_baseline_uses_supplied_height_or_fallback_and_releases_on_adjustment_denial(ushort version, double expectedShift)

@@ -27,6 +27,13 @@ the full platform and package gates at a coherent milestone. Older captures in
 this folder cover direct/path boxes, spacing, strikes and drawing enclosures.
 Shared shader bounds do not replace each fragment's local drawing enclosure.
 
+[Precision residuals](precision-residuals.json) retain 39 original paint/fitting
+inputs with independent images and exact font/capture bindings. They have 31
+Windows and 34 Linux differences and remain open research. The index keeps both
+platforms, including exact controls on the other host; it does not add accepted
+rendering baselines. The current text-path baseline correction leaves these
+inputs unchanged. Resolve each against its own native image during further triage.
+
 [Filter-source images](filter-source-images.json) retain 135 independently captured
 inputs through one canonical conversion path. They cover direct/path text,
 stroke overrides, reflection, affine placement, clips, instances, nested filters,

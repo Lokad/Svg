@@ -9,15 +9,39 @@ public sealed class SvgOriginalTextAcceptanceTests
 {
     [Fact]
     public void Original_declarations_keep_exact_sources_options_and_independent_platform_evidence()
+        => AssertDeclarations("original-acceptance.json", 76, 67);
+
+    [Fact]
+    public void Path_baseline_declarations_keep_exact_sources_options_and_independent_platform_evidence()
+        => AssertDeclarations("path-baseline-acceptance.json", 204, 196);
+
+    private static void AssertDeclarations(string manifest, int declarationCount, int canonicalCount)
     {
         string folder = Path.Combine(ResearchCorpus.Root, "text-node-boundaries");
-        using JsonDocument acceptance = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "original-acceptance.json")));
+        using JsonDocument acceptance = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, manifest)));
         using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "capture.json")));
+        Dictionary<string, (int Length, string Hash)> fonts = new(StringComparer.Ordinal);
+        foreach (JsonElement cohort in acceptance.RootElement.GetProperty("cohorts").EnumerateArray())
+        {
+            if (!cohort.TryGetProperty("fonts", out JsonElement programs)) continue;
+            foreach (JsonElement program in programs.EnumerateArray())
+            {
+                string path = Required(program, "path");
+                if (!fonts.TryGetValue(path, out var actual))
+                {
+                    byte[] bytes = File.ReadAllBytes(Path.Combine(folder, path));
+                    actual = (bytes.Length, Convert.ToHexStringLower(SHA256.HashData(bytes)));
+                    fonts.Add(path, actual);
+                }
+                Assert.Equal(program.GetProperty("bytes").GetInt32(), actual.Length);
+                Assert.Equal(Required(program, "sha256"), actual.Hash);
+            }
+        }
         Dictionary<string, JsonElement> canonical = capture.RootElement.GetProperty("cases").EnumerateArray()
             .ToDictionary(row => Required(row, "id"), StringComparer.Ordinal);
         JsonElement declarations = acceptance.RootElement.GetProperty("declarations");
-        Assert.Equal(76, declarations.GetArrayLength());
-        Assert.Equal(67, declarations.EnumerateArray().Select(row => Required(row, "caseId")).Distinct(StringComparer.Ordinal).Count());
+        Assert.Equal(declarationCount, declarations.GetArrayLength());
+        Assert.Equal(canonicalCount, declarations.EnumerateArray().Select(row => Required(row, "caseId")).Distinct(StringComparer.Ordinal).Count());
         HashSet<string> ids = new(StringComparer.Ordinal);
         foreach (JsonElement declaration in declarations.EnumerateArray())
         {
@@ -61,13 +85,20 @@ public sealed class SvgOriginalTextAcceptanceTests
 
     [Fact]
     public void Companion_declarations_retain_their_native_equality_or_difference()
+        => AssertCompanions("original-acceptance.json", 38, 9);
+
+    [Fact]
+    public void Path_baseline_companions_retain_their_native_equality_or_difference()
+        => AssertCompanions("path-baseline-acceptance.json", 102, 44);
+
+    private static void AssertCompanions(string manifest, int pairCount, int unequalCount)
     {
         string folder = Path.Combine(ResearchCorpus.Root, "text-node-boundaries");
-        using JsonDocument acceptance = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "original-acceptance.json")));
+        using JsonDocument acceptance = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, manifest)));
         Dictionary<string, JsonElement> declarations = acceptance.RootElement.GetProperty("declarations").EnumerateArray()
             .ToDictionary(row => Required(row, "id"), StringComparer.Ordinal);
         JsonElement pairs = acceptance.RootElement.GetProperty("pairs");
-        Assert.Equal(38, pairs.GetArrayLength());
+        Assert.Equal(pairCount, pairs.GetArrayLength());
         Assert.Equal(declarations.Keys.Order(StringComparer.Ordinal), pairs.EnumerateArray()
             .SelectMany(pair => new[] { Required(pair, "candidate"), Required(pair, "control") }).Order(StringComparer.Ordinal));
         foreach (string host in new[] { "windows", "linux" })
@@ -85,7 +116,7 @@ public sealed class SvgOriginalTextAcceptanceTests
                 Assert.Equal(pair.GetProperty("nativeEqual").GetProperty(host).GetBoolean(), equal);
                 if (!equal) unequal++;
             }
-            Assert.Equal(9, unequal);
+            Assert.Equal(unequalCount, unequal);
         }
     }
 

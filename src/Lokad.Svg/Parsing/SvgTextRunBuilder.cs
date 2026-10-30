@@ -224,26 +224,8 @@ CancellationToken token)
             return scale;
 
             static double GetBaselineShift(SvgGlyphFontStyle fontStyle, SvgTextBaseline baseline, SvgGlyphDeviceMetrics? metrics, CancellationToken token)
-            {
-                SvgPreparedFont font = fontStyle.Font;
-                double outputScale = metrics?.Scale ?? 1;
-                float size = (float)(fontStyle.FontSize * outputScale);
-                float ascent = (metrics?.Target ?? (OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux)) == SvgGlyphMetricTarget.Windows
-                    ? size * font.Metrics.LineMetrics.WindowsAscender / font.UnitsPerEm : font.Metrics.LineMetrics.Ascender * (size / font.UnitsPerEm);
-                float roundedAscent = MathF.Floor(ascent + .5f);
-                float baselineAscent;
-                if (baseline == SvgTextBaseline.Middle)
-                {
-                    int xHeight = font.GetXHeight(token);
-                    baselineAscent = roundedAscent - (xHeight > 0 ? size * xHeight / font.UnitsPerEm / 2 : size / 4);
-                }
-                else baselineAscent = roundedAscent * .2f;
-                // Blink retains fractional baseline metrics in LayoutUnit before
-                // the platform's glyph strike snaps its painted origin.
-                double shift = (roundedAscent - MathF.Round(baselineAscent * 64, MidpointRounding.AwayFromZero) / 64) / outputScale;
-                if (!double.IsFinite(shift)) throw new SvgException(SvgErrorCode.LimitExceeded, "The text baseline exceeds the device range.");
-                return shift;
-            }
+                => SvgTextBaselineMetrics.Create(fontStyle, baseline, metrics?.Scale ?? 1,
+                    metrics?.Target ?? (OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux), token).LayoutShift;
         }
     }
 

@@ -121,7 +121,13 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
                 Assert.Equal(row.GetProperty("captureInputSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(captureInput)));
             }
             string nativeInput = System.Text.Encoding.UTF8.GetString(captureInput).Replace("font-family='serif'", "font-family='ReviewFont'", StringComparison.Ordinal);
-            Assert.Equal(row.GetProperty("nativeSourceSha256").GetString(), CaptureHash(nativeInput, _fixture.CssBytes.Span));
+            ReadOnlyMemory<byte> css = _fixture.CssBytes;
+            if (row.TryGetProperty("nativeFontRecipe", out JsonElement recipe))
+            {
+                Assert.Equal("sans-mono", recipe.GetString());
+                css = _fixture.SansMonoCssBytes;
+            }
+            Assert.Equal(row.GetProperty("nativeSourceSha256").GetString(), CaptureHash(nativeInput, css.Span));
         }
 
         // Hash the exact UTF-8 prefix + embedded CSS + suffix used by capture.
@@ -178,6 +184,7 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
     public sealed class NativePaintFixture : IAsyncLifetime
     {
         private readonly ReadOnlyMemory<byte> _bytes;
+        private readonly Lazy<byte[]> _sansMonoCss;
         private SvgFontSnapshot? _snapshot;
 
         internal NativeReferenceImages References { get; } = new();
@@ -188,10 +195,19 @@ public sealed class SvgPaintInputReferenceTests : IClassFixture<SvgPaintInputRef
             Sha256 = Convert.ToHexStringLower(SHA256.HashData(_bytes.Span));
             string css = "<style>@font-face{font-family:ReviewFont;src:url(data:font/ttf;base64," + Convert.ToBase64String(_bytes.Span) + ")}</style>";
             CssBytes = System.Text.Encoding.UTF8.GetBytes(css);
+            _sansMonoCss = new(() =>
+            {
+                byte[] mono = File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "supplied-font-documents/fonts/NotoSansMono-Bold.ttf"));
+                Assert.Equal("beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc", Convert.ToHexStringLower(SHA256.HashData(mono)));
+                string weighted = css.Replace("ReviewFont;src:", "ReviewFont;font-weight:400;src:", StringComparison.Ordinal)
+                    .Replace("</style>", "@font-face{font-family:ReviewMono;font-weight:700;src:url(data:font/ttf;base64," + Convert.ToBase64String(mono) + ")}</style>", StringComparison.Ordinal);
+                return System.Text.Encoding.UTF8.GetBytes(weighted);
+            });
         }
 
         public string Sha256 { get; }
         public ReadOnlyMemory<byte> CssBytes { get; }
+        public ReadOnlyMemory<byte> SansMonoCssBytes => _sansMonoCss.Value;
         public SvgFontSnapshot Snapshot => _snapshot ?? throw new InvalidOperationException("The shared rendering font is not initialized.");
 
         /// <summary>Prepares the corpus's sole serif/normal/400 face once; the fixture retains bytes and snapshot until every case completes.</summary>
