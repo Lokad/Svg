@@ -27,6 +27,29 @@ discovery. Full unfiltered Windows/Linux tests, resource/font-host probes and
 installed-package checks remain milestone/CI gates. Keep browser captures and
 references unchanged when reorganizing tests.
 
+## Generated output and retention
+
+Organize generated data by purpose: pinned tool caches, current qualification,
+release evidence and benchmark results. Keep source inputs, independent platform
+references, licenses and reproducible recipes committed. Ordinary builds and tests
+must work without historical run directories or external checkouts.
+
+Retain published packages and symbols with their exact source identity and hashes.
+Before retiring a run, promote unresolved original inputs, options and provenance;
+equal resulting images do not establish duplicate evidence. Compact completed
+qualification into its committed responsibility record after matching CI succeeds.
+
+Remove copied assets only after comparing every file with retained committed
+sources. An old tool installation can be removed after checking its files against
+a retained archive and confirming no process or configuration uses that path.
+Keep the archive, hash, version and notices when historical reproduction needs it.
+Age and size alone do not establish that output is disposable.
+
+Check resolved removal targets and reparse points before cleanup. Use
+`git worktree remove` for a registered checkout after verifying it is clean, unused
+and its commit remains reachable. Keep temporary qualification exports until their
+checks finish and their evidence is retained.
+
 ## Export the visual suite
 
 Ordinary builds share the checkout's committed research corpus. To produce a
