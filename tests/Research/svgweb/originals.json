@@ -7923,6 +7923,22 @@
           "outcome": "UnsupportedFeature",
           "message": "Filter source requires retained object bounds."
         }
+      },
+      "rootImageStageReview": {
+        "evidence": "root-image-stages.json",
+        "viewportAdmission": "root-viewport-admission.json",
+        "sceneBaseline": "8ee104296896bc6cf16bbcb252477bb67a6a0d29",
+        "retainedUnpaintedCurve": {
+          "geometryIndex": 65,
+          "hasFill": false,
+          "points": 23,
+          "quadratics": 0,
+          "cubics": 1,
+          "authoredPath": false
+        },
+        "mechanism": "A clipped stroke can retain an unpainted fill without source commands. Only the painted channel should require those commands under nonuniform root mapping.",
+        "fixture": "../../Fixtures/original/root-inert-curve.svg",
+        "acceptance": "This admission defect is separate from the default fractional-root image mismatch. Root mapping prototypes remain research; the original is not admitted as exact."
       }
     },
     {

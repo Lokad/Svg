@@ -109,6 +109,12 @@ The [root viewport investigation](root-viewport-review.json) remains research.
 An output-only projection improved exploratory matches but conflicts with uniform
 fitting and retains a painted viewBox counterexample. Preserve layout, fitting and
 all targets while reviewing container layout and image projection as shared stages.
+The [image-stage follow-up](root-image-stages.json) separates CSS image sizing,
+canvas destinations and external output scale. Its broader checks reject folding
+scale into authored text-paint stages; its root prototypes remain unpromoted.
+The independent [viewport-admission repair](root-viewport-admission.json) protects
+an unpainted fill retained alongside a clipped stroke. A direct mechanism keeps the
+painted-curve guard, and one canonical native fixture protects the actual interaction.
 
 Group confirmed gaps by mechanism and retain original-to-fixture mappings,
 licenses and failing-before evidence. Reference admission requires three fresh

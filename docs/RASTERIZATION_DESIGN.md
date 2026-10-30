@@ -88,6 +88,8 @@ generate pixels from transparent input. Markers share a scene-owned canvas stage
 across contours and paints, independently of viewport clipping.
 Leaf polygon clips bind native clip coverage while retaining source contours and
 shader coordinates; they do not geometrically intersect flattened paint vertices.
+An unpainted fill retained for a clipped stroke does not require curve source
+commands for viewport admission; the painted stroke keeps its own source commands.
 
 Mask paint clips enclose the union of the resource region and target visual bounds
 in source space. Instance replay transfers local visual bounds and materialized

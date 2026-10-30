@@ -1,0 +1,1008 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "8ee104296896bc6cf16bbcb252477bb67a6a0d29",
+  "status": "Research. No root mapping or output-scale implementation promoted.",
+  "scope": "Separate native image container layout, authored viewBox/synthetic viewBox, destination pixel projection and external output scaling. Logical layout and uniform fitting are unchanged in production.",
+  "sourceSvgCollectionRetained": false,
+  "browserPins": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3"
+    }
+  },
+  "upstreamReview": [
+    {
+      "name": "svg_image.cc",
+      "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/svg/graphics/svg_image.cc",
+      "sha256": "1d9105eccbb4303322c9bec21881ec163bb4010f74999d1433d4ec12ec9ba4fd"
+    },
+    {
+      "name": "svg_image_for_container.cc",
+      "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/svg/graphics/svg_image_for_container.cc",
+      "sha256": "63e16625e82f04e7c7ebbd41b1a878f179b9e36e8bcbca4f21bdeb07a61d63b4"
+    },
+    {
+      "name": "svg_svg_element.cc",
+      "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/svg/svg_svg_element.cc",
+      "sha256": "088019b14bd8d4230f930ff330071a3c6eb1613235bfa332e49d4db5c8b256bb"
+    }
+  ],
+  "method": "Read upstream concepts and use independent own CC0 controls; no upstream source copied into production.",
+  "cssImageControls": [
+    {
+      "id": "paint",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4' viewBox='0 0 24 16'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></svg>\n",
+      "pair": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17' height='11'><g transform='matrix(0.69592318059299196 0 0 0.6875 0.14892183288409705 0)'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></g></svg>\n",
+      "sourceSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+      "pairSourceSha256": "81d5eea85957b1ef35df3c8f5d8646584bf6bf0aa6abd665d45b60cabebcf3a8",
+      "image": [
+        17.4,
+        11.4
+      ],
+      "layout": [
+        17.390625,
+        11.390625
+      ],
+      "pixels": [
+        17,
+        11
+      ],
+      "map": [
+        0.695923180592992,
+        0.6875,
+        0.14892183288409705,
+        0.0
+      ],
+      "hosts": {
+        "windows": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        },
+        "linux": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "paint-scaled",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4' viewBox='0 0 24 16'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></svg>\n",
+      "pair": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='26' height='17'><g transform='matrix(1.0645209580838324 0 0 1.0625 0.22574850299401197 0)'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></g></svg>\n",
+      "sourceSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+      "pairSourceSha256": "7b7b0ddda7cd731d2bb6eba0398bb322f884edc24facdf43d874d40c709f7ea6",
+      "image": [
+        26.099999999999998,
+        17.1
+      ],
+      "layout": [
+        26.09375,
+        17.09375
+      ],
+      "pixels": [
+        26,
+        17
+      ],
+      "map": [
+        1.0645209580838324,
+        1.0625,
+        0.22574850299401197,
+        0.0
+      ],
+      "hosts": {
+        "windows": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "69a7e06002c5f5ce254d621d66a3ece5d48fdbb3de16a7250ba1e094f9b3f2c9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "69a7e06002c5f5ce254d621d66a3ece5d48fdbb3de16a7250ba1e094f9b3f2c9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        },
+        "linux": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "69a7e06002c5f5ce254d621d66a3ece5d48fdbb3de16a7250ba1e094f9b3f2c9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "69a7e06002c5f5ce254d621d66a3ece5d48fdbb3de16a7250ba1e094f9b3f2c9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "paint-none",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4' viewBox='0 0 24 16' preserveAspectRatio='none'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></svg>\n",
+      "pair": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17' height='11'><g transform='matrix(0.70833333333333337 0 0 0.6875 0 0)'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></g></svg>\n",
+      "sourceSha256": "c3e98157266583175958d47f79a9563adfe314df437c09eeae00d8c44859f38c",
+      "pairSourceSha256": "a26cf06730efe0459f04c4c31e3ebbeeec903ca87e733c9089abfe0037d34aa8",
+      "image": [
+        17.4,
+        11.4
+      ],
+      "layout": [
+        17.390625,
+        11.390625
+      ],
+      "pixels": [
+        17,
+        11
+      ],
+      "map": [
+        0.7083333333333334,
+        0.6875,
+        0.0,
+        0.0
+      ],
+      "hosts": {
+        "windows": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "f6c236e337049749197de0988e19397cadd78c2cc4ada3eb3bf2ff7e2d1caa92",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "f6c236e337049749197de0988e19397cadd78c2cc4ada3eb3bf2ff7e2d1caa92",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        },
+        "linux": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "f6c236e337049749197de0988e19397cadd78c2cc4ada3eb3bf2ff7e2d1caa92",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "f6c236e337049749197de0988e19397cadd78c2cc4ada3eb3bf2ff7e2d1caa92",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "paint-slice",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4' viewBox='0 0 24 16' preserveAspectRatio='xMaxYMin slice'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></svg>\n",
+      "pair": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17' height='11'><g transform='matrix(0.70833333333333337 0 0 0.69975994513031547 0 0)'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></g></svg>\n",
+      "sourceSha256": "329fb08d8a2600f5d0cfae0e1d150c541adf1c2092f411efdc282a706b066b37",
+      "pairSourceSha256": "103056f00df1b5efd4851d0fa29ddf0b353429b5a1a060add37e32116ed665a9",
+      "image": [
+        17.4,
+        11.4
+      ],
+      "layout": [
+        17.390625,
+        11.390625
+      ],
+      "pixels": [
+        17,
+        11
+      ],
+      "map": [
+        0.7083333333333334,
+        0.6997599451303155,
+        0.0,
+        0.0
+      ],
+      "hosts": {
+        "windows": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "27b968ebcc7d7faf739b2e5a4e8399bda65d63f467760f118c62402ed780cee5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "27b968ebcc7d7faf739b2e5a4e8399bda65d63f467760f118c62402ed780cee5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        },
+        "linux": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "27b968ebcc7d7faf739b2e5a4e8399bda65d63f467760f118c62402ed780cee5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "27b968ebcc7d7faf739b2e5a4e8399bda65d63f467760f118c62402ed780cee5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "absolute",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4' ><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></svg>\n",
+      "pair": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17' height='11'><g transform='matrix(0.97701151567243194 0 0 0.96491231298989788 0 0)'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></g></svg>\n",
+      "sourceSha256": "5bfe40b834363710ac3eb1b77d400ee5131b6f6a6511a2f3afe1a413589ecd4c",
+      "pairSourceSha256": "ae27def13a7a225e99e839d8632e76cff618b8395af4459bc2e219701b01fdad",
+      "image": [
+        17.4,
+        11.4
+      ],
+      "layout": [
+        17.390625,
+        11.390625
+      ],
+      "pixels": [
+        17,
+        11
+      ],
+      "map": [
+        0.9770115156724319,
+        0.9649123129898979,
+        0,
+        0
+      ],
+      "hosts": {
+        "windows": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "97b643dc77c46ddcdda2c6513b133091e2037ce51121446a393d16b405878d60",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "97b643dc77c46ddcdda2c6513b133091e2037ce51121446a393d16b405878d60",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        },
+        "linux": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "97b643dc77c46ddcdda2c6513b133091e2037ce51121446a393d16b405878d60",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "97b643dc77c46ddcdda2c6513b133091e2037ce51121446a393d16b405878d60",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "absolute-scaled",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4' ><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></svg>\n",
+      "pair": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='26' height='17'><g transform='matrix(1.4942529063225429 0 0 1.4912281200752968 0 0)'><defs><linearGradient id='p'><stop stop-color='#e04020'/><stop offset='1' stop-color='#2040e0'/></linearGradient><clipPath id='c'><rect x='2' y='1' width='18' height='13'/></clipPath></defs><g clip-path='url(#c)' opacity='.73'><rect x='1' y='2' width='13' height='11' fill='url(#p)'/><circle cx='16' cy='9' r='5' fill='#32a060'/></g></g></svg>\n",
+      "sourceSha256": "5bfe40b834363710ac3eb1b77d400ee5131b6f6a6511a2f3afe1a413589ecd4c",
+      "pairSourceSha256": "7fea862d756e8ae699369262081287b8ae90ccb5b36735bd705b2821e427c55f",
+      "image": [
+        26.099999999999998,
+        17.1
+      ],
+      "layout": [
+        26.09375,
+        17.09375
+      ],
+      "pixels": [
+        26,
+        17
+      ],
+      "map": [
+        1.494252906322543,
+        1.4912281200752968,
+        0,
+        0
+      ],
+      "hosts": {
+        "windows": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "a6d1cf729ca9237de4363c720e666e011a9b72b802f25b917b97a0641ba3841c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "a6d1cf729ca9237de4363c720e666e011a9b72b802f25b917b97a0641ba3841c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        },
+        "linux": {
+          "nativePair": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "mappedLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          },
+          "captures": {
+            "original": {
+              "pngSha256": "a6d1cf729ca9237de4363c720e666e011a9b72b802f25b917b97a0641ba3841c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            "mapped": {
+              "pngSha256": "a6d1cf729ca9237de4363c720e666e011a9b72b802f25b917b97a0641ba3841c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          }
+        }
+      }
+    }
+  ],
+  "controlQualification": "One fresh healthy/profile-cleaned native original and mapped companion per context/host; exploratory, not reference admission. All six native pairs and their integer-root library companions are exact on both platforms.",
+  "models": [
+    {
+      "id": "scaled-layout",
+      "layout": "floor(float(logicalAxis * outputScale) * 64) / 64",
+      "projection": "round(logicalAxis * outputScale) / layoutAxis",
+      "finding": "Matches the six CSS image contexts but folding output scale into authored drawing stages changes established text paint rounding. Scimitar also exposes the independent paintless-fill admission defect.",
+      "nativeFailures": {
+        "windows": [
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-165-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-117-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-47-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Shared_paint_stages_match_each_native_image(id: \"spacing-paint-9-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-45-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-71-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-119-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-69-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-167-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Shared_paint_stages_match_each_native_image(id: \"spacing-paint-421-control\")"
+        ],
+        "linux": [
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-71-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-167-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-453-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-455-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-69-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-165-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-117-control\")",
+          "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-119-control\")"
+        ]
+      }
+    },
+    {
+      "id": "base-layout-uniform-output",
+      "layout": "floor(float(logicalAxis) * 64) / 64",
+      "projection": "outputScale * round(logicalAxis) / layoutAxis",
+      "qualification": "557 Windows text-paint references pass unchanged.",
+      "finding": "Keeps uniform external output scale. Both painted controls match canvas draws to rounded-base extents, including scale 1.5; the no-viewBox scaled control has 34 edge differences. Root/source clipping still needs review."
+    },
+    {
+      "id": "base-layout-output-pixels",
+      "layout": "floor(float(logicalAxis) * 64) / 64",
+      "projection": "round(logicalAxis * outputScale) / layoutAxis",
+      "finding": "Includes only the paintless-fill guard repair; all 5,850 core and 10,801 affected native checks pass per host on net11. All 204 originals keep outcomes/diagnostics and previous exact images. Output rounding can make external scale nonuniform, so this is not a proposed uniform-fitting contract.",
+      "hosts": {
+        "windows": {
+          "counts": {
+            "UnsupportedFeature": 53,
+            "rendered": 148,
+            "exact": 134,
+            "different": 14,
+            "MalformedInput": 3
+          },
+          "previousPngsByteIdentical": 138,
+          "changedOutcomesOrDiagnostics": []
+        },
+        "linux": {
+          "counts": {
+            "UnsupportedFeature": 53,
+            "rendered": 148,
+            "exact": 134,
+            "different": 14,
+            "MalformedInput": 3
+          },
+          "previousPngsByteIdentical": 138,
+          "changedOutcomesOrDiagnostics": []
+        }
+      },
+      "changedOriginals": [
+        {
+          "name": "compuserver_msn_Ford_Focus.svg",
+          "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+          "before": {
+            "status": "different",
+            "changedPixels": 18879,
+            "maximumError": 255,
+            "totalChannelError": 460296
+          },
+          "prototype": {
+            "status": "different",
+            "changedPixels": 412,
+            "maximumError": 10,
+            "totalChannelError": 1197
+          }
+        },
+        {
+          "name": "gaussian2.svg",
+          "sourceSha256": "db74351406922d841cf9186cadaacf2787cccfaf3ed99e34a27d6e0b5f48616c",
+          "before": {
+            "status": "different",
+            "changedPixels": 1115,
+            "maximumError": 255,
+            "totalChannelError": 15145
+          },
+          "prototype": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        },
+        {
+          "name": "lineargradient3.svg",
+          "sourceSha256": "0867f531eb2b72ebd59e637803735ad3fc725f04479c9d9f47d023819a72bfc8",
+          "before": {
+            "status": "different",
+            "changedPixels": 3383,
+            "maximumError": 223,
+            "totalChannelError": 127096
+          },
+          "prototype": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        },
+        {
+          "name": "pencil.svg",
+          "sourceSha256": "a736c186252db9b9ec97ab780601513f1771c3a8f85035d35c07afcae2a96c81",
+          "before": {
+            "status": "different",
+            "changedPixels": 13149,
+            "maximumError": 255,
+            "totalChannelError": 309467
+          },
+          "prototype": {
+            "status": "different",
+            "changedPixels": 3,
+            "maximumError": 6,
+            "totalChannelError": 23
+          }
+        },
+        {
+          "name": "radialgradient2.svg",
+          "sourceSha256": "855888af9d4245c6d7b3a0f4456bf715b9bb26407ed873f529888b6b5983657d",
+          "before": {
+            "status": "different",
+            "changedPixels": 12002,
+            "maximumError": 255,
+            "totalChannelError": 283637
+          },
+          "prototype": {
+            "status": "different",
+            "changedPixels": 11,
+            "maximumError": 2,
+            "totalChannelError": 15
+          }
+        },
+        {
+          "name": "rg1024_Presentation_with_girl.svg",
+          "sourceSha256": "995e2656447b8da3e849fd762d4b9d51bc5ff7982107fc24deacb8659b43d15c",
+          "before": {
+            "status": "different",
+            "changedPixels": 9421,
+            "maximumError": 255,
+            "totalChannelError": 446989
+          },
+          "prototype": {
+            "status": "different",
+            "changedPixels": 174,
+            "maximumError": 14,
+            "totalChannelError": 821
+          }
+        },
+        {
+          "name": "rg1024_Ufo_in_metalic_style.svg",
+          "sourceSha256": "516d45ddddc69f032bde79c0c4885cadbe23aa9c2e70cd5553b7b291b61e1cb4",
+          "before": {
+            "status": "different",
+            "changedPixels": 76552,
+            "maximumError": 255,
+            "totalChannelError": 902323
+          },
+          "prototype": {
+            "status": "different",
+            "changedPixels": 333,
+            "maximumError": 255,
+            "totalChannelError": 5323
+          }
+        },
+        {
+          "name": "rg1024_eggs.svg",
+          "sourceSha256": "e261178649854a75edf284155b349f12019643f668114a998c8c36f1d60d1cb3",
+          "before": {
+            "status": "different",
+            "changedPixels": 42827,
+            "maximumError": 255,
+            "totalChannelError": 652994
+          },
+          "prototype": {
+            "status": "different",
+            "changedPixels": 134,
+            "maximumError": 6,
+            "totalChannelError": 399
+          }
+        },
+        {
+          "name": "rg1024_green_grapes.svg",
+          "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+          "before": {
+            "status": "different",
+            "changedPixels": 63754,
+            "maximumError": 255,
+            "totalChannelError": 631690
+          },
+          "prototype": {
+            "status": "different",
+            "changedPixels": 2756,
+            "maximumError": 255,
+            "totalChannelError": 7042
+          }
+        },
+        {
+          "name": "scimitar.svg",
+          "sourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+          "before": {
+            "status": "different",
+            "changedPixels": 36363,
+            "maximumError": 137,
+            "totalChannelError": 386847
+          },
+          "prototype": {
+            "status": "different",
+            "changedPixels": 221,
+            "maximumError": 33,
+            "totalChannelError": 1216
+          }
+        }
+      ]
+    }
+  ],
+  "authoredMap": "ViewBox uses the existing aspect map into layout extents. Without a viewBox use layoutAxis / logicalAxis. Projection and authored source stages remain separate; retained shader recording order matters.",
+  "qualification": {
+    "scaled-layout": {
+      "windows": {
+        "core": {
+          "seconds": 20.593382899882272,
+          "counters": {
+            "total": 5850,
+            "passed": 5850,
+            "failed": 0
+          },
+          "librarySha256": "b60eb935109b57a151c8d86a3f1bb19b3cff96de63970c867119ee973b3333ad"
+        },
+        "native": {
+          "seconds": 30.886276999954134,
+          "counters": {
+            "total": 10801,
+            "passed": 10791,
+            "failed": 10
+          },
+          "librarySha256": "b60eb935109b57a151c8d86a3f1bb19b3cff96de63970c867119ee973b3333ad"
+        }
+      },
+      "linux": {
+        "core": {
+          "seconds": 17.559644900029525,
+          "counters": {
+            "total": 5850,
+            "passed": 5850,
+            "failed": 0
+          },
+          "librarySha256": "b60eb935109b57a151c8d86a3f1bb19b3cff96de63970c867119ee973b3333ad"
+        },
+        "native": {
+          "seconds": 35.74442230002023,
+          "counters": {
+            "total": 10801,
+            "passed": 10793,
+            "failed": 8
+          },
+          "librarySha256": "b60eb935109b57a151c8d86a3f1bb19b3cff96de63970c867119ee973b3333ad"
+        }
+      }
+    },
+    "base-layout-output-pixels": {
+      "windows": {
+        "core": {
+          "seconds": 25.095985900145024,
+          "counters": {
+            "total": 5850,
+            "passed": 5850,
+            "failed": 0
+          },
+          "librarySha256": "1ca08a74533a020a02d414f67ec4363ac01bf600292dd082101e974fea80b3dd"
+        },
+        "native": {
+          "seconds": 33.83719389978796,
+          "counters": {
+            "total": 10801,
+            "passed": 10801,
+            "failed": 0
+          },
+          "librarySha256": "1ca08a74533a020a02d414f67ec4363ac01bf600292dd082101e974fea80b3dd"
+        }
+      },
+      "linux": {
+        "core": {
+          "seconds": 17.740018399897963,
+          "counters": {
+            "total": 5850,
+            "passed": 5850,
+            "failed": 0
+          },
+          "librarySha256": "1ca08a74533a020a02d414f67ec4363ac01bf600292dd082101e974fea80b3dd"
+        },
+        "native": {
+          "seconds": 44.98334199981764,
+          "counters": {
+            "total": 10801,
+            "passed": 10801,
+            "failed": 0
+          },
+          "librarySha256": "1ca08a74533a020a02d414f67ec4363ac01bf600292dd082101e974fea80b3dd"
+        }
+      }
+    }
+  },
+  "canvasInvestigation": {
+    "recipe": "Private copy of the existing Chrome capture tool at the source baseline. After image.decode and animation-frame wait, drawImage(image,0,0,destinationWidth,destinationHeight) into an integer screenshot-sized transparent canvas; remove the image and capture at DPR1 with the existing process health/cleanup checks. CSS image dimensions do not establish the canvas destination extent.",
+    "modifiedCaptureSourceSha256": "b78b33e800d16e4c8f7f121fab723fe982431f6d379780b382c5843419043216",
+    "host": "windows",
+    "qualification": "One fresh healthy/profile-cleaned exploratory process per case. Not reference admission.",
+    "rows": [
+      {
+        "id": "paint",
+        "extent": "logical",
+        "destination": [
+          17.4,
+          11.4
+        ],
+        "sourceSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+        "pngSha256": "bf1ca30dce28413cfd5862d72015b7707aae9ed618268e84fd2afeae327cc00d",
+        "captures": 1,
+        "comparisons": {
+          "model2": {
+            "changedPixels": 88,
+            "maximumError": 217
+          },
+          "model3": {
+            "changedPixels": 88,
+            "maximumError": 217
+          }
+        },
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "id": "paint",
+        "extent": "rounded-base",
+        "destination": [
+          17.0,
+          11.0
+        ],
+        "sourceSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+        "pngSha256": "e164963c01be4ae51b950e4d9b38e7e7d81b5a59bd4ceaa5de279db0098dfca6",
+        "captures": 1,
+        "comparisons": {
+          "model2": {
+            "changedPixels": 0,
+            "maximumError": 0
+          },
+          "model3": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        },
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "id": "paint-scaled",
+        "extent": "logical",
+        "destination": [
+          26.099999999999998,
+          17.1
+        ],
+        "sourceSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+        "pngSha256": "c5b6553328408246f952c57ad00be15f7c46aa9abea8627fe86b45abcfa8ad2a",
+        "captures": 1,
+        "comparisons": {
+          "model2": {
+            "changedPixels": 173,
+            "maximumError": 229
+          },
+          "model3": {
+            "changedPixels": 128,
+            "maximumError": 159
+          }
+        },
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "id": "paint-scaled",
+        "extent": "rounded-base",
+        "destination": [
+          25.5,
+          16.5
+        ],
+        "sourceSha256": "e3e916a39fb04225b49de3993e15ef4beddef6218544b2b8f1a88344f1b55d9c",
+        "pngSha256": "10688f73702ae5c0352df7c5ba79f889f0c73f0ac18ae785d28ce118c6a84a45",
+        "captures": 1,
+        "comparisons": {
+          "model2": {
+            "changedPixels": 0,
+            "maximumError": 0
+          },
+          "model3": {
+            "changedPixels": 169,
+            "maximumError": 230
+          }
+        },
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "id": "absolute",
+        "extent": "logical",
+        "destination": [
+          17.4,
+          11.4
+        ],
+        "sourceSha256": "5bfe40b834363710ac3eb1b77d400ee5131b6f6a6511a2f3afe1a413589ecd4c",
+        "pngSha256": "f25e2c5cbc9b3f454651ebf3b14fecc1d39e214ffb618c49a0b3d116f44d4fe7",
+        "captures": 1,
+        "comparisons": {
+          "model2": {
+            "changedPixels": 124,
+            "maximumError": 223
+          },
+          "model3": {
+            "changedPixels": 124,
+            "maximumError": 223
+          }
+        },
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "id": "absolute",
+        "extent": "rounded-base",
+        "destination": [
+          17.0,
+          11.0
+        ],
+        "sourceSha256": "5bfe40b834363710ac3eb1b77d400ee5131b6f6a6511a2f3afe1a413589ecd4c",
+        "pngSha256": "97b643dc77c46ddcdda2c6513b133091e2037ce51121446a393d16b405878d60",
+        "captures": 1,
+        "comparisons": {
+          "model2": {
+            "changedPixels": 0,
+            "maximumError": 0
+          },
+          "model3": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        },
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "id": "absolute-scaled",
+        "extent": "logical",
+        "destination": [
+          26.099999999999998,
+          17.1
+        ],
+        "sourceSha256": "5bfe40b834363710ac3eb1b77d400ee5131b6f6a6511a2f3afe1a413589ecd4c",
+        "pngSha256": "dafd28718a990425da5c600edb59d9e9b2e17f891cfacd014229377d8a4125c5",
+        "captures": 1,
+        "comparisons": {
+          "model2": {
+            "changedPixels": 263,
+            "maximumError": 255
+          },
+          "model3": {
+            "changedPixels": 158,
+            "maximumError": 255
+          }
+        },
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "id": "absolute-scaled",
+        "extent": "rounded-base",
+        "destination": [
+          25.5,
+          16.5
+        ],
+        "sourceSha256": "5bfe40b834363710ac3eb1b77d400ee5131b6f6a6511a2f3afe1a413589ecd4c",
+        "pngSha256": "57fb9a5d1e758502142a931189ce99726538cfca1d6711358f40e05e14dac324",
+        "captures": 1,
+        "comparisons": {
+          "model2": {
+            "changedPixels": 34,
+            "maximumError": 139
+          },
+          "model3": {
+            "changedPixels": 280,
+            "maximumError": 255
+          }
+        },
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ]
+  },
+  "nextAcceptance": [
+    "Preserve existing native targets, logical layout, text implementation and uniform output fitting.",
+    "Resolve canvas/output scaling versus CSS image resizing and root/source clipping with explicit independent contexts. No single output-only stretching rule is accepted.",
+    "Retain the painted viewBox counterexample and the distinct zero-fill/painted-curve guard mechanisms.",
+    "Recheck all 204 originals, including previous exact files, and qualify full affected native host/runtime/package paths before promotion."
+  ]
+}

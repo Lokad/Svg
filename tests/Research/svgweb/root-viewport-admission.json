@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "8ee104296896bc6cf16bbcb252477bb67a6a0d29",
+  "scope": "Closed paintless-fill viewport-admission defect only. Shared root image mapping and full Scimitar/filter acceptance remain open.",
+  "originalMapping": {
+    "name": "scimitar.svg",
+    "sourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+    "finding": "A clipped stroke retains a flattened solid fill with HasFill=false and no authored commands. A nonuniform root map incorrectly checks that unused fill before rendering. The painted stroke retains its own source commands.",
+    "defaultOriginalChanged": false
+  },
+  "productionChange": "Require HasFill before applying the solid flattened-curve source-command guard. Existing painted-curve and gradient/radial guards are retained; no root maps, text layout, targets, tolerances or output scaling changed.",
+  "mechanism": {
+    "test": "../../Lokad.Svg.Tests/SvgRootViewportAdmissionTests.cs",
+    "cases": 2,
+    "responsibilities": [
+      "An unpainted retained cubic with no source commands admits under a nonuniform viewBox and paints nothing.",
+      "The corresponding painted curve keeps the source-command rejection.",
+      "Both paths release all owned budget reservations."
+    ],
+    "beforeAfter": {
+      "before": {
+        "checks": 2,
+        "passed": 1,
+        "failed": 1,
+        "runnerSeconds": 6.99135,
+        "reportedTestDurationMilliseconds": 38
+      },
+      "after": {
+        "checks": 2,
+        "passed": 2,
+        "failed": 0,
+        "runnerSeconds": 6.618431,
+        "reportedTestDurationMilliseconds": 52
+      }
+    },
+    "timingScope": "Functional development checks on the busy workstation. Runner times include discovery/startup; execution times are not throughput or speedup evidence.",
+    "ownershipMatrix": "No fixture by API-form matrix added; no execution or allocation ownership model changed."
+  },
+  "rendering": {
+    "fixture": "../../Fixtures/original/root-inert-curve.svg",
+    "reference": "../../References/original-root-inert-curve.json",
+    "sourceSha256": "434b31ec1023a0a1345fe98dfd7f5b3695fa4d9ebd9513c1867ea95af8ef4cf1",
+    "width": 96,
+    "height": 64,
+    "outputScale": 1,
+    "imageViewport": [
+      96,
+      64
+    ],
+    "background": "transparent",
+    "deviceScaleFactor": 1,
+    "nativePlatformCaptures": [
+      {
+        "host": "windows",
+        "captures": [
+          {
+            "pngSha256": "735cc896820424fc874cc90e251bf9209ea9a58c45ba3041b5b40e0dc50ea8d7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "735cc896820424fc874cc90e251bf9209ea9a58c45ba3041b5b40e0dc50ea8d7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "735cc896820424fc874cc90e251bf9209ea9a58c45ba3041b5b40e0dc50ea8d7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "beforeOutcome": "UnsupportedFeature",
+        "beforeMessage": "Curve fills under non-uniform viewBox or output scaling require retained source commands.",
+        "beforeLibrarySha256": "3394858ca3e19c576a0416cea4d52e973340e72d0c7709e97da945866d3e10ac"
+      },
+      {
+        "host": "linux",
+        "captures": [
+          {
+            "pngSha256": "735cc896820424fc874cc90e251bf9209ea9a58c45ba3041b5b40e0dc50ea8d7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "735cc896820424fc874cc90e251bf9209ea9a58c45ba3041b5b40e0dc50ea8d7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "735cc896820424fc874cc90e251bf9209ea9a58c45ba3041b5b40e0dc50ea8d7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "beforeOutcome": "UnsupportedFeature",
+        "beforeMessage": "Curve fills under non-uniform viewBox or output scaling require retained source commands.",
+        "beforeLibrarySha256": "3394858ca3e19c576a0416cea4d52e973340e72d0c7709e97da945866d3e10ac"
+      }
+    ],
+    "finalComparisons": [
+      {
+        "host": "windows",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "17f45bac3c7b79ff3d8ae5f875dfec36a34f09cbe6c2bd108348cc572a25148b"
+      },
+      {
+        "host": "linux",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "librarySha256": "17f45bac3c7b79ff3d8ae5f875dfec36a34f09cbe6c2bd108348cc572a25148b"
+      }
+    ],
+    "responsibility": "One canonical conversion protects a clipped cubic stroke, unpainted fill, visible backdrop and nonuniform viewBox. Native references are independent; three fresh healthy/profile-cleaned processes per host.",
+    "manifestResponsibility": "The existing manifest integrity/rendering facts traverse every admitted fixture; adding this asset does not add a separate xUnit test count."
+  },
+  "affectedQualification": {
+    "windows": {
+      "net11.0": {
+        "core": {
+          "checks": 5852,
+          "passed": 5852,
+          "seconds": 20.695792299928144,
+          "librarySha256": "17f45bac3c7b79ff3d8ae5f875dfec36a34f09cbe6c2bd108348cc572a25148b"
+        },
+        "native": {
+          "checks": 10801,
+          "passed": 10801,
+          "seconds": 32.270313899964094,
+          "librarySha256": "17f45bac3c7b79ff3d8ae5f875dfec36a34f09cbe6c2bd108348cc572a25148b"
+        }
+      },
+      "net10.0": {
+        "core": {
+          "checks": 5852,
+          "passed": 5852,
+          "seconds": 20.294654600089416,
+          "librarySha256": "bfcd5f07944f53cd4db135a62050cffab01e396471b1f2a4c0cb4fee94c0e1e1"
+        },
+        "native": {
+          "checks": 10801,
+          "passed": 10801,
+          "seconds": 29.466395600000396,
+          "librarySha256": "bfcd5f07944f53cd4db135a62050cffab01e396471b1f2a4c0cb4fee94c0e1e1"
+        }
+      }
+    },
+    "linux": {
+      "net11.0": {
+        "core": {
+          "checks": 5852,
+          "passed": 5852,
+          "seconds": 20.64209685,
+          "librarySha256": "17f45bac3c7b79ff3d8ae5f875dfec36a34f09cbe6c2bd108348cc572a25148b"
+        },
+        "native": {
+          "checks": 10801,
+          "passed": 10801,
+          "seconds": 63.848879631,
+          "librarySha256": "17f45bac3c7b79ff3d8ae5f875dfec36a34f09cbe6c2bd108348cc572a25148b"
+        }
+      },
+      "net10.0": {
+        "core": {
+          "checks": 5852,
+          "passed": 5852,
+          "seconds": 16.16839073700001,
+          "librarySha256": "bfcd5f07944f53cd4db135a62050cffab01e396471b1f2a4c0cb4fee94c0e1e1"
+        },
+        "native": {
+          "checks": 10801,
+          "passed": 10801,
+          "seconds": 38.864439597,
+          "librarySha256": "bfcd5f07944f53cd4db135a62050cffab01e396471b1f2a4c0cb4fee94c0e1e1"
+        }
+      }
+    }
+  },
+  "originalReplay": {
+    "receipt": {
+      "files": 204,
+      "seconds": 55.2457764998544,
+      "sourceSvgFilesRetained": 0
+    },
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "previousPngsByteIdentical": 148,
+        "changedOutcomesOrDiagnosticsOrComparisons": []
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 132,
+          "different": 16,
+          "MalformedInput": 3
+        },
+        "previousPngsByteIdentical": 148,
+        "changedOutcomesOrDiagnosticsOrComparisons": []
+      }
+    },
+    "scope": "Every original source hash rechecked per host. No hosted source payload retained; every existing rendered PNG, outcome, diagnostic and comparison stays unchanged. Exploratory exact is not original admission."
+  },
+  "continuedResearch": "root-image-stages.json"
+}

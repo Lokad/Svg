@@ -18121,6 +18121,32 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-gaussian-alias-backdrop.json",
       "referenceSha256": "fa16fd8890870b1cc44f1f36cfd51c8e773f536b06145275f611115b20ea5c6c"
+    },
+    {
+      "id": "original-root-inert-curve",
+      "path": "original/root-inert-curve.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "434b31ec1023a0a1345fe98dfd7f5b3695fa4d9ebd9513c1867ea95af8ef4cf1",
+      "materializedSha256": "434b31ec1023a0a1345fe98dfd7f5b3695fa4d9ebd9513c1867ea95af8ef4cf1",
+      "featureTags": [
+        "viewport",
+        "clip",
+        "stroke",
+        "curve",
+        "inert-paint"
+      ],
+      "width": 96,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-root-inert-curve.json",
+      "referenceSha256": "735cc896820424fc874cc90e251bf9209ea9a58c45ba3041b5b40e0dc50ea8d7"
     }
   ]
 }

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Admit nonuniform viewport maps of clipped strokes with an unpainted fill channel;
+  retain source-command requirements for painted curves.
 - Preserve color-filter shader rounding when black or SourceAlpha filter results
   restore over backdrops, including Gaussian aliases.
 - Preserve authored curves and placement in referenced clip children.

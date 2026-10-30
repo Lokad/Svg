@@ -1,0 +1,10 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="64" viewBox="0 0 48 64" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="p"><stop stop-color="#e04020"/><stop offset="1" stop-color="#2040e0"/></linearGradient>
+    <clipPath id="c"><rect x="4" y="8" width="36" height="44"/></clipPath>
+  </defs>
+  <rect x="3" y="5" width="38" height="50" fill="url(#p)"/>
+  <circle cx="28" cy="35" r="14" fill="#32a060" opacity=".73"/>
+  <path d="M5 48C12 3 31 60 42 9" fill="none" stroke="#203050" stroke-width="1.2" clip-path="url(#c)"/>
+</svg>

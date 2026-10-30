@@ -336,7 +336,7 @@ public static partial class SvgConverter
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 if (geometry.Kind == SvgGeometryKind.PatternFill && !TryMapPatternTile(geometry.Pattern, GetRecordedPaintValue(geometry.RecordedPaint).RecordingTransform, SvgAffineTransform.Identity, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
-                bool isCurveFill = (geometry.Kind == SvgGeometryKind.PolygonFill && geometry.Polygon.Mapping == SvgPolygonMapping.FlattenedCurves)
+                bool isCurveFill = (geometry.Kind == SvgGeometryKind.PolygonFill && geometry.Polygon.HasFill && geometry.Polygon.Mapping == SvgPolygonMapping.FlattenedCurves)
                     || (geometry.Kind == SvgGeometryKind.GradientPolygon && geometry.GradientPolygon.Mapping == SvgPolygonMapping.FlattenedCurves)
                     || (geometry.Kind == SvgGeometryKind.RadialPolygon && geometry.RadialPolygon.Mapping == SvgPolygonMapping.FlattenedCurves);
                 if (horizontalScale != verticalScale && isCurveFill && geometry.AuthoredPath is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Curve fills under non-uniform viewBox or output scaling require retained source commands.");
