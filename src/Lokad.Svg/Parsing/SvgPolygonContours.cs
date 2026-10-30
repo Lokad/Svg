@@ -18,22 +18,32 @@ internal struct SvgPolygonContours : IDisposable
         RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         Validate(points, contourEnds, signs, quadSpans, cubicSpans, isEvenOdd, budget);
-        long bytes;
-        try
-        {
-            bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length)
-                + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length)
-                + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length))
-                + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length)
-                + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length));
-        }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
-        _reservation = reservation ?? (bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene));
+        _reservation = reservation ?? ReserveStorage(points, contourEnds, signs, quadSpans, cubicSpans, budget);
         Points = points;
         ContourEnds = contourEnds;
         Signs = signs;
         QuadSpans = quadSpans;
         CubicSpans = cubicSpans;
+    }
+
+    /// <summary>Reserves a retained payload before allocating mapped arrays; the caller releases on failure or hands the charge to a completed binding.</summary>
+    /// <remarks>Lengths describe the receiving binding. Borrowed topology remains charged there because it can outlive the source definition; radial paint is separate.</remarks>
+    internal static RenderBudget.BudgetReservation? ReserveStorage(ReadOnlySpan<SvgDevicePoint> points,
+        ReadOnlySpan<int> contourEnds, ReadOnlySpan<int> signs, ReadOnlySpan<SvgQuadSpan> quadSpans,
+        ReadOnlySpan<SvgCubicSpan> cubicSpans, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        long bytes;
+        try
+        {
+            bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length)
+                + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length)
+                + ParserCollectionMemory.GetArrayByteCount<int>(signs.Length)
+                + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length)
+                + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length));
+        }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
+        return bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
     }
 
     internal SvgDevicePoint[] Points { get; }

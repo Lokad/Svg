@@ -30,6 +30,10 @@ arrays again. Radial paint has a separate charge, and rejected paint admission o
 vector placement leaves the source owner intact. Empty pattern paint disables
 filling while retaining geometry. Mapping, clips, paint state and authored-path
 ownership remain separate; mask snapshots still copy genuinely independent data.
+Use and symbol mapping reserve the receiving contour payload before allocating
+points or curves, then transfer that same charge to the completed binding. Failed
+mapping releases the reservation. Borrowed contour ends/signs remain accounted for
+in the result because definition storage is released before the scene's lifetime ends.
 
 Prepared-document font discovery borrows the same collected styles, reader
 workspace and active budget used by lowering. Discovery control storage is

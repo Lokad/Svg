@@ -528,65 +528,59 @@ internal static class SvgReferenceResolver
         return new(new(left, top, right - left, bottom - top), map) { IsBinary = reference.IsMarker, DrawMap = reference.IsMarker ? null : new(PlainInstancePlacement(reference, frame), localMap, map) };
     }
 
-    /// <summary>Reserves mapped point/curve scratch before allocation; an empty contour owns no scratch.</summary>
-    private static RenderBudget.BudgetReservation? ReserveMappedContour(RenderBudget budget,
-        ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<SvgQuadSpan> quadratics, ReadOnlySpan<SvgCubicSpan> cubics)
-    {
-        long bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length)
-            + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadratics.Length)
-            + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubics.Length));
-        return bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Geometry);
-    }
-
     private static SvgGeometry ApplyPolygon(SvgGeometry source, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, CancellationToken cancellationToken)
     {
         SvgPolygonFill polygon = source.Polygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(state.Budget, polygon.Points, polygon.QuadSpans, polygon.CubicSpans);
-        SvgDevicePoint[] mapped = polygon.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[polygon.Points.Length];
-        for (int index = 0; index < mapped.Length; index++)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            SvgDevicePoint placed = instanceMap.Apply(polygon.Points[index].X + reference.X, polygon.Points[index].Y + reference.Y);
-            if (frame is not null)
-            {
-                double shiftedX = placed.X * frame.Value.ScaleX + frame.Value.OffsetX;
-                double shiftedY = placed.Y * frame.Value.ScaleY + frame.Value.OffsetY;
-                if (!double.IsFinite(shiftedX) || !double.IsFinite(shiftedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
-                placed = new SvgDevicePoint(shiftedX, shiftedY);
-            }
-            mapped[index] = placed;
-        }
-        SvgAffineTransform placement = PlainInstancePlacement(reference, frame);
-        SvgClipBox? clip = polygon.Clip;
-        SvgAffineViewportClip? affineClip = null;
-        if (clip is {} sourceClip)
-        {
-            if (placement.IsAxisAligned) clip = placement.Apply(sourceClip) with { Antialiasing = sourceClip.Antialiasing };
-            else
-            {
-                affineClip = new(sourceClip, placement) { IsBinary = sourceClip.Antialiasing == SvgClipAntialiasing.Binary };
-                clip = null;
-            }
-        }
-        if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
-        SvgColor color = new(polygon.Color.Red, polygon.Color.Green, polygon.Color.Blue, MultiplyAlpha(polygon.Color.Alpha, reference.Opacity));
-        SvgQuadSpan[] quadSpans = MapUseQuadSpans(polygon.QuadSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
-        SvgCubicSpan[] cubicSpans = MapUseCubicSpans(polygon.CubicSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
-        SvgGeometry result = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, quadSpans, cubicSpans, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, null, state.Budget));
-        result = source.CopyAuthoredPathTo(result, placement, state.Budget, cancellationToken);
+        RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.QuadSpans, polygon.CubicSpans, state.Budget);
         try
         {
-            if (affineClip is not null)
+            SvgDevicePoint[] mapped = polygon.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[polygon.Points.Length];
+            for (int index = 0; index < mapped.Length; index++)
             {
-                Span<SvgGeometry> single = [result];
-                SvgPaintRecording.WrapInstance(single, SvgPaintOpacity.Opaque, state.NewRecordingScope(), null, affineClip, state, cancellationToken);
-                result = single[0];
+                cancellationToken.ThrowIfCancellationRequested();
+                SvgDevicePoint placed = instanceMap.Apply(polygon.Points[index].X + reference.X, polygon.Points[index].Y + reference.Y);
+                if (frame is not null)
+                {
+                    double shiftedX = placed.X * frame.Value.ScaleX + frame.Value.OffsetX;
+                    double shiftedY = placed.Y * frame.Value.ScaleY + frame.Value.OffsetY;
+                    if (!double.IsFinite(shiftedX) || !double.IsFinite(shiftedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                    placed = new SvgDevicePoint(shiftedX, shiftedY);
+                }
+                mapped[index] = placed;
             }
-            return result;
+            SvgAffineTransform placement = PlainInstancePlacement(reference, frame);
+            SvgClipBox? clip = polygon.Clip;
+            SvgAffineViewportClip? affineClip = null;
+            if (clip is {} sourceClip)
+            {
+                if (placement.IsAxisAligned) clip = placement.Apply(sourceClip) with { Antialiasing = sourceClip.Antialiasing };
+                else
+                {
+                    affineClip = new(sourceClip, placement) { IsBinary = sourceClip.Antialiasing == SvgClipAntialiasing.Binary };
+                    clip = null;
+                }
+            }
+            if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
+            SvgColor color = new(polygon.Color.Red, polygon.Color.Green, polygon.Color.Blue, MultiplyAlpha(polygon.Color.Alpha, reference.Opacity));
+            SvgQuadSpan[] quadSpans = MapUseQuadSpans(polygon.QuadSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
+            SvgCubicSpan[] cubicSpans = MapUseCubicSpans(polygon.CubicSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
+            SvgGeometry result = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, quadSpans, cubicSpans, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, mappedReservation, state.Budget));
+            result = source.CopyAuthoredPathTo(result, placement, state.Budget, cancellationToken);
+            try
+            {
+                if (affineClip is not null)
+                {
+                    Span<SvgGeometry> single = [result];
+                    SvgPaintRecording.WrapInstance(single, SvgPaintOpacity.Opaque, state.NewRecordingScope(), null, affineClip, state, cancellationToken);
+                    result = single[0];
+                }
+                return result;
+            }
+            catch { result.Dispose(); throw; }
         }
-        catch { result.Dispose(); throw; }
+        catch { mappedReservation?.Dispose(); throw; }
     }
 
     /// <summary>Maps retained quad-span controls through one plain use-instance placement, preserving span ranges so the analytic walker consumes instance curves like direct geometry.</summary>
@@ -645,52 +639,56 @@ internal static class SvgReferenceResolver
         SvgGradientPolygon outline = source.GradientPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(state.Budget, outline.Points, outline.QuadSpans, outline.CubicSpans);
-        SvgDevicePoint[] mapped = outline.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[outline.Points.Length];
-        for (int index = 0; index < mapped.Length; index++)
+        RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(outline.Points, outline.ContourEnds, outline.Signs, outline.QuadSpans, outline.CubicSpans, state.Budget);
+        try
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            SvgDevicePoint placed = instanceMap.Apply(outline.Points[index].X + reference.X, outline.Points[index].Y + reference.Y);
-            if (frame is not null)
+            SvgDevicePoint[] mapped = outline.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[outline.Points.Length];
+            for (int index = 0; index < mapped.Length; index++)
             {
-                double shiftedX = placed.X * frame.Value.ScaleX + frame.Value.OffsetX;
-                double shiftedY = placed.Y * frame.Value.ScaleY + frame.Value.OffsetY;
-                if (!double.IsFinite(shiftedX) || !double.IsFinite(shiftedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
-                placed = new SvgDevicePoint(shiftedX, shiftedY);
+                cancellationToken.ThrowIfCancellationRequested();
+                SvgDevicePoint placed = instanceMap.Apply(outline.Points[index].X + reference.X, outline.Points[index].Y + reference.Y);
+                if (frame is not null)
+                {
+                    double shiftedX = placed.X * frame.Value.ScaleX + frame.Value.OffsetX;
+                    double shiftedY = placed.Y * frame.Value.ScaleY + frame.Value.OffsetY;
+                    if (!double.IsFinite(shiftedX) || !double.IsFinite(shiftedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                    placed = new SvgDevicePoint(shiftedX, shiftedY);
+                }
+                mapped[index] = placed;
             }
-            mapped[index] = placed;
-        }
-        SvgLinearGradient vector = outline.Gradient;
-        SvgAffineTransform placement = PlainInstancePlacement(reference, frame);
-        SvgRectangle box;
-        if (!reference.Transform.IsAxisAligned || vector.SourcePaint?.Data.IsMapped == true)
-        {
-            SvgAuthoredPath path = source.AuthoredPath ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine linear paint instances require retained source commands.");
-            if (vector.SourcePaint?.Data is { IsMapped: true } data)
+            SvgLinearGradient vector = outline.Gradient;
+            SvgAffineTransform placement = PlainInstancePlacement(reference, frame);
+            SvgRectangle box;
+            if (!reference.Transform.IsAxisAligned || vector.SourcePaint?.Data.IsMapped == true)
             {
-                if (placement != SvgAffineTransform.Identity) vector = vector with { SourcePaint = state.Scene.RetainLinearPaintMap(data with { Referencing = placement.ComposeChecked(data.Referencing) }) };
+                SvgAuthoredPath path = source.AuthoredPath ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine linear paint instances require retained source commands.");
+                if (vector.SourcePaint?.Data is { IsMapped: true } data)
+                {
+                    if (placement != SvgAffineTransform.Identity) vector = vector with { SourcePaint = state.Scene.RetainLinearPaintMap(data with { Referencing = placement.ComposeChecked(data.Referencing) }) };
+                }
+                else
+                {
+                    SvgRectangle sourceBox = vector.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, cancellationToken);
+                    vector = SvgGradientSyntax.BindLinearSourceMap(vector, sourceBox, placement.ComposeChecked(path.SceneMap), state, cancellationToken);
+                }
+                box = default;
             }
             else
             {
-                SvgRectangle sourceBox = vector.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, cancellationToken);
-                vector = SvgGradientSyntax.BindLinearSourceMap(vector, sourceBox, placement.ComposeChecked(path.SceneMap), state, cancellationToken);
+                if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 + reference.X, Y1 = vector.Y1 + reference.Y, X2 = vector.X2 + reference.X, Y2 = vector.Y2 + reference.Y };
+                box = InstanceBox(outline.Box, reference, frame);
+                vector = SvgGradientSyntax.MapUserSpaceVector(reference.Transform, vector, frame);
+                vector = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, vector);
             }
-            box = default;
+            SvgClipBox? clip = outline.Clip;
+            if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
+            byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
+            SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
+            SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
+            SvgGeometry result = SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, vector, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, mappedReservation, state.Budget));
+            return source.CopyAuthoredPathTo(result, placement, state.Budget, cancellationToken);
         }
-        else
-        {
-            if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 + reference.X, Y1 = vector.Y1 + reference.Y, X2 = vector.X2 + reference.X, Y2 = vector.Y2 + reference.Y };
-            box = InstanceBox(outline.Box, reference, frame);
-            vector = SvgGradientSyntax.MapUserSpaceVector(reference.Transform, vector, frame);
-            vector = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, vector);
-        }
-        SvgClipBox? clip = outline.Clip;
-        if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
-        byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
-        SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
-        SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
-        SvgGeometry result = SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, vector, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
-        return source.CopyAuthoredPathTo(result, placement, state.Budget, cancellationToken);
+        catch { mappedReservation?.Dispose(); throw; }
     }
 
     private static SvgGeometry ApplyRadialPolygon(SvgGeometry source, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, CancellationToken cancellationToken)
@@ -698,57 +696,61 @@ internal static class SvgReferenceResolver
         SvgRadialPolygon outline = source.RadialPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(state.Budget, outline.Points, outline.QuadSpans, outline.CubicSpans);
-        SvgDevicePoint[] mapped = outline.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[outline.Points.Length];
-        for (int index = 0; index < mapped.Length; index++)
+        RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(outline.Points, outline.ContourEnds, outline.Signs, outline.QuadSpans, outline.CubicSpans, state.Budget);
+        try
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            SvgDevicePoint placed = instanceMap.Apply(outline.Points[index].X + reference.X, outline.Points[index].Y + reference.Y);
-            if (frame is not null)
+            SvgDevicePoint[] mapped = outline.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[outline.Points.Length];
+            for (int index = 0; index < mapped.Length; index++)
             {
-                double shiftedX = placed.X * frame.Value.ScaleX + frame.Value.OffsetX;
-                double shiftedY = placed.Y * frame.Value.ScaleY + frame.Value.OffsetY;
-                if (!double.IsFinite(shiftedX) || !double.IsFinite(shiftedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
-                placed = new SvgDevicePoint(shiftedX, shiftedY);
-            }
-            mapped[index] = placed;
-        }
-        SvgRadialGradient circle = outline.Gradient;
-        SvgAffineTransform placement = PlainInstancePlacement(reference, frame);
-        SvgRectangle box;
-        if (!reference.Transform.IsAxisAligned)
-        {
-            SvgAuthoredPath path = source.AuthoredPath ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine radial paint instances require retained source commands.");
-            if (circle.IsUserSpace && circle.HasGeneralTransform && circle.NativePaintMatrices is {} matrices)
-            {
-                if (!placement.TryInvert(out SvgAffineTransform inverse))
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular radial paint instance maps are not implemented.");
-                circle = circle with
+                cancellationToken.ThrowIfCancellationRequested();
+                SvgDevicePoint placed = instanceMap.Apply(outline.Points[index].X + reference.X, outline.Points[index].Y + reference.Y);
+                if (frame is not null)
                 {
-                    Inverse = SvgGradientTransform.Compose(circle.Inverse, new(inverse.A, inverse.B, inverse.C, inverse.D, inverse.E, inverse.F)),
-                    NativePaintMatrices = matrices with { Referencing = placement.ComposeChecked(matrices.Referencing) }
-                };
+                    double shiftedX = placed.X * frame.Value.ScaleX + frame.Value.OffsetX;
+                    double shiftedY = placed.Y * frame.Value.ScaleY + frame.Value.OffsetY;
+                    if (!double.IsFinite(shiftedX) || !double.IsFinite(shiftedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                    placed = new SvgDevicePoint(shiftedX, shiftedY);
+                }
+                mapped[index] = placed;
+            }
+            SvgRadialGradient circle = outline.Gradient;
+            SvgAffineTransform placement = PlainInstancePlacement(reference, frame);
+            SvgRectangle box;
+            if (!reference.Transform.IsAxisAligned)
+            {
+                SvgAuthoredPath path = source.AuthoredPath ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine radial paint instances require retained source commands.");
+                if (circle.IsUserSpace && circle.HasGeneralTransform && circle.NativePaintMatrices is {} matrices)
+                {
+                    if (!placement.TryInvert(out SvgAffineTransform inverse))
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular radial paint instance maps are not implemented.");
+                    circle = circle with
+                    {
+                        Inverse = SvgGradientTransform.Compose(circle.Inverse, new(inverse.A, inverse.B, inverse.C, inverse.D, inverse.E, inverse.F)),
+                        NativePaintMatrices = matrices with { Referencing = placement.ComposeChecked(matrices.Referencing) }
+                    };
+                }
+                else
+                {
+                    SvgRectangle sourceBox = circle.IsUserSpace ? default : path.StrokeStyle?.SourceBounds ?? SvgPathBounds.Compute(path.Commands, cancellationToken);
+                    circle = SvgGradientSyntax.BindRadialSourceMap(circle, sourceBox, placement.ComposeChecked(path.SceneMap), cancellationToken);
+                }
+                box = default;
             }
             else
             {
-                SvgRectangle sourceBox = circle.IsUserSpace ? default : path.StrokeStyle?.SourceBounds ?? SvgPathBounds.Compute(path.Commands, cancellationToken);
-                circle = SvgGradientSyntax.BindRadialSourceMap(circle, sourceBox, placement.ComposeChecked(path.SceneMap), cancellationToken);
+                if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, reference.X, reference.Y) : circle with { CenterX = circle.CenterX + reference.X, CenterY = circle.CenterY + reference.Y, FocalX = circle.FocalX + reference.X, FocalY = circle.FocalY + reference.Y };
+                box = InstanceBox(outline.Box, reference, frame);
+                circle = SvgGradientSyntax.MapRadialReference(reference.Transform, circle, frame);
             }
-            box = default;
+            SvgClipBox? clip = outline.Clip;
+            if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
+            byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
+            SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
+            SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
+            SvgGeometry result = SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, circle, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, mappedReservation, state.Budget));
+            return source.CopyAuthoredPathTo(result, placement, state.Budget, cancellationToken);
         }
-        else
-        {
-            if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, reference.X, reference.Y) : circle with { CenterX = circle.CenterX + reference.X, CenterY = circle.CenterY + reference.Y, FocalX = circle.FocalX + reference.X, FocalY = circle.FocalY + reference.Y };
-            box = InstanceBox(outline.Box, reference, frame);
-            circle = SvgGradientSyntax.MapRadialReference(reference.Transform, circle, frame);
-        }
-        SvgClipBox? clip = outline.Clip;
-        if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
-        byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
-        SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
-        SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
-        SvgGeometry result = SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, circle, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
-        return source.CopyAuthoredPathTo(result, placement, state.Budget, cancellationToken);
+        catch { mappedReservation?.Dispose(); throw; }
     }
 
     private static SvgGeometry ApplyPatternPolygon(SvgGeometry source, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, CancellationToken cancellationToken)
@@ -756,28 +758,32 @@ internal static class SvgReferenceResolver
         SvgPatternPolygon outline = source.PatternPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(state.Budget, outline.Points, outline.QuadSpans, outline.CubicSpans);
-        SvgDevicePoint[] mapped = outline.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[outline.Points.Length];
-        for (int index = 0; index < mapped.Length; index++)
+        RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(outline.Points, outline.ContourEnds, outline.Signs, outline.QuadSpans, outline.CubicSpans, state.Budget);
+        try
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            SvgDevicePoint placed = instanceMap.Apply(outline.Points[index].X + reference.X, outline.Points[index].Y + reference.Y);
-            if (frame is not null)
+            SvgDevicePoint[] mapped = outline.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[outline.Points.Length];
+            for (int index = 0; index < mapped.Length; index++)
             {
-                double shiftedX = placed.X * frame.Value.ScaleX + frame.Value.OffsetX;
-                double shiftedY = placed.Y * frame.Value.ScaleY + frame.Value.OffsetY;
-                if (!double.IsFinite(shiftedX) || !double.IsFinite(shiftedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
-                placed = new SvgDevicePoint(shiftedX, shiftedY);
+                cancellationToken.ThrowIfCancellationRequested();
+                SvgDevicePoint placed = instanceMap.Apply(outline.Points[index].X + reference.X, outline.Points[index].Y + reference.Y);
+                if (frame is not null)
+                {
+                    double shiftedX = placed.X * frame.Value.ScaleX + frame.Value.OffsetX;
+                    double shiftedY = placed.Y * frame.Value.ScaleY + frame.Value.OffsetY;
+                    if (!double.IsFinite(shiftedX) || !double.IsFinite(shiftedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                    placed = new SvgDevicePoint(shiftedX, shiftedY);
+                }
+                mapped[index] = placed;
             }
-            mapped[index] = placed;
+            SvgClipBox? clip = outline.Clip;
+            if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
+            byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
+            SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
+            SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
+            SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, outline.Content, outline.ContentPaint, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, outline.VectorContent, outline.VectorContent is null ? SvgAffineTransform.Identity : PlainInstancePlacement(reference, frame).ComposeChecked(outline.ShaderPlacement), outline.ContentViewBox, outline.Coordinates, outline.PaintMatrices?.Place(PlainInstancePlacement(reference, frame)), mappedReservation, state.Budget));
+            return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, cancellationToken);
         }
-        SvgClipBox? clip = outline.Clip;
-        if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
-        byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
-        SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
-        SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, cancellationToken);
-        SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, outline.Content, outline.ContentPaint, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, outline.VectorContent, outline.VectorContent is null ? SvgAffineTransform.Identity : PlainInstancePlacement(reference, frame).ComposeChecked(outline.ShaderPlacement), outline.ContentViewBox, outline.Coordinates, outline.PaintMatrices?.Place(PlainInstancePlacement(reference, frame)), state.Budget));
-        return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, cancellationToken);
+        catch { mappedReservation?.Dispose(); throw; }
     }
 
     /// <summary>Rejects nonuniform shader-outline instances without native source strokes; retained native commands preserve source construction through placement.</summary>
@@ -900,40 +906,44 @@ internal static class SvgReferenceResolver
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
-            using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(document.Budget, source.Points, source.QuadSpans, source.CubicSpans);
-            SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
-            for (int index = 0; index < mapped.Length; index++)
+            RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(source.Points, source.ContourEnds, source.Signs, source.QuadSpans, source.CubicSpans, document.Budget);
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
-                double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
-                SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
-                double placedX = placedPoint.X;
-                double placedY = placedPoint.Y;
-                if (viewportFrame is not null)
+                SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
+                for (int index = 0; index < mapped.Length; index++)
                 {
-                    placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
-                    placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                    cancellationToken.ThrowIfCancellationRequested();
+                    double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
+                    double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
+                    SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
+                    double placedX = placedPoint.X;
+                    double placedY = placedPoint.Y;
+                    if (viewportFrame is not null)
+                    {
+                        placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
+                        placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                    }
+                    if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                    mapped[index] = new SvgDevicePoint(placedX, placedY);
                 }
-                if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
-                mapped[index] = new SvgDevicePoint(placedX, placedY);
+                SvgClipBox? clip;
+                if (source.Clip is null) clip = viewportFrame?.Clip;
+                else
+                {
+                    SvgClipBox content = source.Clip.Value;
+                    SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
+                    SvgClipBox placed = instance.Transform.Apply(shifted);
+                    if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
+                    clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
+                }
+                SvgColor color = new(source.Color.Red, source.Color.Green, source.Color.Blue, MultiplyAlpha(source.Color.Alpha, instance.Opacity));
+                SvgQuadSpan[] quadSpans = MapSymbolQuadSpans(source.QuadSpans, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, cancellationToken);
+                SvgCubicSpan[] cubicSpans = MapSymbolCubicSpans(source.CubicSpans, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, cancellationToken);
+                SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
+                SvgGeometry result = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, source.ContourEnds, source.Signs, quadSpans, cubicSpans, color, source.HasFill && instance.IsPainted, source.IsEvenOdd, source.Mapping, clip, mappedReservation, document.Budget));
+                return geometry.CopyAuthoredPathTo(result, placement, document.Budget, cancellationToken);
             }
-            SvgClipBox? clip;
-            if (source.Clip is null) clip = viewportFrame?.Clip;
-            else
-            {
-                SvgClipBox content = source.Clip.Value;
-                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
-                SvgClipBox placed = instance.Transform.Apply(shifted);
-                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
-                clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
-            }
-            SvgColor color = new(source.Color.Red, source.Color.Green, source.Color.Blue, MultiplyAlpha(source.Color.Alpha, instance.Opacity));
-            SvgQuadSpan[] quadSpans = MapSymbolQuadSpans(source.QuadSpans, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, cancellationToken);
-            SvgCubicSpan[] cubicSpans = MapSymbolCubicSpans(source.CubicSpans, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, cancellationToken);
-            SvgGeometry result = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, source.ContourEnds, source.Signs, quadSpans, cubicSpans, color, source.HasFill && instance.IsPainted, source.IsEvenOdd, source.Mapping, clip, null, document.Budget));
-            SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
-            return geometry.CopyAuthoredPathTo(result, placement, document.Budget, cancellationToken);
+            catch { mappedReservation?.Dispose(); throw; }
         }
 
         static SvgQuadSpan[] MapSymbolQuadSpans(SvgQuadSpan[] spans, double scaleX, double scaleY, double offsetX, double offsetY, SvgUseReference instance, SvgViewportFrame? viewportFrame, CancellationToken cancellationToken)
@@ -1420,55 +1430,59 @@ internal static class SvgReferenceResolver
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
-            using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(document.Budget, source.Points, source.QuadSpans, source.CubicSpans);
-            SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
-            for (int index = 0; index < mapped.Length; index++)
+            RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(source.Points, source.ContourEnds, source.Signs, ReadOnlySpan<SvgQuadSpan>.Empty, ReadOnlySpan<SvgCubicSpan>.Empty, document.Budget);
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
-                double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
-                SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
-                double placedX = placedPoint.X;
-                double placedY = placedPoint.Y;
-                if (viewportFrame is not null)
+                SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
+                for (int index = 0; index < mapped.Length; index++)
                 {
-                    placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
-                    placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                    cancellationToken.ThrowIfCancellationRequested();
+                    double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
+                    double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
+                    SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
+                    double placedX = placedPoint.X;
+                    double placedY = placedPoint.Y;
+                    if (viewportFrame is not null)
+                    {
+                        placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
+                        placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                    }
+                    if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                    mapped[index] = new SvgDevicePoint(placedX, placedY);
                 }
-                if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
-                mapped[index] = new SvgDevicePoint(placedX, placedY);
+                SvgLinearGradient vector = source.Gradient;
+                SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
+                SvgRectangle box;
+                if (vector.SourcePaint?.Data is { IsMapped: true } data)
+                {
+                    if (placement != SvgAffineTransform.Identity)
+                        vector = vector with { SourcePaint = document.Scene.RetainLinearPaintMap(data with { Referencing = placement.ComposeChecked(data.Referencing) }) };
+                    box = default;
+                }
+                else
+                {
+                    if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y, ReferenceScaleX = vector.ReferenceScaleX * scaleX, ReferenceScaleY = vector.ReferenceScaleY * scaleY };
+                    SvgRectangle contentBox = source.Box;
+                    box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
+                    if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
+                    vector = SvgGradientSyntax.MapUserSpaceVector(instance.Transform, vector, viewportFrame);
+                    vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
+                }
+                SvgClipBox? clip;
+                if (source.Clip is null) clip = viewportFrame?.Clip;
+                else
+                {
+                    SvgClipBox content = source.Clip.Value;
+                    SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
+                    SvgClipBox placed = instance.Transform.Apply(shifted);
+                    if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
+                    clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
+                }
+                byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
+                SvgGeometry result = SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, source.ContourEnds, source.Signs, vector, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, mappedReservation, document.Budget));
+                return geometry.CopyAuthoredPathTo(result, placement, document.Budget, cancellationToken);
             }
-            SvgLinearGradient vector = source.Gradient;
-            SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
-            SvgRectangle box;
-            if (vector.SourcePaint?.Data is { IsMapped: true } data)
-            {
-                if (placement != SvgAffineTransform.Identity)
-                    vector = vector with { SourcePaint = document.Scene.RetainLinearPaintMap(data with { Referencing = placement.ComposeChecked(data.Referencing) }) };
-                box = default;
-            }
-            else
-            {
-                if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y, ReferenceScaleX = vector.ReferenceScaleX * scaleX, ReferenceScaleY = vector.ReferenceScaleY * scaleY };
-                SvgRectangle contentBox = source.Box;
-                box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
-                if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
-                vector = SvgGradientSyntax.MapUserSpaceVector(instance.Transform, vector, viewportFrame);
-                vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
-            }
-            SvgClipBox? clip;
-            if (source.Clip is null) clip = viewportFrame?.Clip;
-            else
-            {
-                SvgClipBox content = source.Clip.Value;
-                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
-                SvgClipBox placed = instance.Transform.Apply(shifted);
-                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
-                clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
-            }
-            byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
-            SvgGeometry result = SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, source.ContourEnds, source.Signs, vector, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, null, document.Budget));
-            return geometry.CopyAuthoredPathTo(result, placement, document.Budget, cancellationToken);
+            catch { mappedReservation?.Dispose(); throw; }
         }
         static SvgGeometry ApplySymbolGradientFill(SvgGradientGeometry band, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, CancellationToken cancellationToken)
         {
@@ -1528,44 +1542,48 @@ internal static class SvgReferenceResolver
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
-            using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(document.Budget, source.Points, source.QuadSpans, source.CubicSpans);
-            SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
-            for (int index = 0; index < mapped.Length; index++)
+            RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(source.Points, source.ContourEnds, source.Signs, ReadOnlySpan<SvgQuadSpan>.Empty, ReadOnlySpan<SvgCubicSpan>.Empty, document.Budget);
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
-                double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
-                SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
-                double placedX = placedPoint.X;
-                double placedY = placedPoint.Y;
-                if (viewportFrame is not null)
+                SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
+                for (int index = 0; index < mapped.Length; index++)
                 {
-                    placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
-                    placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                    cancellationToken.ThrowIfCancellationRequested();
+                    double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
+                    double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
+                    SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
+                    double placedX = placedPoint.X;
+                    double placedY = placedPoint.Y;
+                    if (viewportFrame is not null)
+                    {
+                        placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
+                        placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                    }
+                    if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                    mapped[index] = new SvgDevicePoint(placedX, placedY);
                 }
-                if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
-                mapped[index] = new SvgDevicePoint(placedX, placedY);
+                SvgRadialGradient circle = source.Gradient;
+                if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y) : circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
+                SvgRectangle contentBox = source.Box;
+                SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
+                if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
+                circle = SvgGradientSyntax.MapRadialReference(instance.Transform, circle, viewportFrame);
+                SvgClipBox? clip;
+                if (source.Clip is null) clip = viewportFrame?.Clip;
+                else
+                {
+                    SvgClipBox content = source.Clip.Value;
+                    SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
+                    SvgClipBox placed = instance.Transform.Apply(shifted);
+                    if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
+                    clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
+                }
+                byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
+                SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
+                SvgGeometry result = SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, source.ContourEnds, source.Signs, circle, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, mappedReservation, document.Budget));
+                return geometry.CopyAuthoredPathTo(result, placement, document.Budget, cancellationToken);
             }
-            SvgRadialGradient circle = source.Gradient;
-            if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y) : circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
-            SvgRectangle contentBox = source.Box;
-            SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
-            if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
-            circle = SvgGradientSyntax.MapRadialReference(instance.Transform, circle, viewportFrame);
-            SvgClipBox? clip;
-            if (source.Clip is null) clip = viewportFrame?.Clip;
-            else
-            {
-                SvgClipBox content = source.Clip.Value;
-                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
-                SvgClipBox placed = instance.Transform.Apply(shifted);
-                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
-                clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
-            }
-            byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
-            SvgGeometry result = SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, source.ContourEnds, source.Signs, circle, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, null, document.Budget));
-            SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
-            return geometry.CopyAuthoredPathTo(result, placement, document.Budget, cancellationToken);
+            catch { mappedReservation?.Dispose(); throw; }
         }
 
         static SvgGeometry ApplySymbolPatternPolygon(SvgGeometry geometry, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, CancellationToken cancellationToken)
@@ -1577,48 +1595,52 @@ internal static class SvgReferenceResolver
             RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, cancellationToken);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             if (viewportFrame is not null && viewportFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
-            using RenderBudget.BudgetReservation? mappedReservation = ReserveMappedContour(document.Budget, source.Points, source.QuadSpans, source.CubicSpans);
-            SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
-            for (int index = 0; index < mapped.Length; index++)
+            RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(source.Points, source.ContourEnds, source.Signs, ReadOnlySpan<SvgQuadSpan>.Empty, ReadOnlySpan<SvgCubicSpan>.Empty, document.Budget);
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
-                double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
-                SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
-                double placedX = placedPoint.X;
-                double placedY = placedPoint.Y;
-                if (viewportFrame is not null)
+                SvgDevicePoint[] mapped = source.Points.Length == 0 ? Array.Empty<SvgDevicePoint>() : new SvgDevicePoint[source.Points.Length];
+                for (int index = 0; index < mapped.Length; index++)
                 {
-                    placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
-                    placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                    cancellationToken.ThrowIfCancellationRequested();
+                    double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
+                    double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
+                    SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
+                    double placedX = placedPoint.X;
+                    double placedY = placedPoint.Y;
+                    if (viewportFrame is not null)
+                    {
+                        placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
+                        placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                    }
+                    if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                    mapped[index] = new SvgDevicePoint(placedX, placedY);
                 }
-                if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
-                mapped[index] = new SvgDevicePoint(placedX, placedY);
+                double gridOriginX = source.OriginX * scaleX + offsetX;
+                double gridOriginY = source.OriginY * scaleY + offsetY;
+                double gridTileWidth = source.TileWidth * scaleX;
+                double gridTileHeight = source.TileHeight * scaleY;
+                double gridContentX = source.Content.X * scaleX + offsetX;
+                double gridContentY = source.Content.Y * scaleY + offsetY;
+                double gridContentWidth = source.Content.Width * scaleX;
+                double gridContentHeight = source.Content.Height * scaleY;
+                if (!IsIntegerGrid(gridOriginX) || !IsIntegerGrid(gridOriginY) || !IsIntegerGrid(gridTileWidth) || !IsIntegerGrid(gridTileHeight) || !IsIntegerGrid(gridContentX) || !IsIntegerGrid(gridContentY) || !IsIntegerGrid(gridContentWidth) || !IsIntegerGrid(gridContentHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped symbol-held pattern tiles are implemented.");
+                SvgRectangle content = new(gridContentX, gridContentY, gridContentWidth, gridContentHeight, source.Content.Color, source.Content.HasFill, source.Content.Stroke);
+                SvgClipBox? clip;
+                if (source.Clip is null) clip = viewportFrame?.Clip;
+                else
+                {
+                    SvgClipBox shiftedSource = source.Clip.Value;
+                    SvgClipBox shifted = new(shiftedSource.X * scaleX + offsetX + instance.X, shiftedSource.Y * scaleY + offsetY + instance.Y, shiftedSource.Width * scaleX, shiftedSource.Height * scaleY) { Antialiasing = shiftedSource.Antialiasing };
+                    SvgClipBox placed = instance.Transform.Apply(shifted);
+                    if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
+                    clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
+                }
+                byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
+                SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
+                SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, source.ContourEnds, source.Signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), content, source.ContentPaint, source.VectorContent is null ? (int)gridOriginX : source.OriginX, source.VectorContent is null ? (int)gridOriginY : source.OriginY, source.VectorContent is null ? (int)gridTileWidth : source.TileWidth, source.VectorContent is null ? (int)gridTileHeight : source.TileHeight, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, source.VectorContent, source.VectorContent is null ? SvgAffineTransform.Identity : placement.ComposeChecked(source.ShaderPlacement), source.ContentViewBox, source.Coordinates, source.PaintMatrices?.Place(placement), mappedReservation, document.Budget));
+                return geometry.CopyAuthoredPathTo(result, placement, document.Budget, cancellationToken);
             }
-            double gridOriginX = source.OriginX * scaleX + offsetX;
-            double gridOriginY = source.OriginY * scaleY + offsetY;
-            double gridTileWidth = source.TileWidth * scaleX;
-            double gridTileHeight = source.TileHeight * scaleY;
-            double gridContentX = source.Content.X * scaleX + offsetX;
-            double gridContentY = source.Content.Y * scaleY + offsetY;
-            double gridContentWidth = source.Content.Width * scaleX;
-            double gridContentHeight = source.Content.Height * scaleY;
-            if (!IsIntegerGrid(gridOriginX) || !IsIntegerGrid(gridOriginY) || !IsIntegerGrid(gridTileWidth) || !IsIntegerGrid(gridTileHeight) || !IsIntegerGrid(gridContentX) || !IsIntegerGrid(gridContentY) || !IsIntegerGrid(gridContentWidth) || !IsIntegerGrid(gridContentHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped symbol-held pattern tiles are implemented.");
-            SvgRectangle content = new(gridContentX, gridContentY, gridContentWidth, gridContentHeight, source.Content.Color, source.Content.HasFill, source.Content.Stroke);
-            SvgClipBox? clip;
-            if (source.Clip is null) clip = viewportFrame?.Clip;
-            else
-            {
-                SvgClipBox shiftedSource = source.Clip.Value;
-                SvgClipBox shifted = new(shiftedSource.X * scaleX + offsetX + instance.X, shiftedSource.Y * scaleY + offsetY + instance.Y, shiftedSource.Width * scaleX, shiftedSource.Height * scaleY) { Antialiasing = shiftedSource.Antialiasing };
-                SvgClipBox placed = instance.Transform.Apply(shifted);
-                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
-                clip = viewportFrame is {} parent ? placed.Intersect(parent.Clip) : placed;
-            }
-            byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
-            SvgAffineTransform placement = SymbolInstancePlacement(viewBox, instance, viewportFrame);
-            SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, source.ContourEnds, source.Signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), content, source.ContentPaint, source.VectorContent is null ? (int)gridOriginX : source.OriginX, source.VectorContent is null ? (int)gridOriginY : source.OriginY, source.VectorContent is null ? (int)gridTileWidth : source.TileWidth, source.VectorContent is null ? (int)gridTileHeight : source.TileHeight, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, source.VectorContent, source.VectorContent is null ? SvgAffineTransform.Identity : placement.ComposeChecked(source.ShaderPlacement), source.ContentViewBox, source.Coordinates, source.PaintMatrices?.Place(placement), document.Budget));
-            return geometry.CopyAuthoredPathTo(result, placement, document.Budget, cancellationToken);
+            catch { mappedReservation?.Dispose(); throw; }
 
             static bool IsIntegerGrid(double value)
                 => double.IsFinite(value) && value == Math.Truncate(value) && value >= int.MinValue && value <= int.MaxValue;

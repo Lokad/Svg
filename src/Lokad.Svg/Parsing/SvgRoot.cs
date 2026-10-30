@@ -578,12 +578,12 @@ internal sealed class SvgPatternPolygon : ISvgGeometryContent
 
     internal SvgClipBox? Clip { get; }
 
-    /// <summary>Creates a pattern outline owning its contour charge and borrowing its vector tile from the parent scene.</summary>
-    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, SvgVectorContent? vectorContent, SvgAffineTransform shaderPlacement, SvgViewBox? contentViewBox, SvgPatternCoordinates? coordinates, SvgPatternPaintMatrices? paintMatrices, RenderBudget budget)
+    /// <summary>Creates a pattern outline, adopting caller contour storage only on success or reserving it here, and borrowing its vector tile from the parent scene.</summary>
+    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, SvgVectorContent? vectorContent, SvgAffineTransform shaderPlacement, SvgViewBox? contentViewBox, SvgPatternCoordinates? coordinates, SvgPatternPaintMatrices? paintMatrices, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
-        SvgPolygonContours contours = new(points, contourEnds, signs, quadSpans, cubicSpans, isEvenOdd, null, budget);
+        SvgPolygonContours contours = new(points, contourEnds, signs, quadSpans, cubicSpans, isEvenOdd, reservation, budget);
         try { return new SvgPatternPolygon(contours, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip) { VectorContent = vectorContent, ShaderPlacement = shaderPlacement, ContentViewBox = contentViewBox, Coordinates = coordinates, PaintMatrices = paintMatrices }; }
-        catch { contours.Dispose(); throw; }
+        catch { if (reservation is null) contours.Dispose(); throw; }
     }
 
     /// <summary>Moves a live contour payload after vector placement succeeds; empty tiles disable paint while preserving geometry. Legacy tile pixels keep their established route.</summary>
