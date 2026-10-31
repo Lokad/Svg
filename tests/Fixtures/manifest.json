@@ -18300,6 +18300,30 @@
       "referenceSha256": "fc10e665c9b6a7bd4008a455b30a65e24098807575200a0be1311935db339efc"
     },
     {
+      "id": "original-filter-clamped-bilinear-accumulation",
+      "path": "original/filter-clamped-bilinear-accumulation.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "ba540080c80fe050237381c2751f181da8bede997fb6546379b0ea5095ad835d",
+      "materializedSha256": "ba540080c80fe050237381c2751f181da8bede997fb6546379b0ea5095ad835d",
+      "featureTags": [
+        "filter",
+        "affine",
+        "bilinear-accumulation"
+      ],
+      "width": 850,
+      "height": 300,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-clamped-bilinear-accumulation.json",
+      "referenceSha256": "c37e70bbfae4dd06bf42e0818bd31a7e0694c86ba7eb88f2b649ebec76327b89"
+    },
+    {
       "id": "original-filter-image-edge-construction",
       "path": "original/filter-image-edge-construction.svg",
       "sourceUrl": null,

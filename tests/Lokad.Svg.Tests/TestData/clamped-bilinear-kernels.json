@@ -1,0 +1,21 @@
+{
+  "scope": "Compiled adaptation of pinned clamped RGBA8 and generic wrapped stages, using the native x64 FMA instruction for explicit fused accumulation. Browser-backed rendering evidence is separate.",
+  "generator": "../../Research/svgweb/clamped-bilinear-native.cpp",
+  "skiaRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "nativeSource": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/opts/SkRasterPipeline_opts.h",
+  "dataSha256": "f2230c305de040421555a6ee54ea0343c6a3041e011dc33b14d38f2a56487ed9",
+  "compilers": [
+    {
+      "host": "windows",
+      "compiler": "g++ (MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r8) 13.2.0",
+      "arguments": "-O2 -std=c++20 -mavx2 -mfma -ffp-contract=off -Wall -Wextra -Werror",
+      "dataSha256": "f2230c305de040421555a6ee54ea0343c6a3041e011dc33b14d38f2a56487ed9"
+    },
+    {
+      "host": "linux",
+      "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "arguments": "-O2 -std=c++20 -mavx2 -mfma -ffp-contract=off -Wall -Wextra -Werror",
+      "dataSha256": "f2230c305de040421555a6ee54ea0343c6a3041e011dc33b14d38f2a56487ed9"
+    }
+  ]
+}

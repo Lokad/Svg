@@ -147,17 +147,17 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
     /// transparent borders belong to filter surfaces. The caller checks cancellation during sampling.</remarks>
     internal static SvgShaderPaint SampleAffine(ReadOnlySpan<byte> pixels, int width, int height,
         float x, float y, SvgCpuBitmapOrigin pixelOffset, float opacity)
-        => SampleBilinear(pixels, width, new(0, 0, width, height), x, y, pixelOffset, opacity, true);
+        => SampleBilinear(pixels, width, new(0, 0, width, height), x, y, pixelOffset, opacity, transparentBorder: true, fusedProducts: false);
 
-    /// <summary>Samples an admitted image view with clamped edges and the parent raster's stride.</summary>
+    /// <summary>Samples a picture image view through the generic fused pipeline, with clamped edges and the parent stride.</summary>
     /// <remarks>Pixels are borrowed premultiplied RGBA8. Bounds and coordinates are caller-validated;
     /// sampling owns no storage. The caller owns work accounting and cancellation.</remarks>
     internal static SvgShaderPaint SampleView(ReadOnlySpan<byte> pixels, int stride, SvgAnalyticClipBounds bounds,
         float x, float y, float opacity)
-        => SampleBilinear(pixels, stride, bounds, x, y, new(0, 0), opacity, false);
+        => SampleBilinear(pixels, stride, bounds, x, y, new(0, 0), opacity, transparentBorder: false, fusedProducts: true);
 
     private static SvgShaderPaint SampleBilinear(ReadOnlySpan<byte> pixels, int stride, SvgAnalyticClipBounds bounds,
-        float x, float y, SvgCpuBitmapOrigin pixelOffset, float opacity, bool transparentBorder)
+        float x, float y, SvgCpuBitmapOrigin pixelOffset, float opacity, bool transparentBorder, bool fusedProducts)
     {
         int width = bounds.Right - bounds.Left, height = bounds.Bottom - bounds.Top;
         if (transparentBorder && (x + pixelOffset.X < -1 || y + pixelOffset.Y < -1
@@ -177,7 +177,7 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
         }
         return InterpolatePremultiplied(Pixel(pixels, stride, bounds, ix, iy), Pixel(pixels, stride, bounds, right, iy),
             Pixel(pixels, stride, bounds, ix, bottom), Pixel(pixels, stride, bounds, right, bottom),
-            weightX - MathF.Floor(weightX), weightY - MathF.Floor(weightY), opacity);
+            weightX - MathF.Floor(weightX), weightY - MathF.Floor(weightY), opacity, fusedProducts);
 
         static SvgConstantShaderPaint Pixel(ReadOnlySpan<byte> data, int stride, SvgAnalyticClipBounds bounds, int x, int y)
         {
@@ -188,20 +188,35 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
         }
     }
 
-    /// <summary>Interpolates premultiplied picture pixels before paint alpha and the floating store.</summary>
-    /// <remarks>Allocation-free shared image/repeat sampling. Callers own pixels, sampling work and cancellation.</remarks>
+    /// <summary>Interpolates the generic shader pipeline's premultiplied pixels with fused accumulation.</summary>
+    /// <remarks>The clamped RGBA8 fast path uses separate products in SampleAffine. Generic
+    /// wrapped and picture/mipmap sampling retain fused accumulation. Both paths
+    /// are allocation-free; callers own pixels, sampling work and cancellation.</remarks>
     internal static SvgShaderPaint InterpolatePremultiplied(SvgConstantShaderPaint a, SvgConstantShaderPaint b,
         SvgConstantShaderPaint c, SvgConstantShaderPaint d, float fx, float fy, float opacity)
+        => InterpolatePremultiplied(a, b, c, d, fx, fy, opacity, fusedProducts: true);
+
+    private static SvgShaderPaint InterpolatePremultiplied(SvgConstantShaderPaint a, SvgConstantShaderPaint b,
+        SvgConstantShaderPaint c, SvgConstantShaderPaint d, float fx, float fy, float opacity, bool fusedProducts)
     {
         float wa = (1 - fx) * (1 - fy), wb = fx * (1 - fy), wc = (1 - fx) * fy, wd = fx * fy;
-        return new(Lane(a.Red, b.Red, c.Red, d.Red, wa, wb, wc, wd) * opacity,
-            Lane(a.Green, b.Green, c.Green, d.Green, wa, wb, wc, wd) * opacity,
-            Lane(a.Blue, b.Blue, c.Blue, d.Blue, wa, wb, wc, wd) * opacity,
-            Lane(a.Alpha, b.Alpha, c.Alpha, d.Alpha, wa, wb, wc, wd) * opacity);
+        return new(Lane(a.Red, b.Red, c.Red, d.Red, wa, wb, wc, wd, fusedProducts) * opacity,
+            Lane(a.Green, b.Green, c.Green, d.Green, wa, wb, wc, wd, fusedProducts) * opacity,
+            Lane(a.Blue, b.Blue, c.Blue, d.Blue, wa, wb, wc, wd, fusedProducts) * opacity,
+            Lane(a.Alpha, b.Alpha, c.Alpha, d.Alpha, wa, wb, wc, wd, fusedProducts) * opacity);
 
-        static float Lane(byte a, byte b, byte c, byte d, float wa, float wb, float wc, float wd)
+        static float Lane(byte a, byte b, byte c, byte d, float wa, float wb, float wc, float wd, bool fusedProducts)
         {
             const float scale = 1f / 255f;
+            // Native clamped RGBA8 gathering rounds each product before addition.
+            // Generic wrapped/mipmap sampling uses its explicit fused accumulate stage.
+            if (!fusedProducts)
+            {
+                float separate = wa * (a * scale);
+                separate += wb * (b * scale);
+                separate += wc * (c * scale);
+                return separate + wd * (d * scale);
+            }
             float value = MathF.FusedMultiplyAdd(wa, a * scale, 0);
             value = MathF.FusedMultiplyAdd(wb, b * scale, value);
             value = MathF.FusedMultiplyAdd(wc, c * scale, value);

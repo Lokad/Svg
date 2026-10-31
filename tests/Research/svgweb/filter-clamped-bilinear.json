@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "4531af119e8a933a5bf1b4093fa3c5ed8a7fe761",
+  "librarySha256": "99d7e5005a565874fa631c2b4d41dd203c094701459065b1d6d92f56450a4812",
+  "scope": "Retain separate products in the native clamped RGBA8 fast path and fused accumulation in generic wrapped/picture sampling. All35 isolated Gallardo filter consumers are exact; whole original acceptance remains open.",
+  "implementation": {
+    "paint": "../../../src/Lokad.Svg/Rendering/SvgShaderPaint.cs",
+    "nativeFactory": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/shaders/SkImageShader.cpp",
+    "nativeFactorySha256": "10e8dd81d97bb219ba796506af1a38e472224c8f02ac175f09463e0cfd973ae1",
+    "nativePipeline": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/opts/SkRasterPipeline_opts.h",
+    "nativePipelineSha256": "849ecf600bf6181fc44f101e4c84c451fba13b00f12dbfbe64bd035fc1803541",
+    "problem": "The shared sampler fused every multiply/add, although native clamped RGBA8 gathering rounds each product before addition. One float ULP in the interpolated alpha changes a later transfer/store at a channel boundary.",
+    "change": "Keep shared coordinates, addressing, weights and ownership. The existing helper explicitly selects separate clamped products or generic fused accumulation. Picture image views retain the generic path used with linear mipmaps, and wrapped patterns retain FMA.",
+    "unchanged": "Source capture, transforms/bounds, Gaussian/transfer/alpha arithmetic, public APIs, allocations, cancellation, logical/text sizing, references and tolerances."
+  },
+  "mechanisms": {
+    "tests": "../../Lokad.Svg.Tests/SvgFilterBilinearSamplingTests.cs",
+    "vectors": "../../Lokad.Svg.Tests/TestData/clamped-bilinear-kernels.csv",
+    "metadata": "../../Lokad.Svg.Tests/TestData/clamped-bilinear-kernels.json",
+    "generator": "clamped-bilinear-native.cpp",
+    "compiledKernels": 2,
+    "compilers": [
+      {
+        "host": "windows",
+        "compiler": "g++ (MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r8) 13.2.0",
+        "arguments": "-O2 -std=c++20 -mavx2 -mfma -ffp-contract=off -Wall -Wextra -Werror",
+        "dataSha256": "f2230c305de040421555a6ee54ea0343c6a3041e011dc33b14d38f2a56487ed9"
+      },
+      {
+        "host": "linux",
+        "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "arguments": "-O2 -std=c++20 -mavx2 -mfma -ffp-contract=off -Wall -Wextra -Werror",
+        "dataSha256": "f2230c305de040421555a6ee54ea0343c6a3041e011dc33b14d38f2a56487ed9"
+      }
+    ],
+    "directCases": 3,
+    "roles": [
+      "clamped filter image",
+      "generic wrapped pattern",
+      "generic picture view"
+    ],
+    "existingWeightClampingStrideAndIntegrityCasesRetained": 18,
+    "failingBefore": {
+      "selected": 2,
+      "failed": 1,
+      "passed": 1,
+      "librarySha256": "25c15327cba65bc1d1d113ad1f251647c67e7b46b1a8feb99a07dbf2663a78b9",
+      "failure": "Clamped expected blue1040497574/alpha1064171401, actual1040497575/1064171400. Wrapped FMA passes unchanged."
+    },
+    "focusedAfter": {
+      "passed": 21,
+      "seconds": 7.808409899938852
+    },
+    "setupBoundary": "The initial test patch occupied the wrong columns and was rejected as evidence. The corrected run reads columns0/1 at the declared coordinate and exhibits only the native product-rounding discrepancy. Expected vectors were unchanged."
+  },
+  "canonicalControl": {
+    "fixture": "../../Fixtures/original/filter-clamped-bilinear-accumulation.svg",
+    "reference": "../../References/original-filter-clamped-bilinear-accumulation.json",
+    "sourceSha256": "ba540080c80fe050237381c2751f181da8bede997fb6546379b0ea5095ad835d",
+    "nativePngSha256": "c37e70bbfae4dd06bf42e0818bd31a7e0694c86ba7eb88f2b649ebec76327b89",
+    "freshCapturesPerHost": 3,
+    "allSixEncodedPngsIdentical": true,
+    "startupHealthyAndProfilesCleaned": true,
+    "comparisons": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "25c15327cba65bc1d1d113ad1f251647c67e7b46b1a8feb99a07dbf2663a78b9",
+        "changedPixels": 1,
+        "maximumError": 2,
+        "totalChannelError": 2,
+        "bounds": [
+          711,
+          85,
+          712,
+          86
+        ]
+      },
+      {
+        "host": "windows",
+        "phase": "candidate",
+        "librarySha256": "5e9c213246f847ec03658492f8886a8fc2a203062a26a54929c2c42d92becfcd",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "bounds": null
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "25c15327cba65bc1d1d113ad1f251647c67e7b46b1a8feb99a07dbf2663a78b9",
+        "changedPixels": 1,
+        "maximumError": 2,
+        "totalChannelError": 2,
+        "bounds": [
+          711,
+          85,
+          712,
+          86
+        ]
+      },
+      {
+        "host": "linux",
+        "phase": "candidate",
+        "librarySha256": "5e9c213246f847ec03658492f8886a8fc2a203062a26a54929c2c42d92becfcd",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "bounds": null
+      }
+    ],
+    "responsibility": "One own fractional ellipse through canonical conversion protects the floating interpolation/color-transfer interaction. Two native kernels and three direct entry paths are checked without a fixture/API matrix."
+  },
+  "transferBoundary": {
+    "measuredNativeColorFilterInputs": 9,
+    "allMatchedExistingTransfer": true,
+    "host": "windows",
+    "scope": "Independent parameter-observed float color-filter controls around the sample support retaining the existing transfer function. No native intermediate source plane is inferred."
+  },
+  "originalMapping": {
+    "gallardoSourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "filterConsumersExactPerHost": 35,
+    "onlyChangedConsumer": "path3424",
+    "other34FilterPngsUnchanged": true,
+    "unfilteredPaintIsolationsUnchanged": 58,
+    "closedConsumerVariants": [
+      {
+        "variant": "original",
+        "variantSourceSha256": "e41fcbe246650c04c4ca7b984e0bae796092e7728b0329e0258bf31487789a3c",
+        "nativePngSha256": "c85f94985847bf5be7e430e23135c5ad896dc6283cd256bf42ad46b1ca2efa11",
+        "changedPixels": 0
+      },
+      {
+        "variant": "opaque",
+        "variantSourceSha256": "3fdd3d52d59294a3d4993d91c1696c90d65184afaba09d6a6656089f6d8a7a99",
+        "nativePngSha256": "c85f94985847bf5be7e430e23135c5ad896dc6283cd256bf42ad46b1ca2efa11",
+        "changedPixels": 0
+      }
+    ],
+    "preservedCompanionConsumers": [
+      "path5398",
+      "use4125",
+      "path3424",
+      "path5263",
+      "use4171"
+    ],
+    "originalAndOpaqueCompanionsExactBothHosts": true
+  },
+  "allOriginals": {
+    "filesHashCheckedPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "countsPerHost": {
+      "UnsupportedFeature": 53,
+      "rendered": 148,
+      "exact": 139,
+      "different": 9,
+      "MalformedInput": 3
+    },
+    "all148PreviousPngsByteIdenticalPerHost": true,
+    "outcomesFullLogicalDimensionsAndSourceFontDiagnosticsUnchanged": true,
+    "wholeGallardo": {
+      "status": "different",
+      "changedPixels": 38,
+      "maximumError": 1,
+      "totalChannelError": 40
+    },
+    "lostExactImages": [],
+    "increasedTotalErrors": [],
+    "seconds": 50.13178849988617,
+    "timingScope": "Functional replay on a busy host; no benchmark or test-suite simplification claim.",
+    "comparisonScope": "Exploratory default static transparent options without supplied fonts/resources. Replaying the original native cache does not admit a new original reference."
+  },
+  "retainedInteractions": {
+    "affineRadialAndSolidLargeViewBoxCasesPerHost": 23,
+    "allExact": true,
+    "scimitarInnerControlsExactPerHost": 20,
+    "scimitarScopePngsByteIdentical": 43,
+    "completeShadowDescendants": 35
+  },
+  "affectedValidation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 9361,
+      "seconds": 36.11841519991867,
+      "librarySha256": "99d7e5005a565874fa631c2b4d41dd203c094701459065b1d6d92f56450a4812"
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 37769,
+      "seconds": 74.8817070000805,
+      "librarySha256": "99d7e5005a565874fa631c2b4d41dd203c094701459065b1d6d92f56450a4812"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 9361,
+      "seconds": 36.67883380013518,
+      "librarySha256": "9fd4358409a002c1236a3cef8d221182ddf6022cf91d4748ca6bc51d33043be1"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 37769,
+      "seconds": 72.74995070020668,
+      "librarySha256": "9fd4358409a002c1236a3cef8d221182ddf6022cf91d4748ca6bc51d33043be1"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 9361,
+      "seconds": 29.092312067,
+      "librarySha256": "99d7e5005a565874fa631c2b4d41dd203c094701459065b1d6d92f56450a4812"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 37769,
+      "seconds": 164.712592337,
+      "librarySha256": "99d7e5005a565874fa631c2b4d41dd203c094701459065b1d6d92f56450a4812"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 9361,
+      "seconds": 24.646224330999985,
+      "librarySha256": "9fd4358409a002c1236a3cef8d221182ddf6022cf91d4748ca6bc51d33043be1"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 37769,
+      "seconds": 139.081137261,
+      "librarySha256": "9fd4358409a002c1236a3cef8d221182ddf6022cf91d4748ca6bc51d33043be1"
+    }
+  ],
+  "qualificationScope": "Four warning-free test builds and affected image/pattern/filter/clip/affine/drawing/glyph/text mechanisms and rendering, including canonical admission, on both hosts/TFMs. Full filter/package milestone acceptance still requires the remaining whole originals and contexts.",
+  "remainingAcceptance": "Whole Gallardo38 pixels/40 total error, car53/60, green grapes36/138 and UFO30/63 remain; nine default original differences overall. Continue the shared gradient factory/placement model review and remaining W1 font/resource/static-state gates."
+}

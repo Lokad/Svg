@@ -74,6 +74,10 @@ The [image-edge fixture](Fixtures/original/filter-image-edge-construction.svg)
 protects bitmap clipping during affine image restoration, with linearRGB blur and
 enclosing opacity. Existing edge/clip mechanisms retain boundary coverage; the
 fixture follows one canonical conversion path.
+The [clamped-sampling fixture](Fixtures/original/filter-clamped-bilinear-accumulation.svg)
+protects product rounding before color transfer and storage. Two compiled native
+bit vectors distinguish clamped and generic wrapped/picture kernels directly; the existing weight,
+clamping and stride tests remain separate. No API matrix is added.
 The [affine-root control](Fixtures/original/filter-affine-root-boundary.svg) and
 its [paired gap control](Fixtures/original/filter-affine-root-gap.svg) retain
 distinct backdrop/capture interactions through canonical conversion. Direct

@@ -7,6 +7,43 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgFilterBilinearSamplingTests
 {
+    [Theory]
+    [InlineData("clamped")]
+    [InlineData("wrapped")]
+    [InlineData("picture-view")]
+    [Trait("Layer", "Mechanism")]
+    public void Sampling_kernels_preserve_native_product_rounding(string kernel)
+    {
+        string path = Path.Combine(AppContext.BaseDirectory, "TestData", "clamped-bilinear-kernels.csv");
+        using JsonDocument metadata = JsonDocument.Parse(File.ReadAllBytes(Path.ChangeExtension(path, ".json")));
+        Assert.Equal(metadata.RootElement.GetProperty("dataSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(path))));
+        string vector = kernel == "picture-view" ? "wrapped" : kernel;
+        string[] fields = File.ReadLines(path).Single(row => row.StartsWith(vector + ",", StringComparison.Ordinal)).Split(',');
+        uint[] expected = fields.Skip(1).Select(value => uint.Parse(value, NumberStyles.HexNumber, CultureInfo.InvariantCulture)).ToArray();
+        SvgConstantShaderPaint[] taps = [new(47, 35, 33, 236), new(47, 35, 33, 237), new(48, 36, 34, 242), new(49, 36, 34, 243)];
+        const float x = 1.215576171875f, y = 1.553628921508789f;
+        SvgShaderPaint sample;
+        if (kernel == "wrapped")
+            sample = SvgShaderPaint.InterpolatePremultiplied(taps[0], taps[1], taps[2], taps[3],
+                x + .5f - MathF.Floor(x + .5f), y + .5f - MathF.Floor(y + .5f), 1);
+        else
+        {
+            byte[] pixels = new byte[4 * 4 * 4];
+            for (int index = 0; index < taps.Length; index++)
+            {
+                int offset = ((1 + index / 2) * 4 + index % 2) * 4;
+                SvgConstantShaderPaint tap = taps[index];
+                pixels[offset] = tap.Red; pixels[offset + 1] = tap.Green;
+                pixels[offset + 2] = tap.Blue; pixels[offset + 3] = tap.Alpha;
+            }
+            sample = kernel == "picture-view"
+                ? SvgShaderPaint.SampleView(pixels, 4, new(0, 0, 4, 4), x, y, 1)
+                : SvgShaderPaint.SampleAffine(pixels, 4, 4, x, y, new(0, 0), 1);
+        }
+        Assert.Equal(expected, new[] { BitConverter.SingleToUInt32Bits(sample.Red), BitConverter.SingleToUInt32Bits(sample.Green),
+            BitConverter.SingleToUInt32Bits(sample.Blue), BitConverter.SingleToUInt32Bits(sample.Alpha) });
+    }
+
     public static IEnumerable<object[]> FilterCases() => Cases(false);
     public static IEnumerable<object[]> ViewCases() => Cases(true);
 

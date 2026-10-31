@@ -1,0 +1,15 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="850" height="300">
+  <!-- Clamped RGBA8 accumulation precedes color transfer and the final store. -->
+  <defs>
+    <filter id="b" x="-.33162393" y="-.50389611"
+        width="1.6632479" height="2.0077922">
+      <feGaussianBlur stdDeviation="15.236484"/>
+    </filter>
+  </defs>
+  <g transform="translate(0 540)">
+    <ellipse cx="645.25" cy="-447.125" rx="45.875" ry="30.25" fill="#6488ea"
+        opacity=".72608696" filter="url(#b)"
+        transform="matrix(2.242215 .424538 -.186032 .982545 -876.716 -289.2858)"/>
+  </g>
+</svg>

@@ -198,6 +198,9 @@ Content clips limit painting without moving the source bitmap's shader coordinat
 or dither origin, including when compact capture omits part of its transparent border.
 Affine image edges are constructed and walked against the bitmap clip; requested
 output bounds govern row storage and restoration separately.
+The RGBA8 clamp fast path rounds each bilinear product before accumulation. Generic
+wrapped and picture/mipmap sampling retain fused accumulation, sharing preparation
+and storage rules.
 The bounds query distinguishes deferred paint, padded images and cropped images.
 Cropping invalidates transparent-padding knowledge. Affine restoration uses the
 active clip for edge construction and replays coverage with the sampled paint.
