@@ -18765,6 +18765,31 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-radial-gradient-recorded-bitmap-origin.json",
       "referenceSha256": "b284ac3e0973db0d372c588968f6499a2246401bed0d98bbfa08bd93042e9307"
+    },
+    {
+      "id": "original-opaque-gradient-edge-coverage",
+      "path": "original/opaque-gradient-edge-coverage.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "1be021ee9987b56e4d225905343c8bc7b47f1c94b1cf747078ae7633f7efec35",
+      "materializedSha256": "1be021ee9987b56e4d225905343c8bc7b47f1c94b1cf747078ae7633f7efec35",
+      "featureTags": [
+        "linear-gradient",
+        "opaque-coverage",
+        "antialias",
+        "rounding"
+      ],
+      "width": 640,
+      "height": 640,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-opaque-gradient-edge-coverage.json",
+      "referenceSha256": "aa38cd5b1bd1d71e64c5ecb8b37d9dabab5ae87a2fb4e5d0af062ff418752101"
     }
   ]
 }

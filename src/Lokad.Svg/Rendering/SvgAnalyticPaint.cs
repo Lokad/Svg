@@ -25,31 +25,38 @@ internal readonly record struct SvgAnalyticPaint
     private readonly SvgShaderPaint? _shader;
     private readonly SvgConstantShaderPaint? _constant;
     private readonly bool _binaryRegion;
+    private readonly bool _opaqueShader;
 
-    private SvgAnalyticPaint(SvgColor solid, SvgShaderPaint? shader, SvgConstantShaderPaint? constant, bool binaryRegion)
+    private SvgAnalyticPaint(SvgColor solid, SvgShaderPaint? shader, SvgConstantShaderPaint? constant, bool binaryRegion, bool opaqueShader)
     {
         _solid = solid; _binaryRegion = binaryRegion;
         _shader = shader;
         _constant = constant;
+        _opaqueShader = opaqueShader;
     }
 
     internal static SvgAnalyticPaint Solid(SvgColor color)
     {
-        return new(new SvgColor(Premultiply(color.Red, color.Alpha), Premultiply(color.Green, color.Alpha), Premultiply(color.Blue, color.Alpha), color.Alpha), null, null, false);
+        return new(new SvgColor(Premultiply(color.Red, color.Alpha), Premultiply(color.Green, color.Alpha), Premultiply(color.Blue, color.Alpha), color.Alpha), null, null, false, false);
 
         static byte Premultiply(byte color, byte alpha) => (byte)((color * alpha + 127) / 255);
     }
 
-    internal static SvgAnalyticPaint Shader(SvgShaderPaint sample) => new(default, sample, null, false);
+    internal static SvgAnalyticPaint Shader(SvgShaderPaint sample) => Shader(sample, false);
+
+    /// <summary>Retains factory/program opacity independently of a sampled pixel's alpha.</summary>
+    /// <remarks>The caller proves opacity for the complete shader and paint. Samples borrow no
+    /// storage; coverage replay remains allocation-free and caller-cancelled.</remarks>
+    internal static SvgAnalyticPaint Shader(SvgShaderPaint sample, bool opaque) => new(default, sample, null, false, opaque);
 
     /// <summary>Retains native low-precision constant-shader rounding, independently of solid blitter arithmetic.</summary>
-    internal static SvgAnalyticPaint Constant(SvgConstantShaderPaint sample) => new(default, null, sample, false);
+    internal static SvgAnalyticPaint Constant(SvgConstantShaderPaint sample) => new(default, null, sample, false, false);
 
     /// <summary>A binary region's native wrapper forwards fringe pairs as ordinary alpha runs.</summary>
-    internal SvgAnalyticPaint ThroughBinaryRegion() => new(_solid, _shader, _constant, true);
+    internal SvgAnalyticPaint ThroughBinaryRegion() => new(_solid, _shader, _constant, true, _opaqueShader);
 
     /// <summary>Paints one operation onto a premultiplied RGBA8 pixel without collapsing it into another operation.</summary>
-    /// <remarks>The uniform source uses the matched software blitter's initial round/255 premultiplication. A8 masks scale each lane with (lane*coverage+lane)/256; direct single/run operations scale first and then source-over. Fringe pairs interpolate before rounding and use their own coverage scale. Shader samples retain float lanes through coverage and source-over; each event stores its result separately.</remarks>
+    /// <remarks>The uniform source uses the matched software blitter's initial round/255 premultiplication. A8 masks scale each lane with (lane*coverage+lane)/256; direct single/run operations scale first and then source-over. Fringe pairs interpolate before rounding and use their own coverage scale. Shader samples retain float lanes; globally opaque programs interpolate coverage after source reduction. Each event stores its result separately.</remarks>
     internal void Blend(Span<byte> destination, byte coverage, SvgAnalyticPaintKind kind)
     {
         if (_binaryRegion && kind == SvgAnalyticPaintKind.Pair) kind = SvgAnalyticPaintKind.Direct;
@@ -60,7 +67,7 @@ internal readonly record struct SvgAnalyticPaint
         }
         if (_shader is SvgShaderPaint shader)
         {
-            shader.Blend(destination, coverage);
+            shader.Blend(destination, coverage, _opaqueShader, kind);
             return;
         }
         byte sourceRed = _solid.Red, sourceGreen = _solid.Green, sourceBlue = _solid.Blue, sourceAlpha = _solid.Alpha;

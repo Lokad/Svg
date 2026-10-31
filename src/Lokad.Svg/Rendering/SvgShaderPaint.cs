@@ -261,10 +261,36 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
 
     /// <summary>Applies byte coverage and source-over to a premultiplied RGBA8 pixel.</summary>
     internal void Blend(Span<byte> destination, byte coverage)
+        => Blend(destination, coverage, false);
+
+    /// <summary>Preserves native SrcOver-to-Src reduction for a globally opaque shader and paint.</summary>
+    /// <remarks>The caller supplies program opacity, never a sampled-alpha guess. Both branches
+    /// borrow premultiplied storage and allocate nothing; row cancellation belongs to the caller.</remarks>
+    internal void Blend(Span<byte> destination, byte coverage, bool reduceOpaqueSource)
+        => Blend(destination, coverage, reduceOpaqueSource, SvgAnalyticPaintKind.Direct);
+
+    /// <summary>Distinguishes full direct spans from A8 masks that retain the coverage interpolation stage.</summary>
+    internal void Blend(Span<byte> destination, byte coverage, bool reduceOpaqueSource, SvgAnalyticPaintKind kind)
     {
         if (coverage == 0 || Alpha == 0) return;
         const float byteScale = 1f / 255f;
         float scale = coverage * byteScale;
+        if (reduceOpaqueSource)
+        {
+            if (coverage == 255 && kind == SvgAnalyticPaintKind.Direct)
+            {
+                destination[0] = Quantize(Clamp(Red));
+                destination[1] = Quantize(Clamp(Green));
+                destination[2] = Quantize(Clamp(Blue));
+                destination[3] = Quantize(Clamp(Alpha));
+                return;
+            }
+            destination[0] = Interpolate(destination[0], Red, scale);
+            destination[1] = Interpolate(destination[1], Green, scale);
+            destination[2] = Interpolate(destination[2], Blue, scale);
+            destination[3] = Interpolate(destination[3], Alpha, scale);
+            return;
+        }
         // Native normalized blitters clamp shader lanes before coverage and source-over.
         float alpha = Clamp(Alpha) * scale;
         float inverse = 1 - alpha;
@@ -274,6 +300,11 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
         destination[3] = Quantize(MathF.FusedMultiplyAdd(destination[3] * byteScale, inverse, alpha));
 
         static float Clamp(float value) => float.IsNaN(value) ? 1 : Math.Clamp(value, 0, 1);
+        static byte Interpolate(byte destination, float source, float coverage)
+        {
+            float previous = destination * byteScale;
+            return Quantize(MathF.FusedMultiplyAdd(Clamp(source) - previous, coverage, previous));
+        }
         // The x64 SIMD native store uses nearest-even conversion after scaling.
         static byte Quantize(float value) => (byte)Math.Clamp(MathF.Round(value * 255f, MidpointRounding.ToEven), 0, 255);
     }

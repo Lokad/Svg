@@ -13,11 +13,14 @@ internal readonly struct SvgGradientRamp : IDisposable
     private readonly SvgGradientRampSegment _pair;
     private readonly OwnedSceneArray<SvgGradientRampSegment> _segments;
     private readonly int _segmentCount, _uniformGapCount;
+    /// <summary>Reports opacity of every declared stop, independently of a sampled ramp position.</summary>
+    internal bool IsOpaque { get; }
 
-    private SvgGradientRamp(SvgGradientRampSegment pair, OwnedSceneArray<SvgGradientRampSegment> segments, int segmentCount, int uniformGapCount)
+    private SvgGradientRamp(SvgGradientRampSegment pair, OwnedSceneArray<SvgGradientRampSegment> segments, int segmentCount, int uniformGapCount, bool isOpaque)
     {
         _pair = pair; _segments = segments;
         _segmentCount = segmentCount; _uniformGapCount = uniformGapCount;
+        IsOpaque = isOpaque;
     }
 
     internal static SvgGradientRamp Create(ReadOnlySpan<SvgGradientStop> stops, SvgGradientSpread spread,
@@ -25,8 +28,14 @@ internal readonly struct SvgGradientRamp : IDisposable
     {
         token.ThrowIfCancellationRequested();
         if (stops.Length > 256) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient ramp preparation exceeds the supported stop limit.");
-        if (stops.Length == 0) return new(Pair(default, default, 0, 0), new([], null), 0, 0);
-        if (stops.Length == 1) return new(Pair(stops[0].Color, stops[0].Color, stops[0].Alpha, stops[0].Alpha), new([], null), 0, 0);
+        bool isOpaque = stops.Length != 0;
+        foreach (SvgGradientStop stop in stops)
+        {
+            token.ThrowIfCancellationRequested();
+            isOpaque &= stop.Alpha == 1;
+        }
+        if (stops.Length == 0) return new(Pair(default, default, 0, 0), new([], null), 0, 0, isOpaque);
+        if (stops.Length == 1) return new(Pair(stops[0].Color, stops[0].Color, stops[0].Alpha, stops[0].Alpha), new([], null), 0, 0, isOpaque);
         if (stops.Length > 2 && SamePaint(stops[0], stops[^1]))
         {
             bool same = true;
@@ -35,10 +44,10 @@ internal readonly struct SvgGradientRamp : IDisposable
                 token.ThrowIfCancellationRequested();
                 if (!SamePaint(stops[index], stops[0])) { same = false; break; }
             }
-            if (same) return new(Pair(stops[0].Color, stops[0].Color, stops[0].Alpha, stops[0].Alpha), new([], null), 0, 0);
+            if (same) return new(Pair(stops[0].Color, stops[0].Color, stops[0].Alpha, stops[0].Alpha), new([], null), 0, 0, isOpaque);
         }
         if (stops.Length == 2 && (float)stops[0].Offset == 0 && (float)stops[1].Offset == 1)
-            return new(Pair(stops[0].Color, stops[1].Color, stops[0].Alpha, stops[1].Alpha), new([], null), 0, 0);
+            return new(Pair(stops[0].Color, stops[1].Color, stops[0].Alpha, stops[1].Alpha), new([], null), 0, 0, isOpaque);
 
         SvgGradientStops canonical = SvgGradientStops.Create(stops, spread, token);
         int capacity = canonical.Uniform ? canonical.Count : canonical.Count + 1;
@@ -60,7 +69,7 @@ internal readonly struct SvgGradientRamp : IDisposable
                     used++; previous = current;
                 }
                 segments[used++] = Padding(1, previous);
-                return new(default, new(segments, owner), used, gaps);
+                return new(default, new(segments, owner), used, gaps, isOpaque);
             }
 
             if (!iterator.MoveNext()) throw new InvalidOperationException("Canonical gradient is missing its second color.");
@@ -85,7 +94,7 @@ internal readonly struct SvgGradientRamp : IDisposable
                 next = iterator.Current; nextIndex++;
             }
             segments[used++] = Padding((float)previous.Offset, previous);
-            return new(default, new(segments, owner), used, 0);
+            return new(default, new(segments, owner), used, 0, isOpaque);
         }
         catch { owner.Dispose(); throw; }
 

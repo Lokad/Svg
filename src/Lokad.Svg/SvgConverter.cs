@@ -4420,6 +4420,7 @@ public static partial class SvgConverter
             if (!paint || endX <= startX || endY <= startY || (denominator == 0 && definition.Stops.Length != 1)) return;
             using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
 
+            bool opaque = ramp.IsOpaque && ShaderAlpha(opacity) == 1;
             if (paint && (denominator != 0 || definition.Stops.Length == 1))
             for (int y = startY; y < endY; y++)
             {
@@ -4453,7 +4454,7 @@ public static partial class SvgConverter
                 }
                 position = SvgGradientRamp.Spread(position, definition.Spread);
                 int offset = (y * outputWidth + x) * 4;
-                ramp.SampleAbsolute(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
+                ramp.SampleAbsolute(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y), opaque);
             }
             }
 
@@ -4489,6 +4490,7 @@ public static partial class SvgConverter
             if (paint && (definition.Radius <= 0 && definition.Stops.Length != 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
             if (!paint || endX <= startX || endY <= startY) return;
             using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
+            bool opaque = ramp.IsOpaque && ShaderAlpha(opacity) == 1 && SvgShaderCoordinates.UsesRadialFactory(definition);
 
             if (paint)
             for (int y = startY; y < endY; y++)
@@ -4556,7 +4558,7 @@ public static partial class SvgConverter
                 }
                 position = SvgGradientRamp.Spread(position, definition.Spread);
                 int offset = (y * outputWidth + x) * 4;
-                ramp.SampleAbsolute(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
+                ramp.SampleAbsolute(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y), opaque);
             }
             }
         }
@@ -4643,6 +4645,8 @@ public static partial class SvgConverter
             using SvgGradientRamp glyphRamp = constantGlyphFactory ? default : glyphLinear is {} linearRamp
                 ? PrepareGradientRamp(linearRamp.Stops, linearRamp.Spread)
                 : glyphRadial is {} radialRamp ? PrepareGradientRamp(radialRamp.Stops, radialRamp.Spread) : default;
+            bool glyphOpaque = glyphRamp.IsOpaque && ShaderAlpha(glyph.Color.Alpha) == 1
+                && (glyphLinear is not null || glyphRadial is {} radialFactory && SvgShaderCoordinates.UsesRadialFactory(radialFactory));
             if (glyphSource is SvgGlyphRasterSource source && (OperatingSystem.IsLinux() || OperatingSystem.IsWindows()))
             {
                 if (glyph.StrokePaint is {} strokePaint)
@@ -4905,7 +4909,7 @@ public static partial class SvgConverter
                     if (ink.X1 == ink.X2 && ink.Y1 == ink.Y2) position = 1;
                     else if (!glyphCoordinates.TryLinear(x, y, ShaderBitmapOrigin(x, y), out position))
                         position = ink.SourcePaint?.Position((x + .5 - device.E) / device.A, (y + .5 - device.F) / device.D) ?? 1;
-                    return SvgAnalyticPaint.Shader(glyphRamp.SampleAbsolute(SvgGradientRamp.Spread(position, ink.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)));
+                    return SvgAnalyticPaint.Shader(glyphRamp.SampleAbsolute(SvgGradientRamp.Spread(position, ink.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)), glyphOpaque);
                 }
                 if (glyphRadial is {} radial)
                 {
@@ -4933,7 +4937,7 @@ public static partial class SvgConverter
                         if (!sample.IsVisible) return SvgAnalyticPaint.Shader(default);
                         position = sample.Position;
                     }
-                    return SvgAnalyticPaint.Shader(glyphRamp.SampleAbsolute(SvgGradientRamp.Spread(position, radial.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)));
+                    return SvgAnalyticPaint.Shader(glyphRamp.SampleAbsolute(SvgGradientRamp.Spread(position, radial.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)), glyphOpaque);
                 }
                 return glyphPattern is null ? ResolveSolidPaint(glyph.Color)
                     : SvgAnalyticPaint.Shader(SamplePatternWithOpacity(glyphPattern, glyphTile.Surface.Pixels, x, y, ref glyphCoordinates, glyph.Color.Alpha));

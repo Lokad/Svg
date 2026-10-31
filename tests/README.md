@@ -92,6 +92,10 @@ retry without publishing a stale coordinate cache. Separate linear and radial
 clipped fixtures protect rounding through canonical conversion; their independent
 captures and original mappings are in the
 [stage evidence](Research/svgweb/gradient-recorded-bitmap-origin.json).
+The [opaque coverage mechanisms](Lokad.Svg.Tests/SvgOpaqueGradientCoverageTests.cs)
+use six compiled native vectors and factory/opacity eligibility checks. One canonical
+colored-edge fixture protects rendering; [its evidence](Research/svgweb/opaque-gradient-coverage.json)
+also maps full Gallardo acceptance and preserves direct-span/A8 distinctions.
 The [affine-root control](Fixtures/original/filter-affine-root-boundary.svg) and
 its [paired gap control](Fixtures/original/filter-affine-root-gap.svg) retain
 distinct backdrop/capture interactions through canonical conversion. Direct

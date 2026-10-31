@@ -50,6 +50,12 @@ flattening first loses intermediate float rounding. The first stage includes the
 recorded projection and source placement. Draw-local caches publish only completed
 mapping; deep-chain scratch is budgeted and released before sampling continues.
 
+Gradient opacity belongs to all prepared stops and the native factory, independently
+of a sampled alpha. Opaque linear/radial programs reduce source-over to source before
+coverage interpolation; genuinely conical and translucent programs retain source-over.
+Full direct spans store source lanes, while A8 masks retain interpolation. Geometry
+and glyph samplers share this material rule; hairline opacity can disable reduction.
+
 Prepared-document font discovery borrows the same collected styles, reader
 workspace and active budget used by lowering. Discovery control storage is
 temporary; selected font bytes stay alive through the prepared operation.

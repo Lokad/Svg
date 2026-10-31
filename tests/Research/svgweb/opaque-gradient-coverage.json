@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "c7740795cdd8eb6315c9767cad51182ce62fc3fa",
+  "librarySha256": "ea0c8418223f5771a8f4162ef1c6e562e2c0df8d4007597febb77b79b444f0a9",
+  "scope": "Shared opaque-gradient program and coverage stages. Default complete Gallardo acceptance closes; remaining original/font/resource/static-state gates and full milestone qualification stay separately tracked.",
+  "implementation": {
+    "ramp": "../../../src/Lokad.Svg/Rendering/SvgGradientRamp.cs",
+    "coordinates": "../../../src/Lokad.Svg/Rendering/SvgShaderCoordinates.cs",
+    "material": "../../../src/Lokad.Svg/Rendering/SvgShaderPaint.cs",
+    "replay": "../../../src/Lokad.Svg/Rendering/SvgAnalyticPaint.cs",
+    "sampler": "../../../src/Lokad.Svg/Rendering/SvgShaderSampler.cs",
+    "rule": "Retain all-stop opacity at preparation, then combine it with paint alpha and native linear/radial factory identity. Genuinely conical factories stay nonopaque even when a cone covers the plane. Hairline alpha reduction can disable source reduction. Geometry and glyph consumers share the material rule.",
+    "coverage": "Opaque SrcOver reduces to Src before coverage: FMA(source-destination, coverage, destination). Full direct spans store source directly; A8 masks/fringe pairs retain interpolation. Nonopaque programs keep existing prescaled SrcOver, including sampled alpha1. Binary-region pair forwarding retains the original operation distinction.",
+    "ownership": "One boolean in existing ramp/sampler/material values. Existing owners and array admission remain; no new scene storage, provider, cache, allocation path or ownership model. Source stop mutation cannot change prepared opacity.",
+    "nativeSources": [
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkRasterPipelineBlitter.cpp",
+        "sha256": "4ff8b1a87edee23895137a0c2a22d0cfe9f0012468708b8ade00cdca4f7e22b6"
+      },
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/opts/SkRasterPipeline_opts.h",
+        "sha256": "849ecf600bf6181fc44f101e4c84c451fba13b00f12dbfbe64bd035fc1803541"
+      },
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/shaders/gradients/SkConicalGradient.cpp",
+        "sha256": "f6d878d7315edecd73b80249388315dad92c920e422ace1ecc7f10b33e4394dc"
+      }
+    ],
+    "rejected": "Applying interpolation to full direct coverage changes the existing radial-white reference at (469,202). Retain the reference and the native blitAntiH-to-blitRect rule. A repeated stale-DLL run after a failed build is excluded from qualification."
+  },
+  "mechanisms": {
+    "tests": "../../Lokad.Svg.Tests/SvgOpaqueGradientCoverageTests.cs",
+    "newCases": 28,
+    "roles": {
+      "compiledNativeCoverageVectors": 6,
+      "binaryRegionForwarding": 1,
+      "samplerProgramEligibility": 7,
+      "radialFactoryBoundaries": 8,
+      "borrowedDeclarationIdentity": 1,
+      "inlineAllocatedConstantRampOpacity": 5
+    },
+    "nativeKernel": "opaque-gradient-native.cpp",
+    "nativeVectors": "../../Lokad.Svg.Tests/TestData/opaque-gradient-native.csv",
+    "nativeBuild": {
+      "sourceSha256": "cebdb7428186224d6ff45493bc4c7198cbe4f89e2ecd998ee4055e2e12ffcccf",
+      "compilerFlags": [
+        "-O2",
+        "-std=c++20",
+        "-mavx2",
+        "-mfma",
+        "-ffp-contract=off",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "rows": [
+        {
+          "host": "windows",
+          "sha256": "ba197442ed5be2df6339df5153375c530ef011014db0aca3c70b3013d26e4742",
+          "vectors": 6
+        },
+        {
+          "host": "linux",
+          "sha256": "ba197442ed5be2df6339df5153375c530ef011014db0aca3c70b3013d26e4742",
+          "vectors": 6
+        }
+      ]
+    },
+    "existingTranslucentAndBitmapMechanismsUnchanged": true
+  },
+  "canonicalControl": {
+    "fixture": "../../Fixtures/original/opaque-gradient-edge-coverage.svg",
+    "reference": "../../References/original-opaque-gradient-edge-coverage.json",
+    "sourceSha256": "1be021ee9987b56e4d225905343c8bc7b47f1c94b1cf747078ae7633f7efec35",
+    "nativePngSha256": "aa38cd5b1bd1d71e64c5ecb8b37d9dabab5ae87a2fb4e5d0af062ff418752101",
+    "freshCapturesPerHost": 3,
+    "allSixEncodedPngsIdentical": true,
+    "startupHealthyAndProfilesCleaned": true,
+    "canonicalConversionOnly": true,
+    "comparisons": [
+      {
+        "id": "original-opaque-gradient-edge-coverage",
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896",
+        "changedPixels": 3,
+        "maximumError": 1,
+        "totalChannelError": 3
+      },
+      {
+        "id": "original-opaque-gradient-edge-coverage",
+        "host": "windows",
+        "phase": "candidate",
+        "librarySha256": "ea0c8418223f5771a8f4162ef1c6e562e2c0df8d4007597febb77b79b444f0a9",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "original-opaque-gradient-edge-coverage",
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896",
+        "changedPixels": 3,
+        "maximumError": 1,
+        "totalChannelError": 3
+      },
+      {
+        "id": "original-opaque-gradient-edge-coverage",
+        "host": "linux",
+        "phase": "candidate",
+        "librarySha256": "ea0c8418223f5771a8f4162ef1c6e562e2c0df8d4007597febb77b79b444f0a9",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      }
+    ]
+  },
+  "gallardoAcceptance": {
+    "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "options": "Default static image conversion, transparent output, no supplied fonts/resources",
+    "viewport": {
+      "width": 1901,
+      "height": 1018
+    },
+    "targetPngSha256": "46a65de39c5a600c5abaf1508a450c35eff16910ac26e9a7130ddff2fecfbe10",
+    "allSixFreshCapturesMatchPreexistingTarget": true,
+    "captures": [
+      {
+        "host": "windows",
+        "capture": 1,
+        "nativePngSha256": "46a65de39c5a600c5abaf1508a450c35eff16910ac26e9a7130ddff2fecfbe10",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+      },
+      {
+        "host": "windows",
+        "capture": 2,
+        "nativePngSha256": "46a65de39c5a600c5abaf1508a450c35eff16910ac26e9a7130ddff2fecfbe10",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+      },
+      {
+        "host": "windows",
+        "capture": 3,
+        "nativePngSha256": "46a65de39c5a600c5abaf1508a450c35eff16910ac26e9a7130ddff2fecfbe10",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+      },
+      {
+        "host": "linux",
+        "capture": 1,
+        "nativePngSha256": "46a65de39c5a600c5abaf1508a450c35eff16910ac26e9a7130ddff2fecfbe10",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+      },
+      {
+        "host": "linux",
+        "capture": 2,
+        "nativePngSha256": "46a65de39c5a600c5abaf1508a450c35eff16910ac26e9a7130ddff2fecfbe10",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+      },
+      {
+        "host": "linux",
+        "capture": 3,
+        "nativePngSha256": "46a65de39c5a600c5abaf1508a450c35eff16910ac26e9a7130ddff2fecfbe10",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+      }
+    ],
+    "sourceOperation": "path2744, layer3 child49; preceding twelve drawing boundaries retain the matched backdrop (174,182,188). The source sample red bits1064961028/alpha1, coverage192 and dither34 distinguish native opaque source interpolation from prescaled SrcOver.",
+    "wholeOriginalChangedPixelsBefore": 1,
+    "wholeOriginalChangedPixelsAfter": 0,
+    "isolatedFiltersExactPerHost": 35,
+    "selectedUnfilteredPaintMappingsExactPerHost": 58,
+    "sourceSvgFilesRetained": 0,
+    "closureBoundary": "Complete default original and its selected mappings close. This does not qualify animation, other static states or unresolved original/font/resource contexts."
+  },
+  "qualification": {
+    "builds": 4,
+    "warnings": 0,
+    "totalAffectedChecks": 210476,
+    "checks": [
+      {
+        "name": "affected-qualified-core-linux-net10.0",
+        "passed": 14072,
+        "seconds": 35.97272646900001,
+        "librarySha256": "e2cb72bce51e6e46da3ae08f66c150bfb0cc7fce872f45a1853c2f1f3f925941"
+      },
+      {
+        "name": "affected-qualified-core-linux-net11.0",
+        "passed": 14072,
+        "seconds": 36.252919769000016,
+        "librarySha256": "ea0c8418223f5771a8f4162ef1c6e562e2c0df8d4007597febb77b79b444f0a9"
+      },
+      {
+        "name": "affected-qualified-core-windows-net10.0",
+        "passed": 14072,
+        "seconds": 35.39611990004778,
+        "librarySha256": "e2cb72bce51e6e46da3ae08f66c150bfb0cc7fce872f45a1853c2f1f3f925941"
+      },
+      {
+        "name": "affected-qualified-core-windows-net11.0",
+        "passed": 14072,
+        "seconds": 36.831959299976006,
+        "librarySha256": "ea0c8418223f5771a8f4162ef1c6e562e2c0df8d4007597febb77b79b444f0a9"
+      },
+      {
+        "name": "affected-qualified-native-linux-net10.0",
+        "passed": 38547,
+        "seconds": 166.88007941300003,
+        "librarySha256": "e2cb72bce51e6e46da3ae08f66c150bfb0cc7fce872f45a1853c2f1f3f925941"
+      },
+      {
+        "name": "affected-qualified-native-linux-net11.0",
+        "passed": 38547,
+        "seconds": 159.93505038400002,
+        "librarySha256": "ea0c8418223f5771a8f4162ef1c6e562e2c0df8d4007597febb77b79b444f0a9"
+      },
+      {
+        "name": "affected-qualified-native-windows-net10.0",
+        "passed": 38547,
+        "seconds": 68.75145109998994,
+        "librarySha256": "e2cb72bce51e6e46da3ae08f66c150bfb0cc7fce872f45a1853c2f1f3f925941"
+      },
+      {
+        "name": "affected-qualified-native-windows-net11.0",
+        "passed": 38547,
+        "seconds": 71.89139319979586,
+        "librarySha256": "ea0c8418223f5771a8f4162ef1c6e562e2c0df8d4007597febb77b79b444f0a9"
+      }
+    ],
+    "radialAndSolidLargeViewBoxControlsPerHost": 23,
+    "scimitarInnerControlsPerHost": 20,
+    "unchangedScimitarScopePngs": 43,
+    "completeScimitarOriginalUnchangedBothHosts": true,
+    "wholeOriginalReplaySeconds": 63.101496500195935,
+    "existingReferenceImagesOrTolerancesChanged": 0,
+    "timingInterpretation": "Concurrent functional elapsed times, not benchmark or test-suite simplification measurements. Full milestone/package qualification remains separate."
+  },
+  "originalReview": {
+    "evidence": "opaque-gradient-coverage.json",
+    "sourceBaseline": "c7740795cdd8eb6315c9767cad51182ce62fc3fa",
+    "librarySha256": "ea0c8418223f5771a8f4162ef1c6e562e2c0df8d4007597febb77b79b444f0a9",
+    "allSourceHashesRecheckedPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "countsPerHost": {
+      "rendered": 148,
+      "exploratoryExact": 143,
+      "different": 5,
+      "UnsupportedFeature": 53,
+      "MalformedInput": 3
+    },
+    "previousPngsByteIdenticalPerHost": {
+      "windows": 147,
+      "linux": 147
+    },
+    "changedOriginals": [
+      {
+        "name": "gallardo.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 1
+        },
+        "after": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      }
+    ],
+    "newlyExactOriginals": [
+      "gallardo.svg"
+    ],
+    "lostExactImages": [],
+    "changedOutcomesOrDiagnostics": [],
+    "remainingDefaultDifferences": [
+      {
+        "name": "alphachannel.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 255,
+        "totalChannelError": 259
+      },
+      {
+        "name": "compuserver_msn_Ford_Focus.svg",
+        "status": "different",
+        "changedPixels": 6,
+        "maximumError": 4,
+        "totalChannelError": 45
+      },
+      {
+        "name": "opensearch.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 223,
+        "totalChannelError": 231
+      },
+      {
+        "name": "rg1024_green_grapes.svg",
+        "status": "different",
+        "changedPixels": 40,
+        "maximumError": 18,
+        "totalChannelError": 143
+      },
+      {
+        "name": "scion.svg",
+        "status": "different",
+        "changedPixels": 2,
+        "maximumError": 5,
+        "totalChannelError": 22
+      }
+    ]
+  },
+  "remaining": "Five default originals still differ: Ford, green grapes, alphachannel, opensearch and scion. Supplied-font/resource/static-state W1 gates, structural and test-suite simplification, full milestone/package qualification and performance work remain open."
+}

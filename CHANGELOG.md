@@ -19,8 +19,10 @@
 - Capture filtered sources per destination bitmap and preserve source-image padding
   during geometry and clip-resource construction; restore each output pixel once
   across bitmap borders.
-- Bind radial path fills through retained definition, local and drawing maps for
-  axis and skewed placement, including clipped and inherited paints.
+- Preserve gradient declarations, local/reference matrices and recorded bitmap
+  stages across fills, strokes and instances, including clipped and inherited paints.
+- Preserve opaque-gradient source reduction and coverage interpolation, retaining
+  conical/translucent programs and distinct direct-span/A8 mask rounding.
 - Preserve source path bounds across clipped stroke lowering; retain filter image
   padding, cropping and sampling colour transfer through affine restoration.
 - Compose affine image placement in the owning bitmap and store enclosing-opacity

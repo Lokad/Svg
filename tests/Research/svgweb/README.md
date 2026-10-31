@@ -6,11 +6,11 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 148 originals per host: **142 exploratory
-exact and 6 different**, with 53 UnsupportedFeature and 3 MalformedInput outcomes.
+The current default conversion renders 148 originals per host: **143 exploratory
+exact and 5 different**, with 53 UnsupportedFeature and 3 MalformedInput outcomes.
 These observations use transparent output without supplied fonts/resources.
-Scimitar, car, radialgradient2 and UFO are exact; Gallardo differs at one pixel/one
-total channel error. See `currentReview` in the inventory for all six remaining
+Scimitar, Gallardo, car, radialgradient2 and UFO are exact. See `currentReview`
+in the inventory for all five remaining
 differences. Exact default output does not qualify other font, resource
 or static-state contexts, and whole-corpus acceptance remains open.
 
@@ -57,7 +57,8 @@ current inventory above governs overall status.
 | Clip source geometry | [Referenced paths](clip-use-construction.json), [source placement](clip-source-placement.json), [canvas boundaries](clip-canvas-boundaries.json). Retain authored quadratic/cubic/arc operands, local resource placement and referencing-canvas concatenation. |
 | Clip coverage and bounds | [Replay state](clip-replay-state.json), [visual bounds](clip-visual-bounds.json), [analytic alpha](analytic-alpha-bytes.json). Separate silhouette coverage, stroke/layout enclosures, numerical raster ink and native byte narrowing. |
 | Radial paint binding | [Source binding](radial-source-binding.json). Keep local gradient coordinates and reference placement through axis/skew, clipping and inherited stops. |
-| Gradient bitmap coordinates | [Recorded stages](gradient-recorded-bitmap-origin.json). Subtract the owning bitmap origin before replaying child transforms. Linear/radial native controls and direct mapping/ownership tests protect the shared order; whole Gallardo acceptance remains open. |
+| Gradient bitmap coordinates | [Recorded stages](gradient-recorded-bitmap-origin.json). Subtract the owning bitmap origin before replaying child transforms. Linear/radial native controls and direct mapping/ownership tests protect the shared order. |
+| Opaque gradient coverage | [Program opacity and coverage](opaque-gradient-coverage.json). Retain factory eligibility and direct-span/A8 interpolation stages. One canonical edge fixture and six compiled native vectors protect the shared rule; the complete default Gallardo image is exact. |
 | Gradient declarations | [Typed lengths](gradient-lengths.json), [inheritance fixture](../../Fixtures/original/radial-coordinate-inheritance.svg), [stop identity fixture](../../Fixtures/original/gradient-stop-identities.svg). Preserve number/percentage intent, missing/default values, units, per-field inheritance, viewport resolution and metadata. |
 | Paint selection and text evidence | [Paint references](paint-references.json), [filter-source review](filter-source-review.json). Empty paint content and unavailable servers differ; the synthetic font needs valid bounds before its rendering can diagnose the library. Exploratory single captures do not admit new references. |
 
@@ -65,10 +66,10 @@ current inventory above governs overall status.
 
 The [280-leaf Gallardo map](gallardo-paint-map.csv) retains 58 native paint isolations
 and the [referenced-clip record](clip-use-construction.json) maps 35 filter consumers.
-The current [bitmap request record](filter-bitmap-clip-request.json) rechecks both
+The [opaque coverage record](opaque-gradient-coverage.json) rechecks both
 collections. The clipped `path3850` blur and both captured-gradient consumers
 (`use4125`, `use4171`) are exact;
-the complete Gallardo image remains unresolved. The
+the complete default Gallardo image matches three fresh captures per host. The
 [Scimitar scope map](scimitar-scope-map.csv) preserves all 43 scopes; the
 [inner-filter map](scimitar-inner-filter-map.csv) preserves 20 companions, including
 the complete 35-child shadow. These and the complete Scimitar original remain exact.

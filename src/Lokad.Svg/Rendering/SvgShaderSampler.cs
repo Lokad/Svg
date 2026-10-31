@@ -22,6 +22,7 @@ internal struct SvgShaderSampler
     private double _directionX, _directionY, _denominator;
     private float _alpha;
     private SvgShaderPaint _constant;
+    private bool _opaque;
 
     internal static SvgShaderSampler Constant(SvgShaderPaint color, float alpha)
         => new() { _kind = Kind.Constant, _constant = color, _alpha = alpha };
@@ -31,12 +32,14 @@ internal struct SvgShaderSampler
     {
         double dx = definition.X2 - definition.X1, dy = definition.Y2 - definition.Y1;
         return new() { _kind = Kind.Linear, _linear = definition, _box = box, _ramp = ramp, _coordinates = coordinates,
-            _context = context, _alpha = alpha, _directionX = dx, _directionY = dy, _denominator = dx * dx + dy * dy };
+            _context = context, _alpha = alpha, _opaque = alpha == 1 && ramp.IsOpaque,
+            _directionX = dx, _directionY = dy, _denominator = dx * dx + dy * dy };
     }
 
     internal static SvgShaderSampler Radial(SvgRadialGradient definition, SvgRectangle box, SvgGradientRamp ramp,
         SvgShaderCoordinates coordinates, SvgShaderSamplingContext context, float alpha)
-        => new() { _kind = Kind.Radial, _radial = definition, _box = box, _ramp = ramp, _coordinates = coordinates, _context = context, _alpha = alpha };
+        => new() { _kind = Kind.Radial, _radial = definition, _box = box, _ramp = ramp, _coordinates = coordinates, _context = context,
+            _alpha = alpha, _opaque = alpha == 1 && ramp.IsOpaque && SvgShaderCoordinates.UsesRadialFactory(definition) };
 
     internal static SvgShaderSampler Pattern(SvgPatternGeometry definition, byte[] texture,
         SvgShaderCoordinates coordinates, SvgShaderSamplingContext context, float alpha)
@@ -48,6 +51,7 @@ internal struct SvgShaderSampler
         if (coverage == 1) return;
         int alpha = Math.Clamp((int)(_alpha * 255f + .5f), 0, 255);
         _alpha = ((alpha * (int)(coverage * 256)) >> 8) / 255f;
+        _opaque &= _alpha == 1;
     }
 
     internal SvgAnalyticPaint Sample(int x, int y, CancellationToken token)
@@ -80,7 +84,7 @@ internal struct SvgShaderSampler
                 else position = (((point.X - _box.X) / _box.Width - definition.X1) * _directionX
                     + ((point.Y - _box.Y) / _box.Height - definition.Y1) * _directionY) / _denominator;
             }
-            return SvgAnalyticPaint.Shader(_ramp.SampleAbsolute(SvgGradientRamp.Spread(position, definition.Spread), _alpha, _context.Dither(x, y)));
+            return SvgAnalyticPaint.Shader(_ramp.SampleAbsolute(SvgGradientRamp.Spread(position, definition.Spread), _alpha, _context.Dither(x, y)), _opaque);
         }
         SvgRadialGradient circle = _radial;
         double radialPosition;
@@ -107,7 +111,7 @@ internal struct SvgShaderSampler
             if (!sample.IsVisible) return SvgAnalyticPaint.Shader(default);
             radialPosition = sample.Position;
         }
-        return SvgAnalyticPaint.Shader(_ramp.SampleAbsolute(SvgGradientRamp.Spread(radialPosition, circle.Spread), _alpha, _context.Dither(x, y)));
+        return SvgAnalyticPaint.Shader(_ramp.SampleAbsolute(SvgGradientRamp.Spread(radialPosition, circle.Spread), _alpha, _context.Dither(x, y)), _opaque);
     }
 
 }

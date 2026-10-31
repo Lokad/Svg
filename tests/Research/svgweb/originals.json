@@ -10351,15 +10351,15 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "gradient-recorded-bitmap-origin.json",
-    "sourceBaseline": "67bad0ea5867621cd33fdd7d8784df43e477000b",
-    "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896",
+    "evidence": "opaque-gradient-coverage.json",
+    "sourceBaseline": "c7740795cdd8eb6315c9767cad51182ce62fc3fa",
+    "librarySha256": "ea0c8418223f5771a8f4162ef1c6e562e2c0df8d4007597febb77b79b444f0a9",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
       "rendered": 148,
-      "exploratoryExact": 142,
-      "different": 6,
+      "exploratoryExact": 143,
+      "different": 5,
       "UnsupportedFeature": 53,
       "MalformedInput": 3
     },
@@ -10372,19 +10372,21 @@
         "name": "gallardo.svg",
         "before": {
           "status": "different",
-          "changedPixels": 8,
-          "maximumError": 1,
-          "totalChannelError": 8
-        },
-        "after": {
-          "status": "different",
           "changedPixels": 1,
           "maximumError": 1,
           "totalChannelError": 1
+        },
+        "after": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
         }
       }
     ],
-    "newlyExactOriginals": [],
+    "newlyExactOriginals": [
+      "gallardo.svg"
+    ],
     "lostExactImages": [],
     "changedOutcomesOrDiagnostics": [],
     "remainingDefaultDifferences": [
@@ -10401,13 +10403,6 @@
         "changedPixels": 6,
         "maximumError": 4,
         "totalChannelError": 45
-      },
-      {
-        "name": "gallardo.svg",
-        "status": "different",
-        "changedPixels": 1,
-        "maximumError": 1,
-        "totalChannelError": 1
       },
       {
         "name": "opensearch.svg",
