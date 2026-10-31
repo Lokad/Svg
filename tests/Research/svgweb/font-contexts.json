@@ -1,0 +1,1828 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "ad4f18c400c721ccccf09b88f60d483c179dd98e",
+  "candidateLibraries": {
+    "net11.0": "ab41981519eb472022c13b4b19e1b531e1a24d182997b7e0ef85af1179c46b38",
+    "net10.0": "4640abbb0556bd7ecc18697bfcb13b508f77376dbcfc6a4c9a5d802b21d0f03d"
+  },
+  "scope": "SVG inline font-size admission retains its source context; text layout and all previous reference bytes/tolerances remain unchanged. Supplied-program original contexts remain individually scoped and open.",
+  "sharedRule": "Positive unitless font sizes are accepted in SVG style attributes. Rule blocks keep CSS nonzero-unit requirements; importance, inheritance and later-rule admission remain shared. A named stylesheet entry point uses the existing target domain and parser/string owners.",
+  "mechanisms": {
+    "addedCases": 6,
+    "tests": [
+      "../../Lokad.Svg.Tests/SvgTextSyntaxTests.cs",
+      "../../Lokad.Svg.Tests/SvgPaintableElementContextTests.cs"
+    ],
+    "failingBefore": {
+      "selection": "FullyQualifiedName~Inline_font_size_preserves|FullyQualifiedName~Stylesheet_unitless_font_size|FullyQualifiedName~Applies_last_inline_font_declarations|FullyQualifiedName~Prepared_inherited_inline_size",
+      "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9",
+      "counters": {
+        "total": "11",
+        "executed": "11",
+        "passed": "5",
+        "failed": "6",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "reason": "Six actual-value failures; importance, negative-size and stylesheet companions pass. No missing-method/type/discovery failures."
+    },
+    "correctedAssertions": "Existing inline, inherited, span, retained paint-scan and direct synthetic-text assertions had assumed unitless inline sizes were ignored. They now protect the independently observed source distinction; stylesheet regressions remain unchanged."
+  },
+  "contract": {
+    "addedCases": 1,
+    "test": "../../Lokad.Svg.Tests/OpenTypeFontTests.InlineSize.cs",
+    "role": "Prepared inherited inline size survives a later invalid unitless rule, matches the explicit presentation-attribute control and acquires one program once. No fixture/API product."
+  },
+  "rendering": {
+    "addedCases": 1,
+    "source": "../text-instance-composition/inputs/inline-font-size.svg",
+    "manifest": "../text-instance-composition/capture.json",
+    "captures": [
+      {
+        "host": "windows",
+        "index": 1,
+        "nativeSourceSha256": "43ee26d0ef198886051947111557f7058c8bb6d4e50ed644f3180d52ed02befd",
+        "pngSha256": "088e681386a2699caae37ba4ec17edb0a406598b83dbe1f944e802b78ffdfd26",
+        "chromeSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "windows",
+        "index": 2,
+        "nativeSourceSha256": "43ee26d0ef198886051947111557f7058c8bb6d4e50ed644f3180d52ed02befd",
+        "pngSha256": "088e681386a2699caae37ba4ec17edb0a406598b83dbe1f944e802b78ffdfd26",
+        "chromeSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "windows",
+        "index": 3,
+        "nativeSourceSha256": "43ee26d0ef198886051947111557f7058c8bb6d4e50ed644f3180d52ed02befd",
+        "pngSha256": "088e681386a2699caae37ba4ec17edb0a406598b83dbe1f944e802b78ffdfd26",
+        "chromeSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "index": 1,
+        "nativeSourceSha256": "43ee26d0ef198886051947111557f7058c8bb6d4e50ed644f3180d52ed02befd",
+        "pngSha256": "fec6be5b6ead2f836a8e17bd27ab4141a2956404db4410542279e25da6525a33",
+        "chromeSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "index": 2,
+        "nativeSourceSha256": "43ee26d0ef198886051947111557f7058c8bb6d4e50ed644f3180d52ed02befd",
+        "pngSha256": "fec6be5b6ead2f836a8e17bd27ab4141a2956404db4410542279e25da6525a33",
+        "chromeSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "index": 3,
+        "nativeSourceSha256": "43ee26d0ef198886051947111557f7058c8bb6d4e50ed644f3180d52ed02befd",
+        "pngSha256": "fec6be5b6ead2f836a8e17bd27ab4141a2956404db4410542279e25da6525a33",
+        "chromeSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ],
+    "comparisons": [
+      {
+        "host": "windows",
+        "phase": "diagnostic-host",
+        "sourceSha256": "1d182e4cd023a684ba7a6ff88e8ade4b694b12ceb1e5f33881252ef4f387507e",
+        "librarySha256": "33c88a19756b2674c275dfb14a1d42d9fbe021566e247f70a2b415ca23ba05af",
+        "changedPixels": 1050,
+        "maximumError": 255
+      },
+      {
+        "host": "windows",
+        "phase": "candidate-host",
+        "sourceSha256": "1d182e4cd023a684ba7a6ff88e8ade4b694b12ceb1e5f33881252ef4f387507e",
+        "librarySha256": "ab41981519eb472022c13b4b19e1b531e1a24d182997b7e0ef85af1179c46b38",
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "host": "linux",
+        "phase": "diagnostic-host",
+        "sourceSha256": "1d182e4cd023a684ba7a6ff88e8ade4b694b12ceb1e5f33881252ef4f387507e",
+        "librarySha256": "33c88a19756b2674c275dfb14a1d42d9fbe021566e247f70a2b415ca23ba05af",
+        "changedPixels": 951,
+        "maximumError": 255
+      },
+      {
+        "host": "linux",
+        "phase": "candidate-host",
+        "sourceSha256": "1d182e4cd023a684ba7a6ff88e8ade4b694b12ceb1e5f33881252ef4f387507e",
+        "librarySha256": "ab41981519eb472022c13b4b19e1b531e1a24d182997b7e0ef85af1179c46b38",
+        "changedPixels": 0,
+        "maximumError": 0
+      }
+    ],
+    "oldSourcesReferencesAndTolerancesUnchanged": true
+  },
+  "programTransport": {
+    "tool": "../../../tools/derive-svgweb-fonts.py",
+    "fontToolsVersion": "4.66.1",
+    "scope": "Disposable exact geometry/advance transport for native and library font-context research; no source SVG retained, no original font acceptance. No hint programs or kerning are invented. SVG font-face descriptors here omit weight/style and have no kern elements.",
+    "programs": [
+      {
+        "name": "DroidSans-Bold",
+        "originalSourceSha256": "b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed",
+        "sourceFamily": "Droid Sans",
+        "derivedFamily": "SVGWeb DroidSans-Bold",
+        "bytes": 15524,
+        "sha256": "5890f8642b25d4355ace573e0ecacbcb77bff3992bf28bd0fb4eb77529d7438f",
+        "glyphs": 95,
+        "exactOutlineAndAdvanceRoundTrips": 96,
+        "ascent": 1901,
+        "descent": -483,
+        "unitsPerEm": 2048
+      },
+      {
+        "name": "DroidSans",
+        "originalSourceSha256": "258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b",
+        "sourceFamily": "Droid Sans",
+        "derivedFamily": "SVGWeb DroidSans",
+        "bytes": 15360,
+        "sha256": "d12f73258bfb514cfcabc3d7f7091daa0181126a903e66abcb7d9f3d875bfe1d",
+        "glyphs": 95,
+        "exactOutlineAndAdvanceRoundTrips": 96,
+        "ascent": 1901,
+        "descent": -483,
+        "unitsPerEm": 2048
+      },
+      {
+        "name": "DroidSansMono",
+        "originalSourceSha256": "c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d",
+        "sourceFamily": "Droid Sans Mono",
+        "derivedFamily": "SVGWeb DroidSansMono",
+        "bytes": 9560,
+        "sha256": "52c0cb4d5fde280bf3f40c18d15c27c2b62b296157885a6a5350ad9b1f8ba447",
+        "glyphs": 95,
+        "exactOutlineAndAdvanceRoundTrips": 96,
+        "ascent": 1901,
+        "descent": -483,
+        "unitsPerEm": 2048
+      },
+      {
+        "name": "DroidSerif-Bold",
+        "originalSourceSha256": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+        "sourceFamily": "Droid Serif",
+        "derivedFamily": "SVGWeb DroidSerif-Bold",
+        "bytes": 21124,
+        "sha256": "913c9a9e8fffac9fd5abb0941a2594c1e72127d526ab7e8348d09d2ee7b5d674",
+        "glyphs": 95,
+        "exactOutlineAndAdvanceRoundTrips": 96,
+        "ascent": 1901,
+        "descent": -483,
+        "unitsPerEm": 2048
+      },
+      {
+        "name": "DroidSerif-BoldItalic",
+        "originalSourceSha256": "ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0f424f7f259",
+        "sourceFamily": "Droid Serif",
+        "derivedFamily": "SVGWeb DroidSerif-BoldItalic",
+        "bytes": 22940,
+        "sha256": "32efddac88855c2705bf1cebf60aea6e26d4018ca8d05dd9086581b33323e973",
+        "glyphs": 95,
+        "exactOutlineAndAdvanceRoundTrips": 96,
+        "ascent": 1901,
+        "descent": -483,
+        "unitsPerEm": 2048
+      },
+      {
+        "name": "DroidSerif-Italic",
+        "originalSourceSha256": "e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73",
+        "sourceFamily": "Droid Serif",
+        "derivedFamily": "SVGWeb DroidSerif-Italic",
+        "bytes": 12804,
+        "sha256": "e849a4b1cfe498dd52463c2cf0242fa6ce81db42497a88137d48d1b3f811471a",
+        "glyphs": 95,
+        "exactOutlineAndAdvanceRoundTrips": 96,
+        "ascent": 1901,
+        "descent": -483,
+        "unitsPerEm": 2048
+      },
+      {
+        "name": "DroidSerif-Regular",
+        "originalSourceSha256": "451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3",
+        "sourceFamily": "Droid Serif",
+        "derivedFamily": "SVGWeb DroidSerif-Regular",
+        "bytes": 21136,
+        "sha256": "0802536cf28ed798808fbf1e1381978aae013a65acd289834644d5c2d2f5da5d",
+        "glyphs": 95,
+        "exactOutlineAndAdvanceRoundTrips": 96,
+        "ascent": 1901,
+        "descent": -483,
+        "unitsPerEm": 2048
+      }
+    ],
+    "reproducedProgramsIdentical": true,
+    "totalExactGlyphRoundTrips": 672
+  },
+  "rejectedClosestPrograms": {
+    "directory": "https://android.googlesource.com/platform/frameworks/base/+/android-2.3.7_r1/data/fonts/",
+    "directoryTree": "3541b65b9a40827bb8e57b82518b1c3c53718b8e",
+    "noticeSha256": "38751245389e1e23f73e6f5384b5cbe7fa972cc4410c5adc9c04b082a0b9561a",
+    "reason": "Advance agreement did not establish identical outlines. Rounded embedded SVG coordinates differ from the pinned Android TrueType programs; no coordinate tolerance or image fitting was used.",
+    "programs": [
+      {
+        "name": "DroidSans-Bold",
+        "url": "https://android.googlesource.com/platform/frameworks/base/+/android-2.3.7_r1/data/fonts/DroidSans-Bold.ttf?format=TEXT",
+        "bytes": 194488,
+        "sha256": "2f529a3e60c007979d95d29794c3660694217fb882429fb33919d2245fe969e9",
+        "gitBlob": "d065b64eb1863f83c2c982264f9442f2313a44a9",
+        "glyphs": 95,
+        "exactNormalizedOutlineMatches": 31,
+        "exactAdvanceMatches": 95
+      },
+      {
+        "name": "DroidSans",
+        "url": "https://android.googlesource.com/platform/frameworks/base/+/android-2.3.7_r1/data/fonts/DroidSans.ttf?format=TEXT",
+        "bytes": 190776,
+        "sha256": "f51b88945f4c1b236f44b8d55a2d304316869127e95248c435c23f1e4142a7db",
+        "gitBlob": "ad1efca88aed8d9e2d179f27dd713e2a1562fe5f",
+        "glyphs": 95,
+        "exactNormalizedOutlineMatches": 32,
+        "exactAdvanceMatches": 94
+      },
+      {
+        "name": "DroidSansMono",
+        "url": "https://android.googlesource.com/platform/frameworks/base/+/android-2.3.7_r1/data/fonts/DroidSansMono.ttf?format=TEXT",
+        "bytes": 119380,
+        "sha256": "12b552de765dc1265d64f9f5566649930dde4dba07da0251d9f92801e70a1047",
+        "gitBlob": "a007071944f7c90020e798eea53b10065e2b45a5",
+        "glyphs": 95,
+        "exactNormalizedOutlineMatches": 56,
+        "exactAdvanceMatches": 95
+      },
+      {
+        "name": "DroidSerif-Bold",
+        "url": "https://android.googlesource.com/platform/frameworks/base/+/android-2.3.7_r1/data/fonts/DroidSerif-Bold.ttf?format=TEXT",
+        "bytes": 185228,
+        "sha256": "c746c6383a03effbcad6ccb028e4b39e87071ff1a146a24fb2110a23e05776bb",
+        "gitBlob": "838d255888b41224581339799f83e1f6f3f3dc41",
+        "glyphs": 95,
+        "exactNormalizedOutlineMatches": 15,
+        "exactAdvanceMatches": 95
+      },
+      {
+        "name": "DroidSerif-BoldItalic",
+        "url": "https://android.googlesource.com/platform/frameworks/base/+/android-2.3.7_r1/data/fonts/DroidSerif-BoldItalic.ttf?format=TEXT",
+        "bytes": 190304,
+        "sha256": "1aba99421b31afe890182663270c28bc619f00d8746234da3dda054cd5bf09b0",
+        "gitBlob": "0b1601f61bd7fe0697ee3228841bfa8b5f49ec70",
+        "glyphs": 95,
+        "exactNormalizedOutlineMatches": 15,
+        "exactAdvanceMatches": 95
+      },
+      {
+        "name": "DroidSerif-Italic",
+        "url": "https://android.googlesource.com/platform/frameworks/base/+/android-2.3.7_r1/data/fonts/DroidSerif-Italic.ttf?format=TEXT",
+        "bytes": 177560,
+        "sha256": "02c0108dea583e393fbcbec39c7093e9a3095a09d65e37fafff9a9b7a89123a4",
+        "gitBlob": "2972809daaa8d600a3509389124c428492d4868e",
+        "glyphs": 95,
+        "exactNormalizedOutlineMatches": 25,
+        "exactAdvanceMatches": 95
+      },
+      {
+        "name": "DroidSerif-Regular",
+        "url": "https://android.googlesource.com/platform/frameworks/base/+/android-2.3.7_r1/data/fonts/DroidSerif-Regular.ttf?format=TEXT",
+        "bytes": 172916,
+        "sha256": "ae32140265dbe0dfde24b9abd222be9210a531888f014ff9b2326aba2d6fd777",
+        "gitBlob": "5b4fe815d2d856632c200f9b10c45cbc814c86f4",
+        "glyphs": 95,
+        "exactNormalizedOutlineMatches": 16,
+        "exactAdvanceMatches": 95
+      }
+    ]
+  },
+  "nativeProgramControl": {
+    "scope": "Own square glyph distinguishes supplied TrueType use from absent-font fallback on both hosts; inline/rule and doctype variants isolate the size source. One fresh healthy/profile-cleaned capture per exploratory case; canonical admission is separately triple-captured.",
+    "glyph": {
+      "unitsPerEm": 1000,
+      "advance": 1000,
+      "contour": [
+        [
+          0,
+          0
+        ],
+        [
+          1000,
+          0
+        ],
+        [
+          1000,
+          1000
+        ],
+        [
+          0,
+          1000
+        ]
+      ],
+      "family": "SvgWebControl",
+      "ascent": 1000,
+      "descent": 0
+    },
+    "results": {
+      "programSha256": "60a42c4e5c20e2f368fbf71cf45becb5faa4bc6079f652364a1d20598d0c0262",
+      "controls": [
+        {
+          "host": "windows",
+          "name": "default",
+          "kind": "library",
+          "sourceSha256": "957302ad673f0e83ce0f8f20a87e3e709ddd9260f7bc2e4d385df5a7c3a69a88",
+          "pngSha256": "d7475ba30025fac24a6bc24e0f95f7c2edd1dbee86e77c4b77176f5a96b0af72",
+          "bounds": [
+            7,
+            32,
+            25,
+            48
+          ],
+          "nonzero": 288
+        },
+        {
+          "host": "windows",
+          "name": "default",
+          "kind": "native",
+          "sourceSha256": "e6b574d7961d2bcd00ad81c2a9b2d0082a5653ddf5108b7c54add207314b5893",
+          "pngSha256": "24e3bdc38ff1de12e540a1a309f28191ce3aa34c9de2c8c7355277cc2cf8c1fc",
+          "bounds": [
+            7,
+            32,
+            25,
+            48
+          ],
+          "nonzero": 288
+        },
+        {
+          "host": "windows",
+          "name": "default",
+          "kind": "absent",
+          "sourceSha256": "957302ad673f0e83ce0f8f20a87e3e709ddd9260f7bc2e4d385df5a7c3a69a88",
+          "pngSha256": "9c1e16c36bfde711ec31fee3164b928d3d1f700906f67300736098b4c86812dc",
+          "bounds": [
+            7,
+            37,
+            20,
+            48
+          ],
+          "nonzero": 64
+        },
+        {
+          "host": "windows",
+          "name": "attribute",
+          "kind": "library",
+          "sourceSha256": "d4ee305b4e4617253a72bb81e3b7d57a0b2ffec6cabeeb838bb3e6f62ceb5a74",
+          "pngSha256": "7e691e06585177cdd42e3accafdb7c4c0b082ca505604f764e30f97bc8966535",
+          "bounds": [
+            7,
+            30,
+            27,
+            48
+          ],
+          "nonzero": 360
+        },
+        {
+          "host": "windows",
+          "name": "attribute",
+          "kind": "native",
+          "sourceSha256": "d019441af1ba1a723bfd04f779508ae35926b22110676e092edc5b98f2f5ac90",
+          "pngSha256": "03f2e19db997ff48c78e84d42e341dbfd6fdd5ebfb89da8fd0abdfa2c1bae298",
+          "bounds": [
+            7,
+            30,
+            27,
+            48
+          ],
+          "nonzero": 360
+        },
+        {
+          "host": "windows",
+          "name": "inline-unitless",
+          "kind": "library",
+          "sourceSha256": "de52342004e25866742d31f4a2c17d4a8bb956c317dff1a2653598afc5bf821e",
+          "pngSha256": "d7475ba30025fac24a6bc24e0f95f7c2edd1dbee86e77c4b77176f5a96b0af72",
+          "bounds": [
+            7,
+            32,
+            25,
+            48
+          ],
+          "nonzero": 288
+        },
+        {
+          "host": "windows",
+          "name": "inline-unitless",
+          "kind": "native",
+          "sourceSha256": "94bb3ec2f1ef9e270e736ced991f1db28dd5c7b977e611cc4f5634ebe7a7fa78",
+          "pngSha256": "03f2e19db997ff48c78e84d42e341dbfd6fdd5ebfb89da8fd0abdfa2c1bae298",
+          "bounds": [
+            7,
+            30,
+            27,
+            48
+          ],
+          "nonzero": 360
+        },
+        {
+          "host": "windows",
+          "name": "inline-px",
+          "kind": "library",
+          "sourceSha256": "4201788101eb8d1a15410e2014a18319360dd0a14b4026e6764ee68d57d66abc",
+          "pngSha256": "7e691e06585177cdd42e3accafdb7c4c0b082ca505604f764e30f97bc8966535",
+          "bounds": [
+            7,
+            30,
+            27,
+            48
+          ],
+          "nonzero": 360
+        },
+        {
+          "host": "windows",
+          "name": "inline-px",
+          "kind": "native",
+          "sourceSha256": "c1aa996329caa6cfcf6f67fa4ac71be678533dfe95b3043ef507d261347010d4",
+          "pngSha256": "03f2e19db997ff48c78e84d42e341dbfd6fdd5ebfb89da8fd0abdfa2c1bae298",
+          "bounds": [
+            7,
+            30,
+            27,
+            48
+          ],
+          "nonzero": 360
+        },
+        {
+          "host": "windows",
+          "name": "sheet-unitless",
+          "kind": "library",
+          "sourceSha256": "9c8820502592c7eacbc833769d39c6bdd1c8f26d22f2b77f7ed5ac67edccaa88",
+          "pngSha256": "d7475ba30025fac24a6bc24e0f95f7c2edd1dbee86e77c4b77176f5a96b0af72",
+          "bounds": [
+            7,
+            32,
+            25,
+            48
+          ],
+          "nonzero": 288
+        },
+        {
+          "host": "windows",
+          "name": "sheet-unitless",
+          "kind": "native",
+          "sourceSha256": "92e2ff084df07719d9aaba421d1635a614e602d714a8bf2b700618aeaf0e0049",
+          "pngSha256": "24e3bdc38ff1de12e540a1a309f28191ce3aa34c9de2c8c7355277cc2cf8c1fc",
+          "bounds": [
+            7,
+            32,
+            25,
+            48
+          ],
+          "nonzero": 288
+        },
+        {
+          "host": "windows",
+          "name": "sheet-px",
+          "kind": "library",
+          "sourceSha256": "22692c033fdbf2306dcac7341408d076650a27f07121e4ef5b3f938c977c6ae5",
+          "pngSha256": "7e691e06585177cdd42e3accafdb7c4c0b082ca505604f764e30f97bc8966535",
+          "bounds": [
+            7,
+            30,
+            27,
+            48
+          ],
+          "nonzero": 360
+        },
+        {
+          "host": "windows",
+          "name": "sheet-px",
+          "kind": "native",
+          "sourceSha256": "0094d6defbbf30bf73c14ccfb7136f0f2aac4b054f9f201c740e6501ab6c32d7",
+          "pngSha256": "03f2e19db997ff48c78e84d42e341dbfd6fdd5ebfb89da8fd0abdfa2c1bae298",
+          "bounds": [
+            7,
+            30,
+            27,
+            48
+          ],
+          "nonzero": 360
+        },
+        {
+          "host": "windows",
+          "name": "doctype-unitless",
+          "kind": "library",
+          "sourceSha256": "3b7ed6c3c7bf3abe1cfca4a8080e0402f041bd31e2943afe0e14623ee87935c9",
+          "pngSha256": "d7475ba30025fac24a6bc24e0f95f7c2edd1dbee86e77c4b77176f5a96b0af72",
+          "bounds": [
+            7,
+            32,
+            25,
+            48
+          ],
+          "nonzero": 288
+        },
+        {
+          "host": "windows",
+          "name": "doctype-unitless",
+          "kind": "native",
+          "sourceSha256": "a88d5572d8c9e08f27f91d0e494a66580301f9103b6a7fd1b5cfc03217ae33c2",
+          "pngSha256": "03f2e19db997ff48c78e84d42e341dbfd6fdd5ebfb89da8fd0abdfa2c1bae298",
+          "bounds": [
+            7,
+            30,
+            27,
+            48
+          ],
+          "nonzero": 360
+        },
+        {
+          "host": "windows",
+          "name": "doctype-svg11-unitless",
+          "kind": "library",
+          "sourceSha256": "fac72a04adfc9efc829e99aa7564e677ad58747d0e45c2d6a6cce52e36eb3b1f",
+          "pngSha256": "d7475ba30025fac24a6bc24e0f95f7c2edd1dbee86e77c4b77176f5a96b0af72",
+          "bounds": [
+            7,
+            32,
+            25,
+            48
+          ],
+          "nonzero": 288
+        },
+        {
+          "host": "windows",
+          "name": "doctype-svg11-unitless",
+          "kind": "native",
+          "sourceSha256": "816b7a3c326b64cf96a25419835618c30cadfaa3a49d823a9a239917e42d8338",
+          "pngSha256": "03f2e19db997ff48c78e84d42e341dbfd6fdd5ebfb89da8fd0abdfa2c1bae298",
+          "bounds": [
+            7,
+            30,
+            27,
+            48
+          ],
+          "nonzero": 360
+        },
+        {
+          "host": "linux",
+          "name": "default",
+          "kind": "library",
+          "sourceSha256": "957302ad673f0e83ce0f8f20a87e3e709ddd9260f7bc2e4d385df5a7c3a69a88",
+          "pngSha256": "6494cbf50c4921e921465788d52ed0ed08eaf6be26463235560b664b1d54842d",
+          "bounds": [
+            8,
+            32,
+            24,
+            48
+          ],
+          "nonzero": 256
+        },
+        {
+          "host": "linux",
+          "name": "default",
+          "kind": "native",
+          "sourceSha256": "e6b574d7961d2bcd00ad81c2a9b2d0082a5653ddf5108b7c54add207314b5893",
+          "pngSha256": "ac44ef7bd5b5872223597f71b38f657d8c93f20042cf65121a0d80f0b3575418",
+          "bounds": [
+            8,
+            32,
+            24,
+            48
+          ],
+          "nonzero": 256
+        },
+        {
+          "host": "linux",
+          "name": "default",
+          "kind": "absent",
+          "sourceSha256": "957302ad673f0e83ce0f8f20a87e3e709ddd9260f7bc2e4d385df5a7c3a69a88",
+          "pngSha256": "70342ed95b2b48c6fbd9ca71a8b7cdedf14eeb74479349acf169868cf74ea0be",
+          "bounds": [
+            8,
+            37,
+            20,
+            48
+          ],
+          "nonzero": 56
+        },
+        {
+          "host": "linux",
+          "name": "attribute",
+          "kind": "library",
+          "sourceSha256": "d4ee305b4e4617253a72bb81e3b7d57a0b2ffec6cabeeb838bb3e6f62ceb5a74",
+          "pngSha256": "d5b388d22cf030d0e99861502e3adc141f59cb8f25e64645d552acda71eed762",
+          "bounds": [
+            8,
+            30,
+            26,
+            48
+          ],
+          "nonzero": 324
+        },
+        {
+          "host": "linux",
+          "name": "attribute",
+          "kind": "native",
+          "sourceSha256": "d019441af1ba1a723bfd04f779508ae35926b22110676e092edc5b98f2f5ac90",
+          "pngSha256": "85af554ca743fe7759e769046e37044161fdc3ab637333c2d274523267e6b688",
+          "bounds": [
+            8,
+            30,
+            26,
+            48
+          ],
+          "nonzero": 324
+        },
+        {
+          "host": "linux",
+          "name": "inline-unitless",
+          "kind": "library",
+          "sourceSha256": "de52342004e25866742d31f4a2c17d4a8bb956c317dff1a2653598afc5bf821e",
+          "pngSha256": "6494cbf50c4921e921465788d52ed0ed08eaf6be26463235560b664b1d54842d",
+          "bounds": [
+            8,
+            32,
+            24,
+            48
+          ],
+          "nonzero": 256
+        },
+        {
+          "host": "linux",
+          "name": "inline-unitless",
+          "kind": "native",
+          "sourceSha256": "94bb3ec2f1ef9e270e736ced991f1db28dd5c7b977e611cc4f5634ebe7a7fa78",
+          "pngSha256": "85af554ca743fe7759e769046e37044161fdc3ab637333c2d274523267e6b688",
+          "bounds": [
+            8,
+            30,
+            26,
+            48
+          ],
+          "nonzero": 324
+        },
+        {
+          "host": "linux",
+          "name": "inline-px",
+          "kind": "library",
+          "sourceSha256": "4201788101eb8d1a15410e2014a18319360dd0a14b4026e6764ee68d57d66abc",
+          "pngSha256": "d5b388d22cf030d0e99861502e3adc141f59cb8f25e64645d552acda71eed762",
+          "bounds": [
+            8,
+            30,
+            26,
+            48
+          ],
+          "nonzero": 324
+        },
+        {
+          "host": "linux",
+          "name": "inline-px",
+          "kind": "native",
+          "sourceSha256": "c1aa996329caa6cfcf6f67fa4ac71be678533dfe95b3043ef507d261347010d4",
+          "pngSha256": "85af554ca743fe7759e769046e37044161fdc3ab637333c2d274523267e6b688",
+          "bounds": [
+            8,
+            30,
+            26,
+            48
+          ],
+          "nonzero": 324
+        },
+        {
+          "host": "linux",
+          "name": "sheet-unitless",
+          "kind": "library",
+          "sourceSha256": "9c8820502592c7eacbc833769d39c6bdd1c8f26d22f2b77f7ed5ac67edccaa88",
+          "pngSha256": "6494cbf50c4921e921465788d52ed0ed08eaf6be26463235560b664b1d54842d",
+          "bounds": [
+            8,
+            32,
+            24,
+            48
+          ],
+          "nonzero": 256
+        },
+        {
+          "host": "linux",
+          "name": "sheet-unitless",
+          "kind": "native",
+          "sourceSha256": "92e2ff084df07719d9aaba421d1635a614e602d714a8bf2b700618aeaf0e0049",
+          "pngSha256": "ac44ef7bd5b5872223597f71b38f657d8c93f20042cf65121a0d80f0b3575418",
+          "bounds": [
+            8,
+            32,
+            24,
+            48
+          ],
+          "nonzero": 256
+        },
+        {
+          "host": "linux",
+          "name": "sheet-px",
+          "kind": "library",
+          "sourceSha256": "22692c033fdbf2306dcac7341408d076650a27f07121e4ef5b3f938c977c6ae5",
+          "pngSha256": "d5b388d22cf030d0e99861502e3adc141f59cb8f25e64645d552acda71eed762",
+          "bounds": [
+            8,
+            30,
+            26,
+            48
+          ],
+          "nonzero": 324
+        },
+        {
+          "host": "linux",
+          "name": "sheet-px",
+          "kind": "native",
+          "sourceSha256": "0094d6defbbf30bf73c14ccfb7136f0f2aac4b054f9f201c740e6501ab6c32d7",
+          "pngSha256": "85af554ca743fe7759e769046e37044161fdc3ab637333c2d274523267e6b688",
+          "bounds": [
+            8,
+            30,
+            26,
+            48
+          ],
+          "nonzero": 324
+        },
+        {
+          "host": "linux",
+          "name": "doctype-unitless",
+          "kind": "library",
+          "sourceSha256": "3b7ed6c3c7bf3abe1cfca4a8080e0402f041bd31e2943afe0e14623ee87935c9",
+          "pngSha256": "6494cbf50c4921e921465788d52ed0ed08eaf6be26463235560b664b1d54842d",
+          "bounds": [
+            8,
+            32,
+            24,
+            48
+          ],
+          "nonzero": 256
+        },
+        {
+          "host": "linux",
+          "name": "doctype-unitless",
+          "kind": "native",
+          "sourceSha256": "a88d5572d8c9e08f27f91d0e494a66580301f9103b6a7fd1b5cfc03217ae33c2",
+          "pngSha256": "85af554ca743fe7759e769046e37044161fdc3ab637333c2d274523267e6b688",
+          "bounds": [
+            8,
+            30,
+            26,
+            48
+          ],
+          "nonzero": 324
+        },
+        {
+          "host": "linux",
+          "name": "doctype-svg11-unitless",
+          "kind": "library",
+          "sourceSha256": "fac72a04adfc9efc829e99aa7564e677ad58747d0e45c2d6a6cce52e36eb3b1f",
+          "pngSha256": "6494cbf50c4921e921465788d52ed0ed08eaf6be26463235560b664b1d54842d",
+          "bounds": [
+            8,
+            32,
+            24,
+            48
+          ],
+          "nonzero": 256
+        },
+        {
+          "host": "linux",
+          "name": "doctype-svg11-unitless",
+          "kind": "native",
+          "sourceSha256": "816b7a3c326b64cf96a25419835618c30cadfaa3a49d823a9a239917e42d8338",
+          "pngSha256": "85af554ca743fe7759e769046e37044161fdc3ab637333c2d274523267e6b688",
+          "bounds": [
+            8,
+            30,
+            26,
+            48
+          ],
+          "nonzero": 324
+        }
+      ]
+    }
+  },
+  "contexts": [
+    {
+      "name": "410.svg",
+      "sourceSha256": "5fba6c8c0d7da11542e4a8f9ad9754868000926a7436481115b820900eb0491b",
+      "nativeMaterializedSourceSha256": "a8798178ffd801b9cdadddceabdce6dc30a2fc542cc01865bc1b940022a953fe",
+      "programSha256": "ae32140265dbe0dfde24b9abd222be9210a531888f014ff9b2326aba2d6fd777",
+      "programBytes": 172916,
+      "selection": "Explicit host generic-serif policy chooses pinned Droid Serif Regular. Only this supplied-font context is evaluated; no claim about ambient native defaults.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "success",
+          "nativePngSha256": "02e3bace29f4057835dae153e1ca8746ef2d40cb702bd9c2c0b9412696ef0fe9",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 0,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "success",
+          "nativePngSha256": "cb71c8506fc6c1e397f45e45cc52d47440b26c3fbb62c5bb021d54700e712efd",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 0,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "DroidSans-Bold.svg",
+      "sourceSha256": "b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed",
+      "nativeMaterializedSourceSha256": "62a8cf9460e2db033d65c6fc8688581d539127bc2db2f72ab0eb79f5bed8e879",
+      "programSha256": "5890f8642b25d4355ace573e0ecacbcb77bff3992bf28bd0fb4eb77529d7438f",
+      "programBytes": 15524,
+      "selection": "Exact outlines/advances derived from the source SVG font; original SVG descriptors omit weight/style.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "success",
+          "nativePngSha256": "27a1d546b950ade8557671d56a5897eecefc5e1b3dba9e2c71da00009947a4cf",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 6028,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "success",
+          "nativePngSha256": "1124f2c8a55ebb93844fb1ece7de2ca41332a79c965458fe93c668c873ae5a6f",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 5421,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "DroidSans.svg",
+      "sourceSha256": "258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b",
+      "nativeMaterializedSourceSha256": "6c1566d877321a18f50b66e004708f64e584a63d738cc19685df62f15645284c",
+      "programSha256": "d12f73258bfb514cfcabc3d7f7091daa0181126a903e66abcb7d9f3d875bfe1d",
+      "programBytes": 15360,
+      "selection": "Exact outlines/advances derived from the source SVG font; original SVG descriptors omit weight/style.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "success",
+          "nativePngSha256": "b626b2385dc37d3b796226305d5361b99b352183db0408045cc4e002001424bd",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 5632,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "success",
+          "nativePngSha256": "0f11d0e666dad4e603cc191828cb037678ce6d2e876e064ab20eb1309d9eb7ec",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 5026,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "DroidSansMono.svg",
+      "sourceSha256": "c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d",
+      "nativeMaterializedSourceSha256": "4211885be76ad73f59546a8057ec52c4fca2727b8186c97228c00393353cd4d5",
+      "programSha256": "52c0cb4d5fde280bf3f40c18d15c27c2b62b296157885a6a5350ad9b1f8ba447",
+      "programBytes": 9560,
+      "selection": "Exact outlines/advances derived from the source SVG font; original SVG descriptors omit weight/style.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "success",
+          "nativePngSha256": "211001fc7ee02c8e6be4b893d5a1c11a50842b580bb1b2e06913c9ee0f940f8e",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 5412,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "success",
+          "nativePngSha256": "2a7959518fad187e60c60db53388c194a6626e73862447f94f778e10b41c622c",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 4844,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "DroidSerif-Bold.svg",
+      "sourceSha256": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+      "nativeMaterializedSourceSha256": "7a647f83769c072e3f1a4b4e4f6c273584a0f3ec7605e8f81d10e839d2e61fa3",
+      "programSha256": "913c9a9e8fffac9fd5abb0941a2594c1e72127d526ab7e8348d09d2ee7b5d674",
+      "programBytes": 21124,
+      "selection": "Exact outlines/advances derived from the source SVG font; original SVG descriptors omit weight/style.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "success",
+          "nativePngSha256": "ad877cd7fa6fb71f52a31749a3fb383611db2691a859cee71608fd462b3e55e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 6001,
+          "afterChangedPixels": 3,
+          "maximumError": 5,
+          "alphaChangedPixels": 3,
+          "differenceBounds": [
+            215,
+            118,
+            242,
+            119
+          ],
+          "detail": null
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "success",
+          "nativePngSha256": "7b1ecbd374dbb7c5c4094526005a6b3cd8c22b3d801f239ff746bb7f345dbf42",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 5407,
+          "afterChangedPixels": 10,
+          "maximumError": 52,
+          "alphaChangedPixels": 10,
+          "differenceBounds": [
+            254,
+            59,
+            258,
+            63
+          ],
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "DroidSerif-BoldItalic.svg",
+      "sourceSha256": "ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0f424f7f259",
+      "nativeMaterializedSourceSha256": "7b6db01754b49c2a6f3520b07ccea8074fa2be4919766d8558e06a7a3082a50f",
+      "programSha256": "32efddac88855c2705bf1cebf60aea6e26d4018ca8d05dd9086581b33323e973",
+      "programBytes": 22940,
+      "selection": "Exact outlines/advances derived from the source SVG font; original SVG descriptors omit weight/style.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "success",
+          "nativePngSha256": "2ac3c6f4c2c8624cf1e3bb8d6cd4bd777c09a97cc547c2b6e7f318a23f166a4e",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 6089,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "success",
+          "nativePngSha256": "50accb21da1a53d3591c2336264f1b7083e8fcebdff1344217f541f62fc58870",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 5398,
+          "afterChangedPixels": 4,
+          "maximumError": 51,
+          "alphaChangedPixels": 4,
+          "differenceBounds": [
+            257,
+            60,
+            260,
+            62
+          ],
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "DroidSerif-Italic.svg",
+      "sourceSha256": "e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73",
+      "nativeMaterializedSourceSha256": "6aeeed3e9f3fde616ed129be791b224b543076ba85f68a12d537fd62dbdebd38",
+      "programSha256": "e849a4b1cfe498dd52463c2cf0242fa6ce81db42497a88137d48d1b3f811471a",
+      "programBytes": 12804,
+      "selection": "Exact outlines/advances derived from the source SVG font; original SVG descriptors omit weight/style.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "success",
+          "nativePngSha256": "c307b807a93f54ecb5abef13c2ccf30d283c9b01d672ff90a914a4e2208de5ab",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 5701,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "success",
+          "nativePngSha256": "ce345270482cfc5d8ed9d3c242ce97b178101c862faa0f876a7752437668552f",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 5022,
+          "afterChangedPixels": 47,
+          "maximumError": 61,
+          "alphaChangedPixels": 47,
+          "differenceBounds": [
+            70,
+            52,
+            82,
+            60
+          ],
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "DroidSerif-Regular.svg",
+      "sourceSha256": "451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3",
+      "nativeMaterializedSourceSha256": "ebe653b381b7866eb75131012de1d8cdce6e94a7313b2a1649389ffbbf925fd0",
+      "programSha256": "0802536cf28ed798808fbf1e1381978aae013a65acd289834644d5c2d2f5da5d",
+      "programBytes": 21136,
+      "selection": "Exact outlines/advances derived from the source SVG font; original SVG descriptors omit weight/style.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "success",
+          "nativePngSha256": "77dbea065f37ca44e7cd9a0ee48dee7e33e53eb1df9f64c2681a749108014e49",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 5639,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "success",
+          "nativePngSha256": "9ab8766ee929db3a35c1b9aba6cb7b2d48880f0e5dc9fd4c2d4d886975807541",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 4960,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "decimal.svg",
+      "sourceSha256": "d0aba26e5d909c9f3e359a21a0b55b1bdea7c13cb843127bb8ffb8f6fd2b096b",
+      "nativeMaterializedSourceSha256": "2e021c8eb84dbb282605f04038633c305c38630d521654131ce63124f02a1198",
+      "programSha256": "ae32140265dbe0dfde24b9abd222be9210a531888f014ff9b2326aba2d6fd777",
+      "programBytes": 172916,
+      "selection": "Explicit host generic-serif policy chooses pinned Droid Serif Regular. Only this supplied-font context is evaluated; no claim about ambient native defaults.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "success",
+          "nativePngSha256": "e9858bb333408526c86a8b7d8181a0059d33c12cb722e856a8703ce177ff571f",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 0,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "success",
+          "nativePngSha256": "ddb24bd6c399049665ab424a989a2d6d44fc6b7af09dce32345d942b47328ae2",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 0,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "paths-data-08-t.svg",
+      "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+      "nativeMaterializedSourceSha256": "bf6e9ac3b38bb3350de434fcaa3f94554d61dbc35f1e02b0e546c90b48f2da84",
+      "programSha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+      "programBytes": 1045720,
+      "selection": "Explicit local Arial regular program, embedded identically into native image capture. No runtime font discovery or redistribution.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "svg-error",
+          "nativePngSha256": "175f17c07fa76c244c2645e920dcebdf00880fdf755c5a29a22e44ac96dc5e31",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": null,
+          "afterChangedPixels": null,
+          "maximumError": null,
+          "alphaChangedPixels": null,
+          "differenceBounds": null,
+          "detail": {
+            "Message": "Filtered contextual GPOS positioning is not supported.",
+            "SourceDiagnostic": {
+              "ElementName": "text",
+              "ElementId": "",
+              "AttributeName": "",
+              "AttributeValue": "",
+              "LineNumber": 50,
+              "LinePosition": 4,
+              "InstanceElementId": ""
+            },
+            "FontDiagnostic": {
+              "Stage": 2,
+              "RequestedFamily": "Arial",
+              "ResolvedFamily": "Arial",
+              "FaceIdentity": "Arial.ttf:0",
+              "SourceElementId": "",
+              "RequestedWeight": 400,
+              "RequestedItalic": false,
+              "IsFallback": false,
+              "UnicodeScalar": null,
+              "ScalarIndex": null
+            }
+          }
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "svg-error",
+          "nativePngSha256": "edfe292b8d9b388f2449d349a06e2e93f25f851a3a1d5a99208b52df4c157b26",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": null,
+          "afterChangedPixels": null,
+          "maximumError": null,
+          "alphaChangedPixels": null,
+          "differenceBounds": null,
+          "detail": {
+            "Message": "Filtered contextual GPOS positioning is not supported.",
+            "SourceDiagnostic": {
+              "ElementName": "text",
+              "ElementId": "",
+              "AttributeName": "",
+              "AttributeValue": "",
+              "LineNumber": 50,
+              "LinePosition": 4,
+              "InstanceElementId": ""
+            },
+            "FontDiagnostic": {
+              "Stage": 2,
+              "RequestedFamily": "Arial",
+              "ResolvedFamily": "Arial",
+              "FaceIdentity": "Arial.ttf:0",
+              "SourceElementId": "",
+              "RequestedWeight": 400,
+              "RequestedItalic": false,
+              "IsFallback": false,
+              "UnicodeScalar": null,
+              "ScalarIndex": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "paths-data-09-t.svg",
+      "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+      "nativeMaterializedSourceSha256": "45f16f2c52636ba3af664d299652378714467293e27544b09575a9544d724fff",
+      "programSha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+      "programBytes": 1045720,
+      "selection": "Explicit local Arial regular program, embedded identically into native image capture. No runtime font discovery or redistribution.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "svg-error",
+          "nativePngSha256": "1bac9d55e0880e3eb0df914c0de4491641f6fe20aef78288384e2645cc9d286f",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": null,
+          "afterChangedPixels": null,
+          "maximumError": null,
+          "alphaChangedPixels": null,
+          "differenceBounds": null,
+          "detail": {
+            "Message": "Filtered contextual GPOS positioning is not supported.",
+            "SourceDiagnostic": {
+              "ElementName": "text",
+              "ElementId": "",
+              "AttributeName": "",
+              "AttributeValue": "",
+              "LineNumber": 50,
+              "LinePosition": 4,
+              "InstanceElementId": ""
+            },
+            "FontDiagnostic": {
+              "Stage": 2,
+              "RequestedFamily": "Arial",
+              "ResolvedFamily": "Arial",
+              "FaceIdentity": "Arial.ttf:0",
+              "SourceElementId": "",
+              "RequestedWeight": 400,
+              "RequestedItalic": false,
+              "IsFallback": false,
+              "UnicodeScalar": null,
+              "ScalarIndex": null
+            }
+          }
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "svg-error",
+          "nativePngSha256": "fa26456326d17fe6290ca6a930f35d22f9562972e7e5c33ef94619885950424b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": null,
+          "afterChangedPixels": null,
+          "maximumError": null,
+          "alphaChangedPixels": null,
+          "differenceBounds": null,
+          "detail": {
+            "Message": "Filtered contextual GPOS positioning is not supported.",
+            "SourceDiagnostic": {
+              "ElementName": "text",
+              "ElementId": "",
+              "AttributeName": "",
+              "AttributeValue": "",
+              "LineNumber": 50,
+              "LinePosition": 4,
+              "InstanceElementId": ""
+            },
+            "FontDiagnostic": {
+              "Stage": 2,
+              "RequestedFamily": "Arial",
+              "ResolvedFamily": "Arial",
+              "FaceIdentity": "Arial.ttf:0",
+              "SourceElementId": "",
+              "RequestedWeight": 400,
+              "RequestedItalic": false,
+              "IsFallback": false,
+              "UnicodeScalar": null,
+              "ScalarIndex": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "pservers-grad-03-b.svg",
+      "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+      "nativeMaterializedSourceSha256": "3ad0b6cca25c361f1ef1b486800fbabd52a11894b2778f72bcae59a28ffd11cc",
+      "programSha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+      "programBytes": 1045720,
+      "selection": "Explicit local Arial regular program, embedded identically into native image capture. No runtime font discovery or redistribution.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "svg-error",
+          "nativePngSha256": "722aa4fe20040397e3f49647e086725d16192fa3b6c1a2e6b074c4e3dcb6d721",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": null,
+          "afterChangedPixels": null,
+          "maximumError": null,
+          "alphaChangedPixels": null,
+          "differenceBounds": null,
+          "detail": {
+            "Message": "Filtered contextual GPOS positioning is not supported.",
+            "SourceDiagnostic": {
+              "ElementName": "text",
+              "ElementId": "",
+              "AttributeName": "",
+              "AttributeValue": "",
+              "LineNumber": 57,
+              "LinePosition": 4,
+              "InstanceElementId": ""
+            },
+            "FontDiagnostic": {
+              "Stage": 2,
+              "RequestedFamily": "Arial",
+              "ResolvedFamily": "Arial",
+              "FaceIdentity": "Arial.ttf:0",
+              "SourceElementId": "",
+              "RequestedWeight": 400,
+              "RequestedItalic": false,
+              "IsFallback": false,
+              "UnicodeScalar": null,
+              "ScalarIndex": null
+            }
+          }
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "svg-error",
+          "nativePngSha256": "ff8c71d6d934f95f1da13d5221614fc616cdea78484e4fde1df3671ba6cfc4ab",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": null,
+          "afterChangedPixels": null,
+          "maximumError": null,
+          "alphaChangedPixels": null,
+          "differenceBounds": null,
+          "detail": {
+            "Message": "Filtered contextual GPOS positioning is not supported.",
+            "SourceDiagnostic": {
+              "ElementName": "text",
+              "ElementId": "",
+              "AttributeName": "",
+              "AttributeValue": "",
+              "LineNumber": 57,
+              "LinePosition": 4,
+              "InstanceElementId": ""
+            },
+            "FontDiagnostic": {
+              "Stage": 2,
+              "RequestedFamily": "Arial",
+              "ResolvedFamily": "Arial",
+              "FaceIdentity": "Arial.ttf:0",
+              "SourceElementId": "",
+              "RequestedWeight": 400,
+              "RequestedItalic": false,
+              "IsFallback": false,
+              "UnicodeScalar": null,
+              "ScalarIndex": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "shapes-polygon-01-t.svg",
+      "sourceSha256": "ba00b071ec66e3b98ac2de924563f69d72e714ab02adbbe1dd1266b418ea144e",
+      "nativeMaterializedSourceSha256": "9b889f958c7b757b0966a8f78def009471bb22a6f1c8542e55722c1de8603ef5",
+      "programSha256": "ae32140265dbe0dfde24b9abd222be9210a531888f014ff9b2326aba2d6fd777",
+      "programBytes": 172916,
+      "selection": "Explicit host generic-serif policy chooses pinned Droid Serif Regular. Only this supplied-font context is evaluated; no claim about ambient native defaults.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "success",
+          "nativePngSha256": "e4352a45e3a733fcbf086286a6d8219772ed14c779eeee4b2dcf95f115f5955c",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 0,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "success",
+          "nativePngSha256": "e616993f425d19ab66480e79128a34d6188d91a7e0eff607138ccaf9c109d9c4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 0,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        }
+      ]
+    },
+    {
+      "name": "shapes-polyline-01-t.svg",
+      "sourceSha256": "3d636692e459edc01b768cc607b0b1b3fcd06c379616a3771a06ae8dfc8324ca",
+      "nativeMaterializedSourceSha256": "93ab1cac1c0f9d02918f7260d455adbbb77f1678911112eaad1620e257a06cf5",
+      "programSha256": "ae32140265dbe0dfde24b9abd222be9210a531888f014ff9b2326aba2d6fd777",
+      "programBytes": 172916,
+      "selection": "Explicit host generic-serif policy chooses pinned Droid Serif Regular. Only this supplied-font context is evaluated; no claim about ambient native defaults.",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryOutcome": "success",
+          "nativePngSha256": "df80ece6e1639b87fe37a1fba69c6c573ca3802b8c5974e3e9897ccf6f2b930a",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 0,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        },
+        {
+          "host": "linux",
+          "libraryOutcome": "success",
+          "nativePngSha256": "e1c3e7d83be663b71a3c4dec5232cba0cd2c195fafb8deb41fa08cdefe3b1c8b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "beforeChangedPixels": 0,
+          "afterChangedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null,
+          "detail": null
+        }
+      ]
+    }
+  ],
+  "arialNextDiagnostic": {
+    "programSha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+    "programBytes": 1045720,
+    "programRedistributed": false,
+    "scripts": [
+      {
+        "script": "latn",
+        "kernLookups": [
+          0
+        ]
+      }
+    ],
+    "originals": [
+      {
+        "name": "paths-data-08-t.svg",
+        "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+        "textScalars": [
+          32,
+          36,
+          46,
+          49,
+          50,
+          58,
+          76,
+          77,
+          82,
+          90,
+          97,
+          99,
+          100,
+          101,
+          102,
+          104,
+          105,
+          107,
+          108,
+          109,
+          110,
+          111,
+          114,
+          115,
+          116,
+          118,
+          119
+        ],
+        "lookups": [
+          {
+            "index": 0,
+            "type": 9,
+            "flags": 8,
+            "subtables": [
+              {
+                "envelopeFormat": 1,
+                "effectiveType": 2,
+                "effectiveFormat": 2,
+                "valueFormat1": 4,
+                "valueFormat2": 0,
+                "class1Count": 158,
+                "class2Count": 158
+              }
+            ],
+            "coveredGlyphs": 268,
+            "textGlyphsCovered": [
+              "L",
+              "R",
+              "f",
+              "one",
+              "r",
+              "space",
+              "v",
+              "w"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "paths-data-09-t.svg",
+        "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+        "textScalars": [
+          32,
+          36,
+          46,
+          49,
+          50,
+          58,
+          76,
+          82,
+          97,
+          99,
+          100,
+          101,
+          104,
+          105,
+          109,
+          110,
+          111,
+          114,
+          115,
+          116,
+          118,
+          119,
+          122
+        ],
+        "lookups": [
+          {
+            "index": 0,
+            "type": 9,
+            "flags": 8,
+            "subtables": [
+              {
+                "envelopeFormat": 1,
+                "effectiveType": 2,
+                "effectiveFormat": 2,
+                "valueFormat1": 4,
+                "valueFormat2": 0,
+                "class1Count": 158,
+                "class2Count": 158
+              }
+            ],
+            "coveredGlyphs": 268,
+            "textGlyphsCovered": [
+              "L",
+              "R",
+              "one",
+              "r",
+              "space",
+              "v",
+              "w"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "pservers-grad-03-b.svg",
+        "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+        "textScalars": [
+          32,
+          36,
+          46,
+          49,
+          50,
+          58,
+          80,
+          82,
+          97,
+          98,
+          99,
+          101,
+          102,
+          103,
+          105,
+          108,
+          110,
+          111,
+          112,
+          114,
+          115,
+          116,
+          118,
+          119
+        ],
+        "lookups": [
+          {
+            "index": 0,
+            "type": 9,
+            "flags": 8,
+            "subtables": [
+              {
+                "envelopeFormat": 1,
+                "effectiveType": 2,
+                "effectiveFormat": 2,
+                "valueFormat1": 4,
+                "valueFormat2": 0,
+                "class1Count": 158,
+                "class2Count": 158
+              }
+            ],
+            "coveredGlyphs": 268,
+            "textGlyphsCovered": [
+              "P",
+              "R",
+              "f",
+              "one",
+              "r",
+              "space",
+              "v",
+              "w"
+            ]
+          }
+        ]
+      }
+    ],
+    "scope": "Table and run-coverage triage only; no renderer change or original acceptance. SVG bodies and text strings discarded."
+  },
+  "defaultReview": {
+    "files": 204,
+    "outcomesPerHost": {
+      "rendered": 150,
+      "UnsupportedFeature": 51,
+      "MalformedInput": 3
+    },
+    "exactRenderedPerHost": 150,
+    "sourceHashesOptionsDimensionsDiagnosticsAndRenderedBytesUnchanged": true,
+    "seconds": 74.54194739996456,
+    "sourceSvgFilesRetained": 0,
+    "hostedFragmentsRetained": 0
+  },
+  "qualification": {
+    "focused": {
+      "name": "inline-focused-final-core-windows-net11.0",
+      "passed": 478,
+      "seconds": 6.716,
+      "librarySha256": "ab41981519eb472022c13b4b19e1b531e1a24d182997b7e0ef85af1179c46b38"
+    },
+    "affectedIntegration": {
+      "name": "integration-first-native-windows-net11.0",
+      "passed": 34734,
+      "seconds": 56.151,
+      "librarySha256": "ab41981519eb472022c13b4b19e1b531e1a24d182997b7e0ef85af1179c46b38"
+    },
+    "fullRoutine": [
+      {
+        "name": "final-qualified-core-windows-net11.0",
+        "passed": 33124,
+        "seconds": 45.099,
+        "librarySha256": "ab41981519eb472022c13b4b19e1b531e1a24d182997b7e0ef85af1179c46b38"
+      },
+      {
+        "name": "full-qualified-native-windows-net11.0",
+        "passed": 39152,
+        "seconds": 78.187,
+        "librarySha256": "ab41981519eb472022c13b4b19e1b531e1a24d182997b7e0ef85af1179c46b38"
+      },
+      {
+        "name": "final-qualified-core-windows-net10.0",
+        "passed": 33124,
+        "seconds": 62.413,
+        "librarySha256": "4640abbb0556bd7ecc18697bfcb13b508f77376dbcfc6a4c9a5d802b21d0f03d"
+      },
+      {
+        "name": "final-qualified-native-windows-net10.0",
+        "passed": 39152,
+        "seconds": 77.072,
+        "librarySha256": "4640abbb0556bd7ecc18697bfcb13b508f77376dbcfc6a4c9a5d802b21d0f03d"
+      },
+      {
+        "name": "final-qualified-core-linux-net11.0",
+        "passed": 33124,
+        "seconds": 47.556,
+        "librarySha256": "ab41981519eb472022c13b4b19e1b531e1a24d182997b7e0ef85af1179c46b38"
+      },
+      {
+        "name": "full-qualified-native-linux-net11.0",
+        "passed": 39152,
+        "seconds": 161.092,
+        "librarySha256": "ab41981519eb472022c13b4b19e1b531e1a24d182997b7e0ef85af1179c46b38"
+      },
+      {
+        "name": "final-qualified-core-linux-net10.0",
+        "passed": 33124,
+        "seconds": 64.683,
+        "librarySha256": "4640abbb0556bd7ecc18697bfcb13b508f77376dbcfc6a4c9a5d802b21d0f03d"
+      },
+      {
+        "name": "final-qualified-native-linux-net10.0",
+        "passed": 39152,
+        "seconds": 153.89,
+        "librarySha256": "4640abbb0556bd7ecc18697bfcb13b508f77376dbcfc6a4c9a5d802b21d0f03d"
+      }
+    ],
+    "totalRoutinePassed": 289104,
+    "timingScope": "Functional validation wall times under ordinary development load, not benchmarks or a suite-simplification speedup claim."
+  },
+  "remaining": [
+    "Droid Serif Bold: 3 Windows and 10 Linux pixels; BoldItalic: 4 Linux pixels; Italic: 47 Linux pixels. Preserve exact programs/geometry, platform companions and original text layout while isolating shared glyph stages.",
+    "Three private Arial contexts fail an outer GPOS type-9 extension with ignore-marks flags. Its inner operation is an already admitted type-2 format-2 pair table (X advance only), not contextual positioning. Review shared bounded lookup normalization before adding font or run exceptions.",
+    "Four configured generic-serif contexts are exploratory exact; generic alias policy does not qualify native ambient fonts or the default no-font original.",
+    "Every full original remains open for all font/resource/static-state contexts. Single exploratory supplied-program captures are not reference admission."
+  ]
+}

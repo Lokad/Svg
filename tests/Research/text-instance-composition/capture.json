@@ -11,18 +11,18 @@
     "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
     "license": "../supplied-font-labels/fonts/OFL.txt"
   },
-  "logicalRoles": 157,
-  "uniqueInputOptions": 154,
+  "logicalRoles": 158,
+  "uniqueInputOptions": 155,
   "summary": {
     "windows": {
-      "actuals": 154,
-      "exact": 153,
+      "actuals": 155,
+      "exact": 154,
       "knownDifferences": 0,
       "exclusions": 1
     },
     "linux": {
-      "actuals": 154,
-      "exact": 153,
+      "actuals": 155,
+      "exact": 154,
       "knownDifferences": 0,
       "exclusions": 1
     }
@@ -10318,6 +10318,73 @@
             "AlphaChangedPixelCount": 0,
             "MinimumMismatchX": 32,
             "MinimumMismatchY": 32,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        }
+      }
+    },
+    {
+      "id": "inline-font-size",
+      "input": "inputs/inline-font-size.svg",
+      "sourceSha256": "1d182e4cd023a684ba7a6ff88e8ade4b694b12ceb1e5f33881252ef4f387507e",
+      "outputScale": 1,
+      "font": true,
+      "roles": [
+        "inline-font-size"
+      ],
+      "purpose": "SVG inline unitless font sizes, inheritance, span override and importance stay distinct from stylesheet CSS lengths.",
+      "license": "MIT",
+      "licenseEvidence": "../../../LICENSE.txt",
+      "captureContext": {
+        "kind": "viewport",
+        "deviceScaleFactor": 1
+      },
+      "platforms": {
+        "windows": {
+          "reference": "references/088e681386a2699caae37ba4ec17edb0a406598b83dbe1f944e802b78ffdfd26.png",
+          "referenceSha256": "088e681386a2699caae37ba4ec17edb0a406598b83dbe1f944e802b78ffdfd26",
+          "nativeSourceSha256": "43ee26d0ef198886051947111557f7058c8bb6d4e50ed644f3180d52ed02befd",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "width": 96,
+          "height": 80,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 96,
+            "MinimumMismatchY": 80,
+            "MaximumMismatchX": -1,
+            "MaximumMismatchY": -1,
+            "IsExact": true
+          }
+        },
+        "linux": {
+          "reference": "references/fec6be5b6ead2f836a8e17bd27ab4141a2956404db4410542279e25da6525a33.png",
+          "referenceSha256": "fec6be5b6ead2f836a8e17bd27ab4141a2956404db4410542279e25da6525a33",
+          "nativeSourceSha256": "43ee26d0ef198886051947111557f7058c8bb6d4e50ed644f3180d52ed02befd",
+          "freshProcessCaptures": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true,
+          "width": 96,
+          "height": 80,
+          "comparison": {
+            "DimensionsMatch": true,
+            "ChangedPixelCount": 0,
+            "MaximumChannelError": 0,
+            "MeanAbsoluteError": 0.0,
+            "RootMeanSquareError": 0.0,
+            "MaximumAlphaError": 0,
+            "AlphaChangedPixelCount": 0,
+            "MinimumMismatchX": 96,
+            "MinimumMismatchY": 80,
             "MaximumMismatchX": -1,
             "MaximumMismatchY": -1,
             "IsExact": true

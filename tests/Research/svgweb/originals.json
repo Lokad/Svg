@@ -10643,6 +10643,7 @@
     ],
     "newlyExactOriginals": [],
     "lostExactImages": [],
-    "remainingDefaultDifferences": []
+    "remainingDefaultDifferences": [],
+    "fontContexts": "font-contexts.json"
   }
 }

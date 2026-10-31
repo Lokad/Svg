@@ -77,7 +77,7 @@ internal enum InlineImportantProperties : long
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
 internal static class SvgInlineStyleParser
 {
-    private enum Target : byte { Presentation, DirectText, Geometry, LocalUse }
+    private enum Target : byte { Presentation, DirectText, Geometry, LocalUse, StyleSheet }
     internal static InlineStyle Parse(string? value, CancellationToken cancellationToken)
         => value is null ? default : Parse(value.AsSpan(), cancellationToken);
 
@@ -91,8 +91,9 @@ internal static class SvgInlineStyleParser
     private static InlineStyle Parse(ReadOnlySpan<char> value, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
         => ParseCore(value, cancellationToken, null, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
 
-    internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
-        => ParseCore(value, cancellationToken, strings, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
+    /// <summary>Parses a rule block with CSS length admission, retaining strings in the caller's bounded store.</summary>
+    internal static InlineStyle ParseStyleSheet(ReadOnlySpan<char> value, BudgetedParserStringStore strings, CancellationToken cancellationToken)
+        => ParseCore(value, cancellationToken, strings, Target.StyleSheet);
 
     internal static InlineStyle ParseGeometry(string? value, CancellationToken cancellationToken)
         => value is null ? default : ParseCore(value.AsSpan(), cancellationToken, null, Target.Geometry);
@@ -103,7 +104,7 @@ internal static class SvgInlineStyleParser
 
     private static InlineStyle ParseCore(ReadOnlySpan<char> value, CancellationToken cancellationToken, BudgetedParserStringStore? strings, Target target)
     {
-        bool allowsDirectTextFontProperties = target == Target.DirectText;
+        bool allowsDirectTextFontProperties = target is Target.DirectText or Target.StyleSheet;
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null, clipRule = null, paintOrder = null;
         string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null, wordSpacing = null, textDecoration = null;
         string? linecap = null, linejoin = null, dasharray = null, dashoffset = null, width = null, miterlimit = null, strokeOpacity = null, geometryWidth = null, geometryHeight = null;
@@ -183,11 +184,10 @@ internal static class SvgInlineStyleParser
             else if (allowsDirectTextFontProperties && property.Equals("font-size", StringComparison.OrdinalIgnoreCase))
             {
                 TryStripImportant(propertyValue, out ReadOnlySpan<char> fontSize);
-                // Nonzero CSS lengths require a unit. Ignore this invalid
-                // declaration without replacing an earlier valid value;
-                // unitless presentation attributes keep their SVG semantics.
+                // SVG style attributes accept positive unitless sizes. Rule blocks
+                // retain CSS unit requirements; neither source admits negative sizes.
                 if (double.TryParse(fontSize, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double numericSize)
-                    && double.IsFinite(numericSize) && numericSize != 0) continue;
+                    && double.IsFinite(numericSize) && numericSize != 0 && (target == Target.StyleSheet || numericSize < 0)) continue;
                 Set(ref size, InlineImportantProperties.FontSize, property, propertyValue, strings, ref important, false);
             }
             else if (allowsDirectTextFontProperties && property.Equals("white-space", StringComparison.OrdinalIgnoreCase)) Set(ref whiteSpace, InlineImportantProperties.WhiteSpace, property, propertyValue, strings, ref important, false);

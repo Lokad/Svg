@@ -3857,8 +3857,9 @@ public sealed partial class OpenTypeFontTests
 
         byte[] png = SvgConverter.ConvertToPng(svg, options, CancellationToken.None).ToArray();
 
-        // Nonzero unitless CSS font sizes are ignored; the small default-size glyph has no ink here.
-        Assert.Equal(0, DecodeAlpha(png, 1, 1));
+        byte[] control = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(control, options, CancellationToken.None).ToArray(), png);
+        Assert.True(DecodeAlpha(png, 1, 1) > 0);
     }
 
     [Fact]

@@ -1,6 +1,6 @@
 # Text and instance composition
 
-[154 source/options records](capture.json) retain 157 original and interaction
+[155 source/options records](capture.json) retain 158 original and interaction
 roles. Identical source aliases share execution; different SVG graphs keep their
 own native references. Canonical conversion covers object boxes, source/owning
 clips, groups, use, symbols, patterns, masks, filters, opacity and reflected maps.
@@ -20,7 +20,10 @@ Their native pixels differ. Earlier viewport-reference bytes remain retained
 against the explicit viewport source; no layout implementation or reference was
 rewritten to make density agree with viewport resizing.
 
-153 records are exact on both hosts. The four Windows stroke differences are
+154 records are exact on both hosts. The inline-font-size control separately pins
+unitless SVG style attributes, stylesheet length admission, inheritance, span
+overrides and importance. Its two platform references are independent fresh
+captures; earlier reference bytes are unchanged. The four Windows stroke differences are
 corrected against their unchanged native references. The earlier
 [stroke isolation](stroke-isolation.json) retains the failing-before evidence;
 [fractional stroke controls](../fractional-text-strokes/README.md) cover the shared

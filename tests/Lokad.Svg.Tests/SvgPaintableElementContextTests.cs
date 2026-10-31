@@ -36,7 +36,7 @@ public sealed class SvgPaintableElementContextTests
         Assert.Equal("Example", element.InlineFont.Family);
         Assert.Equal("700", element.InlineFont.Weight);
         Assert.Equal("italic", element.InlineFont.Style);
-        Assert.Null(element.InlineFont.Size);
+        Assert.Equal("12", element.InlineFont.Size);
     }
 
     [Fact]

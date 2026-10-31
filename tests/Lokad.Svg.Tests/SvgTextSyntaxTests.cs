@@ -7,13 +7,35 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgTextSyntaxTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("font-size:14px;font-size:18", "18", false)]
+    [InlineData("font-size:18!important;font-size:14px", "18", true)]
+    [InlineData("font-size:14px!important;font-size:18", "14px", true)]
+    [InlineData("font-size:+18.5", "+18.5", false)]
+    [InlineData("font-size:18e0", "18e0", false)]
+    [InlineData("font-size:14px;font-size:-18!important", "14px", false)]
+    public void Inline_font_size_preserves_svg_lengths_and_importance(string declarations, string expected, bool important)
+    {
+        InlineStyle style = SvgInlineStyleParser.Parse(declarations, CancellationToken.None, true);
+        Assert.Equal(expected, style.TextFont.Size);
+        Assert.Equal(important, (style.Important & InlineImportantProperties.FontSize) != 0);
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("font-size:14px;font-size:18")]
     [InlineData("font-size:18!important;font-size:14px")]
     [InlineData("font-size:14px!important;font-size:18")]
-    public void Invalid_unitless_css_font_size_preserves_the_valid_declaration(string declarations)
+    public void Stylesheet_unitless_font_size_preserves_the_valid_declaration(string declarations)
     {
-        InlineStyle style = SvgInlineStyleParser.Parse(declarations, CancellationToken.None, true);
-        Assert.Equal("14px", style.TextFont.Size);
+        RenderBudget budget = new(new HostMemoryBudget(16_384));
+        using (BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser))
+        using (BudgetedParserStringStore strings = new(budget))
+        {
+            SvgStyleSheet.Parse("text{" + declarations + "}", 1, rules, strings, budget, CancellationToken.None);
+            Assert.Equal("14px", rules[0].Style.TextFont.Size);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
@@ -69,7 +91,7 @@ public sealed class SvgTextSyntaxTests
         Assert.Equal("Inline", style.Font.Family);
         Assert.Equal(700, style.Font.Weight);
         Assert.True(style.Font.Italic);
-        Assert.Equal(16, style.FontSize);
+        Assert.Equal(12, style.FontSize);
     }
 
     [Fact]
@@ -241,7 +263,7 @@ public sealed class SvgTextSyntaxTests
         Assert.Equal("Inline", resolved.Family);
         Assert.Equal(400, resolved.Weight);
         Assert.True(resolved.Italic);
-        Assert.Equal(12, resolved.FontSize);
+        Assert.Equal(14, resolved.FontSize);
     }
 
     [Theory]
@@ -277,8 +299,8 @@ public sealed class SvgTextSyntaxTests
     {
         using XmlReader accepted = XmlReader.Create(new StringReader("<tspan xml:space='preserve' x='0' y='12px' dx='2' dy='-4' letter-spacing='2' style='white-space: normal; letter-spacing: 3'/>"));
         accepted.Read();
-        using XmlReader rejected = XmlReader.Create(new StringReader("<tspan style='font-size: 12'/>"));
-        rejected.Read();
+        using XmlReader sized = XmlReader.Create(new StringReader("<tspan style='font-size: 12'/>"));
+        sized.Read();
         using XmlReader rejectedSpacing = XmlReader.Create(new StringReader("<tspan style='white-space: pre; letter-spacing: 2'/>"));
         rejectedSpacing.Read();
 
@@ -286,8 +308,8 @@ public sealed class SvgTextSyntaxTests
         Assert.Equal(SvgTextWhitespaceMode.Default, style.WhitespaceMode);
         Assert.Equal(3, style.LetterSpacing);
         Assert.Equal(new SvgTextPositionOffset(0, 12, 2, -4), style.PositionOffset);
-        Assert.True(SvgTextSyntax.TryParseTspanStyle(rejected, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out SvgTextSpanStyle fontStyle));
-        Assert.Equal(16, fontStyle.Font.FontSize);
+        Assert.True(SvgTextSyntax.TryParseTspanStyle(sized, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out SvgTextSpanStyle fontStyle));
+        Assert.Equal(12, fontStyle.Font.FontSize);
         Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(rejectedSpacing, SvgTextWhitespaceMode.Default, default, CancellationToken.None, out _));
     }
 

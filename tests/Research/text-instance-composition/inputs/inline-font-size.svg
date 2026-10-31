@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="80">
+  <style>g{font-size:24px} tspan{font-size:40}</style>
+  <g style="font-size:18">
+    <text x="8" y="30">AV<tspan dx="4" style="font-size:30">A</tspan></text>
+    <text x="8" y="64" style="font-size:24px;font-size:18!important">WA</text>
+  </g>
+</svg>

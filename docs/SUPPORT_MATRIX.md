@@ -336,7 +336,10 @@ Kerning/ligatures stay within selected faces.
 CSS requests admit 256 families, 1,024 UTF-16 units per decoded name and 4,096 units
 for both authored/canonical lists. SVG weights accept integers 1–1000, normal/bold;
 public request objects retain their positive-weight contract. Font sizes must be
-positive. Family inherit/initial/unset work; those keywords reject for weight,
+positive. Presentation attributes and SVG inline styles accept unitless sizes;
+stylesheet rules require units for nonzero sizes. The
+[source-context regression](../tests/Research/svgweb/font-contexts.json) preserves
+this distinction through inheritance and preparation. Family inherit/initial/unset work; those keywords reject for weight,
 style, size, spacing and white-space. Typography on geometry remains inert.
 
 Nonzero spacing, face/paint changes and absolute positions prevent ligature

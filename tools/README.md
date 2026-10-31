@@ -228,6 +228,25 @@ uses support triage; they do not resolve CSS, prove dependencies available or
 establish rendering correctness. This live-endpoint procedure is outside normal
 builds/tests. The [review record](../tests/Research/svgweb/README.md) defines the
 remaining original-rendering and orthogonal-fixture work.
+
+For the seven legacy Droid SVG fonts, an optional research transport derives
+unhinted TrueType programs from the hashed source outlines and advances. It
+requires `fontTools==4.66.1` in a development Python environment. Choose a new
+ignored destination; no hosted XML is retained or installed:
+
+```powershell
+python -B tools/derive-svgweb-fonts.py --output-directory artifacts/research/svgweb-fonts
+```
+
+All 96 glyphs per font, including the missing glyph, must round-trip exactly.
+Keep the source's implicit normal/400 descriptors; filenames do not establish
+weight or style. Use the generated catalog with FontProbe and embed the identical
+program into native capture with `@font-face`. Preserve native/library input hashes
+and logical viewport. This transport qualifies an explicit program context; it
+does not establish native SVG-font support or whole-original acceptance. The
+[font record](../tests/Research/svgweb/font-contexts.json) separates these results
+from configured generic aliases and private, unredistributed Arial programs.
+
 Keep CSS image resizing separate from canvas drawing destinations. The committed
 [root-boundary recipe](../tests/Research/svgweb/root-image-boundary.json) specifies
 its fractional canvas extent and independent native triples; substituting the same

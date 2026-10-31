@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Respect unitless font sizes in SVG inline styles while preserving stylesheet
+  length admission, inherited/span styles and prepared font requests.
 - Share foreign-description traversal and pattern declaration locations across
   preparation and lowering; preserve the original unsupported-source diagnostic
   when a later text node encounters the rejection.
