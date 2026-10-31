@@ -232,7 +232,9 @@
     "Immediate parent/local canvas-map probes leave all21 focused outcomes unchanged.",
     "DOM local and combined transforms match the parser. Flattened SVG transforms round their coefficients, so matching flattened output does not isolate a canvas-boundary cause.",
     "A float-source-map probe improves one full-original pixel but leaves the remaining errors; it is not adopted.",
-    "Removing only the capture guard/origin leaves Scimitar unchanged and worsens Gallardo from94/123 to95/124; that prototype is rejected."
+    "Removing only the capture guard/origin leaves Scimitar unchanged and worsens Gallardo from94/123 to95/124; that prototype is rejected.",
+    "Blink rounded-box SVG visual outsets cannot replace the retained3*sigma capture hints: the existing native trace disagrees and the focused prototype regresses Gallardo.",
+    "Known-alpha restoration probes must validate their source plane and saved-layer bounds. Multiple fitting matrices and flat carrier agreement do not identify the original affine intermediate."
   ],
   "nextAcceptance": [
     "Retain exact own boundary control and make the paired gap and original white-over231 interaction exact through one justified shared model.",
@@ -297,5 +299,187 @@
       }
     ],
     "timingScope": "Busy-host functional validation only; no performance or suite-simplification claim."
+  },
+  "boundsDomainReview": {
+    "sourceBaseline": "db3ffb7d7ddea34985a0138d2ad824c56067b197",
+    "scope": "Clarify capture-hint naming without changing bounds, sampling, pixels or references. The original filter milestone stays open.",
+    "captureHint": {
+      "nativeSource": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/effects/imagefilters/SkBlurImageFilter.cpp",
+      "contract": "computeFastBounds outsets by 3*sigma. Source capture keeps its hint, integer enclosure, requested source extent and transparent padding distinct.",
+      "implementation": "../../../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+      "regression": "../../Lokad.Svg.Tests/SvgFilterPlaybackTests.cs",
+      "retainedTrace": {
+        "source": [
+          7.25,
+          19.5,
+          61.75,
+          84.75
+        ],
+        "sequentialDeviations": [
+          1.125,
+          1.125
+        ],
+        "enclosedCaptureHint": [
+          0,
+          12,
+          69,
+          92
+        ]
+      }
+    },
+    "separateSvgVisualStage": {
+      "nativeSource": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/platform/graphics/filters/fe_gaussian_blur.cc",
+      "contract": "MapEffect uses 1.5*max(2,floor(sigma*(.75*sqrt(2*pi))+.5)) for each nonzero axis. This is not interchangeable with the retained Skia fast capture hint."
+    },
+    "rejectedSubstitution": {
+      "proposal": "Replace capture-hint outsets with the rounded three-box visual outsets. No stored-kernel change.",
+      "librarySha256": "91409aa9b4cff68fb59bb980f8e292e53cefb81a634c75a052bf94d537d78c91",
+      "focusedInputs": 25,
+      "unchangedInputs": 24,
+      "gallardoChangedPixels": [
+        94,
+        95
+      ],
+      "gallardoTotalChannelError": [
+        123,
+        124
+      ],
+      "scimitarChangedPixels": [
+        6,
+        6
+      ],
+      "opposedControlsImproved": false,
+      "decision": "Rejected; retain 3*sigma and name the enum CaptureHint instead of Visual. No production mapping or pixel arithmetic changes."
+    },
+    "qualification": {
+      "productionChange": "Internal enum member name and comments only; ordinal values and arithmetic are unchanged.",
+      "releaseBuilds": 2,
+      "warnings": 0,
+      "gates": [
+        {
+          "name": "capture-hint-core-windows",
+          "passed": 1758,
+          "elapsedSeconds": 17.36,
+          "librarySha256": "d8ae0409be475201acd6e71fae36e75e8b8f7e615aaa523c9386a1951adf6196"
+        },
+        {
+          "name": "capture-hint-rendering-windows",
+          "passed": 469,
+          "elapsedSeconds": 13.76,
+          "librarySha256": "d8ae0409be475201acd6e71fae36e75e8b8f7e615aaa523c9386a1951adf6196"
+        },
+        {
+          "name": "capture-hint-integration-windows",
+          "passed": 1898,
+          "elapsedSeconds": 23.02,
+          "librarySha256": "d8ae0409be475201acd6e71fae36e75e8b8f7e615aaa523c9386a1951adf6196"
+        },
+        {
+          "name": "capture-hint-core-linux",
+          "passed": 1758,
+          "elapsedSeconds": 12.43,
+          "librarySha256": "d8ae0409be475201acd6e71fae36e75e8b8f7e615aaa523c9386a1951adf6196"
+        },
+        {
+          "name": "capture-hint-rendering-linux",
+          "passed": 469,
+          "elapsedSeconds": 13.01,
+          "librarySha256": "d8ae0409be475201acd6e71fae36e75e8b8f7e615aaa523c9386a1951adf6196"
+        },
+        {
+          "name": "capture-hint-integration-linux",
+          "passed": 1898,
+          "elapsedSeconds": 31.21,
+          "librarySha256": "d8ae0409be475201acd6e71fae36e75e8b8f7e615aaa523c9386a1951adf6196"
+        }
+      ],
+      "timingScope": "Busy-host functional validation; no before/after speed or test-suite simplification claim. Full release qualification belongs to the outstanding coherent milestone."
+    }
+  },
+  "knownTexelRestorationDiagnostic": {
+    "scope": "Windows-only exploratory diagnostic; no reference admission or original closure.",
+    "inputs": [
+      "../../Fixtures/original/filter-affine-root-boundary.svg",
+      "filter-affine-root-gap.svg"
+    ],
+    "recipe": {
+      "background": "Remove the background rectangle. Keep the original white path, transform and Gaussian deviation 3.84278.",
+      "rasterSize": [
+        38,
+        33
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "rgba": "White RGB; alpha=(((x*73+y*151+seed*97)^((x+seed*3)*(y+11)*37))&255). Encode as RGBA PNG in a data URI.",
+      "layerScale": [
+        0.18824827671051025,
+        0.16008448600769043
+      ],
+      "placement": "Use filterUnits=userSpaceOnUse and feImage preserveAspectRatio=none. Set filter and feImage x=4/scaleX,y=4/scaleY,width=38/scaleX,height=33/scaleY. Keep Gaussian result blur; make its alpha 1 with an RGB-identity feColorMatrix; composite the image into that opaque mask with operator=in.",
+      "flatControl": "Use a 64x64 root and scale(scaleX scaleY) on the same path. Check alpha against the generated grid before interpreting affine output."
+    },
+    "capture": {
+      "chromeVersion": "153.0.8010.52",
+      "recipe": 3,
+      "host": "windows",
+      "freshCaptures": 18,
+      "allStartupHealthy": true,
+      "allProfilesCleaned": true,
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+    },
+    "verifiedFlatInput": {
+      "seeds": [
+        0,
+        1
+      ],
+      "fullyOpaqueSourceTexelsPerSeed": 588,
+      "alphaMismatches": 0
+    },
+    "selectedAffineSamples": 8560,
+    "sourceGeometryControls": {
+      "paths": [
+        "M0 0H300V250H0Z",
+        "M70 70H170V180H70Z"
+      ],
+      "seeds": [
+        0,
+        1
+      ],
+      "affineComparisons": 4280,
+      "changedAlphaSamples": 0,
+      "flatInteriorTexelsPerSeed": 986,
+      "flatAlphaMismatches": 0,
+      "freshCaptures": 12
+    },
+    "representativeCaptures": [
+      {
+        "case": "exact-1",
+        "sourceSha256": "75bbbf9b91bb0b5d8426c16bc87b000f1fd02370a0a3d70ba15bf15c0f820ba9",
+        "nativePngSha256": "364a364a9fc441ff2d9b28a67263bf63e4593b2377bffb082152807320fe5e6e"
+      },
+      {
+        "case": "flat-1",
+        "sourceSha256": "e945f6a3178f17f1544cebdb91ba2d321dbfd67925968174d2e6fe725dc34f11",
+        "nativePngSha256": "c899f237d74c792583c20fbdabfdf45831c01222fec978f1030d54542761df7f"
+      },
+      {
+        "case": "gap-1",
+        "sourceSha256": "eb3534a9e0061e06c0e4e51162f74854eaebd2517a306337216047125b77033c",
+        "nativePngSha256": "900149fab4769a926ef6040105d27803c4ac45ccac3077d4c2fe14d443e534a6"
+      }
+    ],
+    "limitations": [
+      "Several staged matrix/origin calculations fit all selected alpha samples. A fit does not identify the actual source-device origin or justify a production transform.",
+      "Keeping the original noninteger filter region resamples feImage before restoration; its texels cannot be assumed to equal the embedded PNG. A one-float-step increase of source scale changes up to 16 of 588 checked texels. Such a carrier is not proof of the original Gaussian intermediate.",
+      "Making the mask opaque and varying source geometry preserves the selected diagnostic output, but the diagnostic graph has its own bounds and allocation requests. Preserve original white and black controls and independent end-to-end acceptance."
+    ]
   }
 }

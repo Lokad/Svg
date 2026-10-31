@@ -162,6 +162,9 @@ A root-CTM substitution improves Scimitar but breaks the exact control and is
 rejected. A separate diagnostic exposes three source-alpha discrepancies while
 preserving the original native blur alpha. Mapping, source construction and image
 storage must be resolved together; these observations close no original finding.
+The same record separates Skia fast capture hints from Blink rounded-box visual
+outsets and retains the rejected substitution. Its known-alpha probe validates the
+input plane before restoration; several fitting matrices remain inconclusive.
 
 The [bilinear review](filter-bilinear-review.json) and its [browser probe](highp-bilinear.js) isolate float weight rounding
 in Chromium's raster pipeline. Its [numeric vectors](../../Lokad.Svg.Tests/TestData/highp-bilinear.json)

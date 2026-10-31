@@ -26,7 +26,7 @@ internal enum SvgFilterDeferredColorFilter : byte { None, SourceAlpha, LinearRgb
 
 internal enum SvgFilterImageSampling : byte { Nearest, Linear }
 
-internal enum SvgFilterBoundsKind : byte { Visual, StoredImage, Output }
+internal enum SvgFilterBoundsKind : byte { CaptureHint, StoredImage, Output }
 
 /// <summary>Distinguishes deferred paint from materialized images with preserved or cropped padding.</summary>
 internal enum SvgFilterImageStorage : byte { Deferred, Padded, Cropped }
@@ -172,17 +172,17 @@ internal static class SvgFilterPlayback
             MathF.Ceiling(value.Right - roundEpsilon), MathF.Ceiling(value.Bottom - roundEpsilon));
     }
 
-    /// <summary>Computes the SVG visual bounds used to seed a source layer's image shaders.</summary>
+    /// <summary>Computes a conservative source-capture hint before layer scaling and integer enclosure.</summary>
     /// <remarks>Source/result bounds remain separate from object bounds and pixel ownership. Temporary
     /// arrays share the conversion budget, release on every exit and charge bounded graph visits.</remarks>
     internal static SvgPaintBounds SourceLayerBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgFilterRegionContext context, SvgPaintBounds source, RenderBudget budget, CancellationToken token)
-        => SourceLayerBounds(resource, map, context, source, SvgFilterBoundsKind.Visual, budget, token);
+        => SourceLayerBounds(resource, map, context, source, SvgFilterBoundsKind.CaptureHint, budget, token);
 
     /// <summary>Propagates capture hints, stored-image bounds or painted output through the same finite graph.</summary>
     /// <remarks>Stored bounds retain native kernel outsets and materialization rounding independently
     /// of compact pixel storage. Resources are borrowed; temporary ownership, work and cancellation
-    /// follow the visual-bounds overload.</remarks>
+    /// follow the capture-hint overload.</remarks>
     internal static SvgPaintBounds SourceLayerBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgFilterRegionContext context, SvgPaintBounds source, SvgFilterBoundsKind kind,
         RenderBudget budget, CancellationToken token)
@@ -194,7 +194,7 @@ internal static class SvgFilterPlayback
         SvgPaintBounds[] regions = new SvgPaintBounds[count], bounds = new SvgPaintBounds[count];
         PrepareRegions(resource, regions, context, token);
         PrepareOutputBounds(resource, map, source, kind, regions, bounds, Span<SvgFilterImageStorage>.Empty, token);
-        return kind == SvgFilterBoundsKind.Visual ? Union(source, bounds[^1]) : bounds[^1];
+        return kind == SvgFilterBoundsKind.CaptureHint ? Union(source, bounds[^1]) : bounds[^1];
 
         static SvgPaintBounds Union(SvgPaintBounds first, SvgPaintBounds second)
             => first.Right <= first.Left || first.Bottom <= first.Top ? second
@@ -256,8 +256,8 @@ internal static class SvgFilterPlayback
                 bool shifted = primitive.Kind is SvgFilterPrimitiveKind.Offset or SvgFilterPrimitiveKind.DropShadow;
                 float dx = shifted ? (float)(primitive.OffsetX * map.ScaleX) : 0, dy = shifted ? (float)(primitive.OffsetY * map.ScaleY) : 0;
                 if (!float.IsFinite(dx) || !float.IsFinite(dy)) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source bounds exceed the coordinate range.");
-                // Native capture hints and stored image extents use separate
-                // rounding, including materialized identity pixel kernels.
+                // Skia fast capture hints use 3*sigma; Blink rounded-box visual
+                // outsets are a different stage. Stored kernels round separately.
                 float rx = 3f * sigmaX, ry = 3f * sigmaY;
                 if (kind == SvgFilterBoundsKind.StoredImage)
                 {
