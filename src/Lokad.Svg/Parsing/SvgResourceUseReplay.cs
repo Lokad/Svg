@@ -84,9 +84,18 @@ internal static class SvgResourceUseReplay
             SvgUseReference reference = pending.Use.Reference with
             {
                 FillOverride = new(new(new(255, 255, 255, 255), 1), true, SvgPaintOpacity.Opaque, new(new(255, 255, 255, 255), 1), false),
-                PaintServerId = null, PaintServerFill = null, Opacity = 255
+                PaintServerId = null, PaintServerFill = null, StrokeOverride = null, Opacity = 255
             };
-            SvgGeometry[] mapped = SvgReferenceResolver.Apply(source, reference, null, state, token);
+            SvgGeometry[] mapped;
+            float boundsInflation = 0;
+            if (source.LeafSource is {} leaf)
+            {
+                (SvgDefinition silhouette, float inflation) = leaf.LowerClip(reference, state);
+                try { mapped = SvgReferenceResolver.Apply(silhouette, reference, null, state, token); }
+                finally { foreach (SvgGeometry geometry in silhouette.Geometries) geometry.Dispose(); }
+                boundsInflation = inflation;
+            }
+            else mapped = SvgReferenceResolver.Apply(source, reference, null, state, token);
             try
             {
                 if (pending.Use.ClipId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips on referenced clip content are not implemented.");
@@ -120,7 +129,8 @@ internal static class SvgResourceUseReplay
                 SvgAuthoredPath? copied = path?.Copy(SvgAffineTransform.Identity, state.Budget, token);
                 // Referenced contours retain the same authored construction as
                 // direct clip children, including their controls and placement.
-                try { state.ClipPolygons.Replace(pending.Id, polygon with { SourcePath = copied, UsesNativeReplay = copied is not null }); }
+                try { state.ClipPolygons.Replace(pending.Id, (polygon with { SourcePath = copied, UsesNativeReplay = copied is not null })
+                    .WithVisualBounds(boundsInflation, token)); }
                 catch { copied?.Dispose(); throw; }
             }
             finally { foreach (SvgGeometry geometry in mapped) geometry.Dispose(); }

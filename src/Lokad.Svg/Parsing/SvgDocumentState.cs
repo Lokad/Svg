@@ -338,7 +338,10 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgClipBox? ClipBox { get; set; }
 
     /// <summary>Retains allocation-free rectangle source placement until another clip child needs native union.</summary>
-    internal SvgAffineViewportClip? ClipRectangleSource { get; set; }
+    internal SvgClipRectangleSource? ClipRectangleSource { get; set; }
+
+    /// <summary>Retains cascaded stroke presentation for resource visual bounds; clip coverage does not paint it.</summary>
+    internal SvgInheritedStrokeStyle ClipInheritedStroke { get; set; }
 
     internal SvgClipPolygon? ClipPolygon { get; set; }
 

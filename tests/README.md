@@ -45,6 +45,10 @@ The [raster-window fixtures](Research/svgweb/filter-raster-window.json) separate
 protect numerical curve coverage beyond tight extrema and clip classification
 inside a filtered source. Both use canonical conversion; one existing ownership
 case covers the stronger source without repeating the API matrix.
+The [clip visual-bounds mechanisms](Lokad.Svg.Tests/SvgClipVisualBoundsTests.cs)
+separate silhouette coverage from inherited stroke enclosures. Direct and referenced
+native fixtures retain distinct source-lowering paths; their identical PNG storage
+is shared. One ownership case covers the previously unconstructed referenced source.
 
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;

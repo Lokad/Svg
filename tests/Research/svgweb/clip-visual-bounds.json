@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "6afd114116c8f047c089af896ed3335a6014c770",
+  "scope": "Stroke-aware clip-resource visual enclosures and paint-free referenced silhouette lowering. The full filter/original milestone remains open.",
+  "sharedContract": {
+    "problem": "Clip coverage correctly ignored child strokes, but resource bounds also discarded them. Native clip construction uses the child visual enclosure, including stroke presentation even when its paint server is unavailable. A smaller enclosure changes curve construction before painting or blurring.",
+    "change": "Direct, primitive, inherited, union and referenced clip producers preserve visual bounds separately from the silhouette. SvgStrokeStyleSyntax.BoundsInflation shares the existing native calculation with ordinary paint recording, with cap eligibility limited to paths/point lists/lines. SvgClipPolygon.ResourceBounds carries the result; existing clip construction consumes it.",
+    "referencedSources": "SvgDefinitionLeafSource.LowerClip reuses ordinary leaf lowerers with opaque fill and ignored paint/stroke/effects. It preserves authored operands and computes visual stroke inflation from cascaded style separately. Visibility applies after geometry admission, keeping hidden-source and single-contour contracts. No stroke paint server is required for silhouette construction.",
+    "ownership": "No new owner, cache, bitmap kind or public API. Pending rectangles retain one extra scalar beside existing placement until a sibling requires native replay. Cascaded presentation strings use the existing document store. Temporary referenced geometry is released before adoption of its mapped copy; failure, cancellation and retry retain existing cleanup.",
+    "containment": "Visual union bounds include every authored child even when one rectangle contains another silhouette. The normalized rectangle clip uses its retained geometry, never the visual enclosure. Two focused regressions fail against the intermediate model and pass after separating these roles.",
+    "implementation": [
+      "../../../src/Lokad.Svg/Parsing/SvgClipPolygon.cs",
+      "../../../src/Lokad.Svg/Parsing/SvgDefinitionLeafSource.cs",
+      "../../../src/Lokad.Svg/Parsing/SvgStrokeStyleSyntax.cs"
+    ]
+  },
+  "nativeSources": {
+    "version": "153.0.8010.52",
+    "clipper": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/layout/svg/layout_svg_resource_clipper.cc",
+    "shapeBounds": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/layout/svg/layout_svg_shape.cc",
+    "contract": "CalculateLocalClipBounds maps each contributing child VisualRectInLocalSVGCoordinates. CalculateStrokeBoundingBox uses the approximate native stroke enclosure; clip-path coverage ignores stroke paint."
+  },
+  "intermediateContainmentRegression": {
+    "librarySha256": "9344eb897f1117bb71dd853c4e281ae69162b358b9d7ab2214c13f697509739b",
+    "failed": 2,
+    "passed": 16,
+    "afterAll18Pass": true,
+    "failureNames": [
+      "Lokad.Svg.Tests.SvgClipVisualBoundsTests.Primitive_and_union_visual_bounds_keep_the_original_clip_silhouettes(children: \"<rect x='2' y='3' width='16' height='12'/><rect x=\"\u00b7\u00b7\u00b7, left: -4, top: -5, right: 30, bottom: 21)",
+      "Lokad.Svg.Tests.SvgClipVisualBoundsTests.Contained_rectangle_visual_outsets_do_not_enlarge_the_object_box_clip_silhouette"
+    ]
+  },
+  "mechanisms": {
+    "test": "../../Lokad.Svg.Tests/SvgClipVisualBoundsTests.cs",
+    "cases": 18,
+    "coverage": "None/zero versus declared/unavailable/transparent/dashed strokes; miter/round/square behavior; inherited presentation and overrides; rounded rectangles, deferred rectangle promotion, circle/ellipse unions; direct and referenced silhouettes. Assert exact enclosure coordinates and unchanged stroke-free source commands.",
+    "before": {
+      "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464",
+      "passed": 3,
+      "failed": 15,
+      "qualification": "Fifteen real bounds/admission failures, with no missing-method/type failures; three unchanged none/zero/silhouette cases pass. Current test DLL restored byte-for-byte after the before run."
+    },
+    "afterPassed": 18,
+    "existingVisibilityChecks": "Visual-bound, visibility and rectangle-union checks pass. Affected integration also preserves source visibility, hidden compound admission and ignored use paint overrides."
+  },
+  "nativeRegressions": {
+    "fixtures": [
+      {
+        "fixture": "../../Fixtures/original/clip-child-visual-bounds.svg",
+        "reference": "../../References/original-clip-child-visual-bounds.json",
+        "sourceSha256": "f201607358e8f1e68c6a5bd92531ef03106920d853a563a46f854266c9583cfb",
+        "pngSha256": "bf9c838e267bebf460596bd4493a40a02b2d6851a506db561d9c10513a98a5a2",
+        "beforeAfter": [
+          {
+            "host": "windows",
+            "phase": "before",
+            "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464",
+            "outcome": "rendered",
+            "changedPixels": 85,
+            "alphaChangedPixels": 85,
+            "maximumError": 255,
+            "maximumAlphaError": 43,
+            "totalChannelError": 5770
+          },
+          {
+            "host": "windows",
+            "phase": "after",
+            "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9",
+            "outcome": "rendered",
+            "changedPixels": 0,
+            "alphaChangedPixels": 0,
+            "maximumError": 0,
+            "maximumAlphaError": 0,
+            "totalChannelError": 0
+          },
+          {
+            "host": "linux",
+            "phase": "before",
+            "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464",
+            "outcome": "rendered",
+            "changedPixels": 85,
+            "alphaChangedPixels": 85,
+            "maximumError": 255,
+            "maximumAlphaError": 43,
+            "totalChannelError": 5770
+          },
+          {
+            "host": "linux",
+            "phase": "after",
+            "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9",
+            "outcome": "rendered",
+            "changedPixels": 0,
+            "alphaChangedPixels": 0,
+            "maximumError": 0,
+            "maximumAlphaError": 0,
+            "totalChannelError": 0
+          }
+        ]
+      },
+      {
+        "fixture": "../../Fixtures/original/clip-use-visual-bounds.svg",
+        "reference": "../../References/original-clip-use-visual-bounds.json",
+        "sourceSha256": "4f535646e90dd8d2326cd3cc6b16b1a9a6e13e77992a1ac6d4e7618aee504b05",
+        "pngSha256": "bf9c838e267bebf460596bd4493a40a02b2d6851a506db561d9c10513a98a5a2",
+        "beforeAfter": [
+          {
+            "host": "windows",
+            "phase": "before",
+            "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464",
+            "outcome": "UnsupportedFeature",
+            "message": "The CSS color name or syntax is not supported."
+          },
+          {
+            "host": "windows",
+            "phase": "after",
+            "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9",
+            "outcome": "rendered",
+            "changedPixels": 0,
+            "alphaChangedPixels": 0,
+            "maximumError": 0,
+            "maximumAlphaError": 0,
+            "totalChannelError": 0
+          },
+          {
+            "host": "linux",
+            "phase": "before",
+            "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464",
+            "outcome": "UnsupportedFeature",
+            "message": "The CSS color name or syntax is not supported."
+          },
+          {
+            "host": "linux",
+            "phase": "after",
+            "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9",
+            "outcome": "rendered",
+            "changedPixels": 0,
+            "alphaChangedPixels": 0,
+            "maximumError": 0,
+            "maximumAlphaError": 0,
+            "totalChannelError": 0
+          }
+        ]
+      }
+    ],
+    "freshHealthyProfileCleanedCapturesPerHostPerFixture": 3,
+    "totalCaptures": 12,
+    "captureContext": "Pinned Chrome153.0.8010.52 / Chromium1681091 / recipe3 / transparent / DPR1; logical and screenshot96x96. Per-host executable identities are recorded in each metadata file.",
+    "pngStorage": "Both independently captured source graphs produce identical PNG bytes; two source/metadata/capture triples share one PNG file. Equal images do not remove the distinct direct/reference lowering responsibilities.",
+    "exploratoryCompanions": "Six own cubic/placement controls fail before (8..89 alpha pixels) and are exact under the shared prototype; these remain research instead of multiplying fixtures/API forms."
+  },
+  "ownership": {
+    "test": "../../Lokad.Svg.Tests/SvgCurvedClipSourceTests.cs",
+    "addedCases": 1,
+    "scope": "One referenced curve with unavailable source stroke and inherited clip stroke width exercises previously unconstructed source lowering. Existing parser memory denials, raster refusal, cancellation, retained-source immutability, cleanup and retry helper is reused; the original constructed-reference case remains."
+  },
+  "scimitar": {
+    "sourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+    "logicalViewport": [
+      466.11172,
+      265.35126
+    ],
+    "screenshot": [
+      466,
+      265
+    ],
+    "map": "scimitar-scope-map.csv",
+    "scopeRecipe": "Preserve root bytes/attributes and ancestor attributes; keep each outermost filtered subtree intact, otherwise isolate visible paint leaves. Recursively retain local URL/href definitions; unavailable local paint references stay unavailable. Source bodies/fragments are bounded in memory and discarded. Isolations change composition and are not whole-original admission.",
+    "scopeDiagnosticLibrarySha256": "9344eb897f1117bb71dd853c4e281ae69162b358b9d7ab2214c13f697509739b",
+    "mappedScopes": 43,
+    "nativeScopes": 9,
+    "freshHealthyProfileCleanedWindowsCapturesPerScope": 1,
+    "nativeScopeQualification": "Exploratory; source hashes, before/after error and native PNG identities are in the map. No hosted SVG files or new references are retained.",
+    "controlledClipStroke": "For rect7099/path2686 clip masks, changing only clip-child stroke to none or width0 makes both native/library exact. Solid black and unavailable paint-server strokes give the same native output. The new shared rule makes all16 clipped/unclipped fill/stroke/mask companions exact.",
+    "shadow": {
+      "group": "g3269",
+      "retainedChildren": 35,
+      "before": {
+        "changedPixels": 344,
+        "maximumError": 127,
+        "totalChannelError": 6424,
+        "alphaChangedPixels": 126,
+        "maximumAlphaError": 2,
+        "bounds": [
+          156,
+          91,
+          438,
+          188
+        ]
+      },
+      "after": {
+        "changedPixels": 160,
+        "maximumError": 127,
+        "totalChannelError": 3243,
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0,
+        "bounds": [
+          156,
+          91,
+          435,
+          188
+        ]
+      },
+      "closedControls": [
+        {
+          "variant": "no-inner-blurs",
+          "before": {
+            "changedPixels": 182,
+            "maximumError": 127,
+            "totalChannelError": 3259,
+            "alphaChangedPixels": 126,
+            "maximumAlphaError": 2,
+            "bounds": [
+              410,
+              133,
+              438,
+              156
+            ]
+          },
+          "after": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0,
+            "alphaChangedPixels": 0,
+            "maximumAlphaError": 0,
+            "bounds": null
+          }
+        },
+        {
+          "variant": "no-blurs",
+          "before": {
+            "changedPixels": 18,
+            "maximumError": 26,
+            "totalChannelError": 461,
+            "alphaChangedPixels": 15,
+            "maximumAlphaError": 19,
+            "bounds": [
+              414,
+              137,
+              435,
+              153
+            ]
+          },
+          "after": {
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0,
+            "alphaChangedPixels": 0,
+            "maximumAlphaError": 0,
+            "bounds": null
+          }
+        }
+      ],
+      "remaining": "With nested blurs present,160 RGB differences/3,243 total channel error remain in this isolated group; alpha is now exact. Without inner blurs, the complete clipped shadow/source and outer blur are exact."
+    }
+  },
+  "allOriginals": {
+    "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9",
+    "audit": {
+      "windows": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 147,
+        "changes": [
+          {
+            "name": "scimitar.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 221,
+              "maximumError": 33,
+              "totalChannelError": 1216
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 106,
+              "maximumError": 6,
+              "totalChannelError": 436
+            }
+          }
+        ],
+        "outcomeOrDiagnosticChanges": [],
+        "increasedErrors": []
+      },
+      "linux": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 147,
+        "changes": [
+          {
+            "name": "scimitar.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 221,
+              "maximumError": 33,
+              "totalChannelError": 1216
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 106,
+              "maximumError": 6,
+              "totalChannelError": 436
+            }
+          }
+        ],
+        "outcomeOrDiagnosticChanges": [],
+        "increasedErrors": []
+      }
+    },
+    "countsPerHost": {
+      "rendered": 148,
+      "exploratoryExact": 134,
+      "different": 14,
+      "UnsupportedFeature": 53,
+      "MalformedInput": 3
+    },
+    "sourceSvgFilesRetained": 0,
+    "qualification": "All204 source hashes rechecked per host; Scimitar221/1,216 ->106/436 with maximum channel error33->6. Other147 PNGs and every outcome/diagnostic remain unchanged; no exact loss or increased error. Supplied-font/resource/static-state and full-original acceptance remain separate."
+  },
+  "validation": {
+    "releaseBuilds": "Both test projects and TFMs, zero warnings/errors; final frozen probe matches the qualified net11 library.",
+    "gates": [
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 42.1676892999094,
+        "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9"
+      },
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Full routine rendering",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 85.3865356000606,
+        "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 33.63244719989598,
+        "librarySha256": "86f1713ecbb9346f55890000f0f1432c22931a9d9f47a4ce3d6129f9a4a0f457"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected rendering",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 27.01725329994224,
+        "librarySha256": "86f1713ecbb9346f55890000f0f1432c22931a9d9f47a4ce3d6129f9a4a0f457"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 35.331966399,
+        "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Full routine rendering",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 158.232351409,
+        "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 26.049698330000005,
+        "librarySha256": "86f1713ecbb9346f55890000f0f1432c22931a9d9f47a4ce3d6129f9a4a0f457"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected rendering",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 34.97245216100001,
+        "librarySha256": "86f1713ecbb9346f55890000f0f1432c22931a9d9f47a4ce3d6129f9a4a0f457"
+      }
+    ],
+    "newMechanismCases": 18,
+    "newOwnershipCases": 1,
+    "newCanonicalFixtures": 2,
+    "newPngFiles": 1,
+    "existingReferencePngsChanged": 0,
+    "timing": "Functional elapsed times on a busy development host, not benchmark or test-suite simplification claims."
+  },
+  "remainingAcceptance": [
+    "Scimitar still106 differing pixels/436 total channel error; finish nested-filter RGB interactions and the remaining independent paint scopes.",
+    "Gallardo remains94/123; original path3850 still10 alpha pixels/max1. Holding construction bounds fixed while changing source bitmap padding0/1/2 gives identical source pixels and native filtered results, excluding storage padding/origin alone.",
+    "Finish crop, flood/offset, shadow and all-original font/resource/static-state mappings before whole-filter closure; preserve current text/logical sizing and all exact targets."
+  ]
+}

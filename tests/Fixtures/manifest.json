@@ -18348,6 +18348,56 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-raster-fringe-inner-clip.json",
       "referenceSha256": "8c8d18a6e4aa37938515b27b7aa7a9cfd542241f8f605673ac5e9f3f683c6f62"
+    },
+    {
+      "id": "original-clip-child-visual-bounds",
+      "path": "original/clip-child-visual-bounds.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "f201607358e8f1e68c6a5bd92531ef03106920d853a563a46f854266c9583cfb",
+      "materializedSha256": "f201607358e8f1e68c6a5bd92531ef03106920d853a563a46f854266c9583cfb",
+      "featureTags": [
+        "clip",
+        "curve",
+        "stroke",
+        "visual-bounds"
+      ],
+      "width": 96,
+      "height": 96,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-clip-child-visual-bounds.json",
+      "referenceSha256": "bf9c838e267bebf460596bd4493a40a02b2d6851a506db561d9c10513a98a5a2"
+    },
+    {
+      "id": "original-clip-use-visual-bounds",
+      "path": "original/clip-use-visual-bounds.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "4f535646e90dd8d2326cd3cc6b16b1a9a6e13e77992a1ac6d4e7618aee504b05",
+      "materializedSha256": "4f535646e90dd8d2326cd3cc6b16b1a9a6e13e77992a1ac6d4e7618aee504b05",
+      "featureTags": [
+        "clip",
+        "curve",
+        "stroke",
+        "visual-bounds"
+      ],
+      "width": 96,
+      "height": 96,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-clip-use-visual-bounds.json",
+      "referenceSha256": "bf9c838e267bebf460596bd4493a40a02b2d6851a506db561d9c10513a98a5a2"
     }
   ]
 }

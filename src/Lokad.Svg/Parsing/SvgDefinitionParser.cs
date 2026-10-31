@@ -220,6 +220,10 @@ internal static class SvgDefinitionParser
             state.ClipIsObjectBoundingBox = SvgClipPathSyntax.ParseClipUnits(reader.GetAttribute("clipPathUnits"));
             SvgPaintableElementContext clipParent = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
             SvgComputedStyle clipParentStyle = SvgComputedStyleResolver.Resolve(reader, clipParent.StyleSheet, cancellationToken).ResolveDisplay(clipParent.InheritedPresentation.ElementDisplay);
+            SvgInheritedStrokeStyle clipStroke = clipParent.InheritedStroke.ResolveChild(clipParentStyle);
+            state.ClipInheritedStroke = new(CopyStyleValue(clipStroke.Linecap, state), CopyStyleValue(clipStroke.Linejoin, state),
+                CopyStyleValue(clipStroke.Dasharray, state), CopyStyleValue(clipStroke.Dashoffset, state), CopyStyleValue(clipStroke.Width, state),
+                CopyStyleValue(clipStroke.Miterlimit, state), CopyStyleValue(clipStroke.StrokeOpacity, state), CopyStyleValue(clipStroke.Stroke, state));
             state.ClipElementDisplay = clipParentStyle.GetDisplay();
             state.ClipIsDisplayed = state.DefinitionResourcesDisplayed && state.ClipElementDisplay != SvgDisplay.None;
             state.ClipIsEvenOdd = SvgClipPathSyntax.ParseClipRule((clipParentStyle.ClipRule ?? clipParent.InheritedClipRule ?? "nonzero").AsSpan());
@@ -237,7 +241,8 @@ internal static class SvgDefinitionParser
             if (reader.LocalName == "use")
             {
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
-                context = context with { InheritedPresentation = context.InheritedPresentation with { IsDisplayed = true, IsVisible = state.ClipIsVisible } };
+                context = context with { InheritedPresentation = context.InheritedPresentation with { IsDisplayed = true, IsVisible = state.ClipIsVisible },
+                    InheritedStroke = state.ClipInheritedStroke };
                 if (SvgResourceUseReplay.Retain(reader, context, root, state) is not {} use) return true;
                 if (state.ClipIsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse referenced clip content is implemented.");
                 if (state.ClipUse is not null || state.ClipBox is not null || state.ClipPolygon is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element clip content is implemented.");
@@ -249,7 +254,7 @@ internal static class SvgDefinitionParser
                 SvgElementAttributePolicy.ValidateRectangle(reader, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 InlineStyle clipInline = SvgInlineStyleParser.ParseGeometry(reader.GetAttribute("style"), cancellationToken);
-                SvgComputedStyle clipStyle = SvgComputedStyle.Resolve(reader, clipInline, context.StyleSheet).ResolveDisplay(state.ClipElementDisplay);
+                SvgComputedStyle clipStyle = state.ClipInheritedStroke.ApplyTo(SvgComputedStyle.Resolve(reader, clipInline, context.StyleSheet)).ResolveDisplay(state.ClipElementDisplay);
                 RetainClipSource(reader, context, clipStyle, state);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases);
                 // A resource uses its own child map; ancestors place the referencing element.
@@ -262,6 +267,7 @@ internal static class SvgDefinitionParser
                     SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                     return true;
                 }
+                float boundsInflation = SvgStrokeStyleSyntax.BoundsInflation(clipStyle, "rect");
                 PromoteClipRectangle(state, cancellationToken);
                 double radiusX = syntax.CornerX ?? syntax.CornerY ?? 0;
                 double radiusY = syntax.CornerY ?? syntax.CornerX ?? 0;
@@ -270,16 +276,16 @@ internal static class SvgDefinitionParser
                     using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, cancellationToken);
                     SvgRoundedRectPath.Append(commands, syntax.X, syntax.Y, syntax.Width, syntax.Height, radiusX, radiusY);
                     AppendClipChild(CreateClipSource(commands.Detach(), clipTransform, false, nestedClip, state, cancellationToken),
-                        state, cancellationToken);
+                        boundsInflation, state, cancellationToken);
                 }
                 else if (clipTransform.IsAxisAligned && state.ClipPolygon is null && nestedClip is null)
                 {
                     SvgRectangle rect = clipTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null));
                     state.ClipBox = new SvgClipBox(rect.X, rect.Y, rect.Width, rect.Height);
-                    state.ClipRectangleSource = source;
+                    state.ClipRectangleSource = new(source, boundsInflation);
                 }
                 else AppendClipChild(CreateClipRectangle(source, state, cancellationToken) with
-                    { NestedClipId = nestedClip, UsesNativeReplay = nestedClip is not null }, state, cancellationToken);
+                    { NestedClipId = nestedClip, UsesNativeReplay = nestedClip is not null }, boundsInflation, state, cancellationToken);
                 SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
             }
@@ -289,19 +295,20 @@ internal static class SvgDefinitionParser
                 SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 // A resource uses its own child map; ancestors place the referencing element.
                 SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseElementTransform(reader, cancellationToken);
-                SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, clipContext.StyleSheet, cancellationToken);
+                SvgComputedStyle clipStyle = state.ClipInheritedStroke.ApplyTo(SvgComputedStyleResolver.Resolve(reader, clipContext.StyleSheet, cancellationToken));
                 RetainClipSource(reader, clipContext, clipStyle, state);
                 bool isEvenOdd = clipStyle.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(clipStyle.ClipRule.AsSpan());
                 string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
                 bool visible = SvgPresentationResolver.IsPainted(clipStyle, true, state.ClipIsVisible);
+                float boundsInflation = visible ? SvgStrokeStyleSyntax.BoundsInflation(clipStyle, "path") : 0;
                 if (visible) PromoteClipRectangle(state, cancellationToken);
                 SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, visible, limits.MaximumPathCommands, state, cancellationToken)
                     with { IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
                 if (visible)
                 {
                     clipContent = clipContent with { NestedClipId = nestedClip, UsesNativeReplay = clipContent.UsesNativeReplay || nestedClip is not null };
-                    AppendClipChild(clipContent, state, cancellationToken);
+                    AppendClipChild(clipContent, boundsInflation, state, cancellationToken);
                 }
                 SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
@@ -310,7 +317,7 @@ internal static class SvgDefinitionParser
             {
                 SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
-                SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, cancellationToken);
+                SvgComputedStyle clipStyle = state.ClipInheritedStroke.ApplyTo(SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, cancellationToken));
                 SvgViewportLengthBases clipBases = state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases;
                 RetainClipSource(reader, context, clipStyle, state);
                 SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, clipBases) : SvgEllipseSyntax.ParseEllipse(reader, clipBases);
@@ -320,6 +327,7 @@ internal static class SvgDefinitionParser
                     SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                     return true;
                 }
+                float boundsInflation = SvgStrokeStyleSyntax.BoundsInflation(clipStyle, reader.LocalName);
                 PromoteClipRectangle(state, cancellationToken);
                 using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, cancellationToken);
                 if (!SvgOrthogonalGeometryLowering.AppendNativeEllipseCommands(commands, oval.CenterX, oval.CenterY, oval.RadiusX, oval.RadiusY))
@@ -329,14 +337,14 @@ internal static class SvgDefinitionParser
                         if (state.ClipIsObjectBoundingBox) state.ClipPolygon = new([], []) { IsObjectBoundingBox = true };
                         else state.ClipBox = new(0, 0, 0, 0);
                     }
-                    else AppendClipChild(new([], []) { IsObjectBoundingBox = state.ClipIsObjectBoundingBox }, state, cancellationToken);
+                    else AppendClipChild(new([], []) { IsObjectBoundingBox = state.ClipIsObjectBoundingBox }, 0, state, cancellationToken);
                 }
                 else
                 {
                     string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                     nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
                     AppendClipChild(CreateClipSource(commands.Detach(), childMap, childMap.IsAxisAligned, nestedClip, state, cancellationToken),
-                        state, cancellationToken);
+                        boundsInflation, state, cancellationToken);
                 }
                 SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
@@ -825,7 +833,11 @@ internal static class SvgDefinitionParser
         {
             if (state.ClipBox is null) return;
             if (state.ClipPolygon is null && state.ClipRectangleSource is {} source)
-                state.ClipPolygon = CreateClipRectangle(source, state, token);
+            {
+                SvgClipPolygon polygon = CreateClipRectangle(source.Geometry, state, token);
+                try { state.ClipPolygon = polygon.WithVisualBounds(source.BoundsInflation, token); }
+                catch { polygon.SourcePath?.Dispose(); throw; }
+            }
             state.ClipRectangleSource = null;
             state.ClipBox = null;
         }
@@ -886,8 +898,10 @@ internal static class SvgDefinitionParser
 
         // Adopt each source once; union failure retains the first staging owner
         // and releases the incoming owner. Publish before cancellable classification.
-        static void AppendClipChild(SvgClipPolygon child, SvgDocumentState state, CancellationToken token)
+        static void AppendClipChild(SvgClipPolygon child, float boundsInflation, SvgDocumentState state, CancellationToken token)
         {
+            try { child = child.WithVisualBounds(boundsInflation, token); }
+            catch { child.SourcePath?.Dispose(); throw; }
             if (child.Points.Length == 0 && state.ClipPolygon is {} painted)
             {
                 child.SourcePath?.Dispose();
@@ -946,6 +960,8 @@ CancellationToken token)
                     ResourceBounds = new(MathF.Min(a.Left, b.Left), MathF.Min(a.Top, b.Top), MathF.Max(a.Right, b.Right), MathF.Max(a.Bottom, b.Bottom)) };
             }
             SvgAuthoredPath firstPath = first.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands.");
+            SvgPaintBounds firstBounds = ChildBounds(first, firstPath, token);
+            SvgPaintBounds nextBounds = ChildBounds(next, nextPath, token);
             // Containment preserves the original rectangle clip. Rebuilding it as
             // a path introduces a separate enclosing clip at fractional edges.
             // Keep authored children/counts for the bounded fallback and source
@@ -959,13 +975,12 @@ CancellationToken token)
                 if (outer is {} containing)
                 {
                     SvgAuthoredPath original = containing.SourcePath ?? throw new InvalidOperationException("A containing clip rectangle requires source commands.");
-                    SvgPaintBounds bounds = ChildBounds(containing, original, token);
+                    SvgPaintBounds bounds = new(MathF.Min(firstBounds.Left, nextBounds.Left), MathF.Min(firstBounds.Top, nextBounds.Top),
+                        MathF.Max(firstBounds.Right, nextBounds.Right), MathF.Max(firstBounds.Bottom, nextBounds.Bottom));
                     return containing with { SourcePath = original.Copy(SvgAffineTransform.Identity, state.Budget, token),
                         Children = range, ChildCount = first.ChildCount + 1, ResourceBounds = bounds };
                 }
             }
-            SvgPaintBounds firstBounds = ChildBounds(first, firstPath, token);
-            SvgPaintBounds nextBounds = ChildBounds(next, nextPath, token);
             return first with { SourcePath = firstPath.Copy(SvgAffineTransform.Identity, state.Budget, token),
                 Children = range, UsesNativeReplay = true, IsResolvedUnion = false, DeferredUnion = true,
                 ChildCount = first.ChildCount + 1, IsOval = false, PaintKind = SvgClipPaintKind.Path,

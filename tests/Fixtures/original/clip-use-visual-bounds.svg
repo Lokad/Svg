@@ -1,0 +1,12 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96">
+  <defs>
+    <path d="M18 10L3 34C3 34 54 2 43 67C68 70 91 21 18 10Z" stroke="url(#missing)" stroke-width="3" id="source" />
+    <clipPath id="c">
+      <use href="#source" />
+    </clipPath>
+  </defs>
+  <g transform="matrix(.68 -.31 .22 .79 8 24)" clip-path="url(#c)">
+    <path fill="white" d="M-100 -100H200V200H-100Z" />
+  </g>
+</svg>

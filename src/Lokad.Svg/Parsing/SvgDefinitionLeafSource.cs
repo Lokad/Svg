@@ -139,6 +139,28 @@ CancellationToken token, string? constructedFillRule, bool unconstructed, SvgSol
         return SvgDefinitionParser.LowerInstanceSource(this, context, state, isDisplayed);
     }
 
+    /// <summary>Lowers a referenced clip silhouette without constructing its ignored paint or stroke.</summary>
+    /// <remarks>The result owns its geometry and borrows document strings. Visual bounds retain cascaded
+    /// stroke presentation separately from opaque fill coverage; the caller applies visibility after geometry admission. Existing leaf lowerers share the document
+    /// budget, cancellation and source operands; failure releases their partial owners. Replay is parser-thread confined.</remarks>
+    internal (SvgDefinition Definition, float BoundsInflation) LowerClip(SvgUseReference reference, SvgDocumentState state)
+    {
+        _attribute = -1;
+        SvgComputedStyle visualStyle = reference.InheritedStroke.ApplyTo(_authored);
+        float inflation = SvgStrokeStyleSyntax.BoundsInflation(visualStyle, _element);
+        SvgAffineTransform placement = SvgReferenceResolver.PlainInstancePlacement(reference, null);
+        SvgPaintableElementContext context = new(new(SvgPaint.Default, true, true, SvgAffineTransform.Identity),
+            SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, default, _colors, _token, state.OutputMagnification, reference.InheritedFillRule)
+        {
+            StrokeHostMap = state.OutputMap.Compose(placement),
+            RecordingScope = new(1), LengthBases = reference.LengthBases, RetainInstanceFillPath = true,
+            AuthoredStyle = _authored with { Fill = "white", FillOpacity = "1", Stroke = "none", StrokeOpacity = "1",
+                Opacity = "1", ComputedOpacity = null, Display = "inline", Visibility = "visible",
+                Filter = "none", MarkerStart = "none", MarkerMid = "none", MarkerEnd = "none" }
+        };
+        return (SvgDefinitionParser.LowerInstanceSource(this, context, state, false), inflation);
+    }
+
     /// <summary>Replays a referenced image through ordinary decoding/placement with the complete instance map.</summary>
     /// <remarks>Source attributes and original limits stay borrowed from this document; lengths use the live instance viewport. The caller owns
     /// returned image/path geometry; failed decode or binding releases partial owners under existing cancellation.</remarks>

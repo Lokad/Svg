@@ -157,6 +157,9 @@ affine maps. Container groups, direct line/point-list/text children and XML
 transform/fill/opacity on `clipPath` reject. A clip-resource `use` must reference
 one contour; plain rectangles and empty/compound sources through that use reject.
 Direct rectangles and compound paths remain supported.
+Clip-child strokes affect the resource's visual enclosure but never paint its
+silhouette. Stroke presentation can inherit from `clipPath`; referenced geometry
+does not need to resolve an ignored stroke paint server.
 
 Alpha/luminance masks accept ordered vector content, grouped/instanced text,
 clipping, local uses and transformed finite regions. Direct text/image mask

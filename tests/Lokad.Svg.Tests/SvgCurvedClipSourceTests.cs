@@ -11,6 +11,7 @@ public sealed class SvgCurvedClipSourceTests
     [InlineData("<defs><clipPath id='unused'><path d='M3 24 C3 0 29 0 29 24'/></clipPath></defs><rect width='32' height='32'/>")]
     [InlineData("<defs><clipPath><path d='M3 24 A13 13 0 0 1 29 24'/></clipPath></defs><rect width='32' height='32'/>")]
     [InlineData("<defs><clipPath id='c'><use href='#s' x='.25' y='.5'/></clipPath><path id='s' d='M3 24C3 0 29 0 29 24Z'/></defs><rect width='32' height='32' clip-path='url(#c)'/>")]
+    [InlineData("<defs><clipPath id='c' stroke-width='2'><use href='#s'/></clipPath><path id='s' d='M3 24C3 0 29 0 29 24Z' stroke='url(#missing)'/></defs><rect width='32' height='32' clip-path='url(#c)'/>")]
     [InlineData("<defs><clipPath id='c'><path transform='matrix(.31 0 .05 .35 780 640)' d='M180 140A80 120 0 1 1 20 140A80 120 0 1 1 180 140Z'/></clipPath></defs><g transform='translate(-800 -660)'><rect width='2000' height='2000' clip-path='url(#c)'/></g>")]
     [InlineData("<defs><clipPath id='c'><path d='M760 512C800 490 880 515 880 545L880 610H760Z'/></clipPath></defs><g transform='translate(-16 -32)'><g transform='matrix(.490589 0 -.01152337 .695881 -352.0716 -337.17108)' clip-path='url(#c)'><path transform='matrix(.245003 0 .04088223 .278334 778.0912 526.6771)' d='M180 140A80 120 0 1 1 20 140A80 120 0 1 1 180 140Z'/></g></g>")]
     [InlineData("bowtie-leaf")]

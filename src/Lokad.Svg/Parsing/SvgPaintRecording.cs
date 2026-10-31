@@ -200,16 +200,7 @@ internal static class SvgPaintRecording
         if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null || context.ResolveTransform(reader) != context.InheritedPresentation.Transform)
             opacityScope = state.NewRecordingScope();
         SvgRecordingScope drawScope = SvgLocalUrl.ReadReference(reader, "mask") is null ? opacityScope : state.NewRecordingScope();
-        float strokeBoundsInflation = 0;
-        string? strokePaint = style.Stroke ?? context.InheritedStroke.Stroke;
-        if (reader.LocalName is "path" or "polygon" or "polyline" or "rect" or "circle" or "ellipse" or "line" && strokePaint is not null && strokePaint != "none")
-        {
-            float half = (float)SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"), reader.LocalName) / 2f;
-            float expansion = reader.LocalName is "path" or "polygon" or "polyline" && SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) == SvgStrokeJoin.Miter
-                ? MathF.Max((float)SvgStrokeStyleSyntax.ParseMiterLimit(style.Miterlimit), 1) : 1;
-            if (reader.LocalName != "rect" && SvgStrokeStyleSyntax.ParseLinecap(style.Linecap) == SvgStrokeCap.Square) expansion = MathF.Max(expansion, MathF.Sqrt(2));
-            strokeBoundsInflation = half * expansion;
-        }
+        float strokeBoundsInflation = SvgStrokeStyleSyntax.BoundsInflation(style, reader.LocalName);
         SvgPaintBounds? objectBounds = PrimitiveBounds(reader, context, frame, 0, out SvgPaintBounds? sourceObjectBox, out SvgAffineTransform sourceObjectMap, out bool suppressedSource);
         return new(style.GetOpacity(), SvgPaintResolver.ResolveSolidPaint(fill).Alpha,
             fill.FillOpacity.Alpha / 255f, stroke.Alpha * strokeOpacity.Value, strokeOpacity.Alpha / 255f,

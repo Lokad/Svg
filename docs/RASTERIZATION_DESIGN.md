@@ -82,7 +82,7 @@ sampling/blend semantics.
 | Source/instance map | Preserve authored placement and resource inheritance; local aliases exclude source ancestors. Clip children materialize into resource coordinates before reference placement and device mapping. |
 | Canvas boundary | Retain parent rounding before child concatenation. A clip's resource normalization does not transform its consumer; mask construction uses the incoming canvas. |
 | Object box | Measures pre-clip geometry/layout for normalized paints/resources. |
-| Visual/drawing enclosure | Includes painted stroke/effect extents and source-space enclosure before placement. |
+| Visual/drawing enclosure | Includes stroke/effect extents before placement. A clip child's stroke can enlarge the resource enclosure while contributing no silhouette coverage. |
 | Raster window | Bounds admitted geometry, clip-resource construction and stored numerical coverage. Curve rasterization can paint beyond tight continuous extrema. |
 | Clip coverage | Use the actual bitmap coverage tape to classify an opaque rectangle; request/layout bounds can hide an antialiased fringe. |
 | Captured/sampled image | Retain requested subsets, content clips, image hints, color space and origin independently of the raster window. |

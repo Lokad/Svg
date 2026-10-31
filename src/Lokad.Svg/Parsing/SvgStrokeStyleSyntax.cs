@@ -174,6 +174,22 @@ internal static class SvgStrokeStyleSyntax
         return strokeWidth == 0;
     }
 
+    /// <summary>Computes the native visual-box outset without resolving or painting the stroke server.</summary>
+    /// <remarks>The caller supplies cascaded stroke presentation and a supported SVG shape name.
+    /// Opacity and dash patterns do not shrink this layout enclosure. Validation allocates no
+    /// retained storage; the caller owns cancellation and subsequent coordinate mapping.</remarks>
+    internal static float BoundsInflation(SvgComputedStyle style, string elementName)
+    {
+        if (elementName is not ("path" or "polygon" or "polyline" or "rect" or "circle" or "ellipse" or "line")
+            || style.Stroke is null or "none") return 0;
+        float half = (float)ParseStrokeWidth(style.Width, elementName) / 2f;
+        float expansion = elementName is "path" or "polygon" or "polyline" && ParseLinejoin(style.Linejoin, true) == SvgStrokeJoin.Miter
+            ? MathF.Max((float)ParseMiterLimit(style.Miterlimit), 1) : 1;
+        if (elementName is "path" or "polygon" or "polyline" or "line" && ParseLinecap(style.Linecap) == SvgStrokeCap.Square)
+            expansion = MathF.Max(expansion, MathF.Sqrt(2));
+        return half * expansion;
+    }
+
     /// <summary>Resolves one admitted solid stroke, or nothing when the element carries no stroke paint.</summary>
     internal readonly record struct SvgAdmittedStroke(SvgColor Color, double Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join, double[]? DashPattern, double DashOffset, double? PathLength, bool NonScalingStroke);
 
