@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "d3b91dc40d18962cd6115873784c5675be323c00cc4cc7b0744c8fe7093eb51b",
+  "referenceSha256": "80b5e530a50b0ad6cca75494a802e911e61d4f15d217ddb3a99cd809b1c7611d",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-root-visible-source-rectangle.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-root-visible-source-rectangle",
+  "viewport": {
+    "width": 558,
+    "height": 781,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 transformed ellipse. A clipped fractional root image remaps its visible source rectangle before residual scaling; preserve both float stages. Three fresh healthy/profile-cleaned captures per host agree exactly. Canonical conversion only.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "d3b91dc40d18962cd6115873784c5675be323c00cc4cc7b0744c8fe7093eb51b",
+      "referenceSha256": "80b5e530a50b0ad6cca75494a802e911e61d4f15d217ddb3a99cd809b1c7611d",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "d3b91dc40d18962cd6115873784c5675be323c00cc4cc7b0744c8fe7093eb51b",
+      "referenceSha256": "80b5e530a50b0ad6cca75494a802e911e61d4f15d217ddb3a99cd809b1c7611d",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 557.90326,
+    "height": 781.49402
+  }
+}

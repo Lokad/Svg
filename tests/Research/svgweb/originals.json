@@ -10351,9 +10351,9 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "completed-strip-coverage.json",
-    "sourceBaseline": "ed47129e8ad2d629faaacaf2321c1a48fc5fd97e",
-    "librarySha256": "b97986081400506c16f00515cd885b25ec114c2c56ec9b201672bbca13a45ecb",
+    "evidence": "root-visible-source.json",
+    "sourceBaseline": "829b8edd1ee1b668dc75f0b8925cd384698b574d",
+    "librarySha256": "7a91387cc80ce08491465b6a99e3095476ff2453a1697edd476895ff95c0666b",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10364,76 +10364,27 @@
       "MalformedInput": 3
     },
     "previousPngsByteIdenticalPerHost": {
-      "windows": 144,
-      "linux": 144
+      "windows": 147,
+      "linux": 147
     },
     "changedOriginals": [
-      {
-        "name": "alphachannel.svg",
-        "before": {
-          "status": "different",
-          "changedPixels": 1,
-          "maximumError": 255,
-          "totalChannelError": 259
-        },
-        "after": {
-          "status": "exact",
-          "changedPixels": 0,
-          "maximumError": 0,
-          "totalChannelError": 0
-        }
-      },
-      {
-        "name": "opensearch.svg",
-        "before": {
-          "status": "different",
-          "changedPixels": 1,
-          "maximumError": 223,
-          "totalChannelError": 231
-        },
-        "after": {
-          "status": "exact",
-          "changedPixels": 0,
-          "maximumError": 0,
-          "totalChannelError": 0
-        }
-      },
       {
         "name": "rg1024_green_grapes.svg",
         "before": {
           "status": "different",
-          "changedPixels": 40,
-          "maximumError": 18,
-          "totalChannelError": 143
-        },
-        "after": {
-          "status": "different",
           "changedPixels": 37,
           "maximumError": 7,
           "totalChannelError": 95
-        }
-      },
-      {
-        "name": "scion.svg",
-        "before": {
-          "status": "different",
-          "changedPixels": 2,
-          "maximumError": 5,
-          "totalChannelError": 22
         },
         "after": {
-          "status": "exact",
-          "changedPixels": 0,
-          "maximumError": 0,
-          "totalChannelError": 0
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 1
         }
       }
     ],
-    "newlyExactOriginals": [
-      "alphachannel.svg",
-      "opensearch.svg",
-      "scion.svg"
-    ],
+    "newlyExactOriginals": [],
     "lostExactImages": [],
     "changedOutcomesOrDiagnostics": [],
     "remainingDefaultDifferences": [
@@ -10447,9 +10398,9 @@
       {
         "name": "rg1024_green_grapes.svg",
         "status": "different",
-        "changedPixels": 37,
-        "maximumError": 7,
-        "totalChannelError": 95
+        "changedPixels": 1,
+        "maximumError": 1,
+        "totalChannelError": 1
       }
     ]
   }

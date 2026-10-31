@@ -27,15 +27,20 @@ internal readonly record struct SvgRootImageMap(SvgAffineTransform Layout, SvgAf
             SvgAffineTransform layout = Map(viewBox, logical.Width, logical.Height, logical);
             return new(layout, SvgAffineTransform.FromScale(outputScale, outputScale), SvgAffineTransform.Identity, null);
         }
+        // ImagePainter remaps a clipped source rectangle before SVGImage applies
+        // its residual scale. Even identical snapped rectangles retain the two
+        // float operations, on both axes, when the viewport truncates the image.
+        bool mapVisibleSource = layoutWidth > naturalWidth || layoutHeight > naturalHeight;
         return new(Map(viewBox, layoutWidth, layoutHeight, new((float)logical.Width, (float)logical.Height)),
             SvgAffineTransform.FromScale(outputScale * (float)(naturalWidth / layoutWidth), outputScale * (float)(naturalHeight / layoutHeight)),
-            SvgAffineTransform.FromScale(DestinationScale((float)layoutWidth, (float)naturalWidth),
-                DestinationScale((float)layoutHeight, (float)naturalHeight)),
+            SvgAffineTransform.FromScale(DestinationScale((float)layoutWidth, (float)naturalWidth, mapVisibleSource),
+                DestinationScale((float)layoutHeight, (float)naturalHeight, mapVisibleSource)),
             new(0, 0, naturalWidth * outputScale, naturalHeight * outputScale));
 
-        static float DestinationScale(float layout, float natural)
+        static float DestinationScale(float layout, float natural, bool mapVisibleSource)
         {
-            float source = layout * (natural / layout);
+            float source = mapVisibleSource ? natural * (layout / natural) : layout;
+            source *= natural / layout;
             return natural / source;
         }
 

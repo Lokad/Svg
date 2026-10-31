@@ -25,6 +25,8 @@
   conical/translucent programs and distinct direct-span/A8 mask rounding.
 - Retain completed curve-strip fringes within the paint clip, keeping mask storage
   and clip-definition construction bounded independently.
+- Preserve visible-source remapping before residual scaling for clipped fractional
+  root images, including the distinct float rounding stages.
 - Preserve source path bounds across clipped stroke lowering; retain filter image
   padding, cropping and sampling colour transfer through affine restoration.
 - Compose affine image placement in the owning bitmap and store enclosing-opacity

@@ -82,6 +82,21 @@ public sealed class SvgRootImageMapTests
         Assert.Equal(SvgAffineTransform.Identity with { A = expectedX, D = expectedY }, root.Destination);
     }
 
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData(557.90326, 781.49402, 1.0f, 0.9999999403953552f)]
+    [InlineData(781.49402, 557.90326, 0.9999999403953552f, 1.0f)]
+    [InlineData(781.49, 781.51, 0.9999999403953552f, 1.0f)]
+    [InlineData(781.5, 781.51, 1.0f, 1.0f)]
+    public void Image_destination_maps_the_visible_source_before_residual_scaling(double width, double height,
+        float expectedX, float expectedY)
+    {
+        // ImagePainter's clipped gfx::MapRect and SVGImage's residual scale are
+        // separate float stages, including when the snapped rectangles coincide.
+        SvgRootImageMap root = SvgRootImageMap.Resolve(null, new(width, height), 1);
+        Assert.Equal(SvgAffineTransform.Identity with { A = expectedX, D = expectedY }, root.Destination);
+    }
+
     [Fact]
     [Trait("Layer", "Mechanism")]
     public void Uniform_density_joins_the_recorded_viewbox_scene_before_native_narrowing()

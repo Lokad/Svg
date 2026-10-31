@@ -109,6 +109,13 @@ distinct backdrop/capture interactions through canonical conversion. Direct
 root-matrix and capture-enclosure mechanisms protect their numerical stages;
 the [stage record](Research/svgweb/root-image-projection.json) preserves native
 coefficients, large viewBox interactions and runtime/package qualification.
+The [root-map mechanisms](Lokad.Svg.Tests/SvgRootImageMapTests.cs) also pin visible
+source remapping before residual scaling, including the rounding boundary and
+opposed axes. One [transformed ellipse](Fixtures/original/root-visible-source-rectangle.svg)
+protects rendering through canonical conversion; its metadata retains fractional
+image dimensions separately from the integer screenshot. Existing root ownership
+cases cover the unchanged allocation paths. See the
+[source-rectangle record](Research/svgweb/root-visible-source.json).
 
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;

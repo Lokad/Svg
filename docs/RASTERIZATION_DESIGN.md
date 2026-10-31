@@ -113,6 +113,12 @@ sampling/blend semantics.
 | Clip coverage | Use the actual bitmap coverage tape to classify an opaque rectangle; request/layout bounds can hide an antialiased fringe. |
 | Captured/sampled image | Retain requested subsets, content clips, image hints, color space and origin independently of the raster window. |
 
+A fractional root image clipped by its integer viewport remaps the visible source
+rectangle before residual image scaling. Keep both float stages even when the
+snapped rectangles coincide; the recorded scene and logical layout stay separate.
+The [source-rectangle evidence](../tests/Research/svgweb/root-visible-source.json)
+links native matrices, rounding boundaries and a canonical transformed ellipse.
+
 Nested viewports retain the parent map outside their local viewBox map. Ordinary
 drawing bounds use native integer saturation/culling; resource pictures keep local
 visual bounds. Culled drawings retain inert anchors when ancestor effects can

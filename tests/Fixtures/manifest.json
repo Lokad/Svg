@@ -18865,6 +18865,31 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-curve-edge-drift-rounded-rect.json",
       "referenceSha256": "6e5ef74a9aa7fbdd84997d8e08f568ee639cebecc38b96d5b6fe75929d49fe60"
+    },
+    {
+      "id": "original-root-visible-source-rectangle",
+      "path": "original/root-visible-source-rectangle.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "d3b91dc40d18962cd6115873784c5675be323c00cc4cc7b0744c8fe7093eb51b",
+      "materializedSha256": "d3b91dc40d18962cd6115873784c5675be323c00cc4cc7b0744c8fe7093eb51b",
+      "featureTags": [
+        "root-image",
+        "visible-source-rectangle",
+        "fractional-viewport",
+        "rounding"
+      ],
+      "width": 558,
+      "height": 781,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-root-visible-source-rectangle.json",
+      "referenceSha256": "80b5e530a50b0ad6cca75494a802e911e61d4f15d217ddb3a99cd809b1c7611d"
     }
   ]
 }

@@ -1,0 +1,471 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "829b8edd1ee1b668dc75f0b8925cd384698b574d",
+  "librarySha256": "7a91387cc80ce08491465b6a99e3095476ff2453a1697edd476895ff95c0666b",
+  "scope": "Visible-source remapping of clipped fractional root images. The shared placement finding closes; whole green-grapes/filter acceptance remains open for one translucent linearRGB highlight.",
+  "implementation": {
+    "source": "../../../src/Lokad.Svg/Rendering/SvgRootImageMap.cs",
+    "rule": "If the integer image viewport truncates CSS subpixel layout, ImagePainter clips/remaps the source rectangle before SVGImage applies its residual scale. Preserve the two float operations even when snapped source/destination rectangles coincide. Layout and recorded projection remain separate.",
+    "derivedGreenGrapesYStages": {
+      "cssLayout": 781.484375,
+      "natural": 781,
+      "remappedSource": 781.4844360351562,
+      "residualSource": 781.0000610351562,
+      "destination": 0.9999999403953552
+    },
+    "stageProvenance": "Intermediate values follow the pinned primary float operations. Final destination and recorded matrices are independent browser LayerTree observations.",
+    "nativeSources": [
+      {
+        "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/ui/gfx/geometry/size_f.cc",
+        "sha256": "22ca882ab461f81469fb868d3dba1dc5878db88d5d4755aea95dbbcdf32d0ac9"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/ui/gfx/geometry/size_f.h",
+        "sha256": "13a2886c572e241d71f2f3d485c9f288665bd798f275a8f5ad92982a6ec8dab8"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/platform/graphics/graphics_context.cc",
+        "sha256": "eebcb8b75b5db95456176da9e7b8c60efe0997794cf2b0f05c870ac9f66dac9f"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/paint/image_painter.cc",
+        "sha256": "e54c54d0d5c49ad993cf51ae5bc68cb4e34a6cc94e738f968433e14c54bf287b"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/ui/gfx/geometry/rect_f.cc",
+        "sha256": "d473d330e16e12c822b8704412ab250f2ad93bf53c5b15281784a67c87e728e3"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/svg/graphics/svg_image.cc",
+        "sha256": "1d9105eccbb4303322c9bec21881ec163bb4010f74999d1433d4ec12ec9ba4fd"
+      },
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkM44.cpp",
+        "sha256": "926c1490507397e716a36fbf6f29cd100d41a7868910334bf1152b9adde3c215"
+      }
+    ],
+    "ownership": "Pure existing map values. No new allocation, owner, cache, provider, layout/fitting rule or API path."
+  },
+  "mechanisms": {
+    "tests": "../../Lokad.Svg.Tests/SvgRootImageMapTests.cs",
+    "newCases": 4,
+    "roles": [
+      "Opposed axes with clipped fractional dimensions.",
+      "Dimension rounding immediately below/at the half-pixel boundary."
+    ],
+    "retained": "Existing native matrix, logical layout, uniform density, tiny-canvas and ownership/refusal/cancellation cases remain unchanged.",
+    "nativeMatrixObservations": [
+      {
+        "host": "linux",
+        "logicalViewport": [
+          557.90326,
+          781.49402
+        ],
+        "screenshot": [
+          558,
+          781
+        ],
+        "sourceSha256": "87b5ecf756067584f98bd4aa0ed58fd0bc6f372d181dfe7f657f7aeb533461d4",
+        "nativeDestination": [
+          1,
+          0.999999940395355
+        ],
+        "nativeRecorded": [
+          1.0001734495163,
+          0.999367833137512
+        ],
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "logicalViewport": [
+          781.49402,
+          557.90326
+        ],
+        "screenshot": [
+          781,
+          558
+        ],
+        "sourceSha256": "821ba9de225ac8b7454957c671d9720f95c08763fd5a43c20c818c3606e3667c",
+        "nativeDestination": [
+          0.999999940395355,
+          1
+        ],
+        "nativeRecorded": [
+          0.999367833137512,
+          1.0001734495163
+        ],
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "logicalViewport": [
+          781.49,
+          781.51
+        ],
+        "screenshot": [
+          781,
+          782
+        ],
+        "sourceSha256": "ff2176f958c25baeafc38d3871a42cb9725bd2ce51b9b8fe32a3759be7d7d911",
+        "nativeDestination": [
+          0.999999940395355,
+          1
+        ],
+        "nativeRecorded": [
+          0.999373018741608,
+          1.00062692165375
+        ],
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "logicalViewport": [
+          781.5,
+          781.51
+        ],
+        "screenshot": [
+          782,
+          782
+        ],
+        "sourceSha256": "8304633e2ccd5703dccd505b5fea5fa9582a8740e3d85d9becd04b23df7781f9",
+        "nativeDestination": [
+          1,
+          1
+        ],
+        "nativeRecorded": [
+          1.00063979625702,
+          1.00062692165375
+        ],
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ]
+  },
+  "canonicalControl": {
+    "fixture": "../../Fixtures/original/root-visible-source-rectangle.svg",
+    "reference": "../../References/original-root-visible-source-rectangle.json",
+    "sourceSha256": "d3b91dc40d18962cd6115873784c5675be323c00cc4cc7b0744c8fe7093eb51b",
+    "nativePngSha256": "80b5e530a50b0ad6cca75494a802e911e61d4f15d217ddb3a99cd809b1c7611d",
+    "logicalViewport": [
+      557.90326,
+      781.49402
+    ],
+    "screenshot": [
+      558,
+      781
+    ],
+    "freshCapturesPerHost": 3,
+    "allSixHealthyProfileCleanedPngsIdentical": true,
+    "beforePixels": 1,
+    "beforeMaximumError": 4,
+    "afterPixels": 0,
+    "canonicalConversionOnly": true,
+    "allPreviousReferencesAndTolerancesUnchanged": true
+  },
+  "originalReplay": {
+    "evidence": "root-visible-source.json",
+    "sourceBaseline": "829b8edd1ee1b668dc75f0b8925cd384698b574d",
+    "librarySha256": "7a91387cc80ce08491465b6a99e3095476ff2453a1697edd476895ff95c0666b",
+    "allSourceHashesRecheckedPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "countsPerHost": {
+      "rendered": 148,
+      "exploratoryExact": 146,
+      "different": 2,
+      "UnsupportedFeature": 53,
+      "MalformedInput": 3
+    },
+    "previousPngsByteIdenticalPerHost": {
+      "windows": 147,
+      "linux": 147
+    },
+    "changedOriginals": [
+      {
+        "name": "rg1024_green_grapes.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 37,
+          "maximumError": 7,
+          "totalChannelError": 95
+        },
+        "after": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 1
+        }
+      }
+    ],
+    "newlyExactOriginals": [],
+    "lostExactImages": [],
+    "changedOutcomesOrDiagnostics": [],
+    "remainingDefaultDifferences": [
+      {
+        "name": "compuserver_msn_Ford_Focus.svg",
+        "status": "different",
+        "changedPixels": 6,
+        "maximumError": 4,
+        "totalChannelError": 45
+      },
+      {
+        "name": "rg1024_green_grapes.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 1,
+        "totalChannelError": 1
+      }
+    ]
+  },
+  "consumerAcceptance": {
+    "map": "green-grapes-paint-map.csv",
+    "currentColumns": [
+      "sourceRectangleChangedPixels",
+      "sourceRectangleMaximumError"
+    ],
+    "previousColumnsPreserved": true,
+    "consumers": 76,
+    "exact": 75,
+    "different": [
+      "path10051"
+    ],
+    "allVariantAndNativeHashesPreserved": true,
+    "exploratoryNativeCapturesPerConsumer": 1,
+    "canonicalAdmission": false
+  },
+  "remainingHighlight": {
+    "original": "rg1024_green_grapes.svg",
+    "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+    "wholePixel": {
+      "x": 252,
+      "y": 699,
+      "library": [
+        165,
+        206,
+        0,
+        186
+      ],
+      "native": [
+        165,
+        207,
+        0,
+        186
+      ]
+    },
+    "variants": [
+      {
+        "case": "original",
+        "variantSourceSha256": "6ef5b1e3158ff195da7630f29f9118726cd1140d7c56bd65129691f3257e18bf",
+        "nativePngSha256": "b657b541f6692a505457af00c65ac00e7e7fa724f559d419d7e881d4fce625f5",
+        "changedPixels": 1,
+        "maximumError": 5,
+        "bounds": [
+          252,
+          699,
+          253,
+          700
+        ],
+        "libraryAtWholePoint": [
+          142,
+          189,
+          0,
+          54
+        ],
+        "nativeAtWholePoint": [
+          142,
+          194,
+          0,
+          54
+        ]
+      },
+      {
+        "case": "no-filter",
+        "variantSourceSha256": "71e217b42da818e8310541d863d0514b4e3f6bd8274d1979024a8b09798a734e",
+        "nativePngSha256": "b5a7152d9722af0bc4bf8253439887ed533dc93eaeadf028edbd1b1a062b1b0c",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null,
+        "libraryAtWholePoint": [
+          146,
+          194,
+          5,
+          54
+        ],
+        "nativeAtWholePoint": [
+          146,
+          194,
+          5,
+          54
+        ]
+      },
+      {
+        "case": "srgb",
+        "variantSourceSha256": "a4d06842a96cfb8863b3e47732e663b14d81cf0ceb8e1c6f08940ec0922ec77a",
+        "nativePngSha256": "1dc9c4c1f4890575bfc8864e56e5ecc4c5073c501ff4ca218aa201cf9c677494",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null,
+        "libraryAtWholePoint": [
+          146,
+          194,
+          5,
+          54
+        ],
+        "nativeAtWholePoint": [
+          146,
+          194,
+          5,
+          54
+        ]
+      },
+      {
+        "case": "sigma-zero",
+        "variantSourceSha256": "f9db814b44e3c004c14e9b9eab902f7196de63d570d183e80a53654c303caac7",
+        "nativePngSha256": "18721cd0e74d7a9848a15aa34885c5e35e46da28bd7401a1bc14b6755c8a71ab",
+        "changedPixels": 20,
+        "maximumError": 255,
+        "bounds": [
+          174,
+          680,
+          258,
+          771
+        ],
+        "libraryAtWholePoint": [
+          146,
+          194,
+          5,
+          54
+        ],
+        "nativeAtWholePoint": [
+          146,
+          194,
+          5,
+          54
+        ]
+      },
+      {
+        "case": "opaque-stops",
+        "variantSourceSha256": "f9ff4ed5a61997f4cde37f6f0b18ed943affb9c2c492f94a9161c0f362f7a8ab",
+        "nativePngSha256": "2d71cbccd4c7125635658f370a49dab1a9b544477ae477e458b3268d6b652f04",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null,
+        "libraryAtWholePoint": [
+          144,
+          193,
+          0,
+          253
+        ],
+        "nativeAtWholePoint": [
+          144,
+          193,
+          0,
+          253
+        ]
+      },
+      {
+        "case": "solid-fill",
+        "variantSourceSha256": "2d38cb8aec426c7c2375796c5182de8e151fe6bf1d7d1d7f69d19ae30129be65",
+        "nativePngSha256": "6e83878bc201b589f60f5b2c77d36f09696f4b34232dbba8b425ad815a3b7ac4",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null,
+        "libraryAtWholePoint": [
+          116,
+          210,
+          22,
+          253
+        ],
+        "nativeAtWholePoint": [
+          116,
+          210,
+          22,
+          253
+        ]
+      }
+    ],
+    "qualification": "Exploratory single captures, not reference admission. No hosted SVG or derived original fragment retained.",
+    "next": "Trace source capture, linearRGB conversion/storage, Gaussian working pixels and restoration before selecting a shared correction. sRGB, opaque-stop, solid-fill and no-filter variants are exact; the zero-sigma companion remains different at20pixels and separately accounted."
+  },
+  "qualification": {
+    "builds": 4,
+    "warnings": 0,
+    "focusedMechanismAndOwnershipPassed": 32,
+    "fullRoutine": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "layer": "core",
+        "passed": 33022,
+        "seconds": 54.09393229987472,
+        "librarySha256": "7a91387cc80ce08491465b6a99e3095476ff2453a1697edd476895ff95c0666b"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "layer": "native",
+        "passed": 39151,
+        "seconds": 67.19007829995826,
+        "librarySha256": "7a91387cc80ce08491465b6a99e3095476ff2453a1697edd476895ff95c0666b"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "layer": "core",
+        "passed": 33022,
+        "seconds": 45.40990459988825,
+        "librarySha256": "32957d8306eed2d81d171246db4c09d173225925b4b8a5cd0d496e87010ce6b0"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "layer": "native",
+        "passed": 39151,
+        "seconds": 56.27022180007771,
+        "librarySha256": "32957d8306eed2d81d171246db4c09d173225925b4b8a5cd0d496e87010ce6b0"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "layer": "core",
+        "passed": 33022,
+        "seconds": 54.72421911,
+        "librarySha256": "7a91387cc80ce08491465b6a99e3095476ff2453a1697edd476895ff95c0666b"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "layer": "native",
+        "passed": 39151,
+        "seconds": 157.004257549,
+        "librarySha256": "7a91387cc80ce08491465b6a99e3095476ff2453a1697edd476895ff95c0666b"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "layer": "core",
+        "passed": 33022,
+        "seconds": 43.25924044999999,
+        "librarySha256": "32957d8306eed2d81d171246db4c09d173225925b4b8a5cd0d496e87010ce6b0"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "layer": "native",
+        "passed": 39151,
+        "seconds": 124.66370758499997,
+        "librarySha256": "32957d8306eed2d81d171246db4c09d173225925b4b8a5cd0d496e87010ce6b0"
+      }
+    ],
+    "aggregatePassed": 288692,
+    "largeViewBoxRadialAndSolidPerHost": 23,
+    "allLargeControlsExact": true,
+    "elapsedScope": "Functional validation during concurrent activity; not a benchmark or test-simplification measurement.",
+    "packageGate": "Exact-head independent CI/package qualification required."
+  },
+  "closureBoundary": "All204 originals retain source hashes, dimensions, outcomes, options and stable diagnostics. No exact original lost. Green grapes falls37/95 to1/1 pixels/channel error; Ford stays6/45. All font/resource/static-state and remaining PLAN gates stay open."
+}

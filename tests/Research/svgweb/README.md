@@ -48,6 +48,7 @@ current inventory above governs overall status.
 | --- | --- |
 | Root image layout and placement | [Root model](root-image-model.json), [projection stages](root-image-projection.json), [image boundary](root-image-boundary.json). Logical sizing, subpixel layout, recorded scene and destination coefficients stay distinct. Direct matrices and large viewBox controls protect stages that small images cannot distinguish. |
 | Root experiments | [Viewport review](root-viewport-review.json), [stage review](root-image-stages.json). Preserve rejected output-only stretching and context distinctions. |
+| Visible image source | [Source rectangle](root-visible-source.json). A clipped fractional image remaps its source before residual scale; keep the distinct float stages. Four direct cases and one independent transformed ellipse protect the rule. |
 | Filter images and restoration | [Image model](filter-image-model.json), [bitmap restoration](filter-bitmap-restoration.json), [Gaussian aliases](gaussian-alias-restoration.json). Retain deferred/color-filter state, cropped storage, padding, enclosing opacity and final sampling roles. |
 | Filter source requests | [Source capture](filter-source-capture.json), [request propagation](filter-source-request.json), [bitmap clip requests](filter-bitmap-clip-request.json). Ordinary, nested and image-containing sources use propagated requests; each bordered destination bitmap uses its own nonzero clip bounds. |
 | Parameter source enclosure | [Capture and output hints](filter-parameter-source-enclosure.json). Enclose source visuals before graph expansion and the result before device mapping. Ordinary and affine capture share the parameter stage; recorded paint hints and captured content remain distinct. |
@@ -74,6 +75,12 @@ the complete default Gallardo image matches three fresh captures per host. The
 [Scimitar scope map](scimitar-scope-map.csv) preserves all 43 scopes; the
 [inner-filter map](scimitar-inner-filter-map.csv) preserves 20 companions, including
 the complete 35-child shadow. These and the complete Scimitar original remain exact.
+
+The [green-grapes map](green-grapes-paint-map.csv) retains all 76 consumers at the
+original fractional image viewport. Its `sourceRectangle` columns show 75 exact
+isolations; one linearRGB highlight remains different. The
+[source-rectangle record](root-visible-source.json) preserves earlier columns and
+the remaining whole-original difference of one channel at one pixel.
 
 Remaining work includes filter crop/flood-offset/shadow interactions, declared
 stroke units, CSS and gradient boundaries, explicit font programs, static-state
