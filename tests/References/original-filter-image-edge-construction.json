@@ -1,0 +1,55 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "c08c2a52d564a7d2ca1317822b03fbdd4d301abcab644cf9429f8b908e2d1202",
+  "referenceSha256": "4bdd4164ea66b1d14e3c5b96f90ce96443719babbaab9b2535e2055ca3019312",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-image-edge-construction.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-image-edge-construction",
+  "viewport": {
+    "width": 850,
+    "height": 300,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 integer ellipse with affine placement, linearRGB blur and enclosing opacity. Output storage is narrower than the native bitmap clip used to construct and walk image edges. Three fresh healthy/profile-cleaned captures per host; all six encoded PNGs agree. One canonical conversion protects the interaction without repeating the API matrix.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "c08c2a52d564a7d2ca1317822b03fbdd4d301abcab644cf9429f8b908e2d1202",
+      "referenceSha256": "4bdd4164ea66b1d14e3c5b96f90ce96443719babbaab9b2535e2055ca3019312",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "c08c2a52d564a7d2ca1317822b03fbdd4d301abcab644cf9429f8b908e2d1202",
+      "referenceSha256": "4bdd4164ea66b1d14e3c5b96f90ce96443719babbaab9b2535e2055ca3019312",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  }
+}

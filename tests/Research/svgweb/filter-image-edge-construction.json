@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "543de574b7186e71fbd0a7b9042a6db396857ec3",
+  "librarySha256": "25c15327cba65bc1d1d113ad1f251647c67e7b46b1a8feb99a07dbf2663a78b9",
+  "scope": "Affine image-edge construction uses the native bitmap clip independently of requested output storage. Gallardo path5263 closes; other original/filter acceptance remains open.",
+  "implementation": {
+    "converter": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "problem": "The affine restore path constructed and walked its image quad against the requested output rectangle. That request can be narrower than the native bitmap clip, changing fixed edge construction and fringe coverage before enclosing opacity.",
+    "change": "Use the bitmap clip intersected with layer/active clip bounds for edge construction and the scan window. Keep requested row storage and destination restoration bounds. No source transforms, sampling, Gaussian, gamma, alpha arithmetic, ownership or public API change.",
+    "nativeDraw": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkDraw.cpp",
+    "nativeDrawSha256": "175b3d1a434eaff2780916868f46a1e7e01cd0f0ce6eef82c0349ad1763158d0",
+    "nativeBoundary": "drawSpecial reaches drawBitmap/drawRect and the native raster clip. Bounds controlling iteration/storage do not replace that clip."
+  },
+  "canonicalControl": {
+    "fixture": "../../Fixtures/original/filter-image-edge-construction.svg",
+    "reference": "../../References/original-filter-image-edge-construction.json",
+    "sourceSha256": "c08c2a52d564a7d2ca1317822b03fbdd4d301abcab644cf9429f8b908e2d1202",
+    "nativePngSha256": "4bdd4164ea66b1d14e3c5b96f90ce96443719babbaab9b2535e2055ca3019312",
+    "freshCapturesPerHost": 3,
+    "allSixEncodedPngsIdentical": true,
+    "startupHealthyAndProfilesCleaned": true,
+    "comparisons": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3",
+        "changedPixels": 26,
+        "maximumError": 255,
+        "totalChannelError": 4350,
+        "bounds": [
+          615,
+          16,
+          711,
+          155
+        ]
+      },
+      {
+        "host": "windows",
+        "phase": "candidate",
+        "librarySha256": "a19685c3d24c50fd6525a8b87b609f8a2718bd1957808f6adc73816f5ef93984",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "bounds": null
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3",
+        "changedPixels": 26,
+        "maximumError": 255,
+        "totalChannelError": 4350,
+        "bounds": [
+          615,
+          16,
+          711,
+          155
+        ]
+      },
+      {
+        "host": "linux",
+        "phase": "candidate",
+        "librarySha256": "a19685c3d24c50fd6525a8b87b609f8a2718bd1957808f6adc73816f5ef93984",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "bounds": null
+      }
+    ],
+    "responsibility": "One own integer ellipse under affine placement, linearRGB blur and enclosing opacity through canonical conversion. Existing direct edge/clip mechanisms retain numerical coverage; no new API matrix or test framework."
+  },
+  "contextAblations": [
+    {
+      "mode": "edge-origin",
+      "originalChangedPixels": 2,
+      "opaqueChangedPixels": 5
+    },
+    {
+      "mode": "edge-clip",
+      "originalChangedPixels": 0,
+      "opaqueChangedPixels": 0
+    },
+    {
+      "mode": "edge-context",
+      "originalChangedPixels": 0,
+      "opaqueChangedPixels": 0
+    }
+  ],
+  "originalMapping": {
+    "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "closedConsumer": "path5263",
+    "filteredConsumersReplayedPerHost": 35,
+    "other34FilterPngsUnchanged": true,
+    "unfilteredPaintIsolationsUnchanged": 58,
+    "remainingFilteredConsumer": {
+      "id": "path3424",
+      "changedPixels": 1,
+      "maximumError": 1,
+      "totalChannelError": 1
+    },
+    "originalAndOpaqueExactBothHosts": true,
+    "closedConsumerVariants": [
+      {
+        "variant": "original",
+        "variantSourceSha256": "3d16f655ae9b987d1e5e34064695a9f6665590d76389e90ecdb7104d116572c0",
+        "nativePngSha256": "dc2a4b5d14be1669ac607cbd5ab62184543f273100d56826e1832f644ea40616",
+        "changedPixels": 0
+      },
+      {
+        "variant": "opaque",
+        "variantSourceSha256": "65f004ddd6452b7645d884eea438216ac1a74b54886f16903f9baa1f00898a0e",
+        "nativePngSha256": "79075656cd223ed063b7817cdb411734396602128c5dad6d830b8eae45649607",
+        "changedPixels": 0
+      }
+    ],
+    "preservedClosedConsumerCompanions": [
+      "path5398",
+      "use4125",
+      "use4171"
+    ]
+  },
+  "allOriginals": {
+    "filesHashCheckedPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "countsPerHost": {
+      "UnsupportedFeature": 53,
+      "rendered": 148,
+      "exact": 139,
+      "different": 9,
+      "MalformedInput": 3
+    },
+    "previousPngsByteIdenticalPerHost": 147,
+    "changedOriginals": [
+      {
+        "name": "gallardo.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 40,
+          "maximumError": 1,
+          "totalChannelError": 46
+        },
+        "after": {
+          "status": "different",
+          "changedPixels": 38,
+          "maximumError": 1,
+          "totalChannelError": 40
+        }
+      }
+    ],
+    "outcomesFullLogicalDimensionsAndSourceFontDiagnosticsUnchanged": true,
+    "lostExactImages": [],
+    "increasedTotalErrors": [],
+    "bothHostsAgreeOnComparisons": true,
+    "seconds": 59.325953300110996,
+    "timingScope": "Functional validation on a busy host, not a benchmark."
+  },
+  "retainedInteractions": {
+    "affineRadialAndSolidLargeViewBoxCasesPerHost": 23,
+    "allExact": true,
+    "scimitarInnerControlsExactPerHost": 20,
+    "scimitarScopePngsByteIdentical": 43,
+    "completeShadowDescendants": 35
+  },
+  "affectedValidation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 5514,
+      "seconds": 27.673992099938914,
+      "librarySha256": "25c15327cba65bc1d1d113ad1f251647c67e7b46b1a8feb99a07dbf2663a78b9"
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 2957,
+      "seconds": 30.88850689982064,
+      "librarySha256": "25c15327cba65bc1d1d113ad1f251647c67e7b46b1a8feb99a07dbf2663a78b9"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 5514,
+      "seconds": 27.2149946000427,
+      "librarySha256": "597848477635ec5d0be12e604785df39bfba0c2dddcdff509945fe274dd576fb"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 2957,
+      "seconds": 29.919082999927923,
+      "librarySha256": "597848477635ec5d0be12e604785df39bfba0c2dddcdff509945fe274dd576fb"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 5514,
+      "seconds": 22.298274636000002,
+      "librarySha256": "25c15327cba65bc1d1d113ad1f251647c67e7b46b1a8feb99a07dbf2663a78b9"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 2957,
+      "seconds": 39.165558391000005,
+      "librarySha256": "25c15327cba65bc1d1d113ad1f251647c67e7b46b1a8feb99a07dbf2663a78b9"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 5514,
+      "seconds": 25.358178069000004,
+      "librarySha256": "597848477635ec5d0be12e604785df39bfba0c2dddcdff509945fe274dd576fb"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 2957,
+      "seconds": 39.854414008,
+      "librarySha256": "597848477635ec5d0be12e604785df39bfba0c2dddcdff509945fe274dd576fb"
+    }
+  ],
+  "qualificationScope": "Four warning-free test builds; affected filter/clip/affine/drawing/glyph/text mechanisms and integration, plus manifest/canonical admission, on Windows/Linux and .NET11/.NET10. Full/package qualification remains at the coherent filter milestone; matching CI is checked independently.",
+  "remainingAcceptance": "Path3424 and whole Gallardo/car/green-grapes/UFO differences remain open, along with other font/resource/static-state W1 contexts. Nearby fractional-ellipse and translated-gradient controls remain shared-model follow-ups."
+}

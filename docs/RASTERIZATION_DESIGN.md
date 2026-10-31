@@ -196,6 +196,8 @@ padding independently of captured-content extents and nested filter requests;
 cancellation/refusal restores the enclosing invocation clip.
 Content clips limit painting without moving the source bitmap's shader coordinates
 or dither origin, including when compact capture omits part of its transparent border.
+Affine image edges are constructed and walked against the bitmap clip; requested
+output bounds govern row storage and restoration separately.
 The bounds query distinguishes deferred paint, padded images and cropped images.
 Cropping invalidates transparent-padding knowledge. Affine restoration uses the
 active clip for edge construction and replays coverage with the sampled paint.

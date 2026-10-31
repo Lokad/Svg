@@ -10351,9 +10351,9 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "filter-source-coordinate-origin.json",
-    "sourceBaseline": "50688862e0845c2dc913935ff6762f1b2af91256",
-    "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3",
+    "evidence": "filter-image-edge-construction.json",
+    "sourceBaseline": "543de574b7186e71fbd0a7b9042a6db396857ec3",
+    "librarySha256": "25c15327cba65bc1d1d113ad1f251647c67e7b46b1a8feb99a07dbf2663a78b9",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10368,7 +10368,7 @@
       "linux": 147
     },
     "changedOriginals": [
-      "rg1024_green_grapes.svg"
+      "gallardo.svg"
     ],
     "newlyExactOriginals": [],
     "lostExactImages": [],
@@ -10398,9 +10398,9 @@
       {
         "name": "gallardo.svg",
         "status": "different",
-        "changedPixels": 40,
+        "changedPixels": 38,
         "maximumError": 1,
-        "totalChannelError": 46
+        "totalChannelError": 40
       },
       {
         "name": "opensearch.svg",

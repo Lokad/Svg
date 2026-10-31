@@ -70,6 +70,10 @@ The [source-coordinate fixture](Fixtures/original/filter-source-coordinate-origi
 protects the source bitmap's coordinate seed under a tighter content clip and
 linearRGB blur. Two direct gradient checks retain the independently captured source
 byte under content and raster clips; the fixture uses canonical conversion.
+The [image-edge fixture](Fixtures/original/filter-image-edge-construction.svg)
+protects bitmap clipping during affine image restoration, with linearRGB blur and
+enclosing opacity. Existing edge/clip mechanisms retain boundary coverage; the
+fixture follows one canonical conversion path.
 The [affine-root control](Fixtures/original/filter-affine-root-boundary.svg) and
 its [paired gap control](Fixtures/original/filter-affine-root-gap.svg) retain
 distinct backdrop/capture interactions through canonical conversion. Direct

@@ -18300,6 +18300,30 @@
       "referenceSha256": "fc10e665c9b6a7bd4008a455b30a65e24098807575200a0be1311935db339efc"
     },
     {
+      "id": "original-filter-image-edge-construction",
+      "path": "original/filter-image-edge-construction.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "c08c2a52d564a7d2ca1317822b03fbdd4d301abcab644cf9429f8b908e2d1202",
+      "materializedSha256": "c08c2a52d564a7d2ca1317822b03fbdd4d301abcab644cf9429f8b908e2d1202",
+      "featureTags": [
+        "filter",
+        "clip",
+        "affine-image-edges"
+      ],
+      "width": 850,
+      "height": 300,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-image-edge-construction.json",
+      "referenceSha256": "4bdd4164ea66b1d14e3c5b96f90ce96443719babbaab9b2535e2055ca3019312"
+    },
+    {
       "id": "original-filter-source-coordinate-origin",
       "path": "original/filter-source-coordinate-origin.svg",
       "sourceUrl": null,

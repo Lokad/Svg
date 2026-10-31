@@ -1209,7 +1209,10 @@ public static partial class SvgConverter
                     edgePoints[1] = SvgAuthoredPath.MapPoint(edgeMap, new(imageWidth, 0), new(0, 0));
                     edgePoints[2] = SvgAuthoredPath.MapPoint(edgeMap, new(imageWidth, imageHeight), new(0, 0));
                     edgePoints[3] = SvgAuthoredPath.MapPoint(edgeMap, new(0, imageHeight), new(0, 0));
-                    SvgAnalyticClipBounds edgeArea = new(restoreLeft, restoreTop, restoreRight, restoreBottom);
+                    // Requested output bounds limit storage and restoration. Edge
+                    // construction and walking retain the owning bitmap's clip.
+                    SvgAnalyticClipBounds edgeArea = new(Math.Max(layerBounds.Left, bitmap.BitmapClip.Left), Math.Max(layerBounds.Top, bitmap.BitmapClip.Top),
+                        Math.Min(layerBounds.Right, bitmap.BitmapClip.Right), Math.Min(layerBounds.Bottom, bitmap.BitmapClip.Bottom));
                     if (ActiveClipBounds(bitmap) is {} imageClip)
                         edgeArea = new(Math.Max(edgeArea.Left, imageClip.Left), Math.Max(edgeArea.Top, imageClip.Top),
                             Math.Min(edgeArea.Right, imageClip.Right), Math.Min(edgeArea.Bottom, imageClip.Bottom));
@@ -1227,7 +1230,7 @@ public static partial class SvgConverter
                     SvgAnalyticPaintClip edgePaintClip = activeViewport.HasMask && !activeViewport.IsBinary
                         ? SvgAnalyticPaintClip.Antialiased : SvgAnalyticPaintClip.Binary;
                     using SvgAnalyticCoverage edgeWalker = imageEdges ? SvgAnalyticCoverage.Prepare(ref edgePreparation, restoreLeft, restoreRight, restoreTop, restoreBottom,
-                        new(restoreLeft, restoreRight), new SvgAnalyticClipContext(edgeArea), edgePaintClip,
+                        new(edgeArea.Left, edgeArea.Right), new SvgAnalyticClipContext(edgeArea), edgePaintClip,
                         budget, out edgeEligible, cancellationToken) : default;
                     if (!edgeEligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine filter image edges are outside the retained boundary.");
                     Span<byte> opacityPixel = stackalloc byte[4];
