@@ -195,10 +195,11 @@ consumers distinct. Premultiplication, coverage scaling, color transfer,
 source-over and byte storage round at their actual stages. Continuous geometric
 equivalence does not establish identical pixels.
 
-Radial source binding uses retained definition coordinates and the local gradient
-transform before composing object bounds and drawing placement. Axis-resolved
-circle coordinates cannot replace that definition when a general source map is needed.
-Path fills share this binding for axis and skewed drawing placement.
+User-space radial definitions retain factory coordinates and their local matrix
+before primitive or instance placement. References compose retained maps, including
+axis-aligned placement; normalized paints bind their object box when known. Primitive
+and path consumers share these stages. The [binding evidence](../tests/Research/svgweb/radial-primitive-binding.json)
+maps direct factory tests, exact instance/viewport contracts and the canonical fixture.
 
 Gradient preparation preserves float stop order, hard/flat boundaries, duplicate
 groups, implicit endpoints and periodic normalization. Factory means use authored

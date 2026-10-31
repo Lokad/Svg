@@ -10351,16 +10351,16 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "opacity-source-scope.json",
+    "evidence": "radial-primitive-binding.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "6a804a375fd13115c1d83872c8fa3a659eb56632",
-    "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+    "sourceBaseline": "55e778eb7dd89360f4b0559bc4c44e519d5bac93",
+    "librarySha256": "91b07b5a822e2821d3d1407b6d63201412bd2b84ebe168522a1902fb540cc9ea",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
       "rendered": 150,
-      "exploratoryExact": 149,
-      "different": 1,
+      "exploratoryExact": 150,
+      "different": 0,
       "UnsupportedFeature": 51,
       "MalformedInput": 3
     },
@@ -10371,17 +10371,9 @@
     "changedOutcomes": [],
     "changedOutcomesOrDiagnostics": [],
     "newlyExactOriginals": [
-      "AJ_Digital_Camera.svg"
+      "radialgradient1.svg"
     ],
     "lostExactImages": [],
-    "remainingDefaultDifferences": [
-      {
-        "name": "radialgradient1.svg",
-        "status": "different",
-        "changedPixels": 4,
-        "maximumError": 1,
-        "totalChannelError": 12
-      }
-    ]
+    "remainingDefaultDifferences": []
   }
 }

@@ -3860,7 +3860,8 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
-        AssertEqualRadial(new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 4, 4, 4, 4, 4, 0, 0, 1, false, true, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1, false, SvgGradientTransform.Identity, false), geometry.Radial.Gradient);
+        AssertEqualRadial(new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 4, 4, 4, 4, 4, 0, 0, 1, false, true, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1, false, SvgGradientTransform.Identity, true), geometry.Radial.Gradient);
+        AssertRadialMaps(geometry.Radial.Gradient, new(1, 0, 0, 0, 1, 0), SvgAffineTransform.Identity);
     }
     [Fact]
     public void Maps_userspace_radial_circle_through_uniform_transform()
@@ -3869,11 +3870,8 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
-        Assert.Equal(8, geometry.Radial.Gradient.CenterX);
-        Assert.Equal(8, geometry.Radial.Gradient.CenterY);
-        Assert.Equal(8, geometry.Radial.Gradient.Radius);
-        Assert.Equal(8, geometry.Radial.Gradient.FocalX);
-        Assert.Equal(8, geometry.Radial.Gradient.FocalY);
+        Assert.Equal((4d, 4d, 4d, 4d, 4d), (geometry.Radial.Gradient.CenterX, geometry.Radial.Gradient.CenterY, geometry.Radial.Gradient.Radius, geometry.Radial.Gradient.FocalX, geometry.Radial.Gradient.FocalY));
+        AssertRadialMaps(geometry.Radial.Gradient, new(1, 0, 0, 0, 1, 0), SvgAffineTransform.FromScale(2, 2));
     }
     [Fact]
     public void Inherits_userspace_units_through_radial_href()
@@ -3902,11 +3900,8 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
-        Assert.Equal(8, geometry.Radial.Gradient.CenterX);
-        Assert.Equal(4, geometry.Radial.Gradient.CenterY);
-        Assert.Equal(8, geometry.Radial.Gradient.Radius);
-        Assert.Equal(2, geometry.Radial.Gradient.ReferenceScaleX);
-        Assert.Equal(1, geometry.Radial.Gradient.ReferenceScaleY);
+        Assert.Equal((4d, 4d, 4d), (geometry.Radial.Gradient.CenterX, geometry.Radial.Gradient.CenterY, geometry.Radial.Gradient.Radius));
+        AssertRadialMaps(geometry.Radial.Gradient, new(1, 0, 0, 0, 1, 0), SvgAffineTransform.FromScale(2, 1));
     }
 
     [Fact]
@@ -3953,11 +3948,8 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
-        Assert.Equal(12, geometry.Radial.Gradient.CenterX);
-        Assert.Equal(4, geometry.Radial.Gradient.CenterY);
-        Assert.Equal(4, geometry.Radial.Gradient.Radius);
-        Assert.Equal(1, geometry.Radial.Gradient.ReferenceScaleX);
-        Assert.Equal(1, geometry.Radial.Gradient.ReferenceScaleY);
+        Assert.Equal((4d, 4d, 4d), (geometry.Radial.Gradient.CenterX, geometry.Radial.Gradient.CenterY, geometry.Radial.Gradient.Radius));
+        AssertRadialMaps(geometry.Radial.Gradient, new(1, 0, 0, 0, 1, 0), SvgAffineTransform.FromTranslation(8, 0));
     }
 
     [Fact]
@@ -4083,10 +4075,8 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
-        Assert.Equal(8, geometry.Radial.Gradient.CenterX);
-        Assert.Equal(4, geometry.Radial.Gradient.FocalX);
-        Assert.Equal(8, geometry.Radial.Gradient.FocalY);
-        Assert.Equal(8, geometry.Radial.Gradient.Radius);
+        Assert.Equal((4d, 4d, 4d, 2d, 4d), (geometry.Radial.Gradient.CenterX, geometry.Radial.Gradient.CenterY, geometry.Radial.Gradient.Radius, geometry.Radial.Gradient.FocalX, geometry.Radial.Gradient.FocalY));
+        AssertRadialMaps(geometry.Radial.Gradient, new(1, 0, 0, 0, 1, 0), SvgAffineTransform.FromScale(2, 2));
     }
 
     [Fact]
@@ -4274,11 +4264,8 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
-        Assert.Equal(8, geometry.Radial.Gradient.CenterX);
-        Assert.Equal(4, geometry.Radial.Gradient.CenterY);
-        Assert.Equal(8, geometry.Radial.Gradient.Radius);
-        Assert.Equal(2, geometry.Radial.Gradient.ReferenceScaleX);
-        Assert.Equal(1, geometry.Radial.Gradient.ReferenceScaleY);
+        Assert.Equal((4d, 4d, 4d), (geometry.Radial.Gradient.CenterX, geometry.Radial.Gradient.CenterY, geometry.Radial.Gradient.Radius));
+        AssertRadialMaps(geometry.Radial.Gradient, new(2, 0, 0, 0, 1, 0), SvgAffineTransform.Identity);
     }
 
     [Fact]
@@ -4354,11 +4341,10 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
         double cosine = Math.Cos(Math.PI / 4);
         double sine = Math.Sin(Math.PI / 4);
-        Assert.Equal(4 * cosine - 4 * sine, geometry.Radial.Gradient.CenterX);
-        Assert.Equal(4 * sine + 4 * cosine, geometry.Radial.Gradient.CenterY);
-        Assert.Equal(4 * Math.Sqrt(cosine * cosine + sine * sine), geometry.Radial.Gradient.Radius);
+        Assert.Equal((4d, 4d, 4d), (geometry.Radial.Gradient.CenterX, geometry.Radial.Gradient.CenterY, geometry.Radial.Gradient.Radius));
         Assert.Equal(geometry.Radial.Gradient.CenterX, geometry.Radial.Gradient.FocalX);
         Assert.Equal(geometry.Radial.Gradient.CenterY, geometry.Radial.Gradient.FocalY);
+        AssertRadialMaps(geometry.Radial.Gradient, new((float)cosine, (float)-sine, 0, (float)sine, (float)cosine, 0), SvgAffineTransform.Identity);
     }
 
     [Fact]
@@ -4470,9 +4456,8 @@ public sealed class SvgRootParserTests
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
         Assert.Equal(new SvgRectangle(4, 0, 4, 8, default, true, null), geometry.Radial.Fill);
-        Assert.Equal(4, geometry.Radial.Gradient.CenterX);
-        Assert.Equal(0, geometry.Radial.Gradient.CenterY);
-        Assert.Equal(8, geometry.Radial.Gradient.Radius);
+        Assert.Equal((0d, 0d, 8d), (geometry.Radial.Gradient.CenterX, geometry.Radial.Gradient.CenterY, geometry.Radial.Gradient.Radius));
+        AssertRadialMaps(geometry.Radial.Gradient, new(1, 0, 0, 0, 1, 0), SvgAffineTransform.FromTranslation(4, 0));
     }
 
     [Fact]
@@ -5389,4 +5374,15 @@ public sealed class SvgRootParserTests
         Assert.Equal(expectedMap, paint.Data.Referencing);
         return path.SceneMap.Apply(bounds with { HasFill = geometry.GradientPolygon.HasFill });
     }
+
+    private static void AssertRadialMaps(SvgRadialGradient gradient, Lokad.Svg.Rendering.SvgShaderMatrix local, SvgAffineTransform referencing)
+    {
+        Assert.True(gradient.IsUserSpace);
+        Assert.True(gradient.HasGeneralTransform);
+        Assert.Equal((1d, 1d), (gradient.ReferenceScaleX, gradient.ReferenceScaleY));
+        SvgGradientPaintMatrices matrices = Assert.IsType<SvgGradientPaintMatrices>(gradient.NativePaintMatrices);
+        Assert.Equal(local, matrices.Local);
+        Assert.Equal(referencing, matrices.Referencing);
+    }
+
 }

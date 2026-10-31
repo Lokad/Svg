@@ -1461,13 +1461,19 @@ CancellationToken cancellationToken)
         {
             (double centerX, double centerY, double radius, double focalX, double focalY, double focalRadius) = vector;
             bool isUserSpace = template.IsUserSpace;
-            double referenceScaleX = 1;
-            double referenceScaleY = 1;
             SvgGradientSpread spread = template.Spread;
             SvgGradientTransform inverse = SvgGradientTransform.Identity;
             bool hasGeneralTransform = false;
             bool hasRotation = false;
-            if (isUserSpace) ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
+            if (isUserSpace)
+            {
+                ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
+                if (!template.Transform.TryInvert(out inverse)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular radial gradient transforms are not implemented.");
+                // Bind the local definition before any primitive or instance placement.
+                // Native factory coordinates and the local/reference matrices stay distinct.
+                return (centerX, centerY, radius, focalX, focalY, focalRadius, true, spread, 1, 1,
+                    template.Transform.B != 0 || template.Transform.C != 0, inverse, true);
+            }
             float circleDeltaX = (float)centerX - (float)focalX, circleDeltaY = (float)centerY - (float)focalY;
             float circleDistance = MathF.Sqrt(circleDeltaX * circleDeltaX + circleDeltaY * circleDeltaY);
             bool preserveCircleCoordinates = focalRadius != 0 || (focalX != centerX || focalY != centerY)
@@ -1477,7 +1483,7 @@ CancellationToken cancellationToken)
             {
                 // Keep focal-circle coordinates separate from local maps for native float rounding.
                 bool simpleTransform = !preserveCircleCoordinates && (template.Transform.B != 0 || template.Transform.C != 0
-                    ? template.Transform.IsSimilarity() : isUserSpace || template.Transform.A == template.Transform.D);
+                    ? template.Transform.IsSimilarity() : template.Transform.A == template.Transform.D);
                 if (!simpleTransform)
                 {
                     if (!template.Transform.TryInvert(out SvgGradientTransform generalInverse)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular radial gradient transforms are not implemented.");
@@ -1493,14 +1499,9 @@ CancellationToken cancellationToken)
                     double radiusScale = template.Transform.B == 0 && template.Transform.C == 0 ? Math.Abs(template.Transform.A) : Math.Sqrt(template.Transform.A * template.Transform.A + template.Transform.B * template.Transform.B);
                     radius *= radiusScale;
                     focalRadius *= radiusScale;
-                    if (isUserSpace)
-                    {
-                        referenceScaleX = template.Transform.A;
-                        referenceScaleY = template.Transform.D;
-                    }
                 }
             }
-            return (centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, spread, referenceScaleX, referenceScaleY, hasRotation, inverse, hasGeneralTransform);
+            return (centerX, centerY, radius, focalX, focalY, focalRadius, false, spread, 1, 1, hasRotation, inverse, hasGeneralTransform);
         }
 
     }

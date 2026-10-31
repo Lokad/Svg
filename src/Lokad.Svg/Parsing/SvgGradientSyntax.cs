@@ -34,8 +34,10 @@ internal readonly record struct SvgGradientTemplate(SvgLinearGradientCoordinates
     internal SvgViewportLengthBases LengthBases { get; init; }
 }
 
-/// <summary>Retains one bounded radial gradient with a strictly inside focal point, contained focal circle and referencing scale record, with an inverse paint map for general transforms.</summary>
-/// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored circle after the local definition, so raster evaluation inverts the exact paint map under non-uniform referencing transforms.</remarks>
+/// <summary>Retains a radial factory circle and its local/reference paint maps.</summary>
+/// <remarks>User-space definitions keep their circle coordinates through placement.
+/// ReferenceScaleX and ReferenceScaleY belong to scalar fallback evaluation; retained
+/// paints use their independent matrices. Definition/stops storage remains scene-owned.</remarks>
 internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation, SvgGradientTransform Inverse, bool HasGeneralTransform)
 {
     /// <summary>Borrows immutable definition coordinates before local or instance placement.</summary>
@@ -958,9 +960,10 @@ internal static class SvgGradientSyntax
             NativePaintMatrices = new(SvgShaderMatrix.Concat(nativeObject, local), nativeReference) };
     }
 
-    /// <summary>Maps a radial paint through an axis reference, preserving object-box reflection and user-space scale records.</summary>
-    /// <remarks>Reflected paints retain reference matrices so native float preparation keeps
-    /// definition coordinates separate from the local paint map. Callers bind general source maps.</remarks>
+    /// <summary>Places a radial paint through an axis reference without changing its factory coordinates.</summary>
+    /// <remarks>User-space definitions already retain their local matrix. Normalized object-box
+    /// paints bind their source box later and retain reflection here. This bounded, allocation-free
+    /// mapping borrows immutable definition data; callers retain cancellation and ownership.</remarks>
     internal static SvgRadialGradient MapRadialReference(SvgAffineTransform transform, SvgRadialGradient gradient, SvgViewportFrame? frame)
     {
         if (!gradient.IsUserSpace)
@@ -973,32 +976,8 @@ internal static class SvgGradientSyntax
             return ScaleGeneralRadial(gradient, mirrorX ? -1 : 1, mirrorY ? -1 : 1, mirrorX ? 1 : 0, mirrorY ? 1 : 0);
         }
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned gradient transforms are implemented.");
-        bool canMapFocalReference = gradient.FocalRadius != 0
-            && TryInvertAxisMap(transform.A, transform.D, transform.E, transform.F, out _)
-            && (frame is null || TryInvertAxisMap(frame.Value.ScaleX, frame.Value.ScaleY, frame.Value.OffsetX, frame.Value.OffsetY, out _));
-        if (!gradient.HasGeneralTransform && (transform.A < 0 || transform.D < 0 || canMapFocalReference))
-            gradient = gradient with { HasGeneralTransform = true, Inverse = SvgGradientTransform.Identity,
-                NativePaintMatrices = new(new(1, 0, 0, 0, 1, 0), SvgAffineTransform.Identity) };
-        if (gradient.HasGeneralTransform) return ScaleGeneralRadial(ScaleGeneralRadial(gradient, transform.A, transform.D, transform.E, transform.F), frame?.ScaleX ?? 1, frame?.ScaleY ?? 1, frame?.OffsetX ?? 0, frame?.OffsetY ?? 0);
-        (double mappedX, double mappedY) = transform.ApplyToUserPoint(gradient.CenterX, gradient.CenterY);
-        (double mappedFocalX, double mappedFocalY) = transform.ApplyToUserPoint(gradient.FocalX, gradient.FocalY);
-        double mappedRadius = gradient.Radius * Math.Abs(transform.A);
-        double mappedFocalRadius = gradient.FocalRadius * Math.Abs(transform.A);
-        double referenceScaleX = transform.A;
-        double referenceScaleY = transform.D;
-        if (frame is not null)
-        {
-            mappedX = mappedX * frame.Value.ScaleX + frame.Value.OffsetX;
-            mappedY = mappedY * frame.Value.ScaleY + frame.Value.OffsetY;
-            mappedFocalX = mappedFocalX * frame.Value.ScaleX + frame.Value.OffsetX;
-            mappedFocalY = mappedFocalY * frame.Value.ScaleY + frame.Value.OffsetY;
-            mappedRadius *= Math.Abs(frame.Value.ScaleX);
-            mappedFocalRadius *= Math.Abs(frame.Value.ScaleX);
-            referenceScaleX *= frame.Value.ScaleX;
-            referenceScaleY *= frame.Value.ScaleY;
-        }
-        if (!double.IsFinite(mappedRadius) || !double.IsFinite(mappedFocalRadius) || !double.IsFinite(mappedFocalX) || !double.IsFinite(mappedFocalY) || !double.IsFinite(mappedX) || !double.IsFinite(mappedY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported viewport map exceeds the radial gradient coordinate range.");
-        return gradient with { CenterX = mappedX, CenterY = mappedY, Radius = mappedRadius, FocalX = mappedFocalX, FocalY = mappedFocalY, FocalRadius = mappedFocalRadius, ReferenceScaleX = gradient.ReferenceScaleX * referenceScaleX, ReferenceScaleY = gradient.ReferenceScaleY * referenceScaleY };
+        return ScaleGeneralRadial(ScaleGeneralRadial(gradient, transform.A, transform.D, transform.E, transform.F),
+            frame?.ScaleX ?? 1, frame?.ScaleY ?? 1, frame?.OffsetX ?? 0, frame?.OffsetY ?? 0);
     }
 
     /// <summary>Mirrors one objectBoundingBox gradient vector when the referencing transform reflects its axis.</summary>

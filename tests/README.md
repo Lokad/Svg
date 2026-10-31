@@ -107,6 +107,13 @@ cleanup, retry and identity reuse. Independent rectangle/path, fractional-use an
 local-matrix fixtures protect the distinct numerical routes through canonical
 conversion; [their evidence](Research/svgweb/linear-source-placement.json) records
 both hosts' captures and failing-before results.
+
+The [radial binding mechanisms](Lokad.Svg.Tests/SvgRadialSourceBindingTests.cs) keep
+factory coordinates independent of local/reference placement across primitives and
+paths. Existing instance, viewport and focal-circle cases assert those exact stages.
+One [canonical reflected-radial fixture](Fixtures/original/radial-primitive-definition.svg)
+protects the rounding interaction; [evidence](Research/svgweb/radial-primitive-binding.json)
+retains before failures and original-to-control mappings. No API matrix is added.
 The [recorded shader mechanisms](Lokad.Svg.Tests/SvgRecordedShaderCoordinatesTests.cs)
 protect bitmap-origin changes, initial placement and the stack/heap mapping boundary.
 One ownership case covers deep-chain refusal, cancellation, cleanup and explicit

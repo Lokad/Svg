@@ -885,8 +885,11 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(2, root.Geometries.Length);
         Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
         Assert.Equal(SvgGeometryKind.RadialPolygon, root.Geometries[1].Kind);
-        Assert.Equal(12, root.Geometries[1].RadialPolygon.Gradient.CenterX);
-        Assert.Equal(4, root.Geometries[1].RadialPolygon.Gradient.Radius);
+        SvgRadialGradient gradient = root.Geometries[1].RadialPolygon.Gradient;
+        Assert.Equal((4d, 4d), (gradient.CenterX, gradient.Radius));
+        SvgGradientPaintMatrices maps = Assert.IsType<SvgGradientPaintMatrices>(gradient.NativePaintMatrices);
+        Assert.Equal(SvgAffineTransform.FromTranslation(8, 0), maps.Referencing);
+        Assert.Equal(new Lokad.Svg.Rendering.SvgShaderMatrix(1, 0, 0, 0, 1, 0), maps.Local);
     }
 
     [Fact]
@@ -1102,8 +1105,11 @@ public sealed class SvgUseInstanceTests
 
         Assert.Equal(2, root.Geometries.Length);
         Assert.Equal(SvgGeometryKind.RadialPolygon, root.Geometries[1].Kind);
-        Assert.Equal(8, root.Geometries[1].RadialPolygon.Gradient.CenterX);
-        Assert.Equal(8, root.Geometries[1].RadialPolygon.Gradient.Radius);
+        SvgRadialGradient gradient = root.Geometries[1].RadialPolygon.Gradient;
+        Assert.Equal((4d, 4d), (gradient.CenterX, gradient.Radius));
+        SvgGradientPaintMatrices maps = Assert.IsType<SvgGradientPaintMatrices>(gradient.NativePaintMatrices);
+        Assert.Equal(SvgAffineTransform.FromScale(2, 2), maps.Referencing);
+        Assert.Equal(new Lokad.Svg.Rendering.SvgShaderMatrix(1, 0, 0, 0, 1, 0), maps.Local);
     }
 
     [Fact]

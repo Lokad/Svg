@@ -1,0 +1,10 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="192.25" height="128.25">
+  <defs>
+    <radialGradient id="r" gradientUnits="userSpaceOnUse" cx="19.3125" cy="15.625" r="3.75"
+                    gradientTransform="matrix(.8125 0 0 1.3125 -3.375 -5.875)" spreadMethod="reflect">
+      <stop stop-color="#315379"/><stop offset="1" stop-color="#97b5d3"/>
+    </radialGradient>
+  </defs>
+  <rect x="2.375" y="3.125" width="186.5" height="121.25" rx="7.25" fill="url(#r)"/>
+</svg>

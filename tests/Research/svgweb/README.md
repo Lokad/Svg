@@ -6,14 +6,13 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 150 originals per host: **149 exploratory
-exact and 1 different**, with 51 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 150 originals per host: **150 exploratory
+exact**, with 51 UnsupportedFeature and 3 MalformedInput outcomes. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
-Scimitar, Gallardo, car, radialgradient2, UFO, alphachannel, opensearch, scion and
-green grapes are exact, as are Ford and the camera. Exact default output does not qualify other font, resource
-or static-state contexts, and whole-corpus acceptance remains open.
+Exact default output does not qualify other font, resource or static-state contexts;
+whole-corpus acceptance remains open.
 
 Resolve gaps by mechanism, preserving original-to-control mappings and independent
 references. A successful render, ambient font substitution or equal images alone
@@ -60,7 +59,7 @@ current inventory above governs overall status.
 | Filter numerical stages | [Black linear stages](black-linear-stages.json), [bilinear weights](filter-bilinear-review.json), [numeric vectors](../../Lokad.Svg.Tests/TestData/highp-bilinear.json), [browser probe](highp-bilinear.js). Transfer, byte storage, packed alpha, high-precision weights and addressing have separate responsibilities. |
 | Clip source geometry | [Referenced paths](clip-use-construction.json), [source placement](clip-source-placement.json), [canvas boundaries](clip-canvas-boundaries.json). Retain authored quadratic/cubic/arc operands, local resource placement and referencing-canvas concatenation. |
 | Clip coverage and bounds | [Replay state](clip-replay-state.json), [visual bounds](clip-visual-bounds.json), [analytic alpha](analytic-alpha-bytes.json). Separate silhouette coverage, stroke/layout enclosures, numerical raster ink and native byte narrowing. |
-| Radial paint binding | [Source binding](radial-source-binding.json). Keep local gradient coordinates and reference placement through axis/skew, clipping and inherited stops. |
+| Radial paint binding | [Source binding](radial-source-binding.json), [primitive binding](radial-primitive-binding.json). Retain factory coordinates before local/reference maps across primitives, paths, instances, clipping and inherited stops. Direct stage tests and one canonical reflected radial protect primitive rounding. |
 | Gradient bitmap coordinates | [Recorded stages](gradient-recorded-bitmap-origin.json). Subtract the owning bitmap origin before replaying child transforms. Linear/radial native controls and direct mapping/ownership tests protect the shared order. |
 | Opaque gradient coverage | [Program opacity and coverage](opaque-gradient-coverage.json). Retain factory eligibility and direct-span/A8 interpolation stages. One canonical edge fixture and six compiled native vectors protect the shared rule; the complete default Gallardo image is exact. |
 | Completed curve strips | [Direct painting and clip construction](completed-strip-coverage.json). Completed direct fringes use the paint clip; pending mask rows and clip definitions keep path bounds. Circle, authored arcs and rounded rectangles protect distinct source builders. |
@@ -98,9 +97,9 @@ Fixed stroke lengths remove three `0pt` gates; the lingerie original reaches a
 separate local-reference gate. The [length record](fixed-stroke-lengths.json)
 retains those outcomes. The shared [opacity-source correction](opacity-source-scope.json)
 closes the complete camera against three fresh healthy captures per host and all
-82 paint isolations. Radialgradient1 retains four differing RGB pixels (maximum
-error 1), including its isolated rounded rectangle. All 149 other rendered PNGs
-remain byte-identical. Whole-original radial acceptance remains open.
+82 paint isolations. Shared [radial primitive binding](radial-primitive-binding.json)
+also closes radialgradient1 and its rounded-rectangle isolation against fresh native
+evidence. All 149 other rendered PNGs remain byte-identical after that correction.
 
 Mapped crop/flood-offset/shadow and root/filter cases are closed for their declared
 default static contexts. Remaining work includes declared stroke units, CSS and

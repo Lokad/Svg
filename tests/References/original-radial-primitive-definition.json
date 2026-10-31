@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "a7c5929561f89d8edc6df50b438f0b010dbb6a3af9e930e6b7a9ee66c7a79b52",
+  "referenceSha256": "9b287ef3bd5c8ee71d7cf046b11d73d28cbf778b7d3cbb3dc8d1ea5c76a34020",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-radial-primitive-definition.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-radial-primitive-definition",
+  "viewport": {
+    "width": 192,
+    "height": 128,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 colored reflected radial on a rounded primitive, with an axis local map and fractional root. Retain factory coordinates independently of local/reference placement. Canonical conversion; three fresh healthy/profile-cleaned captures per host agree. Existing instance, viewport, factory, ownership and path companions protect their distinct stages.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "a7c5929561f89d8edc6df50b438f0b010dbb6a3af9e930e6b7a9ee66c7a79b52",
+      "referenceSha256": "9b287ef3bd5c8ee71d7cf046b11d73d28cbf778b7d3cbb3dc8d1ea5c76a34020",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "a7c5929561f89d8edc6df50b438f0b010dbb6a3af9e930e6b7a9ee66c7a79b52",
+      "referenceSha256": "9b287ef3bd5c8ee71d7cf046b11d73d28cbf778b7d3cbb3dc8d1ea5c76a34020",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 192.25,
+    "height": 128.25
+  }
+}
