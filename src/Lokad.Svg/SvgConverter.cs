@@ -3459,33 +3459,15 @@ public static partial class SvgConverter
                 float alpha = ShaderAlpha(image.Opacity);
                 if (image.UniformSample is {} uniform)
                     return SvgShaderPaint.Pattern(uniform.Red, uniform.Green, uniform.Blue, uniform.Alpha, alpha);
-                SvgShaderPaint upper = SampleView(source, sourceWidth, sampleBounds, x, y, pictureLevels.LowerWeight == 0 ? alpha : 1);
+                SvgShaderPaint upper = SvgShaderPaint.SampleView(source, sourceWidth, sampleBounds, x, y, pictureLevels.LowerWeight == 0 ? alpha : 1);
                 if (lowerMip is not {} lower || pictureLevels.LowerWeight == 0) return upper;
-                SvgShaderPaint smaller = SampleView(lower.Pixels, lower.Width, new(0, 0, lower.Width, lower.Height),
+                SvgShaderPaint smaller = SvgShaderPaint.SampleView(lower.Pixels, lower.Width, new(0, 0, lower.Width, lower.Height),
                     x * ((float)lower.Width / sampleWidth), y * ((float)lower.Height / sampleHeight), 1);
                 float weight = pictureLevels.LowerWeight;
                 return new(MathF.FusedMultiplyAdd(smaller.Red - upper.Red, weight, upper.Red) * alpha,
                     MathF.FusedMultiplyAdd(smaller.Green - upper.Green, weight, upper.Green) * alpha,
                     MathF.FusedMultiplyAdd(smaller.Blue - upper.Blue, weight, upper.Blue) * alpha,
                     MathF.FusedMultiplyAdd(smaller.Alpha - upper.Alpha, weight, upper.Alpha) * alpha);
-            }
-
-            SvgShaderPaint SampleView(byte[] pixels, int stride, SvgAnalyticClipBounds bounds, float x, float y, float alpha)
-            {
-                int viewWidth = bounds.Right - bounds.Left, viewHeight = bounds.Bottom - bounds.Top;
-                x = Math.Clamp(x, -1, viewWidth) - .5f;
-                y = Math.Clamp(y, -1, viewHeight) - .5f;
-                int left = (int)MathF.Floor(x), top = (int)MathF.Floor(y);
-                float fx = x - left, fy = y - top;
-                int a = ((Math.Clamp(top, 0, viewHeight - 1) + bounds.Top) * stride + Math.Clamp(left, 0, viewWidth - 1) + bounds.Left) * 4;
-                int b = ((Math.Clamp(top, 0, viewHeight - 1) + bounds.Top) * stride + Math.Clamp(left + 1, 0, viewWidth - 1) + bounds.Left) * 4;
-                int c = ((Math.Clamp(top + 1, 0, viewHeight - 1) + bounds.Top) * stride + Math.Clamp(left, 0, viewWidth - 1) + bounds.Left) * 4;
-                int d = ((Math.Clamp(top + 1, 0, viewHeight - 1) + bounds.Top) * stride + Math.Clamp(left + 1, 0, viewWidth - 1) + bounds.Left) * 4;
-                return SvgShaderPaint.InterpolatePremultiplied(
-                    new(pixels[a], pixels[a + 1], pixels[a + 2], pixels[a + 3]),
-                    new(pixels[b], pixels[b + 1], pixels[b + 2], pixels[b + 3]),
-                    new(pixels[c], pixels[c + 1], pixels[c + 2], pixels[c + 3]),
-                    new(pixels[d], pixels[d + 1], pixels[d + 2], pixels[d + 3]), fx, fy, alpha);
             }
 
             // Pinned raster-pipeline bilerp_clamp_8888 retains Q15 intermediate

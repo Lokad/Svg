@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "f566ccee3b533c841a23cca69ed60cb12f3cea64",
+  "scope": "One shared high-precision bilinear sampler for filtered surfaces and clamped image views. Original filter acceptance remains open.",
+  "implementation": [
+    "../../../src/Lokad.Svg/Rendering/SvgShaderPaint.cs",
+    "../../../src/Lokad.Svg/SvgConverter.cs"
+  ],
+  "mechanisms": "../../Lokad.Svg.Tests/SvgFilterBilinearSamplingTests.cs",
+  "nativeVectors": "../../Lokad.Svg.Tests/TestData/highp-bilinear.json",
+  "sharedContract": {
+    "problem": "Image/filter replay derived fractions from coordinate-.5, while native high-precision sampling and wrapped-pattern replay derive them from coordinate+.5. One predecessor below powers of two rounds differently before the final store.",
+    "change": "Separate weight coordinates from texel addresses; share filter/image-view interpolation and addressing. Clamp both coordinates once for bounded views before the four texel reads. Remove the converter-local duplicate image sampler.",
+    "ownership": "Borrowed premultiplied pixels and admitted view bounds; no new owners, allocations, caches, public APIs, cancellation or retry paths. Existing consumers retain work/cancellation responsibility.",
+    "unchanged": "Matrix decomposition, root projection, color/alpha arithmetic, Gaussian kernels, logical sizing/text layout, references and exactness."
+  },
+  "coverage": {
+    "directNativeCases": 16,
+    "filterCases": 8,
+    "viewCases": 8,
+    "separateClampingAndIntegrityChecks": 2,
+    "freshHealthyProfileCleanedNativeCaptures": 6,
+    "failingBefore": {
+      "selected": 8,
+      "failed": 4,
+      "passed": 4,
+      "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
+      "failure": "Expected premultiplied alpha128; the previous sampler stores127. Actual failed assertions were inspected."
+    },
+    "afterPassed": 18,
+    "renderingFixtureOrApiMatrixProductsAdded": 0
+  },
+  "originalReplay": {
+    "filesPerHost": 204,
+    "renderedPerHost": 148,
+    "sourceSvgFilesRetained": 0,
+    "allPngHashesOutcomesDiagnosticsUnchangedPerHost": true,
+    "exploratoryExactPerHost": 134,
+    "differentPerHost": 14,
+    "unsupportedPerHost": 53,
+    "malformedPerHost": 3,
+    "openOriginals": {
+      "scimitar.svg": {
+        "changedPixels": 6,
+        "totalChannelError": 11
+      },
+      "gallardo.svg": {
+        "changedPixels": 94,
+        "totalChannelError": 123
+      },
+      "ufo.svg": {
+        "changedPixels": 30,
+        "totalChannelError": 63
+      }
+    }
+  },
+  "qualification": {
+    "releaseBuilds": 4,
+    "warnings": 0,
+    "gates": [
+      {
+        "name": "bilinear-tight-core-linux-net10.0",
+        "passed": 15163,
+        "elapsedSeconds": 32.05,
+        "librarySha256": "eec13718f8f00eab116d4556cd5685b02b1f0ba96b04d5370ceb61c9e38472bc"
+      },
+      {
+        "name": "bilinear-tight-core-linux-net11.0",
+        "passed": 15163,
+        "elapsedSeconds": 39.15,
+        "librarySha256": "9afde7eb9c278739238c69fe44f2bb09252bd377b69982e227e98b14d6bc520d"
+      },
+      {
+        "name": "bilinear-tight-core-windows-net10.0",
+        "passed": 15163,
+        "elapsedSeconds": 40.65,
+        "librarySha256": "eec13718f8f00eab116d4556cd5685b02b1f0ba96b04d5370ceb61c9e38472bc"
+      },
+      {
+        "name": "bilinear-tight-core-windows-net11.0",
+        "passed": 15163,
+        "elapsedSeconds": 47.8,
+        "librarySha256": "9afde7eb9c278739238c69fe44f2bb09252bd377b69982e227e98b14d6bc520d"
+      },
+      {
+        "name": "bilinear-tight-native-linux-net10.0",
+        "passed": 10803,
+        "elapsedSeconds": 36.13,
+        "librarySha256": "eec13718f8f00eab116d4556cd5685b02b1f0ba96b04d5370ceb61c9e38472bc"
+      },
+      {
+        "name": "bilinear-tight-native-linux-net11.0",
+        "passed": 39151,
+        "elapsedSeconds": 182.07,
+        "librarySha256": "9afde7eb9c278739238c69fe44f2bb09252bd377b69982e227e98b14d6bc520d"
+      },
+      {
+        "name": "bilinear-tight-native-windows-net10.0",
+        "passed": 10803,
+        "elapsedSeconds": 27.48,
+        "librarySha256": "eec13718f8f00eab116d4556cd5685b02b1f0ba96b04d5370ceb61c9e38472bc"
+      },
+      {
+        "name": "bilinear-tight-native-windows-net11.0",
+        "passed": 39151,
+        "elapsedSeconds": 87.24,
+        "librarySha256": "9afde7eb9c278739238c69fe44f2bb09252bd377b69982e227e98b14d6bc520d"
+      }
+    ],
+    "affectedIntegration": {
+      "corePassed": 1758,
+      "renderingPassed": 1898
+    },
+    "timingScope": "Busy-host functional validation, including runner startup. No quiet-host performance or completed test-suite simplification claim.",
+    "fullNet11RenderingSeconds": {
+      "previousCheckpoint": {
+        "windows": 84.26,
+        "linux": 158.48
+      },
+      "initialConsolidation": {
+        "windows": 212.46,
+        "linux": 244.03
+      },
+      "final": {
+        "windows": 87.24,
+        "linux": 182.07
+      }
+    }
+  }
+}

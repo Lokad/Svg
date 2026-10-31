@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "dataSha256": "06d0b17eefa6bce5b109d7c45af156dd02ea4673d835bd325ff79182671c6634",
+  "script": "../../Research/svgweb/highp-bilinear.js",
+  "scriptSha256": "a29d9e9964624003a9ea5f23e6026239315335512512f6bcf462c9fab2114ae4",
+  "vectorsSha256": "c29eb366caf996f913617b0809ae7e7f9ee13ee098014678ae3361faf7f5c285",
+  "captures": [
+    {
+      "host": "windows",
+      "capture": 0,
+      "vectorsSha256": "c29eb366caf996f913617b0809ae7e7f9ee13ee098014678ae3361faf7f5c285",
+      "startupHealth": "healthy",
+      "profileCleaned": true
+    },
+    {
+      "host": "windows",
+      "capture": 1,
+      "vectorsSha256": "c29eb366caf996f913617b0809ae7e7f9ee13ee098014678ae3361faf7f5c285",
+      "startupHealth": "healthy",
+      "profileCleaned": true
+    },
+    {
+      "host": "windows",
+      "capture": 2,
+      "vectorsSha256": "c29eb366caf996f913617b0809ae7e7f9ee13ee098014678ae3361faf7f5c285",
+      "startupHealth": "healthy",
+      "profileCleaned": true
+    },
+    {
+      "host": "linux",
+      "capture": 0,
+      "vectorsSha256": "c29eb366caf996f913617b0809ae7e7f9ee13ee098014678ae3361faf7f5c285",
+      "startupHealth": "healthy",
+      "profileCleaned": true
+    },
+    {
+      "host": "linux",
+      "capture": 1,
+      "vectorsSha256": "c29eb366caf996f913617b0809ae7e7f9ee13ee098014678ae3361faf7f5c285",
+      "startupHealth": "healthy",
+      "profileCleaned": true
+    },
+    {
+      "host": "linux",
+      "capture": 2,
+      "vectorsSha256": "c29eb366caf996f913617b0809ae7e7f9ee13ee098014678ae3361faf7f5c285",
+      "startupHealth": "healthy",
+      "profileCleaned": true
+    }
+  ],
+  "recipe": "A canvas white texel strip, one or two float predecessors below powers of two, bilinear drawImage with color-dodge over transparent black. The non-lowp blend selects the high-precision raster pipeline; alpha is independent of the blend color. Plain source-over exercises a distinct legacy bitmap path and is not this control.",
+  "nativeSource": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/opts/SkRasterPipeline_opts.h",
+  "sourceSvgFilesRetained": 0,
+  "scope": "Numeric image sampling only; color-dodge selects the oracle pipeline and does not admit SVG color-dodge support."
+}

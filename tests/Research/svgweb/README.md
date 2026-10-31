@@ -163,6 +163,13 @@ rejected. A separate diagnostic exposes three source-alpha discrepancies while
 preserving the original native blur alpha. Mapping, source construction and image
 storage must be resolved together; these observations close no original finding.
 
+The [bilinear review](filter-bilinear-review.json) and its [browser probe](highp-bilinear.js) isolate float weight rounding
+in Chromium's raster pipeline. Its [numeric vectors](../../Lokad.Svg.Tests/TestData/highp-bilinear.json)
+retain six fresh Windows/Linux captures. Filter and clamped image views now share
+the weight/address calculation; wrapped pattern sampling retains its own addressing.
+This closes the sampled-weight inconsistency, while the original filter gaps and
+opposed affine controls remain open.
+
 Group confirmed gaps by mechanism and retain original-to-fixture mappings,
 licenses and failing-before evidence. Reference admission requires three fresh
 healthy captures per platform and exact established comparisons. Recheck all

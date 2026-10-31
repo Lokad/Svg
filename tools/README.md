@@ -27,6 +27,13 @@ discovery. Full unfiltered Windows/Linux tests, resource/font-host probes and
 installed-package checks remain milestone/CI gates. Keep browser captures and
 references unchanged when reorganizing tests.
 
+For the [bilinear numeric probe](../tests/Research/svgweb/highp-bilinear.js),
+evaluate the script with DevTools `Runtime.evaluate` in the pinned browser and
+retain the returned rows. Color-dodge over transparent black selects the floating
+sampling pipeline without changing the observed alpha; ordinary source-over uses
+a different bitmap path. The [capture record](../tests/Lokad.Svg.Tests/TestData/highp-bilinear.json)
+keeps the source/data hashes and both hosts' fresh-process evidence.
+
 ## Generated output and retention
 
 Organize generated data by purpose: pinned tool caches, current qualification,

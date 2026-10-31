@@ -147,18 +147,43 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
     /// transparent borders belong to filter surfaces. The caller checks cancellation during sampling.</remarks>
     internal static SvgShaderPaint SampleAffine(ReadOnlySpan<byte> pixels, int width, int height,
         float x, float y, SvgCpuBitmapOrigin pixelOffset, float opacity)
+        => SampleBilinear(pixels, width, new(0, 0, width, height), x, y, pixelOffset, opacity, true);
+
+    /// <summary>Samples an admitted image view with clamped edges and the parent raster's stride.</summary>
+    /// <remarks>Pixels are borrowed premultiplied RGBA8. Bounds and coordinates are caller-validated;
+    /// sampling owns no storage. The caller owns work accounting and cancellation.</remarks>
+    internal static SvgShaderPaint SampleView(ReadOnlySpan<byte> pixels, int stride, SvgAnalyticClipBounds bounds,
+        float x, float y, float opacity)
+        => SampleBilinear(pixels, stride, bounds, x, y, new(0, 0), opacity, false);
+
+    private static SvgShaderPaint SampleBilinear(ReadOnlySpan<byte> pixels, int stride, SvgAnalyticClipBounds bounds,
+        float x, float y, SvgCpuBitmapOrigin pixelOffset, float opacity, bool transparentBorder)
     {
-        if (x + pixelOffset.X < -1 || y + pixelOffset.Y < -1 || x + pixelOffset.X > width + 1 || y + pixelOffset.Y > height + 1) return default;
+        int width = bounds.Right - bounds.Left, height = bounds.Bottom - bounds.Top;
+        if (transparentBorder && (x + pixelOffset.X < -1 || y + pixelOffset.Y < -1
+            || x + pixelOffset.X > width + 1 || y + pixelOffset.Y > height + 1)) return default;
+        if (!transparentBorder) { x = Math.Clamp(x, -1, width); y = Math.Clamp(y, -1, height); }
+        // Native high-precision gathering computes weights before shifting the
+        // texel addresses. Subtracting .5 first loses a rounding boundary at powers of two.
+        float weightX = x + .5f, weightY = y + .5f;
         float centeredX = x - .5f, centeredY = y - .5f;
         float floorX = MathF.Floor(centeredX), floorY = MathF.Floor(centeredY);
         int ix = (int)floorX + pixelOffset.X, iy = (int)floorY + pixelOffset.Y;
-        return InterpolatePremultiplied(Pixel(pixels, width, height, ix, iy), Pixel(pixels, width, height, ix + 1, iy),
-            Pixel(pixels, width, height, ix, iy + 1), Pixel(pixels, width, height, ix + 1, iy + 1), centeredX - floorX, centeredY - floorY, opacity);
-
-        static SvgConstantShaderPaint Pixel(ReadOnlySpan<byte> data, int width, int height, int x, int y)
+        int right = ix + 1, bottom = iy + 1;
+        if (!transparentBorder)
         {
+            ix = Math.Clamp(ix, 0, width - 1); right = Math.Clamp(right, 0, width - 1);
+            iy = Math.Clamp(iy, 0, height - 1); bottom = Math.Clamp(bottom, 0, height - 1);
+        }
+        return InterpolatePremultiplied(Pixel(pixels, stride, bounds, ix, iy), Pixel(pixels, stride, bounds, right, iy),
+            Pixel(pixels, stride, bounds, ix, bottom), Pixel(pixels, stride, bounds, right, bottom),
+            weightX - MathF.Floor(weightX), weightY - MathF.Floor(weightY), opacity);
+
+        static SvgConstantShaderPaint Pixel(ReadOnlySpan<byte> data, int stride, SvgAnalyticClipBounds bounds, int x, int y)
+        {
+            int width = bounds.Right - bounds.Left, height = bounds.Bottom - bounds.Top;
             if ((uint)x >= (uint)width || (uint)y >= (uint)height) return default;
-            int at = (y * width + x) * 4;
+            int at = ((y + bounds.Top) * stride + x + bounds.Left) * 4;
             return new(data[at], data[at + 1], data[at + 2], data[at + 3]);
         }
     }

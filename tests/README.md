@@ -31,6 +31,10 @@ The [analytic byte-alpha mechanism](Lokad.Svg.Tests/SvgAnalyticAlphaByteTests.cs
 walks a cubic directly; its [native fixture](Fixtures/original/analytic-alpha-byte.svg)
 adds the specific blur/opacity interaction through canonical conversion. Existing
 analytic ownership tests retain scratch admission, growth, cancellation and cleanup.
+The [bilinear mechanisms](Lokad.Svg.Tests/SvgFilterBilinearSamplingTests.cs) keep
+float weight boundaries in 16 direct cases, sharing independently captured native
+vectors across filter and image-view sampling. View clamping and capture integrity
+have separate checks; no rendering fixture or API matrix is multiplied.
 The [clip placement fixture](Fixtures/original/clip-local-placement.svg) protects
 child/reference/device ordering. Referenced quadratic, cubic and arc mechanisms
 assert exact registered controls; one placed arc joins existing ownership coverage.

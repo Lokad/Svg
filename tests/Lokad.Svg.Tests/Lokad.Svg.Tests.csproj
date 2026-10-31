@@ -202,6 +202,8 @@
     <None Update="TestData/raw-convexity-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/svg-number-browser.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/svg-number-browser.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/highp-bilinear.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/highp-bilinear.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/analytic-clipped-pieces.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/analytic-clip-pair-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/analytic-clip-pair-native.json" CopyToOutputDirectory="PreserveNewest" />

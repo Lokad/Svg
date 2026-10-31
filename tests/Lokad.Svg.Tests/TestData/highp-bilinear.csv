@@ -1,0 +1,16 @@
+x,4,1,407fffff,128
+x,4,2,407ffffe,127
+x,8,1,40ffffff,128
+x,8,2,40fffffe,127
+x,16,1,417fffff,128
+x,16,2,417ffffe,127
+x,32,1,41ffffff,128
+x,32,2,41fffffe,127
+y,4,1,407fffff,128
+y,4,2,407ffffe,127
+y,8,1,40ffffff,128
+y,8,2,40fffffe,127
+y,16,1,417fffff,128
+y,16,2,417ffffe,127
+y,32,1,41ffffff,128
+y,32,2,41fffffe,127
