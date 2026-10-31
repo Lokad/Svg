@@ -1,0 +1,435 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "50688862e0845c2dc913935ff6762f1b2af91256",
+  "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3",
+  "scope": "Source bitmap coordinates and dither share one origin across compact content clipping. One Gallardo gradient consumer closes; whole filter/original acceptance remains open.",
+  "implementation": {
+    "context": "../../../src/Lokad.Svg/Rendering/SvgShaderSamplingContext.cs",
+    "converter": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "problem": "Ordinary capture retained the native bitmap origin for dither but moved coordinate preparation to the content clip. Float matrix translation then changed a source gradient byte before linearRGB blur.",
+    "change": "Retain the source image origin for coordinate preparation as well as dither. Converter samplers delegate both queries to their existing sampling context; remove duplicate origin/dither implementations. Gaussian, transfer, alpha arithmetic, endpoints and references are unchanged."
+  },
+  "sourcePlane": {
+    "original": "gallardo.svg",
+    "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "consumer": "path5398",
+    "originalViewport": [
+      1901,
+      1018
+    ],
+    "canvas": [
+      280,
+      118
+    ],
+    "sourceOrigin": [
+      759,
+      802
+    ],
+    "constructionClip": [
+      1,
+      1,
+      279,
+      117
+    ],
+    "contentClip": [
+      14,
+      14,
+      279,
+      104
+    ],
+    "changedSourcePixel": [
+      213,
+      74
+    ],
+    "beforePremultiplied": [
+      53,
+      50,
+      53,
+      165
+    ],
+    "nativePremultiplied": [
+      52,
+      50,
+      53,
+      165
+    ],
+    "alphaChangedPixels": 0,
+    "rgbChangedPixels": 1,
+    "recipe": "Capture the same vector fragment with filter:none and opacity:1 under an outer canvas translated(-759,-802). Preserve its original SVG viewport. Reconstruct premultiplied bytes from the independent native PNG. Bitmap carriers from each source reproduce their corresponding original and opaque vector result exactly. Different source operation contexts alone are not treated as proof of equivalence.",
+    "carrierComparisons": [
+      {
+        "variant": "original",
+        "carrier": "library-source",
+        "variantSourceSha256": "abeebff0edb1ea7fe232355a06763d44707a442ba73fb08ae808e090276d3178",
+        "sourceSvgFilesRetained": 0,
+        "startupHealthy": true,
+        "profileCleaned": true,
+        "nativeVector": {
+          "changedPixels": 2,
+          "maximumError": 5,
+          "totalChannelError": 7
+        },
+        "libraryVector": {
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      },
+      {
+        "variant": "original",
+        "carrier": "native-source",
+        "variantSourceSha256": "c28967b7930e73a082e7c2a07e214577adf42363b035838912f800eac4bdd1fe",
+        "sourceSvgFilesRetained": 0,
+        "startupHealthy": true,
+        "profileCleaned": true,
+        "nativeVector": {
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        },
+        "libraryVector": {
+          "changedPixels": 2,
+          "maximumError": 5,
+          "totalChannelError": 7
+        }
+      },
+      {
+        "variant": "opaque",
+        "carrier": "library-source",
+        "variantSourceSha256": "7fdc9a7fd7cce5245aa978ece590f76e281558ea522de1cb52b762cbcc28bc22",
+        "sourceSvgFilesRetained": 0,
+        "startupHealthy": true,
+        "profileCleaned": true,
+        "nativeVector": {
+          "changedPixels": 2,
+          "maximumError": 3,
+          "totalChannelError": 6
+        },
+        "libraryVector": {
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      },
+      {
+        "variant": "opaque",
+        "carrier": "native-source",
+        "variantSourceSha256": "1c32fa8c7223b9480a675f3877326f260e4db8e9c1c24213d7ddd401d4befa3b",
+        "sourceSvgFilesRetained": 0,
+        "startupHealthy": true,
+        "profileCleaned": true,
+        "nativeVector": {
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        },
+        "libraryVector": {
+          "changedPixels": 2,
+          "maximumError": 3,
+          "totalChannelError": 6
+        }
+      }
+    ]
+  },
+  "canonicalControl": {
+    "fixture": "../../Fixtures/original/filter-source-coordinate-origin.svg",
+    "reference": "../../References/original-filter-source-coordinate-origin.json",
+    "captures": [
+      {
+        "host": "windows",
+        "capture": 1,
+        "sourceSha256": "9678fedca5cfa0ea7037a81037d15f294233a0c38cf751623251ed9b2e3dad42",
+        "nativePngSha256": "2eade1386a441eda671f73a871d8090eda7165e543c340d2c1a6b2f1225fb06c",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "windows",
+        "capture": 2,
+        "sourceSha256": "9678fedca5cfa0ea7037a81037d15f294233a0c38cf751623251ed9b2e3dad42",
+        "nativePngSha256": "2eade1386a441eda671f73a871d8090eda7165e543c340d2c1a6b2f1225fb06c",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "windows",
+        "capture": 3,
+        "sourceSha256": "9678fedca5cfa0ea7037a81037d15f294233a0c38cf751623251ed9b2e3dad42",
+        "nativePngSha256": "2eade1386a441eda671f73a871d8090eda7165e543c340d2c1a6b2f1225fb06c",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "capture": 1,
+        "sourceSha256": "9678fedca5cfa0ea7037a81037d15f294233a0c38cf751623251ed9b2e3dad42",
+        "nativePngSha256": "2eade1386a441eda671f73a871d8090eda7165e543c340d2c1a6b2f1225fb06c",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "capture": 2,
+        "sourceSha256": "9678fedca5cfa0ea7037a81037d15f294233a0c38cf751623251ed9b2e3dad42",
+        "nativePngSha256": "2eade1386a441eda671f73a871d8090eda7165e543c340d2c1a6b2f1225fb06c",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "capture": 3,
+        "sourceSha256": "9678fedca5cfa0ea7037a81037d15f294233a0c38cf751623251ed9b2e3dad42",
+        "nativePngSha256": "2eade1386a441eda671f73a871d8090eda7165e543c340d2c1a6b2f1225fb06c",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ],
+    "comparisons": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "da8e95c329ce83b75f7fb123778438f76d551a8a077a5947a4ef1265b1e01451",
+        "changedPixels": 1,
+        "maximumError": 5,
+        "totalChannelError": 5,
+        "bounds": [
+          982,
+          885,
+          983,
+          886
+        ]
+      },
+      {
+        "host": "windows",
+        "phase": "candidate",
+        "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "bounds": null
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "da8e95c329ce83b75f7fb123778438f76d551a8a077a5947a4ef1265b1e01451",
+        "changedPixels": 1,
+        "maximumError": 5,
+        "totalChannelError": 5,
+        "bounds": [
+          982,
+          885,
+          983,
+          886
+        ]
+      },
+      {
+        "host": "linux",
+        "phase": "candidate",
+        "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "bounds": null
+      }
+    ],
+    "mechanisms": "../../Lokad.Svg.Tests/SvgGradientCoordinateTests.cs",
+    "responsibility": "Two direct source-clip cases assert the independently captured premultiplied gradient byte. One own rectangle through canonical conversion protects the subsequent linearRGB materialization; no additional API or ownership matrix."
+  },
+  "exploratoryTransferCalibration": {
+    "host": "windows",
+    "freshProcessCapturesPerCase": 1,
+    "opaqueValuesPerDirection": 256,
+    "nonzeroAlphaRedPairs": 32895,
+    "mismatches": 0,
+    "scope": "Independent black-alpha output observes conversion bytes, with source reconstruction and sRGB identity controls. This is exploratory calibration, not admission of all native RGB materialization paths or new canonical references. No transfer arithmetic changed."
+  },
+  "originalMapping": {
+    "filterConsumersReplayedPerHost": 35,
+    "changedConsumers": [
+      "path5398"
+    ],
+    "originalAndOpaqueExactBothHosts": true,
+    "other34FilterPngsUnchanged": true,
+    "unfilteredPaintIsolations": 58,
+    "all58PaintPngsUnchanged": true,
+    "remainingFilterConsumers": [
+      {
+        "id": "path3424",
+        "changedPixels": 1,
+        "maximumError": 1,
+        "totalChannelError": 1
+      },
+      {
+        "id": "path5263",
+        "changedPixels": 2,
+        "maximumError": 127,
+        "totalChannelError": 256
+      }
+    ],
+    "closedConsumerCompanions": [
+      {
+        "host": "windows",
+        "variant": "original",
+        "variantSourceSha256": "450b403dc8a43311ad7d629aef2c3bb5aa186a868ab9ed39f468349d126be5d5",
+        "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3",
+        "nativePngSha256": "197717164c78a5c31298a126d9f34482ae760db418edef82c255e51ff264c7fb",
+        "changedPixels": 0
+      },
+      {
+        "host": "linux",
+        "variant": "original",
+        "variantSourceSha256": "450b403dc8a43311ad7d629aef2c3bb5aa186a868ab9ed39f468349d126be5d5",
+        "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3",
+        "nativePngSha256": "197717164c78a5c31298a126d9f34482ae760db418edef82c255e51ff264c7fb",
+        "changedPixels": 0
+      },
+      {
+        "host": "windows",
+        "variant": "opaque",
+        "variantSourceSha256": "66ef09f5802a65c559f57e9cd537039b41f40f0054e87cfca54cbf7b629e33ba",
+        "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3",
+        "nativePngSha256": "6ae7d20bdb5adf355b358c35c53ac09162224bf8e76fa402219e061d81b830ff",
+        "changedPixels": 0
+      },
+      {
+        "host": "linux",
+        "variant": "opaque",
+        "variantSourceSha256": "66ef09f5802a65c559f57e9cd537039b41f40f0054e87cfca54cbf7b629e33ba",
+        "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3",
+        "nativePngSha256": "6ae7d20bdb5adf355b358c35c53ac09162224bf8e76fa402219e061d81b830ff",
+        "changedPixels": 0
+      }
+    ]
+  },
+  "allOriginals": {
+    "filesHashCheckedPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "countsPerHost": {
+      "UnsupportedFeature": 53,
+      "rendered": 148,
+      "exact": 139,
+      "different": 9,
+      "MalformedInput": 3
+    },
+    "previousPngsByteIdenticalPerHost": 147,
+    "changedOriginals": [
+      {
+        "name": "rg1024_green_grapes.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 37,
+          "maximumError": 18,
+          "totalChannelError": 139
+        },
+        "after": {
+          "status": "different",
+          "changedPixels": 36,
+          "maximumError": 18,
+          "totalChannelError": 138
+        }
+      }
+    ],
+    "wholeGallardo": {
+      "status": "different",
+      "changedPixels": 40,
+      "maximumError": 1,
+      "totalChannelError": 46
+    },
+    "outcomesDimensionsAndDiagnosticsUnchanged": true,
+    "lostExactImages": [],
+    "increasedTotalErrors": [],
+    "bothHostsAgreeOnComparisons": true,
+    "seconds": 50.97670580004342,
+    "timingScope": "Functional replay on a busy host, not a performance benchmark or test-suite simplification measurement."
+  },
+  "retainedInteractions": {
+    "affineRadialAndSolidLargeViewBoxCases": 23,
+    "allExact": true,
+    "scimitarInnerControlsExactPerHost": 20,
+    "scimitarScopePngsByteIdentical": 43,
+    "completeShadowDescendants": 35
+  },
+  "remainingAcceptance": "Two affine Gallardo consumers and whole Gallardo/car/green-grapes/UFO acceptance remain. A separate own unfiltered translated-gradient control exposes endpoint flattening before native factory preparation; retain this shared-model follow-up. Supplied-font, resource and static-state W1 contexts remain separate.",
+  "affectedValidation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 9856,
+      "failed": 0,
+      "seconds": 39.31517180008814,
+      "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3"
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 37768,
+      "failed": 0,
+      "seconds": 70.19769839989021,
+      "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 9856,
+      "failed": 0,
+      "seconds": 38.42877240013331,
+      "librarySha256": "03f38c72bf1d2ca209959c547e7b75d581e19183dff1359f631bbddc8fb21685"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 37768,
+      "failed": 0,
+      "seconds": 72.20790839986876,
+      "librarySha256": "03f38c72bf1d2ca209959c547e7b75d581e19183dff1359f631bbddc8fb21685"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 9856,
+      "failed": 0,
+      "seconds": 30.048190080000005,
+      "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 37768,
+      "failed": 0,
+      "seconds": 172.206810655,
+      "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 9856,
+      "failed": 0,
+      "seconds": 23.166595678999954,
+      "librarySha256": "03f38c72bf1d2ca209959c547e7b75d581e19183dff1359f631bbddc8fb21685"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 37768,
+      "failed": 0,
+      "seconds": 95.85966699900001,
+      "librarySha256": "03f38c72bf1d2ca209959c547e7b75d581e19183dff1359f631bbddc8fb21685"
+    }
+  ],
+  "qualificationScope": "Four warning-free test project/framework builds; affected gradient/pattern/image/filter/clip, drawing-map, glyph/text, manifest and canonical reference checks on both hosts/TFMs. An initial fixture admission attempt rejected license placement; the first-byte SPDX requirement was corrected and all affected rendering checks rerun successfully. Full/package qualification stays at the coherent filter milestone."
+}

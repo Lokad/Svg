@@ -18300,6 +18300,30 @@
       "referenceSha256": "fc10e665c9b6a7bd4008a455b30a65e24098807575200a0be1311935db339efc"
     },
     {
+      "id": "original-filter-source-coordinate-origin",
+      "path": "original/filter-source-coordinate-origin.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "9678fedca5cfa0ea7037a81037d15f294233a0c38cf751623251ed9b2e3dad42",
+      "materializedSha256": "9678fedca5cfa0ea7037a81037d15f294233a0c38cf751623251ed9b2e3dad42",
+      "featureTags": [
+        "filter",
+        "gradient",
+        "source-origin"
+      ],
+      "width": 1200,
+      "height": 940,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-source-coordinate-origin.json",
+      "referenceSha256": "2eade1386a441eda671f73a871d8090eda7165e543c340d2c1a6b2f1225fb06c"
+    },
+    {
       "id": "original-filter-parameter-source-enclosure",
       "path": "original/filter-parameter-source-enclosure.svg",
       "sourceUrl": null,

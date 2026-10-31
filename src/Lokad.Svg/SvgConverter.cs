@@ -2169,11 +2169,11 @@ public static partial class SvgConverter
 
         SvgShaderSamplingContext ShaderSamplingContext()
         {
-            SvgCpuBitmapOrigin? dither = surfaceMode == RasterSurfaceMode.PremultipliedFilter
+            SvgCpuBitmapOrigin? source = surfaceMode == RasterSurfaceMode.PremultipliedFilter
                 && frame is { NativeSourceBounds: null, ImageShaderOrigin: {} sourceOrigin } sourceFrame
                 ? new(sourceOrigin.X - sourceFrame.CaptureOrigin.X, sourceOrigin.Y - sourceFrame.CaptureOrigin.Y) : null;
             SvgAffineTransform device = drawingMap.Device;
-            return new(rasterGrid, layerBounds, layerClipCoverage, frame?.NativeSourceBounds, dither,
+            return new(rasterGrid, layerBounds, layerClipCoverage, frame?.NativeSourceBounds, source,
                 sourceInverse, device.A, device.D, device.E, device.F);
         }
 
@@ -2206,36 +2206,13 @@ public static partial class SvgConverter
                 ? raster : bounds;
 
         SvgCpuBitmapOrigin ShaderBitmapOrigin(int x, int y)
-        {
-            if (frame?.NativeSourceBounds is {} native)
-                return new(checked((int)((native.Left - 1) * horizontalScale + horizontalOffset)), checked((int)((native.Top - 1) * verticalScale + verticalOffset)));
-            SvgCpuBitmapOrigin tile = rasterGrid.GetBitmapOrigin(x, y);
-            int left = Math.Max(tile.X, layerBounds.Left), top = Math.Max(tile.Y, layerBounds.Top);
-            if (layerClipCoverage is {} coverage && coverage.TryGetBounds(tile, out SvgAnalyticClipBounds bitmapBounds))
-            {
-                left = Math.Max(left, bitmapBounds.Left);
-                top = Math.Max(top, bitmapBounds.Top);
-            }
-            return new(left, top);
-        }
+            => ShaderSamplingContext().Origin(x, y);
 
         SvgDevicePoint SceneShaderPoint(double x, double y)
             => sourcePlacement == SvgAffineTransform.Identity ? new(x, y) : sourceInverse.Apply(x, y);
 
         int GradientDither(int x, int y)
-        {
-            SvgCpuBitmapOrigin origin = ShaderBitmapOrigin(x, y);
-            // The compact capture may omit the requested image's halo. Dithering
-            // still belongs to the native padded source bitmap used by image paints.
-            if (surfaceMode == RasterSurfaceMode.PremultipliedFilter
-                && frame is { NativeSourceBounds: null, ImageShaderOrigin: {} sourceOrigin } sourceFrame)
-                origin = new(sourceOrigin.X - sourceFrame.CaptureOrigin.X, sourceOrigin.Y - sourceFrame.CaptureOrigin.Y);
-            int localX = x - origin.X, localY = y - origin.Y;
-            int mixedY = localY ^ localX;
-            return ((mixedY & 1) << 5) | ((localX & 1) << 4)
-                | ((mixedY & 2) << 2) | ((localX & 2) << 1)
-                | ((mixedY & 4) >> 1) | ((localX & 4) >> 2);
-        }
+            => ShaderSamplingContext().Dither(x, y);
 
         // Painted output and stored image bounds share graph propagation, with distinct rounding domains.
         SvgPaintBounds FilterResultBounds(SvgFilterBinding binding, SvgFilterResource filter, SvgFilterBoundsKind kind)

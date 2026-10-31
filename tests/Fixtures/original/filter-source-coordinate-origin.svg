@@ -1,0 +1,18 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="940">
+  <!-- A source content clip must not move the shader's bitmap origin. -->
+  <defs>
+    <linearGradient id="g" gradientUnits="userSpaceOnUse"
+        x1="931.52002" y1="872.21838" x2="1079.7725" y2="885.69226">
+      <stop stop-color="#434343"/>
+      <stop offset=".78571427" stop-color="#69606d" stop-opacity="0"/>
+      <stop offset="1" stop-color="#705f78" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="b" x="-.035006558" width="1.0700131"
+        y="-.14665898" height="1.293318">
+      <feGaussianBlur stdDeviation="6.4832538"/>
+    </filter>
+  </defs>
+  <path d="M773.75 816.75h370.5v88.5h-370.5Z"
+      fill="url(#g)" filter="url(#b)" opacity=".75652179"/>
+</svg>

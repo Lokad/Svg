@@ -66,6 +66,10 @@ clip-bound mechanisms and filter ownership cases retain their own responsibiliti
 The [parameter enclosure fixture](Fixtures/original/filter-parameter-source-enclosure.svg)
 isolates source-device placement and gradient dither in sRGB. Direct native hint
 mechanisms protect enclosure before expansion without multiplying rendering contexts.
+The [source-coordinate fixture](Fixtures/original/filter-source-coordinate-origin.svg)
+protects the source bitmap's coordinate seed under a tighter content clip and
+linearRGB blur. Two direct gradient checks retain the independently captured source
+byte under content and raster clips; the fixture uses canonical conversion.
 The [affine-root control](Fixtures/original/filter-affine-root-boundary.svg) and
 its [paired gap control](Fixtures/original/filter-affine-root-gap.svg) retain
 distinct backdrop/capture interactions through canonical conversion. Direct

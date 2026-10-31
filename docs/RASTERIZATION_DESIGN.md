@@ -194,6 +194,8 @@ using that enclosure changes source curve construction before filtering.
 Source construction retains image-hint
 padding independently of captured-content extents and nested filter requests;
 cancellation/refusal restores the enclosing invocation clip.
+Content clips limit painting without moving the source bitmap's shader coordinates
+or dither origin, including when compact capture omits part of its transparent border.
 The bounds query distinguishes deferred paint, padded images and cropped images.
 Cropping invalidates transparent-padding knowledge. Affine restoration uses the
 active clip for edge construction and replays coverage with the sampled paint.

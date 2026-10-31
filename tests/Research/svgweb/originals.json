@@ -10351,9 +10351,9 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "filter-parameter-source-enclosure.json",
-    "sourceBaseline": "d070812b91972da81f194295aa3f57ec9196101b",
-    "librarySha256": "da8e95c329ce83b75f7fb123778438f76d551a8a077a5947a4ef1265b1e01451",
+    "evidence": "filter-source-coordinate-origin.json",
+    "sourceBaseline": "50688862e0845c2dc913935ff6762f1b2af91256",
+    "librarySha256": "fd12c4a99fd2e10805f4acc5531a83812b5641bf8bf2edcbef350cd3f42552d3",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10364,12 +10364,10 @@
       "MalformedInput": 3
     },
     "previousPngsByteIdenticalPerHost": {
-      "windows": 145,
-      "linux": 145
+      "windows": 147,
+      "linux": 147
     },
     "changedOriginals": [
-      "car.svg",
-      "gallardo.svg",
       "rg1024_green_grapes.svg"
     ],
     "newlyExactOriginals": [],
@@ -10428,9 +10426,9 @@
       {
         "name": "rg1024_green_grapes.svg",
         "status": "different",
-        "changedPixels": 37,
+        "changedPixels": 36,
         "maximumError": 18,
-        "totalChannelError": 139
+        "totalChannelError": 138
       },
       {
         "name": "scion.svg",

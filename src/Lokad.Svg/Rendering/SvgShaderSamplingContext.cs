@@ -6,11 +6,14 @@ namespace Lokad.Svg.Rendering;
 /// <remarks>Immutable and allocation-free. Clip metadata belongs to the caller's raster scope;
 /// the context must not outlive it. Callers observe cancellation.</remarks>
 internal readonly record struct SvgShaderSamplingContext(SvgCpuRasterGrid Grid, SvgAnalyticClipBounds Layer,
-    SvgCpuClipCoverage? LayerClip, SvgPaintBounds? NativeSourceBounds, SvgCpuBitmapOrigin? DitherOrigin,
+    SvgCpuClipCoverage? LayerClip, SvgPaintBounds? NativeSourceBounds, SvgCpuBitmapOrigin? SourceImageOrigin,
     SvgAffineTransform SourceInverse, double ScaleX, double ScaleY, double OffsetX, double OffsetY)
 {
     internal SvgCpuBitmapOrigin Origin(int x, int y)
     {
+        // A capture's content clip limits painting without moving its source bitmap.
+        // Coordinate preparation and dithering share that bitmap's original seed.
+        if (SourceImageOrigin is {} source) return source;
         if (NativeSourceBounds is {} native)
             return new(checked((int)((native.Left - 1) * ScaleX + OffsetX)), checked((int)((native.Top - 1) * ScaleY + OffsetY)));
         SvgCpuBitmapOrigin tile = Grid.GetBitmapOrigin(x, y);
@@ -30,7 +33,7 @@ internal readonly record struct SvgShaderSamplingContext(SvgCpuRasterGrid Grid, 
 
     internal int Dither(int x, int y)
     {
-        SvgCpuBitmapOrigin origin = DitherOrigin ?? Origin(x, y);
+        SvgCpuBitmapOrigin origin = Origin(x, y);
         int localX = x - origin.X, localY = y - origin.Y, mixedY = localY ^ localX;
         return ((mixedY & 1) << 5) | ((localX & 1) << 4)
             | ((mixedY & 2) << 2) | ((localX & 2) << 1)

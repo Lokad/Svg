@@ -9,6 +9,30 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGradientCoordinateTests
 {
     [Theory]
+    [InlineData(14, 14, 279, 104)]
+    [InlineData(1, 1, 279, 117)]
+    public void Captured_gradient_coordinates_and_dither_share_the_source_bitmap_origin(int left, int top, int right, int bottom)
+    {
+        SvgGradientStop[] stops = [new(0, new(67, 67, 67, 255)),
+            new(.7857142090797424, new(105, 96, 109, 0)) { Alpha = 0 }, new(1, new(112, 95, 120, 0)) { Alpha = 0 }];
+        SvgLinearGradient gradient = new(stops[0].Color, stops[2].Color, 931.52002, 872.21838, 1079.7725, 885.69226,
+            0, 1, false, true, SvgGradientSpread.Pad, stops, 1, 1, false);
+        SvgShaderSamplingContext context = new(new(280, 118), new(left, top, right, bottom), null, null,
+            new(0, 0), SvgAffineTransform.Identity, 1, 1, -759, -802);
+        SvgShaderCoordinates coordinates = SvgShaderCoordinates.CreateLinear(gradient, default, 1, 1, -759, -802);
+        Assert.Equal(new SvgCpuBitmapOrigin(0, 0), context.Origin(213, 74));
+        Assert.True(coordinates.TryLinear(213, 74, context.Origin(213, 74), out double position));
+        Assert.Equal(59, context.Dither(213, 74));
+        using SvgGradientRamp ramp = SvgGradientRamp.Create(stops, SvgGradientSpread.Pad,
+            new RenderBudget(new HostMemoryBudget(100_000)), CancellationToken.None);
+        byte[] pixel = new byte[4];
+        ramp.SampleAbsolute(position, 1, context.Dither(213, 74)).Blend(pixel, 255);
+        // Independently captured source plane; the canonical blurred rectangle
+        // protects the subsequent linearRGB conversion and materialization.
+        Assert.Equal(new byte[] { 52, 50, 53, 165 }, pixel);
+    }
+
+    [Theory]
     [InlineData("skewX(45)", 5, 2)]
     [InlineData("skewY(45)", 3, 5)]
     public void Gradient_skew_spelling_preserves_the_shared_affine_map(string transform, double x, double y)
