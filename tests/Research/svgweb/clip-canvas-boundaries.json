@@ -1,0 +1,469 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "24bb9e4822baf204b5061c107b47a75d8dbff9f5",
+  "scope": "Path-clip consumer canvas concatenation; whole filter/original acceptance remains open.",
+  "sharedModel": {
+    "implementation": "../../../src/Lokad.Svg/Parsing/SvgCanvasDrawMap.cs",
+    "contract": "The existing immutable three-matrix value is shared by viewports, markers and path-clip consumers. Viewport/marker boundaries retain their local map. A path clip uses an identity boundary: round the complete parent after output placement, then concatenate the relative child in native float order.",
+    "resourcePlacement": "Clip child commands materialize in resource coordinates as qualified separately. Object-box normalization changes resource placement, not the referencing canvas. Retained clip references keep both maps; instances compose both.",
+    "construction": "A clip constructs its own mask using the incoming canvas; its consumer boundary applies to subsequent paints. Enclosures, curve construction/dispatch bounds and coverage remain independent.",
+    "ownership": "No new owner, cache, array or draw-map slot. The existing draw-map value keeps three matrices and clip replay frames keep their size. Retained clip-reference metadata gains one 48-byte transform; each existing parser-operation reservation rises416 to464 bytes. Budgeted value collections charge their actual element size."
+  },
+  "mechanisms": {
+    "test": "../../Lokad.Svg.Tests/SvgClipCanvasTests.cs",
+    "cases": [
+      "Exact parsed parent and native parent/child coefficients",
+      "Object-box resource map independent of referencing canvas"
+    ],
+    "existingContracts": [
+      "Viewport/marker local-boundary rounding, complete-map admission and finite intermediates",
+      "Exact registered quadratic/cubic/conic operands remain unchanged"
+    ]
+  },
+  "ownership": {
+    "test": "../../Lokad.Svg.Tests/SvgCurvedClipSourceTests.cs",
+    "addedCases": 1,
+    "scope": "One translated parent/child clipped curve joins existing parser-memory denials, raster refusal, cancellation, retained-command immutability, cleanup and retry. No rendering-fixture/API product."
+  },
+  "nativeControl": {
+    "fixture": "../../Fixtures/original/clip-canvas-placement.svg",
+    "reference": "../../References/original-clip-canvas-placement.json",
+    "sourceSha256": "87a60f5124716887946e4c652bea5d2f247d61b8cdd2c8a7cd53ec9a7b4c92bc",
+    "referenceSha256": "9a54fdbbe936d8b66eecf7808f454b42fc3814d85d9c76e5c4ba7acc7e0f0df7",
+    "context": "Pinned Chrome153.0.8010.52 / Chromium1681091 / recipe3 / DPR1 / transparent; logical viewport and screenshot both96x96. Exact executable identities are in linked metadata.",
+    "freshHealthyProfileCleanedCapturesPerHost": 3,
+    "allSixPngsAndDecodedPixelsIdentical": true,
+    "platformBeforeAfter": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "6a463bd9ff3579caf26151f9eeadc15437bd37fde64669946fbe396a7994d3ea",
+        "changedPixels": 105,
+        "maximumError": 11,
+        "totalChannelError": 444
+      },
+      {
+        "host": "windows",
+        "phase": "after",
+        "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "6a463bd9ff3579caf26151f9eeadc15437bd37fde64669946fbe396a7994d3ea",
+        "changedPixels": 105,
+        "maximumError": 11,
+        "totalChannelError": 444
+      },
+      {
+        "host": "linux",
+        "phase": "after",
+        "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      }
+    ],
+    "routinePath": "One canonical conversion in the existing fixture-manifest integrity/rendering check; one new admitted source/reference, no additional API matrix."
+  },
+  "retainedInteractions": [
+    {
+      "family": "curved-path-clips",
+      "id": "rotated-group-dome",
+      "targetChanged": false
+    },
+    {
+      "family": "affine-radial-paints",
+      "id": "curved-logo-paint",
+      "targetChanged": false
+    },
+    {
+      "family": "affine-radial-paints",
+      "id": "curved-logo-paint-2400",
+      "targetChanged": false
+    },
+    {
+      "family": "clip-intersections",
+      "id": "group-object-inherited",
+      "targetChanged": false
+    }
+  ],
+  "rejectedPrototypes": [
+    {
+      "model": "Round the resource map as the clip boundary, also during mask construction",
+      "affectedNativeFailuresPerHost": 4,
+      "decision": "Rejected; source construction and referencing canvas have distinct roles."
+    },
+    {
+      "model": "Consumer-only boundary before external output placement",
+      "decision": "Rejected; scaled radial and object-box controls still differ."
+    },
+    {
+      "model": "Consumer-only boundary after output, retaining resource normalization",
+      "decision": "Rejected; inherited object-box control still differs. Preserve the referencing map separately."
+    }
+  ],
+  "hostedTargets": {
+    "mapping": "gallardo-paint-map.csv",
+    "sourceSvgFilesRetained": 0,
+    "target": "gallardo.svg path4218 / clip3833; mask and ordinary paint were already exact. Its clipped solid target differed24 pixels/1,980 error before the shared boundary. Native clipped alpha is not the standalone alpha product at25 positions/max13.",
+    "variantRecipe": "Reuse the paint-map isolation recipe after removing35 filter:url styles without changing other original bytes. For path4120/path4122/path4218 compare unclipped, solid-clipped and solid-unclipped variants with their previously independent native captures. Hosted SVG payloads stay bounded in RAM and are discarded.",
+    "variantReplay": {
+      "host": "windows",
+      "originalNativeFreshProcessesPerVariant": 1,
+      "newNativeCapturesThisReplay": 0,
+      "qualification": "Exploratory interaction mapping, separate from six-process admission of the own control.",
+      "results": [
+        {
+          "id": "path4120",
+          "variant": "unclipped",
+          "variantSourceSha256": "1fafa3291125fa8584351dd05f9e376d6b0c5c3b0d67806769d57a3bed9b8272",
+          "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "totalChannelError": 0,
+          "bounds": null,
+          "nativeFreshProcessesThisReplay": 0,
+          "referenceFreshProcessCaptures": 1,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sourceSvgFilesRetained": 0
+        },
+        {
+          "id": "path4120",
+          "variant": "solid-clipped",
+          "variantSourceSha256": "7d3ca213c0b8ba2fe848333b384c63adf870d8d69fbc616afe2c622eb1c9a636",
+          "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "totalChannelError": 0,
+          "bounds": null,
+          "nativeFreshProcessesThisReplay": 0,
+          "referenceFreshProcessCaptures": 1,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sourceSvgFilesRetained": 0
+        },
+        {
+          "id": "path4120",
+          "variant": "solid-unclipped",
+          "variantSourceSha256": "d46ab6e3bbf4388046ee23a369513231b5211146390b0dc3d320d2dbcff93e4e",
+          "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "totalChannelError": 0,
+          "bounds": null,
+          "nativeFreshProcessesThisReplay": 0,
+          "referenceFreshProcessCaptures": 1,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sourceSvgFilesRetained": 0
+        },
+        {
+          "id": "path4122",
+          "variant": "unclipped",
+          "variantSourceSha256": "063bd8a70178166ca926db207edbaaa9a6f0e6071304a42fb296a3695d420613",
+          "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "totalChannelError": 0,
+          "bounds": null,
+          "nativeFreshProcessesThisReplay": 0,
+          "referenceFreshProcessCaptures": 1,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sourceSvgFilesRetained": 0
+        },
+        {
+          "id": "path4122",
+          "variant": "solid-clipped",
+          "variantSourceSha256": "5b1e850f6c99e60b305be6bb5af255ecf83eb96f364e4dfbb10d7b128fa25990",
+          "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "totalChannelError": 0,
+          "bounds": null,
+          "nativeFreshProcessesThisReplay": 0,
+          "referenceFreshProcessCaptures": 1,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sourceSvgFilesRetained": 0
+        },
+        {
+          "id": "path4122",
+          "variant": "solid-unclipped",
+          "variantSourceSha256": "b9e1fba7ae0df29c2253bd20a18fff5e21ca698f66b94c67746022f1416ba75f",
+          "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "totalChannelError": 0,
+          "bounds": null,
+          "nativeFreshProcessesThisReplay": 0,
+          "referenceFreshProcessCaptures": 1,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sourceSvgFilesRetained": 0
+        },
+        {
+          "id": "path4218",
+          "variant": "unclipped",
+          "variantSourceSha256": "0ca8e6ac7b7a48be0f20b99841512ae6829dfcb14417596725eaf55cfe2e9403",
+          "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "totalChannelError": 0,
+          "bounds": null,
+          "nativeFreshProcessesThisReplay": 0,
+          "referenceFreshProcessCaptures": 1,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sourceSvgFilesRetained": 0
+        },
+        {
+          "id": "path4218",
+          "variant": "solid-clipped",
+          "variantSourceSha256": "a132b6d219c208af5834074b98992424f942c654e67034facf5f675e29d7ef8b",
+          "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "totalChannelError": 0,
+          "bounds": null,
+          "nativeFreshProcessesThisReplay": 0,
+          "referenceFreshProcessCaptures": 1,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sourceSvgFilesRetained": 0
+        },
+        {
+          "id": "path4218",
+          "variant": "solid-unclipped",
+          "variantSourceSha256": "55e203677ebf94660aa8e2663dc2d971b4f4eca7bc1f53e4ba461f7468b579dd",
+          "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "totalChannelError": 0,
+          "bounds": null,
+          "nativeFreshProcessesThisReplay": 0,
+          "referenceFreshProcessCaptures": 1,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "sourceSvgFilesRetained": 0
+        }
+      ]
+    },
+    "unfilteredGallardo": [
+      {
+        "host": "windows",
+        "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+        "variantSourceSha256": "35247df120a07ff8075bb6d79e75cc23c65940e3702f3aa0bab159820e9e533c",
+        "removedFilters": 35,
+        "nativeFreshProcessesThisReplay": 0,
+        "referenceFreshProcessCaptures": 1,
+        "nativeStartupHealth": "healthy",
+        "nativeProfilesCleaned": true,
+        "sourceSvgFilesRetained": 0,
+        "results": {
+          "before": {
+            "changedPixels": 48,
+            "maximumError": 7,
+            "totalChannelError": 101,
+            "librarySha256": "6a463bd9ff3579caf26151f9eeadc15437bd37fde64669946fbe396a7994d3ea"
+          },
+          "after": {
+            "changedPixels": 36,
+            "maximumError": 1,
+            "totalChannelError": 38,
+            "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8"
+          }
+        }
+      },
+      {
+        "host": "linux",
+        "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+        "variantSourceSha256": "35247df120a07ff8075bb6d79e75cc23c65940e3702f3aa0bab159820e9e533c",
+        "removedFilters": 35,
+        "nativeFreshProcessesThisReplay": 0,
+        "referenceFreshProcessCaptures": 1,
+        "nativeStartupHealth": "healthy",
+        "nativeProfilesCleaned": true,
+        "sourceSvgFilesRetained": 0,
+        "results": {
+          "before": {
+            "changedPixels": 48,
+            "maximumError": 7,
+            "totalChannelError": 101,
+            "librarySha256": "6a463bd9ff3579caf26151f9eeadc15437bd37fde64669946fbe396a7994d3ea"
+          },
+          "after": {
+            "changedPixels": 36,
+            "maximumError": 1,
+            "totalChannelError": 38,
+            "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8"
+          }
+        }
+      }
+    ]
+  },
+  "allOriginals": {
+    "sourceHashesRecheckedPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "countsPerHost": {
+      "rendered": 148,
+      "exploratoryExact": 134,
+      "different": 14,
+      "UnsupportedFeature": 53,
+      "MalformedInput": 3
+    },
+    "audit": {
+      "windows": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 147,
+        "changed": [
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 106,
+              "maximumError": 18,
+              "totalChannelError": 186
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 94,
+              "maximumError": 18,
+              "totalChannelError": 123
+            }
+          }
+        ],
+        "changedOutcomesOrDiagnostics": [],
+        "increasedErrors": [],
+        "lostExacts": []
+      },
+      "linux": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 147,
+        "changed": [
+          {
+            "name": "gallardo.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 106,
+              "maximumError": 18,
+              "totalChannelError": 186
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 94,
+              "maximumError": 18,
+              "totalChannelError": 123
+            }
+          }
+        ],
+        "changedOutcomesOrDiagnostics": [],
+        "increasedErrors": [],
+        "lostExacts": []
+      }
+    },
+    "qualification": "Default contexts reuse independent original native captures; exact exploratory comparisons do not close font/resource/static-state or other platform acceptance gates."
+  },
+  "validation": {
+    "build": "Release, both test projects/TFMs; zero warnings/errors.",
+    "gates": [
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Full routine core",
+        "passed": 32917,
+        "failed": 0,
+        "seconds": 70.54076469992287,
+        "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8"
+      },
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Full routine native",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 95.17291809991002,
+        "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected core",
+        "passed": 6200,
+        "failed": 0,
+        "seconds": 25.38646399998106,
+        "librarySha256": "bee3d8f87a0e361dcc1cfc5cb37109e7087792e80229a3721ec7718d26bda16f"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected native",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 31.08224939997308,
+        "librarySha256": "bee3d8f87a0e361dcc1cfc5cb37109e7087792e80229a3721ec7718d26bda16f"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Full routine core",
+        "passed": 32917,
+        "failed": 0,
+        "seconds": 62.286071744,
+        "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Full routine native",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 173.428047519,
+        "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected core",
+        "passed": 6200,
+        "failed": 0,
+        "seconds": 18.66763663399999,
+        "librarySha256": "bee3d8f87a0e361dcc1cfc5cb37109e7087792e80229a3721ec7718d26bda16f"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected native",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 44.10531052900001,
+        "librarySha256": "bee3d8f87a0e361dcc1cfc5cb37109e7087792e80229a3721ec7718d26bda16f"
+      }
+    ],
+    "timing": "Busy-host functional elapsed times only; no performance conclusion.",
+    "existingReferencePngsChanged": 0,
+    "newAdmittedFixtures": 1,
+    "newMechanismCases": 2,
+    "newRepresentativeOwnershipCases": 1
+  },
+  "remainingAcceptance": [
+    "Resolve full Gallardo94 pixels/123 total channel error and Scimitar221/1,216, including remaining filter/paint interactions.",
+    "Keep all204 originals accounted for, complete supplied-font/resource/static-state gates and map in-scope gaps to orthogonal own fixtures.",
+    "Complete filter crop, flood/offset and shadow acceptance; these qualified clip stages do not close the entire filter milestone."
+  ]
+}

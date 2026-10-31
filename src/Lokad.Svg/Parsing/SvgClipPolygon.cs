@@ -60,8 +60,10 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
     /// <summary>Registers either one resolved native path or ordered native mask-source replay.</summary>
     /// <remarks>Child ranges borrow document staging. Geometry/command copies belong to a sealed vector
     /// scene adopted by the parent; no staging owner escapes parsing. All material storage reserves,
-    /// copy/replay visits observe cancellation token, and failures release partial builders and geometry.</remarks>
-    internal SvgClipRegistration Register(SvgAffineTransform map, bool replaySource, SvgDocumentState state,
+    /// copy/replay visits observe cancellation token, and failures release partial builders and geometry.
+    /// Map places resource coordinates; canvasMap places the referencing element before its children.
+    /// Object-box normalization belongs only to the resource map.</remarks>
+    internal SvgClipRegistration Register(SvgAffineTransform map, SvgAffineTransform canvasMap, bool replaySource, SvgDocumentState state,
         SvgSceneBuilder scene, CancellationToken token)
     {
         if (!UsesMaskFallback)
@@ -74,7 +76,8 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
                     .Register(state, scene, token));
             return WithoutEnclosure(SvgAffineViewportClip.RegisterContour(Points, ContourEnds, map,
                 IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath,
-                replaySource ? SourcePath : null, ResourceBounds, IsEvenOdd, state, scene, token));
+                replaySource ? SourcePath : null, ResourceBounds, IsEvenOdd, state, scene, token,
+                IsOval ? null : new SvgCanvasDrawMap(canvasMap, SvgAffineTransform.Identity, canvasMap)));
         }
         SvgClipChildRange range = Children ?? throw new InvalidOperationException("Clip fallback requires original child sources.");
         BudgetedParserList<SvgClipChild> children = state.ClipChildren ?? throw new InvalidOperationException("Clip child sources are missing.");

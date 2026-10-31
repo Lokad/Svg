@@ -9,7 +9,7 @@ namespace Lokad.Svg.Parsing;
 internal sealed class SvgNativeCanvasStage
 {
     // Includes the node header, reservation token and scene owner-list entry.
-    internal static long RetainedStorageBytes => 64L + Unsafe.SizeOf<SvgViewportDrawMap>();
-    internal SvgNativeCanvasStage(SvgViewportDrawMap map) { Map = map; }
-    internal SvgViewportDrawMap Map { get; }
+    internal static long RetainedStorageBytes => 64L + Unsafe.SizeOf<SvgCanvasDrawMap>();
+    internal SvgNativeCanvasStage(SvgCanvasDrawMap map) { Map = map; }
+    internal SvgCanvasDrawMap Map { get; }
 }

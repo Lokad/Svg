@@ -80,6 +80,7 @@ sampling/blend semantics.
 | Logical viewport/viewBox | Own percentage bases and layout; output density does not resize them. |
 | Root image layout/projection | Keep CSS subpixel layout, natural image normalization and uniform external output scaling in separate maps. Its image boundary is independent of raster allocation. |
 | Source/instance map | Preserve authored placement and resource inheritance; local aliases exclude source ancestors. Clip children materialize into resource coordinates before reference placement and device mapping. |
+| Canvas boundary | Retain parent rounding before child concatenation. A clip's resource normalization does not transform its consumer; mask construction uses the incoming canvas. |
 | Object box | Measures pre-clip geometry/layout for normalized paints/resources. |
 | Visual/drawing enclosure | Includes painted stroke/effect extents and source-space enclosure before placement. |
 | Construction/dispatch bounds | Decide edge admission and raster route independently of clipped storage. |
@@ -90,6 +91,10 @@ drawing bounds use native integer saturation/culling; resource pictures keep loc
 visual bounds. Culled drawings retain inert anchors when ancestor effects can
 generate pixels from transparent input. Markers share a scene-owned canvas stage
 across contours and paints, independently of viewport clipping.
+Viewports, markers and path-clip consumers share the immutable
+[canvas map](../src/Lokad.Svg/Parsing/SvgCanvasDrawMap.cs). Path clips round the
+parent after output placement, then concatenate the relative child map. Their
+resource map remains separate, including object-box normalization.
 Leaf polygon clips bind native clip coverage while retaining source contours and
 shader coordinates; they do not geometrically intersect flattened paint vertices.
 An unpainted fill retained for a clipped stroke does not require curve source

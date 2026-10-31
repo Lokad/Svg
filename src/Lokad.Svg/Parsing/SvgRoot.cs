@@ -1215,7 +1215,7 @@ internal sealed class SvgSceneBuilder : IDisposable
     /// <summary>Reserves a shared immutable native canvas stage before publishing it to paints and references.</summary>
     /// <remarks>The scene owns this conversion-thread reservation through transfer, failure and disposal.
     /// Callers borrow the immutable stage; completed device maps retain admission and raster cancellation.</remarks>
-    internal SvgNativeCanvasStage RetainNativeCanvasStage(SvgViewportDrawMap map)
+    internal SvgNativeCanvasStage RetainNativeCanvasStage(SvgCanvasDrawMap map)
     {
         _cancellationToken.ThrowIfCancellationRequested();
         RenderBudget.BudgetReservation reservation = _budget.Reserve(SvgNativeCanvasStage.RetainedStorageBytes, SvgMemoryCategory.Scene);

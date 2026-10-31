@@ -67,7 +67,7 @@ internal static class SvgLeafMaskAssertions
         Assert.Equal((sourceViewport.X, sourceViewport.Y, sourceViewport.Width, sourceViewport.Height),
             (bounds.X, bounds.Y, bounds.Width, bounds.Height));
         Assert.Equal(map, path.SceneMap);
-        Assert.Equal(path.SceneMap, Assert.IsType<SvgViewportDrawMap>(content.DrawMap).Source);
+        Assert.Equal(path.SceneMap, Assert.IsType<SvgCanvasDrawMap>(content.DrawMap).Source);
         Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), root.Commands[start + 1]);
         Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), root.Commands[start + 2]);
         Assert.Null(Assert.Single(root.Geometries).LeafMask);

@@ -128,8 +128,12 @@ materialization from reference/device mapping. Exact curve-operand mechanisms,
 one representative ownership case and a placed-arc native platform triple protect
 the stage. The [280-leaf paint map](gallardo-paint-map.csv) retains the broader
 investigation; its58 native isolations remain exploratory. Gallardo improves to
-106 differing pixels, with147 other rendered PNGs unchanged per host. Its distinct
-cubic clipped-target discrepancy remains open.
+106 differing pixels, with147 other rendered PNGs unchanged per host.
+The [canvas boundary record](clip-canvas-boundaries.json) resolves the distinct
+cubic clipped-target interaction by separating mask construction from consumer
+concatenation. The own native control is exact on both platforms; scaled radial
+and object-box regressions retain their existing targets. Gallardo now differs
+at94 pixels/123 total channel error; the whole filter/original milestone stays open.
 
 Group confirmed gaps by mechanism and retain original-to-fixture mappings,
 licenses and failing-before evidence. Reference admission requires three fresh

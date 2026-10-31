@@ -18248,6 +18248,31 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-clip-local-placement.json",
       "referenceSha256": "70a68b17a10a1fe03d163ba470a8784bcc5d50474a8c20fc9a548ef562df9e1a"
+    },
+    {
+      "id": "original-clip-canvas-placement",
+      "path": "original/clip-canvas-placement.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "87a60f5124716887946e4c652bea5d2f247d61b8cdd2c8a7cd53ec9a7b4c92bc",
+      "materializedSha256": "87a60f5124716887946e4c652bea5d2f247d61b8cdd2c8a7cd53ec9a7b4c92bc",
+      "featureTags": [
+        "clip",
+        "arc",
+        "transform",
+        "rounding"
+      ],
+      "width": 96,
+      "height": 96,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-clip-canvas-placement.json",
+      "referenceSha256": "9a54fdbbe936d8b66eecf7808f454b42fc3814d85d9c76e5c4ba7acc7e0f0df7"
     }
   ]
 }

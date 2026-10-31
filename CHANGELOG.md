@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve parent/child canvas concatenation across path clips, keeping resource
+  normalization separate from the referencing transform and clip construction.
 - Materialize clip-child transforms before reference and device placement,
   retaining curve controls, conic arcs and independent clip enclosures.
 - Keep analytic coverage intermediates as byte alpha before additive accumulation,

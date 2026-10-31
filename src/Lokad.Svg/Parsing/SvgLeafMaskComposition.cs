@@ -6,7 +6,10 @@ internal readonly record struct SvgLeafMaskOwner(IDisposable Owner);
 internal readonly record struct SvgLeafMaskOperationReference(SvgLeafMaskOperation Operation);
 internal readonly record struct SvgLeafMaskBindingReference(SvgLeafMaskBinding Binding);
 internal readonly record struct SvgFilterClipScope(int Depth, SvgLeafMaskBinding Binding);
-internal readonly record struct SvgNativeClipReference(string Id, SvgAffineTransform Map);
+/// <summary>Borrows a clip resource id and retains resource placement separately from its referencing canvas.</summary>
+/// <remarks>Object-box normalization changes Map only. Instance transfer composes both maps;
+/// immutable values own no buffers, and their containing parser metadata accounts for storage.</remarks>
+internal readonly record struct SvgNativeClipReference(string Id, SvgAffineTransform Map, SvgAffineTransform CanvasMap);
 /// <summary>Borrows a mask id and pre-placement target bounds until an instance registers content in its final scene.</summary>
 internal readonly record struct SvgRetainedMask(string Id, SvgAffineTransform Map, SvgClipBox ObjectBounds, SvgPaintBounds LocalVisualBounds)
 {
@@ -232,8 +235,9 @@ internal static class SvgLeafMaskComposition
     /// <summary>Reserves and registers an operation before returning a borrowed reference; registry teardown releases partial work.</summary>
     internal static SvgLeafMaskOperation NewOperation(SvgDocumentState state, SvgLeafMaskOperation? source, SvgAffineTransform map)
     {
-        // Aggregate allowance includes retained resource/target metadata and its scalar coverage.
-        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(416, SvgMemoryCategory.Parser);
+        // Aggregate allowance includes retained resource/target metadata and its scalar coverage,
+        // including 48 bytes for the clip's separate referencing canvas transform.
+        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(464, SvgMemoryCategory.Parser);
         try
         {
             SvgLeafMaskOperation operation = new(reservation, source, map);
@@ -433,7 +437,7 @@ internal static class SvgLeafMaskComposition
                     if (source.Filter is {} filter)
                         mapped.Filter = new(filter.Binding with { Transform = mapped.Map.ComposeChecked(filter.Binding.Transform) });
                     if (source.NativeClip is {} native)
-                        mapped.NativeClip = native with { Map = mapped.Map.ComposeChecked(native.Map) };
+                        mapped.NativeClip = native with { Map = mapped.Map.ComposeChecked(native.Map), CanvasMap = mapped.Map.ComposeChecked(native.CanvasMap) };
                     if (source.NativeMask is {} mask)
                         mapped.NativeMask = mask with { Map = mapped.Map.ComposeChecked(mask.Map) };
                     if (source.AffineViewport is {} affine)
@@ -441,7 +445,7 @@ internal static class SvgLeafMaskComposition
                         {
                             Map = mapped.Map.ComposeChecked(affine.Map),
                             DrawMap = affine.DrawMap is {} drawMap
-                                ? new(mapped.Map.Compose(drawMap.Parent), drawMap.ViewBox, mapped.Map.ComposeChecked(drawMap.Source)) : null
+                                ? new(mapped.Map.Compose(drawMap.Parent), drawMap.Boundary, mapped.Map.ComposeChecked(drawMap.Source)) : null
                         };
                     else if (source.RegionKind is (SvgLayerRegionKind.Viewport or SvgLayerRegionKind.FilterOutputClip) && !mapped.Map.IsAxisAligned && source.Region is SvgClipBox viewport)
                     {
@@ -465,7 +469,7 @@ internal static class SvgLeafMaskComposition
                         (_, operation.ContentIndex) = SvgClipPathSyntax.RegisterNestedResourceMask(nativeClip.Id, content, nativeClip.Map, scene, state, token);
                         operation.Region = null;
                     }
-                    else content.Register(nativeClip.Map, content.UsesNativeReplay, state, scene, token).Bind(operation, state);
+                    else content.Register(nativeClip.Map, nativeClip.CanvasMap, content.UsesNativeReplay, state, scene, token).Bind(operation, state);
                 }
                 if (operation.NativeMask is {} nativeMask && operation.ContentIndex < 0)
                 {

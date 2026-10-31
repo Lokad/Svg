@@ -274,7 +274,7 @@ public static partial class SvgConverter
     /// <remarks>Conversion-thread state only. An isolated group can clear the pixel tape while retaining
     /// the allocation enclosure. Finish every borrower before releasing the frame's coverage and reservation.</remarks>
     private record struct ViewportClipState(byte[] Pixels, bool IsBinary, bool IsRectangle,
-        SvgAnalyticClipBounds? Bounds, SvgCpuClipCoverage? Coverage, SvgViewportDrawMap? DrawMap, SvgClipBox? Rectangle)
+        SvgAnalyticClipBounds? Bounds, SvgCpuClipCoverage? Coverage, SvgCanvasDrawMap? DrawMap, SvgClipBox? Rectangle)
     {
         internal bool HasMask => Pixels.Length != 0 || Rectangle is not null;
         internal SvgRasterClipMask Mask => Rectangle is {} rectangle ? new(rectangle) : new(Pixels);
@@ -2974,7 +2974,11 @@ public static partial class SvgConverter
             maskLuminanceLayer = content.UsesAffineTarget && !content.IsAlpha;
             SvgAnalyticClipBounds previousLayer = layerBounds;
             SvgRoot previousRoot = root;
-            activeViewport.DrawMap = viewport ? content.DrawMap ?? previousViewport.DrawMap : null;
+            // A path clip establishes a concatenation boundary for subsequent
+            // paints. Construct its own mask using the incoming canvas instead.
+            activeViewport.DrawMap = !viewport ? null
+                : content.ClipKind == SvgClipContentKind.ClipPath ? previousViewport.DrawMap
+                : content.DrawMap ?? previousViewport.DrawMap;
             double previousScaleX = horizontalScale, previousScaleY = verticalScale, previousOffsetX = horizontalOffset, previousOffsetY = verticalOffset;
             SvgAffineTransform maskMap = content.CoordinateMap;
             if (!maskMap.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned mask replay maps are implemented.");
@@ -3149,7 +3153,7 @@ public static partial class SvgConverter
             if (!reusablePattern || patternTileCache is {} retained && !retained.MatchesSource(geometry.Pattern)) ReleasePatternTile();
             SvgRecordedPaintValue previousPaint = activePaint;
             SvgRecordedPaintValue previousStroke = activeStrokePaint;
-            SvgViewportDrawMap? previousDrawMap = activeViewport.DrawMap;
+            SvgCanvasDrawMap? previousDrawMap = activeViewport.DrawMap;
             activePaint = GetRecordedPaintValue(geometry.RecordedPaint);
             activeStrokePaint = GetRecordedPaintValue(geometry.RecordedStrokePaint);
             activeViewport.DrawMap = activePaint.DrawMap?.Map ?? activeViewport.DrawMap;

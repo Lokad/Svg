@@ -34,6 +34,11 @@ analytic ownership tests retain scratch admission, growth, cancellation and clea
 The [clip placement fixture](Fixtures/original/clip-local-placement.svg) protects
 child/reference/device ordering. Referenced quadratic, cubic and arc mechanisms
 assert exact registered controls; one placed arc joins existing ownership coverage.
+The [canvas mechanism](Lokad.Svg.Tests/SvgClipCanvasTests.cs) separates clip-resource
+and referencing maps, including object-box normalization. Its
+[native fixture](Fixtures/original/clip-canvas-placement.svg) protects a rounded
+parent before child concatenation; existing scaled radial, inherited clip and
+rotated dome references protect the contexts where collapsing those roles fails.
 
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;

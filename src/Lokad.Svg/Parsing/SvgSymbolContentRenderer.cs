@@ -77,7 +77,7 @@ internal static class SvgSymbolContentRenderer
                     // once when restoring the group; children retain only their local clips.
                     if (compositionClip is not null) child = child with { Clip = null };
                     stack.Add(new(contents, contents.Start, child, output.Count, opacity, node.Style.ClipId is not null || child.Transform != frame.Context.Transform ? state.NewRecordingScope() : frame.Scope, compositionClip, null, null)
-                        { Filter = filter, ResourceClip = node.Style.ClipId is {} clipId ? new(clipId, child.Transform) : null });
+                        { Filter = filter, ResourceClip = node.Style.ClipId is {} clipId ? new(clipId, child.Transform, child.Transform) : null });
                     continue;
                 }
                 if (node.Kind == SvgSymbolContentKind.Unsupported) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Styled group use instances with text, images, viewports, clips or masks are not implemented.");
@@ -101,10 +101,11 @@ internal static class SvgSymbolContentRenderer
                 {
                     ValidateRenderedGroup(target);
                     Context child = Place(target, use, ClipFrame(frame.Context.Clip), displayed, visible, out SvgAffineViewportClip? nestedClip);
-                    SvgRetainedFilter? filter = child.Displayed ? SvgRetainedFilter.Create(use.Filter, SvgReferenceResolver.PlainInstancePlacement(use, null), use.LengthBases, state) : null;
+                    SvgAffineTransform placement = SvgReferenceResolver.PlainInstancePlacement(use, null);
+                    SvgRetainedFilter? filter = child.Displayed ? SvgRetainedFilter.Create(use.Filter, placement, use.LengthBases, state) : null;
                     if (filter is not null) state.FilterGroupDepth++;
                     stack.Add(new(range, range.Start, child, output.Count, useOpacity, use.RecordingScope, null, nestedClip, node.Reference.SourceMaskReference)
-                        { Filter = filter, MaskMap = SvgReferenceResolver.PlainInstancePlacement(use, null), ResourceClip = node.Style.ClipId is {} clipId ? new(clipId, SvgReferenceResolver.PlainInstancePlacement(use, null)) : null });
+                        { Filter = filter, MaskMap = placement, ResourceClip = node.Style.ClipId is {} clipId ? new(clipId, placement, placement) : null });
                 }
                 else
                 {

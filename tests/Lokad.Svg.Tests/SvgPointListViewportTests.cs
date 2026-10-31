@@ -31,7 +31,7 @@ public sealed class SvgPointListViewportTests
             SvgAffineTransform.Identity, 255, true, null, null, null);
         SvgAffineViewportClip clip = SvgReferenceResolver.SymbolViewport(box, reference, null);
         Assert.Equal(new SvgAffineTransform(1.3125, 0, 0, 0.875, -22020089.1875, 1), clip.Map);
-        SvgViewportDrawMap stage = Assert.IsType<SvgViewportDrawMap>(clip.DrawMap);
+        SvgCanvasDrawMap stage = Assert.IsType<SvgCanvasDrawMap>(clip.DrawMap);
         Assert.Equal(clip.Map, stage.Source);
         SvgAffineTransform device = stage.Prepare(SvgAffineTransform.Identity, clip.Map);
         Assert.Equal(new SvgAffineTransform(1.3125, 0, 0, 0.875, -22020088, 1), device);
@@ -48,7 +48,7 @@ public sealed class SvgPointListViewportTests
         SvgUseReference reference = new("s", 2, 1, 28, 28, SvgAffineTransform.Identity,
             SvgAffineTransform.Identity, 255, true, null, null, null);
         SvgAffineViewportClip clip = SvgReferenceResolver.SymbolViewport(box, reference, null);
-        SvgViewportDrawMap stage = Assert.IsType<SvgViewportDrawMap>(clip.DrawMap);
+        SvgCanvasDrawMap stage = Assert.IsType<SvgCanvasDrawMap>(clip.DrawMap);
         SvgAffineTransform actual = stage.Prepare(SvgAffineTransform.FromScale(outputScale, outputScale), clip.Map);
         Assert.Equal(new SvgAffineTransform(expectedScale, 0, 0, expectedScale, expectedX, expectedY), actual);
     }
@@ -71,7 +71,7 @@ public sealed class SvgPointListViewportTests
     public void Finite_intermediate_maps_can_exceed_the_complete_map_admission_range(double placement, double outputScale)
     {
         SvgAffineTransform source = SvgAffineTransform.FromScale(placement, placement);
-        SvgViewportDrawMap stage = new(SvgAffineTransform.FromScale(placement * 1_000_000_000, placement * 1_000_000_000),
+        SvgCanvasDrawMap stage = new(SvgAffineTransform.FromScale(placement * 1_000_000_000, placement * 1_000_000_000),
             SvgAffineTransform.FromScale(0.000000001, 0.000000001), source);
         Assert.Equal(SvgAffineTransform.FromScale(3, 3), stage.Prepare(SvgAffineTransform.FromScale(outputScale, outputScale), source));
     }
@@ -81,7 +81,7 @@ public sealed class SvgPointListViewportTests
     public void Complete_viewport_draw_maps_keep_the_existing_range_limit()
     {
         SvgAffineTransform source = SvgAffineTransform.FromScale(1_000_000_000, 1_000_000_000);
-        SvgViewportDrawMap stage = new(source, SvgAffineTransform.Identity, source);
+        SvgCanvasDrawMap stage = new(source, SvgAffineTransform.Identity, source);
         Assert.Equal(SvgErrorCode.UnsupportedFeature,
             Assert.Throws<SvgException>(() => stage.Prepare(SvgAffineTransform.FromScale(3, 3), source)).ErrorCode);
     }

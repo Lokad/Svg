@@ -16,7 +16,7 @@ public sealed class SvgMarkerCanvasTests
         SvgAffineTransform pose = SvgAffineTransform.FromTranslation(x, 4);
         SvgAffineTransform source = parent.Compose(pose);
         Assert.Equal(sceneX, source.E);
-        SvgViewportDrawMap draw = new(parent, pose, source);
+        SvgCanvasDrawMap draw = new(parent, pose, source);
         Assert.Equal(new SvgAffineTransform(1.5, 0, 0, 1, deviceX, 4), draw.Prepare(SvgAffineTransform.Identity, source));
     }
 
@@ -28,7 +28,7 @@ public sealed class SvgMarkerCanvasTests
         SvgAffineTransform pose = SvgAffineTransform.FromTranslation(16777215, 4);
         SvgAffineTransform source = instance.Compose(local.ComposeNative(pose));
         Assert.Equal(6, source.E);
-        SvgViewportDrawMap draw = new(instance.Compose(local), pose, source);
+        SvgCanvasDrawMap draw = new(instance.Compose(local), pose, source);
         Assert.Equal(new SvgAffineTransform(1.5, 0, 0, 1, 4, 4.25), draw.Prepare(SvgAffineTransform.Identity, source));
     }
 
@@ -42,7 +42,7 @@ public sealed class SvgMarkerCanvasTests
             SvgAuthoredPath source = Assert.Single(root.Geometries).AuthoredPath ?? throw new InvalidOperationException();
             using SvgAuthoredPath copied = source.Copy(SvgAffineTransform.FromScale(1e20, 1e20), budget, CancellationToken.None);
             Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
-                new SvgViewportDrawMap(copied.SceneMap, SvgAffineTransform.Identity, copied.SceneMap)
+                new SvgCanvasDrawMap(copied.SceneMap, SvgAffineTransform.Identity, copied.SceneMap)
                     .Prepare(SvgAffineTransform.Identity, copied.SceneMap)).ErrorCode);
             using SvgPreparedPathContours restored = copied.Prepare(SvgAffineTransform.FromScale(1e-20, 1e-20), false, budget, CancellationToken.None);
             Assert.Contains(new SvgDevicePoint(2, 0), restored.Points);

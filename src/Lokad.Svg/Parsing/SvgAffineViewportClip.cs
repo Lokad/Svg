@@ -10,7 +10,7 @@ internal enum SvgClipContentKind { AffineViewport, ClipPath, OvalClipPath, Binar
 internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineTransform Map)
 {
     internal bool IsBinary { get; init; }
-    internal SvgViewportDrawMap? DrawMap { get; init; }
+    internal SvgCanvasDrawMap? DrawMap { get; init; }
     internal bool IsExclusion { get; init; }
     /// <summary>Borrows disjoint rectangular exclusions until the parser emits one bounded compound clip.</summary>
     internal ReadOnlyMemory<SvgClipBox> ExcludedBoxes { get; init; }
@@ -48,7 +48,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
         => RegisterContour(source, sourceEnds, map, kind, sourcePath, resourceBounds, isEvenOdd, state, scene, token, null);
 
     internal static (SvgClipBox Bounds, int ContentIndex) RegisterContour(ReadOnlySpan<SvgDevicePoint> source, ReadOnlySpan<int> sourceEnds,
-        SvgAffineTransform map, SvgClipContentKind kind, SvgAuthoredPath? sourcePath, SvgPaintBounds? resourceBounds, bool isEvenOdd, SvgDocumentState state, SvgSceneBuilder scene, CancellationToken token, SvgViewportDrawMap? drawMap)
+        SvgAffineTransform map, SvgClipContentKind kind, SvgAuthoredPath? sourcePath, SvgPaintBounds? resourceBounds, bool isEvenOdd, SvgDocumentState state, SvgSceneBuilder scene, CancellationToken token, SvgCanvasDrawMap? drawMap)
     {
         if (source.Length < 3) throw new ArgumentOutOfRangeException(nameof(source));
         if (sourceEnds.IsEmpty || sourceEnds[^1] != source.Length) throw new ArgumentOutOfRangeException(nameof(sourceEnds));

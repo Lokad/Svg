@@ -96,7 +96,7 @@ internal static class SvgClipPathSyntax
             token.ThrowIfCancellationRequested();
             if (IsDisabled(currentId, state)) break;
             if (!seen.TryAdd(currentId, 0)) throw new SvgException(SvgErrorCode.MalformedInput, "Cyclic clip-path references are not valid.");
-            chain.Add(new(currentId, currentMap));
+            chain.Add(new(currentId, currentMap, currentMap));
             if (!state.ClipPolygons.TryGetValue(currentId, out SvgClipPolygon content) || content.NestedClipId is not {} nestedId) break;
             if (content.IsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box clips on retained resource geometry are not implemented.");
             currentMap = currentMap.ComposeChecked(content.SourcePath?.SceneMap ?? SvgAffineTransform.Identity);
@@ -132,7 +132,7 @@ internal static class SvgClipPathSyntax
                 if (content.Points.Length == 0) operation.Value = 0;
                 else
                 {
-                    operation.NativeClip = new(id, map);
+                    operation.NativeClip = new(id, map, map);
                     operation.Value = 255;
                     operation.RegionKind = SvgLayerRegionKind.AffineViewport;
                 }
@@ -184,7 +184,7 @@ internal static class SvgClipPathSyntax
     {
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Resolved = true; operation.Value = 255;
-        operation.NativeClip = new(id, map); operation.RegionKind = SvgLayerRegionKind.Mask;
+        operation.NativeClip = new(id, map, map); operation.RegionKind = SvgLayerRegionKind.Mask;
         return operation;
     }
 
@@ -318,7 +318,7 @@ internal static class SvgClipPathSyntax
                             (SvgClipBox nestedBounds, int nestedIndex) = RegisterNestedResourceMask(pending.ClipId, clipPolygon, map, state.Scene, state, cancellationToken);
                             registration = new(nestedBounds, nestedIndex, -1);
                         }
-                        else registration = clipPolygon.Register(map, clipPolygon.UsesNativeReplay, state, state.Scene, cancellationToken);
+                        else registration = clipPolygon.Register(map, map, clipPolygon.UsesNativeReplay, state, state.Scene, cancellationToken);
                         SvgClipBox bounds = registration.Bounds;
                         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                         operation.Resolved = true;
@@ -367,7 +367,7 @@ internal static class SvgClipPathSyntax
         double margin = 2 / state.OutputMagnification;
         using SvgSceneBuilder builder = new(state.Budget, token);
         SvgLeafMaskOperation contour = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
-        contour.Resolved = true; contour.Value = 255; contour.NativeClip = new(id, map);
+        contour.Resolved = true; contour.Value = 255; contour.NativeClip = new(id, map, map);
         contour.RegionKind = SvgLayerRegionKind.AffineViewport;
         SvgLeafMaskBinding binding = SvgLeafMaskComposition.NewBinding(state, contour, null);
         string nestedId = polygon.NestedClipId ?? throw new InvalidOperationException("Nested clip replay requires a child clip.");
@@ -499,7 +499,7 @@ internal static class SvgClipPathSyntax
                         (SvgClipBox nestedBounds, int nestedIndex) = RegisterNestedResourceMask(pending.ClipId, polygon, map, state.Scene, state, cancellationToken);
                         registration = new(nestedBounds, nestedIndex, -1);
                     }
-                    else registration = polygon.Register(map, polygon.UsesNativeReplay, state, state.Scene, cancellationToken);
+                    else registration = polygon.Register(map, map, polygon.UsesNativeReplay, state, state.Scene, cancellationToken);
                     SvgClipBox bounds = registration.Bounds;
                     SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                     operation.Resolved = true;

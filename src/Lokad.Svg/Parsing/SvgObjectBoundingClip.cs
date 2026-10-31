@@ -120,13 +120,13 @@ internal struct SvgObjectBoundingClip
         SvgAffineTransform map = _map.ComposeChecked(SvgAffineTransform.FromScaleOffset(_right - _left, _bottom - _top, _left, _top));
         if (nativeId is not null)
         {
-            operation.NativeClip = new(nativeId, map);
+            operation.NativeClip = new(nativeId, map, _map);
             operation.Value = 255;
             operation.RegionKind = SvgLayerRegionKind.AffineViewport;
             return operation;
         }
         operation.Value = 255;
-        content.Register(map, true, state, state.Scene, token).Bind(operation, state);
+        content.Register(map, _map, true, state, state.Scene, token).Bind(operation, state);
         return operation;
     }
 }
