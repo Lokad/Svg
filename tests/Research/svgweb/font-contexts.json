@@ -1824,5 +1824,9 @@
     "Three private Arial contexts fail an outer GPOS type-9 extension with ignore-marks flags. Its inner operation is an already admitted type-2 format-2 pair table (X advance only), not contextual positioning. Review shared bounded lookup normalization before adding font or run exceptions.",
     "Four configured generic-serif contexts are exploratory exact; generic alias policy does not qualify native ambient fonts or the default no-font original.",
     "Every full original remains open for all font/resource/static-state contexts. Single exploratory supplied-program captures are not reference admission."
-  ]
+  ],
+  "followUp": {
+    "evidence": "shared-font-model.json",
+    "scope": "GPOS extension and SFVTPV gates are resolved. Three original Arial-only footer comparisons had unmatched generic-family programs; retain them as historical exploratory observations. The explicit two-family follow-up provides current scoped outcomes."
+  }
 }

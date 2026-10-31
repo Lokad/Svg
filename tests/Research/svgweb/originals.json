@@ -10644,6 +10644,7 @@
     "newlyExactOriginals": [],
     "lostExactImages": [],
     "remainingDefaultDifferences": [],
-    "fontContexts": "font-contexts.json"
+    "fontContexts": "font-contexts.json",
+    "sharedFontModel": "shared-font-model.json"
   }
 }

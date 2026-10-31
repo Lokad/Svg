@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Resolve GPOS extension payloads consistently through validation and kerning;
+  execute the TrueType freedom-from-projection instruction without changing other state.
 - Respect unitless font sizes in SVG inline styles while preserving stylesheet
   length admission, inherited/span styles and prepared font requests.
 - Share foreign-description traversal and pattern declaration locations across

@@ -46,7 +46,7 @@ current inventory above governs overall status.
 
 | Responsibility | Evidence and retained contracts |
 | --- | --- |
-| Font declarations and supplied programs | [Font contexts](font-contexts.json). Inline SVG font sizes and stylesheet CSS lengths keep distinct admission. Exact source-outline transports, generic alias policy and private Arial runs remain separately scoped; small residual glyph differences and contextual positioning stay open. |
+| Font declarations and supplied programs | [Font contexts](font-contexts.json), [shared program model](shared-font-model.json). Inline SVG sizes retain their source context; GPOS extensions share payload resolution and valid freedom-copy hints preserve VM state. Initial generic families need explicit matching alongside named faces. Remaining glyph and root text-screen stages stay open. |
 | Structural traversal | [Shared metadata and pattern locations](shared-traversal.json). Keep recognized foreign descriptions inert through preparation/lowering, preserve the first rejection context, and align rendered-group pattern registration with content selection. Mechanisms, one prepared-font contract and independent root/group/metadata fixtures protect distinct roles. |
 | Root image layout and placement | [Root model](root-image-model.json), [projection stages](root-image-projection.json), [image boundary](root-image-boundary.json). Logical sizing, subpixel layout, recorded scene and destination coefficients stay distinct. Direct matrices and large viewBox controls protect stages that small images cannot distinguish. |
 | Root experiments | [Viewport review](root-viewport-review.json), [stage review](root-image-stages.json). Preserve rejected output-only stretching and context distinctions. |

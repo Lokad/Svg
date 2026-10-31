@@ -1,0 +1,83 @@
+{
+  "input": "extension.svg",
+  "inputSha256": "dcc00164db6e20e4ded8b1eb654ce8c94448c24aeea5c14bbb5ca825ce9def9d",
+  "font": "fonts/GposExtension.ttf",
+  "fontSha256": "fca8b3b989c007c2271052b811fc52cb5b9263e1c7eac227a69b53fee66dfb02",
+  "scope": "One canonical rendering path; GPOS extension routing and a valid freedom-copy hint share one program. Mechanisms separately pin offsets, lookup/filter semantics and VM state. Original CC0 geometry and existing references are unchanged.",
+  "platforms": {
+    "windows": {
+      "reference": "references/windows/extension.png",
+      "referenceSha256": "bceb93dee4b59945e9af40cce6ca93cdbeb9e093b8778d604827ab0547f3e323",
+      "captures": [
+        {
+          "host": "windows",
+          "index": 1,
+          "programSha256": "fca8b3b989c007c2271052b811fc52cb5b9263e1c7eac227a69b53fee66dfb02",
+          "nativeSourceSha256": "280f94bcea86d72239c799e137fa25e052819a1dea1594728381985a6d002449",
+          "pngSha256": "bceb93dee4b59945e9af40cce6ca93cdbeb9e093b8778d604827ab0547f3e323",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "host": "windows",
+          "index": 2,
+          "programSha256": "fca8b3b989c007c2271052b811fc52cb5b9263e1c7eac227a69b53fee66dfb02",
+          "nativeSourceSha256": "280f94bcea86d72239c799e137fa25e052819a1dea1594728381985a6d002449",
+          "pngSha256": "bceb93dee4b59945e9af40cce6ca93cdbeb9e093b8778d604827ab0547f3e323",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "host": "windows",
+          "index": 3,
+          "programSha256": "fca8b3b989c007c2271052b811fc52cb5b9263e1c7eac227a69b53fee66dfb02",
+          "nativeSourceSha256": "280f94bcea86d72239c799e137fa25e052819a1dea1594728381985a6d002449",
+          "pngSha256": "bceb93dee4b59945e9af40cce6ca93cdbeb9e093b8778d604827ab0547f3e323",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "unadjustedProgramChangedPixels": 1576
+    },
+    "linux": {
+      "reference": "references/linux/extension.png",
+      "referenceSha256": "ef13b5d45d8b0142112585fc733681792086ff46115b98dd5b5e2580e2bc4b22",
+      "captures": [
+        {
+          "host": "linux",
+          "index": 1,
+          "programSha256": "fca8b3b989c007c2271052b811fc52cb5b9263e1c7eac227a69b53fee66dfb02",
+          "nativeSourceSha256": "280f94bcea86d72239c799e137fa25e052819a1dea1594728381985a6d002449",
+          "pngSha256": "ef13b5d45d8b0142112585fc733681792086ff46115b98dd5b5e2580e2bc4b22",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "host": "linux",
+          "index": 2,
+          "programSha256": "fca8b3b989c007c2271052b811fc52cb5b9263e1c7eac227a69b53fee66dfb02",
+          "nativeSourceSha256": "280f94bcea86d72239c799e137fa25e052819a1dea1594728381985a6d002449",
+          "pngSha256": "ef13b5d45d8b0142112585fc733681792086ff46115b98dd5b5e2580e2bc4b22",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "host": "linux",
+          "index": 3,
+          "programSha256": "fca8b3b989c007c2271052b811fc52cb5b9263e1c7eac227a69b53fee66dfb02",
+          "nativeSourceSha256": "280f94bcea86d72239c799e137fa25e052819a1dea1594728381985a6d002449",
+          "pngSha256": "ef13b5d45d8b0142112585fc733681792086ff46115b98dd5b5e2580e2bc4b22",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "unadjustedProgramChangedPixels": 1104
+    }
+  }
+}

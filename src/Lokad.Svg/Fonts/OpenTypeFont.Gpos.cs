@@ -44,12 +44,12 @@ internal static partial class OpenTypeFont
         var graph = new OpenTypeGposPairTable(table, feature, lookups, 0, 0);
         while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, cancellationToken))
         {
-            int type = ReadUInt16(data, lookup);
             int flags = ReadUInt16(data, lookup + 2);
             int count = ReadUInt16(data, lookup + 4);
             if (count > MaximumKernSubtables) throw new SvgException(SvgErrorCode.LimitExceeded, "The GPOS kern subtable count exceeds the admitted limit.");
             RequireTableRange(table, lookup, 6 + count * 2 + ((flags & 16) != 0 ? 2 : 0), "GPOS lookup");
             if ((flags & 0xE0) != 0) throw InvalidFont("The GPOS lookup flags contain reserved bits.");
+            int type = GetGposLookupType(data, table, lookup);
             // RIGHT_TO_LEFT belongs to cursive attachment, not pair positioning
             // or the existing contextual admission guard.
             if ((flags & 0xFF1E) != 0)
@@ -97,7 +97,9 @@ internal static partial class OpenTypeFont
             for (int index = 0; index < count; index++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                int subtable = GetTableOffset(table, lookup, ReadUInt16(data, lookup + 6 + index * 2), 4, "GPOS subtable");
+                GposSubtable resolved = ReadGposSubtable(data, table, lookup, index);
+                if (resolved.Type != type) throw InvalidFont("GPOS extension subtables must have the same lookup type.");
+                int subtable = resolved.Offset;
                 if (type == 2)
                 {
                     ValidatePairSubtable(data, table, subtable, glyphCount, cancellationToken);
@@ -167,12 +169,12 @@ internal static partial class OpenTypeFont
         int previous = -1;
         while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, token))
         {
-            if (ReadUInt16(data, lookup) == 2) continue;
+            if (GetGposLookupType(data, graph.Range, lookup) == 2) continue;
             int count = ReadUInt16(data, lookup + 4);
             for (int index = 0; index < count; index++)
             {
                 token.ThrowIfCancellationRequested();
-                int subtable = GetTableOffset(graph.Range, lookup, ReadUInt16(data, lookup + 6 + index * 2), 4, "GPOS subtable");
+                int subtable = ReadGposSubtable(data, graph.Range, lookup, index).Offset;
                 int coverage = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 2), 4, "OpenType coverage");
                 if (GetGlyphCoverageIndex(data, coverage, glyph, token) >= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The glyph requires unsupported contextual GPOS positioning.");
             }
@@ -190,7 +192,7 @@ internal static partial class OpenTypeFont
         int previous = -1;
         while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, cancellationToken))
         {
-            if (ReadUInt16(data, lookup) != 2) continue;
+            if (GetGposLookupType(data, graph.Range, lookup) != 2) continue;
             int flags = ReadUInt16(data, lookup + 2);
             if (IsPairGlyphIgnored(data, graph, leftGlyphIndex, flags, cancellationToken)
                 || IsPairGlyphIgnored(data, graph, rightGlyphIndex, flags, cancellationToken)) continue;
@@ -213,7 +215,7 @@ internal static partial class OpenTypeFont
         int adjustment = 0, previous = -1;
         while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, token))
         {
-            if (ReadUInt16(data, lookup) != 2) continue;
+            if (GetGposLookupType(data, graph.Range, lookup) != 2) continue;
             int flags = ReadUInt16(data, lookup + 2);
             if (IsPairGlyphIgnored(data, graph, left, flags, token)) continue;
             int next = 1;
@@ -244,7 +246,7 @@ internal static partial class OpenTypeFont
         for (int index = 0; index < count; index++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            int subtable = GetTableOffset(graph.Range, lookup, ReadUInt16(data, lookup + 6 + index * 2), 10, "GPOS PairPos");
+            int subtable = ReadGposSubtable(data, graph.Range, lookup, index).Offset;
             int coverage = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 2), 4, "OpenType coverage");
             int covered = GetGlyphCoverageIndex(data, coverage, leftGlyphIndex, cancellationToken);
             if (covered < 0) continue;
@@ -270,6 +272,31 @@ internal static partial class OpenTypeFont
             return ReadInt16(data, pairs + 4 + low * 4);
         }
         return 0;
+    }
+
+    private readonly record struct GposSubtable(ushort Type, int Offset);
+
+    /// <summary>Reads the effective kind without allocating or changing borrowed font bytes.
+    /// Admission validates that every extension in a lookup has that same kind.</summary>
+    private static ushort GetGposLookupType(ReadOnlySpan<byte> data, OpenTypeTableRange table, int lookup)
+        => ReadUInt16(data, lookup) == 9 && ReadUInt16(data, lookup + 4) != 0
+            ? ReadGposSubtable(data, table, lookup, 0).Type : ReadUInt16(data, lookup);
+
+    /// <summary>Resolves one direct or format-1 extension payload within its containing GPOS table.
+    /// Lookup flags/order remain on the outer lookup; the payload owns no storage.
+    /// Callers observe cancellation for every bounded subtable traversal.</summary>
+    private static GposSubtable ReadGposSubtable(ReadOnlySpan<byte> data, OpenTypeTableRange table, int lookup, int index)
+    {
+        ushort type = ReadUInt16(data, lookup);
+        int offset = GetTableOffset(table, lookup, ReadUInt16(data, lookup + 6 + index * 2), 4, "GPOS subtable");
+        if (type != 9) return new(type, offset);
+        RequireTableRange(table, offset, 8, "GPOS extension header");
+        if (ReadUInt16(data, offset) != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only format-1 GPOS extensions are supported.");
+        type = ReadUInt16(data, offset + 2);
+        if (type is 0 or >= 9) throw InvalidFont("A GPOS extension must reference a non-extension positioning type.");
+        uint relative = ReadUInt32(data, offset + 4);
+        if (relative < 8 || relative > int.MaxValue - offset) throw InvalidFont("The GPOS extension offset is outside its payload range.");
+        return new(type, GetTableOffset(table, offset, (int)relative, 4, "GPOS extension payload"));
     }
 
     // Feature lookup indices are a set; execution order comes from the LookupList.

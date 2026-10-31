@@ -7,6 +7,39 @@ namespace Lokad.Svg.VisualTests;
 
 public sealed class SvgKerningPrecedenceTests
 {
+    [Fact]
+    [Trait("Layer", "Rendering")]
+    public async Task Extension_payload_and_freedom_copy_match_the_canonical_native_document()
+    {
+        string directory = Path.Combine(ResearchCorpus.Root, "kerning-flags");
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "extension.json")));
+        JsonElement recipe = manifest.RootElement;
+        byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(recipe, "input")));
+        Assert.Equal(Required(recipe, "inputSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
+        byte[] program = File.ReadAllBytes(Path.Combine(directory, "fonts/GposExtension.ttf"));
+        Assert.Equal(Required(recipe, "fontSha256"), Convert.ToHexStringLower(SHA256.HashData(program)));
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "font-pack.json")), "public-kerning-flags");
+        FontProvider provider = new(directory);
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+        Assert.Single(fonts.Fonts);
+        Assert.Equal("fonts/GposExtension.ttf", Assert.Single(provider.Acquisitions));
+        byte[] actual = SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts), CancellationToken.None).ToArray();
+        JsonElement platform = recipe.GetProperty("platforms").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux");
+        byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(platform, "reference")));
+        string digest = Convert.ToHexStringLower(SHA256.HashData(reference));
+        Assert.Equal(Required(platform, "referenceSha256"), digest);
+        Assert.Equal(3, platform.GetProperty("captures").GetArrayLength());
+        foreach (JsonElement capture in platform.GetProperty("captures").EnumerateArray())
+        {
+            Assert.Equal(digest, Required(capture, "pngSha256"));
+            Assert.Equal("healthy", Required(capture, "startupHealth"));
+            Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
+        }
+        const int pixels = 208 * 64;
+        Assert.True(platform.GetProperty("unadjustedProgramChangedPixels").GetInt32() > 0);
+        Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, pixels), PngRgbaDecoder.Decode(actual, pixels)).IsExact);
+    }
+
     [Theory]
     [InlineData("kerning-precedence", "public-kerning-precedence", 4)]
     [InlineData("kerning-flags", "public-kerning-flags", 7)]

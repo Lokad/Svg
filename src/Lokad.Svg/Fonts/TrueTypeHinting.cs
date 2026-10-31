@@ -299,6 +299,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     break;
                 }
                 case 0x0C: Push(_projection.X); Push(_projection.Y); break;
+                case 0x0E: _freedom = _projection; break;
                 case 0x0F:
                 {
                     // ISECT uses current points in three independent zones and

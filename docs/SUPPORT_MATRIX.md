@@ -355,7 +355,9 @@ metrics, while positive spacingAndGlyphs scales it.
 
 Pair positioning chooses default Latin before DFLT. Selected GPOS kerning,
 including zero adjustments, supersedes legacy kern; required legacy kern permits
-one horizontal format-0 subtable. Type-2 pairs admit RIGHT_TO_LEFT, IgnoreBaseGlyphs
+one horizontal format-0 subtable. Format-1 type-9 extensions preserve the supported
+inner lookup's behavior, outer flags and execution order; recursive/mixed-type
+extensions reject. Type-2 pairs admit RIGHT_TO_LEFT, IgnoreBaseGlyphs
 and IgnoreLigatures with validated GDEF. IgnoreMarks, mark attachment and format-1
 filter sets admit non-mark runs; actual mark positioning rejects. Other reserved
 flags/types/formats and invalid metadata reject.

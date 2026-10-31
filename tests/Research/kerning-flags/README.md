@@ -30,3 +30,13 @@ actual GDEF-mark runs keep an explicit unsupported outcome. Metadata admission
 does not implement mark positioning, filtered contextual lookups or general
 shaping. The original Aptos/Calibri compatibility reports remain separately
 pending; these public fonts qualify shared mechanisms only.
+
+The separate [extension control](extension.svg) uses a CC0 derivative of GposMarks
+with unchanged glyph geometry, type-9 GPOS wrappers and a valid `SFVTPV` hint.
+Its [capture record](extension.json) keeps three fresh healthy captures per host
+and an independent zero-kerning program control. One canonical conversion protects
+rendering; direct mechanisms cover offsets, flags/order, zero matches, contextual/
+mark exclusions and hint state. One prepared contract covers acquisition and replay.
+Existing fonts and reference images are unchanged. The
+[reproduction procedure](../../../tools/README.md#font-program-controls) rebuilds
+the new program from the committed CC0 source; no private font is needed.

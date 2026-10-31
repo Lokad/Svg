@@ -260,6 +260,23 @@ explicitly. The [projection controls](../tests/Research/svgweb/root-image-projec
 include owned inputs and exact observed coefficients; their larger white page is
 a numerical diagnostic, separate from canonical rendering-reference admission.
 
+## Font program controls
+
+The CC0 [extension fixture](../tests/Research/kerning-flags/README.md) derives from
+the committed GposMarks program. With development-only `fontTools==4.66.1`, rebuild
+it into a new output file:
+
+```powershell
+python -B tests/Research/kerning-flags/derive-extension.py --output artifacts/research/GposExtension.ttf
+```
+
+The producer verifies the source hash and unchanged glyph geometry. Compare its
+reported program hash with [the capture record](../tests/Research/kerning-flags/extension.json).
+Reference capture remains independent and requires fresh healthy platform triples.
+For original font comparisons, match initial generic-family selections as well as
+authored named families; the library's legacy last resort and browser ambient serif
+can select different programs. Preserve both input hashes and catalog bindings.
+
 ## Smoke checks and CI evidence
 
 The memory probe supplies a host budget with `--memory-budget-bytes`; it does not

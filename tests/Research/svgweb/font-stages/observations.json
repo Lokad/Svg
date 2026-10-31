@@ -1,0 +1,228 @@
+{
+  "scope": "Three newly composed CC0 source graphs, with exploratory native observations only. No reference admission, routine expected failure, private font or hosted SVG payload. Keep source cases distinct even when their native PNGs share storage.",
+  "font": {
+    "program": "../../kerning-flags/fonts/GposMarks.ttf",
+    "sha256": "3ddd4f153cb98d19992a33869a2c3eadcb22c1c6c671f8c8d474685b23f92051",
+    "catalog": "../../kerning-flags/font-pack.json",
+    "packId": "public-kerning-flags",
+    "license": "../../kerning-flags/LICENSE.txt"
+  },
+  "libraryCall": "SvgConverter.ConvertToPng(originalOwnSourceBytes, default options with the supplied GposMarks snapshot, cancellation)",
+  "nativeRecipe": {
+    "width": 300,
+    "height": 150,
+    "viewport": "Image document at its declared dimensions, DPR 1, transparent.",
+    "fontMaterialization": "Replace final </svg> with <style>@font-face{font-family:GposMarks;src:url(data:font/ttf;base64,PROGRAM)}</style></svg>, using unchanged committed program bytes and unbroken base64.",
+    "freshCapturesPerHostCase": 1,
+    "admission": "Three healthy/profile-cleaned fresh captures per host/case are required before promotion to routine references."
+  },
+  "candidateLibrarySha256": "376671e90a5cd8fa8a80e0688fcbaaae548ea40a2cfe5172dc995b9552082329",
+  "cases": [
+    {
+      "id": "flattened",
+      "source": "flattened.svg",
+      "sourceSha256": "8a817c0682e8ef6a4f52cb658c6fa73ea4886400a1db178aee429b378f7d3ad0",
+      "observations": [
+        {
+          "id": "flattened",
+          "host": "windows",
+          "sourceSha256": "8a817c0682e8ef6a4f52cb658c6fa73ea4886400a1db178aee429b378f7d3ad0",
+          "nativeSourceSha256": "8c268d8e76d81c5c3dbdb0096a56435f2c09d1e8e4ba2023ebdf3e6754424f17",
+          "programSha256": "3ddd4f153cb98d19992a33869a2c3eadcb22c1c6c671f8c8d474685b23f92051",
+          "nativePngSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+          "libraryPngSha256": "196a10ea3d0b9dd490ab00de7dbfc3e3104f287c1d58b7a7e9e2fc51e9b05c6e",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "differenceBounds": null,
+          "libraryAlphaBounds": [
+            81,
+            115,
+            107,
+            122
+          ],
+          "nativeAlphaBounds": [
+            81,
+            115,
+            107,
+            122
+          ],
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "nativeObservation": "observations/11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3.png"
+        },
+        {
+          "id": "flattened",
+          "host": "linux",
+          "sourceSha256": "8a817c0682e8ef6a4f52cb658c6fa73ea4886400a1db178aee429b378f7d3ad0",
+          "nativeSourceSha256": "8c268d8e76d81c5c3dbdb0096a56435f2c09d1e8e4ba2023ebdf3e6754424f17",
+          "programSha256": "3ddd4f153cb98d19992a33869a2c3eadcb22c1c6c671f8c8d474685b23f92051",
+          "nativePngSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+          "libraryPngSha256": "039aab6fbfafb896ed961e6c536942ad364fbf4aba68f96e4c5f9cf80192fd4b",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "differenceBounds": null,
+          "libraryAlphaBounds": [
+            82,
+            114,
+            107,
+            122
+          ],
+          "nativeAlphaBounds": [
+            82,
+            114,
+            107,
+            122
+          ],
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "nativeObservation": "observations/ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8.png"
+        }
+      ]
+    },
+    {
+      "id": "root-product",
+      "source": "root-product.svg",
+      "sourceSha256": "6e0919ec482ae08c0919da3f998b78a46b749d9fda60fc86453340cebdb58540",
+      "observations": [
+        {
+          "id": "root-product",
+          "host": "windows",
+          "sourceSha256": "6e0919ec482ae08c0919da3f998b78a46b749d9fda60fc86453340cebdb58540",
+          "nativeSourceSha256": "c7be3bfce284b6ac12c6197d7ee3a52f296ea732854dc80fbefc9a6965d657c0",
+          "programSha256": "3ddd4f153cb98d19992a33869a2c3eadcb22c1c6c671f8c8d474685b23f92051",
+          "nativePngSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+          "libraryPngSha256": "61df6f48d814f9170ffcf21e345d909ba87aec2891705b0d8944e989aac07fc8",
+          "changedPixels": 108,
+          "maximumError": 255,
+          "differenceBounds": [
+            81,
+            114,
+            107,
+            122
+          ],
+          "libraryAlphaBounds": [
+            81,
+            114,
+            107,
+            121
+          ],
+          "nativeAlphaBounds": [
+            81,
+            115,
+            107,
+            122
+          ],
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "nativeObservation": "observations/11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3.png"
+        },
+        {
+          "id": "root-product",
+          "host": "linux",
+          "sourceSha256": "6e0919ec482ae08c0919da3f998b78a46b749d9fda60fc86453340cebdb58540",
+          "nativeSourceSha256": "c7be3bfce284b6ac12c6197d7ee3a52f296ea732854dc80fbefc9a6965d657c0",
+          "programSha256": "3ddd4f153cb98d19992a33869a2c3eadcb22c1c6c671f8c8d474685b23f92051",
+          "nativePngSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+          "libraryPngSha256": "067bd04329d4a582bf391cc93edc08e0b10af39e85dd4b9ef0b40e141ca43ab0",
+          "changedPixels": 100,
+          "maximumError": 255,
+          "differenceBounds": [
+            82,
+            113,
+            107,
+            122
+          ],
+          "libraryAlphaBounds": [
+            82,
+            113,
+            107,
+            121
+          ],
+          "nativeAlphaBounds": [
+            82,
+            114,
+            107,
+            122
+          ],
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "nativeObservation": "observations/ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8.png"
+        }
+      ]
+    },
+    {
+      "id": "group-product",
+      "source": "group-product.svg",
+      "sourceSha256": "47cda5512290748d9d3d5e93165b0c352023997c52aacf6d125839004d488c38",
+      "observations": [
+        {
+          "id": "group-product",
+          "host": "windows",
+          "sourceSha256": "47cda5512290748d9d3d5e93165b0c352023997c52aacf6d125839004d488c38",
+          "nativeSourceSha256": "544e62cc88114baf55b107340855e417d171889a8d1d2ef3647d795165bdc924",
+          "programSha256": "3ddd4f153cb98d19992a33869a2c3eadcb22c1c6c671f8c8d474685b23f92051",
+          "nativePngSha256": "613b7b0ddbbe9724419815c8a36cd1d7a8448973d101c1fb9f612d88ce845840",
+          "libraryPngSha256": "44bfb662289632fa431c8e5150280d9a70bc08ead5f8f15d4deab94901eccce7",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "differenceBounds": null,
+          "libraryAlphaBounds": [
+            81,
+            114,
+            107,
+            121
+          ],
+          "nativeAlphaBounds": [
+            81,
+            114,
+            107,
+            121
+          ],
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "nativeObservation": "observations/613b7b0ddbbe9724419815c8a36cd1d7a8448973d101c1fb9f612d88ce845840.png"
+        },
+        {
+          "id": "group-product",
+          "host": "linux",
+          "sourceSha256": "47cda5512290748d9d3d5e93165b0c352023997c52aacf6d125839004d488c38",
+          "nativeSourceSha256": "544e62cc88114baf55b107340855e417d171889a8d1d2ef3647d795165bdc924",
+          "programSha256": "3ddd4f153cb98d19992a33869a2c3eadcb22c1c6c671f8c8d474685b23f92051",
+          "nativePngSha256": "30c325707f003fe53ade8d2e4d65ec56057c82e680635883880b73fdce4d441e",
+          "libraryPngSha256": "34f6736229af9ef22f60008d457c1a3ecad7f7abe6eb787acf457b5488dfdb76",
+          "changedPixels": 69,
+          "maximumError": 255,
+          "differenceBounds": [
+            82,
+            113,
+            107,
+            121
+          ],
+          "libraryAlphaBounds": [
+            82,
+            113,
+            107,
+            121
+          ],
+          "nativeAlphaBounds": [
+            82,
+            114,
+            107,
+            121
+          ],
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "nativeObservation": "observations/30c325707f003fe53ade8d2e4d65ec56057c82e680635883880b73fdce4d441e.png"
+        }
+      ]
+    }
+  ],
+  "nativeEnvironment": {
+    "browser": "Chrome 153.0.8010.52",
+    "deviceScaleFactor": 1,
+    "hosts": {
+      "windows": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "linux": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+    }
+  }
+}

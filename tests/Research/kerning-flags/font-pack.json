@@ -35,6 +35,11 @@
       "relativePath": "fonts/GposCombined.ttf",
       "byteSize": 1692,
       "sha256": "b18512f4a4c558e54afd735264edee2fc3ee23fd28d9568624e9dc8041f8620a"
+    },
+    {
+      "relativePath": "fonts/GposExtension.ttf",
+      "byteSize": 1536,
+      "sha256": "fca8b3b989c007c2271052b811fc52cb5b9263e1c7eac227a69b53fee66dfb02"
     }
   ],
   "families": [
@@ -90,6 +95,14 @@
       "requestedFamily": "GposCombined",
       "resolvedFamily": "GposCombined",
       "relativeFontFile": "fonts/GposCombined.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0
+    },
+    {
+      "requestedFamily": "GposExtension",
+      "resolvedFamily": "GposExtension",
+      "relativeFontFile": "fonts/GposExtension.ttf",
       "weight": 400,
       "italic": false,
       "faceIndex": 0
