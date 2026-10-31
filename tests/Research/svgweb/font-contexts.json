@@ -1828,5 +1828,9 @@
   "followUp": {
     "evidence": "shared-font-model.json",
     "scope": "GPOS extension and SFVTPV gates are resolved. Three original Arial-only footer comparisons had unmatched generic-family programs; retain them as historical exploratory observations. The explicit two-family follow-up provides current scoped outcomes."
+  },
+  "recordingFollowUp": {
+    "evidence": "glyph-recording.json",
+    "scope": "Filled position recording is corrected with path strikes retained. Matched Arial Linux is exploratory exact; Windows residuals and other glyph/original contexts remain open."
   }
 }

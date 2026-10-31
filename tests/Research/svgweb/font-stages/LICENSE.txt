@@ -1,0 +1,8 @@
+SPDX-License-Identifier: CC0-1.0
+
+The original SVG controls and comparison images in this directory are dedicated
+to the public domain under CC0 1.0 Universal:
+https://creativecommons.org/publicdomain/zero/1.0/
+
+The unchanged supplied GposMarks font has its own CC0 notice in
+../../kerning-flags/LICENSE.txt.

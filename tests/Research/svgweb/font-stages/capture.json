@@ -1,0 +1,482 @@
+{
+  "scope": "Original CC0 glyph recording source graphs and paint/path/stroke interactions; canonical image conversion only. No hosted SVG payload or private font.",
+  "width": 300,
+  "height": 150,
+  "font": {
+    "program": "../../kerning-flags/fonts/GposMarks.ttf",
+    "sha256": "3ddd4f153cb98d19992a33869a2c3eadcb22c1c6c671f8c8d474685b23f92051",
+    "catalog": "../../kerning-flags/font-pack.json",
+    "packId": "public-kerning-flags",
+    "license": "../../kerning-flags/LICENSE.txt"
+  },
+  "nativeRecipe": {
+    "width": 300,
+    "height": 150,
+    "viewport": "Image document at its declared dimensions, DPR 1, transparent.",
+    "fontMaterialization": "Replace final </svg> with <style>@font-face{font-family:GposMarks;src:url(data:font/ttf;base64,PROGRAM)}</style></svg>, using unchanged committed program bytes and unbroken base64.",
+    "freshCapturesPerHostCase": 3,
+    "admission": "Three healthy/profile-cleaned fresh processes agree byte-for-byte with earlier independent observations."
+  },
+  "browserPins": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+    }
+  },
+  "cases": [
+    {
+      "id": "flattened",
+      "input": "flattened.svg",
+      "inputSha256": "8a817c0682e8ef6a4f52cb658c6fa73ea4886400a1db178aee429b378f7d3ad0",
+      "nativeSourceSha256": "8c268d8e76d81c5c3dbdb0096a56435f2c09d1e8e4ba2023ebdf3e6754424f17",
+      "platforms": {
+        "windows": {
+          "reference": "observations/11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3.png",
+          "referenceSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+          "captures": [
+            {
+              "pngSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8.png",
+          "referenceSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+          "captures": [
+            {
+              "pngSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "root-product",
+      "input": "root-product.svg",
+      "inputSha256": "6e0919ec482ae08c0919da3f998b78a46b749d9fda60fc86453340cebdb58540",
+      "nativeSourceSha256": "c7be3bfce284b6ac12c6197d7ee3a52f296ea732854dc80fbefc9a6965d657c0",
+      "platforms": {
+        "windows": {
+          "reference": "observations/11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3.png",
+          "referenceSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+          "captures": [
+            {
+              "pngSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8.png",
+          "referenceSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+          "captures": [
+            {
+              "pngSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "group-product",
+      "input": "group-product.svg",
+      "inputSha256": "47cda5512290748d9d3d5e93165b0c352023997c52aacf6d125839004d488c38",
+      "nativeSourceSha256": "544e62cc88114baf55b107340855e417d171889a8d1d2ef3647d795165bdc924",
+      "platforms": {
+        "windows": {
+          "reference": "observations/613b7b0ddbbe9724419815c8a36cd1d7a8448973d101c1fb9f612d88ce845840.png",
+          "referenceSha256": "613b7b0ddbbe9724419815c8a36cd1d7a8448973d101c1fb9f612d88ce845840",
+          "captures": [
+            {
+              "pngSha256": "613b7b0ddbbe9724419815c8a36cd1d7a8448973d101c1fb9f612d88ce845840",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "613b7b0ddbbe9724419815c8a36cd1d7a8448973d101c1fb9f612d88ce845840",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "613b7b0ddbbe9724419815c8a36cd1d7a8448973d101c1fb9f612d88ce845840",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/30c325707f003fe53ade8d2e4d65ec56057c82e680635883880b73fdce4d441e.png",
+          "referenceSha256": "30c325707f003fe53ade8d2e4d65ec56057c82e680635883880b73fdce4d441e",
+          "captures": [
+            {
+              "pngSha256": "30c325707f003fe53ade8d2e4d65ec56057c82e680635883880b73fdce4d441e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "30c325707f003fe53ade8d2e4d65ec56057c82e680635883880b73fdce4d441e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "30c325707f003fe53ade8d2e4d65ec56057c82e680635883880b73fdce4d441e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "stroke",
+      "input": "stroke.svg",
+      "inputSha256": "edd89ff3180c0fd67f3984d7ed1d45119f69d29280a6d54e801c7ad861ef3aff",
+      "nativeSourceSha256": "57c47f9b7594b47d15713ffb06ccd9d5b9d3b09323cf9f8ae7b6c482fefd4380",
+      "platforms": {
+        "windows": {
+          "reference": "references/521de5e47e5a5ee99a7d333875c28ad487301427366e4fba44e8a3c69791c7ec.png",
+          "referenceSha256": "521de5e47e5a5ee99a7d333875c28ad487301427366e4fba44e8a3c69791c7ec",
+          "captures": [
+            {
+              "pngSha256": "521de5e47e5a5ee99a7d333875c28ad487301427366e4fba44e8a3c69791c7ec",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "521de5e47e5a5ee99a7d333875c28ad487301427366e4fba44e8a3c69791c7ec",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "521de5e47e5a5ee99a7d333875c28ad487301427366e4fba44e8a3c69791c7ec",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/a76754530f976f9b16d12fe3cea344c666786b5cbc05c2037b7dda874d985f3d.png",
+          "referenceSha256": "a76754530f976f9b16d12fe3cea344c666786b5cbc05c2037b7dda874d985f3d",
+          "captures": [
+            {
+              "pngSha256": "a76754530f976f9b16d12fe3cea344c666786b5cbc05c2037b7dda874d985f3d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a76754530f976f9b16d12fe3cea344c666786b5cbc05c2037b7dda874d985f3d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a76754530f976f9b16d12fe3cea344c666786b5cbc05c2037b7dda874d985f3d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fill-stroke",
+      "input": "fill-stroke.svg",
+      "inputSha256": "233a3b4488351139284b86666387f1a16685f0e49ec8a9117b50878f5614920d",
+      "nativeSourceSha256": "102a97b35f98363dab2cd824f91783e6537594ff8a2312de0348de49de630802",
+      "platforms": {
+        "windows": {
+          "reference": "references/3b89f028c50f085f69f4104b3978369ba522ce82a8e549174db79d6626109e68.png",
+          "referenceSha256": "3b89f028c50f085f69f4104b3978369ba522ce82a8e549174db79d6626109e68",
+          "captures": [
+            {
+              "pngSha256": "3b89f028c50f085f69f4104b3978369ba522ce82a8e549174db79d6626109e68",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3b89f028c50f085f69f4104b3978369ba522ce82a8e549174db79d6626109e68",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3b89f028c50f085f69f4104b3978369ba522ce82a8e549174db79d6626109e68",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/9d16a18fd775d28b7bc6ed81d9bdf6fd41c51461af3d43af5b1272d4860e59b3.png",
+          "referenceSha256": "9d16a18fd775d28b7bc6ed81d9bdf6fd41c51461af3d43af5b1272d4860e59b3",
+          "captures": [
+            {
+              "pngSha256": "9d16a18fd775d28b7bc6ed81d9bdf6fd41c51461af3d43af5b1272d4860e59b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "9d16a18fd775d28b7bc6ed81d9bdf6fd41c51461af3d43af5b1272d4860e59b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "9d16a18fd775d28b7bc6ed81d9bdf6fd41c51461af3d43af5b1272d4860e59b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gradient",
+      "input": "gradient.svg",
+      "inputSha256": "d7e3d8f3a220b504da1fcd679f487165203989cafb64a7db149add03ec6fcbb1",
+      "nativeSourceSha256": "db93010eed8a022472cf2dde0a773257d86fda763604701a4ea590cbb2ce4638",
+      "platforms": {
+        "windows": {
+          "reference": "references/d42c4e114f148f4fcf5c2a67e23fdc641ef8fb1cf862b9f148f1d73c18b5b25c.png",
+          "referenceSha256": "d42c4e114f148f4fcf5c2a67e23fdc641ef8fb1cf862b9f148f1d73c18b5b25c",
+          "captures": [
+            {
+              "pngSha256": "d42c4e114f148f4fcf5c2a67e23fdc641ef8fb1cf862b9f148f1d73c18b5b25c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d42c4e114f148f4fcf5c2a67e23fdc641ef8fb1cf862b9f148f1d73c18b5b25c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d42c4e114f148f4fcf5c2a67e23fdc641ef8fb1cf862b9f148f1d73c18b5b25c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/1261a3b521451e23623af18f4f145e9fca3f157c273038b9621ef3f78658d95d.png",
+          "referenceSha256": "1261a3b521451e23623af18f4f145e9fca3f157c273038b9621ef3f78658d95d",
+          "captures": [
+            {
+              "pngSha256": "1261a3b521451e23623af18f4f145e9fca3f157c273038b9621ef3f78658d95d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1261a3b521451e23623af18f4f145e9fca3f157c273038b9621ef3f78658d95d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1261a3b521451e23623af18f4f145e9fca3f157c273038b9621ef3f78658d95d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "clip",
+      "input": "clip.svg",
+      "inputSha256": "a469665e5d39ed740144db39f7d7ad8789bdb12f5fb4b0486ba14c76b7d24711",
+      "nativeSourceSha256": "1f4442ae60dec6e65ee804d3843c01fe483a4667561341fd3b95ea1aef437334",
+      "platforms": {
+        "windows": {
+          "reference": "references/02eb4b3bbc7c2a236f641f44448a1cdb3e4536027368252af6c9a2bdd8f5d13b.png",
+          "referenceSha256": "02eb4b3bbc7c2a236f641f44448a1cdb3e4536027368252af6c9a2bdd8f5d13b",
+          "captures": [
+            {
+              "pngSha256": "02eb4b3bbc7c2a236f641f44448a1cdb3e4536027368252af6c9a2bdd8f5d13b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "02eb4b3bbc7c2a236f641f44448a1cdb3e4536027368252af6c9a2bdd8f5d13b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "02eb4b3bbc7c2a236f641f44448a1cdb3e4536027368252af6c9a2bdd8f5d13b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/3812585874f997400df5a82ce2eff897f39d660e9e527a2bf2ddea4a15f0b03f.png",
+          "referenceSha256": "3812585874f997400df5a82ce2eff897f39d660e9e527a2bf2ddea4a15f0b03f",
+          "captures": [
+            {
+              "pngSha256": "3812585874f997400df5a82ce2eff897f39d660e9e527a2bf2ddea4a15f0b03f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3812585874f997400df5a82ce2eff897f39d660e9e527a2bf2ddea4a15f0b03f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3812585874f997400df5a82ce2eff897f39d660e9e527a2bf2ddea4a15f0b03f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "text-path",
+      "input": "text-path.svg",
+      "inputSha256": "f327f9938245c29a8f00848f339afb62effbec9e69c9dade28aac4e198f3ba93",
+      "nativeSourceSha256": "676a5b4dca8404a26406f0e35d66c1a819617050ed5791759f6c9cb83a34d1ab",
+      "platforms": {
+        "windows": {
+          "reference": "observations/11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3.png",
+          "referenceSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+          "captures": [
+            {
+              "pngSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "11b9af43d1ca49824c3d7257acec0ce123c5fc0cd01e6245aec7981915f28eb3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8.png",
+          "referenceSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+          "captures": [
+            {
+              "pngSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef5dfb2641e357f15bb80683eb9b47c9556963735a236660386861528c71e7b8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "stroke-path",
+      "input": "stroke-path.svg",
+      "inputSha256": "b0e98927f5d23ec3e6b11e4ba2567717101009eb7db2c7c90eab1fe6db09ea50",
+      "nativeSourceSha256": "ebcbfdd37c5943eb390963555c5681f53fb2f37eed60f0f49642fcb0ad3fe296",
+      "platforms": {
+        "windows": {
+          "reference": "references/521de5e47e5a5ee99a7d333875c28ad487301427366e4fba44e8a3c69791c7ec.png",
+          "referenceSha256": "521de5e47e5a5ee99a7d333875c28ad487301427366e4fba44e8a3c69791c7ec",
+          "captures": [
+            {
+              "pngSha256": "521de5e47e5a5ee99a7d333875c28ad487301427366e4fba44e8a3c69791c7ec",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "521de5e47e5a5ee99a7d333875c28ad487301427366e4fba44e8a3c69791c7ec",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "521de5e47e5a5ee99a7d333875c28ad487301427366e4fba44e8a3c69791c7ec",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/a76754530f976f9b16d12fe3cea344c666786b5cbc05c2037b7dda874d985f3d.png",
+          "referenceSha256": "a76754530f976f9b16d12fe3cea344c666786b5cbc05c2037b7dda874d985f3d",
+          "captures": [
+            {
+              "pngSha256": "a76754530f976f9b16d12fe3cea344c666786b5cbc05c2037b7dda874d985f3d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a76754530f976f9b16d12fe3cea344c666786b5cbc05c2037b7dda874d985f3d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a76754530f976f9b16d12fe3cea344c666786b5cbc05c2037b7dda874d985f3d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

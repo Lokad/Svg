@@ -634,5 +634,9 @@
       "windows": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
       "linux": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
     }
+  },
+  "followUp": {
+    "evidence": "glyph-recording.json",
+    "scope": "Filled position recording is corrected with path strikes retained. Matched Arial Linux is exploratory exact; Windows residuals and other glyph/original contexts remain open."
   }
 }

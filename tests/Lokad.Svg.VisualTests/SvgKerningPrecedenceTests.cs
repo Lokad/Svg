@@ -5,7 +5,7 @@ using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-public sealed class SvgKerningPrecedenceTests
+public sealed partial class SvgKerningPrecedenceTests
 {
     [Fact]
     [Trait("Layer", "Rendering")]

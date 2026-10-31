@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "2f4581eca98ef768c9eb54c277fb7ec370b5bb7c",
+  "candidateLibraries": {
+    "net11.0": "2bbee3bdc650f94626500340772e05f3aad7915a745a0a287d4fab71f2be65d9",
+    "net10.0": "3508d9b2a2963031bf36c575cf0aa9f1fcad0ba96fa921395f1eeb6fcbcae1ca"
+  },
+  "scope": "Shared filled-glyph recording precision. Text layout, logical sizing/fitting, native font cache precision, path strikes/tangents and stroke semantics remain separate. No public API, provider, owner or cache is added. Whole matched-font originals and remaining glyph stages stay open.",
+  "sharedRules": [
+    "Narrow combined element/viewport scale before deriving the source recording scale. Guard finite device range and skip a zero scalar before division.",
+    "Direct fills bake the recording scale into position and size; orientation is normalized by the original element scale. This does not change layout or the retained contour/paint bounds.",
+    "Path fills rebase only the element scale about its translation. Retain the path font strike and tangent rather than changing its cached font-size boundary.",
+    "Stroke-only and fill/stroke ordering retain their independent native path semantics. Solid, gradient and clipped fills share the corrected recording path."
+  ],
+  "implementation": [
+    "../../../src/Lokad.Svg/Parsing/SvgTextGlyphPainter.cs"
+  ],
+  "responsibilities": {
+    "mechanisms": {
+      "cases": 2,
+      "tests": "../../Lokad.Svg.Tests/OpenTypeFontTests.GlyphRecording.cs",
+      "scope": "Direct recorded font size remains 9 while actual scaler baseline matches the flat control; a horizontal path keeps its separately recorded map/strike."
+    },
+    "contract": {
+      "cases": 1,
+      "scope": "Prepared root/viewBox replay matches an independently placed flat control and acquires the supplied program once."
+    },
+    "rendering": {
+      "cases": 9,
+      "manifest": "font-stages/capture.json",
+      "scope": "Three source graphs plus fill/stroke, gradient, clip, horizontal path, direct stroke and path stroke. One canonical conversion each; three fresh healthy/profile-cleaned native processes per host/source. Native images agree byte-for-byte with earlier observations."
+    },
+    "failingBefore": [
+      {
+        "name": "before-final-core-windows-net11.0",
+        "passed": 0,
+        "failed": 3,
+        "seconds": 5.567,
+        "librarySha256": "376671e90a5cd8fa8a80e0688fcbaaae548ea40a2cfe5172dc995b9552082329"
+      },
+      {
+        "name": "before-final-core-linux-net11.0",
+        "passed": 0,
+        "failed": 3,
+        "seconds": 8.896,
+        "librarySha256": "376671e90a5cd8fa8a80e0688fcbaaae548ea40a2cfe5172dc995b9552082329"
+      },
+      {
+        "name": "before-native-windows-net11.0",
+        "passed": 4,
+        "failed": 5,
+        "seconds": 8.655,
+        "librarySha256": "376671e90a5cd8fa8a80e0688fcbaaae548ea40a2cfe5172dc995b9552082329"
+      },
+      {
+        "name": "before-final-native-linux-net11.0",
+        "passed": 3,
+        "failed": 6,
+        "seconds": 8.558,
+        "librarySha256": "376671e90a5cd8fa8a80e0688fcbaaae548ea40a2cfe5172dc995b9552082329"
+      }
+    ]
+  },
+  "rejectedModel": {
+    "scope": "Collapsing every filled path to the direct font strike fixes the new controls but changes the existing Windows curved-spacing image.",
+    "regression": "spacing-paint-421-control",
+    "retainedEvidence": "../text-paint-bounds/paint-stage-images.json",
+    "resolution": "Retain path strike/tangent responsibility while correcting its element recording scale; the existing exact reference is unchanged."
+  },
+  "qualification": {
+    "affected": [
+      {
+        "name": "affected-final-core-windows-net11.0",
+        "passed": 482,
+        "failed": 0,
+        "seconds": 7.499,
+        "librarySha256": "2bbee3bdc650f94626500340772e05f3aad7915a745a0a287d4fab71f2be65d9"
+      },
+      {
+        "name": "affected-final-native-windows-net11.0",
+        "passed": 706,
+        "failed": 0,
+        "seconds": 15.729,
+        "librarySha256": "2bbee3bdc650f94626500340772e05f3aad7915a745a0a287d4fab71f2be65d9"
+      },
+      {
+        "name": "affected-final-core-linux-net11.0",
+        "passed": 482,
+        "failed": 0,
+        "seconds": 12.074,
+        "librarySha256": "2bbee3bdc650f94626500340772e05f3aad7915a745a0a287d4fab71f2be65d9"
+      },
+      {
+        "name": "affected-final-native-linux-net11.0",
+        "passed": 706,
+        "failed": 0,
+        "seconds": 19.509,
+        "librarySha256": "2bbee3bdc650f94626500340772e05f3aad7915a745a0a287d4fab71f2be65d9"
+      }
+    ],
+    "full": [
+      {
+        "name": "full-qualified-core-windows-net11.0",
+        "passed": 33157,
+        "failed": 0,
+        "seconds": 42.878,
+        "librarySha256": "2bbee3bdc650f94626500340772e05f3aad7915a745a0a287d4fab71f2be65d9"
+      },
+      {
+        "name": "full-qualified-native-windows-net11.0",
+        "passed": 39162,
+        "failed": 0,
+        "seconds": 55.408,
+        "librarySha256": "2bbee3bdc650f94626500340772e05f3aad7915a745a0a287d4fab71f2be65d9"
+      },
+      {
+        "name": "full-qualified-core-windows-net10.0",
+        "passed": 33157,
+        "failed": 0,
+        "seconds": 43.325,
+        "librarySha256": "3508d9b2a2963031bf36c575cf0aa9f1fcad0ba96fa921395f1eeb6fcbcae1ca"
+      },
+      {
+        "name": "full-qualified-native-windows-net10.0",
+        "passed": 39162,
+        "failed": 0,
+        "seconds": 58.655,
+        "librarySha256": "3508d9b2a2963031bf36c575cf0aa9f1fcad0ba96fa921395f1eeb6fcbcae1ca"
+      },
+      {
+        "name": "full-qualified-core-linux-net11.0",
+        "passed": 33157,
+        "failed": 0,
+        "seconds": 43.98,
+        "librarySha256": "2bbee3bdc650f94626500340772e05f3aad7915a745a0a287d4fab71f2be65d9"
+      },
+      {
+        "name": "full-qualified-native-linux-net11.0",
+        "passed": 39162,
+        "failed": 0,
+        "seconds": 150.486,
+        "librarySha256": "2bbee3bdc650f94626500340772e05f3aad7915a745a0a287d4fab71f2be65d9"
+      },
+      {
+        "name": "full-qualified-core-linux-net10.0",
+        "passed": 33157,
+        "failed": 0,
+        "seconds": 45.629,
+        "librarySha256": "3508d9b2a2963031bf36c575cf0aa9f1fcad0ba96fa921395f1eeb6fcbcae1ca"
+      },
+      {
+        "name": "full-qualified-native-linux-net10.0",
+        "passed": 39162,
+        "failed": 0,
+        "seconds": 125.953,
+        "librarySha256": "3508d9b2a2963031bf36c575cf0aa9f1fcad0ba96fa921395f1eeb6fcbcae1ca"
+      }
+    ],
+    "totalRoutinePassed": 289276,
+    "baselineRoutinePassed": 289228,
+    "baselineFull": [
+      {
+        "name": "full-qualified-core-windows-net11.0",
+        "passed": 33154,
+        "seconds": 61.37,
+        "librarySha256": "376671e90a5cd8fa8a80e0688fcbaaae548ea40a2cfe5172dc995b9552082329"
+      },
+      {
+        "name": "full-qualified-native-windows-net11.0",
+        "passed": 39153,
+        "seconds": 79.044,
+        "librarySha256": "376671e90a5cd8fa8a80e0688fcbaaae548ea40a2cfe5172dc995b9552082329"
+      },
+      {
+        "name": "full-qualified-core-windows-net10.0",
+        "passed": 33154,
+        "seconds": 55.635,
+        "librarySha256": "a92680fc722020eb0c185a7f3f39bcd596a4f2c64ac2149f81edb7bf2a54d17e"
+      },
+      {
+        "name": "full-qualified-native-windows-net10.0",
+        "passed": 39153,
+        "seconds": 68.091,
+        "librarySha256": "a92680fc722020eb0c185a7f3f39bcd596a4f2c64ac2149f81edb7bf2a54d17e"
+      },
+      {
+        "name": "full-qualified-core-linux-net11.0",
+        "passed": 33154,
+        "seconds": 64.603,
+        "librarySha256": "376671e90a5cd8fa8a80e0688fcbaaae548ea40a2cfe5172dc995b9552082329"
+      },
+      {
+        "name": "full-qualified-native-linux-net11.0",
+        "passed": 39153,
+        "seconds": 185.416,
+        "librarySha256": "376671e90a5cd8fa8a80e0688fcbaaae548ea40a2cfe5172dc995b9552082329"
+      },
+      {
+        "name": "full-qualified-core-linux-net10.0",
+        "passed": 33154,
+        "seconds": 46.184,
+        "librarySha256": "a92680fc722020eb0c185a7f3f39bcd596a4f2c64ac2149f81edb7bf2a54d17e"
+      },
+      {
+        "name": "full-qualified-native-linux-net10.0",
+        "passed": 39153,
+        "seconds": 130.429,
+        "librarySha256": "a92680fc722020eb0c185a7f3f39bcd596a4f2c64ac2149f81edb7bf2a54d17e"
+      }
+    ],
+    "timingScope": "Functional wall times under ordinary development load, not a benchmark or a test-suite-simplification speedup claim."
+  },
+  "originalReplay": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "allDefaultOutcomeDiagnosticDimensionsUnchanged": true,
+    "all150PngsPerHostByteIdentical": true,
+    "outcomes": {
+      "windows": {
+        "UnsupportedFeature": 51,
+        "rendered": 150,
+        "MalformedInput": 3
+      },
+      "linux": {
+        "UnsupportedFeature": 51,
+        "rendered": 150,
+        "MalformedInput": 3
+      }
+    }
+  },
+  "otherSuppliedContexts": {
+    "files": 11,
+    "hosts": 2,
+    "allPngsByteIdentical": true,
+    "exactOutlineAdvanceRoundTrips": 672
+  },
+  "matchedArial": {
+    "scope": "Unchanged private regular Arial plus pinned Droid Serif for the initial generic family. Two exact requested catalog families/programs; native observations are unchanged. No private program redistribution, hosted SVG retention or whole-original acceptance.",
+    "beforeChangedPixels": {
+      "windows": [
+        256,
+        6,
+        5
+      ],
+      "linux": [
+        250,
+        0,
+        0
+      ]
+    },
+    "after": [
+      {
+        "id": "paths-data-08-t.svg",
+        "host": "windows",
+        "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+        "changedPixels": 13,
+        "maximumError": 46,
+        "differenceBounds": [
+          98,
+          9,
+          161,
+          120
+        ],
+        "nativePngSha256": "1123469440b13349c30e3a635d3fb655ce880054155b1d5a2314b0c912853bc6"
+      },
+      {
+        "id": "paths-data-08-t.svg",
+        "host": "linux",
+        "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "differenceBounds": null,
+        "nativePngSha256": "94c0fc90bd255cc6ea2455ec5bc8860beb17186e1415a9ae494cce0367418f6e"
+      },
+      {
+        "id": "paths-data-09-t.svg",
+        "host": "windows",
+        "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+        "changedPixels": 6,
+        "maximumError": 42,
+        "differenceBounds": [
+          123,
+          9,
+          143,
+          14
+        ],
+        "nativePngSha256": "da6e7cc123747feb77eeb9033ca27a79f564454ff19a0e82e11b9e8164896385"
+      },
+      {
+        "id": "paths-data-09-t.svg",
+        "host": "linux",
+        "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "differenceBounds": null,
+        "nativePngSha256": "3d8ba14ad160f4e755fe2a08500401a6e93c02d9ced292767040f76da564fddd"
+      },
+      {
+        "id": "pservers-grad-03-b.svg",
+        "host": "windows",
+        "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+        "changedPixels": 5,
+        "maximumError": 45,
+        "differenceBounds": [
+          94,
+          47,
+          165,
+          102
+        ],
+        "nativePngSha256": "1dd3f4536e56755d0f3aae7b76acb8f746c2f978a2871d1ad09667aad67a70d0"
+      },
+      {
+        "id": "pservers-grad-03-b.svg",
+        "host": "linux",
+        "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "differenceBounds": null,
+        "nativePngSha256": "665539c98f35d78a0c93ec22c987713525495435e6793f04a4096180cd68d070"
+      }
+    ]
+  },
+  "remaining": [
+    "Windows Arial residuals: 13/6/5 pixels (paths08/paths09/pservers03); Linux is exploratory exact for all three matched contexts.",
+    "Exact-program Droid Serif Bold/BoldItalic/Italic glyph residuals are unchanged; preserve opposite-platform and exact P companions.",
+    "Public curved/angled glyph observations in font-stages/tangent-observations.json are unchanged by this fix; single captures are not admitted references.",
+    "Every full original remains open for font/resource/static-state context acceptance; default exact output alone does not close W1."
+  ]
+}

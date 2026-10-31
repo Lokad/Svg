@@ -139,13 +139,31 @@ internal static class SvgTextGlyphPainter
                     SvgPositionedGlyph position = placed.Position;
                     SvgAffineTransform map = placed.Map;
                     double screenScale = SvgGlyphDeviceMetrics.GetScreenScale(placement);
-                    double size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(font.FontSize * screenScale * state.OutputTextScale) / (screenScale * state.OutputTextScale);
+                    // Native recording narrows the combined element/viewport scale
+                    // before baking positions. Keep layout and tangent orientation
+                    // at their existing precision; the cached font size alone does
+                    // not determine which device baseline is selected.
+                    float combinedScale = (float)(screenScale * state.OutputTextScale);
+                    if (!float.IsFinite(combinedScale)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text font scaling exceeds the device range.");
+                    if (combinedScale == 0) continue;
+                    double recordingScale = combinedScale / state.OutputTextScale;
+                    if (!double.IsFinite(recordingScale) || recordingScale <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Text font scaling exceeds the device range.");
+                    if (!paths.IsEmpty && recordingScale != screenScale)
+                    {
+                        // Path fragments keep their own font strike and tangent.
+                        // Rebase only the element's scale about its translation.
+                        double ratio = recordingScale / screenScale;
+                        map = SvgAffineTransform.FromMatrix(map.A * ratio, map.B * ratio, map.C * ratio, map.D * ratio,
+                            (map.E - placement.E) * ratio + placement.E, (map.F - placement.F) * ratio + placement.F);
+                    }
+                    double fontScale = paths.IsEmpty ? recordingScale : screenScale;
+                    double size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(font.FontSize * fontScale * state.OutputTextScale) / (fontScale * state.OutputTextScale);
                     if (paths.IsEmpty && map != SvgAffineTransform.Identity)
                     {
-                        double scale = screenScale;
+                        double scale = recordingScale;
                         position = position with { X = position.X * scale, Y = position.Y * scale, Advance = position.Advance * scale };
                         size *= scale;
-                        map = SvgAffineTransform.FromMatrix(map.A / scale, map.B / scale, map.C / scale, map.D / scale, map.E, map.F);
+                        map = SvgAffineTransform.FromMatrix(map.A / screenScale, map.B / screenScale, map.C / screenScale, map.D / screenScale, map.E, map.F);
                         if (map.IsTranslation) { position = position.Translate(map); map = SvgAffineTransform.Identity; }
                     }
                     if (size == 0) continue;

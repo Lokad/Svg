@@ -1,0 +1,144 @@
+{
+  "scope": "Separate exploratory curved/tangent glyph-stage gaps. Unchanged before and after the recording correction; single fresh native captures, not admitted references or expected failures. Public unchanged GposMarks, source/layout/paint preserved. Keep these gaps open alongside the remaining shared glyph work.",
+  "font": "capture.json",
+  "rows": [
+    {
+      "id": "curved-path",
+      "host": "windows",
+      "sourceSha256": "359fbc3bd431573ab591d33c336d98faed9d9a081fae1ff60c5f8e4db3b7c1df",
+      "nativeSourceSha256": "d5213a05c0a77a0e4059e2f5ab82e111986bc28ebedccc23bdbf40346e4126e5",
+      "nativePngSha256": "63058768641a4405405a90a57ae843c04a380242bc84258243c5cdf26ad31729",
+      "startupHealth": "healthy",
+      "profileCleaned": true,
+      "phases": [
+        {
+          "phase": "before",
+          "outcome": "success",
+          "changedPixels": 42,
+          "maximumError": 20,
+          "differenceBounds": [
+            77,
+            109,
+            106,
+            121
+          ]
+        },
+        {
+          "phase": "prototype",
+          "outcome": "success",
+          "changedPixels": 42,
+          "maximumError": 20,
+          "differenceBounds": [
+            77,
+            109,
+            106,
+            121
+          ]
+        }
+      ],
+      "source": "curved-path.svg",
+      "nativeObservation": "observations/63058768641a4405405a90a57ae843c04a380242bc84258243c5cdf26ad31729.png"
+    },
+    {
+      "id": "curved-path",
+      "host": "linux",
+      "sourceSha256": "359fbc3bd431573ab591d33c336d98faed9d9a081fae1ff60c5f8e4db3b7c1df",
+      "nativeSourceSha256": "d5213a05c0a77a0e4059e2f5ab82e111986bc28ebedccc23bdbf40346e4126e5",
+      "nativePngSha256": "9a5c09862a6944d072719b32aacf4231ee896f69681a0717965493975eaae6dc",
+      "startupHealth": "healthy",
+      "profileCleaned": true,
+      "phases": [
+        {
+          "phase": "before",
+          "outcome": "success",
+          "changedPixels": 62,
+          "maximumError": 6,
+          "differenceBounds": [
+            77,
+            108,
+            105,
+            121
+          ]
+        },
+        {
+          "phase": "prototype",
+          "outcome": "success",
+          "changedPixels": 62,
+          "maximumError": 6,
+          "differenceBounds": [
+            77,
+            108,
+            105,
+            121
+          ]
+        }
+      ],
+      "source": "curved-path.svg",
+      "nativeObservation": "observations/9a5c09862a6944d072719b32aacf4231ee896f69681a0717965493975eaae6dc.png"
+    },
+    {
+      "id": "rising-path",
+      "host": "windows",
+      "sourceSha256": "9d8166cbea9d2de7a9e097849e2ee5b4ee8152b91c6b771a120b52f67eb7e816",
+      "nativeSourceSha256": "8029c8ce78ce8986451457ab5549bc047b32bed87e094f90e7f6b82cf143beee",
+      "nativePngSha256": "2eed6ce168043f16022c863f916fe53d065acc52f0f32113356cfb8d557bddb8",
+      "startupHealth": "healthy",
+      "profileCleaned": true,
+      "phases": [
+        {
+          "phase": "before",
+          "outcome": "success",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "differenceBounds": null
+        },
+        {
+          "phase": "prototype",
+          "outcome": "success",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "differenceBounds": null
+        }
+      ],
+      "source": "rising-path.svg",
+      "nativeObservation": "observations/2eed6ce168043f16022c863f916fe53d065acc52f0f32113356cfb8d557bddb8.png"
+    },
+    {
+      "id": "rising-path",
+      "host": "linux",
+      "sourceSha256": "9d8166cbea9d2de7a9e097849e2ee5b4ee8152b91c6b771a120b52f67eb7e816",
+      "nativeSourceSha256": "8029c8ce78ce8986451457ab5549bc047b32bed87e094f90e7f6b82cf143beee",
+      "nativePngSha256": "95bd64521c79166105f5166837d0f8c5534e713befaf8e5fca87f0a80796d2f9",
+      "startupHealth": "healthy",
+      "profileCleaned": true,
+      "phases": [
+        {
+          "phase": "before",
+          "outcome": "success",
+          "changedPixels": 61,
+          "maximumError": 255,
+          "differenceBounds": [
+            79,
+            106,
+            103,
+            121
+          ]
+        },
+        {
+          "phase": "prototype",
+          "outcome": "success",
+          "changedPixels": 61,
+          "maximumError": 255,
+          "differenceBounds": [
+            79,
+            106,
+            103,
+            121
+          ]
+        }
+      ],
+      "source": "rising-path.svg",
+      "nativeObservation": "observations/95bd64521c79166105f5166837d0f8c5534e713befaf8e5fca87f0a80796d2f9.png"
+    }
+  ]
+}

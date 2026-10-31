@@ -10645,6 +10645,7 @@
     "lostExactImages": [],
     "remainingDefaultDifferences": [],
     "fontContexts": "font-contexts.json",
-    "sharedFontModel": "shared-font-model.json"
+    "sharedFontModel": "shared-font-model.json",
+    "glyphRecording": "glyph-recording.json"
   }
 }
