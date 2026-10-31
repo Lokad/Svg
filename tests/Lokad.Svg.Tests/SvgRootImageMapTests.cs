@@ -107,6 +107,9 @@ public sealed class SvgRootImageMapTests
         Assert.Equal(root.Recording, capture.Recording);
         Assert.Equal(new SvgAffineTransform(.7834839820861816, 0, 0, .7828528881072998,
             432.544677734375, -588.826416015625), capture.MapScene(scene));
+        // Gradient references compose the source before narrowing the root map.
+        Assert.NotEqual(SvgShaderMatrix.FromAffine(capture.Device.Compose(scene)),
+            SvgShaderMatrix.FromAffine(capture.MapScene(scene)));
         Assert.Equal(root.Parameter.A, capture.Parameter.A);
         Assert.Equal(root.Parameter.D, capture.Parameter.D);
     }

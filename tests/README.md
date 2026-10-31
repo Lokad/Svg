@@ -122,7 +122,11 @@ protects retained visual bounds and recording/destination stages through a zero-
 gradient capture. Three direct bounds cases and one bitmap-map case isolate the
 mechanisms; existing filter ownership tests cover allocation and cleanup. Its
 [evidence](Research/svgweb/filter-retained-source-stages.json) records the memory
-tradeoff and separate nonzero-blur findings. No API matrix is added.
+tradeoff and retained bounds/map contracts. No API matrix is added.
+The [nonzero-blur companion](Fixtures/original/filter-source-shader-reference.svg)
+protects complete gradient drawing references during capture. Existing direct map
+checks distinguish early device narrowing; [closure evidence](Research/svgweb/source-shader-reference.json)
+maps the shared fix to native controls and the complete green-grapes original.
 
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;

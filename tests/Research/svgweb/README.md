@@ -6,12 +6,12 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 148 originals per host: **146 exploratory
-exact and 2 different**, with 53 UnsupportedFeature and 3 MalformedInput outcomes.
+The current default conversion renders 148 originals per host: **147 exploratory
+exact and 1 different**, with 53 UnsupportedFeature and 3 MalformedInput outcomes.
 These observations use transparent output without supplied fonts/resources.
-Scimitar, Gallardo, car, radialgradient2, UFO, alphachannel, opensearch and scion are
-exact. See `currentReview` in the inventory for the Ford and green-grapes
-differences. Exact default output does not qualify other font, resource
+Scimitar, Gallardo, car, radialgradient2, UFO, alphachannel, opensearch, scion and
+green grapes are exact. See `currentReview` in the inventory for the Ford
+difference. Exact default output does not qualify other font, resource
 or static-state contexts, and whole-corpus acceptance remains open.
 
 Resolve gaps by mechanism, preserving original-to-control mappings and independent
@@ -52,7 +52,8 @@ current inventory above governs overall status.
 | Filter images and restoration | [Image model](filter-image-model.json), [bitmap restoration](filter-bitmap-restoration.json), [Gaussian aliases](gaussian-alias-restoration.json). Retain deferred/color-filter state, cropped storage, padding, enclosing opacity and final sampling roles. |
 | Filter source requests | [Source capture](filter-source-capture.json), [request propagation](filter-source-request.json), [bitmap clip requests](filter-bitmap-clip-request.json). Ordinary, nested and image-containing sources use propagated requests; each bordered destination bitmap uses its own nonzero clip bounds. |
 | Parameter source enclosure | [Capture and output hints](filter-parameter-source-enclosure.json). Enclose source visuals before graph expansion and the result before device mapping. Ordinary and affine capture share the parameter stage; recorded paint hints and captured content remain distinct. |
-| Retained source stages | [Visual bounds and capture maps](filter-retained-source-stages.json). Keep authored visual/stroke extents before scene narrowing, and recording/destination stages through bitmap placement. Direct bounds/map tests and one canonical gradient ellipse protect zero-blur capture; nonzero blur remains open. |
+| Retained source stages | [Visual bounds and capture maps](filter-retained-source-stages.json). Keep authored visual/stroke extents before scene narrowing, and recording/destination stages through bitmap placement. Direct bounds/map tests and one canonical gradient ellipse protect zero-blur capture. |
+| Captured gradient references | [Drawing reference](source-shader-reference.json). Compose source placement with recorded layout before native destination narrowing. One nonzero-blur fixture and existing direct map cases protect the rule; green grapes and all mapped consumers are exact. |
 | Source raster windows | [Clip construction](source-clip-construction.json), [raster window](filter-raster-window.json). Admitted numerical paint and construction padding remain separate from tight visual extents and captured content. |
 | Nested pictures and affine capture | [Nested picture](filter-nested-picture.json), [transform review](filter-transform-review.json). Keep original descendant paint hints, filtered output and parameter capture enclosure distinct. Both opposed affine controls are exact canonical regressions. |
 | Filter numerical stages | [Black linear stages](black-linear-stages.json), [bilinear weights](filter-bilinear-review.json), [numeric vectors](../../Lokad.Svg.Tests/TestData/highp-bilinear.json), [browser probe](highp-bilinear.js). Transfer, byte storage, packed alpha, high-precision weights and addressing have separate responsibilities. |
@@ -78,13 +79,14 @@ the complete default Gallardo image matches three fresh captures per host. The
 the complete 35-child shadow. These and the complete Scimitar original remain exact.
 
 The [green-grapes map](green-grapes-paint-map.csv) retains all 76 consumers at the
-original fractional image viewport. Its `sourceRectangle` columns show 75 exact
-isolations; one linearRGB highlight remains different. The
-[source-rectangle record](root-visible-source.json) preserves earlier columns and
-the remaining whole-original difference of one channel at one pixel.
+original fractional image viewport. Its `sourceReference` columns show all 76
+isolations exact; earlier columns retain their qualified observations. The
+[drawing-reference record](source-shader-reference.json) also closes the complete
+default original against three fresh healthy captures on each host.
 
-Remaining work includes filter crop/flood-offset/shadow interactions, declared
-stroke units, CSS and gradient boundaries, explicit font programs, static-state
+Mapped crop/flood-offset/shadow and root/filter cases are closed for their declared
+default static contexts. Remaining work includes declared stroke units, CSS and
+gradient boundaries, explicit font programs, static-state
 traversal and host-bound raster resources. Follow actual parent/traversal state
 before attributing a rejection to its reported child. Keep malformed, unsupported
 and font/resource-dependent cases individually classified; removing one blocker

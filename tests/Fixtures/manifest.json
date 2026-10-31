@@ -18916,6 +18916,32 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-retained-source-stages.json",
       "referenceSha256": "3fc4eb4b39c8e2fede4e0aacfb3ec5e5a7d69c8af517d26ea2d3cac0ca1be79b"
+    },
+    {
+      "id": "original-filter-source-shader-reference",
+      "path": "original/filter-source-shader-reference.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "77e75b32b90724988b2f5b2c75840b056fb4e1e51365e809e1116810b9614a8c",
+      "materializedSha256": "77e75b32b90724988b2f5b2c75840b056fb4e1e51365e809e1116810b9614a8c",
+      "featureTags": [
+        "filter",
+        "source-shader-reference",
+        "recorded-transform",
+        "fractional-root",
+        "gradient"
+      ],
+      "width": 558,
+      "height": 781,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-source-shader-reference.json",
+      "referenceSha256": "bfbeb15bac1c9372ebae788ffae2dfaab62e13368d77e6deb1177fdba1a7facd"
     }
   ]
 }

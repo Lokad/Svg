@@ -49,6 +49,9 @@ owning bitmap's coordinates. Subtract its origin before concatenating child stag
 flattening first loses intermediate float rounding. The first stage includes the
 recorded projection and source placement. Draw-local caches publish only completed
 mapping; deep-chain scratch is budgeted and released before sampling continues.
+Source captures also retain the complete drawing reference: compose the gradient's
+source placement with recorded layout before native destination narrowing. A device
+matrix narrowed before that composition can change the stored blur input.
 
 Gradient opacity belongs to all prepared stops and the native factory, independently
 of a sampled alpha. Opaque linear/radial programs reduce source-over to source before

@@ -10351,24 +10351,42 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "filter-retained-source-stages.json",
-    "sourceBaseline": "72f4129c844aa320f6809532a03a74a354303a78",
-    "librarySha256": "78c3ac33aa3c1c1c8e77c0da95de386c3b11783d1b1d859fc209d29f73ffd34b",
+    "evidence": "source-shader-reference.json",
+    "sourceBaseline": "dd36268ba5cf02de83c9e8ce40ba219008157d46",
+    "librarySha256": "45e74dbfea8b942fd012383d75f09d01aa2f2dae0b9f707e51bef81eb7f03e3f",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
       "rendered": 148,
-      "exploratoryExact": 146,
-      "different": 2,
+      "exploratoryExact": 147,
+      "different": 1,
       "UnsupportedFeature": 53,
       "MalformedInput": 3
     },
     "previousPngsByteIdenticalPerHost": {
-      "windows": 148,
-      "linux": 148
+      "windows": 147,
+      "linux": 147
     },
-    "changedOriginals": [],
-    "newlyExactOriginals": [],
+    "changedOriginals": [
+      {
+        "name": "rg1024_green_grapes.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 1
+        },
+        "after": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      }
+    ],
+    "newlyExactOriginals": [
+      "rg1024_green_grapes.svg"
+    ],
     "lostExactImages": [],
     "changedOutcomesOrDiagnostics": [],
     "remainingDefaultDifferences": [
@@ -10378,13 +10396,6 @@
         "changedPixels": 6,
         "maximumError": 4,
         "totalChannelError": 45
-      },
-      {
-        "name": "rg1024_green_grapes.svg",
-        "status": "different",
-        "changedPixels": 1,
-        "maximumError": 1,
-        "totalChannelError": 1
       }
     ]
   }
