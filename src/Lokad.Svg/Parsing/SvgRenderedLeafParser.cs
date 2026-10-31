@@ -397,7 +397,7 @@ CancellationToken cancellationToken)
                     || paint.HasStroke && paint.Stroke?.Style.Stroke is {} stroke && SvgPaintReference.TryParseId(stroke, out _);
 
                 // Fail fast with the conversion-level category: the operation is already rejected as unsupported, so a later font lookup must not surface UnresolvedResource instead.
-                if (state.HasUnsupportedContent) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
+                if (state.HasUnsupportedContent) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.", null, state.UnsupportedDiagnostic);
                 SvgResolvedDirectTextElement resolvedText = context.ResolveTextShape(reader, state.PaintResources);
                 SvgResolvedPaintableElement textElement = resolvedText.PaintableElement;
                 string? textClip = SvgClipPathSyntax.ResolveClipId(reader, state);

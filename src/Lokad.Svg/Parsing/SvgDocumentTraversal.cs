@@ -569,7 +569,7 @@ internal static class SvgDocumentTraversal
 
     /// <summary>Consumes one non-empty foreign-namespace subtree when no descendant can render, reporting whether it was skipped.</summary>
     /// <remarks>
-    /// <para>Only editor namedview containers are eligible: unknown foreign elements keep the unsupported flag even when fully foreign (see the public-contract foreign-rect lock), so the allowlist cannot grow by content shape. A skipped subtree holds no SVG-namespace descendants, and this engine renders only SVG-namespace elements, so skipping paints nothing and drops no definitions.</para>
+    /// <para>Recognized editor/test descriptions are eligible. Unknown nonempty foreign elements keep the unsupported flag. A skipped subtree holds no SVG descendants, so it paints nothing and defines no resources.</para>
     /// <para>Mirrors the main loop per-element accounting: structural limits, node budget, work and cancellation, plus the symbol-depth rule. Leaves the reader on the foreign end element so the main loop end-element bookkeeping runs normally. Well-formed XML always closes the subtree; reaching the reader end reports false.</para>
     /// </remarks>
     private static bool TrySkipInertForeignSubtree(System.Xml.XmlReader reader, SvgDocumentState state, SvgRenderLimits limits, CancellationToken cancellationToken)
@@ -577,24 +577,10 @@ internal static class SvgDocumentTraversal
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(limits);
-        if (!string.Equals(reader.LocalName, "namedview", StringComparison.Ordinal)) return false;
-        int foreignDepth = reader.Depth;
-        bool clean = true;
-        while (reader.Read())
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (reader.NodeType == System.Xml.XmlNodeType.Element)
-            {
-                SvgStructuralAdmission.ValidateElementStructure(reader, limits);
-                if (state.NodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
-                state.NodeCount++;
-                if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) clean = false;
-                if (reader.NamespaceURI == "http://www.w3.org/2000/svg") clean = false;
-            }
-            else if (reader.NodeType == System.Xml.XmlNodeType.EndElement && reader.Depth == foreignDepth) return clean;
-        }
-
-        return false;
+        if (!SvgStructuralVocabulary.IsForeignMetadata(reader.NamespaceURI, reader.LocalName)) return false;
+        SvgForeignSubtree subtree = SvgStructuralAdmission.ConsumeForeignMetadata(reader, limits, state.NodeCount, cancellationToken);
+        state.NodeCount = subtree.NodeCount;
+        return !subtree.ContainsSvg && state.SymbolDepth < 0;
     }
 
     /// <summary>Consumes one non-empty rendered-leaf subtree, reporting whether it holds any child elements.</summary>

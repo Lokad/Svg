@@ -1,0 +1,1061 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "a35559b8ce0aedc6ccdae8e27b041b05e2ebf5d8",
+  "candidateLibraries": {
+    "net11.0": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9",
+    "net10.0": "7e5d721e484db6376f8736ee94c27d27ab5aa893b0062d14eb923b2d08ec11bf"
+  },
+  "scope": "Shared foreign-description traversal, pattern declaration locations and first unsupported-source diagnostics. No pixel, text-layout, sizing, public API or storage-owner change.",
+  "sharedRules": [
+    "Known editor namedview and exact W3C test-description namespace/container identities share bounded scanning in lowering, font discovery and stylesheet collection. SVG descendants and unknown nonempty foreign wrappers retain rejection.",
+    "Pattern selection tracks actual rendered-group ancestry separately from general drawing eligibility. Selection, font discovery and registration share declaration-location vocabulary.",
+    "A later text rejection carries the first recorded unsupported source instead of replacing it with the text node."
+  ],
+  "mechanisms": {
+    "addedCases": 18,
+    "tests": [
+      "../../Lokad.Svg.Tests/SvgForeignMetadataTests.cs",
+      "../../Lokad.Svg.Tests/SvgPatternDefinitionLocationTests.cs",
+      "../../Lokad.Svg.Tests/SvgSourceDiagnosticTests.cs"
+    ],
+    "failingBefore": {
+      "librarySha256": "91b07b5a822e2821d3d1407b6d63201412bd2b84ebe168522a1902fb540cc9ea",
+      "counters": {
+        "total": "13",
+        "executed": "13",
+        "passed": "2",
+        "failed": "11",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "reason": "Eleven actual-value failures in first diagnostics, metadata/font discovery and grouped pattern selection; two ordinary pattern-location companions pass; no missing-method/type/discovery failures."
+    },
+    "roles": "Metadata/font eligibility, SVG descendants, structural node accounting and closing-reader position; five positive and three excluded pattern-parent contexts; three prior-diagnostic sources. Eleven actual-value failures before, two ordinary pattern companions pass; new scan-boundary/exclusion cases retain their separate roles."
+  },
+  "contract": {
+    "addedCases": 1,
+    "test": "../../Lokad.Svg.Tests/OpenTypeFontTests.TraversalMetadata.cs",
+    "role": "A prepared grouped pattern following foreign metadata acquires only the selected font once and matches its explicit control. Existing API/ownership, refusal/cancellation/cleanup/retry and font-pattern allocation cases remain separate; no fixture x API matrix."
+  },
+  "rendering": {
+    "fixtures": [
+      {
+        "id": "original-pattern-definition-root",
+        "source": "../../Fixtures/original/pattern-definition-root.svg",
+        "captureMetadata": "../../References/original-pattern-definition-root.json",
+        "captures": [
+          {
+            "id": "original-pattern-definition-root",
+            "host": "windows",
+            "capture": 1,
+            "sourceSha256": "fd73b366f92d331bb6d45b7c5cbdf3c188ea083277d068d20511bf13cb84623f",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-pattern-definition-root",
+            "host": "windows",
+            "capture": 2,
+            "sourceSha256": "fd73b366f92d331bb6d45b7c5cbdf3c188ea083277d068d20511bf13cb84623f",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-pattern-definition-root",
+            "host": "windows",
+            "capture": 3,
+            "sourceSha256": "fd73b366f92d331bb6d45b7c5cbdf3c188ea083277d068d20511bf13cb84623f",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-pattern-definition-root",
+            "host": "linux",
+            "capture": 1,
+            "sourceSha256": "fd73b366f92d331bb6d45b7c5cbdf3c188ea083277d068d20511bf13cb84623f",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-pattern-definition-root",
+            "host": "linux",
+            "capture": 2,
+            "sourceSha256": "fd73b366f92d331bb6d45b7c5cbdf3c188ea083277d068d20511bf13cb84623f",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-pattern-definition-root",
+            "host": "linux",
+            "capture": 3,
+            "sourceSha256": "fd73b366f92d331bb6d45b7c5cbdf3c188ea083277d068d20511bf13cb84623f",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "comparisons": [
+          {
+            "id": "original-pattern-definition-root",
+            "host": "windows",
+            "phase": "before",
+            "outcome": "rendered",
+            "librarySha256": "91b07b5a822e2821d3d1407b6d63201412bd2b84ebe168522a1902fb540cc9ea",
+            "changedPixels": 0,
+            "maximumError": 0
+          },
+          {
+            "id": "original-pattern-definition-root",
+            "host": "windows",
+            "phase": "candidate",
+            "outcome": "rendered",
+            "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9",
+            "changedPixels": 0,
+            "maximumError": 0
+          },
+          {
+            "id": "original-pattern-definition-root",
+            "host": "linux",
+            "phase": "before",
+            "outcome": "rendered",
+            "librarySha256": "91b07b5a822e2821d3d1407b6d63201412bd2b84ebe168522a1902fb540cc9ea",
+            "changedPixels": 0,
+            "maximumError": 0
+          },
+          {
+            "id": "original-pattern-definition-root",
+            "host": "linux",
+            "phase": "candidate",
+            "outcome": "rendered",
+            "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9",
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        ]
+      },
+      {
+        "id": "original-pattern-definition-group",
+        "source": "../../Fixtures/original/pattern-definition-group.svg",
+        "captureMetadata": "../../References/original-pattern-definition-group.json",
+        "captures": [
+          {
+            "id": "original-pattern-definition-group",
+            "host": "windows",
+            "capture": 1,
+            "sourceSha256": "ed485c8570d4fd705e40377e722f12f05e3c075672c014f61811a401ca7e3225",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-pattern-definition-group",
+            "host": "windows",
+            "capture": 2,
+            "sourceSha256": "ed485c8570d4fd705e40377e722f12f05e3c075672c014f61811a401ca7e3225",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-pattern-definition-group",
+            "host": "windows",
+            "capture": 3,
+            "sourceSha256": "ed485c8570d4fd705e40377e722f12f05e3c075672c014f61811a401ca7e3225",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-pattern-definition-group",
+            "host": "linux",
+            "capture": 1,
+            "sourceSha256": "ed485c8570d4fd705e40377e722f12f05e3c075672c014f61811a401ca7e3225",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-pattern-definition-group",
+            "host": "linux",
+            "capture": 2,
+            "sourceSha256": "ed485c8570d4fd705e40377e722f12f05e3c075672c014f61811a401ca7e3225",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-pattern-definition-group",
+            "host": "linux",
+            "capture": 3,
+            "sourceSha256": "ed485c8570d4fd705e40377e722f12f05e3c075672c014f61811a401ca7e3225",
+            "nativePngSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "comparisons": [
+          {
+            "id": "original-pattern-definition-group",
+            "host": "windows",
+            "phase": "before",
+            "outcome": "UnsupportedFeature",
+            "librarySha256": "91b07b5a822e2821d3d1407b6d63201412bd2b84ebe168522a1902fb540cc9ea"
+          },
+          {
+            "id": "original-pattern-definition-group",
+            "host": "windows",
+            "phase": "candidate",
+            "outcome": "rendered",
+            "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9",
+            "changedPixels": 0,
+            "maximumError": 0
+          },
+          {
+            "id": "original-pattern-definition-group",
+            "host": "linux",
+            "phase": "before",
+            "outcome": "UnsupportedFeature",
+            "librarySha256": "91b07b5a822e2821d3d1407b6d63201412bd2b84ebe168522a1902fb540cc9ea"
+          },
+          {
+            "id": "original-pattern-definition-group",
+            "host": "linux",
+            "phase": "candidate",
+            "outcome": "rendered",
+            "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9",
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        ]
+      },
+      {
+        "id": "original-foreign-test-description",
+        "source": "../../Fixtures/original/foreign-test-description.svg",
+        "captureMetadata": "../../References/original-foreign-test-description.json",
+        "captures": [
+          {
+            "id": "original-foreign-test-description",
+            "host": "windows",
+            "capture": 1,
+            "sourceSha256": "e819a1d567490d15a22ea8ca2c674a027a1ae3bab1f0d2b01d5a0b93820cc791",
+            "nativePngSha256": "e6343cc964efa7ec0f1e4a4eeef400330deffd025a4807723c9e3f01ab98f782",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-foreign-test-description",
+            "host": "windows",
+            "capture": 2,
+            "sourceSha256": "e819a1d567490d15a22ea8ca2c674a027a1ae3bab1f0d2b01d5a0b93820cc791",
+            "nativePngSha256": "e6343cc964efa7ec0f1e4a4eeef400330deffd025a4807723c9e3f01ab98f782",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-foreign-test-description",
+            "host": "windows",
+            "capture": 3,
+            "sourceSha256": "e819a1d567490d15a22ea8ca2c674a027a1ae3bab1f0d2b01d5a0b93820cc791",
+            "nativePngSha256": "e6343cc964efa7ec0f1e4a4eeef400330deffd025a4807723c9e3f01ab98f782",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-foreign-test-description",
+            "host": "linux",
+            "capture": 1,
+            "sourceSha256": "e819a1d567490d15a22ea8ca2c674a027a1ae3bab1f0d2b01d5a0b93820cc791",
+            "nativePngSha256": "e6343cc964efa7ec0f1e4a4eeef400330deffd025a4807723c9e3f01ab98f782",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-foreign-test-description",
+            "host": "linux",
+            "capture": 2,
+            "sourceSha256": "e819a1d567490d15a22ea8ca2c674a027a1ae3bab1f0d2b01d5a0b93820cc791",
+            "nativePngSha256": "e6343cc964efa7ec0f1e4a4eeef400330deffd025a4807723c9e3f01ab98f782",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-foreign-test-description",
+            "host": "linux",
+            "capture": 3,
+            "sourceSha256": "e819a1d567490d15a22ea8ca2c674a027a1ae3bab1f0d2b01d5a0b93820cc791",
+            "nativePngSha256": "e6343cc964efa7ec0f1e4a4eeef400330deffd025a4807723c9e3f01ab98f782",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "comparisons": [
+          {
+            "id": "original-foreign-test-description",
+            "host": "windows",
+            "phase": "before",
+            "outcome": "UnsupportedFeature",
+            "librarySha256": "91b07b5a822e2821d3d1407b6d63201412bd2b84ebe168522a1902fb540cc9ea"
+          },
+          {
+            "id": "original-foreign-test-description",
+            "host": "windows",
+            "phase": "candidate",
+            "outcome": "rendered",
+            "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9",
+            "changedPixels": 0,
+            "maximumError": 0
+          },
+          {
+            "id": "original-foreign-test-description",
+            "host": "linux",
+            "phase": "before",
+            "outcome": "UnsupportedFeature",
+            "librarySha256": "91b07b5a822e2821d3d1407b6d63201412bd2b84ebe168522a1902fb540cc9ea"
+          },
+          {
+            "id": "original-foreign-test-description",
+            "host": "linux",
+            "phase": "candidate",
+            "outcome": "rendered",
+            "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9",
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        ]
+      }
+    ],
+    "canonicalSources": 3,
+    "pngsAdded": 2,
+    "freshCaptures": 18,
+    "roles": "Root/group pattern graphs have independent source hashes and capture metadata even where their PNGs match. The group fixture pins inherited fill and exclusion of definition-ancestor translation. The separate metadata fixture paints ordinary geometry without activating description text.",
+    "existingManifestEntriesUnchanged": 1484,
+    "oldReferencesAndTolerancesUnchanged": true
+  },
+  "originalReview": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "originalFragmentsRetained": 0,
+    "allHashesOptionsDimensionsAndOutcomesPreserved": true,
+    "hosts": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 51,
+          "rendered": 150,
+          "exact": 150,
+          "MalformedInput": 3
+        },
+        "previousPngsByteIdentical": 150,
+        "changedDiagnostics": [
+          {
+            "name": "anim1.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 20,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "rect",
+                "ElementId": "rectToAnimateAtZero",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 10,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "anim2.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 22,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "rect",
+                "ElementId": "rectToAnimateAtZero",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 10,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "anim3.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 20,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "rect",
+                "ElementId": "rectToAnimateAtZero",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 10,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "paths-data-08-t.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 50,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "SVG text requires a prepared font snapshot.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 50,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "paths-data-09-t.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 50,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "SVG text requires a prepared font snapshot.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 50,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "pservers-grad-03-b-anim.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 87,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "rect",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 50,
+                "LinePosition": 5,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "pservers-grad-03-b.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 57,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "SVG text requires a prepared font snapshot.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 57,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "shapes-polygon-01-t.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "revision",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 70,
+                "LinePosition": 3,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "SVG text requires a prepared font snapshot.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "revision",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 70,
+                "LinePosition": 3,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "shapes-polyline-01-t.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "revision",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 81,
+                "LinePosition": 3,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "SVG text requires a prepared font snapshot.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "revision",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 81,
+                "LinePosition": 3,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "video1.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 45,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "video",
+                "ElementId": "vid1",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 8,
+                "LinePosition": 6,
+                "InstanceElementId": ""
+              }
+            }
+          }
+        ]
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 51,
+          "rendered": 150,
+          "exact": 150,
+          "MalformedInput": 3
+        },
+        "previousPngsByteIdentical": 150,
+        "changedDiagnostics": [
+          {
+            "name": "anim1.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 20,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "rect",
+                "ElementId": "rectToAnimateAtZero",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 10,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "anim2.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 22,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "rect",
+                "ElementId": "rectToAnimateAtZero",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 10,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "anim3.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 20,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "rect",
+                "ElementId": "rectToAnimateAtZero",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 10,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "paths-data-08-t.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 50,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "SVG text requires a prepared font snapshot.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 50,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "paths-data-09-t.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 50,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "SVG text requires a prepared font snapshot.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 50,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "pservers-grad-03-b-anim.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 87,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "rect",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 50,
+                "LinePosition": 5,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "pservers-grad-03-b.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 57,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "SVG text requires a prepared font snapshot.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 57,
+                "LinePosition": 4,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "shapes-polygon-01-t.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "revision",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 70,
+                "LinePosition": 3,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "SVG text requires a prepared font snapshot.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "revision",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 70,
+                "LinePosition": 3,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "shapes-polyline-01-t.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "revision",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 81,
+                "LinePosition": 3,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "SVG text requires a prepared font snapshot.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "revision",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 81,
+                "LinePosition": 3,
+                "InstanceElementId": ""
+              }
+            }
+          },
+          {
+            "name": "video1.svg",
+            "before": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "text",
+                "ElementId": "",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 45,
+                "LinePosition": 18,
+                "InstanceElementId": ""
+              }
+            },
+            "after": {
+              "message": "This SVG child element is not implemented yet.",
+              "source": {
+                "ElementName": "video",
+                "ElementId": "vid1",
+                "AttributeName": "",
+                "AttributeValue": "",
+                "LineNumber": 8,
+                "LinePosition": 6,
+                "InstanceElementId": ""
+              }
+            }
+          }
+        ]
+      }
+    },
+    "structuralGatesAdvancedToFonts": [
+      "paths-data-08-t.svg",
+      "paths-data-09-t.svg",
+      "pservers-grad-03-b.svg",
+      "shapes-polygon-01-t.svg",
+      "shapes-polyline-01-t.svg"
+    ],
+    "qualification": "The five originals now require explicit font snapshots; no whole-original font acceptance is claimed. Dynamic content still rejects, with recorded originating contexts preserved. All 150 rendered PNGs are byte-identical."
+  },
+  "rejectedPrototype": "Admitting grouped patterns only in the scene produced a blank own control (192 missing native pixels). A broader parent.Drawing index prototype fixed it but also mixed parent roles. The final code retains actual rendered-group ancestry and existing exclusions.",
+  "simplification": {
+    "sharedScannerReplacesPrivateLoop": true,
+    "newOwners": 0,
+    "newFrameworks": 0,
+    "retainedContracts": "Unknown foreign wrappers, namedview SVG descendants, node/depth/attribute accounting, skipped branches, resource/symbol/nested-viewport exclusions and shared font/resource ownership remain routine."
+  },
+  "validation": {
+    "builds": [
+      {
+        "project": "Lokad.Svg.Tests",
+        "framework": "net11.0",
+        "seconds": 0.5199702000245452,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net11.0",
+        "seconds": 2.0316897998563945,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.Tests",
+        "framework": "net10.0",
+        "seconds": 4.066577100194991,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net10.0",
+        "seconds": 1.4363335999660194,
+        "exitCode": 0,
+        "warnings": 0
+      }
+    ],
+    "focused": {
+      "name": "traversal-contracts-core-windows-net11.0",
+      "passed": 4074,
+      "seconds": 15.047,
+      "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9"
+    },
+    "affectedIntegration": {
+      "name": "traversal-integration-native-windows-net11.0",
+      "passed": 1709,
+      "seconds": 16.365,
+      "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9"
+    },
+    "full": [
+      {
+        "name": "full-qualified-core-linux-net10.0",
+        "passed": 33117,
+        "seconds": 42.26,
+        "librarySha256": "7e5d721e484db6376f8736ee94c27d27ab5aa893b0062d14eb923b2d08ec11bf"
+      },
+      {
+        "name": "full-qualified-core-linux-net11.0",
+        "passed": 33117,
+        "seconds": 55.596,
+        "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9"
+      },
+      {
+        "name": "full-qualified-core-windows-net10.0",
+        "passed": 33117,
+        "seconds": 46.124,
+        "librarySha256": "7e5d721e484db6376f8736ee94c27d27ab5aa893b0062d14eb923b2d08ec11bf"
+      },
+      {
+        "name": "full-qualified-core-windows-net11.0",
+        "passed": 33117,
+        "seconds": 53.187,
+        "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9"
+      },
+      {
+        "name": "full-qualified-native-linux-net10.0",
+        "passed": 39151,
+        "seconds": 123.548,
+        "librarySha256": "7e5d721e484db6376f8736ee94c27d27ab5aa893b0062d14eb923b2d08ec11bf"
+      },
+      {
+        "name": "full-qualified-native-linux-net11.0",
+        "passed": 39151,
+        "seconds": 156.756,
+        "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9"
+      },
+      {
+        "name": "full-qualified-native-windows-net10.0",
+        "passed": 39151,
+        "seconds": 57.269,
+        "librarySha256": "7e5d721e484db6376f8736ee94c27d27ab5aa893b0062d14eb923b2d08ec11bf"
+      },
+      {
+        "name": "full-qualified-native-windows-net11.0",
+        "passed": 39151,
+        "seconds": 67.466,
+        "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9"
+      }
+    ],
+    "totalPassed": 289072,
+    "originalReplaySeconds": 52.77,
+    "timingScope": "Functional elapsed seconds on a concurrently used workstation, not performance or a suite-simplification measurement."
+  },
+  "closure": {
+    "closed": [
+      "First-source diagnostic preservation at later text rejection.",
+      "Recognized foreign test descriptions and coherent preparation/lowering treatment.",
+      "Rendered-group pattern registration/content selection, including inherited style and distinct source graphs."
+    ],
+    "remaining": [
+      "Five newly exposed font gates and all other explicit font/resource/static-state contexts.",
+      "All 54 default nonrendering originals remain individually pending; whole-corpus W1 acceptance is open.",
+      "Remaining PLAN retention, test simplification, structural and benchmark work remains open."
+    ]
+  }
+}

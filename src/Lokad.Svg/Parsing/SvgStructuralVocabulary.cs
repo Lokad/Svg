@@ -15,6 +15,12 @@ internal static class SvgStructuralVocabulary
     /// <summary>Identifies descriptive subtrees that do not paint or define reference targets at any admitted location.</summary>
     internal static bool IsDescriptiveElement(string localName) => localName is "title" or "desc" or "metadata";
 
+    /// <summary>Identifies foreign editor/test descriptions eligible for inert traversal.</summary>
+    /// <remarks>Callers still reject SVG descendants; unknown nonempty foreign wrappers remain unsupported.</remarks>
+    internal static bool IsForeignMetadata(string namespaceUri, string localName)
+        => namespaceUri != "http://www.w3.org/2000/svg" && (localName == "namedview"
+            || namespaceUri == "http://www.w3.org/2000/02/svg/testsuite/description/" && localName == "SVGTestCase");
+
     /// <summary>Identifies the definition leaves that count as styleable content.</summary>
     internal static bool IsDefinitionLeaf(string localName) => localName is "rect" or "line" or "polygon" or "polyline" or "path" or "circle" or "ellipse" or "image";
 
@@ -23,6 +29,11 @@ internal static class SvgStructuralVocabulary
 
     /// <summary>Identifies the definition container that admits local geometry references.</summary>
     internal static bool IsDefinitionsContainer(string localName) => localName == "defs";
+
+    /// <summary>Shares pattern declaration locations between selection, font discovery and lowering.</summary>
+    /// <remarks>Callers supply an eligible rendered-group child, excluding resource/symbol content and skipped branches.</remarks>
+    internal static bool IsPatternDefinitionLocation(bool rootChild, bool definitionsChild, bool groupedChild)
+        => rootChild || definitionsChild || groupedChild;
 
     /// <summary>Shares non-rendering symbol placement between lowering and font discovery.
     /// An open symbol admits no nested symbol; otherwise direct defs children and eligible root/group children are definitions.</summary>

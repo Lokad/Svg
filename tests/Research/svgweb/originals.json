@@ -10351,10 +10351,10 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "radial-primitive-binding.json",
+    "evidence": "shared-traversal.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "55e778eb7dd89360f4b0559bc4c44e519d5bac93",
-    "librarySha256": "91b07b5a822e2821d3d1407b6d63201412bd2b84ebe168522a1902fb540cc9ea",
+    "sourceBaseline": "a35559b8ce0aedc6ccdae8e27b041b05e2ebf5d8",
+    "librarySha256": "8ad2b45d65d37bf9f4da51e225d89718cbc5fbf28d1d328fc08850ff0876c5d9",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10365,14 +10365,283 @@
       "MalformedInput": 3
     },
     "previousPngsByteIdenticalPerHost": {
-      "windows": 149,
-      "linux": 149
+      "windows": 150,
+      "linux": 150
     },
     "changedOutcomes": [],
-    "changedOutcomesOrDiagnostics": [],
-    "newlyExactOriginals": [
-      "radialgradient1.svg"
+    "changedOutcomesOrDiagnostics": [
+      {
+        "name": "anim1.svg",
+        "before": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 20,
+            "LinePosition": 18,
+            "InstanceElementId": ""
+          }
+        },
+        "after": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "rect",
+            "ElementId": "rectToAnimateAtZero",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 10,
+            "LinePosition": 18,
+            "InstanceElementId": ""
+          }
+        }
+      },
+      {
+        "name": "anim2.svg",
+        "before": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 22,
+            "LinePosition": 18,
+            "InstanceElementId": ""
+          }
+        },
+        "after": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "rect",
+            "ElementId": "rectToAnimateAtZero",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 10,
+            "LinePosition": 18,
+            "InstanceElementId": ""
+          }
+        }
+      },
+      {
+        "name": "anim3.svg",
+        "before": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 20,
+            "LinePosition": 18,
+            "InstanceElementId": ""
+          }
+        },
+        "after": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "rect",
+            "ElementId": "rectToAnimateAtZero",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 10,
+            "LinePosition": 18,
+            "InstanceElementId": ""
+          }
+        }
+      },
+      {
+        "name": "paths-data-08-t.svg",
+        "before": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 50,
+            "LinePosition": 4,
+            "InstanceElementId": ""
+          }
+        },
+        "after": {
+          "message": "SVG text requires a prepared font snapshot.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 50,
+            "LinePosition": 4,
+            "InstanceElementId": ""
+          }
+        }
+      },
+      {
+        "name": "paths-data-09-t.svg",
+        "before": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 50,
+            "LinePosition": 4,
+            "InstanceElementId": ""
+          }
+        },
+        "after": {
+          "message": "SVG text requires a prepared font snapshot.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 50,
+            "LinePosition": 4,
+            "InstanceElementId": ""
+          }
+        }
+      },
+      {
+        "name": "pservers-grad-03-b-anim.svg",
+        "before": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 87,
+            "LinePosition": 4,
+            "InstanceElementId": ""
+          }
+        },
+        "after": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "rect",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 50,
+            "LinePosition": 5,
+            "InstanceElementId": ""
+          }
+        }
+      },
+      {
+        "name": "pservers-grad-03-b.svg",
+        "before": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 57,
+            "LinePosition": 4,
+            "InstanceElementId": ""
+          }
+        },
+        "after": {
+          "message": "SVG text requires a prepared font snapshot.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 57,
+            "LinePosition": 4,
+            "InstanceElementId": ""
+          }
+        }
+      },
+      {
+        "name": "shapes-polygon-01-t.svg",
+        "before": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "revision",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 70,
+            "LinePosition": 3,
+            "InstanceElementId": ""
+          }
+        },
+        "after": {
+          "message": "SVG text requires a prepared font snapshot.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "revision",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 70,
+            "LinePosition": 3,
+            "InstanceElementId": ""
+          }
+        }
+      },
+      {
+        "name": "shapes-polyline-01-t.svg",
+        "before": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "revision",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 81,
+            "LinePosition": 3,
+            "InstanceElementId": ""
+          }
+        },
+        "after": {
+          "message": "SVG text requires a prepared font snapshot.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "revision",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 81,
+            "LinePosition": 3,
+            "InstanceElementId": ""
+          }
+        }
+      },
+      {
+        "name": "video1.svg",
+        "before": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "text",
+            "ElementId": "",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 45,
+            "LinePosition": 18,
+            "InstanceElementId": ""
+          }
+        },
+        "after": {
+          "message": "This SVG child element is not implemented yet.",
+          "source": {
+            "ElementName": "video",
+            "ElementId": "vid1",
+            "AttributeName": "",
+            "AttributeValue": "",
+            "LineNumber": 8,
+            "LinePosition": 6,
+            "InstanceElementId": ""
+          }
+        }
+      }
     ],
+    "newlyExactOriginals": [],
     "lostExactImages": [],
     "remainingDefaultDifferences": []
   }

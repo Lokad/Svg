@@ -5,6 +5,30 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Shares structural admission gates between font-request discovery and document lowering.</summary>
 internal static class SvgStructuralAdmission
 {
+    /// <summary>Consumes a recognized foreign description, rejecting any SVG descendants in its result.</summary>
+    /// <remarks>The opening element is already counted. Borrows the reader, allocates no storage and
+    /// validates every child against structural limits and cancellation. Leaves the reader on the
+    /// closing element; callers retain unsupported-content state and all outer scope bookkeeping.</remarks>
+    internal static SvgForeignSubtree ConsumeForeignMetadata(XmlReader reader, SvgRenderLimits limits, int nodeCount, CancellationToken token)
+    {
+        if (reader.IsEmptyElement) return new(false, nodeCount);
+        int depth = reader.Depth;
+        bool containsSvg = false;
+        while (reader.Read())
+        {
+            token.ThrowIfCancellationRequested();
+            if (reader.NodeType == XmlNodeType.Element)
+            {
+                ValidateElementStructure(reader, limits);
+                if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+                nodeCount++;
+                containsSvg |= reader.NamespaceURI == "http://www.w3.org/2000/svg";
+            }
+            else if (reader.NodeType == XmlNodeType.EndElement && reader.Depth == depth) return new(containsSvg, nodeCount);
+        }
+        return new(containsSvg, nodeCount);
+    }
+
     /// <summary>Rejects elements that violate the configured nesting or attribute limits.</summary>
     internal static void ValidateElementStructure(XmlReader reader, SvgRenderLimits limits)
     {
@@ -67,3 +91,6 @@ internal static class SvgStructuralAdmission
 
 /// <summary>Reports unsupported children, excluding inert descriptions, and the resulting document node count.</summary>
 internal readonly record struct SvgLeafSubtree(bool HasUnsupportedChildren, int NodeCount);
+
+/// <summary>Reports SVG descendants of a foreign description and its resulting structural node count.</summary>
+internal readonly record struct SvgForeignSubtree(bool ContainsSvg, int NodeCount);

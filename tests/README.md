@@ -27,6 +27,16 @@ Shared data factories can have `MemberData` consumers in other partial class
 files; include those consumers when selecting affected checks.
 Filter and clip integration includes `SvgSymbolInstanceReferenceTests`: its
 shared bank contains crop, rescaling and nested-effect regressions.
+
+The [foreign-description mechanisms](Lokad.Svg.Tests/SvgForeignMetadataTests.cs)
+cover font eligibility, SVG descendants and structural accounting. [Pattern-location
+cases](Lokad.Svg.Tests/SvgPatternDefinitionLocationTests.cs) separate eligible parent
+roles from existing exclusions; diagnostic cases preserve the first rejected source.
+One prepared-font contract protects their acquisition interaction. Three canonical
+sources retain metadata and root/group declaration graphs with independent captures;
+the two pattern images share verified PNG storage. [Evidence](Research/svgweb/shared-traversal.json)
+records those responsibilities without adding a fixture/API matrix.
+
 The [thin-curve mechanisms](Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs) distinguish
 authored ink from short flattened fallbacks and explicit suppression. One source
 preparation contract and one added clip ownership case cover refusal, cancellation,

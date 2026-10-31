@@ -35,6 +35,11 @@ internal static class SvgRootStyleSheetParser
                 rootDepth = reader.Depth;
                 continue;
             }
+            if (descriptionDepth < 0 && SvgStructuralVocabulary.IsForeignMetadata(reader.NamespaceURI, reader.LocalName))
+            {
+                nodes = SvgStructuralAdmission.ConsumeForeignMetadata(reader, limits, nodes, cancellationToken).NodeCount;
+                continue;
+            }
             if (reader.NamespaceURI != "http://www.w3.org/2000/svg" || descriptionDepth >= 0 && reader.Depth > descriptionDepth) continue;
             if (SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName))
             {

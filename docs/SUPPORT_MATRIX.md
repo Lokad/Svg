@@ -22,12 +22,17 @@ or discover machine fonts. Unsupported visible behavior reports
 `UnsupportedFeature`; malformed input, unresolved references and exceeded limits
 have distinct [error categories](../src/Lokad.Svg/SvgErrorCode.cs).
 
+Foreign editor `namedview` and W3C SVG test-description `SVGTestCase` containers
+are inert when their descendants are also foreign. Their nodes still count toward
+structural limits. SVG descendants and unknown nonempty foreign wrappers reject.
+
 ### Diagnostics
 
 `SvgException.SourceDiagnostic` carries available element/ID, attribute or property,
 value and one-based XML location. Retained text keeps its source location; direct
 text instances also identify their referencing element. Unavailable fields are
 empty/null; strings are bounded to 256 UTF-16 code units. One failure is reported.
+An earlier unsupported source keeps its diagnostic when a later text node rejects.
 
 `FontDiagnostic` identifies the requested family/weight/style, selected face and
 fallback when known. Missing-glyph indices count Unicode scalars in normalized
@@ -145,6 +150,8 @@ gradient interpolation reject.
 Patterns support tile/content unit systems, viewBox/aspect maps, affine placement
 and bounded repetition of vectors, groups, uses, opacity, gradients, PNGs, admitted
 filters and supplied text. Tile x/y/width/height accept numbers/px, not percentages.
+Definitions may appear at the root, as direct `defs` children, or within rendered
+`g` groups. Group styles are inherited; external consumers retain their own placement.
 The pattern container accepts only opacity 1; children retain opacity. XML overflow
 accepts hidden/visible; CSS accepts hidden only. Recursive/nested pattern paints reject.
 

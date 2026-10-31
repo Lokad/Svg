@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Share foreign-description traversal and pattern declaration locations across
+  preparation and lowering; preserve the original unsupported-source diagnostic
+  when a later text node encounters the rejection.
 - Share fixed CSS length conversion across roots, markers and stroke metrics;
   admit physical units for stroke widths, dash entries and offsets, including zero
   widths during font/resource selection.

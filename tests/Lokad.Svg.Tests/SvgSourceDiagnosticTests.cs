@@ -3,6 +3,23 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgSourceDiagnosticTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("<audio id='first'/>", "audio")]
+    [InlineData("<animate id='first'/>", "animate")]
+    [InlineData("<f:rect xmlns:f='urn:foreign' id='first'><f:child/></f:rect>", "rect")]
+    public void Later_text_preserves_the_first_unsupported_source(string unsupported, string element)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>\n"
+            + unsupported + "\n<text id='later' font-family='Missing'>A</text>\n</svg>");
+        SvgException error = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        SvgSourceDiagnostic source = Assert.IsType<SvgSourceDiagnostic>(error.SourceDiagnostic);
+        Assert.Equal(element, source.ElementName);
+        Assert.Equal("first", source.ElementId);
+        Assert.Equal(2, source.LineNumber);
+    }
+
+    [Theory]
     [InlineData("<foreignObject id='foreign'/>", "foreignObject", "foreign", "", "")]
     [InlineData("<rect id='shape' width='8' height='8' transform-origin='center'/>", "rect", "shape", "transform-origin", "center")]
     [InlineData("<path id='edge' d='M0 0L8 8' stroke='red' stroke-linejoin='arcs'/>", "path", "edge", "stroke-linejoin", "arcs")]

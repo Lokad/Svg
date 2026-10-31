@@ -206,6 +206,14 @@ internal static class SvgFontRequestDiscovery
                     }
                     else if (!sterile && isSvgElement && SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName) && !reader.IsEmptyElement)
                         descriptionDepth = reader.Depth;
+                    if (!sterile && !insideDirectText && parentAllowsText && symbolDepth < 0
+                        && SvgStructuralVocabulary.IsForeignMetadata(reader.NamespaceURI, reader.LocalName))
+                    {
+                        SvgForeignSubtree subtree = SvgStructuralAdmission.ConsumeForeignMetadata(reader, limits, nodeCount, cancellationToken);
+                        nodeCount = subtree.NodeCount;
+                        hasUnsupportedContent |= subtree.ContainsSvg;
+                        continue;
+                    }
                     bool rootElement = reader.Depth == rootDepth;
                     TextStyle style;
                     if (inheritedLevels.Count == 0)
@@ -236,7 +244,9 @@ internal static class SvgFontRequestDiscovery
                     }
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
                     bool patternDefinition = !sterile && isSvgElement && reader.LocalName == "pattern" && patternDepth < 0
-                        && (definitionsDepth >= 0 ? reader.Depth == definitionsDepth + 1 : directChild || parentAllowsText && hasGroupAncestor);
+                        && SvgStructuralVocabulary.IsPatternDefinitionLocation(directChild,
+                            definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1,
+                            definitionsDepth < 0 && parentAllowsText && hasGroupAncestor);
                     bool patternHasSize = true;
                     if (patternDefinition)
                     {

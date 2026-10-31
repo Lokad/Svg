@@ -46,6 +46,7 @@ current inventory above governs overall status.
 
 | Responsibility | Evidence and retained contracts |
 | --- | --- |
+| Structural traversal | [Shared metadata and pattern locations](shared-traversal.json). Keep recognized foreign descriptions inert through preparation/lowering, preserve the first rejection context, and align rendered-group pattern registration with content selection. Mechanisms, one prepared-font contract and independent root/group/metadata fixtures protect distinct roles. |
 | Root image layout and placement | [Root model](root-image-model.json), [projection stages](root-image-projection.json), [image boundary](root-image-boundary.json). Logical sizing, subpixel layout, recorded scene and destination coefficients stay distinct. Direct matrices and large viewBox controls protect stages that small images cannot distinguish. |
 | Root experiments | [Viewport review](root-viewport-review.json), [stage review](root-image-stages.json). Preserve rejected output-only stretching and context distinctions. |
 | Visible image source | [Source rectangle](root-visible-source.json). A clipped fractional image remaps its source before residual scale; keep the distinct float stages. Four direct cases and one independent transformed ellipse protect the rule. |
@@ -100,6 +101,12 @@ closes the complete camera against three fresh healthy captures per host and all
 82 paint isolations. Shared [radial primitive binding](radial-primitive-binding.json)
 also closes radialgradient1 and its rounded-rectangle isolation against fresh native
 evidence. All 149 other rendered PNGs remain byte-identical after that correction.
+
+Shared [traversal](shared-traversal.json) removes foreign-description gates from five
+static originals and aligns group-declared patterns. Those originals now need explicit
+font snapshots; their full acceptance remains open. Dynamic samples keep their scope
+rejections, with the recorded originating context preserved. All 150 rendered PNGs
+remain byte-identical. Original bodies and fragments are never retained.
 
 Mapped crop/flood-offset/shadow and root/filter cases are closed for their declared
 default static contexts. Remaining work includes declared stroke units, CSS and

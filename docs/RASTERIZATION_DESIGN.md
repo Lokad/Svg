@@ -22,6 +22,14 @@ and deferred opacity bind at replay. Resource references borrow their scene;
 sealed child scenes retain storage after parser staging ends. Partial construction
 and failure release owners deterministically.
 
+Pattern registration, font discovery and resource selection share declaration
+locations. Selection tracks rendered-group ancestry separately from general drawing
+eligibility, so admitting a declaration also admits its required content. Known
+foreign descriptions share one bounded, allocation-free subtree scan; stylesheet
+collection and font discovery do not activate their contents. The first recorded
+unsupported source survives later text rejection. [Traversal evidence](../tests/Research/svgweb/shared-traversal.json)
+maps the mechanisms, prepared-font contract and independent rendering controls.
+
 Solid, linear, radial and pattern polygon bindings use one
 [contour payload](../src/Lokad.Svg/Parsing/SvgPolygonContours.cs) for points, contour
 ends, winding signs and analytic spans. Repainting and mask stamping transfer its

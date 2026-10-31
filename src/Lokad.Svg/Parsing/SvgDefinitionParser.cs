@@ -482,7 +482,9 @@ internal static class SvgDefinitionParser
             state.HasUnsupportedContent = true;
             return true;
         }
-        if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "pattern")
+        if (SvgStructuralVocabulary.IsPatternDefinitionLocation(directChild,
+            state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1, groupNestedDefinition)
+            && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "pattern")
         {
             SvgElementAttributePolicy.ValidatePattern(reader, cancellationToken);
             state.PatternId = reader.GetAttribute("id");

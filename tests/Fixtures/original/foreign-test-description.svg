@@ -1,0 +1,7 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:d="http://www.w3.org/2000/02/svg/testsuite/description/" width="24" height="16">
+  <d:SVGTestCase>
+    <d:OperatorScript><d:Paragraph font-family="Unused">Descriptive data.</d:Paragraph></d:OperatorScript>
+  </d:SVGTestCase>
+  <rect x="2" y="2" width="20" height="12" rx="2" fill="#386078"/>
+</svg>

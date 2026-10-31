@@ -1,0 +1,55 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "ed485c8570d4fd705e40377e722f12f05e3c075672c014f61811a401ca7e3225",
+  "referenceSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-pattern-definition-root.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-pattern-definition-group",
+  "viewport": {
+    "width": 24,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 pattern declared within a rendered group, inheriting fill while excluding definition-ancestor translation from external use. Its separate capture metadata protects the distinct selection/lowering graph. Three fresh healthy/profile-cleaned captures per host agree. Shared PNG storage does not consolidate source/capture cases.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "ed485c8570d4fd705e40377e722f12f05e3c075672c014f61811a401ca7e3225",
+      "referenceSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "ed485c8570d4fd705e40377e722f12f05e3c075672c014f61811a401ca7e3225",
+      "referenceSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  }
+}

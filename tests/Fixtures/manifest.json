@@ -19142,6 +19142,78 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-radial-primitive-definition.json",
       "referenceSha256": "9b287ef3bd5c8ee71d7cf046b11d73d28cbf778b7d3cbb3dc8d1ea5c76a34020"
+    },
+    {
+      "id": "original-pattern-definition-root",
+      "path": "original/pattern-definition-root.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "fd73b366f92d331bb6d45b7c5cbdf3c188ea083277d068d20511bf13cb84623f",
+      "materializedSha256": "fd73b366f92d331bb6d45b7c5cbdf3c188ea083277d068d20511bf13cb84623f",
+      "featureTags": [
+        "traversal",
+        "pattern-definition",
+        "canonical"
+      ],
+      "width": 24,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-pattern-definition-root.json",
+      "referenceSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493"
+    },
+    {
+      "id": "original-pattern-definition-group",
+      "path": "original/pattern-definition-group.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "ed485c8570d4fd705e40377e722f12f05e3c075672c014f61811a401ca7e3225",
+      "materializedSha256": "ed485c8570d4fd705e40377e722f12f05e3c075672c014f61811a401ca7e3225",
+      "featureTags": [
+        "traversal",
+        "pattern-definition",
+        "canonical"
+      ],
+      "width": 24,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-pattern-definition-group.json",
+      "referenceSha256": "fe2ec4af70b1feb9c608103a8186aefc278dcb4e23bc4db668589813565d5493"
+    },
+    {
+      "id": "original-foreign-test-description",
+      "path": "original/foreign-test-description.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "e819a1d567490d15a22ea8ca2c674a027a1ae3bab1f0d2b01d5a0b93820cc791",
+      "materializedSha256": "e819a1d567490d15a22ea8ca2c674a027a1ae3bab1f0d2b01d5a0b93820cc791",
+      "featureTags": [
+        "traversal",
+        "metadata",
+        "canonical"
+      ],
+      "width": 24,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-foreign-test-description.json",
+      "referenceSha256": "e6343cc964efa7ec0f1e4a4eeef400330deffd025a4807723c9e3f01ab98f782"
     }
   ]
 }
