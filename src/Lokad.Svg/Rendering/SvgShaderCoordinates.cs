@@ -15,12 +15,18 @@ internal readonly record struct SvgRadialShaderSample(double Position, bool IsVi
 
 /// <summary>Prepares native float gradient or image coordinates for one raster draw.</summary>
 /// <remarks>Draw-local mutable state caches the owning bitmap's matrix without
-/// allocating storage. Callers retain cancellation.
+/// retaining scratch storage. Deep recorded chains use budgeted temporary mapping
+/// storage. Callers retain cancellation.
 /// Native centered radial, contained focal circles and foci on the circle use float unit matrices.
 /// Other conical maps and non-finite float maps keep the existing evaluator.
 /// Instances must not be shared between concurrent raster draws.</remarks>
 internal struct SvgShaderCoordinates
 {
+    // Borrows the current draw's immutable scene chain, budget and cancellation.
+    // Mapping scratch belongs to TryMap and is released before it returns.
+    private readonly record struct RecordedDrawing(SvgRecordedTransform Transform, SvgShaderMatrix Output,
+        SvgAffineTransform Initial, SvgAffineTransform Target, RenderBudget Budget, CancellationToken Token);
+    private RecordedDrawing? _recordedDrawing;
     private readonly SvgShaderMatrix _unit;
     private readonly SvgShaderMatrix _paintMap;
     private readonly SvgShaderMatrix? _localMatrix;
@@ -263,6 +269,19 @@ internal struct SvgShaderCoordinates
         return (linear - Math.Sqrt(coneDiscriminant)) / quadratic;
     }
 
+    /// <summary>Retains source drawing boundaries until the owning bitmap origin is known.</summary>
+    /// <remarks>Returns an allocation-free draw-local copy. The caller keeps the scene and budget
+    /// alive through sampling. Mapping checks cancellation and charges deep-chain scratch to that
+    /// budget. Coordinate caches are mutable and must not be shared between concurrent draws.</remarks>
+    internal readonly SvgShaderCoordinates WithRecordedDrawing(SvgRecordedTransform transform, SvgShaderMatrix output,
+        SvgAffineTransform initial, SvgAffineTransform target, RenderBudget budget, CancellationToken token)
+    {
+        SvgShaderCoordinates mapped = this;
+        mapped._recordedDrawing = new(transform, output, initial, target, budget, token);
+        mapped._hasPrepared = false;
+        return mapped;
+    }
+
     internal bool TryLinear(int x, int y, SvgCpuBitmapOrigin origin, out double position)
     {
         position = 0;
@@ -300,9 +319,19 @@ internal struct SvgShaderCoordinates
         if (!_enabled) return false;
         if (!_hasPrepared || origin != _origin)
         {
-            _origin = origin;
-            _hasPrepared = true;
-            SvgShaderMatrix local = _paintMap with { TranslateX = _paintMap.TranslateX - origin.X, TranslateY = _paintMap.TranslateY - origin.Y };
+            // A denied or cancelled preparation must not publish a stale matrix
+            // for this origin. The caller may explicitly retry the same draw.
+            _hasPrepared = false;
+            SvgShaderMatrix local;
+            if (_recordedDrawing is {} drawing)
+            {
+                // Canvas boundaries concatenate in the owning bitmap. Moving its
+                // origin after the child concat loses an intermediate float round.
+                SvgShaderMatrix output = drawing.Output with { TranslateX = drawing.Output.TranslateX - origin.X, TranslateY = drawing.Output.TranslateY - origin.Y };
+                _canSample = drawing.Transform.TryMap(output, drawing.Initial, drawing.Target, drawing.Budget, drawing.Token, out local);
+                if (!_canSample) return false;
+            }
+            else local = _paintMap with { TranslateX = _paintMap.TranslateX - origin.X, TranslateY = _paintMap.TranslateY - origin.Y };
             if (_localMatrix is {} gradientLocal) local = SvgShaderMatrix.Concat(local, gradientLocal);
             _canSample = local.TryInvert(out SvgShaderMatrix inverse);
             if (_canSample)
@@ -310,6 +339,8 @@ internal struct SvgShaderCoordinates
                 _prepared = SvgShaderMatrix.Concat(_unit, inverse);
                 _canSample = _prepared.IsFinite;
             }
+            _origin = origin;
+            _hasPrepared = true;
         }
         if (!_canSample) return false;
         matrix = _prepared;

@@ -1,0 +1,285 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "67bad0ea5867621cd33fdd7d8784df43e477000b",
+  "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896",
+  "scope": "Shared recorded transform replay in bitmap coordinates for linear/radial geometry samplers. Seven whole Gallardo pixels close; one remains. The whole filter milestone stays open.",
+  "implementation": {
+    "coordinates": "../../../src/Lokad.Svg/Rendering/SvgShaderCoordinates.cs",
+    "mapping": "../../../src/Lokad.Svg/Parsing/SvgRecordedTransform.cs",
+    "consumers": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "change": "Subtract the owning bitmap origin from the external destination before replaying the existing recorded chain. Join full recorded projection/layout/source placement to its first source stage before float narrowing. Keep gradient-local and unit stages separate.",
+    "ownership": "Borrow existing immutable scene nodes and the active render budget/token. No new scene map, cache owner, metadata arena or retained allocation. Chains through 64 stages use stack scratch; deeper chains reserve Surface scratch before allocation and release it before sampling. A refused or cancelled preparation cannot publish the coordinate cache.",
+    "rejected": "Splitting only active viewport DrawMap misses early scalar clip lowering. Adding new viewport/canvas metadata duplicates existing recorded-chain ownership. Applying root projection externally loses mask placement and changes large-viewBox rounding.",
+    "coverageBoundary": "Constant factories and unrecorded gradients keep existing paths. Existing text, pattern, image, source-operation identity, admission and reference exactness contracts remain."
+  },
+  "mechanisms": {
+    "tests": "../../Lokad.Svg.Tests/SvgRecordedShaderCoordinatesTests.cs",
+    "mechanismCases": 2,
+    "ownershipCases": 1,
+    "roles": [
+      "64/65-stage stack/heap boundary",
+      "initial and external placement",
+      "bitmap origin cache changes",
+      "preallocation refusal after a cached origin",
+      "scratch cleanup and same-origin explicit retry",
+      "cancelled copy and borrowed scene lifetime"
+    ]
+  },
+  "canonicalControls": [
+    {
+      "fixture": "../../Fixtures/original/linear-gradient-recorded-bitmap-origin.svg",
+      "reference": "../../References/original-linear-gradient-recorded-bitmap-origin.json",
+      "sourceSha256": "ef0458e019c6d6b9fa7910fcd263e511e2d15a409824d43af87f72522556a7f7",
+      "nativePngSha256": "b0ee354d6ed49e908827235b6f10f2cb8b168b6dc6909345b8fee34f74605fe8",
+      "freshCapturesPerHost": 3,
+      "allSixEncodedPngsIdentical": true,
+      "startupHealthyAndProfilesCleaned": true,
+      "comparisons": [
+        {
+          "id": "original-linear-gradient-recorded-bitmap-origin",
+          "host": "windows",
+          "phase": "before",
+          "librarySha256": "8c2ec42a091f97e12c464b8d22f9f94bb7232f3023d236902d95cfa238a27228",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 1
+        },
+        {
+          "id": "original-linear-gradient-recorded-bitmap-origin",
+          "host": "windows",
+          "phase": "candidate",
+          "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        },
+        {
+          "id": "original-linear-gradient-recorded-bitmap-origin",
+          "host": "linux",
+          "phase": "before",
+          "librarySha256": "8c2ec42a091f97e12c464b8d22f9f94bb7232f3023d236902d95cfa238a27228",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 1
+        },
+        {
+          "id": "original-linear-gradient-recorded-bitmap-origin",
+          "host": "linux",
+          "phase": "candidate",
+          "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      ]
+    },
+    {
+      "fixture": "../../Fixtures/original/radial-gradient-recorded-bitmap-origin.svg",
+      "reference": "../../References/original-radial-gradient-recorded-bitmap-origin.json",
+      "sourceSha256": "c7cfd357d51b6eaa5f62520047d59f248a6785f992046ef3d65bcf8cda952ec3",
+      "nativePngSha256": "b284ac3e0973db0d372c588968f6499a2246401bed0d98bbfa08bd93042e9307",
+      "freshCapturesPerHost": 3,
+      "allSixEncodedPngsIdentical": true,
+      "startupHealthyAndProfilesCleaned": true,
+      "comparisons": [
+        {
+          "id": "original-radial-gradient-recorded-bitmap-origin",
+          "host": "windows",
+          "phase": "before",
+          "librarySha256": "8c2ec42a091f97e12c464b8d22f9f94bb7232f3023d236902d95cfa238a27228",
+          "changedPixels": 21,
+          "maximumError": 1,
+          "totalChannelError": 21
+        },
+        {
+          "id": "original-radial-gradient-recorded-bitmap-origin",
+          "host": "windows",
+          "phase": "candidate",
+          "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        },
+        {
+          "id": "original-radial-gradient-recorded-bitmap-origin",
+          "host": "linux",
+          "phase": "before",
+          "librarySha256": "8c2ec42a091f97e12c464b8d22f9f94bb7232f3023d236902d95cfa238a27228",
+          "changedPixels": 21,
+          "maximumError": 1,
+          "totalChannelError": 21
+        },
+        {
+          "id": "original-radial-gradient-recorded-bitmap-origin",
+          "host": "linux",
+          "phase": "candidate",
+          "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      ]
+    }
+  ],
+  "originalMappings": {
+    "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "isolatedFiltersPerHost": 35,
+    "selectedUnfilteredPaintsPerHost": 58,
+    "all93ExactPerHost": true,
+    "newlyExactUnfiltered": [
+      "path3199",
+      "path5014",
+      "path4088"
+    ],
+    "boundary": "These are selected original-to-mechanism mappings, not an exhaustive proof of whole-document composition. Whole Gallardo remains one pixel/one channel error."
+  },
+  "qualification": {
+    "builds": 4,
+    "warnings": 0,
+    "totalAffectedChecks": 210364,
+    "checks": [
+      {
+        "name": "affected-qualified-core-linux-net10.0",
+        "passed": 14044,
+        "seconds": 42.45789748100003,
+        "librarySha256": "3a8e360868287bc12131bc7b0f2379818971db24b058bc098477a9fb99fef2ef"
+      },
+      {
+        "name": "affected-qualified-core-linux-net11.0",
+        "passed": 14044,
+        "seconds": 42.40570926000001,
+        "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896"
+      },
+      {
+        "name": "affected-qualified-core-windows-net10.0",
+        "passed": 14044,
+        "seconds": 33.613506600027904,
+        "librarySha256": "3a8e360868287bc12131bc7b0f2379818971db24b058bc098477a9fb99fef2ef"
+      },
+      {
+        "name": "affected-qualified-core-windows-net11.0",
+        "passed": 14044,
+        "seconds": 41.05554619990289,
+        "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896"
+      },
+      {
+        "name": "affected-qualified-native-linux-net10.0",
+        "passed": 38547,
+        "seconds": 175.48417980899995,
+        "librarySha256": "3a8e360868287bc12131bc7b0f2379818971db24b058bc098477a9fb99fef2ef"
+      },
+      {
+        "name": "affected-qualified-native-linux-net11.0",
+        "passed": 38547,
+        "seconds": 162.607985906,
+        "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896"
+      },
+      {
+        "name": "affected-qualified-native-windows-net10.0",
+        "passed": 38547,
+        "seconds": 55.5643984999042,
+        "librarySha256": "3a8e360868287bc12131bc7b0f2379818971db24b058bc098477a9fb99fef2ef"
+      },
+      {
+        "name": "affected-qualified-native-windows-net11.0",
+        "passed": 38547,
+        "seconds": 66.57281849998981,
+        "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896"
+      }
+    ],
+    "radialAndSolidLargeViewBoxControlsPerHost": 23,
+    "scimitarInnerControlsPerHost": 20,
+    "unchangedScimitarScopePngs": 43,
+    "completeScimitarOriginalUnchangedBothHosts": true,
+    "wholeOriginalReplaySeconds": 62.14901669998653,
+    "timingInterpretation": "Concurrent functional validation, not a benchmark or a test-suite simplification claim. Full package qualification remains a coherent-milestone responsibility."
+  },
+  "originalReview": {
+    "evidence": "gradient-recorded-bitmap-origin.json",
+    "sourceBaseline": "67bad0ea5867621cd33fdd7d8784df43e477000b",
+    "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896",
+    "allSourceHashesRecheckedPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "countsPerHost": {
+      "rendered": 148,
+      "exploratoryExact": 142,
+      "different": 6,
+      "UnsupportedFeature": 53,
+      "MalformedInput": 3
+    },
+    "previousPngsByteIdenticalPerHost": {
+      "windows": 147,
+      "linux": 147
+    },
+    "changedOriginals": [
+      {
+        "name": "gallardo.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 8,
+          "maximumError": 1,
+          "totalChannelError": 8
+        },
+        "after": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 1
+        }
+      }
+    ],
+    "newlyExactOriginals": [],
+    "lostExactImages": [],
+    "changedOutcomesOrDiagnostics": [],
+    "remainingDefaultDifferences": [
+      {
+        "name": "alphachannel.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 255,
+        "totalChannelError": 259
+      },
+      {
+        "name": "compuserver_msn_Ford_Focus.svg",
+        "status": "different",
+        "changedPixels": 6,
+        "maximumError": 4,
+        "totalChannelError": 45
+      },
+      {
+        "name": "gallardo.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 1,
+        "totalChannelError": 1
+      },
+      {
+        "name": "opensearch.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 223,
+        "totalChannelError": 231
+      },
+      {
+        "name": "rg1024_green_grapes.svg",
+        "status": "different",
+        "changedPixels": 40,
+        "maximumError": 18,
+        "totalChannelError": 143
+      },
+      {
+        "name": "scion.svg",
+        "status": "different",
+        "changedPixels": 2,
+        "maximumError": 5,
+        "totalChannelError": 22
+      }
+    ]
+  },
+  "remaining": {
+    "gallardo": "Pixel (494,101). Original prefixes before and through use4125 are exact, including the immediate backdrop (94,103,116). Removing the use from the whole drawing is a composition witness, not attribution to its restore. Narrow the first later drawing operation that creates the difference.",
+    "sharedModel": "Map green-grapes whole differences and the remaining crop/flood-offset/shadow interactions before adding special cases.",
+    "w1": "Six default originals still differ; supplied-font, resource and static-state contexts remain open."
+  }
+}

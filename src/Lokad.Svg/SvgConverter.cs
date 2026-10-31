@@ -3135,6 +3135,15 @@ public static partial class SvgConverter
             return SvgShaderMatrix.FromAffine(MapSourceTransform(output, target, PathCoordinateSpace.User));
         }
 
+        SvgShaderCoordinates PreserveRecordedShaderStages(SvgShaderCoordinates coordinates, SvgAffineTransform target)
+        {
+            if (activePaint.RecordingTransform is not {} recording) return coordinates;
+            SvgAffineTransform initial = sourcePlacement == SvgAffineTransform.Identity ? drawingMap.Recording
+                : drawingMap.Recording.ComposeChecked(sourcePlacement);
+            SvgShaderMatrix external = SvgShaderMatrix.FromAffine(drawingMap.Destination ?? SvgAffineTransform.Identity);
+            return coordinates.WithRecordedDrawing(recording, external, initial, target, budget, cancellationToken);
+        }
+
         SvgShaderMatrix? NativeRadialViewportReference(SvgRadialGradient gradient, SvgRectangle box)
         {
             if (activeViewport.DrawMap is null && frame is not null || gradient.NativePaintMatrices is not {} matrices) return null;
@@ -3941,6 +3950,8 @@ public static partial class SvgConverter
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
             SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateLinear(definition, box, drawingMap.Device.A, drawingMap.Device.D, drawingMap.Device.E, drawingMap.Device.F, null, sourcePlacement,
                 definition.SourcePaint?.Data is { IsMapped: true } viewportSourcePaint ? NativeViewportReference(viewportSourcePaint.Referencing) : null);
+            if (!constantFactory && definition.SourcePaint?.Data is { IsMapped: true } drawingSourcePaint)
+                nativeCoordinates = PreserveRecordedShaderStages(nativeCoordinates, drawingSourcePaint.Referencing);
             using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
             SvgShaderSampler shader = constantFactory
                 ? SvgShaderSampler.Constant(PrepareGradientFactory(definition.Stops, definition.Spread, out _), ShaderAlpha(outline.Opacity))
@@ -3994,6 +4005,12 @@ public static partial class SvgConverter
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
             SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, drawingMap.Device.A, drawingMap.Device.D, drawingMap.Device.E, drawingMap.Device.F, sourcePlacement,
                 NativeRadialViewportReference(definition, box));
+            if (!constantFactory && definition.NativePaintMatrices is {} canvasRadial)
+            {
+                SvgAffineTransform target = definition.IsUserSpace ? canvasRadial.Referencing
+                    : SvgAffineTransform.FromScaleOffset(box.Width, box.Height, box.X, box.Y).Compose(canvasRadial.Referencing);
+                nativeCoordinates = PreserveRecordedShaderStages(nativeCoordinates, target);
+            }
             if (definition.Radius < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial gradient radii must not be negative.");
             using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
 
@@ -4388,6 +4405,8 @@ public static partial class SvgConverter
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
             SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateLinear(definition, box, drawingMap.Device.A, drawingMap.Device.D, drawingMap.Device.E, drawingMap.Device.F, null, sourcePlacement,
                 definition.SourcePaint?.Data is { IsMapped: true } viewportSourcePaint ? NativeViewportReference(viewportSourcePaint.Referencing) : null);
+            if (!constantFactory && definition.SourcePaint?.Data is { IsMapped: true } drawingSourcePaint)
+                nativeCoordinates = PreserveRecordedShaderStages(nativeCoordinates, drawingSourcePaint.Referencing);
             if (definition.Stops.Length > 0 && constantFactory)
             {
                 RasterizeConstantGradient(definition.Stops, definition.Spread, area, opacity, paint, destination);
@@ -4454,6 +4473,12 @@ public static partial class SvgConverter
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
             SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, drawingMap.Device.A, drawingMap.Device.D, drawingMap.Device.E, drawingMap.Device.F, sourcePlacement,
                 NativeRadialViewportReference(definition, box));
+            if (!constantFactory && definition.NativePaintMatrices is {} canvasRadial)
+            {
+                SvgAffineTransform target = definition.IsUserSpace ? canvasRadial.Referencing
+                    : SvgAffineTransform.FromScaleOffset(box.Width, box.Height, box.X, box.Y).Compose(canvasRadial.Referencing);
+                nativeCoordinates = PreserveRecordedShaderStages(nativeCoordinates, target);
+            }
             if (definition.Stops.Length > 0 && constantFactory)
             {
                 RasterizeConstantGradient(definition.Stops, definition.Spread, area, opacity, paint, destination);

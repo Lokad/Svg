@@ -25,7 +25,8 @@ internal sealed class SvgRecordedTransform
     }
 
     /// <summary>Prepares a draw matrix in source recording order; false preserves the existing singular-map admission.</summary>
-    /// <remarks>The authored viewport initial map joins the first source stage before narrowing.
+    /// <remarks>The caller's initial source map joins the first stage before narrowing;
+    /// it can include authored layout, recorded projection and source placement.
     /// The output map belongs to the external bitmap/capture; target remains in scene coordinates.</remarks>
     internal bool TryMap(SvgShaderMatrix output, SvgAffineTransform initial, SvgAffineTransform target, RenderBudget budget,
 CancellationToken token, out SvgShaderMatrix result)

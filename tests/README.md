@@ -85,6 +85,13 @@ cleanup, retry and identity reuse. Independent rectangle/path, fractional-use an
 local-matrix fixtures protect the distinct numerical routes through canonical
 conversion; [their evidence](Research/svgweb/linear-source-placement.json) records
 both hosts' captures and failing-before results.
+The [recorded shader mechanisms](Lokad.Svg.Tests/SvgRecordedShaderCoordinatesTests.cs)
+protect bitmap-origin changes, initial placement and the stack/heap mapping boundary.
+One ownership case covers deep-chain refusal, cancellation, cleanup and explicit
+retry without publishing a stale coordinate cache. Separate linear and radial
+clipped fixtures protect rounding through canonical conversion; their independent
+captures and original mappings are in the
+[stage evidence](Research/svgweb/gradient-recorded-bitmap-origin.json).
 The [affine-root control](Fixtures/original/filter-affine-root-boundary.svg) and
 its [paired gap control](Fixtures/original/filter-affine-root-gap.svg) retain
 distinct backdrop/capture interactions through canonical conversion. Direct

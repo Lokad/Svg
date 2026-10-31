@@ -1,0 +1,55 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "ef0458e019c6d6b9fa7910fcd263e511e2d15a409824d43af87f72522556a7f7",
+  "referenceSha256": "b0ee354d6ed49e908827235b6f10f2cb8b168b6dc6909345b8fee34f74605fe8",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-linear-gradient-recorded-bitmap-origin.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-linear-gradient-recorded-bitmap-origin",
+  "viewport": {
+    "width": 1536,
+    "height": 768,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 control. Recorded clip boundary and child transform compose after the owning bitmap origin. Three fresh healthy/profile-cleaned captures per host; both platforms agree. Canonical conversion only.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "ef0458e019c6d6b9fa7910fcd263e511e2d15a409824d43af87f72522556a7f7",
+      "referenceSha256": "b0ee354d6ed49e908827235b6f10f2cb8b168b6dc6909345b8fee34f74605fe8",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "ef0458e019c6d6b9fa7910fcd263e511e2d15a409824d43af87f72522556a7f7",
+      "referenceSha256": "b0ee354d6ed49e908827235b6f10f2cb8b168b6dc6909345b8fee34f74605fe8",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  }
+}

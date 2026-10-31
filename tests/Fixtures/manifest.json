@@ -18715,6 +18715,56 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-linear-gradient-local-reference.json",
       "referenceSha256": "ebe43126b671fa097b043459c3fe163962d85b83a107ce0e5503e73aff5211d0"
+    },
+    {
+      "id": "original-linear-gradient-recorded-bitmap-origin",
+      "path": "original/linear-gradient-recorded-bitmap-origin.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "ef0458e019c6d6b9fa7910fcd263e511e2d15a409824d43af87f72522556a7f7",
+      "materializedSha256": "ef0458e019c6d6b9fa7910fcd263e511e2d15a409824d43af87f72522556a7f7",
+      "featureTags": [
+        "linear-gradient",
+        "recorded-transform",
+        "bitmap-origin",
+        "clip"
+      ],
+      "width": 1536,
+      "height": 768,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-linear-gradient-recorded-bitmap-origin.json",
+      "referenceSha256": "b0ee354d6ed49e908827235b6f10f2cb8b168b6dc6909345b8fee34f74605fe8"
+    },
+    {
+      "id": "original-radial-gradient-recorded-bitmap-origin",
+      "path": "original/radial-gradient-recorded-bitmap-origin.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "c7cfd357d51b6eaa5f62520047d59f248a6785f992046ef3d65bcf8cda952ec3",
+      "materializedSha256": "c7cfd357d51b6eaa5f62520047d59f248a6785f992046ef3d65bcf8cda952ec3",
+      "featureTags": [
+        "radial-gradient",
+        "recorded-transform",
+        "bitmap-origin",
+        "clip"
+      ],
+      "width": 1536,
+      "height": 768,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-radial-gradient-recorded-bitmap-origin.json",
+      "referenceSha256": "b284ac3e0973db0d372c588968f6499a2246401bed0d98bbfa08bd93042e9307"
     }
   ]
 }

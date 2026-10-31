@@ -10351,9 +10351,9 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "linear-source-placement.json",
-    "sourceBaseline": "35ad75757f624ef7becae84a14bc4bc512acb9b4",
-    "librarySha256": "8c2ec42a091f97e12c464b8d22f9f94bb7232f3023d236902d95cfa238a27228",
+    "evidence": "gradient-recorded-bitmap-origin.json",
+    "sourceBaseline": "67bad0ea5867621cd33fdd7d8784df43e477000b",
+    "librarySha256": "ad3e0a2482c70065a431aa7842fe7a7b0a89c72b48bb81fdc9759194d483c896",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10364,106 +10364,27 @@
       "MalformedInput": 3
     },
     "previousPngsByteIdenticalPerHost": {
-      "windows": 142,
-      "linux": 142
+      "windows": 147,
+      "linux": 147
     },
     "changedOriginals": [
-      {
-        "name": "car.svg",
-        "before": {
-          "status": "different",
-          "changedPixels": 53,
-          "maximumError": 2,
-          "totalChannelError": 60
-        },
-        "after": {
-          "status": "exact",
-          "changedPixels": 0,
-          "maximumError": 0,
-          "totalChannelError": 0
-        }
-      },
-      {
-        "name": "compuserver_msn_Ford_Focus.svg",
-        "before": {
-          "status": "different",
-          "changedPixels": 8,
-          "maximumError": 4,
-          "totalChannelError": 51
-        },
-        "after": {
-          "status": "different",
-          "changedPixels": 6,
-          "maximumError": 4,
-          "totalChannelError": 45
-        }
-      },
       {
         "name": "gallardo.svg",
         "before": {
           "status": "different",
-          "changedPixels": 38,
-          "maximumError": 1,
-          "totalChannelError": 40
-        },
-        "after": {
-          "status": "different",
           "changedPixels": 8,
           "maximumError": 1,
           "totalChannelError": 8
-        }
-      },
-      {
-        "name": "radialgradient2.svg",
-        "before": {
+        },
+        "after": {
           "status": "different",
           "changedPixels": 1,
           "maximumError": 1,
           "totalChannelError": 1
-        },
-        "after": {
-          "status": "exact",
-          "changedPixels": 0,
-          "maximumError": 0,
-          "totalChannelError": 0
-        }
-      },
-      {
-        "name": "rg1024_Ufo_in_metalic_style.svg",
-        "before": {
-          "status": "different",
-          "changedPixels": 30,
-          "maximumError": 1,
-          "totalChannelError": 63
-        },
-        "after": {
-          "status": "exact",
-          "changedPixels": 0,
-          "maximumError": 0,
-          "totalChannelError": 0
-        }
-      },
-      {
-        "name": "rg1024_green_grapes.svg",
-        "before": {
-          "status": "different",
-          "changedPixels": 36,
-          "maximumError": 18,
-          "totalChannelError": 138
-        },
-        "after": {
-          "status": "different",
-          "changedPixels": 40,
-          "maximumError": 18,
-          "totalChannelError": 143
         }
       }
     ],
-    "newlyExactOriginals": [
-      "car.svg",
-      "radialgradient2.svg",
-      "rg1024_Ufo_in_metalic_style.svg"
-    ],
+    "newlyExactOriginals": [],
     "lostExactImages": [],
     "changedOutcomesOrDiagnostics": [],
     "remainingDefaultDifferences": [
@@ -10484,9 +10405,9 @@
       {
         "name": "gallardo.svg",
         "status": "different",
-        "changedPixels": 8,
+        "changedPixels": 1,
         "maximumError": 1,
-        "totalChannelError": 8
+        "totalChannelError": 1
       },
       {
         "name": "opensearch.svg",

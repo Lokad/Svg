@@ -44,6 +44,12 @@ placement never folds endpoints into device coordinates. Map storage is admitted
 before allocation, and identity placement reuses an existing binding. Object-box
 normalization still uses source geometry before reference placement.
 
+Linear and radial samplers replay the existing recorded transform chain in the
+owning bitmap's coordinates. Subtract its origin before concatenating child stages;
+flattening first loses intermediate float rounding. The first stage includes the
+recorded projection and source placement. Draw-local caches publish only completed
+mapping; deep-chain scratch is budgeted and released before sampling continues.
+
 Prepared-document font discovery borrows the same collected styles, reader
 workspace and active budget used by lowering. Discovery control storage is
 temporary; selected font bytes stay alive through the prepared operation.
