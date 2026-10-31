@@ -1,0 +1,7 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96.11172" height="65.35126">
+  <defs>
+    <filter id="b"><feGaussianBlur stdDeviation="3.1054595"/></filter>
+  </defs>
+  <path d="M140 32A80 25 0 1 1-20 32A80 25 0 1 1 140 32Z" fill="#2e2e2e" filter="url(#b)"/>
+</svg>

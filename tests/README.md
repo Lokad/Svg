@@ -52,6 +52,9 @@ is shared. One ownership case covers the previously unconstructed referenced sou
 The [nested-picture fixture](Fixtures/original/filter-nested-picture-bounds.svg)
 protects a retained child blur and a distant gradient's dither origin through one
 canonical conversion. Original paint bounds and filtered output remain distinct.
+The [source-request fixture](Fixtures/original/filter-source-request-window.svg)
+protects a blurred curve crossing the output boundary through canonical conversion;
+integer/fractional and path/ellipse companions remain focused research controls.
 
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;

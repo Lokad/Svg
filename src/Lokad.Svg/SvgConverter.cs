@@ -571,15 +571,12 @@ public static partial class SvgConverter
                 ? replay.Binding : arena.BindingAt(command.MaskContentIndex);
             SvgFilterResource resource = arena.ResourceAt(binding.ResourceIndex);
             int end = first, depth = 0, nestedDepth = -1;
-            bool hasSourceImages = false;
             SvgPaintBounds? nestedSourceBounds = null, imageSourceBounds = null, elementSourceBounds = null;
             bool missingImageBounds = false, missingElementBounds = false;
             for (; end < root.Commands.Length; end++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgDrawCommand item = root.Commands[end];
-                if (nestedDepth < 0 && item.Kind == SvgDrawCommandKind.Geometry && root.Geometries[item.GeometryIndex].Kind == SvgGeometryKind.EmbeddedImage)
-                    hasSourceImages = true;
                 // Nested filters remain part of the recorded source picture.
                 // Their original paint bounds seed its image extent and dither
                 // origin; filtered output bounds are collected separately below.
@@ -656,8 +653,6 @@ public static partial class SvgConverter
                 sourceRight = Math.Max(sourceRight, Math.Ceiling(nested.Right)); sourceBottom = Math.Max(sourceBottom, Math.Ceiling(nested.Bottom));
             }
             SvgPaintBounds sourceCaptureBounds = new((float)sourceLeft, (float)sourceTop, (float)sourceRight, (float)sourceBottom);
-            bool boundedSource = activeViewport.Bounds is not null || layerBounds.Left != 0 || layerBounds.Top != 0
-                || layerBounds.Right != outputWidth || layerBounds.Bottom != outputHeight;
             // Offset replay captures source ink; its native image hint and output
             // clip are computed separately. Enlarging this ink box changes curves.
             if (destinationBitmap is null)
@@ -755,7 +750,10 @@ public static partial class SvgConverter
                     // source grid near its output instead of retaining remote ink.
                     (left, top, right, bottom) = (requestedLeft, requestedTop, requestedRight, requestedBottom);
                 }
-                else if (boundedSource || nestedSourceBounds is not null || hasSourceImages)
+                // Every source picture uses the propagated sampling request.
+                // Capturing unrelated ink changes curve construction as well as
+                // storage; image hints and transparent padding remain separate.
+                else
                 {
                     (left, top, right, bottom) = (captureLeft, captureTop, captureRight, captureBottom);
                 }

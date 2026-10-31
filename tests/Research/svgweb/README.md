@@ -46,6 +46,9 @@ translucent-flood mechanism for exclusive bitmap interiors. Construction padding
 is separate from captured content and nested requests; seven existing crop,
 rescaling and nested-effect targets remain exact. Full core/native qualification
 includes the broad symbol/reference bank on both hosts and supported runtimes.
+The [source-request record](filter-source-request.json) unifies capture across
+ordinary, nested and image-containing sources. One native fixture protects curve
+construction within the propagated request; all148 original PNGs remain unchanged.
 
 The [referenced-clip record](clip-use-construction.json) closes substitution of
 flattened chords for copied authored clip paths. Three failing-before mechanisms

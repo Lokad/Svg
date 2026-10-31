@@ -18424,6 +18424,31 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-nested-picture-bounds.json",
       "referenceSha256": "7c7880ae93dfe7d7299b89d1f12e27a45b315b6d3e2bf9ac838fa131b732ade4"
+    },
+    {
+      "id": "original-filter-source-request-window",
+      "path": "original/filter-source-request-window.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "efef39ddb9f9a7818ca8104145e27bb7309a4076a35496f32f3457ee5691e3b8",
+      "materializedSha256": "efef39ddb9f9a7818ca8104145e27bb7309a4076a35496f32f3457ee5691e3b8",
+      "featureTags": [
+        "filter",
+        "blur",
+        "curve",
+        "source-request"
+      ],
+      "width": 96,
+      "height": 65,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-source-request-window.json",
+      "referenceSha256": "a0ed73db03b95bd0898eef755944a3c22cc62d491f7137a31991fc29a3574f37"
     }
   ]
 }

@@ -177,6 +177,8 @@ in the parent picture's image hint and dither origin; parent capture separately
 includes their filtered output. Rescaled kernels read the captured subset;
 offsets/aliases can retain deferred sampled images until a
 consumer requires pixels.
+Ordinary, nested and image-containing sources all capture the propagated sampling
+request; unrelated source ink must not enlarge that curve-construction window.
 Axis and transformed effects capture input for each bordered destination bitmap;
 only its interior owns restored pixels. Source construction retains image-hint
 padding independently of captured-content extents and nested filter requests;

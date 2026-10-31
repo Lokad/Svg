@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "83211cdac9fdabfeb864681b3bf068fe90501a40",
+  "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
+  "scope": "One propagated sampling-request capture rule for ordinary, nested and image-containing filter sources. The full crop/flood/offset/shadow and original acceptance milestone remains open.",
+  "sharedContract": {
+    "problem": "An ordinary unbounded source retained its full layout enclosure instead of the propagated input request. The larger construction window changes clipped curve coverage before Gaussian processing, even when the final image only samples a narrow subset.",
+    "change": "SvgConverter.RenderFilter always intersects nonempty capture with RequiredSourceBounds. Remove boundedSource and hasSourceImages bookkeeping and the source-kind condition. Existing image hints, transparent padding, numerical raster coverage, empty-input handling, affine source placement and graph requests retain their own roles.",
+    "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "ownership": "No new owner, allocation path, public API or testing framework. Existing source and scratch owners retain pre-allocation admission, cancellation, cleanup and retry. Less unrelated source ink is captured/copied.",
+    "nativeSource": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkImageFilterTypes.cpp",
+    "nativeContract": "FilterResult::MakeFromPicture maps the parameter cull rectangle, intersects desired output and constructs the picture on that bounded surface. Cropping a previously constructed larger image is a different operation.",
+    "excludedExperiments": "Further intersecting capture with the image-hint bounds did not improve the remaining originals and is absent from production. Collapsing stored-image translations did not fix the white interaction and worsened Gallardo; that prototype is rejected."
+  },
+  "regression": {
+    "fixture": "../../Fixtures/original/filter-source-request-window.svg",
+    "reference": "../../References/original-filter-source-request-window.json",
+    "sourceSha256": "efef39ddb9f9a7818ca8104145e27bb7309a4076a35496f32f3457ee5691e3b8",
+    "pngSha256": "a0ed73db03b95bd0898eef755944a3c22cc62d491f7137a31991fc29a3574f37",
+    "decodedRgbaSha256": "0d9d3cbafa229e27a4faefd936cbbefa20203fdd83913ae92528ab19cefa090c",
+    "logicalViewport": [
+      96.11172,
+      65.35126
+    ],
+    "screenshot": [
+      96,
+      65
+    ],
+    "freshHealthyProfileCleanedCapturesPerHost": 3,
+    "totalCaptures": 6,
+    "captureContext": "Pinned Chrome153.0.8010.52 / Chromium1681091 / recipe3 / transparent / DPR1; executable identities and native platform admission are in the reference metadata.",
+    "beforeAfter": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "9532c5bb2d403658481cf262fc7c82a196aab6c1849b264c3bf53214e27e3c28",
+        "changedPixels": 301,
+        "alphaChangedPixels": 296,
+        "maximumError": 18,
+        "maximumAlphaError": 3,
+        "totalChannelError": 1136
+      },
+      {
+        "host": "windows",
+        "phase": "after",
+        "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "maximumAlphaError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "9532c5bb2d403658481cf262fc7c82a196aab6c1849b264c3bf53214e27e3c28",
+        "changedPixels": 301,
+        "alphaChangedPixels": 296,
+        "maximumError": 18,
+        "maximumAlphaError": 3,
+        "totalChannelError": 1136
+      },
+      {
+        "host": "linux",
+        "phase": "after",
+        "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "maximumAlphaError": 0,
+        "totalChannelError": 0
+      }
+    ],
+    "responsibility": "One canonical conversion preserves the failing-before curved-source/request interaction. Existing geometry/rounding mechanisms and ownership matrices remain separate; no fixture/API cross product and no old image/tolerance changes."
+  },
+  "exploratoryCompanions": {
+    "cases": 16,
+    "afterAll16Exact": true,
+    "wideCurves": "Direct arc-path and ellipse forms, each with integer/fractional width and with/without blur. Four blurred controls change from284/301 differing pixels to exact; all unfiltered companions remain exact. These research controls retain distinct producer/layout roles without adding eight canonical fixtures.",
+    "whiteControls": "Eight white affine curves across two maps, two backdrops and linearRGB/sRGB remain exact. The original-derived white-over231 case remains one pixel different and is not closed by these controls."
+  },
+  "sourceWindowExperiment": {
+    "qualification": "Exploratory fresh healthy/profile-cleaned Windows captures, with explicit source-grid placement; no hosted SVG files retained. Canonical platform admission is separate.",
+    "fullWindowAlpha": "Both own complete source captures match independent native source alpha exactly.",
+    "requestedWindowAlpha": "Constructing within the requested window differs from cropping the completed full-window image at74 integer-width and77 fractional-width interior pixels, excluding guard columns/rows. Maximum alpha errors58/56.",
+    "constructionWidths": "The witness previously constructed180 source columns while the propagated request needs116. The capture rule uses that request for every source kind."
+  },
+  "allocationObservation": {
+    "scope": "One functional managed-allocation observation through the existing memory tool; no timing/process-memory or benchmark claim.",
+    "sourceSha256": "efef39ddb9f9a7818ca8104145e27bb7309a4076a35496f32f3457ee5691e3b8",
+    "before": {
+      "librarySha256": "9532c5bb2d403658481cf262fc7c82a196aab6c1849b264c3bf53214e27e3c28",
+      "conversionManagedAllocatedBytes": 550920
+    },
+    "after": {
+      "librarySha256": "23a5eddc30241dc530437131ab47919d70ae345112608138bccbdd087fe1d1c3",
+      "conversionManagedAllocatedBytes": 418200
+    }
+  },
+  "allOriginals": {
+    "audit": {
+      "windows": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 148,
+        "changes": [],
+        "outcomeOrDiagnosticChanges": [],
+        "increasedErrors": [],
+        "counts": {
+          "UnsupportedFeature": 53,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        }
+      },
+      "linux": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 148,
+        "changes": [],
+        "outcomeOrDiagnosticChanges": [],
+        "increasedErrors": [],
+        "counts": {
+          "UnsupportedFeature": 53,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        }
+      }
+    },
+    "sourceSvgFilesRetained": 0,
+    "qualification": "All204 source hashes rechecked per host. All148 rendered PNGs and every outcome/diagnostic remain byte-for-byte unchanged. Default134 exploratory exact/14 different/56 rejected stays separate from font/resource/static-state admission."
+  },
+  "validation": {
+    "releaseBuilds": "Both test projects/TFMs build with zero warnings/errors.",
+    "gates": [
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 41.2113864000421,
+        "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5"
+      },
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Full routine rendering",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 86.06519719981588,
+        "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 32.278911400120705,
+        "librarySha256": "12bccb1f199b0cb1caffb8ea2e2b93023155fd48d972072f7dad5cc380d0d5aa"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected rendering",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 27.286394600057974,
+        "librarySha256": "12bccb1f199b0cb1caffb8ea2e2b93023155fd48d972072f7dad5cc380d0d5aa"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 31.534421179000002,
+        "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Full routine rendering",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 167.585045388,
+        "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 22.930500914999996,
+        "librarySha256": "12bccb1f199b0cb1caffb8ea2e2b93023155fd48d972072f7dad5cc380d0d5aa"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected rendering",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 33.735114682,
+        "librarySha256": "12bccb1f199b0cb1caffb8ea2e2b93023155fd48d972072f7dad5cc380d0d5aa"
+      }
+    ],
+    "focusedPrototypeBeforePromotion": {
+      "corePassed": 1740,
+      "nativePassed": 1898
+    },
+    "newCanonicalFixtures": 1,
+    "newPngFiles": 1,
+    "existingReferencePngsChanged": 0,
+    "timing": "Functional elapsed times and one managed-allocation observation on a busy development host; no benchmark or test-suite simplification claim."
+  },
+  "remainingAcceptance": {
+    "scimitar": "Full original remains6 differing pixels/11 total channel error/max1. Five ground-alpha pixels and one white affine backdrop interaction remain; the complete shadow stays exact.",
+    "whiteSampling": "An independently captured source-grid alpha is exact, and the identity CPU blur preserves every source alpha. The final interpolated alpha0.31249064 blends to238 over231; native gives239. Concentrate on affine image storage/mapping/sampling before changing rounding. The native image carriers use a different source context and are not substitutes for the vector reference.",
+    "gallardo": "Full original remains94/123 and path3850 remains10 alpha pixels/max1. Finish actual native request/construction and materialization analysis.",
+    "wholeMilestone": "Finish original crop, flood/offset and shadow mappings plus the other204-original font/resource/static-state gates. Do not close original acceptance from own-control exactness."
+  }
+}

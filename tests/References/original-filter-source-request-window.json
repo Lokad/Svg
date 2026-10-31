@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "efef39ddb9f9a7818ca8104145e27bb7309a4076a35496f32f3457ee5691e3b8",
+  "referenceSha256": "a0ed73db03b95bd0898eef755944a3c22cc62d491f7137a31991fc29a3574f37",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-source-request-window.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-source-request-window",
+  "viewport": {
+    "width": 96,
+    "height": 65,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 arc ellipse crossing both horizontal output edges. Its Gaussian source uses the propagated sampling request instead of the full layout enclosure. Root logical viewport96.11172x65.35126; screenshot96x65. Three fresh healthy/profile-cleaned captures per platform.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "efef39ddb9f9a7818ca8104145e27bb7309a4076a35496f32f3457ee5691e3b8",
+      "referenceSha256": "a0ed73db03b95bd0898eef755944a3c22cc62d491f7137a31991fc29a3574f37",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "efef39ddb9f9a7818ca8104145e27bb7309a4076a35496f32f3457ee5691e3b8",
+      "referenceSha256": "a0ed73db03b95bd0898eef755944a3c22cc62d491f7137a31991fc29a3574f37",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "logicalViewport": {
+    "width": 96.11172,
+    "height": 65.35126
+  }
+}
