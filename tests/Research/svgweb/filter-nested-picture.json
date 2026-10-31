@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "e47c46268a92a0961d0af14b709b8460875ef380",
+  "librarySha256": "9532c5bb2d403658481cf262fc7c82a196aab6c1849b264c3bf53214e27e3c28",
+  "scope": "Parent picture image hints include original paint bounds inside nested filters; filtered child output remains an independent capture bound. The complete Scimitar shadow is now exact; whole-original/filter acceptance remains open.",
+  "sharedContract": {
+    "problem": "The parent source scan excluded geometry inside nested filters from recorded image hints. Its child output could disappear, and the source image origin could move the dither phase of a distant gradient even when the child rendered exactly in isolation.",
+    "change": "Remove that bounds-collection exclusion in SvgConverter.RenderFilter. Original descendant paint boxes seed the recorded image hint and shader origin alongside ordinary siblings. Existing nestedSourceBounds separately retains filtered output for capture and requests. The same image-hint, transform, sampling and alpha stages remain in use.",
+    "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "ownership": "No new owner, allocation path, metadata kind, public API or runtime branch; existing cancellation, bounded source traversal and capture cleanup remain. Existing affected ownership/contract tests are retained without repeating the API matrix for this rendering source.",
+    "rejectedPrototype": "Unioning child filtered output into parent image hints restores the missing solid child but leaves gradient/shadow errors. Recorded paint bounds and filtered output are distinct stages.",
+    "diagnosticOnly": "A64-phase dither-only diagnostic makes the own stroke control exact at shift(2,0) and the isolated shadow exact at(3,0). These experimental offsets are absent from production; retaining original descendant bounds fixes both through their existing origin calculation."
+  },
+  "regression": {
+    "fixture": "../../Fixtures/original/filter-nested-picture-bounds.svg",
+    "reference": "../../References/original-filter-nested-picture-bounds.json",
+    "sourceSha256": "ec1ca98c56e3dd53c73135cb60d744886809b565c84e08fdfdbe795050475f96",
+    "pngSha256": "7c7880ae93dfe7d7299b89d1f12e27a45b315b6d3e2bf9ac838fa131b732ade4",
+    "decodedRgbaSha256": "ea02542a92607f816968489a1aca9cfc36a9b7db0de74c5efac17669472cf986",
+    "logicalViewport": [
+      466.11172,
+      265.35126
+    ],
+    "screenshot": [
+      466,
+      265
+    ],
+    "freshHealthyProfileCleanedCapturesPerHost": 3,
+    "totalCaptures": 6,
+    "captureContext": "Chrome153.0.8010.52 / Chromium1681091 / recipe3 / DPR1 / transparent. Both platform executable identities and source/reference hashes are in the reference metadata.",
+    "beforeAfter": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9",
+        "changedPixels": 631,
+        "alphaChangedPixels": 511,
+        "maximumError": 132,
+        "maximumAlphaError": 132,
+        "totalChannelError": 17759
+      },
+      {
+        "host": "windows",
+        "phase": "after",
+        "librarySha256": "9532c5bb2d403658481cf262fc7c82a196aab6c1849b264c3bf53214e27e3c28",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "maximumAlphaError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9",
+        "changedPixels": 631,
+        "alphaChangedPixels": 511,
+        "maximumError": 132,
+        "maximumAlphaError": 132,
+        "totalChannelError": 17759
+      },
+      {
+        "host": "linux",
+        "phase": "after",
+        "librarySha256": "9532c5bb2d403658481cf262fc7c82a196aab6c1849b264c3bf53214e27e3c28",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "maximumAlphaError": 0,
+        "totalChannelError": 0
+      }
+    ],
+    "responsibility": "One canonical conversion protects the missing nested black image and the distant reflected gradient-stroke dither interaction. Earlier references and tolerances are unchanged. No fixture/API cross product."
+  },
+  "scimitar": {
+    "sourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+    "innerFilterMap": "scimitar-inner-filter-map.csv",
+    "scopeMap": "scimitar-scope-map.csv",
+    "scopeMapColumns": "Earlier before/after columns retain clip-visual-bound observations. nestedPictureChangedPixels/nestedPictureTotalChannelError record this final library.",
+    "innerConsumers": [
+      "path2744",
+      "path2756",
+      "path2762",
+      "path2764"
+    ],
+    "isolation": "Four consumers each retain inner/outer, inner-only, unfiltered, disable-one and keep-one variants. Root/ancestor attributes, fractional logical viewport and recursive local definitions remain; hosted SVG payloads are bounded in RAM and discarded.",
+    "nativeQualification": "20 exploratory single-process Windows captures, all healthy/profile-cleaned. Source and native PNG hashes plus before/after errors are in the map. These are diagnostics, not whole-original or Linux reference admission.",
+    "afterAll20Exact": true,
+    "complete35ChildShadow": {
+      "beforeChangedPixels": 160,
+      "beforeTotalChannelError": 3243,
+      "after": {
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0,
+        "bounds": null
+      },
+      "variantSourceSha256": "fb3f579b6cde9c3865b50ab9a4f99b06330d20713d33231cc69dd208b3ed6212",
+      "nativePngSha256": "c5eec145d7d1d715c6ab4d0bc8cbcf82411dc5b114e42ef35e98c2edc6e9b332"
+    },
+    "remaining": "Full original remains6 differing pixels/11 total channel error/max1 on both hosts. Ground blur and three independent paint scopes still differ in exploratory isolation."
+  },
+  "ownExploratoryControls": {
+    "cases": 6,
+    "coverage": "Solid, gradient-fill and gradient-stroke sources paired with/without a separated skewed nested blur. All six are exact under the final library; one nested stroke input has full native platform admission. The other five remain exploratory instead of multiplying fixtures/API forms."
+  },
+  "allOriginals": {
+    "audit": {
+      "windows": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 147,
+        "changes": [
+          {
+            "name": "scimitar.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 106,
+              "maximumError": 6,
+              "totalChannelError": 436
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 6,
+              "maximumError": 1,
+              "totalChannelError": 11
+            }
+          }
+        ],
+        "outcomeOrDiagnosticChanges": [],
+        "increasedErrors": [],
+        "counts": {
+          "UnsupportedFeature": 53,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        }
+      },
+      "linux": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 147,
+        "changes": [
+          {
+            "name": "scimitar.svg",
+            "before": {
+              "status": "different",
+              "changedPixels": 106,
+              "maximumError": 6,
+              "totalChannelError": 436
+            },
+            "after": {
+              "status": "different",
+              "changedPixels": 6,
+              "maximumError": 1,
+              "totalChannelError": 11
+            }
+          }
+        ],
+        "outcomeOrDiagnosticChanges": [],
+        "increasedErrors": [],
+        "counts": {
+          "UnsupportedFeature": 53,
+          "exact": 134,
+          "different": 14,
+          "MalformedInput": 3
+        }
+      }
+    },
+    "sourceSvgFilesRetained": 0,
+    "qualification": "All204 source hashes rechecked per host; Scimitar106/436 ->6/11 with maximum channel error6->1. Other147 PNGs and every outcome/diagnostic are unchanged. Supplied-font/resource/static-state admission remains separate."
+  },
+  "validation": {
+    "releaseBuilds": "Both test projects/TFMs build with zero warnings/errors.",
+    "gates": [
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 40.81693460000679,
+        "librarySha256": "9532c5bb2d403658481cf262fc7c82a196aab6c1849b264c3bf53214e27e3c28"
+      },
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Full routine rendering",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 87.95581090007909,
+        "librarySha256": "9532c5bb2d403658481cf262fc7c82a196aab6c1849b264c3bf53214e27e3c28"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 34.03843179997057,
+        "librarySha256": "b14a3d5363371d3670c2cdd332a78cbdd3fdf43e10baf6b1a9815ddcae5aeeeb"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected rendering",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 29.783929500030354,
+        "librarySha256": "b14a3d5363371d3670c2cdd332a78cbdd3fdf43e10baf6b1a9815ddcae5aeeeb"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 34.779287831000005,
+        "librarySha256": "9532c5bb2d403658481cf262fc7c82a196aab6c1849b264c3bf53214e27e3c28"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Full routine rendering",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 219.788099728,
+        "librarySha256": "9532c5bb2d403658481cf262fc7c82a196aab6c1849b264c3bf53214e27e3c28"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected clip/use/stroke/filter/viewport/ownership",
+        "passed": 11529,
+        "failed": 0,
+        "seconds": 26.45954372,
+        "librarySha256": "b14a3d5363371d3670c2cdd332a78cbdd3fdf43e10baf6b1a9815ddcae5aeeeb"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected rendering",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 40.35601643300001,
+        "librarySha256": "b14a3d5363371d3670c2cdd332a78cbdd3fdf43e10baf6b1a9815ddcae5aeeeb"
+      }
+    ],
+    "newCanonicalFixtures": 1,
+    "newPngFiles": 1,
+    "existingReferencePngsChanged": 0,
+    "timing": "Functional elapsed times on a busy development host, not performance or test-suite simplification measurements."
+  },
+  "remainingAcceptance": [
+    "Resolve six remaining Scimitar pixels without changing reference/tolerance or logical viewport.",
+    "Gallardo remains94/123; finish original crop, flood/offset and shadow mappings before whole-filter closure.",
+    "All204 original font/resource/static-state gates and the other PLAN priorities remain open."
+  ]
+}

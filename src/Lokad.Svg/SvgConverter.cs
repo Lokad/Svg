@@ -580,7 +580,10 @@ public static partial class SvgConverter
                 SvgDrawCommand item = root.Commands[end];
                 if (nestedDepth < 0 && item.Kind == SvgDrawCommandKind.Geometry && root.Geometries[item.GeometryIndex].Kind == SvgGeometryKind.EmbeddedImage)
                     hasSourceImages = true;
-                if (nestedDepth < 0 && item.Kind == SvgDrawCommandKind.Geometry)
+                // Nested filters remain part of the recorded source picture.
+                // Their original paint bounds seed its image extent and dither
+                // origin; filtered output bounds are collected separately below.
+                if (item.Kind == SvgDrawCommandKind.Geometry)
                 {
                     SvgRecordedPaintValue sourcePaint = GetRecordedPaintValue(root.Geometries[item.GeometryIndex].RecordedPaint);
                     if (!sourcePaint.IsEffectAnchor)

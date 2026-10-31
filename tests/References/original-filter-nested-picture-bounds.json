@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "ec1ca98c56e3dd53c73135cb60d744886809b565c84e08fdfdbe795050475f96",
+  "referenceSha256": "7c7880ae93dfe7d7299b89d1f12e27a45b315b6d3e2bf9ac838fa131b732ade4",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-nested-picture-bounds.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-nested-picture-bounds",
+  "viewport": {
+    "width": 466,
+    "height": 265,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 separated curves inside an outer blur: one skewed nested black blur and one reflected gradient stroke. Descendant paint bounds retain both the child image and the distant gradient dither origin. Root logical viewport466.11172x265.35126; screenshot466x265. Three fresh healthy/profile-cleaned captures per platform.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "ec1ca98c56e3dd53c73135cb60d744886809b565c84e08fdfdbe795050475f96",
+      "referenceSha256": "7c7880ae93dfe7d7299b89d1f12e27a45b315b6d3e2bf9ac838fa131b732ade4",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "ec1ca98c56e3dd53c73135cb60d744886809b565c84e08fdfdbe795050475f96",
+      "referenceSha256": "7c7880ae93dfe7d7299b89d1f12e27a45b315b6d3e2bf9ac838fa131b732ade4",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "logicalViewport": {
+    "width": 466.11172,
+    "height": 265.35126
+  }
+}

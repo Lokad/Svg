@@ -11,7 +11,7 @@ The current default-path review has 148 rendered inputs per host: 134 exact and 
 different, with 56 rejected. Shared root-image layout improves ten originals without
 losing an exact image or changing outcomes/diagnostics. `gaussian2.svg` and
 `lineargradient3.svg` are now exact against native platform triples. UFO's remaining
-total channel error is63; Scimitar's is436 and Gallardo's is123. These observations
+total channel error is63; Scimitar's is11 and Gallardo's is123. These observations
 use transparent output with no supplied fonts/resources; they do not admit other
 contexts or close the whole corpus.
 
@@ -147,6 +147,11 @@ sources have independent native platform triples. Scimitar improves from221 to10
 differing pixels, with147 other rendered PNGs unchanged per host. Its
 [43-scope map](scimitar-scope-map.csv) keeps filtered subtrees intact; the full
 filter/original acceptance remains open.
+The [nested-picture record](filter-nested-picture.json) keeps original descendant
+paint bounds in the parent image hint, independently of filtered child output.
+One canonical native fixture protects child retention and distant gradient dithering.
+All20 [inner-filter variants](scimitar-inner-filter-map.csv), including the complete
+shadow, are now exact; the full Scimitar original still differs at six pixels.
 
 Group confirmed gaps by mechanism and retain original-to-fixture mappings,
 licenses and failing-before evidence. Reference admission requires three fresh

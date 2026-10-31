@@ -10351,8 +10351,8 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "clip-visual-bounds.json",
-    "sourceBaseline": "6afd114116c8f047c089af896ed3335a6014c770",
+    "evidence": "filter-nested-picture.json",
+    "sourceBaseline": "e47c46268a92a0961d0af14b709b8460875ef380",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10369,6 +10369,6 @@
     "lostExactImages": [],
     "changedOutcomesOrDiagnostics": [],
     "qualification": "Default-context observations and individual native admission remain distinct; see linked evidence for current errors and complete closure criteria.",
-    "librarySha256": "003d3ea7391e57fd517e7ee243c810f93b768718e06f96f236712050fe1199e9"
+    "librarySha256": "9532c5bb2d403658481cf262fc7c82a196aab6c1849b264c3bf53214e27e3c28"
   }
 }

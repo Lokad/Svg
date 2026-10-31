@@ -1,0 +1,18 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="466.11172" height="265.35126">
+  <defs>
+    <filter id="outer"><feGaussianBlur stdDeviation="4.5952988"/></filter>
+    <filter id="inner"><feGaussianBlur stdDeviation="3.84278"/></filter>
+    <linearGradient id="g" gradientUnits="userSpaceOnUse" x1="310.3" y1="-210.6" x2="345.7" y2="-175.2" spreadMethod="reflect">
+      <stop stop-color="#6e6e6e"/>
+      <stop offset=".5" stop-color="white"/>
+      <stop offset="1" stop-color="#a1a1a1"/>
+    </linearGradient>
+  </defs>
+  <g transform="matrix(.658246 0 0 .658246 300.47258 71.37439)">
+    <g transform="translate(-365.75716 195.63755)" opacity=".67777776" filter="url(#outer)">
+      <path d="M300 -180C280 -250 460 -280 510 -180L560 -110C430 -90 380 -100 300 -180Z" fill="black" stroke="url(#g)" stroke-width="5.31668139"/>
+      <path transform="matrix(.1788 .014949511 -.016325171 .1952532 -42.259836 -139.17189)" d="M0 30C0 -15 80 -20 100 40C100 90 30 110 0 30Z" fill="black" filter="url(#inner)"/>
+    </g>
+  </g>
+</svg>

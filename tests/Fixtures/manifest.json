@@ -18398,6 +18398,32 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-clip-use-visual-bounds.json",
       "referenceSha256": "bf9c838e267bebf460596bd4493a40a02b2d6851a506db561d9c10513a98a5a2"
+    },
+    {
+      "id": "original-filter-nested-picture-bounds",
+      "path": "original/filter-nested-picture-bounds.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "ec1ca98c56e3dd53c73135cb60d744886809b565c84e08fdfdbe795050475f96",
+      "materializedSha256": "ec1ca98c56e3dd53c73135cb60d744886809b565c84e08fdfdbe795050475f96",
+      "featureTags": [
+        "filter",
+        "blur",
+        "gradient",
+        "nested",
+        "picture-bounds"
+      ],
+      "width": 466,
+      "height": 265,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-nested-picture-bounds.json",
+      "referenceSha256": "7c7880ae93dfe7d7299b89d1f12e27a45b315b6d3e2bf9ac838fa131b732ade4"
     }
   ]
 }

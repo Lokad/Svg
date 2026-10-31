@@ -172,8 +172,10 @@ Referenced clip children retain authored verbs and placement through registratio
 [Filter playback](../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs) retains result
 dependencies, primitive regions, operating spaces and source placement. Requested
 output, native image hints, captured content, cropped storage and padded scratch
-are separate. Parent capture includes filtered child output. Rescaled kernels read
-the captured subset; offsets/aliases can retain deferred sampled images until a
+are separate. Descendants inside nested filters retain their original paint bounds
+in the parent picture's image hint and dither origin; parent capture separately
+includes their filtered output. Rescaled kernels read the captured subset;
+offsets/aliases can retain deferred sampled images until a
 consumer requires pixels.
 Axis and transformed effects capture input for each bordered destination bitmap;
 only its interior owns restored pixels. Source construction retains image-hint
