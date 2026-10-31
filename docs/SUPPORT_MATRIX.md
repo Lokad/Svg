@@ -70,6 +70,11 @@ circle and curved-path strokes reject rotation/shear; dashed gradient line
 strokes require uniform scaling. CSS/inherited vector effects are unsupported.
 Nonuniform symbol mapping of gradient/radial/pattern polygon strokes rejects.
 
+Stroke widths, dash entries and offsets accept bare numbers and `px`, `in`, `cm`,
+`mm`, `pt`, `pc`, `q` lengths. Conversion precedes numeric range admission; zero
+widths avoid resources needed only by that stroke. Percentage and font-relative
+stroke metrics remain unsupported.
+
 All-zero dash lists use a solid stroke; zero-length dashes with positive gaps
 retain cap behavior. Dash placement follows authored endpoint order. Zero-size
 rectangles paint nothing. Missing circle radii/path data and empty point lists

@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "cd2cef60341825908e11f3b11c7d043bd8035aa7cfdc3e63dc2832ca8b921838",
+  "referenceSha256": "82f49f686bb52796fe779f776e09e74f6800827e5615f70e059c663f77abe195",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-fixed-stroke-lengths.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-fixed-stroke-lengths",
+  "viewport": {
+    "width": 64,
+    "height": 40,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 fixed CSS stroke lengths: inherited width, point/pica/quarter-mm dash entries, signed offset and zero-point offset. Canonical conversion; three fresh healthy/profile-cleaned captures per host agree. Numerical/sign/range and ownership contracts remain separate.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "cd2cef60341825908e11f3b11c7d043bd8035aa7cfdc3e63dc2832ca8b921838",
+      "referenceSha256": "82f49f686bb52796fe779f776e09e74f6800827e5615f70e059c663f77abe195",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "cd2cef60341825908e11f3b11c7d043bd8035aa7cfdc3e63dc2832ca8b921838",
+      "referenceSha256": "82f49f686bb52796fe779f776e09e74f6800827e5615f70e059c663f77abe195",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 64,
+    "height": 40
+  }
+}

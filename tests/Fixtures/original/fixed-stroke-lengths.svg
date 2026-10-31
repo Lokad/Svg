@@ -1,0 +1,8 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="48pt" height="30pt">
+  <g fill="none" stroke="#274d69" stroke-width="2.25pt">
+    <path d="M5.25 8.5 H58.25" stroke-dasharray="3pt 1.5pt" stroke-dashoffset="-.75pt"/>
+    <rect x="8.5" y="18.5" width="45" height="12" stroke-width=".125pc"
+          stroke-dasharray="3.175q .0625pc" stroke-dashoffset="0pt"/>
+  </g>
+</svg>

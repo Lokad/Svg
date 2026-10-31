@@ -124,17 +124,9 @@ internal static class SvgMarkerSyntax
                 }
                 return Finite(factor * (float)font.FontSize);
             }
-            double scale = 1;
-            int suffix = 2;
-            if (input.EndsWith("px", StringComparison.OrdinalIgnoreCase)) { }
-            else if (input.EndsWith("in", StringComparison.OrdinalIgnoreCase)) scale = 96;
-            else if (input.EndsWith("cm", StringComparison.OrdinalIgnoreCase)) scale = 96d / 2.54d;
-            else if (input.EndsWith("mm", StringComparison.OrdinalIgnoreCase)) scale = 96d / 25.4d;
-            else if (input.EndsWith("pt", StringComparison.OrdinalIgnoreCase)) scale = 96d / 72d;
-            else if (input.EndsWith("pc", StringComparison.OrdinalIgnoreCase)) scale = 16;
-            else if (input.EndsWith("q", StringComparison.OrdinalIgnoreCase)) { scale = 96d / 101.6d; suffix = 1; }
-            else suffix = 0;
-            return Finite(Number(suffix == 0 ? input : input[..^suffix], false) * scale);
+            if (!SvgCssLength.TrySplitFixedUnit(input, out ReadOnlySpan<char> number, out double scale))
+                return Number(input, false); // Preserve the marker's malformed-number diagnostic.
+            return Finite(Number(number, false) * scale);
         }
 
         double Angle(string value)

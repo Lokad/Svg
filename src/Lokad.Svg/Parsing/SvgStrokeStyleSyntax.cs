@@ -114,11 +114,8 @@ internal static class SvgStrokeStyleSyntax
 
     private static double ParseDashoffsetValue(ReadOnlySpan<char> value)
     {
-        ReadOnlySpan<char> token = value.Trim(SvgCssWhitespace.Characters);
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2];
-        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
-        if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
-        if (result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
+        if (!TryParseFixedLength(value, out double result) || result < int.MinValue || result > int.MaxValue)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dash offsets must be finite bounded fixed CSS lengths.");
         return result;
     }
 
@@ -138,10 +135,8 @@ internal static class SvgStrokeStyleSyntax
 
     private static double ParseDashEntry(ReadOnlySpan<char> entry)
     {
-        ReadOnlySpan<char> token = entry.Trim(SvgCssWhitespace.Characters);
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2];
-        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash array entries are implemented.");
-        if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash array entries are implemented.");
+        if (!TryParseFixedLength(entry, out double result))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dash array entries must be fixed CSS lengths.");
         if (result < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Dash array lengths cannot be negative.");
         if (result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dash array entries must be finite bounded numbers.");
         return result;
@@ -156,10 +151,8 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Parses a nonnegative finite stroke width for the shared outline kernel, which maps fractional offsets exactly like fractional geometry. Zero flows to callers as no-stroke; negatives stay denied.</summary>
     internal static double ParseStrokeWidth(string? value, string elementName)
     {
-        ReadOnlySpan<char> token = (value ?? "1").AsSpan().Trim(SvgCssWhitespace.Characters);
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2];
-        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px " + elementName + " stroke widths are implemented.");
-        if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double strokeWidth) || !double.IsFinite(strokeWidth) || strokeWidth > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px " + elementName + " stroke widths are implemented.");
+        if (!TryParseFixedLength((value ?? "1").AsSpan(), out double strokeWidth) || strokeWidth > int.MaxValue)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, elementName + " stroke widths must be finite bounded fixed CSS lengths.");
         if (strokeWidth < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive " + elementName + " stroke widths are implemented.");
         return strokeWidth;
     }
@@ -167,11 +160,15 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Reports whether a stroke-width spelling denotes an exact zero without throwing.</summary>
     internal static bool IsZeroStrokeWidth(string? value)
     {
-        ReadOnlySpan<char> token = (value ?? "1").AsSpan().Trim(SvgCssWhitespace.Characters);
-        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2];
-        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token.EndsWith("%"))) return false;
-        if (!double.TryParse(token, CssNumberStyles, CultureInfo.InvariantCulture, out double strokeWidth) || !double.IsFinite(strokeWidth) || strokeWidth > int.MaxValue) return false;
-        return strokeWidth == 0;
+        return TryParseFixedLength((value ?? "1").AsSpan(), out double strokeWidth) && strokeWidth == 0;
+    }
+
+    private static bool TryParseFixedLength(ReadOnlySpan<char> value, out double pixels)
+    {
+        pixels = 0;
+        return SvgCssLength.TrySplitFixedUnit(value.Trim(SvgCssWhitespace.Characters), out ReadOnlySpan<char> number, out double factor)
+            && double.TryParse(number, CssNumberStyles, CultureInfo.InvariantCulture, out pixels)
+            && double.IsFinite(pixels) && double.IsFinite(pixels *= factor);
     }
 
     /// <summary>Computes the native visual-box outset without resolving or painting the stroke server.</summary>

@@ -74,6 +74,13 @@ immutable for their borrowed lifetime; independent operations own their scratch.
 
 ## Geometry and native raster routes
 
+Roots, markers and stroke metrics share fixed CSS unit factors. Their callers
+retain distinct sign, range, percentage/font bases and float-narrowing stages.
+Stroke width selection uses the same conversion as construction, so `0pt` does
+not activate an otherwise unused font or paint resource. The
+[length evidence](../tests/Research/svgweb/fixed-stroke-lengths.json) separates
+unit/boundary mechanisms from native rendering and host-selection contracts.
+
 Retain directed lines, quadratics, cubics and rational conics until transforms
 and [stroke construction](../src/Lokad.Svg/Rendering/SvgNativePathStroke.cs) are known.
 Early flattening changes offset curves, joins, dashes, bounds and fringe coverage.

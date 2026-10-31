@@ -33,6 +33,13 @@ preparation contract and one added clip ownership case cover refusal, cancellati
 cleanup and retry. Three canonical native fixtures separate plain fills, shader
 consumers and clip staging; [their evidence](Research/svgweb/thin-authored-contours.json)
 records failing-before results and independent platform captures.
+The [fixed stroke-length mechanisms](Lokad.Svg.Tests/SvgFixedStrokeLengthTests.cs)
+pin unit conversion, sign/range admission and zero-width selection directly.
+Existing font-discovery and inherited-paint cases each add one physical-zero
+interaction. One [canonical native fixture](Fixtures/original/fixed-stroke-lengths.svg)
+protects inherited width, mixed dash units and signed offsets; the
+[evidence](Research/svgweb/fixed-stroke-lengths.json) retains the two newly exposed
+original rendering discrepancies separately from successful length parsing.
 The [analytic byte-alpha mechanism](Lokad.Svg.Tests/SvgAnalyticAlphaByteTests.cs)
 walks a cubic directly; its [native fixture](Fixtures/original/analytic-alpha-byte.svg)
 adds the specific blur/opacity interaction through canonical conversion. Existing

@@ -1,0 +1,553 @@
+{
+  "schemaVersion": 1,
+  "reviewedUtc": "2026-10-31",
+  "sourceBaseline": "ba123512d7fc378af559546c8aad25fd265743f7",
+  "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+  "sourceSvgFilesRetained": 0,
+  "originalFragmentsRetained": 0,
+  "finding": "Three first-gate originals use zero-point dash offsets. Root and marker length parsing duplicated unit factors, while stroke width, entries, offsets and zero-width selection only admitted bare/px tokens.",
+  "sharedModel": [
+    "SvgCssLength splits fixed CSS units once. Roots, markers and stroke metrics reuse factors; marker float narrowing remains before multiplication and root/stroke numeric admission remains in its caller.",
+    "Stroke width, dash entries and offsets convert before finite/range admission. Negative offsets remain valid, negative entries remain MalformedInput, and negative widths remain unsupported.",
+    "Zero-width selection uses the same fixed conversion as construction, preserving unused-font and inherited missing-paint suppression.",
+    "No zero-only exception, new owner, retained array, closure, public API or alternate geometry path. Percent/font-relative stroke metrics remain unsupported until their bases are represented."
+  ],
+  "specifications": [
+    "https://www.w3.org/TR/SVG/painting.html#StrokeDashoffsetProperty",
+    "https://www.w3.org/TR/css-values-4/#absolute-lengths"
+  ],
+  "coverage": {
+    "mechanisms": {
+      "file": "../../Lokad.Svg.Tests/SvgFixedStrokeLengthTests.cs",
+      "cases": 39,
+      "responsibilities": "Fixed units, signed offsets, converted numeric bounds, mixed/odd/all-zero arrays, lexical/nonfinite rejection, physical-zero selection and root quarter-mm lengths."
+    },
+    "failingBefore": {
+      "selection": "Initial31 direct cases",
+      "failed": 16,
+      "passed": 15,
+      "qualification": "Eight more direct cases were added for quarter-mm/root and zero selection after the implementation; no claim they were part of the initial failing-before run."
+    },
+    "contracts": [
+      {
+        "file": "../../Lokad.Svg.Tests/SvgTextStrokeTests.cs",
+        "newCases": 1,
+        "responsibility": "Physical-zero child stroke requests no unused font; the existing provider/source counters and discovery/conversion assertions remain."
+      },
+      {
+        "file": "../../Lokad.Svg.Tests/SvgInheritedPaintStrokeTests.cs",
+        "newCases": 1,
+        "responsibility": "Physical-zero inherited width does not resolve a missing paint reference."
+      }
+    ],
+    "rendering": {
+      "fixture": "../../Fixtures/original/fixed-stroke-lengths.svg",
+      "reference": "../../References/original-fixed-stroke-lengths.json",
+      "captures": [
+        {
+          "host": "windows",
+          "capture": 1,
+          "sourceSha256": "cd2cef60341825908e11f3b11c7d043bd8035aa7cfdc3e63dc2832ca8b921838",
+          "nativePngSha256": "82f49f686bb52796fe779f776e09e74f6800827e5615f70e059c663f77abe195",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "host": "windows",
+          "capture": 2,
+          "sourceSha256": "cd2cef60341825908e11f3b11c7d043bd8035aa7cfdc3e63dc2832ca8b921838",
+          "nativePngSha256": "82f49f686bb52796fe779f776e09e74f6800827e5615f70e059c663f77abe195",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "host": "windows",
+          "capture": 3,
+          "sourceSha256": "cd2cef60341825908e11f3b11c7d043bd8035aa7cfdc3e63dc2832ca8b921838",
+          "nativePngSha256": "82f49f686bb52796fe779f776e09e74f6800827e5615f70e059c663f77abe195",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "host": "linux",
+          "capture": 1,
+          "sourceSha256": "cd2cef60341825908e11f3b11c7d043bd8035aa7cfdc3e63dc2832ca8b921838",
+          "nativePngSha256": "82f49f686bb52796fe779f776e09e74f6800827e5615f70e059c663f77abe195",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "host": "linux",
+          "capture": 2,
+          "sourceSha256": "cd2cef60341825908e11f3b11c7d043bd8035aa7cfdc3e63dc2832ca8b921838",
+          "nativePngSha256": "82f49f686bb52796fe779f776e09e74f6800827e5615f70e059c663f77abe195",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "host": "linux",
+          "capture": 3,
+          "sourceSha256": "cd2cef60341825908e11f3b11c7d043bd8035aa7cfdc3e63dc2832ca8b921838",
+          "nativePngSha256": "82f49f686bb52796fe779f776e09e74f6800827e5615f70e059c663f77abe195",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "comparisons": [
+        {
+          "host": "windows",
+          "phase": "before",
+          "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+          "outcome": "UnsupportedFeature",
+          "message": "Only bare-number and px dash array entries are implemented."
+        },
+        {
+          "host": "windows",
+          "phase": "candidate",
+          "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+          "outcome": "rendered",
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        {
+          "host": "linux",
+          "phase": "before",
+          "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+          "outcome": "UnsupportedFeature",
+          "message": "Only bare-number and px dash array entries are implemented."
+        },
+        {
+          "host": "linux",
+          "phase": "candidate",
+          "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+          "outcome": "rendered",
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      ],
+      "responsibility": "One canonical conversion protects inherited physical width, mixed point/pica/quarter-mm arrays and signed/zero offsets. Existing images/tolerances stay unchanged; no fixture/API product."
+    }
+  },
+  "newOriginalCaptures": {
+    "sourceSvgFilesRetained": 0,
+    "originalFragmentsRetained": 0,
+    "logicalViewport": [
+      406.25,
+      206.25
+    ],
+    "screenshot": [
+      406,
+      206
+    ],
+    "captures": [
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "host": "windows",
+        "capture": 1,
+        "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+        "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "host": "windows",
+        "capture": 2,
+        "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+        "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "host": "windows",
+        "capture": 3,
+        "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+        "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "host": "linux",
+        "capture": 1,
+        "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+        "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "host": "linux",
+        "capture": 2,
+        "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+        "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "host": "linux",
+        "capture": 3,
+        "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+        "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "name": "radialgradient1.svg",
+        "host": "windows",
+        "capture": 1,
+        "sourceSha256": "fee0748155f0fc67217ad83fc631021dc9510ea3f60f1218e1005fb1be8ddb24",
+        "nativePngSha256": "7d1d351c83d9e48df70cc38bc31e999d0c626bff914290d7cfcc39e536c9dde3",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "name": "radialgradient1.svg",
+        "host": "windows",
+        "capture": 2,
+        "sourceSha256": "fee0748155f0fc67217ad83fc631021dc9510ea3f60f1218e1005fb1be8ddb24",
+        "nativePngSha256": "7d1d351c83d9e48df70cc38bc31e999d0c626bff914290d7cfcc39e536c9dde3",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "name": "radialgradient1.svg",
+        "host": "windows",
+        "capture": 3,
+        "sourceSha256": "fee0748155f0fc67217ad83fc631021dc9510ea3f60f1218e1005fb1be8ddb24",
+        "nativePngSha256": "7d1d351c83d9e48df70cc38bc31e999d0c626bff914290d7cfcc39e536c9dde3",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "name": "radialgradient1.svg",
+        "host": "linux",
+        "capture": 1,
+        "sourceSha256": "fee0748155f0fc67217ad83fc631021dc9510ea3f60f1218e1005fb1be8ddb24",
+        "nativePngSha256": "7d1d351c83d9e48df70cc38bc31e999d0c626bff914290d7cfcc39e536c9dde3",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "name": "radialgradient1.svg",
+        "host": "linux",
+        "capture": 2,
+        "sourceSha256": "fee0748155f0fc67217ad83fc631021dc9510ea3f60f1218e1005fb1be8ddb24",
+        "nativePngSha256": "7d1d351c83d9e48df70cc38bc31e999d0c626bff914290d7cfcc39e536c9dde3",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "name": "radialgradient1.svg",
+        "host": "linux",
+        "capture": 3,
+        "sourceSha256": "fee0748155f0fc67217ad83fc631021dc9510ea3f60f1218e1005fb1be8ddb24",
+        "nativePngSha256": "7d1d351c83d9e48df70cc38bc31e999d0c626bff914290d7cfcc39e536c9dde3",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ],
+    "comparisons": [
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "host": "windows",
+        "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+        "pngSha256": "ea4ff9d6276f66ec1c7819f41b35551e9d51094230a81b3b9f3857655ed5b2b6",
+        "changedPixels": 114,
+        "maximumError": 1,
+        "totalChannelError": 342,
+        "bounds": [
+          58,
+          16,
+          235,
+          151
+        ],
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0
+      },
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "host": "linux",
+        "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+        "pngSha256": "ea4ff9d6276f66ec1c7819f41b35551e9d51094230a81b3b9f3857655ed5b2b6",
+        "changedPixels": 114,
+        "maximumError": 1,
+        "totalChannelError": 342,
+        "bounds": [
+          58,
+          16,
+          235,
+          151
+        ],
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0
+      },
+      {
+        "name": "radialgradient1.svg",
+        "host": "windows",
+        "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+        "pngSha256": "93d94e9b4226319aa0c4df862a20e57044d0af53bc729319c7853c08f6681ddd",
+        "changedPixels": 4,
+        "maximumError": 1,
+        "totalChannelError": 12,
+        "bounds": [
+          154,
+          27,
+          401,
+          192
+        ],
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0
+      },
+      {
+        "name": "radialgradient1.svg",
+        "host": "linux",
+        "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+        "pngSha256": "93d94e9b4226319aa0c4df862a20e57044d0af53bc729319c7853c08f6681ddd",
+        "changedPixels": 4,
+        "maximumError": 1,
+        "totalChannelError": 12,
+        "bounds": [
+          154,
+          27,
+          401,
+          192
+        ],
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0
+      }
+    ]
+  },
+  "qualification": {
+    "builds": [
+      {
+        "project": "Lokad.Svg.Tests",
+        "framework": "net11.0",
+        "seconds": 2.9640451001469046,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net11.0",
+        "seconds": 3.4168354000430554,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.Tests",
+        "framework": "net10.0",
+        "seconds": 6.470560099929571,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net10.0",
+        "seconds": 2.1636733000632375,
+        "exitCode": 0,
+        "warnings": 0
+      }
+    ],
+    "focused": {
+      "passed": 1270,
+      "seconds": 8.999
+    },
+    "affectedIntegration": {
+      "passed": 399,
+      "seconds": 15.93
+    },
+    "suites": [
+      {
+        "name": "full-qualified-core-linux-net10.0",
+        "passed": 33085,
+        "seconds": 42.46,
+        "librarySha256": "0b7f966251b7e4ea9f79a1427e3c4ed418974699f441e4d1d7416144d02973b7"
+      },
+      {
+        "name": "full-qualified-core-linux-net11.0",
+        "passed": 33085,
+        "seconds": 55.515,
+        "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a"
+      },
+      {
+        "name": "full-qualified-core-windows-net10.0",
+        "passed": 33085,
+        "seconds": 47.388,
+        "librarySha256": "0b7f966251b7e4ea9f79a1427e3c4ed418974699f441e4d1d7416144d02973b7"
+      },
+      {
+        "name": "full-qualified-core-windows-net11.0",
+        "passed": 33085,
+        "seconds": 55.828,
+        "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a"
+      },
+      {
+        "name": "full-qualified-native-linux-net10.0",
+        "passed": 39151,
+        "seconds": 128.102,
+        "librarySha256": "0b7f966251b7e4ea9f79a1427e3c4ed418974699f441e4d1d7416144d02973b7"
+      },
+      {
+        "name": "full-qualified-native-linux-net11.0",
+        "passed": 39151,
+        "seconds": 159.018,
+        "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a"
+      },
+      {
+        "name": "full-qualified-native-windows-net10.0",
+        "passed": 39151,
+        "seconds": 59.489,
+        "librarySha256": "0b7f966251b7e4ea9f79a1427e3c4ed418974699f441e4d1d7416144d02973b7"
+      },
+      {
+        "name": "full-qualified-native-windows-net11.0",
+        "passed": 39151,
+        "seconds": 71.833,
+        "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a"
+      }
+    ],
+    "totalPassed": 288944,
+    "timingScope": "Functional elapsed seconds on a concurrently used workstation, not performance or suite-simplification timing.",
+    "originals": {
+      "files": 204,
+      "allHashesOptionsAndFullDimensionsPreserved": true,
+      "outcomesFile": "default-outcomes.csv",
+      "hosts": {
+        "windows": {
+          "counts": {
+            "UnsupportedFeature": 51,
+            "rendered": 150,
+            "different": 2,
+            "exact": 148,
+            "MalformedInput": 3
+          },
+          "previousPngsByteIdentical": 148,
+          "changedOutcomes": [
+            {
+              "name": "AJ_Digital_Camera.svg",
+              "before": "UnsupportedFeature",
+              "after": "rendered",
+              "comparison": {
+                "status": "different",
+                "changedPixels": 114,
+                "maximumError": 1,
+                "totalChannelError": 342
+              }
+            },
+            {
+              "name": "radialgradient1.svg",
+              "before": "UnsupportedFeature",
+              "after": "rendered",
+              "comparison": {
+                "status": "different",
+                "changedPixels": 4,
+                "maximumError": 1,
+                "totalChannelError": 12
+              }
+            }
+          ],
+          "changedDiagnostics": [
+            {
+              "name": "AJ_Digital_Camera.svg",
+              "before": "Only bare-number and px dash offsets are implemented.",
+              "after": null
+            },
+            {
+              "name": "juanmontoya_lingerie.svg",
+              "before": "Only bare-number and px dash offsets are implemented.",
+              "after": "Only defined local references in symbol content are implemented."
+            },
+            {
+              "name": "radialgradient1.svg",
+              "before": "Only bare-number and px dash offsets are implemented.",
+              "after": null
+            }
+          ]
+        },
+        "linux": {
+          "counts": {
+            "UnsupportedFeature": 51,
+            "rendered": 150,
+            "different": 2,
+            "exact": 148,
+            "MalformedInput": 3
+          },
+          "previousPngsByteIdentical": 148,
+          "changedOutcomes": [
+            {
+              "name": "AJ_Digital_Camera.svg",
+              "before": "UnsupportedFeature",
+              "after": "rendered",
+              "comparison": {
+                "status": "different",
+                "changedPixels": 114,
+                "maximumError": 1,
+                "totalChannelError": 342
+              }
+            },
+            {
+              "name": "radialgradient1.svg",
+              "before": "UnsupportedFeature",
+              "after": "rendered",
+              "comparison": {
+                "status": "different",
+                "changedPixels": 4,
+                "maximumError": 1,
+                "totalChannelError": 12
+              }
+            }
+          ],
+          "changedDiagnostics": [
+            {
+              "name": "AJ_Digital_Camera.svg",
+              "before": "Only bare-number and px dash offsets are implemented.",
+              "after": null
+            },
+            {
+              "name": "juanmontoya_lingerie.svg",
+              "before": "Only bare-number and px dash offsets are implemented.",
+              "after": "Only defined local references in symbol content are implemented."
+            },
+            {
+              "name": "radialgradient1.svg",
+              "before": "Only bare-number and px dash offsets are implemented.",
+              "after": null
+            }
+          ]
+        }
+      }
+    }
+  },
+  "closure": {
+    "closed": [
+      "Shared fixed-unit conversion and physical stroke width/array/offset parsing, including zero-width font/resource selection.",
+      "All three original zero-point offset gates."
+    ],
+    "remaining": [
+      "AJ_Digital_Camera.svg:114 differing pixels/max1; radialgradient1.svg:4/max1, stable against three fresh captures per host. Both rendering discrepancies remain open.",
+      "juanmontoya_lingerie.svg now reaches a distinct local-reference gate; whole-original acceptance remains open.",
+      "Other W1 supplied-font/resource/static-state and parser gates remain individually pending."
+    ]
+  }
+}

@@ -6,8 +6,8 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 148 originals per host: **148 exploratory
-exact**, with 53 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 150 originals per host: **148 exploratory
+exact and 2 different**, with 51 UnsupportedFeature and 3 MalformedInput outcomes. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
@@ -65,6 +65,7 @@ current inventory above governs overall status.
 | Opaque gradient coverage | [Program opacity and coverage](opaque-gradient-coverage.json). Retain factory eligibility and direct-span/A8 interpolation stages. One canonical edge fixture and six compiled native vectors protect the shared rule; the complete default Gallardo image is exact. |
 | Completed curve strips | [Direct painting and clip construction](completed-strip-coverage.json). Completed direct fringes use the paint clip; pending mask rows and clip definitions keep path bounds. Circle, authored arcs and rounded rectangles protect distinct source builders. |
 | Short authored curves | [Closing chords](thin-authored-contours.json). Fallback sample count cannot suppress authored curved ink. Direct preparation/index tests, explicit suppression and ownership contracts, and three canonical fill/shader/clip fixtures protect distinct responsibilities. |
+| Fixed stroke lengths | [Shared unit conversion](fixed-stroke-lengths.json). Root, marker and stroke factors share one parser seam; callers retain sign/range/base/narrowing rules. Direct mechanisms, two existing selection contracts and one canonical native fixture protect distinct responsibilities. |
 | Gradient declarations | [Typed lengths](gradient-lengths.json), [inheritance fixture](../../Fixtures/original/radial-coordinate-inheritance.svg), [stop identity fixture](../../Fixtures/original/gradient-stop-identities.svg). Preserve number/percentage intent, missing/default values, units, per-field inheritance, viewport resolution and metadata. |
 | Paint selection and text evidence | [Paint references](paint-references.json), [filter-source review](filter-source-review.json). Empty paint content and unavailable servers differ; the synthetic font needs valid bounds before its rendering can diagnose the library. Exploratory single captures do not admit new references. |
 
@@ -91,6 +92,13 @@ pixel differences against three fresh captures per host. All 21 source-preservin
 subset controls are exact, including the native-positive branch omitted by
 selecting paints from managed coverage alone. No hosted paths are retained;
 the three small regression fixtures use independently authored geometry.
+
+Fixed stroke lengths remove three `0pt` gates. The camera and radialgradient1
+originals now render with 114 and 4 differing pixels respectively (maximum channel
+error 1), stable against fresh captures on both hosts. Their rendering remains
+open. The lingerie original reaches a separate local-reference gate. All 148
+previously rendered PNGs remain byte-identical. See the
+[length record](fixed-stroke-lengths.json) for these distinct outcomes.
 
 Mapped crop/flood-offset/shadow and root/filter cases are closed for their declared
 default static contexts. Remaining work includes declared stroke units, CSS and

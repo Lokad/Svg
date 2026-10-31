@@ -39,6 +39,7 @@ public sealed partial class OpenTypeFontTests
     [Theory]
     [InlineData("stroke-width='0'")]
     [InlineData("style='stroke-width:0'")]
+    [InlineData("style='stroke-width:0pt'")]
     public async Task Child_zero_width_strokes_do_not_request_an_unused_face(string attributes)
     {
         byte[] input = StrokeDocument("<text font-family='Unused' fill='none' stroke='red' stroke-width='8'><tspan " + attributes + ">A</tspan></text>");

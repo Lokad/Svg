@@ -10351,45 +10351,81 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "thin-authored-contours.json",
+    "evidence": "fixed-stroke-lengths.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "db991b28d93f44924f753aa1f158b07d492ff274",
-    "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+    "sourceBaseline": "ba123512d7fc378af559546c8aad25fd265743f7",
+    "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
-      "rendered": 148,
+      "rendered": 150,
       "exploratoryExact": 148,
-      "different": 0,
-      "UnsupportedFeature": 53,
+      "different": 2,
+      "UnsupportedFeature": 51,
       "MalformedInput": 3
     },
     "previousPngsByteIdenticalPerHost": {
-      "windows": 147,
-      "linux": 147
+      "windows": 148,
+      "linux": 148
     },
-    "changedOriginals": [
+    "changedOutcomes": [
       {
-        "name": "compuserver_msn_Ford_Focus.svg",
-        "before": {
+        "name": "AJ_Digital_Camera.svg",
+        "before": "UnsupportedFeature",
+        "after": "rendered",
+        "comparison": {
           "status": "different",
-          "changedPixels": 6,
-          "maximumError": 4,
-          "totalChannelError": 45
-        },
-        "after": {
-          "status": "exact",
-          "changedPixels": 0,
-          "maximumError": 0,
-          "totalChannelError": 0
+          "changedPixels": 114,
+          "maximumError": 1,
+          "totalChannelError": 342
+        }
+      },
+      {
+        "name": "radialgradient1.svg",
+        "before": "UnsupportedFeature",
+        "after": "rendered",
+        "comparison": {
+          "status": "different",
+          "changedPixels": 4,
+          "maximumError": 1,
+          "totalChannelError": 12
         }
       }
     ],
-    "newlyExactOriginals": [
-      "compuserver_msn_Ford_Focus.svg"
+    "changedOutcomesOrDiagnostics": [
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "before": "Only bare-number and px dash offsets are implemented.",
+        "after": null
+      },
+      {
+        "name": "juanmontoya_lingerie.svg",
+        "before": "Only bare-number and px dash offsets are implemented.",
+        "after": "Only defined local references in symbol content are implemented."
+      },
+      {
+        "name": "radialgradient1.svg",
+        "before": "Only bare-number and px dash offsets are implemented.",
+        "after": null
+      }
     ],
+    "newlyExactOriginals": [],
     "lostExactImages": [],
-    "changedOutcomesOrDiagnostics": [],
-    "remainingDefaultDifferences": []
+    "remainingDefaultDifferences": [
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "status": "different",
+        "changedPixels": 114,
+        "maximumError": 1,
+        "totalChannelError": 342
+      },
+      {
+        "name": "radialgradient1.svg",
+        "status": "different",
+        "changedPixels": 4,
+        "maximumError": 1,
+        "totalChannelError": 12
+      }
+    ]
   }
 }

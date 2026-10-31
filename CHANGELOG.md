@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Share fixed CSS length conversion across roots, markers and stroke metrics;
+  admit physical units for stroke widths, dash entries and offsets, including zero
+  widths during font/resource selection.
 - Retain shallow authored curves that flatten to a single segment across solid,
   gradient, pattern and clip fills, preserving their ink against the closing chord.
 - Preserve parent/child canvas concatenation across path clips, keeping resource

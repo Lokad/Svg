@@ -31,10 +31,12 @@ public sealed class SvgInheritedPaintStrokeTests
         Assert.Equal(Render(explicitPaint), Render(inherited));
     }
 
-    [Fact]
-    public void Zero_width_does_not_resolve_an_inherited_missing_paint()
+    [Theory]
+    [InlineData("0")]
+    [InlineData("0pt")]
+    public void Zero_width_does_not_resolve_an_inherited_missing_paint(string width)
     {
-        const string inherited = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g fill='none' stroke='url(#missing)' stroke-width='0'><path d='M1 1L7 7'/></g></svg>";
+        string inherited = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g fill='none' stroke='url(#missing)' stroke-width='" + width + "'><path d='M1 1L7 7'/></g></svg>";
         const string empty = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'/>";
 
         Assert.Equal(Render(empty), Render(inherited));
