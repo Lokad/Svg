@@ -19042,6 +19042,81 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-fixed-stroke-lengths.json",
       "referenceSha256": "82f49f686bb52796fe779f776e09e74f6800827e5615f70e059c663f77abe195"
+    },
+    {
+      "id": "original-opacity-recorded-source-bounds",
+      "path": "original/opacity-recorded-source-bounds.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "93bb3c54bae3a8dedd908f6e5238df2fb4c5891deb1880646bb99716c1139312",
+      "materializedSha256": "93bb3c54bae3a8dedd908f6e5238df2fb4c5891deb1880646bb99716c1139312",
+      "featureTags": [
+        "opacity",
+        "source-bounds",
+        "drawing-enclosure",
+        "raster-scope"
+      ],
+      "width": 96,
+      "height": 128,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-opacity-recorded-source-bounds.json",
+      "referenceSha256": "c9e65c9642b778278954f5ce0b2e7e98e7be1606d1569c8dd08d5164bf334e53"
+    },
+    {
+      "id": "original-opacity-hairline-scope",
+      "path": "original/opacity-hairline-scope.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "2c6395101a788829f41def2c079bc62c31f80b9afb89aef4833222a22e79ac40",
+      "materializedSha256": "2c6395101a788829f41def2c079bc62c31f80b9afb89aef4833222a22e79ac40",
+      "featureTags": [
+        "opacity",
+        "source-bounds",
+        "hairline",
+        "raster-scope"
+      ],
+      "width": 96,
+      "height": 128,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-opacity-hairline-scope.json",
+      "referenceSha256": "a4f1010750207b27b9f80e7f33ebdd3a5cd0680daf9719c361d149141d6f643a"
+    },
+    {
+      "id": "original-opacity-hairline-group",
+      "path": "original/opacity-hairline-group.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "1a278052c45200169ea53c2367cb1020a180526a1224f6a746bf33f54f1bba01",
+      "materializedSha256": "1a278052c45200169ea53c2367cb1020a180526a1224f6a746bf33f54f1bba01",
+      "featureTags": [
+        "opacity",
+        "hairline",
+        "raster-scope",
+        "separate-paints"
+      ],
+      "width": 96,
+      "height": 128,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-opacity-hairline-group.json",
+      "referenceSha256": "a4f1010750207b27b9f80e7f33ebdd3a5cd0680daf9719c361d149141d6f643a"
     }
   ]
 }

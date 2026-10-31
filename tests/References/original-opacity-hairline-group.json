@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "1a278052c45200169ea53c2367cb1020a180526a1224f6a746bf33f54f1bba01",
+  "referenceSha256": "a4f1010750207b27b9f80e7f33ebdd3a5cd0680daf9719c361d149141d6f643a",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-opacity-hairline-scope.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-opacity-hairline-group",
+  "viewport": {
+    "width": 96,
+    "height": 128,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 two-paint parent opacity group. Separate fill and stroke commands protect a distinct recording graph from leaf opacity. Canonical conversion; three fresh healthy/profile-cleaned captures per host agree. The independently captured image shares PNG storage with the leaf fixture.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "1a278052c45200169ea53c2367cb1020a180526a1224f6a746bf33f54f1bba01",
+      "referenceSha256": "a4f1010750207b27b9f80e7f33ebdd3a5cd0680daf9719c361d149141d6f643a",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "1a278052c45200169ea53c2367cb1020a180526a1224f6a746bf33f54f1bba01",
+      "referenceSha256": "a4f1010750207b27b9f80e7f33ebdd3a5cd0680daf9719c361d149141d6f643a",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 96.25,
+    "height": 128.25
+  }
+}

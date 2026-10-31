@@ -130,6 +130,13 @@ sampling/blend semantics.
 | Clip coverage | Use the actual bitmap coverage tape to classify an opaque rectangle; request/layout bounds can hide an antialiased fringe. |
 | Captured/sampled image | Retain requested subsets, content clips, image hints, color space and origin independently of the raster window. |
 
+Recorded primitive drawing bounds enclose local stroke extents before placement;
+filter parameter hints retain their fractional visuals. Hairlines and polygons
+bind to the same compositor grid and active raster scope. A source content clip
+can narrow construction without moving the bitmap origin; owned interiors still
+limit writes. The [opacity-source evidence](../tests/Research/svgweb/opacity-source-scope.json)
+maps direct mechanisms, distinct leaf/group regressions and original consumers.
+
 A fractional root image clipped by its integer viewport remaps the visible source
 rectangle before residual image scaling. Keep both float stages even when the
 snapped rectangles coincide; the recorded scene and logical layout stay separate.

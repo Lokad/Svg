@@ -2210,19 +2210,15 @@ public static partial class SvgConverter
                 drawingMap.Compose(sourcePlacement),
                 ref shader, clip is {} bounds ? MapClipBounds(bounds, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
                 clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewport.Mask, activeViewport.IsBinary,
-                destination, outputWidth, outputHeight, cancellationToken);
+                destination, outputWidth, outputHeight, rasterGrid, RasterScope(), cancellationToken);
             return painted;
         }
 
         SvgCpuRasterContext LayerRasterContext(SvgCpuRasterContext tile)
-        {
-            SvgAnalyticClipBounds rasterBounds = LayerRasterBounds(layerBounds, frame);
-            SvgAnalyticClipBounds bitmap = new(Math.Max(tile.BitmapClip.Left, rasterBounds.Left), Math.Max(tile.BitmapClip.Top, rasterBounds.Top),
-                Math.Min(tile.BitmapClip.Right, rasterBounds.Right), Math.Min(tile.BitmapClip.Bottom, rasterBounds.Bottom));
-            SvgAnalyticClipBounds interior = new(Math.Max(tile.Interior.Left, rasterBounds.Left), Math.Max(tile.Interior.Top, rasterBounds.Top),
-                Math.Min(tile.Interior.Right, rasterBounds.Right), Math.Min(tile.Interior.Bottom, rasterBounds.Bottom));
-            return new(bitmap, interior) { ConstructionOrigin = frame?.ContentClip is not null ? tile.Origin : null };
-        }
+            => RasterScope().Bind(tile);
+
+        SvgCpuRasterScope RasterScope()
+            => new(LayerRasterBounds(layerBounds, frame), frame?.ContentClip is not null);
 
         // Source layout/request bounds can be tighter than numerical curve coverage.
         // The admitted raster window governs geometry and clip resources.
@@ -3221,7 +3217,8 @@ public static partial class SvgConverter
                 bool rendered = stroke.HasFill && SvgHairlineStroke.TryRasterize(centerline,
                     drawingMap.Compose(sourcePlacement), ResolveSolidColor(stroke.Color), surfaceMode == RasterSurfaceMode.PremultipliedPattern ? PatternSolidPaint(stroke.Color) : null,
                     stroke.Clip is SvgClipBox clip ? MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
-                    stroke.Clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewport.Mask, activeViewport.IsBinary, destination, outputWidth, outputHeight, cancellationToken);
+                    stroke.Clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewport.Mask, activeViewport.IsBinary,
+                    destination, outputWidth, outputHeight, rasterGrid, RasterScope(), cancellationToken);
                 if (rendered) return;
             }
             switch (geometry.Kind)

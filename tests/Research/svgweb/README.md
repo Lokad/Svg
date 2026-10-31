@@ -6,13 +6,13 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 150 originals per host: **148 exploratory
-exact and 2 different**, with 51 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 150 originals per host: **149 exploratory
+exact and 1 different**, with 51 UnsupportedFeature and 3 MalformedInput outcomes. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
 Scimitar, Gallardo, car, radialgradient2, UFO, alphachannel, opensearch, scion and
-green grapes are exact, as is Ford. Exact default output does not qualify other font, resource
+green grapes are exact, as are Ford and the camera. Exact default output does not qualify other font, resource
 or static-state contexts, and whole-corpus acceptance remains open.
 
 Resolve gaps by mechanism, preserving original-to-control mappings and independent
@@ -66,6 +66,7 @@ current inventory above governs overall status.
 | Completed curve strips | [Direct painting and clip construction](completed-strip-coverage.json). Completed direct fringes use the paint clip; pending mask rows and clip definitions keep path bounds. Circle, authored arcs and rounded rectangles protect distinct source builders. |
 | Short authored curves | [Closing chords](thin-authored-contours.json). Fallback sample count cannot suppress authored curved ink. Direct preparation/index tests, explicit suppression and ownership contracts, and three canonical fill/shader/clip fixtures protect distinct responsibilities. |
 | Fixed stroke lengths | [Shared unit conversion](fixed-stroke-lengths.json). Root, marker and stroke factors share one parser seam; callers retain sign/range/base/narrowing rules. Direct mechanisms, two existing selection contracts and one canonical native fixture protect distinct responsibilities. |
+| Isolated opacity and source raster scope | [Local enclosure and shared raster binding](opacity-source-scope.json). Recorded primitive strokes enclose before placement; filter hints stay fractional. Hairlines borrow the compositor grid and preserve source clip, origin and owned interior independently. Direct mechanisms and three leaf/group fixtures protect distinct recording graphs. |
 | Gradient declarations | [Typed lengths](gradient-lengths.json), [inheritance fixture](../../Fixtures/original/radial-coordinate-inheritance.svg), [stop identity fixture](../../Fixtures/original/gradient-stop-identities.svg). Preserve number/percentage intent, missing/default values, units, per-field inheritance, viewport resolution and metadata. |
 | Paint selection and text evidence | [Paint references](paint-references.json), [filter-source review](filter-source-review.json). Empty paint content and unavailable servers differ; the synthetic font needs valid bounds before its rendering can diagnose the library. Exploratory single captures do not admit new references. |
 
@@ -93,12 +94,13 @@ subset controls are exact, including the native-positive branch omitted by
 selecting paints from managed coverage alone. No hosted paths are retained;
 the three small regression fixtures use independently authored geometry.
 
-Fixed stroke lengths remove three `0pt` gates. The camera and radialgradient1
-originals now render with 114 and 4 differing pixels respectively (maximum channel
-error 1), stable against fresh captures on both hosts. Their rendering remains
-open. The lingerie original reaches a separate local-reference gate. All 148
-previously rendered PNGs remain byte-identical. See the
-[length record](fixed-stroke-lengths.json) for these distinct outcomes.
+Fixed stroke lengths remove three `0pt` gates; the lingerie original reaches a
+separate local-reference gate. The [length record](fixed-stroke-lengths.json)
+retains those outcomes. The shared [opacity-source correction](opacity-source-scope.json)
+closes the complete camera against three fresh healthy captures per host and all
+82 paint isolations. Radialgradient1 retains four differing RGB pixels (maximum
+error 1), including its isolated rounded rectangle. All 149 other rendered PNGs
+remain byte-identical. Whole-original radial acceptance remains open.
 
 Mapped crop/flood-offset/shadow and root/filter cases are closed for their declared
 default static contexts. Remaining work includes declared stroke units, CSS and

@@ -10351,74 +10351,30 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "fixed-stroke-lengths.json",
+    "evidence": "opacity-source-scope.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "ba123512d7fc378af559546c8aad25fd265743f7",
-    "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+    "sourceBaseline": "6a804a375fd13115c1d83872c8fa3a659eb56632",
+    "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
       "rendered": 150,
-      "exploratoryExact": 148,
-      "different": 2,
+      "exploratoryExact": 149,
+      "different": 1,
       "UnsupportedFeature": 51,
       "MalformedInput": 3
     },
     "previousPngsByteIdenticalPerHost": {
-      "windows": 148,
-      "linux": 148
+      "windows": 149,
+      "linux": 149
     },
-    "changedOutcomes": [
-      {
-        "name": "AJ_Digital_Camera.svg",
-        "before": "UnsupportedFeature",
-        "after": "rendered",
-        "comparison": {
-          "status": "different",
-          "changedPixels": 114,
-          "maximumError": 1,
-          "totalChannelError": 342
-        }
-      },
-      {
-        "name": "radialgradient1.svg",
-        "before": "UnsupportedFeature",
-        "after": "rendered",
-        "comparison": {
-          "status": "different",
-          "changedPixels": 4,
-          "maximumError": 1,
-          "totalChannelError": 12
-        }
-      }
+    "changedOutcomes": [],
+    "changedOutcomesOrDiagnostics": [],
+    "newlyExactOriginals": [
+      "AJ_Digital_Camera.svg"
     ],
-    "changedOutcomesOrDiagnostics": [
-      {
-        "name": "AJ_Digital_Camera.svg",
-        "before": "Only bare-number and px dash offsets are implemented.",
-        "after": null
-      },
-      {
-        "name": "juanmontoya_lingerie.svg",
-        "before": "Only bare-number and px dash offsets are implemented.",
-        "after": "Only defined local references in symbol content are implemented."
-      },
-      {
-        "name": "radialgradient1.svg",
-        "before": "Only bare-number and px dash offsets are implemented.",
-        "after": null
-      }
-    ],
-    "newlyExactOriginals": [],
     "lostExactImages": [],
     "remainingDefaultDifferences": [
-      {
-        "name": "AJ_Digital_Camera.svg",
-        "status": "different",
-        "changedPixels": 114,
-        "maximumError": 1,
-        "totalChannelError": 342
-      },
       {
         "name": "radialgradient1.svg",
         "status": "different",

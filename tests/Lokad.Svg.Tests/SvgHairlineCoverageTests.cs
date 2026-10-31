@@ -10,6 +10,27 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgHairlineCoverageTests
 {
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Source_clip_and_owned_interior_do_not_replace_the_bitmap_origin(bool retainsOrigin)
+    {
+        SvgCpuRasterContext context = new(new(8, 8, 24, 24), new(10, 10, 22, 22))
+        { ConstructionOrigin = retainsOrigin ? new(0, 0) : null };
+        byte[] pixels = new byte[32 * 32 * 4];
+        SvgHairlineCoverage coverage = new(pixels, 32, 32, SvgAnalyticPaint.Solid(new(255, 0, 0, 255)),
+            null, SvgClipAntialiasing.None, SvgRasterClipMask.Empty, true, context, CancellationToken.None);
+        coverage.DrawLine(SvgAuthoredPath.MapPoint(SvgAffineTransform.Identity, new(6, 16), context.Origin),
+            SvgAuthoredPath.MapPoint(SvgAffineTransform.Identity, new(26, 16), context.Origin));
+        // The native line-00-00-0 vector splits an integral horizontal span 127/128.
+        Assert.Equal(new byte[] { 127, 0, 0, 127 }, pixels.AsSpan((15 * 32 + 12) * 4, 4).ToArray());
+        Assert.Equal(new byte[] { 128, 0, 0, 128 }, pixels.AsSpan((16 * 32 + 12) * 4, 4).ToArray());
+        for (int y = 0; y < 32; y++)
+            for (int x = 0; x < 32; x++)
+                if (x < 10 || x >= 22 || y < 10 || y >= 22) Assert.Equal(0, pixels[(y * 32 + x) * 4 + 3]);
+    }
+
     [Fact]
     public void Containing_binary_viewport_preserves_unclipped_adjacent_pixel_rounding()
     {
@@ -54,7 +75,8 @@ public sealed class SvgHairlineCoverageTests
         {
             byte[] destination = new byte[64 * 64 * 4];
             Assert.True(SvgHairlineStroke.TryRasterize(path, new(SvgAffineTransform.FromScale(1.5, 1.5), null), new(255, 0, 0, 255), null,
-                null, SvgClipAntialiasing.None, new(mask), binary, destination, 64, 64, CancellationToken.None));
+                null, SvgClipAntialiasing.None, new(mask), binary, destination, 64, 64,
+                new(64, 64), new(new(0, 0, 64, 64), false), CancellationToken.None));
             return destination;
         }
     }

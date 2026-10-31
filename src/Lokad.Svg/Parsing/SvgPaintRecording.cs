@@ -213,7 +213,10 @@ internal static class SvgPaintRecording
             SvgPaintBounds painted = new(primitive.Left - strokeBoundsInflation, primitive.Top - strokeBoundsInflation,
                 primitive.Right + strokeBoundsInflation, primitive.Bottom + strokeBoundsInflation);
             sourceVisualBox = painted;
-            visualBounds = painted.Map(sourceObjectMap, context.CancellationToken);
+            // Recorded draws enclose their local visual extent before placement;
+            // filter parameter hints retain the independent unrounded source box.
+            SvgPaintBounds recorded = new(MathF.Floor(painted.Left), MathF.Floor(painted.Top), MathF.Ceiling(painted.Right), MathF.Ceiling(painted.Bottom));
+            visualBounds = recorded.Map(sourceObjectMap, context.CancellationToken);
         }
         return new(style.GetOpacity(), SvgPaintResolver.ResolveSolidPaint(fill).Alpha,
             fill.FillOpacity.Alpha / 255f, stroke.Alpha * strokeOpacity.Value, strokeOpacity.Alpha / 255f,

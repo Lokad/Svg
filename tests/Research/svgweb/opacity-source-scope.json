@@ -1,0 +1,549 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "6a804a375fd13115c1d83872c8fa3a659eb56632",
+  "candidateLibrarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+  "scope": "Recorded primitive stroke enclosures and isolated-opacity hairline raster scopes; no public API, storage owner, memory admission, text layout or root fitting change.",
+  "sharedRules": [
+    "Enclose primitive drawing visuals locally before placement; retain the independent fractional source box for filter parameters.",
+    "Hairlines borrow the existing compositor grid and active raster scope instead of constructing a full-canvas grid.",
+    "Bind construction clip, retained bitmap origin and owned interior independently; bound all writes to owned pixels."
+  ],
+  "mechanisms": {
+    "cases": 9,
+    "recordedBounds": "../../Lokad.Svg.Tests/SvgRecordedSourceEnclosureTests.cs",
+    "rasterScope": "../../Lokad.Svg.Tests/SvgRasterScopeTests.cs",
+    "hairlineCoverage": "../../Lokad.Svg.Tests/SvgHairlineCoverageTests.cs",
+    "failingBefore": {
+      "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+      "counters": {
+        "total": "5",
+        "executed": "5",
+        "passed": "1",
+        "failed": "4",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "reason": "Three recorded bounds and one retained-origin value fail; no missing-method/type/discovery failures."
+    },
+    "notes": "Three bounds cases and the retained-origin value fail against the baseline; the ordinary-origin companion passes. Four new scope cases exercise the extracted binding. Initial quarter-pixel expectation in a new test was corrected from independent native evidence; it is excluded from failing-before counts. The retained test pins existing compiled native integral-line alpha 127/128."
+  },
+  "contracts": "Existing hairline shader, root-boundary, group-storage, clipped-stroke and filter ownership cases retain refusal/cancellation/cleanup/retry. No fixture x API-form product added.",
+  "rendering": {
+    "canonicalFixtures": [
+      {
+        "id": "original-opacity-recorded-source-bounds",
+        "source": "../../Fixtures/original/opacity-recorded-source-bounds.svg",
+        "captureMetadata": "../../References/original-opacity-recorded-source-bounds.json",
+        "sourceSha256": "93bb3c54bae3a8dedd908f6e5238df2fb4c5891deb1880646bb99716c1139312",
+        "nativePngSha256": "c9e65c9642b778278954f5ce0b2e7e98e7be1606d1569c8dd08d5164bf334e53",
+        "comparisons": [
+          {
+            "id": "original-opacity-recorded-source-bounds",
+            "host": "windows",
+            "phase": "before",
+            "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+            "changedPixels": 51,
+            "maximumError": 24,
+            "alphaChangedPixels": 0
+          },
+          {
+            "id": "original-opacity-recorded-source-bounds",
+            "host": "windows",
+            "phase": "candidate",
+            "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0
+          },
+          {
+            "id": "original-opacity-recorded-source-bounds",
+            "host": "linux",
+            "phase": "before",
+            "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+            "changedPixels": 51,
+            "maximumError": 24,
+            "alphaChangedPixels": 0
+          },
+          {
+            "id": "original-opacity-recorded-source-bounds",
+            "host": "linux",
+            "phase": "candidate",
+            "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0
+          }
+        ]
+      },
+      {
+        "id": "original-opacity-hairline-scope",
+        "source": "../../Fixtures/original/opacity-hairline-scope.svg",
+        "captureMetadata": "../../References/original-opacity-hairline-scope.json",
+        "sourceSha256": "2c6395101a788829f41def2c079bc62c31f80b9afb89aef4833222a22e79ac40",
+        "nativePngSha256": "a4f1010750207b27b9f80e7f33ebdd3a5cd0680daf9719c361d149141d6f643a",
+        "comparisons": [
+          {
+            "id": "original-opacity-hairline-scope",
+            "host": "windows",
+            "phase": "before",
+            "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+            "changedPixels": 238,
+            "maximumError": 7,
+            "alphaChangedPixels": 3
+          },
+          {
+            "id": "original-opacity-hairline-scope",
+            "host": "windows",
+            "phase": "candidate",
+            "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0
+          },
+          {
+            "id": "original-opacity-hairline-scope",
+            "host": "linux",
+            "phase": "before",
+            "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+            "changedPixels": 238,
+            "maximumError": 7,
+            "alphaChangedPixels": 3
+          },
+          {
+            "id": "original-opacity-hairline-scope",
+            "host": "linux",
+            "phase": "candidate",
+            "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0
+          }
+        ]
+      },
+      {
+        "id": "original-opacity-hairline-group",
+        "source": "../../Fixtures/original/opacity-hairline-group.svg",
+        "captureMetadata": "../../References/original-opacity-hairline-group.json",
+        "sourceSha256": "1a278052c45200169ea53c2367cb1020a180526a1224f6a746bf33f54f1bba01",
+        "nativePngSha256": "a4f1010750207b27b9f80e7f33ebdd3a5cd0680daf9719c361d149141d6f643a",
+        "comparisons": [
+          {
+            "id": "original-opacity-hairline-group",
+            "host": "windows",
+            "phase": "before",
+            "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+            "changedPixels": 238,
+            "maximumError": 7,
+            "alphaChangedPixels": 3
+          },
+          {
+            "id": "original-opacity-hairline-group",
+            "host": "windows",
+            "phase": "candidate",
+            "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0
+          },
+          {
+            "id": "original-opacity-hairline-group",
+            "host": "linux",
+            "phase": "before",
+            "librarySha256": "c9cf72733c065c6b9a73b433162a39e6a585fdad3d278e0db683ab23f2eeea7a",
+            "changedPixels": 238,
+            "maximumError": 7,
+            "alphaChangedPixels": 3
+          },
+          {
+            "id": "original-opacity-hairline-group",
+            "host": "linux",
+            "phase": "candidate",
+            "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0
+          }
+        ]
+      }
+    ],
+    "freshCaptures": 18,
+    "freshCapturesPerHostPerFixture": 3,
+    "allHealthyAndProfileCleaned": true,
+    "pngFilesAdded": 2,
+    "distinctGraphs": "Leaf opacity and a parent group containing separate fill/stroke commands remain separate routine sources with independent captures; identical verified PNGs share storage only.",
+    "existingManifestEntriesUnchanged": 1480,
+    "oldReferenceBytesAndTolerancesUnchanged": true
+  },
+  "mappedOriginals": {
+    "evidence": "opacity-paint-map.csv",
+    "controls": 86,
+    "cameraPaints": 82,
+    "radialPaints": 2,
+    "fullSerializationControls": 2,
+    "construction": "Recreate each source in memory, preserve ancestors/styles/root/definitions and remove other paint commands. Enumerate every leaf, including native-positive content that managed coverage alone could omit.",
+    "sourceSvgFilesRetained": 0,
+    "originalFragmentsRetained": 0,
+    "nativeStatus": "Independent single browser captures are exploratory controls, not admitted references.",
+    "changedConsumers": [
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "id": "full-control",
+        "index": null,
+        "variantSourceSha256": "d64726dc20d0e8c77d87590be6037b939a5365713429d6891395946c801ea54e",
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+        "beforePixels": 114,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0
+      },
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "id": "rect2469",
+        "index": 56,
+        "variantSourceSha256": "884093398315d9be3e716eb593a7fcfaecc9e4492b48d4db4e608e172fa5e7ea",
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+        "beforePixels": 11,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0
+      },
+      {
+        "name": "AJ_Digital_Camera.svg",
+        "id": "rect2318",
+        "index": 75,
+        "variantSourceSha256": "eda046e91799fab3529e64d23c4316da6aa5765e547de6f14e2f91cc5557c606",
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+        "beforePixels": 142,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0
+      },
+      {
+        "name": "radialgradient1.svg",
+        "id": "full-control",
+        "index": null,
+        "variantSourceSha256": "c6dddaeb9ca8e5f30ec1451ce06682b5511cd247d06b05b7c28ded1343b17d60",
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+        "beforePixels": 4,
+        "changedPixels": 4,
+        "maximumError": 1,
+        "alphaChangedPixels": 0
+      },
+      {
+        "name": "radialgradient1.svg",
+        "id": "rect2052",
+        "index": 1,
+        "variantSourceSha256": "21d1a4b6b711260a6a29e4387df4dfeaaffeaacae08cc7264800e57f6edcb9d2",
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+        "beforePixels": 4,
+        "changedPixels": 4,
+        "maximumError": 1,
+        "alphaChangedPixels": 0
+      }
+    ],
+    "completeCamera": {
+      "sourceSvgFilesRetained": 0,
+      "originalFragmentsRetained": 0,
+      "logicalViewport": [
+        406.25,
+        206.25
+      ],
+      "screenshot": [
+        406,
+        206
+      ],
+      "captures": [
+        {
+          "name": "AJ_Digital_Camera.svg",
+          "host": "windows",
+          "capture": 1,
+          "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+          "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "name": "AJ_Digital_Camera.svg",
+          "host": "windows",
+          "capture": 2,
+          "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+          "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "name": "AJ_Digital_Camera.svg",
+          "host": "windows",
+          "capture": 3,
+          "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+          "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "name": "AJ_Digital_Camera.svg",
+          "host": "linux",
+          "capture": 1,
+          "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+          "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "name": "AJ_Digital_Camera.svg",
+          "host": "linux",
+          "capture": 2,
+          "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+          "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "name": "AJ_Digital_Camera.svg",
+          "host": "linux",
+          "capture": 3,
+          "sourceSha256": "e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e",
+          "nativePngSha256": "b56f3e236c49c772c4967a46f0e1fd2de50519df99d0a56c43d40bd69df39d3f",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "comparisons": [
+        {
+          "name": "AJ_Digital_Camera.svg",
+          "host": "windows",
+          "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+          "pngSha256": "5431a1778a7b0de059bf4aafcc70d483764781e82be45aaa2db57fd94d0695ae",
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        {
+          "name": "AJ_Digital_Camera.svg",
+          "host": "linux",
+          "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4",
+          "pngSha256": "5431a1778a7b0de059bf4aafcc70d483764781e82be45aaa2db57fd94d0695ae",
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      ]
+    }
+  },
+  "validation": {
+    "builds": [
+      {
+        "project": "Lokad.Svg.Tests",
+        "framework": "net11.0",
+        "seconds": 0.543341499986127,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net11.0",
+        "seconds": 2.100510799791664,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.Tests",
+        "framework": "net10.0",
+        "seconds": 7.978694900171831,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net10.0",
+        "seconds": 2.1304554000962526,
+        "exitCode": 0,
+        "warnings": 0
+      }
+    ],
+    "finalManifestBuilds": [
+      {
+        "framework": "net11.0",
+        "exitCode": 0,
+        "warnings": 0,
+        "seconds": 0.8681941998656839,
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4"
+      },
+      {
+        "framework": "net10.0",
+        "exitCode": 0,
+        "warnings": 0,
+        "seconds": 0.700342700118199,
+        "librarySha256": "c7c77c793be1e5a8e7e175bf8e8fc6d3f01abb557a02adbe766541807f422959"
+      }
+    ],
+    "focused": {
+      "name": "opacity-source-focused-core-windows-net11.0",
+      "passed": 314,
+      "seconds": 7.668,
+      "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4"
+    },
+    "affectedIntegration": {
+      "name": "opacity-source-integration-native-windows-net11.0",
+      "passed": 3273,
+      "seconds": 39.688,
+      "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4"
+    },
+    "full": [
+      {
+        "name": "full-qualified-core-linux-net10.0",
+        "passed": 33094,
+        "seconds": 46.43,
+        "librarySha256": "c7c77c793be1e5a8e7e175bf8e8fc6d3f01abb557a02adbe766541807f422959"
+      },
+      {
+        "name": "full-qualified-core-linux-net11.0",
+        "passed": 33094,
+        "seconds": 55.479,
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4"
+      },
+      {
+        "name": "full-qualified-core-windows-net10.0",
+        "passed": 33094,
+        "seconds": 48.222,
+        "librarySha256": "c7c77c793be1e5a8e7e175bf8e8fc6d3f01abb557a02adbe766541807f422959"
+      },
+      {
+        "name": "full-qualified-core-windows-net11.0",
+        "passed": 33094,
+        "seconds": 56.358,
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4"
+      },
+      {
+        "name": "full-qualified-native-linux-net10.0",
+        "passed": 39151,
+        "seconds": 132.963,
+        "librarySha256": "c7c77c793be1e5a8e7e175bf8e8fc6d3f01abb557a02adbe766541807f422959"
+      },
+      {
+        "name": "full-qualified-native-linux-net11.0",
+        "passed": 39151,
+        "seconds": 197.648,
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4"
+      },
+      {
+        "name": "full-qualified-native-windows-net10.0",
+        "passed": 39151,
+        "seconds": 66.865,
+        "librarySha256": "c7c77c793be1e5a8e7e175bf8e8fc6d3f01abb557a02adbe766541807f422959"
+      },
+      {
+        "name": "full-qualified-native-windows-net11.0",
+        "passed": 39151,
+        "seconds": 182.982,
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4"
+      }
+    ],
+    "totalPassed": 288980,
+    "finalManifestSupplement": [
+      {
+        "name": "final-manifest-native-linux-net10.0",
+        "passed": 2,
+        "seconds": 22.062,
+        "librarySha256": "c7c77c793be1e5a8e7e175bf8e8fc6d3f01abb557a02adbe766541807f422959"
+      },
+      {
+        "name": "final-manifest-native-linux-net11.0",
+        "passed": 2,
+        "seconds": 23.386,
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4"
+      },
+      {
+        "name": "final-manifest-native-windows-net10.0",
+        "passed": 2,
+        "seconds": 12.06,
+        "librarySha256": "c7c77c793be1e5a8e7e175bf8e8fc6d3f01abb557a02adbe766541807f422959"
+      },
+      {
+        "name": "final-manifest-native-windows-net11.0",
+        "passed": 2,
+        "seconds": 12.184,
+        "librarySha256": "b9131bf3771b67f842b2e9da2446eca23d7436e0f8d529f156da267f8b327fe4"
+      }
+    ],
+    "finalManifestScope": "Third independent group source admitted after full suites completed; four supplementary manifest/integrity/exact-render selections cover final assets on both hosts/TFMs. Production DLL hashes are unchanged.",
+    "originalReplaySeconds": 59.042,
+    "originals": {
+      "windows": {
+        "counts": {
+          "UnsupportedFeature": 51,
+          "rendered": 150,
+          "exact": 149,
+          "MalformedInput": 3,
+          "different": 1
+        },
+        "previousPngsByteIdentical": 149,
+        "changedImages": [
+          "AJ_Digital_Camera.svg"
+        ],
+        "remainingDifferences": [
+          {
+            "name": "radialgradient1.svg",
+            "status": "different",
+            "changedPixels": 4,
+            "maximumError": 1,
+            "totalChannelError": 12
+          }
+        ]
+      },
+      "linux": {
+        "counts": {
+          "UnsupportedFeature": 51,
+          "rendered": 150,
+          "exact": 149,
+          "MalformedInput": 3,
+          "different": 1
+        },
+        "previousPngsByteIdentical": 149,
+        "changedImages": [
+          "AJ_Digital_Camera.svg"
+        ],
+        "remainingDifferences": [
+          {
+            "name": "radialgradient1.svg",
+            "status": "different",
+            "changedPixels": 4,
+            "maximumError": 1,
+            "totalChannelError": 12
+          }
+        ]
+      }
+    },
+    "timingScope": "Functional elapsed seconds on a concurrently used workstation; not performance or a test-suite simplification measurement."
+  },
+  "rejectedExperiments": [
+    "Rounding scene-space bounds regressed transformed path isolations; local recorded enclosure fixes the shared stage.",
+    "Widened polygon construction, forced clipped dispatch and forced direct-pair painting did not resolve the remaining source edge.",
+    "The remaining edge came from hairlines bypassing the active layer scope; no extra source padding or opacity special case remains."
+  ],
+  "closure": {
+    "closed": [
+      "Isolated-opacity recorded primitive enclosure and shared hairline/source raster binding.",
+      "Complete default camera and all 82 camera paint isolations."
+    ],
+    "remaining": [
+      "radialgradient1.svg: four RGB differences/max1 in the original and rounded-rectangle isolation.",
+      "54 default nonrendering originals and other explicit font/resource/static-state contexts remain individually pending.",
+      "Whole-corpus W1 acceptance and remaining PLAN priorities remain open."
+    ]
+  }
+}

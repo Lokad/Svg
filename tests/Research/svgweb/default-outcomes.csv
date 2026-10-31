@@ -1,6 +1,6 @@
 name,sourceSha256,outcome,comparison,changedPixels,maximumError,logicalWidth,logicalHeight,windowsPngSha256,linuxPngSha256,element,id,line,column,message
 410.svg,5fba6c8c0d7da11542e4a8f9ad9754868000926a7436481115b820900eb0491b,UnsupportedFeature,not-compared,,,300,150,,,text,,4,4,SVG text requires a prepared font snapshot.
-AJ_Digital_Camera.svg,e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e,rendered,different,114,1,406.25,206.25,ea4ff9d6276f66ec1c7819f41b35551e9d51094230a81b3b9f3857655ed5b2b6,ea4ff9d6276f66ec1c7819f41b35551e9d51094230a81b3b9f3857655ed5b2b6,,,,,
+AJ_Digital_Camera.svg,e8efd9d45b027782d1b7cd57830c29c27850ea067c2c141ff4be9d2e5a1c314e,rendered,exact,0,0,406.25,206.25,5431a1778a7b0de059bf4aafcc70d483764781e82be45aaa2db57fd94d0695ae,5431a1778a7b0de059bf4aafcc70d483764781e82be45aaa2db57fd94d0695ae,,,,,
 DroidSans-Bold.svg,b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed,UnsupportedFeature,not-compared,,,300,150,,,text,,177,2,SVG text requires a prepared font snapshot.
 DroidSans.svg,258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b,UnsupportedFeature,not-compared,,,300,150,,,text,,173,6,SVG text requires a prepared font snapshot.
 DroidSansMono.svg,c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d,UnsupportedFeature,not-compared,,,300,150,,,text,,135,2,SVG text requires a prepared font snapshot.

@@ -1,0 +1,8 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96.25" height="128.25">
+  <defs>
+    <linearGradient id="g"><stop stop-color="#386078"/><stop offset="1" stop-color="#a0c080"/></linearGradient>
+  </defs>
+  <rect x="8.125" y="8.25" width="35.25" height="23.5" rx="4.125" ry="3.5"
+        fill="#888" stroke="url(#g)" stroke-width=".625" opacity=".9"/>
+</svg>

@@ -38,8 +38,17 @@ pin unit conversion, sign/range admission and zero-width selection directly.
 Existing font-discovery and inherited-paint cases each add one physical-zero
 interaction. One [canonical native fixture](Fixtures/original/fixed-stroke-lengths.svg)
 protects inherited width, mixed dash units and signed offsets; the
-[evidence](Research/svgweb/fixed-stroke-lengths.json) retains the two newly exposed
-original rendering discrepancies separately from successful length parsing.
+[evidence](Research/svgweb/fixed-stroke-lengths.json) retains the original
+observations separately from successful length parsing.
+The [recorded-enclosure mechanisms](Lokad.Svg.Tests/SvgRecordedSourceEnclosureTests.cs)
+keep local drawing bounds separate from fractional filter visuals. Four
+[scope cases](Lokad.Svg.Tests/SvgRasterScopeTests.cs) and two retained-origin
+hairline cases protect construction clips and owned interiors directly. Three
+canonical opacity fixtures retain shader strokes, solid hairlines and separate
+parent-group paints. The latter graph keeps its own source and capture metadata
+while sharing verified PNG storage. Existing ownership checks cover cancellation,
+refusal, cleanup and retry; [evidence](Research/svgweb/opacity-source-scope.json)
+maps these responsibilities and failing-before results.
 The [analytic byte-alpha mechanism](Lokad.Svg.Tests/SvgAnalyticAlphaByteTests.cs)
 walks a cubic directly; its [native fixture](Fixtures/original/analytic-alpha-byte.svg)
 adds the specific blur/opacity interaction through canonical conversion. Existing

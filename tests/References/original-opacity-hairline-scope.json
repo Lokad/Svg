@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "2c6395101a788829f41def2c079bc62c31f80b9afb89aef4833222a22e79ac40",
+  "referenceSha256": "a4f1010750207b27b9f80e7f33ebdd3a5cd0680daf9719c361d149141d6f643a",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-opacity-hairline-scope.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-opacity-hairline-scope",
+  "viewport": {
+    "width": 96,
+    "height": 128,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 tall rounded rectangle with shader fill, solid hairline and isolated opacity. Hairline construction borrows the active bitmap clip/origin and paints only its owned pixels. Canonical conversion; three fresh healthy/profile-cleaned captures per host agree. Direct mechanisms and representative ownership coverage remain separate.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "2c6395101a788829f41def2c079bc62c31f80b9afb89aef4833222a22e79ac40",
+      "referenceSha256": "a4f1010750207b27b9f80e7f33ebdd3a5cd0680daf9719c361d149141d6f643a",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "2c6395101a788829f41def2c079bc62c31f80b9afb89aef4833222a22e79ac40",
+      "referenceSha256": "a4f1010750207b27b9f80e7f33ebdd3a5cd0680daf9719c361d149141d6f643a",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 96.25,
+    "height": 128.25
+  }
+}

@@ -36,6 +36,8 @@
   capture, preserving fractional-root gradients and zero-blur aliases.
 - Use complete drawing references for gradient source captures, preserving source
   colors through nonzero blur on fractional root images.
+- Enclose recorded primitive strokes before placement and bind hairlines to the
+  active layer's raster scope, preserving isolated opacity and captured-source origins.
 - Preserve source path bounds across clipped stroke lowering; retain filter image
   padding, cropping and sampling colour transfer through affine restoration.
 - Compose affine image placement in the owning bitmap and store enclosing-opacity

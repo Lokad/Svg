@@ -12,7 +12,8 @@ namespace Lokad.Svg.Rendering;
 internal ref struct SvgHairlineCoverage
 {
     private readonly Span<byte> _destination;
-    private readonly int _width, _height, _bitmapWidth, _bitmapHeight;
+    private readonly int _width, _height;
+    private readonly SvgAnalyticClipBounds _bitmap;
     private readonly SvgCpuBitmapOrigin _origin;
     private readonly SvgAnalyticClipBounds _interior;
     private readonly bool _regionClipping, _binaryViewport, _rectangularViewport;
@@ -40,17 +41,19 @@ CancellationToken cancellationToken)
         _regionClipping = false;
     }
 
-    /// <summary>Borrows a canvas while constructing local coverage in one bordered bitmap and painting only its owned interior.</summary>
+    /// <summary>Borrows a canvas while constructing coverage in one bitmap's coordinates and painting only its owned interior.</summary>
+    /// <remarks>The context's construction origin can precede a narrowed source clip. Its clip,
+    /// origin and owned interior remain independent; the caller retains the destination and mask.</remarks>
     internal SvgHairlineCoverage(Span<byte> destination, int width, int height, SvgAnalyticPaint paint,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, SvgRasterClipMask viewportMask, bool binaryViewport,
         SvgCpuRasterContext context, CancellationToken cancellationToken)
     {
-        _origin = new(context.BitmapClip.Left, context.BitmapClip.Top);
+        _origin = context.Origin;
         _binaryBounds = null;
         _regionClipping = true;
         _interior = context.Interior;
-        _bitmapWidth = context.BitmapClip.Right - context.BitmapClip.Left;
-        _bitmapHeight = context.BitmapClip.Bottom - context.BitmapClip.Top;
+        _bitmap = new(context.BitmapClip.Left - _origin.X, context.BitmapClip.Top - _origin.Y,
+            context.BitmapClip.Right - _origin.X, context.BitmapClip.Bottom - _origin.Y);
         if (!viewportMask.Pixels.IsEmpty && viewportMask.Pixels.Length != checked(width * height * 4)) throw new ArgumentException("Viewport mask must match the destination canvas.", nameof(viewportMask));
         _viewportMask = viewportMask; _binaryViewport = binaryViewport;
         _rectangularViewport = true;
@@ -82,16 +85,16 @@ CancellationToken cancellationToken)
         float x0 = (float)start.X, y0 = (float)start.Y, x1 = (float)end.X, y1 = (float)end.Y;
         if (!float.IsFinite(x0) || !float.IsFinite(y0) || !float.IsFinite(x1) || !float.IsFinite(y1)) return;
         if (!ClipLine(ref x0, ref y0, ref x1, ref y1, -32767, -32767, 32767, 32767)
-            || !ClipLine(ref x0, ref y0, ref x1, ref y1, -1, -1, _bitmapWidth + 1, _bitmapHeight + 1)) return;
+            || !ClipLine(ref x0, ref y0, ref x1, ref y1, _bitmap.Left - 1, _bitmap.Top - 1, _bitmap.Right + 1, _bitmap.Bottom + 1)) return;
         int fixedX0 = (int)(x0 * 64), fixedY0 = (int)(y0 * 64), fixedX1 = (int)(x1 * 64), fixedY1 = (int)(y1 * 64);
         SvgAnalyticClipBounds bounds = new((Math.Min(fixedX0, fixedX1) >> 6) - 1, (Math.Min(fixedY0, fixedY1) >> 6) - 1,
             ((Math.Max(fixedX0, fixedX1) + 63) >> 6) + 1, ((Math.Max(fixedY0, fixedY1) + 63) >> 6) + 1);
-        bool clipped = bounds.Left < 0 || bounds.Top < 0 || bounds.Right > _bitmapWidth || bounds.Bottom > _bitmapHeight;
-        if (clipped) bounds = new(Math.Max(bounds.Left, 0), Math.Max(bounds.Top, 0), Math.Min(bounds.Right, _bitmapWidth), Math.Min(bounds.Bottom, _bitmapHeight));
-        if (!_regionClipping) { clipped = true; bounds = new(0, 0, _bitmapWidth, _bitmapHeight); }
+        bool clipped = bounds.Left < _bitmap.Left || bounds.Top < _bitmap.Top || bounds.Right > _bitmap.Right || bounds.Bottom > _bitmap.Bottom;
+        if (clipped) bounds = new(Math.Max(bounds.Left, _bitmap.Left), Math.Max(bounds.Top, _bitmap.Top), Math.Min(bounds.Right, _bitmap.Right), Math.Min(bounds.Bottom, _bitmap.Bottom));
+        if (!_regionClipping) { clipped = true; bounds = _bitmap; }
         if (_binaryViewport && !_viewportMask.IsEmpty)
         {
-            SvgAnalyticClipBounds bitmap = new(_origin.X, _origin.Y, _origin.X + _bitmapWidth, _origin.Y + _bitmapHeight);
+            SvgAnalyticClipBounds bitmap = new(_origin.X + _bitmap.Left, _origin.Y + _bitmap.Top, _origin.X + _bitmap.Right, _origin.Y + _bitmap.Bottom);
             SvgAnalyticClipBounds area = new(bounds.Left + _origin.X, bounds.Top + _origin.Y, bounds.Right + _origin.X, bounds.Bottom + _origin.Y);
             SvgBinaryClipRectangles regions = new(_viewportMask, _width, _height, bitmap, area, _token);
             while (regions.MoveNext())
@@ -133,7 +136,7 @@ CancellationToken cancellationToken)
         int firstCoverage = stop - first == 1 ? x1 - x0 : 64 - (x0 & 63);
         int lastCoverage = stop - first == 1 ? 0 : x1 & 63;
         int minimum = clipped ? horizontal ? bounds.Left : bounds.Top : 0;
-        int maximum = clipped ? horizontal ? bounds.Right : bounds.Bottom : horizontal ? _bitmapWidth : _bitmapHeight;
+        int maximum = clipped ? horizontal ? bounds.Right : bounds.Bottom : horizontal ? _bitmap.Right : _bitmap.Bottom;
         if (first >= maximum || stop <= minimum) return;
         if (first < minimum)
         {
@@ -185,7 +188,7 @@ CancellationToken cancellationToken)
     private void Paint(int x, int y, byte alpha, SvgAnalyticPaintKind kind)
     {
         _token.ThrowIfCancellationRequested();
-        if (alpha == 0 || (uint)x >= (uint)_bitmapWidth || (uint)y >= (uint)_bitmapHeight) return;
+        if (alpha == 0 || x < _bitmap.Left || y < _bitmap.Top || x >= _bitmap.Right || y >= _bitmap.Bottom) return;
         if (_binaryBounds is {} bounds && (x < bounds.Left || x >= bounds.Right || y < bounds.Top || y >= bounds.Bottom)) return;
         x += _origin.X; y += _origin.Y;
         if (x < _interior.Left || x >= _interior.Right || y < _interior.Top || y >= _interior.Bottom) return;
