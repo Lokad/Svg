@@ -156,6 +156,13 @@ One canonical native fixture protects child retention and distant gradient dithe
 All20 [inner-filter variants](scimitar-inner-filter-map.csv), including the complete
 shadow, are now exact; the full Scimitar original still differs at six pixels.
 
+The [transform review](filter-transform-review.json) retains opposed affine
+controls: an exact canonical regression and an unresolved research witness.
+A root-CTM substitution improves Scimitar but breaks the exact control and is
+rejected. A separate diagnostic exposes three source-alpha discrepancies while
+preserving the original native blur alpha. Mapping, source construction and image
+storage must be resolved together; these observations close no original finding.
+
 Group confirmed gaps by mechanism and retain original-to-fixture mappings,
 licenses and failing-before evidence. Reference admission requires three fresh
 healthy captures per platform and exact established comparisons. Recheck all

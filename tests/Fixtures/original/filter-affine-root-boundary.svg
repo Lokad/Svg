@@ -1,0 +1,9 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="466.11172" height="265.35126">
+  <defs>
+    <filter id="b"><feGaussianBlur stdDeviation="3.84278"/></filter>
+  </defs>
+  <rect width="466.11172" height="265.35126" fill="#e7e7e7"/>
+  <path d="M40 140C25 40 145 10 205 105C220 210 80 260 40 140Z" fill="white"
+        transform="matrix(.149345 .1148 -.0977 .127 239.201 57.678)" filter="url(#b)"/>
+</svg>

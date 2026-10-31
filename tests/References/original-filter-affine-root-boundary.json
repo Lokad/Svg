@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "c9b1c1d1d5c3d8e24ae122ecd1ca0fed703a92bc50a1439521ffd7e818d4f3f3",
+  "referenceSha256": "b8402769309705c7303f2fa80231e30f2e249edc23eca8e3e83f5041577de9ea",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-affine-root-boundary.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-affine-root-boundary",
+  "viewport": {
+    "width": 466,
+    "height": 265,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 white cubic over gray with affine Gaussian restoration and a fractional logical root. Retains the exact counterexample that rejects a root-CTM stage substitution which improves Scimitar. Three fresh healthy/profile-cleaned captures per host; no tolerance changes.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "c9b1c1d1d5c3d8e24ae122ecd1ca0fed703a92bc50a1439521ffd7e818d4f3f3",
+      "referenceSha256": "b8402769309705c7303f2fa80231e30f2e249edc23eca8e3e83f5041577de9ea",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "c9b1c1d1d5c3d8e24ae122ecd1ca0fed703a92bc50a1439521ffd7e818d4f3f3",
+      "referenceSha256": "b8402769309705c7303f2fa80231e30f2e249edc23eca8e3e83f5041577de9ea",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "logicalViewport": {
+    "width": 466.11172,
+    "height": 265.35126
+  }
+}

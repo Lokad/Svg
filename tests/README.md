@@ -55,6 +55,9 @@ canonical conversion. Original paint bounds and filtered output remain distinct.
 The [source-request fixture](Fixtures/original/filter-source-request-window.svg)
 protects a blurred curve crossing the output boundary through canonical conversion;
 integer/fractional and path/ellipse companions remain focused research controls.
+The [affine-root control](Fixtures/original/filter-affine-root-boundary.svg) guards
+an exact backdrop interaction. Its [paired research witness](Research/svgweb/filter-transform-review.json)
+rejects CTM changes that improve one interaction while breaking the other.
 
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;

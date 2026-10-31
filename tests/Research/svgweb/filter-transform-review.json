@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 1,
+  "reviewedUtc": "2026-10-31",
+  "sourceBaseline": "deabdb31230678237c622e835956fe96f695fe34",
+  "scope": "Opposed affine sampling witnesses and source-raster diagnostics. No implementation change or closure of original filter acceptance.",
+  "capture": {
+    "chromeVersion": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "recipe": 3,
+    "logicalViewport": [
+      466.11172,
+      265.35126
+    ],
+    "screenshot": [
+      466,
+      265
+    ],
+    "background": "transparent",
+    "deviceScaleFactor": 1,
+    "freshCapturesPerControlPerHost": 3,
+    "totalCaptures": 12,
+    "allStartupHealthy": true,
+    "allProfilesCleaned": true,
+    "allTriplesByteStable": true,
+    "executableSha256": {
+      "win64": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "linux64": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+    }
+  },
+  "controls": [
+    {
+      "id": "filter-affine-root-boundary",
+      "input": "../../Fixtures/original/filter-affine-root-boundary.svg",
+      "reference": "../../References/original-filter-affine-root-boundary.json",
+      "license": "CC0-1.0",
+      "sourceSha256": "c9b1c1d1d5c3d8e24ae122ecd1ca0fed703a92bc50a1439521ffd7e818d4f3f3",
+      "nativePngSha256": "b8402769309705c7303f2fa80231e30f2e249edc23eca8e3e83f5041577de9ea",
+      "decodedRgbaSha256": "6ccddf9873f487bd44c116bc81843ae0e1369cf98302d24192241e18bbd55bc2",
+      "current": "exact routine canonical conversion",
+      "measurements": [
+        {
+          "case": "filter-affine-root-boundary",
+          "host": "windows",
+          "phase": "current",
+          "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "maximumAlphaError": 0,
+          "totalChannelError": 0,
+          "bounds": null
+        },
+        {
+          "case": "filter-affine-root-boundary",
+          "host": "windows",
+          "phase": "rejected",
+          "librarySha256": "866f9c0cd95ce0d60b364df8d5cbd5df3b2657e26d85028b356876f810ed2a1e",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "maximumAlphaError": 0,
+          "totalChannelError": 3,
+          "bounds": [
+            237,
+            98,
+            238,
+            99
+          ]
+        },
+        {
+          "case": "filter-affine-root-boundary",
+          "host": "linux",
+          "phase": "current",
+          "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "maximumAlphaError": 0,
+          "totalChannelError": 0,
+          "bounds": null
+        },
+        {
+          "case": "filter-affine-root-boundary",
+          "host": "linux",
+          "phase": "rejected",
+          "librarySha256": "866f9c0cd95ce0d60b364df8d5cbd5df3b2657e26d85028b356876f810ed2a1e",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "maximumAlphaError": 0,
+          "totalChannelError": 3,
+          "bounds": [
+            237,
+            98,
+            238,
+            99
+          ]
+        }
+      ]
+    },
+    {
+      "id": "filter-affine-root-gap",
+      "input": "filter-affine-root-gap.svg",
+      "reference": "filter-affine-root-gap.png",
+      "license": "CC0-1.0",
+      "sourceSha256": "d0924705937c0d5638e659137bbd4ea1cb74b0570624ea760ca29cb16a86246e",
+      "nativePngSha256": "a7dc13e47b2c8355662d4c81df255f67ede4720aaf6a5b9f11da572f7bcc0435",
+      "decodedRgbaSha256": "b19b8073d6bea5ba571ab2eae788ac4ed62e09c3a8ef45da4b923326cae3aada",
+      "current": "one RGB pixel/max1; optional research, not admitted exact",
+      "measurements": [
+        {
+          "case": "filter-affine-root-gap",
+          "host": "windows",
+          "phase": "current",
+          "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "maximumAlphaError": 0,
+          "totalChannelError": 3,
+          "bounds": [
+            230,
+            81,
+            231,
+            82
+          ]
+        },
+        {
+          "case": "filter-affine-root-gap",
+          "host": "windows",
+          "phase": "rejected",
+          "librarySha256": "866f9c0cd95ce0d60b364df8d5cbd5df3b2657e26d85028b356876f810ed2a1e",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "maximumAlphaError": 0,
+          "totalChannelError": 0,
+          "bounds": null
+        },
+        {
+          "case": "filter-affine-root-gap",
+          "host": "linux",
+          "phase": "current",
+          "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "maximumAlphaError": 0,
+          "totalChannelError": 3,
+          "bounds": [
+            230,
+            81,
+            231,
+            82
+          ]
+        },
+        {
+          "case": "filter-affine-root-gap",
+          "host": "linux",
+          "phase": "rejected",
+          "librarySha256": "866f9c0cd95ce0d60b364df8d5cbd5df3b2657e26d85028b356876f810ed2a1e",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "maximumAlphaError": 0,
+          "totalChannelError": 0,
+          "bounds": null
+        }
+      ]
+    }
+  ],
+  "rejectedChange": {
+    "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "proposal": "Before affine filter decomposition, replace combined output.ComposeNative(binding.Transform) with rootImage.Projection.ComposeNative(rootImage.Layout.Compose(binding.Transform)).",
+    "librarySha256": "866f9c0cd95ce0d60b364df8d5cbd5df3b2657e26d85028b356876f810ed2a1e",
+    "originalsRecheckedPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "scimitarChangedPixels": [
+      6,
+      5
+    ],
+    "scimitarTotalChannelError": [
+      11,
+      8
+    ],
+    "other147RenderedPngsUnchangedPerHost": true,
+    "outcomesAndDiagnosticsUnchangedPerHost": true,
+    "focusedIntegration": {
+      "corePassed": 1740,
+      "renderingPassed": 1898
+    },
+    "decision": "Rejected despite original improvement and passing existing tests: the exact own control regresses. The shared mapping must satisfy both own controls and the original interaction together."
+  },
+  "groundSourceDiagnostic": {
+    "source": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/scimitar.svg",
+    "originalSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+    "element": "path5427",
+    "recipe": "On the isolated subtree, retain Gaussian output as blur; encode blue=blur alpha and red=SourceGraphic alpha through constant-color feColorMatrix stages; combine with arithmetic k2=k3=1 under sRGB. Decode premultiplied red/blue bytes. This is a diagnostic graph, not a new supported feColorMatrix contract. Hosted payloads are discarded.",
+    "encodedSourceSha256": "ec1477385a70cd86678a954817a9e12a2132b7ce8af512db956c2e44dfa00db0",
+    "encodedNativePngSha256": "cf305747c3d5dbd2b06cd1c60268d682d1f70e872374d547926911f38c91ac69",
+    "encodedBlurAlphaMatchesOriginalNativeExactly": true,
+    "sourceAlphaDifferences": [
+      {
+        "position": [
+          465,
+          130
+        ],
+        "library": 192,
+        "native": 184
+      },
+      {
+        "position": [
+          465,
+          132
+        ],
+        "library": 216,
+        "native": 208
+      },
+      {
+        "position": [
+          465,
+          133
+        ],
+        "library": 224,
+        "native": 216
+      }
+    ],
+    "qualification": "One fresh healthy/profile-cleaned diagnostic capture per host; encoded PNGs and alpha observations agree across Windows/Linux. Canonical controls have separate native triples.",
+    "recoveredBitmapControl": {
+      "recipe": "Replace only the three observed source alpha bytes in the separately verified flat-source bitmap; repack the corresponding gray premultiplied lanes. Native Gaussian filtering of this carrier reproduces the original vector PNG byte-for-byte. This diagnoses source capture; it is not a coordinate-specific production fix.",
+      "sourceSha256": "762bc6932bf5a9e2717b791a410b717a11a0f352e3f39f699ce954f0d7285a25",
+      "nativePngSha256": "0dbcf36953422f21d5823eb3b9ea5a88b7b3565cac181c3f28cb7dbb28e8b8b5",
+      "originalIsolatedVectorPngSha256": "0dbcf36953422f21d5823eb3b9ea5a88b7b3565cac181c3f28cb7dbb28e8b8b5",
+      "changedPixels": 0,
+      "startupHealth": "healthy",
+      "profileCleaned": true
+    }
+  },
+  "excludedInferences": [
+    "Immediate parent/local canvas-map probes leave all21 focused outcomes unchanged.",
+    "DOM local and combined transforms match the parser. Flattened SVG transforms round their coefficients, so matching flattened output does not isolate a canvas-boundary cause.",
+    "A float-source-map probe improves one full-original pixel but leaves the remaining errors; it is not adopted.",
+    "Removing only the capture guard/origin leaves Scimitar unchanged and worsens Gallardo from94/123 to95/124; that prototype is rejected."
+  ],
+  "nextAcceptance": [
+    "Retain exact own boundary control and make the paired gap and original white-over231 interaction exact through one justified shared model.",
+    "Resolve actual source construction coordinates, native mapping and stored padding before modifying Gaussian or alpha arithmetic.",
+    "Keep existing references, logical sizing and all148 original outputs/outcomes as independent regression responsibilities."
+  ],
+  "qualification": {
+    "productionCodeChanged": false,
+    "newCanonicalFixtures": 1,
+    "newOptionalResearchWitnesses": 1,
+    "previousReferencesAndTolerancesChanged": false,
+    "releaseBuilds": 4,
+    "warnings": 0,
+    "gates": [
+      {
+        "name": "transform-controls-core-linux-net10.0",
+        "passed": 11529,
+        "elapsedSeconds": 23.46,
+        "librarySha256": "6842bf9ebb183f30974f9f3286713b0d31338783dccbbcac7ef7f83d497917e4"
+      },
+      {
+        "name": "transform-controls-core-linux-net11.0",
+        "passed": 11529,
+        "elapsedSeconds": 33.6,
+        "librarySha256": "6e23215b929a5ce573cdf59efb275146f1d5aafd2d7970001fde5a1f38a8499e"
+      },
+      {
+        "name": "transform-controls-core-windows-net10.0",
+        "passed": 11529,
+        "elapsedSeconds": 31.54,
+        "librarySha256": "6842bf9ebb183f30974f9f3286713b0d31338783dccbbcac7ef7f83d497917e4"
+      },
+      {
+        "name": "transform-controls-core-windows-net11.0",
+        "passed": 11529,
+        "elapsedSeconds": 40.92,
+        "librarySha256": "6e23215b929a5ce573cdf59efb275146f1d5aafd2d7970001fde5a1f38a8499e"
+      },
+      {
+        "name": "transform-controls-native-linux-net10.0",
+        "passed": 10803,
+        "elapsedSeconds": 38.03,
+        "librarySha256": "6842bf9ebb183f30974f9f3286713b0d31338783dccbbcac7ef7f83d497917e4"
+      },
+      {
+        "name": "transform-controls-native-linux-net11.0",
+        "passed": 39151,
+        "elapsedSeconds": 158.48,
+        "librarySha256": "6e23215b929a5ce573cdf59efb275146f1d5aafd2d7970001fde5a1f38a8499e"
+      },
+      {
+        "name": "transform-controls-native-windows-net10.0",
+        "passed": 10803,
+        "elapsedSeconds": 27.79,
+        "librarySha256": "6842bf9ebb183f30974f9f3286713b0d31338783dccbbcac7ef7f83d497917e4"
+      },
+      {
+        "name": "transform-controls-native-windows-net11.0",
+        "passed": 39151,
+        "elapsedSeconds": 84.26,
+        "librarySha256": "6e23215b929a5ce573cdf59efb275146f1d5aafd2d7970001fde5a1f38a8499e"
+      }
+    ],
+    "timingScope": "Busy-host functional validation only; no performance or suite-simplification claim."
+  }
+}

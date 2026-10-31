@@ -18449,6 +18449,31 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-source-request-window.json",
       "referenceSha256": "a0ed73db03b95bd0898eef755944a3c22cc62d491f7137a31991fc29a3574f37"
+    },
+    {
+      "id": "original-filter-affine-root-boundary",
+      "path": "original/filter-affine-root-boundary.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "6ffa49a7121f99c69d8e1a4bcc36faeb755ea7c37728b34418decfabd2b2c794",
+      "materializedSha256": "c9b1c1d1d5c3d8e24ae122ecd1ca0fed703a92bc50a1439521ffd7e818d4f3f3",
+      "featureTags": [
+        "filter",
+        "affine",
+        "sampling",
+        "root-projection"
+      ],
+      "width": 466,
+      "height": 265,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-affine-root-boundary.json",
+      "referenceSha256": "b8402769309705c7303f2fa80231e30f2e249edc23eca8e3e83f5041577de9ea"
     }
   ]
 }
