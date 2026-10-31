@@ -118,6 +118,15 @@ keeps coverage separate from allocation enclosures. [Earlier viewport experiment
 and [stage prototypes](root-image-stages.json) preserve the rejected output-only
 stretch and context differences. Full Scimitar/Gallardo acceptance remains open.
 
+The [projection review](root-image-projection.json) records independent native
+matrices for three owned controls with identity, contracting and expanding image
+destinations. Matching images alone do not distinguish these numerical stages.
+An isolated prototype preserves source enclosure, recorded-scene rounding and the
+outer image transform. It makes four more originals exact on both hosts, including
+Scimitar and eggs, while preserving all prior exact images. Production adoption
+still requires consistent placement across drawing consumers, direct stage tests
+and full milestone qualification; the current qualified counts above remain unchanged.
+
 The [analytic alpha record](analytic-alpha-bytes.json) closes signed integer
 intermediates bypassing native byte narrowing before accumulation. One direct
 cubic mechanism and an independently captured direct/blur fixture protect that

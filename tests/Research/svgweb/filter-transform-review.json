@@ -481,5 +481,36 @@
       "Keeping the original noninteger filter region resamples feImage before restoration; its texels cannot be assumed to equal the embedded PNG. A one-float-step increase of source scale changes up to 16 of 588 checked texels. Such a carrier is not proof of the original Gaussian intermediate.",
       "Making the mask opaque and varying source geometry preserves the selected diagnostic output, but the diagnostic graph has its own bounds and allocation requests. Preserve original white and black controls and independent end-to-end acceptance."
     ]
+  },
+  "nativeParameterStage": {
+    "scope": "Canonical Windows LayerTree observation; root-image-projection.json records the separate destination stage. No production change or full filter acceptance is claimed.",
+    "controls": [
+      "../../Fixtures/original/filter-affine-root-boundary.svg",
+      "filter-affine-root-gap.svg"
+    ],
+    "canonicalScreenshotPngsByteExact": true,
+    "snapshotReplaysDecodedRgbaExact": true,
+    "nativeParameterSaveLayerBounds": [
+      26,
+      35,
+      219,
+      222
+    ],
+    "priorLibraryParameterHint": [
+      27,
+      35,
+      218,
+      222
+    ],
+    "sourceTightVisualBox": [
+      38.714375,
+      47.374504,
+      206.11948,
+      209.79495
+    ],
+    "gaussianDeviation": 3.84278,
+    "stageRecipe": "Outward-enclose the source visual box, expand by three deviations, then outward-enclose the capture hint. This applies to parameter-space source hints, not object bounds, layer/device inputs or sampled-image bounds.",
+    "linux": "Canonical screenshot remains exact and healthy/profile-cleaned. No painted-layer command log was available for these two filter controls; do not infer a Linux saveLayer observation.",
+    "nextAcceptance": "Share the two affine CTM consumers, add direct stage regressions and retain the opposed white/black and axis controls. Qualify the complete model before adopting the prototype."
   }
 }

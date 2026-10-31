@@ -233,6 +233,14 @@ Keep CSS image resizing separate from canvas drawing destinations. The committed
 its fractional canvas extent and independent native triples; substituting the same
 numbers as CSS image dimensions changes the capture context.
 
+For numerical stage inspection, enable DevTools `LayerTree` before navigation,
+snapshot painted layers with `makeSnapshot`, and read `snapshotCommandLog` and
+`replaySnapshot`. Release every snapshot. Retain matrices, saveLayer bounds and
+command hashes; discard hosted path operands. Record unavailable layer logs
+explicitly. The [projection controls](../tests/Research/svgweb/root-image-projection.json)
+include owned inputs and exact observed coefficients; their larger white page is
+a numerical diagnostic, separate from canonical rendering-reference admission.
+
 ## Smoke checks and CI evidence
 
 The memory probe supplies a host budget with `--memory-budget-bytes`; it does not

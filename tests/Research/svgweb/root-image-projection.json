@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 1,
+  "reviewedUtc": "2026-10-31",
+  "sourceBaseline": "7619bd4e46bc14c65d47dde812b5a08d09797509",
+  "status": "Native stage observations and an isolated prototype; production has not adopted this model. Full root/filter acceptance remains open.",
+  "relatedFilterReview": "filter-transform-review.json",
+  "sourceSvgCollectionRetained": false,
+  "capture": {
+    "chromeVersion": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "recipe": 3,
+    "background": "white",
+    "screenshot": [
+      431,
+      474
+    ],
+    "deviceScaleFactor": 1,
+    "executableSha256": {
+      "win64": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "linux64": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+    },
+    "comparison": "Compare the owned image region at (0,0), rounded to its natural integer extent, against library output composited over white. This larger-page diagnostic is not a new canonical rendering reference.",
+    "matrixObservation": "LayerTree snapshotCommandLog retains only numerical matrices, bounds, paints and command hashes. Missing painted-layer events remain unavailable; they are not inferred from matching screenshots."
+  },
+  "model": {
+    "layout": "floor(float(logical extent)*64)/64; logical sizing and viewBox layout remain unchanged",
+    "projection": "float(natural integer extent/layout extent), applied to the recorded scene before float canvas narrowing",
+    "destination": "natural/(layout*projection), evaluated as separate float division, multiplication and division; concatenate after the recorded scene matrix",
+    "primarySources": [
+      "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/svg/graphics/svg_image.cc",
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkM44.cpp"
+    ],
+    "limits": "These observations identify distinct rounding boundaries. Before adoption, align fast rectangles, axis filters, image paints and already placed glyphs; do not introduce a stroke-specific adjustment."
+  },
+  "controls": [
+    {
+      "id": "identity",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='16.245' height='16.554'><path d='M1027 1026C1025 1034 1031 1039 1038 1036C1041 1030 1037 1024 1027 1026Z' transform='translate(-1024 -1024)' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='bevel'/></svg>\n",
+      "sourceSha256": "93411a4115b7560d744259c9be4ef7c2ef51e25a50e4cf759b0f34da5931b2d1",
+      "logicalViewport": [
+        16.245,
+        16.554
+      ],
+      "expectedDestinationScale": [
+        1,
+        1
+      ],
+      "hosts": {
+        "windows": {
+          "freshScreenshotCaptures": 3,
+          "nativePngSha256": "d59ccebf150fb6dec49ffbfa4cbaa1fc4a4b2dc16b4283d802f99c9186d0bd80",
+          "allStartupHealthy": true,
+          "allProfilesCleaned": true,
+          "screenshotTriplesByteStable": true,
+          "matrixLogsWithinTriple": 1,
+          "additionalMatchingMatrixLogs": 0,
+          "destinationMatrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "recordedPathMatrix": [
+            0.9849183559417725,
+            0.0,
+            0.0,
+            1.0269420146942139,
+            -1008.556396484375,
+            -1051.588623046875
+          ],
+          "parameterPrototypeChangedPixels": 0,
+          "destinationPrototypeChangedPixels": 0
+        },
+        "linux": {
+          "freshScreenshotCaptures": 3,
+          "nativePngSha256": "d59ccebf150fb6dec49ffbfa4cbaa1fc4a4b2dc16b4283d802f99c9186d0bd80",
+          "allStartupHealthy": true,
+          "allProfilesCleaned": true,
+          "screenshotTriplesByteStable": true,
+          "matrixLogsWithinTriple": 3,
+          "additionalMatchingMatrixLogs": 0,
+          "destinationMatrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "recordedPathMatrix": [
+            0.9849183559417725,
+            0.0,
+            0.0,
+            1.0269420146942139,
+            -1008.556396484375,
+            -1051.588623046875
+          ],
+          "parameterPrototypeChangedPixels": 0,
+          "destinationPrototypeChangedPixels": 0
+        }
+      }
+    },
+    {
+      "id": "contract",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='16.522625' height='21.60075'><path d='M1027 1026C1025 1034 1031 1039 1038 1036C1041 1030 1037 1024 1027 1026Z' transform='translate(-1024 -1024)' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='bevel'/></svg>\n",
+      "sourceSha256": "41ed1331eac727dadad2c43a98ff5cef15a0ed05049c6938a7c158eb887a746d",
+      "logicalViewport": [
+        16.522625,
+        21.60075
+      ],
+      "expectedDestinationScale": [
+        0.9999998807907104,
+        0.9999999403953552
+      ],
+      "hosts": {
+        "windows": {
+          "freshScreenshotCaptures": 3,
+          "nativePngSha256": "94fc2832610f96d7b7a8bef86084c3cbb173332d7360419f70129c058f01805f",
+          "allStartupHealthy": true,
+          "allProfilesCleaned": true,
+          "screenshotTriplesByteStable": true,
+          "matrixLogsWithinTriple": 0,
+          "additionalMatchingMatrixLogs": 2,
+          "destinationMatrix": [
+            0.9999998807907104,
+            0.0,
+            0.0,
+            0.9999999403953552,
+            0.0,
+            0.0
+          ],
+          "recordedPathMatrix": [
+            1.0288922786712646,
+            0.0,
+            0.0,
+            1.0184831619262695,
+            -1053.585693359375,
+            -1042.9267578125
+          ],
+          "parameterPrototypeChangedPixels": 0,
+          "destinationPrototypeChangedPixels": 0
+        },
+        "linux": {
+          "freshScreenshotCaptures": 3,
+          "nativePngSha256": "94fc2832610f96d7b7a8bef86084c3cbb173332d7360419f70129c058f01805f",
+          "allStartupHealthy": true,
+          "allProfilesCleaned": true,
+          "screenshotTriplesByteStable": true,
+          "matrixLogsWithinTriple": 3,
+          "additionalMatchingMatrixLogs": 0,
+          "destinationMatrix": [
+            0.9999998807907104,
+            0.0,
+            0.0,
+            0.9999999403953552,
+            0.0,
+            0.0
+          ],
+          "recordedPathMatrix": [
+            1.0288922786712646,
+            0.0,
+            0.0,
+            1.0184831619262695,
+            -1053.585693359375,
+            -1042.9267578125
+          ],
+          "parameterPrototypeChangedPixels": 0,
+          "destinationPrototypeChangedPixels": 0
+        }
+      }
+    },
+    {
+      "id": "expand",
+      "source": "<!-- SPDX-License-Identifier: CC0-1.0 -->\n<svg xmlns='http://www.w3.org/2000/svg' width='19.60075' height='19.60075'><path d='M1027 1026C1025 1034 1031 1039 1038 1036C1041 1030 1037 1024 1027 1026Z' transform='translate(-1024 -1024)' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='bevel'/></svg>\n",
+      "sourceSha256": "d73790b1b38d75105a7febafe51b05b0adc874de2ed8a8b4be671a2a75a772a3",
+      "logicalViewport": [
+        19.60075,
+        19.60075
+      ],
+      "expectedDestinationScale": [
+        1.0000001192092896,
+        1.0000001192092896
+      ],
+      "hosts": {
+        "windows": {
+          "freshScreenshotCaptures": 3,
+          "nativePngSha256": "69e245d80e80c66cbc7db98a0cb5bc53ef7d74a20f18fc51a504a22218faa2fc",
+          "allStartupHealthy": true,
+          "allProfilesCleaned": true,
+          "screenshotTriplesByteStable": true,
+          "matrixLogsWithinTriple": 2,
+          "additionalMatchingMatrixLogs": 0,
+          "destinationMatrix": [
+            1.0000001192092896,
+            0.0,
+            0.0,
+            1.0000001192092896,
+            0.0,
+            0.0
+          ],
+          "recordedPathMatrix": [
+            1.020369052886963,
+            0.0,
+            0.0,
+            1.020369052886963,
+            -1044.85791015625,
+            -1044.85791015625
+          ],
+          "parameterPrototypeChangedPixels": 0,
+          "destinationPrototypeChangedPixels": 0
+        },
+        "linux": {
+          "freshScreenshotCaptures": 3,
+          "nativePngSha256": "69e245d80e80c66cbc7db98a0cb5bc53ef7d74a20f18fc51a504a22218faa2fc",
+          "allStartupHealthy": true,
+          "allProfilesCleaned": true,
+          "screenshotTriplesByteStable": true,
+          "matrixLogsWithinTriple": 3,
+          "additionalMatchingMatrixLogs": 0,
+          "destinationMatrix": [
+            1.0000001192092896,
+            0.0,
+            0.0,
+            1.0000001192092896,
+            0.0,
+            0.0
+          ],
+          "recordedPathMatrix": [
+            1.020369052886963,
+            0.0,
+            0.0,
+            1.020369052886963,
+            -1044.85791015625,
+            -1044.85791015625
+          ],
+          "parameterPrototypeChangedPixels": 0,
+          "destinationPrototypeChangedPixels": 0
+        }
+      }
+    }
+  ],
+  "originalStrokeObservation": {
+    "original": "rg1024_eggs.svg",
+    "sourceSha256": "e261178649854a75edf284155b349f12019643f668114a998c8c36f1d60d1cb3",
+    "host": "windows",
+    "scope": "Independent exploratory observation, not new reference admission. Hosted path operands remained in bounded memory.",
+    "logicalViewport": [
+      430.8902,
+      473.55905
+    ],
+    "screenshot": [
+      431,
+      474
+    ],
+    "outerDestinationMatrix": [
+      0.9999999403953552,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "centerlineFloatOperandSha256": "EF3D5038D8BB7132FE83165357C432342EB512B9BDDAB4D090EB630F0004F62D",
+    "pixels": [
+      [
+        414,
+        382
+      ],
+      [
+        414,
+        388
+      ]
+    ],
+    "coverageWithoutOuterStage": [
+      62,
+      196
+    ],
+    "nativeCoverageWithOuterStage": [
+      60,
+      198
+    ],
+    "nativeCanvasStrokeAndManagedOutlineRgbaIdentical": true,
+    "nativeCanvasWithOuterStageAndSvgStrokeRgbaIdentical": true,
+    "shaderSamplesIdenticalBeforeAndAfter": true,
+    "inference": "The two regressed pixels exposed a missing outer image stage. Stroke construction and gradient colour arithmetic were not the cause."
+  },
+  "prototype": {
+    "librarySha256": "5f99fd0e86da3d80e541a0426eaca8df24482b4eeec5d066d5dc5a71990bc745",
+    "adopted": false,
+    "retainsParameterSourceEnclosureBeforeBlurExpansion": true,
+    "focusedControls": 25,
+    "ownedAxisControlsExact": 32,
+    "originalReplay": {
+      "originalsPerHost": 204,
+      "renderedPerHost": 148,
+      "exactPerHost": 138,
+      "differentPerHost": 10,
+      "unsupportedPerHost": 53,
+      "malformedPerHost": 3,
+      "previousExactPreservedPerHost": 134,
+      "outcomesUnchanged": true,
+      "seconds": 52.72,
+      "newlyExactOriginals": [
+        "scimitar.svg",
+        "rg1024_Presentation_with_girl.svg",
+        "rg1024_eggs.svg",
+        "pencil.svg"
+      ],
+      "interpretation": "Exploratory whole-original comparisons against existing independent native platform references. No source bodies, references or tolerances changed."
+    },
+    "affectedValidation": [
+      {
+        "host": "windows",
+        "suite": "core",
+        "framework": "net11.0",
+        "passed": 1763,
+        "seconds": 16.9
+      },
+      {
+        "host": "windows",
+        "suite": "rendering",
+        "framework": "net11.0",
+        "passed": 1898,
+        "seconds": 24.66
+      },
+      {
+        "host": "linux",
+        "suite": "core",
+        "framework": "net11.0",
+        "passed": 1763,
+        "seconds": 13.66
+      },
+      {
+        "host": "linux",
+        "suite": "rendering",
+        "framework": "net11.0",
+        "passed": 1898,
+        "seconds": 29.81
+      }
+    ],
+    "timingScope": "Busy-host functional elapsed times; no benchmark or test-suite simplification claim. No .NET 10/package/full promotion qualification is claimed for this prototype."
+  },
+  "nextAcceptance": [
+    "Audit all root drawing consumers and share filter CTM preparation across both affine filter sites. Preserve source/object, visual/capture and sampled-image bounds.",
+    "Add direct failing-before stage assertions, retain opposed white/black controls and promote the existing gap fixture only after qualification.",
+    "Qualify the final source change on Windows/Linux, .NET 11/.NET 10 and installed packages at the coherent milestone. Close whole originals only with original-to-mechanism mappings."
+  ]
+}
