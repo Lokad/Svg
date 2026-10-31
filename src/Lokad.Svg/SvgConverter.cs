@@ -2191,14 +2191,19 @@ public static partial class SvgConverter
 
         SvgCpuRasterContext LayerRasterContext(SvgCpuRasterContext tile)
         {
-            SvgAnalyticClipBounds constructionBounds = frame is { ContentClip: {} content, ConstructionClip: {} construction } && content == layerBounds
-                ? construction : layerBounds;
+            SvgAnalyticClipBounds constructionBounds = LayerConstructionBounds(layerBounds, frame);
             SvgAnalyticClipBounds bitmap = new(Math.Max(tile.BitmapClip.Left, constructionBounds.Left), Math.Max(tile.BitmapClip.Top, constructionBounds.Top),
                 Math.Min(tile.BitmapClip.Right, constructionBounds.Right), Math.Min(tile.BitmapClip.Bottom, constructionBounds.Bottom));
             SvgAnalyticClipBounds interior = new(Math.Max(tile.Interior.Left, layerBounds.Left), Math.Max(tile.Interior.Top, layerBounds.Top),
                 Math.Min(tile.Interior.Right, layerBounds.Right), Math.Min(tile.Interior.Bottom, layerBounds.Bottom));
             return new(bitmap, interior) { ConstructionOrigin = frame?.ContentClip is not null ? tile.Origin : null };
         }
+
+        // Captured content limits stored paint; source-image padding governs
+        // construction of both paint geometry and its clip resources.
+        static SvgAnalyticClipBounds LayerConstructionBounds(SvgAnalyticClipBounds bounds, RasterFrame? sourceFrame)
+            => sourceFrame is { ContentClip: {} content, ConstructionClip: {} construction } && content == bounds
+                ? construction : bounds;
 
         SvgCpuBitmapOrigin ShaderBitmapOrigin(int x, int y)
         {
@@ -2667,7 +2672,12 @@ public static partial class SvgConverter
                                 ViewportClipState previousViewport = activeViewport;
                                 bool binaryClip;
                                 if (viewportContent is {} clipContent)
-                                    clipCoverage = RasterizeMaskContent(clipContent, clipPixels, true, clipContent.ClipKind is SvgClipContentKind.AffineViewport or SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion ? layer : previousLayer, SvgAnalyticPaintClip.Antialiased, [], out binaryClip);
+                                {
+                                    SvgAnalyticClipBounds resourceConstruction = clipContent.ClipKind is SvgClipContentKind.AffineViewport or SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion
+                                        ? layer : LayerConstructionBounds(previousLayer, frame);
+                                    clipCoverage = RasterizeMaskContent(clipContent, clipPixels, true, resourceConstruction,
+                                        SvgAnalyticPaintClip.Antialiased, [], out binaryClip);
+                                }
                                 else
                                 {
                                     binaryClip = true;

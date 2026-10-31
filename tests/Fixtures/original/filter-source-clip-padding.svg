@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="176"><defs><filter id="b" x="-.3" y="-.25" width="1.6" height="1.5"><feGaussianBlur stdDeviation="12.342325"/></filter><clipPath id="c"><path d="M660 390C705 382 765 403 790 440L767 525H660Z"/></clipPath></defs><g transform="translate(-640 -368)"><g filter="url(#b)" opacity=".56956522"><path transform="translate(0.0 0.0)" d="M720 402C772 396 783 468 748 471L697 516C701 488 712 458 720 402Z" fill="white" clip-path="url(#c)"/></g></g></svg>

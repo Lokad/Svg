@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "8540a04e83377c98ba7f5a2f1cf79a6358165b9d",
+  "scope": "Clip-resource construction inside captured filter sources. The full filter/original milestone remains open.",
+  "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
+  "sharedContract": {
+    "problem": "A captured source has both padded image construction bounds and a tighter stored-content rectangle. Ordinary geometry already used the padded bounds, but path-clip resource replay used the content rectangle. Clipping its curves against that smaller rectangle changed the input before blurring.",
+    "change": "Both consumers use the same LayerConstructionBounds rule. Source-frame padding applies while replaying its content layer; nested layer and viewport bounds retain their existing roles. No blur, alpha, transform or sampling arithmetic changes.",
+    "ownership": "No new owner, cache, metadata or buffer kind. Existing clip tapes can retain additional rows within the already admitted source image; their normal budgeted growth, cancellation and release remain in force. Paint output remains limited to the content rectangle."
+  },
+  "nativeRegression": {
+    "fixture": "../../Fixtures/original/filter-source-clip-padding.svg",
+    "reference": "../../References/original-filter-source-clip-padding.json",
+    "sourceSha256": "ff62f42fcc7b543eaea2b560ba29baef1e2d3687a065d4f7003b2bd84971f1ec",
+    "referenceSha256": "fc10e665c9b6a7bd4008a455b30a65e24098807575200a0be1311935db339efc",
+    "context": "Pinned Chrome153.0.8010.52 / Chromium1681091 / recipe3 / transparent / DPR1; logical viewport and screenshot160x176. Exact executable identities are in the reference metadata.",
+    "freshHealthyProfileCleanedCapturesPerHost": 3,
+    "allSixPngsAndDecodedPixelsIdentical": true,
+    "beforeAfter": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+        "changedPixels": 451,
+        "maximumError": 255,
+        "totalChannelError": 3511
+      },
+      {
+        "host": "windows",
+        "phase": "after",
+        "librarySha256": "746fe962a7d5e3896fc6ddd7c34199a3af49939875d385440af2a7fdd67496a2",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+        "changedPixels": 451,
+        "maximumError": 255,
+        "totalChannelError": 3511
+      },
+      {
+        "host": "linux",
+        "phase": "after",
+        "librarySha256": "746fe962a7d5e3896fc6ddd7c34199a3af49939875d385440af2a7fdd67496a2",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      }
+    ],
+    "failingBeforeManifest": {
+      "librarySha256": "ba68e6d1da574d98725785f00260f5e27eb32e320ed398bb5debba2dad00a7c8",
+      "failed": 1,
+      "message": "original-filter-source-clip-padding differs from its admitted reference: {\"DimensionsMatch\":true,\"ChangedPixelCount\":451,\"MaximumChannelError\":255,\"MeanAbsoluteError\":0.03117009943181818,\"RootMeanSquareError\":2.632752014074557,\"MaximumAlphaError\":1,\"AlphaChangedPixelCount\":451,\"MinimumMismatchX\":49,\"MinimumMismatchY\":8,\"MaximumMismatchX\":149,\"MaximumMismatchY\":158,\"IsExact\":false}"
+    },
+    "maximumAlphaErrorBefore": 1,
+    "routineResponsibility": "One additional admitted fixture through the existing canonical conversion/manifest check. Existing image targets and tolerances are unchanged; no rendering-fixture/API product."
+  },
+  "captureMechanism": {
+    "source": "The own fixture, with the filtered group made unfiltered and opaque.",
+    "sourceGridRecipe": "Set logical/screenshot117x174 and viewBox34 4 117 174. An outer construction rectangle is x35,y5,width115,height172 in scene coordinates. Compare captured premultiplied white alpha within bitmap content rectangle[23,29,95,144]. This native capture is exploratory mechanism evidence, separate from full-fixture admission.",
+    "independentNativePngSha256": "91e242603efb2a4e2a3ff1c5e10ce26931555600f35bbd143633a7c323bb1698",
+    "ordinaryUnfilteredSourceAlphaDifferences": 0,
+    "captureAlphaBeforeAfter": [
+      {
+        "phase": "before",
+        "alphaChangedPixels": 119,
+        "maximumAlphaError": 76,
+        "totalAlphaError": 1603
+      },
+      {
+        "phase": "after",
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0,
+        "totalAlphaError": 0
+      }
+    ],
+    "phaseCompanions": "The own source translated by(.125,0),(0,.125),(.125,.125) also fails before and is exact after in one fresh Windows native capture each; these exploratory variants are not multiplied into routine API tests.",
+    "phaseAfter": [
+      {
+        "case": 0,
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "case": 1,
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "case": 8,
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "case": 9,
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      }
+    ]
+  },
+  "ownership": {
+    "test": "../../Lokad.Svg.Tests/SvgCurvedClipSourceTests.cs",
+    "addedCases": 1,
+    "scope": "One inner clipped curve under blur, translated into the existing32x32 ownership harness. Parser memory denials, raster refusal, cancellation, retained-source immutability, cleanup and retry use the existing helper; no duplicate setup or contract matrix."
+  },
+  "allOriginals": {
+    "prototypeLibrarySha256": "266d7ae303fe6fad084498a2ccebd231756f442b62bfa87b3cc9da6464723da8",
+    "audit": {
+      "windows": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 148,
+        "changes": [],
+        "outcomeOrDiagnosticChanges": [],
+        "increasedErrors": []
+      },
+      "linux": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 148,
+        "changes": [],
+        "outcomeOrDiagnosticChanges": [],
+        "increasedErrors": []
+      }
+    },
+    "sourceSvgFilesRetained": 0,
+    "qualification": "All204 source hashes rechecked per host against the frozen shared-rule prototype; all148 rendered PNGs and every outcome/diagnostic stay unchanged. Final formatting/local-variable changes retain the same rule and pass the gates below. Default exploratory134 exact/14 different comparisons do not close supplied-font/resource/static-state acceptance."
+  },
+  "validation": {
+    "releaseBuilds": "Both test projects and both TFMs; zero warnings/errors.",
+    "gates": [
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Affected core",
+        "passed": 6086,
+        "failed": 0,
+        "seconds": 30.18507479992695,
+        "librarySha256": "746fe962a7d5e3896fc6ddd7c34199a3af49939875d385440af2a7fdd67496a2"
+      },
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Full routine rendering",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 79.43707320000976,
+        "librarySha256": "746fe962a7d5e3896fc6ddd7c34199a3af49939875d385440af2a7fdd67496a2"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected core",
+        "passed": 6086,
+        "failed": 0,
+        "seconds": 24.251822700025514,
+        "librarySha256": "50d241ded734bc7357826adae27e680bf2716e92fb92c67f675b88ef2c2407a2"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected native",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 27.46178529993631,
+        "librarySha256": "50d241ded734bc7357826adae27e680bf2716e92fb92c67f675b88ef2c2407a2"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Affected core",
+        "passed": 6086,
+        "failed": 0,
+        "seconds": 26.411358431,
+        "librarySha256": "746fe962a7d5e3896fc6ddd7c34199a3af49939875d385440af2a7fdd67496a2"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Full routine rendering",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 216.37931696599998,
+        "librarySha256": "746fe962a7d5e3896fc6ddd7c34199a3af49939875d385440af2a7fdd67496a2"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected core",
+        "passed": 6086,
+        "failed": 0,
+        "seconds": 19.117220999000004,
+        "librarySha256": "50d241ded734bc7357826adae27e680bf2716e92fb92c67f675b88ef2c2407a2"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected native",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 39.283363060999996,
+        "librarySha256": "50d241ded734bc7357826adae27e680bf2716e92fb92c67f675b88ef2c2407a2"
+      }
+    ],
+    "timing": "Busy-host functional elapsed times only; no performance conclusion.",
+    "newAdmittedFixtures": 1,
+    "newOwnershipCases": 1,
+    "existingReferencePngsChanged": 0
+  },
+  "remainingAcceptance": [
+    "Gallardo remains94 pixels/123 total channel error; Scimitar221/1,216. This fix leaves their defaults unchanged.",
+    "The original path3850 clip-outside-blur interaction remains10 alpha pixels/max1. Its source captures and stored blur values are identical to the unclipped library run at those points. Independent mask, unfiltered source, unclipped blur and constant solid/image clip carriers are exact.",
+    "Complete crop, flood/offset, shadow, all-original font/resource/static-state gates and original-to-mechanism mappings before whole-filter closure."
+  ]
+}

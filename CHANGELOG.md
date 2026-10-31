@@ -17,7 +17,8 @@
   restore over backdrops, including Gaussian aliases.
 - Preserve authored curves and placement in referenced clip children.
 - Capture filtered sources per destination bitmap and preserve source-image padding
-  during curve construction; restore each output pixel once across bitmap borders.
+  during geometry and clip-resource construction; restore each output pixel once
+  across bitmap borders.
 - Bind radial path fills through retained definition, local and drawing maps for
   axis and skewed placement, including clipped and inherited paints.
 - Preserve source path bounds across clipped stroke lowering; retain filter image

@@ -83,7 +83,7 @@ sampling/blend semantics.
 | Canvas boundary | Retain parent rounding before child concatenation. A clip's resource normalization does not transform its consumer; mask construction uses the incoming canvas. |
 | Object box | Measures pre-clip geometry/layout for normalized paints/resources. |
 | Visual/drawing enclosure | Includes painted stroke/effect extents and source-space enclosure before placement. |
-| Construction/dispatch bounds | Decide edge admission and raster route independently of clipped storage. |
+| Construction/dispatch bounds | Decide edge admission and raster route independently of clipped storage. Captured geometry and clip resources share the padded source-image bounds. |
 | Captured/sampled image | Retain requested subsets, content clips, image hints, color space and origin even when storage is cropped. |
 
 Nested viewports retain the parent map outside their local viewBox map. Ordinary

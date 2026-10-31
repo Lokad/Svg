@@ -39,6 +39,8 @@ and referencing maps, including object-box normalization. Its
 [native fixture](Fixtures/original/clip-canvas-placement.svg) protects a rounded
 parent before child concatenation; existing scaled radial, inherited clip and
 rotated dome references protect the contexts where collapsing those roles fails.
+The [clipped filter-source fixture](Fixtures/original/filter-source-clip-padding.svg)
+protects padded clip construction independently of the stored content rectangle.
 
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;

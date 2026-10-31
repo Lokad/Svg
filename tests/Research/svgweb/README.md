@@ -134,6 +134,9 @@ cubic clipped-target interaction by separating mask construction from consumer
 concatenation. The own native control is exact on both platforms; scaled radial
 and object-box regressions retain their existing targets. Gallardo now differs
 at94 pixels/123 total channel error; the whole filter/original milestone stays open.
+The [source-clip record](source-clip-construction.json) closes clip resources using
+tighter construction bounds than their captured source geometry. One own fixture
+retains six independent native captures; all204 hosted outcomes remain unchanged.
 
 Group confirmed gaps by mechanism and retain original-to-fixture mappings,
 licenses and failing-before evidence. Reference admission requires three fresh

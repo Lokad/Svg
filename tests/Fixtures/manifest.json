@@ -18273,6 +18273,31 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-clip-canvas-placement.json",
       "referenceSha256": "9a54fdbbe936d8b66eecf7808f454b42fc3814d85d9c76e5c4ba7acc7e0f0df7"
+    },
+    {
+      "id": "original-filter-source-clip-padding",
+      "path": "original/filter-source-clip-padding.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "ff62f42fcc7b543eaea2b560ba29baef1e2d3687a065d4f7003b2bd84971f1ec",
+      "materializedSha256": "ff62f42fcc7b543eaea2b560ba29baef1e2d3687a065d4f7003b2bd84971f1ec",
+      "featureTags": [
+        "filter",
+        "clip",
+        "curve",
+        "construction"
+      ],
+      "width": 160,
+      "height": 176,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-source-clip-padding.json",
+      "referenceSha256": "fc10e665c9b6a7bd4008a455b30a65e24098807575200a0be1311935db339efc"
     }
   ]
 }
