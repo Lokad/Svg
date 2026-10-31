@@ -10351,9 +10351,9 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "root-visible-source.json",
-    "sourceBaseline": "829b8edd1ee1b668dc75f0b8925cd384698b574d",
-    "librarySha256": "7a91387cc80ce08491465b6a99e3095476ff2453a1697edd476895ff95c0666b",
+    "evidence": "filter-retained-source-stages.json",
+    "sourceBaseline": "72f4129c844aa320f6809532a03a74a354303a78",
+    "librarySha256": "78c3ac33aa3c1c1c8e77c0da95de386c3b11783d1b1d859fc209d29f73ffd34b",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10364,26 +10364,10 @@
       "MalformedInput": 3
     },
     "previousPngsByteIdenticalPerHost": {
-      "windows": 147,
-      "linux": 147
+      "windows": 148,
+      "linux": 148
     },
-    "changedOriginals": [
-      {
-        "name": "rg1024_green_grapes.svg",
-        "before": {
-          "status": "different",
-          "changedPixels": 37,
-          "maximumError": 7,
-          "totalChannelError": 95
-        },
-        "after": {
-          "status": "different",
-          "changedPixels": 1,
-          "maximumError": 1,
-          "totalChannelError": 1
-        }
-      }
-    ],
+    "changedOriginals": [],
     "newlyExactOriginals": [],
     "lostExactImages": [],
     "changedOutcomesOrDiagnostics": [],

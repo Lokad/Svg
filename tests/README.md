@@ -117,6 +117,13 @@ image dimensions separately from the integer screenshot. Existing root ownership
 cases cover the unchanged allocation paths. See the
 [source-rectangle record](Research/svgweb/root-visible-source.json).
 
+The [source-capture fixture](Fixtures/original/filter-retained-source-stages.svg)
+protects retained visual bounds and recording/destination stages through a zero-blur
+gradient capture. Three direct bounds cases and one bitmap-map case isolate the
+mechanisms; existing filter ownership tests cover allocation and cleanup. Its
+[evidence](Research/svgweb/filter-retained-source-stages.json) records the memory
+tradeoff and separate nonzero-blur findings. No API matrix is added.
+
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;
 a layer filter does not replace affected unclassified tests or full qualification.

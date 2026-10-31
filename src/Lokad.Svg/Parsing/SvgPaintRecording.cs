@@ -37,11 +37,15 @@ internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity 
     internal SvgSourceObjectBounds? SourceObjectBounds { get; init; }
 }
 
-/// <summary>Retains native authored object bounds separately from their scene placement.</summary>
+/// <summary>Retains authored object and known visual bounds alongside one scene placement.</summary>
 /// <remarks>Immutable metadata owns no storage. A consumer composes into its own parameter
 /// space before narrowing bounds, observing the caller's cancellation token.
 /// Metadata maps require finite arithmetic; device admission belongs to the completed draw map.</remarks>
-internal readonly record struct SvgSourceObjectBounds(SvgPaintBounds Bounds, SvgAffineTransform SceneMap);
+internal readonly record struct SvgSourceObjectBounds(SvgPaintBounds Bounds, SvgAffineTransform SceneMap)
+{
+    /// <summary>Retains known paint extents before scene narrowing; null leaves the recorded visual contract with its producer.</summary>
+    internal SvgPaintBounds? VisualBounds { get; init; }
+}
 
 internal readonly record struct SvgPaintBounds(float Left, float Top, float Right, float Bottom)
 {
@@ -90,6 +94,7 @@ internal readonly record struct SvgRecordedPaintStyle(SvgPaintOpacity ElementOpa
     internal SvgPaintBounds? VisualBounds { get; init; }
     internal SvgPaintBounds? ObjectBounds { get; init; }
     internal SvgPaintBounds? SourceObjectBox { get; init; }
+    internal SvgPaintBounds? SourceVisualBox { get; init; }
     internal SvgAffineTransform SourceObjectMap { get; init; } = SvgAffineTransform.Identity;
     internal float StrokeBoundsInflation { get; init; }
     internal SvgPaintOrder PaintOrder { get; init; }
@@ -201,14 +206,22 @@ internal static class SvgPaintRecording
             opacityScope = state.NewRecordingScope();
         SvgRecordingScope drawScope = SvgLocalUrl.ReadReference(reader, "mask") is null ? opacityScope : state.NewRecordingScope();
         float strokeBoundsInflation = SvgStrokeStyleSyntax.BoundsInflation(style, reader.LocalName);
-        SvgPaintBounds? objectBounds = PrimitiveBounds(reader, context, frame, 0, out SvgPaintBounds? sourceObjectBox, out SvgAffineTransform sourceObjectMap, out bool suppressedSource);
+        SvgPaintBounds? objectBounds = PrimitiveBounds(reader, context, frame, out SvgPaintBounds? sourceObjectBox, out SvgAffineTransform sourceObjectMap, out bool suppressedSource);
+        SvgPaintBounds? sourceVisualBox = sourceObjectBox, visualBounds = null;
+        if (strokeBoundsInflation > 0 && sourceObjectBox is {} primitive)
+        {
+            SvgPaintBounds painted = new(primitive.Left - strokeBoundsInflation, primitive.Top - strokeBoundsInflation,
+                primitive.Right + strokeBoundsInflation, primitive.Bottom + strokeBoundsInflation);
+            sourceVisualBox = painted;
+            visualBounds = painted.Map(sourceObjectMap, context.CancellationToken);
+        }
         return new(style.GetOpacity(), SvgPaintResolver.ResolveSolidPaint(fill).Alpha,
             fill.FillOpacity.Alpha / 255f, stroke.Alpha * strokeOpacity.Value, strokeOpacity.Alpha / 255f,
             fillServer ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
             style.Stroke is not null && SvgPaintReference.TryParseId(style.Stroke, out _) ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
-            fill.HasFill, drawScope, opacityScope) { RecordingTransform = context.InheritedPresentation.RecordingTransform, IsSuppressedSource = suppressedSource || !context.InheritedPresentation.IsDisplayed || style.GetDisplay() == SvgDisplay.None, PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = objectBounds, SourceObjectBox = sourceObjectBox, SourceObjectMap = sourceObjectMap, VisualBounds = strokeBoundsInflation > 0 ? PrimitiveBounds(reader, context, frame, strokeBoundsInflation, out _, out _, out _) : null, StrokeBoundsInflation = strokeBoundsInflation };
+            fill.HasFill, drawScope, opacityScope) { RecordingTransform = context.InheritedPresentation.RecordingTransform, IsSuppressedSource = suppressedSource || !context.InheritedPresentation.IsDisplayed || style.GetDisplay() == SvgDisplay.None, PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = objectBounds, SourceObjectBox = sourceObjectBox, SourceVisualBox = sourceVisualBox, SourceObjectMap = sourceObjectMap, VisualBounds = visualBounds, StrokeBoundsInflation = strokeBoundsInflation };
 
-        static SvgPaintBounds? PrimitiveBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport, float inflation, out SvgPaintBounds? sourceObjectBox, out SvgAffineTransform sourceObjectMap, out bool suppressedSource)
+        static SvgPaintBounds? PrimitiveBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport, out SvgPaintBounds? sourceObjectBox, out SvgAffineTransform sourceObjectMap, out bool suppressedSource)
         {
             sourceObjectBox = null;
             sourceObjectMap = SvgAffineTransform.Identity;
@@ -242,7 +255,6 @@ internal static class SvgPaintRecording
                     return null;
             }
             sourceObjectBox = bounds;
-            if (inflation > 0) bounds = new(bounds.Left - inflation, bounds.Top - inflation, bounds.Right + inflation, bounds.Bottom + inflation);
             SvgAffineTransform placement = element.ResolveTransform(input);
             if (viewport is {} parent)
                 placement = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(placement);
@@ -263,14 +275,17 @@ internal static class SvgPaintRecording
             SvgPaintBounds? sourceObjectBox = parsed.SourceObjectBox ?? source.SourceObjectBox;
             SvgAffineTransform sourceObjectMap = parsed.SourceObjectBox is not null ? parsed.SourceObjectMap : source.SourceObjectMap;
             SvgPaintBounds? visualBounds = source.VisualBounds;
+            SvgPaintBounds? sourceVisualBox = parsed.SourceObjectBox ?? source.SourceVisualBox;
             if (parsed.SourceObjectBox is {} inputBox)
             {
                 objectBounds = inputBox.Map(parsed.SourceObjectMap, token);
                 if (source.StrokeBoundsInflation > 0)
                 {
                     float inflation = source.StrokeBoundsInflation;
-                    visualBounds = new SvgPaintBounds(MathF.Floor(inputBox.Left - inflation), MathF.Floor(inputBox.Top - inflation),
-                        MathF.Ceiling(inputBox.Right + inflation), MathF.Ceiling(inputBox.Bottom + inflation)).Map(parsed.SourceObjectMap, token);
+                    SvgPaintBounds painted = new(MathF.Floor(inputBox.Left - inflation), MathF.Floor(inputBox.Top - inflation),
+                        MathF.Ceiling(inputBox.Right + inflation), MathF.Ceiling(inputBox.Bottom + inflation));
+                    sourceVisualBox = painted;
+                    visualBounds = painted.Map(parsed.SourceObjectMap, token);
                 }
             }
             if (objectBounds is null && values.Length != 0)
@@ -294,12 +309,15 @@ internal static class SvgPaintRecording
                     SvgRectangle box = SvgPathBounds.Compute(path.Commands, token);
                     sourceObjectBox = new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height));
                     sourceObjectMap = path.SceneMap;
+                    sourceVisualBox = sourceObjectBox;
                     objectBounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)).Map(path.SceneMap, token);
                     if (source.StrokeBoundsInflation > 0)
                     {
                         float inflation = source.StrokeBoundsInflation;
-                        visualBounds = new SvgPaintBounds(MathF.Floor((float)box.X - inflation), MathF.Floor((float)box.Y - inflation),
-                            MathF.Ceiling((float)(box.X + box.Width) + inflation), MathF.Ceiling((float)(box.Y + box.Height) + inflation)).Map(path.SceneMap, token);
+                        SvgPaintBounds painted = new(MathF.Floor((float)box.X - inflation), MathF.Floor((float)box.Y - inflation),
+                            MathF.Ceiling((float)(box.X + box.Width) + inflation), MathF.Ceiling((float)(box.Y + box.Height) + inflation));
+                        sourceVisualBox = painted;
+                        visualBounds = painted.Map(path.SceneMap, token);
                     }
                 }
                 else if (element is "polygon" or "polyline")
@@ -389,7 +407,8 @@ internal static class SvgPaintRecording
                         RecordingTransform = source.RecordingTransform, PaintOrder = source.PaintOrder, IsStroke = identity == strokeId,
                         IsEffectAnchor = anchor, VisualBounds = anchor ? null : visualBounds,
                         ObjectBounds = source.IsSuppressedSource ? null : objectBounds,
-                        SourceObjectBounds = !source.IsSuppressedSource && sourceObjectBox is {} rawBox ? new(rawBox, sourceObjectMap) : null
+                        SourceObjectBounds = !source.IsSuppressedSource && sourceObjectBox is {} rawBox
+                            ? new(rawBox, sourceObjectMap) { VisualBounds = sourceVisualBox } : null
                     });
                 }
                 return cached;

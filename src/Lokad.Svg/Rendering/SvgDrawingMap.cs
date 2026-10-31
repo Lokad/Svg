@@ -18,4 +18,11 @@ internal readonly record struct SvgDrawingMap(SvgAffineTransform Recording, SvgA
 
     internal SvgDrawingMap Compose(SvgAffineTransform source)
         => new(Recording.ComposeChecked(source), Destination);
+
+    /// <summary>Moves destination placement into an admitted bitmap without folding it into the recorded scene.</summary>
+    /// <remarks>Pure values own no storage. The caller retains the bitmap and checks cancellation;
+    /// integer origin translation follows native float destination concatenation.</remarks>
+    internal SvgDrawingMap InBitmap(SvgCpuBitmapOrigin origin)
+        => new(Recording, SvgAffineTransform.FromTranslation(-(double)origin.X, -(double)origin.Y)
+            .ComposeNative(Destination ?? SvgAffineTransform.Identity));
 }

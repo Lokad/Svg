@@ -99,6 +99,20 @@ public sealed class SvgRootImageMapTests
 
     [Fact]
     [Trait("Layer", "Mechanism")]
+    public void Bitmap_capture_keeps_recording_before_destination_narrowing()
+    {
+        SvgDrawingMap root = SvgRootImageMap.Resolve(null, new(557.90326, 781.49402), 1).Drawing;
+        SvgDrawingMap capture = root.InBitmap(new(141, 740));
+        SvgAffineTransform scene = new(.7833481370166453, 0, 0, .7833481370166453, 573.4452440452096, 151.2692627798242);
+        Assert.Equal(root.Recording, capture.Recording);
+        Assert.Equal(new SvgAffineTransform(.7834839820861816, 0, 0, .7828528881072998,
+            432.544677734375, -588.826416015625), capture.MapScene(scene));
+        Assert.Equal(root.Parameter.A, capture.Parameter.A);
+        Assert.Equal(root.Parameter.D, capture.Parameter.D);
+    }
+
+    [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Uniform_density_joins_the_recorded_viewbox_scene_before_native_narrowing()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 100 100'><g transform='rotate(20 90 75)'><path d='M10 75 A40 40 0 0 1 90 75' fill='#EEE'/></g></svg>"u8.ToArray();

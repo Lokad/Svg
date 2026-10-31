@@ -1,0 +1,607 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "72f4129c844aa320f6809532a03a74a354303a78",
+  "librarySha256": "78c3ac33aa3c1c1c8e77c0da95de386c3b11783d1b1d859fc209d29f73ffd34b",
+  "scope": "Authored visual bounds and recording/destination stages through filter source capture. Zero-Gaussian capture findings close; remaining nonzero blur and whole-corpus acceptance stay open.",
+  "implementation": {
+    "boundsSource": "../../../src/Lokad.Svg/Parsing/SvgPaintRecording.cs",
+    "drawingSource": "../../../src/Lokad.Svg/Rendering/SvgDrawingMap.cs",
+    "playbackSource": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "rules": [
+      "Retain known local visual/stroke bounds with the existing object bounds and scene placement. Compose into filter parameter space before narrowing; do not invert a previously narrowed scene rectangle when authored extents are known.",
+      "Keep recording and destination maps in RasterFrame. Move the destination into its bitmap with native float concatenation; preserve the recording stage before replaying child transforms.",
+      "Aggregate parameter hints during the existing source walk. Unknown/text producers retain their existing recorded-bound fallback. Affine source and pattern frames retain their explicit native map contracts."
+    ],
+    "failingBoundary": {
+      "authoredTop": 754,
+      "narrowedSceneTop": 741.9137,
+      "reconstructedTop": 753.9999,
+      "oldEnclosedTop": 753,
+      "retainedEnclosedTop": 754
+    },
+    "captureMatrix": {
+      "bitmapOrigin": [
+        141,
+        740
+      ],
+      "scene": [
+        0.7833481370166453,
+        0,
+        0,
+        0.7833481370166453,
+        573.4452440452096,
+        151.2692627798242
+      ],
+      "expected": [
+        0.7834839820861816,
+        0,
+        0,
+        0.7828528881072998,
+        432.544677734375,
+        -588.826416015625
+      ]
+    },
+    "ownership": "No new buffer, cache, provider, owner or API path. Existing generic array admission charges the actual enlarged value size. Primitive XML bounds are parsed once instead of twice for stroked primitives.",
+    "measuredValueLayout": [
+      {
+        "phase": "before",
+        "librarySha256": "7a91387cc80ce08491465b6a99e3095476ff2453a1697edd476895ff95c0666b",
+        "objectBoundsBytes": 64,
+        "paintValueBytes": 200,
+        "paintArray128Bytes": 25632,
+        "rasterFrameBytes": 584
+      },
+      {
+        "phase": "candidate",
+        "librarySha256": "78c3ac33aa3c1c1c8e77c0da95de386c3b11783d1b1d859fc209d29f73ffd34b",
+        "objectBoundsBytes": 88,
+        "paintValueBytes": 224,
+        "paintArray128Bytes": 28704,
+        "rasterFrameBytes": 656
+      }
+    ],
+    "layoutTradeoff": "Recorded paint slots grow by 24 bytes; a 128-slot array grows by 3072 bytes. RasterFrame grows by 72 bytes as a pure value. No performance claim."
+  },
+  "validationResponsibilities": {
+    "mechanisms": [
+      {
+        "tests": "../../Lokad.Svg.Tests/SvgFilterSourceHintTests.cs",
+        "newCases": 3,
+        "roles": "Ellipse, authored path and stroke extents before scene narrowing."
+      },
+      {
+        "tests": "../../Lokad.Svg.Tests/SvgRootImageMapTests.cs",
+        "newCases": 1,
+        "roles": "Recording/destination float stages survive bitmap origin placement."
+      }
+    ],
+    "rendering": {
+      "fixture": "../../Fixtures/original/filter-retained-source-stages.svg",
+      "metadata": "../../References/original-filter-retained-source-stages.json",
+      "reference": "../../References/original-filter-retained-source-stages.png",
+      "path": "Canonical conversion only.",
+      "comparisons": [
+        {
+          "id": "original-filter-retained-source-stages",
+          "host": "windows",
+          "phase": "before",
+          "librarySha256": "7a91387cc80ce08491465b6a99e3095476ff2453a1697edd476895ff95c0666b",
+          "changedPixels": 1011,
+          "maximumError": 255,
+          "totalChannelError": 3756
+        },
+        {
+          "id": "original-filter-retained-source-stages",
+          "host": "windows",
+          "phase": "candidate",
+          "librarySha256": "78c3ac33aa3c1c1c8e77c0da95de386c3b11783d1b1d859fc209d29f73ffd34b",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        },
+        {
+          "id": "original-filter-retained-source-stages",
+          "host": "linux",
+          "phase": "before",
+          "librarySha256": "7a91387cc80ce08491465b6a99e3095476ff2453a1697edd476895ff95c0666b",
+          "changedPixels": 1011,
+          "maximumError": 255,
+          "totalChannelError": 3756
+        },
+        {
+          "id": "original-filter-retained-source-stages",
+          "host": "linux",
+          "phase": "candidate",
+          "librarySha256": "78c3ac33aa3c1c1c8e77c0da95de386c3b11783d1b1d859fc209d29f73ffd34b",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      ],
+      "freshCaptures": [
+        {
+          "id": "original-filter-retained-source-stages",
+          "host": "windows",
+          "capture": 1,
+          "sourceSha256": "b734a20d864f81a28a7afa240a68792c12e76c85bd438c670abf6cbae44a3d69",
+          "nativePngSha256": "3fc4eb4b39c8e2fede4e0aacfb3ec5e5a7d69c8af517d26ea2d3cac0ca1be79b",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "id": "original-filter-retained-source-stages",
+          "host": "windows",
+          "capture": 2,
+          "sourceSha256": "b734a20d864f81a28a7afa240a68792c12e76c85bd438c670abf6cbae44a3d69",
+          "nativePngSha256": "3fc4eb4b39c8e2fede4e0aacfb3ec5e5a7d69c8af517d26ea2d3cac0ca1be79b",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "id": "original-filter-retained-source-stages",
+          "host": "windows",
+          "capture": 3,
+          "sourceSha256": "b734a20d864f81a28a7afa240a68792c12e76c85bd438c670abf6cbae44a3d69",
+          "nativePngSha256": "3fc4eb4b39c8e2fede4e0aacfb3ec5e5a7d69c8af517d26ea2d3cac0ca1be79b",
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "id": "original-filter-retained-source-stages",
+          "host": "linux",
+          "capture": 1,
+          "sourceSha256": "b734a20d864f81a28a7afa240a68792c12e76c85bd438c670abf6cbae44a3d69",
+          "nativePngSha256": "3fc4eb4b39c8e2fede4e0aacfb3ec5e5a7d69c8af517d26ea2d3cac0ca1be79b",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "id": "original-filter-retained-source-stages",
+          "host": "linux",
+          "capture": 2,
+          "sourceSha256": "b734a20d864f81a28a7afa240a68792c12e76c85bd438c670abf6cbae44a3d69",
+          "nativePngSha256": "3fc4eb4b39c8e2fede4e0aacfb3ec5e5a7d69c8af517d26ea2d3cac0ca1be79b",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "id": "original-filter-retained-source-stages",
+          "host": "linux",
+          "capture": 3,
+          "sourceSha256": "b734a20d864f81a28a7afa240a68792c12e76c85bd438c670abf6cbae44a3d69",
+          "nativePngSha256": "3fc4eb4b39c8e2fede4e0aacfb3ec5e5a7d69c8af517d26ea2d3cac0ca1be79b",
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    "contracts": "Existing filter/root/recorded-paint refusal, cancellation, cleanup, retry, prepared and destination contracts remain in the full suite; no fixture/API product added."
+  },
+  "exploratoryControls": {
+    "qualification": "Original fragments remain hash-checked in bounded RAM and are discarded. These controls do not admit new reference images.",
+    "own": [
+      {
+        "folder": "own-alias-controls-1",
+        "id": "rect-0-linearRGB",
+        "sourceSha256": "85431817736905ac1de3c14efafe01d510fb806d5d21e69c9e436bc44b376ea3",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-alias-controls-1",
+        "id": "rect-0-sRGB",
+        "sourceSha256": "fa05e331fb80ce4acfa648eddde580aedeffecde060ae29d06ede5a738cc687f",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-alias-controls-1",
+        "id": "rect-p001-linearRGB",
+        "sourceSha256": "c601a14d8fa746c7d324ac6b9e30e25a1f39a8b98f4efae51e3541136122071a",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-alias-controls-1",
+        "id": "rect-p5-linearRGB",
+        "sourceSha256": "642c60048c70adc24c7ac64b9a3aae81b53578cf8611b669c0c0add8aeea496b",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-alias-controls-1",
+        "id": "ellipse-0-linearRGB",
+        "sourceSha256": "087da2dc826800b374df4e98ece3818af58064d0169b0b35e8e72eef85ee4198",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-alias-controls-1",
+        "id": "ellipse-0-sRGB",
+        "sourceSha256": "b6881e095d412e7f42d5c489480712a39c7ff5aafdd211cb41b8c6ecf4b97b6f",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-alias-controls-1",
+        "id": "ellipse-p001-linearRGB",
+        "sourceSha256": "e896a710a7d32cd8468a2cf31da7119e0f62192bb427efa3df0c1a8928ea6972",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-alias-controls-1",
+        "id": "ellipse-p5-linearRGB",
+        "sourceSha256": "992122692415c30167a1983464e30a1d2c6b6091e113dcad4219d5b7b44af73b",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-alias-controls-1",
+        "id": "placed-0-linearRGB",
+        "sourceSha256": "f7566b98624af4ea8596fe779bd1609698ddb9f20ddb8b38fd692101cdfbd409",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-alias-controls-1",
+        "id": "placed-0-sRGB",
+        "sourceSha256": "a63539d1d677d9c7bac20bcb01bc21c5f25f32d31a50999c296940bf651f5de7",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-alias-controls-1",
+        "id": "placed-p001-linearRGB",
+        "sourceSha256": "ea00d8b2e16c62ffc5dcae6355caf6b68d762666f7a77bd0be209d271cc84b8a",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-alias-controls-1",
+        "id": "placed-p5-linearRGB",
+        "sourceSha256": "420780df0ed52fe7e309b6eec35e3b41a079f3bb2e36917732d18a2813ccb6d4",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-fractional-alias-1",
+        "id": "fractional-none-linearRGB",
+        "sourceSha256": "1a4e48826ac49b216b918653e2f932a98f1483985e25cbc81cb83caa038f7cd8",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-fractional-alias-1",
+        "id": "fractional-0-linearRGB",
+        "sourceSha256": "b734a20d864f81a28a7afa240a68792c12e76c85bd438c670abf6cbae44a3d69",
+        "beforePixels": 1011,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-fractional-alias-1",
+        "id": "fractional-0-sRGB",
+        "sourceSha256": "b4bbac9bf93ad7a1571ade64b294cbf1864b31384e61ab334820b67e6cd5577c",
+        "beforePixels": 1011,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-fractional-alias-1",
+        "id": "fractional-2p75-linearRGB",
+        "sourceSha256": "77e75b32b90724988b2f5b2c75840b056fb4e1e51365e809e1116810b9614a8c",
+        "beforePixels": 2,
+        "changedPixels": 2,
+        "maximumError": 2,
+        "bounds": [
+          170,
+          779,
+          171,
+          781
+        ]
+      },
+      {
+        "folder": "own-fractional-alias-1",
+        "id": "fractional-2p75-sRGB",
+        "sourceSha256": "51e3a24172aeb703d018debb63fdd585e92ffeed3d7b5f41a6b66cb4f02282ab",
+        "beforePixels": 2,
+        "changedPixels": 1,
+        "maximumError": 2,
+        "bounds": [
+          173,
+          780,
+          174,
+          781
+        ]
+      },
+      {
+        "folder": "own-region-alias-1",
+        "id": "default",
+        "sourceSha256": "b734a20d864f81a28a7afa240a68792c12e76c85bd438c670abf6cbae44a3d69",
+        "beforePixels": 1011,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-region-alias-1",
+        "id": "wide",
+        "sourceSha256": "e0eb2488543c3d6610e7b6442b0c402f187554b6f8912b30b46aaa3fac7b5c65",
+        "beforePixels": 1011,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-region-alias-1",
+        "id": "tight",
+        "sourceSha256": "f55c1bd61e06693d5348e655716952c7925f552689fe848f95fe5a3fdcf9f3f9",
+        "beforePixels": 1,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      },
+      {
+        "folder": "own-region-alias-1",
+        "id": "explicit",
+        "sourceSha256": "2b2ab20154d88735f92645b3974ad3ce7a143403460be573f39eb817b0d9c823",
+        "beforePixels": 1011,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "bounds": null
+      }
+    ],
+    "highlight": {
+      "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+      "sourceSvgFilesRetained": 0,
+      "originalFragmentsRetained": 0,
+      "rows": [
+        {
+          "case": "original",
+          "beforePixels": 1,
+          "changedPixels": 1,
+          "maximumError": 5,
+          "bounds": [
+            252,
+            699,
+            253,
+            700
+          ]
+        },
+        {
+          "case": "no-filter",
+          "beforePixels": 0,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "bounds": null
+        },
+        {
+          "case": "srgb",
+          "beforePixels": 0,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "bounds": null
+        },
+        {
+          "case": "sigma-zero",
+          "beforePixels": 20,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "bounds": null
+        },
+        {
+          "case": "opaque-stops",
+          "beforePixels": 0,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "bounds": null
+        },
+        {
+          "case": "solid-fill",
+          "beforePixels": 0,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "bounds": null
+        }
+      ]
+    },
+    "alpha": {
+      "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+      "sourceSvgFilesRetained": 0,
+      "originalFragmentsRetained": 0,
+      "rows": [
+        {
+          "case": "zero-alpha",
+          "beforePixels": 16,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "bounds": null
+        },
+        {
+          "case": "blur-alpha",
+          "beforePixels": 0,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "bounds": null
+        }
+      ]
+    },
+    "mappedConsumers": {
+      "gallardo": {
+        "filtered": 35,
+        "unfiltered": 58,
+        "bothHostsExact": true
+      },
+      "scimitar": {
+        "inner": 20,
+        "scopes": 43,
+        "bothHostsUnchanged": true
+      },
+      "greenGrapes": {
+        "consumers": 76,
+        "exact": 75,
+        "remaining": "path10051"
+      },
+      "radialAndLargeViewBox": {
+        "perHost": 23,
+        "exact": true
+      }
+    }
+  },
+  "qualification": {
+    "builds": [
+      {
+        "project": "Lokad.Svg.Tests",
+        "framework": "net11.0",
+        "seconds": 2.1680781000759453,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net11.0",
+        "seconds": 1.5362077001482248,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.Tests",
+        "framework": "net10.0",
+        "seconds": 6.956289099995047,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net10.0",
+        "seconds": 1.7685567999724299,
+        "exitCode": 0,
+        "warnings": 0
+      }
+    ],
+    "suites": [
+      {
+        "selection": "full-qualified-core-linux-net10.0",
+        "passed": 33026,
+        "seconds": 48.197
+      },
+      {
+        "selection": "full-qualified-core-linux-net11.0",
+        "passed": 33026,
+        "seconds": 75.311
+      },
+      {
+        "selection": "full-qualified-core-windows-net10.0",
+        "passed": 33026,
+        "seconds": 53.123
+      },
+      {
+        "selection": "full-qualified-core-windows-net11.0",
+        "passed": 33026,
+        "seconds": 66.225
+      },
+      {
+        "selection": "full-qualified-native-linux-net10.0",
+        "passed": 39151,
+        "seconds": 153.817
+      },
+      {
+        "selection": "full-qualified-native-linux-net11.0",
+        "passed": 39151,
+        "seconds": 244.03
+      },
+      {
+        "selection": "full-qualified-native-windows-net10.0",
+        "passed": 39151,
+        "seconds": 73.256
+      },
+      {
+        "selection": "full-qualified-native-windows-net11.0",
+        "passed": 39151,
+        "seconds": 222.432
+      }
+    ],
+    "totalPassed": 288708,
+    "elapsedContext": "Functional elapsed seconds on a concurrently used workstation; not quiet-host performance evidence.",
+    "originals": {
+      "evidence": "originals.json",
+      "files": 204,
+      "sourceHashesOptionsDimensionsAndDiagnosticsUnchanged": true,
+      "sourceSvgFilesRetained": 0,
+      "originalFragmentsRetained": 0,
+      "counts": {
+        "windows": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 146,
+          "different": 2,
+          "MalformedInput": 3
+        },
+        "linux": {
+          "UnsupportedFeature": 53,
+          "rendered": 148,
+          "exact": 146,
+          "different": 2,
+          "MalformedInput": 3
+        }
+      },
+      "previousPngsByteIdenticalPerHost": 148
+    }
+  },
+  "remaining": {
+    "defaultOriginals": [
+      {
+        "name": "compuserver_msn_Ford_Focus.svg",
+        "status": "different",
+        "changedPixels": 6,
+        "maximumError": 4,
+        "totalChannelError": 45
+      },
+      {
+        "name": "rg1024_green_grapes.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 1,
+        "totalChannelError": 1
+      }
+    ],
+    "nextAction": "Trace working-space source storage and nonzero Gaussian sampling before final inverse transfer. Own fractional-root blur controls still differ at2 pixels in linearRGB and1 in sRGB. Whole original green grapes remains1 pixel/1 channel error; Ford remains6 pixels/45 total channel error.",
+    "diagnosticLimit": "A native working-channel extraction suggests green29 versus managed28 after blur, but changes the filter graph and may change materialization. It is exploratory, not proof of identical intermediate images. Direct byte transfer calibration remains exact; do not adjust generic rounding to fit one pixel."
+  }
+}

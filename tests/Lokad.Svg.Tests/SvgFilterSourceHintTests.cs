@@ -7,6 +7,32 @@ namespace Lokad.Svg.Tests;
 [Trait("Layer", "Mechanism")]
 public sealed class SvgFilterSourceHintTests
 {
+    [Theory]
+    [InlineData("<ellipse cx='-502' cy='790' rx='48' ry='36'/>", 0)]
+    [InlineData("<path d='M-550 754 H-454 V826 H-550 Z'/>", 0)]
+    [InlineData("<ellipse cx='-502' cy='790' rx='48' ry='36' stroke='black' stroke-width='2'/>", 1)]
+    public void Source_visuals_retain_parameter_extents_before_scene_narrowing(string shape, int inflation)
+    {
+        byte[] source = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='558' height='781'><g transform='translate(617.53368 631.89256) scale(.8364624)'><g transform='matrix(.9365011 0 0 .9365011 -52.708216 -574.59041)'>"
+            + shape + "</g></g></svg>");
+        using SvgRoot scene = SvgRootParser.Parse(source, SvgRenderLimits.Default, CancellationToken.None);
+        SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(scene.SceneStorage);
+        SvgRecordedPaintValue paint = storage.RecordedPaintValues[scene.Geometries[0].RecordedPaint.Identity - 1];
+        SvgSourceObjectBounds retained = Assert.IsType<SvgSourceObjectBounds>(paint.SourceObjectBounds);
+        SvgPaintBounds expected = new(-550 - inflation, 754 - inflation, -454 + inflation, 826 + inflation);
+        Assert.Equal(new SvgPaintBounds(-550, 754, -454, 826), retained.Bounds);
+        Assert.Equal(expected, retained.VisualBounds);
+        Assert.True(retained.SceneMap.TryInvert(out SvgAffineTransform inverse));
+        Assert.Equal(expected, Assert.IsType<SvgPaintBounds>(retained.VisualBounds).MapLayout(inverse.Compose(retained.SceneMap), CancellationToken.None));
+        if (inflation == 0)
+        {
+            // The stored scene rectangle maps back to 753.9999 and encloses to753.
+            // Authored parameter bounds keep the actual edge754 without an inset.
+            SvgPaintBounds narrowed = Assert.IsType<SvgPaintBounds>(paint.ObjectBounds).Map(inverse, CancellationToken.None);
+            Assert.Equal(753, SvgFilterPlayback.RoundParameterBounds(narrowed).Top);
+        }
+    }
+
     [Fact]
     public void Parameter_capture_encloses_source_visuals_before_gaussian_expansion()
         => AssertNativeParameterCapture(3.84278f, new(38.714375f, 47.374504f, 206.11948f, 209.79495f),
