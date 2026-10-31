@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "d0924705937c0d5638e659137bbd4ea1cb74b0570624ea760ca29cb16a86246e",
+  "referenceSha256": "a7dc13e47b2c8355662d4c81df255f67ede4720aaf6a5b9f11da572f7bcc0435",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-affine-root-gap.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-affine-root-gap",
+  "viewport": {
+    "width": 466,
+    "height": 265,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Paired CC0 affine Gaussian control with fractional root dimensions. Pins source visual enclosure before blur expansion and complete recorded/root drawing stages. Original three-capture native platform targets are unchanged; no tolerance adjustment.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "d0924705937c0d5638e659137bbd4ea1cb74b0570624ea760ca29cb16a86246e",
+      "referenceSha256": "a7dc13e47b2c8355662d4c81df255f67ede4720aaf6a5b9f11da572f7bcc0435",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "d0924705937c0d5638e659137bbd4ea1cb74b0570624ea760ca29cb16a86246e",
+      "referenceSha256": "a7dc13e47b2c8355662d4c81df255f67ede4720aaf6a5b9f11da572f7bcc0435",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "logicalViewport": {
+    "width": 466.11172,
+    "height": 265.35126
+  }
+}

@@ -7,11 +7,11 @@ Bodies are fetched into bounded memory and discarded. Ordinary tests are offline
 this directory contains metadata and original orthogonal controls, not the hosted
 SVG collection.
 
-The current default-path review has 148 rendered inputs per host: 134 exact and 14
+The current default-path review has 148 rendered inputs per host: 139 exact and 9
 different, with 56 rejected. Shared root-image layout improves ten originals without
 losing an exact image or changing outcomes/diagnostics. `gaussian2.svg` and
 `lineargradient3.svg` are now exact against native platform triples. UFO's remaining
-total channel error is63; Scimitar's is11 and Gallardo's is123. These observations
+total channel error is63; Scimitar is exact and Gallardo's error is123. These observations
 use transparent output with no supplied fonts/resources; they do not admit other
 contexts or close the whole corpus.
 
@@ -121,11 +121,14 @@ stretch and context differences. Full Scimitar/Gallardo acceptance remains open.
 The [projection review](root-image-projection.json) records independent native
 matrices for three owned controls with identity, contracting and expanding image
 destinations. Matching images alone do not distinguish these numerical stages.
-An isolated prototype preserves source enclosure, recorded-scene rounding and the
-outer image transform. It makes four more originals exact on both hosts, including
-Scimitar and eggs, while preserving all prior exact images. Production adoption
-still requires consistent placement across drawing consumers, direct stage tests
-and full milestone qualification; the current qualified counts above remain unchanged.
+The shared drawing map preserves unrounded parameter coordinates, recorded-scene
+rounding and the outer image transform across paths, rectangles, shaders, images
+and device-fitted glyph replay. It makes five more originals exact on both hosts:
+pencil, php, Presentation-with-girl, eggs and Scimitar. All prior exact images and
+outcomes are preserved. Direct mechanisms pin native matrices and capture enclosure;
+the paired gap fixture is now canonical with unchanged native targets. Full core,
+rendering and installed-package qualification covers both runtimes on both hosts.
+Remaining filter and whole-corpus acceptance stays open.
 
 The [analytic alpha record](analytic-alpha-bytes.json) closes signed integer
 intermediates bypassing native byte narrowing before accumulation. One direct

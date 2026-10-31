@@ -331,9 +331,10 @@ public static partial class SvgConverter
         int pixelCount = (int)pixelCountLong;
         int surfaceByteCount = pixelCount * 4;
         SvgRootImageMap rootImage = frame is null ? SvgRootImageMap.Resolve(root.ViewBox, new(width, height), options.OutputScale) : default;
-        SvgAffineTransform outputMap = frame is {} filterFrame
-            ? SvgAffineTransform.FromScaleOffset(filterFrame.ScaleX, filterFrame.ScaleY, filterFrame.OffsetX, filterFrame.OffsetY)
-            : rootImage.Combined;
+        SvgDrawingMap drawingMap = frame is {} filterFrame
+            ? new(SvgAffineTransform.FromScaleOffset(filterFrame.ScaleX, filterFrame.ScaleY, filterFrame.OffsetX, filterFrame.OffsetY), null)
+            : rootImage.Drawing;
+        SvgAffineTransform outputMap = drawingMap.Parameter;
         (double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset) = (outputMap.A, outputMap.E, outputMap.D, outputMap.F);
         SvgAffineTransform authoredRootMap = frame is null ? rootImage.Layout : SvgAffineTransform.Identity;
         if (!double.IsFinite(horizontalScale) || !double.IsFinite(horizontalOffset) || !double.IsFinite(verticalScale) || !double.IsFinite(verticalOffset) || horizontalScale <= 0 || verticalScale <= 0)
@@ -682,14 +683,15 @@ public static partial class SvgConverter
                 SvgAffineTransform coordinates = objectSourceUnits
                     ? SvgAffineTransform.FromScaleOffset(primitiveMap.ScaleX, primitiveMap.ScaleY,
                         binding.ObjectBounds.Left * horizontalScale + horizontalOffset, binding.ObjectBounds.Top * verticalScale + verticalOffset)
-                    : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(binding.Transform);
+                    : MapFilterParameterTransform(binding.Transform);
                 SvgFilterRegionContext context = new(coordinates,
                     objectSourceUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), region);
                 SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, primitiveMap, context,
                     new((float)(visual.Left * horizontalScale + horizontalOffset), (float)(visual.Top * verticalScale + verticalOffset),
                         (float)(visual.Right * horizontalScale + horizontalOffset), (float)(visual.Bottom * verticalScale + verticalOffset)), budget, cancellationToken);
-                float sx = (float)(binding.Transform.A * horizontalScale), sy = (float)(binding.Transform.D * verticalScale);
-                float tx = (float)(binding.Transform.E * horizontalScale + horizontalOffset), ty = (float)(binding.Transform.F * verticalScale + verticalOffset);
+                SvgAffineTransform transform = MapFilterParameterTransform(binding.Transform);
+                float sx = (float)transform.A, sy = (float)transform.D;
+                float tx = (float)transform.E, ty = (float)transform.F;
                 if (sx > 0 && sy > 0)
                     hint = new(MathF.Floor((hint.Left - tx) / sx) * sx + tx, MathF.Floor((hint.Top - ty) / sy) * sy + ty,
                         MathF.Ceiling((hint.Right - tx) / sx) * sx + tx, MathF.Ceiling((hint.Bottom - ty) / sy) * sy + ty);
@@ -725,7 +727,7 @@ public static partial class SvgConverter
                 SvgAffineTransform sourceCoordinates = objectSourceUnits
                     ? SvgAffineTransform.FromScaleOffset(primitiveMap.ScaleX, primitiveMap.ScaleY,
                         binding.ObjectBounds.Left * horizontalScale + horizontalOffset, binding.ObjectBounds.Top * verticalScale + verticalOffset)
-                    : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(binding.Transform);
+                    : MapFilterParameterTransform(binding.Transform);
                 SvgFilterRegionContext sourceContext = new(sourceCoordinates,
                     objectSourceUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), region);
                 SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext,
@@ -1001,8 +1003,7 @@ public static partial class SvgConverter
                 // layer raster separate from the residual rotation/skew, just as
                 // native source construction is separate from final image sampling.
                 if (!binding.Transform.TryInvert(out SvgAffineTransform inverseSource)) return;
-                SvgAffineTransform ctm = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset)
-                    .ComposeNative(binding.Transform);
+                SvgAffineTransform ctm = MapFilterDrawingTransform(binding.Transform);
                 SvgShaderMatrix native = new((float)ctm.A, (float)ctm.C, (float)ctm.E, (float)ctm.B, (float)ctm.D, (float)ctm.F);
                 (float scaleX, float scaleY) = native.GetPictureScale();
                 SvgShaderMatrix remainder = new(native.ScaleX * (1f / scaleX), native.SkewX * (1f / scaleY), native.TranslateX,
@@ -1108,8 +1109,8 @@ public static partial class SvgConverter
                     SvgFilterRegionContext parameterContext = new(objectUnits
                         ? SvgAffineTransform.FromScaleOffset(parameterDistances.ScaleX, parameterDistances.ScaleY, parameterObjects.Left, parameterObjects.Top)
                         : SvgAffineTransform.Identity, context.LengthBases, FilterRegion(parameterBinding, resource, SvgAffineTransform.Identity));
-                    SvgPaintBounds parameterOutputHint = SvgFilterPlayback.SourceLayerBounds(resource, parameterDistances, parameterContext, parameterVisual, budget, cancellationToken);
-                    SvgPaintBounds parameterHint = SvgFilterPlayback.RoundParameterBounds(parameterOutputHint);
+                    SvgPaintBounds parameterHint = SvgFilterPlayback.ParameterCaptureBounds(resource, parameterDistances,
+                        parameterContext, parameterVisual, budget, cancellationToken);
                     SvgPaintBounds nativeHint = new(parameterHint.Left * scaleX, parameterHint.Top * scaleY, parameterHint.Right * scaleX, parameterHint.Bottom * scaleY);
                     SvgPaintBounds nativeSource = SvgFilterPlayback.RoundLayerBounds(nativeHint);
                     SvgFilterImageBounds storedImage = SvgFilterPlayback.SourceImageBounds(resource, distances, context, nativeSource, budget, cancellationToken);
@@ -1706,8 +1707,9 @@ public static partial class SvgConverter
             // grid before mapping it into device pixels. Ink capture stays separate.
             SvgPaintBounds RoundOutputHint(SvgPaintBounds output)
             {
-                float sx = (float)(binding.Transform.A * horizontalScale), sy = (float)(binding.Transform.D * verticalScale);
-                float tx = (float)(binding.Transform.E * horizontalScale + horizontalOffset), ty = (float)(binding.Transform.F * verticalScale + verticalOffset);
+                SvgAffineTransform transform = MapFilterParameterTransform(binding.Transform);
+                float sx = (float)transform.A, sy = (float)transform.D;
+                float tx = (float)transform.E, ty = (float)transform.F;
                 if (sx == 0 || sy == 0) return output;
                 float x1 = (output.Left - tx) / sx, x2 = (output.Right - tx) / sx;
                 float y1 = (output.Top - ty) / sy, y2 = (output.Bottom - ty) / sy;
@@ -1911,7 +1913,7 @@ public static partial class SvgConverter
                     SvgAffineTransform coordinates = objectSourceUnits
                         ? SvgAffineTransform.FromScaleOffset(primitiveMap.ScaleX, primitiveMap.ScaleY,
                             binding.ObjectBounds.Left * horizontalScale + horizontalOffset, binding.ObjectBounds.Top * verticalScale + verticalOffset)
-                        : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(binding.Transform);
+                        : MapFilterParameterTransform(binding.Transform);
                     SvgFilterRegionContext sourceContext = new(coordinates,
                         objectSourceUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), region);
                     SvgPaintBounds requestedSource = new(MathF.Max(requested.Left, tile.BitmapClip.Left), MathF.Max(requested.Top, tile.BitmapClip.Top),
@@ -2175,8 +2177,9 @@ public static partial class SvgConverter
             SvgCpuBitmapOrigin? dither = surfaceMode == RasterSurfaceMode.PremultipliedFilter
                 && frame is { NativeSourceBounds: null, ImageShaderOrigin: {} sourceOrigin } sourceFrame
                 ? new(sourceOrigin.X - sourceFrame.CaptureOrigin.X, sourceOrigin.Y - sourceFrame.CaptureOrigin.Y) : null;
+            SvgAffineTransform device = drawingMap.Device;
             return new(rasterGrid, layerBounds, layerClipCoverage, frame?.NativeSourceBounds, dither,
-                sourceInverse, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+                sourceInverse, device.A, device.D, device.E, device.F);
         }
 
         bool RasterizeShaderHairline(SvgAuthoredPath? source, SvgClipBox? clip, ref SvgShaderSampler shader, byte[] destination)
@@ -2184,7 +2187,7 @@ public static partial class SvgConverter
             if (source?.StrokeStyle is not {} style
                 || style.Shape == SvgAuthoredStrokeShape.Rectangle && source.SceneMap.PreservesAxisAlignedRectangles) return false;
             bool painted = SvgHairlineStroke.TryRasterize(source,
-                SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(sourcePlacement),
+                drawingMap.Compose(sourcePlacement),
                 ref shader, clip is {} bounds ? MapClipBounds(bounds, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
                 clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewport.Mask, activeViewport.IsBinary,
                 destination, outputWidth, outputHeight, cancellationToken);
@@ -2261,7 +2264,7 @@ public static partial class SvgConverter
                 bool dependsOnSource = DependsOnSource(filter, budget, cancellationToken);
                 if (kind != SvgFilterBoundsKind.Output && dependsOnSource)
                 {
-                    SvgAffineTransform ctm = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeNative(binding.Transform);
+                    SvgAffineTransform ctm = MapFilterDrawingTransform(binding.Transform);
                     SvgShaderMatrix native = new((float)ctm.A, (float)ctm.C, (float)ctm.E, (float)ctm.B, (float)ctm.D, (float)ctm.F);
                     (float scaleX, float scaleY) = native.GetPictureScale();
                     SvgAffineTransform layerMap = SvgAffineTransform.FromScale(scaleX, scaleY);
@@ -2276,8 +2279,8 @@ public static partial class SvgConverter
                     SvgFilterRegionContext nativeContext = new(objectUnits
                         ? SvgAffineTransform.FromScaleOffset(nativeDistances.ScaleX, nativeDistances.ScaleY, nativeBinding.ObjectBounds.Left, nativeBinding.ObjectBounds.Top) : layerMap,
                         context.LengthBases, FilterRegion(nativeBinding, filter, SvgAffineTransform.Identity));
-                    SvgPaintBounds parameterOutputHint = SvgFilterPlayback.SourceLayerBounds(filter, distances, context, sourceHint, budget, cancellationToken);
-                    SvgPaintBounds parameterHint = SvgFilterPlayback.RoundParameterBounds(parameterOutputHint);
+                    SvgPaintBounds parameterHint = SvgFilterPlayback.ParameterCaptureBounds(filter, distances,
+                        context, sourceHint, budget, cancellationToken);
                     SvgPaintBounds nativeSource = SvgFilterPlayback.RoundLayerBounds(new(parameterHint.Left * scaleX, parameterHint.Top * scaleY,
                         parameterHint.Right * scaleX, parameterHint.Bottom * scaleY));
                     return SvgFilterPlayback.SourceLayerBounds(filter, nativeDistances, nativeContext, nativeSource,
@@ -2994,10 +2997,10 @@ public static partial class SvgConverter
             double previousScaleX = horizontalScale, previousScaleY = verticalScale, previousOffsetX = horizontalOffset, previousOffsetY = verticalOffset;
             SvgAffineTransform maskMap = content.CoordinateMap;
             if (!maskMap.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned mask replay maps are implemented.");
-            horizontalOffset += maskMap.E * horizontalScale;
-            verticalOffset += maskMap.F * verticalScale;
-            horizontalScale *= maskMap.A;
-            verticalScale *= maskMap.D;
+            SvgDrawingMap previousDrawing = drawingMap;
+            drawingMap = drawingMap.Compose(maskMap);
+            SvgAffineTransform maskOutput = drawingMap.Parameter;
+            (horizontalScale, horizontalOffset, verticalScale, verticalOffset) = (maskOutput.A, maskOutput.E, maskOutput.D, maskOutput.F);
             activeViewport.Pixels = []; activeViewport.Rectangle = null; activeViewport.Bounds = null; activeViewport.Coverage = null; foldedOpacity = 1;
             if (!viewport && content.IsAlpha && sourcePaintClipPixels.Length != 0)
             {
@@ -3022,9 +3025,9 @@ public static partial class SvgConverter
                     && rectangle.Commands.Length == 5)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    SvgAffineTransform clipMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+                    SvgAffineTransform clipMap = drawingMap.Recording;
                     if (sourcePlacement != SvgAffineTransform.Identity) clipMap = clipMap.Compose(sourcePlacement);
-                    binaryViewport = RoundsToBinaryRectangle(rectangle, MapSourceTransform(clipMap, rectangle.SceneMap), contentBounds);
+                    binaryViewport = RoundsToBinaryRectangle(rectangle, MapSourceTransform(clipMap, rectangle.SceneMap, PathCoordinateSpace.User), contentBounds);
                 }
                 byte[] boundsPixels = [];
                 if (content.BoundsClipContentIndex >= 0)
@@ -3065,10 +3068,10 @@ public static partial class SvgConverter
                 {
                     if (content.Geometries.Length != 1 || content.Geometries[0].AuthoredPath is not {} viewportPath || coverage is null)
                         throw new SvgException(SvgErrorCode.MalformedInput, "A binary viewport requires retained rectangle geometry.");
-                    SvgAffineTransform clipMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+                    SvgAffineTransform clipMap = drawingMap.Recording;
                     if (sourcePlacement != SvgAffineTransform.Identity) clipMap = clipMap.ComposeChecked(sourcePlacement);
                     SvgBinaryViewportCoverage.Rasterize(viewportPath,
-                        MapSourceTransform(clipMap, viewportPath.SceneMap), rasterGrid,
+                        MapSourceTransform(clipMap, viewportPath.SceneMap, PathCoordinateSpace.User), rasterGrid,
                         contentBounds, destination, outputWidth, coverage, content.Geometries[0].Polygon.IsEvenOdd, content.ClipKind == SvgClipContentKind.BinaryExclusion, budget, cancellationToken);
                 }
                 else foreach (SvgGeometry geometry in content.Geometries) RasterizeGeometry(geometry, destination);
@@ -3106,6 +3109,7 @@ public static partial class SvgConverter
                 activeViewport = previousViewport;
                 foldedOpacity = previousOpacity; collectingViewportClip = previousCollector; root = previousRoot;
                 horizontalScale = previousScaleX; verticalScale = previousScaleY; horizontalOffset = previousOffsetX; verticalOffset = previousOffsetY;
+                drawingMap = previousDrawing;
                 layerBounds = previousLayer;
                 maskClipAntialiased = previousMaskClip;
                 maskLuminanceLayer = previousLuminanceLayer;
@@ -3133,24 +3137,32 @@ public static partial class SvgConverter
             }
         }
 
-        SvgAffineTransform MapSourceTransform(SvgAffineTransform output, SvgAffineTransform target)
+        SvgAffineTransform MapFilterParameterTransform(SvgAffineTransform target)
+            => drawingMap.Parameter.ComposeChecked(target);
+
+        SvgAffineTransform MapFilterDrawingTransform(SvgAffineTransform target)
+            => frame is null ? drawingMap.MapScene(target) : drawingMap.Recording.ComposeNative(target);
+
+        SvgAffineTransform MapSourceTransform(SvgAffineTransform output, SvgAffineTransform target, PathCoordinateSpace space)
         {
-            if (activeViewport.DrawMap is not {} viewport) return output.ComposeChecked(target);
             cancellationToken.ThrowIfCancellationRequested();
-            return viewport.Prepare(output, target);
+            SvgAffineTransform recorded = activeViewport.DrawMap is {} viewport
+                ? viewport.Prepare(output, target) : output.ComposeChecked(target);
+            // Fitted glyph outlines already contain complete destination placement.
+            return space == PathCoordinateSpace.Device ? recorded : drawingMap.PlaceRecorded(recorded);
         }
 
         SvgShaderMatrix? NativeViewportReference(SvgAffineTransform target)
         {
-            if (activeViewport.DrawMap is null) return null;
-            SvgAffineTransform output = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+            if (activeViewport.DrawMap is null && frame is not null) return null;
+            SvgAffineTransform output = drawingMap.Recording;
             if (sourcePlacement != SvgAffineTransform.Identity) output = output.ComposeChecked(sourcePlacement);
-            return SvgShaderMatrix.FromAffine(MapSourceTransform(output, target));
+            return SvgShaderMatrix.FromAffine(MapSourceTransform(output, target, PathCoordinateSpace.User));
         }
 
         SvgShaderMatrix? NativeRadialViewportReference(SvgRadialGradient gradient, SvgRectangle box)
         {
-            if (activeViewport.DrawMap is null || gradient.NativePaintMatrices is not {} matrices) return null;
+            if (activeViewport.DrawMap is null && frame is not null || gradient.NativePaintMatrices is not {} matrices) return null;
             SvgAffineTransform target = matrices.Referencing;
             // Object-box matrices reference normalized paint coordinates. Convert
             // those to scene units before shared viewport draw preparation.
@@ -3198,7 +3210,7 @@ public static partial class SvgConverter
             {
                 SvgPolygonFill stroke = geometry.Polygon;
                 bool rendered = stroke.HasFill && SvgHairlineStroke.TryRasterize(centerline,
-                    SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(sourcePlacement), ResolveSolidColor(stroke.Color), surfaceMode == RasterSurfaceMode.PremultipliedPattern ? PatternSolidPaint(stroke.Color) : null,
+                    drawingMap.Compose(sourcePlacement), ResolveSolidColor(stroke.Color), surfaceMode == RasterSurfaceMode.PremultipliedPattern ? PatternSolidPaint(stroke.Color) : null,
                     stroke.Clip is SvgClipBox clip ? MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
                     stroke.Clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewport.Mask, activeViewport.IsBinary, destination, outputWidth, outputHeight, cancellationToken);
                 if (rendered) return;
@@ -3268,18 +3280,20 @@ public static partial class SvgConverter
             raster = raster with { Left = Math.Max(raster.Left, layerBounds.Left), Top = Math.Max(raster.Top, layerBounds.Top),
                 Right = Math.Min(raster.Right, layerBounds.Right), Bottom = Math.Min(raster.Bottom, layerBounds.Bottom) };
             if (raster.Left >= raster.Right || raster.Top >= raster.Bottom) return;
-            SvgShaderMatrix output = new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset);
+            SvgShaderMatrix recordedImage = SvgShaderMatrix.Concat(SvgShaderMatrix.FromAffine(drawingMap.Recording), image.ReferenceMap);
+            SvgShaderMatrix imageDrawing = SvgShaderMatrix.FromAffine(drawingMap.PlaceRecorded(new(recordedImage.ScaleX,
+                recordedImage.SkewY, recordedImage.SkewX, recordedImage.ScaleY, recordedImage.TranslateX, recordedImage.TranslateY)));
             SvgShaderMatrix samplingMap = image.LocalMap;
             if (sampleBounds.Left != 0 || sampleBounds.Top != 0)
                 samplingMap = SvgShaderMatrix.Concat(samplingMap, new(1, 0, sampleBounds.Left, 0, 1, sampleBounds.Top));
-            SvgShaderCoordinates coordinates = SvgShaderCoordinates.CreateImage(SvgShaderMatrix.Concat(output, image.ReferenceMap), samplingMap);
+            SvgShaderCoordinates coordinates = SvgShaderCoordinates.CreateImage(imageDrawing, samplingMap);
             // The transparent source border clips painting without moving the native
             // bitmap's shader seed. Retain that bitmap origin even in a compact capture.
             SvgCpuBitmapOrigin? capturedImageOrigin = frame is { ImageShaderOrigin: {} nativeOrigin, ContentClip: {} content } sourceFrame && content == layerBounds
                 ? new(nativeOrigin.X - sourceFrame.CaptureOrigin.X, nativeOrigin.Y - sourceFrame.CaptureOrigin.Y) : null;
             (int Width, int Height) decodeSize = surfaceMode == RasterSurfaceMode.PremultipliedPattern
                 ? (sampleWidth, sampleHeight)
-                : SvgImageMipMap.SelectDecodeSize(SvgShaderMatrix.Concat(SvgShaderMatrix.Concat(output, image.ReferenceMap), samplingMap), sampleWidth, sampleHeight);
+                : SvgImageMipMap.SelectDecodeSize(SvgShaderMatrix.Concat(imageDrawing, samplingMap), sampleWidth, sampleHeight);
             if (decodeSize.Width == 0 || decodeSize.Height == 0) return;
             (int Upper, float LowerWeight) pictureLevels = image.UniformSample is null && surfaceMode == RasterSurfaceMode.PremultipliedPattern && !sourceIsSubset
                 && coordinates.TryGetMatrix(new(0, 0), out SvgShaderMatrix pictureInverse)
@@ -3296,7 +3310,7 @@ public static partial class SvgConverter
             if (mip is {} level)
             {
                 samplingMap = SvgShaderMatrix.Concat(samplingMap, new((float)sampleWidth / level.Width, 0, 0, 0, (float)sampleHeight / level.Height, 0));
-                coordinates = SvgShaderCoordinates.CreateImage(SvgShaderMatrix.Concat(output, image.ReferenceMap), samplingMap);
+                coordinates = SvgShaderCoordinates.CreateImage(imageDrawing, samplingMap);
                 source = level.Pixels;
                 sourceWidth = sampleWidth = level.Width;
                 sourceHeight = sampleHeight = level.Height;
@@ -3561,12 +3575,12 @@ public static partial class SvgConverter
                 bool binaryViewport = clip is {} binaryClip && (binaryClip.Antialiasing & SvgClipAntialiasing.Binary) != 0
                     || activeViewport.HasMask && activeViewport.IsBinary;
                 SvgAffineTransform outputMap = coordinateSpace == PathCoordinateSpace.Device ? SvgAffineTransform.Identity : binaryViewport
-                    ? SvgAffineTransform.FromScaleOffset((float)horizontalScale, (float)verticalScale, (float)horizontalOffset, (float)verticalOffset)
-                    : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+                    ? SvgAffineTransform.FromScaleOffset((float)drawingMap.Recording.A, (float)drawingMap.Recording.D, (float)drawingMap.Recording.E, (float)drawingMap.Recording.F)
+                    : drawingMap.Recording;
                 if (coordinateSpace == PathCoordinateSpace.User && sourcePlacement != SvgAffineTransform.Identity)
                     outputMap = outputMap.ComposeChecked(sourcePlacement);
                 authoredMap = frame?.NativeCapturePlacement is {} nativeCapture
-                    ? nativeCapture.ComposeNative(replay.SceneMap) : MapSourceTransform(outputMap, replay.SceneMap);
+                    ? nativeCapture.ComposeNative(replay.SceneMap) : MapSourceTransform(outputMap, replay.SceneMap, coordinateSpace);
                 // Recorded source drawings already belong to the filter layer.
                 // Clip geometry keeps its own native concatenation; fitted glyphs
                 // already use device coordinates rather than this recording map.
@@ -3579,7 +3593,8 @@ public static partial class SvgConverter
                     cancellationToken.ThrowIfCancellationRequested();
                     if (!nonScaling.StrokeTransform.TryInvert(out SvgAffineTransform inverse))
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-scaling stroke transform must be invertible.");
-                    authoredMap = outputMap.ComposeNative(nonScaling.SourceMap).ComposeNative(inverse);
+                    authoredMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset)
+                        .ComposeNative(nonScaling.SourceMap).ComposeNative(inverse);
                 }
                 if (frame is { ParentOrigin: {} parent, NativeCapturePlacement: null } sourceFrame)
                 {
@@ -3590,7 +3605,9 @@ public static partial class SvgConverter
                     float ty = (float)(authoredMap.F + sourceFrame.CaptureOrigin.Y) - parent.Y;
                     authoredMap = authoredMap with { E = tx + (parent.X - sourceFrame.CaptureOrigin.X), F = ty + (parent.Y - sourceFrame.CaptureOrigin.Y) };
                 }
-                authored = replay.PrepareSource(outputMap, isEvenOdd, budget, cancellationToken);
+                SvgAffineTransform preparationMap = coordinateSpace == PathCoordinateSpace.Device
+                    ? SvgAffineTransform.Identity : drawingMap.Parameter.ComposeChecked(sourcePlacement);
+                authored = replay.PrepareSource(preparationMap, isEvenOdd, budget, cancellationToken);
                 points = authored.Points; contourEnds = authored.ContourEnds; signs = authored.Signs;
                 mapping = authoredPath?.StrokeStyle is null ? SvgPolygonMapping.NativeFillEdges : SvgPolygonMapping.NativeStrokeEdges;
                 quadSpans = authored.QuadSpans; cubicSpans = authored.CubicSpans;
@@ -3947,7 +3964,7 @@ public static partial class SvgConverter
             SvgLinearGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
-            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, null, sourcePlacement,
+            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateLinear(definition, box, drawingMap.Device.A, drawingMap.Device.D, drawingMap.Device.E, drawingMap.Device.F, null, sourcePlacement,
                 definition.SourcePaint?.Data is { IsMapped: true } viewportSourcePaint ? NativeViewportReference(viewportSourcePaint.Referencing) : null);
             using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
             SvgShaderSampler shader = constantFactory
@@ -4000,7 +4017,7 @@ public static partial class SvgConverter
             SvgRadialGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
-            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement,
+            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, drawingMap.Device.A, drawingMap.Device.D, drawingMap.Device.E, drawingMap.Device.F, sourcePlacement,
                 NativeRadialViewportReference(definition, box));
             if (definition.Radius < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial gradient radii must not be negative.");
             using SvgGradientRamp ramp = constantFactory ? default : PrepareGradientRamp(definition.Stops, definition.Spread);
@@ -4104,16 +4121,20 @@ public static partial class SvgConverter
         // matrices stay separate until sampling; no source or layout bounds change.
         bool TryMapShaderDraw(SvgAffineTransform target, SvgRecordedTransform? recording, out SvgShaderMatrix drawing)
         {
-            SvgShaderMatrix output = new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset);
+            SvgShaderMatrix output = SvgShaderMatrix.FromAffine(drawingMap.Recording);
             if (sourcePlacement != SvgAffineTransform.Identity)
                 output = SvgShaderMatrix.Concat(output, SvgShaderMatrix.FromAffine(sourcePlacement));
             drawing = SvgShaderMatrix.Concat(output, SvgShaderMatrix.FromAffine(target));
             SvgShaderMatrix external = frame is null
                 ? SvgShaderMatrix.FromAffine(rootImage.Projection) : output;
             if (recording is not null)
-                return recording.TryMap(external, authoredRootMap, target, budget, cancellationToken, out drawing);
-            if (authoredRootMap != SvgAffineTransform.Identity)
+            {
+                if (!recording.TryMap(external, authoredRootMap, target, budget, cancellationToken, out drawing)) return false;
+            }
+            else if (authoredRootMap != SvgAffineTransform.Identity)
                 drawing = SvgShaderMatrix.Concat(external, SvgShaderMatrix.FromAffine(authoredRootMap.Compose(target)));
+            drawing = SvgShaderMatrix.FromAffine(drawingMap.PlaceRecorded(new(drawing.ScaleX, drawing.SkewY,
+                drawing.SkewX, drawing.ScaleY, drawing.TranslateX, drawing.TranslateY)));
             return drawing.IsFinite;
         }
 
@@ -4390,7 +4411,7 @@ public static partial class SvgConverter
         void RasterizeGradientArea(SvgLinearGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
-            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, null, sourcePlacement,
+            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateLinear(definition, box, drawingMap.Device.A, drawingMap.Device.D, drawingMap.Device.E, drawingMap.Device.F, null, sourcePlacement,
                 definition.SourcePaint?.Data is { IsMapped: true } viewportSourcePaint ? NativeViewportReference(viewportSourcePaint.Referencing) : null);
             if (definition.Stops.Length > 0 && constantFactory)
             {
@@ -4456,7 +4477,7 @@ public static partial class SvgConverter
         void RasterizeRadialArea(SvgRadialGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
             bool constantFactory = SvgShaderCoordinates.IsConstantFactory(definition);
-            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement,
+            SvgShaderCoordinates nativeCoordinates = constantFactory ? default : SvgShaderCoordinates.CreateRadial(definition, box, drawingMap.Device.A, drawingMap.Device.D, drawingMap.Device.E, drawingMap.Device.F, sourcePlacement,
                 NativeRadialViewportReference(definition, box));
             if (definition.Stops.Length > 0 && constantFactory)
             {
@@ -4569,6 +4590,7 @@ public static partial class SvgConverter
         }
         void RasterizeGlyphContours(SvgGlyphGeometry glyph, byte[] destination)
         {
+            SvgAffineTransform device = drawingMap.Device;
             if (glyph.Contours.Length == 0) return;
             using SvgGlyphRasterSource? placedSource = sourcePlacement == SvgAffineTransform.Identity ? null : glyph.Source?.Place(sourcePlacement, budget);
             SvgGlyphRasterSource? glyphSource = placedSource ?? glyph.Source;
@@ -4608,8 +4630,8 @@ public static partial class SvgConverter
                 glyphReference = drawing;
             }
             SvgShaderCoordinates glyphCoordinates = constantGlyphFactory ? default : glyphLinear is {} linearCoordinates
-                ? SvgShaderCoordinates.CreateLinear(linearCoordinates, default, horizontalScale, verticalScale, horizontalOffset, verticalOffset, textMatrices, sourcePlacement, glyphReference)
-                : glyphRadial is {} radialCoordinates ? SvgShaderCoordinates.CreateRadial(radialCoordinates, default, horizontalScale, verticalScale, horizontalOffset, verticalOffset, sourcePlacement, glyphReference)
+                ? SvgShaderCoordinates.CreateLinear(linearCoordinates, default, device.A, device.D, device.E, device.F, textMatrices, sourcePlacement, glyphReference)
+                : glyphRadial is {} radialCoordinates ? SvgShaderCoordinates.CreateRadial(radialCoordinates, default, device.A, device.D, device.E, device.F, sourcePlacement, glyphReference)
                 : glyphPattern?.NativeImageMap is {} imageMap ? SvgShaderCoordinates.CreateImage(imageMap, glyphPattern.NativeImageLocal ?? throw new InvalidOperationException("Text image sampling requires its local matrix.")) : default;
             SvgColor glyphFactoryLuminance = default;
             SvgShaderPaint glyphFactoryColor = default;
@@ -4625,7 +4647,7 @@ public static partial class SvgConverter
             {
                 if (glyph.StrokePaint is {} strokePaint)
                 {
-                    using SvgAuthoredPath path = source.CreateStrokePath(strokePaint, horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, cancellationToken);
+                    using SvgAuthoredPath path = source.CreateStrokePath(strokePaint, device.A, device.E, device.D, device.F, budget, cancellationToken);
                     Span<byte> preblend = stackalloc byte[256];
                     SvgColor color = GlyphLuminance();
                     if (OperatingSystem.IsWindows()) SvgFontMaskPreblend.BuildWindowsGrayTable(preblend, color, cancellationToken);
@@ -4635,7 +4657,7 @@ public static partial class SvgConverter
                 }
                 if (source.HasGlyphMap && OperatingSystem.IsLinux())
                 {
-                    using SvgAuthoredPath path = source.CreateMappedPath(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, cancellationToken);
+                    using SvgAuthoredPath path = source.CreateMappedPath(device.A, device.E, device.D, device.F, budget, cancellationToken);
                     Span<byte> preblend = stackalloc byte[256];
                     SvgColor color = GlyphLuminance();
                     SvgFontMaskPreblend.BuildLinuxGrayTable(preblend, color, cancellationToken);
@@ -4646,7 +4668,7 @@ public static partial class SvgConverter
                 {
                     if (OperatingSystem.IsWindows() && (source.HasGlyphMap || source.HasCompleteTrueTypeProfile || source.HasTrueTypePrograms(budget, cancellationToken)))
                     {
-                        using OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, cancellationToken);
+                        using OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(device.A, device.E, device.D, device.F, budget, cancellationToken);
                         int crossingCount = checked(contours.Segments.Length * 2);
                         using RenderBudget.BudgetReservation? crossingReservation = crossingCount == 0 ? null : budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(crossingCount), SvgMemoryCategory.Temporary);
                         SvgGlyphLcdCoverage.Crossing[] crossings = crossingCount == 0 ? [] : new SvgGlyphLcdCoverage.Crossing[crossingCount];
@@ -4698,12 +4720,12 @@ public static partial class SvgConverter
                         // an extra device pixel around them before avoiding fitting
                         // glyphs that cannot reach this target surface.
                         SvgPaintBounds layout = source.LayoutBounds(SvgAffineTransform.Identity, cancellationToken)
-                            .Map(SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), cancellationToken);
-                        double fittingSize = source.DeviceFontSize(verticalScale);
+                            .Map(SvgAffineTransform.FromScaleOffset(device.A, device.D, device.E, device.F), cancellationToken);
+                        double fittingSize = source.DeviceFontSize(device.D);
                         if (fittingSize is > 0 and <= 32767
                             && (layout.Right < -1 || layout.Bottom < -1 || layout.Left > outputWidth + 1 || layout.Top > outputHeight + 1))
                         { return; }
-                        using SvgAuthoredPath path = source.CreateLatinLightPath(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, cancellationToken);
+                        using SvgAuthoredPath path = source.CreateLatinLightPath(device.A, device.E, device.D, device.F, budget, cancellationToken);
                         if (path.Commands.IsEmpty) { return; }
                         Span<byte> preblend = stackalloc byte[256];
                         SvgFontMaskPreblend.BuildLinuxGrayTable(preblend, GlyphLuminance(), cancellationToken);
@@ -4725,17 +4747,17 @@ public static partial class SvgConverter
                 Include(segment.Control);
                 Include(segment.End);
             }
-            int startX = ClampFloor(MapEdge(minimumX, horizontalScale, horizontalOffset), outputWidth);
-            int endX = ClampCeiling(MapEdge(maximumX, horizontalScale, horizontalOffset), outputWidth);
-            int startY = ClampFloor(MapEdge(minimumY, verticalScale, verticalOffset), outputHeight);
-            int endY = ClampCeiling(MapEdge(maximumY, verticalScale, verticalOffset), outputHeight);
+            int startX = ClampFloor(MapEdge(minimumX, device.A, device.E), outputWidth);
+            int endX = ClampCeiling(MapEdge(maximumX, device.A, device.E), outputWidth);
+            int startY = ClampFloor(MapEdge(minimumY, device.D, device.F), outputHeight);
+            int endY = ClampCeiling(MapEdge(maximumY, device.D, device.F), outputHeight);
             if (startX == endX || startY == endY) return;
-            double sourceLeft = (startX - horizontalOffset) / horizontalScale;
-            double sourceRight = (endX - horizontalOffset) / horizontalScale;
-            double sourceTop = (startY - verticalOffset) / verticalScale;
-            double sourceBottom = (endY - verticalOffset) / verticalScale;
-            double sourcePixelWidth = 1 / horizontalScale;
-            double sourcePixelHeight = 1 / verticalScale;
+            double sourceLeft = (startX - device.E) / device.A;
+            double sourceRight = (endX - device.E) / device.A;
+            double sourceTop = (startY - device.F) / device.D;
+            double sourceBottom = (endY - device.F) / device.D;
+            double sourcePixelWidth = 1 / device.A;
+            double sourcePixelHeight = 1 / device.D;
             if (!double.IsFinite(sourceLeft) || !double.IsFinite(sourceRight) || !double.IsFinite(sourceTop) || !double.IsFinite(sourceBottom) || !double.IsFinite(sourcePixelWidth) || !double.IsFinite(sourcePixelHeight) || sourcePixelWidth <= 0 || sourcePixelHeight <= 0)
             {
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph coverage coordinates exceed the admitted numeric range.");
@@ -4882,7 +4904,7 @@ public static partial class SvgConverter
                     double position;
                     if (ink.X1 == ink.X2 && ink.Y1 == ink.Y2) position = 1;
                     else if (!glyphCoordinates.TryLinear(x, y, ShaderBitmapOrigin(x, y), out position))
-                        position = ink.SourcePaint?.Position((x + .5 - horizontalOffset) / horizontalScale, (y + .5 - verticalOffset) / verticalScale) ?? 1;
+                        position = ink.SourcePaint?.Position((x + .5 - device.E) / device.A, (y + .5 - device.F) / device.D) ?? 1;
                     return SvgAnalyticPaint.Shader(glyphRamp.SampleAbsolute(SvgGradientRamp.Spread(position, ink.Spread), ShaderAlpha(glyph.Color.Alpha), GradientDither(x, y)));
                 }
                 if (glyphRadial is {} radial)
@@ -4892,8 +4914,8 @@ public static partial class SvgConverter
                     else if (radial.Radius == 0) position = 1;
                     else if (!glyphCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out SvgRadialShaderSample sample))
                     {
-                        double sampleX = (x + .5 - horizontalOffset) / horizontalScale;
-                        double sampleY = (y + .5 - verticalOffset) / verticalScale;
+                        double sampleX = (x + .5 - device.E) / device.A;
+                        double sampleY = (y + .5 - device.F) / device.D;
                         if (radial.HasGeneralTransform) (sampleX, sampleY) = radial.Inverse.Apply(sampleX, sampleY);
                         double rayX = sampleX - radial.FocalX, rayY = sampleY - radial.FocalY;
                         double offsetX = radial.CenterX - radial.FocalX, offsetY = radial.CenterY - radial.FocalY;
@@ -4979,7 +5001,7 @@ public static partial class SvgConverter
             if (source is not { IsRectangleFill: true }) return null;
             // Retained canvas stages already prepared this map; rebuilding it loses their rounding.
             if (sourcePlacement == SvgAffineTransform.Identity && activeViewport.DrawMap is null)
-                map = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(source.SceneMap);
+                map = MapSourceTransform(drawingMap.Recording, source.SceneMap, PathCoordinateSpace.User);
             if (!map.PreservesAxisAlignedRectangles) return null;
             SvgRectanglePathRecognizer recognizer = new();
             foreach (SvgAuthoredPathCommand command in source.Commands)
@@ -4999,9 +5021,8 @@ public static partial class SvgConverter
         SvgRectangleFrameCoverage? PrepareRectangleFrame(SvgAuthoredPath? source)
         {
             if (source?.StrokeStyle is not { Shape: SvgAuthoredStrokeShape.Rectangle } style) return null;
-            SvgAffineTransform outputMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
-            SvgAffineTransform map = outputMap.ComposeChecked(source.SceneMap);
-            SvgAffineTransform widthMap = outputMap.ComposeChecked(style.WidthMap);
+            SvgAffineTransform map = MapSourceTransform(drawingMap.Recording, source.SceneMap, PathCoordinateSpace.User);
+            SvgAffineTransform widthMap = MapSourceTransform(drawingMap.Recording, style.WidthMap, PathCoordinateSpace.User);
             if (!map.PreservesAxisAlignedRectangles || !widthMap.PreservesAxisAlignedRectangles) return null;
             SvgRectanglePathRecognizer recognizer = new();
             foreach (SvgAuthoredPathCommand command in source.Commands)
@@ -5022,15 +5043,16 @@ public static partial class SvgConverter
 
         void RasterizeRectangleStroke(SvgRectangle rectangle, SvgStroke stroke, byte[] destination)
         {
+            SvgAffineTransform device = drawingMap.Device;
             cancellationToken.ThrowIfCancellationRequested();
             SvgRectangleFrameCoverage frame = SvgRectangleFrameCoverage.Create(
-                MapRectangleEdge(rectangle.X, horizontalScale, horizontalOffset), MapRectangleEdge(rectangle.Y, verticalScale, verticalOffset),
-                MapRectangleEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset), MapRectangleEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset),
-                MapEdge(stroke.Width, horizontalScale, 0), MapEdge(stroke.Width, verticalScale, 0));
+                MapRectangleEdge(rectangle.X, device.A, device.E), MapRectangleEdge(rectangle.Y, device.D, device.F),
+                MapRectangleEdge(rectangle.X + rectangle.Width, device.A, device.E), MapRectangleEdge(rectangle.Y + rectangle.Height, device.D, device.F),
+                MapEdge(stroke.Width, device.A, 0), MapEdge(stroke.Width, device.D, 0));
             SvgClipBox? clip = null;
             if (rectangle.Clip is {} sourceClip)
             {
-                (double l, double t, double r, double b) = MapClipBounds(sourceClip, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
+                (double l, double t, double r, double b) = MapClipBounds(sourceClip, device.A, device.E, device.D, device.F);
                 clip = new SvgClipBox(l, t, Math.Max(0, r - l), Math.Max(0, b - t)) { Antialiasing = sourceClip.Antialiasing };
             }
             int left = (int)Math.Clamp(frame.OuterLeft >> 8, 0, outputWidth), right = (int)Math.Clamp((frame.OuterRight + 255) >> 8, left, outputWidth);
@@ -5053,11 +5075,11 @@ public static partial class SvgConverter
                 if (origin != default)
                 {
                     local = SvgRectangleFrameCoverage.Create(
-                        MapRectangleEdge(rectangle.X, horizontalScale, (float)horizontalOffset - origin.X),
-                        MapRectangleEdge(rectangle.Y, verticalScale, (float)verticalOffset - origin.Y),
-                        MapRectangleEdge(rectangle.X + rectangle.Width, horizontalScale, (float)horizontalOffset - origin.X),
-                        MapRectangleEdge(rectangle.Y + rectangle.Height, verticalScale, (float)verticalOffset - origin.Y),
-                        MapEdge(stroke.Width, horizontalScale, 0), MapEdge(stroke.Width, verticalScale, 0));
+                        MapRectangleEdge(rectangle.X, device.A, (float)device.E - origin.X),
+                        MapRectangleEdge(rectangle.Y, device.D, (float)device.F - origin.Y),
+                        MapRectangleEdge(rectangle.X + rectangle.Width, device.A, (float)device.E - origin.X),
+                        MapRectangleEdge(rectangle.Y + rectangle.Height, device.D, (float)device.F - origin.Y),
+                        MapEdge(stroke.Width, device.A, 0), MapEdge(stroke.Width, device.D, 0));
                 }
                 int x1 = Math.Max(left, context.Interior.Left), x2 = Math.Min(right, context.Interior.Right);
                 int y1 = Math.Max(top, context.Interior.Top), y2 = Math.Min(bottom, context.Interior.Bottom);
@@ -5132,19 +5154,20 @@ public static partial class SvgConverter
 
         SvgRectangleRaster PrepareRectangle(SvgRectangle rectangle)
         {
+            SvgAffineTransform device = drawingMap.Device;
             cancellationToken.ThrowIfCancellationRequested();
-            double x1 = MapRectangleEdge(rectangle.X, horizontalScale, horizontalOffset);
-            double y1 = MapRectangleEdge(rectangle.Y, verticalScale, verticalOffset);
-            double x2 = MapRectangleEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
-            double y2 = MapRectangleEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
+            double x1 = MapRectangleEdge(rectangle.X, device.A, device.E);
+            double y1 = MapRectangleEdge(rectangle.Y, device.D, device.F);
+            double x2 = MapRectangleEdge(rectangle.X + rectangle.Width, device.A, device.E);
+            double y2 = MapRectangleEdge(rectangle.Y + rectangle.Height, device.D, device.F);
             double left = Math.Min(x1, x2), top = Math.Min(y1, y2);
             double right = Math.Max(x1, x2), bottom = Math.Max(y1, y2);
             SvgRectangleCoverage coverage = SvgRectangleCoverage.Create(left, top, right, bottom, outputWidth, outputHeight);
             SvgClipBox? clip = null;
             if (rectangle.Clip is {} sourceClip)
             {
-                double cx1 = MapEdge(sourceClip.X, horizontalScale, horizontalOffset), cy1 = MapEdge(sourceClip.Y, verticalScale, verticalOffset);
-                double cx2 = MapEdge(sourceClip.Right, horizontalScale, horizontalOffset), cy2 = MapEdge(sourceClip.Bottom, verticalScale, verticalOffset);
+                double cx1 = MapEdge(sourceClip.X, device.A, device.E), cy1 = MapEdge(sourceClip.Y, device.D, device.F);
+                double cx2 = MapEdge(sourceClip.Right, device.A, device.E), cy2 = MapEdge(sourceClip.Bottom, device.D, device.F);
                 double clipLeft = Math.Min(cx1, cx2), clipTop = Math.Min(cy1, cy2);
                 double clipRight = Math.Max(cx1, cx2), clipBottom = Math.Max(cy1, cy2);
                 clip = new SvgClipBox(clipLeft, clipTop, Math.Max(0, clipRight - clipLeft), Math.Max(0, clipBottom - clipTop)) { Antialiasing = sourceClip.Antialiasing };

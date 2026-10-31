@@ -7,6 +7,28 @@ namespace Lokad.Svg.Tests;
 [Trait("Layer", "Mechanism")]
 public sealed class SvgFilterSourceHintTests
 {
+    [Fact]
+    public void Parameter_capture_encloses_source_visuals_before_gaussian_expansion()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><defs><filter id='f' filterUnits='userSpaceOnUse' x='-1000' y='-1000' width='2000' height='2000'><feGaussianBlur stdDeviation='3.84278'/></filter></defs><rect width='4' height='4' filter='url(#f)'/></svg>"u8.ToArray();
+        RenderBudget parser = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
+            SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
+            SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(300, 300), new(-1000, -1000, 1000, 1000));
+            SvgPaintBounds visual = new(38.714375f, 47.374504f, 206.11948f, 209.79495f);
+            RenderBudget scratch = new(new HostMemoryBudget(1_000_000));
+            // Independent native saveLayer observation in svgweb/filter-transform-review.json.
+            Assert.Equal(new SvgPaintBounds(26, 35, 219, 222),
+                SvgFilterPlayback.ParameterCaptureBounds(resource, new(1, 1), context, visual, scratch, CancellationToken.None));
+            Assert.Equal(new SvgPaintBounds(27, 35, 218, 222), SvgFilterPlayback.RoundParameterBounds(
+                SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, visual, scratch, CancellationToken.None)));
+            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [InlineData(-.25f, -.75f, 8.25f, 9.75f, -1, -1, 9, 10)]
     [InlineData(2.25f, 3.75f, 7.25f, 8.75f, 2, 3, 8, 9)]

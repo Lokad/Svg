@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewedUtc": "2026-10-31",
   "sourceBaseline": "deabdb31230678237c622e835956fe96f695fe34",
-  "scope": "Opposed affine sampling witnesses and source-raster diagnostics. No implementation change or closure of original filter acceptance.",
+  "scope": "Opposed affine controls and independent source/capture/drawing observations. The shared stages are qualified; whole filter acceptance remains open.",
   "capture": {
     "chromeVersion": "153.0.8010.52",
     "chromiumRevision": "1681091",
@@ -41,7 +41,7 @@
         {
           "case": "filter-affine-root-boundary",
           "host": "windows",
-          "phase": "current",
+          "phase": "before",
           "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
           "changedPixels": 0,
           "maximumError": 0,
@@ -68,7 +68,7 @@
         {
           "case": "filter-affine-root-boundary",
           "host": "linux",
-          "phase": "current",
+          "phase": "before",
           "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
           "changedPixels": 0,
           "maximumError": 0,
@@ -96,18 +96,18 @@
     },
     {
       "id": "filter-affine-root-gap",
-      "input": "filter-affine-root-gap.svg",
-      "reference": "filter-affine-root-gap.png",
+      "input": "../../Fixtures/original/filter-affine-root-gap.svg",
+      "reference": "../../References/original-filter-affine-root-gap.json",
       "license": "CC0-1.0",
       "sourceSha256": "d0924705937c0d5638e659137bbd4ea1cb74b0570624ea760ca29cb16a86246e",
       "nativePngSha256": "a7dc13e47b2c8355662d4c81df255f67ede4720aaf6a5b9f11da572f7bcc0435",
       "decodedRgbaSha256": "b19b8073d6bea5ba571ab2eae788ac4ed62e09c3a8ef45da4b923326cae3aada",
-      "current": "one RGB pixel/max1; optional research, not admitted exact",
+      "current": "Exact canonical conversion on both hosts and supported runtimes; original native images unchanged.",
       "measurements": [
         {
           "case": "filter-affine-root-gap",
           "host": "windows",
-          "phase": "current",
+          "phase": "before",
           "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
           "changedPixels": 1,
           "maximumError": 1,
@@ -134,7 +134,7 @@
         {
           "case": "filter-affine-root-gap",
           "host": "linux",
-          "phase": "current",
+          "phase": "before",
           "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5",
           "changedPixels": 1,
           "maximumError": 1,
@@ -237,9 +237,8 @@
     "Known-alpha restoration probes must validate their source plane and saved-layer bounds. Multiple fitting matrices and flat carrier agreement do not identify the original affine intermediate."
   ],
   "nextAcceptance": [
-    "Retain exact own boundary control and make the paired gap and original white-over231 interaction exact through one justified shared model.",
-    "Resolve actual source construction coordinates, native mapping and stored padding before modifying Gaussian or alpha arithmetic.",
-    "Keep existing references, logical sizing and all148 original outputs/outcomes as independent regression responsibilities."
+    "Resolve remaining Gallardo and whole filter/original acceptance with independent original-to-mechanism mappings.",
+    "Retain both affine controls, native stage assertions, white/black complements and distinct parameter/device/image bounds."
   ],
   "qualification": {
     "productionCodeChanged": false,
@@ -400,7 +399,7 @@
     "scope": "Windows-only exploratory diagnostic; no reference admission or original closure.",
     "inputs": [
       "../../Fixtures/original/filter-affine-root-boundary.svg",
-      "filter-affine-root-gap.svg"
+      "../../Fixtures/original/filter-affine-root-gap.svg"
     ],
     "recipe": {
       "background": "Remove the background rectangle. Keep the original white path, transform and Gaussian deviation 3.84278.",
@@ -483,10 +482,10 @@
     ]
   },
   "nativeParameterStage": {
-    "scope": "Canonical Windows LayerTree observation; root-image-projection.json records the separate destination stage. No production change or full filter acceptance is claimed.",
+    "scope": "Canonical Windows LayerTree observation. The shared ParameterCaptureBounds stage is qualified; whole filter acceptance remains open.",
     "controls": [
       "../../Fixtures/original/filter-affine-root-boundary.svg",
-      "filter-affine-root-gap.svg"
+      "../../Fixtures/original/filter-affine-root-gap.svg"
     ],
     "canonicalScreenshotPngsByteExact": true,
     "snapshotReplaysDecodedRgbaExact": true,
@@ -511,6 +510,12 @@
     "gaussianDeviation": 3.84278,
     "stageRecipe": "Outward-enclose the source visual box, expand by three deviations, then outward-enclose the capture hint. This applies to parameter-space source hints, not object bounds, layer/device inputs or sampled-image bounds.",
     "linux": "Canonical screenshot remains exact and healthy/profile-cleaned. No painted-layer command log was available for these two filter controls; do not infer a Linux saveLayer observation.",
-    "nextAcceptance": "Share the two affine CTM consumers, add direct stage regressions and retain the opposed white/black and axis controls. Qualify the complete model before adopting the prototype."
+    "nextAcceptance": "Keep both canonical affine controls and direct capture/CTM assertions unchanged while resolving the remaining original filter gaps."
+  },
+  "sharedStageResolution": {
+    "evidence": "root-image-projection.json",
+    "canonicalGapFixture": "../../Fixtures/original/filter-affine-root-gap.svg",
+    "canonicalGapReference": "../../References/original-filter-affine-root-gap.json",
+    "wholeFilterAcceptanceClosed": false
   }
 }

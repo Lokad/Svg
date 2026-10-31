@@ -2,13 +2,16 @@ using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
 
-/// <summary>Separates a root image's layout map, destination projection and image boundary.</summary>
+/// <summary>Separates root layout, recorded-image projection and destination placement.</summary>
 /// <remarks>Pure values, with no ownership or cache. Logical sizing and text layout remain
 /// with the document. The image layout uses CSS subpixel extents; projection normalizes
-/// the natural image size before applying the caller's uniform output scale.</remarks>
-internal readonly record struct SvgRootImageMap(SvgAffineTransform Layout, SvgAffineTransform Projection, SvgClipBox? Boundary)
+/// the natural image size and uniform output density before recorded scene narrowing.
+/// The outer destination retains source-rectangle float rounding. The image boundary
+/// is independent of bitmap allocation.</remarks>
+internal readonly record struct SvgRootImageMap(SvgAffineTransform Layout, SvgAffineTransform Projection,
+    SvgAffineTransform Destination, SvgClipBox? Boundary)
 {
-    internal SvgAffineTransform Combined => Projection.Compose(Layout);
+    internal SvgDrawingMap Drawing => new(Projection.Compose(Layout), Boundary is null ? null : Destination);
 
     internal static SvgRootImageMap Resolve(SvgViewBox? viewBox, SvgViewport logical, double outputScale)
     {
@@ -22,11 +25,19 @@ internal readonly record struct SvgRootImageMap(SvgAffineTransform Layout, SvgAf
             || !double.IsFinite(layoutWidth) || !double.IsFinite(layoutHeight))
         {
             SvgAffineTransform layout = Map(viewBox, logical.Width, logical.Height, logical);
-            return new(layout, SvgAffineTransform.FromScale(outputScale, outputScale), null);
+            return new(layout, SvgAffineTransform.FromScale(outputScale, outputScale), SvgAffineTransform.Identity, null);
         }
         return new(Map(viewBox, layoutWidth, layoutHeight, new((float)logical.Width, (float)logical.Height)),
-            SvgAffineTransform.FromScale(outputScale * naturalWidth / layoutWidth, outputScale * naturalHeight / layoutHeight),
+            SvgAffineTransform.FromScale(outputScale * (float)(naturalWidth / layoutWidth), outputScale * (float)(naturalHeight / layoutHeight)),
+            SvgAffineTransform.FromScale(DestinationScale((float)layoutWidth, (float)naturalWidth),
+                DestinationScale((float)layoutHeight, (float)naturalHeight)),
             new(0, 0, naturalWidth * outputScale, naturalHeight * outputScale));
+
+        static float DestinationScale(float layout, float natural)
+        {
+            float source = layout * (natural / layout);
+            return natural / source;
+        }
 
         static SvgAffineTransform Map(SvgViewBox? viewBox, double width, double height, SvgViewport logical)
         {

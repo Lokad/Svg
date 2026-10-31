@@ -10351,22 +10351,41 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "filter-source-request.json",
-    "sourceBaseline": "83211cdac9fdabfeb864681b3bf068fe90501a40",
+    "evidence": "root-image-projection.json",
+    "sourceBaseline": "16bdc39b58099c79be91c1eedd94663c44b36dce",
+    "librarySha256": "8c782b09b9ee0da6708b2f1316dbfbf4a74553e8bc332a8d2f8f904a3ac2879d",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
       "rendered": 148,
-      "exploratoryExact": 134,
-      "different": 14,
+      "exploratoryExact": 139,
+      "different": 9,
       "UnsupportedFeature": 53,
       "MalformedInput": 3
     },
-    "previousPngsByteIdenticalPerHost": 148,
-    "changedOriginals": [],
+    "previousPngsByteIdenticalPerHost": {
+      "windows": 140,
+      "linux": 140
+    },
+    "changedOriginals": [
+      "compuserver_msn_Ford_Focus.svg",
+      "pencil.svg",
+      "php.svg",
+      "radialgradient2.svg",
+      "rg1024_Presentation_with_girl.svg",
+      "rg1024_eggs.svg",
+      "rg1024_green_grapes.svg",
+      "scimitar.svg"
+    ],
+    "newlyExactOriginals": [
+      "pencil.svg",
+      "php.svg",
+      "rg1024_Presentation_with_girl.svg",
+      "rg1024_eggs.svg",
+      "scimitar.svg"
+    ],
     "lostExactImages": [],
     "changedOutcomesOrDiagnostics": [],
-    "qualification": "Default-context observations and individual native admission remain distinct; see linked evidence for current errors and complete closure criteria.",
-    "librarySha256": "582c3c1a0b2a2a2f2864ea6a64d9514fee88f7ccae6b3ea7f2d3b2feff87dae5"
+    "qualification": "Default conversion with no supplied fonts/resources; the linked stage evidence preserves native platform targets and full runtime/package qualification. Other contexts and whole corpus acceptance remain open."
   }
 }

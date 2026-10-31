@@ -148,6 +148,13 @@ internal static class SvgFilterPlayback
     internal static SvgPaintBounds RoundParameterBounds(SvgPaintBounds value)
         => new(MathF.Floor(value.Left), MathF.Floor(value.Top), MathF.Ceiling(value.Right), MathF.Ceiling(value.Bottom));
 
+    /// <summary>Encloses source visuals before graph expansion, then encloses the parameter-space capture.</summary>
+    /// <remarks>Resources and finite source bounds are borrowed. Graph work, temporary ownership,
+    /// cancellation and cleanup follow SourceLayerBounds; object and sampled-image bounds stay separate.</remarks>
+    internal static SvgPaintBounds ParameterCaptureBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
+        SvgFilterRegionContext context, SvgPaintBounds source, RenderBudget budget, CancellationToken token)
+        => RoundParameterBounds(SourceLayerBounds(resource, map, context, RoundParameterBounds(source), budget, token));
+
     /// <summary>Encloses the requested native source image independently of capture storage and transparent guard pixels.</summary>
     /// <remarks>Intersects the image hint and propagated request before integer admission; callers admit nonempty requests.
     /// This immutable helper allocates nothing; the caller owns cancellation.</remarks>

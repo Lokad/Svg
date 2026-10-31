@@ -131,7 +131,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
     {
         SvgRootSyntax root = ReadRoot(false);
         SvgViewport viewport = SvgDocumentSizing.Resolve(options.Viewport, root.Width, root.Height, root.ViewBox).LogicalViewport;
-        return SvgRootImageMap.Resolve(root.ViewBox, viewport, options.OutputScale).Combined;
+        return SvgRootImageMap.Resolve(root.ViewBox, viewport, options.OutputScale).Drawing.Parameter;
     }
 
     private SvgRootSyntax ReadRoot(bool inspectStructure)

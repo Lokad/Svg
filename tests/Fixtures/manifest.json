@@ -18474,6 +18474,31 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-affine-root-boundary.json",
       "referenceSha256": "b8402769309705c7303f2fa80231e30f2e249edc23eca8e3e83f5041577de9ea"
+    },
+    {
+      "id": "original-filter-affine-root-gap",
+      "path": "original/filter-affine-root-gap.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "d0924705937c0d5638e659137bbd4ea1cb74b0570624ea760ca29cb16a86246e",
+      "materializedSha256": "d0924705937c0d5638e659137bbd4ea1cb74b0570624ea760ca29cb16a86246e",
+      "featureTags": [
+        "filter",
+        "affine",
+        "sampling",
+        "root-projection"
+      ],
+      "width": 466,
+      "height": 265,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-affine-root-gap.json",
+      "referenceSha256": "a7dc13e47b2c8355662d4c81df255f67ede4720aaf6a5b9f11da572f7bcc0435"
     }
   ]
 }

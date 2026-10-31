@@ -15,30 +15,30 @@ namespace Lokad.Svg.Rendering;
 /// scans mapped controls and complete borrowed bitmap rows, charging every visit before reading.</remarks>
 internal static class SvgHairlineStroke
 {
-    internal static bool TryRasterize(SvgAuthoredPath path, SvgAffineTransform outputMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
+    internal static bool TryRasterize(SvgAuthoredPath path, SvgDrawingMap drawingMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
         SvgRasterClipMask viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, CancellationToken cancellationToken)
-        => TryRasterizeCore(path, outputMap, color, constantPaint, Span<SvgShaderSampler>.Empty,
+        => TryRasterizeCore(path, drawingMap, color, constantPaint, Span<SvgShaderSampler>.Empty,
             clip, antialiasing, viewportMask, binaryViewport, destination, width, height, cancellationToken);
 
     /// <summary>Replays the same native hairline geometry with a borrowed per-pixel shader material.</summary>
     /// <remarks>Sampler/ramp/texture ownership remains with the caller. Eligible replay updates the
     /// draw-local paint alpha before sampling; ineligible wider strokes leave the sampler unchanged.
     /// This synchronous call retains no sampler reference and shares geometry work/cancellation.</remarks>
-    internal static bool TryRasterize(SvgAuthoredPath path, SvgAffineTransform outputMap, ref SvgShaderSampler shader,
+    internal static bool TryRasterize(SvgAuthoredPath path, SvgDrawingMap drawingMap, ref SvgShaderSampler shader,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
         SvgRasterClipMask viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, CancellationToken cancellationToken)
-        => TryRasterizeCore(path, outputMap, default, null, MemoryMarshal.CreateSpan(ref shader, 1),
+        => TryRasterizeCore(path, drawingMap, default, null, MemoryMarshal.CreateSpan(ref shader, 1),
             clip, antialiasing, viewportMask, binaryViewport, destination, width, height, cancellationToken);
 
-    private static bool TryRasterizeCore(SvgAuthoredPath path, SvgAffineTransform outputMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
+    private static bool TryRasterizeCore(SvgAuthoredPath path, SvgDrawingMap drawingMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
         Span<SvgShaderSampler> shaders, (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
         SvgRasterClipMask viewportMask, bool binaryViewport, Span<byte> destination, int width, int height, CancellationToken cancellationToken)
     {
         if (path.StrokeStyle is not SvgAuthoredStrokeStyle style) return false;
         cancellationToken.ThrowIfCancellationRequested();
-        SvgAffineTransform map = outputMap.ComposeChecked(path.SceneMap);
-        SvgAffineTransform widthMap = outputMap.ComposeChecked(style.WidthMap);
+        SvgAffineTransform map = drawingMap.MapScene(path.SceneMap);
+        SvgAffineTransform widthMap = drawingMap.MapScene(style.WidthMap);
         float strokeWidth = (float)style.Width;
         float lengthX = FastLength((float)widthMap.A * strokeWidth, (float)widthMap.B * strokeWidth);
         float lengthY = FastLength((float)widthMap.C * strokeWidth, (float)widthMap.D * strokeWidth);

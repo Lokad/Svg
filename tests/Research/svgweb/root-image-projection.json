@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "reviewedUtc": "2026-10-31",
   "sourceBaseline": "7619bd4e46bc14c65d47dde812b5a08d09797509",
-  "status": "Native stage observations and an isolated prototype; production has not adopted this model. Full root/filter acceptance remains open.",
+  "status": "Shared drawing and parameter capture stages qualified on Windows/Linux and .NET 11/.NET 10. Full filter and original-corpus acceptance remain open.",
   "relatedFilterReview": "filter-transform-review.json",
   "sourceSvgCollectionRetained": false,
   "capture": {
@@ -30,7 +30,8 @@
       "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/svg/graphics/svg_image.cc",
       "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkM44.cpp"
     ],
-    "limits": "These observations identify distinct rounding boundaries. Before adoption, align fast rectangles, axis filters, image paints and already placed glyphs; do not introduce a stroke-specific adjustment."
+    "limits": "SvgDrawingMap keeps unrounded parameter coordinates, native device coefficients and recorded scene placement separate. Hairlines, fast rectangles, image/shader sampling and glyph device fitting share these roles; already placed device paths skip a second projection.",
+    "density": "Uniform density joins the recorded projection before scene narrowing. The 1200/2400 viewBox controls and the direct large-root matrix below reject moving it into the outer destination. Logical layout remains unchanged."
   },
   "controls": [
     {
@@ -343,8 +344,488 @@
     "timingScope": "Busy-host functional elapsed times; no benchmark or test-suite simplification claim. No .NET 10/package/full promotion qualification is claimed for this prototype."
   },
   "nextAcceptance": [
-    "Audit all root drawing consumers and share filter CTM preparation across both affine filter sites. Preserve source/object, visual/capture and sampled-image bounds.",
-    "Add direct failing-before stage assertions, retain opposed white/black controls and promote the existing gap fixture only after qualification.",
-    "Qualify the final source change on Windows/Linux, .NET 11/.NET 10 and installed packages at the coherent milestone. Close whole originals only with original-to-mechanism mappings."
-  ]
+    "Resolve Gallardo and remaining whole filter acceptance using original-to-mechanism mappings.",
+    "Retain exact source/destination/capture stages while addressing all remaining font/resource/static-state and original-corpus gaps."
+  ],
+  "implementation": {
+    "drawingMap": "../../../src/Lokad.Svg/Rendering/SvgDrawingMap.cs",
+    "rootMap": "../../../src/Lokad.Svg/Rendering/SvgRootImageMap.cs",
+    "captureBounds": "../../../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+    "mechanisms": [
+      "../../Lokad.Svg.Tests/SvgRootImageMapTests.cs",
+      "../../Lokad.Svg.Tests/SvgFilterSourceHintTests.cs"
+    ],
+    "sharedConsumers": [
+      "retained paths and resource clips",
+      "hairlines",
+      "rectangle fills and frames",
+      "image and ordinary/text/pattern shader coordinates",
+      "device-fitted glyph replay",
+      "axis filter parameter coordinates and shared affine drawing CTM"
+    ],
+    "canonicalPair": [
+      "../../Fixtures/original/filter-affine-root-boundary.svg",
+      "../../Fixtures/original/filter-affine-root-gap.svg"
+    ],
+    "newMechanismCases": 8,
+    "hostedSvgBodiesRetained": 0
+  },
+  "largeRootObservation": {
+    "host": "windows",
+    "scope": "Exploratory numerical observation of the existing CC0 capture input; canonical references unchanged.",
+    "input": "../affine-radial-paints/dome-solid-path-capture-1200.svg",
+    "inputSha256": "0de45d229b32b79dabd0e0e4d31a793d0097d2af91ffe4cb56c2030ca53d6275",
+    "captureBackground": "white",
+    "screenshot": [
+      1200,
+      1200
+    ],
+    "destinationMatrix": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "recordedPathMatrix": [
+      11.276311874389648,
+      4.104241847991943,
+      -4.104241847991943,
+      11.276311874389648,
+      372.9501037597656,
+      -315.1051025390625
+    ],
+    "startupHealthy": true,
+    "profileCleaned": true,
+    "sourceDensity": 15,
+    "protectedRenderingCases": 23,
+    "interpretation": "Keep density in the recorded projection; moving it outside scene narrowing changes seven independent large viewBox targets."
+  },
+  "qualification": {
+    "releaseBuilds": 4,
+    "warnings": 0,
+    "fullGates": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "suite": "core",
+        "selection": "all tests",
+        "passed": 35921,
+        "seconds": 73.01,
+        "librarySha256": "8c782b09b9ee0da6708b2f1316dbfbf4a74553e8bc332a8d2f8f904a3ac2879d"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "suite": "native",
+        "selection": "all tests",
+        "passed": 46443,
+        "seconds": 93.28,
+        "librarySha256": "8c782b09b9ee0da6708b2f1316dbfbf4a74553e8bc332a8d2f8f904a3ac2879d"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "suite": "core",
+        "selection": "all tests",
+        "passed": 35921,
+        "seconds": 67.28,
+        "librarySha256": "440b459b2e7503deb9e7491e18d17d73792f6a8b59a8f38d0cb8f9c28a2bae44"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "suite": "native",
+        "selection": "all tests",
+        "passed": 46443,
+        "seconds": 91.89,
+        "librarySha256": "440b459b2e7503deb9e7491e18d17d73792f6a8b59a8f38d0cb8f9c28a2bae44"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "suite": "core",
+        "selection": "all tests",
+        "passed": 35921,
+        "seconds": 53.52,
+        "librarySha256": "8c782b09b9ee0da6708b2f1316dbfbf4a74553e8bc332a8d2f8f904a3ac2879d"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "suite": "native",
+        "selection": "all tests",
+        "passed": 46443,
+        "seconds": 230.35,
+        "librarySha256": "8c782b09b9ee0da6708b2f1316dbfbf4a74553e8bc332a8d2f8f904a3ac2879d"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "suite": "core",
+        "selection": "all tests",
+        "passed": 35921,
+        "seconds": 43.28,
+        "librarySha256": "440b459b2e7503deb9e7491e18d17d73792f6a8b59a8f38d0cb8f9c28a2bae44"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "suite": "native",
+        "selection": "all tests",
+        "passed": 46443,
+        "seconds": 174.04,
+        "librarySha256": "440b459b2e7503deb9e7491e18d17d73792f6a8b59a8f38d0cb8f9c28a2bae44"
+      }
+    ],
+    "promotionChecks": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "selection": "FullyQualifiedName~FixtureManifestTests",
+        "passed": 2,
+        "seconds": 17.23,
+        "librarySha256": "8c782b09b9ee0da6708b2f1316dbfbf4a74553e8bc332a8d2f8f904a3ac2879d"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "selection": "FullyQualifiedName~FixtureManifestTests",
+        "passed": 2,
+        "seconds": 15.83,
+        "librarySha256": "440b459b2e7503deb9e7491e18d17d73792f6a8b59a8f38d0cb8f9c28a2bae44"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "selection": "FullyQualifiedName~FixtureManifestTests",
+        "passed": 2,
+        "seconds": 36.11,
+        "librarySha256": "8c782b09b9ee0da6708b2f1316dbfbf4a74553e8bc332a8d2f8f904a3ac2879d"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "selection": "FullyQualifiedName~FixtureManifestTests",
+        "passed": 2,
+        "seconds": 22.19,
+        "librarySha256": "440b459b2e7503deb9e7491e18d17d73792f6a8b59a8f38d0cb8f9c28a2bae44"
+      }
+    ],
+    "installedPackageConsumers": {
+      "windows": [
+        "net11.0",
+        "net10.0"
+      ],
+      "linux": [
+        "net11.0",
+        "net10.0"
+      ],
+      "runtimePackageVersion": "0.4.0-dev.1",
+      "published": false,
+      "scope": "Clean installed-package consumers exercise source/PNG ownership, host memory admission, fonts, HTTP reuse/cancellation/shutdown and async retained output. Runtime/symbol package content checks pass."
+    },
+    "originalReplay": {
+      "originalsPerHost": 204,
+      "sourceHashesRechecked": true,
+      "renderedPerHost": 148,
+      "exactPerHost": 139,
+      "differentPerHost": 9,
+      "unsupportedPerHost": 53,
+      "malformedPerHost": 3,
+      "previousExactPreservedPerHost": 134,
+      "previousPngsByteIdenticalPerHost": {
+        "windows": 140,
+        "linux": 140
+      },
+      "seconds": 52.07,
+      "newlyExactOriginals": [
+        "pencil.svg",
+        "php.svg",
+        "rg1024_Presentation_with_girl.svg",
+        "rg1024_eggs.svg",
+        "scimitar.svg"
+      ],
+      "changedOriginals": [
+        {
+          "original": "compuserver_msn_Ford_Focus.svg",
+          "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+          "host": "windows",
+          "before": {
+            "status": "different",
+            "changedPixels": 412,
+            "maximumError": 10,
+            "totalChannelError": 1197
+          },
+          "after": {
+            "status": "different",
+            "changedPixels": 8,
+            "maximumError": 4,
+            "totalChannelError": 51
+          }
+        },
+        {
+          "original": "pencil.svg",
+          "sourceSha256": "a736c186252db9b9ec97ab780601513f1771c3a8f85035d35c07afcae2a96c81",
+          "host": "windows",
+          "before": {
+            "status": "different",
+            "changedPixels": 3,
+            "maximumError": 6,
+            "totalChannelError": 23
+          },
+          "after": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        },
+        {
+          "original": "php.svg",
+          "sourceSha256": "5099fa1fa1569849d7a0f00f0119da9e7f6d1672f7b627c65a18189c8cb6c7c0",
+          "host": "windows",
+          "before": {
+            "status": "different",
+            "changedPixels": 1,
+            "maximumError": 1,
+            "totalChannelError": 2
+          },
+          "after": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        },
+        {
+          "original": "radialgradient2.svg",
+          "sourceSha256": "855888af9d4245c6d7b3a0f4456bf715b9bb26407ed873f529888b6b5983657d",
+          "host": "windows",
+          "before": {
+            "status": "different",
+            "changedPixels": 11,
+            "maximumError": 2,
+            "totalChannelError": 15
+          },
+          "after": {
+            "status": "different",
+            "changedPixels": 1,
+            "maximumError": 1,
+            "totalChannelError": 1
+          }
+        },
+        {
+          "original": "rg1024_Presentation_with_girl.svg",
+          "sourceSha256": "995e2656447b8da3e849fd762d4b9d51bc5ff7982107fc24deacb8659b43d15c",
+          "host": "windows",
+          "before": {
+            "status": "different",
+            "changedPixels": 174,
+            "maximumError": 14,
+            "totalChannelError": 821
+          },
+          "after": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        },
+        {
+          "original": "rg1024_eggs.svg",
+          "sourceSha256": "e261178649854a75edf284155b349f12019643f668114a998c8c36f1d60d1cb3",
+          "host": "windows",
+          "before": {
+            "status": "different",
+            "changedPixels": 134,
+            "maximumError": 6,
+            "totalChannelError": 399
+          },
+          "after": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        },
+        {
+          "original": "rg1024_green_grapes.svg",
+          "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+          "host": "windows",
+          "before": {
+            "status": "different",
+            "changedPixels": 2756,
+            "maximumError": 255,
+            "totalChannelError": 7042
+          },
+          "after": {
+            "status": "different",
+            "changedPixels": 2717,
+            "maximumError": 255,
+            "totalChannelError": 6333
+          }
+        },
+        {
+          "original": "scimitar.svg",
+          "sourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+          "host": "windows",
+          "before": {
+            "status": "different",
+            "changedPixels": 6,
+            "maximumError": 1,
+            "totalChannelError": 11
+          },
+          "after": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        },
+        {
+          "original": "compuserver_msn_Ford_Focus.svg",
+          "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+          "host": "linux",
+          "before": {
+            "status": "different",
+            "changedPixels": 412,
+            "maximumError": 10,
+            "totalChannelError": 1197
+          },
+          "after": {
+            "status": "different",
+            "changedPixels": 8,
+            "maximumError": 4,
+            "totalChannelError": 51
+          }
+        },
+        {
+          "original": "pencil.svg",
+          "sourceSha256": "a736c186252db9b9ec97ab780601513f1771c3a8f85035d35c07afcae2a96c81",
+          "host": "linux",
+          "before": {
+            "status": "different",
+            "changedPixels": 3,
+            "maximumError": 6,
+            "totalChannelError": 23
+          },
+          "after": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        },
+        {
+          "original": "php.svg",
+          "sourceSha256": "5099fa1fa1569849d7a0f00f0119da9e7f6d1672f7b627c65a18189c8cb6c7c0",
+          "host": "linux",
+          "before": {
+            "status": "different",
+            "changedPixels": 1,
+            "maximumError": 1,
+            "totalChannelError": 2
+          },
+          "after": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        },
+        {
+          "original": "radialgradient2.svg",
+          "sourceSha256": "855888af9d4245c6d7b3a0f4456bf715b9bb26407ed873f529888b6b5983657d",
+          "host": "linux",
+          "before": {
+            "status": "different",
+            "changedPixels": 11,
+            "maximumError": 2,
+            "totalChannelError": 15
+          },
+          "after": {
+            "status": "different",
+            "changedPixels": 1,
+            "maximumError": 1,
+            "totalChannelError": 1
+          }
+        },
+        {
+          "original": "rg1024_Presentation_with_girl.svg",
+          "sourceSha256": "995e2656447b8da3e849fd762d4b9d51bc5ff7982107fc24deacb8659b43d15c",
+          "host": "linux",
+          "before": {
+            "status": "different",
+            "changedPixels": 174,
+            "maximumError": 14,
+            "totalChannelError": 821
+          },
+          "after": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        },
+        {
+          "original": "rg1024_eggs.svg",
+          "sourceSha256": "e261178649854a75edf284155b349f12019643f668114a998c8c36f1d60d1cb3",
+          "host": "linux",
+          "before": {
+            "status": "different",
+            "changedPixels": 134,
+            "maximumError": 6,
+            "totalChannelError": 399
+          },
+          "after": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        },
+        {
+          "original": "rg1024_green_grapes.svg",
+          "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+          "host": "linux",
+          "before": {
+            "status": "different",
+            "changedPixels": 2756,
+            "maximumError": 255,
+            "totalChannelError": 7042
+          },
+          "after": {
+            "status": "different",
+            "changedPixels": 2717,
+            "maximumError": 255,
+            "totalChannelError": 6333
+          }
+        },
+        {
+          "original": "scimitar.svg",
+          "sourceSha256": "c2bf8a793924d69ec7643e993f53186da030be6faf99eee9cbd55a4bd518be51",
+          "host": "linux",
+          "before": {
+            "status": "different",
+            "changedPixels": 6,
+            "maximumError": 1,
+            "totalChannelError": 11
+          },
+          "after": {
+            "status": "exact",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "totalChannelError": 0
+          }
+        }
+      ],
+      "outcomesUnchanged": true,
+      "sourceSvgFilesRetained": 0,
+      "referenceOrToleranceChanges": false,
+      "diagnosticsAndLogicalDimensionsUnchanged": true
+    },
+    "timingScope": "Busy-host functional times, including runner startup. No benchmark, test-speed improvement or completed suite-simplification claim."
+  }
 }

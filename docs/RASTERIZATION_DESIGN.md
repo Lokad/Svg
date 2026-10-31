@@ -78,7 +78,8 @@ sampling/blend semantics.
 | Domain | Invariant |
 | --- | --- |
 | Logical viewport/viewBox | Own percentage bases and layout; output density does not resize them. |
-| Root image layout/projection | Keep CSS subpixel layout, natural image normalization and uniform external output scaling in separate maps. Its image boundary is independent of raster allocation. |
+| Root image layout/projection | Keep CSS subpixel layout, recorded projection and the outer image destination separate. Uniform output density joins the recorded projection; its image boundary is independent of raster allocation. |
+| Parameter/device mapping | The [drawing map](../src/Lokad.Svg/Rendering/SvgDrawingMap.cs) keeps unrounded filter/bounds coordinates separate from native device coefficients. Recorded source transforms narrow before destination concatenation; fitted device paths consume that placement once. |
 | Source/instance map | Preserve authored placement and resource inheritance; local aliases exclude source ancestors. Clip children materialize into resource coordinates before reference placement and device mapping. |
 | Canvas boundary | Retain parent rounding before child concatenation. A clip's resource normalization does not transform its consumer; mask construction uses the incoming canvas. |
 | Object box | Measures pre-clip geometry/layout for normalized paints/resources. |
@@ -106,6 +107,11 @@ Canvas coverage borrows either a tape or one analytic rectangle. Rectangles shar
 the existing clip rounding and binary-region behavior without a full-surface tape.
 Direct draws consume image-boundary coverage separately; isolated groups consume
 it at restoration. Source captures clear coverage while retaining their enclosure.
+Parameter-space filter captures enclose source visual bounds before graph expansion,
+then enclose the capture hint. Object boxes, layer/device enclosures and sampled-image
+bounds retain their own rounding. The [native stage observations](../tests/Research/svgweb/root-image-projection.json)
+and [capture bounds](../tests/Research/svgweb/filter-transform-review.json) distinguish
+these roles independently of equal final images.
 
 Mask paint clips enclose the union of the resource region and target visual bounds
 in source space. Instance replay transfers local visual bounds and materialized
