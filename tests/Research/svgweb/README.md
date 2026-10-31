@@ -6,12 +6,13 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 148 originals per host: **147 exploratory
-exact and 1 different**, with 53 UnsupportedFeature and 3 MalformedInput outcomes.
+The current default conversion renders 148 originals per host: **148 exploratory
+exact**, with 53 UnsupportedFeature and 3 MalformedInput outcomes. The
+[current outcomes](default-outcomes.csv) list every source's status and first gate;
+the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
 Scimitar, Gallardo, car, radialgradient2, UFO, alphachannel, opensearch, scion and
-green grapes are exact. See `currentReview` in the inventory for the Ford
-difference. Exact default output does not qualify other font, resource
+green grapes are exact, as is Ford. Exact default output does not qualify other font, resource
 or static-state contexts, and whole-corpus acceptance remains open.
 
 Resolve gaps by mechanism, preserving original-to-control mappings and independent
@@ -63,6 +64,7 @@ current inventory above governs overall status.
 | Gradient bitmap coordinates | [Recorded stages](gradient-recorded-bitmap-origin.json). Subtract the owning bitmap origin before replaying child transforms. Linear/radial native controls and direct mapping/ownership tests protect the shared order. |
 | Opaque gradient coverage | [Program opacity and coverage](opaque-gradient-coverage.json). Retain factory eligibility and direct-span/A8 interpolation stages. One canonical edge fixture and six compiled native vectors protect the shared rule; the complete default Gallardo image is exact. |
 | Completed curve strips | [Direct painting and clip construction](completed-strip-coverage.json). Completed direct fringes use the paint clip; pending mask rows and clip definitions keep path bounds. Circle, authored arcs and rounded rectangles protect distinct source builders. |
+| Short authored curves | [Closing chords](thin-authored-contours.json). Fallback sample count cannot suppress authored curved ink. Direct preparation/index tests, explicit suppression and ownership contracts, and three canonical fill/shader/clip fixtures protect distinct responsibilities. |
 | Gradient declarations | [Typed lengths](gradient-lengths.json), [inheritance fixture](../../Fixtures/original/radial-coordinate-inheritance.svg), [stop identity fixture](../../Fixtures/original/gradient-stop-identities.svg). Preserve number/percentage intent, missing/default values, units, per-field inheritance, viewport resolution and metadata. |
 | Paint selection and text evidence | [Paint references](paint-references.json), [filter-source review](filter-source-review.json). Empty paint content and unavailable servers differ; the synthetic font needs valid bounds before its rendering can diagnose the library. Exploratory single captures do not admit new references. |
 
@@ -83,6 +85,12 @@ original fractional image viewport. Its `sourceReference` columns show all 76
 isolations exact; earlier columns retain their qualified observations. The
 [drawing-reference record](source-shader-reference.json) also closes the complete
 default original against three fresh healthy captures on each host.
+
+The [thin-contour record](thin-authored-contours.json) closes Ford's six default
+pixel differences against three fresh captures per host. All 21 source-preserving
+subset controls are exact, including the native-positive branch omitted by
+selecting paints from managed coverage alone. No hosted paths are retained;
+the three small regression fixtures use independently authored geometry.
 
 Mapped crop/flood-offset/shadow and root/filter cases are closed for their declared
 default static contexts. Remaining work includes declared stroke units, CSS and

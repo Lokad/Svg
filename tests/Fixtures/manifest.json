@@ -18942,6 +18942,81 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-source-shader-reference.json",
       "referenceSha256": "bfbeb15bac1c9372ebae788ffae2dfaab62e13368d77e6deb1177fdba1a7facd"
+    },
+    {
+      "id": "original-thin-authored-fills",
+      "path": "original/thin-authored-fills.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+      "materializedSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+      "featureTags": [
+        "authored-curves",
+        "thin-contours",
+        "source-replay",
+        "geometry"
+      ],
+      "width": 24,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-thin-authored-fills.json",
+      "referenceSha256": "9d748a3dbe8ef92b07a7b48627047e1e7e138fe0ff96002bc48295b799625da2"
+    },
+    {
+      "id": "original-thin-authored-paints",
+      "path": "original/thin-authored-paints.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "dc88de6989e5efe69cc505931d2f3d7c0e4ce898809c255520d4a3332f7b73f5",
+      "materializedSha256": "dc88de6989e5efe69cc505931d2f3d7c0e4ce898809c255520d4a3332f7b73f5",
+      "featureTags": [
+        "authored-curves",
+        "thin-contours",
+        "source-replay",
+        "paint"
+      ],
+      "width": 24,
+      "height": 24,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-thin-authored-paints.json",
+      "referenceSha256": "ffb8eeebe7794854e6ec4994d4951f05f8e8da89370a0a7ab235a6ddb6c13866"
+    },
+    {
+      "id": "original-thin-clip-chords",
+      "path": "original/thin-clip-chords.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+      "materializedSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+      "featureTags": [
+        "authored-curves",
+        "thin-contours",
+        "source-replay",
+        "clip"
+      ],
+      "width": 24,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-thin-clip-chords.json",
+      "referenceSha256": "eff9f28f84b3c028ffc27ef3aba3682e8dfd2592cd518b56b1abe1aad6176e3f"
     }
   ]
 }

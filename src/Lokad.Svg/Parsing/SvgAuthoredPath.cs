@@ -139,19 +139,32 @@ internal sealed class SvgAuthoredPath : IDisposable
         using BudgetedParserList<SvgCubicSpan> cubics = new(budget, SvgMemoryCategory.Surface, cancellationToken);
         using BudgetedParserList<int> offsets = new(budget, SvgMemoryCategory.Geometry, cancellationToken);
         using BudgetedParserList<int> contours = new(budget, SvgMemoryCategory.Geometry, cancellationToken);
+        SvgQuadSpan[] sourceQuads = builder.GetQuadSpans();
+        SvgCubicSpan[] sourceCubics = builder.GetCubicSpans();
+        int quadCursor = 0, cubicCursor = 0;
         for (int contour = 0; contour < builder.ContourCount; contour++)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            while (quadCursor < sourceQuads.Length && sourceQuads[quadCursor].Contour < contour) quadCursor++;
+            while (cubicCursor < sourceCubics.Length && sourceCubics[cubicCursor].Contour < contour) cubicCursor++;
             ReadOnlySpan<SvgDevicePoint> vertices = builder.GetContour(contour);
-            bool degenerate = vertices.Length < 3;
+            // A curve can enclose ink against its closing chord even when its
+            // fallback is one segment. Retain the implicit closing endpoint;
+            // the scanner still consumes the original curve and verb count.
+            bool closeCurvedChord = vertices.Length == 2
+                && (quadCursor < sourceQuads.Length && sourceQuads[quadCursor].Contour == contour
+                    || cubicCursor < sourceCubics.Length && sourceCubics[cubicCursor].Contour == contour);
+            bool degenerate = vertices.Length < 3 && !closeCurvedChord;
             offsets.Add(degenerate ? -1 : points.Count);
             contours.Add(degenerate ? -1 : ends.Count);
             if (degenerate) continue;
             foreach (SvgDevicePoint point in vertices) points.Add(mapCoordinates ? MapPoint(map, point, new(0, 0)) : point);
+            if (closeCurvedChord) points.Add(points[offsets[contour]]);
             ends.Add(points.Count);
         }
-        foreach (SvgQuadSpan span in builder.GetQuadSpans())
+        foreach (SvgQuadSpan span in sourceQuads)
             if (offsets[span.Contour] >= 0) quads.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], Control = mapCoordinates ? MapPoint(map, span.Control, new(0, 0)) : span.Control });
-        foreach (SvgCubicSpan span in builder.GetCubicSpans())
+        foreach (SvgCubicSpan span in sourceCubics)
             if (offsets[span.Contour] >= 0) cubics.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], FirstControl = mapCoordinates ? MapPoint(map, span.FirstControl, new(0, 0)) : span.FirstControl, SecondControl = mapCoordinates ? MapPoint(map, span.SecondControl, new(0, 0)) : span.SecondControl });
         return CreateContours(points, ends, quads, cubics, _commands.Items, nativePointCount, isEvenOdd, IsKnownConvex, budget, cancellationToken);
 

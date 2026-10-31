@@ -10351,15 +10351,16 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "source-shader-reference.json",
-    "sourceBaseline": "dd36268ba5cf02de83c9e8ce40ba219008157d46",
-    "librarySha256": "45e74dbfea8b942fd012383d75f09d01aa2f2dae0b9f707e51bef81eb7f03e3f",
+    "evidence": "thin-authored-contours.json",
+    "outcomesFile": "default-outcomes.csv",
+    "sourceBaseline": "db991b28d93f44924f753aa1f158b07d492ff274",
+    "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
       "rendered": 148,
-      "exploratoryExact": 147,
-      "different": 1,
+      "exploratoryExact": 148,
+      "different": 0,
       "UnsupportedFeature": 53,
       "MalformedInput": 3
     },
@@ -10369,12 +10370,12 @@
     },
     "changedOriginals": [
       {
-        "name": "rg1024_green_grapes.svg",
+        "name": "compuserver_msn_Ford_Focus.svg",
         "before": {
           "status": "different",
-          "changedPixels": 1,
-          "maximumError": 1,
-          "totalChannelError": 1
+          "changedPixels": 6,
+          "maximumError": 4,
+          "totalChannelError": 45
         },
         "after": {
           "status": "exact",
@@ -10385,18 +10386,10 @@
       }
     ],
     "newlyExactOriginals": [
-      "rg1024_green_grapes.svg"
+      "compuserver_msn_Ford_Focus.svg"
     ],
     "lostExactImages": [],
     "changedOutcomesOrDiagnostics": [],
-    "remainingDefaultDifferences": [
-      {
-        "name": "compuserver_msn_Ford_Focus.svg",
-        "status": "different",
-        "changedPixels": 6,
-        "maximumError": 4,
-        "totalChannelError": 45
-      }
-    ]
+    "remainingDefaultDifferences": []
   }
 }

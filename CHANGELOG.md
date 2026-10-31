@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Retain shallow authored curves that flatten to a single segment across solid,
+  gradient, pattern and clip fills, preserving their ink against the closing chord.
 - Preserve parent/child canvas concatenation across path clips, keeping resource
   normalization separate from the referencing transform and clip construction.
 - Materialize clip-child transforms before reference and device placement,

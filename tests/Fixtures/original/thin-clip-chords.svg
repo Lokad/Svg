@@ -1,0 +1,9 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="16">
+  <defs>
+    <clipPath id="c"><path d="M1 1 L2 1 Z M4.25 4.125 C4.25 4.2 5.8 4.5 7.5 4.75 Z"/></clipPath>
+    <clipPath id="q"><path d="M4.25 4.125 Q5.8 4.3 7.5 4.75 L4.25 4.125 Z"/></clipPath>
+  </defs>
+  <rect width="24" height="8" fill="#386078" clip-path="url(#c)"/>
+  <g transform="translate(0 8)"><rect width="24" height="8" fill="#905030" clip-path="url(#q)"/></g>
+</svg>

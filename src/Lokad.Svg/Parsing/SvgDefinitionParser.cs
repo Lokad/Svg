@@ -1036,9 +1036,11 @@ CancellationToken token)
             if (!visible) return new([], []);
             using BudgetedParserList<SvgDevicePoint> stripped = new(clipState.Budget, SvgMemoryCategory.Geometry, cancellationToken);
             using BudgetedParserList<int> strippedEnds = new(clipState.Budget, SvgMemoryCategory.Geometry, cancellationToken);
+            int sourceCursor = 0;
             for (int contour = 0; contour < builder.ContourCount; contour++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                bool curved = ReadCurvedContour(authored.AsSpan(), ref sourceCursor, cancellationToken);
                 ReadOnlySpan<SvgDevicePoint> ring = builder.GetContour(contour);
                 using BudgetedParserList<SvgDevicePoint> cleaned = new(clipState.Budget, SvgMemoryCategory.Geometry, cancellationToken);
                 SvgDevicePoint first = default;
@@ -1055,6 +1057,10 @@ CancellationToken token)
                     hasKept = true;
                     cleaned.Add(vertex);
                 }
+                // Native curves can enclose ink despite a one-segment fallback.
+                // Keep their closing endpoint without changing the source verbs.
+                if (curved && cleaned.Count is 1 or 2)
+                    while (cleaned.Count < 3) cleaned.Add(first);
                 if (cleaned.Count < 3) continue;
                 for (int index = 0; index < cleaned.Count; index++)
                 {
@@ -1082,6 +1088,19 @@ CancellationToken token)
             try { source = SvgAuthoredPath.Create(owned, clipTransform, clipState.Budget); }
             catch { owned.Dispose(); throw; }
             return new SvgClipPolygon(retainedPoints, retainedEnds) { SourcePath = source, IsEvenOdd = isEvenOdd, UsesNativeReplay = hasCurve || builder.ContourCount > 1 };
+
+            static bool ReadCurvedContour(ReadOnlySpan<SvgAuthoredPathCommand> commands, ref int cursor, CancellationToken token)
+            {
+                bool curved = false;
+                while (cursor < commands.Length)
+                {
+                    token.ThrowIfCancellationRequested();
+                    SvgAuthoredPathVerb verb = commands[cursor++].Verb;
+                    curved |= verb is SvgAuthoredPathVerb.Quadratic or SvgAuthoredPathVerb.Cubic or SvgAuthoredPathVerb.Arc or SvgAuthoredPathVerb.Conic;
+                    if (verb is SvgAuthoredPathVerb.Close or SvgAuthoredPathVerb.End) break;
+                }
+                return curved;
+            }
         }
 
         static (int Letters, bool HasCurve) ScanClipPathData(string pathData, CancellationToken cancellationToken)

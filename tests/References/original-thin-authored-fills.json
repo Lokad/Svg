@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+  "referenceSha256": "9d748a3dbe8ef92b07a7b48627047e1e7e138fe0ff96002bc48295b799625da2",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-thin-authored-fills.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-thin-authored-fills",
+  "viewport": {
+    "width": 24,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 shallow cubic with explicit closure and quadratic with implicit closure. Their flattened point lists do not establish empty authored fills. Three fresh healthy/profile-cleaned native captures per host agree. Canonical conversion only.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+      "referenceSha256": "9d748a3dbe8ef92b07a7b48627047e1e7e138fe0ff96002bc48295b799625da2",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+      "referenceSha256": "9d748a3dbe8ef92b07a7b48627047e1e7e138fe0ff96002bc48295b799625da2",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 24,
+    "height": 16
+  }
+}

@@ -3579,7 +3579,9 @@ public static partial class SvgConverter
             // Wider strokes replay their generated source outline; the original
             // centerline remains separate for hairline coverage and width dispatch.
             if (authoredPath?.StrokeStyle is not null) replay = authoredPath.StrokeOutline;
-            if (replay is not null)
+            // Suppressed primitives can retain an owner with no source verbs.
+            // Only a real command stream can override an empty fallback.
+            if (replay is { Commands.Length: > 0 })
             {
                 bool binaryViewport = clip is {} binaryClip && (binaryClip.Antialiasing & SvgClipAntialiasing.Binary) != 0
                     || activeViewport.HasMask && activeViewport.IsBinary;
@@ -3831,10 +3833,9 @@ public static partial class SvgConverter
 
         void RasterizePolygonFill(SvgPolygonFill polygon, SvgAuthoredPath? authoredPath, byte[] destination, ReadOnlySpan<byte> fontPreblend)
         {
-            // A glyph bitmap scene borrows only its source commands. Ordinary
-            // lowered empty shapes still suppress their retained source replay.
-            if (!polygon.HasFill || (polygon.Points.Length < 3 && fontPreblend.IsEmpty
-                && (surfaceMode != RasterSurfaceMode.PremultipliedGlyph || authoredPath is null))) return;
+            // Flattened fallback points do not establish whether an authored
+            // curve encloses ink. No-fill paint still suppresses source replay.
+            if (!polygon.HasFill || (polygon.Points.Length < 3 && fontPreblend.IsEmpty && authoredPath is null)) return;
             using MappedPolygon raster = MapPolygon(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.QuadSpans, polygon.CubicSpans, polygon.Mapping, polygon.Clip, authoredPath, fontPreblend.Length == 0 ? PathCoordinateSpace.User : PathCoordinateSpace.Device);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgAnalyticPaint glyphPaint = ResolveSolidPaint(polygon.Color);
@@ -3976,7 +3977,7 @@ public static partial class SvgConverter
 
         void RasterizeGradientPolygon(SvgGradientPolygon outline, SvgAuthoredPath? authoredPath, byte[] destination)
         {
-            if (!outline.HasFill || outline.Points.Length < 3) return;
+            if (!outline.HasFill || (outline.Points.Length < 3 && authoredPath is null)) return;
             // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
             using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath, PathCoordinateSpace.User);
@@ -4031,7 +4032,7 @@ public static partial class SvgConverter
         }
         void RasterizeRadialPolygon(SvgRadialPolygon outline, SvgAuthoredPath? authoredPath, byte[] destination)
         {
-            if (!outline.HasFill || outline.Points.Length < 3) return;
+            if (!outline.HasFill || (outline.Points.Length < 3 && authoredPath is null)) return;
             // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
             using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath, PathCoordinateSpace.User);
@@ -4093,7 +4094,7 @@ public static partial class SvgConverter
 
         void RasterizePatternPolygon(SvgPatternPolygon outline, SvgAuthoredPath? authoredPath, byte[] destination)
         {
-            if (!outline.HasFill || outline.Points.Length < 3 || outline.Coordinates?.IsEmpty == true) return;
+            if (!outline.HasFill || (outline.Points.Length < 3 && authoredPath is null) || outline.Coordinates?.IsEmpty == true) return;
             using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath, PathCoordinateSpace.User);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             using RenderBudget.BudgetReservation sourcePatternOwner = budget.Reserve(512, SvgMemoryCategory.Geometry);

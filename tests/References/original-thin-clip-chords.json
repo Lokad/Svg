@@ -1,0 +1,59 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+  "referenceSha256": "eff9f28f84b3c028ffc27ef3aba3682e8dfd2592cd518b56b1abe1aad6176e3f",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-thin-clip-chords.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-thin-clip-chords",
+  "viewport": {
+    "width": 24,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 shallow cubic/quadratic clip silhouettes, including a preceding empty straight contour. Preserve native source curves and closing endpoints during clip staging. Three fresh healthy/profile-cleaned native captures per host agree. Canonical conversion only.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+      "referenceSha256": "eff9f28f84b3c028ffc27ef3aba3682e8dfd2592cd518b56b1abe1aad6176e3f",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+      "referenceSha256": "eff9f28f84b3c028ffc27ef3aba3682e8dfd2592cd518b56b1abe1aad6176e3f",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  },
+  "imageViewport": {
+    "width": 24,
+    "height": 16
+  }
+}

@@ -7,6 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgCurvedClipSourceTests
 {
     [Theory]
+    [InlineData("<defs><clipPath id='c'><path d='M4.25 4.125 C4.25 4.2 5.8 4.5 7.5 4.75 Z'/></clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/>")]
     [InlineData("<defs><clipPath id='c'><path d='M3 24 Q16 0 29 24'/></clipPath></defs><g transform='rotate(12 16 16)' clip-path='url(#c)'><path d='M0 0H32V32H0Z'/></g>")]
     [InlineData("<defs><clipPath id='unused'><path d='M3 24 C3 0 29 0 29 24'/></clipPath></defs><rect width='32' height='32'/>")]
     [InlineData("<defs><clipPath><path d='M3 24 A13 13 0 0 1 29 24'/></clipPath></defs><rect width='32' height='32'/>")]

@@ -27,6 +27,12 @@ Shared data factories can have `MemberData` consumers in other partial class
 files; include those consumers when selecting affected checks.
 Filter and clip integration includes `SvgSymbolInstanceReferenceTests`: its
 shared bank contains crop, rescaling and nested-effect regressions.
+The [thin-curve mechanisms](Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs) distinguish
+authored ink from short flattened fallbacks and explicit suppression. One source
+preparation contract and one added clip ownership case cover refusal, cancellation,
+cleanup and retry. Three canonical native fixtures separate plain fills, shader
+consumers and clip staging; [their evidence](Research/svgweb/thin-authored-contours.json)
+records failing-before results and independent platform captures.
 The [analytic byte-alpha mechanism](Lokad.Svg.Tests/SvgAnalyticAlphaByteTests.cs)
 walks a cubic directly; its [native fixture](Fixtures/original/analytic-alpha-byte.svg)
 adds the specific blur/opacity interaction through canonical conversion. Existing

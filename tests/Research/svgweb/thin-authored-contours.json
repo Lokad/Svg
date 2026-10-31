@@ -1,0 +1,868 @@
+{
+  "schemaVersion": 1,
+  "reviewedUtc": "2026-10-31",
+  "sourceBaseline": "db991b28d93f44924f753aa1f158b07d492ff274",
+  "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+  "sourceSvgFilesRetained": 0,
+  "originalFragmentsRetained": 0,
+  "finding": "A shallow quadratic or cubic can enclose visible ink against its closing chord while flattening to two endpoints. Fallback count was incorrectly used to suppress retained source geometry in both fill execution and clip staging.",
+  "sharedModel": [
+    "Use nonempty authored commands when fallback points cannot establish coverage. Solid, linear, radial and pattern bindings share source replay.",
+    "Retain a closing sample for a two-sample curved contour. Raw commands, native point count and control indices remain unchanged; discarded straight contours do not shift retained curve indices.",
+    "Clip staging preserves short curved contours before registering borrowed source verbs. Straight short contours stay empty.",
+    "An owner with no commands is intentional suppression and stays nonpainting. The existing zero-radius symbol reference is preserved.",
+    "Existing budgeted preparation owns added points and growth. No new owner, metadata arena, epsilon, coordinate nudge, fitting change or alternate renderer."
+  ],
+  "coverage": {
+    "mechanisms": {
+      "file": "../../Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs",
+      "cases": 13,
+      "responsibility": "Quadratic/cubic, explicit/implicit/open closure, straight emptiness, mixed-contour indexing and clip source retention."
+    },
+    "contracts": {
+      "file": "../../Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs",
+      "cases": 4,
+      "responsibility": "Three explicit suppression paths; one source-preparation refusal/cancellation/cleanup/retry case."
+    },
+    "clipOwnership": {
+      "file": "../../Lokad.Svg.Tests/SvgCurvedClipSourceTests.cs",
+      "newCases": 1,
+      "responsibility": "Short curved source discovery/lowering admission, refusal, cleanup and retry through the existing ownership helper."
+    },
+    "rendering": "Three canonical fixtures separate plain fills, linear/radial/pattern consumers and clip staging. Existing references/tolerances and distinct zero-radius suppression remain unchanged. No fixture/API Cartesian product.",
+    "fixtures": [
+      {
+        "fixture": "../../Fixtures/original/thin-authored-fills.svg",
+        "reference": "../../References/original-thin-authored-fills.json",
+        "sourceSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+        "nativePngSha256": "9d748a3dbe8ef92b07a7b48627047e1e7e138fe0ff96002bc48295b799625da2",
+        "captures": [
+          {
+            "id": "original-thin-authored-fills",
+            "host": "windows",
+            "capture": 1,
+            "sourceSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+            "nativePngSha256": "9d748a3dbe8ef92b07a7b48627047e1e7e138fe0ff96002bc48295b799625da2",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-authored-fills",
+            "host": "windows",
+            "capture": 2,
+            "sourceSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+            "nativePngSha256": "9d748a3dbe8ef92b07a7b48627047e1e7e138fe0ff96002bc48295b799625da2",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-authored-fills",
+            "host": "windows",
+            "capture": 3,
+            "sourceSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+            "nativePngSha256": "9d748a3dbe8ef92b07a7b48627047e1e7e138fe0ff96002bc48295b799625da2",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-authored-fills",
+            "host": "linux",
+            "capture": 1,
+            "sourceSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+            "nativePngSha256": "9d748a3dbe8ef92b07a7b48627047e1e7e138fe0ff96002bc48295b799625da2",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-authored-fills",
+            "host": "linux",
+            "capture": 2,
+            "sourceSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+            "nativePngSha256": "9d748a3dbe8ef92b07a7b48627047e1e7e138fe0ff96002bc48295b799625da2",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-authored-fills",
+            "host": "linux",
+            "capture": 3,
+            "sourceSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+            "nativePngSha256": "9d748a3dbe8ef92b07a7b48627047e1e7e138fe0ff96002bc48295b799625da2",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "before": [
+          {
+            "id": "original-thin-authored-fills",
+            "host": "windows",
+            "phase": "before",
+            "librarySha256": "45e74dbfea8b942fd012383d75f09d01aa2f2dae0b9f707e51bef81eb7f03e3f",
+            "changedPixels": 6,
+            "maximumError": 128,
+            "totalChannelError": 1456
+          },
+          {
+            "id": "original-thin-authored-fills",
+            "host": "linux",
+            "phase": "before",
+            "librarySha256": "45e74dbfea8b942fd012383d75f09d01aa2f2dae0b9f707e51bef81eb7f03e3f",
+            "changedPixels": 6,
+            "maximumError": 128,
+            "totalChannelError": 1456
+          }
+        ],
+        "final": [
+          {
+            "case": "original-thin-authored-fills",
+            "host": "windows",
+            "sourceSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+            "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+            "pngSha256": "877cde9fb64a21e87d40ea4379189ed21d3ff54c8c6af64001be3c17535969e6",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "previousCandidateByteIdentical": true
+          },
+          {
+            "case": "original-thin-authored-fills",
+            "host": "linux",
+            "sourceSha256": "cccab4f47ab8c13ff4dbb596d3a8b1d34d6c45de527cdc9812aaf3794a7d8056",
+            "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+            "pngSha256": "877cde9fb64a21e87d40ea4379189ed21d3ff54c8c6af64001be3c17535969e6",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "previousCandidateByteIdentical": true
+          }
+        ]
+      },
+      {
+        "fixture": "../../Fixtures/original/thin-authored-paints.svg",
+        "reference": "../../References/original-thin-authored-paints.json",
+        "sourceSha256": "dc88de6989e5efe69cc505931d2f3d7c0e4ce898809c255520d4a3332f7b73f5",
+        "nativePngSha256": "ffb8eeebe7794854e6ec4994d4951f05f8e8da89370a0a7ab235a6ddb6c13866",
+        "captures": [
+          {
+            "id": "original-thin-authored-paints",
+            "host": "windows",
+            "capture": 1,
+            "sourceSha256": "dc88de6989e5efe69cc505931d2f3d7c0e4ce898809c255520d4a3332f7b73f5",
+            "nativePngSha256": "ffb8eeebe7794854e6ec4994d4951f05f8e8da89370a0a7ab235a6ddb6c13866",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-authored-paints",
+            "host": "windows",
+            "capture": 2,
+            "sourceSha256": "dc88de6989e5efe69cc505931d2f3d7c0e4ce898809c255520d4a3332f7b73f5",
+            "nativePngSha256": "ffb8eeebe7794854e6ec4994d4951f05f8e8da89370a0a7ab235a6ddb6c13866",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-authored-paints",
+            "host": "windows",
+            "capture": 3,
+            "sourceSha256": "dc88de6989e5efe69cc505931d2f3d7c0e4ce898809c255520d4a3332f7b73f5",
+            "nativePngSha256": "ffb8eeebe7794854e6ec4994d4951f05f8e8da89370a0a7ab235a6ddb6c13866",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-authored-paints",
+            "host": "linux",
+            "capture": 1,
+            "sourceSha256": "dc88de6989e5efe69cc505931d2f3d7c0e4ce898809c255520d4a3332f7b73f5",
+            "nativePngSha256": "ffb8eeebe7794854e6ec4994d4951f05f8e8da89370a0a7ab235a6ddb6c13866",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-authored-paints",
+            "host": "linux",
+            "capture": 2,
+            "sourceSha256": "dc88de6989e5efe69cc505931d2f3d7c0e4ce898809c255520d4a3332f7b73f5",
+            "nativePngSha256": "ffb8eeebe7794854e6ec4994d4951f05f8e8da89370a0a7ab235a6ddb6c13866",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-authored-paints",
+            "host": "linux",
+            "capture": 3,
+            "sourceSha256": "dc88de6989e5efe69cc505931d2f3d7c0e4ce898809c255520d4a3332f7b73f5",
+            "nativePngSha256": "ffb8eeebe7794854e6ec4994d4951f05f8e8da89370a0a7ab235a6ddb6c13866",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "before": [
+          {
+            "id": "original-thin-authored-paints",
+            "host": "windows",
+            "phase": "before",
+            "librarySha256": "45e74dbfea8b942fd012383d75f09d01aa2f2dae0b9f707e51bef81eb7f03e3f",
+            "changedPixels": 10,
+            "maximumError": 204,
+            "totalChannelError": 3418
+          },
+          {
+            "id": "original-thin-authored-paints",
+            "host": "linux",
+            "phase": "before",
+            "librarySha256": "45e74dbfea8b942fd012383d75f09d01aa2f2dae0b9f707e51bef81eb7f03e3f",
+            "changedPixels": 10,
+            "maximumError": 204,
+            "totalChannelError": 3418
+          }
+        ],
+        "final": [
+          {
+            "case": "original-thin-authored-paints",
+            "host": "windows",
+            "sourceSha256": "dc88de6989e5efe69cc505931d2f3d7c0e4ce898809c255520d4a3332f7b73f5",
+            "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+            "pngSha256": "71c6a17294ec79ccb8a4c88b40ce0a589303ce5c014efc5986bd980cdd5a4795",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "previousCandidateByteIdentical": true
+          },
+          {
+            "case": "original-thin-authored-paints",
+            "host": "linux",
+            "sourceSha256": "dc88de6989e5efe69cc505931d2f3d7c0e4ce898809c255520d4a3332f7b73f5",
+            "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+            "pngSha256": "71c6a17294ec79ccb8a4c88b40ce0a589303ce5c014efc5986bd980cdd5a4795",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "previousCandidateByteIdentical": true
+          }
+        ]
+      },
+      {
+        "fixture": "../../Fixtures/original/thin-clip-chords.svg",
+        "reference": "../../References/original-thin-clip-chords.json",
+        "sourceSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+        "nativePngSha256": "eff9f28f84b3c028ffc27ef3aba3682e8dfd2592cd518b56b1abe1aad6176e3f",
+        "captures": [
+          {
+            "id": "original-thin-clip-chords",
+            "host": "windows",
+            "capture": 1,
+            "sourceSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+            "nativePngSha256": "eff9f28f84b3c028ffc27ef3aba3682e8dfd2592cd518b56b1abe1aad6176e3f",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-clip-chords",
+            "host": "windows",
+            "capture": 2,
+            "sourceSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+            "nativePngSha256": "eff9f28f84b3c028ffc27ef3aba3682e8dfd2592cd518b56b1abe1aad6176e3f",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-clip-chords",
+            "host": "windows",
+            "capture": 3,
+            "sourceSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+            "nativePngSha256": "eff9f28f84b3c028ffc27ef3aba3682e8dfd2592cd518b56b1abe1aad6176e3f",
+            "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-clip-chords",
+            "host": "linux",
+            "capture": 1,
+            "sourceSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+            "nativePngSha256": "eff9f28f84b3c028ffc27ef3aba3682e8dfd2592cd518b56b1abe1aad6176e3f",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-clip-chords",
+            "host": "linux",
+            "capture": 2,
+            "sourceSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+            "nativePngSha256": "eff9f28f84b3c028ffc27ef3aba3682e8dfd2592cd518b56b1abe1aad6176e3f",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "id": "original-thin-clip-chords",
+            "host": "linux",
+            "capture": 3,
+            "sourceSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+            "nativePngSha256": "eff9f28f84b3c028ffc27ef3aba3682e8dfd2592cd518b56b1abe1aad6176e3f",
+            "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "before": [
+          {
+            "id": "original-thin-clip-chords",
+            "host": "windows",
+            "phase": "before",
+            "librarySha256": "45e74dbfea8b942fd012383d75f09d01aa2f2dae0b9f707e51bef81eb7f03e3f",
+            "changedPixels": 3,
+            "maximumError": 128,
+            "totalChannelError": 858
+          },
+          {
+            "id": "original-thin-clip-chords",
+            "host": "linux",
+            "phase": "before",
+            "librarySha256": "45e74dbfea8b942fd012383d75f09d01aa2f2dae0b9f707e51bef81eb7f03e3f",
+            "changedPixels": 3,
+            "maximumError": 128,
+            "totalChannelError": 858
+          }
+        ],
+        "final": [
+          {
+            "case": "original-thin-clip-chords",
+            "host": "windows",
+            "sourceSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+            "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+            "pngSha256": "890e8f36e3847d52e1cd8d1c8268f16b8f787cc701da26594e3fd09054b755e9",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "previousCandidateByteIdentical": true
+          },
+          {
+            "case": "original-thin-clip-chords",
+            "host": "linux",
+            "sourceSha256": "ab037c3f23480eee1d8d1cd7e3ab2dcd6a127d1a364d6d948c6146ec414cf9ef",
+            "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+            "pngSha256": "890e8f36e3847d52e1cd8d1c8268f16b8f787cc701da26594e3fd09054b755e9",
+            "changedPixels": 0,
+            "maximumError": 0,
+            "previousCandidateByteIdentical": true
+          }
+        ]
+      }
+    ]
+  },
+  "ford": {
+    "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+    "sourceSvgFilesRetained": 0,
+    "originalFragmentsRetained": 0,
+    "logicalViewport": [
+      548.95361,
+      303.17667
+    ],
+    "screenshot": [
+      549,
+      303
+    ],
+    "qualification": "Complete default static transparent original; three fresh healthy/profile-cleaned captures on each host. Other font/resource/static-state contexts remain separate.",
+    "captures": [
+      {
+        "host": "windows",
+        "capture": 1,
+        "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+        "nativePngSha256": "7377e62702bc12c610e2924e4c8fbf11b7848ce74e9f4e3558fced545ca9f444",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "windows",
+        "capture": 2,
+        "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+        "nativePngSha256": "7377e62702bc12c610e2924e4c8fbf11b7848ce74e9f4e3558fced545ca9f444",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "windows",
+        "capture": 3,
+        "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+        "nativePngSha256": "7377e62702bc12c610e2924e4c8fbf11b7848ce74e9f4e3558fced545ca9f444",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "capture": 1,
+        "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+        "nativePngSha256": "7377e62702bc12c610e2924e4c8fbf11b7848ce74e9f4e3558fced545ca9f444",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "capture": 2,
+        "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+        "nativePngSha256": "7377e62702bc12c610e2924e4c8fbf11b7848ce74e9f4e3558fced545ca9f444",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "host": "linux",
+        "capture": 3,
+        "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+        "nativePngSha256": "7377e62702bc12c610e2924e4c8fbf11b7848ce74e9f4e3558fced545ca9f444",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ],
+    "comparisons": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "45e74dbfea8b942fd012383d75f09d01aa2f2dae0b9f707e51bef81eb7f03e3f",
+        "changedPixels": 6,
+        "maximumError": 4,
+        "totalChannelError": 45,
+        "bounds": [
+          13,
+          123,
+          17,
+          126
+        ]
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "45e74dbfea8b942fd012383d75f09d01aa2f2dae0b9f707e51bef81eb7f03e3f",
+        "changedPixels": 6,
+        "maximumError": 4,
+        "totalChannelError": 45,
+        "bounds": [
+          13,
+          123,
+          17,
+          126
+        ]
+      }
+    ],
+    "final": [
+      {
+        "case": "complete-ford",
+        "host": "windows",
+        "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "pngSha256": "89feb0c30f7e38c0a8fc4285773114b00381b845032973aeb01fa5c036ea0711",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "previousCandidateByteIdentical": true
+      },
+      {
+        "case": "complete-ford",
+        "host": "linux",
+        "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "pngSha256": "89feb0c30f7e38c0a8fc4285773114b00381b845032973aeb01fa5c036ea0711",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "previousCandidateByteIdentical": true
+      }
+    ]
+  },
+  "fordSubsetControls": {
+    "sourceSha256": "7b6394dcab3a9b49ba98c24becfa936507109badb5201d66bd99a105eb19f4fb",
+    "sourceSvgFilesRetained": 0,
+    "originalFragmentsRetained": 0,
+    "scope": "Final replay against unchanged exploratory native subset controls; ancestor/style/source hashes preserved. Both native-positive branches are retained in the control set.",
+    "rows": [
+      {
+        "case": "full-control",
+        "paints": 566,
+        "variantSourceSha256": "04c0f3744b3608b4d09bebfe205d1cd6c71d4ced5de0f90c383c31737b489381",
+        "nativePngSha256": "7377e62702bc12c610e2924e4c8fbf11b7848ce74e9f4e3558fced545ca9f444",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 6,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "selected",
+        "paints": 26,
+        "variantSourceSha256": "45fa08bf2f962d357d56ee68b30d19cea769af2e91a3eb4577ba43f47b72fa58",
+        "nativePngSha256": "3c8f8773ac23c663e6ca2be047c0a9f8dea0b619c268875e3938041f6f9cf5a0",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "complement",
+        "paints": 540,
+        "variantSourceSha256": "a03be6af6c7423bb7672b99f6483b0e5010f3377d8ad118039ba6c698b83fdfb",
+        "nativePngSha256": "2cbeac2a0b6a656b00832f3bd2b2b2345b46a1e3b50ea9e6556766b56db944c3",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 7,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-0-a",
+        "paints": 270,
+        "variantSourceSha256": "c02afa9d64d2e3ed925a04ec5511db681bfc0acb02da9b3aaf8a9a89d968fb2e",
+        "nativePngSha256": "7a27bf5bc405f85634cc336cda7a11ca46df84d770bdaf39af1c542391a672d9",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-0-b",
+        "paints": 270,
+        "variantSourceSha256": "b4e14a0fd9c6d7eeedb2ae2eaea64ddc762aa9e6d10134f00e3c0eb52edf6b87",
+        "nativePngSha256": "c79347ee87087a5bb61944240d6b0bfc7f181dcff9ba63ded0f7d264b4d920f3",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 7,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-1-a",
+        "paints": 135,
+        "variantSourceSha256": "146c5d9c25400546bb0dad74617acf223c6e0f57034d693c70853c68b567749c",
+        "nativePngSha256": "4cbf1fa943fc7b2f6aea4fdd912a31cef493c94475348a65499ed9a907681871",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-1-b",
+        "paints": 135,
+        "variantSourceSha256": "a3c65ae6bc60d678dcedd94d20a9b66a3d9e5db9b9702c491f01ec3a14a417c6",
+        "nativePngSha256": "ec1c354ddf0f42826134ab2c0213db92e8cc993baf34d57372449daa6de305a9",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 7,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-2-a",
+        "paints": 67,
+        "variantSourceSha256": "c3cbe2317bbcafafc52f7f996f4d52e6401457805ef9972560dced3f1aaffbf8",
+        "nativePngSha256": "440c9d2b4a34b6bfc80041c14f28656027b9e813a095a9c04fbbecd74da9cf64",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-2-b",
+        "paints": 68,
+        "variantSourceSha256": "5e0d7fb98b0a315fd436c7c0f0b63aaee074612e34cbe2fb3694378e3c649929",
+        "nativePngSha256": "a6da57f740b92db1d7c15306b50da391c75058b70a3715e298c8301aef018d59",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 7,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-3-a",
+        "paints": 34,
+        "variantSourceSha256": "b55760155e95624b1779061a0ddfeca591f3da8e8f243d1c734d391ac7540a4a",
+        "nativePngSha256": "62587919ea7508e2c133330cb5800f5099939f7194576cb39a9feb0f4844d0a6",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 7,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-3-b",
+        "paints": 34,
+        "variantSourceSha256": "ec7c22eb5ca73bc176ff28844b29c77f2735b56280c145b26755faf421904234",
+        "nativePngSha256": "aba0506db3b620bc9d5c74ea58caf4b9eab70d2e1ec57197f78e760ac3c92d90",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-4-a",
+        "paints": 17,
+        "variantSourceSha256": "13cb08ac40a73dc71eb418bd8bb21f85dad2e5346294ae850c466b5c3ca0ee7c",
+        "nativePngSha256": "947fac8af4291ae72d8078539c544d386d1b406454bff5a7b21d55f2e30e5ad9",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-4-b",
+        "paints": 17,
+        "variantSourceSha256": "b521d5ca019109bcbe3266bdeb0d4170a89771d2873ab87f622200fa930ba7e6",
+        "nativePngSha256": "f8568d18f01328ec37a05ffbaa454b657564712523123bc9be69f5a90584f119",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 7,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-5-a",
+        "paints": 8,
+        "variantSourceSha256": "1421b44fa39f6c26a9821ac28bf31c93c56b667cf945b4b3ad2de384ba68a966",
+        "nativePngSha256": "89689432371ee5edbe3085b713246c801331750973544f773739f934663cc1cb",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 2,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-5-b",
+        "paints": 9,
+        "variantSourceSha256": "06a5a6da1749c73a342ec9a1d3ffdeef85d4d3b9e4b204cffb2b36b8c73e2da8",
+        "nativePngSha256": "3c47d8c7383f3c1699d7c10d14c250515c4614157eea8516007f490d58288875",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 5,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-6-a",
+        "paints": 4,
+        "variantSourceSha256": "73fa37f4714040062faa0716ab880402488227e7dc16e5ebcc3e1a6a409c583a",
+        "nativePngSha256": "89689432371ee5edbe3085b713246c801331750973544f773739f934663cc1cb",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 2,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-6-b",
+        "paints": 4,
+        "variantSourceSha256": "f55ff60aa2062fe091e23d76d6bb90ed64b6eaab8dbb6c97fe40bd3d9ec8614b",
+        "nativePngSha256": "36f40c6a513f18a6cc878864073fae26db4ddf063ef3e5c549de69f272eb6bc9",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-7-a",
+        "paints": 2,
+        "variantSourceSha256": "6a40c5f190fb324850dd825b9e4a2da68bb1b89dbf5374de32987aa47ca8f0d5",
+        "nativePngSha256": "287f09c52636a3bf4abb60e81851c24ef8f1952d68a631beefa98f7660da9859",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-7-b",
+        "paints": 2,
+        "variantSourceSha256": "d74c61390f6e70eee7d4b2ff50c7eac76a0723c00ba3441faa8306b39373c792",
+        "nativePngSha256": "1d57a6b8ec9da2ba354d19ff30b874ca88d429bf118d82a2159037b4fccf6c1a",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 2,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-8-a",
+        "paints": 1,
+        "variantSourceSha256": "585ea27f299fc875b1eb9087038e4336bfbe0ee320147db8687084b9f61ec068",
+        "nativePngSha256": "1d57a6b8ec9da2ba354d19ff30b874ca88d429bf118d82a2159037b4fccf6c1a",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 2,
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "split-8-b",
+        "paints": 1,
+        "variantSourceSha256": "aa448d7f2e9377378a976275694606f6956dcb55dd93a579aac86b15a0334ae6",
+        "nativePngSha256": "36f40c6a513f18a6cc878864073fae26db4ddf063ef3e5c549de69f272eb6bc9",
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7",
+        "beforePixels": 0,
+        "changedPixels": 0,
+        "maximumError": 0
+      }
+    ]
+  },
+  "qualification": {
+    "builds": [
+      {
+        "project": "Lokad.Svg.Tests",
+        "framework": "net11.0",
+        "seconds": 2.204019300173968,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net11.0",
+        "seconds": 0.6212117997929454,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.Tests",
+        "framework": "net10.0",
+        "seconds": 2.1202977001667023,
+        "exitCode": 0,
+        "warnings": 0
+      },
+      {
+        "project": "Lokad.Svg.VisualTests",
+        "framework": "net10.0",
+        "seconds": 0.6135540998075157,
+        "exitCode": 0,
+        "warnings": 0
+      }
+    ],
+    "affectedIntegration": {
+      "passed": 3087,
+      "seconds": 17.832,
+      "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7"
+    },
+    "suites": [
+      {
+        "name": "full-qualified-core-linux-net10.0",
+        "passed": 33044,
+        "seconds": 41.257,
+        "librarySha256": "08a15a24c98a4223e956b6c1e369836036cafc83e11308f58c6297af103ab14b"
+      },
+      {
+        "name": "full-qualified-core-linux-net11.0",
+        "passed": 33044,
+        "seconds": 55.293,
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7"
+      },
+      {
+        "name": "full-qualified-core-windows-net10.0",
+        "passed": 33044,
+        "seconds": 42.453,
+        "librarySha256": "08a15a24c98a4223e956b6c1e369836036cafc83e11308f58c6297af103ab14b"
+      },
+      {
+        "name": "full-qualified-core-windows-net11.0",
+        "passed": 33044,
+        "seconds": 52.839,
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7"
+      },
+      {
+        "name": "full-qualified-native-linux-net10.0",
+        "passed": 39151,
+        "seconds": 121.192,
+        "librarySha256": "08a15a24c98a4223e956b6c1e369836036cafc83e11308f58c6297af103ab14b"
+      },
+      {
+        "name": "full-qualified-native-linux-net11.0",
+        "passed": 39151,
+        "seconds": 151.725,
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7"
+      },
+      {
+        "name": "full-qualified-native-windows-net10.0",
+        "passed": 39151,
+        "seconds": 53.811,
+        "librarySha256": "08a15a24c98a4223e956b6c1e369836036cafc83e11308f58c6297af103ab14b"
+      },
+      {
+        "name": "full-qualified-native-windows-net11.0",
+        "passed": 39151,
+        "seconds": 65.528,
+        "librarySha256": "a25534796b17b12ddba086f8e8e14038bc712cdd708b21d0b5f288ce413cbfb7"
+      }
+    ],
+    "totalPassed": 288780,
+    "timingScope": "Functional elapsed seconds on a concurrently used workstation; not a performance or suite-simplification measurement.",
+    "originals": {
+      "files": 204,
+      "allHashesOutcomesOptionsDimensionsAndStableDiagnosticsPreserved": true,
+      "outcomesFile": "default-outcomes.csv",
+      "sourceSvgFilesRetained": 0,
+      "originalFragmentsRetained": 0,
+      "hosts": {
+        "windows": {
+          "counts": {
+            "UnsupportedFeature": 53,
+            "rendered": 148,
+            "exact": 148,
+            "MalformedInput": 3
+          },
+          "previousPngsByteIdentical": 147,
+          "changedOriginals": [
+            {
+              "name": "compuserver_msn_Ford_Focus.svg",
+              "before": {
+                "status": "different",
+                "changedPixels": 6,
+                "maximumError": 4,
+                "totalChannelError": 45
+              },
+              "after": {
+                "status": "exact",
+                "changedPixels": 0,
+                "maximumError": 0,
+                "totalChannelError": 0
+              }
+            }
+          ],
+          "changedOutcomesOrDiagnostics": []
+        },
+        "linux": {
+          "counts": {
+            "UnsupportedFeature": 53,
+            "rendered": 148,
+            "exact": 148,
+            "MalformedInput": 3
+          },
+          "previousPngsByteIdentical": 147,
+          "changedOriginals": [
+            {
+              "name": "compuserver_msn_Ford_Focus.svg",
+              "before": {
+                "status": "different",
+                "changedPixels": 6,
+                "maximumError": 4,
+                "totalChannelError": 45
+              },
+              "after": {
+                "status": "exact",
+                "changedPixels": 0,
+                "maximumError": 0,
+                "totalChannelError": 0
+              }
+            }
+          ],
+          "changedOutcomesOrDiagnostics": []
+        }
+      }
+    }
+  },
+  "closure": {
+    "closed": [
+      "Short authored curved fill and clip source loss.",
+      "Complete default Ford original; all148 default-rendered originals now exploratory exact on both hosts."
+    ],
+    "remaining": [
+      "The56 default nonrenders remain individually unresolved: supplied fonts/resources, parsing/style and static-state gates.",
+      "Default equality does not qualify alternate static states, fonts or resources; W1 whole-corpus acceptance remains open."
+    ]
+  }
+}

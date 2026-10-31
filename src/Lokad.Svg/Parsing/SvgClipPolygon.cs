@@ -30,7 +30,7 @@ internal readonly record struct SvgClipRegistration(SvgClipBox Bounds, int Conte
 }
 
 /// <summary>Retains one admitted clip-path polygon and its independent winding rule in root-user space.</summary>
-/// <remarks>Points hold pre-device root-user coordinates. Every retained contour closes implicitly and has at least three vertices; ends partition the points exactly. Area-free short contours contribute no clip coverage. Compound paths replay directed winding or parity through the native clip scene, including holes, concavity, self-intersections and canceling coverage. Source commands remain borrowed from document staging.</remarks>
+/// <remarks>Points hold pre-device root-user coordinates. Every retained contour has at least three samples; a curved chord can retain its closing endpoint when flattening produces fewer distinct vertices. Ends partition the points exactly. Short straight contours contribute no clip coverage. Compound paths replay directed winding or parity through the native clip scene, including holes, concavity, self-intersections and canceling coverage. Source commands remain borrowed from document staging.</remarks>
 internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] ContourEnds)
 {
     /// <summary>A display-suppressed resource contributes no binding, unlike an empty silhouette.</summary>

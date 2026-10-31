@@ -78,6 +78,13 @@ Retain directed lines, quadratics, cubics and rational conics until transforms
 and [stroke construction](../src/Lokad.Svg/Rendering/SvgNativePathStroke.cs) are known.
 Early flattening changes offset curves, joins, dashes, bounds and fringe coverage.
 
+A shallow curve can enclose ink against its closing chord even when its fallback
+contains only two endpoints. Fill execution and clip staging retain that authored
+source; preparation adds a closing sample without changing verbs or native point
+counts. Short straight contours and explicitly suppressed empty command streams
+remain nonpainting. The [thin-contour evidence](../tests/Research/svgweb/thin-authored-contours.json)
+separates these mechanisms from paint consumers and ownership contracts.
+
 [Analytic coverage](../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs) walks winding
 intervals using native fixed-point advancement. Rectangle/frame, hairline,
 convex/compound and fallback routes have distinct eligibility and arithmetic.
