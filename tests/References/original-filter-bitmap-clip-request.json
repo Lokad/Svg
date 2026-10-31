@@ -1,0 +1,55 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "182d5f6492cf545c15ec50c0af07a4e4c5ddb07575b97f2391244db619497563",
+  "referenceSha256": "43e5247b140d67a782abe7d95f8844a1ff45fd7a88d57c82ab24d1af869bcbee",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-bitmap-clip-request.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-bitmap-clip-request",
+  "viewport": {
+    "width": 850,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 cubic source and stepped outer clip. In the lower bordered compositor bitmap the clip ends at x=695, although its canvas enclosure extends to x=795. The propagated filter request must use the bitmap coverage. Three fresh healthy/profile-cleaned captures per host at logical/screenshot850x600; all six PNGs are byte-identical.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "182d5f6492cf545c15ec50c0af07a4e4c5ddb07575b97f2391244db619497563",
+      "referenceSha256": "43e5247b140d67a782abe7d95f8844a1ff45fd7a88d57c82ab24d1af869bcbee",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "182d5f6492cf545c15ec50c0af07a4e4c5ddb07575b97f2391244db619497563",
+      "referenceSha256": "43e5247b140d67a782abe7d95f8844a1ff45fd7a88d57c82ab24d1af869bcbee",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  }
+}

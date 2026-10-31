@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "eb0ed33f35d9779fe9aa6ec5d5d9d24c2f6348e2",
+  "scope": "Per-bitmap clip bounds govern axis and affine filter output requests. Gallardo path3850 closes; whole filter/original acceptance remains open.",
+  "sharedModel": {
+    "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "problem": "Filter capture used the full-canvas clip enclosure even when a complex clip covers a narrower part of one bordered destination bitmap. The enlarged source request changes curve construction before blur.",
+    "change": "Reuse existing ActiveClipBounds for ordinary requests, the later native-region remap, affine desired bounds and affine image-edge construction. Existing offset request paths already retain per-bitmap clip metadata.",
+    "ownership": "Existing SvgCpuClipCoverage and caller-owned tapes remain borrowed within their clip scope. No new owner, buffer, cache, API or coordinate model.",
+    "unchanged": "Gaussian kernels, source paint, alpha/color conversion, text layout, logical sizing, uniform fitting, expected images and tolerances.",
+    "nativeContract": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkCanvas.cpp",
+    "nativeContractDetail": "internalSaveLayer and internalDrawDeviceWithFilter derive target output from the current device clip bounds; the complete canvas enclosure is not the per-device request."
+  },
+  "nativeRegression": {
+    "fixture": "../../Fixtures/original/filter-bitmap-clip-request.svg",
+    "reference": "../../References/original-filter-bitmap-clip-request.json",
+    "license": "CC0-1.0",
+    "sourceSha256": "182d5f6492cf545c15ec50c0af07a4e4c5ddb07575b97f2391244db619497563",
+    "referenceSha256": "43e5247b140d67a782abe7d95f8844a1ff45fd7a88d57c82ab24d1af869bcbee",
+    "logicalAndScreenshotDimensions": [
+      850,
+      600
+    ],
+    "freshHealthyProfileCleanedCapturesPerHost": 3,
+    "allSixEncodedPngsIdentical": true,
+    "beforeAfter": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "8c782b09b9ee0da6708b2f1316dbfbf4a74553e8bc332a8d2f8f904a3ac2879d",
+        "changedPixels": 4,
+        "maximumError": 1,
+        "totalChannelError": 4,
+        "bounds": [
+          679,
+          510,
+          692,
+          522
+        ]
+      },
+      {
+        "host": "windows",
+        "phase": "candidate",
+        "librarySha256": "db1fb3f6813704a6d2e58988c9731ef477cba2282b1c3e361677d9c381b7449c",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "bounds": null
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "8c782b09b9ee0da6708b2f1316dbfbf4a74553e8bc332a8d2f8f904a3ac2879d",
+        "changedPixels": 4,
+        "maximumError": 1,
+        "totalChannelError": 4,
+        "bounds": [
+          679,
+          510,
+          692,
+          522
+        ]
+      },
+      {
+        "host": "linux",
+        "phase": "candidate",
+        "librarySha256": "db1fb3f6813704a6d2e58988c9731ef477cba2282b1c3e361677d9c381b7449c",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "bounds": null
+      }
+    ],
+    "routineResponsibility": "One additional canonical fixture in existing manifest admission/conversion tests. Existing clip-bound mechanisms and filter refusal/cancellation/cleanup/retry tests remain separate; no fixture/API product."
+  },
+  "originalMapping": {
+    "original": "gallardo.svg",
+    "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "element": "path3850",
+    "variantSourceSha256": "8bc0c8d316f234f50a6a7c5e0b63df8cc20d7316ab57740be05d6a3c87ef4b79",
+    "observedNativeLowerBitmap": [
+      508,
+      508,
+      764,
+      764
+    ],
+    "observedNonzeroClipBounds": [
+      662,
+      508,
+      695,
+      528
+    ],
+    "canvasClipEnclosure": [
+      662,
+      397,
+      807,
+      528
+    ],
+    "sourceCaptureBefore": [
+      674,
+      470,
+      795,
+      543
+    ],
+    "sourceCaptureAfter": [
+      674,
+      470,
+      733,
+      543
+    ],
+    "isolatedOriginalBefore": {
+      "changedPixels": 10,
+      "maximumAlphaError": 1,
+      "totalChannelError": 10
+    },
+    "isolatedOpaqueBefore": {
+      "changedPixels": 12,
+      "maximumAlphaError": 1,
+      "totalChannelError": 12
+    },
+    "isolatedOriginalAndOpaqueAfter": "exact",
+    "unclippedCompanionsAfter": "exact",
+    "diagnosticGuard": "The full-opacity blue sidecar preserves the native blur plane in all7494 fully opaque clip pixels. Separate restoration of a preserved blur bitmap keeps its texels unchanged. These diagnose source request/construction; source-sidecar equality alone does not identify a different branch input grid. No diagnostic graph is admitted as a new product contract.",
+    "sourceSvgFilesRetained": 0,
+    "consumerReplay": {
+      "filteredConsumers": 35,
+      "unchangedFilteredPngs": 34,
+      "onlyChangedConsumer": "path3850",
+      "candidateFilterPngsAgreeAcrossHosts": 35,
+      "unfilteredPaintIsolations": 58,
+      "all58PaintPngsByteIdentical": true,
+      "sourceAndNativeHashesUnchanged": true,
+      "remainingFilteredConsumers": [
+        {
+          "id": "path5398",
+          "changedPixels": 2,
+          "maximumError": 5,
+          "totalChannelError": 7
+        },
+        {
+          "id": "use4125",
+          "changedPixels": 9,
+          "maximumError": 255,
+          "totalChannelError": 435
+        },
+        {
+          "id": "path3424",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "totalChannelError": 1
+        },
+        {
+          "id": "path5263",
+          "changedPixels": 2,
+          "maximumError": 127,
+          "totalChannelError": 256
+        },
+        {
+          "id": "use4171",
+          "changedPixels": 41,
+          "maximumError": 15,
+          "totalChannelError": 173
+        }
+      ]
+    }
+  },
+  "originalReplay": {
+    "filesPerHost": 204,
+    "countsPerHost": {
+      "rendered": 148,
+      "exploratoryExact": 139,
+      "different": 9,
+      "UnsupportedFeature": 53,
+      "MalformedInput": 3
+    },
+    "previousPngsByteIdenticalPerHost": {
+      "windows": 147,
+      "linux": 147
+    },
+    "gallardoBefore": {
+      "status": "different",
+      "changedPixels": 94,
+      "maximumError": 18,
+      "totalChannelError": 123
+    },
+    "gallardoAfter": {
+      "status": "different",
+      "changedPixels": 84,
+      "maximumError": 18,
+      "totalChannelError": 107
+    },
+    "diagnosticsOutcomesAndLogicalDimensionsUnchanged": true,
+    "lostExactImages": [],
+    "sourceSvgFilesRetained": 0,
+    "seconds": 59.807144899852574
+  },
+  "validation": [
+    {
+      "name": "affected-core-linux-net10.0",
+      "selection": "(FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~SvgCpuRaster|FullyQualifiedName~SvgRootImageMapTests|FullyQualifiedName~SvgCanvasDrawMapTests|FullyQualifiedName~SvgRecordedTransformTests|FullyQualifiedName~SvgHairline|FullyQualifiedName~SvgGlyph|FullyQualifiedName~SvgText)&Category!=Research",
+      "seconds": 19.730621330000005,
+      "librarySha256": "02ebb0a157749720caab44e8aafc0c71e8fc758d7e93e8b9b7d512de97e7b371",
+      "passed": 4738
+    },
+    {
+      "name": "affected-core-linux-net11.0",
+      "selection": "(FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~SvgCpuRaster|FullyQualifiedName~SvgRootImageMapTests|FullyQualifiedName~SvgCanvasDrawMapTests|FullyQualifiedName~SvgRecordedTransformTests|FullyQualifiedName~SvgHairline|FullyQualifiedName~SvgGlyph|FullyQualifiedName~SvgText)&Category!=Research",
+      "seconds": 18.944932937999994,
+      "librarySha256": "db1fb3f6813704a6d2e58988c9731ef477cba2282b1c3e361677d9c381b7449c",
+      "passed": 4738
+    },
+    {
+      "name": "affected-core-windows-net10.0",
+      "selection": "(FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~SvgCpuRaster|FullyQualifiedName~SvgRootImageMapTests|FullyQualifiedName~SvgCanvasDrawMapTests|FullyQualifiedName~SvgRecordedTransformTests|FullyQualifiedName~SvgHairline|FullyQualifiedName~SvgGlyph|FullyQualifiedName~SvgText)&Category!=Research",
+      "seconds": 24.6334530999884,
+      "librarySha256": "02ebb0a157749720caab44e8aafc0c71e8fc758d7e93e8b9b7d512de97e7b371",
+      "passed": 4738
+    },
+    {
+      "name": "affected-core-windows-net11.0",
+      "selection": "(FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~SvgCpuRaster|FullyQualifiedName~SvgRootImageMapTests|FullyQualifiedName~SvgCanvasDrawMapTests|FullyQualifiedName~SvgRecordedTransformTests|FullyQualifiedName~SvgHairline|FullyQualifiedName~SvgGlyph|FullyQualifiedName~SvgText)&Category!=Research",
+      "seconds": 24.667004800168797,
+      "librarySha256": "db1fb3f6813704a6d2e58988c9731ef477cba2282b1c3e361677d9c381b7449c",
+      "passed": 4738
+    },
+    {
+      "name": "affected-native-linux-net10.0",
+      "selection": "(FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgGaussianBlurReferenceTests)&Category!=Research",
+      "seconds": 32.487030956,
+      "librarySha256": "02ebb0a157749720caab44e8aafc0c71e8fc758d7e93e8b9b7d512de97e7b371",
+      "passed": 2951
+    },
+    {
+      "name": "affected-native-linux-net11.0",
+      "selection": "(FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgGaussianBlurReferenceTests)&Category!=Research",
+      "seconds": 36.646699502999994,
+      "librarySha256": "db1fb3f6813704a6d2e58988c9731ef477cba2282b1c3e361677d9c381b7449c",
+      "passed": 2951
+    },
+    {
+      "name": "affected-native-windows-net10.0",
+      "selection": "(FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgGaussianBlurReferenceTests)&Category!=Research",
+      "seconds": 27.583815099904314,
+      "librarySha256": "02ebb0a157749720caab44e8aafc0c71e8fc758d7e93e8b9b7d512de97e7b371",
+      "passed": 2951
+    },
+    {
+      "name": "affected-native-windows-net11.0",
+      "selection": "(FullyQualifiedName~Filter|FullyQualifiedName~Clip|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgGaussianBlurReferenceTests)&Category!=Research",
+      "seconds": 28.369561899919063,
+      "librarySha256": "db1fb3f6813704a6d2e58988c9731ef477cba2282b1c3e361677d9c381b7449c",
+      "passed": 2951
+    }
+  ],
+  "retainedInteractions": {
+    "affineRadialAndSolidLargeViewBoxCases": 23,
+    "allExact": true,
+    "canonicalOpposedAffineReferencesChanged": false
+  },
+  "qualificationBoundary": "Affected mechanisms, ownership and independent rendering on both hosts/runtimes, plus all204 default originals. Full suites and installed packages were qualified at the preceding shared-map milestone; repeat broad qualification at the next coherent filter milestone. Functional busy-host times are not benchmarks or test-suite simplification measurements."
+}

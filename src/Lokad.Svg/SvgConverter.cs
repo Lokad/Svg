@@ -677,6 +677,11 @@ public static partial class SvgConverter
                     return end + 1;
                 }
             }
+            // A complex clip can cover only a narrow part of this bitmap.
+            // Its local nonzero bounds govern filter requests, independently of
+            // the full-canvas enclosure used to enumerate destination bitmaps.
+            SvgAnalyticClipBounds? filterClipBounds = destinationBitmap is {} filterBitmap
+                ? ActiveClipBounds(filterBitmap) : activeViewport.Bounds;
             if (frame?.NativeSourceBounds is null)
             {
                 bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
@@ -714,7 +719,7 @@ public static partial class SvgConverter
             // entire halo makes large blurs needlessly consume unnecessary storage and traversal.
             double requestedLeft = Math.Max(region.Left, layerBounds.Left), requestedTop = Math.Max(region.Top, layerBounds.Top);
             double requestedRight = Math.Min(region.Right, layerBounds.Right), requestedBottom = Math.Min(region.Bottom, layerBounds.Bottom);
-            if (activeViewport.Bounds is {} filterClip)
+            if (filterClipBounds is {} filterClip)
             {
                 requestedLeft = Math.Max(requestedLeft, filterClip.Left); requestedTop = Math.Max(requestedTop, filterClip.Top);
                 requestedRight = Math.Min(requestedRight, filterClip.Right); requestedBottom = Math.Min(requestedBottom, filterClip.Bottom);
@@ -842,7 +847,7 @@ public static partial class SvgConverter
                     requestedTop = Math.Max(layerBounds.Top, gridRegion.Top + frameTop);
                     requestedRight = Math.Min(layerBounds.Right, gridRegion.Right + frameLeft);
                     requestedBottom = Math.Min(layerBounds.Bottom, gridRegion.Bottom + frameTop);
-                    if (activeViewport.Bounds is {} nativeClip)
+                    if (filterClipBounds is {} nativeClip)
                     {
                         requestedLeft = Math.Max(requestedLeft, nativeClip.Left); requestedTop = Math.Max(requestedTop, nativeClip.Top);
                         requestedRight = Math.Min(requestedRight, nativeClip.Right); requestedBottom = Math.Min(requestedBottom, nativeClip.Bottom);
@@ -1118,7 +1123,7 @@ public static partial class SvgConverter
                     if (nativeImage.Right <= nativeImage.Left || nativeImage.Bottom <= nativeImage.Top) return;
                     SvgPaintBounds desired = new(Math.Max(layerBounds.Left, bitmap.BitmapClip.Left), Math.Max(layerBounds.Top, bitmap.BitmapClip.Top),
                         Math.Min(layerBounds.Right, bitmap.BitmapClip.Right), Math.Min(layerBounds.Bottom, bitmap.BitmapClip.Bottom));
-                    if (activeViewport.Bounds is {} clip)
+                    if (ActiveClipBounds(bitmap) is {} clip)
                         desired = new(MathF.Max(desired.Left, clip.Left), MathF.Max(desired.Top, clip.Top), MathF.Min(desired.Right, clip.Right), MathF.Min(desired.Bottom, clip.Bottom));
                     desired = desired.Map(new(inverse.ScaleX, inverse.SkewY, inverse.SkewX, inverse.ScaleY, inverse.TranslateX, inverse.TranslateY), cancellationToken);
                     bool deferredSource = resource.Primitives.Items.Length > 0 && resource.Primitives.Items[^1].Kind == SvgFilterPrimitiveKind.Offset
@@ -1222,7 +1227,7 @@ public static partial class SvgConverter
                     edgePoints[2] = SvgAuthoredPath.MapPoint(edgeMap, new(imageWidth, imageHeight), new(0, 0));
                     edgePoints[3] = SvgAuthoredPath.MapPoint(edgeMap, new(0, imageHeight), new(0, 0));
                     SvgAnalyticClipBounds edgeArea = new(restoreLeft, restoreTop, restoreRight, restoreBottom);
-                    if (activeViewport.Bounds is {} imageClip)
+                    if (ActiveClipBounds(bitmap) is {} imageClip)
                         edgeArea = new(Math.Max(edgeArea.Left, imageClip.Left), Math.Max(edgeArea.Top, imageClip.Top),
                             Math.Min(edgeArea.Right, imageClip.Right), Math.Min(edgeArea.Bottom, imageClip.Bottom));
                     SvgAnalyticClipBounds dispatch = new(

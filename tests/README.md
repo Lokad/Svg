@@ -59,6 +59,10 @@ canonical conversion. Original paint bounds and filtered output remain distinct.
 The [source-request fixture](Fixtures/original/filter-source-request-window.svg)
 protects a blurred curve crossing the output boundary through canonical conversion;
 integer/fractional and path/ellipse companions remain focused research controls.
+The [bitmap clip request fixture](Fixtures/original/filter-bitmap-clip-request.svg)
+protects a stepped clip narrowing one compositor bitmap before source capture.
+It uses canonical conversion and independent native platform triples; existing
+clip-bound mechanisms and filter ownership cases retain their own responsibilities.
 The [affine-root control](Fixtures/original/filter-affine-root-boundary.svg) and
 its [paired gap control](Fixtures/original/filter-affine-root-gap.svg) retain
 distinct backdrop/capture interactions through canonical conversion. Direct

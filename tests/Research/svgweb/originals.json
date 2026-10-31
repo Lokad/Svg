@@ -10351,9 +10351,9 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "root-image-projection.json",
-    "sourceBaseline": "16bdc39b58099c79be91c1eedd94663c44b36dce",
-    "librarySha256": "8c782b09b9ee0da6708b2f1316dbfbf4a74553e8bc332a8d2f8f904a3ac2879d",
+    "evidence": "filter-bitmap-clip-request.json",
+    "sourceBaseline": "eb0ed33f35d9779fe9aa6ec5d5d9d24c2f6348e2",
+    "librarySha256": "db1fb3f6813704a6d2e58988c9731ef477cba2282b1c3e361677d9c381b7449c",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10364,28 +10364,80 @@
       "MalformedInput": 3
     },
     "previousPngsByteIdenticalPerHost": {
-      "windows": 140,
-      "linux": 140
+      "windows": 147,
+      "linux": 147
     },
     "changedOriginals": [
-      "compuserver_msn_Ford_Focus.svg",
-      "pencil.svg",
-      "php.svg",
-      "radialgradient2.svg",
-      "rg1024_Presentation_with_girl.svg",
-      "rg1024_eggs.svg",
-      "rg1024_green_grapes.svg",
-      "scimitar.svg"
+      "gallardo.svg"
     ],
-    "newlyExactOriginals": [
-      "pencil.svg",
-      "php.svg",
-      "rg1024_Presentation_with_girl.svg",
-      "rg1024_eggs.svg",
-      "scimitar.svg"
-    ],
+    "newlyExactOriginals": [],
     "lostExactImages": [],
     "changedOutcomesOrDiagnostics": [],
-    "qualification": "Default conversion with no supplied fonts/resources; the linked stage evidence preserves native platform targets and full runtime/package qualification. Other contexts and whole corpus acceptance remain open."
+    "remainingDefaultDifferences": [
+      {
+        "name": "alphachannel.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 255,
+        "totalChannelError": 259
+      },
+      {
+        "name": "car.svg",
+        "status": "different",
+        "changedPixels": 8542,
+        "maximumError": 255,
+        "totalChannelError": 13801
+      },
+      {
+        "name": "compuserver_msn_Ford_Focus.svg",
+        "status": "different",
+        "changedPixels": 8,
+        "maximumError": 4,
+        "totalChannelError": 51
+      },
+      {
+        "name": "gallardo.svg",
+        "status": "different",
+        "changedPixels": 84,
+        "maximumError": 18,
+        "totalChannelError": 107
+      },
+      {
+        "name": "opensearch.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 223,
+        "totalChannelError": 231
+      },
+      {
+        "name": "radialgradient2.svg",
+        "status": "different",
+        "changedPixels": 1,
+        "maximumError": 1,
+        "totalChannelError": 1
+      },
+      {
+        "name": "rg1024_Ufo_in_metalic_style.svg",
+        "status": "different",
+        "changedPixels": 30,
+        "maximumError": 1,
+        "totalChannelError": 63
+      },
+      {
+        "name": "rg1024_green_grapes.svg",
+        "status": "different",
+        "changedPixels": 2717,
+        "maximumError": 255,
+        "totalChannelError": 6333
+      },
+      {
+        "name": "scion.svg",
+        "status": "different",
+        "changedPixels": 2,
+        "maximumError": 5,
+        "totalChannelError": 22
+      }
+    ],
+    "qualification": "Default conversion without supplied fonts/resources. Native controls and affected integration pass both hosts/runtimes; the linked record distinguishes current validation from the preceding full-suite/package milestone. Other contexts and whole-corpus acceptance remain open."
   }
 }

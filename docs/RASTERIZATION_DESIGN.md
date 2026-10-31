@@ -186,7 +186,10 @@ consumer requires pixels.
 Ordinary, nested and image-containing sources all capture the propagated sampling
 request; unrelated source ink must not enlarge that curve-construction window.
 Axis and transformed effects capture input for each bordered destination bitmap;
-only its interior owns restored pixels. Source construction retains image-hint
+its nonzero clip bounds govern the output request, and only its interior owns
+restored pixels. A canvas clip enclosure can be wider than one bitmap's coverage;
+using that enclosure changes source curve construction before filtering.
+Source construction retains image-hint
 padding independently of captured-content extents and nested filter requests;
 cancellation/refusal restores the enclosing invocation clip.
 The bounds query distinguishes deferred paint, padded images and cropped images.

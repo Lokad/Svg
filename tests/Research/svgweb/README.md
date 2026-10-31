@@ -2,192 +2,77 @@
 
 [Originals](originals.json) accounts for all 204 direct `.svg` entries in the
 [hosted directory](https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/): URL,
-source hash/size, root declarations, lexical font/resource use and platform outcomes.
-Bodies are fetched into bounded memory and discarded. Ordinary tests are offline;
-this directory contains metadata and original orthogonal controls, not the hosted
-SVG collection.
+source hash/size, declarations, lexical font/resource use and platform outcomes.
+Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
+this directory contains metadata and original orthogonal controls.
 
-The current default-path review has 148 rendered inputs per host: 139 exact and 9
-different, with 56 rejected. Shared root-image layout improves ten originals without
-losing an exact image or changing outcomes/diagnostics. `gaussian2.svg` and
-`lineargradient3.svg` are now exact against native platform triples. UFO's remaining
-total channel error is63; Scimitar is exact and Gallardo's error is123. These observations
-use transparent output with no supplied fonts/resources; they do not admit other
-contexts or close the whole corpus.
+The current default conversion renders 148 originals per host: **139 exploratory
+exact and 9 different**, with 53 UnsupportedFeature and 3 MalformedInput outcomes.
+These observations use transparent output without supplied fonts/resources.
+Scimitar is exact; Gallardo differs at 84 pixels/107 total channel error and UFO at
+30 pixels/63 total channel error. See `currentReview` in the inventory for all nine
+remaining differences. Exact default output does not qualify other font, resource
+or static-state contexts, and whole-corpus acceptance remains open.
 
-| Initial first blocker | Originals | Current responsibility |
-| --- | ---: | --- |
-| Gradient-stop `id` | 13 | Admission fixed, with direct identifier boundaries and an exact linear/radial/inherited-stop fixture. Remaining originals expose filter/pattern/color gates or rendering differences. |
-| Fixed units in stroke offsets | 3 | Share a length model; keep units separate from dash geometry and rounding. |
-| Other gradient declarations | 5 | Partial radial inheritance, percentages, defaults, unit overrides and explicit paint fallback are fixed. `twitter.svg` is exact on both hosts; invalid attributes/units remain individually classified. |
-| Required fonts | 9 | Supply programs explicitly; distinguish SVG-font previews from font-free geometry. |
-| Root events | 10 | Qualify static state and document actual interaction limits. |
-| Unsupported children | 11 | Inspect parent/traversal state before attributing the failure to the reported child. |
-| External raster content | 3 | Bind actual resources explicitly and qualify host materialization. |
-| Other boundaries | 14 | Retain CSS, clip composition, authoring attributes, XML and duplicate-ID diagnostics. |
+Resolve gaps by mechanism, preserving original-to-control mappings and independent
+references. A successful render, ambient font substitution or equal images alone
+cannot establish correctness or redundancy. Font declarations are lexical inventory,
+not resolved requests; navigation is separate from image/CSS/media dependencies.
 
-Counts classify the initial first blocker. Removing one can reveal another.
-Parsing success, ambient font substitution and unexplained pixel differences do
-not close a gap. Font declarations are lexical inventory, not resolved requests;
-resource roles distinguish navigation from image/CSS/media dependencies.
+## Validation responsibilities
 
-The [filter-image model](filter-image-model.json) closes retained path boxes,
-materialized-image crop/padding and alias sampling through affine restoration.
-Seven CC0 references have independent platform triples. Empty affine destination
-tiles skip capture and edge preparation while intersecting tiles retain painting.
-The [bitmap restoration record](filter-bitmap-restoration.json) retains the original
-opacity and unit-blur targets, now canonical regressions, plus independent opaque
-and enclosing-group controls. The full filter/root milestone remains open;
-rendering successfully does not admit an original as exact.
+- Mechanisms pin numerical stages, authored geometry, parsed lengths, bounds and
+  rounding directly. Keep meaningful boundary coverage in these tests.
+- Representative ownership tests protect refusal, cancellation, cleanup and retry.
+  Preserve distinct allocation paths without repeating them for every image.
+- Rendering controls normally use canonical conversion. Reference admission requires
+  three fresh healthy, profile-cleaned captures on each platform and exact existing
+  comparisons. Preserve meaningful platform differences and failing-before cases.
+- Recheck all original hashes, outcomes, diagnostics, dimensions and rendered output
+  after shared fixes. Hosted bodies and fragments remain in memory only.
 
-The [source-capture record](filter-source-capture.json) retains three CC0 native
-platform triples for copying/three-box blur and untiled image padding, plus a
-translucent-flood mechanism for exclusive bitmap interiors. Construction padding
-is separate from captured content and nested requests; seven existing crop,
-rescaling and nested-effect targets remain exact. Full core/native qualification
-includes the broad symbol/reference bank on both hosts and supported runtimes.
-The [source-request record](filter-source-request.json) unifies capture across
-ordinary, nested and image-containing sources. One native fixture protects curve
-construction within the propagated request; all148 original PNGs remain unchanged.
+The [capture model](capture-model.json) distinguishes image/Blob, background and
+viewport contexts. Match logical image viewport separately from screenshot size;
+label static-state changes and resource materialization. Scripts are inactive in
+image documents; animation, ambient fonts and unresolved resources need explicit
+qualification. The [tool procedure](../../../tools/README.md#hosted-svgweb-inventory)
+reproduces the inventory without retaining SVG files.
 
-The [referenced-clip record](clip-use-construction.json) closes substitution of
-flattened chords for copied authored clip paths. Three failing-before mechanisms
-protect quadratic/cubic/arc verbs and fractional placement; two canonical native
-platform triples protect plain clipping and a colored filter interaction. All 35
-Gallardo filter consumers are mapped individually. Their isolated results and
-the complete original remain separate acceptance responsibilities.
+## Shared rendering model and evidence
 
-The [black-filter stage record](black-linear-stages.json) closes the content-dependent
-shortcut that discarded linearRGB shader rounding for black input. One canonical
-96x64 native platform triple protects backdrop composition; a retained independent
-1x1 triple supplies the direct numerical expectation. One black case extends the
-existing ownership checks. The redundant RGB scan is removed; color, alpha and
-transport coverage retain their separate responsibilities.
+Each record links mechanisms, original controls, native provenance and scoped
+acceptance. Measurements and rejected experiments remain in the records; the
+current inventory above governs overall status.
 
-The [Gaussian-alias record](gaussian-alias-restoration.json) closes ordinary final
-restoration ignoring retained color-filter shaders. Five independent one-pixel
-controls preserve zero/effective-zero deviations, SourceAlpha, nonopaque paint
-alpha and explicit sRGB. A separate curved-source fixture has native platform
-triples. Affine captures keep their deferred state; nonopaque aliases use one stack
-texel. All 204 original outcomes and 148 rendered PNGs stay unchanged per host.
+| Responsibility | Evidence and retained contracts |
+| --- | --- |
+| Root image layout and placement | [Root model](root-image-model.json), [projection stages](root-image-projection.json), [image boundary](root-image-boundary.json). Logical sizing, subpixel layout, recorded scene and destination coefficients stay distinct. Direct matrices and large viewBox controls protect stages that small images cannot distinguish. |
+| Root experiments | [Viewport review](root-viewport-review.json), [stage review](root-image-stages.json). Preserve rejected output-only stretching and context distinctions. |
+| Filter images and restoration | [Image model](filter-image-model.json), [bitmap restoration](filter-bitmap-restoration.json), [Gaussian aliases](gaussian-alias-restoration.json). Retain deferred/color-filter state, cropped storage, padding, enclosing opacity and final sampling roles. |
+| Filter source requests | [Source capture](filter-source-capture.json), [request propagation](filter-source-request.json), [bitmap clip requests](filter-bitmap-clip-request.json). Ordinary, nested and image-containing sources use propagated requests; each bordered destination bitmap uses its own nonzero clip bounds. |
+| Source raster windows | [Clip construction](source-clip-construction.json), [raster window](filter-raster-window.json). Admitted numerical paint and construction padding remain separate from tight visual extents and captured content. |
+| Nested pictures and affine capture | [Nested picture](filter-nested-picture.json), [transform review](filter-transform-review.json). Keep original descendant paint hints, filtered output and parameter capture enclosure distinct. Both opposed affine controls are exact canonical regressions. |
+| Filter numerical stages | [Black linear stages](black-linear-stages.json), [bilinear weights](filter-bilinear-review.json), [numeric vectors](../../Lokad.Svg.Tests/TestData/highp-bilinear.json), [browser probe](highp-bilinear.js). Transfer, byte storage, packed alpha, high-precision weights and addressing have separate responsibilities. |
+| Clip source geometry | [Referenced paths](clip-use-construction.json), [source placement](clip-source-placement.json), [canvas boundaries](clip-canvas-boundaries.json). Retain authored quadratic/cubic/arc operands, local resource placement and referencing-canvas concatenation. |
+| Clip coverage and bounds | [Replay state](clip-replay-state.json), [visual bounds](clip-visual-bounds.json), [analytic alpha](analytic-alpha-bytes.json). Separate silhouette coverage, stroke/layout enclosures, numerical raster ink and native byte narrowing. |
+| Radial paint binding | [Source binding](radial-source-binding.json). Keep local gradient coordinates and reference placement through axis/skew, clipping and inherited stops. |
+| Gradient declarations | [Typed lengths](gradient-lengths.json), [inheritance fixture](../../Fixtures/original/radial-coordinate-inheritance.svg), [stop identity fixture](../../Fixtures/original/gradient-stop-identities.svg). Preserve number/percentage intent, missing/default values, units, per-field inheritance, viewport resolution and metadata. |
+| Paint selection and text evidence | [Paint references](paint-references.json), [filter-source review](filter-source-review.json). Empty paint content and unavailable servers differ; the synthetic font needs valid bounds before its rendering can diagnose the library. Exploratory single captures do not admit new references. |
 
-The [radial source-binding record](radial-source-binding.json) closes loss of local
-gradient transforms when axis-resolved paints bind to skewed shapes. Four canonical
-controls preserve direct, clipped, inherited-stop and translated path placement with
-native platform triples. Axis and skewed paths share source binding; the former
-translated-axis research witness and target moved unchanged into canonical coverage.
-Mechanisms protect definition coordinates, inverse mapping and local/reference separation.
+## Original acceptance mappings
 
-The [paint-reference record](paint-references.json) maps four CC0 controls to native
-platform triples. Paint fallbacks share lexical parsing and completed resource
-availability across lowering, retained content and font selection. Empty content
-and an unavailable server remain distinct. The
-[filter-source review](filter-source-review.json) closes the apparent blank-text
-witness as missing bounds in its synthetic test font. Eight valid-font controls
-are independently exact on each host. These single-process exploratory captures
-preserve platform differences and do not constitute new reference admission.
+The [280-leaf Gallardo map](gallardo-paint-map.csv) retains 58 native paint isolations
+and the [referenced-clip record](clip-use-construction.json) maps 35 filter consumers.
+The current [bitmap request record](filter-bitmap-clip-request.json) rechecks both
+collections. The clipped `path3850` blur is now exact;
+the complete Gallardo image remains unresolved. The
+[Scimitar scope map](scimitar-scope-map.csv) preserves all 43 scopes; the
+[inner-filter map](scimitar-inner-filter-map.csv) preserves 20 companions, including
+the complete 35-child shadow. These and the complete Scimitar original remain exact.
 
-The [gradient-length record](gradient-lengths.json) maps five original CC0 fixtures
-to independent native platform references. Typed lengths retain number/percentage
-intent and missing/default state through inheritance. Definitions and nested aliases
-resolve in their own viewports before placement; unit overrides reinterpret the
-inherited lengths, while cross-kind templates use their own coordinate defaults.
-Mechanisms protect all coordinates, float boundaries, ownership and invalid focal
-circles; most rendering uses the canonical conversion path. A native DOM probe
-pins an intermediate radius that equal small images alone could not distinguish.
-
-The earlier [radial inheritance fixture](../../Fixtures/original/radial-coordinate-inheritance.svg)
-protects per-field overrides and changed-source ownership; `intertwingly.svg` is
-exact against three fresh healthy captures on each host. The
-[stop-identity fixture](../../Fixtures/original/gradient-stop-identities.svg) protects
-stop metadata independently. Every existing target remains unchanged.
-
-[Capture calibration](capture-model.json) retains independent image/Blob,
-background and viewport contexts. Match the logical image viewport separately
-from screenshot dimensions, preserve original bytes/options, and label any static
-state or resource materialization. Scripts are inactive in image documents;
-animation, ambient fonts and unresolved resources still need explicit qualification.
-
-The [root-image model](root-image-model.json) separates logical sizing, native
-subpixel layout, natural image projection and uniform output scale. Two fractional
-fixtures retain unchanged browser targets, including the painted-viewBox
-counterexample. [Boundary references](root-image-boundary.json) distinguish direct
-overlap from opacity-group restoration; a borrowed rectangle shares existing clip
-rounding without a full-canvas mask. [Clip replay state](clip-replay-state.json)
-keeps coverage separate from allocation enclosures. [Earlier viewport experiments](root-viewport-review.json)
-and [stage prototypes](root-image-stages.json) preserve the rejected output-only
-stretch and context differences. Full Scimitar/Gallardo acceptance remains open.
-
-The [projection review](root-image-projection.json) records independent native
-matrices for three owned controls with identity, contracting and expanding image
-destinations. Matching images alone do not distinguish these numerical stages.
-The shared drawing map preserves unrounded parameter coordinates, recorded-scene
-rounding and the outer image transform across paths, rectangles, shaders, images
-and device-fitted glyph replay. It makes five more originals exact on both hosts:
-pencil, php, Presentation-with-girl, eggs and Scimitar. All prior exact images and
-outcomes are preserved. Direct mechanisms pin native matrices and capture enclosure;
-the paired gap fixture is now canonical with unchanged native targets. Full core,
-rendering and installed-package qualification covers both runtimes on both hosts.
-Remaining filter and whole-corpus acceptance stays open.
-
-The [analytic alpha record](analytic-alpha-bytes.json) closes signed integer
-intermediates bypassing native byte narrowing before accumulation. One direct
-cubic mechanism and an independently captured direct/blur fixture protect that
-stage. Byte scratch replaces integer scratch under the existing owner. All204
-originals are rechecked per host:146 PNGs stay unchanged, car/Gallardo improve,
-and no exact result or diagnostic changes. Seven isolated Gallardo consumers and
-the complete filter/original milestone remain unresolved.
-
-The [clip source record](clip-source-placement.json) separates child-local
-materialization from reference/device mapping. Exact curve-operand mechanisms,
-one representative ownership case and a placed-arc native platform triple protect
-the stage. The [280-leaf paint map](gallardo-paint-map.csv) retains the broader
-investigation; its58 native isolations remain exploratory. Gallardo improves to
-106 differing pixels, with147 other rendered PNGs unchanged per host.
-The [canvas boundary record](clip-canvas-boundaries.json) resolves the distinct
-cubic clipped-target interaction by separating mask construction from consumer
-concatenation. The own native control is exact on both platforms; scaled radial
-and object-box regressions retain their existing targets. Gallardo now differs
-at94 pixels/123 total channel error; the whole filter/original milestone stays open.
-The [source-clip record](source-clip-construction.json) closes clip resources using
-tighter construction bounds than their captured source geometry. One own fixture
-retains six independent native captures; all204 hosted outcomes remain unchanged.
-The [raster-window record](filter-raster-window.json) separates source request/layout
-from admitted numerical paint and actual clip coverage. Two own fixtures retain
-clip-before-blur and clip-after-blur interactions on the same tiled canvas. This
-closes those controls; the original Gallardo clip/blur discrepancy remains open.
-The [clip visual-bounds record](clip-visual-bounds.json) preserves ignored stroke
-extents independently of clip silhouettes, including referenced children. Two own
-sources have independent native platform triples. Scimitar improves from221 to106
-differing pixels, with147 other rendered PNGs unchanged per host. Its
-[43-scope map](scimitar-scope-map.csv) keeps filtered subtrees intact; the full
-filter/original acceptance remains open.
-The [nested-picture record](filter-nested-picture.json) keeps original descendant
-paint bounds in the parent image hint, independently of filtered child output.
-One canonical native fixture protects child retention and distant gradient dithering.
-All20 [inner-filter variants](scimitar-inner-filter-map.csv), including the complete
-shadow, are now exact; the full Scimitar original still differs at six pixels.
-
-The [transform review](filter-transform-review.json) retains opposed affine
-controls: an exact canonical regression and an unresolved research witness.
-A root-CTM substitution improves Scimitar but breaks the exact control and is
-rejected. A separate diagnostic exposes three source-alpha discrepancies while
-preserving the original native blur alpha. Mapping, source construction and image
-storage must be resolved together; these observations close no original finding.
-The same record separates Skia fast capture hints from Blink rounded-box visual
-outsets and retains the rejected substitution. Its known-alpha probe validates the
-input plane before restoration; several fitting matrices remain inconclusive.
-
-The [bilinear review](filter-bilinear-review.json) and its [browser probe](highp-bilinear.js) isolate float weight rounding
-in Chromium's raster pipeline. Its [numeric vectors](../../Lokad.Svg.Tests/TestData/highp-bilinear.json)
-retain six fresh Windows/Linux captures. Filter and clamped image views now share
-the weight/address calculation; wrapped pattern sampling retains its own addressing.
-This closes the sampled-weight inconsistency, while the original filter gaps and
-opposed affine controls remain open.
-
-Group confirmed gaps by mechanism and retain original-to-fixture mappings,
-licenses and failing-before evidence. Reference admission requires three fresh
-healthy captures per platform and exact established comparisons. Recheck all
-originals after shared fixes. The
-[tool procedure](../../../tools/README.md#hosted-svgweb-inventory) reproduces the
-inventory without retaining SVG files.
+Remaining work includes filter crop/flood-offset/shadow interactions, declared
+stroke units, CSS and gradient boundaries, explicit font programs, static-state
+traversal and host-bound raster resources. Follow actual parent/traversal state
+before attributing a rejection to its reported child. Keep malformed, unsupported
+and font/resource-dependent cases individually classified; removing one blocker
+can expose another.
