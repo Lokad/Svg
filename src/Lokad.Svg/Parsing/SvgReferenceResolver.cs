@@ -260,7 +260,7 @@ internal static class SvgReferenceResolver
                         AddInstanceGeometry(applied, ApplyPatternPolygon(authoredSource, reference, frame, state, cancellationToken));
                         break;
                     case SvgGeometryKind.GradientFill:
-                        AddInstanceGeometry(applied, LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame));
+                        AddInstanceGeometry(applied, LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame, state, cancellationToken));
                         break;
                     case SvgGeometryKind.RadialGradient:
                         AddInstanceGeometry(applied, LowerEmbeddedInstanceRadialFill(sources[index].Radial, reference, frame, state.Budget));
@@ -269,7 +269,7 @@ internal static class SvgReferenceResolver
                         AddInstanceGeometry(applied, LowerEmbeddedInstancePatternFill(sources[index].Pattern, reference, frame));
                         break;
                     case SvgGeometryKind.GradientStroke:
-                        AddInstanceGeometry(applied, LowerEmbeddedInstanceGradientStroke(sources[index].GradientStroke, reference, frame));
+                        AddInstanceGeometry(applied, LowerEmbeddedInstanceGradientStroke(sources[index].GradientStroke, reference, frame, state, cancellationToken));
                         break;
                     default: throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.");
                 }
@@ -421,12 +421,12 @@ internal static class SvgReferenceResolver
             return SvgGeometry.FromRectangle(frame.Value.ClipShifted(rectangle));
         }
 
-        static SvgGeometry LowerEmbeddedInstanceGradientFill(SvgGradientGeometry band, SvgUseReference instance, SvgViewportFrame? viewportFrame)
+        static SvgGeometry LowerEmbeddedInstanceGradientFill(SvgGradientGeometry band, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, CancellationToken token)
         {
             SvgRectangle placement = InstancePlacement(band.Fill, instance);
             SvgRectangle box = InstanceBox(band.Box, instance, viewportFrame);
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
-            return LowerInstanceGradientFill(band.Gradient, placement, box, composed, viewportFrame, MapInstanceSolidStroke(band.Fill, band.Stroke, instance, viewportFrame));
+            return LowerInstanceGradientFill(band.Gradient, placement, box, composed, viewportFrame, MapInstanceSolidStroke(band.Fill, band.Stroke, instance, viewportFrame), document, token);
         }
 
         static SvgGeometry LowerEmbeddedInstanceRadialFill(SvgRadialGeometry radial, SvgUseReference instance, SvgViewportFrame? viewportFrame, RenderBudget budget)
@@ -439,11 +439,11 @@ internal static class SvgReferenceResolver
             return LowerPlacedRadialFill(circle, placement, box, composed.Opacity, composed.IsPainted, instance.Transform, viewportFrame, budget, MapInstanceSolidStroke(radial.Fill, radial.Stroke, instance, viewportFrame));
         }
 
-        static SvgGeometry LowerEmbeddedInstanceGradientStroke(SvgGradientStrokeGeometry stroke, SvgUseReference instance, SvgViewportFrame? viewportFrame)
+        static SvgGeometry LowerEmbeddedInstanceGradientStroke(SvgGradientStrokeGeometry stroke, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, CancellationToken token)
         {
             SvgLinearGradient vector = stroke.Gradient;
-            if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 + instance.X, Y1 = vector.Y1 + instance.Y, X2 = vector.X2 + instance.X, Y2 = vector.Y2 + instance.Y };
-            vector = SvgGradientSyntax.MapUserSpaceVector(instance.Transform, vector, viewportFrame);
+            SvgAffineTransform paintPlacement = instance.Transform.ComposeChecked(SvgAffineTransform.FromTranslation(instance.X, instance.Y));
+            vector = SvgGradientSyntax.MapUserSpaceVector(paintPlacement, vector, viewportFrame, document, token);
             vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
             SvgRectangle fill = InstancePlacement(stroke.Fill, instance);
             SvgRectangle top = InstancePlacement(stroke.Top, instance);
@@ -479,7 +479,7 @@ internal static class SvgReferenceResolver
                 tile = SvgPatternReferenceResolver.ForReplay(paintId, tile, state, token);
                 return LowerInstancePatternFill(tile, InstancePlacement(definition.Geometries[0].Rectangle, reference), reference, frame, null, SvgAffineTransform.Identity, null);
             }
-            if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient)) return LowerInstanceGradientFill(gradient, InstancePlacement(definition.Geometries[0].Rectangle, reference), InstanceBox(definition.Geometries[0].Rectangle, reference, frame), reference, frame, null);
+            if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient)) return LowerInstanceGradientFill(gradient, InstancePlacement(definition.Geometries[0].Rectangle, reference), InstanceBox(definition.Geometries[0].Rectangle, reference, frame), reference, frame, null, state, token);
             if (state.RadialGradients.TryGetValue(paintId, out SvgRadialGradient circle)) return LowerInstanceRadialFill(circle, InstancePlacement(definition.Geometries[0].Rectangle, reference), InstanceBox(definition.Geometries[0].Rectangle, reference, frame), reference, frame, state.Budget);
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");
         }
@@ -661,13 +661,13 @@ internal static class SvgReferenceResolver
             SvgRectangle box;
             if (!reference.Transform.IsAxisAligned || vector.SourcePaint?.Data.IsMapped == true)
             {
-                SvgAuthoredPath path = source.AuthoredPath ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine linear paint instances require retained source commands.");
                 if (vector.SourcePaint?.Data is { IsMapped: true } data)
                 {
                     if (placement != SvgAffineTransform.Identity) vector = vector with { SourcePaint = state.Scene.RetainLinearPaintMap(data with { Referencing = placement.ComposeChecked(data.Referencing) }) };
                 }
                 else
                 {
+                    SvgAuthoredPath path = source.AuthoredPath ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine linear paint instances require retained source commands.");
                     SvgRectangle sourceBox = vector.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, cancellationToken);
                     vector = SvgGradientSyntax.BindLinearSourceMap(vector, sourceBox, placement.ComposeChecked(path.SceneMap), state, cancellationToken);
                 }
@@ -675,9 +675,8 @@ internal static class SvgReferenceResolver
             }
             else
             {
-                if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 + reference.X, Y1 = vector.Y1 + reference.Y, X2 = vector.X2 + reference.X, Y2 = vector.Y2 + reference.Y };
                 box = InstanceBox(outline.Box, reference, frame);
-                vector = SvgGradientSyntax.MapUserSpaceVector(reference.Transform, vector, frame);
+                vector = SvgGradientSyntax.MapUserSpaceVector(reference.Transform.ComposeChecked(SvgAffineTransform.FromTranslation(reference.X, reference.Y)), vector, frame, state, cancellationToken);
                 vector = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, vector);
             }
             SvgClipBox? clip = outline.Clip;
@@ -1458,11 +1457,11 @@ internal static class SvgReferenceResolver
                 }
                 else
                 {
-                    if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y, ReferenceScaleX = vector.ReferenceScaleX * scaleX, ReferenceScaleY = vector.ReferenceScaleY * scaleY };
+                    SvgAffineTransform paintPlacement = instance.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y));
                     SvgRectangle contentBox = source.Box;
                     box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
                     if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
-                    vector = SvgGradientSyntax.MapUserSpaceVector(instance.Transform, vector, viewportFrame);
+                    vector = SvgGradientSyntax.MapUserSpaceVector(paintPlacement, vector, viewportFrame, document, cancellationToken);
                     vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
                 }
                 SvgClipBox? clip;
@@ -1490,8 +1489,8 @@ internal static class SvgReferenceResolver
             SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
             if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
             SvgLinearGradient vector = band.Gradient;
-            if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y, ReferenceScaleX = vector.ReferenceScaleX * scaleX, ReferenceScaleY = vector.ReferenceScaleY * scaleY };
-            return LowerPlacedGradientFill(vector, fill, box, MultiplyAlpha(band.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame, fill.Stroke);
+            SvgAffineTransform paintPlacement = instance.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y));
+            return LowerPlacedGradientFill(vector, fill, box, MultiplyAlpha(band.Opacity, instance.Opacity), fill.HasFill, paintPlacement, viewportFrame, fill.Stroke, document, cancellationToken);
         }
         static SvgGeometry ApplySymbolPatternFill(SvgPatternGeometry band, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, CancellationToken cancellationToken)
         {
@@ -1656,8 +1655,8 @@ internal static class SvgReferenceResolver
             SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
             if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
             SvgLinearGradient vector = stroke.Gradient;
-            if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y, ReferenceScaleX = vector.ReferenceScaleX * scaleX, ReferenceScaleY = vector.ReferenceScaleY * scaleY };
-            vector = SvgGradientSyntax.MapUserSpaceVector(instance.Transform, vector, viewportFrame);
+            SvgAffineTransform paintPlacement = instance.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y));
+            vector = SvgGradientSyntax.MapUserSpaceVector(paintPlacement, vector, viewportFrame, document, cancellationToken);
             vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
             byte opacity = MultiplyAlpha(stroke.Opacity, instance.Opacity);
             SvgColor baseColor = stroke.Fill.Color;
@@ -1708,10 +1707,10 @@ internal static class SvgReferenceResolver
         return frame is null ? box : frame.Value.Shift(box);
     }
 
-    private static SvgGeometry LowerInstanceGradientFill(SvgLinearGradient gradient, SvgRectangle placement, SvgRectangle box, SvgUseReference reference, SvgViewportFrame? frame, SvgStroke? stroke)
+    private static SvgGeometry LowerInstanceGradientFill(SvgLinearGradient gradient, SvgRectangle placement, SvgRectangle box, SvgUseReference reference, SvgViewportFrame? frame, SvgStroke? stroke, SvgDocumentState state, CancellationToken token)
     {
-        if (gradient.IsUserSpace) gradient = gradient with { X1 = gradient.X1 + reference.X, Y1 = gradient.Y1 + reference.Y, X2 = gradient.X2 + reference.X, Y2 = gradient.Y2 + reference.Y };
-        return LowerPlacedGradientFill(gradient, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame, stroke);
+        SvgAffineTransform paintPlacement = reference.Transform.ComposeChecked(SvgAffineTransform.FromTranslation(reference.X, reference.Y));
+        return LowerPlacedGradientFill(gradient, placement, box, reference.Opacity, reference.IsPainted, paintPlacement, frame, stroke, state, token);
     }
 
     private static SvgGeometry LowerInstanceRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, SvgUseReference reference, SvgViewportFrame? frame, RenderBudget budget)
@@ -1720,9 +1719,9 @@ internal static class SvgReferenceResolver
         return LowerPlacedRadialFill(circle, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame, budget, null);
     }
 
-    private static SvgGeometry LowerPlacedGradientFill(SvgLinearGradient vector, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform vectorTransform, SvgViewportFrame? frame, SvgStroke? stroke)
+    private static SvgGeometry LowerPlacedGradientFill(SvgLinearGradient vector, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform vectorTransform, SvgViewportFrame? frame, SvgStroke? stroke, SvgDocumentState state, CancellationToken token)
     {
-        vector = SvgGradientSyntax.MapUserSpaceVector(vectorTransform, vector, frame);
+        vector = SvgGradientSyntax.MapUserSpaceVector(vectorTransform, vector, frame, state, token);
         vector = SvgGradientSyntax.MirrorBoundingBoxVector(vectorTransform, vector);
         if (frame is not null) placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
         return FinishInstanceGradientFill(vector, box, placement, opacity, painted, stroke);
@@ -1782,8 +1781,8 @@ internal static class SvgReferenceResolver
         }
         if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient))
         {
-            if (gradient.IsUserSpace) gradient = gradient with { X1 = (gradient.X1 * scaleX + offsetX) + reference.X, Y1 = (gradient.Y1 * scaleY + offsetY) + reference.Y, X2 = (gradient.X2 * scaleX + offsetX) + reference.X, Y2 = (gradient.Y2 * scaleY + offsetY) + reference.Y, ReferenceScaleX = gradient.ReferenceScaleX * scaleX, ReferenceScaleY = gradient.ReferenceScaleY * scaleY };
-            gradient = SvgGradientSyntax.MapUserSpaceVector(reference.Transform, gradient, frame);
+            SvgAffineTransform paintPlacement = reference.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX + reference.X, offsetY + reference.Y));
+            gradient = SvgGradientSyntax.MapUserSpaceVector(paintPlacement, gradient, frame, state, cancellationToken);
             gradient = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, gradient);
             return FinishInstanceGradientFill(gradient, box, fillBox, reference.Opacity, reference.IsPainted, null);
         }

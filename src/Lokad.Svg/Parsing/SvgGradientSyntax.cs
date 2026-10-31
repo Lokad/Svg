@@ -6,8 +6,9 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Retains one bounded linear gradient with its vector and referencing scale record.</summary>
-/// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored endpoints after the local vector definition, so raster evaluation inverts the exact paint map.</remarks>
+/// <summary>Retains one bounded linear gradient and its borrowed source paint map.</summary>
+/// <remarks>SourcePaint keeps factory endpoints, the gradient-local matrix and reference placement
+/// separate. Vector/scale fields also support unbound object-box paints and the finite legacy evaluator.</remarks>
 internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation)
 {
     internal SvgLinearPaintMap? SourcePaint { get; init; }
@@ -377,7 +378,7 @@ internal static class SvgGradientSyntax
         }
         else
         {
-            gradient = MapUserSpaceVector(transform, gradient, frame);
+            gradient = MapUserSpaceVector(transform, gradient, frame, state, context.CancellationToken);
             gradient = MirrorBoundingBoxVector(transform, gradient);
         }
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
@@ -546,12 +547,12 @@ internal static class SvgGradientSyntax
         if (gradient.RequiresSourceMap && !isPath) throw new SvgException(SvgErrorCode.UnsupportedFeature, "General linear paint maps on point-list geometry are not implemented.");
         if (!bindSourceMap)
         {
-            gradient = MapUserSpaceVector(transform, gradient, frame);
+            gradient = MapUserSpaceVector(transform, gradient, frame, state, context.CancellationToken);
             gradient = MirrorBoundingBoxVector(transform, gradient);
         }
         if (paintStroke)
         {
-            outlineGradient = MapUserSpaceVector(transform, outlineGradient, frame);
+            outlineGradient = MapUserSpaceVector(transform, outlineGradient, frame, state, context.CancellationToken);
             outlineGradient = MirrorBoundingBoxVector(transform, outlineGradient);
         }
         if (paintRadialStroke) outlineCircle = MapRadialReference(transform, outlineCircle, frame);
@@ -886,26 +887,22 @@ internal static class SvgGradientSyntax
         return gradient with { Inverse = SvgGradientTransform.Compose(gradient.Inverse, inverseMap), NativePaintMatrices = native };
     }
 
-    internal static SvgLinearGradient MapUserSpaceVector(SvgAffineTransform transform, SvgLinearGradient gradient, SvgViewportFrame? frame)
+    /// <summary>Places user-space paint without folding reference coordinates into its factory endpoints.</summary>
+    /// <remarks>The scene owns the immutable map and its reservation. Existing object-box vectors
+    /// stay unbound until their source box is known. Cancellation precedes the bounded allocation;
+    /// maps are immutable and may be borrowed by concurrent prepared draws.</remarks>
+    internal static SvgLinearGradient MapUserSpaceVector(SvgAffineTransform transform, SvgLinearGradient gradient,
+        SvgViewportFrame? frame, SvgDocumentState state, CancellationToken token)
     {
+        token.ThrowIfCancellationRequested();
         if (gradient.RequiresSourceMap && gradient.SourcePaint?.Data.IsMapped != true) throw new SvgException(SvgErrorCode.UnsupportedFeature, "General linear paint maps require source-bound fill geometry.");
         if (!gradient.IsUserSpace) return gradient;
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned gradient transforms are implemented.");
-        (double mappedX1, double mappedY1) = transform.ApplyToUserPoint(gradient.X1, gradient.Y1);
-        (double mappedX2, double mappedY2) = transform.ApplyToUserPoint(gradient.X2, gradient.Y2);
-        double referenceScaleX = transform.A;
-        double referenceScaleY = transform.D;
-        if (frame is not null)
-        {
-            mappedX1 = mappedX1 * frame.Value.ScaleX + frame.Value.OffsetX;
-            mappedY1 = mappedY1 * frame.Value.ScaleY + frame.Value.OffsetY;
-            mappedX2 = mappedX2 * frame.Value.ScaleX + frame.Value.OffsetX;
-            mappedY2 = mappedY2 * frame.Value.ScaleY + frame.Value.OffsetY;
-            referenceScaleX *= frame.Value.ScaleX;
-            referenceScaleY *= frame.Value.ScaleY;
-        }
-        if (!double.IsFinite(mappedX1) || !double.IsFinite(mappedY1) || !double.IsFinite(mappedX2) || !double.IsFinite(mappedY2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported viewport map exceeds the gradient coordinate range.");
-        return gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2, ReferenceScaleX = gradient.ReferenceScaleX * referenceScaleX, ReferenceScaleY = gradient.ReferenceScaleY * referenceScaleY };
+        SvgLinearPaintMapData source = gradient.SourcePaint?.Data ?? throw new InvalidOperationException("User-space paint requires definition coordinates.");
+        SvgAffineTransform placement = SvgViewportFrame.MapGeometry(transform, frame);
+        SvgAffineTransform reference = source.IsMapped ? placement.ComposeChecked(source.Referencing) : placement;
+        if (source.IsMapped && reference == source.Referencing) return gradient;
+        return gradient with { SourcePaint = state.Scene.RetainLinearPaintMap(source with { Referencing = reference, IsMapped = true }) };
     }
 
     /// <summary>Binds one linear definition to its source object box and composed drawing map.</summary>
@@ -1025,7 +1022,7 @@ internal static class SvgGradientSyntax
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgAffineTransform transform = context.ResolveTransform(reader);
-        gradient = MapUserSpaceVector(transform, gradient, frame);
+        gradient = MapUserSpaceVector(transform, gradient, frame, state, context.CancellationToken);
         SvgLinearGradient fillGradient = default;
         SvgRadialGradient fillCircle = default;
         bool hasLinearFill = false;
@@ -1035,7 +1032,7 @@ internal static class SvgGradientSyntax
             string fillId = ParseGradientId(style.Fill);
             if (state.Gradients.TryGetValue(fillId, out SvgLinearGradient resolvedFill))
             {
-                fillGradient = MapUserSpaceVector(transform, resolvedFill, frame);
+                fillGradient = MapUserSpaceVector(transform, resolvedFill, frame, state, context.CancellationToken);
                 fillGradient = MirrorBoundingBoxVector(transform, fillGradient);
                 hasLinearFill = true;
             }
@@ -1127,7 +1124,7 @@ internal static class SvgGradientSyntax
             string fillId = ParseGradientId(style.Fill);
             if (state.Gradients.TryGetValue(fillId, out SvgLinearGradient resolvedFill))
             {
-                fillGradient = MapUserSpaceVector(transform, resolvedFill, frame);
+                fillGradient = MapUserSpaceVector(transform, resolvedFill, frame, state, context.CancellationToken);
                 fillGradient = MirrorBoundingBoxVector(transform, fillGradient);
                 hasLinearFill = true;
             }

@@ -139,7 +139,7 @@ internal static class SvgOrthogonalShapeParser
             {
                 if (paintPathOutline && !mappedOutline)
                 {
-                    pathGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
+                    pathGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame, state, context.CancellationToken);
                     pathGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, pathGradient);
                 }
                 else if (paintPathRadial && !mappedOutline) pathCircle = SvgGradientSyntax.MapRadialReference(shape.Transform, outlineRadialCandidate, frame);
@@ -312,7 +312,7 @@ internal static class SvgOrthogonalShapeParser
             {
                 if (paintOutline && !mappedOutline)
                 {
-                    strokeGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
+                    strokeGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame, state, context.CancellationToken);
                     strokeGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, strokeGradient);
                 }
                 else if (paintRadialOutline && !mappedOutline) strokeCircle = SvgGradientSyntax.MapRadialReference(shape.Transform, outlineRadialCandidate, frame);

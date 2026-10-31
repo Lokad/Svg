@@ -1,0 +1,55 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "9c3555ed28629634cba5dd3ae86bc5a04171ee99b2d2404f2a4a4e5e26664e3a",
+  "referenceSha256": "112f922640eb15e59ceadaffd0b6a8cb1586fff98fb6861d9514dd4a5e3d9cab",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-linear-gradient-reference-path.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-linear-gradient-reference-path",
+  "viewport": {
+    "width": 280,
+    "height": 118,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 control. Same gradient declaration through authored path construction; source operation identity retained. Three fresh healthy/profile-cleaned captures per host; both platforms agree. Canonical conversion only.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "9c3555ed28629634cba5dd3ae86bc5a04171ee99b2d2404f2a4a4e5e26664e3a",
+      "referenceSha256": "112f922640eb15e59ceadaffd0b6a8cb1586fff98fb6861d9514dd4a5e3d9cab",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "9c3555ed28629634cba5dd3ae86bc5a04171ee99b2d2404f2a4a4e5e26664e3a",
+      "referenceSha256": "112f922640eb15e59ceadaffd0b6a8cb1586fff98fb6861d9514dd4a5e3d9cab",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  }
+}

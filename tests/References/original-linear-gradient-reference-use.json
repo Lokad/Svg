@@ -1,0 +1,55 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "89caed3345991ceb361e460dbe5319ee16a436cbf56812a34a57c0d6aca3ade0",
+  "referenceSha256": "bc2c2c576cdb68b43a19df1926a6e5d5bf2d2b9723f2df546cc8f5b9ccf7caaa",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-linear-gradient-reference-use.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-linear-gradient-reference-use",
+  "viewport": {
+    "width": 280,
+    "height": 118,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Own CC0 control. Bound paint follows a referenced rectangle with fractional instance offsets. Three fresh healthy/profile-cleaned captures per host; both platforms agree. Canonical conversion only.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "89caed3345991ceb361e460dbe5319ee16a436cbf56812a34a57c0d6aca3ade0",
+      "referenceSha256": "bc2c2c576cdb68b43a19df1926a6e5d5bf2d2b9723f2df546cc8f5b9ccf7caaa",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "89caed3345991ceb361e460dbe5319ee16a436cbf56812a34a57c0d6aca3ade0",
+      "referenceSha256": "bc2c2c576cdb68b43a19df1926a6e5d5bf2d2b9723f2df546cc8f5b9ccf7caaa",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  }
+}

@@ -18619,6 +18619,102 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-affine-root-gap.json",
       "referenceSha256": "a7dc13e47b2c8355662d4c81df255f67ede4720aaf6a5b9f11da572f7bcc0435"
+    },
+    {
+      "id": "original-linear-gradient-reference-rect",
+      "path": "original/linear-gradient-reference-rect.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "3ae3aa820e0ef7db98ce9672773bf654bf3f77a40015f22494386457c3ce5b2d",
+      "materializedSha256": "3ae3aa820e0ef7db98ce9672773bf654bf3f77a40015f22494386457c3ce5b2d",
+      "featureTags": [
+        "linear-gradient",
+        "source-map",
+        "placement"
+      ],
+      "width": 280,
+      "height": 118,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-linear-gradient-reference-rect.json",
+      "referenceSha256": "112f922640eb15e59ceadaffd0b6a8cb1586fff98fb6861d9514dd4a5e3d9cab"
+    },
+    {
+      "id": "original-linear-gradient-reference-path",
+      "path": "original/linear-gradient-reference-path.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "9c3555ed28629634cba5dd3ae86bc5a04171ee99b2d2404f2a4a4e5e26664e3a",
+      "materializedSha256": "9c3555ed28629634cba5dd3ae86bc5a04171ee99b2d2404f2a4a4e5e26664e3a",
+      "featureTags": [
+        "linear-gradient",
+        "source-map",
+        "placement"
+      ],
+      "width": 280,
+      "height": 118,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-linear-gradient-reference-path.json",
+      "referenceSha256": "112f922640eb15e59ceadaffd0b6a8cb1586fff98fb6861d9514dd4a5e3d9cab"
+    },
+    {
+      "id": "original-linear-gradient-reference-use",
+      "path": "original/linear-gradient-reference-use.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "89caed3345991ceb361e460dbe5319ee16a436cbf56812a34a57c0d6aca3ade0",
+      "materializedSha256": "89caed3345991ceb361e460dbe5319ee16a436cbf56812a34a57c0d6aca3ade0",
+      "featureTags": [
+        "linear-gradient",
+        "source-map",
+        "placement"
+      ],
+      "width": 280,
+      "height": 118,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-linear-gradient-reference-use.json",
+      "referenceSha256": "bc2c2c576cdb68b43a19df1926a6e5d5bf2d2b9723f2df546cc8f5b9ccf7caaa"
+    },
+    {
+      "id": "original-linear-gradient-local-reference",
+      "path": "original/linear-gradient-local-reference.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "97aa60c5d8d2f59157804c1f0e5891272f40c077d0cbb610cfdaf6fbcbe2d910",
+      "materializedSha256": "97aa60c5d8d2f59157804c1f0e5891272f40c077d0cbb610cfdaf6fbcbe2d910",
+      "featureTags": [
+        "linear-gradient",
+        "source-map",
+        "placement"
+      ],
+      "width": 280,
+      "height": 180,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-linear-gradient-local-reference.json",
+      "referenceSha256": "ebe43126b671fa097b043459c3fe163962d85b83a107ce0e5503e73aff5211d0"
     }
   ]
 }

@@ -1336,8 +1336,8 @@ public sealed class SvgRootParserTests
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
         Assert.Equal(new SvgRectangle(4, 0, 4, 8, default, true, null), geometry.Gradient.Fill);
-        Assert.Equal(4, geometry.Gradient.Gradient.X1);
-        Assert.Equal(12, geometry.Gradient.Gradient.X2);
+        SvgLinearPaintMapData paint = AssertUserSpacePaint(geometry.Gradient.Gradient, SvgAffineTransform.FromTranslation(4, 0));
+        Assert.Equal((0, 0, 8, 0), (paint.X1, paint.Y1, paint.X2, paint.Y2));
     }
 
     [Fact]
@@ -1815,17 +1815,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Records_reference_scales_on_nonuniform_userspace_vectors()
+    public void Keeps_nonuniform_reference_mapping_separate_from_user_space_endpoints()
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='16'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='16'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><g transform='scale(2, 1)'><rect x='0' y='0' width='16' height='16' fill='url(#g)'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(2, geometry.Gradient.Gradient.ReferenceScaleX);
-        Assert.Equal(1, geometry.Gradient.Gradient.ReferenceScaleY);
-        Assert.Equal(0, geometry.Gradient.Gradient.X1);
-        Assert.Equal(32, geometry.Gradient.Gradient.X2);
-        Assert.Equal(16, geometry.Gradient.Gradient.Y2);
+        SvgLinearPaintMapData paint = AssertUserSpacePaint(geometry.Gradient.Gradient, SvgAffineTransform.FromScaleOffset(2, 1, 0, 0));
+        Assert.Equal((0, 0, 16, 16), (paint.X1, paint.Y1, paint.X2, paint.Y2));
     }
 
     [Fact]
@@ -3253,7 +3250,9 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 8, 8, 16, 8, 0, 1, false, true, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1, false), geometry.Gradient.Gradient);
+        SvgLinearPaintMapData paint = AssertUserSpacePaint(geometry.Gradient.Gradient, SvgAffineTransform.FromTranslation(8, 8));
+        Assert.Equal((0, 0, 8, 0), (paint.X1, paint.Y1, paint.X2, paint.Y2));
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 8, 0, 0, 1, false, true, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1, false), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -3272,12 +3271,8 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(8, geometry.Gradient.Gradient.X1);
-        Assert.Equal(8, geometry.Gradient.Gradient.Y1);
-        Assert.Equal(16, geometry.Gradient.Gradient.X2);
-        Assert.Equal(8, geometry.Gradient.Gradient.Y2);
-        Assert.Equal(1, geometry.Gradient.Gradient.ReferenceScaleX);
-        Assert.Equal(1, geometry.Gradient.Gradient.ReferenceScaleY);
+        SvgLinearPaintMapData paint = AssertUserSpacePaint(geometry.Gradient.Gradient, SvgAffineTransform.FromTranslation(8, 8));
+        Assert.Equal((0, 0, 8, 0), (paint.X1, paint.Y1, paint.X2, paint.Y2));
     }
 
     [Fact]
@@ -3947,10 +3942,8 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(0, geometry.Gradient.Gradient.X1);
-        Assert.Equal(16, geometry.Gradient.Gradient.X2);
-        Assert.Equal(2, geometry.Gradient.Gradient.ReferenceScaleX);
-        Assert.Equal(1, geometry.Gradient.Gradient.ReferenceScaleY);
+        SvgLinearPaintMapData paint = AssertUserSpacePaint(geometry.Gradient.Gradient, SvgAffineTransform.FromScaleOffset(2, 1, 0, 0));
+        Assert.Equal((0, 0, 8, 0), (paint.X1, paint.Y1, paint.X2, paint.Y2));
     }
 
     [Fact]
@@ -5371,6 +5364,16 @@ public sealed class SvgRootParserTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' class='" + classValue + "'/>"), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    private static SvgLinearPaintMapData AssertUserSpacePaint(SvgLinearGradient gradient, SvgAffineTransform reference)
+    {
+        Assert.True(gradient.IsUserSpace);
+        SvgLinearPaintMap paint = Assert.IsType<SvgLinearPaintMap>(gradient.SourcePaint);
+        Assert.True(paint.Data.IsMapped);
+        Assert.Equal(SvgGradientTransform.Identity, paint.Data.Local);
+        Assert.Equal(reference, paint.Data.Referencing);
+        return paint.Data;
     }
 
     private static SvgRectangle MappedPointListBox(SvgGeometry geometry, SvgRectangle expectedSource, SvgAffineTransform expectedMap)

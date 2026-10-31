@@ -921,8 +921,11 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(2, root.Geometries.Length);
         Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
         Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[1].Kind);
-        Assert.Equal(8, root.Geometries[1].GradientPolygon.Gradient.X1);
-        Assert.Equal(16, root.Geometries[1].GradientPolygon.Gradient.X2);
+        SvgLinearPaintMap paint = Assert.IsType<SvgLinearPaintMap>(root.Geometries[1].GradientPolygon.Gradient.SourcePaint);
+        Assert.True(paint.Data.IsMapped);
+        Assert.Equal((0, 0, 8, 0), (paint.Data.X1, paint.Data.Y1, paint.Data.X2, paint.Data.Y2));
+        Assert.Equal(SvgGradientTransform.Identity, paint.Data.Local);
+        Assert.Equal(SvgAffineTransform.FromTranslation(8, 0), paint.Data.Referencing);
         Assert.Equal(new SvgDevicePoint(8, -1), root.Geometries[1].GradientPolygon.Points[0]);
     }
 
@@ -1120,8 +1123,11 @@ public sealed class SvgUseInstanceTests
 
         Assert.Equal(2, root.Geometries.Length);
         Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[1].Kind);
-        Assert.Equal(0, root.Geometries[1].GradientPolygon.Gradient.X1);
-        Assert.Equal(16, root.Geometries[1].GradientPolygon.Gradient.X2);
+        SvgLinearPaintMap paint = Assert.IsType<SvgLinearPaintMap>(root.Geometries[1].GradientPolygon.Gradient.SourcePaint);
+        Assert.True(paint.Data.IsMapped);
+        Assert.Equal((0, 0, 8, 0), (paint.Data.X1, paint.Data.Y1, paint.Data.X2, paint.Data.Y2));
+        Assert.Equal(SvgGradientTransform.Identity, paint.Data.Local);
+        Assert.Equal(SvgAffineTransform.FromScale(2, 2), paint.Data.Referencing);
     }
 
     [Fact]

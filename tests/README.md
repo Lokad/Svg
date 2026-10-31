@@ -78,6 +78,13 @@ The [clamped-sampling fixture](Fixtures/original/filter-clamped-bilinear-accumul
 protects product rounding before color transfer and storage. Two compiled native
 bit vectors distinguish clamped and generic wrapped/picture kernels directly; the existing weight,
 clamping and stride tests remain separate. No API matrix is added.
+The [linear placement mechanisms](Lokad.Svg.Tests/SvgLinearPaintPlacementTests.cs)
+keep declaration, local and reference matrices separate across fills, strokes and
+instances. Three ownership cases protect map admission, refusal, cancellation,
+cleanup, retry and identity reuse. Independent rectangle/path, fractional-use and
+local-matrix fixtures protect the distinct numerical routes through canonical
+conversion; [their evidence](Research/svgweb/linear-source-placement.json) records
+both hosts' captures and failing-before results.
 The [affine-root control](Fixtures/original/filter-affine-root-boundary.svg) and
 its [paired gap control](Fixtures/original/filter-affine-root-gap.svg) retain
 distinct backdrop/capture interactions through canonical conversion. Direct

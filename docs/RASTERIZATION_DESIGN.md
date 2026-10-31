@@ -37,6 +37,13 @@ in the result because definition storage is released before the scene's lifetime
 Temporary inherited-fill bindings borrow definition contours only during mapping.
 Their batch owns its reference array; the definition retains its contour charge.
 
+Linear user-space paint keeps declared factory endpoints, its gradient-local matrix
+and reference placement separate. Fill/stroke lowerers and use/symbol instances
+share the [scene-owned paint map](../src/Lokad.Svg/Parsing/SvgLinearPaintMap.cs);
+placement never folds endpoints into device coordinates. Map storage is admitted
+before allocation, and identity placement reuses an existing binding. Object-box
+normalization still uses source geometry before reference placement.
+
 Prepared-document font discovery borrows the same collected styles, reader
 workspace and active budget used by lowering. Discovery control storage is
 temporary; selected font bytes stay alive through the prepared operation.

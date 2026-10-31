@@ -219,7 +219,7 @@ internal static class SvgPatternSyntax
             }
             else if (state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientId(style.Stroke), out SvgLinearGradient resolvedGradient))
             {
-                strokeGradient = SvgGradientSyntax.MapUserSpaceVector(transform, resolvedGradient, frame);
+                strokeGradient = SvgGradientSyntax.MapUserSpaceVector(transform, resolvedGradient, frame, state, context.CancellationToken);
                 hasLinearStroke = true;
             }
             else if (SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"))) zeroPaintStrokeWidth = true;
@@ -300,7 +300,7 @@ internal static class SvgPatternSyntax
             string fillId = SvgGradientSyntax.ParseGradientId(style.Fill);
             if (state.Gradients.TryGetValue(fillId, out SvgLinearGradient resolvedFill))
             {
-                fillGradient = SvgGradientSyntax.MapUserSpaceVector(transform, resolvedFill, frame);
+                fillGradient = SvgGradientSyntax.MapUserSpaceVector(transform, resolvedFill, frame, state, context.CancellationToken);
                 fillGradient = SvgGradientSyntax.MirrorBoundingBoxVector(transform, fillGradient);
                 hasLinearFill = true;
             }
