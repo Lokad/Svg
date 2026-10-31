@@ -96,6 +96,13 @@ The [opaque coverage mechanisms](Lokad.Svg.Tests/SvgOpaqueGradientCoverageTests.
 use six compiled native vectors and factory/opacity eligibility checks. One canonical
 colored-edge fixture protects rendering; [its evidence](Research/svgweb/opaque-gradient-coverage.json)
 also maps full Gallardo acceptance and preserves direct-span/A8 distinctions.
+The [direct-strip mechanisms](Lokad.Svg.Tests/SvgDirectPaintSpillTests.cs) separate
+completed direct events from path-bounded mask rows and clip construction. One
+growth-refusal case checks cleanup and explicit retry; existing cancellation cases
+remain separate. Circle, authored-arc and rounded-rectangle fixtures retain distinct
+source builders through canonical conversion. Their
+[edge evidence](Research/svgweb/completed-strip-coverage.json) preserves all six
+fresh native captures per fixture and the existing clip-resource regression.
 The [affine-root control](Fixtures/original/filter-affine-root-boundary.svg) and
 its [paired gap control](Fixtures/original/filter-affine-root-gap.svg) retain
 distinct backdrop/capture interactions through canonical conversion. Direct

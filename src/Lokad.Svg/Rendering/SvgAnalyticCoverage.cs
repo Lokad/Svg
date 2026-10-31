@@ -1823,10 +1823,11 @@ internal ref partial struct SvgAnalyticCoverage
         int sum = _row[offset] + alpha;
         _row[offset] = sum > 255 ? (byte)255 : (byte)sum;
     }
+    /// <summary>Dispatches completed alpha to direct painting or path-bounded mask storage.</summary>
     private void SetMask(int x, byte alpha)
     {
-        if (x < 0 || x >= _width) return;
         if (_useRunBlitter) { RecordDirectPaint(x, alpha, SvgAnalyticPaintKind.Direct); return; }
+        if (x < 0 || x >= _width) return;
         _row[x + 1] = alpha;
     }
     private void ComputeAboveLine(int destination, int l, int r, int inverseDY, byte fullAlpha)

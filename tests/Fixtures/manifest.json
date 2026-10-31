@@ -18790,6 +18790,81 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-opaque-gradient-edge-coverage.json",
       "referenceSha256": "aa38cd5b1bd1d71e64c5ecb8b37d9dabab5ae87a2fb4e5d0af062ff418752101"
+    },
+    {
+      "id": "original-curve-edge-drift-circle",
+      "path": "original/curve-edge-drift-circle.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "2c17064f329fdf61d95a1ecda5f81cd22c06af0cfc97956cd0773822f0ebb47e",
+      "materializedSha256": "2c17064f329fdf61d95a1ecda5f81cd22c06af0cfc97956cd0773822f0ebb47e",
+      "featureTags": [
+        "analytic-coverage",
+        "completed-strip",
+        "paint-clip",
+        "curve-source-operation"
+      ],
+      "width": 300,
+      "height": 150,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-curve-edge-drift-circle.json",
+      "referenceSha256": "cd3f5ed6adb725405d02a6b0d174ca6ab8cf4a6ab2c2a01c9d9a03db145ccb4c"
+    },
+    {
+      "id": "original-curve-edge-drift-arc",
+      "path": "original/curve-edge-drift-arc.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "6f2962a3af94a70282944208add7d700dfb6f801b364a30966aafe62f9bf5be3",
+      "materializedSha256": "6f2962a3af94a70282944208add7d700dfb6f801b364a30966aafe62f9bf5be3",
+      "featureTags": [
+        "analytic-coverage",
+        "completed-strip",
+        "paint-clip",
+        "curve-source-operation"
+      ],
+      "width": 300,
+      "height": 150,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-curve-edge-drift-arc.json",
+      "referenceSha256": "cd3f5ed6adb725405d02a6b0d174ca6ab8cf4a6ab2c2a01c9d9a03db145ccb4c"
+    },
+    {
+      "id": "original-curve-edge-drift-rounded-rect",
+      "path": "original/curve-edge-drift-rounded-rect.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "21c7c346010a72ee3d8c84a2f94c448e867301a499effc7ca9536f21eccf45a2",
+      "materializedSha256": "21c7c346010a72ee3d8c84a2f94c448e867301a499effc7ca9536f21eccf45a2",
+      "featureTags": [
+        "analytic-coverage",
+        "completed-strip",
+        "paint-clip",
+        "curve-source-operation"
+      ],
+      "width": 300,
+      "height": 150,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-curve-edge-drift-rounded-rect.json",
+      "referenceSha256": "6e5ef74a9aa7fbdd84997d8e08f568ee639cebecc38b96d5b6fe75929d49fe60"
     }
   ]
 }

@@ -6,11 +6,11 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 148 originals per host: **143 exploratory
-exact and 5 different**, with 53 UnsupportedFeature and 3 MalformedInput outcomes.
+The current default conversion renders 148 originals per host: **146 exploratory
+exact and 2 different**, with 53 UnsupportedFeature and 3 MalformedInput outcomes.
 These observations use transparent output without supplied fonts/resources.
-Scimitar, Gallardo, car, radialgradient2 and UFO are exact. See `currentReview`
-in the inventory for all five remaining
+Scimitar, Gallardo, car, radialgradient2, UFO, alphachannel, opensearch and scion are
+exact. See `currentReview` in the inventory for the Ford and green-grapes
 differences. Exact default output does not qualify other font, resource
 or static-state contexts, and whole-corpus acceptance remains open.
 
@@ -59,6 +59,7 @@ current inventory above governs overall status.
 | Radial paint binding | [Source binding](radial-source-binding.json). Keep local gradient coordinates and reference placement through axis/skew, clipping and inherited stops. |
 | Gradient bitmap coordinates | [Recorded stages](gradient-recorded-bitmap-origin.json). Subtract the owning bitmap origin before replaying child transforms. Linear/radial native controls and direct mapping/ownership tests protect the shared order. |
 | Opaque gradient coverage | [Program opacity and coverage](opaque-gradient-coverage.json). Retain factory eligibility and direct-span/A8 interpolation stages. One canonical edge fixture and six compiled native vectors protect the shared rule; the complete default Gallardo image is exact. |
+| Completed curve strips | [Direct painting and clip construction](completed-strip-coverage.json). Completed direct fringes use the paint clip; pending mask rows and clip definitions keep path bounds. Circle, authored arcs and rounded rectangles protect distinct source builders. |
 | Gradient declarations | [Typed lengths](gradient-lengths.json), [inheritance fixture](../../Fixtures/original/radial-coordinate-inheritance.svg), [stop identity fixture](../../Fixtures/original/gradient-stop-identities.svg). Preserve number/percentage intent, missing/default values, units, per-field inheritance, viewport resolution and metadata. |
 | Paint selection and text evidence | [Paint references](paint-references.json), [filter-source review](filter-source-review.json). Empty paint content and unavailable servers differ; the synthetic font needs valid bounds before its rendering can diagnose the library. Exploratory single captures do not admit new references. |
 

@@ -3840,7 +3840,18 @@ public static partial class SvgConverter
                 SvgCpuRasterContext context = LayerRasterContext(cpuTile);
                 if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
                 SvgAnalyticClipBounds paintArea = collectingClipCoverage is null ? context.Interior : context.BitmapClip;
-                using PolygonRaster traversal = new(ref preparation, raster, context, ActiveClipBounds(context),
+                SvgAnalyticClipBounds? constructionBounds = ActiveClipBounds(context);
+                if (collectingViewportClip)
+                {
+                    // SkAAClip builds within path.bounds().roundOut intersected
+                    // with the incoming clip. Ordinary paints can retain edge drift
+                    // outside mask-row storage; a clip definition cannot grow there.
+                    SvgAnalyticClipBounds incoming = constructionBounds ?? context.BitmapClip;
+                    int left = Math.Max(incoming.Left, raster.PathStartX), top = Math.Max(incoming.Top, raster.PathStartY);
+                    constructionBounds = new(left, top, Math.Max(left, Math.Min(incoming.Right, raster.PathEndX)),
+                        Math.Max(top, Math.Min(incoming.Bottom, raster.PathEndY)));
+                }
+                using PolygonRaster traversal = new(ref preparation, raster, context, constructionBounds,
                     PolygonPaintClip(raster, context), paintArea, budget,
                     cancellationToken);
                 bool useAnalytic = traversal.IsAnalytic;

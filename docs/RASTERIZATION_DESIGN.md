@@ -80,6 +80,12 @@ intervals using native fixed-point advancement. Rectangle/frame, hairline,
 convex/compound and fallback routes have distinct eligibility and arithmetic.
 Whole-path bounds choose direct/run versus mask painting; clipped bounds limit
 storage. Direct events and pending additive runs preserve their order.
+Completed convex strips can emit a direct fringe beyond path-bounded mask rows;
+the paint clip governs those events. Clip definitions instead construct within
+the rounded path bounds intersected with the incoming clip. Existing direct-link
+growth accounts for the extra event without widening pending alpha storage.
+The [edge evidence](../tests/Research/svgweb/completed-strip-coverage.json) links
+native source rules, curve-builder references and refusal/retry coverage.
 Triangle and trapezoid alpha narrows to a byte before additive saturation, including
 wrapped approximation results. Temporary alpha rows use byte storage; fixed-point
 geometry and accumulation sums retain their wider arithmetic.

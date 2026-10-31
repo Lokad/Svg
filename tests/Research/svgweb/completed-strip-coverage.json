@@ -1,0 +1,462 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "ed47129e8ad2d629faaacaf2321c1a48fc5fd97e",
+  "librarySha256": "b97986081400506c16f00515cd885b25ec114c2c56ec9b201672bbca13a45ecb",
+  "scope": "Shared completed convex-strip dispatch and clip-definition construction. Three complete default originals close; whole filter/root and font/resource/static-state acceptance remain open.",
+  "implementation": {
+    "coverage": "../../../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs",
+    "clipConstruction": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "rule": "Dispatch completed direct strips against the paint clip before checking path-bounded mask-row storage. Keep pending additive rows path-bounded. A clip definition constructs within rounded path bounds intersected with its incoming clip.",
+    "ownership": "Reuse existing admitted direct-link growth; no wider alpha rows, new owner, cache or numerical pixel heuristic.",
+    "nativeSources": [
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkScan_AAAPath.cpp",
+        "sha256": "c7a2e2f869ce0d13f882e713e477a59b0af547cb72dd134caf04b1889d22a35e"
+      },
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkScan_Path.cpp",
+        "sha256": "3bae4771c03b7a79e5383ae40bd90ac353a6e5332f0faaaa533f50d250c7f304"
+      },
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkAnalyticEdge.cpp",
+        "sha256": "27420132d6c3560e32118f9dc0fc3e5cce4fd421f3da7695634e23dd38f5d963"
+      },
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkAAClip.cpp",
+        "sha256": "14d4c4b5747c97946189bab62220d27c69434c090e8d267f743cd46522b3c8c7"
+      }
+    ],
+    "nativeContracts": [
+      "aaa_walk_convex_edges sends a completed full-height rectangular strip to the real blitter through blitAntiRect; additive pending rows retain path storage bounds.",
+      "SkAAClip::setPath constructs its Builder from path.getBounds().roundOut intersected with the incoming clip. Ordinary AA-clipped paint is a separate operation."
+    ]
+  },
+  "mechanisms": {
+    "tests": "../../Lokad.Svg.Tests/SvgDirectPaintSpillTests.cs",
+    "newCases": 3,
+    "roles": {
+      "completedStripVersusClipConstruction": 2,
+      "growthRefusalCleanupAndExplicitRetry": 1
+    },
+    "retained": "Existing direct-fringe/cancellation/owner cases remain routine. Existing image-resource-scope reference failed when only dispatch was changed; clipping actual clip construction restores it without changing its image."
+  },
+  "canonicalControls": [
+    {
+      "fixture": "../../Fixtures/original/curve-edge-drift-circle.svg",
+      "reference": "../../References/original-curve-edge-drift-circle.json",
+      "sourceSha256": "2c17064f329fdf61d95a1ecda5f81cd22c06af0cfc97956cd0773822f0ebb47e",
+      "nativePngSha256": "cd3f5ed6adb725405d02a6b0d174ca6ab8cf4a6ab2c2a01c9d9a03db145ccb4c",
+      "freshCapturesPerHost": 3,
+      "beforePixels": 1,
+      "beforeMaximumError": 8,
+      "afterPixels": 0
+    },
+    {
+      "fixture": "../../Fixtures/original/curve-edge-drift-arc.svg",
+      "reference": "../../References/original-curve-edge-drift-arc.json",
+      "sourceSha256": "6f2962a3af94a70282944208add7d700dfb6f801b364a30966aafe62f9bf5be3",
+      "nativePngSha256": "cd3f5ed6adb725405d02a6b0d174ca6ab8cf4a6ab2c2a01c9d9a03db145ccb4c",
+      "freshCapturesPerHost": 3,
+      "beforePixels": 1,
+      "beforeMaximumError": 8,
+      "afterPixels": 0
+    },
+    {
+      "fixture": "../../Fixtures/original/curve-edge-drift-rounded-rect.svg",
+      "reference": "../../References/original-curve-edge-drift-rounded-rect.json",
+      "sourceSha256": "21c7c346010a72ee3d8c84a2f94c448e867301a499effc7ca9536f21eccf45a2",
+      "nativePngSha256": "6e5ef74a9aa7fbdd84997d8e08f568ee639cebecc38b96d5b6fe75929d49fe60",
+      "freshCapturesPerHost": 3,
+      "beforePixels": 1,
+      "beforeMaximumError": 8,
+      "afterPixels": 0
+    }
+  ],
+  "referenceAdmission": {
+    "chromeVersion": "153.0.8010.52",
+    "freshHealthyProfileCleanedCaptures": 18,
+    "allExistingReferencesAndTolerancesUnchanged": true,
+    "canonicalConversionOnly": true,
+    "operationIdentity": "Circle primitive, authored arc parsing/convexity and rounded-rectangle construction remain distinct even when resulting pixels agree."
+  },
+  "newlyExactOriginals": [
+    {
+      "name": "alphachannel.svg",
+      "sourceSha256": "c4a92f8cd118d53f42aba99bd85b354b10d48d98e33712efa080813c88f07496",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "screenshot": [
+        300,
+        150
+      ],
+      "nativePngSha256": "e41dd8d1e4617f786b92107c88f3a94fff3aca0507049aa198608c3eb4e6c50f",
+      "freshCapturesPerHost": 3,
+      "allSixMatchUnchangedOriginalTarget": true
+    },
+    {
+      "name": "opensearch.svg",
+      "sourceSha256": "9768b7d43abec9daf285246b44a99bd0b1088746717af54a41379aba23d987b5",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "screenshot": [
+        300,
+        150
+      ],
+      "nativePngSha256": "7c0cd40af2f9aea50729060a039aa98a2a38f2367f9b96ae006e52829cfc8b23",
+      "freshCapturesPerHost": 3,
+      "allSixMatchUnchangedOriginalTarget": true
+    },
+    {
+      "name": "scion.svg",
+      "sourceSha256": "39b6486403588426bca3e9cbf470e5bea69d4ca565a1e6237111e666a01808cb",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "screenshot": [
+        300,
+        150
+      ],
+      "nativePngSha256": "ffcf71a0d646accf67b09a6f7de0274ca386c425eb72ce3be938e45be387b152",
+      "freshCapturesPerHost": 3,
+      "allSixMatchUnchangedOriginalTarget": true
+    }
+  ],
+  "originalReplay": {
+    "evidence": "completed-strip-coverage.json",
+    "sourceBaseline": "ed47129e8ad2d629faaacaf2321c1a48fc5fd97e",
+    "librarySha256": "b97986081400506c16f00515cd885b25ec114c2c56ec9b201672bbca13a45ecb",
+    "allSourceHashesRecheckedPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "countsPerHost": {
+      "rendered": 148,
+      "exploratoryExact": 146,
+      "different": 2,
+      "UnsupportedFeature": 53,
+      "MalformedInput": 3
+    },
+    "previousPngsByteIdenticalPerHost": {
+      "windows": 144,
+      "linux": 144
+    },
+    "changedOriginals": [
+      {
+        "name": "alphachannel.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 255,
+          "totalChannelError": 259
+        },
+        "after": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      },
+      {
+        "name": "opensearch.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 1,
+          "maximumError": 223,
+          "totalChannelError": 231
+        },
+        "after": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      },
+      {
+        "name": "rg1024_green_grapes.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 40,
+          "maximumError": 18,
+          "totalChannelError": 143
+        },
+        "after": {
+          "status": "different",
+          "changedPixels": 37,
+          "maximumError": 7,
+          "totalChannelError": 95
+        }
+      },
+      {
+        "name": "scion.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 2,
+          "maximumError": 5,
+          "totalChannelError": 22
+        },
+        "after": {
+          "status": "exact",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "totalChannelError": 0
+        }
+      }
+    ],
+    "newlyExactOriginals": [
+      "alphachannel.svg",
+      "opensearch.svg",
+      "scion.svg"
+    ],
+    "lostExactImages": [],
+    "changedOutcomesOrDiagnostics": [],
+    "remainingDefaultDifferences": [
+      {
+        "name": "compuserver_msn_Ford_Focus.svg",
+        "status": "different",
+        "changedPixels": 6,
+        "maximumError": 4,
+        "totalChannelError": 45
+      },
+      {
+        "name": "rg1024_green_grapes.svg",
+        "status": "different",
+        "changedPixels": 37,
+        "maximumError": 7,
+        "totalChannelError": 95
+      }
+    ]
+  },
+  "correctedGrapeReview": {
+    "sourceSha256": "c5982a7b24fc10bd8212f03f15f4d368d1022ae9ef15996fa98cfca3dfa0c011",
+    "logicalViewport": [
+      557.90326,
+      781.49402
+    ],
+    "screenshot": [
+      558,
+      781
+    ],
+    "map": "green-grapes-paint-map.csv",
+    "consumers": 76,
+    "filteredConsumers": 14,
+    "exploratoryCapturesPerVariant": 1,
+    "canonicalAdmission": false,
+    "differingIsolations": 18,
+    "prefixes": [
+      {
+        "case": "group",
+        "variantSourceSha256": "c9af928b6bef5632fbea75e1ecf8d58b9ad4cef90b56ea26b69895f4aac594a9",
+        "nativePngSha256": "46fc215cafee20947efe0fd791d2b3256abe01546e3f48998c74672e824bd2aa",
+        "changedPixels": 22,
+        "maximumError": 7,
+        "bounds": [
+          164,
+          699,
+          253,
+          781
+        ]
+      },
+      {
+        "case": "group-through-path10047",
+        "variantSourceSha256": "b0a1a865919747e0d912147053a631f5558e2766665c8c6ce0d0c344070a473a",
+        "nativePngSha256": "b66316c647d30a034bf60fd3493f8364a80a20c9063952b456ca333e83d619b1",
+        "changedPixels": 21,
+        "maximumError": 11,
+        "bounds": [
+          164,
+          779,
+          191,
+          781
+        ]
+      },
+      {
+        "case": "original-through-path10047",
+        "variantSourceSha256": "0ac8c428c11165197ed6039ad74accda4d2ed814b1f1deaaaeb2e5245b1eab15",
+        "nativePngSha256": "4f7e2f3d0b4933ed9e92e26b30be709029f623bf579b5f1c20ca90233b580e25",
+        "changedPixels": 34,
+        "maximumError": 11,
+        "bounds": [
+          25,
+          304,
+          491,
+          781
+        ]
+      },
+      {
+        "case": "group-through-path10049",
+        "variantSourceSha256": "83a540849398ba10cadb46fbef0da3145ca6ef8f244a89e570fb6e5128e59f63",
+        "nativePngSha256": "7514f65bc2ec3e15a794ce25e7abf564967d02e773c7828ef2b76cdd0301f357",
+        "changedPixels": 21,
+        "maximumError": 11,
+        "bounds": [
+          164,
+          779,
+          191,
+          781
+        ]
+      },
+      {
+        "case": "original-through-path10049",
+        "variantSourceSha256": "729f69e5ba479be3c4b287d191dd88ac40b55eee64fb0cb724f56ac1778dc545",
+        "nativePngSha256": "03310272d0318bfeddfe02dfad1e2c90bf4b270854b4444ae21c296ca8e8f49f",
+        "changedPixels": 34,
+        "maximumError": 11,
+        "bounds": [
+          25,
+          304,
+          491,
+          781
+        ]
+      },
+      {
+        "case": "group-through-path10051",
+        "variantSourceSha256": "cc2b5082ba2796956dd6c38d96058f305eac9fdb0227cd8208f10edfe18ec047",
+        "nativePngSha256": "319e087e1a2b6c870f23f8a45a249ea381d4c86da2279d9a4d9b9728979cc454",
+        "changedPixels": 22,
+        "maximumError": 7,
+        "bounds": [
+          164,
+          699,
+          253,
+          781
+        ]
+      },
+      {
+        "case": "original-through-path10051",
+        "variantSourceSha256": "0101fdcd7957c565d179069a9c86a4c3675face56e2aa2431890099d3a2c0c5e",
+        "nativePngSha256": "a9c265448297aeedc4f10a7ff8fc950f3c838cfc51bbf8c59bd02cc72608054f",
+        "changedPixels": 35,
+        "maximumError": 7,
+        "bounds": [
+          25,
+          304,
+          491,
+          781
+        ]
+      },
+      {
+        "case": "group-through-path10053",
+        "variantSourceSha256": "c9af928b6bef5632fbea75e1ecf8d58b9ad4cef90b56ea26b69895f4aac594a9",
+        "nativePngSha256": "46fc215cafee20947efe0fd791d2b3256abe01546e3f48998c74672e824bd2aa",
+        "changedPixels": 22,
+        "maximumError": 7,
+        "bounds": [
+          164,
+          699,
+          253,
+          781
+        ]
+      },
+      {
+        "case": "original-through-path10053",
+        "variantSourceSha256": "61e53832755593bbc4c5d2c36a11a4fe9f6c493966dfbc878bc44d36ffb521dc",
+        "nativePngSha256": "d5d7a8bee3b416f0b54746c48dd9859c4f434f891df60ca239db965113b25bd7",
+        "changedPixels": 35,
+        "maximumError": 7,
+        "bounds": [
+          25,
+          304,
+          491,
+          781
+        ]
+      }
+    ],
+    "correction": "Earlier isolations used rounded CSS558x781 and cannot attribute original pixels. Correctly sized body path10047 alone already differs at21pixels in the bottom two rows. The claim that these arise only after group composition is withdrawn. The complete-original native target and all original comparisons were always fractional and unchanged.",
+    "next": "Trace actual placement, curve coverage and image boundary before changing generic blending or root fitting. Remaining original counts are37pixels/95channel error for green grapes and6/45 for Ford."
+  },
+  "mappedAcceptance": {
+    "gallardoFiltered": 35,
+    "gallardoUnfiltered": 58,
+    "bothHostsExact": true,
+    "scimitarInnerPerHost": 20,
+    "scimitarScopePngsByteIdentical": 43,
+    "largeViewBoxRadialAndSolidPerHost": 23,
+    "allOriginalsSourceHashesAndStableFieldsPreserved": true
+  },
+  "qualification": {
+    "builds": 4,
+    "warnings": 0,
+    "fullRoutineSuites": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "layer": "core",
+        "selection": "Category!=Research",
+        "passed": 33018,
+        "seconds": 62.791023900033906,
+        "librarySha256": "b97986081400506c16f00515cd885b25ec114c2c56ec9b201672bbca13a45ecb"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "layer": "native",
+        "selection": "Category!=Research",
+        "passed": 39151,
+        "seconds": 86.80476579978131,
+        "librarySha256": "b97986081400506c16f00515cd885b25ec114c2c56ec9b201672bbca13a45ecb"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "layer": "core",
+        "selection": "Category!=Research",
+        "passed": 33018,
+        "seconds": 50.23517829994671,
+        "librarySha256": "7178ce6346086eaf7146e48cc313ad00d7aad6abe3b4cdda236ab85dd07286c5"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "layer": "native",
+        "selection": "Category!=Research",
+        "passed": 39151,
+        "seconds": 61.81967519992031,
+        "librarySha256": "7178ce6346086eaf7146e48cc313ad00d7aad6abe3b4cdda236ab85dd07286c5"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "layer": "core",
+        "selection": "Category!=Research",
+        "passed": 33018,
+        "seconds": 78.951263877,
+        "librarySha256": "b97986081400506c16f00515cd885b25ec114c2c56ec9b201672bbca13a45ecb"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "layer": "native",
+        "selection": "Category!=Research",
+        "passed": 39151,
+        "seconds": 189.246557002,
+        "librarySha256": "b97986081400506c16f00515cd885b25ec114c2c56ec9b201672bbca13a45ecb"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "layer": "core",
+        "selection": "Category!=Research",
+        "passed": 33018,
+        "seconds": 42.551572674,
+        "librarySha256": "7178ce6346086eaf7146e48cc313ad00d7aad6abe3b4cdda236ab85dd07286c5"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "layer": "native",
+        "selection": "Category!=Research",
+        "passed": 39151,
+        "seconds": 128.664977111,
+        "librarySha256": "7178ce6346086eaf7146e48cc313ad00d7aad6abe3b4cdda236ab85dd07286c5"
+      }
+    ],
+    "aggregatePassed": 288676,
+    "timing": "Functional elapsed validation under concurrent workstation activity; no benchmark, performance ratio or test-simplification measurement.",
+    "packageAndIndependentHosts": "Exact-head CI required before declaring this milestone qualified."
+  },
+  "closureBoundary": "Default alphachannel/opensearch/scion rendering closes against six fresh whole-original captures each. Ford, green grapes and all supplied-font/resource/static-state gates remain open. No hosted source or derived original fragment retained."
+}
