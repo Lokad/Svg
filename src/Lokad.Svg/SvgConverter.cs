@@ -287,9 +287,10 @@ public static partial class SvgConverter
         // Native filter sources use one padded device, with its content clip
         // separate from the physical bitmap origin.
         internal bool SingleBitmap { get; init; }
+        /// <summary>Retains source content/request bounds; RasterClip can preserve additional numerical paint coverage.</summary>
         internal SvgAnalyticClipBounds? ContentClip { get; init; }
-        /// <summary>Retains source-image padding for edge construction independently of captured content and filter requests.</summary>
-        internal SvgAnalyticClipBounds? ConstructionClip { get; init; }
+        /// <summary>Retains the admitted geometry and clip-resource raster window independently of source layout and filter requests.</summary>
+        internal SvgAnalyticClipBounds? RasterClip { get; init; }
         // Keep the parent's rounded CTM before changing to the source device.
         internal SvgCpuBitmapOrigin? ParentOrigin { get; init; }
         internal SvgCpuBitmapOrigin CaptureOrigin { get; init; }
@@ -812,7 +813,7 @@ public static partial class SvgConverter
                     (float)(left - frameLeft + sourceContentClip.Left - 1), (float)(top - frameTop + sourceContentClip.Top - 1),
                     (float)(left - frameLeft + sourceContentClip.Right - 1), (float)(top - frameTop + sourceContentClip.Bottom - 1)) } };
             RasterFrame captureFrame = new(sw + 2, sh + 2, horizontalScale, horizontalOffset - left + 1, verticalScale, verticalOffset - top + 1)
-            { SingleBitmap = true, ContentClip = sourceContentClip, ConstructionClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = destinationBitmap?.Origin ?? new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left - 1, (int)top - 1)) };
+            { SingleBitmap = true, ContentClip = sourceContentClip, RasterClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = destinationBitmap?.Origin ?? new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = frame?.NativeSourceBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left - 1, (int)top - 1)) };
             // Region coordinates belong to the padded filter bitmap; sampled
             // source-image transforms retain their separate capture domain.
             if (primitiveMap.Regions is {} nativeRegions)
@@ -2191,19 +2192,19 @@ public static partial class SvgConverter
 
         SvgCpuRasterContext LayerRasterContext(SvgCpuRasterContext tile)
         {
-            SvgAnalyticClipBounds constructionBounds = LayerConstructionBounds(layerBounds, frame);
-            SvgAnalyticClipBounds bitmap = new(Math.Max(tile.BitmapClip.Left, constructionBounds.Left), Math.Max(tile.BitmapClip.Top, constructionBounds.Top),
-                Math.Min(tile.BitmapClip.Right, constructionBounds.Right), Math.Min(tile.BitmapClip.Bottom, constructionBounds.Bottom));
-            SvgAnalyticClipBounds interior = new(Math.Max(tile.Interior.Left, layerBounds.Left), Math.Max(tile.Interior.Top, layerBounds.Top),
-                Math.Min(tile.Interior.Right, layerBounds.Right), Math.Min(tile.Interior.Bottom, layerBounds.Bottom));
+            SvgAnalyticClipBounds rasterBounds = LayerRasterBounds(layerBounds, frame);
+            SvgAnalyticClipBounds bitmap = new(Math.Max(tile.BitmapClip.Left, rasterBounds.Left), Math.Max(tile.BitmapClip.Top, rasterBounds.Top),
+                Math.Min(tile.BitmapClip.Right, rasterBounds.Right), Math.Min(tile.BitmapClip.Bottom, rasterBounds.Bottom));
+            SvgAnalyticClipBounds interior = new(Math.Max(tile.Interior.Left, rasterBounds.Left), Math.Max(tile.Interior.Top, rasterBounds.Top),
+                Math.Min(tile.Interior.Right, rasterBounds.Right), Math.Min(tile.Interior.Bottom, rasterBounds.Bottom));
             return new(bitmap, interior) { ConstructionOrigin = frame?.ContentClip is not null ? tile.Origin : null };
         }
 
-        // Captured content limits stored paint; source-image padding governs
-        // construction of both paint geometry and its clip resources.
-        static SvgAnalyticClipBounds LayerConstructionBounds(SvgAnalyticClipBounds bounds, RasterFrame? sourceFrame)
-            => sourceFrame is { ContentClip: {} content, ConstructionClip: {} construction } && content == bounds
-                ? construction : bounds;
+        // Source layout/request bounds can be tighter than numerical curve coverage.
+        // The admitted raster window governs geometry and clip resources.
+        static SvgAnalyticClipBounds LayerRasterBounds(SvgAnalyticClipBounds bounds, RasterFrame? sourceFrame)
+            => sourceFrame is { ContentClip: {} content, RasterClip: {} raster } && content == bounds
+                ? raster : bounds;
 
         SvgCpuBitmapOrigin ShaderBitmapOrigin(int x, int y)
         {
@@ -2674,7 +2675,7 @@ public static partial class SvgConverter
                                 if (viewportContent is {} clipContent)
                                 {
                                     SvgAnalyticClipBounds resourceConstruction = clipContent.ClipKind is SvgClipContentKind.AffineViewport or SvgClipContentKind.BinaryViewport or SvgClipContentKind.BinaryExclusion
-                                        ? layer : LayerConstructionBounds(previousLayer, frame);
+                                        ? layer : LayerRasterBounds(previousLayer, frame);
                                     clipCoverage = RasterizeMaskContent(clipContent, clipPixels, true, resourceConstruction,
                                         SvgAnalyticPaintClip.Antialiased, [], out binaryClip);
                                 }
@@ -3810,7 +3811,9 @@ public static partial class SvgConverter
             SvgAnalyticPaintClip paintClip = raster.GetPaintClip(context);
             if (!activeViewport.HasMask || activeViewport.IsBinary) return paintClip;
             SvgAnalyticClipBounds clip = context.BitmapClip;
-            if (activeViewport.Bounds is {} bounds)
+            // Coverage bounds belong to the bitmap's actual clip tape. The
+            // allocation/request enclosure can omit its antialiased fringe.
+            if (ActiveClipBounds(context) is {} bounds)
                 clip = new(Math.Max(clip.Left, bounds.Left), Math.Max(clip.Top, bounds.Top), Math.Min(clip.Right, bounds.Right), Math.Min(clip.Bottom, bounds.Bottom));
             // Native raster clips collapse a wholly opaque rectangular bitmap
             // intersection to BW. Preserve its ordinary mask/run material routing.

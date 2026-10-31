@@ -1,0 +1,55 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "95f51f0f06fa9f9d66f4e9b1b863708a9bcc8ee9407d528ff7b11f0791a657be",
+  "referenceSha256": "cffd8a600ccbffe57c2f25401ce6d88dd39043cfc2c471980e7f132a96b0dd72",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-raster-fringe.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-raster-fringe",
+  "viewport": {
+    "width": 1901,
+    "height": 1018,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 cubic with controls beyond tight extrema, blur and an outer clip after blur. Three fresh healthy/profile-cleaned captures per platform at matching logical and screenshot1901x1018. The tiled canvas is part of this raster-context regression.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "95f51f0f06fa9f9d66f4e9b1b863708a9bcc8ee9407d528ff7b11f0791a657be",
+      "referenceSha256": "cffd8a600ccbffe57c2f25401ce6d88dd39043cfc2c471980e7f132a96b0dd72",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "95f51f0f06fa9f9d66f4e9b1b863708a9bcc8ee9407d528ff7b11f0791a657be",
+      "referenceSha256": "cffd8a600ccbffe57c2f25401ce6d88dd39043cfc2c471980e7f132a96b0dd72",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  }
+}

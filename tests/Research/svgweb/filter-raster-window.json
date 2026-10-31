@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "40c18e0ef6b7a06b180ffc5276e9260a01be154b",
+  "scope": "Source raster-window coverage and opaque-clip classification; full filter/original acceptance remains open.",
+  "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
+  "sharedContract": {
+    "problem": "Tight continuous curve extrema can exclude numerical raster ink. Captured source construction used its padded window, but its paint interior clipped that ink to layout bounds. Opaque-clip classification also used a request enclosure that could hide an antialiased fringe.",
+    "change": "RasterFrame.RasterClip and LayerRasterBounds name the existing admitted window. Geometry construction, clip-resource construction and paint interior use it. PolygonPaintClip uses existing ActiveClipBounds, shared with polygon traversal, to inspect the actual bitmap coverage tape. ContentClip retains source layout/request and sampling roles.",
+    "ownership": "No new fields, owners, buffers, cache or public API. Additional paint stays within the already admitted source image. The existing curved-source ownership case is strengthened with the overhanging cubic and fractional placement; denial, cancellation, retained-source immutability, cleanup and retry use the existing helper.",
+    "unchanged": "Blur, color-space, alpha and transform arithmetic; all existing PNG targets and exactness rules; text, logical sizing and uniform fitting."
+  },
+  "nativeRegressions": [
+    {
+      "fixture": "../../Fixtures/original/filter-raster-fringe.svg",
+      "reference": "../../References/original-filter-raster-fringe.json",
+      "sourceSha256": "95f51f0f06fa9f9d66f4e9b1b863708a9bcc8ee9407d528ff7b11f0791a657be",
+      "referenceSha256": "cffd8a600ccbffe57c2f25401ce6d88dd39043cfc2c471980e7f132a96b0dd72",
+      "freshHealthyProfileCleanedCapturesPerHost": 3,
+      "allSixPngsAndDecodedPixelsIdentical": true,
+      "beforeAfter": [
+        {
+          "host": "windows",
+          "phase": "before",
+          "librarySha256": "746fe962a7d5e3896fc6ddd7c34199a3af49939875d385440af2a7fdd67496a2",
+          "changedPixels": 24,
+          "maximumError": 1,
+          "alphaChangedPixels": 24,
+          "maximumAlphaError": 1,
+          "totalChannelError": 24,
+          "bounds": [
+            674,
+            487,
+            721,
+            508
+          ]
+        },
+        {
+          "host": "windows",
+          "phase": "after",
+          "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "maximumAlphaError": 0,
+          "totalChannelError": 0,
+          "bounds": null
+        },
+        {
+          "host": "linux",
+          "phase": "before",
+          "librarySha256": "746fe962a7d5e3896fc6ddd7c34199a3af49939875d385440af2a7fdd67496a2",
+          "changedPixels": 24,
+          "maximumError": 1,
+          "alphaChangedPixels": 24,
+          "maximumAlphaError": 1,
+          "totalChannelError": 24,
+          "bounds": [
+            674,
+            487,
+            721,
+            508
+          ]
+        },
+        {
+          "host": "linux",
+          "phase": "after",
+          "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "maximumAlphaError": 0,
+          "totalChannelError": 0,
+          "bounds": null
+        }
+      ]
+    },
+    {
+      "fixture": "../../Fixtures/original/filter-raster-fringe-inner-clip.svg",
+      "reference": "../../References/original-filter-raster-fringe-inner-clip.json",
+      "sourceSha256": "9929be12aa1532757e230faa4bc7b8d0099b7db42ff8b5768eb7d4748ea366e9",
+      "referenceSha256": "8c8d18a6e4aa37938515b27b7aa7a9cfd542241f8f605673ac5e9f3f683c6f62",
+      "freshHealthyProfileCleanedCapturesPerHost": 3,
+      "allSixPngsAndDecodedPixelsIdentical": true,
+      "beforeAfter": [
+        {
+          "host": "windows",
+          "phase": "before",
+          "librarySha256": "746fe962a7d5e3896fc6ddd7c34199a3af49939875d385440af2a7fdd67496a2",
+          "changedPixels": 24,
+          "maximumError": 1,
+          "alphaChangedPixels": 24,
+          "maximumAlphaError": 1,
+          "totalChannelError": 24,
+          "bounds": [
+            674,
+            490,
+            726,
+            529
+          ]
+        },
+        {
+          "host": "windows",
+          "phase": "after",
+          "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "maximumAlphaError": 0,
+          "totalChannelError": 0,
+          "bounds": null
+        },
+        {
+          "host": "linux",
+          "phase": "before",
+          "librarySha256": "746fe962a7d5e3896fc6ddd7c34199a3af49939875d385440af2a7fdd67496a2",
+          "changedPixels": 24,
+          "maximumError": 1,
+          "alphaChangedPixels": 24,
+          "maximumAlphaError": 1,
+          "totalChannelError": 24,
+          "bounds": [
+            674,
+            490,
+            726,
+            529
+          ]
+        },
+        {
+          "host": "linux",
+          "phase": "after",
+          "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "maximumAlphaError": 0,
+          "totalChannelError": 0,
+          "bounds": null
+        }
+      ]
+    }
+  ],
+  "captureContext": {
+    "browser": "Chrome153.0.8010.52 / Chromium1681091 / recipe3 / transparent / DPR1",
+    "logicalViewport": [
+      1901,
+      1018
+    ],
+    "screenshot": [
+      1901,
+      1018
+    ],
+    "reason": "The native tiled canvas changes construction and filter restoration. A smaller matching-aspect crop is a different raster context and cannot replace this reference.",
+    "executableIdentities": "Recorded independently for both platforms in each reference metadata file."
+  },
+  "mechanismEvidence": {
+    "recipe": "Use filter-raster-fringe.svg, remove filter and clip-path attributes and set opacity1. Render the source on the capture grid with an outer rectangle equal to its padded construction window. Do not compare a crop of the global canvas as though it were that source grid.",
+    "upperTile": {
+      "origin": [
+        672,
+        372
+      ],
+      "bitmapSize": [
+        121,
+        174
+      ],
+      "constructionRectangleInScene": [
+        673,
+        373,
+        119,
+        172
+      ],
+      "tightContentRectangleInBitmap": [
+        24,
+        29,
+        97,
+        145
+      ],
+      "missingBefore": {
+        "tile": "508-254",
+        "variant": "whole-grid",
+        "alphaChangedPixels": 4,
+        "maximumAlphaError": 44,
+        "totalAlphaError": 118,
+        "points": [
+          {
+            "scene": [
+              695,
+              512
+            ],
+            "captured": 0,
+            "native": 19
+          },
+          {
+            "scene": [
+              695,
+              513
+            ],
+            "captured": 0,
+            "native": 40
+          },
+          {
+            "scene": [
+              695,
+              514
+            ],
+            "captured": 0,
+            "native": 44
+          },
+          {
+            "scene": [
+              695,
+              515
+            ],
+            "captured": 0,
+            "native": 15
+          }
+        ]
+      }
+    },
+    "lowerTile": {
+      "origin": [
+        672,
+        469
+      ],
+      "bitmapSize": [
+        121,
+        77
+      ],
+      "constructionRectangleInScene": [
+        673,
+        470,
+        119,
+        75
+      ],
+      "tightContentRectangleInBitmap": [
+        24,
+        1,
+        97,
+        48
+      ],
+      "missingBefore": {
+        "tile": "508-508",
+        "variant": "whole-grid",
+        "alphaChangedPixels": 1,
+        "maximumAlphaError": 1,
+        "totalAlphaError": 1,
+        "points": [
+          {
+            "scene": [
+              695,
+              513
+            ],
+            "captured": 0,
+            "native": 1
+          }
+        ]
+      }
+    },
+    "innerClip": "With only the paint-window correction, the upper source grid is exact. On the lower grid, request-bound classification incorrectly selects binary coverage:44 source-alpha differences/max7/88 total remain, producing4 final alpha differences/max1. Inspecting actual coverage bounds makes both final inner-clip controls exact.",
+    "exploratoryCompanions": "Seven own variants (original, unclipped, opacity1, unfiltered, unfiltered-opacity1, unclipped-opacity1 and clip-mask) are exact under the shared prototype. Inner-clip opacity1 is also exact. These exploratory controls reuse their independently captured native images and do not constitute additional admitted references."
+  },
+  "rejectedSimplifications": [
+    {
+      "change": "Treat the entire padded raster window as ContentClip and remove the separate role.",
+      "reason": "Fails seven unchanged native references on each host: cropped/displaced transparent and composed blurs, rescaled blur with/without opacity, and nested-filter halo. Also worsens Gallardo94/123 to95/124 despite making both own controls exact."
+    },
+    {
+      "change": "Change only the paint interior.",
+      "reason": "Passes existing affected checks but leaves4 final alpha differences in the own inner-clip control; the separate clip-classification cause must also be fixed."
+    }
+  ],
+  "allOriginals": {
+    "prototypeLibrarySha256": "510e8dc33a7ef795e03f160ccfb5e54c1220755ff6447d3bb06bd669cf445aef",
+    "audit": {
+      "windows": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 148,
+        "changed": [],
+        "outcomeOrDiagnosticChanges": []
+      },
+      "linux": {
+        "sourceHashesRechecked": 204,
+        "unchangedPngs": 148,
+        "changed": [],
+        "outcomeOrDiagnosticChanges": []
+      }
+    },
+    "sourceSvgFilesRetained": 0,
+    "qualification": "All204 hashes rechecked per host; all148 rendered PNGs, outcomes and diagnostics remain unchanged under the numerical prototype. Final private names/comments retain that behavior and pass the gates below. Exploratory134 exact/14 different does not close supplied-font/resource/static-state acceptance."
+  },
+  "validation": {
+    "releaseBuilds": "Both test projects and TFMs; zero warnings/errors. Fixture assets refreshed after admission.",
+    "gates": [
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Affected core",
+        "passed": 6086,
+        "failed": 0,
+        "seconds": 29.081520299892873,
+        "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464"
+      },
+      {
+        "host": "windows",
+        "tfm": "net11.0",
+        "scope": "Full routine rendering",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 83.0987191000022,
+        "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected core",
+        "passed": 6086,
+        "failed": 0,
+        "seconds": 24.73176130000502,
+        "librarySha256": "eabc1ed0d09c3833ace14354e43d6a9e5be52f12b8c6924ef653d6f485dffe4a"
+      },
+      {
+        "host": "windows",
+        "tfm": "net10.0",
+        "scope": "Affected rendering",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 27.122803300153464,
+        "librarySha256": "eabc1ed0d09c3833ace14354e43d6a9e5be52f12b8c6924ef653d6f485dffe4a"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Affected core",
+        "passed": 6086,
+        "failed": 0,
+        "seconds": 26.845659558999998,
+        "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464"
+      },
+      {
+        "host": "linux",
+        "tfm": "net11.0",
+        "scope": "Full routine rendering",
+        "passed": 39151,
+        "failed": 0,
+        "seconds": 148.789570873,
+        "librarySha256": "21eabe1107df07bea5faf7740ff164dced47d5476a88574dc3e4f618be0f5464"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected core",
+        "passed": 6086,
+        "failed": 0,
+        "seconds": 20.228471393999996,
+        "librarySha256": "eabc1ed0d09c3833ace14354e43d6a9e5be52f12b8c6924ef653d6f485dffe4a"
+      },
+      {
+        "host": "linux",
+        "tfm": "net10.0",
+        "scope": "Affected rendering",
+        "passed": 10803,
+        "failed": 0,
+        "seconds": 36.922283359999994,
+        "librarySha256": "eabc1ed0d09c3833ace14354e43d6a9e5be52f12b8c6924ef653d6f485dffe4a"
+      }
+    ],
+    "timing": "Busy-host functional elapsed times only; no performance claim.",
+    "newAdmittedFixtures": 2,
+    "newOwnershipCases": 0,
+    "strengthenedOwnershipCases": 1,
+    "existingReferencePngsChanged": 0,
+    "routineResponsibility": "Each fixture uses the existing canonical conversion/manifest check. The inner and outer clip are distinct source/restore interactions, not an API multiplication."
+  },
+  "remainingAcceptance": [
+    "Original Gallardo path3850 remains10 alpha differences/max1, with matching source captures and stored blur values in clipped/unclipped library runs. Its independent mask, unfiltered source, unclipped blur and constant solid/image clip carriers are exact. This source-window fix does not close that original finding.",
+    "Gallardo remains94 pixels/123 total channel error; Scimitar221/1,216. Resolve crop, flood/offset, shadows and complete original/font/resource/static-state mappings before closing the whole filter milestone."
+  ]
+}

@@ -83,8 +83,9 @@ sampling/blend semantics.
 | Canvas boundary | Retain parent rounding before child concatenation. A clip's resource normalization does not transform its consumer; mask construction uses the incoming canvas. |
 | Object box | Measures pre-clip geometry/layout for normalized paints/resources. |
 | Visual/drawing enclosure | Includes painted stroke/effect extents and source-space enclosure before placement. |
-| Construction/dispatch bounds | Decide edge admission and raster route independently of clipped storage. Captured geometry and clip resources share the padded source-image bounds. |
-| Captured/sampled image | Retain requested subsets, content clips, image hints, color space and origin even when storage is cropped. |
+| Raster window | Bounds admitted geometry, clip-resource construction and stored numerical coverage. Curve rasterization can paint beyond tight continuous extrema. |
+| Clip coverage | Use the actual bitmap coverage tape to classify an opaque rectangle; request/layout bounds can hide an antialiased fringe. |
+| Captured/sampled image | Retain requested subsets, content clips, image hints, color space and origin independently of the raster window. |
 
 Nested viewports retain the parent map outside their local viewBox map. Ordinary
 drawing bounds use native integer saturation/culling; resource pictures keep local

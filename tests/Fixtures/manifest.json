@@ -18298,6 +18298,56 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-filter-source-clip-padding.json",
       "referenceSha256": "fc10e665c9b6a7bd4008a455b30a65e24098807575200a0be1311935db339efc"
+    },
+    {
+      "id": "original-filter-raster-fringe",
+      "path": "original/filter-raster-fringe.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "95f51f0f06fa9f9d66f4e9b1b863708a9bcc8ee9407d528ff7b11f0791a657be",
+      "materializedSha256": "95f51f0f06fa9f9d66f4e9b1b863708a9bcc8ee9407d528ff7b11f0791a657be",
+      "featureTags": [
+        "filter",
+        "clip",
+        "curve",
+        "raster-window"
+      ],
+      "width": 1901,
+      "height": 1018,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-raster-fringe.json",
+      "referenceSha256": "cffd8a600ccbffe57c2f25401ce6d88dd39043cfc2c471980e7f132a96b0dd72"
+    },
+    {
+      "id": "original-filter-raster-fringe-inner-clip",
+      "path": "original/filter-raster-fringe-inner-clip.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "9929be12aa1532757e230faa4bc7b8d0099b7db42ff8b5768eb7d4748ea366e9",
+      "materializedSha256": "9929be12aa1532757e230faa4bc7b8d0099b7db42ff8b5768eb7d4748ea366e9",
+      "featureTags": [
+        "filter",
+        "clip",
+        "curve",
+        "raster-window"
+      ],
+      "width": 1901,
+      "height": 1018,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-raster-fringe-inner-clip.json",
+      "referenceSha256": "8c8d18a6e4aa37938515b27b7aa7a9cfd542241f8f605673ac5e9f3f683c6f62"
     }
   ]
 }

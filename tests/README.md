@@ -40,7 +40,11 @@ and referencing maps, including object-box normalization. Its
 parent before child concatenation; existing scaled radial, inherited clip and
 rotated dome references protect the contexts where collapsing those roles fails.
 The [clipped filter-source fixture](Fixtures/original/filter-source-clip-padding.svg)
-protects padded clip construction independently of the stored content rectangle.
+protects padded clip construction independently of the source request rectangle.
+The [raster-window fixtures](Research/svgweb/filter-raster-window.json) separately
+protect numerical curve coverage beyond tight extrema and clip classification
+inside a filtered source. Both use canonical conversion; one existing ownership
+case covers the stronger source without repeating the API matrix.
 
 Migrated cases use consistent `Layer=Mechanism`, `Layer=Contract`,
 `Layer=Rendering` and `Layer=Integrity` traits. Classification is incomplete;
