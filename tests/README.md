@@ -63,6 +63,9 @@ The [bitmap clip request fixture](Fixtures/original/filter-bitmap-clip-request.s
 protects a stepped clip narrowing one compositor bitmap before source capture.
 It uses canonical conversion and independent native platform triples; existing
 clip-bound mechanisms and filter ownership cases retain their own responsibilities.
+The [parameter enclosure fixture](Fixtures/original/filter-parameter-source-enclosure.svg)
+isolates source-device placement and gradient dither in sRGB. Direct native hint
+mechanisms protect enclosure before expansion without multiplying rendering contexts.
 The [affine-root control](Fixtures/original/filter-affine-root-boundary.svg) and
 its [paired gap control](Fixtures/original/filter-affine-root-gap.svg) retain
 distinct backdrop/capture interactions through canonical conversion. Direct

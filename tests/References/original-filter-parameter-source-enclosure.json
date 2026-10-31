@@ -1,0 +1,55 @@
+{
+  "platform": "win64",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "captureRecipeRevision": "3",
+  "inputSha256": "342da9faea2518fc6bbaf91cc75779f59befc4e80190862b466e38b6f302957f",
+  "referenceSha256": "e2387a71811926a527e3e3b0542717f55d1e8db87ecb382f2d9848b6844c2740",
+  "freshProcessCaptures": 3,
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "deviceScaleFactor": 1,
+  "referencePng": "original-filter-parameter-source-enclosure.png",
+  "background": "transparent",
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-filter-parameter-source-enclosure",
+  "viewport": {
+    "width": 640,
+    "height": 300,
+    "deviceScaleFactor": 1
+  },
+  "selection": "Original CC0 fractional rectangle and opaque linear gradient, blurred in explicit sRGB across bordered compositor bitmaps. Source parameter bounds are enclosed before graph expansion; capture and shader image hints keep the same native stage. Three fresh healthy/profile-cleaned captures per host at logical/screenshot640x300; all six encoded PNGs are identical.",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  },
+  "platformCaptures": {
+    "win64": {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "inputSha256": "342da9faea2518fc6bbaf91cc75779f59befc4e80190862b466e38b6f302957f",
+      "referenceSha256": "e2387a71811926a527e3e3b0542717f55d1e8db87ecb382f2d9848b6844c2740",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    },
+    "linux64": {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "inputSha256": "342da9faea2518fc6bbaf91cc75779f59befc4e80190862b466e38b6f302957f",
+      "referenceSha256": "e2387a71811926a527e3e3b0542717f55d1e8db87ecb382f2d9848b6844c2740",
+      "freshProcessCaptures": 3,
+      "captureStartupHealth": "healthy",
+      "captureProfilesCleaned": true
+    }
+  }
+}

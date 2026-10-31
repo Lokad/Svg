@@ -18300,6 +18300,30 @@
       "referenceSha256": "fc10e665c9b6a7bd4008a455b30a65e24098807575200a0be1311935db339efc"
     },
     {
+      "id": "original-filter-parameter-source-enclosure",
+      "path": "original/filter-parameter-source-enclosure.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-31",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "342da9faea2518fc6bbaf91cc75779f59befc4e80190862b466e38b6f302957f",
+      "materializedSha256": "342da9faea2518fc6bbaf91cc75779f59befc4e80190862b466e38b6f302957f",
+      "featureTags": [
+        "filter",
+        "clip",
+        "curve",
+        "parameter-enclosure"
+      ],
+      "width": 640,
+      "height": 300,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-filter-parameter-source-enclosure.json",
+      "referenceSha256": "e2387a71811926a527e3e3b0542717f55d1e8db87ecb382f2d9848b6844c2740"
+    },    {
       "id": "original-filter-bitmap-clip-request",
       "path": "original/filter-bitmap-clip-request.svg",
       "sourceUrl": null,

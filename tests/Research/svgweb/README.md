@@ -9,7 +9,7 @@ this directory contains metadata and original orthogonal controls.
 The current default conversion renders 148 originals per host: **139 exploratory
 exact and 9 different**, with 53 UnsupportedFeature and 3 MalformedInput outcomes.
 These observations use transparent output without supplied fonts/resources.
-Scimitar is exact; Gallardo differs at 84 pixels/107 total channel error and UFO at
+Scimitar is exact; Gallardo differs at 40 pixels/46 total channel error and UFO at
 30 pixels/63 total channel error. See `currentReview` in the inventory for all nine
 remaining differences. Exact default output does not qualify other font, resource
 or static-state contexts, and whole-corpus acceptance remains open.
@@ -50,6 +50,7 @@ current inventory above governs overall status.
 | Root experiments | [Viewport review](root-viewport-review.json), [stage review](root-image-stages.json). Preserve rejected output-only stretching and context distinctions. |
 | Filter images and restoration | [Image model](filter-image-model.json), [bitmap restoration](filter-bitmap-restoration.json), [Gaussian aliases](gaussian-alias-restoration.json). Retain deferred/color-filter state, cropped storage, padding, enclosing opacity and final sampling roles. |
 | Filter source requests | [Source capture](filter-source-capture.json), [request propagation](filter-source-request.json), [bitmap clip requests](filter-bitmap-clip-request.json). Ordinary, nested and image-containing sources use propagated requests; each bordered destination bitmap uses its own nonzero clip bounds. |
+| Parameter source enclosure | [Capture and output hints](filter-parameter-source-enclosure.json). Enclose source visuals before graph expansion and the result before device mapping. Ordinary and affine capture share the parameter stage; recorded paint hints and captured content remain distinct. |
 | Source raster windows | [Clip construction](source-clip-construction.json), [raster window](filter-raster-window.json). Admitted numerical paint and construction padding remain separate from tight visual extents and captured content. |
 | Nested pictures and affine capture | [Nested picture](filter-nested-picture.json), [transform review](filter-transform-review.json). Keep original descendant paint hints, filtered output and parameter capture enclosure distinct. Both opposed affine controls are exact canonical regressions. |
 | Filter numerical stages | [Black linear stages](black-linear-stages.json), [bilinear weights](filter-bilinear-review.json), [numeric vectors](../../Lokad.Svg.Tests/TestData/highp-bilinear.json), [browser probe](highp-bilinear.js). Transfer, byte storage, packed alpha, high-precision weights and addressing have separate responsibilities. |
@@ -64,7 +65,8 @@ current inventory above governs overall status.
 The [280-leaf Gallardo map](gallardo-paint-map.csv) retains 58 native paint isolations
 and the [referenced-clip record](clip-use-construction.json) maps 35 filter consumers.
 The current [bitmap request record](filter-bitmap-clip-request.json) rechecks both
-collections. The clipped `path3850` blur is now exact;
+collections. The clipped `path3850` blur and both captured-gradient consumers
+(`use4125`, `use4171`) are exact;
 the complete Gallardo image remains unresolved. The
 [Scimitar scope map](scimitar-scope-map.csv) preserves all 43 scopes; the
 [inner-filter map](scimitar-inner-filter-map.csv) preserves 20 companions, including

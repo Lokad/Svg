@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "qualifiedUtc": "2026-10-31",
+  "sourceBaseline": "d070812b91972da81f194295aa3f57ec9196101b",
+  "scope": "Shared parameter-space capture and output-hint enclosure. The two captured-gradient consumers close; whole filter/original acceptance remains open.",
+  "implementation": {
+    "converter": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "parameterHelper": "../../../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+    "problem": "The ordinary filter path expanded continuous source bounds before enclosing them. Affine capture already enclosed parameter-space source visuals first. A one-pixel hint error moved the native source device and its gradient dither phase.",
+    "change": "Map source visuals into their parameter coordinates, use the existing capture-enclosure helper or the corresponding painted-output propagation, enclose there, then map to device. Ordinary capture and ordinary/optimized-offset shader hints use one local helper; remove device-expand-then-unmap rounding.",
+    "separateRoles": "Recorded descendant paint boxes, element visuals, captured content, propagated requests and transparent padding remain separate. Native drawing coefficients and real parameter coordinates keep their existing roles.",
+    "ownership": "No new owner, buffer, cache, public API or runtime dependency. Bounds scratch remains pre-admitted under the existing budget, and scope cleanup/cancellation remain unchanged.",
+    "arithmetic": "No Gaussian, gradient, color-transfer, alpha, text-layout, logical-size or uniform-fitting arithmetic change. Existing PNG targets and tolerances are unchanged."
+  },
+  "nativeObservations": [
+    {
+      "id": "use4125",
+      "variantSourceSha256": "a8cb631b57b880a1ef46212f4985ee2f5bd0ac760eec1159ada52139e6499d12",
+      "sourceVisualBounds": [
+        218.27927,
+        81.11185,
+        562.594,
+        213.11453
+      ],
+      "deviation": 5.6950996,
+      "nativeRecordedCaptureHint": [
+        200,
+        67,
+        581,
+        227
+      ],
+      "drawPathCommandHash": "14B3927BFB9E9BB177E62822E0482DB6EAA0D90D468B9E465F3CC042D42A5026",
+      "capturePngSha256": "4a8851a7886df2d9e6331279d5712ae668c760244a6a7623474aae3ec8ae03b4",
+      "startupHealthy": true,
+      "profileCleaned": true
+    },
+    {
+      "id": "use4171",
+      "variantSourceSha256": "d8b3497cac756115a7d41535e1c4815ca6344f4ab90f1564a248d3753a6fc6aa",
+      "sourceVisualBounds": [
+        696.90625,
+        397.375,
+        1280.21875,
+        744
+      ],
+      "deviation": 10.108017,
+      "nativeRecordedCaptureHint": [
+        665,
+        366,
+        1312,
+        775
+      ],
+      "drawPathCommandHash": "F70E931585C59F9995237321B6690C210C4A633BD0C4BAB2307238854D414DA3",
+      "capturePngSha256": "b417e85dfd07a3045b98d96c3774b389ec9e31cb4862a613f4d04a47622b62a4",
+      "startupHealthy": true,
+      "profileCleaned": true
+    }
+  ],
+  "nativeRegression": {
+    "fixture": "../../Fixtures/original/filter-parameter-source-enclosure.svg",
+    "reference": "../../References/original-filter-parameter-source-enclosure.json",
+    "license": "CC0-1.0",
+    "sourceSha256": "342da9faea2518fc6bbaf91cc75779f59befc4e80190862b466e38b6f302957f",
+    "referenceSha256": "e2387a71811926a527e3e3b0542717f55d1e8db87ecb382f2d9848b6844c2740",
+    "logicalAndScreenshotDimensions": [
+      640,
+      300
+    ],
+    "freshHealthyProfileCleanedCapturesPerHost": 3,
+    "allSixPngsByteIdentical": true,
+    "beforeAfter": [
+      {
+        "host": "windows",
+        "phase": "before",
+        "librarySha256": "db1fb3f6813704a6d2e58988c9731ef477cba2282b1c3e361677d9c381b7449c",
+        "changedPixels": 643,
+        "maximumError": 128,
+        "totalChannelError": 1776,
+        "bounds": [
+          206,
+          72,
+          255,
+          226
+        ]
+      },
+      {
+        "host": "windows",
+        "phase": "candidate",
+        "librarySha256": "da8e95c329ce83b75f7fb123778438f76d551a8a077a5947a4ef1265b1e01451",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "bounds": null
+      },
+      {
+        "host": "linux",
+        "phase": "before",
+        "librarySha256": "db1fb3f6813704a6d2e58988c9731ef477cba2282b1c3e361677d9c381b7449c",
+        "changedPixels": 643,
+        "maximumError": 128,
+        "totalChannelError": 1776,
+        "bounds": [
+          206,
+          72,
+          255,
+          226
+        ]
+      },
+      {
+        "host": "linux",
+        "phase": "candidate",
+        "librarySha256": "da8e95c329ce83b75f7fb123778438f76d551a8a077a5947a4ef1265b1e01451",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "bounds": null
+      }
+    ],
+    "responsibility": "One canonical rendering control isolates fractional source bounds and gradient dither under explicit sRGB. Existing curve and linearRGB controls remain. Two additional native-derived direct hint cases share ordinary setup with the affine mechanism, without a new rendering/API matrix."
+  },
+  "diagnosticBoundary": "Before correction, independent source canvases matched stored pixels and native bitmap carriers matched library blur/restoration in both spaces, while original vector output still differed. Those separate canvases did not establish the original vector source device. Independent native saveLayer hints identify the missing parameter enclosure; no diagnostic pixel offset is adopted.",
+  "originalMapping": {
+    "gallardoSourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "closedConsumers": [
+      "use4125",
+      "use4171"
+    ],
+    "filterConsumersReplayedPerHost": 35,
+    "other33FilterPngsUnchanged": true,
+    "unfilteredPaintIsolations": 58,
+    "all58PaintPngsUnchanged": true,
+    "remainingFilterConsumers": [
+      {
+        "id": "path5398",
+        "changedPixels": 2,
+        "maximumError": 5,
+        "totalChannelError": 7
+      },
+      {
+        "id": "path3424",
+        "changedPixels": 1,
+        "maximumError": 1,
+        "totalChannelError": 1
+      },
+      {
+        "id": "path5263",
+        "changedPixels": 2,
+        "maximumError": 127,
+        "totalChannelError": 256
+      }
+    ]
+  },
+  "allOriginals": {
+    "filesPerHost": 204,
+    "sourceSvgFilesRetained": 0,
+    "countsPerHost": {
+      "rendered": 148,
+      "exploratoryExact": 139,
+      "different": 9,
+      "UnsupportedFeature": 53,
+      "MalformedInput": 3
+    },
+    "previousPngsByteIdenticalPerHost": {
+      "windows": 145,
+      "linux": 145
+    },
+    "changed": [
+      {
+        "name": "car.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 8542,
+          "maximumError": 255,
+          "totalChannelError": 13801
+        },
+        "after": {
+          "status": "different",
+          "changedPixels": 53,
+          "maximumError": 2,
+          "totalChannelError": 60
+        }
+      },
+      {
+        "name": "gallardo.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 84,
+          "maximumError": 18,
+          "totalChannelError": 107
+        },
+        "after": {
+          "status": "different",
+          "changedPixels": 40,
+          "maximumError": 1,
+          "totalChannelError": 46
+        }
+      },
+      {
+        "name": "rg1024_green_grapes.svg",
+        "before": {
+          "status": "different",
+          "changedPixels": 2717,
+          "maximumError": 255,
+          "totalChannelError": 6333
+        },
+        "after": {
+          "status": "different",
+          "changedPixels": 37,
+          "maximumError": 18,
+          "totalChannelError": 139
+        }
+      }
+    ],
+    "bothHostsAgreeOnComparisons": true,
+    "outcomesDiagnosticsAndLogicalDimensionsUnchanged": true,
+    "lostExactImages": [],
+    "seconds": 54.74482849985361
+  },
+  "retainedInteractions": {
+    "affineRadialAndSolidLargeViewBoxCases": 23,
+    "allExact": true,
+    "scimitarInnerControlsExactPerHost": 20,
+    "scimitarScopePngsByteIdentical": 43,
+    "completeShadowDescendants": 35
+  },
+  "affectedValidation": [
+    {
+      "name": "affected-core-linux-net10.0",
+      "seconds": 22.874139120000002,
+      "librarySha256": "e95b2516427015ca0cb3565c7d34edb8674a84c0794dd15b41d70fe5cc68fe94",
+      "passed": 4740
+    },
+    {
+      "name": "affected-core-linux-net11.0",
+      "seconds": 18.159607302,
+      "librarySha256": "da8e95c329ce83b75f7fb123778438f76d551a8a077a5947a4ef1265b1e01451",
+      "passed": 4740
+    },
+    {
+      "name": "affected-core-windows-net10.0",
+      "seconds": 24.59822709998116,
+      "librarySha256": "e95b2516427015ca0cb3565c7d34edb8674a84c0794dd15b41d70fe5cc68fe94",
+      "passed": 4740
+    },
+    {
+      "name": "affected-core-windows-net11.0",
+      "seconds": 23.810930499807,
+      "librarySha256": "da8e95c329ce83b75f7fb123778438f76d551a8a077a5947a4ef1265b1e01451",
+      "passed": 4740
+    },
+    {
+      "name": "affected-native-linux-net10.0",
+      "seconds": 35.098598103,
+      "librarySha256": "e95b2516427015ca0cb3565c7d34edb8674a84c0794dd15b41d70fe5cc68fe94",
+      "passed": 2951
+    },
+    {
+      "name": "affected-native-linux-net11.0",
+      "seconds": 33.011040025,
+      "librarySha256": "da8e95c329ce83b75f7fb123778438f76d551a8a077a5947a4ef1265b1e01451",
+      "passed": 2951
+    },
+    {
+      "name": "affected-native-windows-net10.0",
+      "seconds": 27.53376999986358,
+      "librarySha256": "e95b2516427015ca0cb3565c7d34edb8674a84c0794dd15b41d70fe5cc68fe94",
+      "passed": 2951
+    },
+    {
+      "name": "affected-native-windows-net11.0",
+      "seconds": 27.98960640002042,
+      "librarySha256": "da8e95c329ce83b75f7fb123778438f76d551a8a077a5947a4ef1265b1e01451",
+      "passed": 2951
+    }
+  ],
+  "validationScope": "Affected clip/filter/ownership/geometry/text mechanisms and rendering on both hosts/runtimes. Full Windows/Linux/package qualification remains a coherent-milestone gate. Functional busy-host timings are not benchmarks or a completed suite-simplification claim."
+}

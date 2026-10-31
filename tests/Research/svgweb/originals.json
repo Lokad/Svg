@@ -10351,9 +10351,9 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "filter-bitmap-clip-request.json",
-    "sourceBaseline": "eb0ed33f35d9779fe9aa6ec5d5d9d24c2f6348e2",
-    "librarySha256": "db1fb3f6813704a6d2e58988c9731ef477cba2282b1c3e361677d9c381b7449c",
+    "evidence": "filter-parameter-source-enclosure.json",
+    "sourceBaseline": "d070812b91972da81f194295aa3f57ec9196101b",
+    "librarySha256": "da8e95c329ce83b75f7fb123778438f76d551a8a077a5947a4ef1265b1e01451",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10364,11 +10364,13 @@
       "MalformedInput": 3
     },
     "previousPngsByteIdenticalPerHost": {
-      "windows": 147,
-      "linux": 147
+      "windows": 145,
+      "linux": 145
     },
     "changedOriginals": [
-      "gallardo.svg"
+      "car.svg",
+      "gallardo.svg",
+      "rg1024_green_grapes.svg"
     ],
     "newlyExactOriginals": [],
     "lostExactImages": [],
@@ -10384,9 +10386,9 @@
       {
         "name": "car.svg",
         "status": "different",
-        "changedPixels": 8542,
-        "maximumError": 255,
-        "totalChannelError": 13801
+        "changedPixels": 53,
+        "maximumError": 2,
+        "totalChannelError": 60
       },
       {
         "name": "compuserver_msn_Ford_Focus.svg",
@@ -10398,9 +10400,9 @@
       {
         "name": "gallardo.svg",
         "status": "different",
-        "changedPixels": 84,
-        "maximumError": 18,
-        "totalChannelError": 107
+        "changedPixels": 40,
+        "maximumError": 1,
+        "totalChannelError": 46
       },
       {
         "name": "opensearch.svg",
@@ -10426,9 +10428,9 @@
       {
         "name": "rg1024_green_grapes.svg",
         "status": "different",
-        "changedPixels": 2717,
-        "maximumError": 255,
-        "totalChannelError": 6333
+        "changedPixels": 37,
+        "maximumError": 18,
+        "totalChannelError": 139
       },
       {
         "name": "scion.svg",

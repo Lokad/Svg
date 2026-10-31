@@ -9,20 +9,35 @@ public sealed class SvgFilterSourceHintTests
 {
     [Fact]
     public void Parameter_capture_encloses_source_visuals_before_gaussian_expansion()
+        => AssertNativeParameterCapture(3.84278f, new(38.714375f, 47.374504f, 206.11948f, 209.79495f),
+            new(-1000, -1000, 1000, 1000), new(26, 35, 219, 222), new(27, 35, 218, 222));
+
+    [Fact]
+    public void Referenced_gradient_capture_preserves_native_left_and_right_enclosure()
+        => AssertNativeParameterCapture(5.6950996f, new(218.27927f, 81.11185f, 562.594f, 213.11453f),
+            new(183.8478f, 67.911575f, 597.02545f, 226.3148f), new(200, 67, 581, 227), new(201, 67, 580, 227));
+
+    [Fact]
+    public void Translucent_gradient_capture_preserves_native_top_enclosure()
+        => AssertNativeParameterCapture(10.108017f, new(696.90625f, 397.375f, 1280.2188f, 744),
+            new(638.575f, 362.7125f, 1338.55f, 778.6625f), new(665, 366, 1312, 775), new(666, 367, 1311, 775));
+
+    private static void AssertNativeParameterCapture(float sigma, SvgPaintBounds visual, SvgPaintBounds region,
+        SvgPaintBounds expected, SvgPaintBounds withoutSourceEnclosure)
     {
-        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><defs><filter id='f' filterUnits='userSpaceOnUse' x='-1000' y='-1000' width='2000' height='2000'><feGaussianBlur stdDeviation='3.84278'/></filter></defs><rect width='4' height='4' filter='url(#f)'/></svg>"u8.ToArray();
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><defs><filter id='f' filterUnits='userSpaceOnUse' x='-1000' y='-1000' width='2000' height='2000'><feGaussianBlur stdDeviation='"
+            + sigma.ToString("R", CultureInfo.InvariantCulture) + "'/></filter></defs><rect width='4' height='4' filter='url(#f)'/></svg>");
         RenderBudget parser = new(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
         {
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
             SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
-            SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(300, 300), new(-1000, -1000, 1000, 1000));
-            SvgPaintBounds visual = new(38.714375f, 47.374504f, 206.11948f, 209.79495f);
+            SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(300, 300), region);
             RenderBudget scratch = new(new HostMemoryBudget(1_000_000));
-            // Independent native saveLayer observation in svgweb/filter-transform-review.json.
-            Assert.Equal(new SvgPaintBounds(26, 35, 219, 222),
+            // Independent saveLayer observations are retained in the SVGWeb stage records.
+            Assert.Equal(expected,
                 SvgFilterPlayback.ParameterCaptureBounds(resource, new(1, 1), context, visual, scratch, CancellationToken.None));
-            Assert.Equal(new SvgPaintBounds(27, 35, 218, 222), SvgFilterPlayback.RoundParameterBounds(
+            Assert.Equal(withoutSourceEnclosure, SvgFilterPlayback.RoundParameterBounds(
                 SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, visual, scratch, CancellationToken.None)));
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
         }

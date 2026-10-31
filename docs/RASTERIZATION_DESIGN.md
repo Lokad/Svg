@@ -183,6 +183,8 @@ in the parent picture's image hint and dither origin; parent capture separately
 includes their filtered output. Rescaled kernels read the captured subset;
 offsets/aliases can retain deferred sampled images until a
 consumer requires pixels.
+Source visuals are enclosed in parameter coordinates before graph expansion;
+capture and output image hints are enclosed there again before device placement.
 Ordinary, nested and image-containing sources all capture the propagated sampling
 request; unrelated source ink must not enlarge that curve-construction window.
 Axis and transformed effects capture input for each bordered destination bitmap;
