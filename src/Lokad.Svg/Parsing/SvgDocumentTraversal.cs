@@ -425,13 +425,13 @@ internal static class SvgDocumentTraversal
                 {
                     if (state.ClipPathId is not null)
                     {
-                        if (state.ClipUse is not null) SvgResourceUseReplay.RegisterClip(state, cancellationToken);
+                        if (state.ClipSourceStart >= 0) SvgClipDefinitionStaging.RegisterDeferred(state, cancellationToken);
                         else if (state.ClipBox is not null) SvgDefinitionParser.RegisterClipBox(state, cancellationToken);
                         else if (state.ClipPolygon is not null) SvgDefinitionParser.RegisterClipPolygon(state, cancellationToken);
                         else SvgDefinitionParser.RegisterClipBox(state, cancellationToken);
                     }
                     if (state.ClipPathId is null) state.ClipPolygon?.SourcePath?.Dispose();
-                    state.ClipUse = null;
+                    state.ClipSourceStart = -1;
                     state.ClipPathDepth = -1;
                     state.ClipPathId = null;
                     state.ClipBox = null;

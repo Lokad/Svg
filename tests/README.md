@@ -28,6 +28,11 @@ files; include those consumers when selecting affected checks.
 Filter and clip integration includes `SvgSymbolInstanceReferenceTests`: its
 shared bank contains crop, rescaling and nested-effect regressions.
 
+[Deferred clip coverage](Research/clip-definition-sources/README.md) separates
+ordered child/range mechanisms, one mixed-source ownership input, and three
+canonical native rendering cases. Keep resource intersections distinct from
+child unions; a newly accepted first gate does not close a complete original.
+
 The [foreign-description mechanisms](Lokad.Svg.Tests/SvgForeignMetadataTests.cs)
 cover font eligibility, SVG descendants and structural accounting. [Pattern-location
 cases](Lokad.Svg.Tests/SvgPatternDefinitionLocationTests.cs) separate eligible parent

@@ -42,6 +42,8 @@ public sealed class SvgResourceUseReplayTests
     [Theory]
     [InlineData("<mask id='m'><use href='#missing'/></mask>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<clipPath id='c'><use href='#missing'/></clipPath>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<clipPath id='c'><path d='M0 0H4V4H0Z'/><use href='#s'/><use href='#missing'/></clipPath>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<clipPath id='c'><use href='#s'/><path d='M0 0H4V4H0Z'/></clipPath><clipPath id='c'/>", SvgErrorCode.MalformedInput)]
     [InlineData("<mask id='m'><use href='#s'/></mask><mask id='m'/>", SvgErrorCode.MalformedInput)]
     [InlineData("<clipPath id='c'><use href='#s'/></clipPath><clipPath id='c'/>", SvgErrorCode.MalformedInput)]
     [InlineData("<mask id='m'><use href='#s' mask='url(#m)'/></mask>", SvgErrorCode.UnsupportedFeature)]

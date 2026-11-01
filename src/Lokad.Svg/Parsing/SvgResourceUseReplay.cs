@@ -5,7 +5,6 @@ namespace Lokad.Svg.Parsing;
 
 internal enum SvgResourceUseKind { Mask, Pattern }
 internal readonly record struct SvgResourceUse(SvgUseReference Reference, string? ClipId, bool IsEvenOdd);
-internal readonly record struct SvgDeferredClipUse(string Id, SvgResourceUse Use);
 
 /// <summary>Replays local resource references after forward geometry and paint definitions have registered.</summary>
 /// <remarks>Attribute strings and pending entries belong to the document. Mapped geometry, clip arrays
@@ -46,42 +45,66 @@ internal static class SvgResourceUseReplay
         return new(reference, clipId, evenOdd);
     }
 
-    internal static void RegisterClip(SvgDocumentState state, CancellationToken token)
-    {
-        token.ThrowIfCancellationRequested();
-        if (!state.ClipIsDisplayed)
-        {
-            SvgDefinitionParser.RegisterClipBox(state, token);
-            return;
-        }
-        string id = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip registration requires an identifier."));
-        SvgResourceUse use = state.ClipUse ?? throw new InvalidOperationException("Clip registration requires a retained use.");
-        if (state.Clips.TryGetValue(id, out _) || state.ObjectClips.TryGetValue(id, out _) || !state.ClipPolygons.TryAdd(id, new([], [])))
-            throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
-        state.DeferredClipUses.Add(new(id, use));
-    }
-
     internal static void ResolveClips(SvgDocumentState state, CancellationToken token)
     {
-        for (int index = 0; index < state.DeferredClipUses.Count; index++)
+        if (state.DeferredClips is not {} definitions) return;
+        BudgetedParserList<SvgClipDefinitionSource> sources = state.ClipSources ?? throw new InvalidOperationException("Deferred clip sources are missing.");
+        bool previousDisplay = state.ClipIsDisplayed;
+        try
         {
-            token.ThrowIfCancellationRequested();
-            SvgDeferredClipUse pending = state.DeferredClipUses[index];
-            if (state.GroupSnapshots.TryGetValue(pending.Use.Reference.Id, out _)
-                || state.RenderedGroupDefinitions.TryGetValue(pending.Use.Reference.Id, out _))
+            state.ClipIsDisplayed = true;
+            foreach (SvgDeferredClipDefinition definition in definitions.AsSpan())
             {
-                state.Clips.TryAdd(pending.Id, new(0, 0, 0, 0));
-                continue;
+                token.ThrowIfCancellationRequested();
+                for (int index = definition.FirstSource; index < definition.FirstSource + definition.SourceCount; index++)
+                {
+                    token.ThrowIfCancellationRequested();
+                    SvgClipDefinitionSource source = sources[index];
+                    sources[index] = default;
+                    SvgClipPolygon? child = source.Kind switch
+                    {
+                        SvgClipDefinitionSourceKind.Geometry => source.Geometry,
+                        SvgClipDefinitionSourceKind.Use => LowerReferencedClip(source.Use, state, token),
+                        _ => throw new InvalidOperationException("A deferred clip source was already consumed.")
+                    };
+                    if (child is {} geometry) SvgClipDefinitionStaging.AppendClipChild(geometry, 0, state, token);
+                }
+                if (state.ClipPolygon is null || state.ClipBox is not null)
+                {
+                    state.Clips.TryAdd(definition.Id, state.ClipBox ?? new(0, 0, 0, 0));
+                    state.ClipPolygon?.SourcePath?.Dispose();
+                }
+                else
+                {
+                    SvgClipPolygon polygon = SvgClipDefinitionStaging.Complete(state, token);
+                    state.ClipPolygons.Replace(definition.Id, polygon);
+                }
+                // Registered dictionaries now own the completed path; the next
+                // definition starts with independent parser staging.
+                state.ClipPolygon = null;
+                state.ClipBox = null;
             }
-            if (!SvgReferenceResolver.TryGetDefinition(pending.Use.Reference, state.Definitions, out SvgDefinition source))
+        }
+        finally
+        {
+            state.ClipPolygon?.SourcePath?.Dispose();
+            state.ClipPolygon = null;
+            state.ClipBox = null;
+            state.ClipIsDisplayed = previousDisplay;
+        }
+
+        static SvgClipPolygon? LowerReferencedClip(SvgResourceUse use, SvgDocumentState state, CancellationToken token)
+        {
+            if (state.GroupSnapshots.TryGetValue(use.Reference.Id, out _)
+                || state.RenderedGroupDefinitions.TryGetValue(use.Reference.Id, out _)) return null;
+            if (!SvgReferenceResolver.TryGetDefinition(use.Reference, state.Definitions, out SvgDefinition source))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local geometry references in resource content are implemented.");
             if (source.StrokeContent is not null || source.SymbolContent is not null || source.RenderedGroupId is not null)
             {
                 // Container references contribute no clip contour, including a one-child group.
-                state.Clips.TryAdd(pending.Id, new(0, 0, 0, 0));
-                continue;
+                return null;
             }
-            SvgUseReference reference = pending.Use.Reference with
+            SvgUseReference reference = use.Reference with
             {
                 FillOverride = new(new(new(255, 255, 255, 255), 1), true, SvgPaintOpacity.Opaque, new(new(255, 255, 255, 255), 1), false),
                 PaintServerId = null, PaintServerFill = null, StrokeOverride = null, Opacity = 255
@@ -98,7 +121,7 @@ internal static class SvgResourceUseReplay
             else mapped = SvgReferenceResolver.Apply(source, reference, null, state, token);
             try
             {
-                if (pending.Use.ClipId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips on referenced clip content are not implemented.");
+                if (use.ClipId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips on referenced clip content are not implemented.");
                 SvgDevicePoint[]? points = null;
                 SvgAuthoredPath? path = null;
                 foreach (SvgGeometry geometry in mapped)
@@ -119,18 +142,16 @@ internal static class SvgResourceUseReplay
                 if (points is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty referenced clip content is not implemented.");
                 if (!reference.IsDisplayed || !source.SourceDisplayed || !(source.SourceVisible ?? reference.IsVisible))
                 {
-                    state.Clips.TryAdd(pending.Id, new(0, 0, 0, 0));
-                    continue;
+                    return null;
                 }
                 state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry));
                 SvgDevicePoint[] copy = new SvgDevicePoint[points.Length];
                 for (int point = 0; point < points.Length; point++) { token.ThrowIfCancellationRequested(); copy[point] = points[point]; }
-                SvgClipPolygon polygon = new(copy, [copy.Length]) { IsEvenOdd = pending.Use.IsEvenOdd };
+                SvgClipPolygon polygon = new(copy, [copy.Length]) { IsEvenOdd = use.IsEvenOdd };
                 SvgAuthoredPath? copied = path?.Copy(SvgAffineTransform.Identity, state.Budget, token);
                 // Referenced contours retain the same authored construction as
                 // direct clip children, including their controls and placement.
-                try { state.ClipPolygons.Replace(pending.Id, (polygon with { SourcePath = copied, UsesNativeReplay = copied is not null })
-                    .WithVisualBounds(boundsInflation, token)); }
+                try { return (polygon with { SourcePath = copied, UsesNativeReplay = copied is not null }).WithVisualBounds(boundsInflation, token); }
                 catch { copied?.Dispose(); throw; }
             }
             finally { foreach (SvgGeometry geometry in mapped) geometry.Dispose(); }

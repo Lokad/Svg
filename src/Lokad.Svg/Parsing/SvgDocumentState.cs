@@ -76,7 +76,6 @@ internal sealed class SvgDocumentState : IDisposable
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, cancellationToken);
         PendingTextRuns = new(budget, SvgMemoryCategory.Parser, cancellationToken);
         DeferredPaintLeaves = new(budget, SvgMemoryCategory.Parser, cancellationToken);
-        DeferredClipUses = new(budget, SvgMemoryCategory.Parser, cancellationToken);
         MaskReplayChildren = new(budget, SvgMemoryCategory.Parser, cancellationToken);
         DeferredMaskContents = new(budget, SvgMemoryCategory.Parser, cancellationToken);
         PatternUses = new(budget, SvgMemoryCategory.Parser, cancellationToken);
@@ -113,7 +112,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal int FilterDepth { get; set; } = -1;
 
     internal BudgetedParserList<SvgDeferredPaintLeaf> DeferredPaintLeaves { get; }
-    internal BudgetedParserList<SvgDeferredClipUse> DeferredClipUses { get; }
+    internal BudgetedParserList<SvgClipDefinitionSource>? ClipSources { get; set; }
+    internal BudgetedParserList<SvgDeferredClipDefinition>? DeferredClips { get; set; }
     internal BudgetedParserList<SvgMaskReplayChild> MaskReplayChildren { get; }
     internal BudgetedParserList<SvgDeferredMaskContent> DeferredMaskContents { get; }
     internal BudgetedParserList<SvgPatternContentUse> PatternUses { get; }
@@ -122,7 +122,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal int MaskReplayChildCount { get; set; }
     internal int MaskGroupChildIndex { get; set; } = -1;
     internal bool MaskHasReplayContent { get; set; }
-    internal SvgResourceUse? ClipUse { get; set; }
+    internal int ClipSourceStart { get; set; } = -1;
 
     internal BudgetedParserStringStore Strings { get; }
 
@@ -436,7 +436,11 @@ internal sealed class SvgDocumentState : IDisposable
         foreach (SvgPendingTextRun pending in PendingTextRuns.AsSpan()) { pending.Run?.Dispose(); pending.SharedLayout?.Dispose(); pending.Owner.Dispose(); }
         PendingTextRuns.Dispose();
         DeferredPaintLeaves.Dispose();
-        DeferredClipUses.Dispose();
+        if (ClipSources is {} clipSources)
+            foreach (SvgClipDefinitionSource source in clipSources.AsSpan())
+                if (source.Kind == SvgClipDefinitionSourceKind.Geometry) source.Geometry.SourcePath?.Dispose();
+        ClipSources?.Dispose();
+        DeferredClips?.Dispose();
         MaskReplayChildren.Dispose();
         DeferredMaskContents.Dispose();
         GroupSnapshots.Dispose();

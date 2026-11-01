@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "license": "CC0-1.0",
+  "width": 128,
+  "height": 96,
+  "browser": "Chrome153.0.8010.52",
+  "sourceBaseline": "421a17eacdbdcad7624a47199fc4a3e88f7f3608",
+  "context": "Transparent SVG image, intrinsic image viewport, DPR 1; frozen before source staging changes.",
+  "cases": [
+    {
+      "id": "multiple-uses",
+      "input": "inputs/multiple-uses.svg",
+      "inputSha256": "1dbb35b633d8b9797aa0af63ef1fd73381361c5dea69ae16230a94bd6477887f",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "9c7772eef598fd133182dfa57c4cde9ca6f75f13e6c9c17a133b3b56f803f095",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "9c7772eef598fd133182dfa57c4cde9ca6f75f13e6c9c17a133b3b56f803f095",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "9c7772eef598fd133182dfa57c4cde9ca6f75f13e6c9c17a133b3b56f803f095",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/multiple-uses.png",
+          "referenceSha256": "9c7772eef598fd133182dfa57c4cde9ca6f75f13e6c9c17a133b3b56f803f095"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "9c7772eef598fd133182dfa57c4cde9ca6f75f13e6c9c17a133b3b56f803f095",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "9c7772eef598fd133182dfa57c4cde9ca6f75f13e6c9c17a133b3b56f803f095",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "9c7772eef598fd133182dfa57c4cde9ca6f75f13e6c9c17a133b3b56f803f095",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/multiple-uses.png",
+          "referenceSha256": "9c7772eef598fd133182dfa57c4cde9ca6f75f13e6c9c17a133b3b56f803f095"
+        }
+      },
+      "before": "UnsupportedFeature: only single-element clipPath content was implemented.",
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "mixed-child",
+      "input": "inputs/mixed-child.svg",
+      "inputSha256": "5f9dcbf6e65e92dcbb74bc161dbc998fe0b2c941f68d9f1584c4f83a944a8201",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "34f6052c8de941a8b30ba551aeb18d13b8d3142c2ea75f3a27263275e88d78df",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "34f6052c8de941a8b30ba551aeb18d13b8d3142c2ea75f3a27263275e88d78df",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "34f6052c8de941a8b30ba551aeb18d13b8d3142c2ea75f3a27263275e88d78df",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/mixed-child.png",
+          "referenceSha256": "34f6052c8de941a8b30ba551aeb18d13b8d3142c2ea75f3a27263275e88d78df"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "34f6052c8de941a8b30ba551aeb18d13b8d3142c2ea75f3a27263275e88d78df",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "34f6052c8de941a8b30ba551aeb18d13b8d3142c2ea75f3a27263275e88d78df",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "34f6052c8de941a8b30ba551aeb18d13b8d3142c2ea75f3a27263275e88d78df",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/mixed-child.png",
+          "referenceSha256": "34f6052c8de941a8b30ba551aeb18d13b8d3142c2ea75f3a27263275e88d78df"
+        }
+      },
+      "before": "UnsupportedFeature: only single-element clipPath content was implemented.",
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "forward-uses",
+      "input": "inputs/forward-uses.svg",
+      "inputSha256": "4e37a62391f90de2c8a7b7ce5a618c57efc6aa441118859f4ffd44c601e617df",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "36910a0d4fb0845782daa13445c4ce7eb8d5703c98a01a939d8f3ec655cc4188",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "36910a0d4fb0845782daa13445c4ce7eb8d5703c98a01a939d8f3ec655cc4188",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "36910a0d4fb0845782daa13445c4ce7eb8d5703c98a01a939d8f3ec655cc4188",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/forward-uses.png",
+          "referenceSha256": "36910a0d4fb0845782daa13445c4ce7eb8d5703c98a01a939d8f3ec655cc4188"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "36910a0d4fb0845782daa13445c4ce7eb8d5703c98a01a939d8f3ec655cc4188",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "36910a0d4fb0845782daa13445c4ce7eb8d5703c98a01a939d8f3ec655cc4188",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "36910a0d4fb0845782daa13445c4ce7eb8d5703c98a01a939d8f3ec655cc4188",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/forward-uses.png",
+          "referenceSha256": "36910a0d4fb0845782daa13445c4ce7eb8d5703c98a01a939d8f3ec655cc4188"
+        }
+      },
+      "before": "UnsupportedFeature: only single-element clipPath content was implemented.",
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    }
+  ]
+}
