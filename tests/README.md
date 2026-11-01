@@ -57,10 +57,15 @@ source/reference hashes, three native receipts and exact pixel comparisons.
 map mechanisms and seven canonical native cases. Two shader mechanisms protect
 recording/capture order and 64/65-stage storage. One recursive-capture contract
 covers the additional allocation path.
-The [filter source-opacity control](Research/filter-source-opacity/README.md)
-adds two canonical images; three direct parameter-bound cases distinguish strokes
-and nested sources. Existing affine group-opacity and AA parent-clip controls
-protect allocation versus coverage bounds. The full hosted original remains open.
+The [filter source-opacity bank](Research/filter-source-opacity/README.md)
+separates thin curves, stroke layout, source recording and opacity restoration
+through canonical conversion. Direct bounds and drawing-map mechanisms protect
+their numerical contracts. The wide control and complete hosted original remain
+open; equal smaller images do not close those interactions.
+The [mask source-clip control](Research/mask-source-clip/README.md) protects a
+hairline crossing an opaque bitmap intersection. Direct mechanisms cover live
+clip borrowing, partial coverage and cancellation; broader mask references retain
+the polygon and composition interactions.
 The reduced [group-opacity pair](Research/filter-group-opacity/README.md) uses two
 overlapping rectangles: both canonical images are exact, and the downscale control
 rejects a global alpha change. Four compiled native device-axis mechanisms protect
