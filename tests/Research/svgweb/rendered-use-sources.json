@@ -370,5 +370,6 @@
     ],
     "builds": "Final .NET11/.NET10 core/native builds have zero warnings/errors.",
     "promotion": "Source-retention scope locally qualified. Full cross-host/runtime/installed-package promotion remains open with the original paint discrepancy and separate frozen DejaVu baseline decision."
-  }
+  },
+  "followup": "nested-filter-placement.json"
 }

@@ -53,6 +53,11 @@ individually selectable. The clip, title and rendered-use banks share one small
 [canonical assertion](Lokad.Svg.VisualTests/SvgNativeControlAssertions.cs), retaining
 source/reference hashes, three native receipts and exact pixel comparisons.
 
+[Nested filter placement](Research/nested-filter-placement/README.md) has six direct
+map mechanisms and two canonical native cases. Four gradient companions retain
+their independent references as explicitly open rounding work. Existing filter
+ownership coverage protects lifecycle paths without another fixture/API product.
+
 The [thin-curve mechanisms](Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs) distinguish
 authored ink from short flattened fallbacks and explicit suppression. One source
 preparation contract and one added clip ownership case cover refusal, cancellation,

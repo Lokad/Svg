@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "c524a6b8c20853baf95d2223d5ba4811f369cc7b",
+  "scope": "Size and replay nested filters in the same affine source layer. Preserve known linear coefficients for a translated child; retain genuine distinct maps without epsilon snapping.",
+  "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
+  "mechanisms": {
+    "test": "../../Lokad.Svg.Tests/SvgFilterSourceMapTests.cs",
+    "cases": 6,
+    "roles": [
+      "Exact original source/layer relation.",
+      "Translated child retains recorded linear part and composed translation.",
+      "Each linear coefficient changed by one ULP retains generic composition."
+    ]
+  },
+  "rendering": {
+    "test": "../../Lokad.Svg.VisualTests/SvgNestedFilterPlacementReferenceTests.cs",
+    "capture": "../nested-filter-placement/capture.json",
+    "exactCases": 2,
+    "freshNativeCaptures": 36,
+    "referenceChanges": 0,
+    "failingBefore": {
+      "librarySha256": "2afb37adabb35f6670af3397fe8fa598c110cba455c879ddd59712053bbd7e7e",
+      "passed": 1,
+      "failed": 1,
+      "case": "affine-nested-solid-srgb",
+      "changedPixelsPerHost": 1671
+    }
+  },
+  "controls": [
+    {
+      "id": "nested-opacity",
+      "input": "../nested-filter-placement/inputs/nested-opacity.svg",
+      "beforePixelsPerHost": {
+        "windows": 0,
+        "linux": 0
+      },
+      "afterPixelsPerHost": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "affine-nested-opacity",
+      "input": "../nested-filter-placement/inputs/affine-nested-opacity.svg",
+      "beforePixelsPerHost": {
+        "windows": 1596,
+        "linux": 1596
+      },
+      "afterPixelsPerHost": {
+        "windows": 18,
+        "linux": 18
+      }
+    },
+    {
+      "id": "large-affine-nested-opacity",
+      "input": "../nested-filter-placement/inputs/large-affine-nested-opacity.svg",
+      "beforePixelsPerHost": {
+        "windows": 1587,
+        "linux": 1587
+      },
+      "afterPixelsPerHost": {
+        "windows": 61,
+        "linux": 61
+      }
+    },
+    {
+      "id": "affine-nested-srgb",
+      "input": "../nested-filter-placement/inputs/affine-nested-srgb.svg",
+      "beforePixelsPerHost": {
+        "windows": 1596,
+        "linux": 1596
+      },
+      "afterPixelsPerHost": {
+        "windows": 26,
+        "linux": 26
+      }
+    },
+    {
+      "id": "affine-nested-solid-srgb",
+      "input": "../nested-filter-placement/inputs/affine-nested-solid-srgb.svg",
+      "beforePixelsPerHost": {
+        "windows": 1671,
+        "linux": 1671
+      },
+      "afterPixelsPerHost": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "id": "affine-nested-no-source-opacity",
+      "input": "../nested-filter-placement/inputs/affine-nested-no-source-opacity.svg",
+      "beforePixelsPerHost": {
+        "windows": 1612,
+        "linux": 1612
+      },
+      "afterPixelsPerHost": {
+        "windows": 19,
+        "linux": 19
+      }
+    }
+  ],
+  "ownership": "No new ownership or allocation path. Affected filter/opacity tests retain distinct refusal, cancellation, cleanup and retry contracts.",
+  "original": {
+    "name": "juanmontoya_lingerie.svg",
+    "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
+    "beforeChangedPixelsPerHost": 5483,
+    "beforeMaximumError": 152,
+    "afterChangedPixelsPerHost": 4588,
+    "afterMaximumError": 23,
+    "afterAlphaChangedPixelsPerHost": 2,
+    "status": "open",
+    "next": "Investigate captured gradient coordinates and nested filter colour transfer/rounding through the shared source drawing map; do not adapt reference images or tolerances."
+  },
+  "defaultAudit": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "directory": {
+      "files": 204,
+      "indexSha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+      "httpStatus": 200,
+      "directoryEntriesUnchanged": true,
+      "sourceSvgFilesRetained": 0
+    },
+    "outcomesPerHost": {
+      "rendered": 154,
+      "UnsupportedFeature": 47,
+      "MalformedInput": 3
+    },
+    "exploratoryExactPerHost": 153,
+    "differentPerHost": 1,
+    "all203OtherSemanticReportsUnchanged": true,
+    "all153PriorExactPngsPerHostByteIdentical": true,
+    "seconds": 48.416
+  },
+  "validation": {
+    "checks": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 572,
+        "seconds": 8.054,
+        "librarySha256": "b12a7c7ed3a676dd775e15f31d603935c9ca0ce08cb99e2862ba2621c2f9dc52",
+        "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 1892,
+        "seconds": 17.442,
+        "librarySha256": "b12a7c7ed3a676dd775e15f31d603935c9ca0ce08cb99e2862ba2621c2f9dc52",
+        "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 572,
+        "seconds": 9.953,
+        "librarySha256": "b12a7c7ed3a676dd775e15f31d603935c9ca0ce08cb99e2862ba2621c2f9dc52",
+        "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 1892,
+        "seconds": 31.123,
+        "librarySha256": "b12a7c7ed3a676dd775e15f31d603935c9ca0ce08cb99e2862ba2621c2f9dc52",
+        "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 40,
+        "seconds": 8.445,
+        "librarySha256": "b1c5fe49daa729529fb3b744d6053abc31ee619f8580de9fea94f741d038533d",
+        "selection": "FullyQualifiedName~SvgFilterSourceMapTests|FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgUniformFilterOwnershipTests"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 262,
+        "seconds": 8.664,
+        "librarySha256": "b1c5fe49daa729529fb3b744d6053abc31ee619f8580de9fea94f741d038533d",
+        "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 40,
+        "seconds": 8.401,
+        "librarySha256": "b1c5fe49daa729529fb3b744d6053abc31ee619f8580de9fea94f741d038533d",
+        "selection": "FullyQualifiedName~SvgFilterSourceMapTests|FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgUniformFilterOwnershipTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 262,
+        "seconds": 12.318,
+        "librarySha256": "b1c5fe49daa729529fb3b744d6053abc31ee619f8580de9fea94f741d038533d",
+        "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests"
+      }
+    ],
+    "builds": "Final core/native .NET11 and .NET10 builds: zero warnings/errors.",
+    "promotion": "Locally qualified placement scope only. Full original, gradient colour rounding and the independent Windows frozen-font authority decision remain open."
+  }
+}

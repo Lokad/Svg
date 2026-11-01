@@ -311,7 +311,22 @@ public static partial class SvgConverter
     }
 
     private readonly record struct SvgFilterReplayBinding(int Index, SvgFilterBinding Binding);
-    private readonly record struct SvgFilterSourceMap(SvgAffineTransform Source, SvgAffineTransform Layer, SvgAffineTransform NativePlacement);
+    /// <summary>Immutable relation between retained scene coordinates and one filter layer; owns no storage.</summary>
+    internal readonly record struct SvgFilterSourceMap(SvgAffineTransform Source, SvgAffineTransform Layer, SvgAffineTransform NativePlacement)
+    {
+        /// <summary>Places a nested filter while preserving the known linear map of a translated ancestor.</summary>
+        /// <remarks>Pure arithmetic on validated maps; no allocation, budget ownership or cancellation work.</remarks>
+        internal SvgAffineTransform Place(SvgAffineTransform nested, SvgAffineTransform sourcePlacement)
+        {
+            if (nested == Source) return Layer;
+            SvgAffineTransform placed = sourcePlacement.ComposeChecked(nested);
+            // Translation cannot introduce rotation or skew. Recomputing the
+            // known linear part through its inverse can leave a nonzero residue
+            // and incorrectly construct another affine filter layer.
+            return nested.A == Source.A && nested.B == Source.B && nested.C == Source.C && nested.D == Source.D
+                ? placed with { A = Layer.A, B = Layer.B, C = Layer.C, D = Layer.D } : placed;
+        }
+    }
 
     private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, RasterFrame? frame, CancellationToken cancellationToken)
     {
@@ -495,8 +510,8 @@ public static partial class SvgConverter
         SvgFilterBinding PlaceFilterBinding(SvgFilterBinding binding, int first)
         {
             if (sourcePlacement == SvgAffineTransform.Identity) return binding;
-            SvgAffineTransform transform = frame?.FilterSourceMap is {} relation && relation.Source == binding.Transform
-                ? relation.Layer : sourcePlacement.ComposeChecked(binding.Transform);
+            SvgAffineTransform transform = frame?.FilterSourceMap is {} relation
+                ? relation.Place(binding.Transform, sourcePlacement) : sourcePlacement.ComposeChecked(binding.Transform);
             SvgPaintBounds? objects = null, visuals = null;
             int depth = 0;
             for (int index = first; index < root.Commands.Length; index++)
@@ -2340,6 +2355,10 @@ public static partial class SvgConverter
                     {
                         SvgFilterBinding binding = frame?.FilterBinding is {} replay && replay.Index == value.MaskContentIndex
                             ? replay.Binding : filters.BindingAt(value.MaskContentIndex);
+                        // An isolated group must size the same placed filter that
+                        // replay will paint, including inside an affine source layer.
+                        if (frame?.FilterBinding is not {} placed || placed.Index != value.MaskContentIndex)
+                            binding = PlaceFilterBinding(binding, cursor + 1);
                         SvgPaintBounds filtered = FilterResultBounds(binding, filters.ResourceAt(binding.ResourceIndex), SvgFilterBoundsKind.StoredImage);
                         left = Math.Min(left, filtered.Left); top = Math.Min(top, filtered.Top);
                         right = Math.Max(right, filtered.Right); bottom = Math.Max(bottom, filtered.Bottom);

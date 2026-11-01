@@ -1,0 +1,323 @@
+{
+  "schemaVersion": 1,
+  "license": "CC0-1.0",
+  "sourceBaseline": "c524a6b8c20853baf95d2223d5ba4811f369cc7b",
+  "browser": "Chrome153.0.8010.52",
+  "width": 128,
+  "height": 96,
+  "context": "Transparent SVG image, intrinsic viewport, DPR1; three independent healthy fresh-process captures per host. Exact and open controls remain explicitly distinguished.",
+  "cases": [
+    {
+      "id": "nested-opacity",
+      "input": "inputs/nested-opacity.svg",
+      "inputSha256": "0da47077c2accc99a28b8a3aab7da22d2fba9421aca2491cd29081903a65c5e7",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "390ad70d0564013bbc87e3946813050baf2d245f63277d9b3a295bc962fb9122",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "390ad70d0564013bbc87e3946813050baf2d245f63277d9b3a295bc962fb9122",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "390ad70d0564013bbc87e3946813050baf2d245f63277d9b3a295bc962fb9122",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/nested-opacity.png",
+          "referenceSha256": "390ad70d0564013bbc87e3946813050baf2d245f63277d9b3a295bc962fb9122"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "390ad70d0564013bbc87e3946813050baf2d245f63277d9b3a295bc962fb9122",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "390ad70d0564013bbc87e3946813050baf2d245f63277d9b3a295bc962fb9122",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "390ad70d0564013bbc87e3946813050baf2d245f63277d9b3a295bc962fb9122",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/nested-opacity.png",
+          "referenceSha256": "390ad70d0564013bbc87e3946813050baf2d245f63277d9b3a295bc962fb9122"
+        }
+      },
+      "status": "exact"
+    },
+    {
+      "id": "affine-nested-opacity",
+      "input": "inputs/affine-nested-opacity.svg",
+      "inputSha256": "c7d5c12635b0a8b43f78d8ae0f3ceb26965049533d3e9911c9b863de99c9ce97",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "04ae633fe4c8fcea62f7f2700144f30527127cbea355b18df349ca51f12f149b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "04ae633fe4c8fcea62f7f2700144f30527127cbea355b18df349ca51f12f149b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "04ae633fe4c8fcea62f7f2700144f30527127cbea355b18df349ca51f12f149b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/affine-nested-opacity.png",
+          "referenceSha256": "04ae633fe4c8fcea62f7f2700144f30527127cbea355b18df349ca51f12f149b"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "04ae633fe4c8fcea62f7f2700144f30527127cbea355b18df349ca51f12f149b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "04ae633fe4c8fcea62f7f2700144f30527127cbea355b18df349ca51f12f149b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "04ae633fe4c8fcea62f7f2700144f30527127cbea355b18df349ca51f12f149b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/affine-nested-opacity.png",
+          "referenceSha256": "04ae633fe4c8fcea62f7f2700144f30527127cbea355b18df349ca51f12f149b"
+        }
+      },
+      "status": "open-colour-rounding"
+    },
+    {
+      "id": "large-affine-nested-opacity",
+      "input": "inputs/large-affine-nested-opacity.svg",
+      "inputSha256": "02c37a80e471ea4aa8db2ce632fb07275da4fd88299eaf3111f08aaf07b16dae",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "5d3eb8a5a43c37dd13aafbdcfc0902ea8a9f7e1992654f83b58924972fb2b784",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5d3eb8a5a43c37dd13aafbdcfc0902ea8a9f7e1992654f83b58924972fb2b784",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5d3eb8a5a43c37dd13aafbdcfc0902ea8a9f7e1992654f83b58924972fb2b784",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/large-affine-nested-opacity.png",
+          "referenceSha256": "5d3eb8a5a43c37dd13aafbdcfc0902ea8a9f7e1992654f83b58924972fb2b784"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "5d3eb8a5a43c37dd13aafbdcfc0902ea8a9f7e1992654f83b58924972fb2b784",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5d3eb8a5a43c37dd13aafbdcfc0902ea8a9f7e1992654f83b58924972fb2b784",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5d3eb8a5a43c37dd13aafbdcfc0902ea8a9f7e1992654f83b58924972fb2b784",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/large-affine-nested-opacity.png",
+          "referenceSha256": "5d3eb8a5a43c37dd13aafbdcfc0902ea8a9f7e1992654f83b58924972fb2b784"
+        }
+      },
+      "status": "open-colour-rounding"
+    },
+    {
+      "id": "affine-nested-srgb",
+      "input": "inputs/affine-nested-srgb.svg",
+      "inputSha256": "47aece3e39bf898793ebf2b28820513a31fdbf60483eb3a5b12745e4bf1b2757",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "022f85be913b1a37d45834463b43318900a1c4ff4286274efce8a3f7d9eb7c30",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "022f85be913b1a37d45834463b43318900a1c4ff4286274efce8a3f7d9eb7c30",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "022f85be913b1a37d45834463b43318900a1c4ff4286274efce8a3f7d9eb7c30",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/affine-nested-srgb.png",
+          "referenceSha256": "022f85be913b1a37d45834463b43318900a1c4ff4286274efce8a3f7d9eb7c30"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "022f85be913b1a37d45834463b43318900a1c4ff4286274efce8a3f7d9eb7c30",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "022f85be913b1a37d45834463b43318900a1c4ff4286274efce8a3f7d9eb7c30",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "022f85be913b1a37d45834463b43318900a1c4ff4286274efce8a3f7d9eb7c30",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/affine-nested-srgb.png",
+          "referenceSha256": "022f85be913b1a37d45834463b43318900a1c4ff4286274efce8a3f7d9eb7c30"
+        }
+      },
+      "status": "open-colour-rounding"
+    },
+    {
+      "id": "affine-nested-solid-srgb",
+      "input": "inputs/affine-nested-solid-srgb.svg",
+      "inputSha256": "8891e20e7c46f089e884c6e257715aa9ee6acc3f792d78027445b93291d61ff7",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "5f33ee19350097e9f58c42c4bced2e3ae00cb3b3e12e138c8adbbbd6f6653d8a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5f33ee19350097e9f58c42c4bced2e3ae00cb3b3e12e138c8adbbbd6f6653d8a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5f33ee19350097e9f58c42c4bced2e3ae00cb3b3e12e138c8adbbbd6f6653d8a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/affine-nested-solid-srgb.png",
+          "referenceSha256": "5f33ee19350097e9f58c42c4bced2e3ae00cb3b3e12e138c8adbbbd6f6653d8a"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "5f33ee19350097e9f58c42c4bced2e3ae00cb3b3e12e138c8adbbbd6f6653d8a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5f33ee19350097e9f58c42c4bced2e3ae00cb3b3e12e138c8adbbbd6f6653d8a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5f33ee19350097e9f58c42c4bced2e3ae00cb3b3e12e138c8adbbbd6f6653d8a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/affine-nested-solid-srgb.png",
+          "referenceSha256": "5f33ee19350097e9f58c42c4bced2e3ae00cb3b3e12e138c8adbbbd6f6653d8a"
+        }
+      },
+      "status": "exact"
+    },
+    {
+      "id": "affine-nested-no-source-opacity",
+      "input": "inputs/affine-nested-no-source-opacity.svg",
+      "inputSha256": "68653576335ee58aef2bfe706aea9d9cbe11c227f774c286a0848c17d762b143",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "feaa3898a5d6b1701d3c4da725f1524205ad6dffcabedb6993b15a274df81781",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "feaa3898a5d6b1701d3c4da725f1524205ad6dffcabedb6993b15a274df81781",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "feaa3898a5d6b1701d3c4da725f1524205ad6dffcabedb6993b15a274df81781",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/affine-nested-no-source-opacity.png",
+          "referenceSha256": "feaa3898a5d6b1701d3c4da725f1524205ad6dffcabedb6993b15a274df81781"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "feaa3898a5d6b1701d3c4da725f1524205ad6dffcabedb6993b15a274df81781",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "feaa3898a5d6b1701d3c4da725f1524205ad6dffcabedb6993b15a274df81781",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "feaa3898a5d6b1701d3c4da725f1524205ad6dffcabedb6993b15a274df81781",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/affine-nested-no-source-opacity.png",
+          "referenceSha256": "feaa3898a5d6b1701d3c4da725f1524205ad6dffcabedb6993b15a274df81781"
+        }
+      },
+      "status": "open-colour-rounding"
+    }
+  ]
+}
