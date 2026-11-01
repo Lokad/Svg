@@ -46,6 +46,7 @@ current inventory above governs overall status.
 
 | Responsibility | Evidence and retained contracts |
 | --- | --- |
+| Windows movement compensation | [Movement state and rounding](windows-movement.json). Component-rounded compensation, explicit copy state, signed horizontal division and exact-ratio placement share one movement path. Eight direct mechanisms and one canonical original-font image protect independent platform behavior. Scoped matched Arial originals and all 173 diagnostic coordinates agree. |
 | Stack projection words | [Stack-vector loading](windows-stack-vectors.json). Preserve supplied Windows F2Dot14 values across query/load and following movement, while keeping line normalization, classic normalization and freedom independent. One canonical original-font image retains both platforms. |
 | Conditional hint functions | [Native recognition](windows-conditional-shift.json). Exact function bodies retain branch/stack/loop effects while suppressing pixel movement; renamed functions, inline execution and inert body changes have independent controls. One canonical original-font image preserves both platforms. |
 | Font declarations and supplied programs | [Font contexts](font-contexts.json), [shared program model](shared-font-model.json). Inline SVG sizes retain their source context; GPOS extensions share payload resolution and valid freedom-copy hints preserve VM state. Initial generic families need explicit matching alongside named faces. Remaining matched-program glyph stages stay open. |

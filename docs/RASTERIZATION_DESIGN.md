@@ -331,6 +331,12 @@ unit-vector components returned by a query. Line construction normalizes its
 direction separately; the classic target retains its established stack normalization.
 The [stack-vector controls](../tests/Research/windows-stack-vectors/README.md)
 cover the read/load round trip and a following relative move.
+Windows movement projects the compensation dot with the same component rounding.
+An explicit projection-to-freedom copy selects unit compensation; independent
+vector setters clear that state even when their rounded words are equal.
+General horizontal compensation retains its native signed division, while vertical
+and exact-ratio placement keep their own rounding. The
+[movement controls](../tests/Research/windows-movement/README.md) pin these transitions.
 Font-selected
 unfitted ranges retain scanner effects without fitted point movements. Metric
 reuse is operation-local and budget-owned; it does not create shared mutable font

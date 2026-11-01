@@ -1,0 +1,204 @@
+{
+  "scope": "Original CC0 numeric states distinguish signed horizontal compensation, independent component rounding, exact X ratios and SFVTPV copy/reload transitions. Transparent image, DPR1, three fresh processes per host.",
+  "width": 384,
+  "height": 48,
+  "browser": "Chrome 153.0.8010.52",
+  "input": "windows-movement.svg",
+  "inputSha256": "ab15b28dfb5b1e9bea07e4b8f6596408efa10830157575ca4c5c7d17102c8e42",
+  "font": "fonts/WindowsMovement.ttf",
+  "fontSha256": "b1a364ee7b741f9ec637f2b6f568cb0426a873cf3e70d57fbab666c7349d0b3e",
+  "nativeSourceSha256": "1d5ab93a65499cb1ca055f5b02b917c35cb61af288d3cd1e65e08803a01ac0b2",
+  "nativeRecipe": "Embed the unchanged program in @font-face before </svg>, family WindowsMovement, normal style/weight 400, no other source changes.",
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "dad6581ca8167ab0ba14b4cc1a6593e5f2f813ca52e66030d5fde0f34f95e47c",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "dad6581ca8167ab0ba14b4cc1a6593e5f2f813ca52e66030d5fde0f34f95e47c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "dad6581ca8167ab0ba14b4cc1a6593e5f2f813ca52e66030d5fde0f34f95e47c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "dad6581ca8167ab0ba14b4cc1a6593e5f2f813ca52e66030d5fde0f34f95e47c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "d79f9abd8847fd1e593567bd60089173cfd61d88db4b606cb10a85ac5acf157e",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "d79f9abd8847fd1e593567bd60089173cfd61d88db4b606cb10a85ac5acf157e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d79f9abd8847fd1e593567bd60089173cfd61d88db4b606cb10a85ac5acf157e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d79f9abd8847fd1e593567bd60089173cfd61d88db4b606cb10a85ac5acf157e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  },
+  "fontUseProofs": {
+    "windows": [
+      {
+        "kind": "missing",
+        "nativeSourceSha256": "ab15b28dfb5b1e9bea07e4b8f6596408efa10830157575ca4c5c7d17102c8e42",
+        "programSha256": null,
+        "changedPixels": 1667,
+        "pngSha256": "2dc27b497c71fe5d4dca140dad46e0ed6f0a5c470b962fdc2301090df5ff0d5d",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "kind": "different",
+        "nativeSourceSha256": "0a0b01add9c5f970aae99095d34d60eca663c274b2240f5b350a8630abc3316f",
+        "programSha256": "564241495d086f789597f2231310b20cc32925981cadf0745ea4fbb8d9ba3556",
+        "changedPixels": 280,
+        "pngSha256": "ccbe421c38c02bfe9dcfd8f08c16828852b274aceb804abd501a7fc32cd0ed7f",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ],
+    "linux": [
+      {
+        "kind": "missing",
+        "nativeSourceSha256": "ab15b28dfb5b1e9bea07e4b8f6596408efa10830157575ca4c5c7d17102c8e42",
+        "programSha256": null,
+        "changedPixels": 1604,
+        "pngSha256": "3fa47bce9101944e9d653d02c72385abbb4ac7c4d04c4f50861d3f2d1c953ca3",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "kind": "different",
+        "nativeSourceSha256": "0a0b01add9c5f970aae99095d34d60eca663c274b2240f5b350a8630abc3316f",
+        "programSha256": "564241495d086f789597f2231310b20cc32925981cadf0745ea4fbb8d9ba3556",
+        "changedPixels": 552,
+        "pngSha256": "774260e6d6b43cd64658bd131695a24614bab252ac6813ad18d276db0b8f9d28",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ]
+  },
+  "oppositeAxisWindows": {
+    "scope": "Numerical companion, no extra ordinary conversion path. Recompose each oppositeMarkerProgram with the original font/gasp7; together with the canonical image this proves both point components.",
+    "variantProgramSha256": "6291cd35f56ded376d84eaa5f25ceaa2145b65032c2e29418d1af2fa9281bd65",
+    "nativeSourceSha256": "7aa5bbca62de526002d7857974e7b2a231af4ff5e9d2e6cd98cc86fa453572d3",
+    "captures": [
+      {
+        "pngSha256": "dad6581ca8167ab0ba14b4cc1a6593e5f2f813ca52e66030d5fde0f34f95e47c",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "offsets": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8
+        ]
+      },
+      {
+        "pngSha256": "dad6581ca8167ab0ba14b4cc1a6593e5f2f813ca52e66030d5fde0f34f95e47c",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "offsets": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8
+        ]
+      },
+      {
+        "pngSha256": "dad6581ca8167ab0ba14b4cc1a6593e5f2f813ca52e66030d5fde0f34f95e47c",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "offsets": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8
+        ]
+      }
+    ]
+  },
+  "symmetricWindows": {
+    "scope": "Numerical companion, no extra ordinary conversion path. Unchanged canonical program with gasp15 confirms symmetric smoothing.",
+    "variantProgramSha256": "801ac38b1929dbe7a2cd72f4e28e50cdcc493fd8550c50c203e2f897002b917b",
+    "nativeSourceSha256": "0885dd877a0c9f337fe591013084a03f27954bff497ec24602a26db356f4cc96",
+    "captures": [
+      {
+        "pngSha256": "dad6581ca8167ab0ba14b4cc1a6593e5f2f813ca52e66030d5fde0f34f95e47c",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "offsets": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8
+        ]
+      },
+      {
+        "pngSha256": "dad6581ca8167ab0ba14b4cc1a6593e5f2f813ca52e66030d5fde0f34f95e47c",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "offsets": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8
+        ]
+      },
+      {
+        "pngSha256": "dad6581ca8167ab0ba14b4cc1a6593e5f2f813ca52e66030d5fde0f34f95e47c",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "offsets": [
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8,
+          8
+        ]
+      }
+    ]
+  }
+}

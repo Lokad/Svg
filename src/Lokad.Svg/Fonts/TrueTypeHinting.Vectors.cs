@@ -7,6 +7,9 @@ namespace Lokad.Svg.Fonts;
 internal sealed partial class TrueTypeHinting
 {
     private HintVector _projection = HintVector.XAxis, _dualProjection = HintVector.XAxis, _freedom = HintVector.XAxis;
+    // SFVTPV selects uncompensated movement. Loading equal rounded words through
+    // independent vector setters selects the general native projection instead.
+    private bool _freedomCopiesProjection = true;
 
     private bool BackwardCompatible => _target.Grid == TrueTypeHintGrid.ClearType && (_instructionControl & 4) == 0;
 
@@ -68,10 +71,18 @@ internal sealed partial class TrueTypeHinting
 
     private void Move(ref TrueTypeHintPoint point, int distance, bool touch)
     {
-        int dot = checked((int)(((long)_projection.X * _freedom.X + (long)_projection.Y * _freedom.Y) >> 14));
+        int dot = _target.UsesWindowsArithmetic
+            ? _freedomCopiesProjection ? 16384 : Project(_projection, _freedom.X, _freedom.Y)
+            : checked((int)(((long)_projection.X * _freedom.X + (long)_projection.Y * _freedom.Y) >> 14));
         // Match the native protection against nearly perpendicular movement spikes.
         if (Math.Abs((long)dot) < 1024) dot = 16384;
-        Translate(ref point, DivideDevice(distance, dot, _freedom.X), DivideDevice(distance, dot, _freedom.Y), touch);
+        // General Windows horizontal compensation adds a positive half before
+        // signed division truncates. Unit compensation and an exact X ratio
+        // retain direct placement; vertical movement keeps its signed rounding.
+        int x = _target.UsesWindowsArithmetic && _target.Grid == TrueTypeHintGrid.ClearType && dot != 16384 && _freedom.X != dot
+            ? checked((int)(((long)distance * _freedom.X + Math.Abs((long)dot) / 2) / dot))
+            : DivideDevice(distance, dot, _freedom.X);
+        Translate(ref point, x, DivideDevice(distance, dot, _freedom.Y), touch);
     }
 
     private void MoveAlongFreedom(ref TrueTypeHintPoint point, int distance)
@@ -104,6 +115,7 @@ internal sealed partial class TrueTypeHinting
 
     private void SetLineVector(byte opcode)
     {
+        _freedomCopiesProjection = false;
         TrueTypeHintPoint second = Point(_zp2, Pop()), first = Point(_zp1, Pop());
         int x = checked(first.X - second.X), y = checked(first.Y - second.Y);
         bool perpendicular = (opcode & 1) != 0;

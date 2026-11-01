@@ -22,6 +22,11 @@ public sealed class SvgWindowsScanBoundaryTests
     public Task Stack_projection_keeps_supplied_components_and_the_independent_freedom_direction()
         => AssertNativeFontFixture("windows-stack-vectors", "original-stack-vectors", "StackVectors");
 
+    [Fact]
+    [Trait("Layer", "Rendering")]
+    public Task Windows_movement_keeps_copied_and_independently_loaded_directions_distinct()
+        => AssertNativeFontFixture("windows-movement", "original-windows-movement", "WindowsMovement");
+
     private static async Task AssertNativeFontFixture(string bank, string packId, string family)
     {
         string directory = Path.Combine(ResearchCorpus.Root, bank);

@@ -1,0 +1,208 @@
+{
+  "license": "CC0-1.0",
+  "fontTools": "4.66.1",
+  "unitsPerEm": 2048,
+  "fontSize": 32,
+  "points": [
+    [
+      0,
+      0
+    ],
+    [
+      384,
+      512
+    ],
+    [
+      128,
+      128
+    ],
+    [
+      0,
+      512
+    ]
+  ],
+  "allOnCurve": true,
+  "gaspVersion": 1,
+  "gaspRanges": {
+    "65535": 7
+  },
+  "headTimestamp": 2082844800,
+  "maxStack": 16,
+  "maxStorage": 1,
+  "maxZones": 2,
+  "advance": 1024,
+  "ascent": 30000,
+  "descent": -512,
+  "windowsAscent": 65535,
+  "windowsDescent": 65535,
+  "names": {
+    "familyName": "WindowsMovement",
+    "styleName": "Regular",
+    "uniqueFontIdentifier": "Original-Windows-Movement-1",
+    "fullName": "WindowsMovement",
+    "psName": "WindowsMovement",
+    "version": "Version 1.000"
+  },
+  "cases": [
+    {
+      "name": "independent",
+      "glyph": "A",
+      "projection": [
+        9830,
+        13107
+      ],
+      "freedom": [
+        9830,
+        13107
+      ],
+      "mechanism": "b82666b833330ab001b00008b000107ab87fff1db002b8ff773a",
+      "expectedX": -61,
+      "expectedY": -125,
+      "markerAxis": "x",
+      "program": "b82666b833330ab001b00008b000107ab87fff1db002b8ff773a01b00246b8ffc35458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048",
+      "left": 0,
+      "baseline": 32,
+      "oppositeMarkerProgram": "b82666b833330ab001b00008b000107ab87fff1db002b8ff773a00b00246b8ff835458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048"
+    },
+    {
+      "name": "negative-dot",
+      "glyph": "B",
+      "projection": [
+        15426,
+        -5522
+      ],
+      "freedom": [
+        -9830,
+        -13107
+      ],
+      "mechanism": "b83c42b8ea6e0ab000b00108b000107ab87fff1db002b0003a",
+      "expectedX": -31,
+      "expectedY": -83,
+      "markerAxis": "x",
+      "program": "b83c42b8ea6e0ab000b00108b000107ab87fff1db002b0003a01b00246b8ffe15458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048",
+      "left": 48,
+      "baseline": 32,
+      "oppositeMarkerProgram": "b83c42b8ea6e0ab000b00108b000107ab87fff1db002b0003a00b00246b8ffad5458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048"
+    },
+    {
+      "name": "component-dot-y",
+      "glyph": "C",
+      "projection": [
+        15426,
+        -5522
+      ],
+      "freedom": [
+        -9830,
+        -13107
+      ],
+      "mechanism": "b83c42b8ea6e0ab000b00108b000107ab87fff1db002b8ff773a",
+      "expectedX": -309,
+      "expectedY": -455,
+      "markerAxis": "y",
+      "program": "b83c42b8ea6e0ab000b00108b000107ab87fff1db002b8ff773a00b00246b8fe395458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048",
+      "left": 96,
+      "baseline": 32,
+      "oppositeMarkerProgram": "b83c42b8ea6e0ab000b00108b000107ab87fff1db002b8ff773a01b00246b8fecb5458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048"
+    },
+    {
+      "name": "copied",
+      "glyph": "D",
+      "projection": [
+        9830,
+        13107
+      ],
+      "freedom": [
+        9830,
+        13107
+      ],
+      "mechanism": "b82666b833330ab001b000080eb000107ab87fff1db002b8ff773a",
+      "expectedX": -62,
+      "expectedY": -125,
+      "markerAxis": "x",
+      "program": "b82666b833330ab001b000080eb000107ab87fff1db002b8ff773a01b00246b8ffc25458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048",
+      "left": 144,
+      "baseline": 32,
+      "oppositeMarkerProgram": "b82666b833330ab001b000080eb000107ab87fff1db002b8ff773a00b00246b8ff835458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048"
+    },
+    {
+      "name": "projection-reload",
+      "glyph": "E",
+      "projection": [
+        9830,
+        13107
+      ],
+      "freedom": [
+        9830,
+        13107
+      ],
+      "mechanism": "b82666b833330ab001b000080e0c0ab000107ab87fff1db002b8ff773a",
+      "expectedX": -61,
+      "expectedY": -125,
+      "markerAxis": "x",
+      "program": "b82666b833330ab001b000080e0c0ab000107ab87fff1db002b8ff773a01b00246b8ffc35458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048",
+      "left": 192,
+      "baseline": 32,
+      "oppositeMarkerProgram": "b82666b833330ab001b000080e0c0ab000107ab87fff1db002b8ff773a00b00246b8ff835458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048"
+    },
+    {
+      "name": "freedom-reload",
+      "glyph": "F",
+      "projection": [
+        9830,
+        13107
+      ],
+      "freedom": [
+        9830,
+        13107
+      ],
+      "mechanism": "b82666b833330ab001b000080eb001b00008b000107ab87fff1db002b8ff773a",
+      "expectedX": -61,
+      "expectedY": -125,
+      "markerAxis": "x",
+      "program": "b82666b833330ab001b000080eb001b00008b000107ab87fff1db002b8ff773a01b00246b8ffc35458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048",
+      "left": 240,
+      "baseline": 32,
+      "oppositeMarkerProgram": "b82666b833330ab001b000080eb001b00008b000107ab87fff1db002b8ff773a00b00246b8ff835458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048"
+    },
+    {
+      "name": "positive-axis",
+      "glyph": "G",
+      "projection": [
+        16384,
+        0
+      ],
+      "freedom": [
+        9830,
+        13107
+      ],
+      "mechanism": "b84000b0000ab001b00008b000107ab87fff1db002b8ff773a",
+      "expectedX": -137,
+      "expectedY": -225,
+      "markerAxis": "x",
+      "program": "b84000b0000ab001b00008b000107ab87fff1db002b8ff773a01b00246b8ff775458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048",
+      "left": 288,
+      "baseline": 32,
+      "oppositeMarkerProgram": "b84000b0000ab001b00008b000107ab87fff1db002b8ff773a00b00246b8ff1f5458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048"
+    },
+    {
+      "name": "copied-coordinate",
+      "glyph": "H",
+      "projection": [
+        9830,
+        13107
+      ],
+      "freedom": [
+        9830,
+        13107
+      ],
+      "mechanism": "b82666b833330ab001b000080eb000107ab87fff1db002b8d8f048",
+      "expectedX": -5979,
+      "expectedY": -8015,
+      "markerAxis": "x",
+      "program": "b82666b833330ab001b000080eb000107ab87fff1db002b8d8f04801b00246b8e8a55458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048",
+      "left": 336,
+      "baseline": 32,
+      "oppositeMarkerProgram": "b82666b833330ab001b000080eb000107ab87fff1db002b8d8f04800b00246b8e0b15458b802001bb00059b000234201b000b0004800b000b000b00043604801b001b0004800b001b080b00043604801b002b802004800b002b080b00043604801b003b802004800b003b000b000436048"
+    }
+  ]
+}

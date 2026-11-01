@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "833a8bdd28722db9ab89f6d0478e23f6143985ce",
+  "scope": "Shared Windows hint movement compensation. Preserve source programs, layout, fitted/scan separation, every existing reference and tolerance; no font-name or glyph-specific branch.",
+  "implementation": [
+    "../../../src/Lokad.Svg/Fonts/TrueTypeHinting.Vectors.cs",
+    "../../../src/Lokad.Svg/Fonts/TrueTypeHinting.cs"
+  ],
+  "contract": {
+    "dot": "Project the independent projection/freedom dot using the same per-component Windows rounding as distance projection.",
+    "copy": "SFVTPV selects unit compensation. Queries preserve it; independent projection/freedom setters clear it even when the resulting rounded words are equal. Each glyph resets its own state.",
+    "horizontal": "General compensated X adds a positive half divisor to the signed numerator before signed division truncates. Unit compensation and an exact positive X ratio retain direct placement.",
+    "vertical": "Retain separate signed movement rounding. Dot component rounding can affect either axis.",
+    "retained": "Classic arithmetic, nearly perpendicular protection, SHPIX freedom-only movement, glyph originals, touches, cancellation and storage accounting remain separate."
+  },
+  "responsibilities": {
+    "mechanisms": {
+      "tests": "../../Lokad.Svg.Tests/TrueTypeHintingTests.WindowsMovement.cs",
+      "cases": 8,
+      "failingBefore": 6,
+      "scope": "Independent/copy/reload states, both compensation signs, a Y component boundary, exact X ratio and large SCFS coordinate; unchanged originals/touches and cleanup."
+    },
+    "rendering": {
+      "tests": "../../Lokad.Svg.VisualTests/SvgWindowsScanBoundaryTests.cs",
+      "cases": 1,
+      "capture": "../windows-movement/capture.json",
+      "recipe": "../windows-movement/font-recipe.json",
+      "fontBytes": 2036,
+      "scope": "One canonical original CC0 supplied program, independent Windows/Linux references, three agreeing healthy processes per host and positive font-use controls. Opposite-coordinate and symmetric Windows numerical companions each have three fresh captures; no additional ordinary API path.",
+      "beforeAfter": [
+        {
+          "host": "windows",
+          "before": 240,
+          "after": 0
+        },
+        {
+          "host": "linux",
+          "before": 0,
+          "after": 0
+        }
+      ]
+    },
+    "research": {
+      "scope": "Optional bounded numerical investigations, no ordinary fixture/API multiplication. Unchanged native observations; no supplied/private program redistributed.",
+      "numericalCases": 968,
+      "allNumericalValuesAgree": true,
+      "coordinateQueries": 173,
+      "allCoordinatesAgree": true
+    },
+    "retained": "Existing complete textures, half-unit geometry, native references, ownership/API regressions and layout are unchanged."
+  },
+  "validation": {
+    "failingBefore": {
+      "host": "windows",
+      "framework": "net11.0",
+      "passed": 2,
+      "failed": 6,
+      "seconds": 5.876,
+      "librarySha256": "7b9f4b8e1cedf90f63e160d6ab528c7939b4d517d25a71b3c879c858030a4590"
+    },
+    "affected": [
+      {
+        "selection": "affected-core",
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 10763,
+        "failed": 0,
+        "seconds": 24.862,
+        "librarySha256": "b194db6a4eef3036fccbdbe11160514e0a32bf14d5280210b7d64979030a7ca5"
+      },
+      {
+        "selection": "affected-rendering",
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 823,
+        "failed": 0,
+        "seconds": 16.849,
+        "librarySha256": "b194db6a4eef3036fccbdbe11160514e0a32bf14d5280210b7d64979030a7ca5"
+      },
+      {
+        "selection": "affected-core",
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 10763,
+        "failed": 0,
+        "seconds": 28.676,
+        "librarySha256": "b194db6a4eef3036fccbdbe11160514e0a32bf14d5280210b7d64979030a7ca5"
+      },
+      {
+        "selection": "affected-rendering",
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 823,
+        "failed": 0,
+        "seconds": 19.966,
+        "librarySha256": "b194db6a4eef3036fccbdbe11160514e0a32bf14d5280210b7d64979030a7ca5"
+      }
+    ],
+    "compatibility": [
+      {
+        "selection": "compatibility-core",
+        "host": "windows",
+        "framework": "net10.0",
+        "passed": 400,
+        "failed": 0,
+        "seconds": 6.001,
+        "librarySha256": "b1a21e882d2eb3becc4d5fc39e2ac8ff6b442d1489630db9ab020273deed324c"
+      },
+      {
+        "selection": "compatibility-rendering",
+        "host": "windows",
+        "framework": "net10.0",
+        "passed": 41,
+        "failed": 0,
+        "seconds": 7.792,
+        "librarySha256": "b1a21e882d2eb3becc4d5fc39e2ac8ff6b442d1489630db9ab020273deed324c"
+      },
+      {
+        "selection": "compatibility-core",
+        "host": "linux",
+        "framework": "net10.0",
+        "passed": 400,
+        "failed": 0,
+        "seconds": 6.556,
+        "librarySha256": "b1a21e882d2eb3becc4d5fc39e2ac8ff6b442d1489630db9ab020273deed324c"
+      },
+      {
+        "selection": "compatibility-rendering",
+        "host": "linux",
+        "framework": "net10.0",
+        "passed": 41,
+        "failed": 0,
+        "seconds": 7.588,
+        "librarySha256": "b1a21e882d2eb3becc4d5fc39e2ac8ff6b442d1489630db9ab020273deed324c"
+      }
+    ],
+    "selections": {
+      "affected-core": "(FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyph|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgSceneTransfer|FullyQualifiedName~SvgInheritedContourOwnershipTests|FullyQualifiedName~SvgPolygonContourOwnershipTests)&Category!=Research",
+      "affected-rendering": "(FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgSuppliedFontLabelTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgKerningPrecedenceTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgUpstreamDocumentTests|FullyQualifiedName~SvgWindowsGlyphTests|FullyQualifiedName~SvgWindowsScanBoundaryTests)&Category!=Research",
+      "compatibility-core": "FullyQualifiedName~TrueTypeHintingTests",
+      "compatibility-rendering": "FullyQualifiedName~SvgWindowsGlyphTests|FullyQualifiedName~SvgWindowsScanBoundaryTests"
+    },
+    "builds": "Final .NET11/.NET10 core/native and frozen probe builds have zero warnings/errors.",
+    "timingScope": "Functional wall times under ordinary development load. Before is an eight-case failing selection; affected checks are broader. No benchmark or test-suite speedup claim.",
+    "promotion": "Full primary Windows/Linux and actual installed-package qualification is required once at exact-head CI promotion."
+  },
+  "originals": {
+    "default": {
+      "files": 204,
+      "sourceSvgFilesRetained": 0,
+      "allSemanticReportsUnchanged": true,
+      "all150PngsPerHostByteIdentical": true,
+      "identicalPngs": {
+        "windows": 150,
+        "linux": 150
+      },
+      "outcomes": {
+        "windows": {
+          "UnsupportedFeature": 51,
+          "rendered": 150,
+          "MalformedInput": 3
+        },
+        "linux": {
+          "UnsupportedFeature": 51,
+          "rendered": 150,
+          "MalformedInput": 3
+        }
+      }
+    },
+    "suppliedArial": {
+      "previousEvidence": "windows-stack-vectors.json",
+      "scope": "Scoped matched supplied programs and native observations; full hosted static acceptance remains open.",
+      "librarySha256": "b194db6a4eef3036fccbdbe11160514e0a32bf14d5280210b7d64979030a7ca5",
+      "contexts": [
+        {
+          "name": "paths-data-08-t.svg",
+          "host": "windows",
+          "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+          "nativePngSha256": "1123469440b13349c30e3a635d3fb655ce880054155b1d5a2314b0c912853bc6",
+          "changedPixels": 0
+        },
+        {
+          "name": "paths-data-08-t.svg",
+          "host": "linux",
+          "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+          "nativePngSha256": "94c0fc90bd255cc6ea2455ec5bc8860beb17186e1415a9ae494cce0367418f6e",
+          "changedPixels": 0
+        },
+        {
+          "name": "paths-data-09-t.svg",
+          "host": "windows",
+          "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+          "nativePngSha256": "da6e7cc123747feb77eeb9033ca27a79f564454ff19a0e82e11b9e8164896385",
+          "changedPixels": 0
+        },
+        {
+          "name": "paths-data-09-t.svg",
+          "host": "linux",
+          "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+          "nativePngSha256": "3d8ba14ad160f4e755fe2a08500401a6e93c02d9ced292767040f76da564fddd",
+          "changedPixels": 0
+        },
+        {
+          "name": "pservers-grad-03-b.svg",
+          "host": "windows",
+          "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+          "nativePngSha256": "1dd3f4536e56755d0f3aae7b76acb8f746c2f978a2871d1ad09667aad67a70d0",
+          "changedPixels": 0
+        },
+        {
+          "name": "pservers-grad-03-b.svg",
+          "host": "linux",
+          "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+          "nativePngSha256": "665539c98f35d78a0c93ec22c987713525495435e6793f04a4096180cd68d070",
+          "changedPixels": 0
+        }
+      ],
+      "controls": [
+        {
+          "id": "w-half",
+          "before": 4,
+          "after": 0
+        },
+        {
+          "id": "w-zero",
+          "before": 2,
+          "after": 0
+        },
+        {
+          "id": "M-zero",
+          "before": 4,
+          "after": 0
+        },
+        {
+          "id": "Z-half",
+          "before": 2,
+          "after": 0
+        },
+        {
+          "id": "k-half",
+          "before": 1,
+          "after": 0
+        },
+        {
+          "id": "n-threequarter",
+          "before": 0,
+          "after": 0
+        },
+        {
+          "id": "n-quarter",
+          "before": 0,
+          "after": 0
+        }
+      ]
+    },
+    "otherSupplied": {
+      "files": 11,
+      "allBothHostsExact": true,
+      "allPreviousPngBytesIdentical": true,
+      "sourceSvgFilesRetained": 0,
+      "unchangedSourceProgramAndPngHashes": "windows-stack-vectors.json#/originals/otherSupplied/contexts"
+    }
+  },
+  "closure": "The five remaining scoped Arial diagonal controls and three matched originals now agree on both hosts. Keep all 204 default outcomes and supplied/static/resource acceptance distinct. Wide relative-distance cut-in diagnostics need separately validated markers; no values inferred from blank markers."
+}

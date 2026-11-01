@@ -233,7 +233,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
             if ((_instructionControl & 1) != 0) { SetDropouts(); return; }
             // Glyph-local reference/zone/vector state starts at the prescribed defaults.
             _rp0 = _rp1 = _rp2 = 0; _zp0 = _zp1 = _zp2 = TrueTypeHintZone.Glyph;
-            _projection = _dualProjection = _freedom = HintVector.XAxis; _loop = 1;
+            _projection = _dualProjection = _freedom = HintVector.XAxis; _freedomCopiesProjection = true; _loop = 1;
             _iupX = _iupY = false;
             if ((_instructionControl & 2) != 0) { _round = TrueTypeHintRound.Grid; _cutIn = 68; _deltaBase = 9; _deltaShift = 3; _scanControl = _scanType = 0; _scanConfigured = false; _minimumDistance = 64; _singleWidthCutIn = _singleWidth = 0; _autoFlip = true; _instructionControl &= ~4; }
         }
@@ -292,6 +292,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
             {
                 case >= 0x00 and <= 0x05:
                 {
+                    _freedomCopiesProjection = false;
                     HintVector vector = (opcode & 1) == 0 ? HintVector.YAxis : HintVector.XAxis;
                     if (opcode < 4) _projection = _dualProjection = vector;
                     if ((opcode & 2) == 0) _freedom = vector;
@@ -300,6 +301,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case >= 0x06 and <= 0x09: SetLineVector(opcode); break;
                 case 0x0A:
                 {
+                    _freedomCopiesProjection = false;
                     int y = unchecked((short)Pop()), x = unchecked((short)Pop());
                     // Windows consumes the supplied F2Dot14 words verbatim.
                     // Renormalizing rounded unit components changes GPV round trips.
@@ -309,7 +311,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     break;
                 }
                 case 0x0C: Push(_projection.X); Push(_projection.Y); break;
-                case 0x0E: _freedom = _projection; break;
+                case 0x0E: _freedom = _projection; _freedomCopiesProjection = true; break;
                 case 0x0F:
                 {
                     // ISECT uses current points in three independent zones and

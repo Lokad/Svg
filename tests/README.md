@@ -190,9 +190,12 @@ selects direct native function-recognition and ordinary-shift controls.
 `FullyQualifiedName~SvgWindowsScanBoundaryTests` selects canonical
 [turning-counter](Research/windows-scan-boundary/README.md) and
 [conditional-function](Research/windows-conditional-shift/README.md) images, plus
-the [stack-vector program](Research/windows-stack-vectors/README.md).
+the [stack-vector program](Research/windows-stack-vectors/README.md) and
+[movement transitions](Research/windows-movement/README.md).
 `FullyQualifiedName~stack_projection` selects Windows word-preservation and classic
 normalization responsibilities, including the actual following movement.
+`FullyQualifiedName~Windows_movement` selects eight direct compensation/copy
+mechanisms and the canonical original-font rendering companion in their projects.
 Existing half-unit fitted-point and complete native-texture regressions remain separate.
 
 ## Development checks

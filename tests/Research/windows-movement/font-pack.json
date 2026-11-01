@@ -1,0 +1,22 @@
+{
+  "packId": "original-windows-movement",
+  "files": [
+    {
+      "relativePath": "fonts/WindowsMovement.ttf",
+      "byteSize": 2036,
+      "sha256": "b1a364ee7b741f9ec637f2b6f568cb0426a873cf3e70d57fbab666c7349d0b3e"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "WindowsMovement",
+      "resolvedFamily": "WindowsMovement",
+      "relativeFontFile": "fonts/WindowsMovement.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    }
+  ],
+  "fallbacks": []
+}
