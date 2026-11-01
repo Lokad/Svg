@@ -161,7 +161,8 @@
           "referenceSha256": "5d3eb8a5a43c37dd13aafbdcfc0902ea8a9f7e1992654f83b58924972fb2b784"
         }
       },
-      "status": "open-colour-rounding"
+      "status": "exact",
+      "qualification": "../svgweb/filter-source-opacity.json"
     },
     {
       "id": "affine-nested-srgb",

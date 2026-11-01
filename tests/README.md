@@ -54,11 +54,13 @@ individually selectable. The clip, title and rendered-use banks share one small
 source/reference hashes, three native receipts and exact pixel comparisons.
 
 [Nested filter placement](Research/nested-filter-placement/README.md) has six direct
-map mechanisms and six canonical native cases. Two shader mechanisms protect
+map mechanisms and seven canonical native cases. Two shader mechanisms protect
 recording/capture order and 64/65-stage storage. One recursive-capture contract
-covers the additional allocation path; the large-coordinate companion remains open.
+covers the additional allocation path.
 The [filter source-opacity control](Research/filter-source-opacity/README.md)
-separately records an unresolved interaction between thin curves, capture and opacity.
+adds one canonical image; three direct parameter-bound cases distinguish strokes
+and nested sources. Existing affine group-opacity and AA parent-clip controls
+protect allocation versus coverage bounds. The full hosted original remains open.
 
 The [thin-curve mechanisms](Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs) distinguish
 authored ink from short flattened fallbacks and explicit suppression. One source

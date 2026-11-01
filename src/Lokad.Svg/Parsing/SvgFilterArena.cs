@@ -45,6 +45,8 @@ internal readonly record struct SvgFilterBinding(string? ReferenceId, int Resour
 {
     internal bool GroupSource { get; init; }
     internal SvgPaintBounds? ParameterObjectBounds { get; init; }
+    /// <summary>Retains painted source extents in filter parameters before scene-space enclosure.</summary>
+    internal SvgPaintBounds? ParameterVisualBounds { get; init; }
     internal string? ClipReferenceId { get; init; }
     /// <summary>Borrows a parser-owned output clip until command emission; sealing clears the reference.</summary>
     internal SvgLeafMaskBinding? OutputClip { get; init; }
@@ -256,13 +258,15 @@ internal sealed class SvgFilterArena : IDisposable
     }
 
     /// <summary>Completes each source's parameter bounds, and group aggregates, before sealing.</summary>
-    internal void SetSourceBounds(int index, SvgPaintBounds objectBounds, SvgPaintBounds visualBounds, SvgPaintBounds? parameterObjectBounds)
+    internal void SetSourceBounds(int index, SvgPaintBounds objectBounds, SvgPaintBounds visualBounds,
+        SvgPaintBounds? parameterObjectBounds, SvgPaintBounds? parameterVisualBounds)
     {
         if (_sealed || _disposed) throw new InvalidOperationException("Filter construction is closed.");
         _token.ThrowIfCancellationRequested();
         SvgFilterBinding binding = _bindings[index];
         _bindings[index] = binding with { ObjectBounds = binding.GroupSource ? objectBounds : binding.ObjectBounds,
-            VisualBounds = binding.GroupSource ? visualBounds : binding.VisualBounds, ParameterObjectBounds = parameterObjectBounds };
+            VisualBounds = binding.GroupSource ? visualBounds : binding.VisualBounds,
+            ParameterObjectBounds = parameterObjectBounds, ParameterVisualBounds = parameterVisualBounds };
     }
 
     /// <summary>Validates a borrowed local resource ID before sealing, observing cancellation without creating a binding.</summary>

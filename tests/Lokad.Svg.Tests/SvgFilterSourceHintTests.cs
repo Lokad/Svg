@@ -8,6 +8,39 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFilterSourceHintTests
 {
     [Theory]
+    [InlineData(false, 0)]
+    [InlineData(false, 2)]
+    [InlineData(true, 2)]
+    public void Filter_parameter_bounds_keep_painted_extents_through_affine_and_nested_sources(bool nested, int strokeWidth)
+    {
+        string innerFilter = nested ? " filter='url(#f)'" : "";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>"
+            + "<defs><filter id='f'><feGaussianBlur stdDeviation='.25'/></filter></defs>"
+            + "<g transform='matrix(.8 .6 -.6 .8 32 16)' filter='url(#f)'><g transform='translate(4 -3)'" + innerFilter
+            + "><ellipse cx='10' cy='20' rx='3' ry='4' stroke='black' stroke-width='"
+            + strokeWidth.ToString(CultureInfo.InvariantCulture) + "'/></g></g></svg>");
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.FilterResources ?? throw new InvalidOperationException();
+            SvgDrawCommand[] filters = scene.Commands.Where(command => command.Kind == SvgDrawCommandKind.BeginGroup
+                && command.RegionKind == SvgLayerRegionKind.Filter).ToArray();
+            Assert.Equal(nested ? 2 : 1, filters.Length);
+            SvgFilterBinding outer = arena.BindingAt(filters[0].MaskContentIndex);
+            int radius = strokeWidth / 2;
+            Assert.Equal(new SvgPaintBounds(11, 13, 17, 21), outer.ParameterObjectBounds);
+            Assert.Equal(new SvgPaintBounds(11 - radius, 13 - radius, 17 + radius, 21 + radius), outer.ParameterVisualBounds);
+            if (nested)
+            {
+                SvgFilterBinding inner = arena.BindingAt(filters[1].MaskContentIndex);
+                Assert.Equal(new SvgPaintBounds(7, 16, 13, 24), inner.ParameterObjectBounds);
+                Assert.Equal(new SvgPaintBounds(7 - radius, 16 - radius, 13 + radius, 24 + radius), inner.ParameterVisualBounds);
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData("<ellipse cx='-502' cy='790' rx='48' ry='36'/>", 0)]
     [InlineData("<path d='M-550 754 H-454 V826 H-550 Z'/>", 0)]
     [InlineData("<ellipse cx='-502' cy='790' rx='48' ry='36' stroke='black' stroke-width='2'/>", 1)]

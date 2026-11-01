@@ -365,6 +365,9 @@ public static partial class SvgConverter
         SvgCpuClipCoverage? layerClipCoverage = null;
         float foldedOpacity = 1;
         SvgAnalyticClipBounds layerBounds = frame?.ContentClip ?? new(0, 0, outputWidth, outputHeight);
+        // Isolated destinations retain their allocation origin across later clips.
+        // A narrowed paint window alone does not allocate a new native bitmap.
+        SvgCpuRasterScope? isolatedBitmapScope = null;
         // Fit mode can retain a one-pixel canvas after the logical viewport
         // rounds empty. This gate is separate from the drawn image boundary.
         bool emptyRootViewport = frame is null && options.RasterBounds is not null
@@ -1022,8 +1025,9 @@ public static partial class SvgConverter
             // See THIRD_PARTY_NOTICES.txt for the BSD license and source revision.
             int RenderAffineFilter()
             {
-                foreach (SvgCpuRasterContext bitmap in rasterGrid.GetContexts(layerBounds))
+                foreach (SvgCpuRasterContext tile in rasterGrid.GetContexts(layerBounds))
                 {
+                    SvgCpuRasterContext bitmap = isolatedBitmapScope is {} owner ? owner.Bind(tile) : tile;
                     cancellationToken.ThrowIfCancellationRequested();
                     RenderAffineBitmap(bitmap);
                 }
@@ -1043,6 +1047,12 @@ public static partial class SvgConverter
                 SvgShaderMatrix remainder = new(native.ScaleX * (1f / scaleX), native.SkewX * (1f / scaleY), native.TranslateX,
                     native.SkewY * (1f / scaleX), native.ScaleY * (1f / scaleY), native.TranslateY);
                 if (!remainder.TryInvert(out SvgShaderMatrix inverse)) return;
+                SvgShaderMatrix localRemainder = remainder with
+                {
+                    TranslateX = remainder.TranslateX - bitmap.Origin.X,
+                    TranslateY = remainder.TranslateY - bitmap.Origin.Y
+                };
+                if (!localRemainder.TryInvert(out SvgShaderMatrix localInverse)) return;
                 SvgAffineTransform layerMap = SvgAffineTransform.FromScale(scaleX, scaleY);
                 SvgAffineTransform placement = layerMap.ComposeChecked(parameterInverse);
                 int count = end - first;
@@ -1209,7 +1219,7 @@ public static partial class SvgConverter
                         budget, RasterSurfaceMode.PremultipliedFilter,
                         new RasterFrame((int)frameWidth, (int)frameHeight,
                             new(SvgAffineTransform.FromTranslation(-left, -top), null))
-                        { SingleBitmap = true, FilterBinding = new(command.MaskContentIndex, local), SourcePlacement = placement, NativeSourceBounds = nativeSource, FilterSourceMap = new(arena.BindingAt(command.MaskContentIndex).Transform, layerMap, new SvgAffineTransform(inverse.ScaleX, inverse.SkewY, inverse.SkewX, inverse.ScaleY, inverse.TranslateX, inverse.TranslateY).ComposeNative(PlaceNativeSource(new(0, 0)) ?? SvgAffineTransform.Identity), frame?.FilterSourceMap is {} originalRelation ? originalRelation.Drawing : drawingMap) }, cancellationToken);
+                        { SingleBitmap = true, FilterBinding = new(command.MaskContentIndex, local), SourcePlacement = placement, NativeSourceBounds = nativeSource, FilterSourceMap = new(arena.BindingAt(command.MaskContentIndex).Transform, layerMap, new SvgAffineTransform(localInverse.ScaleX, localInverse.SkewY, localInverse.SkewX, localInverse.ScaleY, localInverse.TranslateX, localInverse.TranslateY).ComposeNative(SvgAffineTransform.FromTranslation(-bitmap.Origin.X, -bitmap.Origin.Y).ComposeNative(PlaceNativeSource(new(0, 0)) ?? SvgAffineTransform.Identity)), frame?.FilterSourceMap is {} originalRelation ? originalRelation.Drawing : drawingMap) }, cancellationToken);
                     // Native drawSpecial composes the stored image origin and
                     // transparent one-pixel outset before inverting its matrix.
                     // Subtracting that origin after inverse mapping changes phase.
@@ -2271,8 +2281,8 @@ public static partial class SvgConverter
             if (binding.Transform.TryInvert(out SvgAffineTransform inverseBinding))
             {
                 SvgFilterBinding local = binding with { Transform = SvgAffineTransform.Identity,
-                    ObjectBounds = binding.ObjectBounds.Map(inverseBinding, cancellationToken),
-                    VisualBounds = binding.VisualBounds.Map(inverseBinding, cancellationToken) };
+                    ObjectBounds = binding.ParameterObjectBounds ?? binding.ObjectBounds.Map(inverseBinding, cancellationToken),
+                    VisualBounds = binding.ParameterVisualBounds ?? binding.VisualBounds.Map(inverseBinding, cancellationToken) };
                 SvgPaintBounds localRegion = FilterRegion(local, filter, SvgAffineTransform.Identity);
                 bool objectUnits = filter.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
                 SvgFilterDeviceMap distances = objectUnits
@@ -2313,9 +2323,9 @@ public static partial class SvgConverter
                 // extent until the enclosing opacity layer is prepared.
                 if (dependsOnSource) sourceHint = SvgFilterPlayback.RoundParameterBounds(sourceHint);
                 SvgPaintBounds outputBounds = SvgFilterPlayback.SourceLayerBounds(filter, distances, context,
-                    sourceHint, SvgFilterBoundsKind.Output, budget, cancellationToken).Map(binding.Transform, cancellationToken);
-                outputBounds = new(MathF.Floor(outputBounds.Left), MathF.Floor(outputBounds.Top), MathF.Ceiling(outputBounds.Right), MathF.Ceiling(outputBounds.Bottom));
-                filtered = outputBounds.Map(SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), cancellationToken);
+                    sourceHint, SvgFilterBoundsKind.Output, budget, cancellationToken);
+                outputBounds = SvgFilterPlayback.RoundParameterBounds(outputBounds);
+                filtered = outputBounds.Map(MapFilterDrawingTransform(binding.Transform), cancellationToken);
             }
             return filtered;
 
@@ -2373,7 +2383,11 @@ public static partial class SvgConverter
                         // replay will paint, including inside an affine source layer.
                         if (frame?.FilterBinding is not {} placed || placed.Index != value.MaskContentIndex)
                             binding = PlaceFilterBinding(binding, cursor + 1);
-                        SvgPaintBounds filtered = FilterResultBounds(binding, filters.ResourceAt(binding.ResourceIndex), SvgFilterBoundsKind.StoredImage);
+                        // Coverage construction must include the stored image;
+                        // an opacity destination encloses the graph's painted output.
+                        SvgFilterBoundsKind boundsKind = regionKind is SvgLayerRegionKind.Viewport or SvgLayerRegionKind.FilterOutputClip
+                            ? SvgFilterBoundsKind.StoredImage : SvgFilterBoundsKind.Output;
+                        SvgPaintBounds filtered = FilterResultBounds(binding, filters.ResourceAt(binding.ResourceIndex), boundsKind);
                         left = Math.Min(left, filtered.Left); top = Math.Min(top, filtered.Top);
                         right = Math.Max(right, filtered.Right); bottom = Math.Max(bottom, filtered.Bottom);
                         int sourceDepth = 1;
@@ -2770,6 +2784,7 @@ public static partial class SvgConverter
                         }
                         using RenderBudget.BudgetReservation groupReservation = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
                         byte[] groupPixels = new byte[checked(pixelCount * 4)];
+                        SvgCpuRasterScope? previousBitmapScope = isolatedBitmapScope;
                         ViewportClipState parentViewport = activeViewport;
                         SvgRasterClipMask parentViewportClip = parentViewport.Mask;
                         // A native layer can restore as a sprite when its entire
@@ -2780,6 +2795,7 @@ public static partial class SvgConverter
                         RenderBudget.BudgetReservation? sourcePaintClipOwner = null;
                         activeViewport = paintedClipMask ? parentViewport : parentViewport with { Pixels = [], Rectangle = null };
                         layerBounds = layer;
+                        isolatedBitmapScope = new(layer, false);
                         // An inner isolated surface paints before its parent's clip;
                         // folded single paints keep the existing consumer instead.
                         maskClipAntialiased = false;
@@ -2832,6 +2848,7 @@ public static partial class SvgConverter
                         finally
                         {
                             layerBounds = previousLayer; activeViewport = parentViewport; maskClipAntialiased = previousMaskClip;
+                            isolatedBitmapScope = previousBitmapScope;
                         }
                         // Skia hard-rectangle clipping rounds each mapped edge to the nearest integer
                         // (Copyright 2006 The Android Open Source Project; see THIRD_PARTY_NOTICES.txt);
@@ -3019,6 +3036,9 @@ public static partial class SvgConverter
             maskLuminanceLayer = content.UsesAffineTarget && !content.IsAlpha;
             SvgAnalyticClipBounds previousLayer = layerBounds;
             SvgRoot previousRoot = root;
+            SvgCpuRasterScope? previousBitmapScope = isolatedBitmapScope;
+            // Clip and mask destinations use their independent compositor grid.
+            isolatedBitmapScope = null;
             // A path clip establishes a concatenation boundary for subsequent
             // paints. Construct its own mask using the incoming canvas instead.
             activeViewport.DrawMap = !viewport ? null
@@ -3141,6 +3161,7 @@ public static partial class SvgConverter
                 horizontalScale = previousScaleX; verticalScale = previousScaleY; horizontalOffset = previousOffsetX; verticalOffset = previousOffsetY;
                 drawingMap = previousDrawing;
                 layerBounds = previousLayer;
+                isolatedBitmapScope = previousBitmapScope;
                 maskClipAntialiased = previousMaskClip;
                 maskLuminanceLayer = previousLuminanceLayer;
                 ReleasePatternTile();

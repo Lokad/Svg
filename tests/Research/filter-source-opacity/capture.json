@@ -61,7 +61,7 @@
           "reference": "references/thin-curved-source.png"
         }
       },
-      "status": "open-source-opacity-capture",
+      "status": "exact",
       "baseline": {
         "windows": {
           "changedPixels": 161,
@@ -81,7 +81,8 @@
           "actualPngSha256": "77acc72ce181138a95bbbc2449bb9a360ce4122b693517ff649b712b1df736b8",
           "librarySha256": "67a6611f7a1dc55f66f2450cd02c578769a3afc38196809c700b9916ffc9c695"
         }
-      }
+      },
+      "qualification": "../svgweb/filter-source-opacity.json"
     }
   ]
 }

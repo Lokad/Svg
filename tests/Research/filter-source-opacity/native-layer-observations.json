@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "source": "inputs/thin-curved-source.svg",
+  "sourceSha256": "ceb0362809691eb9fdb6896907f166f30b2f0521d9fffefe0de12dd9a65ad431",
+  "browser": "Chrome153.0.8010.52",
+  "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "capturePngSha256": "d12a4690682a170c9503b14f882a348ebedf2e437e62c1629139ea770af54f7f",
+  "startupHealth": "healthy",
+  "profileCleaned": true,
+  "method": "LayerTree enabled before navigation; makeSnapshot and snapshotCommandLog after the unchanged screenshot. Windows diagnostic only; the six independent image captures remain the rendering authority.",
+  "interpretation": "The outer opacity layer records local bounds [1033,69,1109,109] and byte alpha197. The filter layer has different bounds. These are source-picture hints, not a license to replace construction origins whenever a paint window narrows.",
+  "commandSubset": [
+    {
+      "index": 10,
+      "method": "saveLayer",
+      "params": {
+        "bounds": {
+          "left": 1027,
+          "top": 65,
+          "right": 1103,
+          "bottom": 105
+        },
+        "paint": {
+          "color": "#C5000000",
+          "strokeWidth": 0,
+          "strokeMiter": 4,
+          "flags": "none",
+          "strokeCap": "Butt",
+          "strokeJoin": "Miter",
+          "styleName": "Fill"
+        },
+        "saveFlags": 0
+      }
+    },
+    {
+      "index": 11,
+      "method": "saveLayer",
+      "params": {
+        "bounds": {
+          "left": 1027,
+          "top": 65,
+          "right": 1103,
+          "bottom": 105
+        },
+        "paint": {
+          "color": "#FF000000",
+          "strokeWidth": 0,
+          "strokeMiter": 4,
+          "flags": "none",
+          "strokeCap": "Butt",
+          "strokeJoin": "Miter",
+          "styleName": "Fill",
+          "imageFilter": "SkImageFilter"
+        },
+        "saveFlags": 0
+      }
+    },
+    {
+      "index": 29,
+      "method": "concat44",
+      "params": {
+        "matrix44": [
+          -1.74084985256195,
+          -0.132210582494736,
+          0,
+          0,
+          0.132176220417023,
+          -1.74130237102509,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1897.880859375,
+          340.631561279297,
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "index": 30,
+      "method": "saveLayer",
+      "params": {
+        "bounds": {
+          "left": 1033,
+          "top": 69,
+          "right": 1109,
+          "bottom": 109
+        },
+        "paint": {
+          "color": "#C5000000",
+          "strokeWidth": 0,
+          "strokeMiter": 4,
+          "flags": "none",
+          "strokeCap": "Butt",
+          "strokeJoin": "Miter",
+          "styleName": "Fill"
+        },
+        "saveFlags": 0
+      }
+    },
+    {
+      "index": 31,
+      "method": "saveLayer",
+      "params": {
+        "bounds": {
+          "left": 1033,
+          "top": 68.25,
+          "right": 1109.5,
+          "bottom": 109
+        },
+        "paint": {
+          "color": "#FF000000",
+          "strokeWidth": 0,
+          "strokeMiter": 4,
+          "flags": "none",
+          "strokeCap": "Butt",
+          "strokeJoin": "Miter",
+          "styleName": "Fill",
+          "imageFilter": "SkImageFilter"
+        },
+        "saveFlags": 0
+      }
+    },
+    {
+      "index": 34,
+      "method": "saveLayer",
+      "params": {
+        "bounds": {
+          "left": 1027,
+          "top": 65,
+          "right": 1103,
+          "bottom": 105
+        },
+        "paint": {
+          "color": "#C5000000",
+          "strokeWidth": 0,
+          "strokeMiter": 4,
+          "flags": "none",
+          "strokeCap": "Butt",
+          "strokeJoin": "Miter",
+          "styleName": "Fill"
+        },
+        "saveFlags": 0
+      }
+    },
+    {
+      "index": 35,
+      "method": "saveLayer",
+      "params": {
+        "bounds": {
+          "left": 1027,
+          "top": 65,
+          "right": 1103,
+          "bottom": 105
+        },
+        "paint": {
+          "color": "#FF000000",
+          "strokeWidth": 0,
+          "strokeMiter": 4,
+          "flags": "none",
+          "strokeCap": "Butt",
+          "strokeJoin": "Miter",
+          "styleName": "Fill",
+          "imageFilter": "SkImageFilter"
+        },
+        "saveFlags": 0
+      }
+    }
+  ]
+}

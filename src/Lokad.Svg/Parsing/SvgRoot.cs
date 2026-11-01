@@ -1543,7 +1543,7 @@ internal sealed class SvgSceneBuilder : IDisposable
                 {
                     depth++;
                     if (command.RegionKind == SvgLayerRegionKind.Filter)
-                        sources.Add(new(command.MaskContentIndex, depth, null, null, null));
+                        sources.Add(new(command.MaskContentIndex, depth, null, null, null, null));
                 }
                 else if (command.Kind == SvgDrawCommandKind.EndGroup)
                 {
@@ -1551,9 +1551,11 @@ internal sealed class SvgSceneBuilder : IDisposable
                     {
                         SvgFilterSourceScope source = sources[^1];
                         sources.RemoveLast();
-                        filters.SetSourceBounds(source.Binding, source.ObjectBounds ?? default, source.VisualBounds ?? source.ObjectBounds ?? default, source.ParameterObjectBounds);
+                        filters.SetSourceBounds(source.Binding, source.ObjectBounds ?? default,
+                            source.VisualBounds ?? source.ObjectBounds ?? default, source.ParameterObjectBounds, source.ParameterVisualBounds);
                         if (source.ObjectBounds is {} box) Include(box, source.VisualBounds ?? box,
-                            source.ParameterObjectBounds is {} localBox ? new(localBox, filters.SourceTransformAt(source.Binding)) : null);
+                            source.ParameterObjectBounds is {} localBox
+                                ? new(localBox, filters.SourceTransformAt(source.Binding)) { VisualBounds = source.ParameterVisualBounds } : null);
                     }
                     depth--;
                 }
@@ -1572,16 +1574,22 @@ internal sealed class SvgSceneBuilder : IDisposable
             {
                 if (sources.Count == 0) return;
                 SvgFilterSourceScope parent = sources[^1];
-                SvgPaintBounds? parameter = null;
+                SvgPaintBounds? parameter = null, parameterVisual = null;
                 if (filters.SourceTransformAt(parent.Binding).TryInvert(out SvgAffineTransform inverse))
+                {
                     parameter = authored is {} sourceBox
                         ? sourceBox.Bounds.MapLayout(inverse.Compose(sourceBox.SceneMap), _cancellationToken)
                         : box?.MapLayout(inverse, _cancellationToken);
+                    parameterVisual = authored is { VisualBounds: {} localVisual } visualSource
+                        ? localVisual.MapLayout(inverse.Compose(visualSource.SceneMap), _cancellationToken)
+                        : visual?.MapLayout(inverse, _cancellationToken);
+                }
                 sources[^1] = parent with
                 {
                     ObjectBounds = box is {} objects ? Union(parent.ObjectBounds, objects) : parent.ObjectBounds,
                     VisualBounds = visual is {} painted ? Union(parent.VisualBounds, painted) : parent.VisualBounds,
-                    ParameterObjectBounds = parameter is {} local ? Union(parent.ParameterObjectBounds, local) : parent.ParameterObjectBounds
+                    ParameterObjectBounds = parameter is {} local ? Union(parent.ParameterObjectBounds, local) : parent.ParameterObjectBounds,
+                    ParameterVisualBounds = parameterVisual is {} paintedLocal ? Union(parent.ParameterVisualBounds, paintedLocal) : parent.ParameterVisualBounds
                 };
             }
 
@@ -1633,7 +1641,8 @@ internal sealed class SvgSceneBuilder : IDisposable
 }
 
 /// <summary>Retains one bounded filter source while scene commands aggregate descendant geometry.</summary>
-internal readonly record struct SvgFilterSourceScope(int Binding, int Depth, SvgPaintBounds? ObjectBounds, SvgPaintBounds? VisualBounds, SvgPaintBounds? ParameterObjectBounds);
+internal readonly record struct SvgFilterSourceScope(int Binding, int Depth, SvgPaintBounds? ObjectBounds,
+    SvgPaintBounds? VisualBounds, SvgPaintBounds? ParameterObjectBounds, SvgPaintBounds? ParameterVisualBounds);
 
 /// <summary>Identifies the parallel retained-scene entries reserved for a deferred reference.</summary>
 internal readonly record struct SvgSceneSlot(int GeometryIndex, int CommandIndex);

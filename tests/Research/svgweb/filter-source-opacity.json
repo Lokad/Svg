@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "4265423ede7cad58ed4660306bcbe7bc9afb270e",
-  "scope": "Research checkpoint for the same open W1 filter-source area. No production code, existing reference, tolerance or API/test matrix changes.",
+  "scope": "Retain tight visual/object source extents in filter parameters; round painted output before its native drawing map; distinguish isolated bitmap ownership from coverage construction and later paint windows. Two controls close; the full original and integer-viewport research remain open.",
   "control": "../filter-source-opacity/capture.json",
   "ownFixture": "../filter-source-opacity/inputs/thin-curved-source.svg",
   "independentCaptures": 6,
@@ -29,11 +29,13 @@
   "original": {
     "name": "juanmontoya_lingerie.svg",
     "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
-    "changedPixelsPerHost": 2953,
-    "alphaChangedPixelsPerHost": 2,
+    "previousChangedPixelsPerHost": 2953,
+    "previousTotalChannelError": 6403,
+    "changedPixels": 2955,
+    "alphaChangedPixels": 2,
     "maximumError": 17,
-    "totalChannelError": 6403,
-    "status": "open; production and default-outcomes.csv unchanged"
+    "totalChannelError": 6406,
+    "status": "OPEN on both hosts; two more differing colour pixels and three more total channel error. No reference or threshold change."
   },
   "exploratoryIsolations": {
     "qualification": "Single healthy Windows observations. Diagnostic context changes, not admitted native references or new support claims.",
@@ -86,10 +88,10 @@
     "Isolated-capture scoping partially reduces one no-inner-filter variant but does not close it; it is not promoted."
   ],
   "closureCriteria": [
-    "Keep source/reference hashes and exact comparisons unchanged. The admitted thin source must become exact on both hosts, together with the existing large-coordinate control and all prior interaction controls.",
-    "Compare actual source alpha/colour before and after isolated opacity, using explicit bitmap ownership separately from paint windows, construction clips, sampling and byte storage.",
-    "Preserve the old group-opacity reference that rejects context rebinding. Recheck the complete original and all 204 hosted outcomes after a shared fix; keep all 153 prior exact PNGs byte-identical.",
-    "Add a canonical failing-before rendering assertion for this source when fixed. Keep boundary mechanisms and representative allocation/ownership contracts separate; full host/runtime/package qualification belongs at a coherent milestone."
+    "CLOSED: the thin source and all seven placement controls are exact on both hosts without source/reference/tolerance changes; frozen baseline fails the two added controls.",
+    "CLOSED for affected integration: prior group-opacity and antialiased parent-clip references and ownership contracts pass on both hosts and runtimes. Source-only export and full promotion are separate gates.",
+    "OPEN: explain the remaining integer-viewport drawing/capture discrepancy, admit independent evidence, and close the complete original through a shared cause. Recheck all204 and preserve the153 prior exact PNGs.",
+    "OPEN release boundary: finish the coherent correctness milestone before full Windows/Linux/runtime/package qualification. Preserve the pending frozen font reference."
   ],
   "restoredValidation": [
     {
@@ -129,5 +131,213 @@
       "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
     }
   ],
-  "retainedQualification": "Production is byte-for-byte unchanged from the source baseline in Git. Affected Windows/Linux .NET11 checks pass again after the rejected trial is removed. Existing .NET10 qualification remains in prepared-source-drawing.json. No new full/package/CI promotion is claimed."
+  "retainedQualification": "Production is byte-for-byte unchanged from the source baseline in Git. Affected Windows/Linux .NET11 checks pass again after the rejected trial is removed. Existing .NET10 qualification remains in prepared-source-drawing.json. No new full/package/CI promotion is claimed.",
+  "implementationBaseline": "f9199fbfb38feabf205bb970fed7f54e5d5455c1",
+  "sharedCause": "Inverting a transformed scene enclosure inflates parameter bounds. Mapping before parameter rounding changes the enclosing opacity allocation. Separately, an affine filter must prepare source capture relative to the allocated destination bitmap, whose origin survives later clips.",
+  "sharedModel": "ParameterVisualBounds accompanies ParameterObjectBounds through nested sources, preserving strokes separately. Opacity enclosures use graph Output; viewport coverage uses StoredImage. The actual isolated destination supplies the affine capture origin; mask/clip replay has an independent grid. Existing rounding, sampling and packed alpha arithmetic remain unchanged.",
+  "nativeObservation": "../filter-source-opacity/native-layer-observations.json",
+  "coverageAfter": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgFilterSourceHintTests.cs",
+    "newMechanismCases": 3,
+    "mechanismResponsibilities": "Unstroked and stroked painted extents under affine placement; nested-filter propagation; parser memory fully refunded.",
+    "rendering": [
+      "../../Lokad.Svg.VisualTests/SvgNestedFilterPlacementReferenceTests.cs",
+      "../../Lokad.Svg.VisualTests/SvgFilterSourceOpacityReferenceTests.cs"
+    ],
+    "canonicalCases": 8,
+    "retainedNativeCaptures": 48,
+    "newSourceOrReferenceImages": 0,
+    "referenceChanges": 0,
+    "toleranceChanges": 0,
+    "ownership": "../../Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs",
+    "distinctInteractions": [
+      "../../Fixtures/original/filter-affine-group-opacity.svg",
+      "../filter-image-placement/inputs/clip-near-integer-aa-parent.svg"
+    ],
+    "responsibilities": "One canonical path for each control, existing refusal/cancellation/cleanup/retry contracts for distinct allocation paths, and the unchanged 1482-fixture exact manifest assertion. No fixture/API matrix expansion or assertion batching.",
+    "failingBefore": {
+      "host": "windows",
+      "passed": 6,
+      "failed": 2,
+      "seconds": 9.038574,
+      "librarySha256": "67a6611f7a1dc55f66f2450cd02c578769a3afc38196809c700b9916ffc9c695",
+      "failures": [
+        "Lokad.Svg.VisualTests.SvgNestedFilterPlacementReferenceTests.Nested_filters_size_and_paint_the_same_placed_source(identity: \"large-affine-nested-opacity\")",
+        "Lokad.Svg.VisualTests.SvgFilterSourceOpacityReferenceTests.Enclosing_opacity_retains_native_thin_source_coverage"
+      ]
+    },
+    "after": [
+      {
+        "host": "windows",
+        "passed": 8,
+        "failed": 0,
+        "seconds": 5.949657
+      },
+      {
+        "host": "linux",
+        "passed": 8,
+        "failed": 0,
+        "seconds": 9.159899
+      }
+    ],
+    "closedControls": [
+      "thin-curved-source",
+      "large-affine-nested-opacity"
+    ],
+    "afterChangedPixelsPerHost": 0
+  },
+  "originalAuditAfter": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 47,
+          "rendered": 154,
+          "MalformedInput": 3
+        },
+        "comparisons": {
+          "not-compared": 50,
+          "exact": 153,
+          "different": 1
+        },
+        "priorExactPngsUnchanged": 153,
+        "semanticChanges": [],
+        "remainingOriginal": {
+          "changedPixels": 2955,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 6406
+        },
+        "originalPngSha256": "ac162a30cf7aa15031fd4deae5f1bb9fe2629991f58fe58b38728fba1afe293a"
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 47,
+          "rendered": 154,
+          "MalformedInput": 3
+        },
+        "comparisons": {
+          "not-compared": 50,
+          "exact": 153,
+          "different": 1
+        },
+        "priorExactPngsUnchanged": 153,
+        "semanticChanges": [],
+        "remainingOriginal": {
+          "changedPixels": 2955,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 6406
+        },
+        "originalPngSha256": "ac162a30cf7aa15031fd4deae5f1bb9fe2629991f58fe58b38728fba1afe293a"
+      }
+    },
+    "seconds": 51.02934579993598
+  },
+  "affectedValidation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 585,
+      "seconds": 8.291894,
+      "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests"
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 1898,
+      "seconds": 20.417237,
+      "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d",
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 585,
+      "seconds": 9.589479,
+      "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 1898,
+      "seconds": 28.01036,
+      "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d",
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 585,
+      "seconds": 7.972418,
+      "librarySha256": "2eda8df908fe5aee2ed7ffe1e646a5f78649ea1d0ead6c2eb448b74f1aa1b101",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 1898,
+      "seconds": 31.924966,
+      "librarySha256": "2eda8df908fe5aee2ed7ffe1e646a5f78649ea1d0ead6c2eb448b74f1aa1b101",
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 585,
+      "seconds": 8.716945,
+      "librarySha256": "2eda8df908fe5aee2ed7ffe1e646a5f78649ea1d0ead6c2eb448b74f1aa1b101",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 1898,
+      "seconds": 31.007774,
+      "librarySha256": "2eda8df908fe5aee2ed7ffe1e646a5f78649ea1d0ead6c2eb448b74f1aa1b101",
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+    }
+  ],
+  "qualificationLimits": "Affected suites pass on .NET11/.NET10 and Windows/Linux. The same eight-case Windows selection takes9.039s with two failures before,5.950s with none after; functional timings are not a speed benchmark. Full runtime/package/CI promotion is separate; the pending frozen Windows font reference is unchanged.",
+  "remainingInvestigations": [
+    {
+      "area": "Integer viewport of the same own source",
+      "status": "OPEN exploratory research",
+      "recipe": "Change root width/height and CSS image viewport together from128.3x96.2 to128x96; leave geometry and filters unchanged. Investigate the filter drawing/capture map independently of the fractional-viewport closure.",
+      "baselineWindows": [
+        {
+          "id": "nonopaque",
+          "changedPixels": 434,
+          "alphaChangedPixels": 400
+        },
+        {
+          "id": "nearly-opaque",
+          "changedPixels": 558,
+          "alphaChangedPixels": 521
+        },
+        {
+          "id": "opaque",
+          "changedPixels": 559,
+          "alphaChangedPixels": 522
+        }
+      ],
+      "qualification": "One healthy Windows capture per variant, not an admitted reference. Re-admit on both hosts before a regression claim."
+    },
+    {
+      "area": "Complete hosted original",
+      "status": "OPEN",
+      "next": "Compare source construction and capture maps at its affine consumers. Do not add per-pixel phase or alpha corrections."
+    }
+  ]
 }
