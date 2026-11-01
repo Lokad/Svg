@@ -7,7 +7,7 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Owns one resolved path until its caller adopts it; parity belongs to the native boundary operation.</summary>
 internal readonly record struct SvgClipUnionResult(SvgAuthoredPath Path, bool IsEvenOdd);
-internal enum SvgClipUnionMode : byte { Pairwise, ConvexBuilder }
+internal enum SvgClipUnionMode : byte { Pairwise, ConvexBuilder, Intersection }
 
 internal static partial class SvgClipUnion
 {
@@ -35,6 +35,18 @@ internal static partial class SvgClipUnion
         AppendSource(first, 0, edges, token);
         AppendSource(second, 1, edges, token);
         return ResolveBoundary(edges, firstEvenOdd, secondEvenOdd, SvgClipUnionMode.Pairwise, budget, token);
+    }
+
+    /// <summary>Intersects source curves before antialiasing, retaining each operand's winding rule.</summary>
+    /// <remarks>Sources remain borrowed. The same reserved, cancellable edge, intersection and linking
+    /// stages as union create one owned native path. Failure releases scratch and preserves both sources.</remarks>
+    internal static SvgAuthoredPath ResolveNativeIntersection(SvgAuthoredPath first, bool firstEvenOdd,
+        SvgAuthoredPath second, bool secondEvenOdd, RenderBudget budget, CancellationToken token)
+    {
+        using BudgetedParserList<CurveEdge> edges = new(budget, SvgMemoryCategory.Geometry, token);
+        AppendSource(first, 0, edges, token);
+        AppendSource(second, 1, edges, token);
+        return ResolveBoundary(edges, firstEvenOdd, secondEvenOdd, SvgClipUnionMode.Intersection, budget, token);
     }
 
     /// <summary>Resolves original operands once, preserving native convex-builder normalization and source order.</summary>
@@ -190,15 +202,20 @@ internal static partial class SvgClipUnion
                     else { if (leftInside) left1 += sign; if (rightInside) right1 += sign; }
                 }
             }
-            bool leftFill = Filled(left0, firstEvenOdd) || Filled(left1, secondEvenOdd);
-            bool rightFill = Filled(right0, firstEvenOdd) || Filled(right1, secondEvenOdd);
+            bool leftFill = mode == SvgClipUnionMode.Intersection ? Filled(left0, firstEvenOdd) && Filled(left1, secondEvenOdd)
+                : Filled(left0, firstEvenOdd) || Filled(left1, secondEvenOdd);
+            bool rightFill = mode == SvgClipUnionMode.Intersection ? Filled(right0, firstEvenOdd) && Filled(right1, secondEvenOdd)
+                : Filled(right0, firstEvenOdd) || Filled(right1, secondEvenOdd);
             if (leftFill == rightFill) continue;
-            CurveBoundary part = leftFill ? new(a.Edge, a.T, b.T, a.Point, b.Point, false) : new(a.Edge, b.T, a.T, b.Point, a.Point, false);
+            bool forward = mode == SvgClipUnionMode.Intersection ? !leftFill : leftFill;
+            CurveBoundary part = forward ? new(a.Edge, a.T, b.T, a.Point, b.Point, false) : new(a.Edge, b.T, a.T, b.Point, a.Point, false);
             bool duplicate = false;
             foreach (CurveBoundary existing in boundary.AsSpan())
             {
                 token.ThrowIfCancellationRequested();
-                if (existing.Start == part.Start && existing.End == part.End && edges[existing.Edge].Curve.Evaluate((existing.First + existing.Last) / 2) == point)
+                if (existing.Start == part.Start && existing.End == part.End
+                    && (edges[existing.Edge].Curve.Kind == SvgMeasuredCurveKind.Line && curve.Kind == SvgMeasuredCurveKind.Line
+                        || edges[existing.Edge].Curve.Evaluate((existing.First + existing.Last) / 2) == point))
                 { duplicate = true; break; }
             }
             if (!duplicate) boundary.Add(part);
@@ -373,6 +390,18 @@ internal static partial class SvgClipUnion
         {
             double dx = b.End.X - b.Start.X, dy = b.End.Y - b.Start.Y;
             for (int index = 0; index < 4; index++) { token.ThrowIfCancellationRequested(); equation[index] = dx * (ay[index] - b.Start.Y * az[index]) - dy * (ax[index] - b.Start.X * az[index]); }
+            if (a.Kind == SvgMeasuredCurveKind.Line && equation[0] == 0 && equation[1] == 0)
+            {
+                // A zero line equation has no isolated root. Partition both
+                // coincident intervals at their endpoints before selecting the
+                // common/union boundary, including strict containment.
+                double axDelta = a.End.X - a.Start.X, ayDelta = a.End.Y - a.Start.Y;
+                Add(0, Math.Abs(dx) >= Math.Abs(dy) ? (a.Start.X - b.Start.X) / dx : (a.Start.Y - b.Start.Y) / dy, a, b, left, right, cuts, token);
+                Add(1, Math.Abs(dx) >= Math.Abs(dy) ? (a.End.X - b.Start.X) / dx : (a.End.Y - b.Start.Y) / dy, a, b, left, right, cuts, token);
+                Add(Math.Abs(axDelta) >= Math.Abs(ayDelta) ? (b.Start.X - a.Start.X) / axDelta : (b.Start.Y - a.Start.Y) / ayDelta, 0, a, b, left, right, cuts, token);
+                Add(Math.Abs(axDelta) >= Math.Abs(ayDelta) ? (b.End.X - a.Start.X) / axDelta : (b.End.Y - a.Start.Y) / ayDelta, 1, a, b, left, right, cuts, token);
+                return;
+            }
             int count = SvgClipCurve.Roots(equation[..4], roots, token);
             for (int index = 0; index < count; index++)
             {
@@ -488,7 +517,8 @@ internal static partial class SvgClipUnion
 
         static void Add(double t, double u, SvgClipCurve a, SvgClipCurve b, int left, int right, BudgetedParserList<CurveCut> cuts, CancellationToken token)
         {
-            if (!double.IsFinite(u) || u < -1e-10 || u > 1 + 1e-10) return;
+            if (!double.IsFinite(t) || t < -1e-10 || t > 1 + 1e-10 || !double.IsFinite(u) || u < -1e-10 || u > 1 + 1e-10) return;
+            t = Math.Clamp(t, 0, 1);
             u = Math.Clamp(u, 0, 1);
             for (int iteration = 0; iteration < 12; iteration++)
             {
