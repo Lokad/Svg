@@ -109,7 +109,7 @@
           "referenceSha256": "04ae633fe4c8fcea62f7f2700144f30527127cbea355b18df349ca51f12f149b"
         }
       },
-      "status": "open-colour-rounding"
+      "status": "exact"
     },
     {
       "id": "large-affine-nested-opacity",
@@ -213,7 +213,7 @@
           "referenceSha256": "022f85be913b1a37d45834463b43318900a1c4ff4286274efce8a3f7d9eb7c30"
         }
       },
-      "status": "open-colour-rounding"
+      "status": "exact"
     },
     {
       "id": "affine-nested-solid-srgb",
@@ -317,7 +317,64 @@
           "referenceSha256": "feaa3898a5d6b1701d3c4da725f1524205ad6dffcabedb6993b15a274df81781"
         }
       },
-      "status": "open-colour-rounding"
+      "status": "exact"
+    },
+    {
+      "id": "fractional-nested-identity",
+      "input": "inputs/fractional-nested-identity.svg",
+      "inputSha256": "0c9deb10aeb49007b136510c76bf680154975723a16cb47563fc75257303956f",
+      "logicalViewport": [
+        128.3,
+        96.2
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "320aa935ef4b9fac3338696d7686c5bf79a46c303d0c26bdf586a2fd58ef1c1e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "320aa935ef4b9fac3338696d7686c5bf79a46c303d0c26bdf586a2fd58ef1c1e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "320aa935ef4b9fac3338696d7686c5bf79a46c303d0c26bdf586a2fd58ef1c1e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-nested-identity.png",
+          "referenceSha256": "320aa935ef4b9fac3338696d7686c5bf79a46c303d0c26bdf586a2fd58ef1c1e"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "320aa935ef4b9fac3338696d7686c5bf79a46c303d0c26bdf586a2fd58ef1c1e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "320aa935ef4b9fac3338696d7686c5bf79a46c303d0c26bdf586a2fd58ef1c1e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "320aa935ef4b9fac3338696d7686c5bf79a46c303d0c26bdf586a2fd58ef1c1e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-nested-identity.png",
+          "referenceSha256": "320aa935ef4b9fac3338696d7686c5bf79a46c303d0c26bdf586a2fd58ef1c1e"
+        }
+      },
+      "status": "open-fractional-nested-filter",
+      "sourceBaseline": "137a25a7118b36f0df6332fa4139063a973814b2"
     }
   ]
 }

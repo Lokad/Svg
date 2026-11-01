@@ -210,5 +210,6 @@
     ],
     "builds": "Final core/native .NET11 and .NET10 builds: zero warnings/errors.",
     "promotion": "Locally qualified placement scope only. Full original, gradient colour rounding and the independent Windows frozen-font authority decision remain open."
-  }
+  },
+  "followup": "filter-source-scope.json"
 }

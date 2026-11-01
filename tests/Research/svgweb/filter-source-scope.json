@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "137a25a7118b36f0df6332fa4139063a973814b2",
+  "productionPatchSha256": "b9c5b79deb594cb44b35e1ab26c56eb95e749d81211dd2d78386dbe6ef305b34",
+  "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
+  "scope": "Retain each nested filter source picture's native parameter-derived bounds while borrowing its parent's affine placement. Captured storage, image hints and source origins remain distinct.",
+  "cause": "A child inherited its parent picture's native source extent, changing gradient coordinate preparation and dither origin. Clearing that extent alone selected an unrelated expanded image hint. Derive the child's own capture hint in its parameter space, map it into the retained source domain and pass it through existing capture frames.",
+  "coverage": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgFilterSourceHintTests.cs",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgNestedFilterPlacementReferenceTests.cs",
+    "capture": "../nested-filter-placement/capture.json",
+    "canonicalCases": 5,
+    "bankCases": 7,
+    "newExactCases": [
+      "affine-nested-opacity",
+      "affine-nested-srgb",
+      "affine-nested-no-source-opacity"
+    ],
+    "failingBefore": {
+      "librarySha256": "b12a7c7ed3a676dd775e15f31d603935c9ca0ce08cb99e2862ba2621c2f9dc52",
+      "passed": 2,
+      "failed": 3,
+      "changedPixelsPerHost": [
+        18,
+        26,
+        19
+      ]
+    },
+    "afterChangedPixelsPerHost": [
+      0,
+      0,
+      0
+    ],
+    "referenceChanges": 0,
+    "newReferenceCases": 1,
+    "freshCapturesForNewReference": 6,
+    "retainedNativeCaptures": 42,
+    "ownership": "No new ownership or allocation path. Existing filter/opacity refusal, cancellation, cleanup and retry tests retain their distinct paths. No fixture/API cross product or tolerance changes."
+  },
+  "openControls": [
+    {
+      "id": "large-affine-nested-opacity",
+      "changedPixelsPerHost": 1,
+      "alphaChangedPixelsPerHost": 0,
+      "previousChangedPixelsPerHost": 61
+    },
+    {
+      "id": "fractional-nested-identity",
+      "logicalViewport": [
+        128.3,
+        96.2
+      ],
+      "screenshot": [
+        128,
+        96
+      ],
+      "changedPixelsPerHost": 565,
+      "alphaChangedPixelsPerHost": 486,
+      "status": "open; six unchanged agreeing native captures",
+      "next": "Trace recorded root-image projection, affine layer capture and child source maps as separate stages. Parent-only and unfiltered exploratory companions are exact; nested filtered capture is not.",
+      "previousChangedPixelsPerHost": {
+        "windows": 561,
+        "linux": 561
+      },
+      "previousAlphaChangedPixelsPerHost": {
+        "windows": 486,
+        "linux": 486
+      },
+      "qualification": "Both versions fail this context. The pixel count increases by four; the source-picture fix does not close or qualify fractional nested capture."
+    }
+  ],
+  "original": {
+    "name": "juanmontoya_lingerie.svg",
+    "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
+    "previousChangedPixelsPerHost": 4588,
+    "changedPixelsPerHost": 4583,
+    "maximumError": 23,
+    "totalChannelError": 38026,
+    "alphaChangedPixelsPerHost": 2,
+    "status": "open; the smaller pixel count does not close the original discrepancy"
+  },
+  "defaultAudit": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "all203OtherSemanticReportsUnchanged": true,
+    "all153PriorExactPngsPerHostByteIdentical": true,
+    "outcomesPerHost": {
+      "rendered": 154,
+      "exploratoryExact": 153,
+      "different": 1,
+      "UnsupportedFeature": 47,
+      "MalformedInput": 3
+    },
+    "seconds": 52.044
+  },
+  "validation": {
+    "affected": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 575,
+        "seconds": 7.538,
+        "librarySha256": "0ea29227c60c2ed64c55f98275506637b03e8d4032765364abb588fc57b8e626",
+        "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 1895,
+        "seconds": 17.689,
+        "librarySha256": "0ea29227c60c2ed64c55f98275506637b03e8d4032765364abb588fc57b8e626",
+        "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 575,
+        "seconds": 8.668,
+        "librarySha256": "0ea29227c60c2ed64c55f98275506637b03e8d4032765364abb588fc57b8e626",
+        "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 1895,
+        "seconds": 27.66,
+        "librarySha256": "0ea29227c60c2ed64c55f98275506637b03e8d4032765364abb588fc57b8e626",
+        "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 43,
+        "seconds": 9.78,
+        "librarySha256": "587db4dca932736dfd67a13cf6e2bf988e8690f3a521bd60d12064c05e602f30",
+        "selection": "FullyQualifiedName~SvgFilterSourceMapTests|FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 265,
+        "seconds": 12.969,
+        "librarySha256": "587db4dca932736dfd67a13cf6e2bf988e8690f3a521bd60d12064c05e602f30",
+        "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 43,
+        "seconds": 9.254,
+        "librarySha256": "587db4dca932736dfd67a13cf6e2bf988e8690f3a521bd60d12064c05e602f30",
+        "selection": "FullyQualifiedName~SvgFilterSourceMapTests|FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 265,
+        "seconds": 13.983,
+        "librarySha256": "587db4dca932736dfd67a13cf6e2bf988e8690f3a521bd60d12064c05e602f30",
+        "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests"
+      }
+    ],
+    "finalBankCardinalityChecks": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 5,
+        "seconds": 6.273,
+        "librarySha256": "0ea29227c60c2ed64c55f98275506637b03e8d4032765364abb588fc57b8e626"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 5,
+        "seconds": 9.49,
+        "librarySha256": "0ea29227c60c2ed64c55f98275506637b03e8d4032765364abb588fc57b8e626"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "passed": 5,
+        "seconds": 6.088,
+        "librarySha256": "587db4dca932736dfd67a13cf6e2bf988e8690f3a521bd60d12064c05e602f30"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "passed": 5,
+        "seconds": 7.658,
+        "librarySha256": "587db4dca932736dfd67a13cf6e2bf988e8690f3a521bd60d12064c05e602f30"
+      }
+    ],
+    "builds": "Core/native .NET11/.NET10 builds: zero warnings/errors.",
+    "focusedBeforeAfter": {
+      "cases": 5,
+      "windowsBeforeSeconds": 7.215,
+      "windowsAfterSeconds": 6.273,
+      "beforeFailed": 3,
+      "afterFailed": 0,
+      "qualification": "Development wall times, not a benchmark or speedup claim. No test consolidation in this scope."
+    },
+    "promotion": "Local source-picture scope only. Full original, fractional nested capture, large-coordinate rounding and the independent frozen Windows font decision remain open."
+  }
+}
