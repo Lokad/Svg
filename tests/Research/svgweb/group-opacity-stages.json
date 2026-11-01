@@ -387,7 +387,7 @@
       "librarySha256": "aadf315dc28a69c6d04457d0c69ebbfb1ff1639447378ed656c9c3ebac94c7ab"
     }
   ],
-  "nextAction": "Re-isolate the remaining147 pixels of the complete original in bounded RAM. Separate the previously observed direct unfiltered use from filtered consumers; preserve all closed controls, native axes and original recording boundaries together.",
+  "nextAction": "Keep the complete original OPEN. Investigate the19 one-level RGB differences across the four named consumers through shared sampling/colour/recording stages, and separately identify the128-pixel common-content remainder. Preserve all closed controls, exact references and the full204 replay requirement.",
   "implementationBaseline": "14459ac6b",
   "currentModel": {
     "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
@@ -569,5 +569,76 @@
       "passed": 10,
       "seconds": 6.391041
     }
-  ]
+  ],
+  "sourceOnlyExport": {
+    "revision": "de7d8a9df16d10b7bd53ef153b90c2da4e233a24",
+    "archiveSha256": "1c86c187309b4abcf4c8985df98baccd10d359a6619a8771e7b31450e8f9b4d1",
+    "sourceOnlyExport": true,
+    "copiedSvgCorpus": false,
+    "actions": [
+      {
+        "action": "restore",
+        "exitCode": 0
+      },
+      {
+        "action": "build-net11",
+        "exitCode": 0
+      },
+      {
+        "action": "build-net10",
+        "exitCode": 0
+      }
+    ]
+  },
+  "remainingOriginalAttribution": {
+    "sourceSvgFilesRetained": 0,
+    "qualification": "Windows exploratory attribution; one fresh healthy native capture per mutation, not new reference admission.",
+    "completeOriginalChangedPixels": 147,
+    "unchangedCommonContentChangedPixels": 128,
+    "commonContentAlphaChangedPixels": 2,
+    "commonNativeAndCandidatePixelsUnchanged": true,
+    "consumerMasksDisjoint": true,
+    "consumerUnionMatchesOriginalRemainder": true,
+    "cases": [
+      {
+        "id": "use6316",
+        "additionalChangedPixels": 11,
+        "alphaChangedPixels": 0,
+        "maximumError": 1,
+        "totalChannelError": 28
+      },
+      {
+        "id": "use6306",
+        "additionalChangedPixels": 2,
+        "alphaChangedPixels": 0,
+        "maximumError": 1,
+        "totalChannelError": 6
+      },
+      {
+        "id": "use6308",
+        "additionalChangedPixels": 4,
+        "alphaChangedPixels": 0,
+        "maximumError": 1,
+        "totalChannelError": 10
+      },
+      {
+        "id": "use6314",
+        "additionalChangedPixels": 2,
+        "alphaChangedPixels": 0,
+        "maximumError": 1,
+        "totalChannelError": 6
+      }
+    ],
+    "method": "Hide the four named use nodes for the common-content control. For each consumer, keep all other content and hide only the other three use nodes. A zero-opacity wrapper around the source target hides its direct paint while retaining references. In the all-consumers control the original difference mask and both candidate/native values at every mismatch are unchanged; whole images differ where the direct source was hidden. All SVG transformations stay in bounded RAM.",
+    "namedConsumerChangedPixels": 19,
+    "materializedSourceHashes": {
+      "instances-only": "3a8094b0da901313e83eb7fea53b5ae389b0f64af144a8c9f83b2c84b3a06c52",
+      "use6316": "e93483140f6850ca601650fa60025466fbc088a528d0ca0ed31395c1e68ca9e0",
+      "use6306": "37fb68738726f27952836499f092cd7df7eff65e27a4eed182bc733ec03b1f45",
+      "use6308": "355f5b6cb55522ad54e64abb9555898bebfa60cca7868cac42bd4ac9110b7a3a",
+      "use6314": "bde6f92cf88dff544ef36af5fdabcd1c83b4f57b565c1cce4c2db13aadbd95df",
+      "other-content": "3c5324a4130c8c9d2e172c2ede86662848eab2c26d89762d63d5b8b681c08756"
+    },
+    "interpretation": "The remaining147 are not all one direct-use discrepancy. The four named consumers add19 disjoint RGB-only, one-level differences (11,2,4,2). Another128 pixels, including both alpha differences, survive when all four are hidden. Candidate/native values at the common pixels and the original difference mask were checked explicitly. This is diagnostic Windows evidence, not reference admission."
+  }
 }
