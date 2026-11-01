@@ -41,6 +41,11 @@ Run `artifacts/native-source-stages` and compare its JSON with the
 Keep intermediate floating-point rounding enabled; this checks arithmetic stages
 separately from browser reference admission.
 
+The [bitmap-restore control](../tests/Research/svgweb/native-device-restore.cpp)
+uses the same compiler flags. Run it and compare its JSON values with the
+[device-axis vectors](../tests/Lokad.Svg.Tests/TestData/native-device-restore.json);
+forward/inverse float rounding determines whether restoration retains affine skew.
+
 ## Generated output and retention
 
 Organize generated data by purpose: pinned tool caches, current qualification,

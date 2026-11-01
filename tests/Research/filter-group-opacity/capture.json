@@ -127,7 +127,7 @@
           "reference": "references/overlap-upscale.png"
         }
       },
-      "status": "open-group-alpha-restore",
+      "status": "exact",
       "baseline": {
         "windows": {
           "changedPixels": 87,
@@ -145,7 +145,8 @@
           "totalChannelError": 87,
           "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d"
         }
-      }
+      },
+      "qualification": "../svgweb/group-opacity-stages.json"
     }
   ]
 }

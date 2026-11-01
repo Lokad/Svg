@@ -312,10 +312,16 @@ public static partial class SvgConverter
 
     private readonly record struct SvgFilterReplayBinding(int Index, SvgFilterBinding Binding);
     /// <summary>Keeps the authored source/layer relation separate from recorded drawing and native capture.</summary>
-    /// <remarks>Immutable arithmetic-only metadata; it owns no scene or pixel storage.</remarks>
+    /// <remarks>DeviceBasis retains native bitmap axes in the original device; origins stay in
+    /// NativePlacement and the capture window. Immutable metadata owns no scene or pixel storage.</remarks>
     internal readonly record struct SvgFilterSourceMap(SvgAffineTransform Source, SvgAffineTransform Layer,
-        SvgAffineTransform NativePlacement, SvgDrawingMap Drawing)
+        SvgAffineTransform NativePlacement, SvgDrawingMap Drawing, SvgAffineTransform DeviceBasis)
     {
+        /// <summary>Selects bitmap restoration from the rounded native device axes.</summary>
+        /// <remarks>The rounded forward/inverse product can retain affine residue. Such bitmap
+        /// restores use the raster pipeline rather than the packed scale/translate consumer.</remarks>
+        internal bool UsesAffineBitmapRestore => !NativePlacement.ComposeNative(DeviceBasis).IsAxisAligned;
+
         /// <summary>Prepares the original drawing before applying a native capture placement.</summary>
         /// <remarks>Preserves both float concatenation boundaries. Allocation-free; callers retain cancellation and work ownership.</remarks>
         internal SvgAffineTransform MapPreparedDrawing(SvgAffineTransform target, SvgAffineTransform capturePlacement)
@@ -1215,11 +1221,21 @@ public static partial class SvgConverter
                     if (restoreRight <= restoreLeft || restoreBottom <= restoreTop) return;
                     SvgRenderLimits layerLimits = limits;
                     SvgRoot borrowed = root with { Geometries = geometries, Commands = commands};
+                    SvgAffineTransform nativePlacement = new SvgAffineTransform(localInverse.ScaleX, localInverse.SkewY,
+                        localInverse.SkewX, localInverse.ScaleY, localInverse.TranslateX, localInverse.TranslateY)
+                        .ComposeNative(SvgAffineTransform.FromTranslation(-bitmap.Origin.X, -bitmap.Origin.Y)
+                            .ComposeNative(PlaceNativeSource(new(0, 0)) ?? SvgAffineTransform.Identity));
+                    SvgAffineTransform deviceBasis = (frame?.FilterSourceMap is {} parentDevice
+                        ? parentDevice.DeviceBasis : SvgAffineTransform.Identity).ComposeNative(new(
+                            remainder.ScaleX, remainder.SkewY, remainder.SkewX, remainder.ScaleY, 0, 0));
+                    SvgFilterSourceMap sourceMap = new(arena.BindingAt(command.MaskContentIndex).Transform, layerMap,
+                        nativePlacement, frame?.FilterSourceMap is {} originalRelation ? originalRelation.Drawing : drawingMap, deviceBasis);
                     using RasterizedSurface image = Rasterize(borrowed, new(options.Viewport, options.OutputScale, SvgColor.Transparent, layerLimits, options.FontSnapshot),
                         budget, RasterSurfaceMode.PremultipliedFilter,
                         new RasterFrame((int)frameWidth, (int)frameHeight,
                             new(SvgAffineTransform.FromTranslation(-left, -top), null))
-                        { SingleBitmap = true, FilterBinding = new(command.MaskContentIndex, local), SourcePlacement = placement, NativeSourceBounds = nativeSource, FilterSourceMap = new(arena.BindingAt(command.MaskContentIndex).Transform, layerMap, new SvgAffineTransform(localInverse.ScaleX, localInverse.SkewY, localInverse.SkewX, localInverse.ScaleY, localInverse.TranslateX, localInverse.TranslateY).ComposeNative(SvgAffineTransform.FromTranslation(-bitmap.Origin.X, -bitmap.Origin.Y).ComposeNative(PlaceNativeSource(new(0, 0)) ?? SvgAffineTransform.Identity)), frame?.FilterSourceMap is {} originalRelation ? originalRelation.Drawing : drawingMap) }, cancellationToken);
+                        { SingleBitmap = true, FilterBinding = new(command.MaskContentIndex, local), SourcePlacement = placement,
+                            NativeSourceBounds = nativeSource, FilterSourceMap = sourceMap }, cancellationToken);
                     // Native drawSpecial composes the stored image origin and
                     // transparent one-pixel outset before inverting its matrix.
                     // Subtracting that origin after inverse mapping changes phase.
@@ -2896,6 +2912,7 @@ public static partial class SvgConverter
                         }
                         using RenderBudget.BudgetReservation? maskLease = maskReservation;
                         byte groupMaskAlpha = MultiplyAlpha(command.MaskAlpha, constantMask);
+                        bool pipelineRestore = frame?.FilterSourceMap is {} nativeDevice && nativeDevice.UsesAffineBitmapRestore;
                         for (int pixel = 0; pixel < pixelCount; pixel++)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
@@ -2935,6 +2952,7 @@ public static partial class SvgConverter
                                     MultiplyAlpha(groupPixels[offset + 2], maskAlpha), MultiplyAlpha(groupPixels[offset + 3], maskAlpha));
                                 sample.Blend(destination.AsSpan(offset, 4), MultiplyAlpha(extra, clipAlpha));
                             }
+                            else if (pipelineRestore) BlendPipelineLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha, clipAlpha);
                             else if (shaderRestore || parentRequiresShader) BlendClippedLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha, clipAlpha);
                             else BlendLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha);
                         }
@@ -2979,6 +2997,17 @@ public static partial class SvgConverter
                 int destinationScale = (inverse + (inverse >> 8)) >> 8;
                 for (int lane = 0; lane < 4; lane++)
                     destination[lane] = (byte)((MultiplyAlpha(source[lane], maskAlpha) * sourceScale + destination[lane] * destinationScale) >> 8);
+            }
+
+            // The native lowp image shader scales paint alpha before clip coverage.
+            // Retain both byte operations; joining opacity and coverage changes rounding.
+            static void BlendPipelineLayerPixel(Span<byte> destination, ReadOnlySpan<byte> source, byte opacity, byte maskAlpha, byte coverage)
+            {
+                new SvgConstantShaderPaint(
+                    (byte)((MultiplyAlpha(source[0], maskAlpha) * opacity + 255) >> 8),
+                    (byte)((MultiplyAlpha(source[1], maskAlpha) * opacity + 255) >> 8),
+                    (byte)((MultiplyAlpha(source[2], maskAlpha) * opacity + 255) >> 8),
+                    (byte)((MultiplyAlpha(source[3], maskAlpha) * opacity + 255) >> 8)).Blend(destination, coverage);
             }
 
 

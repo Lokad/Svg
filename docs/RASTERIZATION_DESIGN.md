@@ -297,6 +297,10 @@ sampling rules. Black RGB retains its color-conversion stage because shader
 restoration and packed bitmap restoration round differently over a backdrop.
 Enclosing opacity first materializes sampling/color/crop coverage,
 then applies bitmap alpha; its painted extent bounds restoration.
+Filter capture retains both directions of the native bitmap axes. Their rounded
+product can retain skew, selecting pipeline alpha before clip coverage instead of
+packed row blending. [Native controls](../tests/Research/svgweb/group-opacity-stages.json)
+protect this selection without snapping coefficients or changing references.
 
 ## Supplied fonts
 

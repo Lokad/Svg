@@ -6,6 +6,38 @@ namespace Lokad.Svg.Tests;
 [Trait("Layer", "Mechanism")]
 public sealed class SvgFilterSourceMapTests
 {
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public void Rounded_native_device_axes_select_the_bitmap_restore_consumer(int index)
+    {
+        using JsonDocument document = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(
+            AppContext.BaseDirectory, "TestData", "native-device-restore.json")));
+        JsonElement cases = document.RootElement.GetProperty("cases");
+        Assert.Equal(4, cases.GetArrayLength());
+        JsonElement row = cases[index];
+        SvgAffineTransform forward = Basis(row.GetProperty("deviceToGlobal"));
+        SvgAffineTransform inverse = Basis(row.GetProperty("globalToDevice"));
+        SvgConverter.SvgFilterSourceMap source = new(SvgAffineTransform.Identity, SvgAffineTransform.Identity,
+            inverse, new(SvgAffineTransform.Identity, SvgAffineTransform.Identity), forward);
+        SvgAffineTransform restored = inverse.ComposeNative(forward);
+        JsonElement bits = row.GetProperty("restoreBits");
+        Assert.Equal(4, bits.GetArrayLength());
+        Assert.Equal(bits[0].GetUInt32(), BitConverter.SingleToUInt32Bits((float)restored.A));
+        Assert.Equal(bits[1].GetUInt32(), BitConverter.SingleToUInt32Bits((float)restored.B));
+        Assert.Equal(bits[2].GetUInt32(), BitConverter.SingleToUInt32Bits((float)restored.C));
+        Assert.Equal(bits[3].GetUInt32(), BitConverter.SingleToUInt32Bits((float)restored.D));
+        Assert.Equal(row.GetProperty("affineRestore").GetBoolean(), source.UsesAffineBitmapRestore);
+
+        static SvgAffineTransform Basis(JsonElement value)
+        {
+            Assert.Equal(4, value.GetArrayLength());
+            return new(value[0].GetDouble(), value[1].GetDouble(), value[2].GetDouble(), value[3].GetDouble(), 0, 0);
+        }
+    }
+
     [Fact]
     public void Recorded_drawing_is_prepared_before_native_capture_rounding()
     {
@@ -39,7 +71,7 @@ public sealed class SvgFilterSourceMapTests
         Assert.Equal(index, row.GetProperty("id").GetInt32());
         SvgDrawingMap drawing = new(Matrix(row, "root"), SvgAffineTransform.Identity);
         SvgAffineTransform target = Matrix(row, "target"), capture = Matrix(row, "capture");
-        SvgConverter.SvgFilterSourceMap source = new(Matrix(row, "source"), Matrix(row, "layer"), capture, drawing);
+        SvgConverter.SvgFilterSourceMap source = new(Matrix(row, "source"), Matrix(row, "layer"), capture, drawing, SvgAffineTransform.Identity);
         SvgAffineTransform expected = Expected(row);
         SvgAffineTransform actual = source.MapPreparedDrawing(target, capture);
         Assert.Equal(expected, actual);

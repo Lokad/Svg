@@ -138,7 +138,7 @@
           "reference": "references/thin-curved-source-integer.png"
         }
       },
-      "status": "open-integer-source-capture",
+      "status": "exact",
       "sourceBaseline": "b1bd907987073fbfeee777a22f346de2a52ff4db",
       "baseline": {
         "windows": {
@@ -157,7 +157,8 @@
           "totalChannelError": 7276,
           "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d"
         }
-      }
+      },
+      "qualification": "../svgweb/group-opacity-stages.json"
     }
   ]
 }

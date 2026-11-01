@@ -58,12 +58,13 @@ map mechanisms and seven canonical native cases. Two shader mechanisms protect
 recording/capture order and 64/65-stage storage. One recursive-capture contract
 covers the additional allocation path.
 The [filter source-opacity control](Research/filter-source-opacity/README.md)
-adds one canonical image; three direct parameter-bound cases distinguish strokes
+adds two canonical images; three direct parameter-bound cases distinguish strokes
 and nested sources. Existing affine group-opacity and AA parent-clip controls
 protect allocation versus coverage bounds. The full hosted original remains open.
 The reduced [group-opacity pair](Research/filter-group-opacity/README.md) uses two
-overlapping rectangles: one canonical downscale control rejects a global alpha
-change, while its independently captured upscale companion remains open research.
+overlapping rectangles: both canonical images are exact, and the downscale control
+rejects a global alpha change. Four compiled native device-axis mechanisms protect
+the distinct restore consumers without repeating the API/ownership matrix.
 
 The [thin-curve mechanisms](Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs) distinguish
 authored ink from short flattened fallbacks and explicit suppression. One source

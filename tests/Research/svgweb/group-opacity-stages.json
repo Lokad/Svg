@@ -2,14 +2,15 @@
   "schemaVersion": 1,
   "sourceBaseline": "8f85174689059051f8761f81d4dd6cea656196ee",
   "previousEvidence": "filter-source-opacity.json",
-  "scope": "Research and one retained negative control only. No production changes, reference rewrites or tolerance changes.",
+  "scope": "Preserve independently rounded native device axes through filter capture and select group bitmap restoration from their actual product. Close the reduced upscale and integer-viewport controls without changing references, sampling phases or API/ownership matrices.",
   "reducedControls": "../filter-group-opacity/capture.json",
   "reduction": "Two overlapping half-alpha rectangles, one translucent group and one affine copying Gaussian reproduce the same one-level alpha discrepancy. No curves, gradient, aliases, nested filter or large coordinates are necessary.",
   "pairedResults": {
     "downscaleChangedPixelsPerHost": 0,
-    "upscaleChangedPixelsPerHost": 87,
+    "upscaleChangedPixelsPerHost": 0,
     "maximumAlphaError": 1,
-    "independentCaptures": 12
+    "independentCaptures": 12,
+    "previousUpscaleChangedPixelsPerHost": 87
   },
   "outerDrawing": {
     "comparison": "All six native float coefficients match at entry on fractional and integer controls.",
@@ -157,7 +158,7 @@
     ],
     "lowPrecisionAlpha": "For x64 lowp scale, source byte s and rounded paint alpha a: (s*a+255)>>8. Existing SvgConstantShaderPaint.Blend supplies this operation.",
     "packedRowAlpha": "The existing bitmap row retains source/destination products together through the final shift; it is a distinct native consumer.",
-    "interpretation": "The lowp operation exactly explains both failing controls in a diagnostic replacement. This does not establish what selects that consumer. No scale threshold or per-fixture branch is justified."
+    "interpretation": "The native device-axis control now establishes the restore distinction. Only the affine product selects lowp restoration; the global replacement recorded below remains rejected."
   },
   "exploration": {
     "qualification": "Single healthy Windows observations; shared own geometry with only named maps, colour space or sigma changed.",
@@ -318,9 +319,43 @@
     "interpretation": "Both rotation directions and sRGB/linearRGB reproduce it. Axis-aligned upscale and the sampled affine downscales are exact. All six probed sigma values0,.01,.03,.04,.1,.3 leave87 differences; do not patch a blur-kernel boundary."
   },
   "coverage": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgFilterSourceMapTests.cs",
+    "newMechanismCases": 4,
+    "mechanismResponsibilities": "Exact native float products and consumer selection for downscale, upscale, fractional and integer contexts. Keep boundaries in direct mechanisms.",
     "rendering": "../../Lokad.Svg.VisualTests/SvgFilterSourceOpacityReferenceTests.cs",
-    "newPassingCases": 1,
-    "responsibility": "One canonical downscale case rejects the observed global lowp replacement. The paired upscale case remains explicitly OPEN and has no passing assertion. Existing thin, placement and ownership responsibilities remain separate; no API/fixture product."
+    "newPassingCases": 2,
+    "canonicalCasesAcrossBanks": 11,
+    "retainedIndependentCaptures": 66,
+    "newSourceOrReferenceImages": 0,
+    "referenceChanges": 0,
+    "toleranceChanges": 0,
+    "ownership": "../../Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs",
+    "responsibilities": "Activate the two admitted failing-before images through one canonical path each. Existing downscale, fractional, large-coordinate, group-opacity and AA-parent-clip images remain exact. Retain existing distinct allocation/refusal/cancellation/cleanup/retry contracts; no new fixture/API product.",
+    "failingBefore": {
+      "host": "windows",
+      "passed": 9,
+      "failed": 2,
+      "seconds": 8.346729,
+      "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d",
+      "failures": [
+        "Lokad.Svg.VisualTests.SvgFilterSourceOpacityReferenceTests.Upscaled_overlap_uses_the_native_affine_bitmap_restore",
+        "Lokad.Svg.VisualTests.SvgFilterSourceOpacityReferenceTests.Integer_viewport_keeps_its_source_group_bitmap_restore"
+      ]
+    },
+    "after": [
+      {
+        "host": "windows",
+        "passed": 11,
+        "seconds": 5.705815,
+        "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe"
+      },
+      {
+        "host": "linux",
+        "passed": 11,
+        "seconds": 9.347384,
+        "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe"
+      }
+    ]
   },
   "focusedValidation": [
     {
@@ -352,5 +387,187 @@
       "librarySha256": "aadf315dc28a69c6d04457d0c69ebbfb1ff1639447378ed656c9c3ebac94c7ab"
     }
   ],
-  "nextAction": "Determine the native isolated bitmap restore consumer from device mapping, image representation/colour space and clip state. Reuse the existing packed, lowp and floating operations at their actual stage; preserve the downscale/fractional/large-coordinate controls and complete original together."
+  "nextAction": "Re-isolate the remaining147 pixels of the complete original in bounded RAM. Separate the previously observed direct unfiltered use from filtered consumers; preserve all closed controls, native axes and original recording boundaries together.",
+  "implementationBaseline": "14459ac6b",
+  "currentModel": {
+    "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "cause": "A native device-to-global matrix and its rounded inverse need not multiply to an axis-aligned matrix. The upscale and integer cases retain skew of magnitude7.450580596923828e-9; the downscale and fractional cases do not. Assuming all isolated groups restore through the packed bitmap row changed alpha rounding.",
+    "metadata": "DeviceBasis carries the forward bitmap axes beside the existing inverse NativePlacement. Origins remain in the capture/window mapping. Recursive captures compose the forward axes in native float order.",
+    "restoration": "Use the existing lowp source-over operation for affine bitmap restoration. Paint opacity scales the premultiplied source before clip coverage; preserve those separate byte rounds. Scale/translate restores retain the existing packed row. No epsilon snapping or scale threshold.",
+    "source": "native-device-restore.cpp",
+    "sourceSha256": "33abe646df0c7f91a78f07bfea74e8354f1fe8fd88551d71154b37561465ced3",
+    "vectors": "../../Lokad.Svg.Tests/TestData/native-device-restore.json",
+    "vectorSha256": "5354532cbc47432dd395f4b96b8aaef3e5dd4dc70e2e58b1396450adeb664105",
+    "nativeRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "browserRevisionCheck": "The153.0.8010.52 Chromium DEPS pins this exact Skia revision.",
+    "compiler": "g++13.3.0, Ubuntu24.04.1",
+    "flags": "-std=c++20 -O2 -Wall -Wextra -Werror -ffp-contract=off",
+    "nativeRoutingSources": [
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkDevice.cpp",
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/shaders/SkImageShader.cpp",
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/opts/SkBitmapProcState_opts.h"
+    ],
+    "qualification": "The pinned x64 legacy image-shader path has no affine DXDY routine. Native float products and both-host images independently protect the resulting consumer distinction."
+  },
+  "affectedValidationAfter": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 589,
+      "seconds": 6.762769,
+      "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests"
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 1901,
+      "seconds": 17.122416,
+      "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 589,
+      "seconds": 8.969395,
+      "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 1901,
+      "seconds": 28.442574,
+      "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 589,
+      "seconds": 7.64916,
+      "librarySha256": "212533af82c62f90f5c1e72fef4f990400c9b5136a0aca06cd9e1c16b0b7c159",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 1901,
+      "seconds": 17.606879,
+      "librarySha256": "212533af82c62f90f5c1e72fef4f990400c9b5136a0aca06cd9e1c16b0b7c159",
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "core",
+      "passed": 589,
+      "seconds": 8.058588,
+      "librarySha256": "212533af82c62f90f5c1e72fef4f990400c9b5136a0aca06cd9e1c16b0b7c159",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "kind": "native",
+      "passed": 1901,
+      "seconds": 26.313449,
+      "librarySha256": "212533af82c62f90f5c1e72fef4f990400c9b5136a0aca06cd9e1c16b0b7c159",
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+    }
+  ],
+  "originalAuditAfter": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 47,
+          "rendered": 154,
+          "MalformedInput": 3
+        },
+        "comparisons": {
+          "not-compared": 50,
+          "exact": 153,
+          "different": 1
+        },
+        "priorExactPngsUnchanged": 153,
+        "semanticChanges": [],
+        "remainingOriginal": {
+          "changedPixels": 147,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 459
+        },
+        "originalPngSha256": "74b41bb6d0ecdbb94f55c62401ffe25f1b3a99590daee90b9e7024e589f16852"
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 47,
+          "rendered": 154,
+          "MalformedInput": 3
+        },
+        "comparisons": {
+          "not-compared": 50,
+          "exact": 153,
+          "different": 1
+        },
+        "priorExactPngsUnchanged": 153,
+        "semanticChanges": [],
+        "remainingOriginal": {
+          "changedPixels": 147,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 459
+        },
+        "originalPngSha256": "74b41bb6d0ecdbb94f55c62401ffe25f1b3a99590daee90b9e7024e589f16852"
+      }
+    },
+    "seconds": 54.409851799951866
+  },
+  "original": {
+    "name": "juanmontoya_lingerie.svg",
+    "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
+    "previousChangedPixelsPerHost": 2955,
+    "previousTotalChannelError": 6406,
+    "changedPixels": 147,
+    "alphaChangedPixels": 2,
+    "maximumError": 17,
+    "totalChannelError": 459,
+    "status": "OPEN on both hosts"
+  },
+  "qualificationLimits": "Affected suites pass on both hosts and runtimes;153 prior exact PNGs remain byte-identical and all204 semantic outcomes are unchanged. Same11-case Windows selection:8.347s with two failures before,5.706s with none after; Linux9.347s after. Functional timings are not a benchmark. Full runtime/package/CI promotion remains a milestone gate; the frozen Windows font reference is unchanged.",
+  "strictBitVerification": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "passed": 10,
+      "seconds": 6.572685
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "passed": 10,
+      "seconds": 7.857207
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "passed": 10,
+      "seconds": 5.092366
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "passed": 10,
+      "seconds": 6.391041
+    }
+  ]
 }

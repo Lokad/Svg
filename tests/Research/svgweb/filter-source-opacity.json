@@ -29,13 +29,11 @@
   "original": {
     "name": "juanmontoya_lingerie.svg",
     "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
-    "previousChangedPixelsPerHost": 2953,
-    "previousTotalChannelError": 6403,
-    "changedPixels": 2955,
+    "changedPixels": 147,
     "alphaChangedPixels": 2,
     "maximumError": 17,
-    "totalChannelError": 6406,
-    "status": "OPEN on both hosts; two more differing colour pixels and three more total channel error. No reference or threshold change."
+    "totalChannelError": 459,
+    "status": "OPEN; group-opacity-stages.json governs current counters and qualification"
   },
   "exploratoryIsolations": {
     "qualification": "Single healthy Windows observations. Diagnostic context changes, not admitted native references or new support claims.",
@@ -313,7 +311,7 @@
   "remainingInvestigations": [
     {
       "area": "Integer viewport of the same own source",
-      "status": "OPEN; integer nonopaque control now admitted with six fresh captures, one shared PNG and434 differing pixels/400 alpha differences on both hosts. The other opacity variants remain exploratory.",
+      "status": "Integer nonopaque control CLOSED by native device-axis restoration; other opacity variants remain exploratory.",
       "recipe": "Change root width/height and CSS image viewport together from128.3x96.2 to128x96; leave geometry and filters unchanged. Investigate the filter drawing/capture map independently of the fractional-viewport closure.",
       "baselineWindows": [
         {
@@ -385,7 +383,7 @@
       }
     },
     "recipe": "Only root width/height and CSS image viewport change from128.3x96.2 to128x96. Geometry, colours, effects and opacity are unchanged.",
-    "status": "OPEN; native references admitted on both hosts. Not asserted as a passing rendering case.",
+    "status": "CLOSED; group-opacity-stages.json records native mechanisms, failing-before proof and qualification.",
     "admissionValidation": [
       {
         "host": "windows",
@@ -403,6 +401,6 @@
   },
   "groupRestoreFollowup": {
     "evidence": "group-opacity-stages.json",
-    "status": "OPEN source-group restore investigation, reduced to two overlapping rectangles. Native outer CTMs match; a paired downscale control rejects global alpha replacements. No production change follows this checkpoint."
+    "status": "The reduced upscale and integer-viewport controls are CLOSED. All11 canonical controls remain exact. The complete original is OPEN at147pixels; the follow-up governs current model and qualification."
   }
 }
