@@ -27,7 +27,7 @@ internal static class SvgClipDefinitionStaging
         if (state.Clips.TryGetValue(id, out _) || state.ObjectClips.TryGetValue(id, out _) || !state.ClipPolygons.TryAdd(id, new([], [])))
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
         BudgetedParserList<SvgDeferredClipDefinition> definitions = state.DeferredClips ??= new(state.Budget, SvgMemoryCategory.Parser, token);
-        definitions.Add(new(id, state.ClipSourceStart, sources.Count - state.ClipSourceStart));
+        definitions.Add(new(id, state.ClipSourceStart, sources.Count - state.ClipSourceStart, state.ClipIsObjectBoundingBox));
     }
 
     private static void RetainGeometry(SvgDocumentState state, BudgetedParserList<SvgClipDefinitionSource> sources, CancellationToken token)

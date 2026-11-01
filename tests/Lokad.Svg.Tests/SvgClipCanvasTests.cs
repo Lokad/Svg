@@ -36,6 +36,12 @@ public sealed class SvgClipCanvasTests
         Assert.Equal(stage.Source, stage.Parent);
         Assert.Equal(SvgAffineTransform.Identity, stage.Boundary);
         SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(Assert.Single(content.Geometries).AuthoredPath);
-        Assert.Equal(new SvgAffineTransform(20, 0, 0, 16, 6, 5), path.SceneMap);
+        // Normalization may be materialized before constructing the integer
+        // enclosure. Preserve exact placed geometry and the separate consumer
+        // canvas rather than requiring fractions to remain in the scene matrix.
+        Assert.Equal(new SvgDevicePoint[] { new(6, 5), new(21, 5), new(21, 17), new(6, 17),
+            new(11, 9), new(26, 9), new(26, 21), new(11, 21) },
+            path.Commands.ToArray().Where(command => command.Verb is SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.Line)
+                .Select(command => SvgAuthoredPath.MapPoint(path.SceneMap, command.First, new(0, 0))));
     }
 }

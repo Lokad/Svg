@@ -48,7 +48,6 @@ public sealed class SvgResourceUseReplayTests
     [InlineData("<clipPath id='c'><use href='#s'/></clipPath><clipPath id='c'/>", SvgErrorCode.MalformedInput)]
     [InlineData("<mask id='m'><use href='#s' mask='url(#m)'/></mask>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<mask id='m'><use href='#s'/><use href='#missing'/></mask>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<clipPath id='c' clipPathUnits='objectBoundingBox'><use href='#s'/></clipPath>", SvgErrorCode.UnsupportedFeature)]
     public void Rejected_resource_references_release_partial_owners(string resource, SvgErrorCode code)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><defs><path id='s' d='M2 3L20 1 22 20 3 22Z'/>" + resource + "</defs><rect width='24' height='24'/></svg>");

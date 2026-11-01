@@ -29,4 +29,4 @@ internal readonly struct SvgClipDefinitionSource
 }
 
 /// <summary>Borrows one definition's ordered sources until all forward geometry is available.</summary>
-internal readonly record struct SvgDeferredClipDefinition(string Id, int FirstSource, int SourceCount);
+internal readonly record struct SvgDeferredClipDefinition(string Id, int FirstSource, int SourceCount, bool IsObjectBoundingBox);

@@ -174,6 +174,66 @@
         "windows": 0,
         "linux": 0
       }
+    },
+    {
+      "id": "object-box-use",
+      "input": "inputs/object-box-use.svg",
+      "inputSha256": "4071f3c59634f81817530e262872bc0b544ecd1ece8ce0a057a9b11c989e199a",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "738048d0a75eb3797941b7d56759da77b452d80ed91b1aeb1e69bb1139a9b54e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "738048d0a75eb3797941b7d56759da77b452d80ed91b1aeb1e69bb1139a9b54e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "738048d0a75eb3797941b7d56759da77b452d80ed91b1aeb1e69bb1139a9b54e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/object-box-use.png",
+          "referenceSha256": "738048d0a75eb3797941b7d56759da77b452d80ed91b1aeb1e69bb1139a9b54e"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "738048d0a75eb3797941b7d56759da77b452d80ed91b1aeb1e69bb1139a9b54e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "738048d0a75eb3797941b7d56759da77b452d80ed91b1aeb1e69bb1139a9b54e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "738048d0a75eb3797941b7d56759da77b452d80ed91b1aeb1e69bb1139a9b54e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/object-box-use.png",
+          "referenceSha256": "738048d0a75eb3797941b7d56759da77b452d80ed91b1aeb1e69bb1139a9b54e"
+        }
+      },
+      "before": "UnsupportedFeature: only userSpaceOnUse referenced clip content was implemented.",
+      "unitsOnlyPrototypeChangedPixels": {
+        "windows": 3,
+        "linux": 3
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
     }
   ]
 }

@@ -169,8 +169,10 @@ affine maps. Container groups, direct line/point-list/text children and XML
 transform/fill/opacity on `clipPath` reject. A clip-resource `use` must reference
 one contour; plain rectangles and empty/compound sources through that use reject.
 Multiple uses and mixtures with direct children form an ordered union; local
-geometry may be defined later. Referenced content requires user-space units and
-rejects its own clip binding. Direct rectangles and compound paths remain supported.
+geometry may be defined later. Both resource units apply to referenced content;
+object-box percentages use normalized geometry before the referencing canvas map.
+Referenced content rejects its own clip binding. Direct rectangles and compound
+paths remain supported.
 Clip-child strokes affect the resource's visual enclosure but never paint its
 silhouette. Stroke presentation can inherit from `clipPath`; referenced geometry
 does not need to resolve an ignored stroke paint server.

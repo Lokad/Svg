@@ -29,7 +29,7 @@ Filter and clip integration includes `SvgSymbolInstanceReferenceTests`: its
 shared bank contains crop, rescaling and nested-effect regressions.
 
 [Deferred clip coverage](Research/clip-definition-sources/README.md) separates
-ordered child/range mechanisms, one mixed-source ownership input, and three
+ordered child/range/unit mechanisms, two selected ownership inputs, and four
 canonical native rendering cases. Keep resource intersections distinct from
 child unions; a newly accepted first gate does not close a complete original.
 

@@ -11,6 +11,7 @@ public sealed class SvgDeferredClipReferenceTests
     [InlineData("multiple-uses")]
     [InlineData("mixed-child")]
     [InlineData("forward-uses")]
+    [InlineData("object-box-use")]
     public void Ordered_direct_and_referenced_sources_match_independent_native_coverage(string identity)
     {
         string directory = Path.Combine(ResearchCorpus.Root, "clip-definition-sources");

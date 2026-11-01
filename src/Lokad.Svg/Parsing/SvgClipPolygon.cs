@@ -77,7 +77,8 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
     /// scene adopted by the parent; no staging owner escapes parsing. All material storage reserves,
     /// copy/replay visits observe cancellation token, and failures release partial builders and geometry.
     /// Map places resource coordinates; canvasMap places the referencing element before its children.
-    /// Object-box normalization belongs only to the resource map.</remarks>
+    /// Object-box normalization belongs to the resource map and is materialized before
+    /// integer path construction; the referencing canvas map stays independent.</remarks>
     internal SvgClipRegistration Register(SvgAffineTransform map, SvgAffineTransform canvasMap, bool replaySource, SvgDocumentState state,
         SvgSceneBuilder scene, CancellationToken token)
     {
@@ -92,6 +93,21 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
                 SvgRectangle rectangleBounds = SvgPathBounds.Compute(rectangle.Commands, rectangle.SceneMap, token);
                 return WithoutEnclosure(new SvgAffineViewportClip(new(rectangleBounds.X, rectangleBounds.Y, rectangleBounds.Width, rectangleBounds.Height), map)
                     .Register(state, scene, token));
+            }
+            if (IsObjectBoundingBox && !IsOval && replaySource && SourcePath is {} source)
+            {
+                // Integer path enclosures belong to the referencing element's
+                // local canvas, after object-box normalization. Enclosing unit
+                // fractions first makes the construction clip too large.
+                if (!canvasMap.TryInvert(out SvgAffineTransform inverse))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box clips require a nonsingular referencing map.");
+                SvgAffineTransform normalization = inverse.ComposeChecked(map);
+                using SvgAuthoredPath normalized = source.Copy(normalization, state.Budget, token);
+                using SvgPreparedPathContours prepared = normalized.Prepare(SvgAffineTransform.Identity, IsEvenOdd, state.Budget, token);
+                SvgPaintBounds? normalizedBounds = ResourceBounds is {} visual ? visual.Map(normalization, token) : null;
+                return WithoutEnclosure(SvgAffineViewportClip.RegisterContour(prepared.Points, prepared.ContourEnds,
+                    canvasMap, SvgClipContentKind.ClipPath, normalized, normalizedBounds, IsEvenOdd, state, scene, token,
+                    new(canvasMap, SvgAffineTransform.Identity, canvasMap)));
             }
             return WithoutEnclosure(SvgAffineViewportClip.RegisterContour(Points, ContourEnds, map,
                 IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath,

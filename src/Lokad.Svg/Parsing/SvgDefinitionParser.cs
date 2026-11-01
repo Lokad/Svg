@@ -242,8 +242,9 @@ internal static class SvgDefinitionParser
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 context = context with { InheritedPresentation = context.InheritedPresentation with { IsDisplayed = true, IsVisible = state.ClipIsVisible },
                     InheritedStroke = state.ClipInheritedStroke };
-                if (SvgResourceUseReplay.Retain(reader, context, root, state) is not {} use) return true;
-                if (state.ClipIsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse referenced clip content is implemented.");
+                SvgViewportLengthBases bases = state.ClipIsObjectBoundingBox ? new(1, 1) : new(root.UserViewportWidth, root.UserViewportHeight);
+                if (state.ClipIsObjectBoundingBox) context = context with { LengthBases = bases };
+                if (SvgResourceUseReplay.Retain(reader, context, bases, state) is not {} use) return true;
                 SvgClipDefinitionStaging.AppendUse(use, state, cancellationToken);
                 return true;
             }
