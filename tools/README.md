@@ -293,6 +293,8 @@ One additional viewport/crop control reuses an independent transparent reference
 and fails if the explicit image viewport is ignored. Process shutdown observes
 native exit separately from redirected-pipe completion, with bounded termination,
 drain and profile cleanup before accepting any PNG.
+On a temporary-root mismatch, `wrapper-cleanup-failure.json` records added and
+removed roots and bounded immediate entries. Preserve that report before retrying.
 
 ```powershell
 tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests

@@ -210,5 +210,20 @@ catch { if ($_.Exception.Message -notmatch 'deadline|timed out') { throw } }
 if ((Get-FileHash -LiteralPath $wrapperOutput -Algorithm SHA256).Hash -cne $preservedHash) { throw 'Failed capture replaced the existing destination.' }
 if (@(Get-ChildItem -LiteralPath $wrapperDirectory -Filter '*.tmp').Count -ne 0) { throw 'Failed capture left partial publication files.' }
 if (-not $profilesBefore.SetEquals([string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-chrome-*'))) { throw 'Chrome smoke or wrapper controls leaked a profile; pre-existing profiles were not modified.' }
-if (-not $captureRootsBefore.SetEquals([string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-capture-*'))) { throw 'Chrome wrapper controls leaked an owned temporary root; pre-existing roots were not modified.' }
+$captureRootsAfter = [string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-capture-*')
+if (-not $captureRootsBefore.SetEquals($captureRootsAfter)) {
+    $addedRoots = @($captureRootsAfter | Where-Object { -not $captureRootsBefore.Contains($_) })
+    $removedRoots = @($captureRootsBefore | Where-Object { $_ -cnotin $captureRootsAfter })
+    $cleanupFailure = [ordered]@{
+        powershell = $PSVersionTable.PSVersion.ToString()
+        temporaryDirectory = [IO.Path]::GetTempPath()
+        addedRoots = $addedRoots
+        removedRoots = $removedRoots
+        addedRootEntries = @($addedRoots | ForEach-Object {
+            [ordered]@{ root = $_; entries = @(Get-ChildItem -LiteralPath $_ -Force | Select-Object -First 64 -ExpandProperty Name) }
+        })
+    }
+    $cleanupFailure | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $ResultsDirectory 'wrapper-cleanup-failure.json') -Encoding utf8
+    throw ('Chrome wrapper temporary roots changed. Added: ' + ($addedRoots -join ', ') + '; removed: ' + ($removedRoots -join ', ') + '. Pre-existing roots were not modified.')
+}
 $fingerprint | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $fingerprintPath -NoNewline -Encoding utf8
