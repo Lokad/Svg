@@ -487,7 +487,7 @@ internal static class SvgDocumentTraversal
                             SvgViewportFrame viewportFrame = state.Viewports[viewportIndex];
                             if (viewportFrame.ScaleX != 1 || viewportFrame.ScaleY != 1 || viewportFrame.OffsetX != 0 || viewportFrame.OffsetY != 0) { hasViewport = true; break; }
                         }
-                        if (!state.GroupSnapshots.TryAdd(retainedId, new SvgGroupSnapshot(group.IsolatesOpacity, snapshotStart.HasClip, snapshotStart.HasMask, hasViewport))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                        if (!state.GroupSnapshots.TryAdd(retainedId, new SvgGroupSnapshot(snapshotStart.HasClip, snapshotStart.HasMask, hasViewport))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                     }
                     if (group.HasMaskScope) state.MaskScopes.RemoveLast();
                     if (group.Kind == SvgGroupKind.Group) state.GroupDepth--;
@@ -525,6 +525,7 @@ internal static class SvgDocumentTraversal
                     SvgDeferredPaintLeaves.Resolve(root, state, limits, cancellationToken);
                     if (state.DeferredTextFailure is {} textFailure) throw textFailure;
                     SvgTextPathLayout.Resolve(state, limits, cancellationToken);
+                    state.RenderedUseContent?.Seal(cancellationToken, null);
                     state.ValidateSymbolReferences(cancellationToken);
                     state.PaintResources?.ValidateUnusedEffects(state, cancellationToken);
                     SvgResourceUseReplay.ResolveClips(state, cancellationToken);

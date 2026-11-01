@@ -46,6 +46,13 @@ The [descriptive-title control](Research/metadata-attributes/README.md) adds URI
 attribute admission and one canonical native image. It preserves actual reference
 and reserved-namespace checks without multiplying the API/ownership matrix.
 
+[Rendered use sources](Research/rendered-use-sources/README.md) separate source
+identity/placement, two ownership paths, one prepared-text contract and five
+canonical native images. Named use chains, empty targets and graph failures remain
+individually selectable. The clip, title and rendered-use banks share one small
+[canonical assertion](Lokad.Svg.VisualTests/SvgNativeControlAssertions.cs), retaining
+source/reference hashes, three native receipts and exact pixel comparisons.
+
 The [thin-curve mechanisms](Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs) distinguish
 authored ink from short flattened fallbacks and explicit suppression. One source
 preparation contract and one added clip ownership case cover refusal, cancellation,

@@ -742,6 +742,11 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth < 0 && (directChild || isEligible) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
         {
             SvgElementAttributePolicy.ValidateUse(reader, cancellationToken);
+            string? id = reader.GetAttribute("id");
+            if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _)
+                || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
+                throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            id = id is null ? null : state.Strings.Copy(id);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
             InlineStyle inline = SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), cancellationToken);
             context = context with { AuthoredStyle = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet) };
@@ -750,10 +755,11 @@ internal static class SvgDefinitionParser
             double? baseHeight = parentFrame?.ViewportHeight ?? root.UserViewportHeight;
             if (SvgLocalReferenceParser.ParseUse(reader, context, inline, state.Strings, baseWidth, baseHeight, state) is not {} reference)
             {
+                if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null));
                 SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
             }
-            SvgRenderedGroupSourceParser.CaptureUse(reader, context, reference, state);
+            SvgRenderedGroupSourceParser.CaptureUse(reader, context, reference, id, state);
             SvgDeferredClip? deferredClip = ResolveDeferredClip(reader, state);
             SvgViewportFrame? useFrame = deferredClip is null ? SvgClipPathSyntax.ResolveLeafClip(reader, state) : state.EffectiveFrame;
             string? maskAttribute = SvgLocalUrl.ReadReference(reader, "mask");

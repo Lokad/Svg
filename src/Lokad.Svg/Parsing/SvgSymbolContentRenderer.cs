@@ -132,7 +132,6 @@ internal static class SvgSymbolContentRenderer
         {
             if (source.RenderedGroupId is null) return;
             if (!state.GroupSnapshots.TryGetValue(source.RenderedGroupId, out SvgGroupSnapshot snapshot)) return;
-            if (snapshot.IsolatesOpacity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with group opacity are not implemented.");
             if (snapshot.HasClip || snapshot.HasMask) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with group clip or mask scopes are not implemented.");
             if (snapshot.HasViewport) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with viewport-scoped source groups are not implemented.");
         }

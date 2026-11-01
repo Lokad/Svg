@@ -113,8 +113,10 @@ zero symbol/nested-viewport dimensions remove source pixels and child font needs
 Root/direct nested viewports accept omitted/hidden overflow. Nested SVG rejects
 inline styles; stylesheets may supply supported declarations. Symbols reject the
 XML `overflow` attribute but accept CSS `overflow:hidden`. Nested SVG inside
-retained symbol/pattern content is unsupported. Rendered group `use` sources do
-not support source-group opacity isolation, clip/mask bindings or nested viewports.
+retained symbol/pattern content is unsupported. Rendered group references retain
+source-group opacity isolation and filters. Source-group clip/mask bindings and
+nested viewports remain unsupported. Local uses may reference named uses; authored
+placement and presentation remain separate from source ancestors.
 Zero scale factors and singular pattern transforms reject.
 
 ### Gradients and patterns

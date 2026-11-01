@@ -24,7 +24,7 @@ internal static class SvgRenderedGroupSourceParser
         if (state.RenderedGroupContent is null)
         {
             content = SvgSymbolContent.Create(state.Budget, token, new(SvgPaint.Default, default, null, false, null, null, SvgPaintOpacity.Opaque));
-            try { state.RetainStrokeContent(content); }
+            try { state.RetainSymbolContent(content); }
             catch { content.Dispose(); throw; }
             content.IsRenderedGroup = true;
             state.HasRetainedSymbolContent = true;
@@ -47,12 +47,11 @@ internal static class SvgRenderedGroupSourceParser
         content.BeginGroup(reader.Depth, id, presentation,
             new(paint, style.Fill is not null, fillOpacity, color, opacity, (style.GetSourceDisplay() != SvgDisplay.None),
                 style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true))
-            { TextStyleSource = SvgRetainedTextSource.CaptureElement(reader, context, state, limits), InheritsOpacity = style.InheritsOpacity, ElementDisplay = style.GetSourceDisplay(), Markers = presentation.Markers, PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId, Stroke = stroke, FillRule = fillRule, StrokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity) },
+            { TextStyleSource = SvgRetainedTextSource.CaptureElement(reader, context, state, limits), Filter = Copy(style.Filter), InheritsOpacity = style.InheritsOpacity, ElementDisplay = style.GetSourceDisplay(), Markers = presentation.Markers, PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId, Stroke = stroke, FillRule = fillRule, StrokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity) },
             SvgGeometrySyntax.ParseElementTransform(reader, token));
         if (id is not null) state.RenderedGroupDefinitions.TryAdd(id, new([], false, null, null)
             { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true, RenderedGroupId = id });
-        if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null || SvgLocalUrl.ReadReference(reader, "mask") is not null
-            || style.Filter is string filter && filter.Trim() != "none") content.AddUnsupported();
+        if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null || SvgLocalUrl.ReadReference(reader, "mask") is not null) content.AddUnsupported();
         if (reader.IsEmptyElement) EndGroup(reader.Depth, state, token);
 
         string? Copy(string? value)
@@ -84,20 +83,41 @@ internal static class SvgRenderedGroupSourceParser
         content.AddLeaf(source, displayed, visible);
     }
 
-    internal static void CaptureUse(XmlReader reader, SvgPaintableElementContext context, SvgUseReference reference, SvgDocumentState state)
+    /// <summary>Retains a rendered use and its optional named source through the shared symbol node representation.</summary>
+    /// <remarks>Group aliases borrow their group's node owner. Standalone sources transfer to the
+    /// document's shared rendered-use collection before further allocation; failure leaves teardown there.
+    /// Authored styles/maps exclude source ancestors. Capture/sealing observes parser cancellation.</remarks>
+    internal static void CaptureUse(XmlReader reader, SvgPaintableElementContext context, SvgUseReference reference, string? id, SvgDocumentState state)
     {
-        if (state.RenderedGroupContent is not {} content) return;
+        if (state.RenderedGroupContent is null && id is null) return;
+        bool standalone = state.RenderedGroupContent is null;
+        SvgSymbolContent content;
+        if (state.RenderedGroupContent is {} group) content = group;
+        else if (state.RenderedUseContent is {} uses) content = uses;
+        else
+        {
+            content = SvgSymbolContent.Create(state.Budget, context.CancellationToken,
+                new(SvgPaint.Default, default, null, false, null, null, SvgPaintOpacity.Opaque));
+            try { state.RetainSymbolContent(content); }
+            catch { content.Dispose(); throw; }
+            state.RenderedUseContent = content;
+        }
+        state.HasRetainedSymbolContent = true;
         SvgComputedStyle style = context.AuthoredStyle ?? throw new InvalidOperationException("Use capture requires prepared declarations.");
         SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset),
             Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
         reference = reference with { Transform = SvgGeometrySyntax.ParseElementTransform(reader, context.CancellationToken),
             InheritedTransform = SvgAffineTransform.Identity, InheritedFillRule = Copy(style.FillRule), SourceMaskReference = Copy(SvgLocalUrl.ReadReference(reader, "mask")) };
-        content.AddUse(reference, style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity),
+        string? clipId = Copy(SvgClipPathSyntax.ResolveClipId(reader, state));
+        int start = content.AddUse(reference, style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity),
             style.Color is null ? null : SvgColorParser.ParsePaint(style.Color, context.NamedColors),
             style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity), stroke, style.PaintOrder, new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, context.CancellationToken),
-            SvgRetainedTextSource.CaptureElement(reader, context, state, state.TextReplay?.Limits ?? throw new InvalidOperationException("Use capture requires document limits.")), null, style.Fill is not null,
+            SvgRetainedTextSource.CaptureElement(reader, context, state, state.TextReplay?.Limits ?? throw new InvalidOperationException("Use capture requires document limits.")), clipId, style.Fill is not null,
             (style.GetSourceDisplay() != SvgDisplay.None), style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true));
-        if (SvgLocalUrl.ReadReference(reader, "clip-path") is not null) content.AddUnsupported();
+        if (id is not null && !state.Definitions.TryAdd(id, new([], false, null, null)
+            { SymbolContent = new(content, start, 1), BorrowedFromSymbol = true }))
+            throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+        if (!standalone && clipId is not null) content.AddUnsupported();
 
         string? Copy(string? value)
         {

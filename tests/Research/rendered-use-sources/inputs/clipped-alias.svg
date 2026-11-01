@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96'><defs><path id='shape' d='M5 7H48V41H5Z'/><clipPath id='clip'><circle cx='26.5' cy='24.25' r='17'/></clipPath></defs><use id='placed' href='#shape' x='2.25' y='1.5' clip-path='url(#clip)' transform='skewX(6)' fill='#286a91'/><g transform='translate(58.25 36.5)'><use href='#placed' fill='#72bd80'/></g></svg>

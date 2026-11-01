@@ -6,8 +6,8 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 153 originals per host: **153 exploratory
-exact**, with 48 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 154 originals per host: **153 exploratory
+exact, one different**, with 47 UnsupportedFeature and 3 MalformedInput outcomes. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
@@ -53,6 +53,7 @@ current inventory above governs overall status.
 | Glyph recording and shader drawing | [Position recording](glyph-recording.json), [separate drawing binding](glyph-drawing-binding.json), [own controls](font-stages/capture.json). Filled glyphs share font recording while shaders retain their drawing map; layout, tangents and stroke semantics stay independent. Flat, root, group and curved-path graphs remain separate, with one canonical call per source. |
 | Light-fitted glyph edges | [Alignment-zone fitting](latin-blue-zone-fitting.json). Zone matching and completed placement have separate state. Contour-order linked fitting preserves interpolation anchors and shared-edge updates. Two direct topology regressions protect the cause; the remaining Windows coverage differences stay separate. |
 | Windows fitted outlines and scan curves | [Scan boundary](windows-scan-boundary.json), [original counter](../windows-scan-boundary/README.md). Fitted points retain half-unit precision; ink measurement and painting share profile-grid rounding and bounded extrema preparation. Four direct phase vectors, two temporary-lifetime cases and one canonical native image protect distinct responsibilities. |
+| Rendered use sources | [Shared identity and replay](rendered-use-sources.json), [native controls](../rendered-use-sources/README.md). Root/group aliases share retained use nodes and document ownership; group opacity and filters reuse existing replay. Five canonical controls are exact. The affected original now renders but retains independent paint differences and remains open. |
 | Descriptive link titles | [URI-aware attribute admission](metadata-attributes.json), [canonical control](../metadata-attributes/README.md). One predicate serves ordinary elements and defs; six direct boundary cases and one independent native image retain reference/namespace contracts. Both unmodified metadata originals are exact on both hosts. |
 | Structural traversal | [Shared metadata and pattern locations](shared-traversal.json). Keep recognized foreign descriptions inert through preparation/lowering, preserve the first rejection context, and align rendered-group pattern registration with content selection. Mechanisms, one prepared-font contract and independent root/group/metadata fixtures protect distinct roles. |
 | Root image layout and placement | [Root model](root-image-model.json), [projection stages](root-image-projection.json), [image boundary](root-image-boundary.json). Logical sizing, subpixel layout, recorded scene and destination coefficients stay distinct. Direct matrices and large viewBox controls protect stages that small images cannot distinguish. |

@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96'><defs><filter id='blur' x='-.3' y='-.3' width='1.6' height='1.6'><feGaussianBlur stdDeviation='1.5'/></filter></defs><g id='source' filter='url(#blur)' opacity='.65' transform='translate(4.5 2.25)'><path id='shape' d='M4 5H35V32H4Z' fill='#286a91'/><use id='placed' href='#shape' x='14.25' y='6.5' fill='#bc4c71' opacity='.7'/></g><use href='#source' x='59.25' y='38.5' opacity='.8'/></svg>

@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "40a9a51d6130922da308769b7f8a458c2730b632",
+  "scope": "Retain named rendered uses through existing typed use nodes. Share one document-owned standalone source collection, borrow group ranges, and seal before graph validation. Preserve authored placement/presentation and existing cycle/missing-source behavior.",
+  "implementation": [
+    "../../../src/Lokad.Svg/Parsing/SvgRenderedGroupSourceParser.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgDocumentState.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgSymbolReferenceValidator.cs"
+  ],
+  "simplification": [
+    "Rendered/definition uses share the retained node and existing renderer, without an alias resolver or second ownership system.",
+    "One standalone collection replaces a separate owner per named root use; the retained-content owner now has a general symbol-content name.",
+    "Retained group replay already isolates opacity and binds filters. Remove the obsolete opacity rejection/snapshot flag and retain the authored filter declaration."
+  ],
+  "mechanisms": {
+    "test": "../../Lokad.Svg.Tests/SvgRenderedUseSourceTests.cs",
+    "addedCases": 16,
+    "failingBefore": 15,
+    "beforeLibrarySha256": "74cb2476de51fd6ff7233f3807d1b70cfb3259590ed331cd7e560fff423ec846",
+    "responsibilities": [
+      "Forward sources, ordered placement and root/group scope.",
+      "Named missing-href sources remain empty targets.",
+      "Duplicate IDs, use cycles and genuinely missing targets retain distinct outcomes.",
+      "Standalone/shared-group source owners preserve borrowed storage through refusal, cancellation, cleanup and retry; sampled admission failures cover owner/list/seal growth."
+    ],
+    "retainedCases": "The two prior use-chain rejection tests and group-opacity rejection test now assert supported geometry and one isolation scope per group; no case removed."
+  },
+  "preparedContract": {
+    "test": "../../Lokad.Svg.Tests/OpenTypeFontTests.RenderedUseSources.cs",
+    "cases": 1,
+    "scope": "Named rendered text-use chain preserves layout against explicit text and acquires the selected font once."
+  },
+  "rendering": {
+    "test": "../../Lokad.Svg.VisualTests/SvgRenderedUseSourceReferenceTests.cs",
+    "capture": "../rendered-use-sources/capture.json",
+    "cases": 5,
+    "freshNativeCaptures": 30,
+    "referenceChanges": 0,
+    "oldOpacityControls": {
+      "manifest": "../rendered-group-styles/manifest.json",
+      "cases": [
+        {
+          "id": "group-opacity-gate-transparent",
+          "platforms": {
+            "windows": {
+              "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+              "captures": [
+                {
+                  "pngSha256": "963dad31ec81c2167228fb8ef4fc160deeb2fc9c92b95847a316e3d23ad4215e",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "963dad31ec81c2167228fb8ef4fc160deeb2fc9c92b95847a316e3d23ad4215e",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "963dad31ec81c2167228fb8ef4fc160deeb2fc9c92b95847a316e3d23ad4215e",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                }
+              ]
+            },
+            "linux": {
+              "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+              "captures": [
+                {
+                  "pngSha256": "963dad31ec81c2167228fb8ef4fc160deeb2fc9c92b95847a316e3d23ad4215e",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "963dad31ec81c2167228fb8ef4fc160deeb2fc9c92b95847a316e3d23ad4215e",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "963dad31ec81c2167228fb8ef4fc160deeb2fc9c92b95847a316e3d23ad4215e",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "group-opacity-gate-white",
+          "platforms": {
+            "windows": {
+              "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+              "captures": [
+                {
+                  "pngSha256": "fa914542987379d7d12bf8687740ec0278923c514058cf14882beeda0d82fa51",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "fa914542987379d7d12bf8687740ec0278923c514058cf14882beeda0d82fa51",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "fa914542987379d7d12bf8687740ec0278923c514058cf14882beeda0d82fa51",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                }
+              ]
+            },
+            "linux": {
+              "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+              "captures": [
+                {
+                  "pngSha256": "fa914542987379d7d12bf8687740ec0278923c514058cf14882beeda0d82fa51",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "fa914542987379d7d12bf8687740ec0278923c514058cf14882beeda0d82fa51",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "fa914542987379d7d12bf8687740ec0278923c514058cf14882beeda0d82fa51",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "group-opacity-gate-black",
+          "platforms": {
+            "windows": {
+              "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+              "captures": [
+                {
+                  "pngSha256": "dead1fdabda25535194f6e6894b38d45062a67e264587ba86436b3aea7a3f187",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "dead1fdabda25535194f6e6894b38d45062a67e264587ba86436b3aea7a3f187",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "dead1fdabda25535194f6e6894b38d45062a67e264587ba86436b3aea7a3f187",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                }
+              ]
+            },
+            "linux": {
+              "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+              "captures": [
+                {
+                  "pngSha256": "dead1fdabda25535194f6e6894b38d45062a67e264587ba86436b3aea7a3f187",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "dead1fdabda25535194f6e6894b38d45062a67e264587ba86436b3aea7a3f187",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                },
+                {
+                  "pngSha256": "dead1fdabda25535194f6e6894b38d45062a67e264587ba86436b3aea7a3f187",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "scope": "Three old rejection rows promoted only after exact comparison and fresh triples agree with unchanged old reference bytes on both hosts."
+    }
+  },
+  "testConsolidation": {
+    "helper": "../../Lokad.Svg.VisualTests/SvgNativeControlAssertions.cs",
+    "banks": [
+      "clip-definition-sources",
+      "metadata-attributes",
+      "rendered-use-sources"
+    ],
+    "preserved": "Each case remains individually selectable; source/reference hashes, exactly three healthy/profile-cleaned receipts, bank cardinality and exact canonical pixels remain asserted.",
+    "timings": [
+      {
+        "host": "windows",
+        "cases": 13,
+        "beforeSeconds": 6.693,
+        "afterSeconds": 6.117,
+        "librarySha256": "2afb37adabb35f6670af3397fe8fa598c110cba455c879ddd59712053bbd7e7e"
+      },
+      {
+        "host": "linux",
+        "cases": 13,
+        "beforeSeconds": 9.178,
+        "afterSeconds": 9.033,
+        "librarySha256": "2afb37adabb35f6670af3397fe8fa598c110cba455c879ddd59712053bbd7e7e"
+      }
+    ],
+    "timingScope": "Development-load functional wall times including process startup. Same thirteen cases and identical library; this is not a benchmark or a promised speedup."
+  },
+  "original": {
+    "name": "juanmontoya_lingerie.svg",
+    "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
+    "sourceRetained": false,
+    "screenshot": [
+      858,
+      1074
+    ],
+    "imageViewport": [
+      858.02069,
+      1074.1064
+    ],
+    "platforms": [
+      {
+        "host": "windows",
+        "nativeCaptures": [
+          {
+            "pngSha256": "273825e16ef24623a1c46627d9470eed5432a2d452042318bec2815d67e394a4",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "273825e16ef24623a1c46627d9470eed5432a2d452042318bec2815d67e394a4",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "273825e16ef24623a1c46627d9470eed5432a2d452042318bec2815d67e394a4",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "changedPixels": 5483
+      },
+      {
+        "host": "linux",
+        "nativeCaptures": [
+          {
+            "pngSha256": "273825e16ef24623a1c46627d9470eed5432a2d452042318bec2815d67e394a4",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "273825e16ef24623a1c46627d9470eed5432a2d452042318bec2815d67e394a4",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "273825e16ef24623a1c46627d9470eed5432a2d452042318bec2815d67e394a4",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ],
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "changedPixels": 5483
+      }
+    ],
+    "status": "OPEN: every default admission gate now clears, but independent unchanged native captures retain5483 different pixels per host (maximum channel error152). Do not count this original as exact or replace its native reference.",
+    "next": "Investigate source paint/filter behavior through referenced rendered groups and outer affine/filter contexts. Five small native controls are exact; the complete static scene is not."
+  },
+  "defaultAudit": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "all203OtherSemanticReportsUnchanged": true,
+    "all153PriorPngsPerHostByteIdentical": true,
+    "identicalPngs": {
+      "windows": 153,
+      "linux": 153
+    },
+    "outcomes": {
+      "windows": {
+        "UnsupportedFeature": 47,
+        "rendered": 154,
+        "MalformedInput": 3
+      },
+      "linux": {
+        "UnsupportedFeature": 47,
+        "rendered": 154,
+        "MalformedInput": 3
+      }
+    },
+    "exploratoryExactPerHost": 153,
+    "differentPerHost": 1,
+    "changedOriginals": [
+      "juanmontoya_lingerie.svg"
+    ],
+    "sweepSeconds": 44.77884340006858
+  },
+  "validation": {
+    "checks": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 1841,
+        "seconds": 8.086,
+        "librarySha256": "2afb37adabb35f6670af3397fe8fa598c110cba455c879ddd59712053bbd7e7e",
+        "selection": "FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgSymbol|FullyQualifiedName~SvgUse|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgForwardUseExpansionTests|FullyQualifiedName~SvgResourceUseReplayTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacityInheritanceTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~Prepared_named_rendered_use"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 1648,
+        "seconds": 17.119,
+        "librarySha256": "2afb37adabb35f6670af3397fe8fa598c110cba455c879ddd59712053bbd7e7e",
+        "selection": "FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgDeferredClipReferenceTests|FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 1841,
+        "seconds": 10.697,
+        "librarySha256": "2afb37adabb35f6670af3397fe8fa598c110cba455c879ddd59712053bbd7e7e",
+        "selection": "FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgSymbol|FullyQualifiedName~SvgUse|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgForwardUseExpansionTests|FullyQualifiedName~SvgResourceUseReplayTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacityInheritanceTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~Prepared_named_rendered_use"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 1648,
+        "seconds": 36.041,
+        "librarySha256": "2afb37adabb35f6670af3397fe8fa598c110cba455c879ddd59712053bbd7e7e",
+        "selection": "FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgDeferredClipReferenceTests|FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 51,
+        "seconds": 7.675,
+        "librarySha256": "523ee42d6586296296a36cec56e8fcbaca9ad510e490e72643004c921ce0a3bf",
+        "selection": "FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgSymbolContentTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~Prepared_named_rendered_use|FullyQualifiedName~Referenced_group_opacity|FullyQualifiedName~Resolves_use_of_use|FullyQualifiedName~Resolves_forward_use_of_use"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 18,
+        "seconds": 7.314,
+        "librarySha256": "523ee42d6586296296a36cec56e8fcbaca9ad510e490e72643004c921ce0a3bf",
+        "selection": "FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgDeferredClipReferenceTests|FullyQualifiedName~SvgMetadataAttributeReferenceTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 51,
+        "seconds": 8.75,
+        "librarySha256": "523ee42d6586296296a36cec56e8fcbaca9ad510e490e72643004c921ce0a3bf",
+        "selection": "FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgSymbolContentTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~Prepared_named_rendered_use|FullyQualifiedName~Referenced_group_opacity|FullyQualifiedName~Resolves_use_of_use|FullyQualifiedName~Resolves_forward_use_of_use"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 18,
+        "seconds": 7.76,
+        "librarySha256": "523ee42d6586296296a36cec56e8fcbaca9ad510e490e72643004c921ce0a3bf",
+        "selection": "FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgDeferredClipReferenceTests|FullyQualifiedName~SvgMetadataAttributeReferenceTests"
+      }
+    ],
+    "builds": "Final .NET11/.NET10 core/native builds have zero warnings/errors.",
+    "promotion": "Source-retention scope locally qualified. Full cross-host/runtime/installed-package promotion remains open with the original paint discrepancy and separate frozen DejaVu baseline decision."
+  }
+}

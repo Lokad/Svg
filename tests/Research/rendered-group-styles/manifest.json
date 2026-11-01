@@ -1115,8 +1115,8 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "admitted",
+      "admission": "Exact unchanged frozen reference on both hosts; retained group replay preserves one opacity layer. Fresh triples per platform agree with the existing reference bytes."
     },
     {
       "id": "group-opacity-gate-white",
@@ -1130,8 +1130,8 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "admitted",
+      "admission": "Exact unchanged frozen reference on both hosts; retained group replay preserves one opacity layer. Fresh triples per platform agree with the existing reference bytes."
     },
     {
       "id": "group-opacity-gate-black",
@@ -1145,8 +1145,8 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "admitted",
+      "admission": "Exact unchanged frozen reference on both hosts; retained group replay preserves one opacity layer. Fresh triples per platform agree with the existing reference bytes."
     },
     {
       "id": "group-clip-gate-transparent",

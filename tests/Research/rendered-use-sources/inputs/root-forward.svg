@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96'><use href='#placed' x='3.5' y='43.25'/><use id='placed' href='#offset' x='8.25' y='2.5' opacity='.7'/><use id='offset' href='#shape' x='5.25' y='1.5' transform='rotate(7 30 22)' fill='url(#paint)'/><defs><linearGradient id='paint'><stop stop-color='#286a91'/><stop offset='1' stop-color='#72bd80'/></linearGradient><path id='shape' d='M5 8L43 12L29 36Z'/></defs></svg>

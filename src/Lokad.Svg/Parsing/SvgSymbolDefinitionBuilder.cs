@@ -149,7 +149,7 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
             {
                 foreach (SvgDefinition child in _children.AsSpan()) content.AddLeaf(child, child.SourceDisplayed, child.SourceVisible);
                 SvgSymbolContentRange range = content.Seal(token, null);
-                state.RetainStrokeContent(content);
+                state.RetainSymbolContent(content);
                 return range;
             }
             catch { content.Dispose(); throw; }

@@ -56,7 +56,8 @@ internal sealed class SvgSymbolReferenceValidator : IDisposable
         {
             if (value == 1)
             {
-                if (range.Content.IsRenderedGroup) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Cyclic group use references are not implemented.");
+                if (range.Content.IsRenderedGroup && range.Content.Nodes[range.Start].Kind == SvgSymbolContentKind.Group)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Cyclic group use references are not implemented.");
                 throw new SvgException(SvgErrorCode.MalformedInput, "SVG use references cannot form a circular dependency.");
             }
             return;

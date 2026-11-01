@@ -144,12 +144,11 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_group_use_with_group_opacity()
+    public void Referenced_group_opacity_retains_one_isolation_scope_for_all_children()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g id='o' opacity='0.5'><rect width='2' height='2' fill='red'/></g><use href='#o'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("group opacity", rejected.Message);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='4'><g id='o' opacity='.5'><rect width='4' height='4' fill='red'/><rect x='2' width='4' height='4' fill='blue'/></g><use href='#o' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.Equal(4, root.Geometries.Length);
+        Assert.Equal(2, root.Commands.Count(command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == .5));
     }
 
     [Fact]

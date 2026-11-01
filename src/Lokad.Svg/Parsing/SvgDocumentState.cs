@@ -18,8 +18,8 @@ internal sealed class SvgDocumentState : IDisposable
         return new(++_nextRecordingScope);
     }
     private BudgetedParserList<SvgDefinition>? _anonymousSymbols;
-    private BudgetedParserList<SvgSymbolContentRange>? _strokeContents;
-    private RenderBudget.BudgetReservation? _strokeContentOwner;
+    private BudgetedParserList<SvgSymbolContentRange>? _symbolContents;
+    private RenderBudget.BudgetReservation? _symbolContentOwner;
     private RenderBudget.BudgetReservation? _anonymousSymbolOwner;
     private static readonly int DefinitionStorageBytes = checked(64 + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgDefinition>());
     private const int ClipStorageBytes = 128;
@@ -214,6 +214,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserDictionary<string, SvgGroupSnapshot> GroupSnapshots { get; }
     internal BudgetedParserDictionary<string, SvgDefinition> RenderedGroupDefinitions { get; }
     internal SvgSymbolContent? RenderedGroupContent { get; set; }
+    /// <summary>Borrows document-owned standalone use nodes; sealed once before reference validation.</summary>
+    internal SvgSymbolContent? RenderedUseContent { get; set; }
     internal int RenderedGroupRootDepth { get; set; } = -1;
 
     /// <summary>Gets open source-group boundaries, aligned with the group scope stack.</summary>
@@ -413,24 +415,25 @@ internal sealed class SvgDocumentState : IDisposable
             }
     }
 
-    internal void RetainStrokeContent(SvgSymbolContent content)
+    /// <summary>Adopts retained symbol/group/use node storage on successful append; failure leaves it caller-owned.</summary>
+    internal void RetainSymbolContent(SvgSymbolContent content)
     {
-        if (_strokeContents is null)
+        if (_symbolContents is null)
         {
             RenderBudget.BudgetReservation owner = Budget.Reserve(128, SvgMemoryCategory.Scene);
-            try { _strokeContents = new(Budget, SvgMemoryCategory.Scene); _strokeContentOwner = owner; }
+            try { _symbolContents = new(Budget, SvgMemoryCategory.Scene); _symbolContentOwner = owner; }
             catch { owner.Dispose(); throw; }
         }
-        _strokeContents.Add(new(content, 0, 0));
+        _symbolContents.Add(new(content, 0, 0));
     }
 
     public void Dispose()
     {
         FilterDefinition?.Dispose();
         SymbolDefinition?.Dispose();
-        if (_strokeContents is not null) foreach (SvgSymbolContentRange content in _strokeContents.AsSpan()) content.Content.Dispose();
-        _strokeContents?.Dispose();
-        _strokeContentOwner?.Dispose();
+        if (_symbolContents is not null) foreach (SvgSymbolContentRange content in _symbolContents.AsSpan()) content.Content.Dispose();
+        _symbolContents?.Dispose();
+        _symbolContentOwner?.Dispose();
         ReleaseDefinitions();
         _anonymousSymbols?.Dispose();
         _anonymousSymbolOwner?.Dispose();
@@ -526,7 +529,7 @@ internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgI
 internal enum SvgGroupKind { Group, Link, Switch, Mask, Pattern, PatternGroup }
 
 /// <summary>Retains closed source-group boundaries whose instance replay remains gated.</summary>
-internal readonly record struct SvgGroupSnapshot(bool IsolatesOpacity, bool HasClip, bool HasMask, bool HasViewport);
+internal readonly record struct SvgGroupSnapshot(bool HasClip, bool HasMask, bool HasViewport);
 
 /// <summary>Tracks one open group boundary, aligned with the group scope stack.</summary>
 internal readonly record struct SvgGroupSnapshotStart(string? Id, bool HasClip, bool HasMask)
