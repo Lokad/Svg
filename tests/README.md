@@ -60,7 +60,9 @@ covers the additional allocation path.
 The [filter source-opacity bank](Research/filter-source-opacity/README.md)
 separates thin curves, stroke layout, source recording and opacity restoration
 through canonical conversion. Direct bounds and drawing-map mechanisms protect
-their numerical contracts. The wide control and complete hosted original remain
+their numerical contracts. One [opacity-parent regression](Research/svgweb/filter-opacity-source-origin.json)
+protects filter-source creation inside the bitmap that will receive its result.
+The wide control and complete hosted original remain
 open; equal smaller images do not close those interactions.
 The [mask source-clip control](Research/mask-source-clip/README.md) protects a
 hairline crossing an opaque bitmap intersection. Direct mechanisms cover live

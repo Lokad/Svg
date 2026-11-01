@@ -639,6 +639,86 @@
         }
       },
       "qualification": "../svgweb/filter-fractional-stroke-layout.json"
+    },
+    {
+      "id": "opacity-parent-source-origin",
+      "input": "inputs/opacity-parent-source-origin.svg",
+      "inputSha256": "7da3002438de4c257504029b3efe438dc40178db4f00606fa1b0caedd5bc41e2",
+      "width": 858,
+      "height": 1074,
+      "logicalImageViewport": [
+        858.02069,
+        1074.1064
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "5a0742715b401b6b65a2372be6f8fe2a457bd859a716349446a6d58b0da7d9a6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5a0742715b401b6b65a2372be6f8fe2a457bd859a716349446a6d58b0da7d9a6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5a0742715b401b6b65a2372be6f8fe2a457bd859a716349446a6d58b0da7d9a6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "5a0742715b401b6b65a2372be6f8fe2a457bd859a716349446a6d58b0da7d9a6",
+          "reference": "references/opacity-parent-source-origin.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "5a0742715b401b6b65a2372be6f8fe2a457bd859a716349446a6d58b0da7d9a6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5a0742715b401b6b65a2372be6f8fe2a457bd859a716349446a6d58b0da7d9a6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5a0742715b401b6b65a2372be6f8fe2a457bd859a716349446a6d58b0da7d9a6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "5a0742715b401b6b65a2372be6f8fe2a457bd859a716349446a6d58b0da7d9a6",
+          "reference": "references/opacity-parent-source-origin.png"
+        }
+      },
+      "status": "exact",
+      "sourceBaseline": "6e9d962df579af7b3d21918450a85127d792cbeb",
+      "baseline": {
+        "windows": {
+          "changedPixels": 1,
+          "alphaChangedPixels": 0,
+          "maximumError": 1,
+          "maximumAlphaError": 0,
+          "totalChannelError": 1,
+          "librarySha256": "1d11da51ed5e6e1512526015d61b8aa80b149d84934544c8b261f09d2cdc3a47",
+          "actualPngSha256": "db1203b7e8bdb84b4c23d3b15c7b8754e6e2db31cee81a5966327caaade60fe6"
+        },
+        "linux": {
+          "changedPixels": 1,
+          "alphaChangedPixels": 0,
+          "maximumError": 1,
+          "maximumAlphaError": 0,
+          "totalChannelError": 1,
+          "librarySha256": "1d11da51ed5e6e1512526015d61b8aa80b149d84934544c8b261f09d2cdc3a47",
+          "actualPngSha256": "db1203b7e8bdb84b4c23d3b15c7b8754e6e2db31cee81a5966327caaade60fe6"
+        }
+      },
+      "qualification": "../svgweb/filter-opacity-source-origin.json"
     }
   ]
 }

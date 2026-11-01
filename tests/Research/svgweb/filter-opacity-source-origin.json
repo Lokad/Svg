@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "6e9d962df579af7b3d21918450a85127d792cbeb",
+  "capture": "../filter-source-opacity/capture.json",
+  "scope": "Construct the affine filter source in the already-created opacity bitmap. Source capture and final restoration share that parent; tile storage, filter bounds, sampling arithmetic, alpha arithmetic and ownership are unchanged.",
+  "change": {
+    "parent": "restoreBitmap.Origin",
+    "sites": [
+      "Source remainder X",
+      "Source remainder Y",
+      "Source placement parent translation"
+    ],
+    "newOwners": 0,
+    "newPixelSurfaces": 0
+  },
+  "nativeAllocation": {
+    "browser": "Chrome153.0.8010.52",
+    "nativeSourceRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "commandOrder": [
+      "Affine canvas transform",
+      "Opacity saveLayer",
+      "Image-filter saveLayer",
+      "Stroke draw",
+      "Filter restore",
+      "Opacity restore"
+    ],
+    "opacityParameterHint": [
+      1025,
+      63,
+      1059,
+      99
+    ],
+    "filterParameterHint": [
+      1022,
+      60,
+      1062,
+      102
+    ],
+    "observedCandidateOpacityOrigin": [
+      428,
+      73
+    ],
+    "originalCandidateTileOrigin": [
+      254,
+      0
+    ],
+    "healthyAdditionalCommandCaptureMatchesAdmittedReference": true
+  },
+  "nativeSources": [
+    "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkCanvas.cpp"
+  ],
+  "rendering": {
+    "id": "opacity-parent-source-origin",
+    "inputSha256": "7da3002438de4c257504029b3efe438dc40178db4f00606fa1b0caedd5bc41e2",
+    "logicalImageViewport": [
+      858.02069,
+      1074.1064
+    ],
+    "screenshot": [
+      858,
+      1074
+    ],
+    "nativeEvidence": "Three agreeing healthy/profile-cleaned fresh-process captures per host. One own CC0 curved gradient stroke protects source-device creation under affine filtering and enclosing opacity through canonical conversion.",
+    "beforePerHost": {
+      "changedPixels": 1,
+      "alphaChangedPixels": 0,
+      "maximumError": 1,
+      "totalChannelError": 1,
+      "mismatch": [
+        446,
+        83
+      ]
+    },
+    "afterPerHost": {
+      "changedPixels": 0,
+      "alphaChangedPixels": 0
+    }
+  },
+  "responsibilities": {
+    "mechanisms": "Existing native source-map, matrix, bilinear sampling, image bounds and raster-scope tests retain numerical boundaries.",
+    "contracts": "Existing filter bitmap and region ownership tests, representative API matrix, cancellation, refusal, cleanup and retry retain distinct execution paths. No per-fixture API matrix added.",
+    "rendering": "One additional canonical conversion. Existing gradient-stroke and coloured-stroke controls retain their distinct source-layout and restore interactions."
+  },
+  "focusedBeforeAfter": {
+    "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests",
+    "hosts": {
+      "windows": {
+        "before": {
+          "passed": 16,
+          "failed": 1,
+          "seconds": 6.659
+        },
+        "after": {
+          "passed": 17,
+          "failed": 0,
+          "seconds": 6.425
+        }
+      },
+      "linux": {
+        "before": {
+          "passed": 16,
+          "failed": 1,
+          "seconds": 9.586
+        },
+        "after": {
+          "passed": 17,
+          "failed": 0,
+          "seconds": 9.484
+        }
+      }
+    },
+    "timing": "Functional elapsed time, not a performance benchmark. No speedup claim."
+  },
+  "affectedQualification": [
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "layer": "core",
+      "passed": 594,
+      "failed": 0,
+      "seconds": 6.583,
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests",
+      "librarySha256": "c650e8de8f55833f901fbbdb16e2c33f09a4334af0dda0ea415917bfae1a03ab"
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "layer": "core",
+      "passed": 594,
+      "failed": 0,
+      "seconds": 9.146,
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests",
+      "librarySha256": "c650e8de8f55833f901fbbdb16e2c33f09a4334af0dda0ea415917bfae1a03ab"
+    },
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "layer": "rendering",
+      "passed": 1920,
+      "failed": 0,
+      "seconds": 15.612,
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it|FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~SvgDeferredClipReferenceTests",
+      "librarySha256": "c650e8de8f55833f901fbbdb16e2c33f09a4334af0dda0ea415917bfae1a03ab"
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "layer": "rendering",
+      "passed": 1920,
+      "failed": 0,
+      "seconds": 27.165,
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it|FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~SvgDeferredClipReferenceTests",
+      "librarySha256": "c650e8de8f55833f901fbbdb16e2c33f09a4334af0dda0ea415917bfae1a03ab"
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "layer": "core",
+      "passed": 170,
+      "failed": 0,
+      "seconds": 6.426,
+      "selection": "FullyQualifiedName~SvgFilterSourceMapTests|FullyQualifiedName~SvgFilterBilinearSamplingTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgFilterRegionOwnershipTests|FullyQualifiedName~SvgFilterOutputBoundsTests|FullyQualifiedName~SvgRasterScopeTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "librarySha256": "8cab4f32e14c116d233bde153fa8089e5d0ba4cd5867b2a1cf63e2cc410c5204"
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "layer": "core",
+      "passed": 170,
+      "failed": 0,
+      "seconds": 8.141,
+      "selection": "FullyQualifiedName~SvgFilterSourceMapTests|FullyQualifiedName~SvgFilterBilinearSamplingTests|FullyQualifiedName~SvgFilterBitmapOwnershipTests|FullyQualifiedName~SvgFilterRegionOwnershipTests|FullyQualifiedName~SvgFilterOutputBoundsTests|FullyQualifiedName~SvgRasterScopeTests|FullyQualifiedName~SvgConversionApiContractTests",
+      "librarySha256": "8cab4f32e14c116d233bde153fa8089e5d0ba4cd5867b2a1cf63e2cc410c5204"
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "layer": "rendering",
+      "passed": 1647,
+      "failed": 0,
+      "seconds": 15.243,
+      "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgMaskSourceClipReferenceTests",
+      "librarySha256": "8cab4f32e14c116d233bde153fa8089e5d0ba4cd5867b2a1cf63e2cc410c5204"
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "layer": "rendering",
+      "passed": 1647,
+      "failed": 0,
+      "seconds": 23.807,
+      "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgMaskSourceClipReferenceTests",
+      "librarySha256": "8cab4f32e14c116d233bde153fa8089e5d0ba4cd5867b2a1cf63e2cc410c5204"
+    }
+  ],
+  "originalReplay": {
+    "files": 204,
+    "hosts": [
+      "windows",
+      "linux"
+    ],
+    "sourceSvgFilesRetained": 0,
+    "seconds": 50.331,
+    "outcomesPerHost": {
+      "UnsupportedFeature": 46,
+      "rendered": 155,
+      "exact": 154,
+      "MalformedInput": 3,
+      "different": 1
+    },
+    "all155RenderedPngsByteIdentical": true,
+    "outcomesDiagnosticsAndDimensionsUnchanged": true
+  },
+  "remaining": {
+    "completeOriginal": {
+      "changedPixels": 19,
+      "alphaChangedPixels": 0,
+      "maximumError": 1,
+      "totalChannelError": 50
+    },
+    "wideControl": {
+      "changedPixels": 4,
+      "alphaChangedPixels": 4,
+      "maximumError": 1
+    },
+    "filterMilestone": "Open; this closes the distinct opacity-parent source-creation defect only."
+  }
+}

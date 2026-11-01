@@ -11,6 +11,7 @@ compare exact pixels through one conversion path per case.
 | Fractional and integer thin curves | [Source bounds](../svgweb/filter-source-opacity.json) and [native device-axis consumer selection](../svgweb/group-opacity-stages.json). |
 | Coloured stroke and blurred gradient | Separate source recording from the [enclosing opacity bitmap](../svgweb/filter-opacity-device.json), including copying and nontrivial kernels. |
 | Gradient-stroke blur | Reuse [retained parameter visuals](../svgweb/filter-stroke-source-bounds.json) when preparing the source bitmap. |
+| Opacity parent | Construct the filter source in its [enclosing opacity bitmap](../svgweb/filter-opacity-source-origin.json); source preparation and restoration must use the same parent. |
 | Hidden instance | [Display contracts](../svgweb/filter-instance-display-bounds.json) distinguish suppression from zero opacity and hidden visibility. |
 | Fractional stroke layout | Map [fractional layout visuals](../svgweb/filter-fractional-stroke-layout.json) through a rotated alias while retaining per-draw recording enclosure. |
 

@@ -1068,10 +1068,12 @@ public static partial class SvgConverter
                 SvgShaderMatrix remainder = new(native.ScaleX * (1f / scaleX), native.SkewX * (1f / scaleY), native.TranslateX,
                     native.SkewY * (1f / scaleX), native.ScaleY * (1f / scaleY), native.TranslateY);
                 if (!remainder.TryInvert(out SvgShaderMatrix inverse)) return;
+                // The enclosing opacity bitmap exists before filter creation.
+                // Prepare the source device in that parent, independently of tile storage.
                 SvgShaderMatrix localRemainder = remainder with
                 {
-                    TranslateX = remainder.TranslateX - bitmap.Origin.X,
-                    TranslateY = remainder.TranslateY - bitmap.Origin.Y
+                    TranslateX = remainder.TranslateX - restoreBitmap.Origin.X,
+                    TranslateY = remainder.TranslateY - restoreBitmap.Origin.Y
                 };
                 if (!localRemainder.TryInvert(out SvgShaderMatrix localInverse)) return;
                 SvgAffineTransform layerMap = SvgAffineTransform.FromScale(scaleX, scaleY);
@@ -1242,7 +1244,7 @@ public static partial class SvgConverter
                     SvgRoot borrowed = root with { Geometries = geometries, Commands = commands};
                     SvgAffineTransform nativePlacement = new SvgAffineTransform(localInverse.ScaleX, localInverse.SkewY,
                         localInverse.SkewX, localInverse.ScaleY, localInverse.TranslateX, localInverse.TranslateY)
-                        .ComposeNative(SvgAffineTransform.FromTranslation(-bitmap.Origin.X, -bitmap.Origin.Y)
+                        .ComposeNative(SvgAffineTransform.FromTranslation(-restoreBitmap.Origin.X, -restoreBitmap.Origin.Y)
                             .ComposeNative(PlaceNativeSource(new(0, 0)) ?? SvgAffineTransform.Identity));
                     SvgAffineTransform deviceBasis = (frame?.FilterSourceMap is {} parentDevice
                         ? parentDevice.DeviceBasis : SvgAffineTransform.Identity).ComposeNative(new(
