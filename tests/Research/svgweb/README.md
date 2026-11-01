@@ -46,6 +46,7 @@ current inventory above governs overall status.
 
 | Responsibility | Evidence and retained contracts |
 | --- | --- |
+| Remaining filter source opacity | [Source-opacity investigation](filter-source-opacity.json), [own thin-curve control](../filter-source-opacity/README.md). Six independent captures expose 150 alpha differences in the same open filter area. A context-rebinding trial breaks an existing exact reference and is rejected; paint-window narrowing cannot establish bitmap ownership. |
 | Windows movement compensation | [Movement state and rounding](windows-movement.json). Component-rounded compensation, explicit copy state, signed horizontal division and exact-ratio placement share one movement path. Eight direct mechanisms and one canonical original-font image protect independent platform behavior. Scoped matched Arial originals and all 173 diagnostic coordinates agree. |
 | Stack projection words | [Stack-vector loading](windows-stack-vectors.json). Preserve supplied Windows F2Dot14 values across query/load and following movement, while keeping line normalization, classic normalization and freedom independent. One canonical original-font image retains both platforms. |
 | Conditional hint functions | [Native recognition](windows-conditional-shift.json). Exact function bodies retain branch/stack/loop effects while suppressing pixel movement; renamed functions, inline execution and inert body changes have independent controls. One canonical original-font image preserves both platforms. |

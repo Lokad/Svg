@@ -175,5 +175,9 @@
     ],
     "nativeControlRegeneratedAndBitExact": true,
     "interpretation": "Same six-case Windows selection: 7.166475s with one failure before; 5.843484s with zero failures after. Development timings are not a performance benchmark. Full host/runtime/package promotion remains a separate coherent milestone; the pending frozen Windows font reference is unchanged."
+  },
+  "followup": {
+    "evidence": "filter-source-opacity.json",
+    "scope": "Retains the prepared-drawing closure above. A new own thin-curve control exposes the remaining source-opacity area; rejected context changes were reverted. Current original and large-coordinate discrepancies stay open."
   }
 }

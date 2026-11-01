@@ -57,6 +57,8 @@ source/reference hashes, three native receipts and exact pixel comparisons.
 map mechanisms and six canonical native cases. Two shader mechanisms protect
 recording/capture order and 64/65-stage storage. One recursive-capture contract
 covers the additional allocation path; the large-coordinate companion remains open.
+The [filter source-opacity control](Research/filter-source-opacity/README.md)
+separately records an unresolved interaction between thin curves, capture and opacity.
 
 The [thin-curve mechanisms](Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs) distinguish
 authored ink from short flattened fallbacks and explicit suppression. One source

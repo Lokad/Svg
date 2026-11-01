@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "4265423ede7cad58ed4660306bcbe7bc9afb270e",
+  "scope": "Research checkpoint for the same open W1 filter-source area. No production code, existing reference, tolerance or API/test matrix changes.",
+  "control": "../filter-source-opacity/capture.json",
+  "ownFixture": "../filter-source-opacity/inputs/thin-curved-source.svg",
+  "independentCaptures": 6,
+  "coverage": "One own thin cubic source with large authored coordinates, scaled use aliases, copying Gaussian kernels, nested opacity and a fractional viewport. Transparent output reveals source alpha errors; no hosted source or fragment is retained.",
+  "baseline": {
+    "windows": {
+      "changedPixels": 161,
+      "alphaChangedPixels": 150,
+      "maximumError": 255,
+      "maximumAlphaError": 7,
+      "totalChannelError": 2008,
+      "actualPngSha256": "77acc72ce181138a95bbbc2449bb9a360ce4122b693517ff649b712b1df736b8",
+      "librarySha256": "67a6611f7a1dc55f66f2450cd02c578769a3afc38196809c700b9916ffc9c695"
+    },
+    "linux": {
+      "changedPixels": 161,
+      "alphaChangedPixels": 150,
+      "maximumError": 255,
+      "maximumAlphaError": 7,
+      "totalChannelError": 2008,
+      "actualPngSha256": "77acc72ce181138a95bbbc2449bb9a360ce4122b693517ff649b712b1df736b8",
+      "librarySha256": "67a6611f7a1dc55f66f2450cd02c578769a3afc38196809c700b9916ffc9c695"
+    }
+  },
+  "original": {
+    "name": "juanmontoya_lingerie.svg",
+    "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
+    "changedPixelsPerHost": 2953,
+    "alphaChangedPixelsPerHost": 2,
+    "maximumError": 17,
+    "totalChannelError": 6403,
+    "status": "open; production and default-outcomes.csv unchanged"
+  },
+  "exploratoryIsolations": {
+    "qualification": "Single healthy Windows observations. Diagnostic context changes, not admitted native references or new support claims.",
+    "originalMutations": {
+      "noSourceFilter": 2697,
+      "noInstanceFilters": 145,
+      "noRelatedFilters": 228,
+      "solidSourceLeaf": 2048
+    },
+    "individualOriginalFilterConsumers": {
+      "use6316": 1019,
+      "use6306": 1660,
+      "use6308": 564,
+      "use6314": 145
+    },
+    "consumerMethod": "Start from the hash-checked original in bounded RAM. For each named consumer, remove only the filter property from the other three use elements, in both presentation attributes and inline style. Keep source opacity, source filter, geometry and all references unchanged; capture at the original logical image viewport. Discard the body.",
+    "ownThinVariants": {
+      "colourBackdrop": 166,
+      "noOuterFilter": 5,
+      "noInnerFilter": 275,
+      "noRelatedFilters": 2,
+      "opaqueGroups": 8,
+      "transparentBackdrop": 161
+    },
+    "interpretation": "The strong opacity dependence and affine-consumer concentration narrow investigation. They do not identify the root cause or prove equivalent cases redundant."
+  },
+  "rejectedContextChange": {
+    "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "trial": "Bind raw affine/multi-bitmap/offset contexts through the existing LayerRasterContext/RasterScope helpers.",
+    "apparentImprovement": {
+      "largeCoordinateControlChangedPixels": 0,
+      "previousChangedPixels": 1,
+      "originalChangedPixels": 2952
+    },
+    "counterexample": {
+      "fixture": "../../Fixtures/original/filter-affine-group-opacity.svg",
+      "reference": "../../References/original-filter-affine-group-opacity.json",
+      "changedPixelsPerHost": 7,
+      "maximumChannelError": 8,
+      "alphaChangedPixels": 0
+    },
+    "assertion": "The existing exact manifest assertion fails on both hosts. Affine-only rebinding also fails the same fixture; preserving the original construction origin leaves the large-coordinate case unresolved.",
+    "decision": "Reverted completely. A narrowed paint window is insufficient evidence for a new bitmap origin. Closing one pixel does not qualify the shared model.",
+    "sourceCarrierLimit": "A carrier that replays captured pixels may change image bounds and bitmap selection. Its agreement alone does not prove the original restoration stage correct."
+  },
+  "otherRejectedTrials": [
+    "Globally fused filter sampling leaves the original and small reproducers unchanged.",
+    "Replacing packed layer alpha with split shader modulation breaks 982 pixels in a colour-backdrop companion and leaves the thin transparent discrepancy unchanged.",
+    "Removing the exact-own-source geometry override leaves the original and reproducers unchanged; image agreement alone does not prove that contract redundant.",
+    "Isolated-capture scoping partially reduces one no-inner-filter variant but does not close it; it is not promoted."
+  ],
+  "closureCriteria": [
+    "Keep source/reference hashes and exact comparisons unchanged. The admitted thin source must become exact on both hosts, together with the existing large-coordinate control and all prior interaction controls.",
+    "Compare actual source alpha/colour before and after isolated opacity, using explicit bitmap ownership separately from paint windows, construction clips, sampling and byte storage.",
+    "Preserve the old group-opacity reference that rejects context rebinding. Recheck the complete original and all 204 hosted outcomes after a shared fix; keep all 153 prior exact PNGs byte-identical.",
+    "Add a canonical failing-before rendering assertion for this source when fixed. Keep boundary mechanisms and representative allocation/ownership contracts separate; full host/runtime/package qualification belongs at a coherent milestone."
+  ],
+  "restoredValidation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 582,
+      "seconds": 7.146666,
+      "librarySha256": "67a6611f7a1dc55f66f2450cd02c578769a3afc38196809c700b9916ffc9c695",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests"
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 1896,
+      "seconds": 17.403188,
+      "librarySha256": "67a6611f7a1dc55f66f2450cd02c578769a3afc38196809c700b9916ffc9c695",
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "core",
+      "passed": 582,
+      "seconds": 9.539497,
+      "librarySha256": "67a6611f7a1dc55f66f2450cd02c578769a3afc38196809c700b9916ffc9c695",
+      "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests|FullyQualifiedName~SvgRasterScopeTests"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "kind": "native",
+      "passed": 1896,
+      "seconds": 26.34181,
+      "librarySha256": "67a6611f7a1dc55f66f2450cd02c578769a3afc38196809c700b9916ffc9c695",
+      "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+    }
+  ],
+  "retainedQualification": "Production is byte-for-byte unchanged from the source baseline in Git. Affected Windows/Linux .NET11 checks pass again after the rejected trial is removed. Existing .NET10 qualification remains in prepared-source-drawing.json. No new full/package/CI promotion is claimed."
+}
