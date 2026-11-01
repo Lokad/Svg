@@ -1,0 +1,100 @@
+{
+  "scope": "Original CC0 rectangles isolate exact conditional pixel-delta function recognition, renaming, inline execution, inert prefix/suffix, native mode, failed size condition and completed interpolation. Transparent image, DPR1, three fresh processes per host.",
+  "width": 160,
+  "height": 80,
+  "browser": "Chrome 153.0.8010.52",
+  "input": "conditional-functions.svg",
+  "inputSha256": "e041a5a133e5f213dd7360a95e1975809c68e03b3649b098be53199006b1d7f5",
+  "font": "fonts/ConditionalShift.ttf",
+  "fontSha256": "6b360d11151c0de2614a5457ac9f4d77819948123d2d28b146a4c53309855bc4",
+  "nativeSourceSha256": "65381bec2327182cfad6587492298ba0be32fb7b0b6833ac4a024d589de3e7e4",
+  "nativeRecipe": "Embed the unchanged program in @font-face before </svg>, family ConditionalShift, normal style/weight 400, no other source changes.",
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "e27ef990a70c89502c109994f64ae018b0273fcb2e1ee1be581d82f01581bb90",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "e27ef990a70c89502c109994f64ae018b0273fcb2e1ee1be581d82f01581bb90",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e27ef990a70c89502c109994f64ae018b0273fcb2e1ee1be581d82f01581bb90",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e27ef990a70c89502c109994f64ae018b0273fcb2e1ee1be581d82f01581bb90",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "df510aed62579173e737f18c08b015705633fec2c4209ed1de09c03ceb7446f7",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "df510aed62579173e737f18c08b015705633fec2c4209ed1de09c03ceb7446f7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "df510aed62579173e737f18c08b015705633fec2c4209ed1de09c03ceb7446f7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "df510aed62579173e737f18c08b015705633fec2c4209ed1de09c03ceb7446f7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  },
+  "fontUseProofs": {
+    "windows": [
+      {
+        "kind": "missing",
+        "nativeSourceSha256": "e041a5a133e5f213dd7360a95e1975809c68e03b3649b098be53199006b1d7f5",
+        "programSha256": null,
+        "changedPixels": 1808,
+        "pngSha256": "88ff78c859a622745a802640d2501d85008ad0087458d7876741e178b8093c76",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "kind": "different",
+        "nativeSourceSha256": "485a0c14305f954de8b7eeaab231b6d4e6fce737ccb38c4d6b3f9605faf49bb2",
+        "programSha256": "0aafbd169ee14324dc525623791f2b2daf004c6812405803fd283c1def43c31f",
+        "changedPixels": 256,
+        "pngSha256": "f1d980699c17d16e5f044b3dfd61f0b937e38fd1914cfd64902cf94e0f7510b5",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ],
+    "linux": [
+      {
+        "kind": "missing",
+        "nativeSourceSha256": "e041a5a133e5f213dd7360a95e1975809c68e03b3649b098be53199006b1d7f5",
+        "programSha256": null,
+        "changedPixels": 1593,
+        "pngSha256": "63d280dbfbf3af96cafd2987aff1ad67f48b37c4ec0cd05453445a92c8642b17",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "kind": "different",
+        "nativeSourceSha256": "485a0c14305f954de8b7eeaab231b6d4e6fce737ccb38c4d6b3f9605faf49bb2",
+        "programSha256": "0aafbd169ee14324dc525623791f2b2daf004c6812405803fd283c1def43c31f",
+        "changedPixels": 128,
+        "pngSha256": "76c152255c9b0114e39cf540f6592c04b7a7df67c7646d429565d275e97f9765",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ]
+  }
+}

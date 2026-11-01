@@ -269,6 +269,13 @@ internal sealed partial class TrueTypeHinting : IDisposable
 
     private void Execute(ReadOnlyMemory<byte> program, TrueTypeHintProgramKind kind)
     {
+        // Windows recognizes this exact conditional pixel-delta function body.
+        // It consumes the ordinary branch/loop operands but suppresses movement,
+        // including in native mode. Inline code and altered bodies still execute.
+        ReadOnlySpan<byte> conditionalPixelDelta = [0x4B, 0x53, 0x23, 0x4B, 0x51, 0x5A, 0x58, 0x38, 0x1B, 0x21, 0x21, 0x59];
+        bool suppressPixelShift = kind == TrueTypeHintProgramKind.Glyph && _depth != 0 &&
+            _target.UsesWindowsArithmetic && _target.Grid == TrueTypeHintGrid.ClearType &&
+            program.Span.SequenceEqual(conditionalPixelDelta);
         int pc = 0, conditionalDepth = 0;
         while (pc < program.Length)
         {
@@ -386,7 +393,14 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x34: case 0x35: ShiftContour(opcode); break;
                 case 0x38:
                 {
-                    int amount = Pop(); for (int i = 0; i < _loop; i++) { _token.ThrowIfCancellationRequested(); ref TrueTypeHintPoint p = ref Point(_zp2, Pop()); MoveAlongFreedom(ref p, amount); } _loop = 1; break;
+                    int amount = Pop();
+                    for (int i = 0; i < _loop; i++)
+                    {
+                        _token.ThrowIfCancellationRequested();
+                        ref TrueTypeHintPoint point = ref Point(_zp2, Pop());
+                        if (!suppressPixelShift) MoveAlongFreedom(ref point, amount);
+                    }
+                    _loop = 1; break;
                 }
                 case 0x39: InterpolatePoints(); break;
                 case 0x3A: case 0x3B:

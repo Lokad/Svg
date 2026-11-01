@@ -1,0 +1,10 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='160' height='80'>
+  <text font-family='ConditionalShift' font-size='32' x='8' y='30'>A</text>
+  <text font-family='ConditionalShift' font-size='32' x='48' y='30'>B</text>
+  <text font-family='ConditionalShift' font-size='32' x='88' y='30'>C</text>
+  <text font-family='ConditionalShift' font-size='32' x='128' y='30'>D</text>
+  <text font-family='ConditionalShift' font-size='32' x='8' y='70'>E</text>
+  <text font-family='ConditionalShift' font-size='32' x='48' y='70'>F</text>
+  <text font-family='ConditionalShift' font-size='32' x='88' y='70'>G</text>
+  <text font-family='ConditionalShift' font-size='32' x='128' y='70'>H</text>
+</svg>

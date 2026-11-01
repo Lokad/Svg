@@ -1,0 +1,129 @@
+{
+  "fontTools": "4.66.1",
+  "license": "CC0-1.0",
+  "unitsPerEm": 2048,
+  "glyphOrder": [
+    ".notdef",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H"
+  ],
+  "cmap": {
+    "A": 1,
+    "B": 2,
+    "C": 3,
+    "D": 4,
+    "E": 5,
+    "F": 6,
+    "G": 7,
+    "H": 8
+  },
+  "advance": 1024,
+  "leftSideBearing": 0,
+  "ascent": 2048,
+  "descent": -512,
+  "names": {
+    "familyName": "ConditionalShift",
+    "styleName": "Regular",
+    "uniqueFontIdentifier": "Original-Conditional-Shift-1",
+    "fullName": "ConditionalShift",
+    "psName": "ConditionalShift",
+    "version": "Version 1.000"
+  },
+  "headTimestamp": 2082844800,
+  "maxStack": 12,
+  "maxFunctionDefs": 4,
+  "maxZones": 2,
+  "gaspVersion": 1,
+  "gaspRanges": {
+    "65535": 7
+  },
+  "points": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      512
+    ],
+    [
+      512,
+      512
+    ],
+    [
+      512,
+      0
+    ]
+  ],
+  "allOnCurve": true,
+  "functions": [
+    "4b53234b515a58381b212159",
+    "4b53234b515a58381b212159",
+    "b000214b53234b515a58381b212159",
+    "4b53234b515a58381b212159b00021"
+  ],
+  "cases": [
+    {
+      "glyph": "A",
+      "id": "function-zero",
+      "program": "00b300010203b00417b80200b10b28b0002b",
+      "x": 8,
+      "y": 30
+    },
+    {
+      "glyph": "B",
+      "id": "renamed-function",
+      "program": "00b300010203b00417b80200b10b28b0012b",
+      "x": 48,
+      "y": 30
+    },
+    {
+      "glyph": "C",
+      "id": "inline",
+      "program": "00b300010203b00417b80200b10b284b53234b515a58381b212159",
+      "x": 88,
+      "y": 30
+    },
+    {
+      "glyph": "D",
+      "id": "inert-prefix",
+      "program": "00b300010203b00417b80200b10b28b0022b",
+      "x": 128,
+      "y": 30
+    },
+    {
+      "glyph": "E",
+      "id": "inert-suffix",
+      "program": "00b300010203b00417b80200b10b28b0032b",
+      "x": 8,
+      "y": 70
+    },
+    {
+      "glyph": "F",
+      "id": "native-mode",
+      "program": "b104038e00b300010203b00417b80200b10b28b0002b",
+      "x": 48,
+      "y": 70
+    },
+    {
+      "glyph": "G",
+      "id": "outside-size-range",
+      "program": "00b300010203b00417b80200b1283cb0002b",
+      "x": 88,
+      "y": 70
+    },
+    {
+      "glyph": "H",
+      "id": "both-interpolations-horizontal",
+      "program": "303101b300010203b00417b80200b10b28b0002b",
+      "x": 128,
+      "y": 70
+    }
+  ]
+}

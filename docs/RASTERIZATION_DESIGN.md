@@ -321,7 +321,12 @@ interpolation, and later zone matches can reposition a shared non-zone edge.
 The [fitting evidence](../tests/Research/svgweb/latin-blue-zone-fitting.json)
 maps these mechanisms to supplied-program observations.
 Projection/freedom vectors, hint grids, implied points, scan direction, endpoint
-ownership and dropout modes keep their numerical boundaries. Font-selected
+ownership and dropout modes keep their numerical boundaries.
+Windows function recognition preserves ordinary stack/loop effects while suppressing
+movement for an exact conditional pixel-delta body; equivalent inline or changed
+bodies execute normally. The [independent controls](../tests/Research/windows-conditional-shift/README.md)
+pin that distinction without font-name rules.
+Font-selected
 unfitted ranges retain scanner effects without fitted point movements. Metric
 reuse is operation-local and budget-owned; it does not create shared mutable font
 state. [Font qualification](../tests/README.md#qualification) owns the evidence.

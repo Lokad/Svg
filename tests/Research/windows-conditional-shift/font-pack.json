@@ -1,0 +1,22 @@
+{
+  "packId": "original-conditional-shift",
+  "files": [
+    {
+      "relativePath": "fonts/ConditionalShift.ttf",
+      "byteSize": 1344,
+      "sha256": "6b360d11151c0de2614a5457ac9f4d77819948123d2d28b146a4c53309855bc4"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "ConditionalShift",
+      "resolvedFamily": "ConditionalShift",
+      "relativeFontFile": "fonts/ConditionalShift.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    }
+  ],
+  "fallbacks": []
+}

@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "6d628f4fab0653555ce061035f7ee52dbc7be368",
+  "scope": "Windows conditional pixel-shift function recognition, independent of font/family and function number. Preserve all programs, layout, fitted/scan boundaries, prior references and tolerances.",
+  "implementation": "../../../src/Lokad.Svg/Fonts/TrueTypeHinting.cs",
+  "model": {
+    "exactFunctionBody": "4b53234b515a58381b212159",
+    "recognition": "An executed glyph function with this exact body under the Windows ClearType target suppresses SHPIX movement. Ordinary condition evaluation, operand validation/consumption, loop reset and cancellation remain.",
+    "controls": "Renamed functions retain recognition; inline execution and inert prefix/suffix variants move points. The native-mode waiver and completed IUPs do not remove recognition. An unsatisfied size condition preserves the false branch.",
+    "storage": "One invocation-local boolean; no cache, extra owning storage, font-name rule or API change."
+  },
+  "responsibilities": {
+    "mechanisms": {
+      "tests": "../../Lokad.Svg.Tests/TrueTypeHintingTests.ConditionalShift.cs",
+      "cases": 8,
+      "failingBefore": 3,
+      "scope": "Direct coordinates, touch flags, stack consumption, loop reset, following ordinary movement, target/body/inline controls and final budget cleanup."
+    },
+    "rendering": {
+      "tests": "../../Lokad.Svg.VisualTests/SvgWindowsScanBoundaryTests.cs",
+      "cases": 1,
+      "source": "../windows-conditional-shift/conditional-functions.svg",
+      "font": "../windows-conditional-shift/fonts/ConditionalShift.ttf",
+      "fontBytes": 1344,
+      "capture": "../windows-conditional-shift/capture.json",
+      "distinctions": 8,
+      "sourceBeforeAfter": [
+        {
+          "id": "public-fixture",
+          "host": "windows",
+          "before": 624,
+          "after": 0
+        },
+        {
+          "id": "public-fixture",
+          "host": "linux",
+          "before": 0,
+          "after": 0
+        }
+      ],
+      "scope": "One canonical path; three fresh agreeing healthy/profile-cleaned captures per host, with separate references and positive missing/different-font proofs. Shared ordinary setup also serves the existing scan fixture."
+    },
+    "retained": "Every existing fitted half-unit, full texture, ownership, platform companion and API regression remains unchanged."
+  },
+  "validation": {
+    "failingBefore": {
+      "selection": "FullyQualifiedName~Conditional_shift",
+      "host": "windows",
+      "framework": "net11.0",
+      "passed": 5,
+      "failed": 3,
+      "seconds": 7.021,
+      "librarySha256": "08fc9b5e17429334f7d18a70ef0784c05466bd81783e48ece009559b10417df6"
+    },
+    "focusedInterpreter": {
+      "selection": "FullyQualifiedName~TrueTypeHintingTests",
+      "host": "windows",
+      "framework": "net11.0",
+      "passed": 384,
+      "failed": 0,
+      "seconds": 6.916,
+      "librarySha256": "405fff17d153501a8cb1da298340058626b98004ae256749763e6a9e9ed5c3d6"
+    },
+    "focusedRendering": {
+      "selection": "FullyQualifiedName~SvgWindowsScanBoundaryTests|FullyQualifiedName~SvgWindowsGlyphTests",
+      "host": "windows",
+      "framework": "net11.0",
+      "passed": 39,
+      "failed": 0,
+      "seconds": 8.352,
+      "librarySha256": "405fff17d153501a8cb1da298340058626b98004ae256749763e6a9e9ed5c3d6"
+    },
+    "affected": [
+      {
+        "selection": "(FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyph|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgSceneTransfer|FullyQualifiedName~SvgInheritedContourOwnershipTests|FullyQualifiedName~SvgPolygonContourOwnershipTests)&Category!=Research",
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 10747,
+        "failed": 0,
+        "seconds": 28.031,
+        "librarySha256": "405fff17d153501a8cb1da298340058626b98004ae256749763e6a9e9ed5c3d6"
+      },
+      {
+        "selection": "(FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgSuppliedFontLabelTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgKerningPrecedenceTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgUpstreamDocumentTests|FullyQualifiedName~SvgWindowsGlyphTests|FullyQualifiedName~SvgWindowsScanBoundaryTests)&Category!=Research",
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 821,
+        "failed": 0,
+        "seconds": 17.564,
+        "librarySha256": "405fff17d153501a8cb1da298340058626b98004ae256749763e6a9e9ed5c3d6"
+      },
+      {
+        "selection": "(FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyph|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgSceneTransfer|FullyQualifiedName~SvgInheritedContourOwnershipTests|FullyQualifiedName~SvgPolygonContourOwnershipTests)&Category!=Research",
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 10747,
+        "failed": 0,
+        "seconds": 29.342,
+        "librarySha256": "405fff17d153501a8cb1da298340058626b98004ae256749763e6a9e9ed5c3d6"
+      },
+      {
+        "selection": "(FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgSuppliedFontLabelTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgKerningPrecedenceTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgUpstreamDocumentTests|FullyQualifiedName~SvgWindowsGlyphTests|FullyQualifiedName~SvgWindowsScanBoundaryTests)&Category!=Research",
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 821,
+        "failed": 0,
+        "seconds": 19.585,
+        "librarySha256": "405fff17d153501a8cb1da298340058626b98004ae256749763e6a9e9ed5c3d6"
+      }
+    ],
+    "runtimeCompatibility": [
+      {
+        "selection": "FullyQualifiedName~TrueTypeHintingTests",
+        "host": "windows",
+        "framework": "net10.0",
+        "passed": 384,
+        "failed": 0,
+        "seconds": 6.363,
+        "librarySha256": "8a6f07839030fb76b51cf8e5223071a0cc6009a20dccaae3d26e3a3b65e0affd"
+      },
+      {
+        "selection": "FullyQualifiedName~SvgWindowsScanBoundaryTests|FullyQualifiedName~SvgWindowsGlyphTests",
+        "host": "windows",
+        "framework": "net10.0",
+        "passed": 39,
+        "failed": 0,
+        "seconds": 7.942,
+        "librarySha256": "8a6f07839030fb76b51cf8e5223071a0cc6009a20dccaae3d26e3a3b65e0affd"
+      },
+      {
+        "selection": "FullyQualifiedName~TrueTypeHintingTests",
+        "host": "linux",
+        "framework": "net10.0",
+        "passed": 384,
+        "failed": 0,
+        "seconds": 6.559,
+        "librarySha256": "8a6f07839030fb76b51cf8e5223071a0cc6009a20dccaae3d26e3a3b65e0affd"
+      },
+      {
+        "selection": "FullyQualifiedName~SvgWindowsScanBoundaryTests|FullyQualifiedName~SvgWindowsGlyphTests",
+        "host": "linux",
+        "framework": "net10.0",
+        "passed": 39,
+        "failed": 0,
+        "seconds": 7.725,
+        "librarySha256": "8a6f07839030fb76b51cf8e5223071a0cc6009a20dccaae3d26e3a3b65e0affd"
+      }
+    ],
+    "timingScope": "Functional wall times under normal development load. The failing-before selection has eight new cases; the after interpreter selection includes all 384 cases, so these are not suite-simplification speed comparisons. Broader full host/package qualification is performed by exact-head CI at promotion."
+  },
+  "originals": {
+    "default": {
+      "files": 204,
+      "sourceSvgFilesRetained": 0,
+      "allSemanticReportsUnchanged": true,
+      "all150PngsPerHostByteIdentical": true,
+      "identicalPngs": {
+        "windows": 150,
+        "linux": 150
+      },
+      "outcomes": {
+        "windows": {
+          "UnsupportedFeature": 51,
+          "rendered": 150,
+          "MalformedInput": 3
+        },
+        "linux": {
+          "UnsupportedFeature": 51,
+          "rendered": 150,
+          "MalformedInput": 3
+        }
+      }
+    },
+    "suppliedArial": {
+      "programSha256": "b3658eadae55e682b5f69eb64c439c1ecc8f196c0bb8d4756d145d13bc86476a",
+      "beforeWindowsPixels": [
+        13,
+        6,
+        5
+      ],
+      "afterObservations": [
+        {
+          "id": "paths-data-08-t.svg",
+          "host": "windows",
+          "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+          "changedPixels": 13,
+          "maximumError": 46,
+          "differenceBounds": [
+            98,
+            9,
+            161,
+            120
+          ],
+          "nativePngSha256": "1123469440b13349c30e3a635d3fb655ce880054155b1d5a2314b0c912853bc6"
+        },
+        {
+          "id": "paths-data-08-t.svg",
+          "host": "linux",
+          "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "differenceBounds": null,
+          "nativePngSha256": "94c0fc90bd255cc6ea2455ec5bc8860beb17186e1415a9ae494cce0367418f6e"
+        },
+        {
+          "id": "paths-data-09-t.svg",
+          "host": "windows",
+          "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+          "changedPixels": 6,
+          "maximumError": 42,
+          "differenceBounds": [
+            123,
+            9,
+            143,
+            14
+          ],
+          "nativePngSha256": "da6e7cc123747feb77eeb9033ca27a79f564454ff19a0e82e11b9e8164896385"
+        },
+        {
+          "id": "paths-data-09-t.svg",
+          "host": "linux",
+          "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "differenceBounds": null,
+          "nativePngSha256": "3d8ba14ad160f4e755fe2a08500401a6e93c02d9ced292767040f76da564fddd"
+        },
+        {
+          "id": "pservers-grad-03-b.svg",
+          "host": "windows",
+          "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "differenceBounds": null,
+          "nativePngSha256": "1dd3f4536e56755d0f3aae7b76acb8f746c2f978a2871d1ad09667aad67a70d0"
+        },
+        {
+          "id": "pservers-grad-03-b.svg",
+          "host": "linux",
+          "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "differenceBounds": null,
+          "nativePngSha256": "665539c98f35d78a0c93ec22c987713525495435e6793f04a4096180cd68d070"
+        }
+      ],
+      "scope": "Unchanged supplied programs, source hashes, origins/layout and earlier native observations. The n discrepancy is closed by an independent mechanism; whole supplied/static original acceptance is not claimed. No private program or hosted payload is retained here."
+    }
+  },
+  "next": "Five controls for w/M/Z at 10 and k at 9 remain; traced native point/vector queries locate the outstanding diagonal fitting differences. Preserve exact query flags, scan preparation and all references. Other W1 static/font/resource acceptance remains open."
+}

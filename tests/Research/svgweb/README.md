@@ -46,6 +46,7 @@ current inventory above governs overall status.
 
 | Responsibility | Evidence and retained contracts |
 | --- | --- |
+| Conditional hint functions | [Native recognition](windows-conditional-shift.json). Exact function bodies retain branch/stack/loop effects while suppressing pixel movement; renamed functions, inline execution and inert body changes have independent controls. One canonical original-font image preserves both platforms. |
 | Font declarations and supplied programs | [Font contexts](font-contexts.json), [shared program model](shared-font-model.json). Inline SVG sizes retain their source context; GPOS extensions share payload resolution and valid freedom-copy hints preserve VM state. Initial generic families need explicit matching alongside named faces. Remaining matched-program glyph stages stay open. |
 | Glyph recording and shader drawing | [Position recording](glyph-recording.json), [separate drawing binding](glyph-drawing-binding.json), [own controls](font-stages/capture.json). Filled glyphs share font recording while shaders retain their drawing map; layout, tangents and stroke semantics stay independent. Flat, root, group and curved-path graphs remain separate, with one canonical call per source. |
 | Light-fitted glyph edges | [Alignment-zone fitting](latin-blue-zone-fitting.json). Zone matching and completed placement have separate state. Contour-order linked fitting preserves interpolation anchors and shared-edge updates. Two direct topology regressions protect the cause; the remaining Windows coverage differences stay separate. |

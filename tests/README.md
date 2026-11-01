@@ -185,8 +185,11 @@ alignment, rounding and scratch-lifetime checks. The
 anchors and shared edges; supplied-font rendering keeps its canonical path and
 independent platform references.
 `FullyQualifiedName~Windows_scan_` selects fitted/scan geometry, four native phase
-vectors and preparation cleanup/retry. `FullyQualifiedName~SvgWindowsScanBoundaryTests`
-selects the single canonical [turning-counter image](Research/windows-scan-boundary/README.md).
+vectors and preparation cleanup/retry. `FullyQualifiedName~Conditional_shift`
+selects direct native function-recognition and ordinary-shift controls.
+`FullyQualifiedName~SvgWindowsScanBoundaryTests` selects canonical
+[turning-counter](Research/windows-scan-boundary/README.md) and
+[conditional-function](Research/windows-conditional-shift/README.md) images.
 Existing half-unit fitted-point and complete native-texture regressions remain separate.
 
 ## Development checks

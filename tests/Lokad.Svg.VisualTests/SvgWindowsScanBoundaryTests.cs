@@ -9,17 +9,25 @@ public sealed class SvgWindowsScanBoundaryTests
 {
     [Fact]
     [Trait("Layer", "Rendering")]
-    public async Task A_turning_counter_uses_prepared_scan_curves_without_changing_the_fitted_outline()
+    public Task A_turning_counter_uses_prepared_scan_curves_without_changing_the_fitted_outline()
+        => AssertNativeFontFixture("windows-scan-boundary", "original-scan-turn", "ScanTurn");
+
+    [Fact]
+    [Trait("Layer", "Rendering")]
+    public Task Conditional_pixel_delta_functions_preserve_native_recognition_and_ordinary_shift_controls()
+        => AssertNativeFontFixture("windows-conditional-shift", "original-conditional-shift", "ConditionalShift");
+
+    private static async Task AssertNativeFontFixture(string bank, string packId, string family)
     {
-        string directory = Path.Combine(ResearchCorpus.Root, "windows-scan-boundary");
+        string directory = Path.Combine(ResearchCorpus.Root, bank);
         using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "capture.json")));
         JsonElement recipe = capture.RootElement;
         byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(recipe, "input")));
         byte[] program = File.ReadAllBytes(Path.Combine(directory, Required(recipe, "font")));
         Assert.Equal(Required(recipe, "inputSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
         Assert.Equal(Required(recipe, "fontSha256"), Convert.ToHexStringLower(SHA256.HashData(program)));
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "font-pack.json")), "original-scan-turn");
-        SvgFontProgramResolution resolution = catalog.Bind(catalog.Resolve(new("ScanTurn", 400, false)), new SvgMemoryFontProgramSource("scan-turn", program));
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "font-pack.json")), packId);
+        SvgFontProgramResolution resolution = catalog.Bind(catalog.Resolve(new(family, 400, false)), new SvgMemoryFontProgramSource(bank, program));
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None);
         byte[] actual = SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts), CancellationToken.None).ToArray();
         JsonElement platform = recipe.GetProperty("platforms").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux");
