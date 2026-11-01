@@ -479,6 +479,86 @@
         }
       },
       "qualification": "../svgweb/filter-stroke-source-bounds.json"
+    },
+    {
+      "id": "hidden-instance-source-bounds",
+      "input": "inputs/hidden-instance-source-bounds.svg",
+      "inputSha256": "00a8fba5c71dcfad66762d3f7ea8cef84deddd372a181eb0f04a4b460a833c43",
+      "width": 64,
+      "height": 64,
+      "logicalImageViewport": [
+        64,
+        64
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "eb262b4f5acb00a5f460eeaab6274dcdf5f5aee52d0ad46a60a088b06954a048",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "eb262b4f5acb00a5f460eeaab6274dcdf5f5aee52d0ad46a60a088b06954a048",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "eb262b4f5acb00a5f460eeaab6274dcdf5f5aee52d0ad46a60a088b06954a048",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "eb262b4f5acb00a5f460eeaab6274dcdf5f5aee52d0ad46a60a088b06954a048",
+          "reference": "references/hidden-instance-source-bounds.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "eb262b4f5acb00a5f460eeaab6274dcdf5f5aee52d0ad46a60a088b06954a048",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "eb262b4f5acb00a5f460eeaab6274dcdf5f5aee52d0ad46a60a088b06954a048",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "eb262b4f5acb00a5f460eeaab6274dcdf5f5aee52d0ad46a60a088b06954a048",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "eb262b4f5acb00a5f460eeaab6274dcdf5f5aee52d0ad46a60a088b06954a048",
+          "reference": "references/hidden-instance-source-bounds.png"
+        }
+      },
+      "status": "exact",
+      "sourceBaseline": "8486731a5a5ff13419b030a467917fa58de6873a",
+      "baseline": {
+        "windows": {
+          "changedPixels": 18,
+          "alphaChangedPixels": 0,
+          "maximumError": 15,
+          "maximumAlphaError": 0,
+          "totalChannelError": 74,
+          "librarySha256": "95b3246bbb2a5b028a8b68a6a2787b6b30352900efd6c8a384fa172a6b8b6958",
+          "actualPngSha256": "bc57b893c65091dbc12f8a4bcb97c553d6547a6c0439f3d288ff984f2a1d8c8d"
+        },
+        "linux": {
+          "changedPixels": 18,
+          "alphaChangedPixels": 0,
+          "maximumError": 15,
+          "maximumAlphaError": 0,
+          "totalChannelError": 74,
+          "librarySha256": "95b3246bbb2a5b028a8b68a6a2787b6b30352900efd6c8a384fa172a6b8b6958",
+          "actualPngSha256": "bc57b893c65091dbc12f8a4bcb97c553d6547a6c0439f3d288ff984f2a1d8c8d"
+        }
+      },
+      "qualification": "../svgweb/filter-instance-display-bounds.json"
     }
   ]
 }

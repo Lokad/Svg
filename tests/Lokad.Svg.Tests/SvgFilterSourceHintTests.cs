@@ -8,6 +8,32 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFilterSourceHintTests
 {
     [Theory]
+    [InlineData("display='none'", 18)]
+    [InlineData("opacity='0'", 48)]
+    [InlineData("visibility='hidden'", 48)]
+    public void Instance_display_controls_parent_filter_bounds_independently_of_painted_ink(string declaration, int right)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>"
+            + "<defs><filter id='f'><feGaussianBlur stdDeviation='.23'/></filter></defs>"
+            + "<g filter='url(#f)'><rect id='p' x='10' y='12' width='8' height='9'/>"
+            + "<use href='#p' x='30' " + declaration + "/></g></svg>");
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.FilterResources ?? throw new InvalidOperationException();
+            SvgDrawCommand filter = Assert.Single(scene.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup
+                && command.RegionKind == SvgLayerRegionKind.Filter);
+            SvgFilterBinding binding = arena.BindingAt(filter.MaskContentIndex);
+            SvgPaintBounds expected = new(10, 12, right, 21);
+            Assert.Equal(expected, binding.ParameterObjectBounds);
+            Assert.Equal(expected, binding.ParameterVisualBounds);
+            Assert.Equal(expected, binding.ObjectBounds);
+            Assert.Equal(expected, binding.VisualBounds);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData(false, 0)]
     [InlineData(false, 2)]
     [InlineData(true, 2)]

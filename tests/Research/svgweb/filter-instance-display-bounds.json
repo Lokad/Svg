@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "8486731a5a5ff13419b030a467917fa58de6873a",
+  "capture": "../filter-source-opacity/capture.json",
+  "scope": "Suppress object and visual metadata while mapping a non-displayed instance. Retain source validation and the layout participation of zero-opacity and visibility-hidden instances.",
+  "mechanism": {
+    "test": "SvgFilterSourceHintTests.Instance_display_controls_parent_filter_bounds_independently_of_painted_ink",
+    "nonDisplayed": {
+      "before": [
+        10,
+        12,
+        48,
+        21
+      ],
+      "after": [
+        10,
+        12,
+        18,
+        21
+      ]
+    },
+    "zeroOpacity": [
+      10,
+      12,
+      48,
+      21
+    ],
+    "hiddenVisibility": [
+      10,
+      12,
+      48,
+      21
+    ],
+    "baseline": {
+      "passed": 2,
+      "failed": 1
+    },
+    "affectedDisplayAndBoundsTests": {
+      "passed": 78,
+      "failed": 0
+    },
+    "ownership": "The direct parser checks release all accounted memory; existing hidden-source validation, cancellation, resource and ownership paths remain qualified."
+  },
+  "rendering": {
+    "id": "hidden-instance-source-bounds",
+    "inputSha256": "00a8fba5c71dcfad66762d3f7ea8cef84deddd372a181eb0f04a4b460a833c43",
+    "referenceSha256": "eb262b4f5acb00a5f460eeaab6274dcdf5f5aee52d0ad46a60a088b06954a048",
+    "frame": [
+      64,
+      64
+    ],
+    "nativeEvidence": "Three agreeing healthy/profile-cleaned fresh-process captures per host; one canonical conversion. Existing references, exact assertions and API responsibilities are unchanged.",
+    "beforePerHost": {
+      "changedPixels": 18,
+      "alphaChangedPixels": 0,
+      "maximumError": 15,
+      "totalChannelError": 74
+    },
+    "afterPerHost": {
+      "changedPixels": 0,
+      "alphaChangedPixels": 0
+    }
+  },
+  "focusedBeforeAfter": {
+    "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests",
+    "before": {
+      "passed": 14,
+      "failed": 1,
+      "seconds": 7.312
+    },
+    "after": {
+      "passed": 15,
+      "failed": 0,
+      "seconds": 7.948
+    },
+    "timing": "Functional elapsed time, not a benchmark."
+  },
+  "affectedQualification": [
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 2887,
+        "seconds": 10.253,
+        "librarySha256": "b090214273d775b4059b9569486602ce9a3be5965ebde032df1792d220f138f4"
+      },
+      "native": {
+        "passed": 1918,
+        "seconds": 28.463,
+        "librarySha256": "b090214273d775b4059b9569486602ce9a3be5965ebde032df1792d220f138f4"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 2887,
+        "seconds": 13.876,
+        "librarySha256": "b090214273d775b4059b9569486602ce9a3be5965ebde032df1792d220f138f4"
+      },
+      "native": {
+        "passed": 1918,
+        "seconds": 30.758,
+        "librarySha256": "b090214273d775b4059b9569486602ce9a3be5965ebde032df1792d220f138f4"
+      }
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 2887,
+        "seconds": 11.501,
+        "librarySha256": "03df6be2b9d0d252fe4f6dfbf24c9007aed05ea8241d354f34164f90643ee55b"
+      },
+      "native": {
+        "passed": 1918,
+        "seconds": 25.552,
+        "librarySha256": "03df6be2b9d0d252fe4f6dfbf24c9007aed05ea8241d354f34164f90643ee55b"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 2887,
+        "seconds": 11.167,
+        "librarySha256": "03df6be2b9d0d252fe4f6dfbf24c9007aed05ea8241d354f34164f90643ee55b"
+      },
+      "native": {
+        "passed": 1918,
+        "seconds": 29.074,
+        "librarySha256": "03df6be2b9d0d252fe4f6dfbf24c9007aed05ea8241d354f34164f90643ee55b"
+      }
+    }
+  ],
+  "originalReplay": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "seconds": 51.226,
+    "perHost": {
+      "semanticReportsUnchanged": 204,
+      "renderedPngsByteIdentical": 154,
+      "rendered": 154,
+      "exploratoryExact": 153,
+      "exploratoryDifferent": 1,
+      "unsupported": 47,
+      "malformed": 3
+    }
+  },
+  "originalIsolation": {
+    "host": "windows",
+    "materializedSha256": "15d9e77b4616f3eb36dffc4b6ffdb36f7b22eeff449522ea34fff23cdaaa4ea3",
+    "sourceSvgRetained": false,
+    "beforeChangedPixels": 6,
+    "afterChangedPixels": 0,
+    "alphaChangedPixels": 0,
+    "qualification": "Exploratory RAM-only original isolation; not an admitted reference or closure of the complete original."
+  },
+  "remaining": [
+    "Complete juanmontoya_lingerie.svg:147 changed pixels,2alpha,max17,total459 on both hosts; the19 source-consumer,123 stroke-group and5 mask-group pixels remain open.",
+    "Admitted thin-curved-source-wide:four alpha differences per host.",
+    "Milestone full Windows/Linux/runtime/package promotion awaits the remaining correctness work and the pending frozen-font reference authority."
+  ]
+}

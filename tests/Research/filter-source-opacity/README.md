@@ -24,6 +24,10 @@ origin while leaving alpha exact. The [bounds regression](../svgweb/filter-strok
 records the native allocation, 64 failing-before colour pixels and exact canonical
 conversion on both hosts.
 
+The hidden-instance control excludes a `display:none` alias from source bounds.
+Its [display contracts](../svgweb/filter-instance-display-bounds.json) distinguish
+suppression from zero opacity and hidden visibility, which retain layout bounds.
+
 The [wide control](inputs/thin-curved-source-wide.svg) remains **open**: four
 one-level alpha differences on both hosts. It changes only viewport and outer
 placement. Exploratory direct-source painting is exact; the filtered instance
