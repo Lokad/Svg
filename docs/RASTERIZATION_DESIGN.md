@@ -266,6 +266,11 @@ Non-displayed instances contribute no object or visual bounds to enclosing
 effects; hidden visibility and zero opacity retain layout bounds. Source
 validation still runs. [Instance display controls](../tests/Research/svgweb/filter-instance-display-bounds.json)
 protect the recorded metadata and resulting gradient placement.
+An explicit rectangular mask clip can become fully opaque within a compositor
+bitmap. Polygon and hairline consumers share that opacity query; a hairline may
+escape the bitmap without retaining an AA clip wrapper. Partial intersections and
+clip construction retain their own dispatch. [Independent controls](../tests/Research/svgweb/mask-opaque-bitmap.json)
+protect source alpha and the later mask composition separately.
 Ordinary, nested and image-containing sources all capture the propagated sampling
 request; unrelated source ink must not enlarge that curve-construction window.
 Axis and transformed effects capture input for each bordered destination bitmap;

@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "93a1402a25ffa9febf4e801462e01881c9a0f338",
+  "capture": "../mask-source-clip/capture.json",
+  "scope": "Reuse one borrowed-coverage opacity query for polygon, layer and hairline consumers. An opaque bitmap intersection permits binary dispatch even when a hairline escapes that bitmap. Source, mask, allocation and restoration bounds remain separate.",
+  "implementation": {
+    "query": "../../../src/Lokad.Svg/Rendering/SvgRasterClipMask.cs",
+    "hairline": "../../../src/Lokad.Svg/Rendering/SvgHairlineStroke.cs",
+    "polygon": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "change": "Move the existing rectangle/tape opacity check out of the converter; share it with hairlines. Explicit rectangle coverage participates in the polygon bitmap check instead of bypassing it through a global mask flag.",
+    "ownership": "The ref struct borrows coverage and retains no cache or surface. Analytic rectangles read four corners; tapes scan their bitmap intersection with cancellation between rows. Existing path-contained AA quick containment remains separate."
+  },
+  "mechanism": {
+    "testClass": "SvgOpaqueBitmapClipTests",
+    "baselineHairline": {
+      "passed": 0,
+      "failed": 1
+    },
+    "candidateCases": 5,
+    "responsibilities": [
+      "A complete opaque bitmap clip is identity for a hairline whose path escapes that bitmap.",
+      "Tape queries inspect interior pixels and borrow current caller bytes.",
+      "Analytic rectangle queries retain partial boundaries.",
+      "Both coverage representations observe cancellation."
+    ]
+  },
+  "rendering": {
+    "id": "opaque-mask-bitmap",
+    "inputSha256": "cf7fa8b6a42d5a4323273b9ebf3346bb5e19521b17e970128ce8f998587692dd",
+    "referenceSha256": "53355959a36e494a21daf3b90a07baa62fd8897a84acf4895f4f29beb4fd865c",
+    "frame": [
+      858,
+      1074
+    ],
+    "nativeEvidence": "Three agreeing healthy/profile-cleaned fresh-process captures per host. One own stroked cubic and one mask, through one canonical conversion; no API-form matrix expansion.",
+    "beforePerHost": {
+      "changedPixels": 2,
+      "alphaChangedPixels": 1,
+      "maximumError": 4,
+      "totalChannelError": 9
+    },
+    "afterPerHost": {
+      "changedPixels": 0,
+      "alphaChangedPixels": 0
+    }
+  },
+  "focusedBeforeAfter": {
+    "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~SvgMaskSourceClipReferenceTests",
+    "before": {
+      "passed": 16,
+      "failed": 1,
+      "seconds": 7.03
+    },
+    "after": {
+      "passed": 17,
+      "failed": 0,
+      "seconds": 5.922
+    },
+    "timing": "Functional elapsed time, not a benchmark."
+  },
+  "diagnosticAblations": {
+    "qualification": "RAM-only complete-original comparisons identify both necessary consumers; these are diagnostic builds, not alternate reference images.",
+    "polygonOnly": {
+      "changedPixels": 24,
+      "alphaChangedPixels": 2,
+      "totalChannelError": 112,
+      "librarySha256": "d0f9f24c39fe24ab2d626409bd9a0465c63faa8bb6b68b40e74d9af32b961abc"
+    },
+    "hairlineOnly": {
+      "changedPixels": 20,
+      "alphaChangedPixels": 0,
+      "totalChannelError": 54,
+      "librarySha256": "6958d69ea83a8032a233bdb1c6afd235eba7777275903e95d06f01a414c779f2"
+    },
+    "shared": {
+      "changedPixels": 19,
+      "alphaChangedPixels": 0,
+      "totalChannelError": 50
+    }
+  },
+  "affectedQualification": [
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 3140,
+        "seconds": 10.561,
+        "librarySha256": "c3da670e420aeb8aacf7e52cf507b8391815a4cf97e25cc5d857024c3cbc8835"
+      },
+      "native": {
+        "passed": 1987,
+        "seconds": 16.486,
+        "librarySha256": "c3da670e420aeb8aacf7e52cf507b8391815a4cf97e25cc5d857024c3cbc8835"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 3140,
+        "seconds": 13.702,
+        "librarySha256": "c3da670e420aeb8aacf7e52cf507b8391815a4cf97e25cc5d857024c3cbc8835"
+      },
+      "native": {
+        "passed": 1987,
+        "seconds": 27.154,
+        "librarySha256": "c3da670e420aeb8aacf7e52cf507b8391815a4cf97e25cc5d857024c3cbc8835"
+      }
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 3140,
+        "seconds": 10.002,
+        "librarySha256": "911fddf4ea1333a8bd179dbc8e5b43ac63c0bf35b92bf856effe48e818eb3f79"
+      },
+      "native": {
+        "passed": 1987,
+        "seconds": 17.079,
+        "librarySha256": "911fddf4ea1333a8bd179dbc8e5b43ac63c0bf35b92bf856effe48e818eb3f79"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 3140,
+        "seconds": 10.742,
+        "librarySha256": "911fddf4ea1333a8bd179dbc8e5b43ac63c0bf35b92bf856effe48e818eb3f79"
+      },
+      "native": {
+        "passed": 1987,
+        "seconds": 24.055,
+        "librarySha256": "911fddf4ea1333a8bd179dbc8e5b43ac63c0bf35b92bf856effe48e818eb3f79"
+      }
+    }
+  ],
+  "originalReplay": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "seconds": 48.2,
+    "perHost": {
+      "semanticReportsUnchanged": 204,
+      "previouslyExactPngsByteIdentical": 153,
+      "rendered": 154,
+      "exploratoryExact": 153,
+      "exploratoryDifferent": 1,
+      "unsupported": 47,
+      "malformed": 3
+    }
+  },
+  "closedOriginalFinding": {
+    "name": "juanmontoya_lingerie.svg",
+    "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
+    "owner": "g4270",
+    "platforms": {
+      "windows": {
+        "removedPixels": 5,
+        "addedDifferences": 0,
+        "remainingPixels": 19,
+        "allRemainingValuesUnchanged": true,
+        "alphaPlaneExact": true,
+        "removedBounds": [
+          164,
+          905,
+          167,
+          912
+        ],
+        "original": {
+          "changedPixels": 19,
+          "alphaChangedPixels": 0,
+          "maximumError": 1,
+          "totalChannelError": 50,
+          "pngSha256": "768dd2f283d11f9cd6b6971aa205882e9c9cf6d7029ac21e085074397b34a964"
+        }
+      },
+      "linux": {
+        "removedPixels": 5,
+        "addedDifferences": 0,
+        "remainingPixels": 19,
+        "allRemainingValuesUnchanged": true,
+        "alphaPlaneExact": true,
+        "removedBounds": [
+          164,
+          905,
+          167,
+          912
+        ],
+        "original": {
+          "changedPixels": 19,
+          "alphaChangedPixels": 0,
+          "maximumError": 1,
+          "totalChannelError": 50,
+          "pngSha256": "768dd2f283d11f9cd6b6971aa205882e9c9cf6d7029ac21e085074397b34a964"
+        }
+      }
+    }
+  },
+  "remaining": [
+    "The complete original remains19 RGB-only one-level pixels,total50, in four filtered source consumers. Its alpha plane is exact on both hosts.",
+    "Admitted thin-curved-source-wide remains four alpha pixels different per host; one exploratory affine copying-kernel gradient probe retains one RGB difference.",
+    "Full Windows/Linux/runtime/package promotion remains the coherent-milestone gate; frozen font reference authority is pending."
+  ]
+}

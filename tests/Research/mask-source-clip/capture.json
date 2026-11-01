@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "license": "CC0-1.0",
+  "sourceBaseline": "93a1402a25ffa9febf4e801462e01881c9a0f338",
+  "browser": "Chrome153.0.8010.52",
+  "width": 858,
+  "height": 1074,
+  "context": "Transparent SVG image,DPR1; three agreeing healthy/profile-cleaned fresh-process captures per host. One own hairline crosses a compositor bitmap inside an opaque part of a mask source clip.",
+  "cases": [
+    {
+      "id": "opaque-mask-bitmap",
+      "input": "inputs/opaque-mask-bitmap.svg",
+      "inputSha256": "cf7fa8b6a42d5a4323273b9ebf3346bb5e19521b17e970128ce8f998587692dd",
+      "logicalImageViewport": [
+        858.02069,
+        1074.1064
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "53355959a36e494a21daf3b90a07baa62fd8897a84acf4895f4f29beb4fd865c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "53355959a36e494a21daf3b90a07baa62fd8897a84acf4895f4f29beb4fd865c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "53355959a36e494a21daf3b90a07baa62fd8897a84acf4895f4f29beb4fd865c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "53355959a36e494a21daf3b90a07baa62fd8897a84acf4895f4f29beb4fd865c",
+          "reference": "references/opaque-mask-bitmap.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "53355959a36e494a21daf3b90a07baa62fd8897a84acf4895f4f29beb4fd865c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "53355959a36e494a21daf3b90a07baa62fd8897a84acf4895f4f29beb4fd865c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "53355959a36e494a21daf3b90a07baa62fd8897a84acf4895f4f29beb4fd865c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "53355959a36e494a21daf3b90a07baa62fd8897a84acf4895f4f29beb4fd865c",
+          "reference": "references/opaque-mask-bitmap.png"
+        }
+      },
+      "status": "exact",
+      "baseline": {
+        "windows": {
+          "changedPixels": 2,
+          "alphaChangedPixels": 1,
+          "maximumError": 4,
+          "maximumAlphaError": 1,
+          "totalChannelError": 9,
+          "librarySha256": "d8af693ca7620c53b2aefb06cc41fa9258c9128a19e1dc7aabf0cab7a9ad4608",
+          "actualPngSha256": "5fa097137ed8d5a471f4210a696e95b26dc64f2d91900e374d7bca0fb9098a11"
+        },
+        "linux": {
+          "changedPixels": 2,
+          "alphaChangedPixels": 1,
+          "maximumError": 4,
+          "maximumAlphaError": 1,
+          "totalChannelError": 9,
+          "librarySha256": "d8af693ca7620c53b2aefb06cc41fa9258c9128a19e1dc7aabf0cab7a9ad4608",
+          "actualPngSha256": "5fa097137ed8d5a471f4210a696e95b26dc64f2d91900e374d7bca0fb9098a11"
+        }
+      },
+      "qualification": "../svgweb/mask-opaque-bitmap.json"
+    }
+  ]
+}

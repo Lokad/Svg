@@ -96,10 +96,12 @@ internal static class SvgHairlineStroke
             SvgCpuRasterContext context = scope.Bind(tile);
             if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
             SvgCpuBitmapOrigin origin = context.Origin;
-            // Native AA clip wrappers preserve scalar dispatch unless the entire
-            // expanded path fits one opaque row band, including its full row shape.
+            // An opaque bitmap intersection is binary even when the complete
+            // path escapes it. Otherwise the AA wrapper's quick containment
+            // requires one opaque row band, including its full row shape.
             SvgRasterClipMask paintMask = !binaryViewport && !viewportMask.IsEmpty
-                && ContainsPath(viewportMask, width, commands, map, style.Cap, context, cancellationToken)
+                && (viewportMask.IsOpaqueRectangle(context.BitmapClip, width, cancellationToken)
+                    || ContainsPath(viewportMask, width, commands, map, style.Cap, context, cancellationToken))
                 ? SvgRasterClipMask.Empty : viewportMask;
             SvgHairlineCoverage raster = shaders.IsEmpty
                 ? new(destination, width, height, paint, clip, antialiasing, paintMask, binaryViewport, context, cancellationToken)

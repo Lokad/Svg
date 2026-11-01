@@ -2825,7 +2825,7 @@ public static partial class SvgConverter
                         // A native layer can restore as a sprite when its entire
                         // bitmap lies inside opaque runs of an otherwise AA clip.
                         bool parentRequiresShader = !paintedClipMask && !parentViewportClip.IsEmpty && !activeViewport.IsBinary
-                            && !IsOpaqueClipRectangle(parentViewportClip, layer);
+                            && !parentViewportClip.IsOpaqueRectangle(layer, outputWidth, cancellationToken);
                         byte[] sourcePaintClipPixels = [];
                         RenderBudget.BudgetReservation? sourcePaintClipOwner = null;
                         activeViewport = paintedClipMask ? parentViewport : parentViewport with { Pixels = [], Rectangle = null };
@@ -3848,28 +3848,6 @@ public static partial class SvgConverter
         byte ViewportAlpha(byte alpha, int x, int y)
             => !activeViewport.HasMask ? alpha : (byte)((alpha * activeViewport.Mask.GetAlphaAtOffset(outputWidth, (y * outputWidth + x) * 4) + 127) / 255);
 
-        bool IsOpaqueClipRectangle(SvgRasterClipMask pixels, SvgAnalyticClipBounds bounds)
-        {
-            if (pixels.Rectangle is not null)
-            {
-                if (bounds.Left >= bounds.Right || bounds.Top >= bounds.Bottom) return true;
-                cancellationToken.ThrowIfCancellationRequested();
-                return pixels.GetAlpha(outputWidth, bounds.Left, bounds.Top) == 255
-                    && pixels.GetAlpha(outputWidth, bounds.Right - 1, bounds.Top) == 255
-                    && pixels.GetAlpha(outputWidth, bounds.Left, bounds.Bottom - 1) == 255
-                    && pixels.GetAlpha(outputWidth, bounds.Right - 1, bounds.Bottom - 1) == 255;
-            }
-            for (int y = bounds.Top; y < bounds.Bottom; y++)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                for (int x = bounds.Left; x < bounds.Right; x++)
-                {
-                    if (pixels.GetAlpha(outputWidth, x, y) != 255) return false;
-                }
-            }
-            return true;
-        }
-
         SvgAnalyticClipCoverage PolygonClipCoverage(MappedPolygon raster, int x, int y)
         {
             SvgAnalyticClipCoverage coverage = raster.Clip is null ? SvgAnalyticClipCoverage.Full
@@ -3929,7 +3907,10 @@ public static partial class SvgConverter
 
         SvgAnalyticPaintClip PolygonPaintClip(MappedPolygon raster, SvgCpuRasterContext context)
         {
-            if (collectingViewportClip || maskClipAntialiased) return SvgAnalyticPaintClip.Antialiased;
+            // Explicit rectangle coverage can collapse to BW in this bitmap.
+            // Clip construction and unrepresented mask boundaries retain AA.
+            if (collectingViewportClip || maskClipAntialiased && !(activeViewport.HasMask && activeViewport.IsRectangle))
+                return SvgAnalyticPaintClip.Antialiased;
             SvgAnalyticPaintClip paintClip = raster.GetPaintClip(context);
             if (!activeViewport.HasMask || activeViewport.IsBinary) return paintClip;
             SvgAnalyticClipBounds clip = context.BitmapClip;
@@ -3939,7 +3920,7 @@ public static partial class SvgConverter
                 clip = new(Math.Max(clip.Left, bounds.Left), Math.Max(clip.Top, bounds.Top), Math.Min(clip.Right, bounds.Right), Math.Min(clip.Bottom, bounds.Bottom));
             // Native raster clips collapse a wholly opaque rectangular bitmap
             // intersection to BW. Preserve its ordinary mask/run material routing.
-            return IsOpaqueClipRectangle(activeViewport.Mask, clip) ? paintClip : SvgAnalyticPaintClip.Antialiased;
+            return activeViewport.Mask.IsOpaqueRectangle(clip, outputWidth, cancellationToken) ? paintClip : SvgAnalyticPaintClip.Antialiased;
         }
 
         void RasterizePolygonFill(SvgPolygonFill polygon, SvgAuthoredPath? authoredPath, byte[] destination, ReadOnlySpan<byte> fontPreblend)
