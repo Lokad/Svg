@@ -18,6 +18,12 @@ origin, including when pixel scratch replaces whole-image storage. Source captur
 keeps its recording placement. [Native allocation evidence](../svgweb/filter-opacity-device.json)
 records both failing-before controls and the broader qualification.
 
+The gradient-stroke blur reuses visual bounds retained in filter parameter space.
+Reconstructing them from a scene enclosure changes the source bitmap's dither
+origin while leaving alpha exact. The [bounds regression](../svgweb/filter-stroke-source-bounds.json)
+records the native allocation, 64 failing-before colour pixels and exact canonical
+conversion on both hosts.
+
 The [wide control](inputs/thin-curved-source-wide.svg) remains **open**: four
 one-level alpha differences on both hosts. It changes only viewport and outer
 placement. Exploratory direct-source painting is exact; the filtered instance

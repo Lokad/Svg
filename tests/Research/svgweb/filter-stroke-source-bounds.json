@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "321cfe674d10a91128850ca604a636e54e6c6f59",
+  "capture": "../filter-source-opacity/capture.json",
+  "scope": "Reuse retained parameter-space visual bounds when constructing an affine filter source. Existing source requests, capture storage, shader arithmetic, colour transfer and restore contexts remain separate.",
+  "control": {
+    "id": "gradient-stroke-blur-opacity",
+    "input": "inputs/gradient-stroke-blur-opacity.svg",
+    "inputSha256": "168264332836f5777e485fc2e8ebf4d543d9bb0fcff704f99c6a40e5885f11fa",
+    "referenceSha256": "c9293e0cc2412fee71edfd324f07239bd6df177d7a54ed74c3068bded36b511f",
+    "baseline": {
+      "windows": {
+        "changedPixels": 64,
+        "alphaChangedPixels": 0,
+        "maximumError": 16,
+        "maximumAlphaError": 0,
+        "totalChannelError": 298,
+        "librarySha256": "8045609c6f672254bb26397740b5e879a4bcfae6a4015e0b66bb7dc2706ecfe9",
+        "actualPngSha256": "2c65a9172a8a3cd890e40b6e35e98a280efdbf47f93ee218187045b86ff2d94c"
+      },
+      "linux": {
+        "changedPixels": 64,
+        "alphaChangedPixels": 0,
+        "maximumError": 16,
+        "maximumAlphaError": 0,
+        "totalChannelError": 298,
+        "librarySha256": "8045609c6f672254bb26397740b5e879a4bcfae6a4015e0b66bb7dc2706ecfe9",
+        "actualPngSha256": "2c65a9172a8a3cd890e40b6e35e98a280efdbf47f93ee218187045b86ff2d94c"
+      }
+    },
+    "candidate": {
+      "windows": {
+        "changedPixels": 0,
+        "alphaChangedPixels": 0
+      },
+      "linux": {
+        "changedPixels": 0,
+        "alphaChangedPixels": 0
+      }
+    }
+  },
+  "nativeSourceAllocation": {
+    "browser": "Chrome153.0.8010.52",
+    "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "startupHealth": "healthy",
+    "profileCleaned": true,
+    "parameterSaveLayerHint": [
+      1022,
+      60,
+      1062,
+      102
+    ],
+    "sourceDrawDither": true,
+    "restorePaintDither": false,
+    "reconstructionBefore": {
+      "parameterVisual": [
+        1015.8387,
+        54.13204,
+        1068.1614,
+        107.867966
+      ],
+      "parameterCaptureHint": [
+        1015,
+        54,
+        1069,
+        108
+      ],
+      "requestedLayerSource": [
+        823,
+        45,
+        863,
+        87
+      ],
+      "paddedSourceOrigin": [
+        822,
+        44
+      ]
+    },
+    "retainedAfter": {
+      "parameterVisual": [
+        1022,
+        60,
+        1062,
+        102
+      ],
+      "parameterCaptureHint": [
+        1022,
+        60,
+        1062,
+        102
+      ],
+      "requestedLayerSource": [
+        826,
+        48,
+        860,
+        83
+      ],
+      "paddedSourceOrigin": [
+        825,
+        47
+      ]
+    },
+    "interpretation": "The native saveLayer hint agrees with the retained parameter capture. Its mapped/rounded requested input and one-pixel guard determine the source bitmap origin. Expanded scene enclosures moved the ordered source dither while preserving alpha; no pixel phase correction is introduced."
+  },
+  "responsibilities": {
+    "mechanism": "Existing SvgFilterSourceHintTests cover retained authored visuals, affine/nested bindings and parameter enclosure.",
+    "rendering": "One canonical conversion of the independently captured gradient-stroke blur protects capture origin through nontrivial convolution, linear colour transfer, affine sampling and outer opacity.",
+    "ownership": "Existing filter, opacity, budget and replay checks retain distinct execution/allocation paths. No added API-form matrix.",
+    "references": "Six new fresh-process healthy/profile-cleaned captures agree, three per host; existing references and exact assertions are unchanged."
+  },
+  "focusedBeforeAfter": {
+    "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests",
+    "before": {
+      "passed": 13,
+      "failed": 1,
+      "seconds": 7.392,
+      "librarySha256": "8045609c6f672254bb26397740b5e879a4bcfae6a4015e0b66bb7dc2706ecfe9"
+    },
+    "after": {
+      "passed": 14,
+      "failed": 0,
+      "seconds": 5.376,
+      "librarySha256": "95b3246bbb2a5b028a8b68a6a2787b6b30352900efd6c8a384fa172a6b8b6958"
+    },
+    "timing": "Functional elapsed time, not a benchmark."
+  },
+  "affectedQualification": [
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 589,
+        "seconds": 7.349,
+        "librarySha256": "95b3246bbb2a5b028a8b68a6a2787b6b30352900efd6c8a384fa172a6b8b6958"
+      },
+      "native": {
+        "passed": 1917,
+        "seconds": 16.026,
+        "librarySha256": "95b3246bbb2a5b028a8b68a6a2787b6b30352900efd6c8a384fa172a6b8b6958"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 589,
+        "seconds": 9.632,
+        "librarySha256": "95b3246bbb2a5b028a8b68a6a2787b6b30352900efd6c8a384fa172a6b8b6958"
+      },
+      "native": {
+        "passed": 1917,
+        "seconds": 25.825,
+        "librarySha256": "95b3246bbb2a5b028a8b68a6a2787b6b30352900efd6c8a384fa172a6b8b6958"
+      }
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 589,
+        "seconds": 7.111,
+        "librarySha256": "04c62b9bad31db6c29fb097eaac681d3c092a3f0de8424c0cd772b0d578c0f79"
+      },
+      "native": {
+        "passed": 1917,
+        "seconds": 16.855,
+        "librarySha256": "04c62b9bad31db6c29fb097eaac681d3c092a3f0de8424c0cd772b0d578c0f79"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 589,
+        "seconds": 7.99,
+        "librarySha256": "04c62b9bad31db6c29fb097eaac681d3c092a3f0de8424c0cd772b0d578c0f79"
+      },
+      "native": {
+        "passed": 1917,
+        "seconds": 24.13,
+        "librarySha256": "04c62b9bad31db6c29fb097eaac681d3c092a3f0de8424c0cd772b0d578c0f79"
+      }
+    }
+  ],
+  "originalReplay": {
+    "renderingTrialLibrarySha256": "dfd627657f76aef10791769d5309d45a092d825acd664603a3851349c7a8852d",
+    "scope": "Same retained-visuals change before explanatory comments; bounded-RAM SHA-checked downloads.",
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "platforms": {
+      "windows": {
+        "semanticReportsUnchanged": 204,
+        "outcomes": {
+          "UnsupportedFeature": 47,
+          "rendered": 154,
+          "MalformedInput": 3
+        },
+        "comparisons": {
+          "exact": 153,
+          "different": 1
+        },
+        "renderedPngsByteIdentical": 154,
+        "changed": [],
+        "original": {
+          "changedPixels": 147,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 459,
+          "pngSha256": "74b41bb6d0ecdbb94f55c62401ffe25f1b3a99590daee90b9e7024e589f16852"
+        }
+      },
+      "linux": {
+        "semanticReportsUnchanged": 204,
+        "outcomes": {
+          "UnsupportedFeature": 47,
+          "rendered": 154,
+          "MalformedInput": 3
+        },
+        "comparisons": {
+          "exact": 153,
+          "different": 1
+        },
+        "renderedPngsByteIdentical": 154,
+        "changed": [],
+        "original": {
+          "changedPixels": 147,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 459,
+          "pngSha256": "74b41bb6d0ecdbb94f55c62401ffe25f1b3a99590daee90b9e7024e589f16852"
+        }
+      }
+    },
+    "seconds": 49.53464399999939
+  },
+  "remaining": [
+    "Complete juanmontoya_lingerie.svg:147 changed pixels,2alpha,max17,total459 on both hosts;19 named-consumer,123 gradient-stroke and5 mask-group pixels.",
+    "Admitted thin-curved-source-wide:four one-level alpha differences on each host.",
+    "A copying-kernel gradient-stroke exploratory control remains one colour pixel different. This fix does not close all stroke-shader stages.",
+    "Milestone full Windows/Linux/runtime/package promotion and pending frozen-font reference authority remain open."
+  ],
+  "nativeSources": [
+    "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkCanvas.cpp",
+    "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkImageFilterTypes.cpp"
+  ]
+}

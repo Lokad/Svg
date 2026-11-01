@@ -399,6 +399,86 @@
         }
       },
       "qualification": "../svgweb/filter-opacity-device.json"
+    },
+    {
+      "id": "gradient-stroke-blur-opacity",
+      "input": "inputs/gradient-stroke-blur-opacity.svg",
+      "inputSha256": "168264332836f5777e485fc2e8ebf4d543d9bb0fcff704f99c6a40e5885f11fa",
+      "width": 858,
+      "height": 1074,
+      "logicalImageViewport": [
+        858.02069,
+        1074.1064
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "c9293e0cc2412fee71edfd324f07239bd6df177d7a54ed74c3068bded36b511f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c9293e0cc2412fee71edfd324f07239bd6df177d7a54ed74c3068bded36b511f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c9293e0cc2412fee71edfd324f07239bd6df177d7a54ed74c3068bded36b511f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "c9293e0cc2412fee71edfd324f07239bd6df177d7a54ed74c3068bded36b511f",
+          "reference": "references/gradient-stroke-blur-opacity.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "c9293e0cc2412fee71edfd324f07239bd6df177d7a54ed74c3068bded36b511f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c9293e0cc2412fee71edfd324f07239bd6df177d7a54ed74c3068bded36b511f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c9293e0cc2412fee71edfd324f07239bd6df177d7a54ed74c3068bded36b511f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "c9293e0cc2412fee71edfd324f07239bd6df177d7a54ed74c3068bded36b511f",
+          "reference": "references/gradient-stroke-blur-opacity.png"
+        }
+      },
+      "status": "exact",
+      "sourceBaseline": "321cfe674d10a91128850ca604a636e54e6c6f59",
+      "baseline": {
+        "windows": {
+          "changedPixels": 64,
+          "alphaChangedPixels": 0,
+          "maximumError": 16,
+          "maximumAlphaError": 0,
+          "totalChannelError": 298,
+          "librarySha256": "8045609c6f672254bb26397740b5e879a4bcfae6a4015e0b66bb7dc2706ecfe9",
+          "actualPngSha256": "2c65a9172a8a3cd890e40b6e35e98a280efdbf47f93ee218187045b86ff2d94c"
+        },
+        "linux": {
+          "changedPixels": 64,
+          "alphaChangedPixels": 0,
+          "maximumError": 16,
+          "maximumAlphaError": 0,
+          "totalChannelError": 298,
+          "librarySha256": "8045609c6f672254bb26397740b5e879a4bcfae6a4015e0b66bb7dc2706ecfe9",
+          "actualPngSha256": "2c65a9172a8a3cd890e40b6e35e98a280efdbf47f93ee218187045b86ff2d94c"
+        }
+      },
+      "qualification": "../svgweb/filter-stroke-source-bounds.json"
     }
   ]
 }

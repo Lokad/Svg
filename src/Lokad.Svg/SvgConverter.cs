@@ -1166,7 +1166,11 @@ public static partial class SvgConverter
                     SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, distances, context, visual, budget, cancellationToken);
                     // Capture hints are rounded before layer scaling. Inverting a
                     // layer-space hint loses authored fringes and perturbs integers.
-                    SvgPaintBounds parameterObjects = parameterObjectBounds ?? default, parameterVisual = parameterVisualBounds ?? default;
+                    // Reuse visuals retained before scene narrowing. Inverting
+                    // a scene enclosure inflates strokes and moves the source
+                    // bitmap's shader/dither origin even when alpha is unchanged.
+                    SvgPaintBounds parameterObjects = parameterObjectBounds ?? default,
+                        parameterVisual = binding.ParameterVisualBounds ?? parameterVisualBounds ?? default;
                     SvgFilterBinding parameterBinding = binding with { Transform = SvgAffineTransform.Identity, ObjectBounds = parameterObjects, VisualBounds = parameterVisual };
                     SvgFilterDeviceMap parameterDistances = objectUnits
                         ? new(parameterObjects.Right - parameterObjects.Left, parameterObjects.Bottom - parameterObjects.Top) : new(1, 1);
