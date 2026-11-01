@@ -639,6 +639,196 @@
       "use6314": "bde6f92cf88dff544ef36af5fdabcd1c83b4f57b565c1cce4c2db13aadbd95df",
       "other-content": "3c5324a4130c8c9d2e172c2ede86662848eab2c26d89762d63d5b8b681c08756"
     },
-    "interpretation": "The remaining147 are not all one direct-use discrepancy. The four named consumers add19 disjoint RGB-only, one-level differences (11,2,4,2). Another128 pixels, including both alpha differences, survive when all four are hidden. Candidate/native values at the common pixels and the original difference mask were checked explicitly. This is diagnostic Windows evidence, not reference admission."
+    "interpretation": "The remaining147 are not all one direct-use discrepancy. The four named consumers add19 disjoint RGB-only, one-level differences (11,2,4,2). Another128 pixels, including both alpha differences, survive when all four are hidden. Candidate/native values at the common pixels and the original difference mask were checked explicitly. This is diagnostic Windows evidence, not reference admission.",
+    "commonContentGroups": {
+      "qualification": "Exploratory RAM-only mutations; one healthy native capture per input, no reference admission.",
+      "top": {
+        "changedPixels": 123,
+        "alphaChangedPixels": 0,
+        "maximumError": 5,
+        "bounds": [
+          435,
+          75,
+          465,
+          122
+        ],
+        "ownerId": "g6354",
+        "proof": "Hiding g6354 removes all123 top differences; all five bottom candidate/native pixels remain unchanged. Hiding layer4 preserves all123 top candidate/native pixels exactly."
+      },
+      "bottom": {
+        "changedPixels": 5,
+        "alphaChangedPixels": 2,
+        "maximumError": 17,
+        "bounds": [
+          164,
+          905,
+          167,
+          912
+        ],
+        "ownerId": "layer4",
+        "proof": "Hiding layer4 removes all five bottom differences; all123 top candidate/native pixels remain unchanged. The precise descendant and shared mechanism remain open."
+      },
+      "observations": [
+        {
+          "hiddenId": "layer3",
+          "sourceRetained": false,
+          "materializedSha256": "d1f55abd3796ac44db9bfeaf3f35edf29152d577a65e29f561ef9604c5acf0dc",
+          "changedPixels": 128,
+          "alphaChangedPixels": 4,
+          "maximumError": 17,
+          "totalChannelError": 414,
+          "originalCommonPixelsStillDifferent": 128,
+          "originalCommonNativeAndCandidatePixelsUnchanged": 126,
+          "topRegionPixels": 123,
+          "bottomRegionPixels": 5
+        },
+        {
+          "hiddenId": "layer4",
+          "sourceRetained": false,
+          "materializedSha256": "779dc2bcb9487e9374a1f3e9d315fd8988e9fdddeda1671a9371bdb7e558929d",
+          "changedPixels": 123,
+          "alphaChangedPixels": 0,
+          "maximumError": 5,
+          "totalChannelError": 344,
+          "originalCommonPixelsStillDifferent": 123,
+          "originalCommonNativeAndCandidatePixelsUnchanged": 123,
+          "topRegionPixels": 123,
+          "bottomRegionPixels": 0
+        },
+        {
+          "hiddenId": "layer5",
+          "sourceRetained": false,
+          "materializedSha256": "bda150d45dc02746113f7cc56129a5475142c29917fe2819b0fe5e6c71acd941",
+          "changedPixels": 5,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 65,
+          "originalCommonPixelsStillDifferent": 5,
+          "originalCommonNativeAndCandidatePixelsUnchanged": 5,
+          "topRegionPixels": 0,
+          "bottomRegionPixels": 5
+        },
+        {
+          "hiddenId": "g6243",
+          "sourceRetained": false,
+          "materializedSha256": "0ade10a5e43e03a5ffee8322cb651a450a56a8044c5201ff2c49992f53a51fab",
+          "changedPixels": 128,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 409,
+          "originalCommonPixelsStillDifferent": 128,
+          "originalCommonNativeAndCandidatePixelsUnchanged": 128,
+          "topRegionPixels": 123,
+          "bottomRegionPixels": 5
+        },
+        {
+          "hiddenId": "g6354",
+          "sourceRetained": false,
+          "materializedSha256": "e7f518ca9d63d9dc69efd5cc143451bcf580f36fac2d371a468b1bb5d49ea322",
+          "changedPixels": 5,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 65,
+          "originalCommonPixelsStillDifferent": 5,
+          "originalCommonNativeAndCandidatePixelsUnchanged": 5,
+          "topRegionPixels": 0,
+          "bottomRegionPixels": 5
+        }
+      ],
+      "interpretation": "The complete147-pixel residual is spatially accounted for as19 named-consumer pixels,123 pixels in g6354 and five in layer4. This identifies paint owners, not three independent causes; investigate shared recording/sampling/alpha stages before adding special cases."
+    }
+  },
+  "wideSourceAlpha": {
+    "id": "thin-curved-source-wide",
+    "capture": "../filter-source-opacity/capture.json",
+    "sourceSha256": "f03e25615dc0b7c2a167fbf1194eaae7271eb7f50682dc74b5f826dba364e346",
+    "sourceBaseline": "de7d8a9df16d10b7bd53ef153b90c2da4e233a24",
+    "baseline": {
+      "windows": {
+        "changedPixels": 4,
+        "alphaChangedPixels": 4,
+        "maximumError": 1,
+        "maximumAlphaError": 1,
+        "totalChannelError": 4,
+        "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+        "actualPngSha256": "c4ef54b089dd68ffe97c34dfcebad4d64c104ff53e80ec627c905ecbf3d92d2b"
+      },
+      "linux": {
+        "changedPixels": 4,
+        "alphaChangedPixels": 4,
+        "maximumError": 1,
+        "maximumAlphaError": 1,
+        "totalChannelError": 4,
+        "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+        "actualPngSha256": "c4ef54b089dd68ffe97c34dfcebad4d64c104ff53e80ec627c905ecbf3d92d2b"
+      }
+    },
+    "independentCaptures": 6,
+    "recipe": "Reuse the own fractional thin-source geometry, aliases, filters and opacity. Change root/CSS viewport to858.02069x1074.1064 and move the outer translation from(-1024,-64) to(-724,-64). No hosted SVG fragments.",
+    "status": "OPEN at four one-level alpha differences on both hosts; native reference admitted, no passing rendering assertion yet.",
+    "windowsDiagnostics": {
+      "qualification": "One healthy fresh-process native observation per mutation; exploratory only.",
+      "sourceOnlyChangedPixels": 0,
+      "instanceOnlyChangedPixels": 4,
+      "noInnerFilterAlphaChangedPixels": 0,
+      "noOuterFilterAlphaChangedPixels": 0,
+      "opaqueSourceAlphaChangedPixels": 9,
+      "opaqueConsumerAlphaChangedPixels": 3,
+      "integerRootAlphaChangedPixels": 0,
+      "transparentOriginalConsumers": {
+        "changedPixels": 18,
+        "alphaChangedPixels": 13,
+        "interpretation": "Opacity wrappers hide unrelated paint while retaining referenced definitions. The changed context is diagnostic; no exact equivalence to the original coloured backdrop is claimed."
+      }
+    },
+    "interpretation": "A wider drawing context exposes alpha sampling differences that closed small controls do not. Direct source painting is exact in the exploratory visibility isolation. Colour transfer alone cannot explain changed alpha. Both filters are needed for this alpha residual in these observations; removing a filter also changes native surface construction.",
+    "rejectedTrials": [
+      {
+        "change": "Use shader double intermediates for the source-device origin concatenation.",
+        "result": "No effect on the four/nine-shape transparent/backdrop probes or eleven retained controls."
+      },
+      {
+        "change": "Reconstruct full relative device placement through an additional forward map.",
+        "result": "Changes the remaining pixels but regresses the independently closed fractional control by seven pixels. Not promoted."
+      }
+    ],
+    "closure": "Explain the native source capture/sampling stage with a direct mechanism, keep all closed controls exact, close this control and the complete original on both hosts. Preserve reference bytes, logical sizing and stage boundaries.",
+    "affectedHelperValidation": {
+      "buildWarnings": 0,
+      "buildErrors": 0,
+      "productionCodeChanged": false,
+      "testsAdded": 0,
+      "platforms": [
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests",
+          "passed": 11,
+          "seconds": 6.669261199887842
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests",
+          "passed": 11,
+          "seconds": 9.712244299
+        },
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "selection": "FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~SvgDeferredClipReferenceTests",
+          "passed": 18,
+          "seconds": 5.8723965000826865
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "selection": "FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~SvgDeferredClipReferenceTests",
+          "passed": 18,
+          "seconds": 9.599047739999996
+        }
+      ],
+      "scope": "All29 existing canonical rendering consumers of the helper pass per host. The new open case is admitted research, not asserted as passing. Full qualification is reserved for a production milestone."
+    }
   }
 }

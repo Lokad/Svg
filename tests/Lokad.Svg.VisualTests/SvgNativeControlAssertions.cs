@@ -27,7 +27,7 @@ internal static class SvgNativeControlAssertions
         }
         RgbaImage expected = new NativeReferenceImages().Get(Path.Combine(directory, Required(native, "reference")), digest);
         byte[] png = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
-        int pixels = checked(manifest.RootElement.GetProperty("width").GetInt32() * manifest.RootElement.GetProperty("height").GetInt32());
+        int pixels = checked(expected.Width * expected.Height);
         PixelComparison result = PixelComparer.Compare(expected, PngRgbaDecoder.Decode(png, pixels));
         Assert.True(result.IsExact, JsonSerializer.Serialize(result));
 

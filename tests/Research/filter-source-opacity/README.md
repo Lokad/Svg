@@ -1,26 +1,24 @@
 # Filter source opacity
 
-This original CC0 control recomposes a thin curve, scaled aliases, large authored
-coordinates, copying Gaussian kernels and nested opacity. It contains no hosted
-SVG content. The [manifest](capture.json) retains three fresh agreeing, healthy,
-profile-cleaned captures on each host. Both hosts share one reference image.
+These own CC0 controls combine a thin curve, scaled aliases, large coordinates,
+copying Gaussian kernels and nested opacity. They contain no hosted SVG content.
+The [manifest](capture.json) retains three agreeing, healthy, profile-cleaned
+captures per host and one shared native PNG per case.
 
 The fractional and integer [canonical rendering tests](../../Lokad.Svg.VisualTests/SvgFilterSourceOpacityReferenceTests.cs)
-are exact on both hosts. The fractional frozen implementation fails 161 pixels, including
-150 alpha differences. Tight parameter-space visual bounds and the allocated
-opacity bitmap's origin protect source capture; later clips retain that origin.
+are exact on both hosts. Tight parameter-space bounds and the allocated opacity
+bitmap's origin protect source capture. Independently rounded device axes select
+the bitmap-restore consumer. [Bounds evidence](../svgweb/filter-source-opacity.json)
+and [restore mechanisms](../svgweb/group-opacity-stages.json) preserve their distinct
+failing-before results and the existing affine-opacity/AA-parent-clip controls.
 
-Use the [capture procedure](../../../tools/README.md#hosted-svgweb-inventory) with
-a 128.3×96.2 CSS image viewport and a 128×96 screenshot. Keep the source, reference
-and exact comparison unchanged. [Native layer observations](native-layer-observations.json)
-distinguish the opacity allocation from the filter's source-picture hint.
+The [wide control](inputs/thin-curved-source-wide.svg) remains **open**: four
+one-level alpha differences on both hosts. It changes only viewport and outer
+placement. Exploratory direct-source painting is exact; the filtered instance
+retains the error. Its admitted reference protects investigation, with a passing
+rendering assertion to follow closure. The manifest records each viewport and
+screenshot size; the wider context preserves a boundary absent from the small cases.
 
-[Investigation and closure criteria](../svgweb/filter-source-opacity.json) retain
-the preserved affine group-opacity and antialiased parent-clip counterexamples.
-Clip coverage uses stored-image extents; opacity uses painted-output extents.
-The integer companion changes only root and CSS image dimensions to 128×96.
-Its rounded device axes select a different bitmap-restore consumer; preserving
-that selection closes 434 pixel differences, including 400 alpha differences.
-[Group-restore evidence](../svgweb/group-opacity-stages.json) also retains a reduced
-rectangle pair and four direct native mechanisms. The complete hosted original
-and other exploratory opacity variants remain open.
+Use the [capture procedure](../../../tools/README.md#hosted-svgweb-inventory).
+Preserve native reference bytes and exact comparisons. The complete hosted
+original remains open; no support claim follows from these reduced controls.

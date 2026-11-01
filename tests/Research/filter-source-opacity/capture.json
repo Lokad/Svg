@@ -5,7 +5,7 @@
   "browser": "Chrome153.0.8010.52",
   "width": 128,
   "height": 96,
-  "context": "Transparent SVG image, DPR1, 128 by96 screenshot; each case records its CSS image viewport. Three agreeing healthy fresh-process captures per host. Own recomposed sources only.",
+  "context": "Transparent SVG images, DPR1. Per-case width/height override the default128x96 screenshot; each case records its CSS image viewport. Three agreeing healthy fresh-process captures per host. Own recomposed sources only.",
   "cases": [
     {
       "id": "thin-curved-source",
@@ -156,6 +156,86 @@
           "maximumAlphaError": 1,
           "totalChannelError": 7276,
           "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d"
+        }
+      },
+      "qualification": "../svgweb/group-opacity-stages.json"
+    },
+    {
+      "id": "thin-curved-source-wide",
+      "input": "inputs/thin-curved-source-wide.svg",
+      "inputSha256": "f03e25615dc0b7c2a167fbf1194eaae7271eb7f50682dc74b5f826dba364e346",
+      "width": 858,
+      "height": 1074,
+      "logicalImageViewport": [
+        858.02069,
+        1074.1064
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "48078536310bc7cd54b408c5117fb806999fcfc8c0c17937fb142ec40c5066f8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "48078536310bc7cd54b408c5117fb806999fcfc8c0c17937fb142ec40c5066f8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "48078536310bc7cd54b408c5117fb806999fcfc8c0c17937fb142ec40c5066f8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "48078536310bc7cd54b408c5117fb806999fcfc8c0c17937fb142ec40c5066f8",
+          "reference": "references/thin-curved-source-wide.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "48078536310bc7cd54b408c5117fb806999fcfc8c0c17937fb142ec40c5066f8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "48078536310bc7cd54b408c5117fb806999fcfc8c0c17937fb142ec40c5066f8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "48078536310bc7cd54b408c5117fb806999fcfc8c0c17937fb142ec40c5066f8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "48078536310bc7cd54b408c5117fb806999fcfc8c0c17937fb142ec40c5066f8",
+          "reference": "references/thin-curved-source-wide.png"
+        }
+      },
+      "status": "open-source-alpha-sampling",
+      "sourceBaseline": "de7d8a9df16d10b7bd53ef153b90c2da4e233a24",
+      "baseline": {
+        "windows": {
+          "changedPixels": 4,
+          "alphaChangedPixels": 4,
+          "maximumError": 1,
+          "maximumAlphaError": 1,
+          "totalChannelError": 4,
+          "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+          "actualPngSha256": "c4ef54b089dd68ffe97c34dfcebad4d64c104ff53e80ec627c905ecbf3d92d2b"
+        },
+        "linux": {
+          "changedPixels": 4,
+          "alphaChangedPixels": 4,
+          "maximumError": 1,
+          "maximumAlphaError": 1,
+          "totalChannelError": 4,
+          "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+          "actualPngSha256": "c4ef54b089dd68ffe97c34dfcebad4d64c104ff53e80ec627c905ecbf3d92d2b"
         }
       },
       "qualification": "../svgweb/group-opacity-stages.json"
