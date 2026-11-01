@@ -254,6 +254,10 @@ offsets/aliases can retain deferred sampled images until a
 consumer requires pixels.
 Source visuals are enclosed in parameter coordinates before graph expansion;
 capture and output image hints are enclosed there again before device placement.
+Path stroke layout visuals stay fractional through child placement and union;
+recorded painting separately encloses each draw before placement.
+[Fractional stroke controls](../tests/Research/svgweb/filter-fractional-stroke-layout.json)
+protect both stages, including rotated aliases.
 Affine replay reuses retained parameter visuals: inverting a scene enclosure
 inflates strokes and changes the source bitmap's shader/dither origin.
 [Gradient-stroke evidence](../tests/Research/svgweb/filter-stroke-source-bounds.json)

@@ -285,10 +285,13 @@ internal static class SvgPaintRecording
                 if (source.StrokeBoundsInflation > 0)
                 {
                     float inflation = source.StrokeBoundsInflation;
-                    SvgPaintBounds painted = new(MathF.Floor(inputBox.Left - inflation), MathF.Floor(inputBox.Top - inflation),
-                        MathF.Ceiling(inputBox.Right + inflation), MathF.Ceiling(inputBox.Bottom + inflation));
+                    SvgPaintBounds painted = new(inputBox.Left - inflation, inputBox.Top - inflation,
+                        inputBox.Right + inflation, inputBox.Bottom + inflation);
+                    // Parent layout maps fractional visuals; recorded painting
+                    // encloses each draw before placement into its native canvas.
                     sourceVisualBox = painted;
-                    visualBounds = painted.Map(parsed.SourceObjectMap, token);
+                    SvgPaintBounds recorded = new(MathF.Floor(painted.Left), MathF.Floor(painted.Top), MathF.Ceiling(painted.Right), MathF.Ceiling(painted.Bottom));
+                    visualBounds = recorded.Map(parsed.SourceObjectMap, token);
                 }
             }
             if (objectBounds is null && values.Length != 0)
@@ -317,10 +320,11 @@ internal static class SvgPaintRecording
                     if (source.StrokeBoundsInflation > 0)
                     {
                         float inflation = source.StrokeBoundsInflation;
-                        SvgPaintBounds painted = new(MathF.Floor((float)box.X - inflation), MathF.Floor((float)box.Y - inflation),
-                            MathF.Ceiling((float)(box.X + box.Width) + inflation), MathF.Ceiling((float)(box.Y + box.Height) + inflation));
+                        SvgPaintBounds painted = new((float)box.X - inflation, (float)box.Y - inflation,
+                            (float)(box.X + box.Width) + inflation, (float)(box.Y + box.Height) + inflation);
                         sourceVisualBox = painted;
-                        visualBounds = painted.Map(path.SceneMap, token);
+                        SvgPaintBounds recorded = new(MathF.Floor(painted.Left), MathF.Floor(painted.Top), MathF.Ceiling(painted.Right), MathF.Ceiling(painted.Bottom));
+                        visualBounds = recorded.Map(path.SceneMap, token);
                     }
                 }
                 else if (element is "polygon" or "polyline")

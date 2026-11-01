@@ -559,6 +559,86 @@
         }
       },
       "qualification": "../svgweb/filter-instance-display-bounds.json"
+    },
+    {
+      "id": "fractional-stroke-layout",
+      "input": "inputs/fractional-stroke-layout.svg",
+      "inputSha256": "d84f65162c261166b75c4d41624321a972dd328a98261e0388799029c144a229",
+      "width": 128,
+      "height": 96,
+      "logicalImageViewport": [
+        128.3,
+        96.2
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "bef242041d1c42093f61af13ff3dc0a0d972f33c81158143cd85eadd051a85d8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "bef242041d1c42093f61af13ff3dc0a0d972f33c81158143cd85eadd051a85d8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "bef242041d1c42093f61af13ff3dc0a0d972f33c81158143cd85eadd051a85d8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "bef242041d1c42093f61af13ff3dc0a0d972f33c81158143cd85eadd051a85d8",
+          "reference": "references/fractional-stroke-layout.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "bef242041d1c42093f61af13ff3dc0a0d972f33c81158143cd85eadd051a85d8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "bef242041d1c42093f61af13ff3dc0a0d972f33c81158143cd85eadd051a85d8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "bef242041d1c42093f61af13ff3dc0a0d972f33c81158143cd85eadd051a85d8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "bef242041d1c42093f61af13ff3dc0a0d972f33c81158143cd85eadd051a85d8",
+          "reference": "references/fractional-stroke-layout.png"
+        }
+      },
+      "status": "exact",
+      "sourceBaseline": "1876e81b6335957fbe432af815519bf54c6dd4ab",
+      "baseline": {
+        "windows": {
+          "changedPixels": 52,
+          "alphaChangedPixels": 0,
+          "maximumError": 128,
+          "maximumAlphaError": 0,
+          "totalChannelError": 1445,
+          "librarySha256": "b090214273d775b4059b9569486602ce9a3be5965ebde032df1792d220f138f4",
+          "actualPngSha256": "9424713e2defd54cc2f8fc74fa6148d7afd62529780cff1f718f2ea3f52003e8"
+        },
+        "linux": {
+          "changedPixels": 52,
+          "alphaChangedPixels": 0,
+          "maximumError": 128,
+          "maximumAlphaError": 0,
+          "totalChannelError": 1445,
+          "librarySha256": "b090214273d775b4059b9569486602ce9a3be5965ebde032df1792d220f138f4",
+          "actualPngSha256": "9424713e2defd54cc2f8fc74fa6148d7afd62529780cff1f718f2ea3f52003e8"
+        }
+      },
+      "qualification": "../svgweb/filter-fractional-stroke-layout.json"
     }
   ]
 }

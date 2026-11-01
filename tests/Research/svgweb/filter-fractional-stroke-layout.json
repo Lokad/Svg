@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "1876e81b6335957fbe432af815519bf54c6dd4ab",
+  "capture": "../filter-source-opacity/capture.json",
+  "scope": "Retain fractional path-stroke layout visuals through child placement and union; enclose recorded painting separately. Existing parameter capture, source requests, shader/dither arithmetic, sampling and ownership remain unchanged.",
+  "mechanism": {
+    "test": "SvgFilterSourceHintTests.Stroked_path_layout_visuals_stay_fractional_while_recorded_paint_is_enclosed",
+    "builders": [
+      "Retained authored path",
+      "Object-box pattern point-list fill with stroke"
+    ],
+    "layoutVisual": [
+      8.25,
+      10.75,
+      20.5,
+      23.25
+    ],
+    "recordedPaint": [
+      8,
+      10,
+      21,
+      24
+    ],
+    "baseline": {
+      "passed": 0,
+      "failed": 2
+    },
+    "candidateFocused": {
+      "passed": 50,
+      "failed": 0
+    },
+    "ownership": "Direct parsing releases all accounted memory. Existing recorded bounds, source enclosure, viewport scope, clipping, refusal and cancellation checks remain separate."
+  },
+  "rendering": {
+    "id": "fractional-stroke-layout",
+    "inputSha256": "d84f65162c261166b75c4d41624321a972dd328a98261e0388799029c144a229",
+    "referenceSha256": "bef242041d1c42093f61af13ff3dc0a0d972f33c81158143cd85eadd051a85d8",
+    "frame": [
+      128,
+      96
+    ],
+    "nativeEvidence": "Three agreeing healthy/profile-cleaned fresh-process captures per host. One canonical conversion protects two own curves, a rotated alias, translucent gradient, copying kernel and outer opacity. The explicit filter region exposes source enclosure independently of default object-box clipping.",
+    "beforePerHost": {
+      "changedPixels": 52,
+      "alphaChangedPixels": 0,
+      "maximumError": 128,
+      "totalChannelError": 1445
+    },
+    "afterPerHost": {
+      "changedPixels": 0,
+      "alphaChangedPixels": 0
+    }
+  },
+  "nativeAllocation": {
+    "browser": "Chrome153.0.8010.52",
+    "saveLayerParameterHint": [
+      1,
+      6,
+      50,
+      55
+    ],
+    "beforeParameterCaptureHint": [
+      0,
+      6,
+      50,
+      56
+    ],
+    "afterParameterCaptureHint": [
+      1,
+      6,
+      50,
+      55
+    ],
+    "beforePaddedSourceOrigin": [
+      31,
+      23
+    ],
+    "afterPaddedSourceOrigin": [
+      32,
+      23
+    ],
+    "retainedFractionalVisual": {
+      "Left": 2.3007917,
+      "Top": 7.756044,
+      "Right": 48.142567,
+      "Bottom": 53.51173
+    },
+    "startupHealth": "healthy",
+    "profileCleaned": true,
+    "qualification": "An additional own-scene paint-command capture has the same PNG hash as the admitted native reference. The native hint agrees with enclosing the fractional child union before graph expansion; no phase adjustment is added."
+  },
+  "focusedBeforeAfter": {
+    "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests",
+    "before": {
+      "passed": 15,
+      "failed": 1,
+      "seconds": 7.265
+    },
+    "after": {
+      "passed": 16,
+      "failed": 0,
+      "seconds": 6.451
+    },
+    "timing": "Functional elapsed time, not a benchmark."
+  },
+  "affectedQualification": [
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 2889,
+        "seconds": 8.456,
+        "librarySha256": "146c424b4a569dddb95db8b4ffb33b266e9deff378024302ed87086566ba69a4"
+      },
+      "native": {
+        "passed": 1919,
+        "seconds": 18.688,
+        "librarySha256": "146c424b4a569dddb95db8b4ffb33b266e9deff378024302ed87086566ba69a4"
+      },
+      "recording": {
+        "passed": 37,
+        "seconds": 5.194,
+        "librarySha256": "146c424b4a569dddb95db8b4ffb33b266e9deff378024302ed87086566ba69a4"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 2889,
+        "seconds": 12.177,
+        "librarySha256": "146c424b4a569dddb95db8b4ffb33b266e9deff378024302ed87086566ba69a4"
+      },
+      "native": {
+        "passed": 1919,
+        "seconds": 31.858,
+        "librarySha256": "146c424b4a569dddb95db8b4ffb33b266e9deff378024302ed87086566ba69a4"
+      },
+      "recording": {
+        "passed": 37,
+        "seconds": 7.915,
+        "librarySha256": "146c424b4a569dddb95db8b4ffb33b266e9deff378024302ed87086566ba69a4"
+      }
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 2889,
+        "seconds": 10.221,
+        "librarySha256": "cc28413f9a546336a08b5622acdced13f909e04f01519cecaf6382eb308a0964"
+      },
+      "native": {
+        "passed": 1919,
+        "seconds": 16.017,
+        "librarySha256": "cc28413f9a546336a08b5622acdced13f909e04f01519cecaf6382eb308a0964"
+      },
+      "recording": {
+        "passed": 37,
+        "seconds": 4.746,
+        "librarySha256": "cc28413f9a546336a08b5622acdced13f909e04f01519cecaf6382eb308a0964"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 2889,
+        "seconds": 10.201,
+        "librarySha256": "cc28413f9a546336a08b5622acdced13f909e04f01519cecaf6382eb308a0964"
+      },
+      "native": {
+        "passed": 1919,
+        "seconds": 24.501,
+        "librarySha256": "cc28413f9a546336a08b5622acdced13f909e04f01519cecaf6382eb308a0964"
+      },
+      "recording": {
+        "passed": 37,
+        "seconds": 6.181,
+        "librarySha256": "cc28413f9a546336a08b5622acdced13f909e04f01519cecaf6382eb308a0964"
+      }
+    }
+  ],
+  "originalReplay": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "seconds": 43.809,
+    "perHost": {
+      "semanticReportsUnchanged": 204,
+      "previouslyExactPngsByteIdentical": 153,
+      "rendered": 154,
+      "exploratoryExact": 153,
+      "exploratoryDifferent": 1,
+      "unsupported": 47,
+      "malformed": 3
+    }
+  },
+  "closedOriginalFinding": {
+    "name": "juanmontoya_lingerie.svg",
+    "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
+    "owner": "g6354",
+    "platforms": {
+      "windows": {
+        "removedPixels": 123,
+        "addedDifferences": 0,
+        "remainingPixels": 24,
+        "allRemainingValuesUnchanged": true,
+        "alphaPlaneUnchanged": true,
+        "removedBounds": [
+          435,
+          75,
+          465,
+          122
+        ],
+        "original": {
+          "changedPixels": 24,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 115,
+          "pngSha256": "ce1c916f1a50a161fd71f5ae519795d57045cb2bea55bc1bf13f7f648fc085ac"
+        }
+      },
+      "linux": {
+        "removedPixels": 123,
+        "addedDifferences": 0,
+        "remainingPixels": 24,
+        "allRemainingValuesUnchanged": true,
+        "alphaPlaneUnchanged": true,
+        "removedBounds": [
+          435,
+          75,
+          465,
+          122
+        ],
+        "original": {
+          "changedPixels": 24,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 115,
+          "pngSha256": "ce1c916f1a50a161fd71f5ae519795d57045cb2bea55bc1bf13f7f648fc085ac"
+        }
+      }
+    }
+  },
+  "nativeSources": [
+    {
+      "url": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/layout/svg/svg_content_container.cc",
+      "sha256": "3eff973e781480ee5107f99c25ea83c9b55213c0a7b9a2d47829258008d11c08"
+    },
+    {
+      "url": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/layout/svg/layout_svg_shape.cc",
+      "sha256": "4355d1f1427d42b0564d25e29748ff7dd05cfbfb64df0acd4f3229f8997e325c"
+    }
+  ],
+  "remaining": [
+    "The complete original remains24 changed pixels,2alpha,max17,total115:19 source-consumer pixels and5 masked-group pixels.",
+    "Admitted thin-curved-source-wide remains four alpha pixels different per host; one exploratory affine copying-kernel gradient probe retains one RGB difference.",
+    "Full Windows/Linux/runtime/package promotion remains the coherent-milestone gate; frozen font reference authority is pending."
+  ]
+}

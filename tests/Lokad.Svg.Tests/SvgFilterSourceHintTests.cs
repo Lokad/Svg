@@ -8,6 +8,25 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFilterSourceHintTests
 {
     [Theory]
+    [InlineData("<path d='M10.25 12.75H18.5V21.25H10.25Z' fill='none' stroke='black' stroke-width='1'/>")]
+    [InlineData("<defs><pattern id='p' width='.25' height='.25' patternContentUnits='objectBoundingBox'><rect width='.25' height='.25' fill='green'/></pattern></defs><polygon points='10.25,12.75 18.5,12.75 18.5,21.25 10.25,21.25' fill='url(#p)' stroke='black' stroke-width='1'/>")]
+    public void Stroked_path_layout_visuals_stay_fractional_while_recorded_paint_is_enclosed(string shape)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>" + shape + "</svg>");
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(scene.SceneStorage);
+            SvgRecordedPaintValue paint = Assert.Single(storage.RecordedPaintValues.ToArray(), value => value.IsStroke && !value.IsEffectAnchor);
+            SvgSourceObjectBounds retained = Assert.IsType<SvgSourceObjectBounds>(paint.SourceObjectBounds);
+            Assert.Equal(new SvgPaintBounds(10.25f, 12.75f, 18.5f, 21.25f), retained.Bounds);
+            Assert.Equal(new SvgPaintBounds(8.25f, 10.75f, 20.5f, 23.25f), retained.VisualBounds);
+            Assert.Equal(new SvgPaintBounds(8, 10, 21, 24), paint.VisualBounds);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData("display='none'", 18)]
     [InlineData("opacity='0'", 48)]
     [InlineData("visibility='hidden'", 48)]
