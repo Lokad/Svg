@@ -169,5 +169,43 @@
         "saveFlags": 0
       }
     }
-  ]
+  ],
+  "integerViewport": {
+    "source": "inputs/thin-curved-source-integer.svg",
+    "sourceSha256": "2fd45c5b78b3827d230f52ceec03eae6c25c14914e573e746e3c07813f2aa521",
+    "capturePngSha256": "b9b194d399e1c9865eb83f743a10d77c900462b76d990e0f35ac6e1c215ee4b6",
+    "startupHealth": "healthy",
+    "profileCleaned": true,
+    "outerMatrix44": [
+      -1.74493002891541,
+      -0.132486015558243,
+      0,
+      0,
+      0.132486015558243,
+      -1.74493002891541,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1902.3291015625,
+      341.341186523438,
+      0,
+      1
+    ],
+    "outerOpacityBounds": {
+      "left": 1033,
+      "top": 69,
+      "right": 1109,
+      "bottom": 109
+    },
+    "outerFilterBounds": {
+      "left": 1033,
+      "top": 68.25,
+      "right": 1109.5,
+      "bottom": 109
+    },
+    "interpretation": "The parameter-space hints and byte opacity are unchanged; the recorded drawing matrix and preparation context differ. Compare these stages before changing sampling or alpha."
+  }
 }

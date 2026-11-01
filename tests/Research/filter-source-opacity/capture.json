@@ -5,7 +5,7 @@
   "browser": "Chrome153.0.8010.52",
   "width": 128,
   "height": 96,
-  "context": "Transparent SVG image; 128.3 by 96.2 CSS image viewport, 128 by 96 screenshot, DPR1. Three fresh agreeing healthy, profile-cleaned captures on each host. Own source only; no hosted SVG bodies or fragments.",
+  "context": "Transparent SVG image, DPR1, 128 by96 screenshot; each case records its CSS image viewport. Three agreeing healthy fresh-process captures per host. Own recomposed sources only.",
   "cases": [
     {
       "id": "thin-curved-source",
@@ -83,6 +83,81 @@
         }
       },
       "qualification": "../svgweb/filter-source-opacity.json"
+    },
+    {
+      "id": "thin-curved-source-integer",
+      "input": "inputs/thin-curved-source-integer.svg",
+      "inputSha256": "2fd45c5b78b3827d230f52ceec03eae6c25c14914e573e746e3c07813f2aa521",
+      "logicalImageViewport": [
+        128,
+        96
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "b9b194d399e1c9865eb83f743a10d77c900462b76d990e0f35ac6e1c215ee4b6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b9b194d399e1c9865eb83f743a10d77c900462b76d990e0f35ac6e1c215ee4b6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b9b194d399e1c9865eb83f743a10d77c900462b76d990e0f35ac6e1c215ee4b6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "b9b194d399e1c9865eb83f743a10d77c900462b76d990e0f35ac6e1c215ee4b6",
+          "reference": "references/thin-curved-source-integer.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "b9b194d399e1c9865eb83f743a10d77c900462b76d990e0f35ac6e1c215ee4b6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b9b194d399e1c9865eb83f743a10d77c900462b76d990e0f35ac6e1c215ee4b6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b9b194d399e1c9865eb83f743a10d77c900462b76d990e0f35ac6e1c215ee4b6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "b9b194d399e1c9865eb83f743a10d77c900462b76d990e0f35ac6e1c215ee4b6",
+          "reference": "references/thin-curved-source-integer.png"
+        }
+      },
+      "status": "open-integer-source-capture",
+      "sourceBaseline": "b1bd907987073fbfeee777a22f346de2a52ff4db",
+      "baseline": {
+        "windows": {
+          "changedPixels": 434,
+          "alphaChangedPixels": 400,
+          "maximumError": 255,
+          "maximumAlphaError": 1,
+          "totalChannelError": 7276,
+          "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d"
+        },
+        "linux": {
+          "changedPixels": 434,
+          "alphaChangedPixels": 400,
+          "maximumError": 255,
+          "maximumAlphaError": 1,
+          "totalChannelError": 7276,
+          "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d"
+        }
+      }
     }
   ]
 }

@@ -18,4 +18,8 @@ distinguish the opacity allocation from the filter's source-picture hint.
 [Investigation and closure criteria](../svgweb/filter-source-opacity.json) retain
 the preserved affine group-opacity and antialiased parent-clip counterexamples.
 Clip coverage uses stored-image extents; opacity uses painted-output extents.
-The complete hosted original and exploratory integer-viewport variants remain open.
+The complete hosted original remains open. The integer-viewport companion changes
+only root and CSS image dimensions to 128×96. Six agreeing captures establish its
+434 differing pixels and 400 alpha differences on both hosts, with maximum alpha
+error one. It is admitted open evidence; the canonical test asserts only the closed
+fractional control. Other opacity variants remain exploratory.

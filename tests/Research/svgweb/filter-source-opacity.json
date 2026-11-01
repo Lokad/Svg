@@ -89,7 +89,7 @@
   ],
   "closureCriteria": [
     "CLOSED: the thin source and all seven placement controls are exact on both hosts without source/reference/tolerance changes; frozen baseline fails the two added controls.",
-    "CLOSED for affected integration: prior group-opacity and antialiased parent-clip references and ownership contracts pass on both hosts and runtimes. Source-only export and full promotion are separate gates.",
+    "CLOSED for affected integration: prior group-opacity and antialiased parent-clip references and ownership contracts pass on both hosts and runtimes. The exact source commit also passes a source-only locked restore and both builds; full promotion remains separate.",
     "OPEN: explain the remaining integer-viewport drawing/capture discrepancy, admit independent evidence, and close the complete original through a shared cause. Recheck all204 and preserve the153 prior exact PNGs.",
     "OPEN release boundary: finish the coherent correctness milestone before full Windows/Linux/runtime/package qualification. Preserve the pending frozen font reference."
   ],
@@ -145,7 +145,6 @@
       "../../Lokad.Svg.VisualTests/SvgFilterSourceOpacityReferenceTests.cs"
     ],
     "canonicalCases": 8,
-    "retainedNativeCaptures": 48,
     "newSourceOrReferenceImages": 0,
     "referenceChanges": 0,
     "toleranceChanges": 0,
@@ -184,7 +183,8 @@
       "thin-curved-source",
       "large-affine-nested-opacity"
     ],
-    "afterChangedPixelsPerHost": 0
+    "afterChangedPixelsPerHost": 0,
+    "retainedNativeCapturesForClosedControls": 48
   },
   "originalAuditAfter": {
     "files": 204,
@@ -313,7 +313,7 @@
   "remainingInvestigations": [
     {
       "area": "Integer viewport of the same own source",
-      "status": "OPEN exploratory research",
+      "status": "OPEN; integer nonopaque control now admitted with six fresh captures, one shared PNG and434 differing pixels/400 alpha differences on both hosts. The other opacity variants remain exploratory.",
       "recipe": "Change root width/height and CSS image viewport together from128.3x96.2 to128x96; leave geometry and filters unchanged. Investigate the filter drawing/capture map independently of the fractional-viewport closure.",
       "baselineWindows": [
         {
@@ -332,12 +332,73 @@
           "alphaChangedPixels": 522
         }
       ],
-      "qualification": "One healthy Windows capture per variant, not an admitted reference. Re-admit on both hosts before a regression claim."
+      "qualification": "Integer nonopaque input is independently admitted; no reference rewrite, tolerance change or new support claim. Compare native drawing/capture stages and the complete original together."
     },
     {
       "area": "Complete hosted original",
       "status": "OPEN",
       "next": "Compare source construction and capture maps at its affine consumers. Do not add per-pixel phase or alpha corrections."
     }
-  ]
+  ],
+  "sourceOnlyExport": {
+    "revision": "b1bd907987073fbfeee777a22f346de2a52ff4db",
+    "archiveSha256": "a69208f97e710a1f106cbeb2af454fbba54869a04fe23a6e3d3da8ff159ce8aa",
+    "sourceOnlyExport": true,
+    "copiedSvgCorpus": false,
+    "actions": [
+      {
+        "action": "restore",
+        "exitCode": 0
+      },
+      {
+        "action": "build-net11",
+        "exitCode": 0
+      },
+      {
+        "action": "build-net10",
+        "exitCode": 0
+      }
+    ]
+  },
+  "integerViewportControl": {
+    "capture": "../filter-source-opacity/capture.json",
+    "id": "thin-curved-source-integer",
+    "sourceSha256": "2fd45c5b78b3827d230f52ceec03eae6c25c14914e573e746e3c07813f2aa521",
+    "sourceBaseline": "b1bd907987073fbfeee777a22f346de2a52ff4db",
+    "independentCaptures": 6,
+    "baseline": {
+      "windows": {
+        "changedPixels": 434,
+        "alphaChangedPixels": 400,
+        "maximumError": 255,
+        "maximumAlphaError": 1,
+        "totalChannelError": 7276,
+        "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d"
+      },
+      "linux": {
+        "changedPixels": 434,
+        "alphaChangedPixels": 400,
+        "maximumError": 255,
+        "maximumAlphaError": 1,
+        "totalChannelError": 7276,
+        "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d"
+      }
+    },
+    "recipe": "Only root width/height and CSS image viewport change from128.3x96.2 to128x96. Geometry, colours, effects and opacity are unchanged.",
+    "status": "OPEN; native references admitted on both hosts. Not asserted as a passing rendering case.",
+    "admissionValidation": [
+      {
+        "host": "windows",
+        "passed": 8,
+        "seconds": 6.574918,
+        "librarySha256": "2393c664818bccc3c4c98c33cb3bbaccadf6bb19b140bbe88fdd91e7127b2f97"
+      },
+      {
+        "host": "linux",
+        "passed": 8,
+        "seconds": 8.845996,
+        "librarySha256": "2393c664818bccc3c4c98c33cb3bbaccadf6bb19b140bbe88fdd91e7127b2f97"
+      }
+    ]
+  }
 }
