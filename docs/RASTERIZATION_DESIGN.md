@@ -162,6 +162,11 @@ parent after output placement, then concatenate the relative child map. Their
 resource map remains separate, including object-box normalization.
 Leaf polygon clips bind native clip coverage while retaining source contours and
 shader coordinates; they do not geometrically intersect flattened paint vertices.
+Whole-resource path intersections reuse the curve boundary solver before AA.
+Clipped children within a painted union retain independent child maps and the
+resource clip in both canvas and child effect contexts. Their alpha applications
+cannot be collapsed into one silhouette clip. The target enclosure clips target
+ink; mask construction uses the allocated layer before that enclosure trims it.
 An unpainted fill retained for a clipped stroke does not require curve source
 commands for viewport admission; the painted stroke keeps its own source commands.
 Replay scopes save and restore clip coverage, allocation enclosures and drawing maps

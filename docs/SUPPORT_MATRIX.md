@@ -163,9 +163,9 @@ visible alias may supply its own. An alias's own hidden display suppresses borro
 
 ### Clips, masks and composition
 
-Clip paths accept rectangles/rounded rectangles, paths, circles, ellipses,
+Clip paths accept rectangles/rounded rectangles, paths, polygons/polylines, circles, ellipses,
 restricted uses, ordered child unions, compound winding, both resource units and
-affine maps. Container groups, direct line/point-list/text children and XML
+affine maps. Container groups, direct line/text children and XML
 transform/fill/opacity on `clipPath` reject. A clip-resource `use` must reference
 one contour; plain rectangles and empty/compound sources through that use reject.
 Multiple uses and mixtures with direct children form an ordered union; local
@@ -198,8 +198,10 @@ Direct masked text, masked text uses and references to already-masked text work.
 `clip-path`/`mask` bindings are presentation attributes, not inline/stylesheet
 properties. Explicit `none` removes that element's binding, retaining ancestors.
 `initial`/`unset` reject; mask `inherit` rejects, while clip `inherit` copies the
-immediate container or its initial value. `clip-path` on `clipPath` itself rejects;
-admitted resource children may have their own clips.
+immediate container or its initial value. `clip-path` on `clipPath` intersects the
+resource; admitted children may have their own clips, including within a union.
+Nested object-box clips on retained resource geometry reject. Point-list clips
+close implicitly for filling; fewer than three points contribute no coverage.
 
 Resource display is distinct from hidden content:
 

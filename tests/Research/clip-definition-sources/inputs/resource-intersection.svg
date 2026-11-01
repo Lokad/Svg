@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96'><defs><path id='p' d='M10 12L92 18L36 82Z'/><clipPath id='d'><circle cx='53.5' cy='45.5' r='32'/></clipPath><clipPath id='c' clip-path='url(#d)'><use href='#p'/></clipPath></defs><rect x='5.5' y='6.25' width='113' height='82' fill='#2476b5' clip-path='url(#c)'/></svg>

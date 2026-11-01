@@ -214,6 +214,8 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateClipPath(reader, cancellationToken);
             state.ClipPathId = reader.GetAttribute("id");
+            string? resourceClipId = SvgClipPathSyntax.ResolveClipId(reader, state);
+            state.ClipResourceClipId = resourceClipId is null ? null : state.Strings.Copy(resourceClipId);
             state.ClipBox = null;
             state.ClipRectangleSource = null;
             state.ClipPolygon = null;
@@ -284,13 +286,14 @@ internal static class SvgDefinitionParser
                     state.ClipRectangleSource = new(source, boundsInflation);
                 }
                 else SvgClipDefinitionStaging.AppendClipChild(SvgClipDefinitionStaging.CreateClipRectangle(source, state, cancellationToken) with
-                    { NestedClipId = nestedClip, UsesNativeReplay = nestedClip is not null }, boundsInflation, state, cancellationToken);
+                    { ChildClip = nestedClip is null ? null : new(nestedClip, clipTransform), UsesNativeReplay = nestedClip is not null }, boundsInflation, state, cancellationToken);
                 SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
             }
-            if (reader.LocalName == "path")
+            if (reader.LocalName is "path" or "polygon" or "polyline")
             {
-                SvgElementAttributePolicy.ValidatePath(reader, cancellationToken);
+                if (reader.LocalName == "path") SvgElementAttributePolicy.ValidatePath(reader, cancellationToken);
+                else SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, cancellationToken);
                 SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
                 // A resource uses its own child map; ancestors place the referencing element.
                 SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseElementTransform(reader, cancellationToken);
@@ -300,13 +303,15 @@ internal static class SvgDefinitionParser
                 string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 nestedClip = nestedClip is null ? null : state.Strings.Copy(nestedClip);
                 bool visible = SvgPresentationResolver.IsPainted(clipStyle, true, state.ClipIsVisible);
-                float boundsInflation = visible ? SvgStrokeStyleSyntax.BoundsInflation(clipStyle, "path") : 0;
+                float boundsInflation = visible ? SvgStrokeStyleSyntax.BoundsInflation(clipStyle, reader.LocalName) : 0;
                 if (visible) SvgClipDefinitionStaging.PromoteClipRectangle(state, cancellationToken);
-                SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, visible, limits.MaximumPathCommands, state, cancellationToken)
-                    with { IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
+                SvgClipPolygon clipContent = reader.LocalName == "path"
+                    ? ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, visible, limits.MaximumPathCommands, state, cancellationToken)
+                    : ParseClipPointList(reader, clipTransform, isEvenOdd, visible, limits.MaximumPathCommands, state, cancellationToken);
+                clipContent = clipContent with { IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
                 if (visible)
                 {
-                    clipContent = clipContent with { NestedClipId = nestedClip, UsesNativeReplay = clipContent.UsesNativeReplay || nestedClip is not null };
+                    clipContent = clipContent with { ChildClip = nestedClip is null ? null : new(nestedClip, clipTransform), UsesNativeReplay = clipContent.UsesNativeReplay || nestedClip is not null };
                     SvgClipDefinitionStaging.AppendClipChild(clipContent, boundsInflation, state, cancellationToken);
                 }
                 SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
@@ -840,6 +845,30 @@ internal static class SvgDefinitionParser
                 SourceDisplayed = (style.GetSourceDisplay() != SvgDisplay.None), SourceDisplay = style.GetSourceDisplay(),
                 SourceVisible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true)
             });
+        }
+
+        static SvgClipPolygon ParseClipPointList(XmlReader reader, SvgAffineTransform map, bool parity, bool visible,
+            int maximumCommands, SvgDocumentState state, CancellationToken token)
+        {
+            using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(
+                reader.GetAttribute("points") ?? string.Empty, reader.LocalName, maximumCommands, state.Budget, token, 0);
+            if (!visible || points.Count < 3) return new([], []);
+            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, token);
+            for (int index = 0; index < points.Count; index++)
+            {
+                token.ThrowIfCancellationRequested();
+                SvgFractionalPoint point = points[index];
+                commands.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line,
+                    SvgAuthoredArcFlags.None, new(point.X, point.Y), default, default));
+            }
+            commands.Add(new(reader.LocalName == "polygon" ? SvgAuthoredPathVerb.Close : SvgAuthoredPathVerb.End,
+                SvgAuthoredArcFlags.None, default, default, default));
+            OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
+            SvgAuthoredPath source;
+            try { source = SvgAuthoredPath.Create(owned, map, state.Budget); }
+            catch { owned.Dispose(); throw; }
+            try { return SvgClipDefinitionStaging.CaptureBoundary(new([], []), source, parity, state, token); }
+            catch { source.Dispose(); throw; }
         }
 
         static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, bool isEvenOdd, bool visible, int maximumCommands, SvgDocumentState clipState, CancellationToken cancellationToken)
@@ -1491,6 +1520,11 @@ CancellationToken cancellationToken)
     internal static void RegisterClipBox(SvgDocumentState state, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        if (state.ClipIsDisplayed && state.ClipResourceClipId is not null)
+        {
+            SvgClipDefinitionStaging.PromoteClipRectangle(state, cancellationToken);
+            if (state.ClipPolygon is not null) { RegisterClipPolygon(state, cancellationToken); return; }
+        }
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip-path registration requires an identifier."));
         if (state.ClipPolygons.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
         if (!state.ClipIsDisplayed)

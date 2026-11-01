@@ -6,8 +6,8 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 150 originals per host: **150 exploratory
-exact**, with 51 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 151 originals per host: **151 exploratory
+exact**, with 50 UnsupportedFeature and 3 MalformedInput outcomes. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
@@ -67,7 +67,7 @@ current inventory above governs overall status.
 | Filter numerical stages | [Black linear stages](black-linear-stages.json), [bilinear weights](filter-bilinear-review.json), [numeric vectors](../../Lokad.Svg.Tests/TestData/highp-bilinear.json), [browser probe](highp-bilinear.js). Transfer, byte storage, packed alpha, high-precision weights and addressing have separate responsibilities. |
 | Clip source geometry | [Referenced paths](clip-use-construction.json), [source placement](clip-source-placement.json), [canvas boundaries](clip-canvas-boundaries.json). Retain authored quadratic/cubic/arc operands, local resource placement and referencing-canvas concatenation. |
 | Clip coverage and bounds | [Replay state](clip-replay-state.json), [visual bounds](clip-visual-bounds.json), [analytic alpha](analytic-alpha-bytes.json). Separate silhouette coverage, stroke/layout enclosures, numerical raster ink and native byte narrowing. |
-| Clip definition sources | [Ordered direct/reference staging](clip-definition-sources.json). Multiple and mixed uses share child unions, deferred units and geometry resolution. Integer path enclosures follow object-box normalization in the referencing canvas. Four canonical native references, direct range/threshold/unit cases and two selected ownership inputs protect distinct responsibilities; resource intersections remain open. |
+| Clip definition sources | [Sources and intersections](clip-definition-sources.json). Ordered uses share geometry staging; whole-resource intersections reuse the curve boundary solver. Painted unions retain child/canvas clips and allocated construction bounds. Twelve canonical native controls, direct geometry/dependency/unit cases and selected ownership inputs protect separate responsibilities. The default clippath.svg is exact on both hosts; all prior default PNGs are unchanged. |
 | Radial paint binding | [Source binding](radial-source-binding.json), [primitive binding](radial-primitive-binding.json). Retain factory coordinates before local/reference maps across primitives, paths, instances, clipping and inherited stops. Direct stage tests and one canonical reflected radial protect primitive rounding. |
 | Gradient bitmap coordinates | [Recorded stages](gradient-recorded-bitmap-origin.json). Subtract the owning bitmap origin before replaying child transforms. Linear/radial native controls and direct mapping/ownership tests protect the shared order. |
 | Opaque gradient coverage | [Program opacity and coverage](opaque-gradient-coverage.json). Retain factory eligibility and direct-span/A8 interpolation stages. One canonical edge fixture and six compiled native vectors protect the shared rule; the complete default Gallardo image is exact. |

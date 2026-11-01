@@ -12,7 +12,15 @@ public sealed class SvgDeferredClipReferenceTests
     [InlineData("mixed-child")]
     [InlineData("forward-uses")]
     [InlineData("object-box-use")]
-    public void Ordered_direct_and_referenced_sources_match_independent_native_coverage(string identity)
+    [InlineData("resource-intersection")]
+    [InlineData("child-intersection")]
+    [InlineData("point-list-children")]
+    [InlineData("intersection-maps")]
+    [InlineData("direct-child-context")]
+    [InlineData("fractional-target-context")]
+    [InlineData("rectangle-parent-context")]
+    [InlineData("affine-parent-context")]
+    public void Sources_and_intersections_match_independent_native_coverage(string identity)
     {
         string directory = Path.Combine(ResearchCorpus.Root, "clip-definition-sources");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "capture.json")));

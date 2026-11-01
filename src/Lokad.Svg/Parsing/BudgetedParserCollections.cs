@@ -648,6 +648,9 @@ internal sealed class BudgetedParserDictionary<TKey, TValue> : IDisposable where
     /// <summary>Enumerates retained values so owners can release value-owned resources on teardown.</summary>
     internal IEnumerable<TValue> Values => _items.Values;
 
+    /// <summary>Borrows retained entries for registry traversal; callers snapshot keys before changing values.</summary>
+    internal IEnumerable<KeyValuePair<TKey, TValue>> Entries => _items;
+
     public void Dispose()
     {
         _items = [];

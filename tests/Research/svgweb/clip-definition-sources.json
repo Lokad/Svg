@@ -1,42 +1,256 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "421a17eacdbdcad7624a47199fc4a3e88f7f3608",
-  "scope": "One ordered child staging and union path for direct geometry and multiple local references. Forward definitions retain their own resource units. Object-box path construction encloses geometry after normalization in the referencing canvas; the canvas map remains separate. Original winding, commands, maps, visual enclosures and owners are retained.",
+  "scope": "One ordered child staging and union path for direct geometry and multiple local references. Forward definitions retain their own resource units. Object-box path construction encloses geometry after normalization in the referencing canvas; the canvas map remains separate. Original winding, commands, maps, visual enclosures and owners are retained. Whole-resource intersections reuse the curve boundary kernel before AA. Painted unions retain independent child/effect/canvas clips and allocated mask construction bounds. Polygon/polyline sources share authored boundary retention.",
   "original": {
     "name": "clippath.svg",
     "sha256": "67d1c392cfb54f80356f90cc37ee8daa6056e8cb5d72cb2486f1d5339681ff25",
     "retainedPayload": false,
-    "status": "Open: the original also requires clipPath-level intersection. Removing its first single-use rejection does not establish complete admission or exactness."
+    "status": "Default context exact on both hosts; all subsequent default gates clear. Supplied/static contexts of the whole collection remain separate W1 work.",
+    "native": {
+      "browser": "Chrome153.0.8010.52",
+      "screenshot": [
+        744,
+        1052
+      ],
+      "imageViewport": [
+        744.09448819,
+        1052.3622047
+      ],
+      "platforms": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "nativeCaptures": [
+            {
+              "pngSha256": "720612b33edd900fa62b21dfdd400d69dafea77eb66c75a718a1d0b0c17be98e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "720612b33edd900fa62b21dfdd400d69dafea77eb66c75a718a1d0b0c17be98e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "720612b33edd900fa62b21dfdd400d69dafea77eb66c75a718a1d0b0c17be98e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "nativeCaptures": [
+            {
+              "pngSha256": "720612b33edd900fa62b21dfdd400d69dafea77eb66c75a718a1d0b0c17be98e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "720612b33edd900fa62b21dfdd400d69dafea77eb66c75a718a1d0b0c17be98e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "720612b33edd900fa62b21dfdd400d69dafea77eb66c75a718a1d0b0c17be98e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      ]
+    },
+    "changedPixels": {
+      "windows": 0,
+      "linux": 0
+    }
   },
   "rendering": {
     "capture": "../clip-definition-sources/capture.json",
     "test": "../../Lokad.Svg.VisualTests/SvgDeferredClipReferenceTests.cs",
-    "cases": ["multiple-uses", "mixed-child", "forward-uses", "object-box-use"],
-    "before": "All four UnsupportedFeature. Admitting units alone leaves three incorrect pixels on each host; a direct path has the same discrepancy, independent of union or reference handling.",
-    "afterChangedPixels": { "windows": [0, 0, 0, 0], "linux": [0, 0, 0, 0] },
-    "freshNativeCaptures": 24,
-    "referenceChanges": 0
+    "cases": [
+      "multiple-uses",
+      "mixed-child",
+      "forward-uses",
+      "object-box-use",
+      "resource-intersection",
+      "child-intersection",
+      "point-list-children",
+      "intersection-maps",
+      "direct-child-context",
+      "fractional-target-context",
+      "rectangle-parent-context",
+      "affine-parent-context"
+    ],
+    "before": "All twelve controls rejected before their respective source admission changes. The eight intersection/point-list controls reject on the retained pre-integration probe; no reference was changed.",
+    "afterChangedPixels": {
+      "windows": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "linux": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "freshNativeCaptures": 72,
+    "referenceChanges": 0,
+    "interactionEvidence": [
+      "Whole-resource curves need geometric intersection before AA.",
+      "Black clip paint differs from explicit SVG alpha-mask substitution.",
+      "Native paint canvas and clipped-child effect context each apply the parent clip; collapsing them leaves40 incorrect edge pixels.",
+      "Target enclosure and allocated mask construction bounds are independent; trimming source construction adds33 errors in the transformed control, while an unbounded parent source leaves31 errors in the fractional-target control."
+    ]
   },
   "mechanisms": {
     "test": "../../Lokad.Svg.Tests/SvgDeferredClipTests.cs",
-    "responsibilities": ["nonterminal ordered child ranges", "42-child native union and 43-child painted replay", "hidden uses and container references contribute no silhouette without erasing siblings", "use and leaf percentages bind normalized bases independently of definition order", "integer path enclosure is [23,19]-[99,75] before skew, rather than enclosing unit fractions"]
+    "responsibilities": [
+      "nonterminal ordered child ranges",
+      "42-child native union and 43-child painted replay",
+      "hidden uses and container references contribute no silhouette without erasing siblings",
+      "use and leaf percentages bind normalized bases independently of definition order",
+      "integer path enclosure is [23,19]-[99,75] before skew, rather than enclosing unit fractions",
+      "five direct intersection boundary/winding cases",
+      "cycles, shared DAG dependencies, empty intersections and short/collapsed point lists"
+    ],
+    "intersectionTests": [
+      "../../Lokad.Svg.Tests/SvgClipBoundaryTests.cs",
+      "../../Lokad.Svg.Tests/SvgClipBooleanTests.cs"
+    ]
   },
   "ownership": {
     "test": "../../Lokad.Svg.Tests/SvgCurvedClipSourceTests.cs",
-    "responsibility": "One mixed forward-reference input with multiple separated direct groups and another registered union, plus one normalized curved reference, exercise sampled parser memory denial, raster denial, cancellation, unchanged borrowed commands, complete cleanup and retry. Later missing references and duplicate identifiers retain separate failure checks in SvgResourceUseReplayTests."
+    "responsibility": "One mixed forward-reference input with multiple separated direct groups and another registered union, plus one normalized curved reference, exercise sampled parser memory denial, raster denial, cancellation, unchanged borrowed commands, complete cleanup and retry. Later missing references and duplicate identifiers retain separate failure checks in SvgResourceUseReplayTests. Three selected inputs additionally cover forward whole-resource intersections, temporary rectangle boundaries and painted child-clip unions."
   },
   "validation": {
-    "net11": {
-      "librarySha256": "34138e1e334a7dd1d228db0eb2f273f75dc7b865e414e0652de7b4ab8f114173",
-      "windows": { "corePassed": 2734, "coreSeconds": 12.440, "renderingPassed": 2478, "renderingSeconds": 19.176 },
-      "linux": { "corePassed": 2734, "coreSeconds": 14.247, "renderingPassed": 2478, "renderingSeconds": 27.423 }
+    "checks": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 2750,
+        "seconds": 19.366,
+        "librarySha256": "971961ba0b1de5160f64ee6ffc6bc1daa5a43b86d4398829fcd67274ddf29922",
+        "selection": "FullyQualifiedName~Clip|FullyQualifiedName~SvgResourceUseReplayTests|FullyQualifiedName~SvgConversionApiContractTests"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 2486,
+        "seconds": 24.878,
+        "librarySha256": "971961ba0b1de5160f64ee6ffc6bc1daa5a43b86d4398829fcd67274ddf29922",
+        "selection": "FullyQualifiedName~Clip|FullyQualifiedName~SvgSymbolInstanceReferenceTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 2750,
+        "seconds": 18.998,
+        "librarySha256": "971961ba0b1de5160f64ee6ffc6bc1daa5a43b86d4398829fcd67274ddf29922",
+        "selection": "FullyQualifiedName~Clip|FullyQualifiedName~SvgResourceUseReplayTests|FullyQualifiedName~SvgConversionApiContractTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 2486,
+        "seconds": 32.034,
+        "librarySha256": "971961ba0b1de5160f64ee6ffc6bc1daa5a43b86d4398829fcd67274ddf29922",
+        "selection": "FullyQualifiedName~Clip|FullyQualifiedName~SvgSymbolInstanceReferenceTests"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 74,
+        "seconds": 9.437,
+        "librarySha256": "2fb9f3aec3fd85ffa055408200c5a219b0b2fef4de662c6c5073a784c0df1835",
+        "selection": "FullyQualifiedName~SvgClipBoundaryTests|FullyQualifiedName~SvgClipBooleanTests|FullyQualifiedName~SvgCurvedClipSourceTests|FullyQualifiedName~SvgDeferredClipTests|FullyQualifiedName~SvgDrawingMapTests|FullyQualifiedName~SvgResourceUseReplayTests"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 12,
+        "seconds": 8.002,
+        "librarySha256": "2fb9f3aec3fd85ffa055408200c5a219b0b2fef4de662c6c5073a784c0df1835",
+        "selection": "FullyQualifiedName~SvgDeferredClipReferenceTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 74,
+        "seconds": 9.754,
+        "librarySha256": "2fb9f3aec3fd85ffa055408200c5a219b0b2fef4de662c6c5073a784c0df1835",
+        "selection": "FullyQualifiedName~SvgClipBoundaryTests|FullyQualifiedName~SvgClipBooleanTests|FullyQualifiedName~SvgCurvedClipSourceTests|FullyQualifiedName~SvgDeferredClipTests|FullyQualifiedName~SvgDrawingMapTests|FullyQualifiedName~SvgResourceUseReplayTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 12,
+        "seconds": 8.774,
+        "librarySha256": "2fb9f3aec3fd85ffa055408200c5a219b0b2fef4de662c6c5073a784c0df1835",
+        "selection": "FullyQualifiedName~SvgDeferredClipReferenceTests"
+      }
+    ],
+    "scope": "Affected .NET11 clip/ownership/API/symbol integration on both hosts; focused .NET10 mechanism/ownership and all twelve canonical references. Four builds have zero warnings/errors.",
+    "originalAudit": {
+      "files": 204,
+      "sourceSvgFilesRetained": 0,
+      "all203OtherSemanticReportsUnchanged": true,
+      "all150PriorPngsPerHostByteIdentical": true,
+      "identicalPngs": {
+        "windows": 150,
+        "linux": 150
+      },
+      "outcomes": {
+        "windows": {
+          "UnsupportedFeature": 50,
+          "rendered": 151,
+          "MalformedInput": 3
+        },
+        "linux": {
+          "UnsupportedFeature": 50,
+          "rendered": 151,
+          "MalformedInput": 3
+        }
+      },
+      "changedOriginals": [
+        "clippath.svg"
+      ],
+      "sweepSeconds": 52.437480999855325
     },
-    "net10": {
-      "librarySha256": "e70291b62bd082d12d0e79182780d85267e50926762a287940c419470010501a",
-      "windows": { "corePassed": 156, "coreSeconds": 8.204, "renderingPassed": 4, "renderingSeconds": 7.370 },
-      "linux": { "corePassed": 156, "coreSeconds": 8.650, "renderingPassed": 4, "renderingSeconds": 7.477 }
-    },
-    "scope": "Affected clip mechanisms, ownership, API contracts, native clipping and symbol/effect integration. Full runtime/package qualification belongs to the completed resource milestone; the existing Windows DejaVu baseline conflict remains separate."
+    "timingScope": "Functional wall times under concurrent development load. No test-suite speedup claim; full runtime/package qualification remains a milestone gate.",
+    "promotion": "Local resource scope qualified. Overall release/package gate remains open, including the separate frozen Windows DejaVu baseline conflict."
   },
-  "remaining": ["definition-level intersection", "per-child intersection within unions", "subsequent gates and complete original qualification"]
+  "remaining": [
+    "Nested object-box clips on retained resource geometry remain an explicit support exclusion.",
+    "Whole SVGWeb supplied/static/resource acceptance and the existing Windows DejaVu baseline decision remain open."
+  ]
 }

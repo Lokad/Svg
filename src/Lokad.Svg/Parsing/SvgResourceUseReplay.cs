@@ -51,6 +51,7 @@ internal static class SvgResourceUseReplay
         BudgetedParserList<SvgClipDefinitionSource> sources = state.ClipSources ?? throw new InvalidOperationException("Deferred clip sources are missing.");
         bool previousDisplay = state.ClipIsDisplayed;
         bool previousUnits = state.ClipIsObjectBoundingBox;
+        string? previousResourceClip = state.ClipResourceClipId;
         try
         {
             state.ClipIsDisplayed = true;
@@ -58,6 +59,7 @@ internal static class SvgResourceUseReplay
             {
                 token.ThrowIfCancellationRequested();
                 state.ClipIsObjectBoundingBox = definition.IsObjectBoundingBox;
+                state.ClipResourceClipId = definition.ResourceClipId;
                 for (int index = definition.FirstSource; index < definition.FirstSource + definition.SourceCount; index++)
                 {
                     token.ThrowIfCancellationRequested();
@@ -71,6 +73,7 @@ internal static class SvgResourceUseReplay
                     };
                     if (child is {} geometry) SvgClipDefinitionStaging.AppendClipChild(geometry, 0, state, token);
                 }
+                if (definition.ResourceClipId is not null) SvgClipDefinitionStaging.PromoteClipRectangle(state, token);
                 if (state.ClipPolygon is null || state.ClipBox is not null)
                 {
                     if (definition.IsObjectBoundingBox) state.ObjectClips.TryAdd(definition.Id, state.ClipBox ?? new(0, 0, 0, 0));
@@ -95,6 +98,7 @@ internal static class SvgResourceUseReplay
             state.ClipBox = null;
             state.ClipIsDisplayed = previousDisplay;
             state.ClipIsObjectBoundingBox = previousUnits;
+            state.ClipResourceClipId = previousResourceClip;
         }
 
         static SvgClipPolygon? LowerReferencedClip(SvgResourceUse use, SvgDocumentState state, CancellationToken token)
@@ -125,7 +129,6 @@ internal static class SvgResourceUseReplay
             else mapped = SvgReferenceResolver.Apply(source, reference, null, state, token);
             try
             {
-                if (use.ClipId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips on referenced clip content are not implemented.");
                 SvgDevicePoint[]? points = null;
                 SvgAuthoredPath? path = null;
                 foreach (SvgGeometry geometry in mapped)
@@ -151,7 +154,8 @@ internal static class SvgResourceUseReplay
                 state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry));
                 SvgDevicePoint[] copy = new SvgDevicePoint[points.Length];
                 for (int point = 0; point < points.Length; point++) { token.ThrowIfCancellationRequested(); copy[point] = points[point]; }
-                SvgClipPolygon polygon = new(copy, [copy.Length]) { IsEvenOdd = use.IsEvenOdd, IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
+                SvgClipPolygon polygon = new(copy, [copy.Length]) { IsEvenOdd = use.IsEvenOdd, IsObjectBoundingBox = state.ClipIsObjectBoundingBox,
+                    ChildClip = use.ClipId is {} clipId ? new(clipId, SvgReferenceResolver.PlainInstancePlacement(reference, null)) : null };
                 SvgAuthoredPath? copied = path?.Copy(SvgAffineTransform.Identity, state.Budget, token);
                 // Referenced contours retain the same authored construction as
                 // direct clip children, including their controls and placement.

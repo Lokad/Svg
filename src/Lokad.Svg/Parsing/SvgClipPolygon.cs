@@ -7,7 +7,12 @@ internal readonly record struct SvgClipChildRange(int First, int Count);
 /// <summary>Keeps an allocation-free clip rectangle and its visual outset until a sibling requires native source replay.</summary>
 internal readonly record struct SvgClipRectangleSource(SvgAffineViewportClip Geometry, float BoundsInflation);
 internal enum SvgClipPaintKind : byte { Path, Rectangle }
-internal readonly record struct SvgClipChild(SvgAuthoredPath Path, bool IsEvenOdd, SvgClipPaintKind PaintKind);
+/// <summary>Borrows a local clip and its placement independently of the source geometry's map.</summary>
+internal readonly record struct SvgClipIntersection(string Id, SvgAffineTransform Map);
+internal readonly record struct SvgClipChild(SvgAuthoredPath Path, bool IsEvenOdd, SvgClipPaintKind PaintKind, SvgClipIntersection? Clip)
+{
+    internal SvgClipChild(SvgAuthoredPath path, bool isEvenOdd, SvgClipPaintKind paintKind) : this(path, isEvenOdd, paintKind, null) { }
+}
 
 /// <summary>Borrows final-scene clip content and an optional enclosing viewport for a painted clip.</summary>
 internal readonly record struct SvgClipRegistration(SvgClipBox Bounds, int ContentIndex, int EnclosureIndex)
@@ -47,7 +52,10 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
     /// <summary>Maps normalized content through the referencing element's geometry bounds before native replay.</summary>
     internal bool IsObjectBoundingBox { get; init; }
     /// <summary>Borrows the local clip applied to this resource's child geometry.</summary>
-    internal string? NestedClipId { get; init; }
+    internal SvgClipIntersection? ChildClip { get; init; }
+    /// <summary>Borrows the clip intersecting the complete definition after its children are united.</summary>
+    internal string? ResourceClipId { get; init; }
+    internal bool HasIntersections => ChildClip is not null || ResourceClipId is not null;
     /// <summary>Preserves mapped child visual boxes, including ignored stroke extents, independently of the clip silhouette.</summary>
     internal SvgPaintBounds? ResourceBounds { get; init; }
     /// <summary>Counts authored children even when containment leaves one effective rectangle.</summary>
@@ -84,6 +92,13 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
     {
         if (!UsesMaskFallback)
         {
+            if (ResourceClipId is not null && ChildCount == 1 && PaintKind == SvgClipPaintKind.Rectangle && !UsesNativeReplay
+                && SourcePath is {} rectangleSource)
+            {
+                SvgRectangle rectangle = SvgPathBounds.Compute(rectangleSource.Commands, token);
+                return WithoutEnclosure(new SvgAffineViewportClip(new(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height),
+                    map.ComposeChecked(rectangleSource.SceneMap)).Register(state, scene, token));
+            }
             // Containment leaves one original rectangle. Keep object-box polygon
             // registration for admitted affine instances, but preserve rectangular
             // coverage rather than adding a generic path's enclosing clip.
@@ -117,6 +132,7 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
         SvgClipChildRange range = Children ?? throw new InvalidOperationException("Clip fallback requires original child sources.");
         BudgetedParserList<SvgClipChild> children = state.ClipChildren ?? throw new InvalidOperationException("Clip child sources are missing.");
         using SvgSceneBuilder builder = new(state.Budget, token);
+        bool hasChildClips = false;
         for (int index = range.First; index < range.First + range.Count; index++)
         {
             token.ThrowIfCancellationRequested();
@@ -135,14 +151,30 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
                 geometry = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(Copy<SvgDevicePoint>(prepared.Points, token),
                     Copy<int>(prepared.ContourEnds, token), prepared.Signs is {} sourceSigns ? Copy<int>(sourceSigns, token) : null,
                     Copy<SvgQuadSpan>(prepared.QuadSpans, token), Copy<SvgCubicSpan>(prepared.CubicSpans, token),
-                    new(255, 255, 255, 255), true, child.IsEvenOdd, SvgPolygonMapping.FiniteEdges, null, reservation, state.Budget));
+                    new(0, 0, 0, 255), true, child.IsEvenOdd, SvgPolygonMapping.FiniteEdges, null, reservation, state.Budget));
                 geometry = geometry with { AuthoredPath = child.PaintKind == SvgClipPaintKind.Rectangle
                     ? child.Path.CopyRectangleFill(map, state.Budget, token)
                     : child.Path.Copy(map, state.Budget, token) };
+                if (child.Clip is {} clip)
+                {
+                    geometry = geometry with { LeafMask = SvgClipPathSyntax.BindResourceClip(clip.Id, map.ComposeChecked(clip.Map), null, state, token) };
+                    hasChildClips = true;
+                }
+                if (ResourceClipId is {} resourceId)
+                {
+                    // Native replay retains the resource clip in both the paint
+                    // context and a clipped child's effect context. Their AA
+                    // coverage applications must remain separate.
+                    if (child.Clip is not null)
+                        geometry = geometry with { LeafMask = SvgClipPathSyntax.BindResourceClip(resourceId, map, geometry.LeafMask, state, token) };
+                    geometry = geometry with { LeafMask = SvgClipPathSyntax.BindResourceClip(resourceId, map, geometry.LeafMask, state, token) };
+                    hasChildClips = true;
+                }
             }
             catch { geometry.Dispose(); reservation.Dispose(); throw; }
             builder.AddGeometry(geometry);
         }
+        if (hasChildClips) SvgLeafMaskComposition.Emit(state, builder, token);
         SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
         try { state.Scene.AdoptVectorContent(content); }
         catch { content.Dispose(); throw; }

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "scope": "Exploratory inline SVG print-media vector traces, corroborated by the separate canonical SVG-image PNG controls. These traces are not PNG references or a claim that print and image contexts are interchangeable.",
+  "browser": "Chrome153.0.8010.52",
+  "revision": "@78e5e45d4bb41035e17ea4da2cc257f496416ac9",
+  "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "recipe": {
+    "inputs": "capture.json",
+    "content": "Inline the unchanged original CC0 SVG into a zero-margin HTML page. No external resources.",
+    "viewport": [744, 1052],
+    "deviceScaleFactor": 1,
+    "pageCssPixels": [744.09448819, 1052.3622047],
+    "printToPDF": { "printBackground": true, "displayHeaderFooter": false, "preferCSSPageSize": true, "scale": 1 },
+    "interpretation": "PDF form coordinates retain the print raster scale 3.125. Inspect clip operations in the target source and alpha-mask source independently, including repeated clips. Clip arrays are left/top/right/bottom."
+  },
+  "observations": [
+    {
+      "input": "inputs/intersection-maps.svg",
+      "sourceSha256": "5d2291864cd210a89539aac56713d89c1e11576d1cd6189ee76c313433b757ab",
+      "targetEnclosingClip": [26, 11, 112, 78],
+      "enclosureAppearsInTargetSource": true,
+      "enclosureAppearsInMaskSource": false,
+      "parentCircleClipApplications": { "clippedChild": 2, "unclippedSibling": 1 },
+      "inference": "Retain parent canvas and clipped-child effect contexts separately; applying one parent coverage gives40 incorrect pixels against the canonical native image."
+    },
+    {
+      "input": "inputs/fractional-target-context.svg",
+      "sourceSha256": "eeb66d71144bd84772881f11161b4efaaa526173f0001e96b103cf8e5440932e",
+      "allocationOriginPrintPixels": [81, 25],
+      "allocationSizePrintPixels": [269, 219],
+      "targetEnclosingClipPrintPixels": [0.25, 9.375, 269, 218.75],
+      "inference": "Mask construction retains the allocated union of target/resource bounds. A full-root construction window leaves31 incorrect pixels against the canonical native image."
+    }
+  ]
+}

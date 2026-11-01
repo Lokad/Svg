@@ -2623,6 +2623,7 @@ public static partial class SvgConverter
                             && (uint)command.MaskContentIndex < (uint)maskStorage.MaskContents.Length && maskStorage.MaskContents[command.MaskContentIndex].UsesAffineTarget;
                         bool paintedClipMask = command.RegionKind == SvgLayerRegionKind.ClipMask;
                         SvgAnalyticClipBounds layer = affineViewportClip ? previousLayer : LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion, command.RegionKind);
+                        SvgAnalyticClipBounds constructionLayer = layer;
                         if (activeViewport.Bounds is {} inheritedBounds)
                         {
                             int left = Math.Max(layer.Left, inheritedBounds.Left), top = Math.Max(layer.Top, inheritedBounds.Top);
@@ -2830,7 +2831,10 @@ public static partial class SvgConverter
                             try
                             {
                                 maskSurface = new byte[checked(pixelCount * 4)];
-                                SvgAnalyticClipBounds contentBounds = affineViewportClip ? layer
+                                // A painted clip's enclosure constrains target ink.
+                                // Construct its independent mask in the parent
+                                // bitmap, before applying that enclosing viewport.
+                                SvgAnalyticClipBounds contentBounds = paintedClipMask ? constructionLayer : affineViewportClip ? layer
                                     : new(Math.Max(layer.Left, maskBounds.Left), Math.Max(layer.Top, maskBounds.Top), Math.Min(layer.Right, maskBounds.Right), Math.Min(layer.Bottom, maskBounds.Bottom));
                                 using SvgCpuClipCoverage? maskCoverage = RasterizeMaskContent(maskContent, maskSurface, affineViewportClip, contentBounds, sourcePaintClip, sourcePaintClipPixels, out _);
                             }

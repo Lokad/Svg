@@ -108,7 +108,7 @@ internal struct SvgObjectBoundingClip
     internal SvgLeafMaskOperation Register(SvgClipPolygon content, string? nativeId, SvgDocumentState state, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        if (content.NestedClipId is not null)
+        if (content.HasIntersections)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box nested resource clips are not implemented.");
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Resolved = true;

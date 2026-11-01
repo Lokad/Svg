@@ -434,6 +434,7 @@ internal static class SvgDocumentTraversal
                     state.ClipSourceStart = -1;
                     state.ClipPathDepth = -1;
                     state.ClipPathId = null;
+                    state.ClipResourceClipId = null;
                     state.ClipBox = null;
                     state.ClipRectangleSource = null;
                     state.ClipInheritedStroke = default;
@@ -527,6 +528,7 @@ internal static class SvgDocumentTraversal
                     state.ValidateSymbolReferences(cancellationToken);
                     state.PaintResources?.ValidateUnusedEffects(state, cancellationToken);
                     SvgResourceUseReplay.ResolveClips(state, cancellationToken);
+                    SvgClipDefinitionStaging.ResolveIntersections(state, cancellationToken);
                     SvgMaskContentReplay.Resolve(root, state, cancellationToken);
                     SvgPatternUseReplay.Resolve(root, state, limits, cancellationToken);
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, cancellationToken);

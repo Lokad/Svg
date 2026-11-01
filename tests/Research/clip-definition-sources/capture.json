@@ -5,7 +5,7 @@
   "height": 96,
   "browser": "Chrome153.0.8010.52",
   "sourceBaseline": "421a17eacdbdcad7624a47199fc4a3e88f7f3608",
-  "context": "Transparent SVG image, intrinsic image viewport, DPR 1; frozen before source staging changes.",
+  "context": "Transparent SVG image, intrinsic image viewport, DPR 1. Independent native captures frozen before reference admission; no managed output used as a reference.",
   "cases": [
     {
       "id": "multiple-uses",
@@ -233,6 +233,494 @@
       "afterChangedPixels": {
         "windows": 0,
         "linux": 0
+      }
+    },
+    {
+      "id": "resource-intersection",
+      "input": "inputs/resource-intersection.svg",
+      "inputSha256": "45cfb64798f228467442eed233322d3a0fe08a0ad8bf9350d4c0c84141f3d962",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "82ddeee343d0ea6d68ede4d0289ea7fe7b5febf1918fe6a2efd69b2988c1fb3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "82ddeee343d0ea6d68ede4d0289ea7fe7b5febf1918fe6a2efd69b2988c1fb3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "82ddeee343d0ea6d68ede4d0289ea7fe7b5febf1918fe6a2efd69b2988c1fb3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/resource-intersection.png",
+          "referenceSha256": "82ddeee343d0ea6d68ede4d0289ea7fe7b5febf1918fe6a2efd69b2988c1fb3e"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "82ddeee343d0ea6d68ede4d0289ea7fe7b5febf1918fe6a2efd69b2988c1fb3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "82ddeee343d0ea6d68ede4d0289ea7fe7b5febf1918fe6a2efd69b2988c1fb3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "82ddeee343d0ea6d68ede4d0289ea7fe7b5febf1918fe6a2efd69b2988c1fb3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/resource-intersection.png",
+          "referenceSha256": "82ddeee343d0ea6d68ede4d0289ea7fe7b5febf1918fe6a2efd69b2988c1fb3e"
+        }
+      },
+      "sourceBaseline": "f73e345afcc37988b4e7b0c3969598a922ef3df1",
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "before": {
+        "outcome": "UnsupportedFeature",
+        "message": "Clip path attribute 'clip-path' is not implemented.",
+        "librarySha256": "34138e1e334a7dd1d228db0eb2f273f75dc7b865e414e0652de7b4ab8f114173"
+      }
+    },
+    {
+      "id": "child-intersection",
+      "input": "inputs/child-intersection.svg",
+      "inputSha256": "a864c0b6f86af42c0a03b9e34dbd2acdd9ae16861ddd959b53c91fc7188966ff",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "3737c2688a13d12386eb9b3ef17bb771a3e9d9b14336bd0c51fb73889df6d625",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3737c2688a13d12386eb9b3ef17bb771a3e9d9b14336bd0c51fb73889df6d625",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3737c2688a13d12386eb9b3ef17bb771a3e9d9b14336bd0c51fb73889df6d625",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/child-intersection.png",
+          "referenceSha256": "3737c2688a13d12386eb9b3ef17bb771a3e9d9b14336bd0c51fb73889df6d625"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "3737c2688a13d12386eb9b3ef17bb771a3e9d9b14336bd0c51fb73889df6d625",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3737c2688a13d12386eb9b3ef17bb771a3e9d9b14336bd0c51fb73889df6d625",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3737c2688a13d12386eb9b3ef17bb771a3e9d9b14336bd0c51fb73889df6d625",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/child-intersection.png",
+          "referenceSha256": "3737c2688a13d12386eb9b3ef17bb771a3e9d9b14336bd0c51fb73889df6d625"
+        }
+      },
+      "sourceBaseline": "f73e345afcc37988b4e7b0c3969598a922ef3df1",
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "before": {
+        "outcome": "UnsupportedFeature",
+        "message": "Clips on referenced clip content are not implemented.",
+        "librarySha256": "34138e1e334a7dd1d228db0eb2f273f75dc7b865e414e0652de7b4ab8f114173"
+      }
+    },
+    {
+      "id": "point-list-children",
+      "input": "inputs/point-list-children.svg",
+      "inputSha256": "e4f672d1dbf857cfcb7f5280c931162d62d25e326ef367846da3dbc3a184d412",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "b0d0be1eafca52726197c97a82a37621b6dec92bd53d65956207315fd95f2d8d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b0d0be1eafca52726197c97a82a37621b6dec92bd53d65956207315fd95f2d8d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b0d0be1eafca52726197c97a82a37621b6dec92bd53d65956207315fd95f2d8d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/point-list-children.png",
+          "referenceSha256": "b0d0be1eafca52726197c97a82a37621b6dec92bd53d65956207315fd95f2d8d"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "b0d0be1eafca52726197c97a82a37621b6dec92bd53d65956207315fd95f2d8d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b0d0be1eafca52726197c97a82a37621b6dec92bd53d65956207315fd95f2d8d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b0d0be1eafca52726197c97a82a37621b6dec92bd53d65956207315fd95f2d8d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/point-list-children.png",
+          "referenceSha256": "b0d0be1eafca52726197c97a82a37621b6dec92bd53d65956207315fd95f2d8d"
+        }
+      },
+      "sourceBaseline": "f73e345afcc37988b4e7b0c3969598a922ef3df1",
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "before": {
+        "outcome": "UnsupportedFeature",
+        "message": "This SVG child element is not implemented yet.",
+        "librarySha256": "34138e1e334a7dd1d228db0eb2f273f75dc7b865e414e0652de7b4ab8f114173"
+      }
+    },
+    {
+      "id": "intersection-maps",
+      "input": "inputs/intersection-maps.svg",
+      "inputSha256": "5d2291864cd210a89539aac56713d89c1e11576d1cd6189ee76c313433b757ab",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "4f4b67dff29639adf14e977dc675a55c3a249fa191e2283b5aad64ed4e03723a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "4f4b67dff29639adf14e977dc675a55c3a249fa191e2283b5aad64ed4e03723a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "4f4b67dff29639adf14e977dc675a55c3a249fa191e2283b5aad64ed4e03723a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/intersection-maps.png",
+          "referenceSha256": "4f4b67dff29639adf14e977dc675a55c3a249fa191e2283b5aad64ed4e03723a"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "4f4b67dff29639adf14e977dc675a55c3a249fa191e2283b5aad64ed4e03723a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "4f4b67dff29639adf14e977dc675a55c3a249fa191e2283b5aad64ed4e03723a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "4f4b67dff29639adf14e977dc675a55c3a249fa191e2283b5aad64ed4e03723a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/intersection-maps.png",
+          "referenceSha256": "4f4b67dff29639adf14e977dc675a55c3a249fa191e2283b5aad64ed4e03723a"
+        }
+      },
+      "sourceBaseline": "f73e345afcc37988b4e7b0c3969598a922ef3df1",
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "before": {
+        "outcome": "UnsupportedFeature",
+        "message": "Clip path attribute 'clip-path' is not implemented.",
+        "librarySha256": "34138e1e334a7dd1d228db0eb2f273f75dc7b865e414e0652de7b4ab8f114173"
+      }
+    },
+    {
+      "id": "direct-child-context",
+      "input": "inputs/direct-child-context.svg",
+      "inputSha256": "2c17d17777174f65a6a96b054916f54a216b90be18a8c201e9f562f8035ee98d",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "e741f3a1ca611e6ea4215597786fbae7601ec655ae07c4e2c346c5936a647713",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e741f3a1ca611e6ea4215597786fbae7601ec655ae07c4e2c346c5936a647713",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e741f3a1ca611e6ea4215597786fbae7601ec655ae07c4e2c346c5936a647713",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/direct-child-context.png",
+          "referenceSha256": "e741f3a1ca611e6ea4215597786fbae7601ec655ae07c4e2c346c5936a647713"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "e741f3a1ca611e6ea4215597786fbae7601ec655ae07c4e2c346c5936a647713",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e741f3a1ca611e6ea4215597786fbae7601ec655ae07c4e2c346c5936a647713",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e741f3a1ca611e6ea4215597786fbae7601ec655ae07c4e2c346c5936a647713",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/direct-child-context.png",
+          "referenceSha256": "e741f3a1ca611e6ea4215597786fbae7601ec655ae07c4e2c346c5936a647713"
+        }
+      },
+      "sourceBaseline": "f73e345afcc37988b4e7b0c3969598a922ef3df1",
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "before": {
+        "outcome": "UnsupportedFeature",
+        "message": "Clip path attribute 'clip-path' is not implemented.",
+        "librarySha256": "34138e1e334a7dd1d228db0eb2f273f75dc7b865e414e0652de7b4ab8f114173"
+      }
+    },
+    {
+      "id": "fractional-target-context",
+      "input": "inputs/fractional-target-context.svg",
+      "inputSha256": "eeb66d71144bd84772881f11161b4efaaa526173f0001e96b103cf8e5440932e",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "32f6879a06488bca45268ebecca350ded39e6d38a9db1163aa61f7b979057eea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "32f6879a06488bca45268ebecca350ded39e6d38a9db1163aa61f7b979057eea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "32f6879a06488bca45268ebecca350ded39e6d38a9db1163aa61f7b979057eea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-target-context.png",
+          "referenceSha256": "32f6879a06488bca45268ebecca350ded39e6d38a9db1163aa61f7b979057eea"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "32f6879a06488bca45268ebecca350ded39e6d38a9db1163aa61f7b979057eea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "32f6879a06488bca45268ebecca350ded39e6d38a9db1163aa61f7b979057eea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "32f6879a06488bca45268ebecca350ded39e6d38a9db1163aa61f7b979057eea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-target-context.png",
+          "referenceSha256": "32f6879a06488bca45268ebecca350ded39e6d38a9db1163aa61f7b979057eea"
+        }
+      },
+      "sourceBaseline": "f73e345afcc37988b4e7b0c3969598a922ef3df1",
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "before": {
+        "outcome": "UnsupportedFeature",
+        "message": "Clip path attribute 'clip-path' is not implemented.",
+        "librarySha256": "34138e1e334a7dd1d228db0eb2f273f75dc7b865e414e0652de7b4ab8f114173"
+      }
+    },
+    {
+      "id": "rectangle-parent-context",
+      "input": "inputs/rectangle-parent-context.svg",
+      "inputSha256": "f8e00d0f51d1bb79426128aef483982094c5fa7df2c69e4fa43bd9f652c8a54a",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "987084899769fe9008b38df1385bd147f2cd130f1bc146ea37d5a1fc81e3002f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "987084899769fe9008b38df1385bd147f2cd130f1bc146ea37d5a1fc81e3002f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "987084899769fe9008b38df1385bd147f2cd130f1bc146ea37d5a1fc81e3002f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/rectangle-parent-context.png",
+          "referenceSha256": "987084899769fe9008b38df1385bd147f2cd130f1bc146ea37d5a1fc81e3002f"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "987084899769fe9008b38df1385bd147f2cd130f1bc146ea37d5a1fc81e3002f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "987084899769fe9008b38df1385bd147f2cd130f1bc146ea37d5a1fc81e3002f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "987084899769fe9008b38df1385bd147f2cd130f1bc146ea37d5a1fc81e3002f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/rectangle-parent-context.png",
+          "referenceSha256": "987084899769fe9008b38df1385bd147f2cd130f1bc146ea37d5a1fc81e3002f"
+        }
+      },
+      "sourceBaseline": "f73e345afcc37988b4e7b0c3969598a922ef3df1",
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "before": {
+        "outcome": "UnsupportedFeature",
+        "message": "Clip path attribute 'clip-path' is not implemented.",
+        "librarySha256": "34138e1e334a7dd1d228db0eb2f273f75dc7b865e414e0652de7b4ab8f114173"
+      }
+    },
+    {
+      "id": "affine-parent-context",
+      "input": "inputs/affine-parent-context.svg",
+      "inputSha256": "aa89d8d47c6a332d0aa2906e9cc562a634ffbae7c254dd6364291d569107a1af",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "3bea649623515fb9095bd50a2f6d5d8f89365fc756ec10523bf0fde52a11421d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3bea649623515fb9095bd50a2f6d5d8f89365fc756ec10523bf0fde52a11421d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3bea649623515fb9095bd50a2f6d5d8f89365fc756ec10523bf0fde52a11421d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/affine-parent-context.png",
+          "referenceSha256": "3bea649623515fb9095bd50a2f6d5d8f89365fc756ec10523bf0fde52a11421d"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "3bea649623515fb9095bd50a2f6d5d8f89365fc756ec10523bf0fde52a11421d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3bea649623515fb9095bd50a2f6d5d8f89365fc756ec10523bf0fde52a11421d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3bea649623515fb9095bd50a2f6d5d8f89365fc756ec10523bf0fde52a11421d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/affine-parent-context.png",
+          "referenceSha256": "3bea649623515fb9095bd50a2f6d5d8f89365fc756ec10523bf0fde52a11421d"
+        }
+      },
+      "sourceBaseline": "f73e345afcc37988b4e7b0c3969598a922ef3df1",
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "before": {
+        "outcome": "UnsupportedFeature",
+        "message": "Clip path attribute 'clip-path' is not implemented.",
+        "librarySha256": "34138e1e334a7dd1d228db0eb2f273f75dc7b865e414e0652de7b4ab8f114173"
       }
     }
   ]

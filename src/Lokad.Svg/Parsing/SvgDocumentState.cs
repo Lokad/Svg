@@ -23,6 +23,7 @@ internal sealed class SvgDocumentState : IDisposable
     private RenderBudget.BudgetReservation? _anonymousSymbolOwner;
     private static readonly int DefinitionStorageBytes = checked(64 + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgDefinition>());
     private const int ClipStorageBytes = 128;
+    private static readonly int ClipPolygonStorageBytes = checked(64 + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgClipPolygon>());
     // The tile embeds nullable scene geometry. Include its actual value size,
     // plus conservative bucket/key/entry overhead, before dictionary growth.
     private static readonly int PatternStorageBytes = checked(64 + (int)ParserCollectionMemory.GetArrayByteCount<SvgPatternTile>(1));
@@ -56,7 +57,7 @@ internal sealed class SvgDocumentState : IDisposable
         CssAncestors = new(styleRules, budget, cancellationToken);
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         Clips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
-        ClipPolygons = new BudgetedParserDictionary<string, SvgClipPolygon>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
+        ClipPolygons = new BudgetedParserDictionary<string, SvgClipPolygon>(budget, SvgMemoryCategory.Parser, ClipPolygonStorageBytes);
         ObjectClips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Masks = new BudgetedParserDictionary<string, byte>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         MaskContents = new BudgetedParserDictionary<string, SvgMaskContent>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
@@ -334,6 +335,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgClipBox? MaskContentBox { get; set; }
 
     internal string? ClipPathId { get; set; }
+    internal string? ClipResourceClipId { get; set; }
 
     internal SvgClipBox? ClipBox { get; set; }
 
