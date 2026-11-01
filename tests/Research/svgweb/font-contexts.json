@@ -1820,10 +1820,10 @@
     "timingScope": "Functional validation wall times under ordinary development load, not benchmarks or a suite-simplification speedup claim."
   },
   "remaining": [
-    "Windows Serif Bold has three coverage pixels; its Linux counterpart and BoldItalic/Italic Linux fitting residuals are corrected by the shared linked-zone sequence. See latin-blue-zone-fitting.json.",
-    "GPOS extensions and SFVTPV are closed. Matched Arial retains Windows 13/6/5 pixels and Linux 0/0/0; preserve exact named and generic-family programs.",
-    "Configured generic-serif contexts are exploratory exact; alias policy does not qualify native ambient fonts or default no-font conversion.",
-    "Every original remains open for complete font/resource/static-state accounting. Single exploratory supplied-program captures are not reference admission."
+    "Known Droid Serif Bold/BoldItalic/Italic fitting/coverage causes are corrected through shared Latin linked-zone fitting and the fitted/scan stage split. Their supplied contexts are exploratory exact on both hosts; whole-original accounting remains separate.",
+    "Matched Arial retains Windows 13/6/5 pixels and Linux 0/0/0. Preserve named and generic-family programs while isolating the remaining glyph stages.",
+    "Configured generic-serif contexts do not qualify ambient native fonts or default no-font conversion.",
+    "Every original still needs complete font/resource/static-state accounting. Exploratory captures alone are not reference admission."
   ],
   "followUp": {
     "evidence": "shared-font-model.json",
@@ -1833,5 +1833,6 @@
     "evidence": "glyph-recording.json",
     "scope": "Filled position recording is corrected with path strikes retained. Matched Arial Linux is exploratory exact; Windows residuals and other glyph/original contexts remain open."
   },
-  "latinBlueZoneFitting": "latin-blue-zone-fitting.json"
+  "latinBlueZoneFitting": "latin-blue-zone-fitting.json",
+  "windowsScanBoundary": "windows-scan-boundary.json"
 }

@@ -445,5 +445,6 @@
   "remaining": [
     "Windows Serif Bold O/Q coverage: three pixels in the complete supplied-program document. Other Windows glyph contexts, including matched Arial, remain open.",
     "All supplied-font/static/resource contexts still require complete original accounting and reference admission. Exploratory exact output alone does not close an original."
-  ]
+  ],
+  "windowsScanBoundary": "windows-scan-boundary.json"
 }

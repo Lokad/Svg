@@ -218,7 +218,7 @@ CancellationToken token)
                     float left = (float)Math.Floor(bounds.X), top = (float)Math.Floor(bounds.Y);
                     return new(left, top, (float)Math.Ceiling(bounds.X + bounds.Width) - left, (float)Math.Ceiling(bounds.Y + bounds.Height) - top);
                 }
-                using OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, token);
+                using OpenTypeGlyphContourStorage contours = source.CreateWindowsScanContours(1, 0, 1, 0, budget, token);
                 if (contours.Segments.Length == 0) return default;
                 double minimumX = double.PositiveInfinity, minimumY = double.PositiveInfinity;
                 double maximumX = double.NegativeInfinity, maximumY = double.NegativeInfinity;

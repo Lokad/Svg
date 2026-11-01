@@ -1,0 +1,143 @@
+{
+  "scope": "Independent Windows mask/preblend mechanism vectors from the same original program and curve. Three agreeing healthy/profile-cleaned native image processes per phase; the .25 process set is the canonical rendering capture. No extra API paths.",
+  "fontSha256": "b769c71b1d0997220b33c54dcc24d8f5281366b903e01c25bebf661f4cb11696",
+  "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "rows": [
+    {
+      "phase": 0,
+      "x": 8,
+      "y": 30,
+      "size": 32,
+      "sampleY": 28,
+      "sampleLeft": 16,
+      "alpha": [
+        28,
+        8,
+        9,
+        184,
+        255
+      ],
+      "sourceSha256": "d31355201072ef72693fcf69f8106515bc073844ec42ba530bda2bcccabd392f",
+      "nativeSourceSha256": "3e1ba97420343339a1b1a9b4636e7f4ec72d4e4556f053c40f59b11573ebe70e",
+      "captures": [
+        {
+          "pngSha256": "a42266446e18dea9ee4903ff672a8ef3abb15225c9ea0a79addba2be0fb76286",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a42266446e18dea9ee4903ff672a8ef3abb15225c9ea0a79addba2be0fb76286",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a42266446e18dea9ee4903ff672a8ef3abb15225c9ea0a79addba2be0fb76286",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "phase": 0.25,
+      "x": 8.25,
+      "y": 30,
+      "size": 32,
+      "sampleY": 28,
+      "sampleLeft": 16,
+      "alpha": [
+        37,
+        16,
+        0,
+        108,
+        255
+      ],
+      "sourceSha256": "fe7808600c677306ae2a6c77e85c02148e8388d759c2a6e09bedbdec60dc8400",
+      "nativeSourceSha256": "240e14f1c3cd0ee452d0f8694cc9cf8822ff670286d8da9217a36dd47a96f8f5",
+      "captures": [
+        {
+          "pngSha256": "86cf0b5cd0d14e28721201e05ddeef9755acaebffd8e97235302580d6362fd65",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "86cf0b5cd0d14e28721201e05ddeef9755acaebffd8e97235302580d6362fd65",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "86cf0b5cd0d14e28721201e05ddeef9755acaebffd8e97235302580d6362fd65",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "phase": 0.5,
+      "x": 8.5,
+      "y": 30,
+      "size": 32,
+      "sampleY": 28,
+      "sampleLeft": 16,
+      "alpha": [
+        44,
+        19,
+        1,
+        72,
+        254
+      ],
+      "sourceSha256": "95113799db9fcee348bd5ca43df6ed68823e91d831f7b5f51e861dd6e749563a",
+      "nativeSourceSha256": "db6c4f8ad91b300867bf17e3ca896fafe7a8aea8c1ce6677a255b1ce067069b4",
+      "captures": [
+        {
+          "pngSha256": "9adf7079e7bc4164eb61c4516b38af66b3079183ef10fd39a4ac315b6e116a05",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9adf7079e7bc4164eb61c4516b38af66b3079183ef10fd39a4ac315b6e116a05",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9adf7079e7bc4164eb61c4516b38af66b3079183ef10fd39a4ac315b6e116a05",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "phase": 0.75,
+      "x": 8.75,
+      "y": 30,
+      "size": 32,
+      "sampleY": 28,
+      "sampleLeft": 16,
+      "alpha": [
+        64,
+        23,
+        5,
+        23,
+        215
+      ],
+      "sourceSha256": "db8514d0a4d1ccd61ef6269bf189d714b256ad2bb73da33fe0b6426aefa4600a",
+      "nativeSourceSha256": "a39de61c7f6695514ce68effac2ccd41dc97675cff98650e7149bc49a1cbc9d5",
+      "captures": [
+        {
+          "pngSha256": "d8e3c34504df536a24c351fe15ce5b53ea482f006e55d70ecc7e5f8f812dbefa",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d8e3c34504df536a24c351fe15ce5b53ea482f006e55d70ecc7e5f8f812dbefa",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d8e3c34504df536a24c351fe15ce5b53ea482f006e55d70ecc7e5f8f812dbefa",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

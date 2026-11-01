@@ -74,8 +74,9 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         return OpenTypeFont.HasTrueTypePrograms(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, token);
     }
 
-    /// <summary>Returns owned device contours for the selected native LCD profile, with rotated outlines retaining their unhinted shape.</summary>
-    internal OpenTypeGlyphContourStorage CreateWindowsContours(double scaleX, double offsetX, double scaleY, double offsetY, RenderBudget budget, CancellationToken token)
+    /// <summary>Returns owned, positioned Windows quadratics, preserving fitted points and half-F26 implied points before scan preparation.</summary>
+    /// <remarks>Borrows the immutable face. Decoding, fitting and mapping storage use the supplied budget; cancellation or failure releases temporary owners. The caller exclusively owns the returned contours. Rotated outlines retain their unhinted shape; sampling-grid rounding and subdivision belong to the scan stage.</remarks>
+    internal OpenTypeGlyphContourStorage CreateWindowsFittedContours(double scaleX, double offsetX, double scaleY, double offsetY, RenderBudget budget, CancellationToken token)
     {
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
         SvgGlyphStrikeTransform strike = HasGlyphMap
@@ -135,10 +136,6 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
                 OpenTypeQuadraticSegment segment = contours.Segments[i];
                 contours.Segments[i] = new(Map(segment.Start), Map(segment.Control), Map(segment.End));
             }
-            if (HasGlyphMap || !HasSimpleOutline(token))
-            {
-                using (contours) return SvgWindowsGlyphCurves.Prepare(contours, budget, token);
-            }
             return contours;
 
             OpenTypeOutlinePoint Map(OpenTypeOutlinePoint point)
@@ -151,6 +148,14 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
             }
         }
         catch { contours.Dispose(); throw; }
+    }
+
+    /// <summary>Returns owned Windows scan curves after profile-specific grid rounding and bounded extrema subdivision.</summary>
+    /// <remarks>Shares one preparation route for simple, composite and mapped glyphs. The fitted temporary remains reserved through preparation and is released after its last borrower, including on cancellation or refusal. The caller exclusively owns the returned scan storage; the face and source remain borrowed and unchanged.</remarks>
+    internal OpenTypeGlyphContourStorage CreateWindowsScanContours(double scaleX, double offsetX, double scaleY, double offsetY, RenderBudget budget, CancellationToken token)
+    {
+        using OpenTypeGlyphContourStorage fitted = CreateWindowsFittedContours(scaleX, offsetX, scaleY, offsetY, budget, token);
+        return SvgWindowsGlyphCurves.Prepare(fitted, budget, token);
     }
 
     internal static SvgGlyphRasterSource Create(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget)

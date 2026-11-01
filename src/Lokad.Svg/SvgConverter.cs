@@ -4708,7 +4708,7 @@ public static partial class SvgConverter
                 {
                     if (OperatingSystem.IsWindows() && (source.HasGlyphMap || source.HasCompleteTrueTypeProfile || source.HasTrueTypePrograms(budget, cancellationToken)))
                     {
-                        using OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(device.A, device.E, device.D, device.F, budget, cancellationToken);
+                        using OpenTypeGlyphContourStorage contours = source.CreateWindowsScanContours(device.A, device.E, device.D, device.F, budget, cancellationToken);
                         int crossingCount = checked(contours.Segments.Length * 2);
                         using RenderBudget.BudgetReservation? crossingReservation = crossingCount == 0 ? null : budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(crossingCount), SvgMemoryCategory.Temporary);
                         SvgGlyphLcdCoverage.Crossing[] crossings = crossingCount == 0 ? [] : new SvgGlyphLcdCoverage.Crossing[crossingCount];

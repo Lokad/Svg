@@ -271,4 +271,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="../Research/windows-scan-boundary/fonts/ScanTurn.ttf" Link="TestData/windows-scan-boundary/ScanTurn.ttf" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

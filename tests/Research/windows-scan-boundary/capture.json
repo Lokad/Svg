@@ -1,0 +1,114 @@
+{
+  "scope": "Original CC0 turning counter; image document, transparent 48x48, DPR 1. Three fresh independent native processes per platform. No hosted glyph/program or private font.",
+  "width": 48,
+  "height": 48,
+  "browser": "Chrome 153.0.8010.52",
+  "input": "turning-counter.svg",
+  "inputSha256": "fe7808600c677306ae2a6c77e85c02148e8388d759c2a6e09bedbdec60dc8400",
+  "font": "fonts/ScanTurn.ttf",
+  "fontSha256": "b769c71b1d0997220b33c54dcc24d8f5281366b903e01c25bebf661f4cb11696",
+  "nativeSourceSha256": "240e14f1c3cd0ee452d0f8694cc9cf8822ff670286d8da9217a36dd47a96f8f5",
+  "nativeRecipe": "Embed the unchanged program in @font-face before </svg>, family ScanTurn, normal style/weight 400, no other source changes.",
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "86cf0b5cd0d14e28721201e05ddeef9755acaebffd8e97235302580d6362fd65",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "86cf0b5cd0d14e28721201e05ddeef9755acaebffd8e97235302580d6362fd65",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "86cf0b5cd0d14e28721201e05ddeef9755acaebffd8e97235302580d6362fd65",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "86cf0b5cd0d14e28721201e05ddeef9755acaebffd8e97235302580d6362fd65",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "9ac10f283cb9760fab877f566339e61781ddc2d609995f3a57d6b6f3e213a1f5",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "9ac10f283cb9760fab877f566339e61781ddc2d609995f3a57d6b6f3e213a1f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9ac10f283cb9760fab877f566339e61781ddc2d609995f3a57d6b6f3e213a1f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9ac10f283cb9760fab877f566339e61781ddc2d609995f3a57d6b6f3e213a1f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  },
+  "fontUseProofs": {
+    "recipe": "Missing: capture the unchanged SVG without @font-face. Different: retain the capture materialization but substitute the original recipe program with only A changed to the H outer rectangle, omitting its counter. These are font-use probes, not additional fidelity references.",
+    "platforms": {
+      "windows": [
+        {
+          "kind": "missing",
+          "changedPixels": 309,
+          "maximumError": 255,
+          "nativeSourceSha256": "fe7808600c677306ae2a6c77e85c02148e8388d759c2a6e09bedbdec60dc8400",
+          "programSha256": null,
+          "pngSha256": "671e160b7e20676577c0161e8ff1737bbf18db5342d0f096f3d841e0ce62540c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "kind": "different",
+          "changedPixels": 145,
+          "maximumError": 255,
+          "nativeSourceSha256": "4fd39f3bd918a666b3d9dcec0c335c45b72a1122a069aa2ba06ed7c899b24818",
+          "programSha256": "81d70b15fae799fe4f6fa502c9f877c71a7475707b20c5e58d9c3b392eabd04a",
+          "pngSha256": "8762ec335bf85c8c2ed5d9378331c4f37ee7ed1c1cd01ed4456c24829b59290c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linux": [
+        {
+          "kind": "missing",
+          "changedPixels": 286,
+          "maximumError": 255,
+          "nativeSourceSha256": "fe7808600c677306ae2a6c77e85c02148e8388d759c2a6e09bedbdec60dc8400",
+          "programSha256": null,
+          "pngSha256": "63d9c0a0e13d8c82c6ca3de77b090fd27480c06ea66cb22f889f92a34223a3e3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "kind": "different",
+          "changedPixels": 171,
+          "maximumError": 255,
+          "nativeSourceSha256": "4fd39f3bd918a666b3d9dcec0c335c45b72a1122a069aa2ba06ed7c899b24818",
+          "programSha256": "81d70b15fae799fe4f6fa502c9f877c71a7475707b20c5e58d9c3b392eabd04a",
+          "pngSha256": "b65504971cbdd0e7fa6aa77b129d465b146f89ad98493c6a15f110a34225b4b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  },
+  "id": "windows-scan-boundary-turning-counter",
+  "creator": "Lokad.Svg contributors",
+  "createdDate": "2026-11-01",
+  "license": "CC0-1.0",
+  "licenseEvidence": "LICENSE.txt",
+  "background": "transparent",
+  "deviceScaleFactor": 1
+}

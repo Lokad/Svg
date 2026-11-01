@@ -10648,6 +10648,7 @@
     "sharedFontModel": "shared-font-model.json",
     "glyphRecording": "glyph-recording.json",
     "glyphDrawingBinding": "glyph-drawing-binding.json",
-    "latinBlueZoneFitting": "latin-blue-zone-fitting.json"
+    "latinBlueZoneFitting": "latin-blue-zone-fitting.json",
+    "windowsScanBoundary": "windows-scan-boundary.json"
   }
 }

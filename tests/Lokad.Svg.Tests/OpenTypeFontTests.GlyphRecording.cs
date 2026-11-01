@@ -35,9 +35,9 @@ public sealed partial class OpenTypeFontTests
             // origin as the independently browser-backed flat control. Do not
             // require a particular intermediate path-map representation.
             using SvgGlyphRasterSource flat = SvgGlyphRasterSource.Create(Assert.Single(fonts.Fonts), new(2, 81.5, 121.5, 0), 9, budget);
-            using OpenTypeGlyphContourStorage expected = flat.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None);
+            using OpenTypeGlyphContourStorage expected = flat.CreateWindowsFittedContours(1, 0, 1, 0, budget, CancellationToken.None);
             float rasterScale = (float)(5d / 12);
-            using OpenTypeGlyphContourStorage actual = source.CreateWindowsContours(rasterScale, 50, rasterScale, 0, budget, CancellationToken.None);
+            using OpenTypeGlyphContourStorage actual = source.CreateWindowsFittedContours(rasterScale, 50, rasterScale, 0, budget, CancellationToken.None);
             Assert.Equal(expected.Segments.ToArray(), actual.Segments.ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

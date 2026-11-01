@@ -184,6 +184,10 @@ alignment, rounding and scratch-lifetime checks. The
 [alignment-zone cases](Research/svgweb/latin-blue-zone-fitting.json) isolate linked
 anchors and shared edges; supplied-font rendering keeps its canonical path and
 independent platform references.
+`FullyQualifiedName~Windows_scan_` selects fitted/scan geometry, four native phase
+vectors and preparation cleanup/retry. `FullyQualifiedName~SvgWindowsScanBoundaryTests`
+selects the single canonical [turning-counter image](Research/windows-scan-boundary/README.md).
+Existing half-unit fitted-point and complete native-texture regressions remain separate.
 
 ## Development checks
 

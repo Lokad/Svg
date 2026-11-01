@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "c7601fb7073e7c7de09f1cb6a9816afc80ee6733",
+  "scope": "Separate fitted Windows quadratics from prepared scan leaves. Preserve fitted/implied points, layout, programs, source origins, native references and tolerances. Ink measurement and painting use one owned scan preparation path; no font-specific patch or new backend.",
+  "implementation": [
+    "../../../src/Lokad.Svg/Fonts/SvgGlyphRasterSource.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgTextLayoutBounds.cs",
+    "../../../src/Lokad.Svg/SvgConverter.cs"
+  ],
+  "model": {
+    "fitted": "CreateWindowsFittedContours returns positioned quadratics before scan-grid rounding or subdivision, including half-F26 implied points.",
+    "scan": "CreateWindowsScanContours uses the same bounded preparation for simple, composite and mapped glyphs. Both ink metrics and painting request this stage.",
+    "ownership": "The existing segment accumulator owns scan storage. Its fitted temporary remains charged during preparation and releases after its last borrower, including refusal/cancellation. No cache or additional ownership abstraction.",
+    "rejectedShortcut": "Rounding inside the fitted loader made images exact but broke the independently pinned half-F26 point contract. Keep that test and its reference values; expose the two actual stages instead."
+  },
+  "responsibilities": {
+    "mechanisms": {
+      "tests": "../../Lokad.Svg.Tests/OpenTypeFontTests.WindowsScan.cs",
+      "cases": 4,
+      "nativeVectors": "../windows-scan-boundary/native-alpha.json",
+      "scope": "One original turning curve, four numerical phases, direct fitted/scan topology and independently captured alpha vectors. Each phase is an individual theory case."
+    },
+    "contracts": {
+      "cases": 2,
+      "scope": "Refusal and cancellation after scan capacity is reserved, while the fitted temporary remains alive; baseline reservation restored, source unchanged, retry succeeds and final storage releases. No per-fixture API matrix."
+    },
+    "rendering": {
+      "tests": "../../Lokad.Svg.VisualTests/SvgWindowsScanBoundaryTests.cs",
+      "cases": 1,
+      "capture": "../windows-scan-boundary/capture.json",
+      "scope": "One canonical conversion per host, with original CC0 program/SVG and meaningful independent Windows/Linux references. Each platform has three agreeing fresh healthy/profile-cleaned captures."
+    },
+    "retained": {
+      "tests": "../../Lokad.Svg.VisualTests/SvgWindowsGlyphTests.cs",
+      "existingCases": 37,
+      "scope": "Native fitted-point assertions and complete texture bytes are unchanged. Texture consumers select scan contours; point/profile/mapping consumers select fitted contours. The half-F26 regression stays intact."
+    },
+    "failingBefore": [
+      {
+        "name": "before-native-windows-net11.0",
+        "passed": 0,
+        "failed": 1,
+        "seconds": 6.356,
+        "librarySha256": "25ab4e4b4fedfebf8f78a8efc389c3163749e30a77281c975b3b2ad52aebb4e2"
+      },
+      {
+        "name": "before-native-linux-net11.0",
+        "passed": 1,
+        "failed": 0,
+        "seconds": 9.338,
+        "librarySha256": "25ab4e4b4fedfebf8f78a8efc389c3163749e30a77281c975b3b2ad52aebb4e2"
+      }
+    ]
+  },
+  "qualification": {
+    "focused": [
+      {
+        "name": "boundary-focused-core-windows-net11.0",
+        "passed": 14,
+        "failed": 0,
+        "seconds": 5.326,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      },
+      {
+        "name": "boundary-focused-native-windows-net11.0",
+        "passed": 38,
+        "failed": 0,
+        "seconds": 7.063,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      },
+      {
+        "name": "boundary-focused-core-linux-net11.0",
+        "passed": 14,
+        "failed": 0,
+        "seconds": 7.517,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      },
+      {
+        "name": "boundary-focused-native-linux-net11.0",
+        "passed": 38,
+        "failed": 0,
+        "seconds": 9.966,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      }
+    ],
+    "affected": [
+      {
+        "name": "affected-core-windows-net11.0",
+        "passed": 10363,
+        "failed": 0,
+        "seconds": 25.58,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      },
+      {
+        "name": "affected-native-windows-net11.0",
+        "passed": 820,
+        "failed": 0,
+        "seconds": 17.277,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      },
+      {
+        "name": "affected-core-linux-net11.0",
+        "passed": 10363,
+        "failed": 0,
+        "seconds": 27.089,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      },
+      {
+        "name": "affected-native-linux-net11.0",
+        "passed": 820,
+        "failed": 0,
+        "seconds": 19.456,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      }
+    ],
+    "full": [
+      {
+        "name": "full-qualified-core-windows-net11.0",
+        "passed": 33166,
+        "failed": 0,
+        "seconds": 48.966,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      },
+      {
+        "name": "full-qualified-native-windows-net11.0",
+        "passed": 39165,
+        "failed": 0,
+        "seconds": 61.772,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      },
+      {
+        "name": "full-qualified-core-windows-net10.0",
+        "passed": 33166,
+        "failed": 0,
+        "seconds": 42.028,
+        "librarySha256": "7a26c992371842df07929d71cdffa268e25bfb32adc5c1aa70e2990327594158"
+      },
+      {
+        "name": "full-qualified-native-windows-net10.0",
+        "passed": 39165,
+        "failed": 0,
+        "seconds": 55.057,
+        "librarySha256": "7a26c992371842df07929d71cdffa268e25bfb32adc5c1aa70e2990327594158"
+      },
+      {
+        "name": "full-qualified-core-linux-net11.0",
+        "passed": 33166,
+        "failed": 0,
+        "seconds": 44.73,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      },
+      {
+        "name": "full-qualified-native-linux-net11.0",
+        "passed": 39165,
+        "failed": 0,
+        "seconds": 147.045,
+        "librarySha256": "578d6fc197dbd25e2ecf5392b5954fb4dd4cee7ec7fd727f5bc6ee1993bbc0de"
+      },
+      {
+        "name": "full-qualified-core-linux-net10.0",
+        "passed": 33166,
+        "failed": 0,
+        "seconds": 39.89,
+        "librarySha256": "7a26c992371842df07929d71cdffa268e25bfb32adc5c1aa70e2990327594158"
+      },
+      {
+        "name": "full-qualified-native-linux-net10.0",
+        "passed": 39165,
+        "failed": 0,
+        "seconds": 132.946,
+        "librarySha256": "7a26c992371842df07929d71cdffa268e25bfb32adc5c1aa70e2990327594158"
+      }
+    ],
+    "totalRoutinePassed": 289324,
+    "baselineEvidence": "latin-blue-zone-fitting.json",
+    "timingScope": "Functional wall times under ordinary development load. No benchmark or suite-simplification speedup claim."
+  },
+  "originalReplay": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "allSemanticReportsUnchanged": true,
+    "all150PngsPerHostByteIdentical": true,
+    "identicalPngs": {
+      "windows": 150,
+      "linux": 150
+    },
+    "outcomes": {
+      "windows": {
+        "UnsupportedFeature": 51,
+        "rendered": 150,
+        "MalformedInput": 3
+      },
+      "linux": {
+        "UnsupportedFeature": 51,
+        "rendered": 150,
+        "MalformedInput": 3
+      }
+    }
+  },
+  "suppliedContexts": {
+    "contexts": 11,
+    "allExploratoryPixelExactOnBothHosts": true,
+    "changed": [
+      {
+        "name": "DroidSerif-Bold.svg",
+        "host": "windows",
+        "sourceSha256": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+        "programSha256": "913c9a9e8fffac9fd5abb0941a2594c1e72127d526ab7e8348d09d2ee7b5d674",
+        "pngSha256": "54e9d6ee0fc7c1dbe2b1d601b0170d3f53b370ea64e960e8902f888b63bd98b0"
+      }
+    ],
+    "other21PngsByteIdentical": true,
+    "remainingArialWindowsPixels": [
+      13,
+      6,
+      5
+    ],
+    "arialLinuxPixels": [
+      0,
+      0,
+      0
+    ],
+    "scope": "Same original source/program/materialized-native context and unchanged native observations. These exploratory replays alone do not admit whole-original font/resource/static-state acceptance."
+  },
+  "windowsPhaseControls": {
+    "cases": 12,
+    "allExploratoryExact": true,
+    "programSha256": "913c9a9e8fffac9fd5abb0941a2594c1e72127d526ab7e8348d09d2ee7b5d674",
+    "recipe": "Same size-18 O/P/Q at x=8,8.25,8.5,8.75 and y=30; 48x48 transparent image; normal-400 @font-face uses unchanged exact-outline transport.",
+    "scope": "Prior independent phase observations retained; not additional routine fixtures or newly admitted references."
+  },
+  "remaining": [
+    "Matched Arial Windows contexts retain 13/6/5 pixel differences; Linux stays exact. Isolate their shared glyph stages separately.",
+    "All W1 sources still need complete resource/static/font context accounting; exact default or supplied-program output alone does not close an original."
+  ]
+}

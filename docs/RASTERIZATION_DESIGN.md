@@ -309,6 +309,12 @@ rebased fragment arrays. Unpainted characters may still contribute layout bounds
 
 Windows uses matched TrueType/LCD fitting, scanning and preblend; Linux uses light
 fitting/grayscale coverage, with axial and unhinted routes chosen separately.
+The Windows fitted-outline loader preserves positioned quadratic points, including
+half-unit implied points. Ink measurement and painting share one scan factory that
+rounds to the profile grid and splits extrema. Its fitted temporary remains charged
+until preparation finishes; scan storage has its own exclusive lifetime.
+The [scan-boundary evidence](../tests/Research/svgweb/windows-scan-boundary.json)
+maps the point, mask and ownership responsibilities.
 Light fitting separates alignment-zone matches from completed edge placement.
 Linked edges are fitted in contour order: the first visited edge anchors later
 interpolation, and later zone matches can reposition a shared non-zone edge.

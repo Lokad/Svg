@@ -1,0 +1,22 @@
+{
+  "packId": "original-scan-turn",
+  "files": [
+    {
+      "relativePath": "fonts/ScanTurn.ttf",
+      "byteSize": 872,
+      "sha256": "b769c71b1d0997220b33c54dcc24d8f5281366b903e01c25bebf661f4cb11696"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "ScanTurn",
+      "resolvedFamily": "ScanTurn",
+      "relativeFontFile": "fonts/ScanTurn.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    }
+  ],
+  "fallbacks": []
+}

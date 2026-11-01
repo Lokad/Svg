@@ -16,7 +16,7 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(long.MaxValue));
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(1, 0, 0, 0), 11.5, budget))
-        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(scale, 0, scale, 0, budget, CancellationToken.None))
+        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsFittedContours(scale, 0, scale, 0, budget, CancellationToken.None))
             Assert.Equal(symmetric ? SvgGlyphLcdMode.Symmetric : SvgGlyphLcdMode.Natural, contours.WindowsLcdMode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

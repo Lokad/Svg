@@ -1,0 +1,78 @@
+{
+  "fontTools": "4.66.1",
+  "license": "CC0-1.0",
+  "unitsPerEm": 2048,
+  "glyphOrder": [
+    ".notdef",
+    "H",
+    "A"
+  ],
+  "cmap": {
+    "H": 1,
+    "A": 2
+  },
+  "advances": 1200,
+  "leftSideBearings": 0,
+  "ascent": 1800,
+  "descent": -200,
+  "outer": [
+    [
+      "M",
+      0,
+      0
+    ],
+    [
+      "L",
+      0,
+      1200
+    ],
+    [
+      "L",
+      1000,
+      1200
+    ],
+    [
+      "L",
+      1000,
+      0
+    ],
+    [
+      "Z"
+    ]
+  ],
+  "counter": [
+    [
+      "M",
+      300,
+      128
+    ],
+    [
+      "Q",
+      560,
+      62,
+      700,
+      64
+    ],
+    [
+      "L",
+      800,
+      256
+    ],
+    [
+      "L",
+      800,
+      1000
+    ],
+    [
+      "L",
+      300,
+      1000
+    ],
+    [
+      "Z"
+    ]
+  ],
+  "instructions": false,
+  "headTimestamp": 2082844800,
+  "programSha256": "b769c71b1d0997220b33c54dcc24d8f5281366b903e01c25bebf661f4cb11696"
+}
