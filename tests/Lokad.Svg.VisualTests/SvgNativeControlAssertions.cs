@@ -25,9 +25,17 @@ internal static class SvgNativeControlAssertions
             Assert.Equal("healthy", Required(capture, "startupHealth"));
             Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
         }
-        RgbaImage expected = new NativeReferenceImages().Get(Path.Combine(directory, Required(native, "reference")), digest);
+        int width = row.TryGetProperty("width", out JsonElement caseWidth)
+            ? caseWidth.GetInt32() : manifest.RootElement.GetProperty("width").GetInt32();
+        int height = row.TryGetProperty("height", out JsonElement caseHeight)
+            ? caseHeight.GetInt32() : manifest.RootElement.GetProperty("height").GetInt32();
+        int pixels = checked(width * height);
+        byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(native, "reference")));
+        Assert.Equal(digest, Convert.ToHexStringLower(SHA256.HashData(reference)));
+        RgbaImage expected = PngRgbaDecoder.Decode(reference, pixels);
+        Assert.Equal(width, expected.Width);
+        Assert.Equal(height, expected.Height);
         byte[] png = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
-        int pixels = checked(expected.Width * expected.Height);
         PixelComparison result = PixelComparer.Compare(expected, PngRgbaDecoder.Decode(png, pixels));
         Assert.True(result.IsExact, JsonSerializer.Serialize(result));
 

@@ -1,7 +1,7 @@
 # Filter source opacity
 
-These own CC0 controls combine a thin curve, scaled aliases, large coordinates,
-copying Gaussian kernels and nested opacity. They contain no hosted SVG content.
+These own CC0 controls cover thin curves, aliases, large coordinates, coloured
+strokes, gradients, Gaussian kernels and nested opacity. They contain no hosted SVG content.
 The [manifest](capture.json) retains three agreeing, healthy, profile-cleaned
 captures per host and one shared native PNG per case.
 
@@ -11,6 +11,12 @@ bitmap's origin protect source capture. Independently rounded device axes select
 the bitmap-restore consumer. [Bounds evidence](../svgweb/filter-source-opacity.json)
 and [restore mechanisms](../svgweb/group-opacity-stages.json) preserve their distinct
 failing-before results and the existing affine-opacity/AA-parent-clip controls.
+
+The coloured-stroke and blurred-gradient cases retain separate source and restore
+bitmap contexts. Final sampling uses the enclosing opacity bitmap's painted-output
+origin, including when pixel scratch replaces whole-image storage. Source capture
+keeps its recording placement. [Native allocation evidence](../svgweb/filter-opacity-device.json)
+records both failing-before controls and the broader qualification.
 
 The [wide control](inputs/thin-curved-source-wide.svg) remains **open**: four
 one-level alpha differences on both hosts. It changes only viewport and outer

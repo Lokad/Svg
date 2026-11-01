@@ -309,6 +309,8 @@ discard transparent-padding assumptions; rotated restoration retains the active
 clip bounds and the sampling colour transfer of zero-effect aliases.
 Empty tile restoration paints nothing. Image placement retains the owning bitmap's
 sampling phase; enclosing opacity stores restored pixels before paint-alpha modulation.
+Its painted-output bounds determine the sampling origin; source capture retains
+its recording context.
 
 Drop shadows admit mapped/rounded deviations through 135 device pixels per axis;
 larger deviations reject. Gaussian blur rescales larger deviations and saturates

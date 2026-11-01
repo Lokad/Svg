@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "b7a35cbd0",
+  "previousEvidence": "group-opacity-stages.json",
+  "capture": "../filter-source-opacity/capture.json",
+  "scope": "Preserve the source recording bitmap while restoring an affine filter into the enclosing opacity bitmap. Reuse existing output bounds and raster scopes; no extra pixel surface, retained owner or general coordinate framework.",
+  "invariants": [
+    "Source picture capture retains its existing native placement and sampling request.",
+    "The enclosing opacity bitmap is enclosed from graph Output, independently of StoredImage extents.",
+    "Final image sampling and edge construction use the restore bitmap origin/clip; covered converted bytes precede packed paint alpha.",
+    "No reference/tolerance change, geometry/text-layout change, colour-transfer approximation or per-pixel phase correction."
+  ],
+  "nativeAllocation": {
+    "sourceSha256": "6cf8cc780c6d5c72cfa2e9e81d8cd38d243586a5eb51603721fec8a8b480e745",
+    "browser": "Chrome153.0.8010.52",
+    "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "startupHealth": "healthy",
+    "profileCleaned": true,
+    "pngSha256": "85e98a14e125d5740c926e04266546dc2cffc3a2c15804e738cf5f6d15cc7bc0",
+    "opacityParameterHint": [
+      1025,
+      63,
+      1059,
+      99
+    ],
+    "opacityDeviceBounds": [
+      428,
+      73,
+      460,
+      107
+    ],
+    "oldDestinationOrigin": [
+      254,
+      0
+    ],
+    "observedCandidateBounds": {
+      "Left": 428,
+      "Top": 73,
+      "Right": 460,
+      "Bottom": 107
+    },
+    "sourceCapture": {
+      "width": 32,
+      "height": 34,
+      "nativeAndCandidatePremultipliedPixelsEqual": true,
+      "qualification": "Own source independently replayed at the captured map; alpha and every premultiplied colour byte agree. Independent source/copy/zero/sRGB stage controls also agree."
+    }
+  },
+  "nativeSources": [
+    "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkCanvas.cpp",
+    "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkImageFilterTypes.cpp"
+  ],
+  "controls": [
+    {
+      "id": "coloured-stroke-opacity",
+      "input": "inputs/coloured-stroke-opacity.svg",
+      "inputSha256": "6cf8cc780c6d5c72cfa2e9e81d8cd38d243586a5eb51603721fec8a8b480e745",
+      "baseline": {
+        "windows": {
+          "changedPixels": 1,
+          "alphaChangedPixels": 0,
+          "maximumError": 19,
+          "maximumAlphaError": 0,
+          "totalChannelError": 19,
+          "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+          "actualPngSha256": "b4c48728176b0095b4568083ad5029dc02ab3d2054b73e15444035c72f5d7f60"
+        },
+        "linux": {
+          "changedPixels": 1,
+          "alphaChangedPixels": 0,
+          "maximumError": 19,
+          "maximumAlphaError": 0,
+          "totalChannelError": 19,
+          "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+          "actualPngSha256": "b4c48728176b0095b4568083ad5029dc02ab3d2054b73e15444035c72f5d7f60"
+        }
+      },
+      "changedPixelsAfter": 0,
+      "independentCaptures": 6
+    },
+    {
+      "id": "gradient-blur-opacity",
+      "input": "inputs/gradient-blur-opacity.svg",
+      "inputSha256": "813abae4ca623170333e83a9f4c8f46b2fdde5c7f15673ba8fedc48735ed9ecc",
+      "baseline": {
+        "windows": {
+          "changedPixels": 2,
+          "alphaChangedPixels": 0,
+          "maximumError": 128,
+          "maximumAlphaError": 0,
+          "totalChannelError": 213,
+          "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+          "actualPngSha256": "22f7a83910490d47051ae25d93349777f795a1e2ef7144d3385927a3564c318f"
+        },
+        "linux": {
+          "changedPixels": 2,
+          "alphaChangedPixels": 0,
+          "maximumError": 128,
+          "maximumAlphaError": 0,
+          "totalChannelError": 213,
+          "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+          "actualPngSha256": "22f7a83910490d47051ae25d93349777f795a1e2ef7144d3385927a3564c318f"
+        }
+      },
+      "changedPixelsAfter": 0,
+      "independentCaptures": 6
+    }
+  ],
+  "responsibilities": {
+    "mechanisms": "Existing native source-map bits, drawing preparation, output/stored bounds and raster-scope cases remain. No duplicate numerical/consumer matrix.",
+    "contracts": "Existing representative refusal/cancellation/cleanup/retry and ownership checks remain in affected core coverage.",
+    "rendering": "Two added canonical cases: solid stroked copying kernel and user-space gradient with nontrivial blur. Twelve independent captures, no API-form expansion.",
+    "helper": "Hash-check and decode the one reference directly within each manifest-declared frame bound. Remove an unused per-call cache, retain exact dimensions and pixels."
+  },
+  "failingBefore": {
+    "passed": 11,
+    "failed": 2,
+    "seconds": 7.476488499902189,
+    "librarySha256": "6295285c1856561a5c6bb38636c2e0d31d783a3dd608d530cb1661560028e2fe",
+    "failedTests": [
+      "Lokad.Svg.VisualTests.SvgFilterSourceOpacityReferenceTests.Filter_opacity_samples_in_its_enclosing_bitmap",
+      "Lokad.Svg.VisualTests.SvgFilterSourceOpacityReferenceTests.Blurred_gradient_keeps_source_capture_separate_from_opacity_sampling"
+    ]
+  },
+  "focusedAfter": {
+    "passed": 13,
+    "failed": 0,
+    "seconds": 7.359205799875781,
+    "librarySha256": "8045609c6f672254bb26397740b5e879a4bcfae6a4015e0b66bb7dc2706ecfe9"
+  },
+  "affectedQualification": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "core": {
+        "passed": 589,
+        "seconds": 11.025002600159496
+      },
+      "librarySha256": "8045609c6f672254bb26397740b5e879a4bcfae6a4015e0b66bb7dc2706ecfe9",
+      "native": {
+        "passed": 1916,
+        "seconds": 20.77566000004299
+      }
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "core": {
+        "passed": 589,
+        "seconds": 9.912919152
+      },
+      "librarySha256": "8045609c6f672254bb26397740b5e879a4bcfae6a4015e0b66bb7dc2706ecfe9",
+      "native": {
+        "passed": 1916,
+        "seconds": 31.65557296899999
+      }
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "core": {
+        "passed": 589,
+        "seconds": 9.566367599880323
+      },
+      "librarySha256": "bfaede14e4dfd7dfa1492db68b94540db0b877736190d69d92aa27c5f7c08da1",
+      "native": {
+        "passed": 1916,
+        "seconds": 18.938219300005585
+      }
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "core": {
+        "passed": 589,
+        "seconds": 9.323460474
+      },
+      "librarySha256": "bfaede14e4dfd7dfa1492db68b94540db0b877736190d69d92aa27c5f7c08da1",
+      "native": {
+        "passed": 1916,
+        "seconds": 27.189207267
+      }
+    }
+  ],
+  "originalReplay": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "platforms": {
+      "windows": {
+        "semanticReportsUnchanged": 204,
+        "outcomes": {
+          "UnsupportedFeature": 47,
+          "rendered": 154,
+          "MalformedInput": 3
+        },
+        "comparisons": {
+          "exact": 153,
+          "different": 1
+        },
+        "renderedPngsByteIdentical": 154,
+        "changed": [],
+        "original": {
+          "changedPixels": 147,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 459,
+          "pngSha256": "74b41bb6d0ecdbb94f55c62401ffe25f1b3a99590daee90b9e7024e589f16852"
+        }
+      },
+      "linux": {
+        "semanticReportsUnchanged": 204,
+        "outcomes": {
+          "UnsupportedFeature": 47,
+          "rendered": 154,
+          "MalformedInput": 3
+        },
+        "comparisons": {
+          "exact": 153,
+          "different": 1
+        },
+        "renderedPngsByteIdentical": 154,
+        "changed": [],
+        "original": {
+          "changedPixels": 147,
+          "alphaChangedPixels": 2,
+          "maximumError": 17,
+          "totalChannelError": 459,
+          "pngSha256": "74b41bb6d0ecdbb94f55c62401ffe25f1b3a99590daee90b9e7024e589f16852"
+        }
+      }
+    },
+    "seconds": 44.43817920004949
+  },
+  "rejectedWholeScope": {
+    "finding": "Applying the opacity scope to source capture as well as restoration regresses the previously exact gallardo.svg by two one-level RGB pixels per host. Keeping the source context while changing the restore context preserves every prior PNG.",
+    "sourceSha256": "1d6884541b38811528ce93495ca941e2e60e5927f81dc814d3914c1084f8bb62",
+    "sourceSvgRetained": false
+  },
+  "remainingOriginalAttribution": {
+    "qualification": "RAM-only diagnostic mutations, one healthy Windows native observation per variant; no new original reference admission.",
+    "top": {
+      "owner": "g6354",
+      "originalChangedPixels": 123,
+      "strokePaint": "User-space linear gradient on one stroked cubic and eleven aliases.",
+      "transparentChangedPixels": 102,
+      "transparentAlphaChangedPixels": 0,
+      "transparentSingleCurveChangedPixels": 6,
+      "transparentSingleCurveAlphaChangedPixels": 0,
+      "interpretation": "Investigate source stroke shader/colour stages. A simple own solid-stroke error was closed, but this gradient-stroke remainder is unchanged."
+    },
+    "bottom": {
+      "owner": "g4270",
+      "originalChangedPixels": 5,
+      "originalAlphaChangedPixels": 2,
+      "transparentChangedPixels": 5,
+      "transparentAlphaChangedPixels": 4,
+      "interpretation": "Masked group, not the adjacent pattern or strokes. Hiding it removes all five bottom errors and leaves the top candidate/native pixels unchanged."
+    },
+    "namedConsumers": {
+      "changedPixels": 19,
+      "status": "OPEN; the admitted wide alpha control remains four pixels different on both hosts."
+    },
+    "ownStrokeShaderProbe": {
+      "status": "OPEN exploratory companion to the original gradient-stroke investigation.",
+      "cases": [
+        {
+          "id": "stroke-.7",
+          "results": {
+            "baseline": {
+              "changedPixels": 1,
+              "alphaChangedPixels": 0,
+              "totalChannelError": 1
+            },
+            "whole-scope": {
+              "changedPixels": 0,
+              "alphaChangedPixels": 0,
+              "totalChannelError": 0
+            },
+            "separate": {
+              "changedPixels": 1,
+              "alphaChangedPixels": 0,
+              "totalChannelError": 1
+            }
+          }
+        },
+        {
+          "id": "stroke-2.4",
+          "results": {
+            "baseline": {
+              "changedPixels": 66,
+              "alphaChangedPixels": 2,
+              "totalChannelError": 352
+            },
+            "whole-scope": {
+              "changedPixels": 64,
+              "alphaChangedPixels": 0,
+              "totalChannelError": 298
+            },
+            "separate": {
+              "changedPixels": 64,
+              "alphaChangedPixels": 0,
+              "totalChannelError": 298
+            }
+          }
+        },
+        {
+          "id": "stroke-5.3",
+          "results": {
+            "baseline": {
+              "changedPixels": 45,
+              "alphaChangedPixels": 5,
+              "totalChannelError": 699
+            },
+            "whole-scope": {
+              "changedPixels": 39,
+              "alphaChangedPixels": 0,
+              "totalChannelError": 316
+            },
+            "separate": {
+              "changedPixels": 39,
+              "alphaChangedPixels": 0,
+              "totalChannelError": 316
+            }
+          }
+        },
+        {
+          "id": "stroke-12.3",
+          "results": {
+            "baseline": {
+              "changedPixels": 39,
+              "alphaChangedPixels": 6,
+              "totalChannelError": 764
+            },
+            "whole-scope": {
+              "changedPixels": 31,
+              "alphaChangedPixels": 0,
+              "totalChannelError": 402
+            },
+            "separate": {
+              "changedPixels": 31,
+              "alphaChangedPixels": 0,
+              "totalChannelError": 402
+            }
+          }
+        }
+      ],
+      "source": "Own recomposed curve/ramp only. Not admitted as passing fixtures; keep source/shader/colour stages separate."
+    }
+  },
+  "qualificationLimits": "Both builds are warning-free. Affected checks pass on both hosts and runtimes; all204 semantic reports and154 rendered PNGs are unchanged. Functional timings7.476s before/7.359s after are not a performance benchmark. The complete original147 and wide4 remain OPEN. Full CI/package promotion remains a milestone gate; the pending frozen Windows font-reference question is unchanged."
+}

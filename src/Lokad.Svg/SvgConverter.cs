@@ -1031,20 +1031,35 @@ public static partial class SvgConverter
             // See THIRD_PARTY_NOTICES.txt for the BSD license and source revision.
             int RenderAffineFilter()
             {
+                SvgCpuRasterScope? opacityScope = null;
+                if (command.SourceOpacity.Value * foldedOpacity < 1)
+                {
+                    // Filter opacity owns a bitmap even when restoration uses
+                    // pixel scratch. Its painted-output enclosure determines the
+                    // sampling origin, independently of the stored filter image.
+                    SvgPaintBounds bounds = FilterResultBounds(binding, resource, SvgFilterBoundsKind.Output);
+                    SvgAnalyticClipBounds area = new(Math.Max(layerBounds.Left, ClampFloor(bounds.Left, outputWidth)),
+                        Math.Max(layerBounds.Top, ClampFloor(bounds.Top, outputHeight)),
+                        Math.Min(layerBounds.Right, ClampCeiling(bounds.Right, outputWidth)),
+                        Math.Min(layerBounds.Bottom, ClampCeiling(bounds.Bottom, outputHeight)));
+                    opacityScope = new(area, false);
+                }
                 foreach (SvgCpuRasterContext tile in rasterGrid.GetContexts(layerBounds))
                 {
                     SvgCpuRasterContext bitmap = isolatedBitmapScope is {} owner ? owner.Bind(tile) : tile;
                     cancellationToken.ThrowIfCancellationRequested();
-                    RenderAffineBitmap(bitmap);
+                    RenderAffineBitmap(bitmap, opacityScope is {} opacityDevice ? opacityDevice.Bind(bitmap) : bitmap);
                 }
                 return end + 1;
             }
 
-            void RenderAffineBitmap(SvgCpuRasterContext bitmap)
+            void RenderAffineBitmap(SvgCpuRasterContext bitmap, SvgCpuRasterContext restoreBitmap)
             {
                 // Filter kernels require scale/translate coordinates. Keep their
                 // layer raster separate from the residual rotation/skew, just as
                 // native source construction is separate from final image sampling.
+                // The source bitmap retains recording placement; the restore
+                // bitmap supplies the enclosing opacity layer's sampling origin.
                 // Geometry stays in the original scene across recursive captures.
                 if (!arena.BindingAt(command.MaskContentIndex).Transform.TryInvert(out SvgAffineTransform parameterInverse)) return;
                 SvgAffineTransform ctm = MapFilterDrawingTransform(binding.Transform);
@@ -1204,10 +1219,10 @@ public static partial class SvgConverter
                         throw new SvgException(SvgErrorCode.LimitExceeded, "Affine filter layer exceeds the configured surface limits.");
                     SvgPaintBounds restoreBounds = new SvgPaintBounds((float)left - 1, (float)top - 1, (float)right + 1, (float)bottom + 1)
                         .Map(new(remainder.ScaleX, remainder.SkewY, remainder.SkewX, remainder.ScaleY, remainder.TranslateX, remainder.TranslateY), cancellationToken);
-                    int restoreLeft = Math.Max(bitmap.Interior.Left, Math.Max(layerBounds.Left, ClampFloor(restoreBounds.Left, outputWidth)));
-                    int restoreTop = Math.Max(bitmap.Interior.Top, Math.Max(layerBounds.Top, ClampFloor(restoreBounds.Top, outputHeight)));
-                    int restoreRight = Math.Min(bitmap.Interior.Right, Math.Min(layerBounds.Right, ClampCeiling(restoreBounds.Right, outputWidth)));
-                    int restoreBottom = Math.Min(bitmap.Interior.Bottom, Math.Min(layerBounds.Bottom, ClampCeiling(restoreBounds.Bottom, outputHeight)));
+                    int restoreLeft = Math.Max(restoreBitmap.Interior.Left, Math.Max(layerBounds.Left, ClampFloor(restoreBounds.Left, outputWidth)));
+                    int restoreTop = Math.Max(restoreBitmap.Interior.Top, Math.Max(layerBounds.Top, ClampFloor(restoreBounds.Top, outputHeight)));
+                    int restoreRight = Math.Min(restoreBitmap.Interior.Right, Math.Min(layerBounds.Right, ClampCeiling(restoreBounds.Right, outputWidth)));
+                    int restoreBottom = Math.Min(restoreBitmap.Interior.Bottom, Math.Min(layerBounds.Bottom, ClampCeiling(restoreBounds.Bottom, outputHeight)));
                     if (command.SourceOpacity.Value * foldedOpacity < 1)
                     {
                         SvgPaintBounds paintBounds = FilterResultBounds(binding, resource, SvgFilterBoundsKind.StoredImage);
@@ -1247,7 +1262,7 @@ public static partial class SvgConverter
                         SvgPaintBounds existing = deferred.Clip;
                         deferred = deferred with { Clip = new(MathF.Max(existing.Left, logical.Left - (float)left), MathF.Max(existing.Top, logical.Top - (float)top),
                             MathF.Min(existing.Right, logical.Right - (float)left), MathF.Min(existing.Bottom, logical.Bottom - (float)top)) };
-                        RestoreDeferredImage(image, deferred, remainder, nativeSource, new((int)left, (int)top), bitmap.Origin,
+                        RestoreDeferredImage(image, deferred, remainder, nativeSource, new((int)left, (int)top), restoreBitmap.Origin,
                             new(restoreLeft, restoreTop, restoreRight, restoreBottom));
                         return;
                     }
@@ -1258,7 +1273,7 @@ public static partial class SvgConverter
                     }
                     SvgShaderMatrix subset = new(1, 0, nativeImage.Left - (nativeSource.Left - 1), 0, 1, nativeImage.Top - (nativeSource.Top - 1));
                     SvgShaderMatrix edgeDevice = SvgShaderMatrix.Concat(SourceDeviceMap(remainder, nativeSource, new(0, 0)), subset);
-                    SvgShaderMatrix imageToDevice = SvgShaderMatrix.Concat(SourceDeviceMap(remainder, nativeSource, bitmap.Origin), subset);
+                    SvgShaderMatrix imageToDevice = SvgShaderMatrix.Concat(SourceDeviceMap(remainder, nativeSource, restoreBitmap.Origin), subset);
 
                     // A crop discards padding knowledge. Only preserved padding can
                     // supply transparent-border sampling instead of an AA image edge.
@@ -1283,8 +1298,8 @@ public static partial class SvgConverter
                     edgePoints[3] = SvgAuthoredPath.MapPoint(edgeMap, new(0, imageHeight), new(0, 0));
                     // Requested output bounds limit storage and restoration. Edge
                     // construction and walking retain the owning bitmap's clip.
-                    SvgAnalyticClipBounds edgeArea = new(Math.Max(layerBounds.Left, bitmap.BitmapClip.Left), Math.Max(layerBounds.Top, bitmap.BitmapClip.Top),
-                        Math.Min(layerBounds.Right, bitmap.BitmapClip.Right), Math.Min(layerBounds.Bottom, bitmap.BitmapClip.Bottom));
+                    SvgAnalyticClipBounds edgeArea = new(Math.Max(layerBounds.Left, restoreBitmap.BitmapClip.Left), Math.Max(layerBounds.Top, restoreBitmap.BitmapClip.Top),
+                        Math.Min(layerBounds.Right, restoreBitmap.BitmapClip.Right), Math.Min(layerBounds.Bottom, restoreBitmap.BitmapClip.Bottom));
                     if (ActiveClipBounds(bitmap) is {} imageClip)
                         edgeArea = new(Math.Max(edgeArea.Left, imageClip.Left), Math.Max(edgeArea.Top, imageClip.Top),
                             Math.Min(edgeArea.Right, imageClip.Right), Math.Min(edgeArea.Bottom, imageClip.Bottom));
@@ -1322,7 +1337,7 @@ public static partial class SvgConverter
                             Span<byte> paintTarget = opacityLayer ? opacityPixel : destinationPixel;
                             if (opacityLayer) opacityPixel.Clear();
                             byte paintCoverage = opacityLayer ? (byte)255 : clipCoverage;
-                            float px = x + .5f - bitmap.Origin.X, py = y + .5f - bitmap.Origin.Y;
+                            float px = x + .5f - restoreBitmap.Origin.X, py = y + .5f - restoreBitmap.Origin.Y;
                             // Packed sampling retains its map arithmetic; floating
                             // shader transfers use the fused map below.
                             float u = px * imageInverse.ScaleX + (py * imageInverse.SkewX + imageInverse.TranslateX);
