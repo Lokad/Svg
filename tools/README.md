@@ -34,6 +34,13 @@ sampling pipeline without changing the observed alpha; ordinary source-over uses
 a different bitmap path. The [capture record](../tests/Lokad.Svg.Tests/TestData/highp-bilinear.json)
 keeps the source/data hashes and both hosts' fresh-process evidence.
 
+On Linux, compile the [native source-stage control](../tests/Research/svgweb/native-source-stages.cpp)
+with `g++ -std=c++20 -O2 -ffp-contract=off tests/Research/svgweb/native-source-stages.cpp -o artifacts/native-source-stages`.
+Run `artifacts/native-source-stages` and compare its JSON with the
+[committed vectors](../tests/Lokad.Svg.Tests/TestData/native-source-stages.json).
+Keep intermediate floating-point rounding enabled; this checks arithmetic stages
+separately from browser reference admission.
+
 ## Generated output and retention
 
 Organize generated data by purpose: pinned tool caches, current qualification,

@@ -54,9 +54,9 @@ individually selectable. The clip, title and rendered-use banks share one small
 source/reference hashes, three native receipts and exact pixel comparisons.
 
 [Nested filter placement](Research/nested-filter-placement/README.md) has six direct
-map mechanisms and five canonical native cases. Large-coordinate and fractional
-viewport companions retain their independent references as explicitly open work. Existing filter
-ownership coverage protects lifecycle paths without another fixture/API product.
+map mechanisms and six canonical native cases. Two shader mechanisms protect
+recording/capture order and 64/65-stage storage. One recursive-capture contract
+covers the additional allocation path; the large-coordinate companion remains open.
 
 The [thin-curve mechanisms](Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs) distinguish
 authored ink from short flattened fallbacks and explicit suppression. One source

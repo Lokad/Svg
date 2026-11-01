@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "ab45afc115aeb5195751d0e26a8cbe30c4310573",
+  "implementation": [
+    "../../../src/Lokad.Svg/SvgConverter.cs",
+    "../../../src/Lokad.Svg/Rendering/SvgShaderCoordinates.cs"
+  ],
+  "scope": "Prepare the original recorded drawing before native filter-source capture. Preserve the same stage order through recursive affine capture, geometry, primitive parameters and recorded shaders.",
+  "cause": "Precomposing inverse capture with source recording removed a native float preparation boundary. Replacing the resulting linear coefficients with an ideal layer map hid genuine native skew and suppressed a required recursive capture. Source layout bounds also need their original parameter inverse independently of native drawing rounding.",
+  "sharedModel": "Keep original drawing recording/destination stages and post-recording native capture separately. Use MapPreparedDrawing for source bindings, geometry and primitive maps; recorded shaders retain their chain before capture. Remove the ideal-linear Place helper. No phase offsets, epsilon snapping, font changes, new raster backend or native inversion change.",
+  "coverage": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgFilterSourceMapTests.cs",
+    "shaderMechanisms": "../../Lokad.Svg.Tests/SvgRecordedShaderCoordinatesTests.cs",
+    "nativeControl": "native-source-stages.cpp",
+    "nativeRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "nativeCompiler": "g++ 13.3.0, Ubuntu 24.04.1",
+    "nativeFlags": "-std=c++20 -O2 -Wall -Wextra -Werror -ffp-contract=off",
+    "vectors": "../../Lokad.Svg.Tests/TestData/native-source-stages.json",
+    "vectorSha256": "b6f8e59ea81cf46fcf53afe400ab69df6d76f8269767411671dbebb4cbc477a2",
+    "sourceCases": 6,
+    "replacedSourceCases": 6,
+    "sourceBoundaries": "Fractional native skew, compensated root cancellation and four individually selectable one-ULP float inputs. Native rounding may map different inputs to the same final coefficient.",
+    "newShaderCases": 2,
+    "shaderBoundaries": "Recorded chain depths 64/65 exercise stack/owned scratch and bitmap origins 0,0 -> 17,23 -> 0,0; exact native matrix bits and zero retained scratch.",
+    "ownership": "../../Lokad.Svg.Tests/SvgUniformFilterOwnershipTests.cs",
+    "newOwnershipCases": 1,
+    "ownershipBoundary": "Recursive affine replay has a distinct allocation path. One existing lifecycle helper covers parse/raster refusal, pre-cancellation, cleanup, immutable input and successful retry. Only the fractional input is copied into core test data.",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgNestedFilterPlacementReferenceTests.cs",
+    "capture": "../nested-filter-placement/capture.json",
+    "canonicalCases": 6,
+    "bankCases": 7,
+    "retainedNativeCaptures": 42,
+    "failingBefore": {
+      "baseline": "ab45afc115aeb5195751d0e26a8cbe30c4310573",
+      "librarySha256": "f314f551452d139032d57ab9a2a209167fc0d9bd51177595630cd5aa9bde02a4",
+      "passed": 5,
+      "failed": 1,
+      "host": "windows",
+      "seconds": 7.166475,
+      "changedPixelsPerHost": 565,
+      "alphaChangedPixelsPerHost": 486
+    },
+    "afterChangedPixelsPerHost": 0,
+    "referenceChanges": 0,
+    "toleranceChanges": 0,
+    "newReferenceCases": 0,
+    "testConsolidation": "No additional API/fixture matrix. Replace six implementation-specific map cases with six independent arithmetic cases; retain separately discovered rendering, shader and ownership responsibilities."
+  },
+  "closedControls": [
+    "fractional-nested-identity"
+  ],
+  "openControls": [
+    {
+      "id": "large-affine-nested-opacity",
+      "changedPixelsPerHost": 1,
+      "alphaChangedPixelsPerHost": 0,
+      "status": "open; unchanged reference and exact assertion"
+    }
+  ],
+  "original": {
+    "name": "juanmontoya_lingerie.svg",
+    "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
+    "previousChangedPixelsPerHost": 4583,
+    "previousMaximumError": 23,
+    "previousTotalChannelError": 38026,
+    "changedPixelsPerHost": 2953,
+    "maximumError": 17,
+    "totalChannelError": 6403,
+    "alphaChangedPixelsPerHost": 2,
+    "status": "open; the complete original is not exact"
+  },
+  "defaultAudit": {
+    "files": 204,
+    "directoryEntriesUnchanged": true,
+    "sourceSvgFilesRetained": 0,
+    "all203OtherSemanticReportsUnchanged": true,
+    "all153PriorExactPngsPerHostByteIdentical": true,
+    "outcomesPerHost": {
+      "rendered": 154,
+      "exploratoryExact": 153,
+      "different": 1,
+      "UnsupportedFeature": 47,
+      "MalformedInput": 3
+    },
+    "seconds": 59.138038
+  },
+  "validation": {
+    "affected": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 578,
+        "seconds": 7.873965,
+        "librarySha256": "55a922b0ce6cec8d9ec8214bab151d0b0c27c695210d4735149308351cedd6ce",
+        "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 1896,
+        "seconds": 19.250077,
+        "librarySha256": "55a922b0ce6cec8d9ec8214bab151d0b0c27c695210d4735149308351cedd6ce",
+        "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 578,
+        "seconds": 9.319773,
+        "librarySha256": "55a922b0ce6cec8d9ec8214bab151d0b0c27c695210d4735149308351cedd6ce",
+        "selection": "FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgDeferredFilterSourceTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgOpacity|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 1896,
+        "seconds": 32.329574,
+        "librarySha256": "55a922b0ce6cec8d9ec8214bab151d0b0c27c695210d4735149308351cedd6ce",
+        "selection": "FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 46,
+        "seconds": 6.549376,
+        "librarySha256": "40ccefa8fda674e7d9ee5ad500f2fc32e8d4db66d801aabb461ef13f746e3da0",
+        "selection": "FullyQualifiedName~SvgFilterSourceMapTests|FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 266,
+        "seconds": 9.132855,
+        "librarySha256": "40ccefa8fda674e7d9ee5ad500f2fc32e8d4db66d801aabb461ef13f746e3da0",
+        "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 46,
+        "seconds": 6.947184,
+        "librarySha256": "40ccefa8fda674e7d9ee5ad500f2fc32e8d4db66d801aabb461ef13f746e3da0",
+        "selection": "FullyQualifiedName~SvgFilterSourceMapTests|FullyQualifiedName~SvgAffineTransformTests|FullyQualifiedName~SvgUniformFilterOwnershipTests|FullyQualifiedName~SvgRecordedShaderCoordinatesTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 266,
+        "seconds": 11.420427,
+        "librarySha256": "40ccefa8fda674e7d9ee5ad500f2fc32e8d4db66d801aabb461ef13f746e3da0",
+        "selection": "FullyQualifiedName~SvgNestedFilterPlacementReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests|FullyQualifiedName~SvgRenderedUseSourceReferenceTests"
+      }
+    ],
+    "finalCanonicalBank": [
+      {
+        "host": "windows",
+        "passed": 6,
+        "failed": 0,
+        "seconds": 5.843484
+      },
+      {
+        "host": "linux",
+        "passed": 6,
+        "failed": 0,
+        "seconds": 9.088353
+      }
+    ],
+    "nativeControlRegeneratedAndBitExact": true,
+    "interpretation": "Same six-case Windows selection: 7.166475s with one failure before; 5.843484s with zero failures after. Development timings are not a performance benchmark. Full host/runtime/package promotion remains a separate coherent milestone; the pending frozen Windows font reference is unchanged."
+  }
+}

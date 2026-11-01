@@ -208,5 +208,9 @@
       "qualification": "Development wall times, not a benchmark or speedup claim. No test consolidation in this scope."
     },
     "promotion": "Local source-picture scope only. Full original, fractional nested capture, large-coordinate rounding and the independent frozen Windows font decision remain open."
+  },
+  "followup": {
+    "evidence": "prepared-source-drawing.json",
+    "status": "Historical source-scope measurements above are preserved. Fractional nested capture is now exact; the follow-up governs current counters, shared drawing stages and qualification limits."
   }
 }

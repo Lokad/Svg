@@ -64,6 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="TestData/filter-alpha-boundaries.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/native-source-stages.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/nested-filter-placement/inputs/fractional-nested-identity.svg" Link="TestData/nested-filter-placement/fractional-nested-identity.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/pattern-selection-acceptance.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>

@@ -373,7 +373,7 @@
           "referenceSha256": "320aa935ef4b9fac3338696d7686c5bf79a46c303d0c26bdf586a2fd58ef1c1e"
         }
       },
-      "status": "open-fractional-nested-filter",
+      "status": "exact",
       "sourceBaseline": "137a25a7118b36f0df6332fa4139063a973814b2"
     }
   ]

@@ -7,6 +7,15 @@ namespace Lokad.Svg.Tests;
 [Trait("Layer", "Contract")]
 public sealed class SvgUniformFilterOwnershipTests
 {
+    [Fact]
+    public void Recursive_affine_capture_releases_source_replay_after_refusal_cancellation_and_retry()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,
+            "TestData", "nested-filter-placement", "fractional-nested-identity.svg"));
+        SvgRasterOwnershipAssertions.ParsesAndReleasesAfterFailures(input, SvgRenderOptions.Default, 1_000_000, 4,
+            "6ddfba1f66afb91737658738283bbf9269d4d138728a51b5d24c66090ee7e8b6");
+    }
+
     [Theory]
     [InlineData("controls-graphs-srgb-1-candidate-1p5")]
     [InlineData("controls-graphs-linear-9-candidate-1p5")]

@@ -25,7 +25,10 @@ internal struct SvgShaderCoordinates
     // Borrows the current draw's immutable scene chain, budget and cancellation.
     // Mapping scratch belongs to TryMap and is released before it returns.
     private readonly record struct RecordedDrawing(SvgRecordedTransform Transform, SvgShaderMatrix Output,
-        SvgAffineTransform Initial, SvgAffineTransform Target, RenderBudget Budget, CancellationToken Token);
+        SvgAffineTransform Initial, SvgAffineTransform Target, RenderBudget Budget, CancellationToken Token)
+    {
+        internal SvgAffineTransform? CapturePlacement { get; init; }
+    }
     private RecordedDrawing? _recordedDrawing;
     private readonly SvgShaderMatrix _unit;
     private readonly SvgShaderMatrix _paintMap;
@@ -295,9 +298,18 @@ internal struct SvgShaderCoordinates
     /// budget. Coordinate caches are mutable and must not be shared between concurrent draws.</remarks>
     internal readonly SvgShaderCoordinates WithRecordedDrawing(SvgRecordedTransform transform, SvgShaderMatrix output,
         SvgAffineTransform initial, SvgAffineTransform target, RenderBudget budget, CancellationToken token)
+        => WithRecordedDrawing(new(transform, output, initial, target, budget, token));
+
+    /// <summary>Retains a native source-device placement after the original recorded drawing.</summary>
+    /// <remarks>Borrowing, scratch accounting, cancellation and draw-local cache ownership follow WithRecordedDrawing.</remarks>
+    internal readonly SvgShaderCoordinates WithCapturedDrawing(SvgRecordedTransform transform, SvgShaderMatrix output,
+        SvgAffineTransform initial, SvgAffineTransform target, RenderBudget budget, CancellationToken token, SvgAffineTransform capturePlacement)
+        => WithRecordedDrawing(new(transform, output, initial, target, budget, token) { CapturePlacement = capturePlacement });
+
+    private readonly SvgShaderCoordinates WithRecordedDrawing(RecordedDrawing drawing)
     {
         SvgShaderCoordinates mapped = this;
-        mapped._recordedDrawing = new(transform, output, initial, target, budget, token);
+        mapped._recordedDrawing = drawing;
         mapped._hasPrepared = false;
         return mapped;
     }
@@ -347,9 +359,17 @@ internal struct SvgShaderCoordinates
             {
                 // Canvas boundaries concatenate in the owning bitmap. Moving its
                 // origin after the child concat loses an intermediate float round.
-                SvgShaderMatrix output = drawing.Output with { TranslateX = drawing.Output.TranslateX - origin.X, TranslateY = drawing.Output.TranslateY - origin.Y };
+                SvgShaderMatrix output = drawing.CapturePlacement is null
+                    ? drawing.Output with { TranslateX = drawing.Output.TranslateX - origin.X, TranslateY = drawing.Output.TranslateY - origin.Y }
+                    : drawing.Output;
                 _canSample = drawing.Transform.TryMap(output, drawing.Initial, drawing.Target, drawing.Budget, drawing.Token, out local);
                 if (!_canSample) return false;
+                if (drawing.CapturePlacement is {} capture)
+                {
+                    SvgAffineTransform bitmapPlacement = SvgAffineTransform.FromTranslation(-origin.X, -origin.Y).ComposeNative(capture);
+                    local = SvgShaderMatrix.FromAffine(bitmapPlacement.ComposeNative(new(
+                        local.ScaleX, local.SkewY, local.SkewX, local.ScaleY, local.TranslateX, local.TranslateY)));
+                }
             }
             else local = _paintMap with { TranslateX = _paintMap.TranslateX - origin.X, TranslateY = _paintMap.TranslateY - origin.Y };
             if (_localMatrix is {} gradientLocal) local = SvgShaderMatrix.Concat(local, gradientLocal);

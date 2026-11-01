@@ -306,26 +306,20 @@ public static partial class SvgConverter
         internal SvgPaintBounds? NativeSourceBounds { get; init; }
         /// <summary>Retains the exact source/layer relation when nested filters share their authored ancestry.</summary>
         internal SvgFilterSourceMap? FilterSourceMap { get; init; }
-        /// <summary>Maps authored scene coordinates through the native source device, retaining each float concatenation.</summary>
+        /// <summary>Places a prepared native drawing in the current source bitmap; FilterSourceMap retains its original recording.</summary>
         internal SvgAffineTransform? NativeCapturePlacement { get; init; }
     }
 
     private readonly record struct SvgFilterReplayBinding(int Index, SvgFilterBinding Binding);
-    /// <summary>Immutable relation between retained scene coordinates and one filter layer; owns no storage.</summary>
-    internal readonly record struct SvgFilterSourceMap(SvgAffineTransform Source, SvgAffineTransform Layer, SvgAffineTransform NativePlacement)
+    /// <summary>Keeps the authored source/layer relation separate from recorded drawing and native capture.</summary>
+    /// <remarks>Immutable arithmetic-only metadata; it owns no scene or pixel storage.</remarks>
+    internal readonly record struct SvgFilterSourceMap(SvgAffineTransform Source, SvgAffineTransform Layer,
+        SvgAffineTransform NativePlacement, SvgDrawingMap Drawing)
     {
-        /// <summary>Places a nested filter while preserving the known linear map of a translated ancestor.</summary>
-        /// <remarks>Pure arithmetic on validated maps; no allocation, budget ownership or cancellation work.</remarks>
-        internal SvgAffineTransform Place(SvgAffineTransform nested, SvgAffineTransform sourcePlacement)
-        {
-            if (nested == Source) return Layer;
-            SvgAffineTransform placed = sourcePlacement.ComposeChecked(nested);
-            // Translation cannot introduce rotation or skew. Recomputing the
-            // known linear part through its inverse can leave a nonzero residue
-            // and incorrectly construct another affine filter layer.
-            return nested.A == Source.A && nested.B == Source.B && nested.C == Source.C && nested.D == Source.D
-                ? placed with { A = Layer.A, B = Layer.B, C = Layer.C, D = Layer.D } : placed;
-        }
+        /// <summary>Prepares the original drawing before applying a native capture placement.</summary>
+        /// <remarks>Preserves both float concatenation boundaries. Allocation-free; callers retain cancellation and work ownership.</remarks>
+        internal SvgAffineTransform MapPreparedDrawing(SvgAffineTransform target, SvgAffineTransform capturePlacement)
+            => capturePlacement.ComposeNative(Drawing.MapScene(target));
     }
 
     private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, RasterFrame? frame, CancellationToken cancellationToken)
@@ -509,9 +503,12 @@ public static partial class SvgConverter
         // separate from raw object/paint bounds; each traversal observes cancellation.
         SvgFilterBinding PlaceFilterBinding(SvgFilterBinding binding, int first)
         {
-            if (sourcePlacement == SvgAffineTransform.Identity) return binding;
-            SvgAffineTransform transform = frame?.FilterSourceMap is {} relation
-                ? relation.Place(binding.Transform, sourcePlacement) : sourcePlacement.ComposeChecked(binding.Transform);
+            if (sourcePlacement == SvgAffineTransform.Identity && frame?.FilterSourceMap is null) return binding;
+            SvgAffineTransform transform = sourcePlacement.ComposeChecked(binding.Transform);
+            if (frame?.FilterSourceMap is {} relation && PlaceNativeSource(new(0, 0)) is {} post)
+                transform = SvgAffineTransform.FromScaleOffset(1 / horizontalScale, 1 / verticalScale,
+                    -horizontalOffset / horizontalScale, -verticalOffset / verticalScale)
+                    .ComposeChecked(relation.MapPreparedDrawing(binding.Transform, post));
             SvgPaintBounds? objects = null, visuals = null;
             int depth = 0;
             for (int index = first; index < root.Commands.Length; index++)
@@ -596,6 +593,9 @@ public static partial class SvgConverter
             SvgAffineTransform parameterInverse = default;
             bool hasParameterMap = resource.IsAvailable && binding.Transform.TryInvert(out parameterInverse);
             SvgAffineTransform parameterPlacement = hasParameterMap ? parameterInverse.Compose(sourcePlacement) : default;
+            if (hasParameterMap && frame?.FilterSourceMap is not null
+                && arena.BindingAt(command.MaskContentIndex).Transform.TryInvert(out SvgAffineTransform originalInverse))
+                parameterPlacement = originalInverse;
             for (; end < root.Commands.Length; end++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -856,7 +856,9 @@ public static partial class SvgConverter
                 // retain their own recording placement and canvas stages.
                 SvgAffineTransform nativePlacement = captureFrame.NativeCapturePlacement
                     ?? SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset - left + 1, verticalOffset - top + 1);
-                SvgAffineTransform parameters = nativePlacement.ComposeNative(arena.BindingAt(command.MaskContentIndex).Transform);
+                SvgAffineTransform parameters = captureFrame is { NativeCapturePlacement: {} capturePost, FilterSourceMap: {} captureRelation }
+                    ? captureRelation.MapPreparedDrawing(arena.BindingAt(command.MaskContentIndex).Transform, capturePost)
+                    : nativePlacement.ComposeNative(arena.BindingAt(command.MaskContentIndex).Transform);
                 SvgCpuBitmapOrigin nativeOrigin = new((int)(left - 1 - frameLeft), (int)(top - 1 - frameTop));
                 SvgPaintBounds parameterObjects = binding.ParameterObjectBounds ?? default;
                 cancellationToken.ThrowIfCancellationRequested();
@@ -1033,7 +1035,8 @@ public static partial class SvgConverter
                 // Filter kernels require scale/translate coordinates. Keep their
                 // layer raster separate from the residual rotation/skew, just as
                 // native source construction is separate from final image sampling.
-                if (!binding.Transform.TryInvert(out SvgAffineTransform inverseSource)) return;
+                // Geometry stays in the original scene across recursive captures.
+                if (!arena.BindingAt(command.MaskContentIndex).Transform.TryInvert(out SvgAffineTransform parameterInverse)) return;
                 SvgAffineTransform ctm = MapFilterDrawingTransform(binding.Transform);
                 SvgShaderMatrix native = new((float)ctm.A, (float)ctm.C, (float)ctm.E, (float)ctm.B, (float)ctm.D, (float)ctm.F);
                 (float scaleX, float scaleY) = native.GetPictureScale();
@@ -1041,7 +1044,6 @@ public static partial class SvgConverter
                     native.SkewY * (1f / scaleX), native.ScaleY * (1f / scaleY), native.TranslateY);
                 if (!remainder.TryInvert(out SvgShaderMatrix inverse)) return;
                 SvgAffineTransform layerMap = SvgAffineTransform.FromScale(scaleX, scaleY);
-                SvgAffineTransform parameterInverse = sourcePlacement == SvgAffineTransform.Identity ? inverseSource : inverseSource.ComposeChecked(sourcePlacement);
                 SvgAffineTransform placement = layerMap.ComposeChecked(parameterInverse);
                 int count = end - first;
                 using RenderBudget.BudgetReservation replayOwner = budget.Reserve(
@@ -1207,7 +1209,7 @@ public static partial class SvgConverter
                         budget, RasterSurfaceMode.PremultipliedFilter,
                         new RasterFrame((int)frameWidth, (int)frameHeight,
                             new(SvgAffineTransform.FromTranslation(-left, -top), null))
-                        { SingleBitmap = true, FilterBinding = new(command.MaskContentIndex, local), SourcePlacement = placement, NativeSourceBounds = nativeSource, FilterSourceMap = new(arena.BindingAt(command.MaskContentIndex).Transform, layerMap, new SvgAffineTransform(inverse.ScaleX, inverse.SkewY, inverse.SkewX, inverse.ScaleY, inverse.TranslateX, inverse.TranslateY).ComposeNative(SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset))) }, cancellationToken);
+                        { SingleBitmap = true, FilterBinding = new(command.MaskContentIndex, local), SourcePlacement = placement, NativeSourceBounds = nativeSource, FilterSourceMap = new(arena.BindingAt(command.MaskContentIndex).Transform, layerMap, new SvgAffineTransform(inverse.ScaleX, inverse.SkewY, inverse.SkewX, inverse.ScaleY, inverse.TranslateX, inverse.TranslateY).ComposeNative(PlaceNativeSource(new(0, 0)) ?? SvgAffineTransform.Identity), frame?.FilterSourceMap is {} originalRelation ? originalRelation.Drawing : drawingMap) }, cancellationToken);
                     // Native drawSpecial composes the stored image origin and
                     // transparent one-pixel outset before inverting its matrix.
                     // Subtracting that origin after inverse mapping changes phase.
@@ -3182,6 +3184,9 @@ public static partial class SvgConverter
 
         SvgShaderMatrix? NativeDrawingReference(SvgAffineTransform target)
         {
+            if (frame is { NativeCapturePlacement: {} nativeCapture, FilterSourceMap: {} captureRelation }
+                && activeViewport.DrawMap is null)
+                return SvgShaderMatrix.FromAffine(captureRelation.MapPreparedDrawing(target, nativeCapture));
             // Captures retain recorded/destination stages; only bare native layer frames
             // use the device reference prepared by their existing replay contract.
             if (activeViewport.DrawMap is null && frame is not null && drawingMap.Destination is null) return null;
@@ -3192,6 +3197,10 @@ public static partial class SvgConverter
 
         SvgShaderCoordinates PreserveRecordedShaderStages(SvgShaderCoordinates coordinates, SvgAffineTransform target)
         {
+            if (frame is { NativeCapturePlacement: {} capturedPlacement, FilterSourceMap: {} capturedRelation } && activePaint.RecordingTransform is {} capturedRecording)
+                return coordinates.WithCapturedDrawing(capturedRecording,
+                    SvgShaderMatrix.FromAffine(capturedRelation.Drawing.Destination ?? SvgAffineTransform.Identity),
+                    capturedRelation.Drawing.Recording, target, budget, cancellationToken, capturedPlacement);
             if (activePaint.RecordingTransform is not {} recording) return coordinates;
             SvgAffineTransform initial = sourcePlacement == SvgAffineTransform.Identity ? drawingMap.Recording
                 : drawingMap.Recording.ComposeChecked(sourcePlacement);
@@ -3622,8 +3631,9 @@ public static partial class SvgConverter
                     : drawingMap.Recording;
                 if (coordinateSpace == PathCoordinateSpace.User && sourcePlacement != SvgAffineTransform.Identity)
                     outputMap = outputMap.ComposeChecked(sourcePlacement);
-                authoredMap = frame?.NativeCapturePlacement is {} nativeCapture
-                    ? nativeCapture.ComposeNative(replay.SceneMap) : MapSourceTransform(outputMap, replay.SceneMap, coordinateSpace);
+                authoredMap = frame is { NativeCapturePlacement: {} nativeCapture, FilterSourceMap: {} captureRelation }
+                    ? captureRelation.MapPreparedDrawing(replay.SceneMap, nativeCapture)
+                    : MapSourceTransform(outputMap, replay.SceneMap, coordinateSpace);
                 // Recorded source drawings already belong to the filter layer.
                 // Clip geometry keeps its own native concatenation; fitted glyphs
                 // already use device coordinates rather than this recording map.
