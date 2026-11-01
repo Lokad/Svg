@@ -61,6 +61,9 @@ The [filter source-opacity control](Research/filter-source-opacity/README.md)
 adds one canonical image; three direct parameter-bound cases distinguish strokes
 and nested sources. Existing affine group-opacity and AA parent-clip controls
 protect allocation versus coverage bounds. The full hosted original remains open.
+The reduced [group-opacity pair](Research/filter-group-opacity/README.md) uses two
+overlapping rectangles: one canonical downscale control rejects a global alpha
+change, while its independently captured upscale companion remains open research.
 
 The [thin-curve mechanisms](Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs) distinguish
 authored ink from short flattened fallbacks and explicit suppression. One source

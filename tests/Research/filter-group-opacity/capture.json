@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "license": "CC0-1.0",
+  "sourceBaseline": "8f85174689059051f8761f81d4dd6cea656196ee",
+  "browser": "Chrome153.0.8010.52",
+  "width": 64,
+  "height": 64,
+  "context": "Two own overlapping half-alpha rectangles under one translucent group and an affine copying Gaussian. Intrinsic64x64 viewport, transparent output, DPR1; three agreeing healthy/profile-cleaned captures per host. No hosted source content.",
+  "cases": [
+    {
+      "id": "overlap-downscale",
+      "input": "inputs/overlap-downscale.svg",
+      "inputSha256": "3ba34fc19334f38c91fba64dc5d624454fe90c8a5ccb03cf14f97620d3e931ad",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "0697438dbf1ec054ba27ab87edadf8555bf4fff371d93087d5e167977acd737c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "0697438dbf1ec054ba27ab87edadf8555bf4fff371d93087d5e167977acd737c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "0697438dbf1ec054ba27ab87edadf8555bf4fff371d93087d5e167977acd737c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "0697438dbf1ec054ba27ab87edadf8555bf4fff371d93087d5e167977acd737c",
+          "reference": "references/overlap-downscale.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "0697438dbf1ec054ba27ab87edadf8555bf4fff371d93087d5e167977acd737c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "0697438dbf1ec054ba27ab87edadf8555bf4fff371d93087d5e167977acd737c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "0697438dbf1ec054ba27ab87edadf8555bf4fff371d93087d5e167977acd737c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "0697438dbf1ec054ba27ab87edadf8555bf4fff371d93087d5e167977acd737c",
+          "reference": "references/overlap-downscale.png"
+        }
+      },
+      "status": "exact",
+      "baseline": {
+        "windows": {
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "maximumAlphaError": 0,
+          "totalChannelError": 0,
+          "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d"
+        },
+        "linux": {
+          "changedPixels": 0,
+          "alphaChangedPixels": 0,
+          "maximumError": 0,
+          "maximumAlphaError": 0,
+          "totalChannelError": 0,
+          "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d"
+        }
+      }
+    },
+    {
+      "id": "overlap-upscale",
+      "input": "inputs/overlap-upscale.svg",
+      "inputSha256": "2190f3f7054c33206e6eefa49e5f45e73d433f1731ce2c90497fadd998e5669e",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "ef6bffcd9bf477b61ccce02c3538db6640eadd6fcaee6b4e46bc912b5bf9c961",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef6bffcd9bf477b61ccce02c3538db6640eadd6fcaee6b4e46bc912b5bf9c961",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef6bffcd9bf477b61ccce02c3538db6640eadd6fcaee6b4e46bc912b5bf9c961",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "ef6bffcd9bf477b61ccce02c3538db6640eadd6fcaee6b4e46bc912b5bf9c961",
+          "reference": "references/overlap-upscale.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "ef6bffcd9bf477b61ccce02c3538db6640eadd6fcaee6b4e46bc912b5bf9c961",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef6bffcd9bf477b61ccce02c3538db6640eadd6fcaee6b4e46bc912b5bf9c961",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef6bffcd9bf477b61ccce02c3538db6640eadd6fcaee6b4e46bc912b5bf9c961",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "ef6bffcd9bf477b61ccce02c3538db6640eadd6fcaee6b4e46bc912b5bf9c961",
+          "reference": "references/overlap-upscale.png"
+        }
+      },
+      "status": "open-group-alpha-restore",
+      "baseline": {
+        "windows": {
+          "changedPixels": 87,
+          "alphaChangedPixels": 87,
+          "maximumError": 1,
+          "maximumAlphaError": 1,
+          "totalChannelError": 87,
+          "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d"
+        },
+        "linux": {
+          "changedPixels": 87,
+          "alphaChangedPixels": 87,
+          "maximumError": 1,
+          "maximumAlphaError": 1,
+          "totalChannelError": 87,
+          "librarySha256": "c4c86c8df1104decfe984b442e81f7ba9b86b4c8fac6cca4b449d2b45afed93d"
+        }
+      }
+    }
+  ]
+}

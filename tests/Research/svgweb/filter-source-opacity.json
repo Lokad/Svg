@@ -400,5 +400,9 @@
         "librarySha256": "2393c664818bccc3c4c98c33cb3bbaccadf6bb19b140bbe88fdd91e7127b2f97"
       }
     ]
+  },
+  "groupRestoreFollowup": {
+    "evidence": "group-opacity-stages.json",
+    "status": "OPEN source-group restore investigation, reduced to two overlapping rectangles. Native outer CTMs match; a paired downscale control rejects global alpha replacements. No production change follows this checkpoint."
   }
 }

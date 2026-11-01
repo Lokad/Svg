@@ -1,0 +1,356 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "8f85174689059051f8761f81d4dd6cea656196ee",
+  "previousEvidence": "filter-source-opacity.json",
+  "scope": "Research and one retained negative control only. No production changes, reference rewrites or tolerance changes.",
+  "reducedControls": "../filter-group-opacity/capture.json",
+  "reduction": "Two overlapping half-alpha rectangles, one translucent group and one affine copying Gaussian reproduce the same one-level alpha discrepancy. No curves, gradient, aliases, nested filter or large coordinates are necessary.",
+  "pairedResults": {
+    "downscaleChangedPixelsPerHost": 0,
+    "upscaleChangedPixelsPerHost": 87,
+    "maximumAlphaError": 1,
+    "independentCaptures": 12
+  },
+  "outerDrawing": {
+    "comparison": "All six native float coefficients match at entry on fractional and integer controls.",
+    "fractionalRecursiveAffineCaptures": 2,
+    "integerRecursiveAffineCaptures": 1,
+    "interpretation": "Different nested routing is observable, but forcing the extra affine capture leaves the integer mismatch unchanged. The outer drawing CTM is not the cause shown by these observations."
+  },
+  "isolations": {
+    "qualification": "Single healthy Windows captures, diagnostic mutations of the admitted own integer source; no additional reference admission.",
+    "results": [
+      {
+        "id": "source-only",
+        "inputSha256": "dbf5c08baa4a8a62b110462ef5f751047a25a5accc79fba8f34c95a8c06ad86a",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "source-only-no-filter",
+        "inputSha256": "a3c82991608a9dba1b5f779b6b63e9ae98698739a02ddb699778a29cb8657066",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "opaque-source",
+        "inputSha256": "7ebecb7c3b3a436a6687902f4cdaab6cb60b0066422744084debc98a91e3f725",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "opaque-both",
+        "inputSha256": "02e0e6455cbb2f0ab502e4acb1ee4ff91b631013cc385c37060daefbd3770135",
+        "changedPixels": 1,
+        "alphaChangedPixels": 1,
+        "maximumError": 3,
+        "totalChannelError": 10
+      },
+      {
+        "id": "no-inner-filter",
+        "inputSha256": "7ebc9eaa8130bc7f70580bc9aef0b8ef21a44beda061737251652fd9b3b2c10a",
+        "changedPixels": 452,
+        "alphaChangedPixels": 398,
+        "maximumError": 255,
+        "totalChannelError": 8168
+      },
+      {
+        "id": "no-related-filters",
+        "inputSha256": "8988632f236a91cf8759920d24448bc1907a046f01094b07613b47b64bd27922",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      }
+    ]
+  },
+  "rejectedRendererTrials": {
+    "forcedNestedAffine": {
+      "thin-curved-source": {
+        "changedPixels": 0,
+        "alphaChangedPixels": 0
+      },
+      "thin-curved-source-integer": {
+        "changedPixels": 434,
+        "alphaChangedPixels": 400
+      },
+      "large-affine-nested-opacity": {
+        "changedPixels": 0,
+        "alphaChangedPixels": 0
+      },
+      "old-affine-opacity": {
+        "changedPixels": 0,
+        "alphaChangedPixels": 0
+      }
+    },
+    "floatingAuthoredOpacity": {
+      "thin-curved-source": {
+        "changedPixels": 245,
+        "alphaChangedPixels": 231
+      },
+      "thin-curved-source-integer": {
+        "changedPixels": 341,
+        "alphaChangedPixels": 302
+      },
+      "large-affine-nested-opacity": {
+        "changedPixels": 168,
+        "alphaChangedPixels": 124
+      },
+      "old-affine-opacity": {
+        "changedPixels": 0,
+        "alphaChangedPixels": 0
+      }
+    },
+    "floatingByteOpacity": {
+      "thin-curved-source": {
+        "changedPixels": 378,
+        "alphaChangedPixels": 345
+      },
+      "thin-curved-source-integer": {
+        "changedPixels": 232,
+        "alphaChangedPixels": 205
+      },
+      "large-affine-nested-opacity": {
+        "changedPixels": 432,
+        "alphaChangedPixels": 359
+      },
+      "old-affine-opacity": {
+        "changedPixels": 0,
+        "alphaChangedPixels": 0
+      }
+    },
+    "lowPrecisionShader": {
+      "thin-curved-source": {
+        "changedPixels": 555,
+        "alphaChangedPixels": 528
+      },
+      "thin-curved-source-integer": {
+        "changedPixels": 0,
+        "alphaChangedPixels": 0
+      },
+      "large-affine-nested-opacity": {
+        "changedPixels": 424,
+        "alphaChangedPixels": 367
+      },
+      "old-affine-opacity": {
+        "changedPixels": 0,
+        "alphaChangedPixels": 0
+      }
+    }
+  },
+  "reducedLowPrecisionTrial": {
+    "upscaleChangedPixels": 0,
+    "downscaleChangedPixels": 50,
+    "decision": "Rejected:0 on the upscale control but50 on the previously exact downscale control. The fractional thin source and large-coordinate control also regress."
+  },
+  "numericalObservation": {
+    "nativeRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "sources": [
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkRasterPipeline_opts.h",
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkBlitRow_D32.cpp"
+    ],
+    "lowPrecisionAlpha": "For x64 lowp scale, source byte s and rounded paint alpha a: (s*a+255)>>8. Existing SvgConstantShaderPaint.Blend supplies this operation.",
+    "packedRowAlpha": "The existing bitmap row retains source/destination products together through the final shift; it is a distinct native consumer.",
+    "interpretation": "The lowp operation exactly explains both failing controls in a diagnostic replacement. This does not establish what selects that consumer. No scale threshold or per-fixture branch is justified."
+  },
+  "exploration": {
+    "qualification": "Single healthy Windows observations; shared own geometry with only named maps, colour space or sigma changed.",
+    "results": [
+      {
+        "id": "affine-sRGB",
+        "inputSha256": "45baaa1b447dff3c3b59efa318119cfc6694812ca3b2c198384d20a23f3b97dc",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "affine-linearRGB",
+        "inputSha256": "8f7d2e400d44495b7787c05be4d4c4e7a76aaa32e120f4fa5feec0b1a4e33416",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "similar-sRGB",
+        "inputSha256": "3ba34fc19334f38c91fba64dc5d624454fe90c8a5ccb03cf14f97620d3e931ad",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "similar-linearRGB",
+        "inputSha256": "04a08da15e44b0eadf6e1e25514800140859ed259e5c892d5a6ab32c7b9d2a20",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "reflected-sRGB",
+        "inputSha256": "2813e0f5bb7f99b6b96029f49daf49aa9d591a9c49c4562e3b8d1ebfc8122ed3",
+        "changedPixels": 87,
+        "alphaChangedPixels": 87,
+        "maximumAlphaError": 1,
+        "maximumError": 1,
+        "totalChannelError": 87
+      },
+      {
+        "id": "reflected-linearRGB",
+        "inputSha256": "4d8d5ae8196a2d27f6b01a56101c74f63ea824186a1fe69658225be80df5e12a",
+        "changedPixels": 88,
+        "alphaChangedPixels": 88,
+        "maximumAlphaError": 1,
+        "maximumError": 1,
+        "totalChannelError": 88
+      },
+      {
+        "id": "up-positive-sRGB",
+        "inputSha256": "2190f3f7054c33206e6eefa49e5f45e73d433f1731ce2c90497fadd998e5669e",
+        "changedPixels": 87,
+        "alphaChangedPixels": 87,
+        "maximumAlphaError": 1,
+        "maximumError": 1,
+        "totalChannelError": 87
+      },
+      {
+        "id": "up-positive-linearRGB",
+        "inputSha256": "914c752332943074b903fc4ec827918f181e4a0edb930c02685147283374a6ee",
+        "changedPixels": 88,
+        "alphaChangedPixels": 88,
+        "maximumAlphaError": 1,
+        "maximumError": 1,
+        "totalChannelError": 88
+      },
+      {
+        "id": "down-negative-sRGB",
+        "inputSha256": "4aa03e7a5d399f7cd20f3fcf5c3ab977c5b074b0a82c1e5b55bbb429e1def333",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "down-negative-linearRGB",
+        "inputSha256": "d37ad5ec1476ed18e265a9e0bf31766238f8d3aac8a8559b0cacbe2929627f1f",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "up-axes-sRGB",
+        "inputSha256": "e779b540edbe66823672421cf008b3741b0bf1139694cdab98dfe5a1ab78b81a",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "up-axes-linearRGB",
+        "inputSha256": "ddc6cb35f2a4d977948bd7c65f52132a4f7387b8485589ddad340ec84758ed1e",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumAlphaError": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      },
+      {
+        "id": "up-skew-sRGB",
+        "inputSha256": "7d740ac8c3f24928b5f90ce3a7de36a65d04652ece9276be145d04bf21e2fae6",
+        "changedPixels": 88,
+        "alphaChangedPixels": 88,
+        "maximumAlphaError": 1,
+        "maximumError": 255,
+        "totalChannelError": 7738
+      },
+      {
+        "id": "up-skew-linearRGB",
+        "inputSha256": "e03985049f56e8afeabfc5dc336346cd022215d9645f1f4a3595c7d9b411d912",
+        "changedPixels": 88,
+        "alphaChangedPixels": 88,
+        "maximumAlphaError": 1,
+        "maximumError": 255,
+        "totalChannelError": 7738
+      }
+    ],
+    "kernelProbe": [
+      {
+        "sigma": "0",
+        "changedPixels": 87
+      },
+      {
+        "sigma": ".01",
+        "changedPixels": 87
+      },
+      {
+        "sigma": ".03",
+        "changedPixels": 87
+      },
+      {
+        "sigma": ".04",
+        "changedPixels": 87
+      },
+      {
+        "sigma": ".1",
+        "changedPixels": 87
+      },
+      {
+        "sigma": ".3",
+        "changedPixels": 87
+      }
+    ],
+    "interpretation": "Both rotation directions and sRGB/linearRGB reproduce it. Axis-aligned upscale and the sampled affine downscales are exact. All six probed sigma values0,.01,.03,.04,.1,.3 leave87 differences; do not patch a blur-kernel boundary."
+  },
+  "coverage": {
+    "rendering": "../../Lokad.Svg.VisualTests/SvgFilterSourceOpacityReferenceTests.cs",
+    "newPassingCases": 1,
+    "responsibility": "One canonical downscale case rejects the observed global lowp replacement. The paired upscale case remains explicitly OPEN and has no passing assertion. Existing thin, placement and ownership responsibilities remain separate; no API/fixture product."
+  },
+  "focusedValidation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "passed": 9,
+      "seconds": 6.8195,
+      "librarySha256": "bfe6976d706eaf52859bde30ddc7d3547baea96badb9e120b4af8d8a3c56e390"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "passed": 9,
+      "seconds": 9.311912,
+      "librarySha256": "bfe6976d706eaf52859bde30ddc7d3547baea96badb9e120b4af8d8a3c56e390"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "passed": 9,
+      "seconds": 6.985958,
+      "librarySha256": "aadf315dc28a69c6d04457d0c69ebbfb1ff1639447378ed656c9c3ebac94c7ab"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "passed": 9,
+      "seconds": 7.154107,
+      "librarySha256": "aadf315dc28a69c6d04457d0c69ebbfb1ff1639447378ed656c9c3ebac94c7ab"
+    }
+  ],
+  "nextAction": "Determine the native isolated bitmap restore consumer from device mapping, image representation/colour space and clip state. Reuse the existing packed, lowp and floating operations at their actual stage; preserve the downscale/fractional/large-coordinate controls and complete original together."
+}
