@@ -6,8 +6,8 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 155 originals per host: **153 exploratory
-exact, two different**, with 46 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 155 originals per host: **154 exploratory
+exact, one different**, with 46 UnsupportedFeature and 3 MalformedInput outcomes. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
@@ -82,7 +82,8 @@ current inventory above governs overall status.
 | Fixed stroke lengths | [Shared unit conversion](fixed-stroke-lengths.json). Root, marker and stroke factors share one parser seam; callers retain sign/range/base/narrowing rules. Direct mechanisms, two existing selection contracts and one canonical native fixture protect distinct responsibilities. |
 | Isolated opacity and source raster scope | [Local enclosure and shared raster binding](opacity-source-scope.json). Recorded primitive strokes enclose before placement; filter hints stay fractional. Hairlines borrow the compositor grid and preserve source clip, origin and owned interior independently. Direct mechanisms and three leaf/group fixtures protect distinct recording graphs. |
 | Gradient declarations | [Typed lengths](gradient-lengths.json), [inheritance fixture](../../Fixtures/original/radial-coordinate-inheritance.svg), [stop identity fixture](../../Fixtures/original/gradient-stop-identities.svg). Preserve number/percentage intent, missing/default values, units, per-field inheritance, viewport resolution and metadata. |
-| Nested pattern content | [Content graph and native controls](nested-patterns.json). Borrow shared sealed scenes, validate cycles and actual content depth once, and retain forward/template/mask/glyph interactions. The complete metal-effect original renders; its colour residual remains open. |
+| Nested pattern content | [Content graph and native controls](nested-patterns.json). Borrow shared sealed scenes, validate cycles and actual content depth once, and retain forward/template/mask/glyph interactions. |
+| Picture repeat sampling | [Floating tap addresses and fragment drawing](pattern-repeat-addressing.json). Repeat each tap before gather clamping; keep shader drawing separate from fitted glyph ink. Direct native vectors and one canonical nested image close the complete metal-effect original while preserving its glyph companions. |
 | Paint selection and text evidence | [Paint references](paint-references.json), [filter-source review](filter-source-review.json). Empty paint content and unavailable servers differ; the synthetic font needs valid bounds before its rendering can diagnose the library. Exploratory single captures do not admit new references. |
 
 ## Original acceptance mappings

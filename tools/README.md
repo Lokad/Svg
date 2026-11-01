@@ -46,6 +46,12 @@ uses the same compiler flags. Run it and compare its JSON values with the
 [device-axis vectors](../tests/Lokad.Svg.Tests/TestData/native-device-restore.json);
 forward/inverse float rounding determines whether restoration retains affine skew.
 
+The [picture-repeat control](../tests/Research/svgweb/pattern-repeat-native.cpp)
+uses the same compiler flags. Compare its CSV with the
+[committed tap vectors](../tests/Research/svgweb/pattern-repeat-native.csv).
+These pin floating repeat and gather addresses directly; the
+[browser control](../tests/Research/pattern-repeat/README.md) qualifies their rendering interaction.
+
 ## Generated output and retention
 
 Organize generated data by purpose: pinned tool caches, current qualification,

@@ -70,7 +70,12 @@ The [nested-pattern control](Research/nested-patterns/README.md) covers forward
 aliases, shared tiles, rectangle/polygon sampling and supplied-font direct/path
 text through canonical conversion, preserving distinct glyph platform references.
 Direct graph mechanisms protect cycles and nesting boundaries; prepared-font and
-refusal/retry checks cover ownership separately. The complete original remains open.
+refusal/retry checks cover ownership separately.
+The [repeat-boundary control](Research/pattern-repeat/README.md) closes that
+original's remaining pixel discrepancy. Fifteen direct native-vector mechanisms
+protect tap addresses and floating boundaries; one canonical image protects nested
+sampling. Existing glyph-pattern references preserve the fragment-drawing interaction
+without adding destination or ownership matrices.
 The reduced [group-opacity pair](Research/filter-group-opacity/README.md) uses two
 overlapping rectangles: both canonical images are exact, and the downscale control
 rejects a global alpha change. Four compiled native device-axis mechanisms protect

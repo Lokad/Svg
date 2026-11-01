@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "license": "CC0-1.0",
+  "sourceBaseline": "882aced408eb7fa077bf707ed0d49b4f8fe0577d",
+  "browser": "Chrome153.0.8010.52",
+  "width": 64,
+  "height": 48,
+  "context": "Transparent SVG image,DPR1; three agreeing healthy/profile-cleaned fresh-process captures per host. Independently authored rectangle and one horizontal stroke; fractional nested tiles rotate the child bitmap across a repeat boundary. Numerical tile extents retain the observed texture grid, without retaining hosted geometry.",
+  "cases": [
+    {
+      "id": "repeat-edge",
+      "input": "inputs/repeat-edge.svg",
+      "inputSha256": "78770fa719698ebcb97b554bb5405b4bfa3b0cc778b362104af67b530e7d0adf",
+      "status": "exact",
+      "qualification": "../svgweb/pattern-repeat-addressing.json",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "reference": "references/repeat-edge.png",
+          "referenceSha256": "f71eefa032848e6b701473078a50d0211e664dcfbd309b8149299e19938ae113",
+          "captures": [
+            {
+              "pngSha256": "f71eefa032848e6b701473078a50d0211e664dcfbd309b8149299e19938ae113",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f71eefa032848e6b701473078a50d0211e664dcfbd309b8149299e19938ae113",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f71eefa032848e6b701473078a50d0211e664dcfbd309b8149299e19938ae113",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "reference": "references/repeat-edge.png",
+          "referenceSha256": "f71eefa032848e6b701473078a50d0211e664dcfbd309b8149299e19938ae113",
+          "captures": [
+            {
+              "pngSha256": "f71eefa032848e6b701473078a50d0211e664dcfbd309b8149299e19938ae113",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f71eefa032848e6b701473078a50d0211e664dcfbd309b8149299e19938ae113",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f71eefa032848e6b701473078a50d0211e664dcfbd309b8149299e19938ae113",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

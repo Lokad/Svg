@@ -159,8 +159,7 @@ CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             SvgGlyphFontStyle glyphFont = run.GetGlyphFont(glyphIndex);
-            double rotation = run.GetGlyphRotation(glyphIndex);
-            SvgTextGlyphPaint paint = run.GetGlyphPaint(glyphIndex++, pending.Color);
+            double rotation = run.GetGlyphRotation(glyphIndex++);
             // Unpainted path glyphs still contribute to source paint bounds.
             double distance = offset + glyph.X;
             // Native SVG adds the device character offset and inline
@@ -219,14 +218,15 @@ CancellationToken token)
                 if (horizontalPlacement) placed = placed with { Y = placed.Y + baselinePaintDelta };
                 else glyphMap = glyphMap.ComposeChecked(SvgAffineTransform.FromTranslation(0, baselinePaintDelta));
             }
-            SvgTextDecorationPlacement decoration = default;
-            if (paint.Decoration is not null)
+            SvgTextFragmentDrawing drawing;
+            // Native text draws the fragment at its paint origin under this
+            // transform. Glyph ink retains its fitted map independently.
             {
                 double stretch = run.GlyphStretch;
                 if (glyphMap.IsTranslation)
                 {
                     SvgDevicePoint origin = glyphMap.Apply(placed.X, placed.Y);
-                    decoration = new(origin, SvgAffineTransform.FromScaleOffset(stretch, 1, origin.X - stretch * origin.X, 0));
+                    drawing = new(origin, SvgAffineTransform.FromScaleOffset(stretch, 1, origin.X - stretch * origin.X, 0));
                 }
                 else
                 {
@@ -238,14 +238,14 @@ CancellationToken token)
                         ? size * glyphFont.Font.Metrics.LineMetrics.WindowsAscender / glyphFont.Font.UnitsPerEm
                         : glyphFont.Font.Metrics.LineMetrics.Ascender * (size / glyphFont.Font.UnitsPerEm);
                     ascent = MathF.Floor(ascent + .5f);
-                    // Decoration rectangles use the physical fragment origin
+                    // Fragment drawing uses the physical paint origin
                     // (truncated layout units), separately from glyph fitting.
                     SvgDevicePoint origin = new(MathF.Truncate(cx * 64) / (64 * scale), (MathF.Truncate((cy - ascent) * 64) / 64 + ascent) / scale);
                     SvgAffineTransform map = glyphMap.ComposeChecked(SvgAffineTransform.FromScale(stretch, 1))
                         .ComposeChecked(SvgAffineTransform.FromTranslation(-cx / scale, -cy / scale));
-                    decoration = new(origin, map);
+                    drawing = new(origin, map);
                 }
-                decoration = decoration with { Map = pending.Placement.ComposeChecked(decoration.Map) };
+                drawing = drawing with { Map = pending.Placement.ComposeChecked(drawing.Map) };
             }
             // A zero tangent angle uses the native horizontal strike, even on a curved baseline.
             if (!horizontalPlacement && glyphMap.A == 1 && glyphMap.B == 0 && glyphMap.C == 0 && glyphMap.D == 1)
@@ -286,7 +286,7 @@ CancellationToken token)
                 if (glyphMap == SvgAffineTransform.Identity && pending.Placement.IsTranslation) placed = placed.Translate(pending.Placement);
                 else glyphMap = pending.Placement.ComposeChecked(glyphMap);
             }
-            placements.Add(new(placed, glyphMap, true) { SourceMap = sourceMap, Decoration = decoration });
+            placements.Add(new(placed, glyphMap, true) { SourceMap = sourceMap, Drawing = drawing });
         }
         return placements.Detach();
     }

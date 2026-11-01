@@ -19,7 +19,8 @@ Existing pattern text tests retain direct/text-path interactions; prepared-font
 selection and [memory refusal/retry](../../Lokad.Svg.Tests/SvgNestedPatternOwnershipTests.cs)
 cover their distinct ownership paths.
 
-[Qualification](../svgweb/nested-patterns.json) keeps the complete SVGWeb original
-separate: it renders, but its remaining colour differences are still open.
+[Qualification](../svgweb/nested-patterns.json) records initial graph admission.
+The complete SVGWeb original is exact through the subsequent shared
+[repeat-addressing correction](../svgweb/pattern-repeat-addressing.json).
 Use the [capture procedure](../../../tools/README.md#hosted-svgweb-inventory);
 preserve reference bytes and exact comparisons.

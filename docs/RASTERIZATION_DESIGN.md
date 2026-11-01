@@ -29,6 +29,14 @@ Existing document owners retain shared content and release it once. The
 [nested-pattern evidence](../tests/Research/svgweb/nested-patterns.json) separates
 graph, ownership and canonical rendering responsibilities.
 
+Picture sampling repeats each floating bilinear tap before clamping and gathering
+its pixel. Rounded reciprocal multiplication can cross a period boundary before
+the corresponding integer address does; the next tap cannot be inferred by adding
+one to the first address. Glyph shaders share the existing fragment drawing
+transform with decorations, keeping its paint origin separate from fitted glyph
+ink. [Repeat evidence](../tests/Research/svgweb/pattern-repeat-addressing.json)
+retains direct arithmetic vectors and the original glyph interactions.
+
 Pattern registration, font discovery and resource selection share declaration
 locations. Selection tracks rendered-group ancestry separately from general drawing
 eligibility, so admitting a declaration also admits its required content. Known

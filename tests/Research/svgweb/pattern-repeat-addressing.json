@@ -1,0 +1,323 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "882aced408eb7fa077bf707ed0d49b4f8fe0577d",
+  "capture": "../pattern-repeat/capture.json",
+  "scope": "Close the complete static/default metal-effect original through shared floating image-tap addressing and native fragment drawing. Preserve text layout, fitted glyph ink, native references and exactness.",
+  "implementation": {
+    "sampler": "../../../src/Lokad.Svg/Rendering/SvgPatternSample.cs",
+    "fragmentDrawing": "../../../src/Lokad.Svg/Parsing/SvgTextGlyphPainter.cs",
+    "fragmentPlacement": "../../../src/Lokad.Svg/Parsing/SvgTextPathLayout.cs",
+    "repeat": "Repeat each floating +/-0.5 tap with the native rounded reciprocal, then gather-clamp before integer selection. Do not modulo an already-floored integer or infer the second tap by incrementing the first. Existing fractions and interpolation/composition stages remain unchanged.",
+    "drawing": "Promote the existing decoration placement to shared immutable fragment drawing metadata. Glyph shaders borrow its transform; the paint origin remains separate. Existing layout, fitted glyph maps, source bounds and decoration calculations are unchanged.",
+    "ownership": "Existing temporary placement and scene storage account the same fields. No new owner, surface, allocation path, cache, public API or runtime dependency.",
+    "nativeSources": [
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/opts/SkRasterPipeline_opts.h",
+        "sha256": "849ecf600bf6181fc44f101e4c84c451fba13b00f12dbfbe64bd035fc1803541"
+      },
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/shaders/SkPictureShader.cpp",
+        "sha256": "c729a2ae214515ab643dbb1014d58f23be085fb641630f57d4d2158f02ce20e0"
+      },
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/shaders/SkShaderBase.cpp",
+        "sha256": "3636d3c6c96ad4870ce3d935ce619e866055280d7d1d5cedfe5ea35eecd6f8e3"
+      },
+      {
+        "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/shaders/SkImageShader.cpp",
+        "sha256": "10e8dd81d97bb219ba796506af1a38e472224c8f02ac175f09463e0cfd973ae1"
+      }
+    ]
+  },
+  "mechanisms": {
+    "test": "../../Lokad.Svg.Tests/SvgPatternRepeatAddressTests.cs",
+    "cases": 15,
+    "nativeSource": "pattern-repeat-native.cpp",
+    "nativeSourceSha256": "d825fc40a4e6192ff76fb5fab13a96457ac31b9e89b61fa4ad83fe527c9a26c1",
+    "vectors": "pattern-repeat-native.csv",
+    "vectorSha256": "fb7fe26eec4a5628f5d53581340d542cef6b5a82fe888c5ded8de30ffed1309b",
+    "compiler": "g++13.3.0,Ubuntu13.3.0-6ubuntu2~24.04.1",
+    "flags": [
+      "-std=c++20",
+      "-O2",
+      "-ffp-contract=off"
+    ],
+    "coverage": "Positive/negative sample coordinates, exact/adjacent half pixels, independent four-tap addresses and exclusive gather clamping at13/60/253-pixel extents. These are direct arithmetic tests, without rendering/API context products.",
+    "before": {
+      "passed": 8,
+      "failed": 7,
+      "seconds": 5.153
+    },
+    "after": {
+      "passed": 15,
+      "failed": 0,
+      "seconds": 4.953
+    },
+    "timing": "Same15 cases; functional elapsed time,not a renderer benchmark."
+  },
+  "ownControl": {
+    "id": "repeat-edge",
+    "inputSha256": "78770fa719698ebcb97b554bb5405b4bfa3b0cc778b362104af67b530e7d0adf",
+    "referenceSha256": "f71eefa032848e6b701473078a50d0211e664dcfbd309b8149299e19938ae113",
+    "frame": [
+      64,
+      48
+    ],
+    "nativeEvidence": "Three agreeing healthy/profile-cleaned fresh-process captures per host, frozen before comparison. One canonical conversion; no destination/ownership matrix expansion.",
+    "beforePerHost": {
+      "changedPixels": 192,
+      "alphaChangedPixels": 0,
+      "maximumError": 147,
+      "totalChannelError": 36192
+    },
+    "afterPerHost": {
+      "changedPixels": 0,
+      "alphaChangedPixels": 0
+    }
+  },
+  "sourceIsolation": {
+    "scope": "Own independently authored rectangle/stroke source only; diagnostic observations do not admit alternate reference images.",
+    "directChildGeometryChangedPixels": 0,
+    "nativeReplayOfOuterBitmapChangedPixels": 0,
+    "nativeReplayOfChildBitmapRetainsChangedPixels": 192
+  },
+  "glyphInteraction": {
+    "acceptance": "../text-paint-bounds/precision-pattern-images.json",
+    "affectedIds": [
+      "spacing-paint-477-candidate",
+      "spacing-paint-477-control"
+    ],
+    "samplerOnlyTrial": "Rejected: four RGB pixels per case/host turn blue to red; alpha is unchanged. Existing assertions detect this loss.",
+    "freshNative": "One healthy original Image-to-canvas replay per case/host reproduces every frozen pixel. Source and both font CSS/program hashes are unchanged. CSS viewport resizing is a different context and is excluded.",
+    "drawingEvidence": {
+      "context": "A Windows intrinsic-size SVG image under external scale1.5 reproduces the frozen control pixels. Native command logging exposes the separate fragment CTM and drawTextBlob origin.",
+      "source": "spacing-paint-477-control",
+      "fragmentTransformColumnOrder": [
+        0.99991112947464,
+        0.0133323259651661,
+        -0.0133323259651661,
+        0.99991112947464,
+        0.300013661384583,
+        -0.974037408828735
+      ],
+      "paintOrigin": [
+        73.203125,
+        22.015625
+      ],
+      "outputScale": 1.5
+    },
+    "final": "All26 retained platform-specific pattern-matrix cases remain exact, with their sources/references/assertions unchanged. Shared paint-stage, layout, filter-source and decoration integration is included in affected qualification."
+  },
+  "focusedRendering": {
+    "passed": 46,
+    "seconds": 6.77
+  },
+  "affectedQualification": [
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 5551,
+        "seconds": 18.707,
+        "librarySha256": "f2a2e417e9fbfea71576288dfe1301924dcc84c06b26bf6abbb9bc10365e7e62"
+      },
+      "native": {
+        "passed": 2807,
+        "seconds": 24.534,
+        "librarySha256": "f2a2e417e9fbfea71576288dfe1301924dcc84c06b26bf6abbb9bc10365e7e62"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 5551,
+        "seconds": 21.289,
+        "librarySha256": "f2a2e417e9fbfea71576288dfe1301924dcc84c06b26bf6abbb9bc10365e7e62"
+      },
+      "native": {
+        "passed": 2807,
+        "seconds": 32.22,
+        "librarySha256": "f2a2e417e9fbfea71576288dfe1301924dcc84c06b26bf6abbb9bc10365e7e62"
+      }
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 5551,
+        "seconds": 16.821,
+        "librarySha256": "e7bda1f00768f4620fe20dd20ca3393c3aa89bc42a729d026c9c7a87944a0f0e"
+      },
+      "native": {
+        "passed": 2807,
+        "seconds": 18.408,
+        "librarySha256": "e7bda1f00768f4620fe20dd20ca3393c3aa89bc42a729d026c9c7a87944a0f0e"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 5551,
+        "seconds": 17.17,
+        "librarySha256": "e7bda1f00768f4620fe20dd20ca3393c3aa89bc42a729d026c9c7a87944a0f0e"
+      },
+      "native": {
+        "passed": 2807,
+        "seconds": 25.247,
+        "librarySha256": "e7bda1f00768f4620fe20dd20ca3393c3aa89bc42a729d026c9c7a87944a0f0e"
+      }
+    }
+  ],
+  "originalReplay": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "seconds": 42.804,
+    "librarySha256": "f2a2e417e9fbfea71576288dfe1301924dcc84c06b26bf6abbb9bc10365e7e62",
+    "perHost": {
+      "rendered": 155,
+      "exploratoryExact": 154,
+      "exploratoryDifferent": 1,
+      "unsupported": 46,
+      "malformed": 3,
+      "unchangedOtherRenderedPngs": 154,
+      "previouslyExactPngsByteIdentical": 153,
+      "unchangedOutcomesAndDiagnostics": 204
+    }
+  },
+  "closedOriginal": {
+    "name": "rg1024_metal_effect.svg",
+    "sourceSha256": "bea3712e842b247bfab90ab373355fffe3be933f8a33df55ea193036e0812983",
+    "frame": [
+      445,
+      479
+    ],
+    "beforePerHost": {
+      "changedPixels": 262,
+      "alphaChangedPixels": 0,
+      "maximumError": 2,
+      "totalChannelError": 971
+    },
+    "platforms": {
+      "windows": {
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "candidatePngSha256": "db9226ee63f8fd79d10844909a0f0d6a4af63d79571a6ee67bd0f4815edd0557",
+        "captures": [
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "linux": {
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0,
+        "candidatePngSha256": "db9226ee63f8fd79d10844909a0f0d6a4af63d79571a6ee67bd0f4815edd0557",
+        "captures": [
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    }
+  },
+  "rejectedTrials": [
+    "Float-only picture raster-frame rounding and separating its destination leave the complete original262 pixels unchanged; no such change is promoted.",
+    "The sampler-only trial loses two known glyph controls. Sharing the already retained fragment drawing fixes that interaction; no glyph exemption, reference change or rounding epsilon is added."
+  ],
+  "remaining": [
+    "The complete lingerie original remains19 RGB-only pixels,max1,total50,with exact alpha and byte-identical output.",
+    "The admitted wide filter-source control retains four alpha differences; the own affine copying-kernel control retains one RGB difference.",
+    "All other W1 font/resource/static contexts and P0/P2/P4/P5/P6/P7 requirements remain open. Full cross-platform/runtime/package promotion remains a milestone gate; the separate frozen Windows font-authority question is pending."
+  ],
+  "finalCleanup": {
+    "change": "Remove the now unused paint lookup during path placement; keep its existing glyph index increment at rotation lookup. Coordinate math and storage are unchanged. Both final runtime builds pass.",
+    "qualification": [
+      {
+        "host": "windows",
+        "runtime": "net11.0",
+        "core": {
+          "passed": 283,
+          "seconds": 9.062,
+          "librarySha256": "1d11da51ed5e6e1512526015d61b8aa80b149d84934544c8b261f09d2cdc3a47"
+        },
+        "native": {
+          "passed": 46,
+          "seconds": 6.678,
+          "librarySha256": "1d11da51ed5e6e1512526015d61b8aa80b149d84934544c8b261f09d2cdc3a47"
+        }
+      },
+      {
+        "host": "linux",
+        "runtime": "net11.0",
+        "core": {
+          "passed": 283,
+          "seconds": 12.453,
+          "librarySha256": "1d11da51ed5e6e1512526015d61b8aa80b149d84934544c8b261f09d2cdc3a47"
+        },
+        "native": {
+          "passed": 46,
+          "seconds": 10.49,
+          "librarySha256": "1d11da51ed5e6e1512526015d61b8aa80b149d84934544c8b261f09d2cdc3a47"
+        }
+      },
+      {
+        "host": "windows",
+        "runtime": "net10.0",
+        "core": {
+          "passed": 283,
+          "seconds": 10.272,
+          "librarySha256": "ca5dfa9e626b77c2870c120aa633318c64c01043b15b078d6d9e2aa5afa227a8"
+        },
+        "native": {
+          "passed": 46,
+          "seconds": 6.992,
+          "librarySha256": "ca5dfa9e626b77c2870c120aa633318c64c01043b15b078d6d9e2aa5afa227a8"
+        }
+      },
+      {
+        "host": "linux",
+        "runtime": "net10.0",
+        "core": {
+          "passed": 283,
+          "seconds": 12.027,
+          "librarySha256": "ca5dfa9e626b77c2870c120aa633318c64c01043b15b078d6d9e2aa5afa227a8"
+        },
+        "native": {
+          "passed": 46,
+          "seconds": 8.514,
+          "librarySha256": "ca5dfa9e626b77c2870c120aa633318c64c01043b15b078d6d9e2aa5afa227a8"
+        }
+      }
+    ]
+  }
+}

@@ -1,3 +1,5 @@
+// Adapts SkRasterPipeline_opts.h repeat, bilinear tap and gather stages.
+// Copyright 2016 Google Inc.; 2018 Google LLC. See THIRD_PARTY_NOTICES.txt.
 using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
@@ -13,28 +15,43 @@ internal readonly record struct SvgPatternSample(int First, int Second, int Thir
     internal static SvgPatternSample Prepare(SvgPatternGeometry pattern, int x, int y,
         SvgCpuBitmapOrigin origin, ref SvgShaderCoordinates coordinates)
     {
-        float sampleX = x - (float)(pattern.OriginX + pattern.ShaderPlacement.E);
-        float sampleY = y - (float)(pattern.OriginY + pattern.ShaderPlacement.F);
-        float nativeFractionX = 0, nativeFractionY = 0;
+        int tileX, tileY, nextX, nextY;
+        float fx, fy;
         if (pattern.NativeImageMap is not null)
         {
             if (!coordinates.TryMap(x, y, origin, out (float X, float Y) point))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern image coordinates are not finite and invertible.");
-            (sampleX, sampleY) = point;
-            float weightX = sampleX + .5f, weightY = sampleY + .5f;
-            nativeFractionX = weightX - MathF.Floor(weightX);
-            nativeFractionY = weightY - MathF.Floor(weightY);
-            sampleX -= .5f; sampleY -= .5f;
+            float weightX = point.X + .5f, weightY = point.Y + .5f;
+            fx = weightX - MathF.Floor(weightX);
+            fy = weightY - MathF.Floor(weightY);
+            tileX = Repeat(point.X - .5f, pattern.TextureWidth);
+            nextX = Repeat(point.X + .5f, pattern.TextureWidth);
+            tileY = Repeat(point.Y - .5f, pattern.TextureHeight);
+            nextY = Repeat(point.Y + .5f, pattern.TextureHeight);
         }
-        float floorX = MathF.Floor(sampleX), floorY = MathF.Floor(sampleY);
-        int tileX = (int)((floorX % pattern.TextureWidth + pattern.TextureWidth) % pattern.TextureWidth);
-        int tileY = (int)((floorY % pattern.TextureHeight + pattern.TextureHeight) % pattern.TextureHeight);
-        float fx = pattern.NativeImageMap is null ? sampleX - floorX : nativeFractionX;
-        float fy = pattern.NativeImageMap is null ? sampleY - floorY : nativeFractionY;
-        int nextX = tileX + 1 == pattern.TextureWidth ? 0 : tileX + 1;
-        int nextY = tileY + 1 == pattern.TextureHeight ? 0 : tileY + 1;
+        else
+        {
+            float sampleX = x - (float)(pattern.OriginX + pattern.ShaderPlacement.E);
+            float sampleY = y - (float)(pattern.OriginY + pattern.ShaderPlacement.F);
+            float floorX = MathF.Floor(sampleX), floorY = MathF.Floor(sampleY);
+            tileX = (int)((floorX % pattern.TextureWidth + pattern.TextureWidth) % pattern.TextureWidth);
+            tileY = (int)((floorY % pattern.TextureHeight + pattern.TextureHeight) % pattern.TextureHeight);
+            fx = sampleX - floorX; fy = sampleY - floorY;
+            nextX = tileX + 1 == pattern.TextureWidth ? 0 : tileX + 1;
+            nextY = tileY + 1 == pattern.TextureHeight ? 0 : tileY + 1;
+        }
         return new((tileY * pattern.TextureWidth + tileX) * 4, (tileY * pattern.TextureWidth + nextX) * 4,
             (nextY * pattern.TextureWidth + tileX) * 4, (nextY * pattern.TextureWidth + nextX) * 4, fx, fy);
+
+        static int Repeat(float value, int size)
+        {
+            // Repeat each floating tap before gathering. A rounded reciprocal
+            // can cross a period below its integer boundary; integer modulo
+            // and an inferred neighboring address lose that native stage.
+            float extent = size;
+            float repeated = value - MathF.Floor(value * (1f / extent)) * extent;
+            return (int)Math.Clamp(repeated, 0, MathF.BitDecrement(extent));
+        }
     }
 
     internal SvgShaderPaint Sample(ReadOnlySpan<byte> pixels, float alpha)

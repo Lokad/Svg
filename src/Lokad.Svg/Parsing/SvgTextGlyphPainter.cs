@@ -10,11 +10,11 @@ internal readonly record struct SvgPlacedTextGlyph(SvgPositionedGlyph Position, 
 {
     /// <summary>Retains the local source map before paint truncation, glyph stretch and output placement.</summary>
     internal SvgAffineTransform SourceMap { get; init; }
-    internal SvgTextDecorationPlacement Decoration { get; init; }
+    internal SvgTextFragmentDrawing Drawing { get; init; }
 }
 
-/// <summary>Retains the native fragment origin separately from its tangent map for rectangle paint precision.</summary>
-internal readonly record struct SvgTextDecorationPlacement(SvgDevicePoint Origin, SvgAffineTransform Map);
+/// <summary>Keeps the native fragment origin separate from its drawing transform for glyph shaders and decoration rectangles.</summary>
+internal readonly record struct SvgTextFragmentDrawing(SvgDevicePoint Origin, SvgAffineTransform Map);
 
 /// <summary>Borrows one immutable scene-owned text paint; variants contain exactly one bound paint source.</summary>
 /// <remarks>Implementations retain no parser state or font ownership. Scene construction reserves metadata
@@ -158,7 +158,7 @@ internal static class SvgTextGlyphPainter
                         if (map.IsTranslation) { position = position.Translate(map); map = SvgAffineTransform.Identity; }
                     }
                     if (size == 0) continue;
-                    SvgAffineTransform shaderDrawingMap = paths.IsEmpty ? map : placed.Map;
+                    SvgAffineTransform shaderDrawingMap = paths.IsEmpty ? map : placed.Drawing.Map;
                     SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, paint.Color, font.Font, position, size, map, state.OutputTextScale, shaderDrawingMap, budget);
                     glyph.Shader = shader;
                     try
