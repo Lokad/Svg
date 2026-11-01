@@ -10647,6 +10647,7 @@
     "fontContexts": "font-contexts.json",
     "sharedFontModel": "shared-font-model.json",
     "glyphRecording": "glyph-recording.json",
-    "glyphDrawingBinding": "glyph-drawing-binding.json"
+    "glyphDrawingBinding": "glyph-drawing-binding.json",
+    "latinBlueZoneFitting": "latin-blue-zone-fitting.json"
   }
 }

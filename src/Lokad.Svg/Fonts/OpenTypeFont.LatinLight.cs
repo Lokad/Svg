@@ -300,18 +300,30 @@ internal static class LatinLightHinting
                             fitted -= zoneDistance < 0 ? -delta : delta;
                         }
                     }
-                    if (distance < best) { best = distance; edge.Position = fitted; edge.Done = true; }
+                    if (distance < best) { best = distance; edge.Position = fitted; edge.HasBlue = true; }
                 }
                 edges[i] = edge;
-                if (edge.Done && anchor < 0) anchor = i;
             }
+            // Match zones before fitting, then visit linked pairs in edge order.
+            // A zone on the other edge still anchors at this visited edge; a
+            // later blue edge may reposition a shared non-blue link.
             for (int i = 0; i < edges.Count; i++)
             {
                 token.ThrowIfCancellationRequested();
                 HintEdge edge = edges[i];
-                if (!edge.Done || edge.Link < 0 || edges[edge.Link].Done) continue;
-                HintEdge linked = edges[edge.Link];
-                linked.Position = edge.Position + linked.Original - edge.Original; linked.Done = true; edges[edge.Link] = linked;
+                if (edge.Done) continue;
+                int blueIndex = edge.HasBlue ? i : edge.Link >= 0 && edges[edge.Link].HasBlue ? edge.Link : -1;
+                if (blueIndex < 0 || edges[blueIndex].Done) continue;
+                HintEdge blue = edges[blueIndex];
+                blue.Done = true; edges[blueIndex] = blue;
+                int linkedIndex = blueIndex == i ? edge.Link : i;
+                if (linkedIndex >= 0 && !edges[linkedIndex].HasBlue)
+                {
+                    HintEdge linked = edges[linkedIndex];
+                    linked.Position = blue.Position + linked.Original - blue.Original;
+                    linked.Done = true; edges[linkedIndex] = linked;
+                }
+                if (anchor < 0) anchor = i;
             }
             for (int i = 0; i < edges.Count; i++)
             {
@@ -671,6 +683,6 @@ internal static class LatinLightHinting
     private struct HintEdge(int fontPosition, int original, int direction, bool round)
     {
         internal int FontPosition = fontPosition, Original = original, Position = original, Direction = direction, Link = -1, Serif = -1;
-        internal bool Round = round, Done;
+        internal bool Round = round, HasBlue, Done;
     }
 }

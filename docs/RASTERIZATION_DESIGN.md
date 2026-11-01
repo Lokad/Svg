@@ -309,6 +309,11 @@ rebased fragment arrays. Unpainted characters may still contribute layout bounds
 
 Windows uses matched TrueType/LCD fitting, scanning and preblend; Linux uses light
 fitting/grayscale coverage, with axial and unhinted routes chosen separately.
+Light fitting separates alignment-zone matches from completed edge placement.
+Linked edges are fitted in contour order: the first visited edge anchors later
+interpolation, and later zone matches can reposition a shared non-zone edge.
+The [fitting evidence](../tests/Research/svgweb/latin-blue-zone-fitting.json)
+maps these mechanisms to supplied-program observations.
 Projection/freedom vectors, hint grids, implied points, scan direction, endpoint
 ownership and dropout modes keep their numerical boundaries. Font-selected
 unfitted ranges retain scanner effects without fitted point movements. Metric

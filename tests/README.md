@@ -179,6 +179,11 @@ The [case map](Research/release-baselines/test-responsibilities.md#pattern-sourc
 explains the routine prepared subset and extended `Category=Research` companions.
 Use `FullyQualifiedName~OpenTypeFontTests&Layer=Mechanism` for direct font work;
 include contract/rendering siblings when changing shared font preparation or fixtures.
+`FullyQualifiedName~LatinLightHintingTests` selects direct light-fitting topology,
+alignment, rounding and scratch-lifetime checks. The
+[alignment-zone cases](Research/svgweb/latin-blue-zone-fitting.json) isolate linked
+anchors and shared edges; supplied-font rendering keeps its canonical path and
+independent platform references.
 
 ## Development checks
 

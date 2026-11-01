@@ -638,5 +638,6 @@
   "followUp": {
     "evidence": "glyph-recording.json",
     "scope": "Filled position recording is corrected with path strikes retained. Matched Arial Linux is exploratory exact; Windows residuals and other glyph/original contexts remain open."
-  }
+  },
+  "latinBlueZoneFitting": "latin-blue-zone-fitting.json"
 }

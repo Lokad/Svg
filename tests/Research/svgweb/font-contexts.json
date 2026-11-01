@@ -1820,10 +1820,10 @@
     "timingScope": "Functional validation wall times under ordinary development load, not benchmarks or a suite-simplification speedup claim."
   },
   "remaining": [
-    "Droid Serif Bold: 3 Windows and 10 Linux pixels; BoldItalic: 4 Linux pixels; Italic: 47 Linux pixels. Preserve exact programs/geometry, platform companions and original text layout while isolating shared glyph stages.",
-    "Three private Arial contexts fail an outer GPOS type-9 extension with ignore-marks flags. Its inner operation is an already admitted type-2 format-2 pair table (X advance only), not contextual positioning. Review shared bounded lookup normalization before adding font or run exceptions.",
-    "Four configured generic-serif contexts are exploratory exact; generic alias policy does not qualify native ambient fonts or the default no-font original.",
-    "Every full original remains open for all font/resource/static-state contexts. Single exploratory supplied-program captures are not reference admission."
+    "Windows Serif Bold has three coverage pixels; its Linux counterpart and BoldItalic/Italic Linux fitting residuals are corrected by the shared linked-zone sequence. See latin-blue-zone-fitting.json.",
+    "GPOS extensions and SFVTPV are closed. Matched Arial retains Windows 13/6/5 pixels and Linux 0/0/0; preserve exact named and generic-family programs.",
+    "Configured generic-serif contexts are exploratory exact; alias policy does not qualify native ambient fonts or default no-font conversion.",
+    "Every original remains open for complete font/resource/static-state accounting. Single exploratory supplied-program captures are not reference admission."
   ],
   "followUp": {
     "evidence": "shared-font-model.json",
@@ -1832,5 +1832,6 @@
   "recordingFollowUp": {
     "evidence": "glyph-recording.json",
     "scope": "Filled position recording is corrected with path strikes retained. Matched Arial Linux is exploratory exact; Windows residuals and other glyph/original contexts remain open."
-  }
+  },
+  "latinBlueZoneFitting": "latin-blue-zone-fitting.json"
 }

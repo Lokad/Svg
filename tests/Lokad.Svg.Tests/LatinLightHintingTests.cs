@@ -7,6 +7,40 @@ namespace Lokad.Svg.Tests;
 public sealed class LatinLightHintingTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void A_linked_alignment_zone_anchors_interpolation_at_the_first_visited_edge()
+    {
+        // The upper box edge snaps from 627 to 640, carrying its lower edge
+        // from 444 to 457. The unlinked triangle then uses that lower edge:
+        // 457 + round-to-half-pixel(175 - 444) = 201.
+        OpenTypeGlyphPoint[] points = [.. Box(0, 400, 789, 1115),
+            new(500, 311, true), new(700, 311, true), new(600, -100, true)];
+        LatinAlignmentZone[] zones = [new(1115, 1115, 1115, -100, true, false)];
+        RenderBudget budget = new(new HostMemoryBudget(long.MaxValue));
+
+        LatinLightHinting.Hint(points, [3, 6], zones, 2048, 18, new(0, 0), budget, CancellationToken.None);
+
+        Assert.Equal(new[] { 457, 640, 640, 457, 201, 201, -30 }, points.Select(point => point.Y));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void Later_alignment_zones_reposition_a_shared_link_without_moving_the_blue_edges()
+    {
+        // Two bottom edges at -20 and 0 both snap to zero. Their common upper
+        // edge must follow the later zero edge, preserving its 48-unit width.
+        OpenTypeGlyphPoint[] points = [.. Box(0, 200, -20, 86), .. Box(300, 500, 0, 86)];
+        LatinAlignmentZone[] zones = [new(0, -20, 86, -20, false, false)];
+        RenderBudget budget = new(new HostMemoryBudget(long.MaxValue));
+
+        LatinLightHinting.Hint(points, [3, 7], zones, 2048, 18, new(0, 4), budget, CancellationToken.None);
+
+        Assert.Equal(new[] { 0, 48, 48, 0, 0, 48, 48, 0 }, points.Select(point => point.Y));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Pending_edges_bound_fitted_stems_before_serif_interpolation()
     {
         // Original boxes and a triangular spur keep a pending edge between two
