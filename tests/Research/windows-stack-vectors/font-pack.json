@@ -1,0 +1,22 @@
+{
+  "packId": "original-stack-vectors",
+  "files": [
+    {
+      "relativePath": "fonts/StackVectors.ttf",
+      "byteSize": 1336,
+      "sha256": "9998bcd912c2def5aeb205736313b80a26f18a4a91b8c280c660cf8364dbc903"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "StackVectors",
+      "resolvedFamily": "StackVectors",
+      "relativeFontFile": "fonts/StackVectors.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    }
+  ],
+  "fallbacks": []
+}

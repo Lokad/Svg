@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "a8adabbd8977dc03c406364e117bdced9c9e537f",
+  "scope": "Preserve supplied Windows SPVFS words without renormalization. Keep classic normalization, line-vector normalization, source programs/layout, all existing references and tolerances.",
+  "implementation": "../../../src/Lokad.Svg/Fonts/TrueTypeHinting.cs",
+  "contract": {
+    "specification": "https://learn.microsoft.com/en-us/typography/opentype/spec/tt_instructions#set-projection_vector-from-stack",
+    "normalizedInput": "SPVFS consumes signed F2Dot14 unit-vector components; rounded GPV output is already the supplied representation. A second normalization changes 15426 to 15425.",
+    "windows": "Store both supplied signed low words verbatim and replace dual projection. Freedom is unchanged. Non-unit and zero predicates separately record native compatibility behavior; they do not extend the OpenType normalized-input contract.",
+    "classic": "Keep the established nonzero normalization and zero-direction behavior. Line construction still computes normalized direction independently.",
+    "followingMovement": "The original 504:1408 line yields GPV (15426,-5522). A GPV/SPVFS round trip followed by MSIRP places the independent target at 107; the former renormalization produces 108.",
+    "movementEvidence": "../windows-stack-vectors/capture.json#movementVector",
+    "movementInput": "../windows-stack-vectors/movement/relative-move.svg",
+    "movementScope": "The committed original font and three agreeing Windows native markers establish the direct mechanism's golden value. This companion adds no ordinary rendering path or Linux movement claim."
+  },
+  "responsibilities": {
+    "mechanisms": {
+      "tests": "../../Lokad.Svg.Tests/TrueTypeHintingTests.StackVectors.cs",
+      "newCases": 8,
+      "failingBefore": 7,
+      "scope": "Signed/rounded words, dual replacement, freedom and cleanup, symmetric round trip and a following actual relative move."
+    },
+    "classicResponsibility": {
+      "tests": "../../Lokad.Svg.Tests/TrueTypeHintingTests.Vectors.cs",
+      "cases": 4,
+      "correction": "The former normalization test selected Windows arithmetic via the symmetric flag while asserting normalization without native evidence. Its unchanged expected values now protect the classic target. New Windows tests use independently observed supplied-word behavior."
+    },
+    "rendering": {
+      "tests": "../../Lokad.Svg.VisualTests/SvgWindowsScanBoundaryTests.cs",
+      "newCases": 1,
+      "capture": "../windows-stack-vectors/capture.json",
+      "recipe": "../windows-stack-vectors/font-recipe.json",
+      "fontBytes": 1336,
+      "predicates": 8,
+      "scope": "One canonical source/program and meaningful independent Windows/Linux references. Three fresh agreeing healthy/profile-cleaned captures per host; positive missing/different-font proofs. Three additional Windows symmetric predicate captures use the recipe variant, including explicit zero Y.",
+      "beforeAfter": [
+        {
+          "host": "windows",
+          "before": 1152,
+          "after": 0
+        },
+        {
+          "host": "linux",
+          "before": 0,
+          "after": 0
+        }
+      ]
+    },
+    "retained": "No existing reference image, tolerance, full texture, half-unit point, layout or ownership contract is changed. No fixture/API cross product."
+  },
+  "validation": {
+    "failingBefore": {
+      "host": "windows",
+      "framework": "net11.0",
+      "selection": "FullyQualifiedName~stack_projection",
+      "passed": 8,
+      "failed": 7,
+      "seconds": 5.393,
+      "librarySha256": "5e1b666a01c8c5292598f1d534e082ffdc19796516e9ea3e3c8f62ca7ebcba92"
+    },
+    "affected": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 10755,
+        "failed": 0,
+        "seconds": 25.23,
+        "librarySha256": "5e737de75b52b4e88655837f4826342b1150cecdb15a5140fc045c52550e4004",
+        "selection": "affected-core"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "passed": 822,
+        "failed": 0,
+        "seconds": 17.496,
+        "librarySha256": "5e737de75b52b4e88655837f4826342b1150cecdb15a5140fc045c52550e4004",
+        "selection": "affected-rendering"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 10755,
+        "failed": 0,
+        "seconds": 27.327,
+        "librarySha256": "5e737de75b52b4e88655837f4826342b1150cecdb15a5140fc045c52550e4004",
+        "selection": "affected-core"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "passed": 822,
+        "failed": 0,
+        "seconds": 19.3,
+        "librarySha256": "5e737de75b52b4e88655837f4826342b1150cecdb15a5140fc045c52550e4004",
+        "selection": "affected-rendering"
+      }
+    ],
+    "compatibility": [
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "passed": 392,
+        "failed": 0,
+        "seconds": 6.116,
+        "librarySha256": "2ff2718d726e2bef173b920f771eef0a8b3ff860ad357b8190068624728463a4",
+        "selection": "compatibility-core"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "passed": 40,
+        "failed": 0,
+        "seconds": 8.09,
+        "librarySha256": "2ff2718d726e2bef173b920f771eef0a8b3ff860ad357b8190068624728463a4",
+        "selection": "compatibility-rendering"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "passed": 392,
+        "failed": 0,
+        "seconds": 6.427,
+        "librarySha256": "2ff2718d726e2bef173b920f771eef0a8b3ff860ad357b8190068624728463a4",
+        "selection": "compatibility-core"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "passed": 40,
+        "failed": 0,
+        "seconds": 7.795,
+        "librarySha256": "2ff2718d726e2bef173b920f771eef0a8b3ff860ad357b8190068624728463a4",
+        "selection": "compatibility-rendering"
+      }
+    ],
+    "timingScope": "Functional wall times under ordinary load. Before is a failing 15-case focused selection; affected validation is broader. No benchmark or suite-simplification speedup claim.",
+    "builds": "Final .NET11/.NET10 core/native builds have zero warnings/errors. The earlier capture-tool file-copy warnings were resolved by completing captures before rebuilding.",
+    "promotion": "Full primary Windows/Linux and installed-package qualification is delegated once to exact-head CI at promotion.",
+    "selections": {
+      "affected-core": "(FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~LatinLightHintingTests|FullyQualifiedName~SvgGlyph|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgSceneTransfer|FullyQualifiedName~SvgInheritedContourOwnershipTests|FullyQualifiedName~SvgPolygonContourOwnershipTests)&Category!=Research",
+      "affected-rendering": "(FullyQualifiedName~SvgSuppliedFontTextPathTests|FullyQualifiedName~SvgSuppliedFontLabelTests|FullyQualifiedName~SvgSuppliedFontDocumentTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgKerningPrecedenceTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgUpstreamDocumentTests|FullyQualifiedName~SvgWindowsGlyphTests|FullyQualifiedName~SvgWindowsScanBoundaryTests)&Category!=Research",
+      "compatibility-core": "FullyQualifiedName~TrueTypeHintingTests",
+      "compatibility-rendering": "FullyQualifiedName~SvgWindowsGlyphTests|FullyQualifiedName~SvgWindowsScanBoundaryTests"
+    }
+  },
+  "originals": {
+    "default": {
+      "files": 204,
+      "sourceSvgFilesRetained": 0,
+      "allSemanticReportsUnchanged": true,
+      "all150PngsPerHostByteIdentical": true,
+      "identicalPngs": {
+        "windows": 150,
+        "linux": 150
+      },
+      "outcomes": {
+        "windows": {
+          "UnsupportedFeature": 51,
+          "rendered": 150,
+          "MalformedInput": 3
+        },
+        "linux": {
+          "UnsupportedFeature": 51,
+          "rendered": 150,
+          "MalformedInput": 3
+        }
+      }
+    },
+    "otherSupplied": {
+      "files": 11,
+      "allBothHostsExact": true,
+      "allPreviousPngBytesIdentical": true,
+      "sourceSvgFilesRetained": 0,
+      "contexts": [
+        {
+          "name": "410.svg",
+          "sourceSha256": "5fba6c8c0d7da11542e4a8f9ad9754868000926a7436481115b820900eb0491b",
+          "programSha256": "ae32140265dbe0dfde24b9abd222be9210a531888f014ff9b2326aba2d6fd777",
+          "pngSha256": {
+            "windows": "a4a571580945e349969a0b8ca6b29385190dff43bd13cd3c22dda73235d76ed9",
+            "linux": "00446f6594ef1935fb0450b6cc60e71cb408d087ce8733e5b4e290b7fe9d516b"
+          }
+        },
+        {
+          "name": "DroidSans-Bold.svg",
+          "sourceSha256": "b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed",
+          "programSha256": "5890f8642b25d4355ace573e0ecacbcb77bff3992bf28bd0fb4eb77529d7438f",
+          "pngSha256": {
+            "windows": "1905506cbcab7313c6012c64d1f80f35f69e7e0cf89839a9ea45cfb1b9176092",
+            "linux": "4fe1f73355bb3cb3a1906ab580b5ac5c3e7505c850aced3e96c92460353da471"
+          }
+        },
+        {
+          "name": "DroidSans.svg",
+          "sourceSha256": "258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b",
+          "programSha256": "d12f73258bfb514cfcabc3d7f7091daa0181126a903e66abcb7d9f3d875bfe1d",
+          "pngSha256": {
+            "windows": "0dde9aecc62c64c6b363087a570988d5db9d8d6da9ff3d0e980cde42fc0f2714",
+            "linux": "19e01136bfceba07813396f3d7d3fee9462aaf8b326e520302bdfd9f876c9744"
+          }
+        },
+        {
+          "name": "DroidSansMono.svg",
+          "sourceSha256": "c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d",
+          "programSha256": "52c0cb4d5fde280bf3f40c18d15c27c2b62b296157885a6a5350ad9b1f8ba447",
+          "pngSha256": {
+            "windows": "955dba989ccd56f1516eca8d7b9e2a583fd4d9392150da0a4476e64653dccbe5",
+            "linux": "7c09529f0897833e02aa27e9485343d004660ac5f8a636dfc5f1fd8efa1cc756"
+          }
+        },
+        {
+          "name": "DroidSerif-Bold.svg",
+          "sourceSha256": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+          "programSha256": "913c9a9e8fffac9fd5abb0941a2594c1e72127d526ab7e8348d09d2ee7b5d674",
+          "pngSha256": {
+            "windows": "54e9d6ee0fc7c1dbe2b1d601b0170d3f53b370ea64e960e8902f888b63bd98b0",
+            "linux": "67f115097ea0555bc44b15481721ba4a1fab6f9be0ea34b0e4d659bafa9738c5"
+          }
+        },
+        {
+          "name": "DroidSerif-BoldItalic.svg",
+          "sourceSha256": "ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0f424f7f259",
+          "programSha256": "32efddac88855c2705bf1cebf60aea6e26d4018ca8d05dd9086581b33323e973",
+          "pngSha256": {
+            "windows": "b5f4a89dda303222f349d5387567fc236954cccdb459c6a59ddb87249066ade6",
+            "linux": "b33d400df43a98950cf7e8645ced094f05f0911dfce92b2c36874625597007cd"
+          }
+        },
+        {
+          "name": "DroidSerif-Italic.svg",
+          "sourceSha256": "e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73",
+          "programSha256": "e849a4b1cfe498dd52463c2cf0242fa6ce81db42497a88137d48d1b3f811471a",
+          "pngSha256": {
+            "windows": "ab4f6e1c7dd352dbd1bcc9fd931bd3eebe9e784d8f2c3e31a02c99b166ce20ca",
+            "linux": "e6e126c3f66a586378e2a2d0842af88d4c003b6b2da7ac21bf75387d2720f90e"
+          }
+        },
+        {
+          "name": "DroidSerif-Regular.svg",
+          "sourceSha256": "451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3",
+          "programSha256": "0802536cf28ed798808fbf1e1381978aae013a65acd289834644d5c2d2f5da5d",
+          "pngSha256": {
+            "windows": "662e61585560b1ca52f29e08ea7e6a6cc4b4652cb5cfdc69b8f6d63517549358",
+            "linux": "eb358b6837ff38ddacb23b23a64c883110109c7554cf7fc75736568203e0a925"
+          }
+        },
+        {
+          "name": "decimal.svg",
+          "sourceSha256": "d0aba26e5d909c9f3e359a21a0b55b1bdea7c13cb843127bb8ffb8f6fd2b096b",
+          "programSha256": "ae32140265dbe0dfde24b9abd222be9210a531888f014ff9b2326aba2d6fd777",
+          "pngSha256": {
+            "windows": "f5ccd3e62719c1e03a005910227552c7b1d8dbdf7603c575b66172ae9cdb1760",
+            "linux": "2ce50e8aa6942b1e47786f221196babc452171fc4a7e94dbb37dc08113573b3e"
+          }
+        },
+        {
+          "name": "shapes-polygon-01-t.svg",
+          "sourceSha256": "ba00b071ec66e3b98ac2de924563f69d72e714ab02adbbe1dd1266b418ea144e",
+          "programSha256": "ae32140265dbe0dfde24b9abd222be9210a531888f014ff9b2326aba2d6fd777",
+          "pngSha256": {
+            "windows": "b1c797ae558ca8d910136295927bcd74c5adecdb65b8d3ed69ec46de35dbe89b",
+            "linux": "2ead9b5847f6e9c1e775bab9375d07020568b6438e12ae74e5d0713f8a855cb2"
+          }
+        },
+        {
+          "name": "shapes-polyline-01-t.svg",
+          "sourceSha256": "3d636692e459edc01b768cc607b0b1b3fcd06c379616a3771a06ae8dfc8324ca",
+          "programSha256": "ae32140265dbe0dfde24b9abd222be9210a531888f014ff9b2326aba2d6fd777",
+          "pngSha256": {
+            "windows": "262911d1961bdc29bd065ddc38bc7909f52f5e14856ed3f1fad3f8292c20ef2b",
+            "linux": "7839cc6cb9aad965fa303420e23e4c948b68345f205c82ae023cf31fce906654"
+          }
+        }
+      ]
+    },
+    "suppliedArial": {
+      "scope": "Unchanged supplied programs and earlier native observations; full static acceptance remains open.",
+      "remainingWindowsPixels": [
+        13,
+        6,
+        0
+      ],
+      "remainingLinuxPixels": [
+        0,
+        0,
+        0
+      ],
+      "previousEvidence": "windows-conditional-shift.json",
+      "sources": [
+        {
+          "name": "paths-data-08-t.svg",
+          "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5"
+        },
+        {
+          "name": "paths-data-09-t.svg",
+          "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203"
+        },
+        {
+          "name": "pservers-grad-03-b.svg",
+          "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4"
+        }
+      ]
+    }
+  },
+  "next": "Keep the five remaining small-size diagonal glyph controls and controlled movement evidence separate. Image equality alone does not prove coordinate or mechanism equivalence; no diagonal prototype is included here."
+}

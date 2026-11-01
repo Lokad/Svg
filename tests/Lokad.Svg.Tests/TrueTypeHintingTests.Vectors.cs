@@ -78,10 +78,10 @@ public sealed partial class TrueTypeHintingTests
     [InlineData(0, -16384, 0, -16384)]
     [InlineData(3, 4, 9830, 13107)]
     [InlineData(-3, 4, -9830, 13107)]
-    public void Stack_projection_normalizes_signed_F2Dot14_components(int x, int y, int expectedX, int expectedY)
+    public void Classic_stack_projection_normalizes_signed_F2Dot14_components(int x, int y, int expectedX, int expectedY)
     {
         using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 2, 0, 0), [], [], [], 16,
-            new(65536, 65536), Target with { QueryFlags = TrueTypeHintQueryFlags.Symmetric }, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
+            new(65536, 65536), Target, new RenderBudget(new HostMemoryBudget(long.MaxValue)), CancellationToken.None);
         machine.Run(new byte[] { 0xB9, (byte)(x >> 8), (byte)x, (byte)(y >> 8), (byte)y, 0x0A,
             0x0C, 0xB0, 1, 0x23, 0x42, 0xB0, 0, 0x23, 0x42 }, TrueTypeHintProgramKind.Glyph);
         Assert.Equal(expectedX, machine.Storage[0]); Assert.Equal(expectedY, machine.Storage[1]);

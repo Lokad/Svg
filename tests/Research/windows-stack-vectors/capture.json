@@ -1,0 +1,186 @@
+{
+  "scope": "Original CC0 rectangles isolate SPVFS supplied-word preservation and GPV echo, including a rounded unit vector, non-unit compatibility and zero input. True echoes shift eight pixels along unchanged Y freedom. Transparent image, DPR1, three fresh processes per host.",
+  "width": 384,
+  "height": 192,
+  "browser": "Chrome 153.0.8010.52",
+  "input": "stack-vectors.svg",
+  "inputSha256": "ea57fa1a791565b1e0f067456d5d5f75e42ac35dc3af29c9d0f6429e057a6251",
+  "font": "fonts/StackVectors.ttf",
+  "fontSha256": "9998bcd912c2def5aeb205736313b80a26f18a4a91b8c280c660cf8364dbc903",
+  "nativeSourceSha256": "8d1f3bfb817c6886024c36f2d7a6e91c42b8f2d956920f2e21525c845666196a",
+  "nativeRecipe": "Embed the unchanged program in @font-face before </svg>, family StackVectors, normal style/weight 400, no other source changes.",
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "d96dab1dcfe27b73863172b1eb7ac90e7259034382f840fd415d00b6aa690b71",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "d96dab1dcfe27b73863172b1eb7ac90e7259034382f840fd415d00b6aa690b71",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d96dab1dcfe27b73863172b1eb7ac90e7259034382f840fd415d00b6aa690b71",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d96dab1dcfe27b73863172b1eb7ac90e7259034382f840fd415d00b6aa690b71",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "f1c64cd18fc11fb2b5729b74ed2baeba212109ac493b9928efd1c69d06912480",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "f1c64cd18fc11fb2b5729b74ed2baeba212109ac493b9928efd1c69d06912480",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f1c64cd18fc11fb2b5729b74ed2baeba212109ac493b9928efd1c69d06912480",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f1c64cd18fc11fb2b5729b74ed2baeba212109ac493b9928efd1c69d06912480",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  },
+  "fontUseProofs": {
+    "windows": [
+      {
+        "kind": "missing",
+        "nativeSourceSha256": "ea57fa1a791565b1e0f067456d5d5f75e42ac35dc3af29c9d0f6429e057a6251",
+        "programSha256": null,
+        "changedPixels": 2032,
+        "pngSha256": "7d2b692d1e20ab58f5e7bf8e0a8d6de2e1b487d55001a1f3d9f10e1c736e4adf",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "kind": "different",
+        "nativeSourceSha256": "a119de3ba00f9e465094c865b0458fb7ef4aa8b7b4ffdf0f3864bef0e1951c4e",
+        "programSha256": "e9c2907ebeaf3c2e4f2091df1649aa01f1b8793b17579526482c71d4149b96cb",
+        "changedPixels": 104,
+        "pngSha256": "6b9eb7bcc4c4106d50b7068dd5cd359be5fb7026b61c12de51fab1cae54263b1",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ],
+    "linux": [
+      {
+        "kind": "missing",
+        "nativeSourceSha256": "ea57fa1a791565b1e0f067456d5d5f75e42ac35dc3af29c9d0f6429e057a6251",
+        "programSha256": null,
+        "changedPixels": 1740,
+        "pngSha256": "2c920714c2d30af50d614831996a3032aa3f7439fe0db1d968ea53aea8405744",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "kind": "different",
+        "nativeSourceSha256": "a119de3ba00f9e465094c865b0458fb7ef4aa8b7b4ffdf0f3864bef0e1951c4e",
+        "programSha256": "e9c2907ebeaf3c2e4f2091df1649aa01f1b8793b17579526482c71d4149b96cb",
+        "changedPixels": 120,
+        "pngSha256": "a02c642676e4e7c8d502daeeb0893ae760c93447acebe5c5931fefcacca49e4b",
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ]
+  },
+  "symmetricWindows": {
+    "scope": "Numerical SPVFS/GPV echo companion; three fresh agreeing Windows processes. Recompose from the committed font with gasp flags15 and H program below (zero Y compared with zero). No extra ordinary rendering path.",
+    "variantProgramSha256": "d579f9e9a5a009be60baa1ccc13b93aaefcf2492655df727b1d1388247913a99",
+    "variantHProgram": "00b300010203b00417b000b0000a0c2321b00054b0005258b802001bb0005938",
+    "nativeSourceSha256": "8ec88b0f45d3ed8c13b8f0da880bcb1cafb055dfb9ee89eb50c23c2b25e40e9a",
+    "captures": [
+      {
+        "pngSha256": "bb7b96b3f879c71820df50fa864a3958d04e5e99c4d4c8545ea4a8b784b50c4f",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "offsets": [
+          8,
+          8,
+          8,
+          8,
+          0,
+          0,
+          8,
+          8
+        ]
+      },
+      {
+        "pngSha256": "bb7b96b3f879c71820df50fa864a3958d04e5e99c4d4c8545ea4a8b784b50c4f",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "offsets": [
+          8,
+          8,
+          8,
+          8,
+          0,
+          0,
+          8,
+          8
+        ]
+      },
+      {
+        "pngSha256": "bb7b96b3f879c71820df50fa864a3958d04e5e99c4d4c8545ea4a8b784b50c4f",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "offsets": [
+          8,
+          8,
+          8,
+          8,
+          0,
+          0,
+          8,
+          8
+        ]
+      }
+    ]
+  },
+  "movementVector": {
+    "scope": "Windows numerical mechanism companion, not a second rendering-suite path. Original CC0 three-point state plus closing point; final X read/magnified by its supplied program. Three fresh captures establish the direct VM golden vector.",
+    "input": "movement/relative-move.svg",
+    "inputSha256": "f0d80f069a8bac002c8e021f31d1da5b0f7fd860b869e54023cc3b2fdd9bdf62",
+    "font": "movement/Move.ttf",
+    "fontSha256": "fc5f499779ef036733727914705cdb8392e34a4ae83bf2b78a949ed23027fffc",
+    "nativeSourceSha256": "9dfa66576e69803fc7ab5d180b877cde30f6db9e14f8f75bbdddb493de83b868",
+    "reference": "movement/windows.png",
+    "captures": [
+      {
+        "pngSha256": "47ea4cc8e55bde61b8f107f1c8c7e5f6f07dd2b72312c3dbcd08da1b42a92abc",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "finalX": 107
+      },
+      {
+        "pngSha256": "47ea4cc8e55bde61b8f107f1c8c7e5f6f07dd2b72312c3dbcd08da1b42a92abc",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "finalX": 107
+      },
+      {
+        "pngSha256": "47ea4cc8e55bde61b8f107f1c8c7e5f6f07dd2b72312c3dbcd08da1b42a92abc",
+        "startupHealth": "healthy",
+        "profileCleaned": true,
+        "finalX": 107
+      }
+    ],
+    "managedResults": {
+      "before": 108,
+      "after": 107
+    }
+  }
+}

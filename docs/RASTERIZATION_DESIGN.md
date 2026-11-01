@@ -326,6 +326,11 @@ Windows function recognition preserves ordinary stack/loop effects while suppres
 movement for an exact conditional pixel-delta body; equivalent inline or changed
 bodies execute normally. The [independent controls](../tests/Research/windows-conditional-shift/README.md)
 pin that distinction without font-name rules.
+Windows stack projection loads preserve supplied F2Dot14 words, including rounded
+unit-vector components returned by a query. Line construction normalizes its
+direction separately; the classic target retains its established stack normalization.
+The [stack-vector controls](../tests/Research/windows-stack-vectors/README.md)
+cover the read/load round trip and a following relative move.
 Font-selected
 unfitted ranges retain scanner effects without fitted point movements. Metric
 reuse is operation-local and budget-owned; it does not create shared mutable font

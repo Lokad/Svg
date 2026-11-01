@@ -1,0 +1,158 @@
+{
+  "fontTools": "4.66.1",
+  "license": "CC0-1.0",
+  "unitsPerEm": 2048,
+  "glyphOrder": [
+    ".notdef",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H"
+  ],
+  "cmap": {
+    "65": "A",
+    "66": "B",
+    "67": "C",
+    "68": "D",
+    "69": "E",
+    "70": "F",
+    "71": "G",
+    "72": "H"
+  },
+  "advance": 1200,
+  "leftSideBearing": 0,
+  "ascent": 6000,
+  "descent": -512,
+  "headTimestamp": 2082844800,
+  "maxStack": 12,
+  "maxZones": 2,
+  "gaspVersion": 1,
+  "gaspRanges": {
+    "65535": 7
+  },
+  "symmetricVariantGaspRanges": {
+    "65535": 15
+  },
+  "points": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      640
+    ],
+    [
+      640,
+      640
+    ],
+    [
+      640,
+      0
+    ]
+  ],
+  "allOnCurve": true,
+  "cases": [
+    {
+      "kind": "near-x",
+      "expected": 15426,
+      "glyph": "A",
+      "left": 0,
+      "top": 0,
+      "program": "00b300010203b00417b83c42b8ea6e0a0c21b83c4254b0005258b802001bb0005938"
+    },
+    {
+      "kind": "near-y",
+      "expected": -5522,
+      "glyph": "B",
+      "left": 64,
+      "top": 0,
+      "program": "00b300010203b00417b83c42b8ea6e0a0c2321b8ea6e54b0005258b802001bb0005938"
+    },
+    {
+      "kind": "small-x",
+      "expected": 3,
+      "glyph": "C",
+      "left": 128,
+      "top": 0,
+      "program": "00b300010203b00417b003b0040a0c21b00354b0005258b802001bb0005938"
+    },
+    {
+      "kind": "small-y",
+      "expected": 4,
+      "glyph": "D",
+      "left": 192,
+      "top": 0,
+      "program": "00b300010203b00417b003b0040a0c2321b00454b0005258b802001bb0005938"
+    },
+    {
+      "kind": "small-normalized-x",
+      "expected": 9830,
+      "glyph": "E",
+      "left": 256,
+      "top": 0,
+      "program": "00b300010203b00417b003b0040a0c21b8266654b0005258b802001bb0005938"
+    },
+    {
+      "kind": "small-normalized-y",
+      "expected": 13107,
+      "glyph": "F",
+      "left": 320,
+      "top": 0,
+      "program": "00b300010203b00417b003b0040a0c2321b8333354b0005258b802001bb0005938"
+    },
+    {
+      "kind": "zero-x",
+      "expected": 0,
+      "glyph": "G",
+      "left": 0,
+      "top": 96,
+      "program": "00b300010203b00417b000b0000a0c21b00054b0005258b802001bb0005938"
+    },
+    {
+      "kind": "zero-y",
+      "expected": 16384,
+      "glyph": "H",
+      "left": 64,
+      "top": 96,
+      "program": "00b300010203b00417b000b0000a0c2321b8400054b0005258b802001bb0005938"
+    }
+  ],
+  "names": {
+    "familyName": "StackVectors",
+    "styleName": "Regular",
+    "uniqueFontIdentifier": "Original-Native-Query-1",
+    "fullName": "StackVectors",
+    "version": "Version 1.000",
+    "postScriptName": "StackVectors"
+  },
+  "movementVector": {
+    "points": [
+      [
+        0,
+        128
+      ],
+      [
+        512,
+        1664
+      ],
+      [
+        102,
+        0
+      ],
+      [
+        64,
+        0
+      ]
+    ],
+    "unitsPerEm": 2048,
+    "fontSize": 32,
+    "program": "00b001b806004801b000b00848b000b0018705b0002e0c0a7ab804001db002b0893a01b00246b000234201b000b805004800b000b00043b06b61b8100063b080604801b001b805004800b001b00043b06b61b8100063b08060b080604801b002b807004800b002b00043b06b61b8100063b08060b080604801b003b807004800b003b00043b06b61b8100063b0806048",
+    "sourceCodepoint": 57350,
+    "measuredFinalX": 107
+  }
+}

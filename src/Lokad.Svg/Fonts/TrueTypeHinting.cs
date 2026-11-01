@@ -301,7 +301,10 @@ internal sealed partial class TrueTypeHinting : IDisposable
                 case 0x0A:
                 {
                     int y = unchecked((short)Pop()), x = unchecked((short)Pop());
-                    if (x != 0 || y != 0) _projection = NormalizeVector(x, y);
+                    // Windows consumes the supplied F2Dot14 words verbatim.
+                    // Renormalizing rounded unit components changes GPV round trips.
+                    if (_target.UsesWindowsArithmetic) _projection = new(x, y);
+                    else if (x != 0 || y != 0) _projection = NormalizeVector(x, y);
                     _dualProjection = _projection;
                     break;
                 }

@@ -17,6 +17,11 @@ public sealed class SvgWindowsScanBoundaryTests
     public Task Conditional_pixel_delta_functions_preserve_native_recognition_and_ordinary_shift_controls()
         => AssertNativeFontFixture("windows-conditional-shift", "original-conditional-shift", "ConditionalShift");
 
+    [Fact]
+    [Trait("Layer", "Rendering")]
+    public Task Stack_projection_keeps_supplied_components_and_the_independent_freedom_direction()
+        => AssertNativeFontFixture("windows-stack-vectors", "original-stack-vectors", "StackVectors");
+
     private static async Task AssertNativeFontFixture(string bank, string packId, string family)
     {
         string directory = Path.Combine(ResearchCorpus.Root, bank);
