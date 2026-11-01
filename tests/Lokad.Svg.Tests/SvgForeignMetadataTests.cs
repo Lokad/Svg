@@ -9,6 +9,35 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgForeignMetadataTests
 {
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Descriptive_link_titles_use_namespace_identity_and_leave_the_reader_on_the_element(bool definitions)
+    {
+        string element = definitions ? "defs" : "g";
+        using StringReader source = new("<" + element + " xmlns:description='http://www.w3.org/1999/xlink' description:title='fill:url(#missing);font-family:Unused'/>");
+        using XmlReader reader = XmlReader.Create(source);
+        reader.MoveToContent();
+        if (definitions) SvgElementAttributePolicy.ValidateDefinitionContainer(reader, CancellationToken.None);
+        else SvgElementAttributePolicy.ValidateGroup(reader, CancellationToken.None);
+        Assert.Equal(XmlNodeType.Element, reader.NodeType);
+        Assert.Equal(element, reader.LocalName);
+    }
+
+    [Theory]
+    [InlineData("xml:title")]
+    [InlineData("description:href")]
+    [InlineData("description:titles")]
+    [InlineData("title")]
+    public void Descriptive_title_admission_does_not_admit_other_reserved_attributes(string attribute)
+    {
+        using StringReader source = new("<path xmlns:description='http://www.w3.org/1999/xlink' " + attribute + "='description'/>");
+        using XmlReader reader = XmlReader.Create(source);
+        reader.MoveToContent();
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+            SvgElementAttributePolicy.ValidatePath(reader, CancellationToken.None)).ErrorCode);
+    }
+
+    [Theory]
     [InlineData("<s:namedview xmlns:s='urn:editor'><s:page/></s:namedview>")]
     [InlineData("<d:SVGTestCase xmlns:d='http://www.w3.org/2000/02/svg/testsuite/description/'><d:OperatorScript><d:Paragraph>Example</d:Paragraph></d:OperatorScript></d:SVGTestCase>")]
     public void Recognized_foreign_descriptions_do_not_suppress_following_fonts(string metadata)

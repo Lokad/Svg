@@ -29,9 +29,10 @@ Filter and clip integration includes `SvgSymbolInstanceReferenceTests`: its
 shared bank contains crop, rescaling and nested-effect regressions.
 
 [Deferred clip coverage](Research/clip-definition-sources/README.md) separates
-ordered child/range/unit mechanisms, two selected ownership inputs, and four
-canonical native rendering cases. Keep resource intersections distinct from
-child unions; a newly accepted first gate does not close a complete original.
+ordered child/range/unit and intersection mechanisms, five selected ownership
+inputs, and twelve canonical native rendering cases. Path intersections precede
+AA; painted unions retain child/canvas clips and allocated construction bounds.
+A newly accepted first gate does not close a complete original.
 
 The [foreign-description mechanisms](Lokad.Svg.Tests/SvgForeignMetadataTests.cs)
 cover font eligibility, SVG descendants and structural accounting. [Pattern-location
@@ -41,6 +42,9 @@ One prepared-font contract protects their acquisition interaction. Three canonic
 sources retain metadata and root/group declaration graphs with independent captures;
 the two pattern images share verified PNG storage. [Evidence](Research/svgweb/shared-traversal.json)
 records those responsibilities without adding a fixture/API matrix.
+The [descriptive-title control](Research/metadata-attributes/README.md) adds URI-aware
+attribute admission and one canonical native image. It preserves actual reference
+and reserved-namespace checks without multiplying the API/ownership matrix.
 
 The [thin-curve mechanisms](Lokad.Svg.Tests/SvgThinAuthoredFillTests.cs) distinguish
 authored ink from short flattened fallbacks and explicit suppression. One source

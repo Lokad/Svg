@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "21544d8e8048fcd32c1f0e0d3d19c2bdd352f212",
+  "scope": "Admit descriptive XLink titles through one URI-aware predicate shared by element and defs validators. Preserve actual references, other reserved names, reader position and existing structural limits. No drawing, layout, ownership or API change.",
+  "specification": "https://www.w3.org/TR/SVG11/linking.html#XLinkTitleAttribute",
+  "implementation": "../../../src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs",
+  "mechanisms": {
+    "test": "../../Lokad.Svg.Tests/SvgForeignMetadataTests.cs",
+    "added": 6,
+    "failingBefore": 2,
+    "beforeLibrarySha256": "fca94d0b9c3bc16e6a55fb552109e3c42eb2f8d031fb76e5a5f826a2a880e0d8",
+    "beforeSeconds": 5.383,
+    "roles": [
+      "Common element and separate defs validators accept aliased title namespaces and preserve reader position.",
+      "xml:title, path XLink href, misspelled XLink title and unqualified title retain their rejection."
+    ]
+  },
+  "rendering": {
+    "test": "../../Lokad.Svg.VisualTests/SvgMetadataAttributeReferenceTests.cs",
+    "capture": "../metadata-attributes/capture.json",
+    "cases": 1,
+    "freshNativeCaptures": 6,
+    "referenceChanges": 0,
+    "responsibility": "One canonical call protects titles on root, defs, gradient, path, group and use together with aliased href and paint-like descriptive text. Existing API/ownership and prepared-font contracts remain separate."
+  },
+  "originals": [
+    {
+      "name": "dukechain.svg",
+      "sourceSha256": "25698948a4a6dfcadaa239f3bb600094faf5832023c8bb56d0cc2aecec751dba",
+      "sourceRetained": false,
+      "screenshot": [
+        300,
+        150
+      ],
+      "imageViewport": [
+        300,
+        150
+      ],
+      "platforms": [
+        {
+          "host": "windows",
+          "nativeCaptures": [
+            {
+              "pngSha256": "cfe960cc0965b5b085a7895bb5fee26aaedd1ff4f1df4d48984e9dde1c452cff",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "cfe960cc0965b5b085a7895bb5fee26aaedd1ff4f1df4d48984e9dde1c452cff",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "cfe960cc0965b5b085a7895bb5fee26aaedd1ff4f1df4d48984e9dde1c452cff",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "changedPixels": 0
+        },
+        {
+          "host": "linux",
+          "nativeCaptures": [
+            {
+              "pngSha256": "cfe960cc0965b5b085a7895bb5fee26aaedd1ff4f1df4d48984e9dde1c452cff",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "cfe960cc0965b5b085a7895bb5fee26aaedd1ff4f1df4d48984e9dde1c452cff",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "cfe960cc0965b5b085a7895bb5fee26aaedd1ff4f1df4d48984e9dde1c452cff",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "changedPixels": 0
+        }
+      ]
+    },
+    {
+      "name": "why.svg",
+      "sourceSha256": "7cc83adcf8c08a6e69f94da70e2e8eb93a42897ec092ddc3fd1d6838a4ce42bf",
+      "sourceRetained": false,
+      "screenshot": [
+        300,
+        150
+      ],
+      "imageViewport": [
+        300,
+        150
+      ],
+      "platforms": [
+        {
+          "host": "windows",
+          "nativeCaptures": [
+            {
+              "pngSha256": "5fcf0651359b1163d8bd3ccafb311a27da4503c596c71bfb222d9fb0f4d74186",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5fcf0651359b1163d8bd3ccafb311a27da4503c596c71bfb222d9fb0f4d74186",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5fcf0651359b1163d8bd3ccafb311a27da4503c596c71bfb222d9fb0f4d74186",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "changedPixels": 0
+        },
+        {
+          "host": "linux",
+          "nativeCaptures": [
+            {
+              "pngSha256": "5fcf0651359b1163d8bd3ccafb311a27da4503c596c71bfb222d9fb0f4d74186",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5fcf0651359b1163d8bd3ccafb311a27da4503c596c71bfb222d9fb0f4d74186",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5fcf0651359b1163d8bd3ccafb311a27da4503c596c71bfb222d9fb0f4d74186",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "changedPixels": 0
+        }
+      ]
+    }
+  ],
+  "defaultAudit": {
+    "files": 204,
+    "directory": {
+      "files": 204,
+      "indexSha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+      "httpStatus": 200,
+      "directoryEntriesUnchanged": true,
+      "sourceSvgFilesRetained": 0
+    },
+    "sourceSvgFilesRetained": 0,
+    "all202OtherSemanticReportsUnchanged": true,
+    "all151PriorPngsPerHostByteIdentical": true,
+    "identicalPngs": {
+      "windows": 151,
+      "linux": 151
+    },
+    "outcomes": {
+      "windows": {
+        "UnsupportedFeature": 48,
+        "rendered": 153,
+        "MalformedInput": 3
+      },
+      "linux": {
+        "UnsupportedFeature": 48,
+        "rendered": 153,
+        "MalformedInput": 3
+      }
+    },
+    "changedOriginals": [
+      "dukechain.svg",
+      "why.svg"
+    ],
+    "sweepSeconds": 55.015789499972016
+  },
+  "validation": {
+    "checks": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 677,
+        "seconds": 6.296,
+        "librarySha256": "9ea01a8367d2f30999cb2de94d26a7159a30c07c189d7ee7d8e508730b554cf4",
+        "selection": "FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgDefinitionNamespaceTests|FullyQualifiedName~SvgAttributeGrammarTests|FullyQualifiedName~SvgStructural|FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~SvgPatternDefinitionLocationTests|FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~Prepared_group_pattern_with_foreign_description"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 2,
+        "seconds": 37.671,
+        "librarySha256": "9ea01a8367d2f30999cb2de94d26a7159a30c07c189d7ee7d8e508730b554cf4",
+        "selection": "FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 677,
+        "seconds": 8.337,
+        "librarySha256": "9ea01a8367d2f30999cb2de94d26a7159a30c07c189d7ee7d8e508730b554cf4",
+        "selection": "FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgDefinitionNamespaceTests|FullyQualifiedName~SvgAttributeGrammarTests|FullyQualifiedName~SvgStructural|FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~SvgPatternDefinitionLocationTests|FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~Prepared_group_pattern_with_foreign_description"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "native",
+        "passed": 2,
+        "seconds": 37.665,
+        "librarySha256": "9ea01a8367d2f30999cb2de94d26a7159a30c07c189d7ee7d8e508730b554cf4",
+        "selection": "FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~FixtureManifestTests.Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 76,
+        "seconds": 6.256,
+        "librarySha256": "bff4580ef5f4f62ce06e384be1a0891b9f70ded8dae48766f5d50fffeafd1d6e",
+        "selection": "FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgDefinitionNamespaceTests|FullyQualifiedName~SvgAttributeGrammarTests|FullyQualifiedName~SvgStructuralAdmissionTests|FullyQualifiedName~Prepared_group_pattern_with_foreign_description"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 1,
+        "seconds": 7.046,
+        "librarySha256": "bff4580ef5f4f62ce06e384be1a0891b9f70ded8dae48766f5d50fffeafd1d6e",
+        "selection": "FullyQualifiedName~SvgMetadataAttributeReferenceTests"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 76,
+        "seconds": 6.27,
+        "librarySha256": "bff4580ef5f4f62ce06e384be1a0891b9f70ded8dae48766f5d50fffeafd1d6e",
+        "selection": "FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgDefinitionNamespaceTests|FullyQualifiedName~SvgAttributeGrammarTests|FullyQualifiedName~SvgStructuralAdmissionTests|FullyQualifiedName~Prepared_group_pattern_with_foreign_description"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "native",
+        "passed": 1,
+        "seconds": 7.134,
+        "librarySha256": "bff4580ef5f4f62ce06e384be1a0891b9f70ded8dae48766f5d50fffeafd1d6e",
+        "selection": "FullyQualifiedName~SvgMetadataAttributeReferenceTests"
+      }
+    ],
+    "exactManifestFixtures": 1482,
+    "scope": "677 affected parser/traversal/namespace/diagnostic/prepared-font tests and the canonical title fixture plus the existing 1482-fixture exact-manifest check on each primary host. Focused .NET10 compatibility has76 mechanisms/contracts plus the canonical fixture per host.",
+    "timingScope": "Functional development-load wall times, not a speedup comparison. Before is a six-case failing selection; affected checks are broader.",
+    "promotion": "Local metadata scope qualified. Overall full runtime/package promotion remains open with the separate frozen Windows DejaVu baseline decision."
+  }
+}

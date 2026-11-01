@@ -1,0 +1,11 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:description='http://www.w3.org/1999/xlink' width='128' height='96' description:title='An inert title, not a paint declaration'>
+  <defs description:title='Local definitions'>
+    <linearGradient id='paint' description:title='fill:url(#unused)'><stop stop-color='#23598b'/><stop offset='1' stop-color='#68bd89'/></linearGradient>
+    <path id='shape' d='M8 8H42V38H8Z' description:title='The source shape'/>
+  </defs>
+  <g description:title='font-family:Unused'>
+    <use description:href='#shape' x='4.25' y='5.5' fill='url(#paint)' description:title='The placed shape'/>
+    <path d='M65 15L111 28L90 78Z' fill='#a14d76' description:title='Another shape'/>
+  </g>
+</svg>

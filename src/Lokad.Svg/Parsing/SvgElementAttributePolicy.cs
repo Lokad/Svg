@@ -35,7 +35,7 @@ internal static class SvgElementAttributePolicy
         while (reader.MoveToNextAttribute())
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (reader.NamespaceURI == "http://www.w3.org/2000/xmlns/") continue;
+            if (reader.NamespaceURI == "http://www.w3.org/2000/xmlns/" || IsDescriptiveLinkTitle(reader)) continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName == "id")
             {
                 if (reader.Value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");
@@ -133,8 +133,14 @@ internal static class SvgElementAttributePolicy
         }
     }
 
+    // Descriptive link metadata has no paint or reference semantics. Match the
+    // namespace URI so aliases do not depend on a particular XML prefix.
+    private static bool IsDescriptiveLinkTitle(XmlReader reader)
+        => reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "title";
+
     private static bool IsAllowed(XmlReader reader, SvgElementKind kind)
     {
+        if (IsDescriptiveLinkTitle(reader)) return true;
         if (kind == SvgElementKind.Group && reader.NamespaceURI.Length == 0 && reader.LocalName == "filter") return true;
         // Language metadata does not select a font or introduce host shaping in the admitted label subset.
         if (reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "lang")

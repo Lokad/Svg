@@ -25,6 +25,8 @@ have distinct [error categories](../src/Lokad.Svg/SvgErrorCode.cs).
 Foreign editor `namedview` and W3C SVG test-description `SVGTestCase` containers
 are inert when their descendants are also foreign. Their nodes still count toward
 structural limits. SVG descendants and unknown nonempty foreign wrappers reject.
+Descriptive `xlink:title` metadata is inert on admitted elements and `defs`.
+Namespace aliases use the XLink URI; XML/input and structural limits still apply.
 
 ### Diagnostics
 

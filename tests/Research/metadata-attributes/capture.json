@@ -1,0 +1,62 @@
+{
+  "width": 128,
+  "height": 96,
+  "cases": [
+    {
+      "id": "descriptive-titles",
+      "input": "descriptive-titles.svg",
+      "inputSha256": "cdc546a17603232b081008fd9b2507ac206821e4466cc9140824d811e17a0de8",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "62a1d5bb5bee98647361f4eef0190280a84bee68fd994a2c5d6b7605419af19e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "62a1d5bb5bee98647361f4eef0190280a84bee68fd994a2c5d6b7605419af19e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "62a1d5bb5bee98647361f4eef0190280a84bee68fd994a2c5d6b7605419af19e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/descriptive-titles.png",
+          "referenceSha256": "62a1d5bb5bee98647361f4eef0190280a84bee68fd994a2c5d6b7605419af19e"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "62a1d5bb5bee98647361f4eef0190280a84bee68fd994a2c5d6b7605419af19e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "62a1d5bb5bee98647361f4eef0190280a84bee68fd994a2c5d6b7605419af19e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "62a1d5bb5bee98647361f4eef0190280a84bee68fd994a2c5d6b7605419af19e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/descriptive-titles.png",
+          "referenceSha256": "62a1d5bb5bee98647361f4eef0190280a84bee68fd994a2c5d6b7605419af19e"
+        }
+      }
+    }
+  ],
+  "schemaVersion": 1,
+  "license": "CC0-1.0",
+  "sourceBaseline": "21544d8e8048fcd32c1f0e0d3d19c2bdd352f212",
+  "browser": "Chrome153.0.8010.52",
+  "context": "Transparent SVG image, intrinsic image viewport, DPR1; three fresh healthy captures per host frozen before the title admission change."
+}
