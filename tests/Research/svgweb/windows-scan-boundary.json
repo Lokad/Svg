@@ -173,6 +173,11 @@
     ],
     "totalRoutinePassed": 289324,
     "baselineEvidence": "latin-blue-zone-fitting.json",
+    "fixtureInputNormalization": {
+      "lineEnding": "LF, matching the committed SVG blob",
+      "evidence": "../windows-scan-boundary/capture.json",
+      "qualification": "Six fresh healthy/profile-cleaned captures of the canonical LF input match the existing PNG reference bytes. Original CRLF mechanism vectors and source digests remain explicit; neither geometry nor reference images changed."
+    },
     "timingScope": "Functional wall times under ordinary development load. No benchmark or suite-simplification speedup claim."
   },
   "originalReplay": {

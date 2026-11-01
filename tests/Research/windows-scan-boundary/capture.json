@@ -4,10 +4,10 @@
   "height": 48,
   "browser": "Chrome 153.0.8010.52",
   "input": "turning-counter.svg",
-  "inputSha256": "fe7808600c677306ae2a6c77e85c02148e8388d759c2a6e09bedbdec60dc8400",
+  "inputSha256": "bbf82e651a9f28694e3788d29ad1351980efa3bd7d0f2f8001f432d3e0175cd5",
   "font": "fonts/ScanTurn.ttf",
   "fontSha256": "b769c71b1d0997220b33c54dcc24d8f5281366b903e01c25bebf661f4cb11696",
-  "nativeSourceSha256": "240e14f1c3cd0ee452d0f8694cc9cf8822ff670286d8da9217a36dd47a96f8f5",
+  "nativeSourceSha256": "7f33aff13607aec2f0b3c05223f0ff3184a0b34b779acaaec55f8b4b465548f9",
   "nativeRecipe": "Embed the unchanged program in @font-face before </svg>, family ScanTurn, normal style/weight 400, no other source changes.",
   "platforms": {
     "windows": {
@@ -102,7 +102,8 @@
           "profileCleaned": true
         }
       ]
-    }
+    },
+    "inputLineEnding": "CRLF"
   },
   "id": "windows-scan-boundary-turning-counter",
   "creator": "Lokad.Svg contributors",
@@ -110,5 +111,12 @@
   "license": "CC0-1.0",
   "licenseEvidence": "LICENSE.txt",
   "background": "transparent",
-  "deviceScaleFactor": 1
+  "deviceScaleFactor": 1,
+  "priorInputNormalization": {
+    "inputSha256": "fe7808600c677306ae2a6c77e85c02148e8388d759c2a6e09bedbdec60dc8400",
+    "nativeSourceSha256": "240e14f1c3cd0ee452d0f8694cc9cf8822ff670286d8da9217a36dd47a96f8f5",
+    "lineEnding": "CRLF",
+    "change": "Canonical repository LF ending only; original geometry, program, origins and PNG reference bytes are unchanged. Six fresh LF captures match the existing references byte-for-byte."
+  },
+  "inputLineEnding": "LF"
 }

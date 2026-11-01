@@ -1,5 +1,5 @@
 {
-  "scope": "Independent Windows mask/preblend mechanism vectors from the same original program and curve. Three agreeing healthy/profile-cleaned native image processes per phase; the .25 process set is the canonical rendering capture. No extra API paths.",
+  "scope": "Independent Windows mechanism vectors from three agreeing healthy/profile-cleaned processes per phase, using the original CRLF input. The canonical LF recapture preserves identical PNG bytes; capture.json records both source digests. No extra API paths.",
   "fontSha256": "b769c71b1d0997220b33c54dcc24d8f5281366b903e01c25bebf661f4cb11696",
   "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
   "rows": [
@@ -139,5 +139,7 @@
         }
       ]
     }
-  ]
+  ],
+  "inputLineEnding": "CRLF",
+  "canonicalInputNormalization": "capture.json"
 }
