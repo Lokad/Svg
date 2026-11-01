@@ -197,19 +197,20 @@ public sealed class SvgPatternTextReplayTests
     [InlineData(false, true)]
     [InlineData(true, false)]
     [InlineData(true, true)]
-    public async Task Nested_pattern_text_rejection_is_independent_of_definition_order(bool path, bool forward)
+    public async Task Nested_pattern_text_keeps_its_paints_independently_of_definition_order(bool path, bool forward)
     {
         using SvgFontSnapshot fonts = await CreateFonts();
         string outer = Pattern("p", Text(path, " fill='url(#q)'"));
         string inner = Pattern("q", "<rect width='8' height='8' fill='red'/>");
         byte[] input = Input("<defs>" + (forward ? outer + inner : inner + outer) + Resources + "</defs><rect width='16' height='8' fill='url(#p)'/>");
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None))
         {
-            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None);
-        }).ErrorCode);
+            Assert.NotEmpty(root.Geometries);
+        }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Render(input, fonts)).ErrorCode);
+        byte[] expected = Input("<defs>" + (forward ? inner + outer : outer + inner) + Resources + "</defs><rect width='16' height='8' fill='url(#p)'/>");
+        Assert.Equal(Render(expected, fonts), Render(input, fonts));
     }
 
     [Theory]

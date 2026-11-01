@@ -12,10 +12,18 @@ internal readonly record struct SvgDeferredPatternContent(SvgSceneBuilder Builde
 
 /// <summary>Resolves ordered local tile instances through existing reference and premultiplied scene machinery.</summary>
 /// <remarks>References borrow document-owned strings and definitions. The staging builder retains all mapped
-/// owners until sealing or failure cleanup. Replay is parser-thread confined, subject to cancellation and
+/// owners until sealing or failure cleanup. Replay is parser-thread confined, budgeted and
 /// cancellation aware. Content becomes immutable before the root scene is returned.</remarks>
 internal static class SvgPatternUseReplay
 {
+    // Tile rasterization borrows child scenes recursively. Bound the actual
+    // content path, independently of collapsed template href chains.
+    internal const int MaximumContentDepth = 32;
+
+    private readonly record struct ContentFrame(SvgVectorContent Content, int GeometryIndex,
+        int MaskIndex, int MaskGeometryIndex, int Depth);
+    private readonly record struct ContentVisit(bool Active, int Depth);
+
     private readonly record struct ScopeRange(int First, int End)
     {
         internal bool ClipsFilterOutput { get; init; }
@@ -216,27 +224,97 @@ internal static class SvgPatternUseReplay
         }
     }
 
-    /// <summary>Seals tile scenes after all deferred masks and clips have bound to their owning builder.</summary>
+    /// <summary>Seals tile scenes and validates their borrowed content graph before rasterization.</summary>
+    /// <remarks>Scenes retain their existing parent owners. Iterative validation reserves its
+    /// lookup and stack storage, checks cancellation per edge and releases scratch on every exit.
+    /// Cycles and excessive recursive content depth fail before any tile is rasterized.</remarks>
     internal static void Complete(SvgDocumentState state, CancellationToken token)
     {
         foreach (SvgDeferredPatternContent pending in state.DeferredPatternContents.AsSpan())
         {
             token.ThrowIfCancellationRequested();
-            for (int index = 0; index < pending.Builder.GeometryCount; index++)
-            {
-                token.ThrowIfCancellationRequested();
-                RejectNestedPaint(pending.Builder.GeometryAt(index));
-            }
             SvgLeafMaskComposition.Emit(state, pending.Builder, token);
             pending.Content.Complete(pending.Builder.Build());
         }
-    }
+        if (state.DeferredPatternContents.Count == 0) return;
+        using BudgetedParserDictionary<SvgVectorContent, ContentVisit> visits = new(state.Budget, SvgMemoryCategory.Temporary, 96);
+        using BudgetedParserList<ContentFrame> stack = new(state.Budget, SvgMemoryCategory.Temporary, token);
+        foreach (SvgDeferredPatternContent pending in state.DeferredPatternContents.AsSpan())
+        {
+            token.ThrowIfCancellationRequested();
+            if (visits.TryGetValue(pending.Content, out _)) continue;
+            visits.TryAdd(pending.Content, new(true, 0));
+            stack.Add(new(pending.Content, 0, 0, -1, 1));
+            while (stack.Count != 0)
+            {
+                token.ThrowIfCancellationRequested();
+                ContentFrame frame = stack[^1];
+                SvgVectorContent? child = NextChild(ref frame);
+                stack[^1] = frame;
+                if (child is null)
+                {
+                    visits.Replace(frame.Content, new(false, frame.Depth));
+                    stack.RemoveLast();
+                    if (stack.Count != 0) IncludeDepth(frame.Depth);
+                }
+                else if (visits.TryGetValue(child, out ContentVisit visit))
+                {
+                    if (visit.Active) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Cyclic pattern content is not implemented.");
+                    IncludeDepth(visit.Depth);
+                }
+                else
+                {
+                    if (stack.Count == MaximumContentDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern content nesting exceeds the supported depth.");
+                    visits.TryAdd(child, new(true, 0));
+                    stack.Add(new(child, 0, 0, -1, 1));
+                }
+            }
+        }
 
-    /// <summary>Rejects nested paint dependencies after source expansion, including paints carried by glyph payloads.</summary>
-    internal static void RejectNestedPaint(SvgGeometry geometry)
-    {
-        if (geometry.Kind is SvgGeometryKind.PatternFill or SvgGeometryKind.PatternPolygon
-            || geometry.Kind == SvgGeometryKind.GlyphContours && geometry.Glyph.Shader is SvgTextPatternShader)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern paints inside pattern content are not implemented.");
+        void IncludeDepth(int childDepth)
+        {
+            int depth = Math.Max(stack[^1].Depth, childDepth + 1);
+            if (depth > MaximumContentDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern content nesting exceeds the supported depth.");
+            stack[^1] = stack[^1] with { Depth = depth };
+        }
+
+        SvgVectorContent? NextChild(ref ContentFrame frame)
+        {
+            SvgSceneStorage scene = frame.Content.Scene;
+            while (frame.GeometryIndex < scene.Geometries.Length)
+            {
+                token.ThrowIfCancellationRequested();
+                SvgGeometry geometry = scene.Geometries[frame.GeometryIndex];
+                frame = frame with { GeometryIndex = frame.GeometryIndex + 1 };
+                if (PaintContent(geometry) is {} child) return child;
+            }
+            while (frame.MaskIndex < scene.MaskContents.Length)
+            {
+                token.ThrowIfCancellationRequested();
+                SvgMaskContent mask = scene.MaskContents[frame.MaskIndex];
+                if (frame.MaskGeometryIndex < 0)
+                {
+                    frame = frame with { MaskGeometryIndex = 0 };
+                    if (mask.VectorContent is {} child) return child;
+                }
+                while (frame.MaskGeometryIndex < mask.Geometries.Length)
+                {
+                    token.ThrowIfCancellationRequested();
+                    SvgGeometry geometry = mask.Geometries[frame.MaskGeometryIndex];
+                    frame = frame with { MaskGeometryIndex = frame.MaskGeometryIndex + 1 };
+                    if (PaintContent(geometry) is {} child) return child;
+                }
+                frame = frame with { MaskIndex = frame.MaskIndex + 1, MaskGeometryIndex = -1 };
+            }
+            return null;
+        }
+
+        static SvgVectorContent? PaintContent(SvgGeometry geometry) => geometry.Kind switch
+        {
+            SvgGeometryKind.PatternFill => geometry.Pattern.VectorContent,
+            SvgGeometryKind.PatternPolygon => geometry.PatternPolygon.VectorContent,
+            SvgGeometryKind.GlyphContours when geometry.Glyph.Shader is SvgTextPatternShader paint => paint.Pattern.VectorContent,
+            _ => null
+        };
     }
 }

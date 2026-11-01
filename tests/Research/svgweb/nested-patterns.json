@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "7e7a25f586c1dea69d4dcb707b35db4c5e5fd5ac",
+  "capture": "../nested-patterns/capture.json",
+  "scope": "Admit acyclic pattern paints in retained tile scenes. Share existing sealed child owners, validate the actual content graph once before rasterization, and remove the obsolete blanket exclusions and resource-use kind.",
+  "implementation": {
+    "source": "../../../src/Lokad.Svg/Parsing/SvgPatternUseReplay.cs",
+    "maximumContentDepth": 32,
+    "ownership": "Existing document scenes retain each child once; pattern, alias and glyph paints borrow them. The iterative graph walk visits geometry and mask content with budgeted temporary lookup/stack storage, cancellation per edge and deterministic scratch release.",
+    "errors": "Cycles remain UnsupportedFeature. More than32 vector-scene levels returns LimitExceeded. Collapsed template href aliases add no content depth. Missing paint and selected/unused resource contracts remain separate."
+  },
+  "responsibilities": {
+    "mechanisms": {
+      "testClass": "SvgNestedPatternTests",
+      "cases": 9,
+      "coverage": "Forward/backward definition order, rectangle/path paints, sibling owner identity through aliases, self/two-node/alias cycles, tile-mask cycles, and32/33 actual depth with successful rasterization at32."
+    },
+    "glyphMechanism": "OpenTypeFontTests.Pattern_paints_carried_by_glyphs_participate_in_cycle_detection",
+    "textReplay": "Four existing direct/text-path and forward/backward cases now preserve definition-order parity and successful cleanup. Independent glyph references validate paint output; solid and pattern materials are not assumed equivalent.",
+    "contracts": [
+      "One prepared-font case acquires the reachable font exactly once and ignores an unused declaration.",
+      "One memory-refusal case releases owners and retries with the same host allowance. Existing pattern cancellation, missing-resource and recursion cases remain selected."
+    ],
+    "rendering": "Two canonical conversions: forward/shared rectangle/polygon tiles and supplied-font direct/text-path glyph paints. Each has three agreeing healthy/profile-cleaned fresh native captures per host; glyph platform differences are retained. No API-form matrix expansion."
+  },
+  "positiveBeforeAfter": {
+    "before": {
+      "passed": 0,
+      "failed": 2,
+      "seconds": 5.586
+    },
+    "after": {
+      "passed": 2,
+      "failed": 0,
+      "seconds": 5.22
+    },
+    "timing": "Same two positive cases; functional elapsed time, not a benchmark."
+  },
+  "focusedCandidate": {
+    "core": {
+      "passed": 44,
+      "seconds": 5.894
+    },
+    "native": {
+      "passed": 19,
+      "seconds": 5.903
+    }
+  },
+  "affectedQualification": [
+    {
+      "host": "windows",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 5302,
+        "seconds": 16.118,
+        "librarySha256": "b1dd1342d0ac65dfd7be1677d30c9bc8005fa94e63209b22940ae1562044b161"
+      },
+      "native": {
+        "passed": 2055,
+        "seconds": 29.809,
+        "librarySha256": "b1dd1342d0ac65dfd7be1677d30c9bc8005fa94e63209b22940ae1562044b161"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net11.0",
+      "core": {
+        "passed": 5302,
+        "seconds": 18.207,
+        "librarySha256": "b1dd1342d0ac65dfd7be1677d30c9bc8005fa94e63209b22940ae1562044b161"
+      },
+      "native": {
+        "passed": 2055,
+        "seconds": 31.656,
+        "librarySha256": "b1dd1342d0ac65dfd7be1677d30c9bc8005fa94e63209b22940ae1562044b161"
+      }
+    },
+    {
+      "host": "windows",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 5302,
+        "seconds": 17.675,
+        "librarySha256": "b63f7f0415b32b3dc48aa6a2c17316309251c235b5326936eaa95e4cec051a6e"
+      },
+      "native": {
+        "passed": 2055,
+        "seconds": 25.008,
+        "librarySha256": "b63f7f0415b32b3dc48aa6a2c17316309251c235b5326936eaa95e4cec051a6e"
+      }
+    },
+    {
+      "host": "linux",
+      "runtime": "net10.0",
+      "core": {
+        "passed": 5302,
+        "seconds": 16.884,
+        "librarySha256": "b63f7f0415b32b3dc48aa6a2c17316309251c235b5326936eaa95e4cec051a6e"
+      },
+      "native": {
+        "passed": 2055,
+        "seconds": 27.636,
+        "librarySha256": "b63f7f0415b32b3dc48aa6a2c17316309251c235b5326936eaa95e4cec051a6e"
+      }
+    }
+  ],
+  "originalReplay": {
+    "files": 204,
+    "sourceSvgFilesRetained": 0,
+    "seconds": 49.58,
+    "librarySha256": "1a3a21115637cc9572e514889eccdf71de1693e9255a1d994876772124285496",
+    "perHost": {
+      "rendered": 155,
+      "exploratoryExact": 153,
+      "exploratoryDifferent": 2,
+      "unsupported": 46,
+      "malformed": 3,
+      "previouslyRenderedPngsByteIdentical": 154,
+      "previouslyExactPngsByteIdentical": 153
+    }
+  },
+  "completeOriginal": {
+    "name": "rg1024_metal_effect.svg",
+    "sourceSha256": "bea3712e842b247bfab90ab373355fffe3be933f8a33df55ea193036e0812983",
+    "frame": [
+      445,
+      479
+    ],
+    "before": "UnsupportedFeature: Pattern paints inside pattern content are not implemented.",
+    "status": "OPEN: rendered with colour residual",
+    "platforms": {
+      "windows": {
+        "changedPixels": 262,
+        "alphaChangedPixels": 0,
+        "maximumError": 2,
+        "totalChannelError": 971,
+        "candidatePngSha256": "9d95aa306888b8b685f5fb842f0b938f453489390fa0950a2b5f90724e551f6e",
+        "captures": [
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "linux": {
+        "changedPixels": 262,
+        "alphaChangedPixels": 0,
+        "maximumError": 2,
+        "totalChannelError": 971,
+        "candidatePngSha256": "9d95aa306888b8b685f5fb842f0b938f453489390fa0950a2b5f90724e551f6e",
+        "captures": [
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "33384295500a28b406f8923de74060e8a3fa7664314fd82a5f10c1bd49445001",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    }
+  },
+  "remaining": [
+    "The complete metal-effect original retains262 RGB-only pixels,max2,total971 on each host. RAM-only content isolation locates these within the nested child paint; original bodies and fragments are not retained.",
+    "The lingerie original remains19 RGB-only pixels,max1,total50, with exact alpha and byte-identical output. Its admitted wide control remains four alpha pixels different; the own affine copying-kernel probe retains one RGB difference.",
+    "Rasterization code, native references, tolerances, text layout and release identity are unchanged. Replay and affected-test binaries differ only by an XML documentation correction in production source.",
+    "Full Windows/Linux/runtime/package promotion remains a milestone gate. The frozen Windows font reference-authority question remains pending."
+  ],
+  "finalFocused": {
+    "core": {
+      "passed": 44,
+      "seconds": 5.649,
+      "librarySha256": "53bf94baa88d14fb941681ddf28c9a6a18d1bed9192f327e9ab5570919076323"
+    },
+    "native": {
+      "passed": 19,
+      "seconds": 6.142,
+      "librarySha256": "53bf94baa88d14fb941681ddf28c9a6a18d1bed9192f327e9ab5570919076323"
+    },
+    "scope": "Final source includes only XML documentation corrections after the original replay and affected qualification. Both explicit runtime builds are warning-free; these focused checks use the final working-tree binary."
+  }
+}

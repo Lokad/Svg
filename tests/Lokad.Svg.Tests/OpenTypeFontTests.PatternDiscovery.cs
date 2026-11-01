@@ -10,6 +10,38 @@ public sealed partial class OpenTypeFontTests
     private const string PatternFontText = "<text x='1' y='8' font-family='Example' font-size='200'>A</text>";
     private const string PatternFontTarget = "<rect width='32' height='32' fill='url(#p)'/>";
 
+    [Fact]
+    [Trait("Layer", "Contract")]
+    public async Task Nested_pattern_preparation_acquires_only_the_reachable_font_once()
+    {
+        string source = PatternFontDefinition(PatternFontSize, PatternFontText).Replace("id='p'", "id='child'", StringComparison.Ordinal);
+        const string parent = "<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='16' height='16' fill='url(#child)'/></pattern>";
+        const string unused = "<pattern id='unused' width='16' height='16' patternUnits='userSpaceOnUse'><text x='1' y='8' font-family='UnusedFont'>A</text></pattern>";
+        byte[] input = PatternFontInput("<defs>" + parent + source + unused + "</defs>" + PatternFontTarget);
+        Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, CancellationToken.None)).Family);
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource fontSource) = PatternFontPack(false);
+        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        byte[] expected = SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None).ToArray();
+        Assert.Equal(expected, document.ConvertToPng(CancellationToken.None).ToArray());
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, fontSource.RequestCount);
+    }
+
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public async Task Pattern_paints_carried_by_glyphs_participate_in_cycle_detection()
+    {
+        byte[] input = PatternFontInput("<defs>" + PatternFontDefinition(PatternFontSize,
+            PatternFontText.Replace("font-family='Example'", "font-family='Example' fill='url(#p)'", StringComparison.Ordinal)) + "</defs>" + PatternFontTarget);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        RenderBudget budget = new(new HostMemoryBudget(8_000_000));
+        SvgException failure = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, failure.ErrorCode);
+        Assert.Contains("Cyclic pattern content", failure.Message, StringComparison.Ordinal);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [InlineData("", false)]
     [InlineData("", true)]

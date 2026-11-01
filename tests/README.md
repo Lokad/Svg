@@ -66,6 +66,11 @@ The [mask source-clip control](Research/mask-source-clip/README.md) protects a
 hairline crossing an opaque bitmap intersection. Direct mechanisms cover live
 clip borrowing, partial coverage and cancellation; broader mask references retain
 the polygon and composition interactions.
+The [nested-pattern control](Research/nested-patterns/README.md) covers forward
+aliases, shared tiles, rectangle/polygon sampling and supplied-font direct/path
+text through canonical conversion, preserving distinct glyph platform references.
+Direct graph mechanisms protect cycles and nesting boundaries; prepared-font and
+refusal/retry checks cover ownership separately. The complete original remains open.
 The reduced [group-opacity pair](Research/filter-group-opacity/README.md) uses two
 overlapping rectangles: both canonical images are exact, and the downscale control
 rejects a global alpha change. Four compiled native device-axis mechanisms protect

@@ -577,7 +577,6 @@ internal static class SvgDefinitionParser
                 {
                     if (!SvgRenderedLeafParser.ValidateLeafAttributes(reader, cancellationToken))
                         throw new InvalidOperationException("Pattern replay requires a supported leaf.");
-                    RejectPatternContentPaint(style, state);
                     SvgPatternTemplate template = state.PatternTemplate;
                     if ((template.Width == 0 || template.Height == 0 || template.Href is null && (template.Width is null || template.Height is null))
                         && state.PaintResources?.RequiresPatternContent(state.PatternId) != true)
@@ -618,8 +617,6 @@ internal static class SvgDefinitionParser
                     if (!CanKeepLegacyContent(parsedContent, tile))
                     {
                         foreach (SvgGeometry unused in parsedContent.Geometries) unused.Dispose();
-                        SvgComputedStyle style = tileContext.ResolveStyle(reader);
-                        RejectPatternContentPaint(style, state);
                         SvgSceneBuilder builder = GetPatternContentBuilder(state, cancellationToken);
                         SvgPaintRecording.AdoptLeafScene(LowerInstanceSource(reader, tileContext, state), builder, state, cancellationToken);
                         SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
@@ -661,8 +658,6 @@ internal static class SvgDefinitionParser
                 }
                 SvgSceneBuilder builder = GetPatternContentBuilder(state, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
-                SvgComputedStyle style = context.ResolveStyle(reader);
-                RejectPatternContentPaint(style, state);
                 AdoptLeaf(LowerInstanceSource(reader, context, state));
                 SvgStructuralAdmission.ConsumeLeafChildren(reader, state, cancellationToken);
                 return true;
@@ -1545,13 +1540,6 @@ CancellationToken cancellationToken)
         if (state.ClipIsObjectBoundingBox) { if (state.Clips.TryGetValue(retainedId, out _) || !state.ObjectClips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique."); } else if (state.ObjectClips.TryGetValue(retainedId, out _) || !state.Clips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
         state.ClipPolygon?.SourcePath?.Dispose();
         state.ClipPolygon = null;
-    }
-
-    internal static void RejectPatternContentPaint(SvgComputedStyle style, SvgDocumentState state)
-    {
-        if (style.Fill is {} fill && SvgPaintReference.TryParseId(fill, out string fillId) && (fillId == state.PatternId || state.Patterns.TryGetValue(fillId, out _))
-            || style.Stroke is {} stroke && SvgPaintReference.TryParseId(stroke, out string strokeId) && (strokeId == state.PatternId || state.Patterns.TryGetValue(strokeId, out _)))
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern paints inside pattern content are not implemented.");
     }
 
     internal static void RegisterFilter(SvgDocumentState state)

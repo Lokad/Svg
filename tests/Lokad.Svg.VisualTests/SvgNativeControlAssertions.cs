@@ -8,6 +8,9 @@ namespace Lokad.Svg.VisualTests;
 internal static class SvgNativeControlAssertions
 {
     internal static void MatchesCanonicalConversion(string bank, string identity, int expectedBankCases)
+        => MatchesCanonicalConversion(bank, identity, expectedBankCases, SvgRenderOptions.Default);
+
+    internal static void MatchesCanonicalConversion(string bank, string identity, int expectedBankCases, SvgRenderOptions options)
     {
         string directory = Path.Combine(ResearchCorpus.Root, bank);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "capture.json")));
@@ -35,7 +38,7 @@ internal static class SvgNativeControlAssertions
         RgbaImage expected = PngRgbaDecoder.Decode(reference, pixels);
         Assert.Equal(width, expected.Width);
         Assert.Equal(height, expected.Height);
-        byte[] png = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         PixelComparison result = PixelComparer.Compare(expected, PngRgbaDecoder.Decode(png, pixels));
         Assert.True(result.IsExact, JsonSerializer.Serialize(result));
 

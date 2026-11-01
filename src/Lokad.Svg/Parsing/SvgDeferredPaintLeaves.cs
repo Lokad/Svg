@@ -98,7 +98,6 @@ CancellationToken token)
             // rebinds them into the tile arena. Rendered replay emits there directly.
             if (tile && pending.Kind == SvgDeferredPaintKind.Rendered) state.DefinitionReplayScene = pending.Scene;
             if (pending.Frame is {} frame) state.Viewports.Add(frame);
-            if (tile) SvgDefinitionParser.RejectPatternContentPaint(pending.Context.ResolveStyle(pending.Source), state);
             for (int scope = 0; scope < pending.MaskScopeCount; scope++)
                 state.MaskScopes.Add(state.MaskScopeSnapshots[pending.MaskScopeStart + scope]);
             if (pending.Kind == SvgDeferredPaintKind.PatternDefinition)

@@ -22,6 +22,13 @@ and deferred opacity bind at replay. Resource references borrow their scene;
 sealed child scenes retain storage after parser staging ends. Partial construction
 and failure release owners deterministically.
 
+Pattern paints borrow sealed child scenes, including through template aliases,
+glyph shaders and masks. One budgeted iterative walk validates content cycles and
+recursive depth before rasterization; template aliases do not add scene depth.
+Existing document owners retain shared content and release it once. The
+[nested-pattern evidence](../tests/Research/svgweb/nested-patterns.json) separates
+graph, ownership and canonical rendering responsibilities.
+
 Pattern registration, font discovery and resource selection share declaration
 locations. Selection tracks rendered-group ancestry separately from general drawing
 eligibility, so admitting a declaration also admits its required content. Known

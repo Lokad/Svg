@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "license": "CC0-1.0",
+  "sourceBaseline": "7e7a25f586c1dea69d4dcb707b35db4c5e5fd5ac",
+  "browser": "Chrome153.0.8010.52",
+  "width": 64,
+  "height": 40,
+  "context": "Transparent SVG image,DPR1; three agreeing healthy/profile-cleaned fresh-process captures per host. Forward pattern templates, shared child content, nested rectangle/polygon paints and tile placement. Glyph control uses one declared original CC0 font and preserves distinct Windows/Linux references.",
+  "cases": [
+    {
+      "id": "nested-grid",
+      "input": "inputs/nested-grid.svg",
+      "inputSha256": "daad0201f44881f878db4cbd698705b1b3206c36044c724b6eb821ac82cef211",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "reference": "references/nested-grid.png",
+          "referenceSha256": "37c42f039eadbedebb6c0fc04f8e55d657a3d6ac2761b4acb6a48afcc11d331a",
+          "captures": [
+            {
+              "pngSha256": "37c42f039eadbedebb6c0fc04f8e55d657a3d6ac2761b4acb6a48afcc11d331a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "37c42f039eadbedebb6c0fc04f8e55d657a3d6ac2761b4acb6a48afcc11d331a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "37c42f039eadbedebb6c0fc04f8e55d657a3d6ac2761b4acb6a48afcc11d331a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "reference": "references/nested-grid.png",
+          "referenceSha256": "37c42f039eadbedebb6c0fc04f8e55d657a3d6ac2761b4acb6a48afcc11d331a",
+          "captures": [
+            {
+              "pngSha256": "37c42f039eadbedebb6c0fc04f8e55d657a3d6ac2761b4acb6a48afcc11d331a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "37c42f039eadbedebb6c0fc04f8e55d657a3d6ac2761b4acb6a48afcc11d331a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "37c42f039eadbedebb6c0fc04f8e55d657a3d6ac2761b4acb6a48afcc11d331a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      },
+      "status": "exact",
+      "baseline": {
+        "outcome": "UnsupportedFeature",
+        "message": "Pattern paints inside pattern content are not implemented."
+      },
+      "qualification": "../svgweb/nested-patterns.json"
+    },
+    {
+      "id": "nested-glyphs",
+      "input": "inputs/nested-glyphs.svg",
+      "inputSha256": "356cf298f3fe006a3618bf8354b47ab579d812aaf2ce7a1b24a85072cdb01fe3",
+      "width": 32,
+      "height": 16,
+      "fontProgram": {
+        "path": "../kerning-precedence/fonts/PlainKern.ttf",
+        "sha256": "0526c14b283c2bc05eecdc9677615a32f12d27c881fbc1ac52759716828076a7",
+        "catalog": "../kerning-precedence/font-pack.json",
+        "packId": "public-kerning-precedence",
+        "license": "../kerning-precedence/LICENSE.txt"
+      },
+      "browserRecipe": "Insert @font-face in defs, family PlainKern, data:font/ttf;base64 of the declared font bytes. Authored input is unchanged for library conversion.",
+      "browserSourceSha256": "611e31661ba2f52b91ae8ce79f4bba807c0d7dfc208b91396e9623e943b42715",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "reference": "references/nested-glyphs-windows.png",
+          "referenceSha256": "b709253413d70885718e3df47d07445942600edf2aee8536d6d5018a1978f36b",
+          "captures": [
+            {
+              "pngSha256": "b709253413d70885718e3df47d07445942600edf2aee8536d6d5018a1978f36b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b709253413d70885718e3df47d07445942600edf2aee8536d6d5018a1978f36b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b709253413d70885718e3df47d07445942600edf2aee8536d6d5018a1978f36b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "reference": "references/nested-glyphs-linux.png",
+          "referenceSha256": "078b6d14e35321cf6a010194827d2404dd30adbb5686167b7df7d4b6909b77e4",
+          "captures": [
+            {
+              "pngSha256": "078b6d14e35321cf6a010194827d2404dd30adbb5686167b7df7d4b6909b77e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "078b6d14e35321cf6a010194827d2404dd30adbb5686167b7df7d4b6909b77e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "078b6d14e35321cf6a010194827d2404dd30adbb5686167b7df7d4b6909b77e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      },
+      "status": "exact",
+      "qualification": "../svgweb/nested-patterns.json"
+    }
+  ]
+}

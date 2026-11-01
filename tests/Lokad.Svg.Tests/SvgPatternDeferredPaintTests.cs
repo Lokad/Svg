@@ -98,16 +98,14 @@ public sealed class SvgPatternDeferredPaintTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    [Theory]
-    [InlineData("", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<pattern id='g' width='2' height='2' patternUnits='userSpaceOnUse'><rect width='1' height='1'/></pattern>", SvgErrorCode.UnsupportedFeature)]
-    public void Missing_and_nested_pattern_paints_keep_their_public_error_categories(string resource, SvgErrorCode expected)
+    [Fact]
+    public void Missing_tile_paints_keep_their_public_error_category()
     {
-        byte[] input = Input("<defs>" + Pattern("p", "<rect width='4' height='4' fill='url(#g)'/>") + resource + "</defs>" + Output);
+        byte[] input = Input("<defs>" + Pattern("p", "<rect width='4' height='4' fill='url(#g)'/>") + "</defs>" + Output);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
-        Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        Assert.Equal(expected, Assert.Throws<SvgException>(() => Render(input)).ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Render(input)).ErrorCode);
     }
 
     [Fact]

@@ -3,7 +3,6 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal enum SvgResourceUseKind { Mask, Pattern }
 internal readonly record struct SvgResourceUse(SvgUseReference Reference, string? ClipId, bool IsEvenOdd);
 
 /// <summary>Replays local resource references after forward geometry and paint definitions have registered.</summary>
@@ -167,13 +166,13 @@ internal static class SvgResourceUseReplay
     }
 
     internal static void AppendMaskUse(SvgResourceUse use, SvgSceneBuilder builder, SvgDocumentState state, CancellationToken token)
-        => AppendUse(use, builder, state, SvgResourceUseKind.Mask, token);
+        => AppendUse(use, builder, state, token);
 
     internal static void AppendPatternUse(SvgResourceUse use, SvgSceneBuilder builder, SvgDocumentState state, CancellationToken token)
-        => AppendUse(use, builder, state, SvgResourceUseKind.Pattern, token);
+        => AppendUse(use, builder, state, token);
 
-    /// <summary>Adopts shared reference replay into a resource scene; tile paints reject recursive pattern dependencies.</summary>
-    private static void AppendUse(SvgResourceUse use, SvgSceneBuilder builder, SvgDocumentState state, SvgResourceUseKind kind, CancellationToken token)
+    /// <summary>Adopts shared reference replay into a resource scene; sealing validates tile content dependencies.</summary>
+    private static void AppendUse(SvgResourceUse use, SvgSceneBuilder builder, SvgDocumentState state, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         if (!SvgReferenceResolver.TryGetDefinition(use.Reference, state.Definitions, out SvgDefinition source)
@@ -188,12 +187,6 @@ internal static class SvgResourceUseReplay
         SvgLeafMaskMapper? masks = null;
         try
         {
-            if (kind == SvgResourceUseKind.Pattern)
-                foreach (SvgGeometry geometry in mapped)
-                {
-                    token.ThrowIfCancellationRequested();
-                    SvgPatternUseReplay.RejectNestedPaint(geometry);
-                }
             SvgUseReference reference = use.Reference;
             SvgAffineTransform placement = SvgReferenceResolver.PlainInstancePlacement(reference, null);
             foreach (ref SvgGeometry geometry in mapped.AsSpan())

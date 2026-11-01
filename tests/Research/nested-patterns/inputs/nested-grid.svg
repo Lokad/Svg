@@ -1,0 +1,8 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="40"><defs>
+<pattern id="outer" href="#middle" patternTransform="translate(1 1)"/>
+<pattern id="middle" width="16" height="12" patternUnits="userSpaceOnUse"><rect width="16" height="12" fill="url(#inner)"/><path d="M8 2L15 2L15 10Z" fill="url(#second)"/></pattern>
+<pattern id="inner" href="#base" patternTransform="translate(1 0)"/>
+<pattern id="second" href="#base" patternTransform="translate(0 1)"/>
+<pattern id="base" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="2" height="4" fill="#e04030"/><rect x="2" width="2" height="2" fill="#204080"/></pattern>
+</defs><rect width="40" height="40" fill="url(#outer)"/><path d="M42 2H62L42 38Z" fill="url(#middle)"/></svg>

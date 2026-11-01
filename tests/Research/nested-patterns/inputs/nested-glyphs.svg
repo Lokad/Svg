@@ -1,0 +1,7 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16"><defs>
+<pattern id="direct" width="8" height="8" patternUnits="userSpaceOnUse"><text y="6" font-family="PlainKern" font-size="8" fill="url(#paint)">AA</text></pattern>
+<pattern id="along" width="8" height="8" patternUnits="userSpaceOnUse"><text font-family="PlainKern" font-size="8" fill="url(#paint)"><textPath href="#baseline">AA</textPath></text></pattern>
+<pattern id="paint" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="2" height="4" fill="#d03020"/><rect x="2" width="2" height="4" fill="#2040a0"/></pattern>
+<path id="baseline" d="M0 6H16"/>
+</defs><rect width="16" height="16" fill="url(#direct)"/><rect x="16" width="16" height="16" fill="url(#along)"/></svg>

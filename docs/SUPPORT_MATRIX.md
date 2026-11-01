@@ -157,7 +157,10 @@ filters and supplied text. Tile x/y/width/height accept numbers/px, not percenta
 Definitions may appear at the root, as direct `defs` children, or within rendered
 `g` groups. Group styles are inherited; external consumers retain their own placement.
 The pattern container accepts only opacity 1; children retain opacity. XML overflow
-accepts hidden/visible; CSS accepts hidden only. Recursive/nested pattern paints reject.
+accepts hidden/visible; CSS accepts hidden only. Acyclic nested pattern paints share
+retained tile content. Their content graph supports up to 32 vector-scene levels,
+including masks; collapsed template alias chains add no levels. Content cycles
+reject as unsupported; excessive content depth returns `LimitExceeded`.
 
 Aliases with local element children use those children, including empty,
 descriptive or foreign elements. Childless/comment/text-only aliases inherit
