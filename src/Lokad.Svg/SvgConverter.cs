@@ -4631,6 +4631,7 @@ public static partial class SvgConverter
             if (glyph.Contours.Length == 0) return;
             using SvgGlyphRasterSource? placedSource = sourcePlacement == SvgAffineTransform.Identity ? null : glyph.Source?.Place(sourcePlacement, budget);
             SvgGlyphRasterSource? glyphSource = placedSource ?? glyph.Source;
+            SvgAffineTransform glyphDrawingMap = glyph.ShaderDrawingMap;
             SvgLinearGradient? glyphLinear = glyph.Shader is SvgTextLinearShader linearPaint ? linearPaint.Gradient : null;
             SvgRadialGradient? glyphRadial = glyph.Shader is SvgTextRadialShader radialPaint ? radialPaint.Gradient : null;
             if (glyphLinear?.IsEmpty == true || glyphRadial?.IsEmpty == true) return;
@@ -4638,31 +4639,31 @@ public static partial class SvgConverter
             SvgPatternGeometry? originalPattern = glyph.Shader is SvgTextPatternShader patternPaint ? patternPaint.Pattern : null;
             if (originalPattern is not null)
             {
-                if (!TryMapPatternTile(originalPattern, activePaint.RecordingTransform, glyph.Source?.GlyphMap ?? SvgAffineTransform.Identity, out SvgPatternGeometry? mapped))
+                if (!TryMapPatternTile(originalPattern, activePaint.RecordingTransform, glyphDrawingMap, out SvgPatternGeometry? mapped))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text pattern coordinates are not finite and invertible.");
                 if (originalPattern.Coordinates?.IsEmpty == true) return;
                 glyphPattern = mapped ?? originalPattern;
             }
             using SvgPatternTileLease glyphTile = originalPattern is null || glyphPattern is null ? default : BorrowPatternTile(originalPattern, glyphPattern, true);
             SvgGradientPaintMatrices? textMatrices = null;
-            if (glyphLinear?.SourcePaint?.Data is {} textSource && glyph.Source is { GlyphMap: var glyphMap } && glyphMap != SvgAffineTransform.Identity)
+            if (glyphLinear?.SourcePaint?.Data is {} textSource && glyphDrawingMap != SvgAffineTransform.Identity)
             {
-                SvgAffineTransform local = SvgTextShader.RebaseLocal(glyphMap, textSource.Referencing, new(textSource.Local.A, textSource.Local.B, textSource.Local.C, textSource.Local.D, textSource.Local.E, textSource.Local.F));
-                textMatrices = new(new((float)local.A, (float)local.C, (float)local.E, (float)local.B, (float)local.D, (float)local.F), glyphMap);
+                SvgAffineTransform local = SvgTextShader.RebaseLocal(glyphDrawingMap, textSource.Referencing, new(textSource.Local.A, textSource.Local.B, textSource.Local.C, textSource.Local.D, textSource.Local.E, textSource.Local.F));
+                textMatrices = new(new((float)local.A, (float)local.C, (float)local.E, (float)local.B, (float)local.D, (float)local.F), glyphDrawingMap);
             }
-            if (glyphRadial is { NativePaintMatrices: {} radialMatrices } radial && glyph.Source is { GlyphMap: var radialGlyphMap } && radialGlyphMap != SvgAffineTransform.Identity)
+            if (glyphRadial is { NativePaintMatrices: {} radialMatrices } radial && glyphDrawingMap != SvgAffineTransform.Identity)
             {
                 SvgShaderMatrix matrix = radialMatrices.Local;
-                SvgAffineTransform local = SvgTextShader.RebaseLocal(radialGlyphMap, radialMatrices.Referencing, new(matrix.ScaleX, matrix.SkewY, matrix.SkewX, matrix.ScaleY, matrix.TranslateX, matrix.TranslateY));
-                glyphRadial = radial with { NativePaintMatrices = new(new((float)local.A, (float)local.C, (float)local.E, (float)local.B, (float)local.D, (float)local.F), radialGlyphMap) };
+                SvgAffineTransform local = SvgTextShader.RebaseLocal(glyphDrawingMap, radialMatrices.Referencing, new(matrix.ScaleX, matrix.SkewY, matrix.SkewX, matrix.ScaleY, matrix.TranslateX, matrix.TranslateY));
+                glyphRadial = radial with { NativePaintMatrices = new(new((float)local.A, (float)local.C, (float)local.E, (float)local.B, (float)local.D, (float)local.F), glyphDrawingMap) };
             }
             bool constantGlyphFactory = glyphLinear is {} factoryLinear ? SvgShaderCoordinates.IsConstantFactory(factoryLinear)
                 : glyphRadial is {} factoryRadial && SvgShaderCoordinates.IsConstantFactory(factoryRadial);
             SvgShaderMatrix? glyphReference = null;
             if (!constantGlyphFactory && (glyphLinear is not null || glyphRadial is not null)
-                && glyph.Source is { GlyphMap: var paintGlyphMap } && paintGlyphMap != SvgAffineTransform.Identity)
+                && glyphDrawingMap != SvgAffineTransform.Identity)
             {
-                if (!TryMapShaderDraw(paintGlyphMap, activePaint.RecordingTransform, out SvgShaderMatrix drawing))
+                if (!TryMapShaderDraw(glyphDrawingMap, activePaint.RecordingTransform, out SvgShaderMatrix drawing))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text shader placement must be finite and invertible.");
                 glyphReference = drawing;
             }

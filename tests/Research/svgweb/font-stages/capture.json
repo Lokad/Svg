@@ -477,6 +477,106 @@
           ]
         }
       }
+    },
+    {
+      "id": "curved-path",
+      "input": "curved-path.svg",
+      "inputSha256": "359fbc3bd431573ab591d33c336d98faed9d9a081fae1ff60c5f8e4db3b7c1df",
+      "nativeSourceSha256": "d5213a05c0a77a0e4059e2f5ab82e111986bc28ebedccc23bdbf40346e4126e5",
+      "platforms": {
+        "windows": {
+          "reference": "observations/63058768641a4405405a90a57ae843c04a380242bc84258243c5cdf26ad31729.png",
+          "referenceSha256": "63058768641a4405405a90a57ae843c04a380242bc84258243c5cdf26ad31729",
+          "captures": [
+            {
+              "pngSha256": "63058768641a4405405a90a57ae843c04a380242bc84258243c5cdf26ad31729",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "63058768641a4405405a90a57ae843c04a380242bc84258243c5cdf26ad31729",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "63058768641a4405405a90a57ae843c04a380242bc84258243c5cdf26ad31729",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/9a5c09862a6944d072719b32aacf4231ee896f69681a0717965493975eaae6dc.png",
+          "referenceSha256": "9a5c09862a6944d072719b32aacf4231ee896f69681a0717965493975eaae6dc",
+          "captures": [
+            {
+              "pngSha256": "9a5c09862a6944d072719b32aacf4231ee896f69681a0717965493975eaae6dc",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "9a5c09862a6944d072719b32aacf4231ee896f69681a0717965493975eaae6dc",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "9a5c09862a6944d072719b32aacf4231ee896f69681a0717965493975eaae6dc",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "rising-path",
+      "input": "rising-path.svg",
+      "inputSha256": "9d8166cbea9d2de7a9e097849e2ee5b4ee8152b91c6b771a120b52f67eb7e816",
+      "nativeSourceSha256": "8029c8ce78ce8986451457ab5549bc047b32bed87e094f90e7f6b82cf143beee",
+      "platforms": {
+        "windows": {
+          "reference": "observations/2eed6ce168043f16022c863f916fe53d065acc52f0f32113356cfb8d557bddb8.png",
+          "referenceSha256": "2eed6ce168043f16022c863f916fe53d065acc52f0f32113356cfb8d557bddb8",
+          "captures": [
+            {
+              "pngSha256": "2eed6ce168043f16022c863f916fe53d065acc52f0f32113356cfb8d557bddb8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "2eed6ce168043f16022c863f916fe53d065acc52f0f32113356cfb8d557bddb8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "2eed6ce168043f16022c863f916fe53d065acc52f0f32113356cfb8d557bddb8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/95bd64521c79166105f5166837d0f8c5534e713befaf8e5fca87f0a80796d2f9.png",
+          "referenceSha256": "95bd64521c79166105f5166837d0f8c5534e713befaf8e5fca87f0a80796d2f9",
+          "captures": [
+            {
+              "pngSha256": "95bd64521c79166105f5166837d0f8c5534e713befaf8e5fca87f0a80796d2f9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "95bd64521c79166105f5166837d0f8c5534e713befaf8e5fca87f0a80796d2f9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "95bd64521c79166105f5166837d0f8c5534e713befaf8e5fca87f0a80796d2f9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
     }
   ]
 }

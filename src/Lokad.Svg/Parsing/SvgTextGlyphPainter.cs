@@ -38,7 +38,7 @@ internal sealed record SvgTextPatternShader(SvgPatternGeometry Pattern) : SvgTex
 
 /// <summary>Replays fill and stroke in normalized fragment order using the existing platform glyph sources.</summary>
 /// <remarks>All inputs remain borrowed. Each emitted geometry transfers to the scene; temporary decoded contours
-/// observe the shared memory budget and cancellation token and release on every exit. Direct and path font-placement distinctions remain explicit.</remarks>
+/// observe the shared memory budget and cancellation token and release on every exit. Layout and shader drawing maps remain independent of font recording.</remarks>
 internal static class SvgTextGlyphPainter
 {
     /// <summary>Emits one direct run with the same ordered decorations, paints and borrowed clip as deferred replay.</summary>
@@ -148,17 +148,8 @@ internal static class SvgTextGlyphPainter
                     if (combinedScale == 0) continue;
                     double recordingScale = combinedScale / state.OutputTextScale;
                     if (!double.IsFinite(recordingScale) || recordingScale <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Text font scaling exceeds the device range.");
-                    if (!paths.IsEmpty && recordingScale != screenScale)
-                    {
-                        // Path fragments keep their own font strike and tangent.
-                        // Rebase only the element's scale about its translation.
-                        double ratio = recordingScale / screenScale;
-                        map = SvgAffineTransform.FromMatrix(map.A * ratio, map.B * ratio, map.C * ratio, map.D * ratio,
-                            (map.E - placement.E) * ratio + placement.E, (map.F - placement.F) * ratio + placement.F);
-                    }
-                    double fontScale = paths.IsEmpty ? recordingScale : screenScale;
-                    double size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(font.FontSize * fontScale * state.OutputTextScale) / (fontScale * state.OutputTextScale);
-                    if (paths.IsEmpty && map != SvgAffineTransform.Identity)
+                    double size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(font.FontSize * recordingScale * state.OutputTextScale) / (recordingScale * state.OutputTextScale);
+                    if (map != SvgAffineTransform.Identity)
                     {
                         double scale = recordingScale;
                         position = position with { X = position.X * scale, Y = position.Y * scale, Advance = position.Advance * scale };
@@ -167,7 +158,8 @@ internal static class SvgTextGlyphPainter
                         if (map.IsTranslation) { position = position.Translate(map); map = SvgAffineTransform.Identity; }
                     }
                     if (size == 0) continue;
-                    SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, paint.Color, font.Font, position, size, map, paths.IsEmpty ? state.OutputTextScale : screenScale, budget);
+                    SvgAffineTransform shaderDrawingMap = paths.IsEmpty ? map : placed.Map;
+                    SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, paint.Color, font.Font, position, size, map, state.OutputTextScale, shaderDrawingMap, budget);
                     glyph.Shader = shader;
                     try
                     {

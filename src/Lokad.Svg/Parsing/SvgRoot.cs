@@ -628,17 +628,18 @@ internal sealed class SvgGlyphGeometry : ISvgGeometryContent
 {
     private RenderBudget.BudgetReservation? _reservation;
 
-    internal SvgGlyphGeometry(SvgGlyphQuadraticContour[] contours, SvgColor color) : this(contours, color, null, null)
+    internal SvgGlyphGeometry(SvgGlyphQuadraticContour[] contours, SvgColor color) : this(contours, color, null, null, SvgAffineTransform.Identity)
     {
         ArgumentNullException.ThrowIfNull(contours);
     }
 
-    private SvgGlyphGeometry(SvgGlyphQuadraticContour[] contours, SvgColor color, RenderBudget.BudgetReservation? reservation, SvgGlyphRasterSource? source)
+    private SvgGlyphGeometry(SvgGlyphQuadraticContour[] contours, SvgColor color, RenderBudget.BudgetReservation? reservation, SvgGlyphRasterSource? source, SvgAffineTransform shaderDrawingMap)
     {
         Contours = contours;
         Color = color;
         _reservation = reservation;
         Source = source;
+        ShaderDrawingMap = shaderDrawingMap;
     }
 
     internal SvgGlyphQuadraticContour[] Contours { get; }
@@ -648,13 +649,17 @@ internal sealed class SvgGlyphGeometry : ISvgGeometryContent
     internal SvgGlyphRasterSource? Source { get; }
     internal SvgTextStrokePaint? StrokePaint { get; private set; }
     internal SvgTextShader? Shader { get; set; }
+    /// <summary>Retains the shader's drawing coordinates independently of the normalized font strike.</summary>
+    /// <remarks>Copied into the scene at construction and immutable during replay. Its storage is included
+    /// in contour admission before allocation and ownership transfer; it owns no separate reservation.</remarks>
+    internal SvgAffineTransform ShaderDrawingMap { get; }
     internal double StrokeBoundsInflation { get; private set; }
 
     internal static SvgGlyphGeometry CreateStroke(SvgGlyphContourStorage contours, SvgTextStrokePaint paint,
         SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, SvgAffineTransform glyphMap, RenderBudget budget)
     {
         SvgColor color = paint.Resolve()?.Color ?? throw new InvalidOperationException("A painted text stroke requires a color.");
-        SvgGlyphGeometry geometry = Create(contours, color, font, position, fontSize, glyphMap, null, budget);
+        SvgGlyphGeometry geometry = Create(contours, color, font, position, fontSize, glyphMap, null, glyphMap, budget);
         geometry.StrokePaint = paint;
         double scale = Math.Max(Math.Sqrt(glyphMap.A * glyphMap.A + glyphMap.B * glyphMap.B), Math.Sqrt(glyphMap.C * glyphMap.C + glyphMap.D * glyphMap.D));
         double strokeScale = paint.NonScaling ? 1 / paint.FontScale : 1;
@@ -666,7 +671,7 @@ internal sealed class SvgGlyphGeometry : ISvgGeometryContent
     {
         ArgumentNullException.ThrowIfNull(contours);
         SvgGlyphContourTransfer transfer = contours.TransferOwnership();
-        try { return new SvgGlyphGeometry(transfer.Contours, color, transfer.Reservation, null); }
+        try { return new SvgGlyphGeometry(transfer.Contours, color, transfer.Reservation, null, SvgAffineTransform.Identity); }
         catch
         {
             transfer.Reservation?.Dispose();
@@ -675,14 +680,14 @@ internal sealed class SvgGlyphGeometry : ISvgGeometryContent
     }
 
     /// <summary>Adopts contours and positioned source metadata, releasing both on failed ownership transfer.</summary>
-    internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color, SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, SvgAffineTransform glyphMap, double? pictureFontScale, RenderBudget budget)
+    internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color, SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, SvgAffineTransform glyphMap, double? pictureFontScale, SvgAffineTransform shaderDrawingMap, RenderBudget budget)
     {
         if (contours.Contours.Length == 0) return Create(contours, color);
         SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, position, fontSize, glyphMap, pictureFontScale, budget);
         try
         {
             SvgGlyphContourTransfer transfer = contours.TransferOwnership();
-            try { return new(transfer.Contours, color, transfer.Reservation, source); }
+            try { return new(transfer.Contours, color, transfer.Reservation, source, shaderDrawingMap); }
             catch { transfer.Reservation?.Dispose(); throw; }
         }
         catch { source.Dispose(); throw; }
@@ -707,14 +712,14 @@ internal sealed class SvgGlyphGeometry : ISvgGeometryContent
             throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph contour storage exceeds the supported accounting range.");
         }
         RenderBudget.BudgetReservation reservation = budget.Reserve(GetStorageByteCount(contours.Length, segmentCount), SvgMemoryCategory.Scene);
-        return new SvgGlyphGeometry(contours, color, reservation, null);
+        return new SvgGlyphGeometry(contours, color, reservation, null, SvgAffineTransform.Identity);
     }
 
     internal static long GetStorageByteCount(int contourCount, int segmentCount)
     {
         try
         {
-            return checked(40L + (long)contourCount * Unsafe.SizeOf<SvgGlyphQuadraticContour>() + (long)contourCount * 32L + (long)segmentCount * Unsafe.SizeOf<SvgGlyphQuadraticSegment>());
+            return checked(40L + Unsafe.SizeOf<SvgAffineTransform>() + (long)contourCount * Unsafe.SizeOf<SvgGlyphQuadraticContour>() + (long)contourCount * 32L + (long)segmentCount * Unsafe.SizeOf<SvgGlyphQuadraticSegment>());
         }
         catch (OverflowException)
         {

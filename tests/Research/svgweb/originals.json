@@ -10646,6 +10646,7 @@
     "remainingDefaultDifferences": [],
     "fontContexts": "font-contexts.json",
     "sharedFontModel": "shared-font-model.json",
-    "glyphRecording": "glyph-recording.json"
+    "glyphRecording": "glyph-recording.json",
+    "glyphDrawingBinding": "glyph-drawing-binding.json"
   }
 }

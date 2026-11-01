@@ -325,5 +325,9 @@
     "Exact-program Droid Serif Bold/BoldItalic/Italic glyph residuals are unchanged; preserve opposite-platform and exact P companions.",
     "Public curved/angled glyph observations in font-stages/tangent-observations.json are unchanged by this fix; single captures are not admitted references.",
     "Every full original remains open for font/resource/static-state context acceptance; default exact output alone does not close W1."
-  ]
+  ],
+  "followUp": {
+    "evidence": "glyph-drawing-binding.json",
+    "scope": "Filled path strikes now share recording with direct fills; shader drawing maps retain the separate context that the earlier prototype lacked. Existing references are unchanged."
+  }
 }

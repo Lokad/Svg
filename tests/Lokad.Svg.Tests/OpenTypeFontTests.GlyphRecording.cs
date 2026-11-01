@@ -10,7 +10,7 @@ public sealed partial class OpenTypeFontTests
     [Trait("Layer", "Mechanism")]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task Filled_positions_record_the_combined_scale_without_changing_the_path_strike(bool onPath)
+    public async Task Filled_direct_and_path_positions_keep_the_native_scaler_baseline(bool onPath)
     {
         string text = onPath
             ? "<defs><path id='p' d='M42 162H160'/></defs><text font-family='Example' font-size='12'><textPath href='#p'>A</textPath></text>"
@@ -22,14 +22,7 @@ public sealed partial class OpenTypeFontTests
             SvgAffineTransform.FromScaleOffset(5d / 12, 5d / 12, 50, 0), null))
         {
             SvgGlyphRasterSource source = Assert.IsType<SvgGlyphRasterSource>(Assert.Single(scene.Geometries).Glyph.Source);
-            if (onPath)
-            {
-                // A horizontal path retains the element map and its separate
-                // strike, with the same recorded element scale as direct fill.
-                Assert.Equal(1.8, source.GlyphMap.A, 12);
-                Assert.Equal(1.8, source.GlyphMap.D, 12);
-            }
-            else
+            if (!source.HasGlyphMap)
             {
                 Assert.Equal(SvgAffineTransform.Identity, source.GlyphMap);
                 // This float lies above the old 291.59999227523804 baseline.
@@ -37,14 +30,47 @@ public sealed partial class OpenTypeFontTests
                 // GposMarks has descent 128/1024: 21.6 rounds to 3 here.
                 Assert.Equal((double)(float)291.6, source.LayoutBounds(SvgAffineTransform.Identity, CancellationToken.None).Bottom - 3);
                 Assert.Equal(9, source.DeviceFontSize(5d / 12));
-                using SvgGlyphRasterSource flat = SvgGlyphRasterSource.Create(Assert.Single(fonts.Fonts), new(2, 81.5, 121.5, 0), 9, budget);
-                using OpenTypeGlyphContourStorage expected = flat.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None);
-                float rasterScale = (float)(5d / 12);
-                using OpenTypeGlyphContourStorage actual = source.CreateWindowsContours(rasterScale, 50, rasterScale, 0, budget, CancellationToken.None);
-                Assert.Equal(expected.Segments.ToArray(), actual.Segments.ToArray());
             }
+            // Both source graphs must reach the same actual fitted outline and
+            // origin as the independently browser-backed flat control. Do not
+            // require a particular intermediate path-map representation.
+            using SvgGlyphRasterSource flat = SvgGlyphRasterSource.Create(Assert.Single(fonts.Fonts), new(2, 81.5, 121.5, 0), 9, budget);
+            using OpenTypeGlyphContourStorage expected = flat.CreateWindowsContours(1, 0, 1, 0, budget, CancellationToken.None);
+            float rasterScale = (float)(5d / 12);
+            using OpenTypeGlyphContourStorage actual = source.CreateWindowsContours(rasterScale, 50, rasterScale, 0, budget, CancellationToken.None);
+            Assert.Equal(expected.Segments.ToArray(), actual.Segments.ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    [Trait("Layer", "Contract")]
+    public async Task Glyph_drawing_metadata_is_admitted_before_transform_and_transfers_through_retry()
+    {
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgPreparedFont font = Assert.Single(fonts.Fonts);
+        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, 1, font.Metrics, new RenderBudget(new HostMemoryBudget(10_000)), CancellationToken.None);
+        // This single-contour, three-segment fixture previously needed 224 bytes.
+        // Its independent affine drawing binding retains another 48 bytes.
+        using HostMemoryBudget host = new(224);
+        RenderBudget budget = new(host);
+        bool transformed = false;
+        using (GlyphOutlineProbe.Arm(() => transformed = true))
+        {
+            SvgException error = Assert.Throws<SvgException>(() => SvgGlyphOutline.GetContourStorage(font, new(1, 2, 3, 1), 100, decoded, budget, CancellationToken.None));
+            Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
+        }
+        Assert.False(transformed);
+        Assert.Equal(0, host.Reserved);
+        host.Limit = 272;
+        using (SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font, new(1, 2, 3, 1), 100, decoded, budget, CancellationToken.None))
+        using (SvgGlyphGeometry retained = SvgGlyphGeometry.Create(contours, new SvgColor(0, 0, 0, 255)))
+        {
+            Assert.Equal(272, host.Reserved);
+            Assert.Equal(3, Assert.Single(retained.Contours).Segments.Length);
+            Assert.Equal(3, decoded.Segments.Length);
+        }
+        Assert.Equal(0, host.Reserved);
     }
 
     [Fact]
