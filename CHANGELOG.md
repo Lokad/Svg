@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Respect Windows tiny-glyph program admission and default scanner thresholds,
+  preserving scaled-child execution and instruction-free parent scanner state.
+- Produce reproducible NuGet and symbol-package ZIP timestamps.
 - Correct Windows glyph contours when a font applies conditional vertical pixel shifts.
 - Keep Windows fitted glyph originals/current points in their aligned metric frame;
   preserve the child paint origin independently of composite parent-program phantoms.

@@ -6,6 +6,13 @@ using Lokad.Svg.Rendering;
 /// <summary>Retains independent Windows smoothing and font-selected fitting policies without owning storage.</summary>
 internal readonly record struct OpenTypeWindowsGlyphProfile(SvgGlyphLcdMode LcdMode, bool GridFit)
 {
+    /// <summary>Rounds a validated raster size through native 16.16 precision, independently of gasp range rounding.</summary>
+    internal static int RoundRasterPpem(double deviceSize)
+    {
+        long fixedSize = (long)Math.Floor((double)(float)deviceSize * 65536 + .5);
+        return (int)((fixedSize + 32768) >> 16);
+    }
+
     /// <summary>Creates the storage-free native interpreter policy independently of whether its fitted points will be painted.</summary>
     internal TrueTypeHintTarget CreateHintTarget(double horizontalRatio)
     {

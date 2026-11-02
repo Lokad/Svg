@@ -327,6 +327,14 @@ a new destination and require both recorded hashes:
 python -B tests/Research/windows-conditional-targets/derive.py --output-directory artifacts/research/conditional-targets
 ```
 
+The [small-strike controls](../tests/Research/windows-small-strikes/README.md)
+separate program admission, scaled children and scanner thresholds. The same
+dependency reproduces all five original CC0 font hashes:
+
+```powershell
+python -B tests/Research/windows-small-strikes/derive.py --output-directory artifacts/research/small-strikes
+```
+
 For original font comparisons, match initial generic-family selections as well as
 authored named families; the library's legacy last resort and browser ambient serif
 can select different programs. Preserve both input hashes and catalog bindings.

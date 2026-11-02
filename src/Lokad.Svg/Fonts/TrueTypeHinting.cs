@@ -122,6 +122,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
     private readonly CancellationToken _token;
     private TrueTypeHintTarget _target;
     private readonly int _ppem;
+    private readonly int _scannerPpem;
     private readonly TrueTypeHintDeviceScale _scale;
     private int AxisPpem => ScaleRatio(_ppem, ProjectionRatio);
     private int _count, _depth, _loop = 1, _rp0, _rp1, _rp2;
@@ -133,27 +134,30 @@ internal sealed partial class TrueTypeHinting : IDisposable
     private TrueTypeHintSuperRound _superRound = new(64, 0, 32);
     private TrueTypeHintZone _zp0 = TrueTypeHintZone.Glyph, _zp1 = TrueTypeHintZone.Glyph, _zp2 = TrueTypeHintZone.Glyph;
 
-    private TrueTypeHinting(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget.BudgetReservation reservation, CancellationToken token)
+    private TrueTypeHinting(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, double deviceSize, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget.BudgetReservation reservation, CancellationToken token)
     {
         _stack = new int[profile.Stack]; _storage = new int[profile.Storage];
         _functions = new TrueTypeHintFunction[profile.Functions]; _twilight = new TrueTypeHintPoint[profile.Twilight];
         _cvt = new int[cvt.Length]; _initialCvt = new int[cvt.Length];
         for (int i = 0; i < cvt.Length; i++) { token.ThrowIfCancellationRequested(); _cvt[i] = _initialCvt[i] = cvt[i]; }
-        _glyph = glyph; _ends = ends; _ppem = ppem; _scale = scale; _target = target;
+        _glyph = glyph; _ends = ends; _ppem = (int)Math.Floor(deviceSize + .5); _scale = scale; _target = target;
+        _scannerPpem = target.UsesWindowsArithmetic ? OpenTypeWindowsGlyphProfile.RoundRasterPpem(deviceSize) : _ppem;
         _reservation = reservation; _token = token;
     }
 
     /// <summary>Copies control values and borrows glyph points and contour ends for an exclusively owned interpreter.</summary>
     /// <remarks>Windows control values arrive scaled on the maximum device axis. The caller retains the borrowed arrays until disposal. Creation and execution share the supplied cancellation token and memory budget; independent owners may run concurrently.</remarks>
-    internal static TrueTypeHinting Create(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget budget, CancellationToken token)
+    internal static TrueTypeHinting Create(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, double deviceSize, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget budget, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         if (profile.Stack is < 0 or > 4096 || profile.Storage is < 0 or > 4096 || profile.Functions is < 0 or > 1024 || profile.Twilight is < 0 or > 4096 || cvt.Length > 4096 || glyph.Length > 32772)
             throw new SvgException(SvgErrorCode.LimitExceeded, "TrueType interpreter storage exceeds the supported bounds.");
-        if (ppem is < 0 or > 32767 || scale.Vertical < 0 || scale.Horizontal < 0 ||
+        if (!double.IsFinite(deviceSize) || deviceSize is < 0 or > 32767 || scale.Vertical < 0 || scale.Horizontal < 0 ||
             !float.IsFinite(scale.WindowsVertical) || !float.IsFinite(scale.WindowsHorizontal) || scale.WindowsVertical < 0 || scale.WindowsHorizontal < 0)
             throw Invalid("The TrueType device scale is invalid.");
         ValidateTarget(target);
+        if (!double.IsFinite(deviceSize * target.HorizontalRatio) || deviceSize * target.HorizontalRatio > 32767)
+            throw Invalid("The horizontal TrueType device size is invalid.");
         int previous = -1;
         foreach (ushort end in ends)
         {
@@ -165,7 +169,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
             + ParserCollectionMemory.GetArrayByteCount<int>(profile.Storage) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(cvt.Length)
             + ParserCollectionMemory.GetArrayByteCount<TrueTypeHintFunction>(profile.Functions) + ParserCollectionMemory.GetArrayByteCount<TrueTypeHintPoint>(profile.Twilight);
         RenderBudget.BudgetReservation reservation = budget.Reserve(bytes, SvgMemoryCategory.Geometry);
-        try { return new(profile, cvt, glyph, ends, ppem, scale, target, reservation, token); }
+        try { return new(profile, cvt, glyph, ends, deviceSize, scale, target, reservation, token); }
         catch { reservation.Dispose(); throw; }
     }
 
@@ -258,19 +262,19 @@ internal sealed partial class TrueTypeHinting : IDisposable
         void SetDropouts()
         {
             bool enabled = DropoutsEnabled();
-            GlyphSmartDropouts = enabled && (!_scanConfigured || _scanType is 4 or 5);
-            GlyphSimpleDropouts = enabled && _scanConfigured && _scanType is 0 or 1;
+            GlyphSmartDropouts = enabled && _scanConfigured && _scanType is 4 or 5;
+            GlyphSimpleDropouts = enabled && (!_scanConfigured || _scanType is 0 or 1);
             GlyphExcludeDropoutStubs = enabled && _scanConfigured && _scanType is 1 or 5;
         }
 
         bool DropoutsEnabled()
         {
-            // The native symmetric profile enables default tip dropouts through
-            // rounded ppem 32. Authored scanner settings replace that default.
-            if (!_scanConfigured && (_target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 && _ppem <= 32) return true;
+            // Both Windows LCD profiles default to simple dropouts through the
+            // vertical raster ppem32. Authored settings replace the default.
+            if (!_scanConfigured) return _target.UsesWindowsArithmetic && _scannerPpem <= 32;
             if (_scanType is not 0 and not 1 and not 4 and not 5) return false;
             int threshold = _scanControl & 255;
-            bool small = threshold == 255 || threshold != 0 && _ppem <= threshold;
+            bool small = threshold == 255 || threshold != 0 && _scannerPpem <= threshold;
             bool rotated = (_target.QueryFlags & TrueTypeHintQueryFlags.Rotated) != 0;
             bool stretched = (_target.QueryFlags & TrueTypeHintQueryFlags.Stretched) != 0;
             bool enabled = (_scanControl & 256) != 0 && small || (_scanControl & 512) != 0 && rotated || (_scanControl & 1024) != 0 && stretched;

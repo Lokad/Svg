@@ -1,0 +1,84 @@
+{
+  "scope": "Canonical original CC0 marker at1px and2px. Windows ignores the first program and executes the second; Linux retains its independent fitting.",
+  "width": 64,
+  "height": 48,
+  "browser": "Chrome153.0.8010.52",
+  "input": "small-strikes.svg",
+  "inputSha256": "a2cebc94fe06d3759aa3d06ed7455f3e655eb9fcda03bf0289595b970a9f36e8",
+  "font": "fonts/SmallNatural.ttf",
+  "fontSha256": "488bd27049efdc682b6c34fa41abd021a9200c226dc86d3a7afa384e1df7fb52",
+  "nativeSourceSha256": "96c65f13ac247a51108b3d59e3a0a5dd4ee5298966586ed47779fdb845246832",
+  "nativeRecipe": "Embed unchanged SmallNatural program with @font-face family ProbeTiny; no other source changes.",
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "4d3f9c7509976f4bd0b4d783f679e48e1a9c2f1562141ad8b3959aa96470abee",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "4d3f9c7509976f4bd0b4d783f679e48e1a9c2f1562141ad8b3959aa96470abee",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "4d3f9c7509976f4bd0b4d783f679e48e1a9c2f1562141ad8b3959aa96470abee",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "4d3f9c7509976f4bd0b4d783f679e48e1a9c2f1562141ad8b3959aa96470abee",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "fontUseProofs": {
+        "withoutEmbeddedProgram": {
+          "inputSha256": "a2cebc94fe06d3759aa3d06ed7455f3e655eb9fcda03bf0289595b970a9f36e8",
+          "pngSha256": "dd6c02c9d2bdf6dbe8abd37da07fd8586619b537a76dd0cade449aae727cc43e",
+          "changedPixels": 31,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      }
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "5a62914cf5d4d21ecb57275eac87494bdb9cdf1a0a3459c18c382d50ebe9d945",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "5a62914cf5d4d21ecb57275eac87494bdb9cdf1a0a3459c18c382d50ebe9d945",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "5a62914cf5d4d21ecb57275eac87494bdb9cdf1a0a3459c18c382d50ebe9d945",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "5a62914cf5d4d21ecb57275eac87494bdb9cdf1a0a3459c18c382d50ebe9d945",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "fontUseProofs": {
+        "withoutEmbeddedProgram": {
+          "inputSha256": "a2cebc94fe06d3759aa3d06ed7455f3e655eb9fcda03bf0289595b970a9f36e8",
+          "pngSha256": "90eacc48884bc3cceb6a04b769e0b5e6dac6408a4160b9270b147f153b3b4618",
+          "changedPixels": 5,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      }
+    }
+  }
+}

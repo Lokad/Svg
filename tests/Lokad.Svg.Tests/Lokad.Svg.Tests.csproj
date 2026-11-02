@@ -116,6 +116,8 @@
     <None Include="../Research/windows-font-unit-scaling/native-vectors.json" Link="TestData/windows-font-unit-scaling/native-vectors.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/windows-font-unit-scaling/expanded-points.json" Link="TestData/windows-font-unit-scaling/expanded-points.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/windows-font-unit-scaling/phantom-origins.json" Link="TestData/windows-font-unit-scaling/phantom-origins.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/windows-small-strikes/native-masks.json" Link="TestData/windows-small-strikes/native-masks.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/windows-small-strikes/fonts/*.ttf" Link="TestData/windows-small-strikes/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/windows-conditional-targets/native-targets.json" Link="TestData/windows-conditional-targets/native-targets.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/windows-conditional-targets/fonts/*.ttf" Link="TestData/windows-conditional-targets/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

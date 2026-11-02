@@ -55,6 +55,16 @@ internal static partial class OpenTypeFont
         double requestedHorizontalScale = Math.Floor(horizontalSize * 64 * 65536 / metrics.UnitsPerEm + .5);
         if (!double.IsFinite(horizontalSize) || horizontalSize > 32767 || requestedHorizontalScale > int.MaxValue)
             throw new SvgException(SvgErrorCode.LimitExceeded, "The horizontal TrueType device scale exceeds its coordinate bound.");
+        // Program admission belongs to the raster strike. A smaller transformed
+        // child still executes once its parent strike has admitted fitting.
+        if (target.UsesWindowsArithmetic && OpenTypeWindowsGlyphProfile.RoundRasterPpem(Math.Max(deviceSize, horizontalSize)) < 2)
+        {
+            OpenTypeGlyphContourStorage unfitted = GetUnhintedDeviceContours(bytes, glyphIndex, metrics,
+                OpenTypeUnhintedDeviceScale.CreateWindows(deviceSize, horizontalSize, metrics.UnitsPerEm),
+                OpenTypeCompositeOffsetMath.DirectWrite, TrueTypeImpliedPointRounding.None, postTransform, budget, token);
+            unfitted.SimpleDropouts = true;
+            return unfitted;
+        }
         int horizontalScale = checked((int)requestedHorizontalScale);
         TrueTypeHintDeviceScale deviceScale = new(scale, horizontalScale)
         {
@@ -65,7 +75,7 @@ internal static partial class OpenTypeFont
         if (structure.CompositeHeader is not null)
         {
             (TrueTypeHintProfile compositeProfile, OpenTypeTableRange compositeCvt, OpenTypeTableRange compositeFont, OpenTypeTableRange compositePrep) = ReadHintTables();
-            using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), deviceScale, deviceSize, horizontalSize, target, budget, token);
+            using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, deviceScale, deviceSize, horizontalSize, target, budget, token);
             using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, null, target.UsesWindowsArithmetic ? OpenTypeCompositeOffsetMath.DirectWrite : OpenTypeCompositeOffsetMath.NativeLength, budget, token);
             SubtractGlyphOrigin(outline.Points, outline.Phantoms?.LeftX ?? 0, token);
             MapPoints(outline.Points);
@@ -84,7 +94,6 @@ internal static partial class OpenTypeFont
         int instructionLength = ReadUInt16(bytes.Span, lengthOffset);
         bool hasPrograms = fontProgram.Length != 0 || preparation.Length != 0 || instructionLength != 0;
         int pointCount = decoded.Points.Length, cvtCount = cvtRange.Length / 2;
-        int ppem = checked((int)Math.Floor(deviceSize + .5));
         long scratchBytes = ParserCollectionMemory.GetArrayByteCount<TrueTypeHintPoint>(pointCount + 4) + ParserCollectionMemory.GetArrayByteCount<int>(cvtCount);
         using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
         TrueTypeHintPoint[] points = new TrueTypeHintPoint[pointCount + 4];
@@ -113,7 +122,7 @@ internal static partial class OpenTypeFont
         // to either vertical phantom point is an explicit unsupported outcome.
         points[pointCount + 2].Unavailable = points[pointCount + 3].Unavailable = true;
         bool smartDropouts, simpleDropouts, excludeDropoutStubs;
-        using (TrueTypeHinting machine = TrueTypeHinting.Create(profile, cvt, points, structure.Value.ContourEndpoints, ppem, deviceScale, target, budget, token))
+        using (TrueTypeHinting machine = TrueTypeHinting.Create(profile, cvt, points, structure.Value.ContourEndpoints, deviceSize, deviceScale, target, budget, token))
         {
             machine.Run(bytes.Slice(fontProgram.Offset, fontProgram.Length), TrueTypeHintProgramKind.Font);
             ReadOnlyMemory<byte> prep = bytes.Slice(preparation.Offset, preparation.Length);
@@ -121,8 +130,8 @@ internal static partial class OpenTypeFont
                 machine.Prepare(prep, target with { QueryFlags = TrueTypeHintQueryFlags.None });
             machine.Prepare(prep, target);
             machine.Run(bytes.Slice(lengthOffset + 2, instructionLength), TrueTypeHintProgramKind.Glyph);
-            smartDropouts = hasPrograms && machine.GlyphSmartDropouts;
-            simpleDropouts = hasPrograms && target.UsesWindowsArithmetic && machine.GlyphSimpleDropouts;
+            smartDropouts = machine.GlyphSmartDropouts;
+            simpleDropouts = target.UsesWindowsArithmetic && machine.GlyphSimpleDropouts;
             excludeDropoutStubs = (smartDropouts || simpleDropouts) && machine.GlyphExcludeDropoutStubs;
         }
         // Simple and composite outlines share the fitted horizontal metric origin.
@@ -135,7 +144,7 @@ internal static partial class OpenTypeFont
         OpenTypeGlyphContourStorage fitted = segments.Detach();
         fitted.SmartDropouts = smartDropouts;
         fitted.ExcludeDropoutStubs = excludeDropoutStubs;
-        fitted.SimpleDropouts = simpleDropouts || !hasPrograms && (target.QueryFlags & TrueTypeHintQueryFlags.Symmetric) != 0 && ppem <= 32;
+        fitted.SimpleDropouts = simpleDropouts;
         return fitted;
 
         void MapPoints(Span<OpenTypeGlyphPoint> points)

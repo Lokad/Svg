@@ -9,6 +9,11 @@ public sealed class SvgWindowsScanBoundaryTests
 {
     [Fact]
     [Trait("Layer", "Rendering")]
+    public Task The_raster_strike_selects_tiny_program_execution_before_component_fitting()
+        => AssertNativeFontFixture("windows-small-strikes", "original-small-strikes", "ProbeTiny");
+
+    [Fact]
+    [Trait("Layer", "Rendering")]
     public Task A_turning_counter_uses_prepared_scan_curves_without_changing_the_fitted_outline()
         => AssertNativeFontFixture("windows-scan-boundary", "original-scan-turn", "ScanTurn");
 

@@ -22,7 +22,7 @@ internal static partial class OpenTypeFont
         private readonly TrueTypeHinting _machine;
         private readonly RenderBudget.BudgetReservation _reservation;
 
-        internal CompositeTrueTypeHinting(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation, int ppem, TrueTypeHintDeviceScale scale, double deviceSize, double horizontalSize, TrueTypeHintTarget target, RenderBudget budget, CancellationToken token)
+        internal CompositeTrueTypeHinting(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation, TrueTypeHintDeviceScale scale, double deviceSize, double horizontalSize, TrueTypeHintTarget target, RenderBudget budget, CancellationToken token)
         {
             _bytes = bytes; _metrics = metrics; _scale = scale; _deviceSize = deviceSize; _horizontalSize = horizontalSize;
             _profile = profile; _cvtRange = cvtRange; _fontProgram = fontProgram; _preparation = preparation; _target = target; _budget = budget; _token = token;
@@ -41,7 +41,7 @@ internal static partial class OpenTypeFont
                     cvt[i] = target.UsesWindowsArithmetic && target.ControlScale == TrueTypeHintControlScale.FullPrecision
                         ? scale.ScaleWindowsControl(value) : Scale(value, controlScale);
                 }
-                _machine = TrueTypeHinting.Create(profile, cvt, [], [], ppem, scale, target, budget, token);
+                _machine = TrueTypeHinting.Create(profile, cvt, [], [], deviceSize, scale, target, budget, token);
                 try
                 {
                     _machine.Run(bytes.Slice(fontProgram.Offset, fontProgram.Length), TrueTypeHintProgramKind.Font);
@@ -70,7 +70,7 @@ internal static partial class OpenTypeFont
                 WindowsVertical = (float)y / _metrics.UnitsPerEm,
                 WindowsHorizontal = (float)x / _metrics.UnitsPerEm
             };
-            return new(_bytes, _metrics, _profile, _cvtRange, _fontProgram, _preparation, checked((int)Math.Floor(y + .5)), childScale, y, x,
+            return new(_bytes, _metrics, _profile, _cvtRange, _fontProgram, _preparation, childScale, y, x,
                 _target with { HorizontalRatio = x / y }, _budget, _token);
         }
 
@@ -126,7 +126,13 @@ internal static partial class OpenTypeFont
         {
             _token.ThrowIfCancellationRequested();
             // An instruction-free parent keeps its selected child's completed metric state.
-            if (selectedMetrics is {} selected && instructions.Length == 0) return selected;
+            if (selectedMetrics is {} selected && instructions.Length == 0)
+            {
+                // The parent's prepared scanner policy governs the assembled
+                // outline even when its metrics come from a scaled child.
+                _machine.Run(ReadOnlyMemory<byte>.Empty, TrueTypeHintProgramKind.Glyph);
+                return selected;
+            }
             using RenderBudget.BudgetReservation scratch = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<TrueTypeHintPoint>(outline.Length + 4), SvgMemoryCategory.Geometry);
             TrueTypeHintPoint[] points = new TrueTypeHintPoint[outline.Length + 4];
             for (int i = 0; i < outline.Length; i++)

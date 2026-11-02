@@ -18,14 +18,20 @@ public sealed class TrueTypeCompositeStateTests
         {
             TrueTypeHintPoint[] points = [new(0, 0, 0, 0), default, default, default, default];
             machine.HintGlyph(ReadOnlyMemory<byte>.Empty, points, [0], false);
-            Assert.Equal(expected, machine.GlyphSmartDropouts);
+            // The independent rectangle masks select simple tip dropouts in
+            // both Windows LCD profiles; this case protects prepared-state replay.
+            Assert.False(machine.GlyphSmartDropouts);
+            Assert.Equal(expected, machine.GlyphSimpleDropouts);
             machine.HintGlyph(new byte[] { 0xB0, 0, 0x85 }, points, [0], false);
             Assert.False(machine.GlyphSmartDropouts);
+            Assert.False(machine.GlyphSimpleDropouts);
             machine.HintGlyph(ReadOnlyMemory<byte>.Empty, points, [0], false);
-            Assert.Equal(expected, machine.GlyphSmartDropouts);
+            Assert.False(machine.GlyphSmartDropouts);
+            Assert.Equal(expected, machine.GlyphSimpleDropouts);
             machine.Prepare(new byte[] { 0xB0, 2, 0x8D }, target);
             machine.HintGlyph(ReadOnlyMemory<byte>.Empty, points, [0], true);
             Assert.False(machine.GlyphSmartDropouts);
+            Assert.False(machine.GlyphSimpleDropouts);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

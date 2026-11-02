@@ -1,0 +1,22 @@
+{
+  "packId": "original-small-strikes",
+  "files": [
+    {
+      "relativePath": "fonts/SmallNatural.ttf",
+      "byteSize": 1196,
+      "sha256": "488bd27049efdc682b6c34fa41abd021a9200c226dc86d3a7afa384e1df7fb52"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "ProbeTiny",
+      "resolvedFamily": "Original tiny hint control",
+      "relativeFontFile": "fonts/SmallNatural.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    }
+  ],
+  "fallbacks": []
+}

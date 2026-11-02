@@ -17,6 +17,7 @@
     <PackageTags>svg;png;rendering</PackageTags>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DeterministicTimestamp>true</DeterministicTimestamp>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageOutputPath>../../artifacts/nuget/</PackageOutputPath>
   </PropertyGroup>

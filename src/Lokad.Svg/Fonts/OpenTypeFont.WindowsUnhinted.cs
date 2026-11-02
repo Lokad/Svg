@@ -64,14 +64,16 @@ internal static partial class OpenTypeFont
             deviceSize = Math.Floor(deviceSize + .5);
             if (deviceSize == 0) return new([], [], null, null);
         }
+        OpenTypeUnhintedDeviceScale scale = OpenTypeUnhintedDeviceScale.CreateWindows(deviceSize, deviceSize * horizontalRatio, metrics.UnitsPerEm);
         (bool smart, bool simple, bool excludeStubs) = SelectScanner();
-        OpenTypeGlyphContourStorage result = GetUnhintedDeviceContours(bytes, glyphIndex, metrics, OpenTypeUnhintedDeviceScale.CreateWindows(deviceSize, deviceSize * horizontalRatio, metrics.UnitsPerEm), OpenTypeCompositeOffsetMath.DirectWrite, TrueTypeImpliedPointRounding.None, postTransform, budget, token);
+        OpenTypeGlyphContourStorage result = GetUnhintedDeviceContours(bytes, glyphIndex, metrics, scale, OpenTypeCompositeOffsetMath.DirectWrite, TrueTypeImpliedPointRounding.None, postTransform, budget, token);
         result.SmartDropouts = smart; result.SimpleDropouts = simple; result.ExcludeDropoutStubs = excludeStubs;
         return result;
 
         (bool Smart, bool Simple, bool ExcludeStubs) SelectScanner()
         {
-            bool hasPrograms = false, required = false;
+            if (OpenTypeWindowsGlyphProfile.RoundRasterPpem(Math.Max(deviceSize, deviceSize * horizontalRatio)) < 2) return (false, true, false);
+            bool required = false;
             ReadOnlySpan<byte> data = bytes.Span;
             int count = ReadUInt16(data, 4);
             RequireRange(data, 12, count * 16, "scanner table directory");
@@ -96,8 +98,7 @@ internal static partial class OpenTypeFont
                 using OpenTypeGlyphContourStorage scan = GetTrueTypeContours(bytes, glyphIndex, metrics, deviceSize, target, TrueTypeImpliedPointRounding.None, budget, token);
                 return (scan.SmartDropouts, scan.SimpleDropouts, scan.ExcludeDropoutStubs);
             }
-            bool enabled = Math.Floor(deviceSize + .5) <= 32;
-            return (enabled && hasPrograms, enabled && !hasPrograms, false);
+            return (false, OpenTypeWindowsGlyphProfile.RoundRasterPpem(deviceSize) <= 32, false);
 
             bool Visit(ushort glyph, int depth, OpenTypeGlyphRecursionTracker active)
             {
@@ -125,7 +126,6 @@ internal static partial class OpenTypeFont
 
             bool NeedsScanner(ReadOnlyMemory<byte> program)
             {
-                hasPrograms |= program.Length != 0;
                 ReadOnlySpan<byte> code = program.Span;
                 for (int at = 0; at < code.Length;)
                 {
