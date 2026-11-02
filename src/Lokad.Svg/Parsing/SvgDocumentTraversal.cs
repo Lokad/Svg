@@ -88,10 +88,16 @@ internal static class SvgDocumentTraversal
                 {
                     // Skipped switch content never renders and never invalidates the operation.
                 }
+                else if (SvgStructuralVocabulary.IsScriptElement(reader.NamespaceURI, reader.LocalName))
+                {
+                    SvgLeafSubtree script = SvgStructuralAdmission.ConsumeScriptSubtree(reader, limits, state.NodeCount, 0, cancellationToken);
+                    state.NodeCount = script.NodeCount;
+                    state.HasUnsupportedContent |= script.HasUnsupportedChildren;
+                }
                 else if (state.DescriptionDepth >= 0 && reader.Depth > state.DescriptionDepth)
                 {
                     // Descriptive subtrees never create drawing or reference definitions. Active content still invalidates the operation.
-                    if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
+                    if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
                 }
                 else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName))
                 {
@@ -283,7 +289,7 @@ internal static class SvgDocumentTraversal
                 {
                     SvgRootStyleSheetParser.Consume(reader, budget, cancellationToken);
                 }
-                else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
+                else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
                 else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsInertContainer(reader.LocalName)) { }
                 else if (inScope && reader.NamespaceURI != "http://www.w3.org/2000/svg" && reader.IsEmptyElement)
                 {

@@ -10,7 +10,7 @@ internal static class SvgDefinitionParser
     {
         if (state.FilterDefinition is {} activeFilter && reader.Depth > state.FilterDepth)
         {
-            if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
+            if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
             activeFilter.Add(reader, reader.Depth == state.FilterDepth + 1);
             return true;
         }

@@ -42,7 +42,6 @@ public sealed class SvgPatternUseReplayTests
 
     [Theory]
     [InlineData("<desc><animate attributeName='x'/></desc>")]
-    [InlineData("<metadata><script>invalid</script></metadata>")]
     [InlineData("<title/><rect width='1' height='1'/>")]
     [InlineData("<desc><style>rect { fill: red }</style></desc>")]
     public void Active_or_rendered_children_still_reject_inside_geometric_leaves(string children)
@@ -50,6 +49,11 @@ public sealed class SvgPatternUseReplayTests
         byte[] input = Input("<path d='M0 0H64V48H0Z'>" + children + "</path>");
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
     }
+
+    [Fact]
+    public void Non_executing_script_metadata_preserves_geometric_leaf_paint()
+        => SvgRasterTestHelper.AssertPixelsEqual(Input("<path d='M0 0H64V48H0Z'/>"),
+            Input("<path d='M0 0H64V48H0Z'><metadata><script>invalid</script></metadata></path>"), SvgRenderOptions.Default);
 
     [Fact]
     public void Multiple_pending_tile_scenes_observe_denial_cancellation_and_cleanup()

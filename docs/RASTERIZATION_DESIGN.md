@@ -47,6 +47,10 @@ maps the mechanisms, prepared-font contract and independent rendering controls.
 Attribute validators share an [inert event rule](../tests/Research/svgweb/inert-events.json)
 across geometry, definitions, stylesheets, filters and span/path text. Values do
 not enter paint, font or resource parsing; XML and structural accounting remain.
+Non-executing script bodies share one bounded subtree consumer across preparation,
+resource/font discovery and lowering. Retained text stores an empty marker instead
+of script values, preserving lexical counts and surrounding text nodes. Text reads
+use the same structural-limit object and absolute depth checks as ordinary traversal.
 
 Solid, linear, radial and pattern polygon bindings use one
 [contour payload](../src/Lokad.Svg/Parsing/SvgPolygonContours.cs) for points, contour

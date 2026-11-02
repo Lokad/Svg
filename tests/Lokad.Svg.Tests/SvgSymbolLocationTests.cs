@@ -23,7 +23,6 @@ public sealed class SvgSymbolLocationTests
 
     [Theory]
     [InlineData("<style>rect { fill: red; }</style>")]
-    [InlineData("<script/>")]
     [InlineData("<animate attributeName='opacity' values='0;1' dur='1s'/>")]
     [InlineData("<set attributeName='fill' to='red'/>")]
     public void Descriptive_symbol_metadata_does_not_hide_active_content(string active)
@@ -31,6 +30,11 @@ public sealed class SvgSymbolLocationTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(Input("<symbol id='s'><metadata>" + active + "</metadata><rect width='4' height='4'/></symbol><use href='#s'/>"), SvgRenderOptions.Default, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
+
+    [Fact]
+    public void Non_executing_script_metadata_preserves_symbol_replay()
+        => SvgRasterTestHelper.AssertPixelsEqual(Input("<rect width='4' height='4'/>"),
+            Input("<symbol id='s'><metadata><script/></metadata><rect width='4' height='4'/></symbol><use href='#s'/>"), SvgRenderOptions.Default);
 
     [Fact]
     public void Metadata_geometry_neither_paints_nor_registers_child_ids()

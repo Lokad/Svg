@@ -557,7 +557,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         try
         {
             SvgRenderedLeafParser.ReadDirectTextContent(reader, _state, whitespace, style.LetterSpacing, paint, font,
-                SvgTextLimits.MaximumCharacters, _limits.MaximumNodes, _limits.MaximumXmlDepth, _limits.MaximumAttributesPerElement,
+                SvgTextLimits.MaximumCharacters, _limits.MaximumNodes, _limits,
                 _state.Budget, _token, runs, out _, out _);
             bool painted = false;
             foreach (SvgExtractedTextRun run in runs.AsSpan())

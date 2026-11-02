@@ -21,6 +21,8 @@ File.WriteAllBytes("output.png", png.ToArray());
 The subset includes affine geometry, local instances, gradients/patterns,
 clips/masks, embedded base64 PNGs, static CSS, markers, selected filters and
 supplied-font text. Unsupported visible features report `SvgException`.
+Event attributes and character-data script elements are inert during static
+conversion; script URLs are not fetched. Animation remains unsupported.
 Rendering applies size/structural limits, optional host memory admission and cancellation.
 
 Outputs support owned memory, caller memory and writable streams, synchronously

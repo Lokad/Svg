@@ -31,11 +31,44 @@ internal static class SvgStructuralAdmission
 
     /// <summary>Rejects elements that violate the configured nesting or attribute limits.</summary>
     internal static void ValidateElementStructure(XmlReader reader, SvgRenderLimits limits)
+        => ValidateElementStructure(reader, limits, 0);
+
+    /// <summary>Checks an ordinary or subtree reader at its absolute document depth.</summary>
+    internal static void ValidateElementStructure(XmlReader reader, SvgRenderLimits limits, int depthOffset)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(limits);
-        if (reader.Depth >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
+        if ((long)reader.Depth + depthOffset >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
         if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
+    }
+
+    /// <summary>Consumes an inert SVG script without retaining or interpreting its values.</summary>
+    /// <remarks>The caller has counted and checked the opening element. Borrows the reader and
+    /// allocates no storage; every child is counted and checked at the supplied absolute depth.
+    /// Leaves the closing element (or empty opening element). Element children are reported as
+    /// unsupported: script content is character data. Selection/lowering owns that admission decision;
+    /// preparatory scans must not activate child styles, references or fonts. Checks cancellation
+    /// during reading and never resolves a script URL.</remarks>
+    internal static SvgLeafSubtree ConsumeScriptSubtree(XmlReader reader, SvgRenderLimits limits, int nodeCount,
+        int depthOffset, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        if (reader.IsEmptyElement) return new(false, nodeCount);
+        int depth = reader.Depth;
+        bool hasElements = false;
+        while (reader.Read())
+        {
+            token.ThrowIfCancellationRequested();
+            if (reader.NodeType == XmlNodeType.Element)
+            {
+                ValidateElementStructure(reader, limits, depthOffset);
+                if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+                nodeCount++;
+                hasElements = true;
+            }
+            else if (reader.NodeType == XmlNodeType.EndElement && reader.Depth == depth) return new(hasElements, nodeCount);
+        }
+        return new(hasElements, nodeCount);
     }
 
     /// <summary>Consumes a geometric leaf body, admitting inert descriptions while counting every nested element and checking cancellation during reading. Borrows the reader and allocates no retained storage.</summary>
@@ -55,8 +88,15 @@ internal static class SvgStructuralAdmission
                 if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                 nodeCount++;
                 bool svg = reader.NamespaceURI == "http://www.w3.org/2000/svg";
+                if (SvgStructuralVocabulary.IsScriptElement(reader.NamespaceURI, reader.LocalName))
+                {
+                    SvgLeafSubtree script = ConsumeScriptSubtree(reader, limits, nodeCount, 0, cancellationToken);
+                    nodeCount = script.NodeCount;
+                    hasElements |= script.HasUnsupportedChildren;
+                    continue;
+                }
                 if (descriptionDepth >= 0)
-                    hasElements |= svg && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName);
+                    hasElements |= svg && SvgStructuralVocabulary.IsStyleOrAnimationElement(reader.LocalName);
                 else if (svg && SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName))
                 {
                     if (!reader.IsEmptyElement) descriptionDepth = reader.Depth;

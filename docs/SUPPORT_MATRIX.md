@@ -29,8 +29,12 @@ Descriptive `xlink:title` metadata is inert on admitted elements and `defs`.
 Namespace aliases use the XLink URI; XML/input and structural limits still apply.
 Unqualified lowercase `on*` event attributes are inert in static conversion,
 including definitions, stylesheets, filters and text spans/paths. Their values
-never affect paint, font selection or resource resolution. Script and animation
-elements remain unsupported.
+never affect paint, font selection or resource resolution. SVG `script` elements
+with character-data content are inert too: their URLs are not resolved, and their
+values consume no rendered-text allowance. Empty retained markers preserve lexical
+node accounting and text-node boundaries. Element children inside scripts and
+animation elements remain unsupported. Scripts retain their authored position in
+switch selection and pattern content inheritance.
 
 ### Diagnostics
 

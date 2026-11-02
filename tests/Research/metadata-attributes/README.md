@@ -1,4 +1,4 @@
-# Inert attributes
+# Inert attributes and script content
 
 The original CC0 [source](descriptive-titles.svg) retains aliased XLink titles on
 the root, definitions, a gradient, source geometry, group and local use. Some
@@ -28,3 +28,14 @@ position, literal names, reserved namespaces and filter/merge admission. One
 protects span/path discovery, one font acquisition and replay. No per-fixture API
 or ownership matrix is added. [Hosted-original validation](../svgweb/inert-events.json)
 separates closed static event admission from remaining subtree and rendering gaps.
+
+The CC0 [script control](inert-scripts.svg) protects non-executing script bodies
+across source definitions, filters, geometry, nested viewports, switches and pattern
+inheritance. It uses one canonical conversion against six frozen native captures.
+[Direct script mechanisms](../../Lokad.Svg.Tests/SvgStaticScriptTests.cs) keep
+absolute depth, attributes, node counts, namespaces, reader position and malformed
+XML separate from pixels. Representative live/retained/instanced text contracts
+retain font acquisition, ignored-character accounting and the original node charge;
+the existing cancellation test also covers script consumption. Element children
+remain unsupported. [Original outcomes and qualification](../svgweb/inert-scripts.json)
+record the unmodified hosted source without retaining its payload.

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Ignore inert event attributes and character-data script elements during static
+  conversion. Preserve switch/pattern selection, lexical node accounting and text
+  boundaries without executing scripts, resolving their URLs or retaining bodies.
 - Resolve GPOS extension payloads consistently through validation and kerning;
   execute the TrueType freedom-from-projection instruction without changing other state.
 - Respect unitless font sizes in SVG inline styles while preserving stylesheet

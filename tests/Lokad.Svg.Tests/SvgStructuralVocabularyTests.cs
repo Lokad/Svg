@@ -47,7 +47,7 @@ public sealed class SvgStructuralVocabularyTests
     [InlineData("use", false, false)]
     [InlineData("symbol", false, false)]
     [InlineData("style", false, true)]
-    [InlineData("script", false, true)]
+    [InlineData("script", false, false)]
     [InlineData("animate", false, true)]
     [InlineData("animateMotion", false, true)]
     [InlineData("animateTransform", false, true)]
@@ -57,9 +57,9 @@ public sealed class SvgStructuralVocabularyTests
     [InlineData("RECT", false, false)]
     [InlineData("STYLE", false, false)]
     [InlineData("", false, false)]
-    public void Classifies_definition_and_dynamic_names(string localName, bool definitionLeaf, bool styleScriptOrAnimation)
+    public void Classifies_definition_and_dynamic_names(string localName, bool definitionLeaf, bool styleOrAnimation)
     {
         Assert.Equal(definitionLeaf, SvgStructuralVocabulary.IsDefinitionLeaf(localName));
-        Assert.Equal(styleScriptOrAnimation, SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(localName));
+        Assert.Equal(styleOrAnimation, SvgStructuralVocabulary.IsStyleOrAnimationElement(localName));
     }
 }

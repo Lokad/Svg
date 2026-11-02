@@ -105,6 +105,59 @@
           "referenceSha256": "61a225c47435baaaaff88ead188ffb5c6af8114e7448bc8e3464a1b25949057f"
         }
       }
+    },
+    {
+      "id": "inert-scripts",
+      "input": "inert-scripts.svg",
+      "inputSha256": "b2cd9d37cc81303f3737ac90e80b156ce6b76f789799115eb0dd317e80dc5a3c",
+      "sourceBaseline": "fe78feda96a9eb7b22b4ecd49463f6d77aa2c923",
+      "context": "Original CC0 static SVG image with character-data script elements; fresh native captures frozen before admission changes.",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "f9b01c478d699e723b8860053359c3811af9c96129a9278fc500fdf9c7af50a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f9b01c478d699e723b8860053359c3811af9c96129a9278fc500fdf9c7af50a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f9b01c478d699e723b8860053359c3811af9c96129a9278fc500fdf9c7af50a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/inert-scripts.png",
+          "referenceSha256": "f9b01c478d699e723b8860053359c3811af9c96129a9278fc500fdf9c7af50a5"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "f9b01c478d699e723b8860053359c3811af9c96129a9278fc500fdf9c7af50a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f9b01c478d699e723b8860053359c3811af9c96129a9278fc500fdf9c7af50a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f9b01c478d699e723b8860053359c3811af9c96129a9278fc500fdf9c7af50a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/inert-scripts.png",
+          "referenceSha256": "f9b01c478d699e723b8860053359c3811af9c96129a9278fc500fdf9c7af50a5"
+        }
+      }
     }
   ],
   "schemaVersion": 1,

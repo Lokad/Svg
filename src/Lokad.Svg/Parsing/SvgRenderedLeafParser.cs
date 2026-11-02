@@ -426,7 +426,7 @@ CancellationToken cancellationToken)
                 try
                 {
                     SvgInheritedTextStyle rootTextFont = new(textStyle.Font.Family, textStyle.Font.Weight, textStyle.Font.Italic, textStyle.FontSize, whitespaceMode, textStyle.LetterSpacing, textStyle.Anchor) { WordSpacing = textStyle.WordSpacing, Decoration = textPaint.Decoration };
-                    ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, textPaint, rootTextFont, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, cancellationToken, textRuns, out int sourceCharacterCount, out int childNodeCount);
+                    ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, textPaint, rootTextFont, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits, budget, cancellationToken, textRuns, out int sourceCharacterCount, out int childNodeCount);
                     state.TextCharacterCount += sourceCharacterCount;
                     state.NodeCount += childNodeCount;
                     bool sharedPathContext = false, hasOrdinaryContinuation = false, sharedPaint = false;
@@ -665,7 +665,7 @@ CancellationToken cancellationToken)
     /// <summary>Extracts bounded normalized text and style intervals without preparing font programs.</summary>
     /// <remarks>Caller-owned output adopts layout arrays; every failure leaves them disposable. Shared
     /// cancellation and document limits apply. Inputs and immutable source styles remain borrowed.</remarks>
-    internal static void ReadDirectTextContent(XmlReader element, SvgDocumentState state, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, SvgTextPaintStyle paint, SvgInheritedTextStyle font, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, CancellationToken cancellationToken, BudgetedParserList<SvgExtractedTextRun> runs, out int sourceCharacterCount, out int childNodeCount)
+    internal static void ReadDirectTextContent(XmlReader element, SvgDocumentState state, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, SvgTextPaintStyle paint, SvgInheritedTextStyle font, int maximumCharacters, int remainingNodeCount, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken, BudgetedParserList<SvgExtractedTextRun> runs, out int sourceCharacterCount, out int childNodeCount)
     {
         SvgTextPathReference? textPath = null;
         SvgTextPathReference? previousPath = null;
@@ -728,14 +728,21 @@ CancellationToken cancellationToken)
             }
             if (subtree.NodeType == XmlNodeType.Element && subtree.Depth != 0)
             {
-                if (subtree.Depth + depthOffset >= maximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
+                SvgStructuralAdmission.ValidateElementStructure(subtree, limits, depthOffset);
                 if (childNodeCount >= remainingNodeCount) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                 childNodeCount++;
-                if (subtree.AttributeCount > maximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
+                if (SvgStructuralVocabulary.IsScriptElement(subtree.NamespaceURI, subtree.LocalName))
+                {
+                    int priorNodes = limits.MaximumNodes - remainingNodeCount;
+                    SvgLeafSubtree script = SvgStructuralAdmission.ConsumeScriptSubtree(subtree, limits, priorNodes + childNodeCount, depthOffset, cancellationToken);
+                    childNodeCount = script.NodeCount - priorNodes;
+                    if (script.HasUnsupportedChildren) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG scripts admit character data only.");
+                    continue;
+                }
                 bool svg = subtree.NamespaceURI == "http://www.w3.org/2000/svg";
                 if (descriptionDepth >= 0)
                 {
-                    if (svg && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(subtree.LocalName))
+                    if (svg && SvgStructuralVocabulary.IsStyleOrAnimationElement(subtree.LocalName))
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "This content inside an SVG description is not implemented.");
                     continue;
                 }

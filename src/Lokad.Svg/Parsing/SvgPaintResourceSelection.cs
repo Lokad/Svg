@@ -133,6 +133,11 @@ internal sealed class SvgPaintResourceSelection : IDisposable
                 // of namespace, display, geometry or whether a scene is allocated.
                 if (parent.Pattern >= 0 && scopes.Count > 0)
                     patterns[parent.Pattern] = patterns[parent.Pattern] with { HasChildElements = true };
+                if (SvgStructuralVocabulary.IsScriptElement(reader.NamespaceURI, reader.LocalName))
+                {
+                    nodes = SvgStructuralAdmission.ConsumeScriptSubtree(reader, limits, nodes, 0, token).NodeCount;
+                    continue;
+                }
                 SvgComputedStyle paint = default;
                 bool inert = parent.Inert || !svgElement || SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName);
                 bool paintable = !inert && (root || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)

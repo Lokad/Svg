@@ -35,6 +35,11 @@ internal static class SvgRootStyleSheetParser
                 rootDepth = reader.Depth;
                 continue;
             }
+            if (SvgStructuralVocabulary.IsScriptElement(reader.NamespaceURI, reader.LocalName))
+            {
+                nodes = SvgStructuralAdmission.ConsumeScriptSubtree(reader, limits, nodes, 0, cancellationToken).NodeCount;
+                continue;
+            }
             if (descriptionDepth < 0 && SvgStructuralVocabulary.IsForeignMetadata(reader.NamespaceURI, reader.LocalName))
             {
                 nodes = SvgStructuralAdmission.ConsumeForeignMetadata(reader, limits, nodes, cancellationToken).NodeCount;

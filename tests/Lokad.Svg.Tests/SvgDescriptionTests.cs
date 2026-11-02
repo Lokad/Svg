@@ -28,7 +28,6 @@ public sealed class SvgDescriptionTests
 
     [Theory]
     [InlineData("title", "<animate attributeName='opacity' values='0;1' dur='1s'/>")]
-    [InlineData("desc", "<script>ignored</script>")]
     [InlineData("metadata", "<style>rect { fill: red; }</style>")]
     public void Descriptions_preserve_explicit_active_content_rejection(string element, string active)
     {
@@ -37,5 +36,17 @@ public sealed class SvgDescriptionTests
         using (SvgRoot root = SvgRootParser.Parse(rendered, SvgRenderLimits.Default, CancellationToken.None))
             Assert.True(root.HasUnsupportedChild);
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, CancellationToken.None));
+    }
+
+    [Fact]
+    public void Script_descriptions_preserve_following_geometry_and_font_discovery()
+    {
+        const string description = "<desc><script>ignored</script></desc>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><g>" + description + "<text font-family='Example'>x</text></g></svg>");
+        Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, CancellationToken.None)).Family);
+        byte[] rendered = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(input).Replace("<text font-family='Example'>x</text>", "<rect width='8' height='8'/>", StringComparison.Ordinal));
+        using SvgRoot root = SvgRootParser.Parse(rendered, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.Single(root.Geometries);
     }
 }

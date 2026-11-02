@@ -41,10 +41,12 @@ public sealed class SvgDescriptiveTextStorageTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    [Fact]
-    public void Cancellation_while_consuming_ignored_text_releases_storage_without_disposing_the_borrower()
+    [Theory]
+    [InlineData("metadata")]
+    [InlineData("script")]
+    public void Cancellation_while_consuming_ignored_text_releases_storage_without_disposing_the_borrower(string element)
     {
-        string document = "<text xmlns='http://www.w3.org/2000/svg'>A<metadata>" + new string('x', 16_384) + "</metadata>A</text>";
+        string document = "<text xmlns='http://www.w3.org/2000/svg'>A<" + element + ">" + new string('x', 16_384) + "</" + element + ">A</text>";
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         using (CancellationTokenSource cancellation = new())
@@ -62,7 +64,6 @@ public sealed class SvgDescriptiveTextStorageTests
     [Theory]
     [InlineData("<metadata><style>text{fill:red}</style></metadata>")]
     [InlineData("<metadata><animate/></metadata>")]
-    [InlineData("<title><script/></title>")]
     [InlineData("<rect width='2' height='2'/>")]
     [InlineData("<title xmlns='urn:other'>ignored</title>")]
     public void Descriptions_do_not_admit_unsupported_markup_or_ordinary_drawing_children(string child)
@@ -82,6 +83,18 @@ public sealed class SvgDescriptiveTextStorageTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Theory]
+    [InlineData("<script>ignored</script>")]
+    [InlineData("<script><![CDATA[<style>ignored</style>]]></script>")]
+    [InlineData("<title><script/></title>")]
+    public void Script_characters_do_not_change_text_nodes_or_consume_the_character_allowance(string script)
+    {
+        RenderBudget budget = new(new HostMemoryBudget(100_000));
+        using StringReader input = new("<text xmlns='http://www.w3.org/2000/svg'>A" + script + "A</text>");
+        Assert.Equal("AA", Read(input, budget, 100, 64, 64, CancellationToken.None));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     private static string Read(TextReader input, RenderBudget budget, int nodes, int depth, int attributes, CancellationToken token)
     {
         using XmlReader reader = XmlReader.Create(input);
@@ -91,7 +104,7 @@ public sealed class SvgDescriptiveTextStorageTests
         try
         {
             SvgRenderedLeafParser.ReadDirectTextContent(reader, state, SvgTextWhitespaceMode.Default, 0, SvgTextPaintStyle.Default,
-                SvgInheritedTextStyle.Default, 2, nodes, depth, attributes, budget, token, runs, out int characters, out _);
+                SvgInheritedTextStyle.Default, 2, nodes, new SvgRenderLimits(100_000, 64, 4096, 100_000, nodes, 1024, depth, attributes), budget, token, runs, out int characters, out _);
             Assert.Equal(2, characters);
             return string.Concat(runs.AsSpan().ToArray().Select(run => run.Layout.Value));
         }

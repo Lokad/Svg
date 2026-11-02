@@ -9,7 +9,7 @@ DroidSerif-BoldItalic.svg,ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0
 DroidSerif-Italic.svg,e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73,UnsupportedFeature,,,,300,150,,,text,,183,2,SVG text requires a prepared font snapshot.
 DroidSerif-Regular.svg,451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3,UnsupportedFeature,,,,300,150,,,text,,224,2,SVG text requires a prepared font snapshot.
 Steps.svg,bb86d3eca3502649661d892cbfdb8ad604611b3cdf48b5f131461536476715af,UnsupportedFeature,,,,,,,,rect,,385,23,Unsupported attribute 'r'; event metadata is inert.
-USStates.svg,615f7c8c43e4d7181969496643ed8f35d74fc29fea391c8d8dd219aa6547136b,UnsupportedFeature,,,,,,,,script,,19,2,Unsupported static content beyond inert event metadata; see inert-events.json.
+USStates.svg,615f7c8c43e4d7181969496643ed8f35d74fc29fea391c8d8dd219aa6547136b,UnsupportedFeature,,,,1000,600,,,text,,232,2,SVG text requires a prepared font snapshot.
 aa.svg,5d40c766974abadc07c16bfdc76a25b5669cb6c876ab2a7e86536e2deec47bd2,rendered,exact,0,0,300,150,48f8f3813ca9ebc8ed7a5d335b40093e6f381af3e51ad399f6614c2f0ee01233,48f8f3813ca9ebc8ed7a5d335b40093e6f381af3e51ad399f6614c2f0ee01233,,,,,
 accessible.svg,41d806f0d8184d3af20c7ba1492487abee4901f79201178979478189b60aae93,rendered,exact,0,0,300,150,b3b692763ede3b5d4da1a2f1e54fbdbccdaa7261aa29f2baea609836d3ff5803,b3b692763ede3b5d4da1a2f1e54fbdbccdaa7261aa29f2baea609836d3ff5803,,,,,
 acid.svg,9c57a55325c11464d4fc42506dbe53fd9f027db2294abcc3170c300847d34a76,rendered,exact,0,0,300,150,bb2ec9b41e636c3727e9f4fa50ca3da0bbe0414c626158302854c5089461d4c7,bb2ec9b41e636c3727e9f4fa50ca3da0bbe0414c626158302854c5089461d4c7,,,,,
@@ -23,7 +23,7 @@ atom.svg,19ce57a65b56111e30619a82d65007f2608ef6292fe39c8a5d2ee74863980b48,render
 basura.svg,75cbd02dd0939bd1644ffe90f2ec8b4fabdcb97d0a053bf8c217b27d3d2359d8,rendered,exact,0,0,300,150,9d2d6f069e9f7bcd8c95340700e1023c1c532ba97c4e9c0488b5722992e59bce,9d2d6f069e9f7bcd8c95340700e1023c1c532ba97c4e9c0488b5722992e59bce,,,,,
 beacon.svg,16f7022960bfd009be08fc41e7e74bcfa09e94cc7d73e806dfb90ac8b7031873,rendered,exact,0,0,300,150,f4147835625d423a8aea30f8d1009869fd74a1d4cfdde1445dc6a3e627982d84,f4147835625d423a8aea30f8d1009869fd74a1d4cfdde1445dc6a3e627982d84,,,,,
 betterplace.svg,142e0d84ea9875379869f593a0c6fc430fd8a103b7bc6ae909542492cb24b3f4,rendered,exact,0,0,300,150,e04e96302f6abf023cfbab1135713a881befe2f8672899a335d31b7ff12d0b24,e04e96302f6abf023cfbab1135713a881befe2f8672899a335d31b7ff12d0b24,,,,,
-blocks_game.svg,4594f838008d371765539a53e53b52706e6afec99bf5fc38347e2a3ee142817c,UnsupportedFeature,,,,,,,,script,,16,2,Unsupported static content beyond inert event metadata; see inert-events.json.
+blocks_game.svg,4594f838008d371765539a53e53b52706e6afec99bf5fc38347e2a3ee142817c,UnsupportedFeature,,,,300,150,,,text,,494,2,SVG text requires a prepared font snapshot.
 bloglines.svg,4bb1b6ee3347cd5dfe48f6755eb0504058dd59d3e78a653678d55271b3c85324,UnsupportedFeature,,,,,,,,svg,,1,41,SVG root attribute 'viewbox' is not implemented.
 bozo.svg,239431753644a5c07d1244fd5be09c3ef1d30072a663a01effc4d2e75c7bf138,rendered,exact,0,0,300,150,9d381930b586a5e89cc58c2c58e2ba79092c12d9c6b30f88123534ea74a93bdf,9d381930b586a5e89cc58c2c58e2ba79092c12d9c6b30f88123534ea74a93bdf,,,,,
 bzr.svg,5092702b6ca45d24c1a0a8dbbed6c39d50ea552c0dc07a1f24609304711720bb,rendered,exact,0,0,300,150,dfb9af83e08cc5add3cb8ed9d6f9e02f33a8446ca5dfe3286860ad9a51daf88d,dfb9af83e08cc5add3cb8ed9d6f9e02f33a8446ca5dfe3286860ad9a51daf88d,,,,,
@@ -170,7 +170,7 @@ semweb.svg,ca2342bc648e2055ea2ff921d0d909464c8575ba14b65e1bbb55b759640621a2,rend
 shapes-polygon-01-t.svg,ba00b071ec66e3b98ac2de924563f69d72e714ab02adbbe1dd1266b418ea144e,UnsupportedFeature,,,,300,150,,,text,revision,70,3,SVG text requires a prepared font snapshot.
 shapes-polyline-01-t.svg,3d636692e459edc01b768cc607b0b1b3fcd06c379616a3771a06ae8dfc8324ca,UnsupportedFeature,,,,300,150,,,text,revision,81,3,SVG text requires a prepared font snapshot.
 smile.svg,e3d8f00248a02b117b030e0bb64beab3f492727e9298706c768ce7849fce7e33,MalformedInput,,,,,,,,,,,,SVG XML internal DTD subsets are not admitted.
-snake.svg,52ac4b0c97fdd51ec9a93a618389164f3ebe60bd2cc0caabe781a1e011343072,UnsupportedFeature,,,,,,,,script,,5,2,Unsupported static content beyond inert event metadata; see inert-events.json.
+snake.svg,52ac4b0c97fdd51ec9a93a618389164f3ebe60bd2cc0caabe781a1e011343072,UnsupportedFeature,,,,600,500,,,text,,247,2,SVG text requires a prepared font snapshot.
 star.svg,20a60ffa611d75706135caf3b0fad1116b40cc39bb078e782074e82a95d6034d,rendered,exact,0,0,300,150,1e8ca59ab217ba26854a9ba6e4c14c562e8a4bfa27dae113f2ac91e4e056f79d,1e8ca59ab217ba26854a9ba6e4c14c562e8a4bfa27dae113f2ac91e4e056f79d,,,,,
 svg.svg,f367188940f36e0053777941ea72820d272dacc5e2fadaf03ba837b55947081a,rendered,exact,0,0,300,150,9ba32e3633726806dc788447d8fa7fca21dc25f1c0ac0e17a7b5abd9dd8cf718,6270d140b852258201361b48813bfde0aaa5185afb7e6ce1d7234703ebbc89c0,,,,,
 svg2009.svg,40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104,UnsupportedFeature,,,,850,200,,,,,,,Inline style property 'text-align' is not implemented.
@@ -186,7 +186,7 @@ usaf.svg,2d8c49fccefcab8d73affb9e129578dc8063d7432f085a931e268e2f1bf833a7,render
 utensils.svg,f05f3f2cd96130ea8ced315dfd83af629d10036f168532e63455f0db2dc3dccb,rendered,exact,0,0,300,150,c91d2c05901d24879a0174e4812120860f08a2c2e31df21baa1cea2b2c64bde0,c91d2c05901d24879a0174e4812120860f08a2c2e31df21baa1cea2b2c64bde0,,,,,
 venus.svg,faf9a00555543c528ae294337167c588883ab6d4ddff450525bf198f5ccca63b,rendered,exact,0,0,300,150,4802842f6c381ebe9b9a548746410853ce20139822a63ce3fa95522d615fc544,4802842f6c381ebe9b9a548746410853ce20139822a63ce3fa95522d615fc544,,,,,
 video1.svg,e6941453371664e5d392af70aab97cc2d9d02ca0b406324553dcaaaf0e38fcff,UnsupportedFeature,,,,480,360,,,video,vid1,8,6,This SVG child element is not implemented yet.
-videos.svg,30527d7b7fd44e93209a9a5227fbe2be75f26c9bd9acaf365c90ab30f169cd76,UnsupportedFeature,,,,,,,,script,,9,4,Unsupported static content beyond inert event metadata; see inert-events.json.
+videos.svg,30527d7b7fd44e93209a9a5227fbe2be75f26c9bd9acaf365c90ab30f169cd76,rendered,exact,0,0,300,150,4e31151eb3421ef025bf2a88235f141e6ba1899656d0ad366f2c92bae5cd1ef7,4e31151eb3421ef025bf2a88235f141e6ba1899656d0ad366f2c92bae5cd1ef7,,,,,
 vmware.svg,79503bd3a923498432c9923635fe1e3fa7a04b189e001034ff30ec0c2866fa86,rendered,exact,0,0,300,150,81d4497f12a577ffa33a830bca2e98cdbaf4bdd06e0c48bb0d2d0e86a422197e,81d4497f12a577ffa33a830bca2e98cdbaf4bdd06e0c48bb0d2d0e86a422197e,,,,,
 vnu.svg,d33b894ed602d9f8a804170649fab2c5bfa12743ee480071274a0f9edf969e6c,rendered,exact,0,0,300,150,302c65bd46bf6bbe3cfd2f777c89141e6d0a83e4841df45b47fe2ab06bb4d5e8,302c65bd46bf6bbe3cfd2f777c89141e6d0a83e4841df45b47fe2ab06bb4d5e8,,,,,
 vote.svg,871e72f5226eaeece7c517c1f25123adb9db5f442b21c87af7ac46711fbd5eac,rendered,exact,0,0,300,150,b562169ebe835e7b1d8760c9dd27db9396f459dfc86f6f786ffdd626b24478ab,b562169ebe835e7b1d8760c9dd27db9396f459dfc86f6f786ffdd626b24478ab,,,,,

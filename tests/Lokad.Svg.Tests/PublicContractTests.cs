@@ -510,8 +510,6 @@ public sealed class PublicContractTests
 
     [Theory]
     [InlineData("<metadata><style>rect { fill: red; }</style></metadata>")]
-    [InlineData("<script><![CDATA[void 0]]></script>")]
-    [InlineData("<metadata><script/></metadata>")]
     [InlineData("<animate attributeName='opacity' values='0;1' dur='1s'/>")]
     [InlineData("<animateMotion path='M 0 0 H 1' dur='1s'/>")]
     [InlineData("<animateTransform attributeName='transform' type='translate' from='0' to='1' dur='1s'/>")]
@@ -523,6 +521,17 @@ public sealed class PublicContractTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("<script><![CDATA[void 0]]></script>")]
+    [InlineData("<metadata><script/></metadata>")]
+    public void Non_executing_scripts_leave_the_static_public_conversion_unchanged(string content)
+    {
+        const string start = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'>";
+        const string end = "<rect width='1' height='1'/></svg>";
+        byte[] expected = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(start + end), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Assert.Equal(expected, SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(start + content + end), SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Theory]

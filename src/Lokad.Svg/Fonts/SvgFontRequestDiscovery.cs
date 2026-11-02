@@ -130,11 +130,18 @@ internal static class SvgFontRequestDiscovery
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     nodeCount++;
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
+                    if (activeCandidateLevel >= 0 && SvgStructuralVocabulary.IsScriptElement(reader.NamespaceURI, reader.LocalName))
+                    {
+                        SvgLeafSubtree script = SvgStructuralAdmission.ConsumeScriptSubtree(reader, limits, nodeCount, 0, cancellationToken);
+                        nodeCount = script.NodeCount;
+                        hasUnsupportedContent |= script.HasUnsupportedChildren;
+                        continue;
+                    }
                     if (activeCandidateLevel >= 0 && (descriptionDepth >= 0 || isSvgElement && SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName)))
                     {
                         if (descriptionDepth >= 0)
                         {
-                            if (isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
+                            if (isSvgElement && SvgStructuralVocabulary.IsStyleOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
                         }
                         else if (!reader.IsEmptyElement) descriptionDepth = reader.Depth;
                         // Preserve the enclosing candidate, whitespace and font
@@ -199,9 +206,16 @@ internal static class SvgFontRequestDiscovery
                         }
                         else switchScopes[switchScopes.Count - 1] = top with { FirstChildConsumed = true };
                     }
+                    if (!sterile && SvgStructuralVocabulary.IsScriptElement(reader.NamespaceURI, reader.LocalName))
+                    {
+                        SvgLeafSubtree script = SvgStructuralAdmission.ConsumeScriptSubtree(reader, limits, nodeCount, 0, cancellationToken);
+                        nodeCount = script.NodeCount;
+                        hasUnsupportedContent |= script.HasUnsupportedChildren;
+                        continue;
+                    }
                     if (descriptionDepth >= 0 && reader.Depth > descriptionDepth)
                     {
-                        if (isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
+                        if (isSvgElement && SvgStructuralVocabulary.IsStyleOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
                         sterile = true;
                     }
                     else if (!sterile && isSvgElement && SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName) && !reader.IsEmptyElement)
@@ -242,7 +256,7 @@ internal static class SvgFontRequestDiscovery
                         else SvgElementAttributePolicy.ValidateSymbol(reader, cancellationToken);
                         if (!reader.IsEmptyElement) symbolDepth = reader.Depth;
                     }
-                    if (!sterile && isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
+                    if (!sterile && isSvgElement && SvgStructuralVocabulary.IsStyleOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
                     bool patternDefinition = !sterile && isSvgElement && reader.LocalName == "pattern" && patternDepth < 0
                         && SvgStructuralVocabulary.IsPatternDefinitionLocation(directChild,
                             definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1,

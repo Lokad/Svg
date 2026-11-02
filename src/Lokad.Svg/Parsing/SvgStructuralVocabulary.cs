@@ -15,6 +15,10 @@ internal static class SvgStructuralVocabulary
     /// <summary>Identifies descriptive subtrees that do not paint or define reference targets at any admitted location.</summary>
     internal static bool IsDescriptiveElement(string localName) => localName is "title" or "desc" or "metadata";
 
+    /// <summary>Identifies a non-rendering SVG script by namespace identity, independent of its XML prefix.</summary>
+    internal static bool IsScriptElement(string namespaceUri, string localName)
+        => namespaceUri == "http://www.w3.org/2000/svg" && localName == "script";
+
     /// <summary>Identifies foreign editor/test descriptions eligible for inert traversal.</summary>
     /// <remarks>Callers still reject SVG descendants; unknown nonempty foreign wrappers remain unsupported.</remarks>
     internal static bool IsForeignMetadata(string namespaceUri, string localName)
@@ -24,8 +28,8 @@ internal static class SvgStructuralVocabulary
     /// <summary>Identifies the definition leaves that count as styleable content.</summary>
     internal static bool IsDefinitionLeaf(string localName) => localName is "rect" or "line" or "polygon" or "polyline" or "path" or "circle" or "ellipse" or "image";
 
-    /// <summary>Identifies style, script and animation elements that unconditionally invalidate the operation.</summary>
-    internal static bool IsStyleScriptOrAnimationElement(string localName) => localName is "style" or "script" or "animate" or "animateMotion" or "animateTransform" or "set";
+    /// <summary>Identifies style and animation elements outside inert script bodies that require explicit admission.</summary>
+    internal static bool IsStyleOrAnimationElement(string localName) => localName is "style" or "animate" or "animateMotion" or "animateTransform" or "set";
 
     /// <summary>Identifies the definition container that admits local geometry references.</summary>
     internal static bool IsDefinitionsContainer(string localName) => localName == "defs";

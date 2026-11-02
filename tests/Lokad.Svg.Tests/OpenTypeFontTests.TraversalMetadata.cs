@@ -6,6 +6,43 @@ public sealed partial class OpenTypeFontTests
 {
     [Fact]
     [Trait("Layer", "Contract")]
+    public async Task Retained_script_markers_spend_the_original_node_allowance_before_later_geometry()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='24'><text id='t' font-family='Example' font-size='12'>A<script/>A</text><rect width='1' height='1'/><rect width='1' height='1'/></svg>"u8.ToArray();
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderLimits limits = new(100_000, 32, 1024, 100_000, 4, 1024);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits, fonts);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            SvgConverter.ConvertToPng(input, options, CancellationToken.None)).ErrorCode);
+    }
+
+    [Theory]
+    [Trait("Layer", "Contract")]
+    [InlineData("direct")]
+    [InlineData("retained")]
+    [InlineData("use")]
+    public async Task Prepared_static_scripts_preserve_live_and_retained_text_with_one_font_acquisition(string context)
+    {
+        string script = "<script href='https://example.invalid/unused.js' style='font-family:Unused'><![CDATA[" + new string('x', Lokad.Svg.Parsing.SvgTextLimits.MaximumCharacters + 1) + "]]></script>";
+        byte[] input = Document(script), control = Document("");
+        (var catalog, var provider, var source) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot controlFonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        byte[] expected = SvgConverter.ConvertToPng(control, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, controlFonts), CancellationToken.None).ToArray();
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, source.RequestCount);
+
+        byte[] Document(string ignored)
+        {
+            string text = "<text " + (context == "direct" ? "" : "id='t' ") + "font-family='Example' font-size='12' x='2' y='14'>A" + ignored + "<tspan>A</tspan>A</text>";
+            string body = context == "use" ? "<defs>" + text + "</defs><use href='#t'/>" : text;
+            return System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='48' height='24'>" + body + "</svg>");
+        }
+    }
+
+    [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Prepared_events_preserve_span_and_path_font_discovery_and_replay()
     {
         string markup = "<svg xmlns='http://www.w3.org/2000/svg' width='48' height='32' onload='font-family:Unused'>"

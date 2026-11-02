@@ -61,6 +61,20 @@ internal sealed class SvgRetainedTextSource
                 SvgStructuralAdmission.ValidateElementStructure(subtree, limits);
                 if (depth + originalDepth >= limits.MaximumXmlDepth)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Retained text exceeds the document depth limit.");
+                if (descendants && SvgStructuralVocabulary.IsScriptElement(subtree.NamespaceURI, subtree.LocalName))
+                {
+                    // Retain an empty marker, preserving the original node count
+                    // and surrounding text-node boundaries without copying script values.
+                    int markerIndex = nodes.Count;
+                    (int line, int position) = Location(subtree);
+                    nodes.Add(new(XmlNodeType.Element, Copy(subtree.Name), Copy(subtree.LocalName), Copy(subtree.Prefix), Copy(subtree.NamespaceURI),
+                        string.Empty, depth, true, attributes.Count, 0, -1, markerIndex, line, position));
+                    SvgLeafSubtree script = SvgStructuralAdmission.ConsumeScriptSubtree(subtree, limits, state.NodeCount + childNodes, originalDepth, token);
+                    childNodes = script.NodeCount - state.NodeCount;
+                    if (script.HasUnsupportedChildren) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG scripts admit character data only.");
+                    next = subtree.Read();
+                    continue;
+                }
                 if (descriptionDepth < 0 && subtree.NamespaceURI == "http://www.w3.org/2000/svg"
                     && SvgStructuralVocabulary.IsDescriptiveElement(subtree.LocalName) && !empty)
                     descriptionDepth = depth;

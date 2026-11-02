@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:s="http://www.w3.org/2000/svg" width="128" height="96">
+  <script href="https://example.invalid/unused.js" style="font-family:Unused;fill:url(#missing)"><![CDATA[document.querySelector('rect').setAttribute('fill','red');]]></script>
+  <style>.tile { fill: url(#paint); }</style>
+  <metadata><script><![CDATA[<style>.tile{fill:red}</style>]]></script></metadata>
+  <defs>
+    <script><![CDATA[<rect width='128' height='96'/>]]></script>
+    <linearGradient id="paint"><s:script>void 0</s:script><stop stop-color="#2468ac"/><stop offset="1" stop-color="#e08428"/></linearGradient>
+    <filter id="shift" color-interpolation-filters="sRGB"><script>void 0</script><feOffset dx="2" dy="1"/></filter>
+    <path id="tile" d="M0 0H38V28H0Z" class="tile"><script>void 0</script></path>
+    <pattern id="base" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="red"/></pattern>
+    <pattern id="empty" href="#base"><script>void 0</script></pattern>
+  </defs>
+  <g transform="translate(10 12)"><script>void 0</script><use href="#tile"/></g>
+  <svg x="68" y="12" width="42" height="32"><script>void 0</script><use href="#tile"/></svg>
+  <rect x="10" y="54" width="38" height="28" fill="#2468ac" filter="url(#shift)"><script>void 0</script></rect>
+  <rect x="68" y="54" width="18" height="28" fill="url(#empty)"/>
+  <switch><script>void 0</script><rect x="90" y="54" width="18" height="28" fill="lime"/></switch>
+</svg>
