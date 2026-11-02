@@ -44,6 +44,9 @@ foreign descriptions share one bounded, allocation-free subtree scan; stylesheet
 collection and font discovery do not activate their contents. The first recorded
 unsupported source survives later text rejection. [Traversal evidence](../tests/Research/svgweb/shared-traversal.json)
 maps the mechanisms, prepared-font contract and independent rendering controls.
+Attribute validators share an [inert event rule](../tests/Research/svgweb/inert-events.json)
+across geometry, definitions, stylesheets, filters and span/path text. Values do
+not enter paint, font or resource parsing; XML and structural accounting remain.
 
 Solid, linear, radial and pattern polygon bindings use one
 [contour payload](../src/Lokad.Svg/Parsing/SvgPolygonContours.cs) for points, contour

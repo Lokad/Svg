@@ -35,7 +35,7 @@ internal static class SvgElementAttributePolicy
         while (reader.MoveToNextAttribute())
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (reader.NamespaceURI == "http://www.w3.org/2000/xmlns/" || IsDescriptiveLinkTitle(reader)) continue;
+            if (reader.NamespaceURI == "http://www.w3.org/2000/xmlns/" || IsDescriptiveLinkTitle(reader) || IsInertEventAttribute(reader)) continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName == "id")
             {
                 if (reader.Value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");
@@ -77,6 +77,7 @@ internal static class SvgElementAttributePolicy
         while (reader.MoveToNextAttribute())
         {
             cancellationToken.ThrowIfCancellationRequested();
+            if (IsInertEventAttribute(reader)) continue;
             if (kind == SvgElementKind.Root && reader.NamespaceURI.Length == 0
                 && reader.LocalName is "viewport-fill" or "viewport-fill-opacity")
             {
@@ -137,6 +138,12 @@ internal static class SvgElementAttributePolicy
     // namespace URI so aliases do not depend on a particular XML prefix.
     private static bool IsDescriptiveLinkTitle(XmlReader reader)
         => reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "title";
+
+    /// <summary>Recognizes unqualified, literal lowercase on* metadata. Static image conversion
+    /// never evaluates event handlers; their values have no paint, font or resource semantics.</summary>
+    internal static bool IsInertEventAttribute(XmlReader reader)
+        => reader.NamespaceURI.Length == 0 && reader.LocalName.Length > 2
+            && reader.LocalName.StartsWith("on", StringComparison.Ordinal);
 
     private static bool IsAllowed(XmlReader reader, SvgElementKind kind)
     {

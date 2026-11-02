@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="96" onload="document.documentElement.setAttribute('display','none')">
+  <style onerror="ignored">.tile { fill: url(#paint); }</style>
+  <defs onclick="ignored">
+    <linearGradient id="paint" onfocus="ignored"><stop stop-color="#2468ac" onblur="ignored"/><stop offset="1" stop-color="#e08428"/></linearGradient>
+    <filter id="shift" color-interpolation-filters="sRGB" onload="ignored"><feOffset dx="2" dy="1" onerror="ignored"/><feMerge onclick="ignored"><feMergeNode onfocus="ignored"/></feMerge></filter>
+    <path id="tile" d="M0 0H38V28H0Z" class="tile" onpointerenter="ignored"/>
+    <clipPath id="crop" onclick="ignored"><rect width="34" height="24" onmousedown="ignored"/></clipPath>
+  </defs>
+  <g transform="translate(10 12)" onmouseover="ignored"><use href="#tile" onmouseup="ignored"/></g>
+  <svg x="68" y="12" width="42" height="32" onload="ignored"><use href="#tile" clip-path="url(#crop)" onclick="ignored"/></svg>
+  <rect x="10" y="54" width="38" height="28" fill="#2468ac" filter="url(#shift)" onclick="this.setAttribute('fill','red')"/>
+  <circle cx="88" cy="69" r="14" fill="#e08428" onmouseout="ignored"/>
+</svg>

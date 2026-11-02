@@ -16,7 +16,7 @@ contract; it does not imply full SVG, CSS or browser conformance.
 | Composition | Group opacity, clip paths, alpha/luminance masks, markers and the filter primitives below. |
 | Content | Embedded base64 PNGs, static CSS and supplied-font labels/spans/text paths. |
 
-Scripts/events, animation, a mutable DOM, `foreignObject` HTML, perspective and
+Script execution, animation, a mutable DOM, `foreignObject` HTML, perspective and
 arbitrary external documents are unsupported. Ordinary conversion does not fetch resources
 or discover machine fonts. Unsupported visible behavior reports
 `UnsupportedFeature`; malformed input, unresolved references and exceeded limits
@@ -27,6 +27,10 @@ are inert when their descendants are also foreign. Their nodes still count towar
 structural limits. SVG descendants and unknown nonempty foreign wrappers reject.
 Descriptive `xlink:title` metadata is inert on admitted elements and `defs`.
 Namespace aliases use the XLink URI; XML/input and structural limits still apply.
+Unqualified lowercase `on*` event attributes are inert in static conversion,
+including definitions, stylesheets, filters and text spans/paths. Their values
+never affect paint, font selection or resource resolution. Script and animation
+elements remain unsupported.
 
 ### Diagnostics
 

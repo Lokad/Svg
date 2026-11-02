@@ -52,6 +52,59 @@
           "referenceSha256": "62a1d5bb5bee98647361f4eef0190280a84bee68fd994a2c5d6b7605419af19e"
         }
       }
+    },
+    {
+      "id": "inert-events",
+      "input": "inert-events.svg",
+      "inputSha256": "8940148c883277ca2f0215037bc66385200d278ac40734fda66da8089d1fd4c3",
+      "sourceBaseline": "c13d4838094de0378113e480b627e2329fa64cde",
+      "context": "Original CC0 static SVG image with inert event attributes; fresh native captures frozen before admission changes.",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "61a225c47435baaaaff88ead188ffb5c6af8114e7448bc8e3464a1b25949057f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "61a225c47435baaaaff88ead188ffb5c6af8114e7448bc8e3464a1b25949057f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "61a225c47435baaaaff88ead188ffb5c6af8114e7448bc8e3464a1b25949057f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/inert-events.png",
+          "referenceSha256": "61a225c47435baaaaff88ead188ffb5c6af8114e7448bc8e3464a1b25949057f"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "61a225c47435baaaaff88ead188ffb5c6af8114e7448bc8e3464a1b25949057f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "61a225c47435baaaaff88ead188ffb5c6af8114e7448bc8e3464a1b25949057f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "61a225c47435baaaaff88ead188ffb5c6af8114e7448bc8e3464a1b25949057f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/inert-events.png",
+          "referenceSha256": "61a225c47435baaaaff88ead188ffb5c6af8114e7448bc8e3464a1b25949057f"
+        }
+      }
     }
   ],
   "schemaVersion": 1,

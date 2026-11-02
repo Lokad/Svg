@@ -408,6 +408,7 @@ internal static class SvgTextSyntax
         while (reader.MoveToNextAttribute())
         {
             cancellationToken.ThrowIfCancellationRequested();
+            if (SvgElementAttributePolicy.IsInertEventAttribute(reader)) continue;
             if (reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space")
             {
                 if (xmlSpace is not null) { reader.MoveToElement(); style = inherited; return false; }

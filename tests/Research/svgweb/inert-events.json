@@ -1,0 +1,493 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "c13d4838094de0378113e480b627e2329fa64cde",
+  "scope": "Static conversion ignores unqualified literal lowercase on* event metadata through one shared predicate used by element, defs, stylesheet, filter, text-path and span validators. Script and animation element admission is unchanged. No layout, drawing, ownership or public API signature change.",
+  "specification": "https://www.w3.org/TR/SVG2/conform.html#static-mode",
+  "implementation": "../../../src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs",
+  "mechanisms": {
+    "test": "../../Lokad.Svg.Tests/SvgEventAttributeTests.cs",
+    "newCases": 10,
+    "failingBefore": 6,
+    "beforeLibrarySha256": "ae00ef49ac773bb48da757a9f9ce3305a39329c72f8941d61f6427fea7e1dc2c",
+    "beforeSeconds": 5.987446400104091,
+    "responsibilities": [
+      "Reader position through common, defs, stylesheet and text-path validators",
+      "Literal XML names and reserved namespaces remain distinct",
+      "Filter, primitive, merge and merge-node admission share the same predicate"
+    ],
+    "existingContractUpdate": "The former blanket event-rejection test keeps its original input and now asserts its exact rectangle and absence of unsupported content."
+  },
+  "contract": {
+    "test": "../../Lokad.Svg.Tests/OpenTypeFontTests.TraversalMetadata.cs",
+    "newCases": 1,
+    "failingBefore": 1,
+    "beforeSeconds": 6.054939200170338,
+    "responsibility": "One prepared document retains span/path font discovery, exactly one provider/source acquisition and replay matching the event-free control. Existing cancellation, refusal, cleanup and API matrices retain their separate responsibilities."
+  },
+  "rendering": {
+    "test": "../../Lokad.Svg.VisualTests/SvgMetadataAttributeReferenceTests.cs",
+    "manifest": "../metadata-attributes/capture.json",
+    "newCanonicalCases": 1,
+    "failingBefore": 1,
+    "beforeSeconds": 6.589232299942523,
+    "newNativeCaptures": 6,
+    "existingReferenceChanges": 0,
+    "responsibility": "One own CC0 fixture combines inert attributes with static CSS, local sources, gradient, clipping, nested viewport and filter. No destination/preparation cross product."
+  },
+  "originals": {
+    "files": 204,
+    "seconds": 64.32381680002436,
+    "hosts": {
+      "windows": {
+        "UnsupportedFeature": 45,
+        "rendered": 156,
+        "MalformedInput": 3
+      },
+      "linux": {
+        "UnsupportedFeature": 45,
+        "rendered": 156,
+        "MalformedInput": 3
+      }
+    },
+    "previousExactPngsUnchangedPerHost": 155,
+    "newlyExact": {
+      "sourceName": "rectangles.svg",
+      "sourceSha256": "09b5f6137b5f0dc3ca233f85f08723564135e18a93237cc6b235ca9eef6c00e3",
+      "logicalViewport": {
+        "Width": 200,
+        "Height": 200
+      },
+      "pixelDimensions": [
+        200,
+        200
+      ],
+      "hosts": {
+        "windows": [
+          {
+            "nativePngSha256": "2e82690c9d7f6640c88c492be61a95d7b5d58d42d0f1b5961b1b5d9982a558c1",
+            "startupHealthy": true,
+            "profileCleaned": true,
+            "changedPixelsAgainstCurrentCandidate": 0
+          },
+          {
+            "nativePngSha256": "2e82690c9d7f6640c88c492be61a95d7b5d58d42d0f1b5961b1b5d9982a558c1",
+            "startupHealthy": true,
+            "profileCleaned": true,
+            "changedPixelsAgainstCurrentCandidate": 0
+          },
+          {
+            "nativePngSha256": "2e82690c9d7f6640c88c492be61a95d7b5d58d42d0f1b5961b1b5d9982a558c1",
+            "startupHealthy": true,
+            "profileCleaned": true,
+            "changedPixelsAgainstCurrentCandidate": 0
+          }
+        ],
+        "linux": [
+          {
+            "nativePngSha256": "2e82690c9d7f6640c88c492be61a95d7b5d58d42d0f1b5961b1b5d9982a558c1",
+            "startupHealthy": true,
+            "profileCleaned": true,
+            "changedPixelsAgainstCurrentCandidate": 0
+          },
+          {
+            "nativePngSha256": "2e82690c9d7f6640c88c492be61a95d7b5d58d42d0f1b5961b1b5d9982a558c1",
+            "startupHealthy": true,
+            "profileCleaned": true,
+            "changedPixelsAgainstCurrentCandidate": 0
+          },
+          {
+            "nativePngSha256": "2e82690c9d7f6640c88c492be61a95d7b5d58d42d0f1b5961b1b5d9982a558c1",
+            "startupHealthy": true,
+            "profileCleaned": true,
+            "changedPixelsAgainstCurrentCandidate": 0
+          }
+        ]
+      },
+      "sourceSvgFilesRetained": 0,
+      "candidatePngSha256": "5ecedb4333f1a07475c540c65e7291d070dcfde0f1b908dae5b22fe20bb3ac01",
+      "changedPixelsPerHost": 0,
+      "pixelDimensionsChecked": [
+        200,
+        200
+      ],
+      "nativeCaptureContext": "Unmodified original supplied to the native browser image pipeline before admission changed; all six frozen captures match the current candidate pixels."
+    },
+    "changedFirstGates": [
+      {
+        "name": "Steps.svg",
+        "host": "windows",
+        "outcome": "UnsupportedFeature",
+        "element": "rect",
+        "attribute": "r",
+        "line": 385,
+        "column": 23
+      },
+      {
+        "name": "Steps.svg",
+        "host": "linux",
+        "outcome": "UnsupportedFeature",
+        "element": "rect",
+        "attribute": "r",
+        "line": 385,
+        "column": 23
+      },
+      {
+        "name": "USStates.svg",
+        "host": "windows",
+        "outcome": "UnsupportedFeature",
+        "element": "script",
+        "attribute": "",
+        "line": 19,
+        "column": 2
+      },
+      {
+        "name": "USStates.svg",
+        "host": "linux",
+        "outcome": "UnsupportedFeature",
+        "element": "script",
+        "attribute": "",
+        "line": 19,
+        "column": 2
+      },
+      {
+        "name": "blocks_game.svg",
+        "host": "windows",
+        "outcome": "UnsupportedFeature",
+        "element": "script",
+        "attribute": "",
+        "line": 16,
+        "column": 2
+      },
+      {
+        "name": "blocks_game.svg",
+        "host": "linux",
+        "outcome": "UnsupportedFeature",
+        "element": "script",
+        "attribute": "",
+        "line": 16,
+        "column": 2
+      },
+      {
+        "name": "displayWebStats.svg",
+        "host": "windows",
+        "outcome": "UnsupportedFeature",
+        "element": "svg",
+        "attribute": "smiling",
+        "line": 3,
+        "column": 201
+      },
+      {
+        "name": "displayWebStats.svg",
+        "host": "linux",
+        "outcome": "UnsupportedFeature",
+        "element": "svg",
+        "attribute": "smiling",
+        "line": 3,
+        "column": 201
+      },
+      {
+        "name": "helloworld.svg",
+        "host": "windows",
+        "outcome": "UnsupportedFeature",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null
+      },
+      {
+        "name": "helloworld.svg",
+        "host": "linux",
+        "outcome": "UnsupportedFeature",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null
+      },
+      {
+        "name": "mouseEvents.svg",
+        "host": "windows",
+        "outcome": "UnsupportedFeature",
+        "element": "g",
+        "attribute": "x",
+        "line": 30,
+        "column": 19
+      },
+      {
+        "name": "mouseEvents.svg",
+        "host": "linux",
+        "outcome": "UnsupportedFeature",
+        "element": "g",
+        "attribute": "x",
+        "line": 30,
+        "column": 19
+      },
+      {
+        "name": "photos.svg",
+        "host": "windows",
+        "outcome": "UnsupportedFeature",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null
+      },
+      {
+        "name": "photos.svg",
+        "host": "linux",
+        "outcome": "UnsupportedFeature",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null
+      },
+      {
+        "name": "rectangles.svg",
+        "host": "windows",
+        "outcome": "rendered",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null
+      },
+      {
+        "name": "rectangles.svg",
+        "host": "linux",
+        "outcome": "rendered",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null
+      },
+      {
+        "name": "snake.svg",
+        "host": "windows",
+        "outcome": "UnsupportedFeature",
+        "element": "script",
+        "attribute": "",
+        "line": 5,
+        "column": 2
+      },
+      {
+        "name": "snake.svg",
+        "host": "linux",
+        "outcome": "UnsupportedFeature",
+        "element": "script",
+        "attribute": "",
+        "line": 5,
+        "column": 2
+      },
+      {
+        "name": "videos.svg",
+        "host": "windows",
+        "outcome": "UnsupportedFeature",
+        "element": "script",
+        "attribute": "",
+        "line": 9,
+        "column": 4
+      },
+      {
+        "name": "videos.svg",
+        "host": "linux",
+        "outcome": "UnsupportedFeature",
+        "element": "script",
+        "attribute": "",
+        "line": 9,
+        "column": 4
+      }
+    ],
+    "sourceSvgFilesRetained": 0,
+    "diagnosticValuesRetained": 0,
+    "closure": "The default static rectangles.svg outcome is closed. The other nine formerly event-root originals remain open behind deeper attributes, script elements, CSS or supplied-font gates. No first-gate-only closure."
+  },
+  "validation": [
+    {
+      "host": "windows",
+      "target": "net11.0",
+      "role": "Affected parsing, discovery, structural, diagnostic, public contracts and filters",
+      "selection": "FullyQualifiedName~SvgEventAttributeTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~SvgFontRequestDiscoveryTests|FullyQualifiedName~SvgFontCoverageDiscoveryTests|FullyQualifiedName~SvgDescriptiveTextStorageTests|FullyQualifiedName~Prepared_events|FullyQualifiedName~Prepared_group_pattern_with_foreign_description|FullyQualifiedName~Descriptions_inside_text|FullyQualifiedName~Ignored_descriptions_preserve|FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~SvgFilter",
+      "passed": 1349,
+      "seconds": 8.44506200007163,
+      "librarySha256": "10d7da0124129a417a92b959b86d6fa4ede4450493a7a277488044c4f7c2ab28"
+    },
+    {
+      "host": "linux",
+      "target": "net11.0",
+      "role": "Affected parsing, discovery, structural, diagnostic, public contracts and filters",
+      "selection": "FullyQualifiedName~SvgEventAttributeTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~SvgFontRequestDiscoveryTests|FullyQualifiedName~SvgFontCoverageDiscoveryTests|FullyQualifiedName~SvgDescriptiveTextStorageTests|FullyQualifiedName~Prepared_events|FullyQualifiedName~Prepared_group_pattern_with_foreign_description|FullyQualifiedName~Descriptions_inside_text|FullyQualifiedName~Ignored_descriptions_preserve|FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~SvgFilter",
+      "passed": 1349,
+      "seconds": 12.130695685000006,
+      "librarySha256": "10d7da0124129a417a92b959b86d6fa4ede4450493a7a277488044c4f7c2ab28"
+    },
+    {
+      "host": "windows",
+      "target": "net11.0",
+      "role": "Canonical metadata and source-filter regressions",
+      "selection": "FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~SvgTextPath",
+      "passed": 17,
+      "seconds": 8.812472800025716,
+      "librarySha256": "10d7da0124129a417a92b959b86d6fa4ede4450493a7a277488044c4f7c2ab28"
+    },
+    {
+      "host": "linux",
+      "target": "net11.0",
+      "role": "Canonical metadata and source-filter regressions",
+      "selection": "FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~SvgFilterSourceOpacityReferenceTests|FullyQualifiedName~SvgTextPath",
+      "passed": 17,
+      "seconds": 11.657533798000003,
+      "librarySha256": "10d7da0124129a417a92b959b86d6fa4ede4450493a7a277488044c4f7c2ab28"
+    },
+    {
+      "host": "windows",
+      "target": "net10.0",
+      "role": "Direct admission, font replay and metadata contracts",
+      "selection": "FullyQualifiedName~SvgEventAttributeTests|FullyQualifiedName~Prepared_events|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~Event_handler_metadata_preserves",
+      "passed": 25,
+      "seconds": 6.659204100025818,
+      "librarySha256": "47031e7313430b5ec55f56963a857a7befd17567b51dd56afe654f9cc2e9fa91"
+    },
+    {
+      "host": "linux",
+      "target": "net10.0",
+      "role": "Direct admission, font replay and metadata contracts",
+      "selection": "FullyQualifiedName~SvgEventAttributeTests|FullyQualifiedName~Prepared_events|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~Event_handler_metadata_preserves",
+      "passed": 25,
+      "seconds": 8.220289715000007,
+      "librarySha256": "47031e7313430b5ec55f56963a857a7befd17567b51dd56afe654f9cc2e9fa91"
+    },
+    {
+      "host": "windows",
+      "target": "net10.0",
+      "role": "Canonical metadata references",
+      "selection": "FullyQualifiedName~SvgMetadataAttributeReferenceTests",
+      "passed": 2,
+      "seconds": 7.561046699993312,
+      "librarySha256": "47031e7313430b5ec55f56963a857a7befd17567b51dd56afe654f9cc2e9fa91"
+    },
+    {
+      "host": "linux",
+      "target": "net10.0",
+      "role": "Canonical metadata references",
+      "selection": "FullyQualifiedName~SvgMetadataAttributeReferenceTests",
+      "passed": 2,
+      "seconds": 8.321532262000005,
+      "librarySha256": "47031e7313430b5ec55f56963a857a7befd17567b51dd56afe654f9cc2e9fa91"
+    },
+    {
+      "host": "windows",
+      "target": "net11.0",
+      "role": "Final review: fail on unknown test selector and assert no retained filter rejection",
+      "selection": "FullyQualifiedName~SvgEventAttributeTests|FullyQualifiedName~Prepared_events|FullyQualifiedName~Event_handler_metadata_preserves",
+      "passed": 12,
+      "seconds": 5.6685036001726985,
+      "librarySha256": "10d7da0124129a417a92b959b86d6fa4ede4450493a7a277488044c4f7c2ab28"
+    },
+    {
+      "host": "windows",
+      "target": "net10.0",
+      "role": "Final review: fail on unknown test selector and assert no retained filter rejection",
+      "selection": "FullyQualifiedName~SvgEventAttributeTests|FullyQualifiedName~Prepared_events|FullyQualifiedName~Event_handler_metadata_preserves",
+      "passed": 12,
+      "seconds": 5.2793578000273556,
+      "librarySha256": "47031e7313430b5ec55f56963a857a7befd17567b51dd56afe654f9cc2e9fa91"
+    }
+  ],
+  "qualificationBoundary": "Affected Windows/Linux net11 and representative net10 checks at this static-admission safe point. Full engine/runtime/package milestone remains the preceding filter qualification; no package/public API change or new full CI claim. Functional elapsed time includes runner startup and is not a benchmark.",
+  "unchanged": [
+    "Frozen reference/font bytes",
+    "Published 0.3.0",
+    "Text layout, shaping, sizing and fitting",
+    "Cancellation, document/structural bounds and memory accounting"
+  ],
+  "remaining": [
+    "W1 script/non-rendering subtree traversal, inert or invalid attributes, CSS, resources, fonts and XML gaps",
+    "Independent Windows DejaVu baseline authority conflict; reference and assertion unchanged"
+  ],
+  "nextStaticSubtreeReview": {
+    "status": "Exploratory controls only; production script admission unchanged.",
+    "bodiesRetained": 0,
+    "diagnosticValuesRetained": 0,
+    "remainingOriginals": [
+      {
+        "name": "Steps.svg",
+        "scriptsRemovedInMemory": 1,
+        "nextCategory": "attribute",
+        "element": "rect",
+        "attribute": "r",
+        "controlOutcome": "UnsupportedFeature",
+        "closedByThisControl": false
+      },
+      {
+        "name": "USStates.svg",
+        "scriptsRemovedInMemory": 1,
+        "nextCategory": "font-preparation",
+        "element": "text",
+        "attribute": "",
+        "controlOutcome": "UnsupportedFeature",
+        "closedByThisControl": false
+      },
+      {
+        "name": "blocks_game.svg",
+        "scriptsRemovedInMemory": 1,
+        "nextCategory": "font-preparation",
+        "element": "text",
+        "attribute": "",
+        "controlOutcome": "UnsupportedFeature",
+        "closedByThisControl": false
+      },
+      {
+        "name": "displayWebStats.svg",
+        "scriptsRemovedInMemory": 5,
+        "nextCategory": "attribute",
+        "element": "svg",
+        "attribute": "smiling",
+        "controlOutcome": "UnsupportedFeature",
+        "closedByThisControl": false
+      },
+      {
+        "name": "helloworld.svg",
+        "scriptsRemovedInMemory": 1,
+        "nextCategory": "css-style",
+        "element": null,
+        "attribute": null,
+        "controlOutcome": "UnsupportedFeature",
+        "closedByThisControl": false
+      },
+      {
+        "name": "mouseEvents.svg",
+        "scriptsRemovedInMemory": 1,
+        "nextCategory": "attribute",
+        "element": "g",
+        "attribute": "x",
+        "controlOutcome": "UnsupportedFeature",
+        "closedByThisControl": false
+      },
+      {
+        "name": "photos.svg",
+        "scriptsRemovedInMemory": 1,
+        "nextCategory": "css-style",
+        "element": null,
+        "attribute": null,
+        "controlOutcome": "UnsupportedFeature",
+        "closedByThisControl": false
+      },
+      {
+        "name": "snake.svg",
+        "scriptsRemovedInMemory": 1,
+        "nextCategory": "font-preparation",
+        "element": "text",
+        "attribute": "",
+        "controlOutcome": "UnsupportedFeature",
+        "closedByThisControl": false
+      },
+      {
+        "name": "videos.svg",
+        "scriptsRemovedInMemory": 1,
+        "nextCategory": "rendered",
+        "element": null,
+        "attribute": null,
+        "controlOutcome": "rendered",
+        "closedByThisControl": false
+      }
+    ],
+    "sharedModelReview": "Any script-subtree admission must align traversal, leaf/text extraction, stylesheet collection, font/resource selection and XML/node accounting. Do not generalize descriptive containers without preserving their distinct active-child contracts."
+  }
+}

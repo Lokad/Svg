@@ -220,6 +220,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
         while (reader.MoveToNextAttribute())
         {
             _token.ThrowIfCancellationRequested();
+            if (SvgElementAttributePolicy.IsInertEventAttribute(reader)) continue;
             if (reader.NamespaceURI.Length != 0 && reader.NamespaceURI != "http://www.w3.org/1999/xlink") continue;
             bool admitted = false;
             foreach (Range range in allowed.AsSpan().Split(' '))

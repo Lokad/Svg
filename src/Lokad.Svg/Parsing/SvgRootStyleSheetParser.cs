@@ -67,14 +67,14 @@ internal static class SvgRootStyleSheetParser
         return cascade.ToInlineStyle();
     }
 
-    /// <summary>Allows XML namespace declarations and the inert stylesheet type and identifier attributes.</summary>
+    /// <summary>Allows XML namespace declarations, stylesheet type/identifier and inert event attributes.</summary>
     internal static void ThrowIfAttributed(XmlReader reader)
     {
         ArgumentNullException.ThrowIfNull(reader);
         if (!reader.HasAttributes) return;
         while (reader.MoveToNextAttribute())
         {
-            if (reader.NamespaceURI == "http://www.w3.org/2000/xmlns/") continue;
+            if (reader.NamespaceURI == "http://www.w3.org/2000/xmlns/" || SvgElementAttributePolicy.IsInertEventAttribute(reader)) continue;
             bool allowed = (reader.LocalName.Equals("type", StringComparison.OrdinalIgnoreCase) && reader.Value.Equals("text/css", StringComparison.OrdinalIgnoreCase))
                 || reader.LocalName.Equals("id", StringComparison.OrdinalIgnoreCase);
             if (!allowed) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");

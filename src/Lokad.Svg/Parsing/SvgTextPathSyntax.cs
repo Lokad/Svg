@@ -14,6 +14,7 @@ internal static class SvgTextPathSyntax
         while (reader.MoveToNextAttribute())
         {
             token.ThrowIfCancellationRequested();
+            if (SvgElementAttributePolicy.IsInertEventAttribute(reader)) continue;
             if (reader.Name == "xmlns" || reader.Prefix == "xmlns") continue;
             if (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") continue;
             if (reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space") continue;
