@@ -6,6 +6,30 @@ namespace Lokad.Svg.Tests;
 
 public sealed partial class OpenTypeFontTests
 {
+    public static IEnumerable<object[]> WindowsExpandedPointNativeCases()
+    {
+        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "windows-font-unit-scaling", "expanded-points.json")));
+        foreach (JsonElement item in data.RootElement.GetProperty("cases").EnumerateArray())
+            yield return [item.GetProperty("glyph").GetUInt16(), item.GetProperty("horizontalRatio").GetDouble(), item.GetProperty("nativeValue").GetInt32()];
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [MemberData(nameof(WindowsExpandedPointNativeCases))]
+    public void Windows_initial_points_share_axis_precision_in_simple_and_composite_glyphs(ushort glyph, double ratio, int expected)
+    {
+        byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "windows-font-unit-scaling", "ExpandedPoints.ttf")), unchanged = bytes.ToArray();
+        RenderBudget budget = new(new HostMemoryBudget(long.MaxValue));
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, glyph, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 22,
+            new OpenTypeWindowsGlyphProfile(SvgGlyphLcdMode.Symmetric, true).CreateHintTarget(ratio), TrueTypeImpliedPointRounding.None, budget, CancellationToken.None))
+        {
+            Assert.Equal(expected * 64, contours.Segments.Min(segment => Math.Min(segment.Start.Y, segment.End.Y)));
+            Assert.Equal((expected + 4) * 64, contours.Segments.Max(segment => Math.Max(segment.Start.Y, segment.End.Y)));
+        }
+        Assert.Equal(unchanged, bytes);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     public static IEnumerable<object[]> WindowsFontUnitNativeCases()
     {
         using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "windows-font-unit-scaling", "native-vectors.json")));

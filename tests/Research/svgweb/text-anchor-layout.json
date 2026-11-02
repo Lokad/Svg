@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "d7d4a44198d0741a6f1f3841a8515cb5155bbb3e",
+  "status": "CSS anchoring, anchor interval retention, scoped chunk positioning and expanded Windows initial-X scaling are qualified. Full helloworld rendering remains open behind supplied fonts.",
+  "specifications": [
+    "https://www.w3.org/TR/SVG2/text.html#TextAnchoringProperties",
+    "https://learn.microsoft.com/en-us/windows/win32/api/dwrite/nf-dwrite-idwritefactory-createglyphrunanalysis"
+  ],
+  "sharedModel": [
+    "Keep raw global anchor keywords through cascade; validate at the shared bounded token boundary, including inert geometry. Containers, direct text and font discovery share inheritance resolution.",
+    "Font intervals retain anchor-only changes. The first addressed character anchors a chunk; absolute x/y boundaries receive the current scoped anchor. Continuous shaping, fitting and width/rounding algorithms remain unchanged.",
+    "Annotate existing owned positions; copy borrowed descendant positions only for anchor overrides. Cancellation, refusal and retry release all owned staging. Direct, prepared and instance paths share the same metadata.",
+    "Simple and composite fitted glyph loaders share initial Windows X scaling: expanded horizontal strikes retain 16.16 precision, while uniform/compressed strikes retain float scaling. Control-table rounding, ideal unfitted outlines, shaping, raster sampling and alpha rounding remain separate and unchanged."
+  ],
+  "tests": {
+    "mechanisms": [
+      "../../Lokad.Svg.Tests/SvgTextAnchorTests.cs",
+      "../../Lokad.Svg.Tests/OpenTypeFontTests.TextAnchor.cs",
+      "../../Lokad.Svg.Tests/OpenTypeFontTests.WindowsScaling.cs"
+    ],
+    "newMechanismCases": 61,
+    "contracts": "../../Lokad.Svg.Tests/OpenTypeFontTests.TextAnchor.cs",
+    "newContractCases": 2,
+    "contractResponsibilities": [
+      "owned chunk-position staging: refusal, refund and retry",
+      "anchor validation before font acquisition and prepared replay"
+    ],
+    "canonical": "../../Lokad.Svg.VisualTests/SvgTextAnchorReferenceTests.cs",
+    "canonicalCases": 4,
+    "capture": "../text-anchor/capture.json",
+    "healthyBrowserCaptures": 24,
+    "platforms": "All four controls keep distinct Windows/Linux references.",
+    "font": "../supplied-font-labels/font-pack.json",
+    "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "nativePointVectors": "../windows-font-unit-scaling/expanded-points.json",
+    "nativePointCases": 12,
+    "nativePointAnalyses": 36,
+    "organization": "Mechanisms retain individual boundary cases; contracts cover distinct execution/allocation paths; rendering uses one canonical supplied-font conversion per fixture. No fixture/API product, reference edits, tolerance changes or count hiding."
+  },
+  "failingBefore": {
+    "cssAdmission": {
+      "librarySha256": "49e337aec13c3f3ee0b4cb38eecbd1b87c1af46302b2472f853df0c4fd7d8b71",
+      "cases": [
+        {
+          "id": "inherited",
+          "sourceSha256": "ea738de5527e87116a231a527faec268a76314e80ee008b1412758d3e6b1e221",
+          "outcome": "UnsupportedFeature"
+        },
+        {
+          "id": "chunks",
+          "sourceSha256": "2c6b9b4fc8446d4f596e52dd90ffa3e2ff98e0dbc4a0a6e95645764425136f01",
+          "outcome": "UnsupportedFeature"
+        },
+        {
+          "id": "effects",
+          "sourceSha256": "386fd83a957c1a01c5845e844ab2056d63b3028496268cdb02ec32a9a7088b31",
+          "outcome": "UnsupportedFeature"
+        },
+        {
+          "id": "path",
+          "sourceSha256": "3e00163ffc9861cfc803dc98de6d57cf38a95710a53eb715c6d421d79e1b2220",
+          "outcome": "UnsupportedFeature"
+        }
+      ]
+    },
+    "intervalCompactionAndStretching": [
+      {
+        "host": "windows",
+        "case": "effects",
+        "librarySha256": "351070e2d679b2e2f451e7bf33663a88e62d012c7b35ce179f61fed782f708ac",
+        "changedPixels": 2,
+        "maximumChannelError": 4
+      },
+      {
+        "host": "windows",
+        "case": "chunks",
+        "librarySha256": "351070e2d679b2e2f451e7bf33663a88e62d012c7b35ce179f61fed782f708ac",
+        "changedPixels": 1693,
+        "maximumChannelError": 255
+      },
+      {
+        "host": "linux",
+        "case": "chunks",
+        "librarySha256": "351070e2d679b2e2f451e7bf33663a88e62d012c7b35ce179f61fed782f708ac",
+        "changedPixels": 1478,
+        "maximumChannelError": 255
+      }
+    ],
+    "expandedInitialPoints": {
+      "librarySha256": "49e337aec13c3f3ee0b4cb38eecbd1b87c1af46302b2472f853df0c4fd7d8b71",
+      "failures": [
+        {
+          "glyph": 1,
+          "ratio": 2.33984375,
+          "native": 1795,
+          "actual": 1796
+        },
+        {
+          "glyph": 2,
+          "ratio": 2.33984375,
+          "native": -1795,
+          "actual": -1796
+        },
+        {
+          "glyph": 3,
+          "ratio": 2.33984375,
+          "native": 1795,
+          "actual": 1796
+        },
+        {
+          "glyph": 4,
+          "ratio": 2.33984375,
+          "native": -1795,
+          "actual": -1796
+        }
+      ],
+      "unchangedUniformAndCompressedCases": 8
+    },
+    "borrowedPositionMetadata": {
+      "librarySha256": "68e297c970cec93a79b250edbe16dd45dd71bd336ab22651e983ad201d0de239",
+      "expectedX": [
+        0,
+        88,
+        200
+      ],
+      "actualX": [
+        0,
+        100,
+        200
+      ]
+    },
+    "priorStretchingDefect": {
+      "librarySha256": "49e337aec13c3f3ee0b4cb38eecbd1b87c1af46302b2472f853df0c4fd7d8b71",
+      "equivalentPresentationAnchorControl": {
+        "id": "attribute-before",
+        "librarySha256": "49e337aec13c3f3ee0b4cb38eecbd1b87c1af46302b2472f853df0c4fd7d8b71",
+        "sourceSha256": "ff617a11dc94e70ea72be5ba7d4c7137a5f62e86978f8bb2768071bfa6582f70",
+        "nativeInputSha256": "dda407a04f3168cecdc65e0da97829e1fcfdeba476cc455d772ff5f94b6a1f0b",
+        "changedPixels": 2,
+        "maximumError": 4
+      },
+      "conclusion": "The two Windows alpha pixels also differ before CSS anchor admission; removing fitting eliminates them, while removing filter or opacity does not."
+    }
+  },
+  "qualification": {
+    "runs": [
+      {
+        "name": "text-anchor-milestone-2-core-windows-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg.Tests",
+        "seconds": 89.639,
+        "total": 36521,
+        "passed": 36521,
+        "failed": [],
+        "librarySha256": "aae9f0bcfa4039345f64ac8139761f643bbcaa079f4327ddb3a748c97be4992a"
+      },
+      {
+        "name": "text-anchor-milestone-2-core-linux-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg.Tests",
+        "seconds": 74.508,
+        "total": 36521,
+        "passed": 36521,
+        "failed": [],
+        "librarySha256": "aae9f0bcfa4039345f64ac8139761f643bbcaa079f4327ddb3a748c97be4992a"
+      },
+      {
+        "name": "text-anchor-milestone-2-native-windows-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg.VisualTests",
+        "seconds": 107.363,
+        "total": 46562,
+        "passed": 46561,
+        "failed": [
+          "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")"
+        ],
+        "librarySha256": "aae9f0bcfa4039345f64ac8139761f643bbcaa079f4327ddb3a748c97be4992a"
+      },
+      {
+        "name": "text-anchor-milestone-2-native-linux-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg.VisualTests",
+        "seconds": 244.801,
+        "total": 46562,
+        "passed": 46562,
+        "failed": [],
+        "librarySha256": "aae9f0bcfa4039345f64ac8139761f643bbcaa079f4327ddb3a748c97be4992a"
+      },
+      {
+        "name": "text-anchor-compat-1-core-windows-net10.0",
+        "selection": "FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~SvgText|FullyQualifiedName~SvgRoot|FullyQualifiedName~SvgCss|FullyQualifiedName~SvgInlineStyle|FullyQualifiedName~SvgInertTypographyTests",
+        "seconds": 52.134,
+        "total": 14714,
+        "passed": 14714,
+        "failed": [],
+        "librarySha256": "c6a7d4b2e4c609923061518b8926fd413f0ede81c7c21b068d250d92241359fe"
+      },
+      {
+        "name": "text-anchor-compat-1-core-linux-net10.0",
+        "selection": "FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~SvgText|FullyQualifiedName~SvgRoot|FullyQualifiedName~SvgCss|FullyQualifiedName~SvgInlineStyle|FullyQualifiedName~SvgInertTypographyTests",
+        "seconds": 39.136,
+        "total": 14714,
+        "passed": 14714,
+        "failed": [],
+        "librarySha256": "c6a7d4b2e4c609923061518b8926fd413f0ede81c7c21b068d250d92241359fe"
+      },
+      {
+        "name": "text-anchor-compat-1-native-windows-net10.0",
+        "selection": "FullyQualifiedName~Text|FullyQualifiedName~Font",
+        "seconds": 31.686,
+        "total": 1161,
+        "passed": 1160,
+        "failed": [
+          "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")"
+        ],
+        "librarySha256": "c6a7d4b2e4c609923061518b8926fd413f0ede81c7c21b068d250d92241359fe"
+      },
+      {
+        "name": "text-anchor-compat-1-native-linux-net10.0",
+        "selection": "FullyQualifiedName~Text|FullyQualifiedName~Font",
+        "seconds": 51.135,
+        "total": 1161,
+        "passed": 1161,
+        "failed": [],
+        "librarySha256": "c6a7d4b2e4c609923061518b8926fd413f0ede81c7c21b068d250d92241359fe"
+      }
+    ],
+    "originalReplay": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 92.87518150010146,
+      "librarySha256": "aae9f0bcfa4039345f64ac8139761f643bbcaa079f4327ddb3a748c97be4992a",
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 40,
+            "rendered": 161,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyExactPngs": 161,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 40,
+            "rendered": 161,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyExactPngs": 161,
+          "changedOriginals": []
+        }
+      }
+    },
+    "originalSemanticAudit": {
+      "windows": {
+        "changedOriginals": [
+          {
+            "name": "helloworld.svg",
+            "changedFields": [
+              "messageSha256",
+              "sourceDiagnosticSha256",
+              "diagnosticElement",
+              "diagnosticAttribute"
+            ]
+          }
+        ],
+        "defaultFontGateOriginals": [
+          "410.svg",
+          "DroidSans-Bold.svg",
+          "DroidSans.svg",
+          "DroidSansMono.svg",
+          "DroidSerif-Bold.svg",
+          "DroidSerif-BoldItalic.svg",
+          "DroidSerif-Italic.svg",
+          "DroidSerif-Regular.svg",
+          "USStates.svg",
+          "blocks_game.svg",
+          "decimal.svg",
+          "helloworld.svg",
+          "mysvg.svg",
+          "paths-data-08-t.svg",
+          "paths-data-09-t.svg",
+          "pservers-grad-03-b.svg",
+          "shapes-polygon-01-t.svg",
+          "shapes-polyline-01-t.svg",
+          "snake.svg"
+        ]
+      },
+      "linux": {
+        "changedOriginals": [
+          {
+            "name": "helloworld.svg",
+            "changedFields": [
+              "messageSha256",
+              "sourceDiagnosticSha256",
+              "diagnosticElement",
+              "diagnosticAttribute"
+            ]
+          }
+        ],
+        "defaultFontGateOriginals": [
+          "410.svg",
+          "DroidSans-Bold.svg",
+          "DroidSans.svg",
+          "DroidSansMono.svg",
+          "DroidSerif-Bold.svg",
+          "DroidSerif-BoldItalic.svg",
+          "DroidSerif-Italic.svg",
+          "DroidSerif-Regular.svg",
+          "USStates.svg",
+          "blocks_game.svg",
+          "decimal.svg",
+          "helloworld.svg",
+          "mysvg.svg",
+          "paths-data-08-t.svg",
+          "paths-data-09-t.svg",
+          "pservers-grad-03-b.svg",
+          "shapes-polygon-01-t.svg",
+          "shapes-polyline-01-t.svg",
+          "snake.svg"
+        ]
+      }
+    },
+    "packages": {
+      "version": "0.4.0-dev.1",
+      "published": false,
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "9197e944f6dee57932bb4f21fabdca2c9b23cd0a8c1432da28d04e752cc4124a"
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "8a157e7a3f2278fd5e16f2c8ad1dad845eb03cc73bc91c82342c2af6dfb98969"
+        }
+      ],
+      "assets": {
+        "net10.0": "c6a7d4b2e4c609923061518b8926fd413f0ede81c7c21b068d250d92241359fe",
+        "net11.0": "aae9f0bcfa4039345f64ac8139761f643bbcaa079f4327ddb3a748c97be4992a"
+      },
+      "installedConsumers": [
+        {
+          "host": "windows",
+          "exitCode": 0,
+          "seconds": 8.76891539990902
+        },
+        {
+          "host": "linux",
+          "exitCode": 0,
+          "seconds": 63.53357920004055
+        }
+      ]
+    },
+    "windowsDejaVu": {
+      "changedPixels": 75,
+      "maximumChannelError": 17,
+      "alphaChangedPixels": 75,
+      "actualPngSha256": "71b1b8cd1159dab06d982aef86b48f4968838bb5ba699122962d0947f901dc34",
+      "frozenPngSha256": "d00220c0ab28b9805f43e7e86cda6165573021fb7dd7e2964531052d45c95b39",
+      "librarySha256": "aae9f0bcfa4039345f64ac8139761f643bbcaa079f4327ddb3a748c97be4992a",
+      "authority": "Pending; preserve reference/assertion; terminal CI41274755136 remains FAILED/CLOSED.",
+      "byteIdenticalToPreviousQualifiedCandidate": true
+    },
+    "validationTimeComparison": {
+      "beforeEvidence": "root-css-border-layout.json",
+      "before": {
+        "coreWindowsSeconds": 81.567,
+        "coreLinuxSeconds": 66.318,
+        "nativeWindowsSeconds": 105.168,
+        "nativeLinuxSeconds": 225.211,
+        "coreCases": 36458,
+        "nativeCases": 46558
+      },
+      "after": {
+        "coreWindowsSeconds": 89.639,
+        "coreLinuxSeconds": 74.508,
+        "nativeWindowsSeconds": 107.363,
+        "nativeLinuxSeconds": 244.801,
+        "coreCases": 36521,
+        "nativeCases": 46562
+      },
+      "focusedWindows": {
+        "cases": 87,
+        "seconds": 8.787
+      },
+      "interpretation": "Functional elapsed times include process startup and concurrent host work. Coverage grew by63 core and4 rendering cases. No test-suite speedup or completed broad simplification claim."
+    }
+  },
+  "remaining": [
+    "Supply explicit licensed fonts and independent native configuration for all19 default-font gates, including helloworld and mysvg. Their complete original rendering remains open.",
+    "Continue the high-priority static-gap review, including text-transform/text-align and non-applicable/custom attributes. Preserve all204 RAM-only source/hash/semantic audits.",
+    "Preserve the unchanged Windows DejaVu reference/assertion and the pending authority decision. No exact-head green CI or release-completion claim."
+  ]
+}

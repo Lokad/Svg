@@ -226,8 +226,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
         void AddFont(int start, int end, SvgInheritedTextStyle font)
         {
             token.ThrowIfCancellationRequested();
-            if (fonts.Count != 0 && fonts[^1].End == start && fonts[^1].Font.Family == font.Family
-                && fonts[^1].Font.Weight == font.Weight && fonts[^1].Font.Italic == font.Italic && fonts[^1].Font.FontSize == font.FontSize)
+            if (fonts.Count != 0 && fonts[^1].End == start && fonts[^1].Font.HasSameFontAndAnchor(font))
                 fonts[^1] = fonts[^1] with { End = end };
             else fonts.Add(new(start, end, font));
         }

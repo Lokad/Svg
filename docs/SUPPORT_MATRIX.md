@@ -380,6 +380,14 @@ host-selected pack root; it adds no SVG-directed fetching or ambient font discov
 | Text paths | One local open/closed geometry path per run, transformed/curved paths, advances/kerning, length/percentage startOffset, anchors/tangents, align/exact spacing and mixed direct/path text. |
 | Ligatures | Default Latin/DFLT Basic Latin, one unfiltered type-4 lookup, format-1 subtables, coverage 1/2 and 2–8 components in font order. |
 
+`text-anchor` accepts `start`, `middle`, `end`, `inherit`, `initial` and `unset`
+through presentation attributes and admitted inline/stylesheet contexts. Root,
+group, text and span scopes share inheritance and cascade rules. Each chunk uses
+its first addressed character's anchor; absolute x/y starts another chunk, while
+an anchor-only change preserves continuous shaping. Text paths inherit group CSS;
+their own inline/stylesheet declarations remain unsupported. The
+[anchor controls](../tests/Research/text-anchor/README.md) protect these interactions.
+
 `SvgFontFaceRequest.FromCss` preserves family order, quoting, escapes and named/
 generic identity. `SvgFontSelectionPolicy` supplies host generic mappings and
 fallback restrictions. CSS requests use directional weight fallback, including

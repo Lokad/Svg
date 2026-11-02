@@ -165,7 +165,7 @@ internal static partial class OpenTypeFont
         }
 
         private int ScaleHorizontal(int value) => !_target.UsesWindowsArithmetic
-            ? Scale(value, _scale.Horizontal) : TrueTypeHintDeviceScale.ScaleWindows(value, _scale.WindowsHorizontal);
+            ? Scale(value, _scale.Horizontal) : _scale.ScaleWindowsHorizontal(value);
         private int Scale(int value, int factor) => ScaleTrueTypeFixed(value, factor, _target);
 
         public void Dispose() { _machine.Dispose(); _reservation.Dispose(); }

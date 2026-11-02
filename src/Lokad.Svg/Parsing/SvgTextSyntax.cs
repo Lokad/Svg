@@ -148,6 +148,8 @@ internal readonly record struct SvgTextPositionAdjustment(int Start, double? X, 
     internal bool OverridesDx { get; init; }
     internal bool OverridesDy { get; init; }
     internal double? Rotation { get; init; }
+    /// <summary>Supplies the current text scope's anchor at an authored absolute chunk boundary.</summary>
+    internal SvgTextAnchor? Anchor { get; init; }
 }
 
 /// <summary>Normalizes direct-text whitespace while preserving the source character limit across reader chunks.</summary>
@@ -303,7 +305,7 @@ internal static class SvgTextSyntax
     {
         ArgumentNullException.ThrowIfNull(reader);
         InlineStyle inline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
-        return Parse(reader, inline.TextFont, inherited, inline.LetterSpacing, inline.WordSpacing);
+        return Parse(reader, inline.TextFont, inherited, inline.LetterSpacing, inline.WordSpacing, inline.TextAnchor);
     }
 
     /// <summary>Parses direct text declarations when no resolved scalar letter spacing is present.</summary>
@@ -315,6 +317,9 @@ internal static class SvgTextSyntax
         => Parse(reader, inline, inherited, letterSpacing, null);
 
     internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline, SvgInheritedTextStyle inherited, string? letterSpacing, string? wordSpacing)
+        => Parse(reader, inline, inherited, letterSpacing, wordSpacing, null);
+
+    internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline, SvgInheritedTextStyle inherited, string? letterSpacing, string? wordSpacing, string? textAnchor)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string family = SvgTextFontSyntax.ResolveFamily(inline.Family ?? reader.GetAttribute("font-family"), inherited.Family);
@@ -327,7 +332,7 @@ internal static class SvgTextSyntax
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
         string? letterSpacingValue = letterSpacing ?? reader.GetAttribute("letter-spacing");
         double parsedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : ParseSpacing(letterSpacingValue);
-        SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor"), inherited.Anchor);
+        SvgTextAnchor anchor = ParseAnchor(textAnchor ?? reader.GetAttribute("text-anchor"), inherited.Anchor);
         string? x = reader.GetAttribute("x"), y = reader.GetAttribute("y"), dx = reader.GetAttribute("dx"), dy = reader.GetAttribute("dy"), rotate = reader.GetAttribute("rotate");
         double firstX = SvgTextPositionLists.ReadFirst(x, out bool manyX), firstY = SvgTextPositionLists.ReadFirst(y, out bool manyY);
         double firstDx = SvgTextPositionLists.ReadFirst(dx, out bool manyDx), firstDy = SvgTextPositionLists.ReadFirst(dy, out bool manyDy);
@@ -464,7 +469,7 @@ internal static class SvgTextSyntax
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "font-family" or "font-weight" or "font-style" or "font-size") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName == "word-spacing") continue;
-            if (reader.NamespaceURI.Length == 0 && reader.LocalName == "text-decoration") continue;
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "text-decoration" or "text-anchor") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "color" or "fill" or "fill-opacity" or "stroke" or "fill-rule" or "display" or "visibility"
                 or "stroke-width" or "stroke-opacity" or "stroke-linecap" or "stroke-linejoin" or "stroke-miterlimit" or "stroke-dasharray" or "stroke-dashoffset" or "paint-order" or "vector-effect") continue;
             reader.MoveToElement();
@@ -485,7 +490,8 @@ internal static class SvgTextSyntax
         { PositionLists = new(x, y, dx, dy, rotate),
             Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, parsedInline, styleSheet), inherited.Paint),
             Font = SvgTextInheritance.Resolve(reader, inherited.Font, SvgInlineStyleParser.MergeFont(parsedInline.TextFont, parsedInline.Important, styleSheet.TextFont, styleSheet.Important), null, null,
-                SvgInlineStyleParser.MergeWithImportance(parsedInline.WordSpacing, parsedInline.Important, InlineImportantProperties.WordSpacing, styleSheet.WordSpacing, styleSheet.Important)) };
+                SvgInlineStyleParser.MergeWithImportance(parsedInline.WordSpacing, parsedInline.Important, InlineImportantProperties.WordSpacing, styleSheet.WordSpacing, styleSheet.Important),
+                SvgInlineStyleParser.MergeWithImportance(parsedInline.TextAnchor, parsedInline.Important, InlineImportantProperties.TextAnchor, styleSheet.TextAnchor, styleSheet.Important)) };
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, parsedInline, styleSheet, inherited.Font.Decoration, (style.Paint with { IsDisplayed = true, IsVisible = true }).GlyphPaint);
         if (decoration != style.Font.Decoration) style = style with { Font = style.Font.WithDecoration(decoration) };
         style = style with { Paint = style.Paint with { Decoration = decoration } };
@@ -504,13 +510,16 @@ internal static class SvgTextSyntax
         return parsed;
     }
 
-    /// <summary>Resolves one bounded presentation anchor over its inherited value; CSS anchor declarations remain outside this parser.</summary>
+    /// <summary>Resolves the winning bounded CSS/presentation anchor over its inherited value.</summary>
     internal static SvgTextAnchor ParseAnchor(string? value, SvgTextAnchor inherited)
+        => value is null ? inherited : ParseAnchor(value.AsSpan(), inherited);
+
+    internal static SvgTextAnchor ParseAnchor(ReadOnlySpan<char> value, SvgTextAnchor inherited)
     {
-        if (value is null) return inherited;
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "The text anchor exceeds the configured syntax limit.");
-        string token = SvgCssWhitespace.Trim(value);
-        if (token.Equals("inherit", StringComparison.OrdinalIgnoreCase)) return inherited;
+        ReadOnlySpan<char> token = SvgCssWhitespace.Trim(value);
+        if (token.Equals("inherit", StringComparison.OrdinalIgnoreCase) || token.Equals("unset", StringComparison.OrdinalIgnoreCase)) return inherited;
+        if (token.Equals("initial", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.Start;
         if (token.Equals("start", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.Start;
         if (token.Equals("middle", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.Middle;
         if (token.Equals("end", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.End;

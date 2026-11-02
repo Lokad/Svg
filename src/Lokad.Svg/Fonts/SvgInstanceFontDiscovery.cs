@@ -542,7 +542,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         SvgComputedStyle authoredStyle = context.ResolveStyle(reader, true);
         context = context with { AuthoredStyle = authoredStyle with { Filter = null } };
         SvgResolvedDirectTextElement resolved = context.ResolveTextShape(reader, _state.PaintResources);
-        SvgTextStyle style = SvgTextSyntax.Parse(reader, resolved.InlineFont, inherited.TextStyle, resolved.LetterSpacing, resolved.WordSpacing);
+        SvgTextStyle style = SvgTextSyntax.Parse(reader, resolved.InlineFont, inherited.TextStyle, resolved.LetterSpacing, resolved.WordSpacing, resolved.TextAnchor);
         SvgTextWhitespaceMode whitespace = SvgTextSyntax.ParseWhitespaceMode(reader, resolved.WhiteSpace, inherited.TextStyle.WhitespaceMode);
         SvgTextPaintStyle paint = SvgTextPaintStyle.ResolveElement(resolved.PaintableElement.Style with { Filter = null }, inherited.Presentation.Paint,
             inherited.Presentation.IsDisplayed, inherited.Presentation.IsVisible, inherited.Stroke.Stroke, _state.PaintResources);

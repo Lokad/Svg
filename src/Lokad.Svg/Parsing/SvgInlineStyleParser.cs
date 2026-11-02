@@ -17,6 +17,7 @@ internal readonly record struct InlineStyle(string? Color, string? Fill, string?
     internal string? LetterSpacing { get; init; }
     internal string? WordSpacing { get; init; }
     internal string? TextDecoration { get; init; }
+    internal string? TextAnchor { get; init; }
     internal string? Linecap { get; init; }
     internal string? Linejoin { get; init; }
     internal string? Dasharray { get; init; }
@@ -79,6 +80,7 @@ internal enum InlineImportantProperties : long
     TextDecoration = 1L << 31,
     Overflow = 1L << 32,
     BackgroundColor = 1L << 33,
+    TextAnchor = 1L << 34,
 }
 
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
@@ -142,7 +144,7 @@ internal static class SvgInlineStyleParser
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null, clipRule = null, paintOrder = null;
         string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null, wordSpacing = null, textDecoration = null;
         string? linecap = null, linejoin = null, dasharray = null, dashoffset = null, width = null, miterlimit = null, strokeOpacity = null, geometryWidth = null, geometryHeight = null;
-        string? markerStart = null, markerMid = null, markerEnd = null, filter = null, overflow = null, backgroundColor = null;
+        string? markerStart = null, markerMid = null, markerEnd = null, filter = null, overflow = null, backgroundColor = null, textAnchor = null;
         InlineImportantProperties important = InlineImportantProperties.None;
         bool hasBoxLayout = false;
         Span<char> commentScratch = stackalloc char[2 * SvgSyntaxLimits.MaximumValueTokenCharacters + 1];
@@ -166,6 +168,12 @@ internal static class SvgInlineStyleParser
             if (propertyValue.Length == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty inline style declarations are not implemented.");
             if (property.Equals("color", StringComparison.OrdinalIgnoreCase)) Set(ref color, InlineImportantProperties.Color, property, propertyValue, strings, ref important, true);
             else if (property.Equals("background-color", StringComparison.OrdinalIgnoreCase)) Set(ref backgroundColor, InlineImportantProperties.BackgroundColor, property, propertyValue, strings, ref important, false);
+            else if (property.Equals("text-anchor", StringComparison.OrdinalIgnoreCase))
+            {
+                TryStripImportant(propertyValue, out ReadOnlySpan<char> anchorValue);
+                _ = SvgTextSyntax.ParseAnchor(anchorValue, SvgTextAnchor.Start);
+                Set(ref textAnchor, InlineImportantProperties.TextAnchor, property, propertyValue, strings, ref important, false);
+            }
             else if (SvgRootBoxSyntax.IsLayoutProperty(property)) hasBoxLayout = true;
             else if (property.Equals("fill", StringComparison.OrdinalIgnoreCase)) Set(ref fill, InlineImportantProperties.Fill, property, propertyValue, strings, ref important, true);
             else if (property.Equals("fill-opacity", StringComparison.OrdinalIgnoreCase)) Set(ref fillOpacity, InlineImportantProperties.FillOpacity, property, propertyValue, strings, ref important, true);
@@ -240,7 +248,7 @@ internal static class SvgInlineStyleParser
                 || property.Equals("float", StringComparison.OrdinalIgnoreCase)) { } // No UI state or surrounding box flow exists in an SVG image.
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, WordSpacing = wordSpacing, TextDecoration = textDecoration, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, ClipRule = clipRule, PaintOrder = paintOrder, MarkerStart = markerStart, MarkerMid = markerMid, MarkerEnd = markerEnd, Filter = filter, Overflow = overflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, BackgroundColor = backgroundColor, BoxLayoutDeclarations = hasBoxLayout ? strings is null ? borrowedSource ?? value.ToString() : strings.Copy(value) : null, Important = important };
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, WordSpacing = wordSpacing, TextDecoration = textDecoration, TextAnchor = textAnchor, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, ClipRule = clipRule, PaintOrder = paintOrder, MarkerStart = markerStart, MarkerMid = markerMid, MarkerEnd = markerEnd, Filter = filter, Overflow = overflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, BackgroundColor = backgroundColor, BoxLayoutDeclarations = hasBoxLayout ? strings is null ? borrowedSource ?? value.ToString() : strings.Copy(value) : null, Important = important };
 
         static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> property, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important, bool mapKeywords)
         {

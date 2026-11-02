@@ -37,6 +37,14 @@ internal sealed class SvgInheritedTextStyle
     internal SvgInheritedTextStyle WithDecoration(SvgTextDecorationStyle? decoration)
         => new(Family, Weight, Italic, FontSize, WhitespaceMode, LetterSpacing, Anchor) { WordSpacing = WordSpacing, Decoration = decoration };
 
+    internal SvgInheritedTextStyle WithAnchor(SvgTextAnchor anchor)
+        => anchor == Anchor ? this : new(Family, Weight, Italic, FontSize, WhitespaceMode, LetterSpacing, anchor) { WordSpacing = WordSpacing, Decoration = Decoration };
+
+    /// <summary>Tests the state retained by font intervals; whitespace, spacing and paint have separate intervals.</summary>
+    internal bool HasSameFontAndAnchor(SvgInheritedTextStyle other)
+        => string.Equals(Family, other.Family, StringComparison.OrdinalIgnoreCase) && Weight == other.Weight
+            && Italic == other.Italic && FontSize == other.FontSize && Anchor == other.Anchor;
+
     internal string? Family { get; }
     internal int Weight { get; }
     internal bool Italic { get; }
@@ -51,6 +59,13 @@ internal sealed class SvgInheritedTextStyle
 /// <summary>Combines inline, presentation, and ancestor text properties using the direct-text precedence subset.</summary>
 internal static class SvgTextInheritance
 {
+    /// <summary>Shares the specified-style cascade between container lowering and font discovery.</summary>
+    internal static SvgInheritedTextStyle Resolve(XmlReader reader, SvgInheritedTextStyle inherited, InlineStyle inline, InlineStyle sheet)
+        => Resolve(reader, inherited, SvgInlineStyleParser.MergeFont(inline.TextFont, inline.Important, sheet.TextFont, sheet.Important),
+            SvgInlineStyleParser.MergeWithImportance(inline.WhiteSpace, inline.Important, InlineImportantProperties.WhiteSpace, sheet.WhiteSpace, sheet.Important),
+            SvgInlineStyleParser.MergeWithImportance(inline.LetterSpacing, inline.Important, InlineImportantProperties.LetterSpacing, sheet.LetterSpacing, sheet.Important),
+            SvgInlineStyleParser.MergeWithImportance(inline.WordSpacing, inline.Important, InlineImportantProperties.WordSpacing, sheet.WordSpacing, sheet.Important),
+            SvgInlineStyleParser.MergeWithImportance(inline.TextAnchor, inline.Important, InlineImportantProperties.TextAnchor, sheet.TextAnchor, sheet.Important));
     /// <summary>Parses a container xml:space declaration with the inherited mode as its default.</summary>
     private static SvgTextWhitespaceMode ParseContainerXmlSpace(string value)
     {
@@ -63,6 +78,9 @@ internal static class SvgTextInheritance
         => Resolve(reader, inherited, inline, whiteSpace, letterSpacing, null);
 
     internal static SvgInheritedTextStyle Resolve(XmlReader reader, SvgInheritedTextStyle inherited, SvgTextInlineFontProperties inline, string? whiteSpace, string? letterSpacing, string? wordSpacing)
+        => Resolve(reader, inherited, inline, whiteSpace, letterSpacing, wordSpacing, null);
+
+    internal static SvgInheritedTextStyle Resolve(XmlReader reader, SvgInheritedTextStyle inherited, SvgTextInlineFontProperties inline, string? whiteSpace, string? letterSpacing, string? wordSpacing, string? textAnchor)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string family = SvgTextFontSyntax.ResolveFamily(inline.Family ?? reader.GetAttribute("font-family"), inherited.Family);
@@ -80,6 +98,6 @@ internal static class SvgTextInheritance
         double resolvedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgTextSyntax.ParseSpacing(letterSpacingValue);
         string? wordSpacingValue = wordSpacing ?? reader.GetAttribute("word-spacing");
         double resolvedWordSpacing = wordSpacingValue is null ? inherited.WordSpacing : SvgTextSyntax.ParseSpacing(wordSpacingValue);
-        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing, SvgTextSyntax.ParseAnchor(reader.GetAttribute("text-anchor"), inherited.Anchor)) { WordSpacing = resolvedWordSpacing, Decoration = inherited.Decoration };
+        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing, SvgTextSyntax.ParseAnchor(textAnchor ?? reader.GetAttribute("text-anchor"), inherited.Anchor)) { WordSpacing = resolvedWordSpacing, Decoration = inherited.Decoration };
     }
 }

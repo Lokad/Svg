@@ -416,7 +416,7 @@ CancellationToken cancellationToken)
                     textPlacement = textFrame.MapText(textPlacement);
                 }
                 // ResolveTextShape validates fill-rule syntax; SVG text keeps glyph winding independent of that property.
-                SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing, resolvedText.WordSpacing);
+                SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing, resolvedText.WordSpacing, resolvedText.TextAnchor);
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
                 SvgTextPaintStyle textPaint = SvgTextPaintStyle.ResolveElement(textElement.Style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.InheritedStroke.Stroke, state.PaintResources);
                 textPaint = textPaint with { TextOpacity = SvgPaintOpacity.Opaque, StrokeStyle = context.InheritedStroke.ResolveChild(textElement.Style), PaintOrder = textElement.Style.PaintOrder ?? context.InheritedPresentation.PaintOrder };
@@ -766,7 +766,8 @@ CancellationToken cancellationToken)
                     textPath = parsed with { PathId = state.Strings.Copy(parsed.PathId) };
                     InlineStyle pathStyle = SvgDocumentStyleResolver.Resolve(subtree, state, cancellationToken);
                     if (!pathStyle.Equals(default(InlineStyle))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Styles on text-path children are not implemented.");
-                    childStyle = new(SvgTextSyntax.ParseWhitespaceMode(subtree, null, inheritedStyle.WhitespaceMode), inheritedStyle.LetterSpacing) { Paint = inheritedStyle.Paint, Font = inheritedStyle.Font };
+                    childStyle = new(SvgTextSyntax.ParseWhitespaceMode(subtree, null, inheritedStyle.WhitespaceMode), inheritedStyle.LetterSpacing)
+                        { Paint = inheritedStyle.Paint, Font = inheritedStyle.Font.WithAnchor(parsed.Anchor ?? inheritedStyle.Font.Anchor) };
                 }
                 else
                 {

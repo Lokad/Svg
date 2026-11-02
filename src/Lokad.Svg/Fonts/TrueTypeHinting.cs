@@ -41,6 +41,17 @@ internal readonly record struct TrueTypeHintDeviceScale(int Vertical, int Horizo
     internal float WindowsVertical { get; init; } = Vertical / 4194304f;
     internal float WindowsHorizontal { get; init; } = Horizontal / 4194304f;
 
+    /// <summary>Scales initial Windows X points, retaining fixed precision when the horizontal strike is larger.</summary>
+    /// <remarks>Point halves round toward positive infinity; control values retain their separate signed-half rule.</remarks>
+    internal int ScaleWindowsHorizontal(int value)
+    {
+        if (WindowsHorizontal <= WindowsVertical) return ScaleWindows(value, WindowsHorizontal);
+        long rounded = ((long)value * Horizontal + 32768) >> 16;
+        if (rounded < int.MinValue || rounded > int.MaxValue)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "A TrueType device coordinate exceeds its signed bound.");
+        return (int)rounded;
+    }
+
     /// <summary>Scales a Windows control value on its maximum device axis with the native precision of that axis.</summary>
     internal int ScaleWindowsControl(int value)
     {

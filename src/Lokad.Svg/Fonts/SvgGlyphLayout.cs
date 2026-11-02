@@ -503,6 +503,10 @@ internal static class SvgGlyphLayout
             float sourceShiftX = (float)originX * sourceScaleFactor, sourceShiftY = (float)originY * sourceScaleFactor;
             while (chunkStart < positionedGlyphCount)
             {
+                SvgTextAnchor chunkAnchor = positionAdjustmentIndex < positionAdjustments.Length
+                    && positionAdjustments[positionAdjustmentIndex].Start == sourceOffset
+                    && positionAdjustments[positionAdjustmentIndex].HasAbsolutePosition
+                    ? positionAdjustments[positionAdjustmentIndex].Anchor ?? anchor : anchor;
                 int chunkEndSourceOffset = text.Length;
                 for (int adjustmentIndex = positionAdjustmentIndex; adjustmentIndex < positionAdjustments.Length; adjustmentIndex++)
                 {
@@ -576,7 +580,7 @@ internal static class SvgGlyphLayout
                 }
                 double width = right - left;
                 double chunkWidth = deviceMetrics is SvgGlyphDeviceMetrics widthMetrics ? widthMetrics.RoundWidth(width) : width;
-                double anchorOffset = anchorOrigin - left + (anchor switch
+                double anchorOffset = anchorOrigin - left + (chunkAnchor switch
                 {
                     SvgTextAnchor.Start => 0,
                     SvgTextAnchor.Middle => -chunkWidth / 2,
@@ -598,7 +602,7 @@ internal static class SvgGlyphLayout
                         sourceMaximum = MathF.Max(sourceMaximum, (float)source.X + sourceWidth);
                     }
                     if (fragments[firstFragment].SourceOrigin is {} sourceOrigin)
-                        sourceAnchorOffset = (float)sourceOrigin.X - (anchor switch
+                        sourceAnchorOffset = (float)sourceOrigin.X - (chunkAnchor switch
                         {
                             SvgTextAnchor.Start => sourceMinimum,
                             SvgTextAnchor.Middle => (sourceMinimum + sourceMaximum) / 2,
@@ -735,7 +739,8 @@ internal static class SvgGlyphLayout
                 }
                 if (startsChunk)
                 {
-                    chunkAnchor = placementRanges.IsEmpty ? anchor : placementRanges[placementIndex].Path?.Anchor ?? anchor;
+                    chunkAnchor = adjustments[adjustmentIndex].Anchor
+                        ?? (placementRanges.IsEmpty ? anchor : placementRanges[placementIndex].Path?.Anchor ?? anchor);
                     afterPath = false;
                 }
 

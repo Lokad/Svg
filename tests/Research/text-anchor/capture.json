@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "d7d4a44198d0741a6f1f3841a8515cb5155bbb3e",
+  "captureRecipeRevision": "3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "mode": "explicit-image-viewport",
+  "fontManifest": "../supplied-font-labels/font-pack.json",
+  "fontRoot": "../supplied-font-labels",
+  "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "nativeFontBinding": "Insert one data-font @font-face before authored content; retain authored input unchanged for library conversion.",
+  "cases": [
+    {
+      "id": "inherited",
+      "input": "inherited.svg",
+      "width": 192,
+      "height": 112,
+      "outputScale": 1,
+      "inputSha256": "ea738de5527e87116a231a527faec268a76314e80ee008b1412758d3e6b1e221",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "nativeInputSha256": "ab749f8aae79ae4a16f6b0884a62465e5c56034a5885440dc240b392bf190e54",
+          "captures": [
+            {
+              "pngSha256": "2590bc198b66e5860daf504b52a31f4f7d0508db5d56e31d3093625187d43454",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "2590bc198b66e5860daf504b52a31f4f7d0508db5d56e31d3093625187d43454",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "2590bc198b66e5860daf504b52a31f4f7d0508db5d56e31d3093625187d43454",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/windows/inherited.png",
+          "referenceSha256": "2590bc198b66e5860daf504b52a31f4f7d0508db5d56e31d3093625187d43454"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "nativeInputSha256": "ab749f8aae79ae4a16f6b0884a62465e5c56034a5885440dc240b392bf190e54",
+          "captures": [
+            {
+              "pngSha256": "6c26c8965174e6fad3913ca77430140a31ce975cb8125ce6dd415e0d5d260191",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6c26c8965174e6fad3913ca77430140a31ce975cb8125ce6dd415e0d5d260191",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6c26c8965174e6fad3913ca77430140a31ce975cb8125ce6dd415e0d5d260191",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/linux/inherited.png",
+          "referenceSha256": "6c26c8965174e6fad3913ca77430140a31ce975cb8125ce6dd415e0d5d260191"
+        }
+      }
+    },
+    {
+      "id": "chunks",
+      "input": "chunks.svg",
+      "width": 240,
+      "height": 128,
+      "outputScale": 1,
+      "inputSha256": "2c6b9b4fc8446d4f596e52dd90ffa3e2ff98e0dbc4a0a6e95645764425136f01",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "nativeInputSha256": "80aab0eb7ece0101af5d079cc67b73d33c1959f6ff6913c4e29064113c4a31e8",
+          "captures": [
+            {
+              "pngSha256": "f83acf87704dd82ac75f504a1a86fd3e0fb7c5e87d522d65ca8d8f713d6ec3ce",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f83acf87704dd82ac75f504a1a86fd3e0fb7c5e87d522d65ca8d8f713d6ec3ce",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f83acf87704dd82ac75f504a1a86fd3e0fb7c5e87d522d65ca8d8f713d6ec3ce",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/windows/chunks.png",
+          "referenceSha256": "f83acf87704dd82ac75f504a1a86fd3e0fb7c5e87d522d65ca8d8f713d6ec3ce"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "nativeInputSha256": "80aab0eb7ece0101af5d079cc67b73d33c1959f6ff6913c4e29064113c4a31e8",
+          "captures": [
+            {
+              "pngSha256": "06ab6c550a5107d6414bbbccbdd53fa0d7b36698f6565dad9bf8fd5b5106861e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "06ab6c550a5107d6414bbbccbdd53fa0d7b36698f6565dad9bf8fd5b5106861e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "06ab6c550a5107d6414bbbccbdd53fa0d7b36698f6565dad9bf8fd5b5106861e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/linux/chunks.png",
+          "referenceSha256": "06ab6c550a5107d6414bbbccbdd53fa0d7b36698f6565dad9bf8fd5b5106861e"
+        }
+      }
+    },
+    {
+      "id": "effects",
+      "input": "effects.svg",
+      "width": 208,
+      "height": 112,
+      "outputScale": 1,
+      "inputSha256": "386fd83a957c1a01c5845e844ab2056d63b3028496268cdb02ec32a9a7088b31",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "nativeInputSha256": "c96c6e6d12976510dd364081e89cde7bc9c951aedfa1abc4d9c1a9f78286b7ac",
+          "captures": [
+            {
+              "pngSha256": "782582657c563e544c70e9cc25481144052864c60f3b598c8e46fcf2fe502adc",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "782582657c563e544c70e9cc25481144052864c60f3b598c8e46fcf2fe502adc",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "782582657c563e544c70e9cc25481144052864c60f3b598c8e46fcf2fe502adc",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/windows/effects.png",
+          "referenceSha256": "782582657c563e544c70e9cc25481144052864c60f3b598c8e46fcf2fe502adc"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "nativeInputSha256": "c96c6e6d12976510dd364081e89cde7bc9c951aedfa1abc4d9c1a9f78286b7ac",
+          "captures": [
+            {
+              "pngSha256": "c3acfc98646711ed16c7a1c22393ce22cb8b61aaa81a697d2def8e3714d2756d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c3acfc98646711ed16c7a1c22393ce22cb8b61aaa81a697d2def8e3714d2756d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c3acfc98646711ed16c7a1c22393ce22cb8b61aaa81a697d2def8e3714d2756d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/linux/effects.png",
+          "referenceSha256": "c3acfc98646711ed16c7a1c22393ce22cb8b61aaa81a697d2def8e3714d2756d"
+        }
+      }
+    },
+    {
+      "id": "path",
+      "input": "path.svg",
+      "width": 224,
+      "height": 112,
+      "outputScale": 1,
+      "inputSha256": "3e00163ffc9861cfc803dc98de6d57cf38a95710a53eb715c6d421d79e1b2220",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "nativeInputSha256": "51d2d6120ca01a2d4c205930d98a1b64e6188ae7508b555c36b8b884e1b0171e",
+          "captures": [
+            {
+              "pngSha256": "bb7f9838b9ad2840b6a0065ebd37e8c404f4197e88f708b7badd03fd3836f809",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "bb7f9838b9ad2840b6a0065ebd37e8c404f4197e88f708b7badd03fd3836f809",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "bb7f9838b9ad2840b6a0065ebd37e8c404f4197e88f708b7badd03fd3836f809",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/windows/path.png",
+          "referenceSha256": "bb7f9838b9ad2840b6a0065ebd37e8c404f4197e88f708b7badd03fd3836f809"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "nativeInputSha256": "51d2d6120ca01a2d4c205930d98a1b64e6188ae7508b555c36b8b884e1b0171e",
+          "captures": [
+            {
+              "pngSha256": "286d15ec3ead31c135f0d93e02b116f9348e39c38541e8f53ce6cb6fa1b3962d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "286d15ec3ead31c135f0d93e02b116f9348e39c38541e8f53ce6cb6fa1b3962d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "286d15ec3ead31c135f0d93e02b116f9348e39c38541e8f53ce6cb6fa1b3962d",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/linux/path.png",
+          "referenceSha256": "286d15ec3ead31c135f0d93e02b116f9348e39c38541e8f53ce6cb6fa1b3962d"
+        }
+      }
+    }
+  ]
+}

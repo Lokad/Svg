@@ -25,7 +25,7 @@ internal static class SvgContainerInheritance
         SvgInheritedContainer painted = ResolvePaint(reader, computedStyle,
             new(inheritedPresentation, inheritedTextStyle, inheritedFillRule, inheritedPresentation.ElementOpacity.Alpha, inheritedStroke),
             namedColors, resources, cancellationToken);
-        SvgInheritedTextStyle textStyle = SvgTextInheritance.Resolve(reader, inheritedTextStyle, SvgInlineStyleParser.MergeFont(inlineStyle.TextFont, inlineStyle.Important, styleSheet.TextFont, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WhiteSpace, inlineStyle.Important, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.LetterSpacing, inlineStyle.Important, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WordSpacing, inlineStyle.Important, InlineImportantProperties.WordSpacing, styleSheet.WordSpacing, styleSheet.Important));
+        SvgInheritedTextStyle textStyle = SvgTextInheritance.Resolve(reader, inheritedTextStyle, inlineStyle, styleSheet);
         SvgTextPaintStyle decorationPaint = new(painted.Presentation.Paint, true, true, painted.Stroke.Stroke, SvgPaintOpacity.Opaque)
         { StrokeStyle = painted.Stroke, PaintOrder = painted.Presentation.PaintOrder };
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, inlineStyle, styleSheet, inheritedTextStyle.Decoration, decorationPaint.GlyphPaint);

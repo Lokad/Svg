@@ -1,0 +1,253 @@
+{
+  "schemaVersion": 1,
+  "font": "fonts/ExpandedPoints.ttf",
+  "fontSha256": "8cda274698c8e7148ab69bb84b3e628a147bdd00bdc71ab2ce12f859d72c0206",
+  "fontBytes": 1252,
+  "license": "LICENSE.txt",
+  "oracle": "DirectWrite explicit font file, symmetric ClearType (mode 5), natural measurement, enabled grid fitting, three independent glyph-run analyses per case; GC[1] initial-X readout through an integer four-pixel Y band.",
+  "nativeDllSha256": "45b8d6534fd6cd884bfc38a62c007da0d9d5f29324bcb1f31cbf0528bc2e7eae",
+  "nativeCapturesPerCase": 3,
+  "recipe": "Own five-glyph UPEM1000 font. Simple glyphs use (0,0),(+/-545,714),(400,714),(400,0); side bearings equal xMin, keeping the phantom origin zero. GC[1] reads point1 on X; MUL4096 stores one coordinate unit as one pixel; SCFS on Y draws a four-pixel band. Two identity composites reuse the same simple children. Font size22; X ratios2.33984375,1,.625. No existing font bytes changed.",
+  "cases": [
+    {
+      "glyph": 1,
+      "input": 545,
+      "composite": false,
+      "size": 22,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 1795,
+      "nativeAlphaSha256": "98169a074c497faf4e8712d01f5d0659f98400e322d20a97211431eabd71f936",
+      "nonzeroBounds": [
+        0,
+        -1799,
+        28,
+        -1795
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 1,
+      "input": 545,
+      "composite": false,
+      "size": 22,
+      "horizontalRatio": 1,
+      "nativeValue": 767,
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "nonzeroBounds": [
+        0,
+        -771,
+        12,
+        -767
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 1,
+      "input": 545,
+      "composite": false,
+      "size": 22,
+      "horizontalRatio": 0.625,
+      "nativeValue": 480,
+      "nativeAlphaSha256": "3eef184619f9949dea6b4205ba8b1a1d66d9b04af32a1f66854c76b817125dfd",
+      "nonzeroBounds": [
+        -1,
+        -484,
+        8,
+        -480
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 2,
+      "input": -545,
+      "composite": false,
+      "size": 22,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": -1795,
+      "nativeAlphaSha256": "d7c7c9a869b999c279d582429a49b5166d37de2a24e8a10f8ca5c6bd8ea2a16c",
+      "nonzeroBounds": [
+        -28,
+        1791,
+        21,
+        1795
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 2,
+      "input": -545,
+      "composite": false,
+      "size": 22,
+      "horizontalRatio": 1,
+      "nativeValue": -767,
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "nonzeroBounds": [
+        -12,
+        763,
+        10,
+        767
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 2,
+      "input": -545,
+      "composite": false,
+      "size": 22,
+      "horizontalRatio": 0.625,
+      "nativeValue": -480,
+      "nativeAlphaSha256": "11a384502adba61543cb58b2de2c281c8b719ec8f77fabf85c63a3dc2ef12254",
+      "nonzeroBounds": [
+        -8,
+        476,
+        6,
+        480
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 3,
+      "input": 545,
+      "composite": true,
+      "size": 22,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 1795,
+      "nativeAlphaSha256": "98169a074c497faf4e8712d01f5d0659f98400e322d20a97211431eabd71f936",
+      "nonzeroBounds": [
+        0,
+        -1799,
+        28,
+        -1795
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 3,
+      "input": 545,
+      "composite": true,
+      "size": 22,
+      "horizontalRatio": 1,
+      "nativeValue": 767,
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "nonzeroBounds": [
+        0,
+        -771,
+        12,
+        -767
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 3,
+      "input": 545,
+      "composite": true,
+      "size": 22,
+      "horizontalRatio": 0.625,
+      "nativeValue": 480,
+      "nativeAlphaSha256": "3eef184619f9949dea6b4205ba8b1a1d66d9b04af32a1f66854c76b817125dfd",
+      "nonzeroBounds": [
+        -1,
+        -484,
+        8,
+        -480
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 4,
+      "input": -545,
+      "composite": true,
+      "size": 22,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": -1795,
+      "nativeAlphaSha256": "d7c7c9a869b999c279d582429a49b5166d37de2a24e8a10f8ca5c6bd8ea2a16c",
+      "nonzeroBounds": [
+        -28,
+        1791,
+        21,
+        1795
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 4,
+      "input": -545,
+      "composite": true,
+      "size": 22,
+      "horizontalRatio": 1,
+      "nativeValue": -767,
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "nonzeroBounds": [
+        -12,
+        763,
+        10,
+        767
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 4,
+      "input": -545,
+      "composite": true,
+      "size": 22,
+      "horizontalRatio": 0.625,
+      "nativeValue": -480,
+      "nativeAlphaSha256": "11a384502adba61543cb58b2de2c281c8b719ec8f77fabf85c63a3dc2ef12254",
+      "nonzeroBounds": [
+        -8,
+        476,
+        6,
+        480
+      ],
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

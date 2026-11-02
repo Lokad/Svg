@@ -26,3 +26,11 @@ retain native band observations for both axes, compression and signed values.
 These fixtures protect shared fitting semantics. Complete font sheets retain
 their separate selection, independent metric and exact image acceptance gates.
 All fixture assets and vectors are [CC0](LICENSE.txt).
+
+The [expanded-point vectors](expanded-points.json) add one five-glyph font for
+initial X coordinates. Positive/negative simple glyphs and identity composites
+read point1 through GC[1] and draw a four-pixel Y band. Side bearings equal xMin
+so these checks isolate point scaling from phantom-origin alignment. Three native
+analyses agree for each of twelve size/ratio/glyph cases. Expanded horizontal
+strikes use their 16.16 scale; uniform/compressed strikes retain floating-point
+scaling. Control-table values keep their separate signed-half rule.

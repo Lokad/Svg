@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Resolve CSS/presentation text anchors through shared inheritance and chunk
+  boundaries, preserving anchor-only span changes during interval compaction.
+- Preserve native fixed-point precision for expanded Windows initial glyph
+  coordinates in both simple outlines and composite children.
 - Admit inactive hover/active/focus selectors and inert float declarations in SVG
   images. Share inline-style source diagnostics and preserve stylesheet locations.
 - Ignore inert event attributes and character-data script elements during static

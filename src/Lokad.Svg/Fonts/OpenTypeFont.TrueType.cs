@@ -156,7 +156,7 @@ internal static partial class OpenTypeFont
         int ScaleHorizontal(int value)
         {
             if (!target.UsesWindowsArithmetic) return ScaleTrueTypeFixed(value, horizontalScale, target);
-            return TrueTypeHintDeviceScale.ScaleWindows(value, deviceScale.WindowsHorizontal);
+            return deviceScale.ScaleWindowsHorizontal(value);
         }
         (TrueTypeHintProfile, OpenTypeTableRange, OpenTypeTableRange, OpenTypeTableRange) ReadHintTables()
         {

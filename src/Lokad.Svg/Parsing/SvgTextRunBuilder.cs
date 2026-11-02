@@ -60,6 +60,10 @@ internal static class SvgTextRunBuilder
             deviceMetrics = metrics with { UsesTextLengthSpacing = true };
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(snapshot);
+        // A plain text chunk takes its anchor from its first addressed character.
+        // Mixed direct/path ranges retain their own placement context below.
+        if (placementRanges.IsEmpty && !fontSpans.IsEmpty && fontSpans[0].Start == 0)
+            style = style with { Anchor = fontSpans[0].Font.Anchor };
         using BudgetedParserList<SvgTextResolvedFontSpan> resolvedFonts = new(budget, SvgMemoryCategory.Parser, cancellationToken);
         SvgPreparedFont? firstRequestedFont = null;
         foreach (SvgTextFontSpan span in fontSpans)
@@ -98,23 +102,58 @@ internal static class SvgTextRunBuilder
             throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
         }
 
-        if (style.PositionLists.IsEmpty)
+        bool ownsAnchors = style.PositionLists.IsEmpty
+            && BindChunkAnchors(positionAdjustments, [], fontSpans, placementRanges, style.Anchor, cancellationToken);
+        if (style.PositionLists.IsEmpty && !ownsAnchors)
         {
             var (ordinary, resolvedMetrics, fittingResult) = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, originX, originY, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positionAdjustments, paintSpans, resolvedFonts.AsSpan(), nodeBoundaries, placementRanges, style.Anchor, deviceMetrics, style.TextLength is > 0 ? new SvgTextFitting(style.TextLength.Value, style.LengthAdjust) : null, budget, style.SourceElementId, cancellationToken);
             try { return new SvgTextRun(style, font, ordinary, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, resolvedMetrics, elementStroke)
                 { GlyphStretch = AdjustGlyphs(ordinary, font, style, resolvedMetrics, fittingResult, cancellationToken) }; }
             catch { ordinary.Dispose(); throw; }
         }
-        using OwnedParserArray<SvgTextPositionAdjustment> positions = style.PositionLists.Build(text, positionAdjustments, budget, cancellationToken);
+        using OwnedParserArray<SvgTextPositionAdjustment> positions = ownsAnchors
+            ? CopyPositions(positionAdjustments, budget, cancellationToken)
+            : style.PositionLists.Build(text, positionAdjustments, budget, cancellationToken);
+        // Annotate owned storage in place. Borrowed descendant positions need a
+        // copy only when the new scope actually overrides a chunk's anchor.
+        _ = BindChunkAnchors(positions.Items, positions.Items, fontSpans, placementRanges, style.Anchor, cancellationToken);
         SvgPositionedGlyphStorage? glyphs = null;
         try
         {
-            var layout = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, 0, 0, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), nodeBoundaries, placementRanges, style.Anchor, deviceMetrics, style.TextLength is > 0 ? new SvgTextFitting(style.TextLength.Value, style.LengthAdjust) : null, budget, style.SourceElementId, cancellationToken);
+            var layout = SvgGlyphLayout.CreateStorageAndMetrics(font, text, style.FontSize, ownsAnchors ? originX : 0, ownsAnchors ? originY : 0, style.LetterSpacing, style.WordSpacing, needsFragments, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), nodeBoundaries, placementRanges, style.Anchor, deviceMetrics, style.TextLength is > 0 ? new SvgTextFitting(style.TextLength.Value, style.LengthAdjust) : null, budget, style.SourceElementId, cancellationToken);
             glyphs = layout.Storage;
             return new SvgTextRun(style, font, glyphs, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, layout.Metrics, elementStroke)
             { GlyphStretch = AdjustGlyphs(glyphs, font, style, layout.Metrics, layout.Fitting, cancellationToken) };
         }
         catch { glyphs?.Dispose(); throw; }
+
+        static OwnedParserArray<SvgTextPositionAdjustment> CopyPositions(ReadOnlySpan<SvgTextPositionAdjustment> source, RenderBudget budget, CancellationToken token)
+        {
+            using BudgetedParserList<SvgTextPositionAdjustment> positions = new(budget, SvgMemoryCategory.Parser, token);
+            positions.AddRange(source);
+            return positions.Detach();
+        }
+
+        static bool BindChunkAnchors(ReadOnlySpan<SvgTextPositionAdjustment> positions, Span<SvgTextPositionAdjustment> destination,
+            ReadOnlySpan<SvgTextFontSpan> fonts, ReadOnlySpan<SvgTextPlacementRange> ranges, SvgTextAnchor root, CancellationToken token)
+        {
+            int fontIndex = 0, rangeIndex = 0;
+            bool changed = false;
+            for (int index = 0; index < positions.Length && !fonts.IsEmpty; index++)
+            {
+                token.ThrowIfCancellationRequested();
+                SvgTextPositionAdjustment position = positions[index];
+                if (!position.HasAbsolutePosition) continue;
+                while (fontIndex + 1 < fonts.Length && fonts[fontIndex].End <= position.Start) fontIndex++;
+                while (rangeIndex + 1 < ranges.Length && ranges[rangeIndex].End <= position.Start) rangeIndex++;
+                SvgTextAnchor inherited = ranges.IsEmpty ? root : ranges[rangeIndex].Path?.Anchor ?? root;
+                SvgTextFontSpan span = fonts[fontIndex];
+                if (span.Start > position.Start || position.Start >= span.End || span.Font.Anchor == inherited) continue;
+                changed = true;
+                if (!destination.IsEmpty) destination[index] = position with { Anchor = span.Font.Anchor };
+            }
+            return changed;
+        }
 
         void AddCoverageSpans(SvgFontFaceRequest request, SvgPreparedFont primary, double fontSize, int start, int end)
         {

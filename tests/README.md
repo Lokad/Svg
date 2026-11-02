@@ -16,6 +16,11 @@ defines supported behavior.
 | Integrity | Manifest identities, hashes, capture context, licensing, corpus partition and provenance. Existing combined fixtures retain these assertions until their responsibilities are separated. |
 | Research | Extended numerical-context products remain individually selectable with `Category=Research` and run in full qualification. Former failing interactions remain routine. |
 
+[Text-anchor coverage](Research/text-anchor/README.md) separates cascade/compaction
+and chunk-layout mechanisms, two allocation/preparation contracts, and four
+canonical browser comparisons. [Windows point vectors](Research/windows-font-unit-scaling/expanded-points.json)
+protect strike arithmetic directly without multiplying it across rendering contexts.
+
 The [responsibility map](Research/release-baselines/test-responsibilities.md)
 records paint-bank membership, lazy loading, raster/PNG separation and measured
 validation costs, including the core pixel helpers, parser ownership helper, API fixture allocation and
