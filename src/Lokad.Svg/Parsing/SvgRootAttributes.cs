@@ -7,6 +7,7 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct SvgRootAttributes(SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, SvgInheritedStrokeStyle InheritedStroke, SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, string? FillRule)
 {
     internal SvgPaintOpacity SourceOpacity { get; init; }
+    internal SvgSolidPaint CanvasBackground { get; init; }
     internal string? ClipRule { get; init; }
 
     /// <summary>Supplies the explicit containing viewport for percentage root dimensions during lowering.</summary>
@@ -31,6 +32,9 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet).ResolveOpacity(SvgPaintOpacity.Opaque).ResolveDisplay(SvgDisplay.Inline);
         _ = SvgPaintResolver.ResolveFallbacks(ref style, resources, namedColors, reader.LocalName);
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, null, true, true, namedColors);
+        // An SVG image always generates its outer viewport. Keep the computed
+        // display value below: descendants can explicitly inherit display:none.
+        presentation = presentation with { IsDisplayed = true };
         SvgTextWhitespaceMode rootWhitespace = ValidateXmlSpace(reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace"));
         SvgRootSyntax syntax = SvgRootSyntax.ParseComputed(reader, inline, sheet, cancellationToken);
         SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, SvgInheritedTextStyle.Default.WithWhitespaceMode(rootWhitespace),
@@ -42,7 +46,17 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
         { StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers };
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, inline, sheet, null, decorationPaint.GlyphPaint);
         if (decoration is not null) text = text.WithDecoration(decoration);
-        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, SvgAffineTransform.Identity) { OwnOpacity = style.GetOpacity(), ElementDisplay = style.GetDisplay(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(style, default), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers }, text, new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), syntax.Width, syntax.Height, syntax.ViewBox, style.FillRule) { SourceOpacity = style.GetOpacity(), ClipRule = style.ClipRule };
+        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, SvgAffineTransform.Identity) { OwnOpacity = style.GetOpacity(), ElementDisplay = style.GetDisplay(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(style, default), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers }, text, new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), syntax.Width, syntax.Height, syntax.ViewBox, style.FillRule) { SourceOpacity = style.GetOpacity(), ClipRule = style.ClipRule, CanvasBackground = ResolveCanvasBackground() };
+        SvgSolidPaint ResolveCanvasBackground()
+        {
+            string? value = SvgInlineStyleParser.MergeWithImportance(inline.BackgroundColor, inline.Important,
+                InlineImportantProperties.BackgroundColor, sheet.BackgroundColor, sheet.Important);
+            if (value is null || value.Equals("initial", StringComparison.OrdinalIgnoreCase)
+                || value.Equals("unset", StringComparison.OrdinalIgnoreCase) || value.Equals("inherit", StringComparison.OrdinalIgnoreCase)) return default;
+            return value.Equals("currentColor", StringComparison.OrdinalIgnoreCase)
+                ? presentation.Paint.CurrentPaint : SvgColorParser.ParsePaint(value, namedColors);
+        }
+
         static SvgTextWhitespaceMode ValidateXmlSpace(string? value)
         {
             // Only the two spec-defined values are accepted so anything else fails fast;

@@ -6,8 +6,8 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 160 originals per host: **160 exploratory
-exact, none different**, with 41 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 161 originals per host: **161 exploratory
+exact, none different**, with 40 UnsupportedFeature and 3 MalformedInput outcomes. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
@@ -63,6 +63,7 @@ current inventory above governs overall status.
 | Non-executing script content | [Shared traversal](inert-scripts.json), [canonical control](../metadata-attributes/inert-scripts.svg). Preparation, selection and lowering share a bounded consumer. Retained empty markers preserve text nodes and lexical counts without copying bodies. Direct limits/namespace/XML cases, representative text contracts and one native image protect distinct roles. The default videos original is exact; three newly reached font gates remain open. |
 | Static CSS state and source | [Shared admission and source boundaries](static-css.json), [canonical control](../metadata-attributes/static-css-state.svg). Inactive interaction rules retain no selector/value storage or ancestor branch; float does not affect image flow. Mechanisms, representative font acquisition and one native image separate responsibilities. Default faux-art/mail are exact. Root CSS background/border painting remains open. |
 | Fixed geometry and rotation centres | [Shared lengths and stages](geometry-fixed-lengths.json), [canonical control](../geometry-fixed-lengths/README.md). Consumer-specific ranges and percentage stages remain distinct. Native rotation-centre sequencing fixes fractional pattern sampling without a shader adjustment. Default circles1 is exact; all 159 previous PNGs remain unchanged. |
+| Root canvas and generation | [Canvas boundaries](root-canvas-background.json), [native controls](../root-css-box/README.md) and [box review](root-box-native-review.csv). Canvas color stays outside element opacity/visibility and child filter sources. Root image generation preserves computed display for explicit inheritance. Default photos is exact; helloworld advances to group CSS text-anchor. Border/content layout remains open. |
 | Structural traversal | [Shared metadata and pattern locations](shared-traversal.json). Keep recognized foreign descriptions inert through preparation/lowering, preserve the first rejection context, and align rendered-group pattern registration with content selection. Mechanisms, one prepared-font contract and independent root/group/metadata fixtures protect distinct roles. |
 | Root image layout and placement | [Root model](root-image-model.json), [projection stages](root-image-projection.json), [image boundary](root-image-boundary.json). Logical sizing, subpixel layout, recorded scene and destination coefficients stay distinct. Direct matrices and large viewBox controls protect stages that small images cannot distinguish. |
 | Root experiments | [Viewport review](root-viewport-review.json), [stage review](root-image-stages.json). Preserve rejected output-only stretching and context distinctions. |

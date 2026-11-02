@@ -1,0 +1,279 @@
+{
+  "cases": [
+    {
+      "id": "canvas-source-opacity",
+      "input": "canvas-source-opacity.svg",
+      "width": 64,
+      "height": 48,
+      "inputSha256": "94a8e84b0739081a8b36df822a4f992285b297b964e610180fc1ca41b159bce7",
+      "sourceBaseline": "8b47422bcdf4f5243c6396a1d3c9e08c5d83aded",
+      "context": "Original CC0 SVG canvas paint control; three agreeing healthy native images per host frozen before admission changes.",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "e48c49c4defbbaee992b18741bf07ecbe1d7066723d9acbb44d1fe15ec9c9d58",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e48c49c4defbbaee992b18741bf07ecbe1d7066723d9acbb44d1fe15ec9c9d58",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e48c49c4defbbaee992b18741bf07ecbe1d7066723d9acbb44d1fe15ec9c9d58",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/canvas-source-opacity.png",
+          "referenceSha256": "e48c49c4defbbaee992b18741bf07ecbe1d7066723d9acbb44d1fe15ec9c9d58"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "e48c49c4defbbaee992b18741bf07ecbe1d7066723d9acbb44d1fe15ec9c9d58",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e48c49c4defbbaee992b18741bf07ecbe1d7066723d9acbb44d1fe15ec9c9d58",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e48c49c4defbbaee992b18741bf07ecbe1d7066723d9acbb44d1fe15ec9c9d58",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/canvas-source-opacity.png",
+          "referenceSha256": "e48c49c4defbbaee992b18741bf07ecbe1d7066723d9acbb44d1fe15ec9c9d58"
+        }
+      }
+    },
+    {
+      "id": "canvas-cascade-applicability",
+      "input": "canvas-cascade-applicability.svg",
+      "width": 64,
+      "height": 48,
+      "inputSha256": "828ce4591069eb002eeef59dfece91a5a01fbdb5a9a1054e8420ff8c179865b8",
+      "sourceBaseline": "8b47422bcdf4f5243c6396a1d3c9e08c5d83aded",
+      "context": "Original CC0 SVG canvas paint control; three agreeing healthy native images per host frozen before admission changes.",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "a1b1af9c52340465e6a55e508e966025dd9e829f30ec5c7360cb34fbe178fe90",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a1b1af9c52340465e6a55e508e966025dd9e829f30ec5c7360cb34fbe178fe90",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a1b1af9c52340465e6a55e508e966025dd9e829f30ec5c7360cb34fbe178fe90",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/canvas-cascade-applicability.png",
+          "referenceSha256": "a1b1af9c52340465e6a55e508e966025dd9e829f30ec5c7360cb34fbe178fe90"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "a1b1af9c52340465e6a55e508e966025dd9e829f30ec5c7360cb34fbe178fe90",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a1b1af9c52340465e6a55e508e966025dd9e829f30ec5c7360cb34fbe178fe90",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "a1b1af9c52340465e6a55e508e966025dd9e829f30ec5c7360cb34fbe178fe90",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/canvas-cascade-applicability.png",
+          "referenceSha256": "a1b1af9c52340465e6a55e508e966025dd9e829f30ec5c7360cb34fbe178fe90"
+        }
+      }
+    },
+    {
+      "id": "canvas-empty",
+      "input": "canvas-empty.svg",
+      "width": 17,
+      "height": 11,
+      "inputSha256": "631f4994fc8beb48796e73388ffda969e9fab7b0e8ce653b30faad6e4c33a2ab",
+      "sourceBaseline": "8b47422bcdf4f5243c6396a1d3c9e08c5d83aded",
+      "context": "Original CC0 SVG canvas paint control; three agreeing healthy native images per host frozen before admission changes.",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "7d0338966666945b58b399250bd8c8f82d5e71b3ae42f3c0e18a4b3761f6263a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "7d0338966666945b58b399250bd8c8f82d5e71b3ae42f3c0e18a4b3761f6263a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "7d0338966666945b58b399250bd8c8f82d5e71b3ae42f3c0e18a4b3761f6263a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/canvas-empty.png",
+          "referenceSha256": "7d0338966666945b58b399250bd8c8f82d5e71b3ae42f3c0e18a4b3761f6263a"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "7d0338966666945b58b399250bd8c8f82d5e71b3ae42f3c0e18a4b3761f6263a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "7d0338966666945b58b399250bd8c8f82d5e71b3ae42f3c0e18a4b3761f6263a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "7d0338966666945b58b399250bd8c8f82d5e71b3ae42f3c0e18a4b3761f6263a",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/canvas-empty.png",
+          "referenceSha256": "7d0338966666945b58b399250bd8c8f82d5e71b3ae42f3c0e18a4b3761f6263a"
+        }
+      }
+    },
+    {
+      "id": "canvas-root-display",
+      "input": "canvas-root-display.svg",
+      "width": 64,
+      "height": 48,
+      "inputSha256": "ef3416a67fd8410b7e17b05cb4bf7b041676325b3b7c87f84d6f2741e0daecea",
+      "sourceBaseline": "8b47422bcdf4f5243c6396a1d3c9e08c5d83aded",
+      "context": "Original CC0 SVG image root generation, inherited display and paint-resource control; six native captures frozen before the root-generation correction.",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "fffd46babc80889288e40a4f1699428d8e3e403dd438bbaaac96323e6828bdd0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "fffd46babc80889288e40a4f1699428d8e3e403dd438bbaaac96323e6828bdd0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "fffd46babc80889288e40a4f1699428d8e3e403dd438bbaaac96323e6828bdd0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/canvas-root-display.png",
+          "referenceSha256": "fffd46babc80889288e40a4f1699428d8e3e403dd438bbaaac96323e6828bdd0"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "fffd46babc80889288e40a4f1699428d8e3e403dd438bbaaac96323e6828bdd0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "fffd46babc80889288e40a4f1699428d8e3e403dd438bbaaac96323e6828bdd0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "fffd46babc80889288e40a4f1699428d8e3e403dd438bbaaac96323e6828bdd0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/canvas-root-display.png",
+          "referenceSha256": "fffd46babc80889288e40a4f1699428d8e3e403dd438bbaaac96323e6828bdd0"
+        }
+      }
+    },
+    {
+      "id": "canvas-source-alpha",
+      "input": "canvas-source-alpha.svg",
+      "width": 64,
+      "height": 48,
+      "inputSha256": "288650a37e0b8c05e64edfd14b8ca119c76f41a6c6aa43b351933a3412c956bb",
+      "sourceBaseline": "8b47422bcdf4f5243c6396a1d3c9e08c5d83aded",
+      "context": "Original CC0 canvas versus child SourceAlpha, flood/composite and opacity control; six independent healthy native captures, without reference adjustment.",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "d951a0528dca3e7c2c678eddb075202c10e37dc38c2a1d8b2f7ec82f53fa6d3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d951a0528dca3e7c2c678eddb075202c10e37dc38c2a1d8b2f7ec82f53fa6d3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d951a0528dca3e7c2c678eddb075202c10e37dc38c2a1d8b2f7ec82f53fa6d3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/canvas-source-alpha.png",
+          "referenceSha256": "d951a0528dca3e7c2c678eddb075202c10e37dc38c2a1d8b2f7ec82f53fa6d3e"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "d951a0528dca3e7c2c678eddb075202c10e37dc38c2a1d8b2f7ec82f53fa6d3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d951a0528dca3e7c2c678eddb075202c10e37dc38c2a1d8b2f7ec82f53fa6d3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "d951a0528dca3e7c2c678eddb075202c10e37dc38c2a1d8b2f7ec82f53fa6d3e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/canvas-source-alpha.png",
+          "referenceSha256": "d951a0528dca3e7c2c678eddb075202c10e37dc38c2a1d8b2f7ec82f53fa6d3e"
+        }
+      }
+    }
+  ]
+}

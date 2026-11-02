@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="48" style="background-color:rgba(32,80,144,.7)">
+  <defs><filter id="f" x="0" y="0" width="64" height="48" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-color="#ff4000" result="ink"/><feComposite in="ink" in2="SourceAlpha" operator="in"/></filter></defs>
+  <g filter="url(#f)" opacity=".6"><circle cx="19" cy="20" r="12" fill="#20a080"/><rect x="24" y="18" width="26" height="18" fill="#d09020"/></g>
+  <path d="M5 40H59" stroke="#f0e0c0" stroke-width="2"/>
+</svg>

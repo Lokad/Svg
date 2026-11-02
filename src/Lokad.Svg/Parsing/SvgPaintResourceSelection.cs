@@ -180,7 +180,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
                 int patternOwner = pattern >= 0 ? pattern : root ? -1 : parent.PatternOwner;
                 bool grouped = selected && !inert && !parent.Definitions && patternOwner < 0
                     && (parent.Grouped || SvgStructuralVocabulary.IsGroupContainer(reader.LocalName));
-                bool displayed = (root || pattern >= 0 || parent.Displayed) && (paint.GetDisplay() != SvgDisplay.None);
+                bool displayed = root || (pattern >= 0 || parent.Displayed) && (paint.GetDisplay() != SvgDisplay.None);
                 bool visible = SvgPresentationResolver.ParseVisibility(paint.Visibility, root || parent.Visible);
                 if (patternOwner >= 0 && displayed && paintable && (SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)
                     || SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) || reader.LocalName is "text" or "use" or "image"))

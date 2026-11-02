@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="48" style="background-color:#203040;display:none;opacity:.7">
+  <defs><pattern id="p" patternUnits="userSpaceOnUse" width="8" height="8"><rect width="4" height="8" fill="#20a080"/></pattern></defs>
+  <rect x="4" y="4" width="24" height="32" fill="url(#p)"/>
+  <g display="inherit"><circle cx="44" cy="16" r="9" fill="#d09020"/></g>
+  <g display="inline"><rect x="36" y="28" width="18" height="14" fill="#d05020"/></g>
+</svg>

@@ -1,0 +1,863 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "8b47422bcdf4f5243c6396a1d3c9e08c5d83aded",
+  "scope": "SVG image canvas background, root generation versus computed display, and shared paint preflight. Root border/padding layout remains open. No reference, tolerance, text layout or public signature changes.",
+  "specifications": [
+    "https://www.w3.org/TR/css-backgrounds-3/#root-background",
+    "https://www.w3.org/TR/SVG2/conform.html#processing-modes"
+  ],
+  "implementation": [
+    "../../../src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgStyleCascade.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgRootAttributes.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgPaintResourceSelection.cs",
+    "../../../src/Lokad.Svg/SvgConverter.cs"
+  ],
+  "sharedModel": [
+    "The outer root background propagates to the image canvas, outside element opacity and visibility. Resolved color/alpha values survive preparation without retaining style strings. Non-root background values remain nonapplicable where styles are otherwise admitted.",
+    "Canvas paint uses the existing image boundary and output reservation, before SVG element commands. It is never inserted into a child SourceGraphic, glyph, pattern or filter surface. Its stored draw boundary cannot be folded into the source-group float solid-canvas analysis.",
+    "Root generation in SVG image mode is independent of computed display:none. Preserve that computed value for explicitly inheriting children. Root traversal, font discovery and paint-resource preflight retain the same distinction.",
+    "Background declaration priority and stylesheet storage use the existing per-property mechanism. Initial/unset/root-inherit resolve to transparent; currentColor retains its resolved source alpha. No CSS box owner, generic property dictionary, coordinate framework or per-fixture API matrix."
+  ],
+  "tests": {
+    "mechanism": "../../Lokad.Svg.Tests/SvgCanvasBackgroundTests.cs",
+    "mechanismCases": 17,
+    "ownership": "../../Lokad.Svg.Tests/SvgCanvasBackgroundOwnershipTests.cs",
+    "ownershipCases": 1,
+    "preparation": "../../Lokad.Svg.Tests/OpenTypeFontTests.TraversalMetadata.cs",
+    "preparationCases": 1,
+    "rendering": "../../Lokad.Svg.VisualTests/SvgCanvasBackgroundReferenceTests.cs",
+    "manifest": "../root-css-box/capture.json",
+    "canonicalCases": 5,
+    "nativeCapturesPerCasePerHost": 3,
+    "roles": "Priority, global/current color, applicability and root display mechanisms; output-only reservation/borrowed coverage/refusal/retry; validation before one font acquisition and prepared replay; independent canvas/source opacity, visibility, pattern selection, empty scene and child SourceAlpha images."
+  },
+  "failingBefore": {
+    "canvasAdmission": {
+      "librarySha256": "d2ebcfc753918abe9b692616c65e88d6ee62f3437d04236f4514fdf69e9f0f8e",
+      "cases": [
+        {
+          "id": "canvas-source-opacity",
+          "inputSha256": "94a8e84b0739081a8b36df822a4f992285b297b964e610180fc1ca41b159bce7",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'background-color' is not implemented."
+        },
+        {
+          "id": "canvas-cascade-applicability",
+          "inputSha256": "828ce4591069eb002eeef59dfece91a5a01fbdb5a9a1054e8420ff8c179865b8",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'background-color' is not implemented."
+        },
+        {
+          "id": "canvas-empty",
+          "inputSha256": "631f4994fc8beb48796e73388ffda969e9fab7b0e8ce653b30faad6e4c33a2ab",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'background-color' is not implemented."
+        }
+      ]
+    },
+    "rootGeneration": {
+      "librarySha256": "980a365a041256d0d2c3062bfabf3b0d6a824caa187e5cd0d16d33fdc73ce148",
+      "changedPixels": 636,
+      "maximumChannelError": 123,
+      "maximumAlphaError": 0
+    },
+    "fullCanvasSolidPaint": {
+      "input": "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' style='background-color:red'><rect width='1' height='1' fill='rgba(0,0,255,.5)'/></svg>",
+      "inputSha256": "e3a8ead53cebd3c9f2d8c78f22cc4d2a4013dab49114110bb168d3cd3bc5ac09",
+      "hosts": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "fea62b0303380e32a68e181f88248f7bd6bcb3a1c3e6239eba1e46b41743eb39",
+              "rgba": [
+                127,
+                0,
+                128,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "fea62b0303380e32a68e181f88248f7bd6bcb3a1c3e6239eba1e46b41743eb39",
+              "rgba": [
+                127,
+                0,
+                128,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "fea62b0303380e32a68e181f88248f7bd6bcb3a1c3e6239eba1e46b41743eb39",
+              "rgba": [
+                127,
+                0,
+                128,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "fea62b0303380e32a68e181f88248f7bd6bcb3a1c3e6239eba1e46b41743eb39",
+              "rgba": [
+                127,
+                0,
+                128,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "fea62b0303380e32a68e181f88248f7bd6bcb3a1c3e6239eba1e46b41743eb39",
+              "rgba": [
+                127,
+                0,
+                128,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "fea62b0303380e32a68e181f88248f7bd6bcb3a1c3e6239eba1e46b41743eb39",
+              "rgba": [
+                127,
+                0,
+                128,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      }
+    },
+    "correctedExpectations": "Three old assertions assumed root display:none suppressed image content. Their input sources are retained. Fresh native capture of the exact 1x1 use input is red under display:none and transparent under visibility:hidden. Font discovery now checks the exact generated request; visibility suppression and explicit descendant inheritance remain tested. No frozen PNG or tolerance changes.",
+    "displayReview": {
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "diagnosticCases": 4,
+          "exactContractCases": 3,
+          "contractCapturesPerCase": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "diagnosticCases": 4,
+          "exactContractCases": 3,
+          "contractCapturesPerCase": 3,
+          "startupHealth": "healthy",
+          "profilesCleaned": true
+        }
+      },
+      "diagnosticCases": [
+        {
+          "case": "inline",
+          "rootRecipe": "style='display:none'",
+          "childRecipe": "",
+          "pngSha256": "e85a8974b656f05ebd7c544f7c22e48650b704f5e1454405cf2404a0185ff36f",
+          "colors": [
+            [
+              64,
+              [
+                0,
+                255,
+                0,
+                255
+              ]
+            ],
+            [
+              192,
+              [
+                0,
+                0,
+                0,
+                0
+              ]
+            ]
+          ],
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "case": "inherited",
+          "rootRecipe": "style='display:none'",
+          "childRecipe": "display='inherit'",
+          "pngSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee",
+          "colors": [
+            [
+              256,
+              [
+                0,
+                0,
+                0,
+                0
+              ]
+            ]
+          ],
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "case": "attribute",
+          "rootRecipe": "display='none'",
+          "childRecipe": "display='inherit'",
+          "pngSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee",
+          "colors": [
+            [
+              256,
+              [
+                0,
+                0,
+                0,
+                0
+              ]
+            ]
+          ],
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "case": "sheet",
+          "rootRecipe": "id='r'",
+          "childRecipe": "display='inherit'",
+          "pngSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee",
+          "colors": [
+            [
+              256,
+              [
+                0,
+                0,
+                0,
+                0
+              ]
+            ]
+          ],
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "exactExistingContractInputs": [
+        {
+          "case": "attribute-none",
+          "rootAttributes": "display='none'",
+          "sourceSha256": "76de98b2f3022f85a2196fc038615a59bd94c114d28f34e5ce69f9a3aac27eb1",
+          "captures": [
+            {
+              "pngSha256": "21d4c9c5ba54a0938e5545bbec6a4be219317e0e9b2c1063f3796567c87fd127",
+              "rgba": [
+                255,
+                0,
+                0,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "21d4c9c5ba54a0938e5545bbec6a4be219317e0e9b2c1063f3796567c87fd127",
+              "rgba": [
+                255,
+                0,
+                0,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "21d4c9c5ba54a0938e5545bbec6a4be219317e0e9b2c1063f3796567c87fd127",
+              "rgba": [
+                255,
+                0,
+                0,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        {
+          "case": "style-none",
+          "rootAttributes": "style='display: none'",
+          "sourceSha256": "1d776a5c27a7396d40435d2a800fdd80b0b4cd7d247929c1af6684c9dfc160cf",
+          "captures": [
+            {
+              "pngSha256": "21d4c9c5ba54a0938e5545bbec6a4be219317e0e9b2c1063f3796567c87fd127",
+              "rgba": [
+                255,
+                0,
+                0,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "21d4c9c5ba54a0938e5545bbec6a4be219317e0e9b2c1063f3796567c87fd127",
+              "rgba": [
+                255,
+                0,
+                0,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "21d4c9c5ba54a0938e5545bbec6a4be219317e0e9b2c1063f3796567c87fd127",
+              "rgba": [
+                255,
+                0,
+                0,
+                255
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        {
+          "case": "visibility-hidden",
+          "rootAttributes": "visibility='hidden'",
+          "sourceSha256": "d4a755a09970de1e0858ff8d97b48159c62ca8173eb0c19b68b3bb2ca98f125f",
+          "captures": [
+            {
+              "pngSha256": "c093f0c8f3d4e59c7b5d363bd99e0bfb4673ffdade327e5313e5aca3e40d34e2",
+              "rgba": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c093f0c8f3d4e59c7b5d363bd99e0bfb4673ffdade327e5313e5aca3e40d34e2",
+              "rgba": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c093f0c8f3d4e59c7b5d363bd99e0bfb4673ffdade327e5313e5aca3e40d34e2",
+              "rgba": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      ],
+      "platformOutputsAgree": true
+    }
+  },
+  "boxReview": {
+    "record": "root-box-native-review.csv",
+    "recordSha256": "99fd203ee4cf06699a071c0948ace19725aaf15606e5ed1698863db841b0daa3",
+    "license": "../root-css-box/LICENSE.txt",
+    "platforms": {
+      "windows": {
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "captures": 24,
+        "startupHealth": "healthy",
+        "profilesCleaned": true
+      },
+      "linux": {
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "captures": 24,
+        "startupHealth": "healthy",
+        "profilesCleaned": true
+      }
+    },
+    "platformOutputsAgree": true,
+    "recipe": "Own 16x16 SVG with a lime rectangle at (4,4), size 8x8. Use the recorded root style/attributes and child attributes. Definitions: clipPath half is a rectangle at (0,0), size 8x16; filter f has user-space region (0,0,16,16) and one blue feFlood. rgbaCounts entries are [red,green,blue,alpha,pixelCount]. All sources are own controls, not hosted snippets.",
+    "findings": [
+      "Background remains canvas paint under root opacity/visibility and root clipping. Border paint follows element opacity/visibility while its content-origin offset survives hidden visibility.",
+      "A 3px border moves lime bounds from [4,4,12,12] to [7,7,15,15]; asymmetric widths and padding move the origin by their own edges.",
+      "In these fixed-size image controls, box-sizing and an identity viewBox do not alter the layout. This does not qualify other sizing/viewBox contexts.",
+      "Fractional fixed border widths resolve to used CSS widths: .25px, 1.5px and 1pt produce one-pixel borders in this image context.",
+      "The flood fills the whole viewport; equal flood output cannot establish whether canvas paint participates in filter source capture. The separate accepted child SourceAlpha control protects that boundary."
+    ],
+    "closure": "Canvas and root generation close. Border/content maps, mixed edge/color alpha, nontrivial viewBox/aspect, fractional sizing/output density, padding and visibility need independent controls before layout admission. Root filters and root clip paths retain explicit scope refusals."
+  },
+  "originalReview": [
+    {
+      "name": "helloworld.svg",
+      "sourceSha256": "7bef17011e3c570fa07f5fe8671917e1df854bb9c0b67d1efbd105773fd5eb08",
+      "sourceBytes": 1405,
+      "rootAttributeNames": [
+        "height",
+        "onload",
+        "style",
+        "version",
+        "width"
+      ],
+      "boxDeclarations": [
+        {
+          "element": "svg",
+          "isRoot": true,
+          "property": "background-color",
+          "valueSha256": "4676da0782de1f2e1037524c9c90f883d7a2043d8ab57a0029d4ef97588d00a3",
+          "hasImportant": false
+        }
+      ],
+      "elementCounts": {
+        "svg": 1,
+        "text": 2,
+        "image": 0,
+        "rect": 0,
+        "g": 1,
+        "filter": 0,
+        "clipPath": 0
+      },
+      "sourceBodiesRetained": 0,
+      "attributeValuesRetained": 0
+    },
+    {
+      "name": "photos.svg",
+      "sourceSha256": "e693ebedc37daae273f7b2f3b09eb76e1a2a9a35490b05b05e1fa816bca8ada9",
+      "sourceBytes": 12283,
+      "rootAttributeNames": [
+        "id",
+        "onload",
+        "style"
+      ],
+      "boxDeclarations": [
+        {
+          "element": "svg",
+          "isRoot": true,
+          "property": "background-color",
+          "valueSha256": "4dd74f87d478f86d8ff5dcb429d02ce93fc1feb8135a107cd4c9245efc081249",
+          "hasImportant": false
+        }
+      ],
+      "elementCounts": {
+        "svg": 1,
+        "text": 0,
+        "image": 0,
+        "rect": 1,
+        "g": 0,
+        "filter": 0,
+        "clipPath": 0
+      },
+      "sourceBodiesRetained": 0,
+      "attributeValuesRetained": 0
+    },
+    {
+      "name": "mysvg.svg",
+      "sourceSha256": "3976da5079172c8ea5edea4f2b8a3628b366816361796544fc499b3f8bc2f688",
+      "sourceBytes": 480,
+      "rootAttributeNames": [
+        "height",
+        "id",
+        "style",
+        "width"
+      ],
+      "boxDeclarations": [
+        {
+          "element": "svg",
+          "isRoot": true,
+          "property": "border",
+          "valueSha256": "5d4b1811f8310ddf00a2ab8618a1f5c160341b02539f38b4fec871b130f28354",
+          "hasImportant": false,
+          "isSolid": true,
+          "hasRadius": false,
+          "numericWidthTokenCount": 1
+        }
+      ],
+      "elementCounts": {
+        "svg": 1,
+        "text": 1,
+        "image": 0,
+        "rect": 1,
+        "g": 1,
+        "filter": 0,
+        "clipPath": 0
+      },
+      "sourceBodiesRetained": 0,
+      "attributeValuesRetained": 0
+    }
+  ],
+  "original": {
+    "name": "photos.svg",
+    "sourceSha256": "e693ebedc37daae273f7b2f3b09eb76e1a2a9a35490b05b05e1fa816bca8ada9",
+    "sourceBytes": 12283,
+    "logicalViewport": {
+      "Width": 300,
+      "Height": 150
+    },
+    "context": "Unmodified hosted SVG in native image mode; no authored root dimensions/viewBox, default 300x150 viewport, scripting disabled. No content or style changes.",
+    "hosts": {
+      "windows": {
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "captures": [
+          {
+            "pngSha256": "f5f11e1208a93bf9c8fd00ca3425e402a570bab2090d5812068d1eb760bdae0f",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "f5f11e1208a93bf9c8fd00ca3425e402a570bab2090d5812068d1eb760bdae0f",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "f5f11e1208a93bf9c8fd00ca3425e402a570bab2090d5812068d1eb760bdae0f",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "linux": {
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "captures": [
+          {
+            "pngSha256": "f5f11e1208a93bf9c8fd00ca3425e402a570bab2090d5812068d1eb760bdae0f",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "f5f11e1208a93bf9c8fd00ca3425e402a570bab2090d5812068d1eb760bdae0f",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "f5f11e1208a93bf9c8fd00ca3425e402a570bab2090d5812068d1eb760bdae0f",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    },
+    "sourceBodiesRetained": 0,
+    "attributeValuesRetained": 0,
+    "closure": "Unmodified photos.svg is exact in default static image mode on both hosts. Script-driven interaction remains outside this declared context."
+  },
+  "originals": {
+    "files": 204,
+    "seconds": 52.014679099898785,
+    "sourceSvgFilesRetained": 0,
+    "diagnosticValuesRetained": 0,
+    "librarySha256": "b891b4be145637c5b838016fffa65ec3075b7746651b4a0dc2d300722f17a7e3",
+    "hosts": {
+      "windows": {
+        "UnsupportedFeature": 40,
+        "rendered": 161,
+        "MalformedInput": 3
+      },
+      "linux": {
+        "UnsupportedFeature": 40,
+        "rendered": 161,
+        "MalformedInput": 3
+      }
+    },
+    "transitions": [
+      {
+        "name": "photos.svg",
+        "host": "windows",
+        "before": "UnsupportedFeature",
+        "after": "rendered"
+      },
+      {
+        "name": "photos.svg",
+        "host": "linux",
+        "before": "UnsupportedFeature",
+        "after": "rendered"
+      }
+    ],
+    "audit": {
+      "all204RuntimeAndOptionsUnchanged": true,
+      "previousExactPngsUnchangedPerHost": {
+        "windows": 160,
+        "linux": 160
+      },
+      "newIndependentNativeExactPerHost": {
+        "windows": 1,
+        "linux": 1
+      },
+      "metadataChanges": [
+        {
+          "name": "helloworld.svg",
+          "host": "windows",
+          "fields": [
+            "dimensions",
+            "diagnosticElement",
+            "diagnosticLine",
+            "messageSha256"
+          ]
+        },
+        {
+          "name": "photos.svg",
+          "host": "windows",
+          "fields": [
+            "outcome",
+            "dimensions",
+            "pngSha256",
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn",
+            "messageSha256"
+          ]
+        },
+        {
+          "name": "helloworld.svg",
+          "host": "linux",
+          "fields": [
+            "dimensions",
+            "diagnosticElement",
+            "diagnosticLine",
+            "messageSha256"
+          ]
+        },
+        {
+          "name": "photos.svg",
+          "host": "linux",
+          "fields": [
+            "outcome",
+            "dimensions",
+            "pngSha256",
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn",
+            "messageSha256"
+          ]
+        }
+      ],
+      "completeDiagnosticHashChanges": [
+        {
+          "name": "helloworld.svg",
+          "host": "windows",
+          "fields": [
+            "sourceDiagnosticSha256"
+          ]
+        },
+        {
+          "name": "photos.svg",
+          "host": "windows",
+          "fields": [
+            "sourceDiagnosticSha256"
+          ]
+        },
+        {
+          "name": "helloworld.svg",
+          "host": "linux",
+          "fields": [
+            "sourceDiagnosticSha256"
+          ]
+        },
+        {
+          "name": "photos.svg",
+          "host": "linux",
+          "fields": [
+            "sourceDiagnosticSha256"
+          ]
+        }
+      ],
+      "expectedTransitionsOnly": true,
+      "sourceBodiesRetained": 0,
+      "diagnosticValuesRetained": 0
+    },
+    "helloworldDeeperGate": {
+      "name": "helloworld.svg",
+      "sourceSha256": "7bef17011e3c570fa07f5fe8671917e1df854bb9c0b67d1efbd105773fd5eb08",
+      "outcome": "UnsupportedFeature",
+      "unsupportedProperty": "text-anchor",
+      "diagnosticElement": "g",
+      "diagnosticAttribute": "style",
+      "diagnosticLine": 35,
+      "diagnosticColumn": 6,
+      "messageSha256": "67c91493432ed3492ee40ced99abfad7254fbf9abde8c1861ea889c0b6b47828",
+      "sourceBodiesRetained": 0,
+      "attributeValuesRetained": 0
+    },
+    "closure": "161 exploratory exact default renders per host; all 160 previous PNGs unchanged. Helloworld advances to group CSS text-anchor and remains open. Mysvg remains at the border gate. All 204 hashes/runtime/options checked; no hosted SVG payload or attribute-value snippets retained."
+  },
+  "qualification": [
+    {
+      "role": "core",
+      "target": "net11.0",
+      "host": "windows",
+      "selection": "FullyQualifiedName~Lokad.Svg.Tests",
+      "passed": 36380,
+      "total": 36380,
+      "seconds": 49.29492459981702,
+      "librarySha256": "b891b4be145637c5b838016fffa65ec3075b7746651b4a0dc2d300722f17a7e3",
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "role": "core",
+      "target": "net11.0",
+      "host": "linux",
+      "selection": "FullyQualifiedName~Lokad.Svg.Tests",
+      "passed": 36380,
+      "total": 36380,
+      "seconds": 52.95624594100002,
+      "librarySha256": "b891b4be145637c5b838016fffa65ec3075b7746651b4a0dc2d300722f17a7e3",
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "role": "native",
+      "target": "net11.0",
+      "host": "windows",
+      "selection": "FullyQualifiedName~Lokad.Svg.VisualTests",
+      "passed": 46511,
+      "total": 46512,
+      "seconds": 85.83389979996718,
+      "librarySha256": "b891b4be145637c5b838016fffa65ec3075b7746651b4a0dc2d300722f17a7e3",
+      "knownUnchangedBaselineException": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        }
+      ]
+    },
+    {
+      "role": "native",
+      "target": "net11.0",
+      "host": "linux",
+      "selection": "FullyQualifiedName~Lokad.Svg.VisualTests",
+      "passed": 46512,
+      "total": 46512,
+      "seconds": 216.471791447,
+      "librarySha256": "b891b4be145637c5b838016fffa65ec3075b7746651b4a0dc2d300722f17a7e3",
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "role": "core",
+      "target": "net10.0",
+      "host": "windows",
+      "selection": "FullyQualifiedName~SvgCanvasBackground|FullyQualifiedName~Canvas_background_validates|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgRootImageMapTests|FullyQualifiedName~SvgRootImageBoundaryOwnershipTests|FullyQualifiedName~SvgDocumentDimensionsTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~Image_root_|FullyQualifiedName~SvgFontRequestDiscoveryTests",
+      "passed": 353,
+      "total": 353,
+      "seconds": 8.257663700031117,
+      "librarySha256": "75850673e7339715ce5ce00f43cd96e30ef7ea9b5e35749eda80115c815e9c20",
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "role": "core",
+      "target": "net10.0",
+      "host": "linux",
+      "selection": "FullyQualifiedName~SvgCanvasBackground|FullyQualifiedName~Canvas_background_validates|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgRootImageMapTests|FullyQualifiedName~SvgRootImageBoundaryOwnershipTests|FullyQualifiedName~SvgDocumentDimensionsTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~Image_root_|FullyQualifiedName~SvgFontRequestDiscoveryTests",
+      "passed": 353,
+      "total": 353,
+      "seconds": 9.454278472999988,
+      "librarySha256": "75850673e7339715ce5ce00f43cd96e30ef7ea9b5e35749eda80115c815e9c20",
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "role": "native",
+      "target": "net10.0",
+      "host": "windows",
+      "selection": "FullyQualifiedName~SvgCanvasBackgroundReferenceTests|FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~SvgGeometryLengthReferenceTests",
+      "passed": 10,
+      "total": 10,
+      "seconds": 6.368180099874735,
+      "librarySha256": "75850673e7339715ce5ce00f43cd96e30ef7ea9b5e35749eda80115c815e9c20",
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "role": "native",
+      "target": "net10.0",
+      "host": "linux",
+      "selection": "FullyQualifiedName~SvgCanvasBackgroundReferenceTests|FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~SvgGeometryLengthReferenceTests",
+      "passed": 10,
+      "total": 10,
+      "seconds": 7.078747936000013,
+      "librarySha256": "75850673e7339715ce5ce00f43cd96e30ef7ea9b5e35749eda80115c815e9c20",
+      "knownUnchangedBaselineException": []
+    }
+  ],
+  "finalCanonicalBank": [
+    {
+      "name": "root-canvas-native-focused-4-native-windows-net11.0",
+      "seconds": 6.8142036001663655,
+      "librarySha256": "b891b4be145637c5b838016fffa65ec3075b7746651b4a0dc2d300722f17a7e3",
+      "passed": 5,
+      "total": 5
+    },
+    {
+      "name": "root-canvas-native-focused-4-native-linux-net11.0",
+      "seconds": 9.022610993,
+      "librarySha256": "b891b4be145637c5b838016fffa65ec3075b7746651b4a0dc2d300722f17a7e3",
+      "passed": 5,
+      "total": 5
+    }
+  ],
+  "qualificationScope": "Full net11 rendering ran the four initial canvas cases. A fifth, supported child SourceAlpha control was then added and the final five-case bank passed on both hosts and both runtimes under the unchanged production DLL. Full core was rerun after correcting the three stale expectations. A later one-pixel solid-canvas check was verified in the final affected core selection on both hosts/runtimes, under the same production DLL. No redundant full sweep for test-only fixture additions.",
+  "focusedDevelopment": {
+    "selection": "FullyQualifiedName~SvgCanvasBackground|FullyQualifiedName~Canvas_background_|FullyQualifiedName~Image_root_|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgRootImageMapTests|FullyQualifiedName~SvgRootImageBoundaryOwnershipTests",
+    "seconds": 6.066443199990317,
+    "librarySha256": "b891b4be145637c5b838016fffa65ec3075b7746651b4a0dc2d300722f17a7e3",
+    "passed": 161,
+    "total": 161,
+    "interpretation": "Functional runner time includes startup; these selections and concurrent milestone runs are not comparable performance measurements."
+  },
+  "packages": {
+    "identity": "0.4.0-dev.1, local qualification only; never published",
+    "files": [
+      {
+        "file": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "dd7fca986394381d7ff5e39efe9b60a75e2f4d0011a7b42950d3684b9b7d6295",
+        "librarySha256": {
+          "net10.0": "75850673e7339715ce5ce00f43cd96e30ef7ea9b5e35749eda80115c815e9c20",
+          "net11.0": "b891b4be145637c5b838016fffa65ec3075b7746651b4a0dc2d300722f17a7e3"
+        }
+      },
+      {
+        "file": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "3d45af99966b9c39d5a9f615b2a24fb0439b611e4f5ae41edf8c2ff1473b2f5d"
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 6.5639881999231875
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 51.04808239988051
+      }
+    ]
+  },
+  "remaining": [
+    "Root border/content layout and mysvg.svg",
+    "Group CSS text-anchor and all deeper helloworld.svg/font requirements",
+    "W1 remaining style/attribute, seventeen default font gates, child and raster groups; all contexts still need accounting",
+    "P0/P2/P4/P5/P6/P7; no green exact-head CI or release completion claim"
+  ],
+  "unchanged": [
+    "Published 0.3.0 source/tag/packages",
+    "Font bytes, text shaping/layout/fitting",
+    "Existing reference images and exact tolerances",
+    "Independent Windows DejaVu reference/assertion; authority question remains pending"
+  ]
+}

@@ -28,7 +28,7 @@ internal static class SvgDocumentTraversal
         if (reader.IsEmptyElement)
         {
             ValidateDocumentEnd(reader, cancellationToken);
-            return new SvgRoot(root.Width, root.Height, root.ViewBox, [], [], false, null);
+            return new SvgRoot(root.Width, root.Height, root.ViewBox, [], [], false, null) { CanvasBackground = root.CanvasBackground };
         }
         int rootDepth = reader.Depth;
         root = root with { ContainingViewport = explicitViewport };
@@ -552,7 +552,7 @@ internal static class SvgDocumentTraversal
                     {
                         ValidateDocumentEnd(reader, cancellationToken);
                         return new SvgRoot(root.Width, root.Height, root.ViewBox, sceneStorage.Geometries, sceneStorage.Commands, state.HasUnsupportedContent, sceneStorage)
-                            { UnsupportedDiagnostic = state.UnsupportedDiagnostic };
+                            { UnsupportedDiagnostic = state.UnsupportedDiagnostic, CanvasBackground = root.CanvasBackground };
                     }
                     catch { sceneStorage.Dispose(); throw; }
                 }

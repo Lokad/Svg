@@ -392,14 +392,22 @@ public sealed class SvgFontRequestDiscoveryTests
 
     [Trait("Layer", "Mechanism")]
     [Theory]
-    [InlineData("display='none'")]
-    [InlineData("visibility='hidden'")]
-    [InlineData("style='display: none'")]
-    public void Ignores_font_requests_from_hidden_text_ancestors(string presentation)
+    [InlineData("display='none'", true)]
+    [InlineData("visibility='hidden'", false)]
+    [InlineData("style='display: none'", true)]
+    public void Image_root_generation_and_visibility_select_the_required_text_font(string presentation, bool generated)
     {
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' " + presentation + "><text font-family='Unused'>x</text></svg>"), CancellationToken.None);
 
-        Assert.Empty(requests);
+        if (!generated) Assert.Empty(requests);
+        else
+        {
+            SvgFontFaceRequest request = Assert.Single(requests);
+            Assert.Single(request.Families);
+            Assert.Equal("Unused", request.Family);
+            Assert.Equal(400, request.Weight);
+            Assert.False(request.Italic);
+        }
     }
 
     [Trait("Layer", "Mechanism")]

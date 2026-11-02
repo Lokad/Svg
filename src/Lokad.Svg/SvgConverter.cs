@@ -477,6 +477,8 @@ public static partial class SvgConverter
                     pixels[offset + 3] = options.BackgroundColor.Alpha;
                 }
             }
+            if (!emptyRootViewport && frame is null && surfaceMode == RasterSurfaceMode.Capture)
+                PaintCanvasBackground(pixels);
             if (!emptyRootViewport && !activeViewport.HasMask && surfaceMode == RasterSurfaceMode.Capture && TryResolveSolidCanvas(out SvgColor solidColor))
             {
                 int red = (solidColor.Red * solidColor.Alpha + 127) / 255;
@@ -511,6 +513,25 @@ public static partial class SvgConverter
             throw;
         }
         finally { patternTileCache?.Dispose(); }
+
+        void PaintCanvasBackground(byte[] destination)
+        {
+            SvgSolidPaint background = root.CanvasBackground;
+            if (background.Alpha == 0) return;
+            // The root background propagates to the SVG image canvas. It has a
+            // stored paint boundary before element opacity, visibility and draws.
+            SvgConstantShaderPaint paint = SvgShaderPaint.ConstantGradient(
+                new SvgGradientStop(0, background.Color) { Alpha = background.Alpha }, 1);
+            for (int y = 0; y < outputHeight; y++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                for (int x = 0; x < outputWidth; x++)
+                {
+                    if ((x & 4_095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    paint.Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), ViewportAlpha(255, x, y));
+                }
+            }
+        }
 
         SvgPaintBounds FilterRegion(SvgFilterBinding binding, SvgFilterResource resource, SvgAffineTransform output)
         {
@@ -2267,6 +2288,9 @@ public static partial class SvgConverter
         {
             const int maximumDraws = 5;
             color = default;
+            // Canvas background is an earlier stored draw, outside the SVG source
+            // group; it cannot be folded into this group's float paint analysis.
+            if (root.CanvasBackground.Alpha != 0) return false;
             int drawCount = options.BackgroundColor.Alpha == 255 ? 2 : 0;
             if (options.BackgroundColor.Alpha is not (0 or 255) || root.Commands.Length == 0 || root.Commands.Length > maximumDraws - drawCount) return false;
             SvgDrawCommand first = root.Commands[0];

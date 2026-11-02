@@ -546,5 +546,9 @@
     "Root CSS background/border/content origin",
     "W1 text/style/attribute, supplied-font, child and raster groups; all 204 need complete context accounting",
     "P0/P2/P4/P5/P6/P7; no new green exact-head CI or release-completion claim"
-  ]
+  ],
+  "subsequentClosure": {
+    "record": "root-canvas-background.json",
+    "scope": "Canvas background and root generation close. Photos is newly exact; prior measurements remain historical evidence. Root border/layout stays open."
+  }
 }

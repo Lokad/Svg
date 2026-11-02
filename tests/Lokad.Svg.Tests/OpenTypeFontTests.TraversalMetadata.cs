@@ -6,6 +6,27 @@ public sealed partial class OpenTypeFontTests
 {
     [Fact]
     [Trait("Layer", "Contract")]
+    public async Task Canvas_background_validates_before_acquisition_and_preserves_prepared_retry()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='48' height='24' style='background-color:rgba(48,80,112,.7);opacity:.4;display:none'><text display='inherit' font-family='Unused'>X</text><text font-family='Example' font-size='12' x='2' y='14'>AA</text></svg>"u8.ToArray();
+        byte[] invalid = "<svg xmlns='http://www.w3.org/2000/svg' style='background-color:unused'><text font-family='Example'>A</text></svg>"u8.ToArray();
+        (var catalog, var provider, var source) = CreateExamplePack(CreateTriangleFont());
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, (await Assert.ThrowsAsync<SvgException>(async () =>
+        {
+            using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(invalid, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+        })).ErrorCode);
+        Assert.Equal(0, provider.RequestCount);
+        Assert.Equal(0, source.RequestCount);
+        using SvgFontSnapshot controlFonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        byte[] expected = SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, controlFonts), CancellationToken.None).ToArray();
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, source.RequestCount);
+    }
+
+    [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Physical_pattern_dimensions_preserve_selected_font_discovery_and_prepared_replay()
     {
         string content = "<defs>" + PatternFontDefinition("width='1pc' height='12pt'", PatternFontText) + "</defs>" + PatternFontTarget;

@@ -635,14 +635,28 @@ public sealed class PublicContractTests
     }
 
     [Theory]
-    [InlineData("display='none'")]
-    [InlineData("visibility='hidden'")]
-    public void Root_presentation_hides_direct_local_use_instances(string rootPresentation)
+    [InlineData("display='none'", "red")]
+    [InlineData("visibility='hidden'", "none")]
+    public void Image_root_display_and_visibility_preserve_direct_local_use_paint(string rootPresentation, string expectedFill)
     {
         ReadOnlyMemory<byte> actual = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' " + rootPresentation + "><defs><rect id='tile' width='1' height='1' fill='red'/></defs><use href='#tile'/></svg>"), SvgRenderOptions.Default, CancellationToken.None);
-        ReadOnlyMemory<byte> transparent = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+        // Fresh native captures of these exact source inputs are recorded in
+        // Research/svgweb/root-canvas-background.json. Visibility still suppresses
+        // the use; root display does not suppress generation in SVG image mode.
+        ReadOnlyMemory<byte> expected = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='" + expectedFill + "'/></svg>"), SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.Equal(transparent.ToArray(), actual.ToArray());
+        Assert.Equal(expected.ToArray(), actual.ToArray());
+    }
+
+    [Fact]
+    [Trait("Layer", "Rendering")]
+    public void Canvas_background_survives_a_full_canvas_translucent_source()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' style='background-color:red'><rect width='1' height='1' fill='rgba(0,0,255,.5)'/></svg>"u8.ToArray();
+        byte[] pixels = SvgRasterTestHelper.RenderPixels(input, SvgRenderOptions.Default, out int width, out int height);
+        Assert.Equal((1, 1), (width, height));
+        // Six fresh native captures: Research/svgweb/root-canvas-background.json.
+        Assert.Equal(new byte[] { 127, 0, 128, 255 }, pixels);
     }
 
     [Fact]

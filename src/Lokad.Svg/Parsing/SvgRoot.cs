@@ -14,6 +14,8 @@ using System.Runtime.CompilerServices;
 internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, SvgSceneStorage? SceneStorage) : IDisposable
 {
     internal SvgSourceDiagnostic? UnsupportedDiagnostic { get; init; }
+    /// <summary>Paints the image canvas independently of root element visibility and source opacity.</summary>
+    internal SvgSolidPaint CanvasBackground { get; init; }
 
     /// <summary>Borrows this scene's sealed bindings; child arenas separately borrow document-owned definitions.</summary>
     internal SvgFilterArena? FilterResources => SceneStorage?.Filters;

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="48" style="background-color:rgba(40,100,180,.6);opacity:.57">
+  <defs><linearGradient id="p"><stop stop-color="#d05020"/><stop offset="1" stop-color="#20a080"/></linearGradient></defs>
+  <rect x="6" y="4" width="34" height="31" rx="5" fill="url(#p)"/>
+  <g transform="translate(29 15) rotate(12)"><ellipse cx="10" cy="10" rx="13" ry="8" fill="#d09020"/></g>
+</svg>

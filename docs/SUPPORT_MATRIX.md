@@ -60,6 +60,13 @@ in sizing; winning root `auto`/`inherit` dimensions resolve as 100%.
 Child percentages use the logical viewport, or viewBox user-space dimensions.
 Nested viewports keep their own percentage bases, aspect mapping and physical
 clips. Raster scaling does not change logical layout or those bases.
+
+The outer root's CSS `background-color` paints the SVG image canvas behind element
+content, independently of root opacity and visibility. It supports ordinary color
+syntax and `currentColor`; `initial`, `unset` and root `inherit` use transparent.
+Backgrounds on other SVG elements have no effect where their styles are admitted.
+Root border/padding layout, root filters and root clip paths remain unsupported.
+
 The natural image viewport rounds before uniform output scaling; extra pixels in
 the final raster are padding. Tiny or very large logical sizes retain their admitted
 sizing behavior when native image layout cannot represent them.
@@ -280,6 +287,8 @@ select operating spaces.
 `paint-order` accepts normal or distinct fill/stroke/markers lists, appending
 omitted operations. `display` accepts inline/block/none/inherit; omitted/initial/
 unset use inline, ancestor suppression is cumulative, and root inherit is inline.
+SVG image mode always generates the outer viewport even under root `display:none`;
+its computed display remains available to children that explicitly inherit it.
 `currentColor` resolves against each element's effective color; `color:currentColor`
 uses inherited color. Comma RGB/RGBA channels must all be numbers or percentages;
 space syntax may mix them. RGB(A)/HSL(A) aliases accept slash alpha.
