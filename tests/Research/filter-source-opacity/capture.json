@@ -871,6 +871,82 @@
         }
       },
       "qualification": "../svgweb/filter-recording-devices.json"
+    },
+    {
+      "id": "affine-materialized-subset",
+      "input": "inputs/affine-materialized-subset.svg",
+      "inputSha256": "721991f7a35ca19bb707dc39bd1b0ad7109852a7926b846645122acf4946ec8a",
+      "width": 144,
+      "height": 108,
+      "logicalImageViewport": [
+        144,
+        108
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "362d0850c3485870c5b3a9b833e833a683a48144814b90be9454aebc4a037a23",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "362d0850c3485870c5b3a9b833e833a683a48144814b90be9454aebc4a037a23",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "362d0850c3485870c5b3a9b833e833a683a48144814b90be9454aebc4a037a23",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "362d0850c3485870c5b3a9b833e833a683a48144814b90be9454aebc4a037a23",
+          "reference": "references/affine-materialized-subset.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "362d0850c3485870c5b3a9b833e833a683a48144814b90be9454aebc4a037a23",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "362d0850c3485870c5b3a9b833e833a683a48144814b90be9454aebc4a037a23",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "362d0850c3485870c5b3a9b833e833a683a48144814b90be9454aebc4a037a23",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "362d0850c3485870c5b3a9b833e833a683a48144814b90be9454aebc4a037a23",
+          "reference": "references/affine-materialized-subset.png"
+        }
+      },
+      "status": "candidate-qualified",
+      "sourceBaseline": "47337e98aad30a5f54af99a4113a7f54f546f5c5",
+      "baseline": {
+        "windows": {
+          "changedPixels": 119,
+          "alphaChangedPixels": 119,
+          "maximumError": 128,
+          "totalChannelError": 9909,
+          "librarySha256": "3ec3f9d4b7b2b9360bf51d9cdbc7908f970c664179aaf56f36fb52db4a924753"
+        },
+        "linux": {
+          "changedPixels": 119,
+          "alphaChangedPixels": 119,
+          "maximumError": 128,
+          "totalChannelError": 9909,
+          "librarySha256": "3ec3f9d4b7b2b9360bf51d9cdbc7908f970c664179aaf56f36fb52db4a924753"
+        }
+      },
+      "qualification": "../svgweb/filter-materialized-subsets.json"
     }
   ]
 }

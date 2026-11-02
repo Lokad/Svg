@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "47337e98aad30a5f54af99a4113a7f54f546f5c5",
+  "status": "Materialized-subset origin fixed; remaining filter source/clip/restoration discrepancies stay open.",
+  "mechanism": "Materialized graph outputs own integer texel enclosures. Fractional output requests and virtual flood bounds remain separate; a later nearest offset must not reuse a fractional crop as its stored image origin.",
+  "production": "../../../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+  "mechanismTest": "../../Lokad.Svg.Tests/SvgFilterOutputRequestTests.cs",
+  "failingBefore": "Nontrivial_blur_encloses_a_fractional_crop_before_deferred_offset expected [0,0,8,8] and retained image map [1,0,1.5,0,1,1]; baseline instead retained [.25,.25,7.75,7.75].",
+  "rendering": {
+    "input": "../filter-source-opacity/inputs/affine-materialized-subset.svg",
+    "captureManifest": "../filter-source-opacity/capture.json",
+    "test": "../../Lokad.Svg.VisualTests/SvgFilterSourceOpacityReferenceTests.cs",
+    "path": "One canonical conversion; no font or ownership/API repetition.",
+    "freshNativeCapturesPerHost": 3,
+    "beforeChangedPixelsPerHost": 119,
+    "afterChangedPixelsPerHost": 0,
+    "referencesRewritten": 0
+  },
+  "validation": {
+    "windows": {
+      "core": {
+        "selection": "FullyQualifiedName~Lokad.Svg.Tests",
+        "passed": 36258,
+        "failed": 0,
+        "seconds": 46.092288699932396,
+        "librarySha256": "24c7bce716133a3e98487f48761abebacc0e43f729a3114de8259b08f622268a"
+      },
+      "native": {
+        "selection": "FullyQualifiedName~Filter|FullyQualifiedName~SvgFontLayoutDiagramTests",
+        "passed": 7856,
+        "failed": 1,
+        "seconds": 21.283549099927768,
+        "librarySha256": "24c7bce716133a3e98487f48761abebacc0e43f729a3114de8259b08f622268a"
+      }
+    },
+    "linux": {
+      "core": {
+        "selection": "FullyQualifiedName~Lokad.Svg.Tests",
+        "passed": 36258,
+        "failed": 0,
+        "seconds": 49.53647883399999,
+        "librarySha256": "24c7bce716133a3e98487f48761abebacc0e43f729a3114de8259b08f622268a"
+      },
+      "native": {
+        "selection": "FullyQualifiedName~Filter|FullyQualifiedName~SvgFontLayoutDiagramTests",
+        "passed": 7856,
+        "failed": 1,
+        "seconds": 41.144179320000006,
+        "librarySha256": "24c7bce716133a3e98487f48761abebacc0e43f729a3114de8259b08f622268a"
+      }
+    }
+  },
+  "knownRemaining": {
+    "suppliedFontSource": {
+      "input": "../affine-source-exit-sheet/supplied-font-source.svg",
+      "windowsChangedPixels": 4,
+      "linuxChangedPixels": 7,
+      "unchangedByThisFix": true,
+      "status": "Open; preserve layout and exact frozen references."
+    },
+    "scope": "Full cross-platform/package qualification remains at the filter milestone; the independent Windows DejaVu authority question remains open."
+  }
+}

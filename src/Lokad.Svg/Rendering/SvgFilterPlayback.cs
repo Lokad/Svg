@@ -994,6 +994,13 @@ internal static class SvgFilterPlayback
                 {
                     token.ThrowIfCancellationRequested();
                     SvgPaintBounds extent = imageBounds[index], wanted = requests[index];
+                    if (primitive.MaterializesImage(deviation))
+                    {
+                        // Stored subsets enclose whole texels. Keeping a fractional
+                        // request here moves a later deferred image's sampling origin.
+                        extent = RoundLayerBounds(extent);
+                        wanted = RoundLayerBounds(wanted);
+                    }
                     imageBounds[index] = new(MathF.Max(extent.Left, wanted.Left), MathF.Max(extent.Top, wanted.Top),
                         MathF.Min(extent.Right, wanted.Right), MathF.Min(extent.Bottom, wanted.Bottom));
                     Clip(output, wanted);

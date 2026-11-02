@@ -22,5 +22,10 @@ and anchor isolated opacity in its own bitmap. The complete hosted original is
 exact on both hosts under default conversion; broader static-state qualification
 remains open. The axis and isolated controls each have six independent captures.
 
+The [affine materialized-subset control](inputs/affine-materialized-subset.svg)
+keeps a fractional filter crop separate from its integer stored bitmap origin.
+Its [mechanism and rendering evidence](../svgweb/filter-materialized-subsets.json)
+protects blur-to-offset replay without fonts or an API matrix.
+
 Use the [capture procedure](../../../tools/README.md#hosted-svgweb-inventory).
 Preserve native reference bytes and exact comparisons.

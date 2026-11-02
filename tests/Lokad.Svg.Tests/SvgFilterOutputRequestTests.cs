@@ -55,6 +55,34 @@ public sealed class SvgFilterOutputRequestTests
         Assert.Equal(0, parser.Snapshot().CurrentBytes);
     }
 
+    [Fact]
+    public void Nontrivial_blur_encloses_a_fractional_crop_before_deferred_offset()
+    {
+        RenderBudget parser = new(new HostMemoryBudget(1_000_000)), scratch = new(new HostMemoryBudget(1_000_000));
+        byte[] document = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs>"
+            + "<filter id='f' filterUnits='userSpaceOnUse' x='.25' y='.25' width='7.5' height='7.5' color-interpolation-filters='sRGB'>"
+            + "<feGaussianBlur in='SourceAlpha' stdDeviation='1.25 .75'/><feOffset dx='.5'/></filter>"
+            + "</defs><rect width='4' height='4' filter='url(#f)'/></svg>");
+        using (SvgRoot scene = SvgRootParser.Parse(document, SvgRenderLimits.Default, parser, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
+            SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
+            SvgFilterDeviceMap map = new(1, 1)
+            {
+                Regions = new(SvgAffineTransform.Identity, new(8, 8), new(.25f, .25f, 7.75f, 7.75f))
+                { SourceBounds = new(2, 2, 6, 6), DeferFinalOffset = true }
+            };
+            using (SvgFilterResult result = SvgFilterPlayback.ApplyFullFrame(new byte[8 * 8 * 4], 8, 8, resource, map, scratch, CancellationToken.None))
+            {
+                SvgFilterDeferredImage image = Assert.IsType<SvgFilterDeferredImage>(result.DeferredImage);
+                Assert.Equal(new SvgPaintBounds(0, 0, 8, 8), image.SourceBounds);
+                Assert.Equal(new SvgShaderMatrix(1, 0, 1.5f, 0, 1, 1), image.ImageToSource);
+            }
+            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [InlineData(.5, 0, 2, 2, 6, 6, false)]
     [InlineData(-.5, 0, 2, 2, 6, 6, false)]
