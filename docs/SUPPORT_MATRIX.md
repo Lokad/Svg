@@ -27,6 +27,11 @@ are inert when their descendants are also foreign. Their nodes still count towar
 structural limits. SVG descendants and unknown nonempty foreign wrappers reject.
 Descriptive `xlink:title` metadata is inert on admitted elements and `defs`.
 Namespace aliases use the XLink URI; XML/input and structural limits still apply.
+Unknown unqualified attributes and names inapplicable to their element are inert:
+for example, `rect r`, `g x` and lowercase `viewbox`. Attribute names are literal;
+they are not corrected to a different SVG name. Applicable SVG 1.1/SVG 2 features
+retain their value validation and unsupported outcomes. This rule does not admit
+unknown CSS declarations or change reserved XML/XLink handling.
 Unqualified lowercase `on*` event attributes are inert in static conversion,
 including definitions, stylesheets, filters and text spans/paths. Their values
 never affect paint, font selection or resource resolution. SVG `script` elements
@@ -171,6 +176,9 @@ resolves percentages in its own viewport; radial radii use the normalized diagon
 Templates preserve units through inheritance and unit overrides. Cross-kind
 templates share stops/common attributes and apply the child's coordinate defaults.
 A child's transform replaces its parent's.
+An absent `gradientUnits` inherits; an invalid explicit value selects the initial
+`objectBoundingBox` units, overriding the template. Values are case-sensitive and
+are not trimmed.
 
 Radial focal circles must be contained; zero-radius foci may lie on the outer
 circle. Outside foci and tangential nonzero focal circles reject. Templates retain

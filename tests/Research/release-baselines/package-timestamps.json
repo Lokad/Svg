@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "d3d08e49aaa72f66bdf9812e496d84dc7332d527",
+  "sourceChanges": [
+    "../../../src/Lokad.Svg/Lokad.Svg.csproj"
+  ],
+  "status": "Closed for the pinned SDK: fixed ZIP epoch, separate-time byte-identical packages and installed consumers on both hosts.",
+  "specification": "https://learn.microsoft.com/en-us/nuget/create-packages/deterministic-packages",
+  "correction": "DeterministicTimestamp=true selects current wall-clock time. A same-clock-window equality cannot establish reproducibility. Use the fixed RFC3339 ZIP epoch instead; no post-processing or package identity change.",
+  "before": {
+    "property": "true",
+    "packages": {
+      "nupkg": {
+        "firstSha256": "50c9c40c40396aaec8b8a12c8d03b52756cf55c1bf9cec62ab7e9b457172c6b6",
+        "secondSha256": "6538d81ed7d392f4e6b706235630cb54862f306d15048f6539810d3ecc067e8a",
+        "entryBytesEqual": true,
+        "archiveBytesEqual": false
+      },
+      "snupkg": {
+        "firstSha256": "a5f1bcef75c49a5d430a3156753ea507e290d8dbf9a9b74506fefcf8f8928dfe",
+        "secondSha256": "b5aa8bb15f623ab0114457c3ec858493f2c012f55365f8bfa15ec28c5c9084d1",
+        "entryBytesEqual": true,
+        "archiveBytesEqual": false
+      }
+    }
+  },
+  "after": {
+    "property": "1980-01-01T00:00:00Z",
+    "packages": {
+      "nupkg": {
+        "sha256": "c8deb2020410fff525590d0b4a6877cd14c72a06a8be8f29f8b0ca3296d8769c",
+        "byteIdenticalAcrossSeparatePacks": true,
+        "zipEntries": 14
+      },
+      "snupkg": {
+        "sha256": "6a593808eb48cd028d577d59658a6dbccec028aca0abc7512b978a1f38605006",
+        "byteIdenticalAcrossSeparatePacks": true,
+        "zipEntries": 6
+      }
+    },
+    "consumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 7.159503299975768
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 57.99965240014717
+      }
+    ]
+  },
+  "libraryAssets": {
+    "net11.0": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+    "net10.0": "37b261c6139cb2c7f29057e839bb67802c1b50afd3ddec08bd90d274291d3111"
+  },
+  "published030Changed": false
+}

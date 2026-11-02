@@ -36,7 +36,7 @@ public sealed class SvgVectorEffectTests
     [InlineData("viewport-fill-opacity='Infinity'", SvgErrorCode.MalformedInput)]
     [InlineData("viewport-fill-opacity='bogus'", SvgErrorCode.MalformedInput)]
     [InlineData("viewport-fill='url(#p)'", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("viewport-fill-new='red'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("shape-rendering='crispEdges'", SvgErrorCode.UnsupportedFeature)]
     [InlineData("vector-effect='non-rotation'", SvgErrorCode.UnsupportedFeature)]
     [InlineData("vector-effect='non-scaling-stroke'", SvgErrorCode.UnsupportedFeature)]
     public void Invalid_root_values_reject_before_writing_output(string attributes, SvgErrorCode code)

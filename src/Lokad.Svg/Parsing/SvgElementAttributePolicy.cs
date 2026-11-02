@@ -41,6 +41,7 @@ internal static class SvgElementAttributePolicy
                 if (reader.Value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");
                 continue;
             }
+            if (SvgAttributeSemantics.IsInert("defs", reader)) continue;
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Definition container attributes are not implemented.");
         }
         reader.MoveToElement();
@@ -74,6 +75,7 @@ internal static class SvgElementAttributePolicy
     private static void ValidateCore(XmlReader reader, SvgElementKind kind, string elementName, CancellationToken cancellationToken)
     {
         if (!reader.HasAttributes) return;
+        string element = reader.LocalName;
         while (reader.MoveToNextAttribute())
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -110,6 +112,7 @@ internal static class SvgElementAttributePolicy
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "enable-background") SvgInertPresentationSyntax.ValidateBackground(reader.Value.AsSpan(), cancellationToken);
                 continue;
             }
+            if (SvgAttributeSemantics.IsInert(element, reader)) continue;
             throw new SvgException(SvgErrorCode.UnsupportedFeature, elementName + " attribute '" + reader.Name + "' is not implemented.");
         }
         reader.MoveToElement();

@@ -1,0 +1,1150 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "d3d08e49aaa72f66bdf9812e496d84dc7332d527",
+  "status": "Attribute applicability and gradientUnits fallback closed; complete hosted acceptance remains open.",
+  "scope": {
+    "existingReferencesChanged": 0,
+    "hostedSourceBodiesRetained": 0,
+    "hostedFragmentsRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "newFonts": 0
+  },
+  "specifications": [
+    {
+      "url": "https://www.w3.org/TR/SVG2/attindex.html",
+      "sha256": "69b601ee24d67e57eaf86776936b88b4536459b56d35278b1af1041a0034ad42"
+    },
+    {
+      "url": "https://www.w3.org/TR/SVG11/attindex.html",
+      "sha256": "48f5bb0dd98392d09755750160a2ae2acf2ede09ccae99ff4d56d32c881a1886"
+    }
+  ],
+  "model": {
+    "implementation": "../../../src/Lokad.Svg/Parsing/SvgAttributeSemantics.cs",
+    "rule": "Literal regular attributes are scoped to renderer-admitted elements using SVG1.1/SVG2 tables and SVG2 geometry properties. Presentation names remain conservatively meaningful. The query reads no values and retains no storage. Existing supported-value, namespace, event, structural and cancellation checks run first.",
+    "admittedElementNames": 35,
+    "regularAttributeNames": 84,
+    "gradientUnits": "Absent inherits; invalid, padded, wrong-case and empty explicit values select initial objectBoundingBox and preserve HasUnits. No trimming or case folding.",
+    "unchangedScope": "Unknown CSS declarations and applicable unsupported features still reject. Other unit-enum domains have not been changed."
+  },
+  "validationLayers": {
+    "mechanisms": {
+      "source": "../../Lokad.Svg.Tests/SvgAttributeApplicabilityTests.cs",
+      "cases": 34,
+      "initialBeforeCases": 28,
+      "initialBeforeFailures": 20,
+      "initialBeforePasses": 8,
+      "finalFailures": 0
+    },
+    "contracts": "Existing unsupported/cleanup/no-output assertions remain. Replace falsely unsupported inputs with genuine unsupported behavior; preserve the former inputs as positive mechanisms. Keep requiredFeatures as a genuine legacy guard. No API/fixture matrix added.",
+    "rendering": {
+      "source": "../../Lokad.Svg.VisualTests/SvgAttributeApplicabilityReferenceTests.cs",
+      "cases": 1,
+      "bank": "../attribute-applicability/README.md",
+      "capture": "../attribute-applicability/capture.json",
+      "pngSha256": "d784fb98b9addde3f74c79a82ef344a69e4b51f4cd0053ef3c8068d9aa252ea3",
+      "healthyCapturesPerHost": 3
+    },
+    "gradientEnumExploration": {
+      "linearCases": 7,
+      "radialCases": 7,
+      "host": "windows",
+      "healthyCaptures": 14,
+      "parent": "userSpaceOnUse",
+      "result": "Missing equals explicit user-space; invalid/padded/wrong-case/empty equals explicit object-bounding-box and differs from missing.",
+      "captures": [
+        {
+          "kind": "linearGradient",
+          "case": "absent",
+          "inputSha256": "e81ef68992b24765b3bdd63302ce5ec5373e90af521763a12fa60ad0189e4ac5",
+          "pngSha256": "efbbbb05dad20d57cab7a0a3af87ab09a50db92f8179e4ee3ae28af258c95524",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "linearGradient",
+          "case": "bbox",
+          "inputSha256": "7249933c2bbf6f899d435203713430361b5d3ebf4f49a47c242067cbdccbb985",
+          "pngSha256": "6ceac56f8f0f9911cdfbdc1b7a29c1fa96548a4c5b38939fdec04033b5906c58",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "linearGradient",
+          "case": "user",
+          "inputSha256": "05515cbd2bd4b430e4b6a9cc19a83ae9ded70db9d755b78097c7f02a91b2bfd9",
+          "pngSha256": "efbbbb05dad20d57cab7a0a3af87ab09a50db92f8179e4ee3ae28af258c95524",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "linearGradient",
+          "case": "invalid",
+          "inputSha256": "2518cf13c263420671ffd1e62d3153358e781ba5e356d486e748d65a1e2404fd",
+          "pngSha256": "6ceac56f8f0f9911cdfbdc1b7a29c1fa96548a4c5b38939fdec04033b5906c58",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "linearGradient",
+          "case": "spaced",
+          "inputSha256": "eb2eae2c347dbeb554517da8bb560adb691d477349b50dd10f718f53d448cd5c",
+          "pngSha256": "6ceac56f8f0f9911cdfbdc1b7a29c1fa96548a4c5b38939fdec04033b5906c58",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "linearGradient",
+          "case": "case",
+          "inputSha256": "1be739e0fa3957ff054bb18bc104ec340f91a8d26f50201cadd85b78a863f0aa",
+          "pngSha256": "6ceac56f8f0f9911cdfbdc1b7a29c1fa96548a4c5b38939fdec04033b5906c58",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "linearGradient",
+          "case": "empty",
+          "inputSha256": "bbab3c2728a5bdd01bac80430fba465483d8e6dbb57f15b417274bfcdb778fcf",
+          "pngSha256": "6ceac56f8f0f9911cdfbdc1b7a29c1fa96548a4c5b38939fdec04033b5906c58",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "radialGradient",
+          "case": "absent",
+          "inputSha256": "1014acf6fac0d411c4aafb353fc4afd443c2dfda22190a293f198adfc5480e10",
+          "pngSha256": "d1d30f5085ff2e2c839c557786f60823c9614f0a66a17aef6be9be1a67b4fb31",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "radialGradient",
+          "case": "bbox",
+          "inputSha256": "52c31203efeda5a196526eac08ac5e6356d8fa8c7159f4faf994d99a52b2862f",
+          "pngSha256": "f5c118ba307a53546251f32ef04697a4c13244cca467ac5463ab658747a9dc62",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "radialGradient",
+          "case": "user",
+          "inputSha256": "348970fa64a3fd7ddff5d5c6974a2cf2de7fc0bdc39a7e0a869c58820425bdbb",
+          "pngSha256": "d1d30f5085ff2e2c839c557786f60823c9614f0a66a17aef6be9be1a67b4fb31",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "radialGradient",
+          "case": "invalid",
+          "inputSha256": "6a25c26b4bb20a5a5586cd3c0a7b74c68d80bd5c421911f1288963e092850f7d",
+          "pngSha256": "f5c118ba307a53546251f32ef04697a4c13244cca467ac5463ab658747a9dc62",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "radialGradient",
+          "case": "spaced",
+          "inputSha256": "d2ecff30c7791495582cd43577446af5a6d9ce86df496d8a0d75d28f7c31d6b7",
+          "pngSha256": "f5c118ba307a53546251f32ef04697a4c13244cca467ac5463ab658747a9dc62",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "radialGradient",
+          "case": "case",
+          "inputSha256": "3a67ec4e492d201a4974219f2b04ed404dd657acea9823024e7026ee91ca0a67",
+          "pngSha256": "f5c118ba307a53546251f32ef04697a4c13244cca467ac5463ab658747a9dc62",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "kind": "radialGradient",
+          "case": "empty",
+          "inputSha256": "31daa170fec37de4611c7593cee0593bd45925d5124c7aa33bfb0bfa09c6bad8",
+          "pngSha256": "f5c118ba307a53546251f32ef04697a4c13244cca467ac5463ab658747a9dc62",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    }
+  },
+  "timing": {
+    "before": [
+      {
+        "host": "windows",
+        "suite": "core",
+        "seconds": 8.053568399976939,
+        "total": 28,
+        "failed": 20
+      },
+      {
+        "host": "windows",
+        "suite": "visual",
+        "seconds": 8.896275999955833,
+        "total": 1,
+        "failed": 1
+      },
+      {
+        "host": "linux",
+        "suite": "core",
+        "seconds": 9.716564500005916,
+        "total": 28,
+        "failed": 20
+      },
+      {
+        "host": "linux",
+        "suite": "visual",
+        "seconds": 9.515039700083435,
+        "total": 1,
+        "failed": 1
+      }
+    ],
+    "initialAfter": [
+      {
+        "host": "windows",
+        "suite": "core",
+        "seconds": 8.774662000127137,
+        "total": 28,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "suite": "visual",
+        "seconds": 9.209096499951556,
+        "total": 1,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "suite": "core",
+        "seconds": 16.47939550015144,
+        "total": 28,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "suite": "visual",
+        "seconds": 16.55386639991775,
+        "total": 1,
+        "failed": 0
+      }
+    ],
+    "finalFocused": [
+      {
+        "host": "windows",
+        "suite": "core",
+        "seconds": 9.370941899949685,
+        "total": 34,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "suite": "visual",
+        "seconds": 9.501581700053066,
+        "total": 1,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "suite": "core",
+        "seconds": 9.075998700223863,
+        "total": 34,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "suite": "visual",
+        "seconds": 9.16337490011938,
+        "total": 1,
+        "failed": 0
+      }
+    ],
+    "interpretation": "Functional elapsed seconds include startup and concurrent investigation. Initial before/after selects28 mechanisms plus1 canonical image; final adds6 direct cases. These measurements establish no test-suite speedup."
+  },
+  "originals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 112.45657060015947,
+    "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyExactPngs": 161,
+        "changedOriginals": [
+          "gaussian3.svg",
+          "lineargradient1.svg",
+          "lineargradient2.svg",
+          "lineargradient4.svg",
+          "mouseEvents.svg",
+          "tommek_Car.svg"
+        ]
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyExactPngs": 161,
+        "changedOriginals": [
+          "gaussian3.svg",
+          "lineargradient1.svg",
+          "lineargradient2.svg",
+          "lineargradient4.svg",
+          "mouseEvents.svg",
+          "tommek_Car.svg"
+        ]
+      }
+    },
+    "firstAndFinalCandidateSemanticRowsIdentical": true,
+    "previouslyRenderedPngsByteIdentical": 161,
+    "currentDefaultExploratoryExact": 166,
+    "currentDefaultDifferent": 1,
+    "newNativeComparisons": [
+      {
+        "name": "gaussian3.svg",
+        "sourceSha256": "4c28ca520cd369783795ac17c0ea9ba96d0a5471e7c456ea6b35fdeea59ea9c8",
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "d9d61146faa8d3017a17cf791bbae1e2ffd4dfb15cf35aef5efc516e9a9602a4",
+            "nativePngSha256": "fef5025c4633da442201bf567dfa6b92b679bbe2c846948df03f883031288318",
+            "logicalViewport": {
+              "Width": 744.09448819,
+              "Height": 1052.3622047
+            },
+            "outputSize": [
+              744,
+              1052
+            ],
+            "captures": [
+              {
+                "pngSha256": "fef5025c4633da442201bf567dfa6b92b679bbe2c846948df03f883031288318",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "fef5025c4633da442201bf567dfa6b92b679bbe2c846948df03f883031288318",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "fef5025c4633da442201bf567dfa6b92b679bbe2c846948df03f883031288318",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 0,
+            "maximumError": 0,
+            "differenceBounds": null,
+            "alphaChangedPixels": 0
+          },
+          "linux": {
+            "libraryPngSha256": "d9d61146faa8d3017a17cf791bbae1e2ffd4dfb15cf35aef5efc516e9a9602a4",
+            "nativePngSha256": "fef5025c4633da442201bf567dfa6b92b679bbe2c846948df03f883031288318",
+            "logicalViewport": {
+              "Width": 744.09448819,
+              "Height": 1052.3622047
+            },
+            "outputSize": [
+              744,
+              1052
+            ],
+            "captures": [
+              {
+                "pngSha256": "fef5025c4633da442201bf567dfa6b92b679bbe2c846948df03f883031288318",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "fef5025c4633da442201bf567dfa6b92b679bbe2c846948df03f883031288318",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "fef5025c4633da442201bf567dfa6b92b679bbe2c846948df03f883031288318",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 0,
+            "maximumError": 0,
+            "differenceBounds": null,
+            "alphaChangedPixels": 0
+          }
+        }
+      },
+      {
+        "name": "lineargradient1.svg",
+        "sourceSha256": "759375607f7c9f50783ca570fa4505ef3a812cd650ad278f832a06b58d71be4c",
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "98df4095d3bdc6b29f25398b04b2a9dc52a6fc0cef4e70ce64fbea42855d23b0",
+            "nativePngSha256": "f44d0ef7a04ed39b587f3aad4f9e6c26765ff91e2bb5599e3d776c1a83b8c098",
+            "logicalViewport": {
+              "Width": 744.09448819,
+              "Height": 1052.3622047
+            },
+            "outputSize": [
+              744,
+              1052
+            ],
+            "captures": [
+              {
+                "pngSha256": "f44d0ef7a04ed39b587f3aad4f9e6c26765ff91e2bb5599e3d776c1a83b8c098",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "f44d0ef7a04ed39b587f3aad4f9e6c26765ff91e2bb5599e3d776c1a83b8c098",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "f44d0ef7a04ed39b587f3aad4f9e6c26765ff91e2bb5599e3d776c1a83b8c098",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 0,
+            "maximumError": 0,
+            "differenceBounds": null,
+            "alphaChangedPixels": 0
+          },
+          "linux": {
+            "libraryPngSha256": "98df4095d3bdc6b29f25398b04b2a9dc52a6fc0cef4e70ce64fbea42855d23b0",
+            "nativePngSha256": "f44d0ef7a04ed39b587f3aad4f9e6c26765ff91e2bb5599e3d776c1a83b8c098",
+            "logicalViewport": {
+              "Width": 744.09448819,
+              "Height": 1052.3622047
+            },
+            "outputSize": [
+              744,
+              1052
+            ],
+            "captures": [
+              {
+                "pngSha256": "f44d0ef7a04ed39b587f3aad4f9e6c26765ff91e2bb5599e3d776c1a83b8c098",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "f44d0ef7a04ed39b587f3aad4f9e6c26765ff91e2bb5599e3d776c1a83b8c098",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "f44d0ef7a04ed39b587f3aad4f9e6c26765ff91e2bb5599e3d776c1a83b8c098",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 0,
+            "maximumError": 0,
+            "differenceBounds": null,
+            "alphaChangedPixels": 0
+          }
+        }
+      },
+      {
+        "name": "lineargradient2.svg",
+        "sourceSha256": "f15c67aa22a778e513ec8868383fa811934ce0aa6691d4f32f28e2c0542e738d",
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "68c2925c964fa1f51301cd1c8d74a8db49a4751c44cb3c282d86ae3becc63bff",
+            "nativePngSha256": "0f592c3b170358bb2193881718a1e9d6e053f6c14c0f7b2f7b120c6457841131",
+            "logicalViewport": {
+              "Width": 744.09448819,
+              "Height": 1052.3622047
+            },
+            "outputSize": [
+              744,
+              1052
+            ],
+            "captures": [
+              {
+                "pngSha256": "0f592c3b170358bb2193881718a1e9d6e053f6c14c0f7b2f7b120c6457841131",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "0f592c3b170358bb2193881718a1e9d6e053f6c14c0f7b2f7b120c6457841131",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "0f592c3b170358bb2193881718a1e9d6e053f6c14c0f7b2f7b120c6457841131",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 0,
+            "maximumError": 0,
+            "differenceBounds": null,
+            "alphaChangedPixels": 0
+          },
+          "linux": {
+            "libraryPngSha256": "68c2925c964fa1f51301cd1c8d74a8db49a4751c44cb3c282d86ae3becc63bff",
+            "nativePngSha256": "0f592c3b170358bb2193881718a1e9d6e053f6c14c0f7b2f7b120c6457841131",
+            "logicalViewport": {
+              "Width": 744.09448819,
+              "Height": 1052.3622047
+            },
+            "outputSize": [
+              744,
+              1052
+            ],
+            "captures": [
+              {
+                "pngSha256": "0f592c3b170358bb2193881718a1e9d6e053f6c14c0f7b2f7b120c6457841131",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "0f592c3b170358bb2193881718a1e9d6e053f6c14c0f7b2f7b120c6457841131",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "0f592c3b170358bb2193881718a1e9d6e053f6c14c0f7b2f7b120c6457841131",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 0,
+            "maximumError": 0,
+            "differenceBounds": null,
+            "alphaChangedPixels": 0
+          }
+        }
+      },
+      {
+        "name": "lineargradient4.svg",
+        "sourceSha256": "3fd8d08cc3c709ca731add9416396f1352118223bc01fdeea92c95a12fc1d824",
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "dc08a9a8f89f41e066f8f6a71170dd3c7a0ec537be72831deccf7f5e6dcb3408",
+            "nativePngSha256": "f79910ff69de8591e8b2d43309f099d14588bff483238f303a84fe89484fe1c1",
+            "logicalViewport": {
+              "Width": 744.09448819,
+              "Height": 1052.3622047
+            },
+            "outputSize": [
+              744,
+              1052
+            ],
+            "captures": [
+              {
+                "pngSha256": "f79910ff69de8591e8b2d43309f099d14588bff483238f303a84fe89484fe1c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "f79910ff69de8591e8b2d43309f099d14588bff483238f303a84fe89484fe1c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "f79910ff69de8591e8b2d43309f099d14588bff483238f303a84fe89484fe1c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 0,
+            "maximumError": 0,
+            "differenceBounds": null,
+            "alphaChangedPixels": 0
+          },
+          "linux": {
+            "libraryPngSha256": "dc08a9a8f89f41e066f8f6a71170dd3c7a0ec537be72831deccf7f5e6dcb3408",
+            "nativePngSha256": "f79910ff69de8591e8b2d43309f099d14588bff483238f303a84fe89484fe1c1",
+            "logicalViewport": {
+              "Width": 744.09448819,
+              "Height": 1052.3622047
+            },
+            "outputSize": [
+              744,
+              1052
+            ],
+            "captures": [
+              {
+                "pngSha256": "f79910ff69de8591e8b2d43309f099d14588bff483238f303a84fe89484fe1c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "f79910ff69de8591e8b2d43309f099d14588bff483238f303a84fe89484fe1c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "f79910ff69de8591e8b2d43309f099d14588bff483238f303a84fe89484fe1c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 0,
+            "maximumError": 0,
+            "differenceBounds": null,
+            "alphaChangedPixels": 0
+          }
+        }
+      },
+      {
+        "name": "mouseEvents.svg",
+        "sourceSha256": "c31b67fe446a89a252df7e156dcb63e15bee5bddf141cdb77a8201bbc1310ba7",
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "0e37aa7adf115e26ccaf2ed7f1e69d1f5757734a4ddd5af15215bf8b67b24ffa",
+            "nativePngSha256": "8fecb90961c0a4dac95d8db4249fe83b98e48f54261514cb08481199182fcddc",
+            "logicalViewport": {
+              "Width": 300,
+              "Height": 150
+            },
+            "outputSize": [
+              300,
+              150
+            ],
+            "captures": [
+              {
+                "pngSha256": "8fecb90961c0a4dac95d8db4249fe83b98e48f54261514cb08481199182fcddc",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "8fecb90961c0a4dac95d8db4249fe83b98e48f54261514cb08481199182fcddc",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "8fecb90961c0a4dac95d8db4249fe83b98e48f54261514cb08481199182fcddc",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 0,
+            "maximumError": 0,
+            "differenceBounds": null,
+            "alphaChangedPixels": 0
+          },
+          "linux": {
+            "libraryPngSha256": "0e37aa7adf115e26ccaf2ed7f1e69d1f5757734a4ddd5af15215bf8b67b24ffa",
+            "nativePngSha256": "8fecb90961c0a4dac95d8db4249fe83b98e48f54261514cb08481199182fcddc",
+            "logicalViewport": {
+              "Width": 300,
+              "Height": 150
+            },
+            "outputSize": [
+              300,
+              150
+            ],
+            "captures": [
+              {
+                "pngSha256": "8fecb90961c0a4dac95d8db4249fe83b98e48f54261514cb08481199182fcddc",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "8fecb90961c0a4dac95d8db4249fe83b98e48f54261514cb08481199182fcddc",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "8fecb90961c0a4dac95d8db4249fe83b98e48f54261514cb08481199182fcddc",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 0,
+            "maximumError": 0,
+            "differenceBounds": null,
+            "alphaChangedPixels": 0
+          }
+        }
+      },
+      {
+        "name": "tommek_Car.svg",
+        "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "2ea39eb1a65147597542ba396f3f0cc34517762177a63e5e5856c92eaa083e99",
+            "nativePngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+            "logicalViewport": {
+              "Width": 1052.3622,
+              "Height": 744.09448
+            },
+            "outputSize": [
+              1052,
+              744
+            ],
+            "captures": [
+              {
+                "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 8,
+            "maximumError": 1,
+            "differenceBounds": [
+              478,
+              274,
+              774,
+              615
+            ],
+            "alphaChangedPixels": 0
+          },
+          "linux": {
+            "libraryPngSha256": "2ea39eb1a65147597542ba396f3f0cc34517762177a63e5e5856c92eaa083e99",
+            "nativePngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+            "logicalViewport": {
+              "Width": 1052.3622,
+              "Height": 744.09448
+            },
+            "outputSize": [
+              1052,
+              744
+            ],
+            "captures": [
+              {
+                "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              },
+              {
+                "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "terminalExitCode": 0
+              }
+            ],
+            "changedPixels": 8,
+            "maximumError": 1,
+            "differenceBounds": [
+              478,
+              274,
+              774,
+              615
+            ],
+            "alphaChangedPixels": 0
+          }
+        }
+      }
+    ],
+    "healthyNewOriginalCaptures": 36,
+    "nativeComparisonsBindFinalPngHashes": true,
+    "advancedGates": [
+      {
+        "name": "Steps.svg",
+        "messageSha256": "53f930386244b7b59afff86da8731631045ffc38fc968d1e0b11cf694c383c10",
+        "diagnostic": {
+          "ElementName": "text",
+          "ElementId": "",
+          "AttributeName": "",
+          "LineNumber": 430,
+          "LinePosition": 4
+        }
+      },
+      {
+        "name": "bloglines.svg",
+        "messageSha256": "53f930386244b7b59afff86da8731631045ffc38fc968d1e0b11cf694c383c10",
+        "diagnostic": {
+          "ElementName": "text",
+          "ElementId": "",
+          "AttributeName": "",
+          "LineNumber": 3,
+          "LinePosition": 4
+        }
+      },
+      {
+        "name": "displayWebStats.svg",
+        "messageSha256": "74f765a941d08df90499e4e2ad2ea8468113ea999e24d6461dce07c1e9a55145",
+        "diagnostic": {
+          "ElementName": "rect",
+          "ElementId": "",
+          "AttributeName": "",
+          "LineNumber": 59,
+          "LinePosition": 10
+        }
+      }
+    ],
+    "suppliedPrograms": {
+      "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+      "files": 19,
+      "seconds": 18.823873199988157,
+      "sourceBodiesRetained": 0,
+      "referenceChanges": 0,
+      "all19ExactOnBothHosts": true,
+      "legacyFormatCaveat": "Historical SVG1.1 inline-font rendering remains outside the implemented host-supplied TrueType contract."
+    }
+  },
+  "openFindings": {
+    "car": {
+      "status": "Open:8 RGB differences, maximum1, no alpha differences, same on both hosts.",
+      "exploratoryControls": [
+        {
+          "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+          "librarySha256": "7d5b1a427b8e427ee3c950b16fbf4f126d8fcd8e75403e46fa061ec9cd190f02",
+          "hostedBodiesRetained": 0,
+          "exploratoryCaptures": 4,
+          "seconds": 24.54788829991594,
+          "results": [
+            {
+              "variant": "original",
+              "changedDeclarations": 0,
+              "inputSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+              "libraryPngSha256": "2ea39eb1a65147597542ba396f3f0cc34517762177a63e5e5856c92eaa083e99",
+              "nativePngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+              "changedPixels": 8,
+              "maximumError": 1,
+              "alphaChangedPixels": 0,
+              "differenceBounds": [
+                478,
+                274,
+                774,
+                615
+              ]
+            },
+            {
+              "variant": "no-filter",
+              "changedDeclarations": 100,
+              "inputSha256": "06df903265903d5ce5f283e958853dc4681cd3a93656b352e337da7fd848af40",
+              "libraryPngSha256": "e7d8774edb995d57d2053cbcbe5f9357c52328152dd0a072ae28c921688c69e9",
+              "nativePngSha256": "23f8b5d2402b755b476389b573c35cfe9f5e8790bffb92d1d8ce6d21b4cfcd36",
+              "changedPixels": 0,
+              "maximumError": 0,
+              "alphaChangedPixels": 0,
+              "differenceBounds": null
+            },
+            {
+              "variant": "solid-paint",
+              "changedDeclarations": 175,
+              "inputSha256": "d97f054dbd3219004c31417097829cdb6e2b043275c791a9e7400cff328ec3af",
+              "libraryPngSha256": "1b708fe9775a56b744865000e744f26604e217b5eecfb372945ebff1d523c9f3",
+              "nativePngSha256": "ab72f8080ac3b6213641299fb1409ac45e249e923ae15b2edacd5e84baf816bd",
+              "changedPixels": 8,
+              "maximumError": 1,
+              "alphaChangedPixels": 0,
+              "differenceBounds": [
+                763,
+                274,
+                774,
+                276
+              ]
+            },
+            {
+              "variant": "opaque",
+              "changedDeclarations": 1190,
+              "inputSha256": "2dbbfc40cd56bfdbacdaa37c30949d673d68306621721930d6808024c4ec706b",
+              "libraryPngSha256": "00c92030efe6c2bd425bb84688189092479b7e1f1b256fd4f55c02b19420f682",
+              "nativePngSha256": "815aa345a6538adc12bfacb8e52711f7388e8bd51b1daee96ecc379c9a19ffb3",
+              "changedPixels": 6,
+              "maximumError": 1,
+              "alphaChangedPixels": 0,
+              "differenceBounds": [
+                763,
+                274,
+                774,
+                276
+              ]
+            }
+          ]
+        },
+        {
+          "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+          "librarySha256": "7d5b1a427b8e427ee3c950b16fbf4f126d8fcd8e75403e46fa061ec9cd190f02",
+          "hostedBodiesRetained": 0,
+          "exploratoryCaptures": 5,
+          "seconds": 15.484572000103071,
+          "results": [
+            {
+              "variant": "zero-blur",
+              "changedDeclarations": 45,
+              "inputSha256": "5df5c17b22da2aad82f7589ef0e554ed41f0988fb5ce0475daa359986c64c841",
+              "libraryPngSha256": "5af80e10528d092fc0f323560abff94b5dbb1b6de974ec32f7de538181d6faef",
+              "nativePngSha256": "0d69bb8c8011309f99aebb4be1c50848516bbf3a5cf2aa9c41409cfbfa1b3563",
+              "changedPixels": 41,
+              "maximumError": 1,
+              "alphaChangedPixels": 0,
+              "differenceBounds": [
+                479,
+                250,
+                734,
+                609
+              ]
+            },
+            {
+              "variant": "quarter-0",
+              "changedDeclarations": 75,
+              "inputSha256": "bd8e4abdedd7ed9e6b5dee66bbbd8881f3af604098122eefebb6bc277e0957ec",
+              "libraryPngSha256": "9c0a6e6ae1bffe1ff6a5b15f9703e96d1824c65095f5686f7ccffcbaff4a65ef",
+              "nativePngSha256": "4cd4a1c21c95d32606e2d474077326d46d3622e338dd9f2a4579ea741f90774a",
+              "changedPixels": 0,
+              "maximumError": 0,
+              "alphaChangedPixels": 0,
+              "differenceBounds": null
+            },
+            {
+              "variant": "quarter-1",
+              "changedDeclarations": 75,
+              "inputSha256": "779c6e1bbff32efa3edb3e61ea3e917d5eb8e1d66b658d20447a1e09a55703a8",
+              "libraryPngSha256": "638aa6d334ec845a10d835a5cbf0908289756c7c01d86b6d1394a1dc250e16f5",
+              "nativePngSha256": "76ba67017dfeca4e69064d5c1e978d47dca2c31f4c8f735906e72cd163bb90b2",
+              "changedPixels": 6,
+              "maximumError": 1,
+              "alphaChangedPixels": 0,
+              "differenceBounds": [
+                763,
+                274,
+                774,
+                276
+              ]
+            },
+            {
+              "variant": "quarter-2",
+              "changedDeclarations": 75,
+              "inputSha256": "252059c38aa05cac7f3962ef5d28c213acfca96b2024b491bfbe1aaeec358510",
+              "libraryPngSha256": "0c2933816e2222d267b5fded32aa73e7048fb995f6178acb49644198fb85c953",
+              "nativePngSha256": "0f391f3caf0aa18925c2f94f5886aa8ce6ad189fa3c8ecfba6a04d527ee87ddb",
+              "changedPixels": 2,
+              "maximumError": 1,
+              "alphaChangedPixels": 0,
+              "differenceBounds": [
+                478,
+                606,
+                480,
+                615
+              ]
+            },
+            {
+              "variant": "quarter-3",
+              "changedDeclarations": 75,
+              "inputSha256": "ea6acdce0bc4c8961eff10b365a54d9a1d5a84cfc374368095819b3bfd682667",
+              "libraryPngSha256": "236fc376887267777a07c5c47befe146d577d412448b273a3512d40999f3b9de",
+              "nativePngSha256": "c69c447547f05942124e2b8e8bc8a8289c375552777b36faa7f32c68c2810601",
+              "changedPixels": 0,
+              "maximumError": 0,
+              "alphaChangedPixels": 0,
+              "differenceBounds": null
+            }
+          ]
+        }
+      ],
+      "next": "Preserve image/bounds/transform/sampling/alpha roles; isolate active filter consumers and shared rounding. Removing all100 filter bindings is exact. Retaining successive quarters localizes6 differences to bindings25-49 and2 to50-74; other quarters are exact. Zero-blur changes expose41 differences, so neither blur-kernel-only nor gradient-only causality is established. Controls are RAM-only, single exploratory Windows captures, not reference admission."
+    },
+    "textTransform": "One live text rule requests actual case mapping. Preserve original scalar addressing, font discovery and prepared layout; do not discard it as inert.",
+    "textAlign": "Qualify preformatted-text applicability before changing admission.",
+    "advanced": "Steps/bloglines still need explicit supplied-font contexts; displayWebStats reaches a deeper unsupported-child gate. A removed first gate is not whole-original closure."
+  },
+  "qualification": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "suite": "core",
+      "total": 36705,
+      "passed": 36705,
+      "failed": 0,
+      "seconds": 90.7409882999491,
+      "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+      "testAssemblySha256": "ca8cb99e31a6008c3faae46735d4c20e7a371925ad2de5a10322bf06e5ce91e3"
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "suite": "visual",
+      "total": 46566,
+      "passed": 46565,
+      "failed": 1,
+      "seconds": 113.33907180000097,
+      "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+      "testAssemblySha256": "e70352a39b7aad0008b08c676d653b0d48d8b4d990997b08f943f794faf65428",
+      "failureNames": [
+        "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")"
+      ]
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "suite": "font-host",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "seconds": 2.3149301998782903,
+      "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+      "testAssemblySha256": "641462d3178d0990b047ca4e8ce53bae040b9bebec76be829d753fd24f5fd31e"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "suite": "core",
+      "total": 12593,
+      "passed": 12593,
+      "failed": 0,
+      "seconds": 44.459053500089794,
+      "librarySha256": "37b261c6139cb2c7f29057e839bb67802c1b50afd3ddec08bd90d274291d3111",
+      "testAssemblySha256": "fc93a64a549db3f9dd0ba56d8de11dcb97fc410dd45cf9058ce12ff1d628c248"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "suite": "visual",
+      "total": 829,
+      "passed": 829,
+      "failed": 0,
+      "seconds": 21.131641399813816,
+      "librarySha256": "37b261c6139cb2c7f29057e839bb67802c1b50afd3ddec08bd90d274291d3111",
+      "testAssemblySha256": "f95901eba55a13d983847fd733ba182e8c428936bef4e28ccc68cd51b0e9f450"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "suite": "font-host",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "seconds": 1.479744500014931,
+      "librarySha256": "37b261c6139cb2c7f29057e839bb67802c1b50afd3ddec08bd90d274291d3111",
+      "testAssemblySha256": "ce0b3432e05ef294d5653de577227a4fdd3bebedbbb5b3dc3dd5144a71c99cdd"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "suite": "core",
+      "total": 36705,
+      "passed": 36705,
+      "failed": 0,
+      "seconds": 54.20716560003348,
+      "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+      "testAssemblySha256": "ca8cb99e31a6008c3faae46735d4c20e7a371925ad2de5a10322bf06e5ce91e3"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "suite": "visual",
+      "total": 46566,
+      "passed": 46566,
+      "failed": 0,
+      "seconds": 203.35470719984733,
+      "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+      "testAssemblySha256": "e70352a39b7aad0008b08c676d653b0d48d8b4d990997b08f943f794faf65428"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "suite": "font-host",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "seconds": 1.1966021000407636,
+      "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+      "testAssemblySha256": "641462d3178d0990b047ca4e8ce53bae040b9bebec76be829d753fd24f5fd31e"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "suite": "core",
+      "total": 12593,
+      "passed": 12593,
+      "failed": 0,
+      "seconds": 26.397962499875575,
+      "librarySha256": "37b261c6139cb2c7f29057e839bb67802c1b50afd3ddec08bd90d274291d3111",
+      "testAssemblySha256": "fc93a64a549db3f9dd0ba56d8de11dcb97fc410dd45cf9058ce12ff1d628c248"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "suite": "visual",
+      "total": 829,
+      "passed": 829,
+      "failed": 0,
+      "seconds": 30.418408500030637,
+      "librarySha256": "37b261c6139cb2c7f29057e839bb67802c1b50afd3ddec08bd90d274291d3111",
+      "testAssemblySha256": "f95901eba55a13d983847fd733ba182e8c428936bef4e28ccc68cd51b0e9f450"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "suite": "font-host",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "seconds": 4.357458999846131,
+      "librarySha256": "37b261c6139cb2c7f29057e839bb67802c1b50afd3ddec08bd90d274291d3111",
+      "testAssemblySha256": "ce0b3432e05ef294d5653de577227a4fdd3bebedbbb5b3dc3dd5144a71c99cdd"
+    }
+  ],
+  "knownWindowsDejavu": {
+    "status": "Unchanged pending reference authority; assertion/reference preserved. No green CI claim.",
+    "changedPixels": 75,
+    "currentPngSha256": "71b1b8cd1159dab06d982aef86b48f4968838bb5ba699122962d0947f901dc34",
+    "referencePngSha256": "d00220c0ab28b9805f43e7e86cda6165573021fb7dd7e2964531052d45c95b39"
+  },
+  "packageEvidence": "../release-baselines/package-timestamps.json"
+}

@@ -157,7 +157,6 @@ internal static class SvgGradientSyntax
         ArgumentNullException.ThrowIfNull(reader);
         string? units = reader.GetAttribute("gradientUnits");
         bool isUserSpace = units is not null && units.Equals("userSpaceOnUse", StringComparison.Ordinal);
-        if (units is not null && !units.Equals("objectBoundingBox", StringComparison.Ordinal) && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only objectBoundingBox and userSpaceOnUse gradient units are implemented.");
         string? spread = reader.GetAttribute("spreadMethod");
         SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
         SvgLinearGradientCoordinates coordinates = new(SvgGradientLength.Parse(reader.GetAttribute("x1")), SvgGradientLength.Parse(reader.GetAttribute("y1")),
@@ -173,7 +172,6 @@ internal static class SvgGradientSyntax
         ArgumentNullException.ThrowIfNull(reader);
         string? units = reader.GetAttribute("gradientUnits");
         bool isUserSpace = units is not null && units.Equals("userSpaceOnUse", StringComparison.Ordinal);
-        if (units is not null && !units.Equals("objectBoundingBox", StringComparison.Ordinal) && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only objectBoundingBox and userSpaceOnUse radial gradient units are implemented.");
         string? spread = reader.GetAttribute("spreadMethod");
         SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
         string? transformValue = reader.GetAttribute("gradientTransform");

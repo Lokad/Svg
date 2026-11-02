@@ -472,6 +472,7 @@ internal static class SvgTextSyntax
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "text-decoration" or "text-anchor") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "color" or "fill" or "fill-opacity" or "stroke" or "fill-rule" or "display" or "visibility"
                 or "stroke-width" or "stroke-opacity" or "stroke-linecap" or "stroke-linejoin" or "stroke-miterlimit" or "stroke-dasharray" or "stroke-dashoffset" or "paint-order" or "vector-effect") continue;
+            if (SvgAttributeSemantics.IsInert("tspan", reader)) continue;
             reader.MoveToElement();
             style = inherited;
             return false;

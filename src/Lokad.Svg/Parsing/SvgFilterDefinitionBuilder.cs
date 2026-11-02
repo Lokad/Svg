@@ -217,6 +217,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
 
     private void ValidateAttributes(XmlReader reader, string allowed)
     {
+        string element = reader.LocalName;
         while (reader.MoveToNextAttribute())
         {
             _token.ThrowIfCancellationRequested();
@@ -227,6 +228,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
                 if (allowed.AsSpan()[range].SequenceEqual(reader.LocalName.AsSpan())) { admitted = true; break; }
             if (!admitted)
             {
+                if (SvgAttributeSemantics.IsInert(element, reader)) continue;
                 string name = reader.Name;
                 reader.MoveToElement();
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter attribute '" + name + "' is not implemented.");

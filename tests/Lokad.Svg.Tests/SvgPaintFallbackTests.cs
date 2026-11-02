@@ -56,7 +56,7 @@ public sealed class SvgPaintFallbackTests
     [InlineData("<rect width='32' height='16' fill='url(https://example.org/g.svg#g) red'/>")]
     [InlineData("<rect width='32' height='16' fill='url(#missing)'/>")]
     [InlineData("<path d='M0 8H32' marker-end='url(#g) red'/>")]
-    [InlineData("<defs><linearGradient id='invalid' gradientUnits='invalid'/></defs><rect width='32' height='16' fill='url(#invalid) red'/>")]
+    [InlineData("<defs><linearGradient id='invalid' gradientTransform='scale(0)'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect width='32' height='16' fill='url(#invalid) red'/>")]
     public void Fallback_does_not_admit_invalid_syntax_effect_tails_or_unsupported_servers(string shape)
         => Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
             SvgConverter.ConvertToPng(Document(shape), SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);

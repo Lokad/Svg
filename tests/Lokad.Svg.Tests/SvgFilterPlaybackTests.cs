@@ -612,7 +612,7 @@ public sealed class SvgFilterPlaybackTests
     [Theory]
     [InlineData("<feMerge><feMergeNode in='later'/></feMerge><feOffset result='later'/>")]
     [InlineData("<feMerge result='self'><feMergeNode in='self'/></feMerge>")]
-    [InlineData("<feMerge><feMergeNode dx='1'/></feMerge>")]
+    [InlineData("<feMerge><feMergeNode in='BackgroundImage'/></feMerge>")]
     [InlineData("<feMerge><g><feMergeNode/></g></feMerge>")]
     public void Invalid_merge_graphs_remain_dormant_until_used_and_release_owners(string graph)
     {

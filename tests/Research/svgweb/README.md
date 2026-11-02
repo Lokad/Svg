@@ -6,13 +6,19 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 161 originals per host: **161 exploratory
-exact, none different**, with 40 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 167 originals per host: **166 exploratory
+exact, one different**, with 34 UnsupportedFeature and 3 MalformedInput outcomes. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
 Exact default output does not qualify other font, resource or static-state contexts;
 whole-corpus acceptance remains open.
+
+The [attribute-applicability review](attribute-applicability.json) closes custom
+and inapplicable attribute gates plus explicit gradient-unit fallback. Five newly
+rendered originals match three healthy native captures per host; `tommek_Car.svg`
+retains eight RGB differences of one unit. Removing its filters makes it exact in
+an exploratory control; the shared filter/paint rounding investigation remains open.
 
 The [supplied-program inventory](supplied-original-contexts.json) pins all 19 font
 contexts and three stable healthy captures per host. The [current raster-strike correction](windows-small-strikes.json)

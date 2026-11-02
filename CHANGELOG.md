@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Ignore unknown and inapplicable SVG attributes consistently while retaining
+  validation of applicable rendering features.
+- Use initial gradient units for invalid values, preserving template explicitness.
 - Respect Windows tiny-glyph program admission and default scanner thresholds,
   preserving scaled-child execution and instruction-free parent scanner state.
 - Produce reproducible NuGet and symbol-package ZIP timestamps.

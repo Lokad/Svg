@@ -23,7 +23,7 @@ public sealed class SvgEventAttributeTests
             case "svg": SvgElementAttributePolicy.ValidateRoot(reader, CancellationToken.None); break;
             case "defs": SvgElementAttributePolicy.ValidateDefinitionContainer(reader, CancellationToken.None); break;
             case "path": SvgElementAttributePolicy.ValidatePath(reader, CancellationToken.None); break;
-            case "style": SvgRootStyleSheetParser.ThrowIfAttributed(reader); break;
+            case "style": SvgRootStyleSheetParser.ThrowIfAttributed(reader, CancellationToken.None); break;
             case "textPath": Assert.Equal("p", SvgTextPathSyntax.Parse(reader, CancellationToken.None).PathId); break;
             default: throw new ArgumentOutOfRangeException(nameof(element));
         }
@@ -32,8 +32,6 @@ public sealed class SvgEventAttributeTests
     }
 
     [Theory]
-    [InlineData("on")]
-    [InlineData("Onload")]
     [InlineData("xml:onload")]
     [InlineData("link:onload")]
     public void Event_admission_preserves_literal_names_and_reserved_namespaces(string attribute)
@@ -43,6 +41,22 @@ public sealed class SvgEventAttributeTests
         reader.MoveToContent();
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
             SvgElementAttributePolicy.ValidatePath(reader, CancellationToken.None)).ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("on")]
+    [InlineData("Onload")]
+    public void Other_literal_names_remain_metadata_without_becoming_event_attributes(string attribute)
+    {
+        using StringReader input = new("<path " + attribute + "='ignored'/>");
+        using XmlReader reader = XmlReader.Create(input);
+        reader.MoveToContent();
+        Assert.True(reader.MoveToAttribute(attribute));
+        Assert.False(SvgElementAttributePolicy.IsInertEventAttribute(reader));
+        reader.MoveToElement();
+        SvgElementAttributePolicy.ValidatePath(reader, CancellationToken.None);
+        Assert.Equal(XmlNodeType.Element, reader.NodeType);
+        Assert.Equal("ignored", reader.GetAttribute(attribute));
     }
 
     [Fact]

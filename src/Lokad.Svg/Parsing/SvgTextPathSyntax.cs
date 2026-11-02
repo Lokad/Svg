@@ -23,6 +23,7 @@ internal static class SvgTextPathSyntax
                 if (reader.Value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Text-path attributes exceed the configured syntax limit.");
                 continue;
             }
+            if (SvgAttributeSemantics.IsInert("textPath", reader)) continue;
             reader.MoveToElement();
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "This text-path attribute is not implemented.");
         }

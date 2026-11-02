@@ -55,7 +55,7 @@ internal static class SvgRootStyleSheetParser
             SvgSourceContext source = SvgSourceContext.Capture(reader);
             try
             {
-                ThrowIfAttributed(reader);
+                ThrowIfAttributed(reader, cancellationToken);
                 using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, cancellationToken);
                 SvgStyleSheet.Parse(text.Value, limits.MaximumNodes, rules, strings, budget, cancellationToken);
             }
@@ -83,16 +83,18 @@ internal static class SvgRootStyleSheetParser
     }
 
     /// <summary>Allows XML namespace declarations, stylesheet type/identifier and inert event attributes.</summary>
-    internal static void ThrowIfAttributed(XmlReader reader)
+    internal static void ThrowIfAttributed(XmlReader reader, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
         if (!reader.HasAttributes) return;
         while (reader.MoveToNextAttribute())
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (reader.NamespaceURI == "http://www.w3.org/2000/xmlns/" || SvgElementAttributePolicy.IsInertEventAttribute(reader)) continue;
             bool allowed = (reader.LocalName.Equals("type", StringComparison.OrdinalIgnoreCase) && reader.Value.Equals("text/css", StringComparison.OrdinalIgnoreCase))
                 || reader.LocalName.Equals("id", StringComparison.OrdinalIgnoreCase);
-            if (!allowed) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
+            if (!allowed && !SvgAttributeSemantics.IsInert("style", reader))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
         }
         reader.MoveToElement();
     }
@@ -101,7 +103,7 @@ internal static class SvgRootStyleSheetParser
     internal static void Consume(XmlReader reader, RenderBudget budget, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        ThrowIfAttributed(reader);
+        ThrowIfAttributed(reader, cancellationToken);
         if (reader.IsEmptyElement) return;
         using XmlReader subtree = reader.ReadSubtree();
         if (!subtree.Read()) throw new XmlException("Stylesheet content is missing.");

@@ -11,6 +11,11 @@ and reports under ignored `artifacts/`. Browser tooling is development-only;
 conversion has no browser dependency. [Tests and provenance](../tests/README.md)
 defines collection membership and fixture admission.
 
+Package ZIP timestamps are fixed at `1980-01-01T00:00:00Z` in the library project.
+To check reproducibility, pack unchanged Release outputs into two directories at
+different times and compare both `.nupkg` and `.snupkg` bytes. NuGet's
+`DeterministicTimestamp=true` uses the current time; a fixed timestamp is required.
+
 ## Development and qualification
 
 Use the [three test responsibilities](../tests/README.md) to choose a short edit

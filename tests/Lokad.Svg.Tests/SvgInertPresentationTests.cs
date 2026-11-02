@@ -63,7 +63,6 @@ public sealed class SvgInertPresentationTests
     [InlineData("marker-start", "auto")]
     [InlineData("marker-mid", "none extra")]
     [InlineData("marker-end", "none !important !important")]
-    [InlineData("marker-later", "none")]
     [InlineData("enable-background", "auto")]
     [InlineData("enable-background", "blur(5)")]
     public void Active_or_unimplemented_values_reject_in_attributes_inline_and_stylesheets(string property, string value)
@@ -89,6 +88,31 @@ public sealed class SvgInertPresentationTests
             Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
+    }
+
+    [Theory]
+    [InlineData("attribute", true)]
+    [InlineData("inline", false)]
+    [InlineData("stylesheet", false)]
+    public void Unknown_attribute_names_do_not_alias_implemented_properties(string context, bool admitted)
+    {
+        string content = context switch
+        {
+            "attribute" => Shape.Replace("<path ", "<path marker-later='url(#missing)' "),
+            "inline" => Shape.Replace("<path ", "<path style='marker-later:url(#missing)' "),
+            _ => "<style>.paint{marker-later:url(#missing)}</style>" + Shape.Replace("<path ", "<path class='paint' ")
+        };
+        RenderBudget budget = new(new HostMemoryBudget(268_435_456L));
+        if (admitted)
+        {
+            using SvgRoot scene = SvgRootParser.Parse(Wrap(content), SvgRenderLimits.Default, budget, null, CancellationToken.None);
+            Assert.False(scene.HasUnsupportedChild);
+            Assert.Single(scene.Geometries);
+        }
+        else
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+                SvgRootParser.Parse(Wrap(content), SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Theory]

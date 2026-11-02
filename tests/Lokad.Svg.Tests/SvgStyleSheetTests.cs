@@ -428,13 +428,13 @@ public sealed class SvgStyleSheetTests
         Assert.True(reader.Read());
         if (throws)
         {
-            SvgException exception = Assert.Throws<SvgException>(() => SvgRootStyleSheetParser.ThrowIfAttributed(reader));
+            SvgException exception = Assert.Throws<SvgException>(() => SvgRootStyleSheetParser.ThrowIfAttributed(reader, CancellationToken.None));
 
             Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         }
         else
         {
-            SvgRootStyleSheetParser.ThrowIfAttributed(reader);
+            SvgRootStyleSheetParser.ThrowIfAttributed(reader, CancellationToken.None);
             Assert.Equal(XmlNodeType.Element, reader.NodeType);
             Assert.Equal("style", reader.LocalName);
         }

@@ -1,0 +1,63 @@
+{
+  "width": 64,
+  "height": 48,
+  "cases": [
+    {
+      "id": "attributes",
+      "input": "attributes.svg",
+      "inputSha256": "dce7ac179509ac8a0eaf40db0f2f4e453e3d0ec17752bcc00082082d4b75ce21",
+      "platforms": {
+        "windows": {
+          "reference": "references/windows.png",
+          "referenceSha256": "d784fb98b9addde3f74c79a82ef344a69e4b51f4cd0053ef3c8068d9aa252ea3",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "d784fb98b9addde3f74c79a82ef344a69e4b51f4cd0053ef3c8068d9aa252ea3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "d784fb98b9addde3f74c79a82ef344a69e4b51f4cd0053ef3c8068d9aa252ea3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "d784fb98b9addde3f74c79a82ef344a69e4b51f4cd0053ef3c8068d9aa252ea3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "references/linux.png",
+          "referenceSha256": "d784fb98b9addde3f74c79a82ef344a69e4b51f4cd0053ef3c8068d9aa252ea3",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "d784fb98b9addde3f74c79a82ef344a69e4b51f4cd0053ef3c8068d9aa252ea3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "d784fb98b9addde3f74c79a82ef344a69e4b51f4cd0053ef3c8068d9aa252ea3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "d784fb98b9addde3f74c79a82ef344a69e4b51f4cd0053ef3c8068d9aa252ea3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -954,7 +954,8 @@
           "exitCode": 0,
           "seconds": 50.614045000169426
         }
-      ]
+      ],
+      "qualificationLimitation": "The observed pair does not establish stability across different wall-clock times: true selects the current time. Fixed-epoch, separate-time qualification supersedes this inference; see ../release-baselines/package-timestamps.json. Historical package hashes are retained."
     },
     "focusedBeforeAfter": {
       "scope": "Original44 direct mechanisms, before adding six scanner-rounding boundaries; terminal pinned builds precede consumers.",

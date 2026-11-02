@@ -96,7 +96,7 @@ public sealed class SvgColoredFilterTests
     [InlineData("<feBlend mode='darken'/>")]
     [InlineData("<feComposite in2='later'/><feFlood result='later'/>")]
     [InlineData("<feBlend in2='missing'/>")]
-    [InlineData("<feFlood in='SourceGraphic'/>")]
+    [InlineData("<feFlood/><feComposite operator='xor'/>")]
     public void Unsupported_binary_graphs_publish_no_output_and_release_parser_owners(string graph)
     {
         byte[] input = Document(graph, "sRGB");

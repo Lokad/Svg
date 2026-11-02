@@ -27,7 +27,6 @@ public sealed class SvgForeignMetadataTests
     [InlineData("xml:title")]
     [InlineData("description:href")]
     [InlineData("description:titles")]
-    [InlineData("title")]
     public void Descriptive_title_admission_does_not_admit_other_reserved_attributes(string attribute)
     {
         using StringReader source = new("<path xmlns:description='http://www.w3.org/1999/xlink' " + attribute + "='description'/>");
