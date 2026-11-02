@@ -375,5 +375,380 @@
       }
     }
   ],
-  "next": "Inspect shared source/grid/color/storage stages on these two inputs. Recompose an independently authored control; preserve scalar/bounds/map/alpha roles and existing failing-before regressions. Require exact complete-original Windows/Linux output and independent control admission before closure."
+  "next": "Inspect shared source/grid/color/storage stages on these two inputs. Recompose an independently authored control; preserve scalar/bounds/map/alpha roles and existing failing-before regressions. Require exact complete-original Windows/Linux output and independent control admission before closure.",
+  "followup": {
+    "sourceBaseline": "00e8269f18cc6e7ad5ee9b537147adffa6f749e7",
+    "status": "Open: independent failing control retained; source-capture versus restoration cause remains unresolved. No renderer change promoted.",
+    "scope": {
+      "productionChanges": 0,
+      "existingReferenceChanges": 0,
+      "hostedBodiesRetained": 0,
+      "sourceFragmentsRetained": 0,
+      "sourceAttributeValuesRetained": 0,
+      "materializedHostedSvgRetained": 0
+    },
+    "sourceContexts": {
+      "host": "windows",
+      "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+      "healthyExploratoryCaptures": 12,
+      "contract": "Retain definitions and the selected path/ancestor chain; remove other painted leaves. Compare transparent, white and dark backdrops. All-paint contexts retain every original paint and only disable other filters. Source and zero-blur controls retain the isolated path with its actual transform.",
+      "inputs": [
+        {
+          "binding": 46,
+          "ancestorElements": [
+            "path",
+            "g",
+            "g",
+            "svg"
+          ],
+          "authoredTransformAncestors": 1,
+          "nondefaultOpacityAncestors": 0,
+          "paintServer": false,
+          "strokePresent": true,
+          "authoredSigmaBucket": "1to4",
+          "primitiveUnitsExplicit": false,
+          "filterRegionExplicit": true,
+          "sourcePathCommandCounts": {
+            "M": 1,
+            "L": 4,
+            "z": 1
+          }
+        },
+        {
+          "binding": 60,
+          "ancestorElements": [
+            "path",
+            "svg"
+          ],
+          "authoredTransformAncestors": 1,
+          "nondefaultOpacityAncestors": 0,
+          "paintServer": true,
+          "strokePresent": false,
+          "authoredSigmaBucket": "1to4",
+          "primitiveUnitsExplicit": false,
+          "filterRegionExplicit": true,
+          "sourcePathCommandCounts": {
+            "M": 1,
+            "L": 6,
+            "z": 1
+          }
+        }
+      ],
+      "results": [
+        {
+          "binding": 46,
+          "context": "all-paint",
+          "inputSha256": "49a78bb5dfcb2f819a527ca7955295e2c62ca470c419336ee510587344db8987",
+          "libraryPngSha256": "a4f41528741cd4a8b4127a8d869a55d11a363a06552593a06e760a3fd84e4215",
+          "nativePngSha256": "286d716a881306f1684957b4dca6d83274066e64bb0674222674e2b1f08c80ed",
+          "changedPixels": 6,
+          "maximumError": 1,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            763,
+            274,
+            774,
+            276
+          ]
+        },
+        {
+          "binding": 46,
+          "context": "transparent",
+          "inputSha256": "bb130786aaec6e0f79eedab0b45f925c2c6f9c0b29ba3be150dfe9708fc10a30",
+          "libraryPngSha256": "8f1174ca069673e35c93114acfaab7c559966b945df794a6a5ecb03740763e8b",
+          "nativePngSha256": "dfcc1a0783b08c51b71841fb704cca2e7fc93700141c8fa731b0c863ee5ec8d7",
+          "changedPixels": 7,
+          "maximumError": 1,
+          "alphaChangedPixels": 7,
+          "differenceBounds": [
+            763,
+            274,
+            773,
+            276
+          ]
+        },
+        {
+          "binding": 46,
+          "context": "white",
+          "inputSha256": "596c169a3514b26149a8d517124f07311cb9f36cd5eb458f497a9a8b8c28df57",
+          "libraryPngSha256": "c9dd9c84590517b5efa84bf927cb6d3e17b5ac7d4f3211cb1bea086345ff6dbd",
+          "nativePngSha256": "ee6632e40f9c40f473715909dcf83d7e5b38862bae929198fe4d5533922bee93",
+          "changedPixels": 7,
+          "maximumError": 1,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            763,
+            274,
+            773,
+            276
+          ]
+        },
+        {
+          "binding": 46,
+          "context": "dark",
+          "inputSha256": "d6ea6d14ed4fa0948f472da53611f91f86f72aecd19f4ff7b8cc12485f8c0df7",
+          "libraryPngSha256": "b3186e5547a85acbc2b09c309601c220cbe41cc162377e92c4884896217b032f",
+          "nativePngSha256": "636412cfab21d241a46e42ebf36dca95007b83c162f7b206da252268d81cf171",
+          "changedPixels": 4,
+          "maximumError": 1,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            764,
+            274,
+            773,
+            276
+          ]
+        },
+        {
+          "binding": 60,
+          "context": "all-paint",
+          "inputSha256": "042db3ad97994111199bc88ccc3fa3a4d8f408a36332494058d5c101c4f192af",
+          "libraryPngSha256": "25ca696a33923664b0e9609d9afcbb0e5e13de668019af6aa602f716f9e75812",
+          "nativePngSha256": "c5348ef16a39b6d7dabaa622eeb63e34b17699db914c264904c59aee463a94a2",
+          "changedPixels": 2,
+          "maximumError": 1,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            478,
+            606,
+            480,
+            615
+          ]
+        },
+        {
+          "binding": 60,
+          "context": "transparent",
+          "inputSha256": "375cde8a79527b816d8eb94b7f8d64c726c82bf9c4393192dec1b1a9ef696676",
+          "libraryPngSha256": "29a3bb6e404a8f65c0ca21fcc81d4bb739734f000b15c50f9b757fb7e2290e89",
+          "nativePngSha256": "4fc79ff37d3a5a69f593a38b45d551b5f6375ccc4ed32f13ae722c73230887b3",
+          "changedPixels": 4,
+          "maximumError": 11,
+          "alphaChangedPixels": 3,
+          "differenceBounds": [
+            476,
+            602,
+            479,
+            618
+          ]
+        },
+        {
+          "binding": 60,
+          "context": "white",
+          "inputSha256": "b8c3ec0ec1d637b86b3b81014da4bdeda26eab23d68a57d405b7e82fbc12329e",
+          "libraryPngSha256": "67bf651e1f0b4fedd847cab2d44bc8e45da4ed9cebeee73707b21aa1e45a949f",
+          "nativePngSha256": "d04f9e2a04a913f0beee218f264212cdf99f37399318bc6f329a417a1441475f",
+          "changedPixels": 4,
+          "maximumError": 1,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            476,
+            602,
+            479,
+            618
+          ]
+        },
+        {
+          "binding": 60,
+          "context": "dark",
+          "inputSha256": "8b262500af7366281a7d256f8f663854fd36f6c5cd325604b1676c61e1087e56",
+          "libraryPngSha256": "97e6ef36fc8be0107071468c9005057db8ff060652d4e0dc840810e4bce6dd7c",
+          "nativePngSha256": "f26c00269235d3d0fc8dd2f02873d308a8eb5a9fd6d7e30ae0081273e7ec0742",
+          "changedPixels": 5,
+          "maximumError": 1,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            476,
+            602,
+            480,
+            618
+          ]
+        },
+        {
+          "binding": 46,
+          "context": "source",
+          "inputSha256": "4b195ef2a6186acc5c2d3172c4697fe8f3c2a803e6b380f082d69d78f7b7012a",
+          "libraryPngSha256": "394c29915729a1748b878e0a0f85a9268b521ade9c891ca4ed16055836288ee1",
+          "nativePngSha256": "e2468633e53c7edb92b2da435e4a8855fc0f617f3657d265c08b8f39cc9a561b",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        {
+          "binding": 46,
+          "context": "zero-blur",
+          "inputSha256": "96fdd52032e91e3b5862de728b3310f2cdb6f188ead81a76a1f48c9fed1d9157",
+          "libraryPngSha256": "3988eb3e8574bd62d4cddcfa1c897a3cdeb84d60d6172b3451f07cd168c3c38e",
+          "nativePngSha256": "65e9c7991a771261394438a9077c2fee4cb507eb3d8d22145a1075384f9219c9",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        {
+          "binding": 60,
+          "context": "source",
+          "inputSha256": "bde1d6c2cafdddfd230477d69bda6d58621ec7ab3769b53a7e4e5f7bfe441065",
+          "libraryPngSha256": "8d0c0247316015ed2bb5766272170ff3d7da999283704356459ed20b8fd53182",
+          "nativePngSha256": "c10cc8a7dde87734a484b6fe0444b05ac70fe89b8351521cd971591c4fdc9da9",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        {
+          "binding": 60,
+          "context": "zero-blur",
+          "inputSha256": "75c7ebf444438b4d6c3c29585ede51a9d9f8a477b3948e4d3bc4b37eca279ab1",
+          "libraryPngSha256": "20919ea1e0c5c4a566100edd4460ccd3411efc0aac29590a1ef85de852e76219",
+          "nativePngSha256": "328f6aff04554e6c0de2db86838857502658d4a8e66d0ecb98174d50f7071683",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "alphaChangedPixels": 1,
+          "differenceBounds": [
+            479,
+            608,
+            480,
+            609
+          ]
+        }
+      ]
+    },
+    "kernelControl": {
+      "host": "windows",
+      "healthyExploratoryCaptures": 2,
+      "method": "A temporary observer records each borrowed Gaussian call input and result without changing it. Encode identical input alpha into a black PNG and pass it through a one-to-one native Gaussian image control with the observed grid and deviations. Compare all output alpha bytes. Source/deviation entries below are measured runtime stages, not copied SVG attributes.",
+      "observerPreservesOriginalFilteredPngBytes": true,
+      "observerRemoved": true,
+      "traceLibrarySha256": "4e36b80044b4f321aca969c16217583c30ea233b4161d18e14a9ee80a6810847",
+      "results": [
+        {
+          "binding": 46,
+          "width": 26,
+          "height": 18,
+          "sigmaX": 1.7413892,
+          "sigmaY": 1.9770126,
+          "inputAlphaSha256": "02929e6e909844ea6077a68dc9800f699b2406e824019ee79883bd56d08216fb",
+          "blurredAlphaSha256": "8635f0e52ce6de03d7a8cb67e210155e136d64abbd8c2af01a337bc528793d92",
+          "nativeAlphaSha256": "8635f0e52ce6de03d7a8cb67e210155e136d64abbd8c2af01a337bc528793d92",
+          "changedAlphaPixels": 0,
+          "maximumAlphaError": 0,
+          "differenceBounds": null
+        },
+        {
+          "binding": 60,
+          "width": 34,
+          "height": 40,
+          "sigmaX": 2.888778,
+          "sigmaY": 4.3340945,
+          "inputAlphaSha256": "78ff4cae61b1a63e56c7e61cdedd9e577daf8ea87d96acaf2ddee5e99bc9f22c",
+          "blurredAlphaSha256": "5a705d1bb14c272cfb92d4a8fc217ff24171c24204bce938b9352b52ddd91433",
+          "nativeAlphaSha256": "5a705d1bb14c272cfb92d4a8fc217ff24171c24204bce938b9352b52ddd91433",
+          "changedAlphaPixels": 0,
+          "maximumAlphaError": 0,
+          "differenceBounds": null
+        }
+      ],
+      "limitation": "This verifies the measured kernel on identical inputs only. Native original-source capture and the final restoration stages have not been shown equivalent."
+    },
+    "ownedControl": {
+      "bank": "../affine-filter-capture/README.md",
+      "input": "../affine-filter-capture/stroke.svg",
+      "capture": "../affine-filter-capture/capture.json",
+      "independentHealthyCaptures": 6,
+      "before": [
+        {
+          "host": "windows",
+          "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+          "inputSha256": "c85f5ef76943fa7504d8c58860df3be6b53d5b4cf864eb683dfe89b4f9e5fd54",
+          "libraryPngSha256": "6a3e480b2ba14937b05f9fc786987475f7a1e061e381fb54cacacd624753b80b",
+          "nativePngSha256": "b70b14a7128387f39ebfd39e07414b42ac003011a8ca6626b29861631df63ac4",
+          "changedPixels": 2,
+          "maximumError": 85,
+          "alphaChangedPixels": 1,
+          "differenceBounds": [
+            763,
+            261,
+            764,
+            274
+          ]
+        },
+        {
+          "host": "linux",
+          "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+          "inputSha256": "c85f5ef76943fa7504d8c58860df3be6b53d5b4cf864eb683dfe89b4f9e5fd54",
+          "libraryPngSha256": "6a3e480b2ba14937b05f9fc786987475f7a1e061e381fb54cacacd624753b80b",
+          "nativePngSha256": "b70b14a7128387f39ebfd39e07414b42ac003011a8ca6626b29861631df63ac4",
+          "changedPixels": 2,
+          "maximumError": 85,
+          "alphaChangedPixels": 1,
+          "differenceBounds": [
+            763,
+            261,
+            764,
+            274
+          ]
+        }
+      ],
+      "croppedExploratoryControl": {
+        "case": "crop",
+        "inputSha256": "68db646f7eb31ef857abb0eaa7c972220cdcf85cd3e4cdeee8649d56f361db11",
+        "libraryPngSha256": "5fcf9f6f61974cb86a0c35a30ad4760c766e9e6971e24b084e1889368c438262",
+        "nativePngSha256": "6ad981811d22d827bbce9dba831cb99cb1aece14fdd042edc719997892f9fd39",
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null
+      },
+      "meaning": "One independently authored path/filter pair reproduces an alpha discrepancy at a bordered bitmap boundary. The cropped viewport passes in its own native context; mathematical similarity does not make the large-viewport case redundant.",
+      "fixtureBytesMatchCommittedLfSource": true
+    },
+    "next": "Trace the source bitmap and restoration independently with the owned single-path case. Preserve logical image extents, allocated pixel windows, bitmap origin, sampling transform and alpha/color stores separately. The local-edge and storage-window experiments did not close the main case and were discarded. Keep the native references and known failing-before pixels unchanged.",
+    "validation": {
+      "productionSourceRestored": true,
+      "buildWarnings": 0,
+      "buildErrors": 0,
+      "scope": "Existing filter replay, source-map, alpha-stage, storage and alias mechanisms plus manifest/reference checks. No routine test or API matrix added; no renderer change justifies repeating full/package gates.",
+      "checks": [
+        {
+          "host": "windows",
+          "suite": "core",
+          "total": 53,
+          "passed": 53,
+          "seconds": 8.249792299931869,
+          "librarySha256": "22ef98bd18146af2eb3344d6086322fa4047a31e0b24bbebd68f020e661f6fb8",
+          "testAssemblySha256": "173202382dded78d88a2e5355c49f64e17dd55c7f24a7a8453a99992a0af8463"
+        },
+        {
+          "host": "windows",
+          "suite": "visual",
+          "total": 2,
+          "passed": 2,
+          "seconds": 24.56023419997655,
+          "librarySha256": "22ef98bd18146af2eb3344d6086322fa4047a31e0b24bbebd68f020e661f6fb8",
+          "testAssemblySha256": "0ea607f0d1cfd34ee248ea2536e62458c0a5ad95df6fd5996bdab586d73b6f01"
+        },
+        {
+          "host": "linux",
+          "suite": "core",
+          "total": 53,
+          "passed": 53,
+          "seconds": 13.572005800204352,
+          "librarySha256": "22ef98bd18146af2eb3344d6086322fa4047a31e0b24bbebd68f020e661f6fb8",
+          "testAssemblySha256": "173202382dded78d88a2e5355c49f64e17dd55c7f24a7a8453a99992a0af8463"
+        },
+        {
+          "host": "linux",
+          "suite": "visual",
+          "total": 2,
+          "passed": 2,
+          "seconds": 33.457429399946705,
+          "librarySha256": "22ef98bd18146af2eb3344d6086322fa4047a31e0b24bbebd68f020e661f6fb8",
+          "testAssemblySha256": "0ea607f0d1cfd34ee248ea2536e62458c0a5ad95df6fd5996bdab586d73b6f01"
+        }
+      ],
+      "lastFullQualification": "attribute-applicability.json",
+      "knownWindowsDejavu": "Unchanged authority conflict; reference/assertion preserved. No CI green claim."
+    }
+  }
 }

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768">
+<defs>
+<filter id="f11" x="-.5" y="-.5" width="2" height="2">
+<feGaussianBlur stdDeviation="2.5" />
+</filter>
+</defs>
+<path transform="matrix(.881 .017 -.023 1.03 94.631500000 -20.581375000)" d="M744.375000 264.625000L764.725000 266.075000L763.525000 269.775000L744.575000 267.575000L744.375000 264.625000Z" fill="none" stroke="#377f9b" stroke-width="1.3" filter="url(#f11)" />
+</svg>

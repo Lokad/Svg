@@ -20,6 +20,8 @@ rendered originals match three healthy native captures per host; `tommek_Car.svg
 retains eight RGB differences of one unit. The [filter isolation](car-filter-isolation.json)
 maps them to two path inputs with one Gaussian blur each; the shared filter/paint
 rounding investigation remains open.
+An [independently authored affine stroke](../affine-filter-capture/README.md)
+retains the failing bitmap-boundary context without copying hosted geometry.
 
 The [supplied-program inventory](supplied-original-contexts.json) pins all 19 font
 contexts and three stable healthy captures per host. The [current raster-strike correction](windows-small-strikes.json)
