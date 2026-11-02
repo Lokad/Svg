@@ -1,0 +1,1345 @@
+{
+  "schemaVersion": 1,
+  "font": "fonts/PhantomOrigins.ttf",
+  "fontSha256": "658df587a3cde6998c9d3d343c6d3ebce0703d05367437d78a462f905268e44c",
+  "fontBytes": 2888,
+  "license": "LICENSE.txt",
+  "oracle": "DirectWrite explicit font file; symmetric ClearType, natural measurement, grid fitting enabled, font size22; three independent glyph-run analyses per case. Integer four-pixel bands amplify current/original X readouts without relying on a rendering consumer.",
+  "nativeDllSha256": "45b8d6534fd6cd884bfc38a62c007da0d9d5f29324bcb1f31cbf0528bc2e7eae",
+  "nativeCapturesPerCase": 3,
+  "recipe": "Original UPEM1000 font; simple contours (0,0),(+/-545,714),(400,714),(400,0). Nonzero left phantom origins are +/-545; ordinary advances600 plus independent599/610 rounding boundaries. Programs read the listed X point with GC[0]/GC[1], multiply by4096 and use Y SCFS to encode one coordinate unit as one pixel. Ordinary composites borrow already aligned children; parent programs test their own metrics and USE_MY_METRICS. No existing font modified.",
+  "glyphs": [
+    {
+      "name": "p1-current-positive",
+      "sign": 1,
+      "readPoint": 1,
+      "original": false,
+      "advance": 600,
+      "origin": 545,
+      "composite": false,
+      "glyph": 1
+    },
+    {
+      "name": "p1-current-negative",
+      "sign": -1,
+      "readPoint": 1,
+      "original": false,
+      "advance": 600,
+      "origin": -545,
+      "composite": false,
+      "glyph": 2
+    },
+    {
+      "name": "p1-original-positive",
+      "sign": 1,
+      "readPoint": 1,
+      "original": true,
+      "advance": 600,
+      "origin": 545,
+      "composite": false,
+      "glyph": 3
+    },
+    {
+      "name": "p1-original-negative",
+      "sign": -1,
+      "readPoint": 1,
+      "original": true,
+      "advance": 600,
+      "origin": -545,
+      "composite": false,
+      "glyph": 4
+    },
+    {
+      "name": "p4-current-positive",
+      "sign": 1,
+      "readPoint": 4,
+      "original": false,
+      "advance": 600,
+      "origin": 545,
+      "composite": false,
+      "glyph": 5
+    },
+    {
+      "name": "p4-current-negative",
+      "sign": -1,
+      "readPoint": 4,
+      "original": false,
+      "advance": 600,
+      "origin": -545,
+      "composite": false,
+      "glyph": 6
+    },
+    {
+      "name": "p4-original-positive",
+      "sign": 1,
+      "readPoint": 4,
+      "original": true,
+      "advance": 600,
+      "origin": 545,
+      "composite": false,
+      "glyph": 7
+    },
+    {
+      "name": "p4-original-negative",
+      "sign": -1,
+      "readPoint": 4,
+      "original": true,
+      "advance": 600,
+      "origin": -545,
+      "composite": false,
+      "glyph": 8
+    },
+    {
+      "name": "p5-current-positive",
+      "sign": 1,
+      "readPoint": 5,
+      "original": false,
+      "advance": 600,
+      "origin": 545,
+      "composite": false,
+      "glyph": 9
+    },
+    {
+      "name": "p5-current-negative",
+      "sign": -1,
+      "readPoint": 5,
+      "original": false,
+      "advance": 600,
+      "origin": -545,
+      "composite": false,
+      "glyph": 10
+    },
+    {
+      "name": "p5-original-positive",
+      "sign": 1,
+      "readPoint": 5,
+      "original": true,
+      "advance": 600,
+      "origin": 545,
+      "composite": false,
+      "glyph": 11
+    },
+    {
+      "name": "p5-original-negative",
+      "sign": -1,
+      "readPoint": 5,
+      "original": true,
+      "advance": 600,
+      "origin": -545,
+      "composite": false,
+      "glyph": 12
+    },
+    {
+      "name": "right-599-current",
+      "sign": -1,
+      "readPoint": 5,
+      "original": false,
+      "advance": 599,
+      "origin": -545,
+      "composite": false,
+      "glyph": 13
+    },
+    {
+      "name": "right-599-original",
+      "sign": -1,
+      "readPoint": 5,
+      "original": true,
+      "advance": 599,
+      "origin": -545,
+      "composite": false,
+      "glyph": 14
+    },
+    {
+      "name": "right-610-current",
+      "sign": 1,
+      "readPoint": 5,
+      "original": false,
+      "advance": 610,
+      "origin": 545,
+      "composite": false,
+      "glyph": 15
+    },
+    {
+      "name": "right-610-original",
+      "sign": 1,
+      "readPoint": 5,
+      "original": true,
+      "advance": 610,
+      "origin": 545,
+      "composite": false,
+      "glyph": 16
+    },
+    {
+      "name": "simple-child-positive",
+      "child": "p1-original-positive",
+      "readPoint": null,
+      "original": false,
+      "selectedMetrics": false,
+      "composite": true,
+      "glyph": 17
+    },
+    {
+      "name": "simple-child-negative",
+      "child": "p1-current-negative",
+      "readPoint": null,
+      "original": false,
+      "selectedMetrics": false,
+      "composite": true,
+      "glyph": 18
+    },
+    {
+      "name": "programmed-parent",
+      "child": "p1-original-negative",
+      "readPoint": 1,
+      "original": true,
+      "selectedMetrics": false,
+      "composite": true,
+      "glyph": 19
+    },
+    {
+      "name": "selected-current-parent",
+      "child": "right-610-current",
+      "readPoint": 5,
+      "original": false,
+      "selectedMetrics": true,
+      "composite": true,
+      "glyph": 20
+    },
+    {
+      "name": "selected-original-parent",
+      "child": "right-610-original",
+      "readPoint": 5,
+      "original": true,
+      "selectedMetrics": true,
+      "composite": true,
+      "glyph": 21
+    }
+  ],
+  "cases": [
+    {
+      "glyph": 1,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 1796,
+      "nonzeroBounds": [
+        -28,
+        -1800,
+        0,
+        -1796
+      ],
+      "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 1,
+      "horizontalRatio": 1,
+      "nativeValue": 768,
+      "nonzeroBounds": [
+        -12,
+        -772,
+        0,
+        -768
+      ],
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 1,
+      "horizontalRatio": 0.625,
+      "nativeValue": 480,
+      "nonzeroBounds": [
+        -8,
+        -484,
+        1,
+        -480
+      ],
+      "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 2,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": -1796,
+      "nonzeroBounds": [
+        0,
+        1792,
+        49,
+        1796
+      ],
+      "nativeAlphaSha256": "d08424ba2a492ee62b02b3af3edd9ea6ee65b8d1b9d82c69c1d64a908c21258f",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 2,
+      "horizontalRatio": 1,
+      "nativeValue": -768,
+      "nonzeroBounds": [
+        0,
+        764,
+        22,
+        768
+      ],
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 2,
+      "horizontalRatio": 0.625,
+      "nativeValue": -480,
+      "nonzeroBounds": [
+        -1,
+        476,
+        14,
+        480
+      ],
+      "nativeAlphaSha256": "f670a987cbee9fb4d22d9d28c81d082723d536a8c8d2576832b19ad2bcaddaa2",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 3,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 1796,
+      "nonzeroBounds": [
+        -28,
+        -1800,
+        0,
+        -1796
+      ],
+      "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 3,
+      "horizontalRatio": 1,
+      "nativeValue": 768,
+      "nonzeroBounds": [
+        -12,
+        -772,
+        0,
+        -768
+      ],
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 3,
+      "horizontalRatio": 0.625,
+      "nativeValue": 480,
+      "nonzeroBounds": [
+        -8,
+        -484,
+        1,
+        -480
+      ],
+      "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 4,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": -1796,
+      "nonzeroBounds": [
+        0,
+        1792,
+        49,
+        1796
+      ],
+      "nativeAlphaSha256": "d08424ba2a492ee62b02b3af3edd9ea6ee65b8d1b9d82c69c1d64a908c21258f",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 4,
+      "horizontalRatio": 1,
+      "nativeValue": -768,
+      "nonzeroBounds": [
+        0,
+        764,
+        22,
+        768
+      ],
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 4,
+      "horizontalRatio": 0.625,
+      "nativeValue": -480,
+      "nonzeroBounds": [
+        -1,
+        476,
+        14,
+        480
+      ],
+      "nativeAlphaSha256": "f670a987cbee9fb4d22d9d28c81d082723d536a8c8d2576832b19ad2bcaddaa2",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 5,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 1796,
+      "nonzeroBounds": [
+        -28,
+        -1800,
+        0,
+        -1796
+      ],
+      "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 5,
+      "horizontalRatio": 1,
+      "nativeValue": 768,
+      "nonzeroBounds": [
+        -12,
+        -772,
+        0,
+        -768
+      ],
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 5,
+      "horizontalRatio": 0.625,
+      "nativeValue": 480,
+      "nonzeroBounds": [
+        -8,
+        -484,
+        1,
+        -480
+      ],
+      "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 6,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": -1796,
+      "nonzeroBounds": [
+        0,
+        1792,
+        49,
+        1796
+      ],
+      "nativeAlphaSha256": "d08424ba2a492ee62b02b3af3edd9ea6ee65b8d1b9d82c69c1d64a908c21258f",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 6,
+      "horizontalRatio": 1,
+      "nativeValue": -768,
+      "nonzeroBounds": [
+        0,
+        764,
+        22,
+        768
+      ],
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 6,
+      "horizontalRatio": 0.625,
+      "nativeValue": -480,
+      "nonzeroBounds": [
+        -1,
+        476,
+        14,
+        480
+      ],
+      "nativeAlphaSha256": "f670a987cbee9fb4d22d9d28c81d082723d536a8c8d2576832b19ad2bcaddaa2",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 7,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 1796,
+      "nonzeroBounds": [
+        -28,
+        -1800,
+        0,
+        -1796
+      ],
+      "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 7,
+      "horizontalRatio": 1,
+      "nativeValue": 768,
+      "nonzeroBounds": [
+        -12,
+        -772,
+        0,
+        -768
+      ],
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 7,
+      "horizontalRatio": 0.625,
+      "nativeValue": 480,
+      "nonzeroBounds": [
+        -8,
+        -484,
+        1,
+        -480
+      ],
+      "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 8,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": -1796,
+      "nonzeroBounds": [
+        0,
+        1792,
+        49,
+        1796
+      ],
+      "nativeAlphaSha256": "d08424ba2a492ee62b02b3af3edd9ea6ee65b8d1b9d82c69c1d64a908c21258f",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 8,
+      "horizontalRatio": 1,
+      "nativeValue": -768,
+      "nonzeroBounds": [
+        0,
+        764,
+        22,
+        768
+      ],
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 8,
+      "horizontalRatio": 0.625,
+      "nativeValue": -480,
+      "nonzeroBounds": [
+        -1,
+        476,
+        14,
+        480
+      ],
+      "nativeAlphaSha256": "f670a987cbee9fb4d22d9d28c81d082723d536a8c8d2576832b19ad2bcaddaa2",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 9,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 3772,
+      "nonzeroBounds": [
+        -28,
+        -3776,
+        0,
+        -3772
+      ],
+      "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 9,
+      "horizontalRatio": 1,
+      "nativeValue": 1612,
+      "nonzeroBounds": [
+        -12,
+        -1616,
+        0,
+        -1612
+      ],
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 9,
+      "horizontalRatio": 0.625,
+      "nativeValue": 1008,
+      "nonzeroBounds": [
+        -8,
+        -1012,
+        1,
+        -1008
+      ],
+      "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 10,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 180,
+      "nonzeroBounds": [
+        0,
+        -184,
+        49,
+        -180
+      ],
+      "nativeAlphaSha256": "d08424ba2a492ee62b02b3af3edd9ea6ee65b8d1b9d82c69c1d64a908c21258f",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 10,
+      "horizontalRatio": 1,
+      "nativeValue": 76,
+      "nonzeroBounds": [
+        0,
+        -80,
+        22,
+        -76
+      ],
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 10,
+      "horizontalRatio": 0.625,
+      "nativeValue": 48,
+      "nonzeroBounds": [
+        -1,
+        -52,
+        14,
+        -48
+      ],
+      "nativeAlphaSha256": "f670a987cbee9fb4d22d9d28c81d082723d536a8c8d2576832b19ad2bcaddaa2",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 11,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 3773,
+      "nonzeroBounds": [
+        -28,
+        -3777,
+        0,
+        -3773
+      ],
+      "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 11,
+      "horizontalRatio": 1,
+      "nativeValue": 1613,
+      "nonzeroBounds": [
+        -12,
+        -1617,
+        0,
+        -1613
+      ],
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 11,
+      "horizontalRatio": 0.625,
+      "nativeValue": 1008,
+      "nonzeroBounds": [
+        -8,
+        -1012,
+        1,
+        -1008
+      ],
+      "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 12,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 180,
+      "nonzeroBounds": [
+        0,
+        -184,
+        49,
+        -180
+      ],
+      "nativeAlphaSha256": "d08424ba2a492ee62b02b3af3edd9ea6ee65b8d1b9d82c69c1d64a908c21258f",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 12,
+      "horizontalRatio": 1,
+      "nativeValue": 76,
+      "nonzeroBounds": [
+        0,
+        -80,
+        22,
+        -76
+      ],
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 12,
+      "horizontalRatio": 0.625,
+      "nativeValue": 48,
+      "nonzeroBounds": [
+        -1,
+        -52,
+        14,
+        -48
+      ],
+      "nativeAlphaSha256": "f670a987cbee9fb4d22d9d28c81d082723d536a8c8d2576832b19ad2bcaddaa2",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 13,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 176,
+      "nonzeroBounds": [
+        0,
+        -180,
+        49,
+        -176
+      ],
+      "nativeAlphaSha256": "d08424ba2a492ee62b02b3af3edd9ea6ee65b8d1b9d82c69c1d64a908c21258f",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 13,
+      "horizontalRatio": 1,
+      "nativeValue": 76,
+      "nonzeroBounds": [
+        0,
+        -80,
+        22,
+        -76
+      ],
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 13,
+      "horizontalRatio": 0.625,
+      "nativeValue": 48,
+      "nonzeroBounds": [
+        -1,
+        -52,
+        14,
+        -48
+      ],
+      "nativeAlphaSha256": "f670a987cbee9fb4d22d9d28c81d082723d536a8c8d2576832b19ad2bcaddaa2",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 14,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 177,
+      "nonzeroBounds": [
+        0,
+        -181,
+        49,
+        -177
+      ],
+      "nativeAlphaSha256": "d08424ba2a492ee62b02b3af3edd9ea6ee65b8d1b9d82c69c1d64a908c21258f",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 14,
+      "horizontalRatio": 1,
+      "nativeValue": 75,
+      "nonzeroBounds": [
+        0,
+        -79,
+        22,
+        -75
+      ],
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 14,
+      "horizontalRatio": 0.625,
+      "nativeValue": 48,
+      "nonzeroBounds": [
+        -1,
+        -52,
+        14,
+        -48
+      ],
+      "nativeAlphaSha256": "f670a987cbee9fb4d22d9d28c81d082723d536a8c8d2576832b19ad2bcaddaa2",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 15,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 3808,
+      "nonzeroBounds": [
+        -28,
+        -3812,
+        0,
+        -3808
+      ],
+      "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 15,
+      "horizontalRatio": 1,
+      "nativeValue": 1628,
+      "nonzeroBounds": [
+        -12,
+        -1632,
+        0,
+        -1628
+      ],
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 15,
+      "horizontalRatio": 0.625,
+      "nativeValue": 1016,
+      "nonzeroBounds": [
+        -8,
+        -1020,
+        1,
+        -1016
+      ],
+      "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 16,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 3806,
+      "nonzeroBounds": [
+        -28,
+        -3810,
+        0,
+        -3806
+      ],
+      "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 16,
+      "horizontalRatio": 1,
+      "nativeValue": 1627,
+      "nonzeroBounds": [
+        -12,
+        -1631,
+        0,
+        -1627
+      ],
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 16,
+      "horizontalRatio": 0.625,
+      "nativeValue": 1016,
+      "nonzeroBounds": [
+        -8,
+        -1020,
+        1,
+        -1016
+      ],
+      "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 17,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 1796,
+      "nonzeroBounds": [
+        -28,
+        -1800,
+        0,
+        -1796
+      ],
+      "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 17,
+      "horizontalRatio": 1,
+      "nativeValue": 768,
+      "nonzeroBounds": [
+        -12,
+        -772,
+        0,
+        -768
+      ],
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 17,
+      "horizontalRatio": 0.625,
+      "nativeValue": 480,
+      "nonzeroBounds": [
+        -8,
+        -484,
+        1,
+        -480
+      ],
+      "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 18,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": -1796,
+      "nonzeroBounds": [
+        0,
+        1792,
+        49,
+        1796
+      ],
+      "nativeAlphaSha256": "d08424ba2a492ee62b02b3af3edd9ea6ee65b8d1b9d82c69c1d64a908c21258f",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 18,
+      "horizontalRatio": 1,
+      "nativeValue": -768,
+      "nonzeroBounds": [
+        0,
+        764,
+        22,
+        768
+      ],
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 18,
+      "horizontalRatio": 0.625,
+      "nativeValue": -480,
+      "nonzeroBounds": [
+        -1,
+        476,
+        14,
+        480
+      ],
+      "nativeAlphaSha256": "f670a987cbee9fb4d22d9d28c81d082723d536a8c8d2576832b19ad2bcaddaa2",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 19,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": -1796,
+      "nonzeroBounds": [
+        0,
+        1792,
+        49,
+        1796
+      ],
+      "nativeAlphaSha256": "d08424ba2a492ee62b02b3af3edd9ea6ee65b8d1b9d82c69c1d64a908c21258f",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 19,
+      "horizontalRatio": 1,
+      "nativeValue": -768,
+      "nonzeroBounds": [
+        0,
+        764,
+        22,
+        768
+      ],
+      "nativeAlphaSha256": "a74fdc2a2e20e56f109d12a35310eb3af02a930fb2e53b16d27cdfe7ac9e22cb",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 19,
+      "horizontalRatio": 0.625,
+      "nativeValue": -480,
+      "nonzeroBounds": [
+        -1,
+        476,
+        14,
+        480
+      ],
+      "nativeAlphaSha256": "f670a987cbee9fb4d22d9d28c81d082723d536a8c8d2576832b19ad2bcaddaa2",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "glyph": 20,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 3264,
+      "nonzeroBounds": [
+        -28,
+        -3268,
+        0,
+        -3264
+      ],
+      "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ],
+      "mask": {
+        "bounds": [
+          -29,
+          -3268,
+          1,
+          -3264
+        ],
+        "base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK4DV//bs4+PYw66jl4BoXFE8JxwcEwkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBwyR1xcaICXo67D2OPjwnYrAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBwyR1xcaICXo67D2OPj7Pb/////////////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBwyR1xcaICXo67D2OPj7Pb/////////////////////////////////////////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      }
+    },
+    {
+      "glyph": 20,
+      "horizontalRatio": 1,
+      "nativeValue": 1396,
+      "nonzeroBounds": [
+        -12,
+        -1400,
+        0,
+        -1396
+      ],
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ],
+      "mask": {
+        "bounds": [
+          -13,
+          -1400,
+          1,
+          -1396
+        ],
+        "base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACuAy+HDooBdPB4JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACR48XYCiw7d2KwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACR48XYCiw+H2/////////9WAKwAAAAAAAAAAAAAAAAAACR48XYCiw+H2/////////////////////9WAKwAAAAAAAAAAAAAA"
+      }
+    },
+    {
+      "glyph": 20,
+      "horizontalRatio": 0.625,
+      "nativeValue": 872,
+      "nonzeroBounds": [
+        -8,
+        -876,
+        1,
+        -872
+      ],
+      "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ],
+      "mask": {
+        "bounds": [
+          -8,
+          -876,
+          1,
+          -872
+        ],
+        "base64": "AAAAAAAAAAAAAAAAAAAAAABVodehaTcZBQAAAAAAAAAAAAAAAAAABRlDgLeMTAAAAAAAAAAAAAAAAAAABQ4tXqHX9v////+qVQAAAAAAAAAAAAkoU4q85vr///////////+qVQAAAAAAAAAA"
+      }
+    },
+    {
+      "glyph": 21,
+      "horizontalRatio": 2.33984375,
+      "nativeValue": 3264,
+      "nonzeroBounds": [
+        -28,
+        -3268,
+        0,
+        -3264
+      ],
+      "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ],
+      "mask": {
+        "bounds": [
+          -29,
+          -3268,
+          1,
+          -3264
+        ],
+        "base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK4DV//bs4+PYw66jl4BoXFE8JxwcEwkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBwyR1xcaICXo67D2OPjwnYrAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBwyR1xcaICXo67D2OPj7Pb/////////////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBwyR1xcaICXo67D2OPj7Pb/////////////////////////////////////////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      }
+    },
+    {
+      "glyph": 21,
+      "horizontalRatio": 1,
+      "nativeValue": 1394,
+      "nonzeroBounds": [
+        -12,
+        -1398,
+        0,
+        -1394
+      ],
+      "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ],
+      "mask": {
+        "bounds": [
+          -13,
+          -1398,
+          1,
+          -1394
+        ],
+        "base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACuAy+HDooBdPB4JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACR48XYCiw7d2KwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACR48XYCiw+H2/////////9WAKwAAAAAAAAAAAAAAAAAACR48XYCiw+H2/////////////////////9WAKwAAAAAAAAAAAAAA"
+      }
+    },
+    {
+      "glyph": 21,
+      "horizontalRatio": 0.625,
+      "nativeValue": 872,
+      "nonzeroBounds": [
+        -8,
+        -876,
+        1,
+        -872
+      ],
+      "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+      "terminalExitCodes": [
+        0,
+        0,
+        0
+      ],
+      "mask": {
+        "bounds": [
+          -8,
+          -876,
+          1,
+          -872
+        ],
+        "base64": "AAAAAAAAAAAAAAAAAAAAAABVodehaTcZBQAAAAAAAAAAAAAAAAAABRlDgLeMTAAAAAAAAAAAAAAAAAAABQ4tXqHX9v////+qVQAAAAAAAAAAAAkoU4q85vr///////////+qVQAAAAAAAAAA"
+      }
+    }
+  ]
+}

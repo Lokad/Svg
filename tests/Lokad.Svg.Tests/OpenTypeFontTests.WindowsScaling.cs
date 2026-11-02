@@ -6,19 +6,23 @@ namespace Lokad.Svg.Tests;
 
 public sealed partial class OpenTypeFontTests
 {
-    public static IEnumerable<object[]> WindowsExpandedPointNativeCases()
+    public static IEnumerable<object[]> WindowsHorizontalPointNativeCases()
     {
-        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "windows-font-unit-scaling", "expanded-points.json")));
-        foreach (JsonElement item in data.RootElement.GetProperty("cases").EnumerateArray())
-            yield return [item.GetProperty("glyph").GetUInt16(), item.GetProperty("horizontalRatio").GetDouble(), item.GetProperty("nativeValue").GetInt32()];
+        foreach (string vectors in new[] { "expanded-points.json", "phantom-origins.json" })
+        {
+            using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "windows-font-unit-scaling", vectors)));
+            string font = Path.GetFileName(data.RootElement.GetProperty("font").GetString() ?? throw new InvalidDataException("Missing native font identity."));
+            foreach (JsonElement item in data.RootElement.GetProperty("cases").EnumerateArray())
+                yield return [font, item.GetProperty("glyph").GetUInt16(), item.GetProperty("horizontalRatio").GetDouble(), item.GetProperty("nativeValue").GetInt32()];
+        }
     }
 
     [Theory]
     [Trait("Layer", "Mechanism")]
-    [MemberData(nameof(WindowsExpandedPointNativeCases))]
-    public void Windows_initial_points_share_axis_precision_in_simple_and_composite_glyphs(ushort glyph, double ratio, int expected)
+    [MemberData(nameof(WindowsHorizontalPointNativeCases))]
+    public void Windows_horizontal_points_and_metrics_match_native_readouts(string file, ushort glyph, double ratio, int expected)
     {
-        byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "windows-font-unit-scaling", "ExpandedPoints.ttf")), unchanged = bytes.ToArray();
+        byte[] bytes = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "windows-font-unit-scaling", file)), unchanged = bytes.ToArray();
         RenderBudget budget = new(new HostMemoryBudget(long.MaxValue));
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(bytes, glyph, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 22,
             new OpenTypeWindowsGlyphProfile(SvgGlyphLcdMode.Symmetric, true).CreateHintTarget(ratio), TrueTypeImpliedPointRounding.None, budget, CancellationToken.None))

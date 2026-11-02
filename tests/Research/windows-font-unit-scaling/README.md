@@ -1,6 +1,6 @@
 # Windows font-unit scaling
 
-Two original CC0 static TrueType fonts isolate initial Y points, initial CVT
+Original CC0 static TrueType fonts isolate initial Y points, initial CVT
 values, WCVTF writes and original MD distances. Fractional.ttf uses UPEM 1000
 and coordinates ±714 at 11.5 px; Half.ttf uses UPEM 1024 and ±1 at 8 px.
 Each includes positive/negative programs and two identity composite controls.
@@ -34,3 +34,13 @@ so these checks isolate point scaling from phantom-origin alignment. Three nativ
 analyses agree for each of twelve size/ratio/glyph cases. Expanded horizontal
 strikes use their 16.16 scale; uniform/compressed strikes retain floating-point
 scaling. Control-table values keep their separate signed-half rule.
+
+[Phantom-origin vectors](phantom-origins.json) use one additional original font
+for 63 independently selectable coordinate cases. Current/original outline and
+phantom readouts separate origin translation from advance rounding. Simple glyphs,
+already aligned composite children and parent programs retain distinct handoffs.
+Six exact native LCD masks also protect the selected child's paint origin: matching
+coordinate readouts alone cannot prove correct placement. The
+[milestone record](../svgweb/windows-phantom-origins.json) preserves the earlier
+failures, native identities and qualification scope. Existing font/reference bytes
+remain unchanged.

@@ -394,6 +394,11 @@ rebased fragment arrays. Unpainted characters may still contribute layout bounds
 
 Windows uses matched TrueType/LCD fitting, scanning and preblend; Linux uses light
 fitting/grayscale coverage, with axial and unhinted routes chosen separately.
+Windows alignment translates current/original outline points with the left metric
+origin. Current advance rounding stays separate from the original absolute right
+coordinate. Composite parent programs use their own phantoms, while inherited
+child metrics still select the completed paint origin. [Native readouts and masks](../tests/Research/svgweb/windows-phantom-origins.json)
+protect both handoffs independently of text shaping and fitting.
 The Windows fitted-outline loader preserves positioned quadratic points, including
 half-unit implied points. Ink measurement and painting share one scan factory that
 rounds to the profile grid and splits extrema. Its fitted temporary remains charged

@@ -1,0 +1,612 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "a4b6789f6d23529a80477663c05552217d530518",
+  "status": "Windows fitted horizontal origins and composite metric handoffs are qualified. The shared origin item is closed; supplied-font and other SVGWeb gaps remain open.",
+  "specifications": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/dwrite/nf-dwrite-idwritefactory-createglyphrunanalysis"
+  ],
+  "sharedModel": [
+    "Align the left horizontal metric once. Translate both current and original simple-outline X points and original phantom coordinates into that frame. Preserve unscaled design coordinates and independently scaled absolute right originals.",
+    "Current right metrics add an independently rounded advance to the aligned left coordinate. Do not round the absolute right coordinate as though it were a displacement.",
+    "Composite children retain their completed alignment. A Windows parent program sees its own phantom metrics; USE_MY_METRICS still selects the completed child paint origin afterward. Preserve the distinct FreeType policy.",
+    "One allocation-free initializer is shared by the simple and composite loaders. Borrowed points remain exclusive and bounded, shifted points observe cancellation, and existing reservations/cleanup own every array. Shaping, fitting, glyph sampling, preblend and alpha rounding remain unchanged."
+  ],
+  "tests": {
+    "coordinates": "../../Lokad.Svg.Tests/OpenTypeFontTests.WindowsScaling.cs",
+    "newCoordinateCases": 63,
+    "sharedCoordinateCases": 75,
+    "paintOrigin": "../../Lokad.Svg.Tests/OpenTypeFontTests.WindowsOrigins.cs",
+    "newMaskCases": 6,
+    "nativeVectors": "../windows-font-unit-scaling/phantom-origins.json",
+    "font": "../windows-font-unit-scaling/fonts/PhantomOrigins.ttf",
+    "fontSha256": "658df587a3cde6998c9d3d343c6d3ebce0703d05367437d78a462f905268e44c",
+    "nativeAnalysesPerCase": 3,
+    "sourceAndAlphaHashes": "Native vectors retain source identity, independent readouts and exact mask bytes/hashes. Additional mask capture preserves every previously frozen alpha hash.",
+    "responsibilities": "Direct numerical mechanisms cover points, phantoms, signs, axis precision and advance boundaries; exact masks cover the parent-program versus final paint-origin interaction. Existing browser-backed font banks retain rendering duties. No new API matrix or allocation path."
+  },
+  "failingBefore": {
+    "coordinates": {
+      "librarySha256": "aae9f0bcfa4039345f64ac8139761f643bbcaa079f4327ddb3a748c97be4992a",
+      "failedCases": 34,
+      "totalCases": 63,
+      "failures": [
+        {
+          "glyph": 1,
+          "ratio": 2.33984375,
+          "native": 1796,
+          "actual": 1795
+        },
+        {
+          "glyph": 1,
+          "ratio": 1,
+          "native": 768,
+          "actual": 767
+        },
+        {
+          "glyph": 2,
+          "ratio": 2.33984375,
+          "native": -1796,
+          "actual": -1795
+        },
+        {
+          "glyph": 2,
+          "ratio": 1,
+          "native": -768,
+          "actual": -767
+        },
+        {
+          "glyph": 3,
+          "ratio": 2.33984375,
+          "native": 1796,
+          "actual": 1795
+        },
+        {
+          "glyph": 3,
+          "ratio": 1,
+          "native": 768,
+          "actual": 767
+        },
+        {
+          "glyph": 4,
+          "ratio": 2.33984375,
+          "native": -1796,
+          "actual": -1795
+        },
+        {
+          "glyph": 4,
+          "ratio": 1,
+          "native": -768,
+          "actual": -767
+        },
+        {
+          "glyph": 7,
+          "ratio": 2.33984375,
+          "native": 1796,
+          "actual": 1795
+        },
+        {
+          "glyph": 7,
+          "ratio": 1,
+          "native": 768,
+          "actual": 767
+        },
+        {
+          "glyph": 8,
+          "ratio": 2.33984375,
+          "native": -1796,
+          "actual": -1795
+        },
+        {
+          "glyph": 8,
+          "ratio": 1,
+          "native": -768,
+          "actual": -767
+        },
+        {
+          "glyph": 11,
+          "ratio": 2.33984375,
+          "native": 3773,
+          "actual": 3772
+        },
+        {
+          "glyph": 11,
+          "ratio": 1,
+          "native": 1613,
+          "actual": 1612
+        },
+        {
+          "glyph": 12,
+          "ratio": 2.33984375,
+          "native": 180,
+          "actual": 181
+        },
+        {
+          "glyph": 12,
+          "ratio": 1,
+          "native": 76,
+          "actual": 77
+        },
+        {
+          "glyph": 13,
+          "ratio": 2.33984375,
+          "native": 176,
+          "actual": 180
+        },
+        {
+          "glyph": 14,
+          "ratio": 2.33984375,
+          "native": 177,
+          "actual": 178
+        },
+        {
+          "glyph": 14,
+          "ratio": 1,
+          "native": 75,
+          "actual": 76
+        },
+        {
+          "glyph": 15,
+          "ratio": 2.33984375,
+          "native": 3808,
+          "actual": 3804
+        },
+        {
+          "glyph": 16,
+          "ratio": 2.33984375,
+          "native": 3806,
+          "actual": 3805
+        },
+        {
+          "glyph": 16,
+          "ratio": 1,
+          "native": 1627,
+          "actual": 1626
+        },
+        {
+          "glyph": 17,
+          "ratio": 2.33984375,
+          "native": 1796,
+          "actual": 1795
+        },
+        {
+          "glyph": 17,
+          "ratio": 1,
+          "native": 768,
+          "actual": 767
+        },
+        {
+          "glyph": 18,
+          "ratio": 2.33984375,
+          "native": -1796,
+          "actual": -1795
+        },
+        {
+          "glyph": 18,
+          "ratio": 1,
+          "native": -768,
+          "actual": -767
+        },
+        {
+          "glyph": 19,
+          "ratio": 2.33984375,
+          "native": -1796,
+          "actual": -1795
+        },
+        {
+          "glyph": 19,
+          "ratio": 1,
+          "native": -768,
+          "actual": -767
+        },
+        {
+          "glyph": 20,
+          "ratio": 2.33984375,
+          "native": 3264,
+          "actual": 3804
+        },
+        {
+          "glyph": 20,
+          "ratio": 1,
+          "native": 1396,
+          "actual": 1628
+        },
+        {
+          "glyph": 20,
+          "ratio": 0.625,
+          "native": 872,
+          "actual": 1016
+        },
+        {
+          "glyph": 21,
+          "ratio": 2.33984375,
+          "native": 3264,
+          "actual": 3804
+        },
+        {
+          "glyph": 21,
+          "ratio": 1,
+          "native": 1394,
+          "actual": 1628
+        },
+        {
+          "glyph": 21,
+          "ratio": 0.625,
+          "native": 872,
+          "actual": 1016
+        }
+      ]
+    },
+    "masks": [
+      {
+        "label": "before",
+        "librarySha256": "aae9f0bcfa4039345f64ac8139761f643bbcaa079f4327ddb3a748c97be4992a",
+        "cases": [
+          {
+            "glyph": 20,
+            "horizontalRatio": 2.33984375,
+            "mismatchedBytes": 146,
+            "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+            "actualAlphaSha256": "d3df611a0ed2e328b050d285287637c60643ba96ec09e4aaefaad7f2cd114b77"
+          },
+          {
+            "glyph": 20,
+            "horizontalRatio": 1,
+            "mismatchedBytes": 68,
+            "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+            "actualAlphaSha256": "e3c2af35d1dfc500e16f826a071cc311bf55003a3de77de7ea3376c6b6fa2857"
+          },
+          {
+            "glyph": 20,
+            "horizontalRatio": 0.625,
+            "mismatchedBytes": 46,
+            "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+            "actualAlphaSha256": "77133f431d5e12dd850002c0d3d4e0fecbe3a7a699d604dc8c5eae9976e1d260"
+          },
+          {
+            "glyph": 21,
+            "horizontalRatio": 2.33984375,
+            "mismatchedBytes": 146,
+            "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+            "actualAlphaSha256": "d3df611a0ed2e328b050d285287637c60643ba96ec09e4aaefaad7f2cd114b77"
+          },
+          {
+            "glyph": 21,
+            "horizontalRatio": 1,
+            "mismatchedBytes": 68,
+            "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+            "actualAlphaSha256": "e3c2af35d1dfc500e16f826a071cc311bf55003a3de77de7ea3376c6b6fa2857"
+          },
+          {
+            "glyph": 21,
+            "horizontalRatio": 0.625,
+            "mismatchedBytes": 46,
+            "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+            "actualAlphaSha256": "77133f431d5e12dd850002c0d3d4e0fecbe3a7a699d604dc8c5eae9976e1d260"
+          }
+        ]
+      },
+      {
+        "label": "intermediate",
+        "librarySha256": "a9a2fb80737ae78864806f4fd54d02217e4bc7eb7ae6bb70e39d9ba524049b2f",
+        "cases": [
+          {
+            "glyph": 20,
+            "horizontalRatio": 2.33984375,
+            "mismatchedBytes": 183,
+            "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+            "actualAlphaSha256": "9426754cb92f97a5554dcf1b8d4f52ee466c2f5ea5db6a5a0a41b21f379ad7fb"
+          },
+          {
+            "glyph": 20,
+            "horizontalRatio": 1,
+            "mismatchedBytes": 86,
+            "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+            "actualAlphaSha256": "0e4deb0eb8e74008b5fd6aa5ae22755f5f4774f22248ec57dce3f80dbbe0d8bb"
+          },
+          {
+            "glyph": 20,
+            "horizontalRatio": 0.625,
+            "mismatchedBytes": 62,
+            "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+            "actualAlphaSha256": "3ff805e314fadbe5c8f38395a3f8a53e6d83a89937bae8ebbe179cda6ae63cc0"
+          },
+          {
+            "glyph": 21,
+            "horizontalRatio": 2.33984375,
+            "mismatchedBytes": 183,
+            "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+            "actualAlphaSha256": "9426754cb92f97a5554dcf1b8d4f52ee466c2f5ea5db6a5a0a41b21f379ad7fb"
+          },
+          {
+            "glyph": 21,
+            "horizontalRatio": 1,
+            "mismatchedBytes": 86,
+            "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+            "actualAlphaSha256": "0e4deb0eb8e74008b5fd6aa5ae22755f5f4774f22248ec57dce3f80dbbe0d8bb"
+          },
+          {
+            "glyph": 21,
+            "horizontalRatio": 0.625,
+            "mismatchedBytes": 62,
+            "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+            "actualAlphaSha256": "3ff805e314fadbe5c8f38395a3f8a53e6d83a89937bae8ebbe179cda6ae63cc0"
+          }
+        ]
+      },
+      {
+        "label": "candidate",
+        "librarySha256": "c8a9a050e6d5e2cee264fab928722f022738bf99aa2f67ffa62c8a3192ea9767",
+        "cases": [
+          {
+            "glyph": 20,
+            "horizontalRatio": 2.33984375,
+            "mismatchedBytes": 0,
+            "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+            "actualAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361"
+          },
+          {
+            "glyph": 20,
+            "horizontalRatio": 1,
+            "mismatchedBytes": 0,
+            "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+            "actualAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40"
+          },
+          {
+            "glyph": 20,
+            "horizontalRatio": 0.625,
+            "mismatchedBytes": 0,
+            "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+            "actualAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947"
+          },
+          {
+            "glyph": 21,
+            "horizontalRatio": 2.33984375,
+            "mismatchedBytes": 0,
+            "nativeAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361",
+            "actualAlphaSha256": "025f3aa764c2083e4cec4d846822fd664d455893a04e07939087c3c57812e361"
+          },
+          {
+            "glyph": 21,
+            "horizontalRatio": 1,
+            "mismatchedBytes": 0,
+            "nativeAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40",
+            "actualAlphaSha256": "3ee073616ee4bb874467394e3854161b8865d90acc43abe3c0f37ed6f7873e40"
+          },
+          {
+            "glyph": 21,
+            "horizontalRatio": 0.625,
+            "mismatchedBytes": 0,
+            "nativeAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947",
+            "actualAlphaSha256": "cd2dcb86baf4cd6d3e31100fb03db8150d6194f3fd14e4a6b4684a330fc0e947"
+          }
+        ]
+      }
+    ],
+    "interaction": "The intermediate implementation matched the coordinate readouts while all six masks still differed. Preserve both tests; coordinate equality alone did not prove correct paint ownership."
+  },
+  "qualification": {
+    "runs": [
+      {
+        "name": "phantom-origin-milestone-2-core-windows-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg.Tests",
+        "seconds": 110.268,
+        "total": 36590,
+        "passed": 36590,
+        "failed": [],
+        "librarySha256": "c8a9a050e6d5e2cee264fab928722f022738bf99aa2f67ffa62c8a3192ea9767"
+      },
+      {
+        "name": "phantom-origin-milestone-2-core-linux-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg.Tests",
+        "seconds": 102.481,
+        "total": 36590,
+        "passed": 36590,
+        "failed": [],
+        "librarySha256": "c8a9a050e6d5e2cee264fab928722f022738bf99aa2f67ffa62c8a3192ea9767"
+      },
+      {
+        "name": "phantom-origin-milestone-2-native-windows-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg.VisualTests",
+        "seconds": 143.028,
+        "total": 46562,
+        "passed": 46561,
+        "failed": [
+          "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")"
+        ],
+        "librarySha256": "c8a9a050e6d5e2cee264fab928722f022738bf99aa2f67ffa62c8a3192ea9767"
+      },
+      {
+        "name": "phantom-origin-milestone-2-native-linux-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg.VisualTests",
+        "seconds": 332.625,
+        "total": 46562,
+        "passed": 46562,
+        "failed": [],
+        "librarySha256": "c8a9a050e6d5e2cee264fab928722f022738bf99aa2f67ffa62c8a3192ea9767"
+      },
+      {
+        "name": "phantom-origin-compat-1-core-windows-net10.0",
+        "selection": "FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~TrueTypeCompositeStateTests",
+        "seconds": 58.72,
+        "total": 13419,
+        "passed": 13419,
+        "failed": [],
+        "librarySha256": "40130a22b4d39c9f1dffd50950cfcc3575c7160fc54a47fd367889be3d725256"
+      },
+      {
+        "name": "phantom-origin-compat-1-core-linux-net10.0",
+        "selection": "FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~TrueTypeCompositeStateTests",
+        "seconds": 42.404,
+        "total": 13419,
+        "passed": 13419,
+        "failed": [],
+        "librarySha256": "40130a22b4d39c9f1dffd50950cfcc3575c7160fc54a47fd367889be3d725256"
+      },
+      {
+        "name": "phantom-origin-compat-1-native-windows-net10.0",
+        "selection": "FullyQualifiedName~Text|FullyQualifiedName~Font",
+        "seconds": 36.008,
+        "total": 1161,
+        "passed": 1160,
+        "failed": [
+          "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")"
+        ],
+        "librarySha256": "40130a22b4d39c9f1dffd50950cfcc3575c7160fc54a47fd367889be3d725256"
+      },
+      {
+        "name": "phantom-origin-compat-1-native-linux-net10.0",
+        "selection": "FullyQualifiedName~Text|FullyQualifiedName~Font",
+        "seconds": 63.405,
+        "total": 1161,
+        "passed": 1161,
+        "failed": [],
+        "librarySha256": "40130a22b4d39c9f1dffd50950cfcc3575c7160fc54a47fd367889be3d725256"
+      }
+    ],
+    "focused": [
+      {
+        "name": "phantom-origin-focused-2-core-windows-net11.0",
+        "selection": "FullyQualifiedName~OpenTypeFontTests.Windows_horizontal_points_and_metrics|FullyQualifiedName~OpenTypeFontTests.Windows_parent_programs_keep_the_selected_child",
+        "seconds": 8.916,
+        "total": 81,
+        "passed": 81,
+        "failed": [],
+        "librarySha256": "c8a9a050e6d5e2cee264fab928722f022738bf99aa2f67ffa62c8a3192ea9767"
+      },
+      {
+        "name": "phantom-origin-focused-2-core-linux-net11.0",
+        "selection": "FullyQualifiedName~OpenTypeFontTests.Windows_horizontal_points_and_metrics|FullyQualifiedName~OpenTypeFontTests.Windows_parent_programs_keep_the_selected_child",
+        "seconds": 9.611,
+        "total": 81,
+        "passed": 81,
+        "failed": [],
+        "librarySha256": "c8a9a050e6d5e2cee264fab928722f022738bf99aa2f67ffa62c8a3192ea9767"
+      }
+    ],
+    "originalReplay": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 127.23705539992079,
+      "librarySha256": "c8a9a050e6d5e2cee264fab928722f022738bf99aa2f67ffa62c8a3192ea9767",
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 40,
+            "rendered": 161,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyExactPngs": 161,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 40,
+            "rendered": 161,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyExactPngs": 161,
+          "changedOriginals": []
+        }
+      }
+    },
+    "originalSemanticAudit": {
+      "windows": {
+        "files": 204,
+        "semanticChanges": [],
+        "fields": [
+          "outcome",
+          "dimensions",
+          "options",
+          "runtime",
+          "pngSha256",
+          "messageSha256",
+          "sourceDiagnosticSha256",
+          "fontDiagnosticSha256",
+          "diagnosticElement",
+          "diagnosticAttribute"
+        ]
+      },
+      "linux": {
+        "files": 204,
+        "semanticChanges": [],
+        "fields": [
+          "outcome",
+          "dimensions",
+          "options",
+          "runtime",
+          "pngSha256",
+          "messageSha256",
+          "sourceDiagnosticSha256",
+          "fontDiagnosticSha256",
+          "diagnosticElement",
+          "diagnosticAttribute"
+        ]
+      }
+    },
+    "packages": {
+      "version": "0.4.0-dev.1",
+      "published": false,
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "b900f83da157343c806d3e7e39406cad9844967526fa3ab9bf304671c3453fbd"
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "300922d19d9c2541cff985713e9b98c61fbee25650a960afdd698c2567331a23"
+        }
+      ],
+      "assets": {
+        "net10.0": "40130a22b4d39c9f1dffd50950cfcc3575c7160fc54a47fd367889be3d725256",
+        "net11.0": "c8a9a050e6d5e2cee264fab928722f022738bf99aa2f67ffa62c8a3192ea9767"
+      },
+      "installedConsumers": [
+        {
+          "host": "windows",
+          "exitCode": 0,
+          "seconds": 8.392832400044426
+        },
+        {
+          "host": "linux",
+          "exitCode": 0,
+          "seconds": 78.1764167000074
+        }
+      ]
+    },
+    "windowsDejaVu": {
+      "changedPixels": 75,
+      "maximumChannelError": 17,
+      "alphaChangedPixels": 75,
+      "actualPngSha256": "71b1b8cd1159dab06d982aef86b48f4968838bb5ba699122962d0947f901dc34",
+      "frozenPngSha256": "d00220c0ab28b9805f43e7e86cda6165573021fb7dd7e2964531052d45c95b39",
+      "librarySha256": "c8a9a050e6d5e2cee264fab928722f022738bf99aa2f67ffa62c8a3192ea9767",
+      "authority": "Pending; preserve reference/assertion; terminal CI41274755136 remains FAILED/CLOSED.",
+      "byteIdenticalToPreviousQualifiedCandidate": true
+    },
+    "validationTimeComparison": {
+      "beforeEvidence": "text-anchor-layout.json",
+      "before": {
+        "coreWindowsSeconds": 89.639,
+        "coreLinuxSeconds": 74.508,
+        "nativeWindowsSeconds": 107.363,
+        "nativeLinuxSeconds": 244.801,
+        "coreCases": 36521,
+        "nativeCases": 46562
+      },
+      "after": {
+        "coreWindowsSeconds": 110.268,
+        "coreLinuxSeconds": 102.481,
+        "nativeWindowsSeconds": 143.028,
+        "nativeLinuxSeconds": 332.625,
+        "coreCases": 36590,
+        "nativeCases": 46562
+      },
+      "interpretation": "Functional elapsed times include startup and concurrent builds/replays/host work. Added69 individually selectable mechanism cases; no speedup or completed P2 simplification claim. Focused development checks run81 cases in about9 seconds."
+    }
+  },
+  "remaining": [
+    "All19 default supplied-font gates and complete originals remain open, including helloworld and mysvg. Continue explicit licensed font/native configuration without machine discovery.",
+    "Continue the remaining static CSS and non-applicable/custom-attribute review, retaining all204 RAM-only source/hash/outcome audits and deeper gaps.",
+    "Windows DejaVu authority remains pending independently. Preserve reference/assertion and the terminal CI decision; no exact-head green CI or release-completion claim."
+  ]
+}

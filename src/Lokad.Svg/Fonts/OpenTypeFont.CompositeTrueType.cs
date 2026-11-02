@@ -144,14 +144,27 @@ internal static partial class OpenTypeFont
             int origin = (header?.XMinimum ?? 0) - ReadInt16(_bytes.Span, bearingOffset);
             int firstPhantom = outline.Length;
             int scaledOrigin = ScaleHorizontal(origin), scaledAdvance = ScaleHorizontal(origin + advance);
-            OpenTypeHorizontalPhantoms initial = selectedMetrics ?? new(scaledOrigin, 0, scaledAdvance, 0);
+            // Windows parent programs use their own phantoms. An instruction-free
+            // parent returned the inherited child metrics above; FreeType retains
+            // those metrics through a parent program as well.
+            OpenTypeHorizontalPhantoms initial = !_target.UsesWindowsArithmetic && selectedMetrics is {} inherited
+                ? inherited : new(scaledOrigin, 0, scaledAdvance, 0);
             points[firstPhantom] = new(initial.LeftX, initial.LeftY, composite ? initial.LeftX : origin, composite ? initial.LeftY : 0);
             points[firstPhantom + 1] = new(initial.RightX, initial.RightY, composite ? initial.RightX : origin + advance, composite ? initial.RightY : 0);
-            points[firstPhantom].X = RoundTrueTypeHorizontalMetric(initial.LeftX, _target);
-            points[firstPhantom + 1].X = RoundTrueTypeHorizontalMetric(initial.RightX, _target);
+            if (_target.UsesWindowsArithmetic)
+                InitializeTrueTypeWindowsMetrics(composite ? [] : points.AsSpan(0, outline.Length), points.AsSpan(firstPhantom, 2),
+                    ScaleHorizontal(advance), _target, _token);
+            else
+            {
+                points[firstPhantom].X = RoundTrueTypeHorizontalMetric(initial.LeftX, _target);
+                points[firstPhantom + 1].X = RoundTrueTypeHorizontalMetric(initial.RightX, _target);
+            }
             points[firstPhantom + 2].Unavailable = points[firstPhantom + 3].Unavailable = true;
             _machine.HintGlyph(_bytes.Slice(instructions.Offset, instructions.Length), points, ends, composite);
             for (int i = 0; i < outline.Length; i++) { _token.ThrowIfCancellationRequested(); outline[i] = new(points[i].X, points[i].Y, points[i].IsOnCurve); }
+            // USE_MY_METRICS still selects the completed child's paint origin,
+            // independently of the phantoms visible to the Windows parent program.
+            if (_target.UsesWindowsArithmetic && selectedMetrics is {} completed) return completed;
             // The native FreeType v40 policy and instruction-free parents preserve
             // unrounded metrics; Windows parents retain their fitted sixteenth-pixel origin.
             return _target.Version == 40 || composite && instructions.Length == 0 && !_target.UsesWindowsArithmetic ? initial : new(points[firstPhantom].X, points[firstPhantom].Y, points[firstPhantom + 1].X, points[firstPhantom + 1].Y);

@@ -20,6 +20,9 @@ defines supported behavior.
 and chunk-layout mechanisms, two allocation/preparation contracts, and four
 canonical browser comparisons. [Windows point vectors](Research/windows-font-unit-scaling/expanded-points.json)
 protect strike arithmetic directly without multiplying it across rendering contexts.
+The [phantom-origin mechanisms](Research/windows-font-unit-scaling/phantom-origins.json)
+add coordinate readouts and six native masks for parent-program versus child-paint
+ownership. They share the ordinary font/scan setup and add no API matrix.
 
 The [responsibility map](Research/release-baselines/test-responsibilities.md)
 records paint-bank membership, lazy loading, raster/PNG separation and measured

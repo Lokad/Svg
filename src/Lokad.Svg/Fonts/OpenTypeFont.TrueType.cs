@@ -108,10 +108,7 @@ internal static partial class OpenTypeFont
         // Instruction-free outlines retain their independently scaled metric
         // origin; a fitting program starts with the native sixteenth-pixel grid.
         if (hasPrograms && target.UsesWindowsArithmetic)
-        {
-            points[pointCount].X = RoundTrueTypeHorizontalMetric(points[pointCount].X, target);
-            points[pointCount + 1].X = RoundTrueTypeHorizontalMetric(points[pointCount + 1].X, target);
-        }
+            InitializeTrueTypeWindowsMetrics(points.AsSpan(0, pointCount), points.AsSpan(pointCount, 2), ScaleHorizontal(advance), target, token);
         // Preserve indices without inventing vertical metrics. Executed access
         // to either vertical phantom point is an explicit unsupported outcome.
         points[pointCount + 2].Unavailable = points[pointCount + 3].Unavailable = true;
@@ -209,6 +206,41 @@ internal static partial class OpenTypeFont
         long rounded = ((long)value + grid / 2) & -(long)grid;
         if (rounded < int.MinValue || rounded > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A glyph metric exceeds its signed coordinate bound.");
         return (int)rounded;
+    }
+
+    /// <summary>Initializes Windows current metrics and translates borrowed original/current points into their aligned origin.</summary>
+    /// <remarks>Owns no storage. Simple outlines borrow the whole point span; a composite parent passes an empty outline
+    /// because its children already retain their aligned points. Original right metrics preserve the translated absolute
+    /// coordinate; current right metrics add the independently rounded advance to the aligned left. Every outline point
+    /// observes cancellation. Callers retain exclusive ownership of both spans.</remarks>
+    private static void InitializeTrueTypeWindowsMetrics(Span<TrueTypeHintPoint> outline, Span<TrueTypeHintPoint> metrics,
+        int advance, TrueTypeHintTarget target, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        int left = RoundTrueTypeHorizontalMetric(metrics[0].X, target);
+        int shift = left - metrics[0].X;
+        int right = Add(left, RoundTrueTypeHorizontalMetric(advance, target));
+        if (shift != 0)
+        {
+            foreach (ref TrueTypeHintPoint point in outline)
+            {
+                token.ThrowIfCancellationRequested();
+                point.X = Add(point.X, shift);
+                point.OriginalX = Add(point.OriginalX, shift);
+            }
+            metrics[0].OriginalX = Add(metrics[0].OriginalX, shift);
+            metrics[1].OriginalX = Add(metrics[1].OriginalX, shift);
+        }
+        metrics[0].X = left;
+        metrics[1].X = right;
+
+        static int Add(int value, int offset)
+        {
+            long result = (long)value + offset;
+            if (result < int.MinValue || result > int.MaxValue)
+                throw new SvgException(SvgErrorCode.LimitExceeded, "An aligned glyph coordinate exceeds its signed bound.");
+            return (int)result;
+        }
     }
 
 }

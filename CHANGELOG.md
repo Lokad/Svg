@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep Windows fitted glyph originals/current points in their aligned metric frame;
+  preserve the child paint origin independently of composite parent-program phantoms.
 - Resolve CSS/presentation text anchors through shared inheritance and chunk
   boundaries, preserving anchor-only span changes during interval compaction.
 - Preserve native fixed-point precision for expanded Windows initial glyph
