@@ -33,3 +33,5 @@ protects the full-canvas solid-paint shortcut against dropping the earlier canva
 color; its RGBA reference has six independent healthy native captures.
 [Original outcomes and box review](../svgweb/root-canvas-background.json) keep the
 remaining border/layout work separate from closed canvas behavior.
+The [layout controls](../root-box-layout/README.md) freeze those open behaviors
+independently, with explicit output density and image/content boundaries.

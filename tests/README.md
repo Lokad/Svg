@@ -56,6 +56,11 @@ element opacity/visibility and root generation from computed display inheritance
 Mechanisms, two focused ownership/preparation contracts and five native inputs
 retain those boundaries without repeating the API matrix.
 
+[Image density controls](Research/root-image-density/README.md) retain one source
+and four native density contexts, with canonical conversion per context. The
+[border/padding layout controls](Research/root-box-layout/README.md) remain open
+research evidence, with failing-before outcomes separate from supported tests.
+
 [Rendered use sources](Research/rendered-use-sources/README.md) separate source
 identity/placement, two ownership paths, one prepared-text contract and five
 canonical native images. Named use chains, empty targets and graph failures remain

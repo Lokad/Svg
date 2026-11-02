@@ -9,13 +9,16 @@ param(
     [ValidateSet('net11.0', 'net10.0')]
     [string] $TargetFramework = 'net11.0',
     [Nullable[double]] $ImageViewportWidth,
-    [Nullable[double]] $ImageViewportHeight
+    [Nullable[double]] $ImageViewportHeight,
+    [double] $OutputScale = 1
 )
 # Internal process wrapper. The caller authenticates Chrome through setup-chrome.ps1;
 # one batch can reuse that installation while every capture owns a fresh process/profile.
 $ErrorActionPreference = 'Stop'
 if ($Width -le 0 -or $Height -le 0 -or $CaptureTimeoutMilliseconds -le 0) { throw 'Capture dimensions and timeout must be positive.' }
 if (($null -eq $ImageViewportWidth) -ne ($null -eq $ImageViewportHeight)) { throw 'Supply both image viewport dimensions.' }
+if (-not [double]::IsFinite($OutputScale) -or $OutputScale -le 0) { throw 'Output scale must be finite and positive.' }
+if ($OutputScale -ne 1 -and $null -eq $ImageViewportWidth) { throw 'Output scale requires an explicit image viewport.' }
 if ($null -ne $ImageViewportWidth -and (-not [double]::IsFinite($ImageViewportWidth) -or $ImageViewportWidth -le 0 -or $ImageViewportWidth -gt 16384 -or -not [double]::IsFinite($ImageViewportHeight) -or $ImageViewportHeight -le 0 -or $ImageViewportHeight -gt 16384)) { throw 'Image viewport dimensions must be finite, positive and within the capture side limit.' }
 if ($InputFile -eq $OutputFile) { throw 'Capture must not overwrite its SVG input.' }
 $chromeTool = Join-Path $PSScriptRoot "Lokad.Svg.Chrome/bin/Release/$TargetFramework/Lokad.Svg.Chrome.dll"
@@ -37,6 +40,10 @@ if ($null -ne $ImageViewportWidth) {
     $start.ArgumentList.Add('--image-viewport')
     $start.ArgumentList.Add($ImageViewportWidth.ToString('R', [Globalization.CultureInfo]::InvariantCulture))
     $start.ArgumentList.Add($ImageViewportHeight.ToString('R', [Globalization.CultureInfo]::InvariantCulture))
+    if ($OutputScale -ne 1) {
+        $start.ArgumentList.Add('--output-scale')
+        $start.ArgumentList.Add($OutputScale.ToString('R', [Globalization.CultureInfo]::InvariantCulture))
+    }
 }
 # The parent owns this private temporary root even when its child is forcibly
 # terminated before ChromeProcess can run its profile cleanup.

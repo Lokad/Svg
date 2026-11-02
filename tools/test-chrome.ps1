@@ -148,6 +148,32 @@ for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++) {
     $viewportHashes.Add($hash)
 }
 
+# Keep CSS image sizing fixed while device density changes. Both fractional
+# edge captures use independently frozen references, not generated expectations.
+$densitySource = Join-Path $PSScriptRoot '../tests/Research/root-image-density/boundary.svg'
+$densityControls = [Collections.Generic.List[object]]::new()
+foreach ($control in @(@{ id = 'boundary-0-75'; scale = .75; width = 13; height = 8 }, @{ id = 'boundary-1-5'; scale = 1.5; width = 26; height = 17 })) {
+    $densityReference = Join-Path $PSScriptRoot ('../tests/Research/root-image-density/references/' + $control.id + '.png')
+    $densityHashes = [Collections.Generic.List[string]]::new()
+    for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++) {
+        $candidate = Join-Path $ResultsDirectory ($control.id + '-' + $captureId + '-' + $attempt + '.png')
+        & (Join-Path $PSScriptRoot 'capture-chrome-process.ps1') -ChromeExecutable $executable -InputFile $densitySource -OutputFile $candidate -Width $control.width -Height $control.height -Background transparent -CaptureTimeoutMilliseconds $CaptureTimeoutMilliseconds -TargetFramework $TargetFramework -ImageViewportWidth 17 -ImageViewportHeight 11 -OutputScale $control.scale
+        & dotnet $diffTool $densityReference $candidate
+        if ($LASTEXITCODE -ne 0) { throw 'Device density changed CSS layout or image-boundary coverage.' }
+        $hash = (Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash.ToLowerInvariant()
+        if ($densityHashes.Count -gt 0 -and $hash -cne $densityHashes[0]) { throw 'Device-density captures differ across fresh processes.' }
+        $densityHashes.Add($hash)
+    }
+    $densityControls.Add(@{
+        sourceSha256 = (Get-FileHash -LiteralPath $densitySource -Algorithm SHA256).Hash.ToLowerInvariant()
+        referenceSha256 = (Get-FileHash -LiteralPath $densityReference -Algorithm SHA256).Hash.ToLowerInvariant()
+        imageViewport = @{ width = 17; height = 11 }
+        screenshot = @{ width = $control.width; height = $control.height }
+        outputScale = $control.scale
+        candidateSha256 = @($densityHashes)
+    })
+}
+
 $fingerprint = [ordered]@{
     schemaVersion = 4
     pinSha256 = (Get-FileHash -LiteralPath $PinPath -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -187,6 +213,7 @@ $fingerprint = [ordered]@{
         screenshot = @{ width = 16; height = 16 }
         candidateSha256 = @($viewportHashes)
     }
+    deviceDensityControls = @($densityControls)
 }
 $fingerprintPath = Join-Path $ResultsDirectory "pinned-chrome-smoke-$captureId.json"
 
@@ -202,6 +229,11 @@ try {
     throw 'Wrapper unexpectedly accepted excessive dimensions.'
 }
 catch { if ($_.Exception.Message -notlike '*8,388,608-pixel transport limit*') { throw } }
+try {
+    & $captureScript -InputPath $densitySource -OutputPath $wrapperOutput -Width 35 -Height 23 -CacheDirectory $CacheDirectory -PinPath $PinPath -ImageViewportWidth 17 -ImageViewportHeight 11 -OutputScale 2
+    throw 'Wrapper unexpectedly accepted an unrepresentable device-density crop.'
+}
+catch { if ($_.Exception.Message -notlike '*cannot represent these physical screenshot dimensions*') { throw } }
 try {
     & $captureScript -InputPath $fixture -OutputPath $wrapperOutput -Width 2 -Height 2 -CacheDirectory $CacheDirectory -PinPath $PinPath -CaptureTimeoutMilliseconds 1
     throw 'Wrapper unexpectedly completed inside the forced deadline.'

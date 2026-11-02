@@ -23,21 +23,41 @@ internal static class ChromeSvgCapture
     private const int MaximumNavigationUrlCharacters = 2 * 1024 * 1024;
 
     internal static Task<byte[]> CaptureAsync(string executable, ReadOnlyMemory<byte> svg, int width, int height, CaptureBackground background, CancellationToken cancellationToken)
-        => CaptureCoreAsync(executable, svg, width, height, null, background, cancellationToken);
+        => CaptureCoreAsync(executable, svg, width, height, null, 1, background, cancellationToken);
 
     /// <summary>Captures unchanged SVG bytes with an explicit image viewport; the caller selects screenshot rounding separately.</summary>
     internal static Task<byte[]> CaptureAtViewportAsync(string executable, ReadOnlyMemory<byte> svg, int width, int height,
         ImageViewport imageViewport, CaptureBackground background, CancellationToken cancellationToken)
-        => CaptureCoreAsync(executable, svg, width, height, imageViewport, background, cancellationToken);
+        => CaptureCoreAsync(executable, svg, width, height, imageViewport, 1, background, cancellationToken);
+
+    /// <summary>Changes device density without resizing the image's CSS viewport or rewriting SVG bytes.
+    /// Width and height remain physical screenshot pixels; the screenshot clip is expressed in CSS pixels.</summary>
+    internal static Task<byte[]> CaptureAtDensityAsync(string executable, ReadOnlyMemory<byte> svg, int width, int height,
+        ImageViewport imageViewport, double outputScale, CaptureBackground background, CancellationToken cancellationToken)
+        => CaptureCoreAsync(executable, svg, width, height, imageViewport, outputScale, background, cancellationToken);
 
     private static async Task<byte[]> CaptureCoreAsync(string executable, ReadOnlyMemory<byte> svg, int width, int height,
-        ImageViewport? imageViewport, CaptureBackground background, CancellationToken cancellationToken)
+        ImageViewport? imageViewport, double outputScale, CaptureBackground background, CancellationToken cancellationToken)
     {
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
         if (width > MaximumCaptureDimension || height > MaximumCaptureDimension) throw new InvalidDataException("Chrome capture dimensions exceed the 16,384-pixel side limit.");
         if (svg.Length > MaximumSvgBytes) throw new InvalidDataException("SVG input exceeds the Chrome capture limit of 8 MiB.");
         if ((long)width * height > MaximumCapturePixels) throw new InvalidDataException("Chrome capture dimensions exceed the 8,388,608-pixel transport limit.");
+        if (!double.IsFinite(outputScale) || outputScale <= 0)
+            throw new ArgumentOutOfRangeException(nameof(outputScale), "Output scale must be finite and positive.");
+        double clipWidth = width / outputScale, clipHeight = height / outputScale;
+        if (!double.IsFinite(clipWidth) || !double.IsFinite(clipHeight)
+            || clipWidth > MaximumCaptureDimension || clipHeight > MaximumCaptureDimension)
+            throw new ArgumentOutOfRangeException(nameof(outputScale), "The CSS screenshot viewport exceeds the capture side limit.");
+        // Pinned Chromium truncates requested_image_size to integer CSS pixels
+        // before scaling it. Refuse an unrepresentable physical crop rather than
+        // return a differently sized PNG or resize the reference afterward.
+        if (Math.Round(Math.Truncate(clipWidth) * outputScale, MidpointRounding.AwayFromZero) != width
+            || Math.Round(Math.Truncate(clipHeight) * outputScale, MidpointRounding.AwayFromZero) != height)
+            throw new ArgumentOutOfRangeException(nameof(outputScale), "Pinned Chrome cannot represent these physical screenshot dimensions at this density; choose an explicit enclosing capture.");
+        int pageWidth = Math.Max(1, (int)Math.Ceiling(clipWidth));
+        int pageHeight = Math.Max(1, (int)Math.Ceiling(clipHeight));
         if (imageViewport is {} viewport)
         {
             if (!double.IsFinite(viewport.Width) || viewport.Width <= 0 || viewport.Width > MaximumCaptureDimension)
@@ -71,7 +91,7 @@ internal static class ChromeSvgCapture
                 await page.SendAsync("Page.enable", "{}", cancellationToken);
                 await page.SendAsync("Network.enable", "{}", cancellationToken);
                 await page.SendAsync("Network.setBlockedURLs", "{\"urls\":[\"http://*\",\"https://*\",\"file://*\",\"ftp://*\",\"ws://*\",\"wss://*\"]}", cancellationToken);
-                await page.SendAsync("Emulation.setDeviceMetricsOverride", JsonSerializer.Serialize(new { width, height, deviceScaleFactor = 1, mobile = false }), cancellationToken);
+                await page.SendAsync("Emulation.setDeviceMetricsOverride", JsonSerializer.Serialize(new { width = pageWidth, height = pageHeight, deviceScaleFactor = outputScale, mobile = false }), cancellationToken);
                 string backgroundOverride = background == CaptureBackground.White ? "{\"color\":{\"r\":255,\"g\":255,\"b\":255,\"a\":255}}" : background == CaptureBackground.Black ? "{\"color\":{\"r\":0,\"g\":0,\"b\":0,\"a\":255}}" : "{\"color\":{\"r\":0,\"g\":0,\"b\":0,\"a\":0}}";
                 await page.SendAsync("Emulation.setDefaultBackgroundColorOverride", backgroundOverride, cancellationToken);
                 await page.SendAsync("Page.navigate", JsonSerializer.Serialize(new { url = pageUrl }), cancellationToken);
@@ -80,7 +100,7 @@ internal static class ChromeSvgCapture
                     ? "(()=>{const bytes=Uint8Array.from(atob(" + JsonSerializer.Serialize(svgBase64) + "),c=>c.charCodeAt(0));const url=URL.createObjectURL(new Blob([bytes],{type:'image/svg+xml'}));const image=document.getElementById('svg');image.src=url;return image.decode().then(()=>new Promise(requestAnimationFrame)).finally(()=>URL.revokeObjectURL(url));})()"
                     : "document.getElementById('svg').decode().then(()=>new Promise(requestAnimationFrame))";
                 await page.SendAsync("Runtime.evaluate", JsonSerializer.Serialize(new { expression, awaitPromise = true, returnByValue = true }), cancellationToken);
-                using JsonDocument capture = JsonDocument.Parse(await page.SendAsync("Page.captureScreenshot", JsonSerializer.Serialize(new { format = "png", fromSurface = true, captureBeyondViewport = false, clip = new { x = 0, y = 0, width, height, scale = 1 } }), cancellationToken));
+                using JsonDocument capture = JsonDocument.Parse(await page.SendAsync("Page.captureScreenshot", JsonSerializer.Serialize(new { format = "png", fromSurface = true, captureBeyondViewport = false, clip = new { x = 0, y = 0, width = clipWidth, height = clipHeight, scale = 1 } }), cancellationToken));
                 screenshot = Convert.FromBase64String(capture.RootElement.GetProperty("result").GetProperty("data").GetString() ?? throw new InvalidDataException("Chrome returned no screenshot bytes."));
             }
             await browser.SendAsync("Browser.close", "{}", cancellationToken);
@@ -88,6 +108,12 @@ internal static class ChromeSvgCapture
         // Drain diagnostics through shutdown before a PNG can escape a failed sandbox launch.
         await chrome.DisposeAsync();
         chrome.ThrowIfUnhealthy();
+        if (screenshot.Length < 24 || System.Buffers.Binary.BinaryPrimitives.ReadUInt64BigEndian(screenshot) != 0x89504E470D0A1A0AUL)
+            throw new InvalidDataException("Chrome returned an invalid PNG screenshot.");
+        int actualWidth = System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(screenshot.AsSpan(16, 4));
+        int actualHeight = System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(screenshot.AsSpan(20, 4));
+        if (actualWidth != width || actualHeight != height)
+            throw new InvalidDataException($"Chrome returned {actualWidth}x{actualHeight} physical pixels; requested {width}x{height}.");
         return screenshot;
     }
 

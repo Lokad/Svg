@@ -17,6 +17,7 @@ internal static class SvgNativeControlAssertions
         JsonElement cases = manifest.RootElement.GetProperty("cases");
         Assert.Equal(expectedBankCases, cases.GetArrayLength());
         JsonElement row = cases.EnumerateArray().Single(item => Required(item, "id") == identity);
+        if (row.TryGetProperty("outputScale", out JsonElement scale)) Assert.Equal(scale.GetDouble(), options.OutputScale);
         byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(row, "input")));
         Assert.Equal(Required(row, "inputSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
         JsonElement native = row.GetProperty("platforms").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux");

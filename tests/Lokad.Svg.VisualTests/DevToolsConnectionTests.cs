@@ -122,6 +122,33 @@ public sealed class DevToolsConnectionTests
                 new(width, height), ChromeSvgCapture.CaptureBackground.Transparent, CancellationToken.None));
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(double.NaN)]
+    [InlineData(double.PositiveInfinity)]
+    [InlineData(double.Epsilon)]
+    [InlineData(.0001)]
+    public async Task Invalid_density_or_oversized_css_capture_fails_before_launch(double scale)
+    {
+        ArgumentOutOfRangeException error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            await ChromeSvgCapture.CaptureAtDensityAsync("missing", "<svg/>"u8.ToArray(), 16, 16,
+                new(16, 16), scale, ChromeSvgCapture.CaptureBackground.Transparent, CancellationToken.None));
+        Assert.Equal("outputScale", error.ParamName);
+    }
+
+    [Theory]
+    [InlineData(35, 24, 2)]
+    [InlineData(36, 23, 2)]
+    [InlineData(25, 17, 1.5)]
+    public async Task Unrepresentable_physical_crops_fail_before_launch(int width, int height, double scale)
+    {
+        ArgumentOutOfRangeException error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+            await ChromeSvgCapture.CaptureAtDensityAsync("missing", "<svg/>"u8.ToArray(), width, height,
+                new(17.4, 11.4), scale, ChromeSvgCapture.CaptureBackground.Transparent, CancellationToken.None));
+        Assert.Equal("outputScale", error.ParamName);
+    }
+
     [Fact]
     public void Rejects_protocol_error_responses()
     {

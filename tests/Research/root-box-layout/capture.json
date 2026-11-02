@@ -1,0 +1,1275 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "2c536d2284b455131c37dd3e550f22d27be7193d",
+  "captureRecipeRevision": "3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "mode": "explicit-image-viewport-with-device-density",
+  "background": "transparent",
+  "cases": [
+    {
+      "id": "meet",
+      "input": "meet.svg",
+      "logicalWidth": 64,
+      "logicalHeight": 48,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 64,
+      "height": 48,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "inputSha256": "96350aefe9c0c1b1963b93bae04315d7981e0465b6ffa60b42dabe32c89913ea",
+      "imageViewport": {
+        "width": 64,
+        "height": 48
+      },
+      "pageViewport": {
+        "width": 64,
+        "height": 48,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 64.0,
+        "height": 48.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/meet.png",
+          "referenceSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/meet.png",
+          "referenceSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c"
+        }
+      }
+    },
+    {
+      "id": "slice",
+      "input": "slice.svg",
+      "logicalWidth": 64,
+      "logicalHeight": 48,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 64,
+      "height": 48,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "inputSha256": "b95fea7f65c6fdd1bfdc4daa9d581460b0575fe8786cbbb3d6d67cd691bf5228",
+      "imageViewport": {
+        "width": 64,
+        "height": 48
+      },
+      "pageViewport": {
+        "width": 64,
+        "height": 48,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 64.0,
+        "height": 48.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/slice.png",
+          "referenceSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/slice.png",
+          "referenceSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21"
+        }
+      }
+    },
+    {
+      "id": "none-alpha",
+      "input": "none-alpha.svg",
+      "logicalWidth": 64,
+      "logicalHeight": 48,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 64,
+      "height": 48,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "inputSha256": "62327ec0d74c0cc4491cc084e44feb60ba37b799abe74bab6828c7ff772f1f8b",
+      "imageViewport": {
+        "width": 64,
+        "height": 48
+      },
+      "pageViewport": {
+        "width": 64,
+        "height": 48,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 64.0,
+        "height": 48.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "aa8a54d1a82152b39d9e040d97eb38af39fa4a7d3684df6d16a2df461ddf88e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "aa8a54d1a82152b39d9e040d97eb38af39fa4a7d3684df6d16a2df461ddf88e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "aa8a54d1a82152b39d9e040d97eb38af39fa4a7d3684df6d16a2df461ddf88e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/none-alpha.png",
+          "referenceSha256": "aa8a54d1a82152b39d9e040d97eb38af39fa4a7d3684df6d16a2df461ddf88e6"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "aa8a54d1a82152b39d9e040d97eb38af39fa4a7d3684df6d16a2df461ddf88e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "aa8a54d1a82152b39d9e040d97eb38af39fa4a7d3684df6d16a2df461ddf88e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "aa8a54d1a82152b39d9e040d97eb38af39fa4a7d3684df6d16a2df461ddf88e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/none-alpha.png",
+          "referenceSha256": "aa8a54d1a82152b39d9e040d97eb38af39fa4a7d3684df6d16a2df461ddf88e6"
+        }
+      }
+    },
+    {
+      "id": "overflow-default",
+      "input": "overflow-default.svg",
+      "logicalWidth": 64,
+      "logicalHeight": 48,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 64,
+      "height": 48,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "inputSha256": "4b679f6883cf0704e90dd1b6d9f59948dab0760b3e7462191928949ce834b8f9",
+      "imageViewport": {
+        "width": 64,
+        "height": 48
+      },
+      "pageViewport": {
+        "width": 64,
+        "height": 48,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 64.0,
+        "height": 48.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/overflow-default.png",
+          "referenceSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/overflow-default.png",
+          "referenceSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21"
+        }
+      }
+    },
+    {
+      "id": "overflow-hidden",
+      "input": "overflow-hidden.svg",
+      "logicalWidth": 64,
+      "logicalHeight": 48,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 64,
+      "height": 48,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "inputSha256": "55d624a8cf5a7293c49b0e0b459fbd589975da87303873514576e7a58b236abd",
+      "imageViewport": {
+        "width": 64,
+        "height": 48
+      },
+      "pageViewport": {
+        "width": 64,
+        "height": 48,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 64.0,
+        "height": 48.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/overflow-hidden.png",
+          "referenceSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/overflow-hidden.png",
+          "referenceSha256": "8d525e851ca72cdb7de0cf0e2ecf27d8093171305388a115743765f990e35d21"
+        }
+      }
+    },
+    {
+      "id": "padding-130",
+      "input": "padding-130.svg",
+      "logicalWidth": 16,
+      "logicalHeight": 16,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 16,
+      "height": 16,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 16,
+        "height": 16
+      },
+      "inputSha256": "170abc071af60e4510c346577fd9dc6bfe7546a3d337479502d78c11946bcafc",
+      "imageViewport": {
+        "width": 16,
+        "height": 16
+      },
+      "pageViewport": {
+        "width": 16,
+        "height": 16,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 16.0,
+        "height": 16.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "6ee4d6af4923f4e04926690a6b10a595ad0abe76fcc94748e57b81b5df97f4ae",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6ee4d6af4923f4e04926690a6b10a595ad0abe76fcc94748e57b81b5df97f4ae",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6ee4d6af4923f4e04926690a6b10a595ad0abe76fcc94748e57b81b5df97f4ae",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-130.png",
+          "referenceSha256": "6ee4d6af4923f4e04926690a6b10a595ad0abe76fcc94748e57b81b5df97f4ae"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "6ee4d6af4923f4e04926690a6b10a595ad0abe76fcc94748e57b81b5df97f4ae",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6ee4d6af4923f4e04926690a6b10a595ad0abe76fcc94748e57b81b5df97f4ae",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6ee4d6af4923f4e04926690a6b10a595ad0abe76fcc94748e57b81b5df97f4ae",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-130.png",
+          "referenceSha256": "6ee4d6af4923f4e04926690a6b10a595ad0abe76fcc94748e57b81b5df97f4ae"
+        }
+      }
+    },
+    {
+      "id": "padding-132",
+      "input": "padding-132.svg",
+      "logicalWidth": 16,
+      "logicalHeight": 16,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 16,
+      "height": 16,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 16,
+        "height": 16
+      },
+      "inputSha256": "990bd938e6c93e0009eba11a4f51d35eaa79ac7296b1cb0d09b77186ff0aa72a",
+      "imageViewport": {
+        "width": 16,
+        "height": 16
+      },
+      "pageViewport": {
+        "width": 16,
+        "height": 16,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 16.0,
+        "height": 16.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "c12bd3c4558d48c861f3676e3b5db7bfde1f33238888fe8a67c4b0d467d00ec4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c12bd3c4558d48c861f3676e3b5db7bfde1f33238888fe8a67c4b0d467d00ec4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c12bd3c4558d48c861f3676e3b5db7bfde1f33238888fe8a67c4b0d467d00ec4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-132.png",
+          "referenceSha256": "c12bd3c4558d48c861f3676e3b5db7bfde1f33238888fe8a67c4b0d467d00ec4"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "c12bd3c4558d48c861f3676e3b5db7bfde1f33238888fe8a67c4b0d467d00ec4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c12bd3c4558d48c861f3676e3b5db7bfde1f33238888fe8a67c4b0d467d00ec4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "c12bd3c4558d48c861f3676e3b5db7bfde1f33238888fe8a67c4b0d467d00ec4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-132.png",
+          "referenceSha256": "c12bd3c4558d48c861f3676e3b5db7bfde1f33238888fe8a67c4b0d467d00ec4"
+        }
+      }
+    },
+    {
+      "id": "asymmetric",
+      "input": "asymmetric.svg",
+      "logicalWidth": 64,
+      "logicalHeight": 48,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 64,
+      "height": 48,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "inputSha256": "87af965344a90cf79680aaf94d0ad549d3fc3353b300986e71531224ea8bde2a",
+      "imageViewport": {
+        "width": 64,
+        "height": 48
+      },
+      "pageViewport": {
+        "width": 64,
+        "height": 48,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 64.0,
+        "height": 48.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "76b780366b9a056789ce9e4d83455325f7dd7ea2cdb95acbe7db8150b71ba035",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "76b780366b9a056789ce9e4d83455325f7dd7ea2cdb95acbe7db8150b71ba035",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "76b780366b9a056789ce9e4d83455325f7dd7ea2cdb95acbe7db8150b71ba035",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/asymmetric.png",
+          "referenceSha256": "76b780366b9a056789ce9e4d83455325f7dd7ea2cdb95acbe7db8150b71ba035"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "76b780366b9a056789ce9e4d83455325f7dd7ea2cdb95acbe7db8150b71ba035",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "76b780366b9a056789ce9e4d83455325f7dd7ea2cdb95acbe7db8150b71ba035",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "76b780366b9a056789ce9e4d83455325f7dd7ea2cdb95acbe7db8150b71ba035",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/asymmetric.png",
+          "referenceSha256": "76b780366b9a056789ce9e4d83455325f7dd7ea2cdb95acbe7db8150b71ba035"
+        }
+      }
+    },
+    {
+      "id": "box-sizing",
+      "input": "box-sizing.svg",
+      "logicalWidth": 64,
+      "logicalHeight": 48,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 64,
+      "height": 48,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "inputSha256": "3df7e2b3526077cf2854f0b7f2360d499e670900a6fe296767aea502f648c7b0",
+      "imageViewport": {
+        "width": 64,
+        "height": 48
+      },
+      "pageViewport": {
+        "width": 64,
+        "height": 48,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 64.0,
+        "height": 48.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/box-sizing.png",
+          "referenceSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/box-sizing.png",
+          "referenceSha256": "8b621875435c8eab5e38d59df1e2d842efaa9c43c6599bc2067583bb0ef4226c"
+        }
+      }
+    },
+    {
+      "id": "hidden-border",
+      "input": "hidden-border.svg",
+      "logicalWidth": 64,
+      "logicalHeight": 48,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 64,
+      "height": 48,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "inputSha256": "88236c17ccefb1bd19fe1bd1e3c08e4403c86569096c4f0b2ca719dfd2bed578",
+      "imageViewport": {
+        "width": 64,
+        "height": 48
+      },
+      "pageViewport": {
+        "width": 64,
+        "height": 48,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 64.0,
+        "height": 48.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "917d5eb5d49f307f0eb855f2d9060cdc9df952d69ffb19c45529a45fc46362f3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "917d5eb5d49f307f0eb855f2d9060cdc9df952d69ffb19c45529a45fc46362f3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "917d5eb5d49f307f0eb855f2d9060cdc9df952d69ffb19c45529a45fc46362f3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/hidden-border.png",
+          "referenceSha256": "917d5eb5d49f307f0eb855f2d9060cdc9df952d69ffb19c45529a45fc46362f3"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "917d5eb5d49f307f0eb855f2d9060cdc9df952d69ffb19c45529a45fc46362f3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "917d5eb5d49f307f0eb855f2d9060cdc9df952d69ffb19c45529a45fc46362f3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "917d5eb5d49f307f0eb855f2d9060cdc9df952d69ffb19c45529a45fc46362f3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/hidden-border.png",
+          "referenceSha256": "917d5eb5d49f307f0eb855f2d9060cdc9df952d69ffb19c45529a45fc46362f3"
+        }
+      }
+    },
+    {
+      "id": "none-display-border",
+      "input": "none-display-border.svg",
+      "logicalWidth": 64,
+      "logicalHeight": 48,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 64,
+      "height": 48,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "inputSha256": "f6789bb7774efd2d1dd9a3a0d582d04bfc1a0d3e63cff7c92c065833dfe43dc7",
+      "imageViewport": {
+        "width": 64,
+        "height": 48
+      },
+      "pageViewport": {
+        "width": 64,
+        "height": 48,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 64.0,
+        "height": 48.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "ef5b3442c2bf58949e27ecda2969a0543b143fb4610f645dba6a4ed11d3cf10b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef5b3442c2bf58949e27ecda2969a0543b143fb4610f645dba6a4ed11d3cf10b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef5b3442c2bf58949e27ecda2969a0543b143fb4610f645dba6a4ed11d3cf10b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/none-display-border.png",
+          "referenceSha256": "ef5b3442c2bf58949e27ecda2969a0543b143fb4610f645dba6a4ed11d3cf10b"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "ef5b3442c2bf58949e27ecda2969a0543b143fb4610f645dba6a4ed11d3cf10b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef5b3442c2bf58949e27ecda2969a0543b143fb4610f645dba6a4ed11d3cf10b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "ef5b3442c2bf58949e27ecda2969a0543b143fb4610f645dba6a4ed11d3cf10b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/none-display-border.png",
+          "referenceSha256": "ef5b3442c2bf58949e27ecda2969a0543b143fb4610f645dba6a4ed11d3cf10b"
+        }
+      }
+    },
+    {
+      "id": "fractional-1",
+      "input": "fractional.svg",
+      "logicalWidth": 17.4,
+      "logicalHeight": 11.4,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 17,
+      "height": 11,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 17,
+        "height": 11
+      },
+      "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+      "imageViewport": {
+        "width": 17.4,
+        "height": 11.4
+      },
+      "pageViewport": {
+        "width": 17,
+        "height": 11,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 17.0,
+        "height": 11.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "e6e592c8980dd1ec22d1adca9a4fc9520e54668cb8d14d19623781ec2cf1e44f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e6e592c8980dd1ec22d1adca9a4fc9520e54668cb8d14d19623781ec2cf1e44f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e6e592c8980dd1ec22d1adca9a4fc9520e54668cb8d14d19623781ec2cf1e44f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-1.png",
+          "referenceSha256": "e6e592c8980dd1ec22d1adca9a4fc9520e54668cb8d14d19623781ec2cf1e44f"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "e6e592c8980dd1ec22d1adca9a4fc9520e54668cb8d14d19623781ec2cf1e44f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e6e592c8980dd1ec22d1adca9a4fc9520e54668cb8d14d19623781ec2cf1e44f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e6e592c8980dd1ec22d1adca9a4fc9520e54668cb8d14d19623781ec2cf1e44f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-1.png",
+          "referenceSha256": "e6e592c8980dd1ec22d1adca9a4fc9520e54668cb8d14d19623781ec2cf1e44f"
+        }
+      }
+    },
+    {
+      "id": "fractional-0-75",
+      "input": "fractional.svg",
+      "logicalWidth": 17.4,
+      "logicalHeight": 11.4,
+      "outputScale": 0.75,
+      "status": "open-root-box-layout",
+      "width": 13,
+      "height": 9,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 13,
+        "height": 9
+      },
+      "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+      "imageViewport": {
+        "width": 17.4,
+        "height": 11.4
+      },
+      "pageViewport": {
+        "width": 18,
+        "height": 12,
+        "deviceScaleFactor": 0.75
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 17.333333333333332,
+        "height": 12.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "65ab59a26fdb0a32f0563bdfe77c985d5bf9629a469361ed101f1452edca16e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "65ab59a26fdb0a32f0563bdfe77c985d5bf9629a469361ed101f1452edca16e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "65ab59a26fdb0a32f0563bdfe77c985d5bf9629a469361ed101f1452edca16e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-0-75.png",
+          "referenceSha256": "65ab59a26fdb0a32f0563bdfe77c985d5bf9629a469361ed101f1452edca16e6"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "65ab59a26fdb0a32f0563bdfe77c985d5bf9629a469361ed101f1452edca16e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "65ab59a26fdb0a32f0563bdfe77c985d5bf9629a469361ed101f1452edca16e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "65ab59a26fdb0a32f0563bdfe77c985d5bf9629a469361ed101f1452edca16e6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-0-75.png",
+          "referenceSha256": "65ab59a26fdb0a32f0563bdfe77c985d5bf9629a469361ed101f1452edca16e6"
+        }
+      }
+    },
+    {
+      "id": "fractional-1-5",
+      "input": "fractional.svg",
+      "logicalWidth": 17.4,
+      "logicalHeight": 11.4,
+      "outputScale": 1.5,
+      "status": "open-root-box-layout",
+      "width": 26,
+      "height": 17,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 26,
+        "height": 17
+      },
+      "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+      "imageViewport": {
+        "width": 17.4,
+        "height": 11.4
+      },
+      "pageViewport": {
+        "width": 18,
+        "height": 12,
+        "deviceScaleFactor": 1.5
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 17.333333333333332,
+        "height": 11.333333333333334,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "4b40d11423c90cce96baef6443cc2691f3ef1f588f3ea114fd3d24710a7d2d1c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "4b40d11423c90cce96baef6443cc2691f3ef1f588f3ea114fd3d24710a7d2d1c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "4b40d11423c90cce96baef6443cc2691f3ef1f588f3ea114fd3d24710a7d2d1c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-1-5.png",
+          "referenceSha256": "4b40d11423c90cce96baef6443cc2691f3ef1f588f3ea114fd3d24710a7d2d1c"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "4b40d11423c90cce96baef6443cc2691f3ef1f588f3ea114fd3d24710a7d2d1c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "4b40d11423c90cce96baef6443cc2691f3ef1f588f3ea114fd3d24710a7d2d1c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "4b40d11423c90cce96baef6443cc2691f3ef1f588f3ea114fd3d24710a7d2d1c",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-1-5.png",
+          "referenceSha256": "4b40d11423c90cce96baef6443cc2691f3ef1f588f3ea114fd3d24710a7d2d1c"
+        }
+      }
+    },
+    {
+      "id": "fractional-2",
+      "input": "fractional.svg",
+      "logicalWidth": 17.4,
+      "logicalHeight": 11.4,
+      "outputScale": 2,
+      "status": "open-root-box-layout",
+      "width": 36,
+      "height": 24,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 35,
+        "height": 23
+      },
+      "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+      "imageViewport": {
+        "width": 17.4,
+        "height": 11.4
+      },
+      "pageViewport": {
+        "width": 18,
+        "height": 12,
+        "deviceScaleFactor": 2
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 18.0,
+        "height": 12.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "15a0c5e08357f6f93f88a4e37a35fdb0b18f95cb1ea06485359f4cefd2dd93a4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "15a0c5e08357f6f93f88a4e37a35fdb0b18f95cb1ea06485359f4cefd2dd93a4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "15a0c5e08357f6f93f88a4e37a35fdb0b18f95cb1ea06485359f4cefd2dd93a4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-2.png",
+          "referenceSha256": "15a0c5e08357f6f93f88a4e37a35fdb0b18f95cb1ea06485359f4cefd2dd93a4"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "15a0c5e08357f6f93f88a4e37a35fdb0b18f95cb1ea06485359f4cefd2dd93a4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "15a0c5e08357f6f93f88a4e37a35fdb0b18f95cb1ea06485359f4cefd2dd93a4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "15a0c5e08357f6f93f88a4e37a35fdb0b18f95cb1ea06485359f4cefd2dd93a4",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-2.png",
+          "referenceSha256": "15a0c5e08357f6f93f88a4e37a35fdb0b18f95cb1ea06485359f4cefd2dd93a4"
+        }
+      }
+    },
+    {
+      "id": "empty-border",
+      "input": "empty-border.svg",
+      "logicalWidth": 17,
+      "logicalHeight": 11,
+      "outputScale": 1,
+      "status": "open-root-box-layout",
+      "width": 17,
+      "height": 11,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 17,
+        "height": 11
+      },
+      "inputSha256": "492d7241f9714e996724173a7c7161f6341d5475aa6eda567ad69fef30548d65",
+      "imageViewport": {
+        "width": 17,
+        "height": 11
+      },
+      "pageViewport": {
+        "width": 17,
+        "height": 11,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 17.0,
+        "height": 11.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "95a0c13bc5fe9990982b6cc3e15b440d23d67aed96c3c41b2b13b1f4a44a5b04",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "95a0c13bc5fe9990982b6cc3e15b440d23d67aed96c3c41b2b13b1f4a44a5b04",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "95a0c13bc5fe9990982b6cc3e15b440d23d67aed96c3c41b2b13b1f4a44a5b04",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/empty-border.png",
+          "referenceSha256": "95a0c13bc5fe9990982b6cc3e15b440d23d67aed96c3c41b2b13b1f4a44a5b04"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "95a0c13bc5fe9990982b6cc3e15b440d23d67aed96c3c41b2b13b1f4a44a5b04",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "95a0c13bc5fe9990982b6cc3e15b440d23d67aed96c3c41b2b13b1f4a44a5b04",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "95a0c13bc5fe9990982b6cc3e15b440d23d67aed96c3c41b2b13b1f4a44a5b04",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/empty-border.png",
+          "referenceSha256": "95a0c13bc5fe9990982b6cc3e15b440d23d67aed96c3c41b2b13b1f4a44a5b04"
+        }
+      }
+    }
+  ]
+}

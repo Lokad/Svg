@@ -1,0 +1,1167 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "2c536d2284b455131c37dd3e550f22d27be7193d",
+  "status": "root border/padding implementation open; native layout evidence frozen before admission",
+  "manifest": "../root-box-layout/capture.json",
+  "densityManifest": "../root-image-density/capture.json",
+  "specifications": [
+    "https://www.w3.org/TR/css-backgrounds-3/",
+    "https://www.w3.org/TR/css-box-3/",
+    "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/content/browser/devtools/protocol/page_handler.cc"
+  ],
+  "coverage": {
+    "layoutContexts": 16,
+    "layoutSourceFiles": 13,
+    "densityContexts": 4,
+    "densitySourceFiles": 1,
+    "capturesPerContextPerHost": 3,
+    "hosts": [
+      "windows",
+      "linux"
+    ]
+  },
+  "observations": [
+    {
+      "id": "meet",
+      "inputSha256": "96350aefe9c0c1b1963b93bae04315d7981e0465b6ffa60b42dabe32c89913ea",
+      "width": 64,
+      "height": 48,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "limeBounds": [
+        3,
+        18,
+        64,
+        36
+      ],
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          255,
+          255,
+          1525
+        ],
+        [
+          0,
+          154,
+          101,
+          255,
+          122
+        ],
+        [
+          0,
+          255,
+          0,
+          255,
+          1098
+        ],
+        [
+          255,
+          0,
+          0,
+          255,
+          327
+        ]
+      ]
+    },
+    {
+      "id": "slice",
+      "inputSha256": "b95fea7f65c6fdd1bfdc4daa9d581460b0575fe8786cbbb3d6d67cd691bf5228",
+      "width": 64,
+      "height": 48,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "limeBounds": [
+        3,
+        3,
+        64,
+        48
+      ],
+      "rgbaCounts": [
+        [
+          0,
+          255,
+          0,
+          255,
+          2745
+        ],
+        [
+          255,
+          0,
+          0,
+          255,
+          327
+        ]
+      ]
+    },
+    {
+      "id": "none-alpha",
+      "inputSha256": "62327ec0d74c0cc4491cc084e44feb60ba37b799abe74bab6828c7ff772f1f8b",
+      "width": 64,
+      "height": 48,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "limeBounds": null,
+      "rgbaCounts": [
+        [
+          0,
+          174,
+          81,
+          224,
+          2745
+        ],
+        [
+          97,
+          0,
+          158,
+          202,
+          327
+        ]
+      ]
+    },
+    {
+      "id": "overflow-default",
+      "inputSha256": "4b679f6883cf0704e90dd1b6d9f59948dab0760b3e7462191928949ce834b8f9",
+      "width": 64,
+      "height": 48,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "limeBounds": [
+        3,
+        3,
+        64,
+        48
+      ],
+      "rgbaCounts": [
+        [
+          0,
+          255,
+          0,
+          255,
+          2745
+        ],
+        [
+          255,
+          0,
+          0,
+          255,
+          327
+        ]
+      ]
+    },
+    {
+      "id": "overflow-hidden",
+      "inputSha256": "55d624a8cf5a7293c49b0e0b459fbd589975da87303873514576e7a58b236abd",
+      "width": 64,
+      "height": 48,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "limeBounds": [
+        3,
+        3,
+        64,
+        48
+      ],
+      "rgbaCounts": [
+        [
+          0,
+          255,
+          0,
+          255,
+          2745
+        ],
+        [
+          255,
+          0,
+          0,
+          255,
+          327
+        ]
+      ]
+    },
+    {
+      "id": "padding-130",
+      "inputSha256": "170abc071af60e4510c346577fd9dc6bfe7546a3d337479502d78c11946bcafc",
+      "width": 16,
+      "height": 16,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 16,
+        "height": 16
+      },
+      "limeBounds": null,
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          252
+        ],
+        [
+          0,
+          255,
+          0,
+          30,
+          1
+        ],
+        [
+          0,
+          255,
+          0,
+          60,
+          2
+        ],
+        [
+          0,
+          255,
+          0,
+          116,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "padding-132",
+      "inputSha256": "990bd938e6c93e0009eba11a4f51d35eaa79ac7296b1cb0d09b77186ff0aa72a",
+      "width": 16,
+      "height": 16,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 16,
+        "height": 16
+      },
+      "limeBounds": null,
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          252
+        ],
+        [
+          0,
+          255,
+          0,
+          33,
+          1
+        ],
+        [
+          0,
+          255,
+          0,
+          60,
+          2
+        ],
+        [
+          0,
+          255,
+          0,
+          111,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "asymmetric",
+      "inputSha256": "87af965344a90cf79680aaf94d0ad549d3fc3353b300986e71531224ea8bde2a",
+      "width": 64,
+      "height": 48,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "limeBounds": null,
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          255,
+          255,
+          188
+        ],
+        [
+          32,
+          0,
+          223,
+          255,
+          1
+        ],
+        [
+          32,
+          128,
+          192,
+          255,
+          64
+        ],
+        [
+          96,
+          0,
+          159,
+          255,
+          1
+        ],
+        [
+          160,
+          0,
+          95,
+          255,
+          1
+        ],
+        [
+          223,
+          0,
+          32,
+          255,
+          1
+        ],
+        [
+          255,
+          0,
+          0,
+          255,
+          60
+        ],
+        [
+          255,
+          255,
+          255,
+          255,
+          2756
+        ]
+      ]
+    },
+    {
+      "id": "box-sizing",
+      "inputSha256": "3df7e2b3526077cf2854f0b7f2360d499e670900a6fe296767aea502f648c7b0",
+      "width": 64,
+      "height": 48,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "limeBounds": [
+        3,
+        18,
+        64,
+        36
+      ],
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          255,
+          255,
+          1525
+        ],
+        [
+          0,
+          154,
+          101,
+          255,
+          122
+        ],
+        [
+          0,
+          255,
+          0,
+          255,
+          1098
+        ],
+        [
+          255,
+          0,
+          0,
+          255,
+          327
+        ]
+      ]
+    },
+    {
+      "id": "hidden-border",
+      "inputSha256": "88236c17ccefb1bd19fe1bd1e3c08e4403c86569096c4f0b2ca719dfd2bed578",
+      "width": 64,
+      "height": 48,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "limeBounds": [
+        7,
+        7,
+        15,
+        15
+      ],
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          255,
+          255,
+          3008
+        ],
+        [
+          0,
+          255,
+          0,
+          255,
+          64
+        ]
+      ]
+    },
+    {
+      "id": "none-display-border",
+      "inputSha256": "f6789bb7774efd2d1dd9a3a0d582d04bfc1a0d3e63cff7c92c065833dfe43dc7",
+      "width": 64,
+      "height": 48,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 48
+      },
+      "limeBounds": [
+        7,
+        7,
+        15,
+        15
+      ],
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          255,
+          255,
+          2681
+        ],
+        [
+          0,
+          255,
+          0,
+          255,
+          64
+        ],
+        [
+          255,
+          0,
+          0,
+          255,
+          327
+        ]
+      ]
+    },
+    {
+      "id": "fractional-1",
+      "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+      "width": 17,
+      "height": 11,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 17,
+        "height": 11
+      },
+      "limeBounds": null,
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          255,
+          179,
+          25
+        ],
+        [
+          0,
+          85,
+          170,
+          198,
+          1
+        ],
+        [
+          0,
+          123,
+          132,
+          209,
+          8
+        ],
+        [
+          0,
+          124,
+          131,
+          209,
+          14
+        ],
+        [
+          0,
+          174,
+          81,
+          224,
+          112
+        ],
+        [
+          97,
+          0,
+          158,
+          202,
+          27
+        ]
+      ]
+    },
+    {
+      "id": "fractional-0-75",
+      "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+      "width": 13,
+      "height": 9,
+      "outputScale": 0.75,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 13,
+        "height": 9
+      },
+      "limeBounds": null,
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          13
+        ],
+        [
+          0,
+          3,
+          252,
+          179,
+          1
+        ],
+        [
+          0,
+          25,
+          230,
+          184,
+          6
+        ],
+        [
+          0,
+          26,
+          229,
+          184,
+          10
+        ],
+        [
+          0,
+          26,
+          230,
+          140,
+          1
+        ],
+        [
+          0,
+          155,
+          99,
+          188,
+          6
+        ],
+        [
+          0,
+          173,
+          82,
+          225,
+          60
+        ],
+        [
+          70,
+          0,
+          185,
+          154,
+          1
+        ],
+        [
+          74,
+          0,
+          181,
+          196,
+          18
+        ],
+        [
+          92,
+          0,
+          163,
+          200,
+          1
+        ]
+      ]
+    },
+    {
+      "id": "fractional-1-5",
+      "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+      "width": 26,
+      "height": 17,
+      "outputScale": 1.5,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 26,
+        "height": 17
+      },
+      "limeBounds": null,
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          255,
+          90,
+          2
+        ],
+        [
+          0,
+          0,
+          255,
+          179,
+          36
+        ],
+        [
+          0,
+          49,
+          206,
+          189,
+          1
+        ],
+        [
+          0,
+          83,
+          170,
+          114,
+          2
+        ],
+        [
+          0,
+          94,
+          161,
+          201,
+          12
+        ],
+        [
+          0,
+          95,
+          160,
+          201,
+          21
+        ],
+        [
+          0,
+          128,
+          128,
+          76,
+          1
+        ],
+        [
+          0,
+          140,
+          113,
+          140,
+          33
+        ],
+        [
+          0,
+          173,
+          82,
+          225,
+          252
+        ],
+        [
+          47,
+          0,
+          207,
+          102,
+          2
+        ],
+        [
+          51,
+          0,
+          204,
+          190,
+          37
+        ],
+        [
+          74,
+          0,
+          181,
+          196,
+          1
+        ],
+        [
+          84,
+          0,
+          169,
+          115,
+          2
+        ],
+        [
+          97,
+          0,
+          158,
+          202,
+          40
+        ]
+      ]
+    },
+    {
+      "id": "fractional-2",
+      "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+      "width": 36,
+      "height": 24,
+      "outputScale": 2,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 35,
+        "height": 23
+      },
+      "limeBounds": null,
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          0,
+          0,
+          116
+        ],
+        [
+          0,
+          0,
+          255,
+          179,
+          100
+        ],
+        [
+          0,
+          21,
+          233,
+          184,
+          1
+        ],
+        [
+          0,
+          63,
+          191,
+          194,
+          17
+        ],
+        [
+          0,
+          65,
+          190,
+          193,
+          29
+        ],
+        [
+          0,
+          174,
+          81,
+          224,
+          493
+        ],
+        [
+          97,
+          0,
+          158,
+          202,
+          108
+        ]
+      ]
+    },
+    {
+      "id": "empty-border",
+      "inputSha256": "492d7241f9714e996724173a7c7161f6341d5475aa6eda567ad69fef30548d65",
+      "width": 17,
+      "height": 11,
+      "outputScale": 1,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 17,
+        "height": 11
+      },
+      "limeBounds": null,
+      "rgbaCounts": [
+        [
+          0,
+          0,
+          255,
+          179,
+          112
+        ],
+        [
+          97,
+          0,
+          158,
+          202,
+          75
+        ]
+      ]
+    }
+  ],
+  "failingBefore": {
+    "librarySha256": "b891b4be145637c5b838016fffa65ec3075b7746651b4a0dc2d300722f17a7e3",
+    "outcomesPerHost": {
+      "windows": {
+        "unsupportedLayout": 16,
+        "exactExistingDensity": 4
+      },
+      "linux": {
+        "unsupportedLayout": 16,
+        "exactExistingDensity": 4
+      }
+    },
+    "cases": [
+      {
+        "bank": "root-box-layout",
+        "id": "meet",
+        "inputSha256": "96350aefe9c0c1b1963b93bae04315d7981e0465b6ffa60b42dabe32c89913ea",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "253257803436869d2976b69f771030257944e29a334425a82795d275eb3e1b8a"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "slice",
+        "inputSha256": "b95fea7f65c6fdd1bfdc4daa9d581460b0575fe8786cbbb3d6d67cd691bf5228",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "1f616a724747deb8db70aab1c26db562901b2b80281154c26db8479fd6e6bd16"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "none-alpha",
+        "inputSha256": "62327ec0d74c0cc4491cc084e44feb60ba37b799abe74bab6828c7ff772f1f8b",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "368d249d0e0ac8570dc7a6de5f42e8692cf2173f6cbd0b5310de922daf5c1912"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "overflow-default",
+        "inputSha256": "4b679f6883cf0704e90dd1b6d9f59948dab0760b3e7462191928949ce834b8f9",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "575fbf7b3d162e801c076443d803c97674a415ce6133aa22d4761461c2fbfe39"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "overflow-hidden",
+        "inputSha256": "55d624a8cf5a7293c49b0e0b459fbd589975da87303873514576e7a58b236abd",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "fe4b0dab465c02721ae000c5d32d3dba4f66a391c315d9c49233b52f22646c7e"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "padding-130",
+        "inputSha256": "170abc071af60e4510c346577fd9dc6bfe7546a3d337479502d78c11946bcafc",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'padding' is not implemented.",
+        "sourceDiagnosticSha256": "c31d9d0268663203b7e265704cb1155d797bae5e63eee5e42780402e2063016d"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "padding-132",
+        "inputSha256": "990bd938e6c93e0009eba11a4f51d35eaa79ac7296b1cb0d09b77186ff0aa72a",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'padding' is not implemented.",
+        "sourceDiagnosticSha256": "d12d136c1a038d0fdf557d6f704f6a9e97e7de8054885318083e2d50d066c707"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "asymmetric",
+        "inputSha256": "87af965344a90cf79680aaf94d0ad549d3fc3353b300986e71531224ea8bde2a",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'border-style' is not implemented.",
+        "sourceDiagnosticSha256": "fea6a331c54b5eebb261fbfe7696a991cfa226537423ffbeac285cebeb2de341"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "box-sizing",
+        "inputSha256": "3df7e2b3526077cf2854f0b7f2360d499e670900a6fe296767aea502f648c7b0",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "6ce3147e09378a2eabe45606f3eec5d8dd80cf7e9647aeda769007c033e48e3d"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "hidden-border",
+        "inputSha256": "88236c17ccefb1bd19fe1bd1e3c08e4403c86569096c4f0b2ca719dfd2bed578",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "4eb55e6f979ab86156cad4d33cf2ac73a586cb1caecf4b7ffe8b97a4d2795f50"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "none-display-border",
+        "inputSha256": "f6789bb7774efd2d1dd9a3a0d582d04bfc1a0d3e63cff7c92c065833dfe43dc7",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "338d7fff556620253cbd828a59c02c8ceef8d1d227641508d01ebc26cd1b7925"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "fractional-1",
+        "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "9aef187aa39827a656fff120b333da9b0c3ccb5f29c387feac9909e06283a329"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "fractional-0-75",
+        "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 0.75,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "9aef187aa39827a656fff120b333da9b0c3ccb5f29c387feac9909e06283a329"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "fractional-1-5",
+        "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1.5,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "9aef187aa39827a656fff120b333da9b0c3ccb5f29c387feac9909e06283a329"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "fractional-2",
+        "inputSha256": "c8be189d3deea1642ed1c70d58bb5faec48fad6be3c2eb788b899a288a9bd8c7",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 2,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "9aef187aa39827a656fff120b333da9b0c3ccb5f29c387feac9909e06283a329"
+      },
+      {
+        "bank": "root-box-layout",
+        "id": "empty-border",
+        "inputSha256": "492d7241f9714e996724173a7c7161f6341d5475aa6eda567ad69fef30548d65",
+        "outcome": "UnsupportedFeature",
+        "outputScale": 1,
+        "message": "Inline style property 'border' is not implemented.",
+        "sourceDiagnosticSha256": "85a101f93c146fadbc9ad5c427943b1e51d9c436afea502fa5eb50f06f094351"
+      },
+      {
+        "bank": "root-image-density",
+        "id": "boundary-0-75",
+        "inputSha256": "e6d6491461fa53ce5a259c2aebd1f1403707b314f0f340bb65963515ca0b2855",
+        "outcome": "rendered",
+        "outputScale": 0.75,
+        "nativeComparison": "exact",
+        "sourceDiagnosticSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+      },
+      {
+        "bank": "root-image-density",
+        "id": "boundary-1",
+        "inputSha256": "e6d6491461fa53ce5a259c2aebd1f1403707b314f0f340bb65963515ca0b2855",
+        "outcome": "rendered",
+        "outputScale": 1,
+        "nativeComparison": "exact",
+        "sourceDiagnosticSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+      },
+      {
+        "bank": "root-image-density",
+        "id": "boundary-1-5",
+        "inputSha256": "e6d6491461fa53ce5a259c2aebd1f1403707b314f0f340bb65963515ca0b2855",
+        "outcome": "rendered",
+        "outputScale": 1.5,
+        "nativeComparison": "exact",
+        "sourceDiagnosticSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+      },
+      {
+        "bank": "root-image-density",
+        "id": "boundary-2",
+        "inputSha256": "e6d6491461fa53ce5a259c2aebd1f1403707b314f0f340bb65963515ca0b2855",
+        "outcome": "rendered",
+        "outputScale": 2,
+        "nativeComparison": "exact",
+        "sourceDiagnosticSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+      }
+    ],
+    "options": "Default; no supplied fonts or external resources"
+  },
+  "sharedModelRequirements": [
+    "Retain independent canvas/image, CSS box and SVG content maps. Fit the viewBox within the unchanged SVG content viewport, then place that viewport at the CSS content inset; do not cancel the viewBox map to reconstruct box placement.",
+    "Canvas color is outside root element opacity and visibility. Border paint belongs to the element; hidden visibility retains its layout inset. Image generation still ignores the root computed display:none.",
+    "Default and hidden overflow clip content at its shifted viewport, independently of the natural image boundary. Keep negative source ink and viewBox fitting as separate controls.",
+    "Retain CSS layout precision, native border-width snapping and output projection as distinct stages. Fractional widths and output density do not establish a universal border-rounding formula.",
+    "Compare the 2x fractional case only over the declared 35x23 output window in its unchanged 36x24 native PNG. Pinned Chromium truncates screenshot clip CSS dimensions before scaling; no resizing, reference rewrite or density substitution."
+  ],
+  "next": [
+    "Inspect native layout/recorded numerical maps for fractional border snapping and padding before choosing their shared representation.",
+    "Implement the root box/content split including empty roots, source opacity bounds, visibility, cascade and acquisition agreement. Keep other-element applicability explicit.",
+    "Promote canonical fixture assertions only after exact native agreement; preserve all failing-before records and every existing reference. Recheck complete originals and all204 after production changes."
+  ],
+  "qualification": {
+    "productionSourceChanged": false,
+    "fullSuiteOrPackageRerun": false,
+    "focused": [
+      {
+        "name": "root-density-final-1-native-windows-net11.0",
+        "seconds": 11.815630099968985,
+        "counters": {
+          "total": "56",
+          "executed": "56",
+          "passed": "56",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "name": "root-density-final-1-native-linux-net11.0",
+        "seconds": 14.595272279,
+        "counters": {
+          "total": "56",
+          "executed": "56",
+          "passed": "56",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "name": "root-density-final-1-native-windows-net10.0",
+        "seconds": 10.786872599972412,
+        "counters": {
+          "total": "56",
+          "executed": "56",
+          "passed": "56",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "name": "root-density-final-1-native-linux-net10.0",
+        "seconds": 12.490997426999996,
+        "counters": {
+          "total": "56",
+          "executed": "56",
+          "passed": "56",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      }
+    ],
+    "nativeWrappers": [
+      {
+        "host": "windows",
+        "mode": "full-native-tool-smoke",
+        "exitCode": 0,
+        "seconds": 44.0916076998692
+      },
+      {
+        "host": "linux",
+        "mode": "density-wrapper-both-runtimes",
+        "exitCode": 0,
+        "seconds": 88.76169810001738
+      }
+    ],
+    "windowsNet10WrapperCaptures": 6,
+    "linuxWrapperCaptures": 12,
+    "limits": "Functional runner time includes startup and concurrent work; no benchmark or performance improvement claim. No new full-suite/package or green exact-head CI claim."
+  }
+}

@@ -8,7 +8,8 @@ param(
     [string] $PinPath = (Join-Path $PSScriptRoot 'chrome-for-testing.json'),
     [int] $CaptureTimeoutMilliseconds = 120000,
     [Nullable[double]] $ImageViewportWidth,
-    [Nullable[double]] $ImageViewportHeight
+    [Nullable[double]] $ImageViewportHeight,
+    [double] $OutputScale = 1
 )
 $ErrorActionPreference = 'Stop'
 if ($Width -le 0 -or $Height -le 0) { throw 'Capture dimensions must be positive.' }
@@ -17,4 +18,4 @@ $inputFile = (Resolve-Path -LiteralPath $InputPath).Path
 $outputFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutputPath)
 if ($inputFile -eq $outputFile) { throw 'Capture must not overwrite its SVG input.' }
 $executable = & (Join-Path $PSScriptRoot 'setup-chrome.ps1') -CacheDirectory $CacheDirectory -PinPath $PinPath
-& (Join-Path $PSScriptRoot 'capture-chrome-process.ps1') -ChromeExecutable $executable -InputFile $inputFile -OutputFile $outputFile -Width $Width -Height $Height -Background $Background -CaptureTimeoutMilliseconds $CaptureTimeoutMilliseconds -ImageViewportWidth $ImageViewportWidth -ImageViewportHeight $ImageViewportHeight
+& (Join-Path $PSScriptRoot 'capture-chrome-process.ps1') -ChromeExecutable $executable -InputFile $inputFile -OutputFile $outputFile -Width $Width -Height $Height -Background $Background -CaptureTimeoutMilliseconds $CaptureTimeoutMilliseconds -ImageViewportWidth $ImageViewportWidth -ImageViewportHeight $ImageViewportHeight -OutputScale $OutputScale

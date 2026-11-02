@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "2c536d2284b455131c37dd3e550f22d27be7193d",
+  "captureRecipeRevision": "3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "mode": "explicit-image-viewport-with-device-density",
+  "background": "transparent",
+  "cases": [
+    {
+      "id": "boundary-0-75",
+      "input": "boundary.svg",
+      "logicalWidth": 17,
+      "logicalHeight": 11,
+      "outputScale": 0.75,
+      "status": "existing-rendering-contract",
+      "width": 13,
+      "height": 8,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 13,
+        "height": 8
+      },
+      "inputSha256": "e6d6491461fa53ce5a259c2aebd1f1403707b314f0f340bb65963515ca0b2855",
+      "imageViewport": {
+        "width": 17,
+        "height": 11
+      },
+      "pageViewport": {
+        "width": 18,
+        "height": 11,
+        "deviceScaleFactor": 0.75
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 17.333333333333332,
+        "height": 10.666666666666666,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/boundary-0-75.png",
+          "referenceSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/boundary-0-75.png",
+          "referenceSha256": "b888f55a5bd95eb62d579a1e10f1a3f8bcf3ba75452631e3573b8ed44a831cde"
+        }
+      }
+    },
+    {
+      "id": "boundary-1",
+      "input": "boundary.svg",
+      "logicalWidth": 17,
+      "logicalHeight": 11,
+      "outputScale": 1,
+      "status": "existing-rendering-contract",
+      "width": 17,
+      "height": 11,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 17,
+        "height": 11
+      },
+      "inputSha256": "e6d6491461fa53ce5a259c2aebd1f1403707b314f0f340bb65963515ca0b2855",
+      "imageViewport": {
+        "width": 17,
+        "height": 11
+      },
+      "pageViewport": {
+        "width": 17,
+        "height": 11,
+        "deviceScaleFactor": 1
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 17.0,
+        "height": 11.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "dd149161465640811c543734ee98684fc1465c5b9130616b11affb3a3090b8b9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "dd149161465640811c543734ee98684fc1465c5b9130616b11affb3a3090b8b9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "dd149161465640811c543734ee98684fc1465c5b9130616b11affb3a3090b8b9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/boundary-1.png",
+          "referenceSha256": "dd149161465640811c543734ee98684fc1465c5b9130616b11affb3a3090b8b9"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "dd149161465640811c543734ee98684fc1465c5b9130616b11affb3a3090b8b9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "dd149161465640811c543734ee98684fc1465c5b9130616b11affb3a3090b8b9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "dd149161465640811c543734ee98684fc1465c5b9130616b11affb3a3090b8b9",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/boundary-1.png",
+          "referenceSha256": "dd149161465640811c543734ee98684fc1465c5b9130616b11affb3a3090b8b9"
+        }
+      }
+    },
+    {
+      "id": "boundary-1-5",
+      "input": "boundary.svg",
+      "logicalWidth": 17,
+      "logicalHeight": 11,
+      "outputScale": 1.5,
+      "status": "existing-rendering-contract",
+      "width": 26,
+      "height": 17,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 26,
+        "height": 17
+      },
+      "inputSha256": "e6d6491461fa53ce5a259c2aebd1f1403707b314f0f340bb65963515ca0b2855",
+      "imageViewport": {
+        "width": 17,
+        "height": 11
+      },
+      "pageViewport": {
+        "width": 18,
+        "height": 12,
+        "deviceScaleFactor": 1.5
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 17.333333333333332,
+        "height": 11.333333333333334,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/boundary-1-5.png",
+          "referenceSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/boundary-1-5.png",
+          "referenceSha256": "90bd4999ebd181395f912147ce69887ad21d147798d9c6e7fd296050242d21b3"
+        }
+      }
+    },
+    {
+      "id": "boundary-2",
+      "input": "boundary.svg",
+      "logicalWidth": 17,
+      "logicalHeight": 11,
+      "outputScale": 2,
+      "status": "existing-rendering-contract",
+      "width": 34,
+      "height": 22,
+      "comparisonWindow": {
+        "x": 0,
+        "y": 0,
+        "width": 34,
+        "height": 22
+      },
+      "inputSha256": "e6d6491461fa53ce5a259c2aebd1f1403707b314f0f340bb65963515ca0b2855",
+      "imageViewport": {
+        "width": 17,
+        "height": 11
+      },
+      "pageViewport": {
+        "width": 17,
+        "height": 11,
+        "deviceScaleFactor": 2
+      },
+      "screenshotClip": {
+        "x": 0,
+        "y": 0,
+        "width": 17.0,
+        "height": 11.0,
+        "scale": 1
+      },
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "07ab9a100cc8811da7e803727164e7a48fad1736fc71c700fda459d84189a053",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "07ab9a100cc8811da7e803727164e7a48fad1736fc71c700fda459d84189a053",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "07ab9a100cc8811da7e803727164e7a48fad1736fc71c700fda459d84189a053",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/boundary-2.png",
+          "referenceSha256": "07ab9a100cc8811da7e803727164e7a48fad1736fc71c700fda459d84189a053"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "07ab9a100cc8811da7e803727164e7a48fad1736fc71c700fda459d84189a053",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "07ab9a100cc8811da7e803727164e7a48fad1736fc71c700fda459d84189a053",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "07ab9a100cc8811da7e803727164e7a48fad1736fc71c700fda459d84189a053",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/boundary-2.png",
+          "referenceSha256": "07ab9a100cc8811da7e803727164e7a48fad1736fc71c700fda459d84189a053"
+        }
+      }
+    }
+  ]
+}

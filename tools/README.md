@@ -166,6 +166,18 @@ tools/capture-chrome.ps1 -InputPath tests/Research/circle-6x6.svg -OutputPath ar
   relabel intrinsic-image references. Use the renderer's actual rounded raster
   size rather than a ceiling. Fractional image sizes can add native resampling;
   qualify them separately before treating a difference as a renderer bug.
+- To vary output density while preserving that CSS image viewport, also pass
+  `-OutputScale <density>`; the stdin CLI accepts `--output-scale <density>` after
+  `--image-viewport`. Width/height are physical PNG pixels. Device emulation uses
+  that density, with a CSS screenshot clip of `width/density` by `height/density`
+  and an integer page viewport enclosing the clip. Record all three separately.
+  [Image boundary controls](../tests/Research/root-image-density/capture.json)
+  qualify magnification, minification and fractional coverage on both platforms.
+  Resizing the CSS image changes layout and cannot stand in for this mode.
+  Pinned Chrome truncates the CSS screenshot clip before rounding to device pixels;
+  unrepresentable physical crops fail before launch. For example, at density 2 use
+  an explicit 36×24 capture to inspect a 35×23 output region. Record the comparison
+  window separately; preserve the enclosing native PNG without resizing it.
 - Capture limits are 8 MiB SVG input, 16,384 pixels per side and 8,388,608 pixels
   total. Screenshot JSON transport allows 64 MiB including PNG base64; other
   replies/commands/events remain bounded at 16 MiB. These limits belong to the
