@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "8b957f033b372ac9a8d54a7250f39e1b3d22a1a9",
-  "status": "Open: exact source-preserving localization, no production change or reference admission.",
+  "status": "Shared mask-window gap CLOSED; two lower RGB differences in the complete original remain OPEN. Prior isolation and diagnostic observations are retained below.",
   "original": "tommek_Car.svg",
   "inventory": "originals.json",
   "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
@@ -750,5 +750,24 @@
       "lastFullQualification": "attribute-applicability.json",
       "knownWindowsDejavu": "Unchanged authority conflict; reference/assertion preserved. No CI green claim."
     }
+  },
+  "current": {
+    "evidence": "mask-scan-window.json",
+    "beforeChangedPixels": 8,
+    "afterChangedPixels": 2,
+    "maximumError": 1,
+    "changedAlphaPixels": 0,
+    "remainingCoordinates": [
+      [
+        478,
+        606
+      ],
+      [
+        479,
+        614
+      ]
+    ],
+    "ownedAffineControlExact": true,
+    "remainingPaintContext": "Centered user-space radial with one translucent inherited stop; native source-capture equivalence remains unproven."
   }
 }

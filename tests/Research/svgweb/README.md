@@ -17,9 +17,9 @@ whole-corpus acceptance remains open.
 The [attribute-applicability review](attribute-applicability.json) closes custom
 and inapplicable attribute gates plus explicit gradient-unit fallback. Five newly
 rendered originals match three healthy native captures per host; `tommek_Car.svg`
-retains eight RGB differences of one unit. The [filter isolation](car-filter-isolation.json)
-maps them to two path inputs with one Gaussian blur each; the shared filter/paint
-rounding investigation remains open.
+retains two RGB differences of one unit. The [mask scan-window correction](mask-scan-window.json)
+closes its six other differences. The [filter isolation](car-filter-isolation.json)
+retains the remaining radial-gradient source context.
 An [independently authored affine stroke](../affine-filter-capture/README.md)
 retains the failing bitmap-boundary context without copying hosted geometry.
 

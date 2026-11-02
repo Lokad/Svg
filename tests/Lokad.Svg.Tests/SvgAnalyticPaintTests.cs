@@ -39,7 +39,7 @@ public sealed class SvgAnalyticPaintTests
     public void Full_span_keeps_one_descriptor_and_preserves_indexed_paint()
     {
         const int width = 4096;
-        long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, width, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(width);
+        long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, width, width, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(width);
         long spanBufferBytes = 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintSpan>(16);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(preparedBytes + spanBufferBytes));
         SvgDevicePoint[] points = [new(0, 0), new(width, 0), new(width, 4), new(0, 4)];
@@ -72,7 +72,7 @@ public sealed class SvgAnalyticPaintTests
     [Fact]
     public void Span_storage_denial_releases_preparation_and_pixel_links()
     {
-        long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, 64, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(64);
+        long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, 64, 64, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(64);
         long spanBufferBytes = 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintSpan>(16);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(preparedBytes + spanBufferBytes - 1));
         int growthCalls = 0;
@@ -90,7 +90,7 @@ public sealed class SvgAnalyticPaintTests
     [Fact]
     public void Operation_growth_reserves_old_and_replacement_storage_together()
     {
-        long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, 64, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(64);
+        long preparedBytes = SvgAnalyticCoverage.ScratchByteCount(4, 64, 64, 0) + 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(64);
         long firstBuffer = 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintOperation>(16);
         long replacementBuffer = 64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintOperation>(32);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(preparedBytes + firstBuffer + replacementBuffer - 1));

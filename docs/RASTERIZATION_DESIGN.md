@@ -132,6 +132,9 @@ intervals using native fixed-point advancement. Rectangle/frame, hairline,
 convex/compound and fallback routes have distinct eligibility and arithmetic.
 Whole-path bounds choose direct/run versus mask painting; clipped bounds limit
 storage. Direct events and pending additive runs preserve their order.
+Mask walking intersects the complete path bounds with the bitmap clip, independently
+of the row's owned pixels. Row storage and full-span temporary arrays are budgeted
+separately; narrowing output storage must retain contributions from border pixels.
 Completed convex strips can emit a direct fringe beyond path-bounded mask rows;
 the paint clip governs those events. Clip definitions instead construct within
 the rounded path bounds intersected with the incoming clip. Existing direct-link

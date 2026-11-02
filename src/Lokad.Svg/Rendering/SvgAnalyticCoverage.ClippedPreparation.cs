@@ -9,8 +9,8 @@ internal ref partial struct SvgAnalyticCoverage
 
 
     /// <summary>Counts and constructs clipped verbs without retaining an intermediate piece tape.</summary>
-    /// <remarks>Both passes charge clipping, validation and traversal. Authored points map directly into bitmap coordinates; all clipped verbs construct there, combine there, then translate their fixed walk/curve state to canvas space. Source contours are borrowed during construction and no extra mapped tape is allocated. Rational verbs convert after device mapping, one quadratic at a time through the same bounded piece buffer. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. All curve edges retain live state, including convex polynomial quadratics. Horizontal/AA paint clipping stays separate from curve clipping. Reservations transfer to the returned instance or release on every exception.</remarks>
-    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, SvgPreparedPathContours? source, SvgAffineTransform sourceMap, RenderBudget budget, out bool eligible, CancellationToken token)
+    /// <remarks>Both passes charge clipping, validation and traversal. Authored points map directly into bitmap coordinates; all clipped verbs construct there, combine there, then translate their fixed walk/curve state to canvas space. Source contours are borrowed during construction and no extra mapped tape is allocated. Rational verbs convert after device mapping, one quadratic at a time through the same bounded piece buffer. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. All curve edges retain live state, including convex polynomial quadratics. The complete scan window and span scratch remain independent of the owned output row. Horizontal/AA paint clipping stays separate from curve clipping. Reservations transfer to the returned instance or release on every exception.</remarks>
+    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, SvgPreparedPathContours? source, SvgAffineTransform sourceMap, SvgAnalyticScanWindow walkWindow, int spanWidth, RenderBudget budget, out bool eligible, CancellationToken token)
     {
         eligible = false;
         int width = xEnd - xStart;
@@ -30,7 +30,7 @@ internal ref partial struct SvgAnalyticCoverage
                 if (pass == 1)
                 {
                     if (maximumEdges > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Clipped analytic edge count exceeds the supported range.");
-                    scratch = budget.Reserve(ScratchByteCount(0, width, maximumEdges), SvgMemoryCategory.Surface);
+                    scratch = budget.Reserve(ScratchByteCount(0, width, spanWidth, maximumEdges), SvgMemoryCategory.Surface);
                     kept = new List<AnalyticEdge>((int)Math.Min(points.Length, maximumEdges));
                 }
                 int priorEnd = 0;
@@ -156,11 +156,11 @@ internal ref partial struct SvgAnalyticCoverage
                 edges[index].Next = index + 1 == edges.Length ? tail : edges[index + 1];
             }
             byte[] row = new byte[width + 2];
-            byte[] temp = new byte[width + 4];
-            byte[] alphas = new byte[width + 4];
+            byte[] temp = new byte[spanWidth + 4];
+            byte[] alphas = new byte[spanWidth + 4];
             eligible = true;
             bool skipIntersect = nativePointCount > (long)(Math.Min(yEnd, clip.Bottom) - Math.Max(yStart, clip.Top)) * 2;
-            return new(edges, head, tail, row, temp, alphas, xStart, width, Math.Min(yEnd, clip.Bottom), skipIntersect, isEvenOdd, convex, rawBox, useRunBlitter, usesHorizontalClip, paintClip, new(clip.Left, clip.Right), budget, scratch);
+            return new(edges, head, tail, row, temp, alphas, xStart, width, Math.Min(yEnd, clip.Bottom), skipIntersect, isEvenOdd, convex, rawBox, useRunBlitter, usesHorizontalClip, paintClip, walkWindow, budget, scratch);
         }
         catch { scratch?.Dispose(); throw; }
 

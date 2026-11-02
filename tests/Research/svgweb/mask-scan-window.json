@@ -1,0 +1,690 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "d02ffbac8f7a23acfb22441af7d87df7ac5ad265",
+  "status": "Shared mask scan-window correction CLOSED. Complete Car acceptance remains OPEN at two lower RGB pixels; release qualification retains the independent Windows DejaVu authority conflict.",
+  "scope": {
+    "publicApiChanges": 0,
+    "existingReferenceChanges": 0,
+    "hostedSvgBodiesRetained": 0,
+    "hostedFragmentsRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "newFontBytes": 0,
+    "newRoutineCases": 8
+  },
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs": "94d57a5f59269f75c8b9ba32049600ab7f9fdf482868160ed2b0eb33ccb89bc6",
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.ClippedPreparation.cs": "1b727f4fc81ac8c2ff613ae52bbf03049d6d825a2d7a4eb29bd0d375c4ef110d",
+    "tests/Lokad.Svg.Tests/SvgAnalyticStorageWindowTests.cs": "b10919d804643849941c2aa8ae930116d7722499a5f169a983446ca72a011676",
+    "tests/Lokad.Svg.VisualTests/SvgAffineFilterCaptureReferenceTests.cs": "1ea265cbaa1a4205618a6feffca583c6b6c9614ac9c4ba9e0d5f59bffe70c1f8"
+  },
+  "nativeRule": {
+    "url": "https://raw.githubusercontent.com/google/skia/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkScan_AAAPath.cpp",
+    "sourceSha256": "c7a2e2f869ce0d13f882e713e477a59b0af547cb72dd134caf04b1889d22a35e",
+    "rule": "Mask scan bounds intersect the complete path bounds with the bitmap clip. The output row can own a narrower column interval without changing those geometry bounds."
+  },
+  "implementation": {
+    "problem": "Mask setup narrowed its walk clip to coverage-row storage. A border contribution was lost when the first stored column followed the bitmap border.",
+    "change": "Prepare one typed scan window independently of the owned row. Bound temporary trapezoid spans by the complete path/clip intersection, while the coverage row retains only requested pixels. Charge both array dimensions before allocation and share the setup across clipped and uncut single/compound contours.",
+    "sources": [
+      "../../../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs",
+      "../../../src/Lokad.Svg/Rendering/SvgAnalyticCoverage.ClippedPreparation.cs"
+    ],
+    "consumerUpdate": "../../Lokad.Svg.Tests/SvgAnalyticPaintTests.cs",
+    "unchanged": "No filter-specific branch, pixel exception, additional owner, reference edit, layout change, font substitution or testing framework."
+  },
+  "layers": {
+    "mechanisms": {
+      "source": "../../Lokad.Svg.Tests/SvgAnalyticStorageWindowTests.cs",
+      "cases": 6,
+      "nativeControl": "../affine-filter-capture/edge.svg",
+      "captures": "../affine-filter-capture/edge-capture.json",
+      "healthyNewCaptures": 6,
+      "expectedAlpha": [
+        {
+          "x": 1,
+          "y": 7,
+          "alpha": 182
+        },
+        {
+          "x": 1,
+          "y": 19,
+          "alpha": 75
+        }
+      ],
+      "beforeOwnedRowAlpha": [
+        128,
+        64
+      ],
+      "responsibility": "Full-row control, border-excluding row and a single owned column protect two opposed edges. Boundaries stay in direct geometry tests."
+    },
+    "ownership": {
+      "cases": 1,
+      "responsibility": "The one-column row retains width1 while reserving full-span scratch. Refusal releases all owners and an accepted allowance can be reused for identical replay."
+    },
+    "rendering": {
+      "source": "../../Lokad.Svg.VisualTests/SvgAffineFilterCaptureReferenceTests.cs",
+      "cases": 1,
+      "bank": "../affine-filter-capture/README.md",
+      "capture": "../affine-filter-capture/capture.json",
+      "existingReferenceSha256": "b70b14a7128387f39ebfd39e07414b42ac003011a8ca6626b29861631df63ac4",
+      "beforeDifferentPixels": 2,
+      "beforeDifferentAlphaPixels": 1,
+      "afterDifferentPixels": 0,
+      "responsibility": "One canonical conversion preserves the full viewport and bitmap-boundary interaction. No fixture/API matrix or routine exploratory sheet added."
+    }
+  },
+  "focusedValidation": {
+    "before": [
+      {
+        "host": "windows",
+        "suite": "core",
+        "total": 7,
+        "passed": 3,
+        "failed": 4,
+        "seconds": 7.887375999940559,
+        "librarySha256": "71c1476a73647fbd5d6486bf8b4e32a90e1ce357307926af1688bbad8fef3c04",
+        "testAssemblySha256": "c28237daabbb2da2c0d92ef244ea26723339321235cbe3a90755955c8b026f54"
+      },
+      {
+        "host": "windows",
+        "suite": "visual",
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "seconds": 9.087897799909115,
+        "librarySha256": "71c1476a73647fbd5d6486bf8b4e32a90e1ce357307926af1688bbad8fef3c04",
+        "testAssemblySha256": "8ebb80cc53c3c4d9cbb9e49ad93b98b05c14993de0d33635f05ad1ba21b745b0"
+      },
+      {
+        "host": "linux",
+        "suite": "core",
+        "total": 7,
+        "passed": 3,
+        "failed": 4,
+        "seconds": 10.291465800022706,
+        "librarySha256": "71c1476a73647fbd5d6486bf8b4e32a90e1ce357307926af1688bbad8fef3c04",
+        "testAssemblySha256": "c28237daabbb2da2c0d92ef244ea26723339321235cbe3a90755955c8b026f54"
+      },
+      {
+        "host": "linux",
+        "suite": "visual",
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "seconds": 10.353367599891499,
+        "librarySha256": "71c1476a73647fbd5d6486bf8b4e32a90e1ce357307926af1688bbad8fef3c04",
+        "testAssemblySha256": "8ebb80cc53c3c4d9cbb9e49ad93b98b05c14993de0d33635f05ad1ba21b745b0"
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "suite": "core",
+        "total": 7,
+        "passed": 7,
+        "failed": 0,
+        "seconds": 7.747908700024709,
+        "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+        "testAssemblySha256": "f3a741d49f5c37f92585480c0fc3f26742d33699d7a3d46d808e554407abf755"
+      },
+      {
+        "host": "windows",
+        "suite": "visual",
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "seconds": 8.863708100048825,
+        "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+        "testAssemblySha256": "7f64a74486888907e85e3377012d85aa85b6b327df5e4790a2e5c9ebedc8b53f"
+      },
+      {
+        "host": "linux",
+        "suite": "core",
+        "total": 7,
+        "passed": 7,
+        "failed": 0,
+        "seconds": 10.102169699966908,
+        "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+        "testAssemblySha256": "f3a741d49f5c37f92585480c0fc3f26742d33699d7a3d46d808e554407abf755"
+      },
+      {
+        "host": "linux",
+        "suite": "visual",
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "seconds": 10.209516700124368,
+        "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+        "testAssemblySha256": "7f64a74486888907e85e3377012d85aa85b6b327df5e4790a2e5c9ebedc8b53f"
+      }
+    ],
+    "interpretation": "Same7 core and1 rendering selections per host. Functional seconds include process startup and concurrent checks; these are not benchmarks or a suite-speedup claim."
+  },
+  "corpus": {
+    "directory": {
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/",
+      "directorySha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+      "directSvgEntries": 204,
+      "matchesCommittedInventory": true,
+      "sourceBodiesRetained": 0
+    },
+    "replay": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 87.33296829997562,
+      "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 34,
+            "rendered": 167,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 166,
+          "changedOriginals": [
+            "tommek_Car.svg"
+          ]
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 34,
+            "rendered": 167,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 166,
+          "changedOriginals": [
+            "tommek_Car.svg"
+          ]
+        }
+      }
+    },
+    "initialAndFinalCandidateSemanticRowsEqual": true,
+    "priorExactPngsByteIdentical": 166,
+    "currentDefaultExact": 166,
+    "currentDefaultDifferent": 1,
+    "car": {
+      "name": "tommek_Car.svg",
+      "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+      "beforeChangedPixels": 8,
+      "afterChangedPixels": 2,
+      "closedUpperPixels": 6,
+      "remainingCoordinates": [
+        [
+          478,
+          606
+        ],
+        [
+          479,
+          614
+        ]
+      ],
+      "maximumError": 1,
+      "changedAlphaPixels": 0,
+      "freshHealthyCaptures": 6,
+      "comparisons": {
+        "windows": {
+          "libraryPngSha256": "9153f50e0822dc54ed49cdfaaf4f8a977981fcd26715be8df4c03fb030359cca",
+          "nativePngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+          "logicalViewport": {
+            "Width": 1052.3622,
+            "Height": 744.09448
+          },
+          "outputSize": [
+            1052,
+            744
+          ],
+          "captures": [
+            {
+              "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ],
+          "changedPixels": 2,
+          "maximumError": 1,
+          "differenceBounds": [
+            478,
+            606,
+            480,
+            615
+          ],
+          "alphaChangedPixels": 0
+        },
+        "linux": {
+          "libraryPngSha256": "9153f50e0822dc54ed49cdfaaf4f8a977981fcd26715be8df4c03fb030359cca",
+          "nativePngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+          "logicalViewport": {
+            "Width": 1052.3622,
+            "Height": 744.09448
+          },
+          "outputSize": [
+            1052,
+            744
+          ],
+          "captures": [
+            {
+              "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ],
+          "changedPixels": 2,
+          "maximumError": 1,
+          "differenceBounds": [
+            478,
+            606,
+            480,
+            615
+          ],
+          "alphaChangedPixels": 0
+        }
+      },
+      "comparisonsBindFinalPngHashes": true
+    },
+    "suppliedPrograms": {
+      "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+      "files": 19,
+      "seconds": 35.267642399994656,
+      "sourceBodiesRetained": 0,
+      "referenceChanges": 0,
+      "all19ExactOnBothHosts": true,
+      "legacyFormatBoundary": "Historical SVG1.1 inline-font support remains distinct from the qualified host-supplied TrueType contexts."
+    }
+  },
+  "qualification": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "suite": "core",
+      "scope": "Unfiltered",
+      "total": 36712,
+      "passed": 36712,
+      "failed": 0,
+      "seconds": 74.23142910003662,
+      "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+      "testAssemblySha256": "f3a741d49f5c37f92585480c0fc3f26742d33699d7a3d46d808e554407abf755"
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "suite": "visual",
+      "scope": "Unfiltered",
+      "total": 46567,
+      "passed": 46566,
+      "failed": 1,
+      "seconds": 96.53717339993455,
+      "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+      "testAssemblySha256": "7f64a74486888907e85e3377012d85aa85b6b327df5e4790a2e5c9ebedc8b53f",
+      "failureNames": [
+        "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")"
+      ]
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "suite": "font-host",
+      "scope": "Unfiltered",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "seconds": 1.3715869998559356,
+      "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+      "testAssemblySha256": "43703b7986a180ff1cfe4c747723d6b30f554bf32da5c7ce010affc4005dfdf6"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "suite": "core",
+      "scope": "Representative compatibility",
+      "total": 12612,
+      "passed": 12612,
+      "failed": 0,
+      "seconds": 37.65047869994305,
+      "librarySha256": "cb6560be3714398bf446f1f38275a1b9cbe695678fd087c8bd86528a1c986228",
+      "testAssemblySha256": "6637bfdb161b328c44962732b59838e27e80911cbb3e1bf08e246f19320882b3"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "suite": "visual",
+      "scope": "Representative compatibility",
+      "total": 830,
+      "passed": 830,
+      "failed": 0,
+      "seconds": 19.169952199794352,
+      "librarySha256": "cb6560be3714398bf446f1f38275a1b9cbe695678fd087c8bd86528a1c986228",
+      "testAssemblySha256": "191d6041e4a73d40679bf04c3ccc2b08ba55bcb862dcff756de2724f05f893c8"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "suite": "font-host",
+      "scope": "Unfiltered",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "seconds": 1.3938019999768585,
+      "librarySha256": "cb6560be3714398bf446f1f38275a1b9cbe695678fd087c8bd86528a1c986228",
+      "testAssemblySha256": "5c509a5742a4923a97d7befbf02393a006ab18c82886061985ee8b9ea57d9135"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "suite": "core",
+      "scope": "Unfiltered",
+      "total": 36712,
+      "passed": 36712,
+      "failed": 0,
+      "seconds": 48.10903449985199,
+      "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+      "testAssemblySha256": "f3a741d49f5c37f92585480c0fc3f26742d33699d7a3d46d808e554407abf755"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "suite": "visual",
+      "scope": "Unfiltered",
+      "total": 46567,
+      "passed": 46567,
+      "failed": 0,
+      "seconds": 167.73947849986143,
+      "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+      "testAssemblySha256": "7f64a74486888907e85e3377012d85aa85b6b327df5e4790a2e5c9ebedc8b53f"
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "suite": "font-host",
+      "scope": "Unfiltered",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "seconds": 1.3077107998542488,
+      "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+      "testAssemblySha256": "43703b7986a180ff1cfe4c747723d6b30f554bf32da5c7ce010affc4005dfdf6"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "suite": "core",
+      "scope": "Representative compatibility",
+      "total": 12612,
+      "passed": 12612,
+      "failed": 0,
+      "seconds": 26.357407400151715,
+      "librarySha256": "cb6560be3714398bf446f1f38275a1b9cbe695678fd087c8bd86528a1c986228",
+      "testAssemblySha256": "6637bfdb161b328c44962732b59838e27e80911cbb3e1bf08e246f19320882b3"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "suite": "visual",
+      "scope": "Representative compatibility",
+      "total": 830,
+      "passed": 830,
+      "failed": 0,
+      "seconds": 24.80580549989827,
+      "librarySha256": "cb6560be3714398bf446f1f38275a1b9cbe695678fd087c8bd86528a1c986228",
+      "testAssemblySha256": "191d6041e4a73d40679bf04c3ccc2b08ba55bcb862dcff756de2724f05f893c8"
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "suite": "font-host",
+      "scope": "Unfiltered",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "seconds": 2.033458400052041,
+      "librarySha256": "cb6560be3714398bf446f1f38275a1b9cbe695678fd087c8bd86528a1c986228",
+      "testAssemblySha256": "5c509a5742a4923a97d7befbf02393a006ab18c82886061985ee8b9ea57d9135"
+    }
+  ],
+  "compatibilitySelections": {
+    "core": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~TrueTypeCompositeStateTests|FullyQualifiedName~SvgAnalyticStorageWindowTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgAttributeApplicabilityTests|FullyQualifiedName~SvgEventAttributeTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgInertPresentationTests|FullyQualifiedName~SvgStyleSheetTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests)&Category!=Research",
+    "rendering": "FullyQualifiedName~SvgAffineFilterCaptureReferenceTests|FullyQualifiedName~SvgAttributeApplicabilityReferenceTests|FullyQualifiedName~SvgLegacyFontDeclarationReferenceTests|FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgWindowsScanBoundaryTests"
+  },
+  "packages": {
+    "identity": "0.4.0-dev.1",
+    "libraryAssets": {
+      "net11.0": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+      "net10.0": "cb6560be3714398bf446f1f38275a1b9cbe695678fd087c8bd86528a1c986228"
+    },
+    "archives": {
+      "nupkg": {
+        "sha256": "050fcbeb5f7e73ae228ea1fc1ab4cb2d33273d60c815104be66d91b75447c03a",
+        "separateTimePacksByteIdentical": true,
+        "entries": 14
+      },
+      "snupkg": {
+        "sha256": "efa72e3d0402da1cf9bf34f6762093d90acdb633808646c1c829a38e6503c63a",
+        "separateTimePacksByteIdentical": true,
+        "entries": 6
+      }
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 7.1643523999955505
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 46.72683770000003
+      }
+    ],
+    "runtimeDependencies": 0,
+    "published030Changed": false
+  },
+  "knownWindowsDejavu": {
+    "changed": false,
+    "changedPixels": 75,
+    "currentPngSha256": "71b1b8cd1159dab06d982aef86b48f4968838bb5ba699122962d0947f901dc34",
+    "authority": "Pending; frozen reference/assertion unchanged. No green CI or release-closure claim."
+  },
+  "next": {
+    "priority": "HIGH: complete the remaining filter source/color gap before unrelated optional cleanup.",
+    "context": "A centered user-space radial gradient has an authored matrix and inherits one translucent stop from a linear template. The isolated unfiltered source is exact; zero blur retains one alpha discrepancy, while nonzero blur retains four differences including three alpha bytes. Opaque white fill and opaque-stop controls are exact in the isolated context. Original bodies and variants remain in RAM.",
+    "paintDomain": [
+      {
+        "kind": "radialGradient",
+        "unitsExplicit": true,
+        "userSpaceUnits": true,
+        "knownUnits": true,
+        "centeredFocus": true,
+        "transformKinds": [
+          "matrix"
+        ],
+        "matrixAxisAligned": true,
+        "factoryCenterBelow1": false,
+        "radiusBucket": "1to10",
+        "stops": 0,
+        "sameStopColors": true,
+        "nonopaqueStops": 0
+      },
+      {
+        "kind": "linearGradient",
+        "unitsExplicit": false,
+        "userSpaceUnits": false,
+        "knownUnits": true,
+        "centeredFocus": true,
+        "transformKinds": [],
+        "matrixAxisAligned": true,
+        "factoryCenterBelow1": true,
+        "radiusBucket": "below1",
+        "stops": 2,
+        "sameStopColors": true,
+        "nonopaqueStops": 1
+      }
+    ],
+    "sourceStages": {
+      "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+      "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+      "hostedBodiesRetained": 0,
+      "sourceAttributeValuesRetained": 0,
+      "host": "windows",
+      "exploratoryHealthyCaptures": 4,
+      "seconds": 6.787352600134909,
+      "originalInput": {
+        "binding": 60,
+        "ancestorElements": [
+          "path",
+          "svg"
+        ],
+        "authoredTransformAncestors": 1,
+        "nondefaultOpacityAncestors": 0,
+        "paintServer": true,
+        "strokePresent": false,
+        "authoredSigmaBucket": "1to4",
+        "primitiveUnitsExplicit": false,
+        "filterRegionExplicit": true,
+        "sourcePathCommandCounts": {
+          "M": 1,
+          "L": 6,
+          "z": 1
+        }
+      },
+      "results": [
+        {
+          "binding": 60,
+          "context": "source",
+          "inputSha256": "bde1d6c2cafdddfd230477d69bda6d58621ec7ab3769b53a7e4e5f7bfe441065",
+          "libraryPngSha256": "8d0c0247316015ed2bb5766272170ff3d7da999283704356459ed20b8fd53182",
+          "nativePngSha256": "c10cc8a7dde87734a484b6fe0444b05ac70fe89b8351521cd971591c4fdc9da9",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        {
+          "binding": 60,
+          "context": "zero-blur",
+          "inputSha256": "75c7ebf444438b4d6c3c29585ede51a9d9f8a477b3948e4d3bc4b37eca279ab1",
+          "libraryPngSha256": "20919ea1e0c5c4a566100edd4460ccd3411efc0aac29590a1ef85de852e76219",
+          "nativePngSha256": "328f6aff04554e6c0de2db86838857502658d4a8e66d0ecb98174d50f7071683",
+          "changedPixels": 1,
+          "maximumError": 1,
+          "alphaChangedPixels": 1,
+          "differenceBounds": [
+            479,
+            608,
+            480,
+            609
+          ]
+        },
+        {
+          "binding": 60,
+          "context": "transparent",
+          "inputSha256": "375cde8a79527b816d8eb94b7f8d64c726c82bf9c4393192dec1b1a9ef696676",
+          "libraryPngSha256": "29a3bb6e404a8f65c0ca21fcc81d4bb739734f000b15c50f9b757fb7e2290e89",
+          "nativePngSha256": "4fc79ff37d3a5a69f593a38b45d551b5f6375ccc4ed32f13ae722c73230887b3",
+          "changedPixels": 4,
+          "maximumError": 11,
+          "alphaChangedPixels": 3,
+          "differenceBounds": [
+            476,
+            602,
+            479,
+            618
+          ]
+        },
+        {
+          "binding": 60,
+          "context": "all-paint",
+          "inputSha256": "042db3ad97994111199bc88ccc3fa3a4d8f408a36332494058d5c101c4f192af",
+          "libraryPngSha256": "25ca696a33923664b0e9609d9afcbb0e5e13de668019af6aa602f716f9e75812",
+          "nativePngSha256": "c5348ef16a39b6d7dabaa622eeb63e34b17699db914c264904c59aee463a94a2",
+          "changedPixels": 2,
+          "maximumError": 1,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            478,
+            606,
+            480,
+            615
+          ]
+        }
+      ]
+    },
+    "paintControls": {
+      "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+      "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+      "hostedBodiesRetained": 0,
+      "sourceAttributeValuesRetained": 0,
+      "host": "windows",
+      "exploratoryHealthyCaptures": 2,
+      "seconds": 2.6142609000671655,
+      "originalInput": {
+        "binding": 60,
+        "ancestorElements": [
+          "path",
+          "svg"
+        ],
+        "authoredTransformAncestors": 1,
+        "nondefaultOpacityAncestors": 0,
+        "paintServer": true,
+        "strokePresent": false,
+        "authoredSigmaBucket": "1to4",
+        "primitiveUnitsExplicit": false,
+        "filterRegionExplicit": true,
+        "sourcePathCommandCounts": {
+          "M": 1,
+          "L": 6,
+          "z": 1
+        }
+      },
+      "results": [
+        {
+          "binding": 60,
+          "context": "white-fill",
+          "inputSha256": "e635b57d5eb1e772d6a0d56166c67730e59c2a0c8b8f3dde10699f356e672712",
+          "libraryPngSha256": "6606cbc54e7438a8dd7e2c69ce18e0b8bb6f920af6ac9f9d93a6fdd21eea6212",
+          "nativePngSha256": "79fd3e2fb4c86a5ca1b21563fc703ed8ad50209268b3bf3f836715a707bb330b",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        {
+          "binding": 60,
+          "context": "opaque-stops",
+          "inputSha256": "7b13d0186b1eb7a26c5faf09cf1f5333c4392d99be15cbd02e066a462bd8e206",
+          "libraryPngSha256": "657f40c03fe7036928e3785db881726642ade9282e8d853eef30542caf1e966d",
+          "nativePngSha256": "60ab914865f90ddc876c642983153a3f76dad67e6cd0f1f4142680ea684a3253",
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        }
+      ]
+    },
+    "research": "Simple owned centered-radial controls, including fractional viewports, remain exact. They do not reproduce or close the original gap. Continue with retained factory/local/reference/source-capture maps and alpha storage; preserve scalar/layout evidence and all existing native references."
+  }
+}

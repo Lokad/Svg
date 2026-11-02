@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve antialiased coverage beside bitmap borders when an output row is
+  narrower than the mask's complete scan window; reserve span scratch separately.
 - Ignore unknown and inapplicable SVG attributes consistently while retaining
   validation of applicable rendering features.
 - Use initial gradient units for invalid values, preserving template explicitness.

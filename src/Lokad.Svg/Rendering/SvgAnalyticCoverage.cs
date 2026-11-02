@@ -211,8 +211,8 @@ internal ref partial struct SvgAnalyticCoverage
         _isEvenOdd = isEvenOdd;
         _convex = convex;
         _rawBox = rawBox;
-        _leftClip = (int)Math.Min((long)(useRunBlitter ? window.Left : Math.Max(xStart, window.Left)) << 16, int.MaxValue);
-        _rightClip = (int)Math.Min((long)(useRunBlitter ? window.Right : Math.Min(xStart + width, window.Right)) << 16, int.MaxValue);
+        _leftClip = (int)Math.Min((long)window.Left << 16, int.MaxValue);
+        _rightClip = (int)Math.Min((long)window.Right << 16, int.MaxValue);
         _reservation = reservation;
         _budget = budget;
         _useRunBlitter = useRunBlitter;
@@ -1268,15 +1268,15 @@ internal ref partial struct SvgAnalyticCoverage
         return true;
     }
 
-    /// <summary>Returns scratch storage for flattened edges, a conservative retained-curve expansion and the coverage row.</summary>
-    /// <remarks>Curve expansion is reserved before any edge allocation: live monotonic pieces need at most two edges per quadratic and three per cubic. Rational verbs reserve the same bound for every converted quadratic. Flattened edge capacity remains reserved for every declined span.</remarks>
-    internal static long ScratchByteCount(int pointCount, int rowWidth, long maximumCurveEdges)
+    /// <summary>Returns scratch storage for edges, the owned coverage row and complete trapezoid spans.</summary>
+    /// <remarks>Span scratch can exceed the owned row when a bitmap border contributes coverage. Curve expansion is reserved before any edge allocation: live monotonic pieces need at most two edges per quadratic and three per cubic. Rational verbs reserve the same bound for every converted quadratic. Flattened edge capacity remains reserved for every declined span.</remarks>
+    internal static long ScratchByteCount(int pointCount, int rowWidth, int spanWidth, long maximumCurveEdges)
     {
         long bytes;
         // Edges carry 36 integers, two links and an object header (176 bytes on
         // x64); 32 more bytes cover references during list growth and ToArray.
         // The old 80-byte envelope predates retained live-curve snapshots.
-        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 2) + ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 4) + ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 4) + 32 + ((long)pointCount + maximumCurveEdges + 2) * 208); }
+        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 2) + ParserCollectionMemory.GetArrayByteCount<byte>(spanWidth + 4) + ParserCollectionMemory.GetArrayByteCount<byte>(spanWidth + 4) + 32 + ((long)pointCount + maximumCurveEdges + 2) * 208); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic coverage storage exceeds the supported accounting range."); }
         return bytes;
     }
@@ -1430,6 +1430,19 @@ internal ref partial struct SvgAnalyticCoverage
                 return new(fatRectangle, xStart);
             }
         }
+        // Mask walking uses the complete path window; the output row can own
+        // fewer pixels. Truncating geometry to that row discards boundary fringes.
+        bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
+        SvgAnalyticScanWindow walkWindow = constructionClip is {} walkClip
+            ? new(walkClip.Bounds.Left, walkClip.Bounds.Right) : window;
+        if (!useRunBlitter)
+        {
+            int left = Math.Clamp(preparation.DispatchBounds.Left, walkWindow.Left, walkWindow.Right);
+            walkWindow = new(left, Math.Clamp(preparation.DispatchBounds.Right, left, walkWindow.Right));
+        }
+        int spanWidth = Math.Max(xEnd - xStart, (int)Math.Clamp(
+            (long)Math.Min(preparation.DispatchBounds.Right, walkWindow.Right)
+                - Math.Max(preparation.DispatchBounds.Left, walkWindow.Left), 0, int.MaxValue));
         bool directedWinding = mapping == SvgPolygonMapping.NativeFillEdges
             || !isEvenOdd && mapping == SvgPolygonMapping.NativeStrokeEdges;
         if (ends.Length > 1)
@@ -1502,11 +1515,11 @@ internal ref partial struct SvgAnalyticCoverage
             if (!evenOddCrossings && !transversalUnion && !orthogonalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
             bool useNativeSpans = mapping == SvgPolygonMapping.NativeFillEdges || !isEvenOdd && (mapping is SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges);
             long multiPointCount = GetNativePointCount(ref preparation, useNativeSpans, cancellationToken);
-            if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, mapping, quadSpans, cubicSpans, useNativeSpans, false, false, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, multiClip.BitmapOrigin, preparation.Source, preparation.SourceMap, budget, out eligible, cancellationToken);
+            if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, mapping, quadSpans, cubicSpans, useNativeSpans, false, false, useRunBlitter, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, multiClip.BitmapOrigin, preparation.Source, preparation.SourceMap, walkWindow, spanWidth, budget, out eligible, cancellationToken);
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = multiPointCount > (long)(yEnd - yStart) * 2;
             long multiCurveEdges = QuadraticEdgeBound(constructionPoints, quadSpans, cancellationToken) + (long)cubicSpans.Length * 3;
-            RenderBudget.BudgetReservation? multiScratch = budget.Reserve(ScratchByteCount(points.Length, multiWidth, multiCurveEdges), SvgMemoryCategory.Surface);
+            RenderBudget.BudgetReservation? multiScratch = budget.Reserve(ScratchByteCount(points.Length, multiWidth, spanWidth, multiCurveEdges), SvgMemoryCategory.Surface);
             try
             {
                 List<AnalyticEdge> multiKept = new(points.Length);
@@ -1593,12 +1606,11 @@ internal ref partial struct SvgAnalyticCoverage
                 if (multiEdges.Length > 0) { multiEdges[^1].Next = multiTail; multiTail.Prev = multiEdges[^1]; }
                 else multiTail.Prev = multiHead;
                 byte[] multiRow = new byte[multiWidth + 2];
-                byte[] multiTemp = new byte[multiWidth + 4];
-                byte[] multiAlphas = new byte[multiWidth + 4];
+                byte[] multiTemp = new byte[spanWidth + 4];
+                byte[] multiAlphas = new byte[spanWidth + 4];
                 eligible = true;
-                bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
                 cancellationToken.ThrowIfCancellationRequested();
-                return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, false, useRunBlitter, false, paintClip, window, budget, multiScratch);
+                return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, false, useRunBlitter, false, paintClip, walkWindow, budget, multiScratch);
             }
             catch { multiScratch?.Dispose(); throw; }
         }
@@ -1680,11 +1692,11 @@ internal ref partial struct SvgAnalyticCoverage
         bool desnapBox = preparation.DesnapBox;
         bool useCurveSpans = preparation.UseCurveSpans;
         long singlePointCount = GetNativePointCount(ref preparation, useCurveSpans, cancellationToken);
-        if (constructionClip is {} singleClip) return PrepareClipped(singlePointCount, points, ends, votes, hasVotes, isEvenOdd, mapping, quadSpans, cubicSpans, useCurveSpans, convex, desnapBox, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, singleClip.BitmapOrigin, preparation.Source, preparation.SourceMap, budget, out eligible, cancellationToken);
+        if (constructionClip is {} singleClip) return PrepareClipped(singlePointCount, points, ends, votes, hasVotes, isEvenOdd, mapping, quadSpans, cubicSpans, useCurveSpans, convex, desnapBox, useRunBlitter, paintClip, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, singleClip.BitmapOrigin, preparation.Source, preparation.SourceMap, walkWindow, spanWidth, budget, out eligible, cancellationToken);
         int width = xEnd - xStart;
         bool skipIntersect = singlePointCount > (long)(yEnd - yStart) * 2;
         long curveEdges = useCurveSpans ? QuadraticEdgeBound(constructionPoints, quadSpans, cancellationToken) + (long)cubicSpans.Length * 3 : 0;
-        RenderBudget.BudgetReservation? scratch = budget.Reserve(ScratchByteCount(points.Length, width, curveEdges), SvgMemoryCategory.Surface);
+        RenderBudget.BudgetReservation? scratch = budget.Reserve(ScratchByteCount(points.Length, width, spanWidth, curveEdges), SvgMemoryCategory.Surface);
         try
         {
             List<AnalyticEdge> kept = new(points.Length);
@@ -1752,12 +1764,11 @@ internal ref partial struct SvgAnalyticCoverage
             if (edges.Length > 0) { edges[^1].Next = tail; tail.Prev = edges[^1]; }
             else tail.Prev = head;
             byte[] row = new byte[width + 2];
-            byte[] temp = new byte[width + 4];
-            byte[] alphas = new byte[width + 4];
+            byte[] temp = new byte[spanWidth + 4];
+            byte[] alphas = new byte[spanWidth + 4];
             eligible = true;
-            bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
             cancellationToken.ThrowIfCancellationRequested();
-            return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, desnapBox, useRunBlitter, false, paintClip, window, budget, scratch);
+            return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, desnapBox, useRunBlitter, false, paintClip, walkWindow, budget, scratch);
         }
         catch { scratch?.Dispose(); throw; }
     }
