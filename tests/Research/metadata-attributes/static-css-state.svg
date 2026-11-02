@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="96" style="float:right">
+  <style>
+    .tile { fill:url(#paint); }
+    .tile:hover { opacity:0; }
+    g:active > .tile, g:focus-within .tile { fill:red; }
+    .tile:focus, .tile:focus-visible { stroke:red; stroke-width:8; }
+    .tile:hover { filter:url(https://example.invalid/unused); unsupported-paint:1; }
+    .tile:hover, .blue { fill:#2468ac; }
+  </style>
+  <defs><linearGradient id="paint"><stop stop-color="#2468ac"/><stop offset="1" stop-color="#e08428"/></linearGradient></defs>
+  <g style="float:left"><rect class="tile" x="10" y="12" width="38" height="28"/><circle class="tile" cx="88" cy="26" r="14"/></g>
+  <g><path class="tile" d="M10 54H48V82H10Z"/><rect class="blue" x="68" y="54" width="38" height="28"/></g>
+</svg>

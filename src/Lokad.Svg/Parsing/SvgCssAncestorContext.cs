@@ -17,7 +17,7 @@ internal sealed class SvgCssAncestorContext : IDisposable
         _matches = new(budget, SvgMemoryCategory.Parser, token);
         for (int index = 0; index < rules.Count; index++)
         {
-            if (rules[index].HasCombinator) { _enabled = true; break; }
+            if (rules[index].HasCombinator && !rules[index].IsInactive) { _enabled = true; break; }
         }
     }
 

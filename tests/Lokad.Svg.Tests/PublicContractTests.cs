@@ -583,7 +583,6 @@ public sealed class PublicContractTests
     }
 
     [Theory]
-    [InlineData("<style>circle:hover { fill: red; }</style><rect/>")]
     [InlineData("<style>rect { fill: red</style><rect/>")]
     [InlineData("<foreign:rect xmlns:foreign='urn:foreign' width='1' height='1'><foreign:child/></foreign:rect>")]
     public void Unsupported_presentation_namespace_and_syntax_forms_are_categorized_at_public_conversion(string content)
@@ -594,6 +593,11 @@ public sealed class PublicContractTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
+
+    [Fact]
+    public void An_inactive_hover_rule_preserves_empty_public_output()
+        => Assert.Equal(SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><style>circle:hover { fill: red; }</style><rect/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray());
 
     [Fact]
     public void Original_empty_nested_opacity_is_admitted_with_unchanged_output()

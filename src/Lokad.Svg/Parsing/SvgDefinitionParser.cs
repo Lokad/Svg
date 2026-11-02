@@ -254,7 +254,7 @@ internal static class SvgDefinitionParser
             {
                 SvgElementAttributePolicy.ValidateRectangle(reader, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
-                InlineStyle clipInline = SvgInlineStyleParser.ParseGeometry(reader.GetAttribute("style"), cancellationToken);
+                InlineStyle clipInline = SvgInlineStyleParser.ReadGeometry(reader, cancellationToken);
                 SvgComputedStyle clipStyle = state.ClipInheritedStroke.ApplyTo(SvgComputedStyle.Resolve(reader, clipInline, context.StyleSheet)).ResolveDisplay(state.ClipElementDisplay);
                 RetainClipSource(reader, context, clipStyle, state);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases);
@@ -363,7 +363,7 @@ internal static class SvgDefinitionParser
             // A resource inherits presentation, while its content coordinates start
             // at the resource rather than at a rendered definition ancestor.
             maskContext = maskContext with { InheritedPresentation = maskContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity, IsDisplayed = true, TextMetrics = default } };
-            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
+            InlineStyle inline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, maskContext.StyleSheet).ResolveOpacity(maskContext.InheritedPresentation.ElementOpacity).ResolveDisplay(maskContext.InheritedPresentation.ElementDisplay);
             // The resource container supplies inherited style; its children paint
             // the mask without an extra opacity layer around the resource itself.
@@ -496,7 +496,7 @@ internal static class SvgDefinitionParser
             state.PatternTile = state.PatternTemplate.Grid;
             SvgPaintableElementContext patternContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
             patternContext = patternContext with { InheritedPresentation = patternContext.InheritedPresentation with { TextMetrics = default } };
-            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
+            InlineStyle inline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, patternContext.StyleSheet).ResolveOpacity(patternContext.InheritedPresentation.ElementOpacity).ResolveDisplay(patternContext.InheritedPresentation.ElementDisplay);
             if (style.GetOpacity().Value != 1)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Opacity on pattern containers is not implemented.");
@@ -726,7 +726,7 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateDefinitionContainer(reader, cancellationToken);
             SvgPaintableElementContext definitionContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
-            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
+            InlineStyle inline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, definitionContext.StyleSheet);
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, definitionContext.StyleSheet, definitionContext.InheritedPresentation,
                 definitionContext.InheritedFillRule, definitionContext.InheritedTextStyle, definitionContext.InheritedStroke, namedColors, state.PaintResources, cancellationToken);
@@ -743,7 +743,7 @@ internal static class SvgDefinitionParser
                 throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             id = id is null ? null : state.Strings.Copy(id);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
-            InlineStyle inline = SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), cancellationToken);
+            InlineStyle inline = SvgInlineStyleParser.ReadUse(reader, cancellationToken);
             context = context with { AuthoredStyle = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet) };
             SvgViewportFrame? parentFrame = state.EffectiveFrame;
             double? baseWidth = parentFrame?.ViewportWidth ?? root.UserViewportWidth;

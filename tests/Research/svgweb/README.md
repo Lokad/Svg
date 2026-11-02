@@ -6,8 +6,8 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 157 originals per host: **157 exploratory
-exact, none different**, with 44 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 159 originals per host: **159 exploratory
+exact, none different**, with 42 UnsupportedFeature and 3 MalformedInput outcomes. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
@@ -61,6 +61,7 @@ current inventory above governs overall status.
 | Descriptive link titles | [URI-aware attribute admission](metadata-attributes.json), [canonical control](../metadata-attributes/README.md). One predicate serves ordinary elements and defs; six direct boundary cases and one independent native image retain reference/namespace contracts. Both unmodified metadata originals are exact on both hosts. |
 | Inert event attributes | [Static admission](inert-events.json), [canonical control](../metadata-attributes/inert-events.svg). One predicate serves element, defs, stylesheet, filter and span/path validators. Ten direct cases, one prepared-font contract and one native image separate responsibilities. The default rectangles original is exact; deeper static gaps continue under script, font, attribute and CSS review. |
 | Non-executing script content | [Shared traversal](inert-scripts.json), [canonical control](../metadata-attributes/inert-scripts.svg). Preparation, selection and lowering share a bounded consumer. Retained empty markers preserve text nodes and lexical counts without copying bodies. Direct limits/namespace/XML cases, representative text contracts and one native image protect distinct roles. The default videos original is exact; three newly reached font gates remain open. |
+| Static CSS state and source | [Shared admission and source boundaries](static-css.json), [canonical control](../metadata-attributes/static-css-state.svg). Inactive interaction rules retain no selector/value storage or ancestor branch; float does not affect image flow. Mechanisms, representative font acquisition and one native image separate responsibilities. Default faux-art/mail are exact. Circle physical lengths and root CSS background/border painting remain open; native diagnostics distinguish their actual behavior. |
 | Structural traversal | [Shared metadata and pattern locations](shared-traversal.json). Keep recognized foreign descriptions inert through preparation/lowering, preserve the first rejection context, and align rendered-group pattern registration with content selection. Mechanisms, one prepared-font contract and independent root/group/metadata fixtures protect distinct roles. |
 | Root image layout and placement | [Root model](root-image-model.json), [projection stages](root-image-projection.json), [image boundary](root-image-boundary.json). Logical sizing, subpixel layout, recorded scene and destination coefficients stay distinct. Direct matrices and large viewBox controls protect stages that small images cannot distinguish. |
 | Root experiments | [Viewport review](root-viewport-review.json), [stage review](root-image-stages.json). Preserve rejected output-only stretching and context distinctions. |

@@ -23,6 +23,7 @@ clips/masks, embedded base64 PNGs, static CSS, markers, selected filters and
 supplied-font text. Unsupported visible features report `SvgException`.
 Event attributes and character-data script elements are inert during static
 conversion; script URLs are not fetched. Animation remains unsupported.
+Hover/active/focus CSS states remain inactive, and `float` has no image-layout effect.
 Rendering applies size/structural limits, optional host memory admission and cancellation.
 
 Outputs support owned memory, caller memory and writable streams, synchronously

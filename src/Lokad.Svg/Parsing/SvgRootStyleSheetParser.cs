@@ -52,9 +52,19 @@ internal static class SvgRootStyleSheetParser
                 continue;
             }
             if (reader.LocalName != "style") continue;
-            ThrowIfAttributed(reader);
-            using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, cancellationToken);
-            SvgStyleSheet.Parse(text.Value, limits.MaximumNodes, rules, strings, budget, cancellationToken);
+            SvgSourceContext source = SvgSourceContext.Capture(reader);
+            try
+            {
+                ThrowIfAttributed(reader);
+                using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, cancellationToken);
+                SvgStyleSheet.Parse(text.Value, limits.MaximumNodes, rules, strings, budget, cancellationToken);
+            }
+            catch (SvgException exception)
+            {
+                if (reader.NodeType == XmlNodeType.Attribute) SvgSourceContext.Attach(reader, exception);
+                else exception.AttachSource(source.Describe(string.Empty, string.Empty));
+                throw;
+            }
         }
     }
 

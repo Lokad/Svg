@@ -147,7 +147,7 @@ internal static class SvgDocumentTraversal
                     SvgClipBox box = new(clipOriginX, clipOriginY, viewport.Width * clipScaleX, viewport.Height * clipScaleY);
                     if (parentClip is not null) box = box.Intersect(parentClip.Value);
                     SvgPaintableElementContext viewportContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
-                    InlineStyle viewportInline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
+                    InlineStyle viewportInline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
                     SvgComputedStyle viewportStyle = SvgComputedStyle.Resolve(reader, viewportInline, viewportContext.StyleSheet);
                     SvgInheritedContainer inheritedViewport = SvgContainerInheritance.Resolve(reader, viewportInline, viewportStyle, viewportContext.StyleSheet, viewportContext.InheritedPresentation,
                         viewportContext.InheritedFillRule, viewportContext.InheritedTextStyle, viewportContext.InheritedStroke, namedColors, state.PaintResources, cancellationToken);

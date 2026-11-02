@@ -27,7 +27,7 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
 
     private static SvgRootAttributes ParseValues(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, InlineStyle sheet, SvgPaintResourceSelection? resources, CancellationToken cancellationToken)
     {
-        InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
+        InlineStyle inline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet).ResolveOpacity(SvgPaintOpacity.Opaque).ResolveDisplay(SvgDisplay.Inline);
         _ = SvgPaintResolver.ResolveFallbacks(ref style, resources, namedColors, reader.LocalName);
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, null, true, true, namedColors);

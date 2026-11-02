@@ -112,7 +112,7 @@ internal static class SvgMarkerSyntax
             {
                 if (font is null)
                 {
-                    InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), token, true);
+                    InlineStyle inline = SvgInlineStyleParser.Read(reader, token, true);
                     font = SvgTextInheritance.Resolve(reader, inheritedFont,
                         SvgInlineStyleParser.MergeFont(inline.TextFont, inline.Important, sheet.TextFont, sheet.Important), null, null);
                 }

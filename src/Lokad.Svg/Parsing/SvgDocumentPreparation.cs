@@ -155,7 +155,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
                 SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
                 SvgElementAttributePolicy.ValidateRoot(reader, _token);
                 InlineStyle sheet = SvgRootStyleSheetParser.ResolveRoot(reader.GetAttribute("id"), reader.GetAttribute("class"), Rules, _token);
-                InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), _token, true);
+                InlineStyle inline = SvgInlineStyleParser.Read(reader, _token, true);
                 _root = SvgRootSyntax.ParseComputed(reader, inline, sheet, _token);
                 if (!inspectStructure) return _root.Value;
             }

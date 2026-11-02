@@ -4,13 +4,19 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgCssSelectorSyntax
 {
     internal static CssSpecificity Specificity(ReadOnlySpan<char> pattern, CancellationToken token)
+        => Specificity(pattern, token, out _);
+
+    /// <summary>Validates one compound selector and identifies user interaction state that is absent in static image conversion.</summary>
+    internal static CssSpecificity Specificity(ReadOnlySpan<char> pattern, CancellationToken token, out bool inactive)
     {
+        inactive = false;
         ComponentReader reader = new(pattern);
         CssSpecificity result = default;
         while (reader.Read(out ComponentKind kind, out _, out _))
         {
             token.ThrowIfCancellationRequested();
             result += kind == ComponentKind.Type ? new CssSpecificity(0, 0, 1) : kind == ComponentKind.Id ? new CssSpecificity(1, 0, 0) : new CssSpecificity(0, 1, 0);
+            inactive |= kind == ComponentKind.InactiveInteraction;
         }
         return result;
     }
@@ -29,6 +35,7 @@ internal static class SvgCssSelectorSyntax
                 ComponentKind.Class => SvgStyleSheet.HasCssClass(element.Classes, value, token),
                 ComponentKind.AttributePresent => (value.SequenceEqual("id") ? element.Id : element.Classes) is not null,
                 ComponentKind.AttributeEquals => EqualIdentifier(value.SequenceEqual("id") ? element.Id : element.Classes, expected),
+                ComponentKind.InactiveInteraction => false,
                 _ => false
             };
             if (!matched) return false;
@@ -74,7 +81,7 @@ internal static class SvgCssSelectorSyntax
         return true;
     }
 
-    private enum ComponentKind { Type, Id, Class, AttributePresent, AttributeEquals }
+    private enum ComponentKind { Type, Id, Class, AttributePresent, AttributeEquals, InactiveInteraction }
 
     private ref struct ComponentReader
     {
@@ -104,7 +111,12 @@ internal static class SvgCssSelectorSyntax
                 kind = ComponentKind.AttributeEquals;
                 return true;
             }
-            if (first is '#' or '.')
+            if (first == ':')
+            {
+                kind = ComponentKind.InactiveInteraction;
+                _position++;
+            }
+            else if (first is '#' or '.')
             {
                 kind = first == '#' ? ComponentKind.Id : ComponentKind.Class;
                 _position++;
@@ -115,6 +127,12 @@ internal static class SvgCssSelectorSyntax
             while (_position < _value.Length && IsIdentifierCharacter(_value[_position])) _position++;
             value = _value[start.._position];
             ValidateIdentifier(value);
+            if (kind == ComponentKind.InactiveInteraction
+                && !value.Equals("hover", StringComparison.OrdinalIgnoreCase)
+                && !value.Equals("active", StringComparison.OrdinalIgnoreCase)
+                && !value.Equals("focus", StringComparison.OrdinalIgnoreCase)
+                && !value.Equals("focus-visible", StringComparison.OrdinalIgnoreCase)
+                && !value.Equals("focus-within", StringComparison.OrdinalIgnoreCase)) throw Unsupported();
             return true;
         }
 

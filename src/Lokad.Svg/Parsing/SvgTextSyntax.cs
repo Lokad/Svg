@@ -302,7 +302,7 @@ internal static class SvgTextSyntax
     internal static SvgTextStyle Parse(XmlReader reader, CancellationToken cancellationToken, SvgInheritedTextStyle inherited)
     {
         ArgumentNullException.ThrowIfNull(reader);
-        InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
+        InlineStyle inline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
         return Parse(reader, inline.TextFont, inherited, inline.LetterSpacing, inline.WordSpacing);
     }
 
@@ -418,7 +418,7 @@ internal static class SvgTextSyntax
             if (reader.NamespaceURI.Length == 0 && reader.LocalName == "style")
             {
                 if (whiteSpace is not null || inlineLetterSpacing is not null) { reader.MoveToElement(); style = inherited; return false; }
-                InlineStyle inline = SvgInlineStyleParser.Parse(reader.Value, cancellationToken, true);
+                InlineStyle inline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
                 if (HasUnsupportedProperties(inline)) { reader.MoveToElement(); style = inherited; return false; }
                 parsedInline = inline;
                 whiteSpace = inline.WhiteSpace;

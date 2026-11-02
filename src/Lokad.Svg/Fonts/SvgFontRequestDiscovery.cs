@@ -642,7 +642,7 @@ internal static class SvgFontRequestDiscovery
 
     private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, InlineStyle styleSheet, SvgPaintResourceSelection? resources, CancellationToken cancellationToken, out string? specifiedWhiteSpace)
     {
-        InlineStyle inlineStyle = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
+        InlineStyle inlineStyle = SvgInlineStyleParser.Read(reader, cancellationToken, true);
         SvgComputedStyle computedStyle = SvgComputedStyle.Resolve(reader, inlineStyle, styleSheet).ResolveOpacity(inherited.ElementOpacity).ResolveDisplay(inherited.ElementDisplay);
         specifiedWhiteSpace = SvgInlineStyleParser.MergeWithImportance(inlineStyle.WhiteSpace, inlineStyle.Important, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important);
         if (reader.LocalName is "svg" or "defs" or "use" || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))

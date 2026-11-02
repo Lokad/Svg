@@ -583,5 +583,9 @@
       "unsupportedPropertyName": "text-align",
       "diagnosticEmitter": "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs"
     }
-  ]
+  ],
+  "subsequentClosure": {
+    "record": "static-css.json",
+    "scope": "Static interaction selectors, inert float and XML style parsing diagnostics close; default faux-art/mail become exact. Earlier source-baseline measurements remain historical evidence."
+  }
 }

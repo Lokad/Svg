@@ -29,7 +29,7 @@ internal static class SvgResourceUseReplay
         CancellationToken token = context.CancellationToken;
         SvgElementAttributePolicy.ValidateUse(reader, token);
         if (!allowMask && SvgLocalUrl.ReadReference(reader, "mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
-        InlineStyle inline = SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), token);
+        InlineStyle inline = SvgInlineStyleParser.ReadUse(reader, token);
         context = context with { AuthoredStyle = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet) };
         if (SvgLocalReferenceParser.ParseUse(reader, context, inline, state.Strings, bases.Width, bases.Height, state) is not {} reference)
         {

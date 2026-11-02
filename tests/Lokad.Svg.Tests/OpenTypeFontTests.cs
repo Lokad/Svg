@@ -2941,9 +2941,11 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(0, source.RequestCount);
     }
 
-    [Fact]
+    [Theory]
     [Trait("Layer", "Contract")]
-    public async Task Svg_based_snapshot_rejects_an_unsupported_late_stylesheet_before_font_acquisition()
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Svg_based_snapshot_distinguishes_inactive_and_unsupported_late_rules_before_acquisition(bool inactive)
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
         string hash = Convert.ToHexString(SHA256.HashData(bytes));
@@ -2951,10 +2953,20 @@ public sealed partial class OpenTypeFontTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
 
-        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1'/><style>rect:hover { fill: red; }</style><text font-family='Unused'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-        Assert.Equal(0, source.RequestCount);
+        string selector = inactive ? "rect:hover" : "rect:nth-child(2)";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1'/><style>" + selector + " { fill: red; }</style><text font-family='Unused'>x</text></svg>");
+        if (inactive)
+        {
+            using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync(input, catalog, new CountingFontProvider(source), CancellationToken.None);
+            Assert.Single(fonts.Fonts);
+            Assert.Equal(1, source.RequestCount);
+        }
+        else
+        {
+            SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(input, catalog, new CountingFontProvider(source), CancellationToken.None));
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+            Assert.Equal(0, source.RequestCount);
+        }
     }
 
     [Fact]

@@ -147,7 +147,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
                 {
                     InlineStyle sheet = SvgStyleSheet.Resolve(reader, rules, ancestors, token);
                     paint = reader.LocalName == "use"
-                        ? SvgComputedStyle.Resolve(reader, SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), token), sheet)
+                        ? SvgComputedStyle.Resolve(reader, SvgInlineStyleParser.ReadUse(reader, token), sheet)
                         : SvgComputedStyleResolver.Resolve(reader, sheet, token, true);
                 }
                 paint = paint.ResolveDisplay(parent.ElementDisplay);

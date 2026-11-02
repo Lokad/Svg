@@ -21,8 +21,8 @@ internal static class SvgSymbolContentParser
         id = id is null ? null : state.Strings.Copy(id);
         if (definitionRoot) state.SymbolId = id;
         InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, state, token);
-        InlineStyle inline = reader.LocalName == "use" ? SvgInlineStyleParser.ParseUse(reader.GetAttribute("style"), token)
-            : SvgInlineStyleParser.Parse(reader.GetAttribute("style"), token, true);
+        InlineStyle inline = reader.LocalName == "use" ? SvgInlineStyleParser.ReadUse(reader, token)
+            : SvgInlineStyleParser.Read(reader, token, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet);
         _ = SvgPaintResolver.ResolveFallbacks(ref style, state.PaintResources, colors, reader.LocalName);
         SvgPaintOpacity? strokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);

@@ -10,7 +10,7 @@ internal static class SvgGroupParser
         if (reader.LocalName == "switch") SvgElementAttributePolicy.ValidateSwitch(reader, cancellationToken);
         else SvgElementAttributePolicy.ValidateGroup(reader, cancellationToken);
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
-        InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), cancellationToken, true);
+        InlineStyle inline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet).ResolveOpacity(context.InheritedPresentation.ElementOpacity).ResolveDisplay(context.InheritedPresentation.ElementDisplay);
         SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, context.StyleSheet, context.InheritedPresentation, context.InheritedFillRule, context.InheritedTextStyle, context.InheritedStroke, namedColors, state.PaintResources, cancellationToken);
         if (style.Fill is not null && resolved.Presentation.PaintServerFill is string fill)

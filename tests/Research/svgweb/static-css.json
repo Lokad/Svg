@@ -1,0 +1,921 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "3554ad7a762cd28a89f001838251b69ebdc2a999",
+  "scope": "Static SVG image styling: absent hover/active/focus states, inert float, and shared source-aware XML style parsing. Ordinary cascade, rendering arithmetic, public signatures and ownership remain unchanged. Root background/border paint and physical geometry units remain separate open work.",
+  "specifications": [
+    "https://www.w3.org/TR/SVG2/conform.html#processing-modes",
+    "https://www.w3.org/TR/selectors-4/#useraction-pseudos"
+  ],
+  "implementation": [
+    "../../../src/Lokad.Svg/Parsing/SvgCssSelectorSyntax.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgStyleSheet.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgRootStyleSheetParser.cs"
+  ],
+  "sharedModel": [
+    "Compound syntax identifies hover, active, focus, focus-visible and focus-within with ordinary class specificity; matching remains false in static image conversion. Other or malformed pseudo syntax remains explicit unsupported input.",
+    "Selectors are admitted before declaration semantics. Inactive-only blocks keep bounded declaration syntax/size and rule counts, but parse no paint, font or URL semantics. A list containing an active selector retains ordinary declaration admission.",
+    "Inactive rule records retain neither selector nor declaration strings and do not enable the ancestor tracker. Parsed rule count still includes them; no quota is bypassed.",
+    "Float has no surrounding SVG image box flow and is inert through the common inline parser. Root backgrounds and borders are visibly different and are not ignored.",
+    "Three XML style-reader entry points preserve existing presentation, geometry and local-use admission while attaching the style attribute on parser failure. All direct XML style consumers use them; string/span mechanisms remain direct.",
+    "Stylesheet collection captures the declaring opening element before consuming content. Attribute failures retain their attribute location; declaration/selector failures retain the style element. Existing source diagnostics are never overwritten."
+  ],
+  "mechanisms": {
+    "test": "../../Lokad.Svg.Tests/SvgStaticCssTests.cs",
+    "cases": 23,
+    "roles": [
+      "Six interaction-name/case and specificity cases",
+      "Five other or malformed pseudo boundaries",
+      "Inactive descendant/child rules cannot select font/resource/paint behavior",
+      "Mixed selector lists still validate active declarations",
+      "Inert float preserves geometry",
+      "Inactive bookkeeping retains no selector/value/ancestor state",
+      "Rule-count and declaration-size boundaries retain cleanup",
+      "Root, geometry and stylesheet error locations identify their declaring source"
+    ],
+    "existingContracts": "Former public/late hover inputs remain exact static output assertions. The late stylesheet cleanup test retains an unsupported functional selector. Snapshot qualification separately preserves rejection-before-acquisition and valid inactive-rule acquisition."
+  },
+  "preparation": {
+    "test": "../../Lokad.Svg.Tests/OpenTypeFontTests.TraversalMetadata.cs",
+    "responsibility": "One selected supplied font, no inactive family acquisition and exact prepared replay. Existing raw snapshot acceptance/refusal-before-acquisition remains separate. No fixture/API cross product or new owner."
+  },
+  "failingBefore": {
+    "core": {
+      "selected": 20,
+      "failed": 14,
+      "seconds": 6.499072199920192,
+      "librarySha256": "d1f06059efe9faefd7a5ad787ae66366c9ca921db09cc7d88de0c54e1ec64716"
+    },
+    "canonicalRendering": {
+      "failed": 1,
+      "seconds": 6.1243080999702215,
+      "librarySha256": "1eddfa7497ff51069472193fbeb491966d61cb8705a993309cc9d6319d42ca92"
+    },
+    "focusedAfter": {
+      "selected": 314,
+      "failed": 0,
+      "seconds": 6.11270619998686,
+      "librarySha256": "1ab4ce6c0d2d0c2cc8ebc12da4dfc2cb81de1f8b8bfbd923346657e9865b178b"
+    },
+    "timingInterpretation": "Selections differ. These functional runner times include startup and do not establish a performance improvement."
+  },
+  "rendering": {
+    "test": "../../Lokad.Svg.VisualTests/SvgMetadataAttributeReferenceTests.cs",
+    "manifest": "../metadata-attributes/capture.json",
+    "newCanonicalCases": 1,
+    "freshNativeCapturesBeforeImplementation": 6,
+    "existingReferenceChanges": 0,
+    "responsibility": "One own CC0 image protects inactive simple/compound/ancestor states, an inactive external URL/unsupported property, a mixed selector list, gradient/local sources and inert root/group float."
+  },
+  "originals": {
+    "files": 204,
+    "seconds": 64.32683459995314,
+    "hosts": {
+      "windows": {
+        "UnsupportedFeature": 42,
+        "rendered": 159,
+        "MalformedInput": 3
+      },
+      "linux": {
+        "UnsupportedFeature": 42,
+        "rendered": 159,
+        "MalformedInput": 3
+      }
+    },
+    "previousExactPngsUnchangedPerHost": 157,
+    "newAdmissionReview": [
+      {
+        "name": "circles1.svg",
+        "sourceSha256": "32b93f88e6bdfdbe053142fba23a1afc8a48125890daa8c882aa5554fc155aed",
+        "sourceBytes": 678,
+        "outcome": "UnsupportedFeature",
+        "diagnosticElement": "circle",
+        "diagnosticAttribute": "",
+        "sourceBodiesRetained": 0,
+        "diagnosticValuesRetained": 0
+      },
+      {
+        "name": "faux-art.svg",
+        "sourceSha256": "acda01733d4a1a89b1d59b3859d06a188d9a73cb8e1d47f06afd131457c87817",
+        "sourceBytes": 5503,
+        "outcome": "rendered",
+        "diagnosticElement": null,
+        "diagnosticAttribute": null,
+        "sourceBodiesRetained": 0,
+        "diagnosticValuesRetained": 0,
+        "logicalViewport": {
+          "Width": 148,
+          "Height": 200
+        },
+        "pixelDimensions": [
+          148,
+          200
+        ],
+        "candidatePngSha256": "c99c78da6e61df6abcc0a83b6501dbd7ad5707201920e1662e0ffa7281690655",
+        "captureContext": "Unmodified hosted source in native image mode. No CSS, geometry, metadata or static state changes.",
+        "hosts": {
+          "windows": {
+            "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "captures": [
+              {
+                "pngSha256": "a07c6ebbb4eb19898fb65c65050ce96dddf864ae7021df662303372e531bae54",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "a07c6ebbb4eb19898fb65c65050ce96dddf864ae7021df662303372e531bae54",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "a07c6ebbb4eb19898fb65c65050ce96dddf864ae7021df662303372e531bae54",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ]
+          },
+          "linux": {
+            "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "captures": [
+              {
+                "pngSha256": "a07c6ebbb4eb19898fb65c65050ce96dddf864ae7021df662303372e531bae54",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "a07c6ebbb4eb19898fb65c65050ce96dddf864ae7021df662303372e531bae54",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "a07c6ebbb4eb19898fb65c65050ce96dddf864ae7021df662303372e531bae54",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "mail.svg",
+        "sourceSha256": "1c8ef5528e884229921196bf3e005a949ada628d39061a27f0a18935a1dbabb4",
+        "sourceBytes": 388,
+        "outcome": "rendered",
+        "diagnosticElement": null,
+        "diagnosticAttribute": null,
+        "sourceBodiesRetained": 0,
+        "diagnosticValuesRetained": 0,
+        "logicalViewport": {
+          "Width": 300,
+          "Height": 150
+        },
+        "pixelDimensions": [
+          300,
+          150
+        ],
+        "candidatePngSha256": "69881a3d6b12ed2b635e9d28785ff2b6d15442b56dd35ba7ccf56b1fc675b498",
+        "captureContext": "Unmodified hosted source in native image mode. No CSS, geometry, metadata or static state changes.",
+        "hosts": {
+          "windows": {
+            "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+            "captures": [
+              {
+                "pngSha256": "74bce39b17a36d1af03410645abcce5d2db30c54b043fa3acebeeb692d457566",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "74bce39b17a36d1af03410645abcce5d2db30c54b043fa3acebeeb692d457566",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "74bce39b17a36d1af03410645abcce5d2db30c54b043fa3acebeeb692d457566",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ]
+          },
+          "linux": {
+            "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+            "captures": [
+              {
+                "pngSha256": "74bce39b17a36d1af03410645abcce5d2db30c54b043fa3acebeeb692d457566",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "74bce39b17a36d1af03410645abcce5d2db30c54b043fa3acebeeb692d457566",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              },
+              {
+                "pngSha256": "74bce39b17a36d1af03410645abcce5d2db30c54b043fa3acebeeb692d457566",
+                "changedPixels": 0,
+                "maximumChannelError": 0,
+                "startupHealth": "healthy",
+                "profileCleaned": true
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "metadataAndCompleteDiagnosticAudit": {
+      "all204MetadataChanges": [
+        {
+          "name": "circles1.svg",
+          "host": "windows",
+          "fields": [
+            "dimensions",
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn",
+            "messageSha256"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "circle",
+          "attribute": ""
+        },
+        {
+          "name": "circles1.svg",
+          "host": "linux",
+          "fields": [
+            "dimensions",
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn",
+            "messageSha256"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "circle",
+          "attribute": ""
+        },
+        {
+          "name": "faux-art.svg",
+          "host": "windows",
+          "fields": [
+            "outcome",
+            "dimensions",
+            "messageSha256"
+          ],
+          "outcome": "rendered",
+          "element": null,
+          "attribute": null
+        },
+        {
+          "name": "faux-art.svg",
+          "host": "linux",
+          "fields": [
+            "outcome",
+            "dimensions",
+            "messageSha256"
+          ],
+          "outcome": "rendered",
+          "element": null,
+          "attribute": null
+        },
+        {
+          "name": "helloworld.svg",
+          "host": "windows",
+          "fields": [
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "svg",
+          "attribute": "style"
+        },
+        {
+          "name": "helloworld.svg",
+          "host": "linux",
+          "fields": [
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "svg",
+          "attribute": "style"
+        },
+        {
+          "name": "mail.svg",
+          "host": "windows",
+          "fields": [
+            "outcome",
+            "dimensions",
+            "messageSha256"
+          ],
+          "outcome": "rendered",
+          "element": null,
+          "attribute": null
+        },
+        {
+          "name": "mail.svg",
+          "host": "linux",
+          "fields": [
+            "outcome",
+            "dimensions",
+            "messageSha256"
+          ],
+          "outcome": "rendered",
+          "element": null,
+          "attribute": null
+        },
+        {
+          "name": "mysvg.svg",
+          "host": "windows",
+          "fields": [
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "svg",
+          "attribute": "style"
+        },
+        {
+          "name": "mysvg.svg",
+          "host": "linux",
+          "fields": [
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "svg",
+          "attribute": "style"
+        },
+        {
+          "name": "ny1.svg",
+          "host": "windows",
+          "fields": [
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "style",
+          "attribute": ""
+        },
+        {
+          "name": "ny1.svg",
+          "host": "linux",
+          "fields": [
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "style",
+          "attribute": ""
+        },
+        {
+          "name": "photos.svg",
+          "host": "windows",
+          "fields": [
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "svg",
+          "attribute": "style"
+        },
+        {
+          "name": "photos.svg",
+          "host": "linux",
+          "fields": [
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "svg",
+          "attribute": "style"
+        },
+        {
+          "name": "svg2009.svg",
+          "host": "windows",
+          "fields": [
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "text",
+          "attribute": "style"
+        },
+        {
+          "name": "svg2009.svg",
+          "host": "linux",
+          "fields": [
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn"
+          ],
+          "outcome": "UnsupportedFeature",
+          "element": "text",
+          "attribute": "style"
+        }
+      ],
+      "all204FullDiagnosticHashChanges": [
+        {
+          "name": "circles1.svg",
+          "host": "windows"
+        },
+        {
+          "name": "circles1.svg",
+          "host": "linux"
+        },
+        {
+          "name": "helloworld.svg",
+          "host": "windows"
+        },
+        {
+          "name": "helloworld.svg",
+          "host": "linux"
+        },
+        {
+          "name": "mysvg.svg",
+          "host": "windows"
+        },
+        {
+          "name": "mysvg.svg",
+          "host": "linux"
+        },
+        {
+          "name": "ny1.svg",
+          "host": "windows"
+        },
+        {
+          "name": "ny1.svg",
+          "host": "linux"
+        },
+        {
+          "name": "photos.svg",
+          "host": "windows"
+        },
+        {
+          "name": "photos.svg",
+          "host": "linux"
+        },
+        {
+          "name": "svg2009.svg",
+          "host": "windows"
+        },
+        {
+          "name": "svg2009.svg",
+          "host": "linux"
+        }
+      ],
+      "previous157ExactPngsUnchangedPerHost": true,
+      "sourceBodiesRetained": 0,
+      "diagnosticValuesRetained": 0,
+      "assertedExpectedMetadataTransitions": true,
+      "assertedExpectedCompleteDiagnosticTransitions": true
+    },
+    "sourceBodiesRetained": 0,
+    "diagnosticValuesRetained": 0,
+    "closure": "Default faux-art.svg and mail.svg outcomes are exact on both hosts. The circles1.svg hover gate is closed; its physical coordinate lengths remain unsupported and the original stays open."
+  },
+  "rootBoxReview": {
+    "status": "Diagnostic only; root CSS box features are not admitted by this milestone.",
+    "host": "windows",
+    "capturesPerCase": 1,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "ownControlRecipe": "16x16 SVG image, lime rectangle at (4,4) with size 8x8; vary only root/shape/nested viewport styles or interaction rules. All source strings are own controls, not hosted content.",
+    "cases": [
+      {
+        "name": "plain",
+        "edgeRgba": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "shapeRgba": [
+          0,
+          255,
+          0,
+          255
+        ],
+        "pngSha256": "e85a8974b656f05ebd7c544f7c22e48650b704f5e1454405cf2404a0185ff36f",
+        "limeGeometryBounds": [
+          4,
+          4,
+          12,
+          12
+        ]
+      },
+      {
+        "name": "root-background",
+        "edgeRgba": [
+          255,
+          0,
+          0,
+          255
+        ],
+        "shapeRgba": [
+          0,
+          255,
+          0,
+          255
+        ],
+        "pngSha256": "622a9c66d1a03eed0c9c43a6fdb147fbb185d8a94885df212ddee723b0560f47",
+        "limeGeometryBounds": [
+          4,
+          4,
+          12,
+          12
+        ]
+      },
+      {
+        "name": "root-border",
+        "edgeRgba": [
+          255,
+          0,
+          0,
+          255
+        ],
+        "shapeRgba": [
+          0,
+          255,
+          0,
+          255
+        ],
+        "pngSha256": "eff77cdc3754489069c1f71d3fd455af84fab9499af227e3e20b89fd26cb7f49",
+        "limeGeometryBounds": [
+          7,
+          7,
+          15,
+          15
+        ]
+      },
+      {
+        "name": "root-float",
+        "edgeRgba": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "shapeRgba": [
+          0,
+          255,
+          0,
+          255
+        ],
+        "pngSha256": "e85a8974b656f05ebd7c544f7c22e48650b704f5e1454405cf2404a0185ff36f",
+        "limeGeometryBounds": [
+          4,
+          4,
+          12,
+          12
+        ]
+      },
+      {
+        "name": "shape-background",
+        "edgeRgba": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "shapeRgba": [
+          0,
+          255,
+          0,
+          255
+        ],
+        "pngSha256": "e85a8974b656f05ebd7c544f7c22e48650b704f5e1454405cf2404a0185ff36f",
+        "limeGeometryBounds": [
+          4,
+          4,
+          12,
+          12
+        ]
+      },
+      {
+        "name": "nested-background",
+        "edgeRgba": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "shapeRgba": [
+          0,
+          255,
+          0,
+          255
+        ],
+        "pngSha256": "e85a8974b656f05ebd7c544f7c22e48650b704f5e1454405cf2404a0185ff36f",
+        "limeGeometryBounds": [
+          4,
+          4,
+          12,
+          12
+        ]
+      },
+      {
+        "name": "hover",
+        "edgeRgba": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "shapeRgba": [
+          0,
+          255,
+          0,
+          255
+        ],
+        "pngSha256": "e85a8974b656f05ebd7c544f7c22e48650b704f5e1454405cf2404a0185ff36f",
+        "limeGeometryBounds": [
+          4,
+          4,
+          12,
+          12
+        ]
+      },
+      {
+        "name": "focus-active",
+        "edgeRgba": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "shapeRgba": [
+          0,
+          255,
+          0,
+          255
+        ],
+        "pngSha256": "e85a8974b656f05ebd7c544f7c22e48650b704f5e1454405cf2404a0185ff36f",
+        "limeGeometryBounds": [
+          4,
+          4,
+          12,
+          12
+        ]
+      }
+    ],
+    "findings": [
+      "Root background-color:red paints the transparent exterior while leaving the geometry bounds unchanged.",
+      "Root border:3px solid red paints and shifts geometry from [4,4,12,12] to [7,7,15,15]; a border cannot be implemented as a cosmetic overlay.",
+      "Non-root background, float and inactive interaction controls leave this image unchanged.",
+      "Root box paint, content origin, clipping, sizing, viewBox fitting and opacity require one explicit model with independent controls."
+    ]
+  },
+  "remainingGeometry": {
+    "diagnostic": {
+      "name": "circles1.svg",
+      "sourceSha256": "32b93f88e6bdfdbe053142fba23a1afc8a48125890daa8c882aa5554fc155aed",
+      "outcome": "UnsupportedFeature",
+      "elementCounts": {
+        "svg": 1,
+        "style": 1,
+        "g": 1,
+        "circle": 3
+      },
+      "committedDiagnosticCandidates": [
+        {
+          "committedPrefix": "Only bare-number and px rectangle coordinates are implemented.",
+          "path": "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs",
+          "line": 85
+        }
+      ],
+      "messageSha256": "5df84b54251617fd637bed0b27b3b06998828628090f28bf57fd01ab4e0e6e61",
+      "sourceBodiesRetained": 0,
+      "diagnosticValuesRetained": 0
+    },
+    "lengthMetadata": [
+      {
+        "attributeNames": [
+          "cx",
+          "cy",
+          "r",
+          "style",
+          "transform"
+        ],
+        "lengthUnitKinds": {
+          "cx": "unit:cm",
+          "cy": "unit:cm",
+          "r": "number"
+        }
+      },
+      {
+        "attributeNames": [
+          "cx",
+          "cy",
+          "r",
+          "style",
+          "transform"
+        ],
+        "lengthUnitKinds": {
+          "cx": "unit:cm",
+          "cy": "unit:cm",
+          "r": "number"
+        }
+      },
+      {
+        "attributeNames": [
+          "cx",
+          "cy",
+          "r",
+          "style",
+          "transform"
+        ],
+        "lengthUnitKinds": {
+          "cx": "unit:cm",
+          "cy": "unit:cm",
+          "r": "number"
+        }
+      }
+    ],
+    "nextAction": "Review the shared geometry length resolver against existing root/marker/stroke fixed-unit conversion. Resolve centimetre centres without global float-rounding changes or a source-specific exception; the current reader misleadingly names rectangles for circle failures."
+  },
+  "qualification": [
+    {
+      "host": "windows",
+      "target": "net11.0",
+      "role": "Full core",
+      "selection": "FullyQualifiedName~Lokad.Svg",
+      "passed": 36326,
+      "total": 36326,
+      "seconds": 54.20637240004726,
+      "librarySha256": "1ab4ce6c0d2d0c2cc8ebc12da4dfc2cb81de1f8b8bfbd923346657e9865b178b",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "linux",
+      "target": "net11.0",
+      "role": "Full core",
+      "selection": "FullyQualifiedName~Lokad.Svg",
+      "passed": 36326,
+      "total": 36326,
+      "seconds": 53.733650432000005,
+      "librarySha256": "1ab4ce6c0d2d0c2cc8ebc12da4dfc2cb81de1f8b8bfbd923346657e9865b178b",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "windows",
+      "target": "net11.0",
+      "role": "Full rendering",
+      "selection": "FullyQualifiedName~Lokad.Svg",
+      "passed": 46506,
+      "total": 46507,
+      "seconds": 67.63449309999123,
+      "librarySha256": "1ab4ce6c0d2d0c2cc8ebc12da4dfc2cb81de1f8b8bfbd923346657e9865b178b",
+      "exitCode": 1,
+      "knownUnchangedBaselineException": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "target": "net11.0",
+      "role": "Full rendering",
+      "selection": "FullyQualifiedName~Lokad.Svg",
+      "passed": 46507,
+      "total": 46507,
+      "seconds": 223.248027808,
+      "librarySha256": "1ab4ce6c0d2d0c2cc8ebc12da4dfc2cb81de1f8b8bfbd923346657e9865b178b",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "windows",
+      "target": "net10.0",
+      "role": "Affected styles, selectors, diagnostics, preparation and public contracts",
+      "selection": "FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~Inactive_css|FullyQualifiedName~Svg_based_snapshot_distinguishes|FullyQualifiedName~SvgStyleSheetTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~PublicContractTests",
+      "passed": 316,
+      "total": 316,
+      "seconds": 6.996262599946931,
+      "librarySha256": "8ebb64296f4445fdabff0b237939d2c77b8bb2ab44c23c7be2dae55625e8c7b2",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "linux",
+      "target": "net10.0",
+      "role": "Affected styles, selectors, diagnostics, preparation and public contracts",
+      "selection": "FullyQualifiedName~SvgStaticCssTests|FullyQualifiedName~Inactive_css|FullyQualifiedName~Svg_based_snapshot_distinguishes|FullyQualifiedName~SvgStyleSheetTests|FullyQualifiedName~SvgCssSelectorTests|FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~PublicContractTests",
+      "passed": 316,
+      "total": 316,
+      "seconds": 8.709853340000002,
+      "librarySha256": "8ebb64296f4445fdabff0b237939d2c77b8bb2ab44c23c7be2dae55625e8c7b2",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "windows",
+      "target": "net10.0",
+      "role": "Canonical metadata references",
+      "selection": "FullyQualifiedName~SvgMetadataAttributeReferenceTests",
+      "passed": 4,
+      "total": 4,
+      "seconds": 7.257821399951354,
+      "librarySha256": "8ebb64296f4445fdabff0b237939d2c77b8bb2ab44c23c7be2dae55625e8c7b2",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "linux",
+      "target": "net10.0",
+      "role": "Canonical metadata references",
+      "selection": "FullyQualifiedName~SvgMetadataAttributeReferenceTests",
+      "passed": 4,
+      "total": 4,
+      "seconds": 8.60744622,
+      "librarySha256": "8ebb64296f4445fdabff0b237939d2c77b8bb2ab44c23c7be2dae55625e8c7b2",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    }
+  ],
+  "packages": {
+    "identity": "0.4.0-dev.1; local qualification, never published",
+    "files": [
+      {
+        "file": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "569197ec070c26c3a223d52897f5318b1a84438c558d98128054cc3befe40ad2",
+        "librarySha256": {
+          "net10.0": "8ebb64296f4445fdabff0b237939d2c77b8bb2ab44c23c7be2dae55625e8c7b2",
+          "net11.0": "1ab4ce6c0d2d0c2cc8ebc12da4dfc2cb81de1f8b8bfbd923346657e9865b178b"
+        }
+      },
+      {
+        "file": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "f45be43c7a1e5773cb08f12d8fde7668f36fc79b7875078e452df7d3f870e7be"
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 7.100872999988496
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 68.1645043999888
+      }
+    ],
+    "scope": "Installed net10/net11 Windows/Linux consumers, package/symbol and dependency checks, host memory/font/HTTP/resource/output contracts, refusal, cancellation, cleanup and retry."
+  },
+  "unchanged": [
+    "Published 0.3.0",
+    "Existing reference and font bytes",
+    "Text layout, shaping, fitting and rendering arithmetic",
+    "API signatures and ownership matrices",
+    "Windows DejaVu frozen reference and assertion; user authority remains pending"
+  ],
+  "remaining": [
+    "W1 physical geometry lengths, root CSS box paint, text-transform/text-align, other attributes, seventeen supplied-font gates, resource/XML/child groups",
+    "P0/P2/P4/P5/P6/P7; no new full CI or release-completion claim"
+  ]
+}

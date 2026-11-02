@@ -140,7 +140,7 @@ internal static class SvgSymbolContentRenderer
         {
             if (source is null) return inheritedContext.TextStyle;
             using SvgRetainedTextSource.Reader attributes = source.OpenReader(0, token); attributes.MoveToContent();
-            InlineStyle inline = SvgInlineStyleParser.Parse(attributes.GetAttribute("style"), token, true);
+            InlineStyle inline = SvgInlineStyleParser.Read(attributes, token, true);
             InlineStyle sheet = attributes.StyleSheet;
             SvgComputedStyle computed = SvgComputedStyle.Resolve(attributes, inline, sheet);
             SvgInheritedPresentation inherited = new(inheritedContext.Paint, inheritedContext.Displayed, inheritedContext.Visible, SvgAffineTransform.Identity)

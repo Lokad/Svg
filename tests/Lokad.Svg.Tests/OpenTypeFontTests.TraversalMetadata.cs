@@ -6,6 +6,24 @@ public sealed partial class OpenTypeFontTests
 {
     [Fact]
     [Trait("Layer", "Contract")]
+    public async Task Inactive_css_preserves_one_selected_font_and_prepared_replay()
+    {
+        const string inactive = "g:hover text, text:focus{font-family:Unused;unsupported-paint:1}";
+        string markup = "<svg xmlns='http://www.w3.org/2000/svg' width='48' height='24' style='float:right'><style>text{font-family:Example;font-size:12px}"
+            + inactive + "</style><g><text x='2' y='14'>AA</text></g></svg>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(markup);
+        byte[] control = System.Text.Encoding.UTF8.GetBytes(markup.Replace(inactive, "", StringComparison.Ordinal).Replace(" style='float:right'", "", StringComparison.Ordinal));
+        (var catalog, var provider, var source) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot controlFonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        byte[] expected = SvgConverter.ConvertToPng(control, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, controlFonts), CancellationToken.None).ToArray();
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, source.RequestCount);
+    }
+
+    [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Retained_script_markers_spend_the_original_node_allowance_before_later_geometry()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='24'><text id='t' font-family='Example' font-size='12'>A<script/>A</text><rect width='1' height='1'/><rect width='1' height='1'/></svg>"u8.ToArray();

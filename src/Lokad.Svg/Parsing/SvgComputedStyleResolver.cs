@@ -13,8 +13,8 @@ internal static class SvgComputedStyleResolver
 
     private static InlineStyle ReadInline(XmlReader reader, CancellationToken token, bool directText)
         => SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)
-            ? SvgInlineStyleParser.ParseGeometry(reader.GetAttribute("style"), token)
-            : SvgInlineStyleParser.Parse(reader.GetAttribute("style"), token, directText);
+            ? SvgInlineStyleParser.ReadGeometry(reader, token)
+            : SvgInlineStyleParser.Read(reader, token, directText);
 
     internal static SvgComputedStyle Resolve(XmlReader reader, CancellationToken cancellationToken)
         => Resolve(reader, default, cancellationToken);

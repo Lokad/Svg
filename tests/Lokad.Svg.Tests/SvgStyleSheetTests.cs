@@ -397,11 +397,17 @@ public sealed class SvgStyleSheetTests
     public void Partial_late_stylesheet_rejection_releases_parser_storage()
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
-        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><rect id='box' width='8' height='8'/><style>#box{fill:blue}.box:hover{fill:red}</style></svg>"u8.ToArray();
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><rect id='box' width='8' height='8'/><style>#box{fill:blue}.box:nth-child(2){fill:red}</style></svg>"u8.ToArray();
         SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
+
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void Late_inactive_interaction_rules_preserve_the_preceding_cascade()
+        => AssertPixelsEqual("<svg xmlns='http://www.w3.org/2000/svg'><rect id='box' width='8' height='8' fill='blue'/></svg>"u8.ToArray(),
+            "<svg xmlns='http://www.w3.org/2000/svg'><rect id='box' width='8' height='8'/><style>#box{fill:blue}.box:hover{fill:red}</style></svg>"u8.ToArray(), SvgRenderOptions.Default);
 
     [Trait("Layer", "Mechanism")]
     [Theory]

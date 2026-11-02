@@ -2590,7 +2590,7 @@ public sealed class SvgRootParserTests
         Assert.True(reader.Read());
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using SvgDocumentState state = new(budget, CancellationToken.None);
-        state.StyleRules.Add(new CssRule(".selected", new(0, 1, 0), default, false));
+        state.StyleRules.Add(new CssRule(".selected", new(0, 1, 0), default, false, false));
         SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, null, null);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRenderedLeafParser.TryParse(reader, true, root, state, SvgRenderLimits.Default, budget, new Dictionary<string, SvgColor>(), null, CancellationToken.None));
@@ -2606,7 +2606,7 @@ public sealed class SvgRootParserTests
         using System.Xml.XmlReader reader = System.Xml.XmlReader.Create(new System.IO.StringReader("<svg xmlns='http://www.w3.org/2000/svg'><rect class='" + classValue + "'/></svg>"));
         Assert.True(reader.Read());
         Assert.True(reader.Read());
-        CssRule rule = new(".selected", new(0, 1, 0), default, false);
+        CssRule rule = new(".selected", new(0, 1, 0), default, false, false);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser, CancellationToken.None);
         using SvgCssAncestorContext ancestors = new(rules, budget, CancellationToken.None);

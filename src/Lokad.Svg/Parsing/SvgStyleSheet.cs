@@ -20,15 +20,47 @@ internal static class SvgStyleSheet
             if (openingBrace < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet rules must contain a declaration block.");
             int closingBrace = FindCharacter(value, '}', openingBrace + 1, cancellationToken);
             if (closingBrace < 0 || ContainsCharacter(value, '{', openingBrace + 1, closingBrace, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested stylesheet rules are not implemented.");
-            InlineStyle style = SvgInlineStyleParser.ParseStyleSheet(value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1), strings, cancellationToken);
+            int firstRule = rules.Count;
+            bool hasActiveSelector = false;
             CssSelectorListReader selectors = new(value.AsSpan(position, openingBrace - position), cancellationToken);
             while (selectors.TryRead(out ReadOnlySpan<char> selector))
             {
                 if (rules.Count >= maximumRules) throw new SvgException(SvgErrorCode.LimitExceeded, "Stylesheet rule count exceeds the configured structural limit.");
-                rules.Add(ParseSelector(selector, style, strings, cancellationToken));
+                CssRule rule = ParseSelector(selector, strings, cancellationToken);
+                hasActiveSelector |= !rule.IsInactive;
+                rules.Add(rule);
             }
+            ReadOnlySpan<char> declarations = value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1);
+            if (hasActiveSelector)
+            {
+                InlineStyle style = SvgInlineStyleParser.ParseStyleSheet(declarations, strings, cancellationToken);
+                for (int index = firstRule; index < rules.Count; index++)
+                    if (!rules[index].IsInactive) rules[index] = rules[index] with { Style = style };
+            }
+            else SvgInlineStyleParser.ValidateInactiveRule(declarations, cancellationToken);
             position = closingBrace + 1;
         }
+
+        static CssRule ParseSelector(ReadOnlySpan<char> selector, BudgetedParserStringStore strings, CancellationToken cancellationToken)
+        {
+            if (selector.Length > SvgSyntaxLimits.MaximumCssSelectorCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "CSS selectors exceed the configured syntax limit.");
+            CssSelectorTokenReader tokens = new(selector, cancellationToken);
+            if (!tokens.TryRead(out ReadOnlySpan<char> pattern) || pattern.SequenceEqual(">")) throw Unsupported();
+            CssSpecificity specificity = SvgCssSelectorSyntax.Specificity(pattern, cancellationToken, out bool inactive);
+            bool combinator = false;
+            while (tokens.TryRead(out pattern))
+            {
+                if (pattern.SequenceEqual(">") && !tokens.TryRead(out pattern)) throw Unsupported();
+                if (pattern.SequenceEqual(">")) throw Unsupported();
+                specificity += SvgCssSelectorSyntax.Specificity(pattern, cancellationToken, out bool componentInactive);
+                inactive |= componentInactive;
+                combinator = true;
+            }
+            return new CssRule(inactive ? string.Empty : strings.Copy(selector), specificity, default, combinator, inactive);
+
+            static SvgException Unsupported() => new(SvgErrorCode.UnsupportedFeature, "Selector combinators require a compound selector on each side.");
+        }
+
     }
 
     internal static InlineStyle Resolve(XmlReader reader, BudgetedParserList<CssRule> rules, SvgCssAncestorContext ancestors, CancellationToken cancellationToken)
@@ -215,25 +247,6 @@ internal static class SvgStyleSheet
         }
     }
 
-    private static CssRule ParseSelector(ReadOnlySpan<char> selector, InlineStyle style, BudgetedParserStringStore strings, CancellationToken cancellationToken)
-    {
-        if (selector.Length > SvgSyntaxLimits.MaximumCssSelectorCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "CSS selectors exceed the configured syntax limit.");
-        CssSelectorTokenReader tokens = new(selector, cancellationToken);
-        if (!tokens.TryRead(out ReadOnlySpan<char> pattern) || pattern.SequenceEqual(">")) throw Unsupported();
-        CssSpecificity specificity = SvgCssSelectorSyntax.Specificity(pattern, cancellationToken);
-        bool combinator = false;
-        while (tokens.TryRead(out pattern))
-        {
-            if (pattern.SequenceEqual(">") && !tokens.TryRead(out pattern)) throw Unsupported();
-            if (pattern.SequenceEqual(">")) throw Unsupported();
-            specificity += SvgCssSelectorSyntax.Specificity(pattern, cancellationToken);
-            combinator = true;
-        }
-        return new CssRule(strings.Copy(selector), specificity, style, combinator);
-
-        static SvgException Unsupported() => new(SvgErrorCode.UnsupportedFeature, "Selector combinators require a compound selector on each side.");
-    }
-
     internal static void ValidateIdentifierValue(string value)
     {
         if (value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");
@@ -343,15 +356,15 @@ internal static class SvgStyleSheet
     }
 }
 
-internal readonly record struct CssRule(string Selector, CssSpecificity Specificity, InlineStyle Style, bool HasCombinator)
+internal readonly record struct CssRule(string Selector, CssSpecificity Specificity, InlineStyle Style, bool HasCombinator, bool IsInactive)
 {
     internal bool Matches(SvgCssElement element, SvgCssAncestorContext ancestors, CancellationToken token)
-        => HasCombinator
+        => !IsInactive && (HasCombinator
             ? SvgCssSelectorSyntax.MatchesChain(Selector, element, ancestors, token)
-            : SvgCssSelectorSyntax.Matches(Selector.AsSpan(), element, token);
+            : SvgCssSelectorSyntax.Matches(Selector.AsSpan(), element, token));
 
     internal bool MatchesRoot(string? id, string? classes, CancellationToken token)
-        => !HasCombinator && SvgCssSelectorSyntax.Matches(Selector.AsSpan(), new("svg", id, classes, true), token);
+        => !IsInactive && !HasCombinator && SvgCssSelectorSyntax.Matches(Selector.AsSpan(), new("svg", id, classes, true), token);
 }
 
 /// <summary>Owns the temporary budget reservation for a comment-stripped stylesheet copy.</summary>

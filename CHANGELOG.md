@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Admit inactive hover/active/focus selectors and inert float declarations in SVG
+  images. Share inline-style source diagnostics and preserve stylesheet locations.
 - Ignore inert event attributes and character-data script elements during static
   conversion. Preserve switch/pattern selection, lexical node accounting and text
   boundaries without executing scripts, resolving their URLs or retaining bodies.

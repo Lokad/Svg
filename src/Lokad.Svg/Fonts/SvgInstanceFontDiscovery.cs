@@ -191,8 +191,8 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         SvgInheritedContainer Resolve(XmlReader reader, SvgInheritedContainer inherited, out SvgComputedStyle computed)
         {
             bool geometry = SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName);
-            InlineStyle inline = geometry ? SvgInlineStyleParser.ParseGeometry(reader.GetAttribute("style"), _token)
-                : SvgInlineStyleParser.Parse(reader.GetAttribute("style"), _token, true);
+            InlineStyle inline = geometry ? SvgInlineStyleParser.ReadGeometry(reader, _token)
+                : SvgInlineStyleParser.Read(reader, _token, true);
             InlineStyle sheet = reader is SvgRetainedTextSource.Reader retained ? retained.StyleSheet : default;
             computed = SvgComputedStyle.Resolve(reader, inline, sheet);
             if (geometry)
@@ -258,7 +258,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 if (resource && visit.Index == root)
                 {
                     resolved = visit.Context;
-                    InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), _token, true);
+                    InlineStyle inline = SvgInlineStyleParser.Read(reader, _token, true);
                     computed = SvgComputedStyle.Resolve(reader, inline, reader.StyleSheet);
                 }
                 else resolved = Resolve(reader, visit.Context, out computed);
@@ -340,7 +340,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         SvgElementAttributePolicy.ValidateMask(reader, _token);
         if (reader.GetAttribute("id") is not {} id || !_ids.TryGetValue(id, out int index) || _nodes[index].Kind != Kind.Mask) return;
         _token.ThrowIfCancellationRequested();
-        InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), _token, true);
+        InlineStyle inline = SvgInlineStyleParser.Read(reader, _token, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet);
         SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, sheet,
             inherited.Presentation with { IsDisplayed = definitionResourcesDisplayed, Transform = SvgAffineTransform.Identity, TextMetrics = default }, inherited.FillRule,
@@ -401,7 +401,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 if (!active.TryAdd(visit.Index, true)) active.Replace(visit.Index, true);
                 SvgRetainedTextSource source = node.Source ?? throw new InvalidOperationException("A mask target requires retained tokens.");
                 using SvgRetainedTextSource.Reader reader = source.OpenReader(0, owner._token); reader.MoveToContent();
-                InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), owner._token, true);
+                InlineStyle inline = SvgInlineStyleParser.Read(reader, owner._token, true);
                 SvgComputedStyle computed = SvgComputedStyle.Resolve(reader, inline, reader.StyleSheet);
                 SvgInheritedContainer resolved = visit.Index == root ? visit.Context : SvgContainerInheritance.Resolve(reader, inline, computed, reader.StyleSheet,
                     visit.Context.Presentation, visit.Context.FillRule, visit.Context.TextStyle, visit.Context.Stroke,
@@ -498,7 +498,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 using SvgRetainedTextSource.Reader reader = source.OpenReader(0, _token); reader.MoveToContent();
                 stack[^1] = visit with { Kind = VisitKind.Exit };
                 if (node.Kind == Kind.Text) { AddText(reader, visit.Context, addFace, addPaint, addFilter, AddMask, coverage); continue; }
-                InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), _token, true);
+                InlineStyle inline = SvgInlineStyleParser.Read(reader, _token, true);
                 SvgComputedStyle computed = SvgComputedStyle.Resolve(reader, inline, reader.StyleSheet);
                 SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, computed, reader.StyleSheet,
                     visit.Context.Presentation, visit.Context.FillRule, visit.Context.TextStyle, visit.Context.Stroke,

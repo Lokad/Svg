@@ -158,6 +158,59 @@
           "referenceSha256": "f9b01c478d699e723b8860053359c3811af9c96129a9278fc500fdf9c7af50a5"
         }
       }
+    },
+    {
+      "id": "static-css-state",
+      "input": "static-css-state.svg",
+      "inputSha256": "6e708d4d59804c94c7b9a004f84b9b8e44ed7237a0d8e0e99406898febd8d98a",
+      "sourceBaseline": "3554ad7a762cd28a89f001838251b69ebdc2a999",
+      "context": "Original CC0 static SVG image with inactive interaction rules and inert float declarations; fresh native captures frozen before admission changes.",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "11f0b263ba331a13a90848f56666259472d3adf364858c6ddae26564fd239111",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "11f0b263ba331a13a90848f56666259472d3adf364858c6ddae26564fd239111",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "11f0b263ba331a13a90848f56666259472d3adf364858c6ddae26564fd239111",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/static-css-state.png",
+          "referenceSha256": "11f0b263ba331a13a90848f56666259472d3adf364858c6ddae26564fd239111"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "11f0b263ba331a13a90848f56666259472d3adf364858c6ddae26564fd239111",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "11f0b263ba331a13a90848f56666259472d3adf364858c6ddae26564fd239111",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "11f0b263ba331a13a90848f56666259472d3adf364858c6ddae26564fd239111",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/static-css-state.png",
+          "referenceSha256": "11f0b263ba331a13a90848f56666259472d3adf364858c6ddae26564fd239111"
+        }
+      }
     }
   ],
   "schemaVersion": 1,

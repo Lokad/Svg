@@ -257,6 +257,13 @@ children. Specificity, source order, inline priority, inheritance and `!importan
 apply. Empty/comment-only stylesheets are no-ops. Comments preserve token boundaries
 and quoted text; namespace declarations on style/defs are accepted.
 
+`:hover`, `:active`, `:focus`, `:focus-visible` and `:focus-within` are admitted
+as inactive states in image conversion. Such components retain class specificity;
+their rules cannot select paint, fonts or resources. Inactive-only rule blocks
+still obey declaration syntax/size and rule-count limits. A selector list with an
+active member validates the shared declarations normally. `float` is inert;
+SVG image conversion has no surrounding box flow.
+
 Properties cover paint/color/opacity, strokes/dashes, fill/clip rules, display/
 visibility, paint order, filter, markers, overflow, root sizing and the typography
 below. Admission depends on target/location; [location contracts](../tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs)
@@ -279,14 +286,14 @@ Token rules:
 - Length numbers and units form contiguous tokens. Lists retain required values
   around commas and reject leading/repeated/trailing commas. Transform functions
   may be comma/whitespace separated; SVG function/enumeration names retain case.
-- Scalars and inline property values have a 256-character authored bound, checked
-  before trimming. Gradient stop/color limits retain their authored tokens.
+- Scalars and inline property values have 256-character token bounds.
+  Gradient stop/color limits retain their authored tokens.
 - Local href/URL fragments decode UTF-8 percent escapes once; malformed escapes,
   invalid UTF-8 and encoded ASCII whitespace reject. URL function names and filter
   `none` ignore ASCII case; identifiers do not. Surrounding/trailing URI padding is
   accepted, but leading whitespace inside quoted URIs and fragment whitespace reject.
 
-Imports, media/supports rules, pseudo selectors, sibling selectors, layout,
+Imports, media/supports rules, other pseudo selectors, sibling selectors, layout,
 variables, animation and CSS web-font acquisition are unsupported.
 
 ### Markers and filters

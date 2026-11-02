@@ -1,4 +1,4 @@
-# Inert attributes and script content
+# Static image admission
 
 The original CC0 [source](descriptive-titles.svg) retains aliased XLink titles on
 the root, definitions, a gradient, source geometry, group and local use. Some
@@ -39,3 +39,13 @@ retain font acquisition, ignored-character accounting and the original node char
 the existing cancellation test also covers script consumption. Element children
 remain unsupported. [Original outcomes and qualification](../svgweb/inert-scripts.json)
 record the unmodified hosted source without retaining its payload.
+
+The CC0 [CSS control](static-css-state.svg) retains inactive hover/active/focus
+rules, a mixed selector list, an unused external URL and root/group float. One
+canonical conversion matches six native captures frozen before implementation.
+[Direct mechanisms](../../Lokad.Svg.Tests/SvgStaticCssTests.cs) separate selector
+syntax/specificity, bounds, inactive storage and style-error locations. The
+representative font contract preserves one acquisition and prepared replay;
+snapshot admission retains its own acceptance and rejection-before-acquisition
+cases. [Native outcomes and shared-model review](../svgweb/static-css.json)
+close two hosted float cases and keep geometry lengths/root CSS box paint open.

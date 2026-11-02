@@ -1,3 +1,5 @@
+using System.Xml;
+
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents the supported specified-style declarations before cascade resolution.</summary>
@@ -77,7 +79,37 @@ internal enum InlineImportantProperties : long
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
 internal static class SvgInlineStyleParser
 {
-    private enum Target : byte { Presentation, DirectText, Geometry, LocalUse, StyleSheet }
+    private enum Target : byte { Presentation, DirectText, Geometry, LocalUse, StyleSheet, InactiveRule }
+
+    /// <summary>Reads borrowed inline declarations, attaching their style attribute location on syntax/admission failure.</summary>
+    internal static InlineStyle Read(XmlReader reader, CancellationToken token, bool allowsDirectTextFontProperties)
+        => ReadCore(reader, token, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
+
+    /// <summary>Reads geometry declarations with the same source ownership and diagnostics as other inline styles.</summary>
+    internal static InlineStyle ReadGeometry(XmlReader reader, CancellationToken token)
+        => ReadCore(reader, token, Target.Geometry);
+
+    /// <summary>Reads local-use declarations without changing their distinct admission rules.</summary>
+    internal static InlineStyle ReadUse(XmlReader reader, CancellationToken token)
+        => ReadCore(reader, token, Target.LocalUse);
+
+    private static InlineStyle ReadCore(XmlReader reader, CancellationToken token, Target target)
+    {
+        string? value = reader.GetAttribute("style");
+        if (value is null) return default;
+        try { return ParseCore(value.AsSpan(), token, null, target); }
+        catch (SvgException exception)
+        {
+            reader.MoveToElement();
+            SvgSourceContext.Attach(reader, exception, "style", value);
+            throw;
+        }
+    }
+
+    /// <summary>Checks bounded declaration syntax and cancellation for rules that cannot match a static image.
+    /// Values have no font, paint or resource semantics and allocate no retained strings.</summary>
+    internal static void ValidateInactiveRule(ReadOnlySpan<char> declarations, CancellationToken token)
+        => _ = ParseCore(declarations, token, null, Target.InactiveRule);
     internal static InlineStyle Parse(string? value, CancellationToken cancellationToken)
         => value is null ? default : Parse(value.AsSpan(), cancellationToken);
 
@@ -120,6 +152,11 @@ internal static class SvgInlineStyleParser
             if (separator <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
             ReadOnlySpan<char> property = declaration[..separator].Trim(SvgCssWhitespace.Characters);
             ReadOnlySpan<char> propertyValue = declaration[(separator + 1)..].Trim(SvgCssWhitespace.Characters);
+            if (target == Target.InactiveRule)
+            {
+                if (property.Length > SvgSyntaxLimits.MaximumValueTokenCharacters || propertyValue.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Inline style property names and values exceed the configured syntax limit.");
+                continue;
+            }
             if (propertyValue.Contains(':') && !property.Equals("font-family", StringComparison.OrdinalIgnoreCase))
                 throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
             if (property.Length > SvgSyntaxLimits.MaximumValueTokenCharacters || propertyValue.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Inline style property names and values exceed the configured syntax limit.");
@@ -194,7 +231,8 @@ internal static class SvgInlineStyleParser
             else if (allowsDirectTextFontProperties && property.Equals("letter-spacing", StringComparison.OrdinalIgnoreCase)) Set(ref letterSpacing, InlineImportantProperties.LetterSpacing, property, propertyValue, strings, ref important, false);
             else if (allowsDirectTextFontProperties && property.Equals("word-spacing", StringComparison.OrdinalIgnoreCase)) Set(ref wordSpacing, InlineImportantProperties.WordSpacing, property, propertyValue, strings, ref important, false);
             else if (allowsDirectTextFontProperties && property.Equals("text-decoration", StringComparison.OrdinalIgnoreCase)) Set(ref textDecoration, InlineImportantProperties.TextDecoration, property, propertyValue, strings, ref important, false);
-            else if (property.Equals("pointer-events", StringComparison.OrdinalIgnoreCase) || property.Equals("cursor", StringComparison.OrdinalIgnoreCase)) { } // UI behavior never affects static pixels.
+            else if (property.Equals("pointer-events", StringComparison.OrdinalIgnoreCase) || property.Equals("cursor", StringComparison.OrdinalIgnoreCase)
+                || property.Equals("float", StringComparison.OrdinalIgnoreCase)) { } // No UI state or surrounding box flow exists in an SVG image.
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
         return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, WordSpacing = wordSpacing, TextDecoration = textDecoration, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, ClipRule = clipRule, PaintOrder = paintOrder, MarkerStart = markerStart, MarkerMid = markerMid, MarkerEnd = markerEnd, Filter = filter, Overflow = overflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, Important = important };

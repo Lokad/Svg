@@ -51,6 +51,11 @@ Non-executing script bodies share one bounded subtree consumer across preparatio
 resource/font discovery and lowering. Retained text stores an empty marker instead
 of script values, preserving lexical counts and surrounding text nodes. Text reads
 use the same structural-limit object and absolute depth checks as ordinary traversal.
+CSS selector syntax identifies absent interaction state before interpreting a rule's
+declarations. Inactive rows keep only bounded rule bookkeeping, without selector/
+value strings or enabling ancestor tracking. Mixed selector lists retain ordinary cascade
+and declaration validation. Inline style readers share one diagnostic boundary;
+stylesheet collection captures its opening element before consuming text.
 
 Solid, linear, radial and pattern polygon bindings use one
 [contour payload](../src/Lokad.Svg/Parsing/SvgPolygonContours.cs) for points, contour
