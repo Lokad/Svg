@@ -20,8 +20,8 @@ public sealed class SvgCanvasBackgroundOwnershipTests
         {
             Assert.Equal((26, 17), (surface.Width, surface.Height));
             Assert.Equal(179, surface.Pixels[3]);
-            Assert.Equal(90, surface.Pixels[(10 * 26 + 25) * 4 + 3]);
-            Assert.Equal(45, surface.Pixels[(16 * 26 + 25) * 4 + 3]);
+            Assert.Equal(new byte[] { 176, 62, 28, 45 }, surface.Pixels.AsSpan((10 * 26 + 25) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 185, 46, 23, 11 }, surface.Pixels.AsSpan((16 * 26 + 25) * 4, 4).ToArray());
             expected = surface.Pixels.ToArray();
         }
         long peak = 26 * 17 * 4;

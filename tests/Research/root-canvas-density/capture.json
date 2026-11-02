@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "dddeea148a7a7a1a14aaab8a988c4294c5133d99",
+  "captureRecipeRevision": "3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "mode": "explicit-image-viewport-with-device-density",
+  "cases": [
+    {
+      "id": "transparent-edge",
+      "input": "../root-css-box/canvas-empty.svg",
+      "inputSha256": "631f4994fc8beb48796e73388ffda969e9fab7b0e8ce653b30faad6e4c33a2ab",
+      "width": 26,
+      "height": 17,
+      "imageViewport": {
+        "width": 17,
+        "height": 11
+      },
+      "outputScale": 1.5,
+      "background": "transparent",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/transparent-edge.png",
+          "referenceSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/transparent-edge.png",
+          "referenceSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830"
+        }
+      }
+    },
+    {
+      "id": "white-edge",
+      "input": "../root-css-box/canvas-empty.svg",
+      "inputSha256": "631f4994fc8beb48796e73388ffda969e9fab7b0e8ce653b30faad6e4c33a2ab",
+      "width": 26,
+      "height": 17,
+      "imageViewport": {
+        "width": 17,
+        "height": 11
+      },
+      "outputScale": 1.5,
+      "background": "white",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "07d9d9b13bf1143e3fcb8af3a59a20d248975cb1ad86da5c9fb488e25522cca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "07d9d9b13bf1143e3fcb8af3a59a20d248975cb1ad86da5c9fb488e25522cca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "07d9d9b13bf1143e3fcb8af3a59a20d248975cb1ad86da5c9fb488e25522cca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/white-edge.png",
+          "referenceSha256": "07d9d9b13bf1143e3fcb8af3a59a20d248975cb1ad86da5c9fb488e25522cca6"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "07d9d9b13bf1143e3fcb8af3a59a20d248975cb1ad86da5c9fb488e25522cca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "07d9d9b13bf1143e3fcb8af3a59a20d248975cb1ad86da5c9fb488e25522cca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "07d9d9b13bf1143e3fcb8af3a59a20d248975cb1ad86da5c9fb488e25522cca6",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/white-edge.png",
+          "referenceSha256": "07d9d9b13bf1143e3fcb8af3a59a20d248975cb1ad86da5c9fb488e25522cca6"
+        }
+      }
+    },
+    {
+      "id": "fractional-edge",
+      "input": "fractional.svg",
+      "inputSha256": "8b25ff57e50254012580d687bcbb93ebcc918d3d68d67ae60cd54cd1c28cde84",
+      "width": 26,
+      "height": 17,
+      "imageViewport": {
+        "width": 17.4,
+        "height": 11.4
+      },
+      "outputScale": 1.5,
+      "background": "transparent",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-edge.png",
+          "referenceSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-edge.png",
+          "referenceSha256": "44cb87805c326f573ddd6377f0809f91f9b4c76024d716d1e923c13b00aa3830"
+        }
+      }
+    }
+  ]
+}

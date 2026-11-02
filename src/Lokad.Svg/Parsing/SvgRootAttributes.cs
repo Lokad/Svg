@@ -8,6 +8,7 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
 {
     internal SvgPaintOpacity SourceOpacity { get; init; }
     internal SvgSolidPaint CanvasBackground { get; init; }
+    internal SvgRootBoxLayout BoxLayout { get; init; }
     internal string? ClipRule { get; init; }
 
     /// <summary>Supplies the explicit containing viewport for percentage root dimensions during lowering.</summary>
@@ -19,16 +20,17 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
     internal double? UserViewportHeight => ViewBox?.Height ?? SvgDocumentSizing.ResolveViewportSide(Height, ContainingViewport?.Height, 150);
 
     /// <summary>Applies the collected root stylesheet before inherited presentation and intrinsic dimensions are resolved.</summary>
-    internal static SvgRootAttributes Parse(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, BudgetedParserList<CssRule> rules, SvgPaintResourceSelection? resources, CancellationToken cancellationToken)
+    internal static SvgRootAttributes Parse(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, SvgPaintResourceSelection? resources, CancellationToken cancellationToken)
     {
         SvgElementAttributePolicy.ValidateRoot(reader, cancellationToken);
         InlineStyle sheet = SvgRootStyleSheetParser.ResolveRoot(reader.GetAttribute("id"), reader.GetAttribute("class"), rules, cancellationToken);
-        return ParseValues(reader, namedColors, sheet, resources, cancellationToken);
+        InlineStyle inline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
+        SvgRootAttributes root = ParseValues(reader, namedColors, inline, sheet, resources, cancellationToken);
+        return root with { BoxLayout = SvgRootBoxSyntax.Resolve(reader, inline, rules, strings, cancellationToken) };
     }
 
-    private static SvgRootAttributes ParseValues(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, InlineStyle sheet, SvgPaintResourceSelection? resources, CancellationToken cancellationToken)
+    private static SvgRootAttributes ParseValues(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, InlineStyle inline, InlineStyle sheet, SvgPaintResourceSelection? resources, CancellationToken cancellationToken)
     {
-        InlineStyle inline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, sheet).ResolveOpacity(SvgPaintOpacity.Opaque).ResolveDisplay(SvgDisplay.Inline);
         _ = SvgPaintResolver.ResolveFallbacks(ref style, resources, namedColors, reader.LocalName);
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, null, true, true, namedColors);

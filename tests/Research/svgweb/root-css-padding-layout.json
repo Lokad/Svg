@@ -1,0 +1,451 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "dddeea148a7a7a1a14aaab8a988c4294c5133d99",
+  "status": "Shared root padding placement, independent image/content clip coverage and canvas edge coverage qualified; root border painting remains open.",
+  "specifications": [
+    "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/layout/svg/layout_svg_root.cc",
+    "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/paint/svg_root_painter.cc",
+    "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/paint/paint_property_tree_builder.cc",
+    "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/paint/view_painter.cc"
+  ],
+  "sharedModel": [
+    "Keep CSS box paint in its density/destination map, SVG content in a fitted viewBox/box-inset map, and the natural image boundary independent of both. Never cancel a viewBox transform to recover box coordinates.",
+    "Resolve padding on the CSS 1/64 layout grid. All four percentages use the rounded natural image container width. Logical dimensions, SVG percentage bases and text coordinates stay unchanged.",
+    "SVGRootPainter projects document content through the snapped outer CSS box. The CSS content clip snaps separately before density; preparation and rendering share the same content map.",
+    "Canvas rectangle AA combines with image-boundary coverage before one solid-color store, independently of source opacity and visibility. Packed constant-shader coverage gives different alpha/RGB at fractional edges. Retain the background box independently of SVG content.",
+    "Analytic image/content rectangle clips keep independent AA coverage even when geometrically coincident; only their integer enclosure intersects geometrically. They borrow coverage without an output-sized mask. Their scopes restore without requiring an owned reservation; source/filter capture bounds retain their own stages.",
+    "Retain one optional declaration source per specified style, rather than per-edge fields throughout retained text. Matching/root tokens use the existing budgeted string owner; resolved scene metadata owns no strings."
+  ],
+  "tests": {
+    "mechanism": "../../Lokad.Svg.Tests/SvgRootBoxLayoutTests.cs",
+    "mechanismCases": 27,
+    "bitmapBoundaryMechanism": "../../Lokad.Svg.Tests/SvgAlphaBoundaryMechanismTests.cs",
+    "bitmapBoundaryCases": 2,
+    "ownership": "../../Lokad.Svg.Tests/SvgRootPaddingOwnershipTests.cs",
+    "ownershipCases": 1,
+    "ownershipBound": "One output surface plus less than4096bytes of frame metadata; refusal refunds all allowance and retry reuses the same host.",
+    "preparedText": "../../Lokad.Svg.Tests/OpenTypeFontTests.TraversalMetadata.cs",
+    "preparedTextCases": 1,
+    "canonicalPadding": "../../Lokad.Svg.VisualTests/SvgRootPaddingReferenceTests.cs",
+    "canonicalPaddingCases": 10,
+    "canonicalCanvasEdges": "../../Lokad.Svg.VisualTests/SvgCanvasDensityReferenceTests.cs",
+    "canonicalCanvasEdgeCases": 3,
+    "manifests": [
+      "../root-padding/capture.json",
+      "../root-canvas-density/capture.json",
+      "../root-box-layout/capture.json"
+    ],
+    "capturesPerContextPerHost": 3,
+    "clipIntersectionMechanism": "../../Lokad.Svg.Tests/SvgOpaqueBitmapClipTests.cs",
+    "clipIntersectionCases": 4,
+    "healthyNativeReceipts": 78,
+    "specifiedPaddingIntent": "padding-quantized-zero retains an independent CSS content clip although .001px resolves to zero; equal layout extents do not make the no-padding path equivalent.",
+    "binaryRegionMechanism": "../../Lokad.Svg.Tests/SvgBinaryClipRectanglesTests.cs",
+    "binaryRegionIntersectionCases": 1
+  },
+  "failingBefore": {
+    "rootPadding": {
+      "baselineLibrarySha256": "b891b4be145637c5b838016fffa65ec3075b7746651b4a0dc2d300722f17a7e3",
+      "outcome": "UnsupportedFeature",
+      "originalFrozenInputs": [
+        "padding-130",
+        "padding-132"
+      ],
+      "priorEvidence": "root-css-box-layout.json",
+      "cases": [
+        {
+          "id": "padding-viewbox",
+          "inputSha256": "0bde83840bbf23e3a9aa025bad723afe390b54919df1c28d4a6ef2a5c4211f48",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'padding' is not implemented."
+        },
+        {
+          "id": "padding-source-alpha",
+          "inputSha256": "c9de97f2139c8deec32b57207ff62e8c7b8312ecb2b9d29c615aa8a9c85811fb",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'padding' is not implemented."
+        },
+        {
+          "id": "padding-clip-density",
+          "inputSha256": "cf9d10e2e232428b0adf3e8a11c04cfb2fe6c13b37cf1a0de1488ee56072874b",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'padding' is not implemented."
+        },
+        {
+          "id": "padding-percent",
+          "inputSha256": "568c1781c8dd9a3f2f97ee6bc2b2ab75856d9dde261b0c89c652e3b9a3b4f06b",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'padding' is not implemented."
+        },
+        {
+          "id": "padding-empty",
+          "inputSha256": "8f8344c2750a3ba4146ccb61d76096721f703c940aaf5b6f8a71dec3621b7422",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'padding' is not implemented."
+        },
+        {
+          "id": "padding-priority",
+          "inputSha256": "95b9a9c8c1ac95e28bfc37b0f4b9be816bebee4f79cb53ac22f2b40bde830942",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'padding' is not implemented."
+        },
+        {
+          "id": "padding-130",
+          "inputSha256": "170abc071af60e4510c346577fd9dc6bfe7546a3d337479502d78c11946bcafc",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'padding' is not implemented."
+        },
+        {
+          "id": "padding-132",
+          "inputSha256": "990bd938e6c93e0009eba11a4f51d35eaa79ac7296b1cb0d09b77186ff0aa72a",
+          "outcome": "UnsupportedFeature",
+          "message": "Inline style property 'padding' is not implemented."
+        }
+      ]
+    },
+    "initialPlacementCandidate": {
+      "librarySha256": "d0531885c0c3475e733da4e07211d0df084b48aa20ce00e957b19866becf9f4e",
+      "contexts": [
+        {
+          "id": "padding-130",
+          "changedPixels": 4,
+          "maximumAlphaError": 50
+        },
+        {
+          "id": "padding-132",
+          "changedPixels": 4,
+          "maximumAlphaError": 49
+        }
+      ],
+      "reason": "An SVG translation plus an unsnapped clip omitted outer-box projection and multiplied coverage again."
+    },
+    "canvasFactory": {
+      "librarySha256": "10909df01c37ab631f493274c423c12c52234dda2f86b8e84420dafebd36141a",
+      "contexts": [
+        {
+          "id": "padding-empty",
+          "changedPixels": 42,
+          "maximumChannelError": 6,
+          "alphaChangedPixels": 0
+        },
+        {
+          "id": "transparent-edge",
+          "changedPixels": 42,
+          "maximumAlphaError": 45
+        },
+        {
+          "id": "white-edge",
+          "changedPixels": 42,
+          "maximumChannelError": 39,
+          "maximumAlphaError": 0
+        }
+      ],
+      "referencesChanged": false
+    },
+    "zeroBitmapCoverage": {
+      "sourceAlpha": 255,
+      "coverage": 0,
+      "destinationBefore": [
+        43,
+        86,
+        129,
+        172
+      ],
+      "destinationAfter": [
+        43,
+        85,
+        128,
+        172
+      ]
+    },
+    "coincidentClipIntersection": {
+      "librarySha256": "f183670bcc04e322ce315f95b7eda7292b3b9300f053783e9636a1f3e63040a9",
+      "input": "../root-padding/padding-coincident-clips.svg",
+      "changedPixels": 42,
+      "maximumChannelError": 70,
+      "sampleCoordinates": [
+        [
+          0,
+          0
+        ],
+        [
+          25,
+          0
+        ],
+        [
+          0,
+          16
+        ],
+        [
+          25,
+          16
+        ]
+      ],
+      "nativeRgba": [
+        [
+          0,
+          255,
+          0,
+          255
+        ],
+        [
+          19,
+          179,
+          115,
+          160
+        ],
+        [
+          14,
+          200,
+          82,
+          112
+        ],
+        [
+          17,
+          172,
+          122,
+          46
+        ]
+      ],
+      "candidateRgba": [
+        [
+          0,
+          255,
+          0,
+          255
+        ],
+        [
+          11,
+          212,
+          64,
+          192
+        ],
+        [
+          6,
+          230,
+          38,
+          160
+        ],
+        [
+          9,
+          220,
+          52,
+          88
+        ]
+      ],
+      "cause": "Geometrically intersecting coincident image/content clips discarded one AA multiplication. Independent rectangle coverage restores exact edges and corners."
+    },
+    "binaryRegionIntersection": {
+      "librarySha256": "50dc242ff0273b34b8ebd5d1a2ae9831dbf84d54e7976c22c3336c43b710a28d",
+      "mechanism": "Analytic_binary_region_intersects_both_borrowed_rectangles",
+      "child": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "parent": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "expectedEnclosure": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "actualEnclosure": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "cause": "The binary region iterator still enumerated only the child rectangle. It now intersects both rectangles for its enclosure, while AA readers multiply them separately."
+    }
+  },
+  "qualification": {
+    "runs": [
+      {
+        "name": "root-padding-milestone-3-core-windows-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg",
+        "seconds": 83.3,
+        "total": 36417,
+        "passed": 36417,
+        "failed": [],
+        "librarySha256": "8f60474191c33ecc1cb0fbe93c77d413b5ebbe99a6834dba29f0515c18d8fb37"
+      },
+      {
+        "name": "root-padding-milestone-3-core-linux-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg",
+        "seconds": 67.897,
+        "total": 36417,
+        "passed": 36417,
+        "failed": [],
+        "librarySha256": "8f60474191c33ecc1cb0fbe93c77d413b5ebbe99a6834dba29f0515c18d8fb37"
+      },
+      {
+        "name": "root-padding-milestone-3-native-windows-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg",
+        "seconds": 105.896,
+        "total": 46539,
+        "passed": 46538,
+        "failed": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ],
+        "librarySha256": "8f60474191c33ecc1cb0fbe93c77d413b5ebbe99a6834dba29f0515c18d8fb37"
+      },
+      {
+        "name": "root-padding-milestone-3-native-linux-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg",
+        "seconds": 200.485,
+        "total": 46539,
+        "passed": 46539,
+        "failed": [],
+        "librarySha256": "8f60474191c33ecc1cb0fbe93c77d413b5ebbe99a6834dba29f0515c18d8fb37"
+      },
+      {
+        "name": "root-padding-compat-3-core-windows-net10.0",
+        "selection": "FullyQualifiedName~SvgRootBoxLayoutTests|FullyQualifiedName~SvgRootImageMapTests|FullyQualifiedName~SvgCanvasBackground|FullyQualifiedName~SvgRootPaddingOwnershipTests|FullyQualifiedName~Root_padding_validates_before_acquisition|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgOpaqueBitmapClipTests|FullyQualifiedName~SvgBinaryClipRectanglesTests|FullyQualifiedName~PublicContractTests",
+        "seconds": 18.026,
+        "total": 1470,
+        "passed": 1470,
+        "failed": [],
+        "librarySha256": "b0ff5ab8b1b465ff44afa9da4cceccbb2d857223e7e02354ab8230b6162ac992"
+      },
+      {
+        "name": "root-padding-compat-3-core-linux-net10.0",
+        "selection": "FullyQualifiedName~SvgRootBoxLayoutTests|FullyQualifiedName~SvgRootImageMapTests|FullyQualifiedName~SvgCanvasBackground|FullyQualifiedName~SvgRootPaddingOwnershipTests|FullyQualifiedName~Root_padding_validates_before_acquisition|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgOpaqueBitmapClipTests|FullyQualifiedName~SvgBinaryClipRectanglesTests|FullyQualifiedName~PublicContractTests",
+        "seconds": 27.384,
+        "total": 1470,
+        "passed": 1470,
+        "failed": [],
+        "librarySha256": "b0ff5ab8b1b465ff44afa9da4cceccbb2d857223e7e02354ab8230b6162ac992"
+      },
+      {
+        "name": "root-padding-compat-3-native-windows-net10.0",
+        "selection": "FullyQualifiedName~SvgRootPaddingReferenceTests|FullyQualifiedName~SvgCanvasBackgroundReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~SvgCanvasDensityReferenceTests|FullyQualifiedName~DevToolsConnectionTests|FullyQualifiedName~ChromeDiagnosticsTests|FullyQualifiedName~ChromeProcessTests",
+        "seconds": 19.648,
+        "total": 69,
+        "passed": 69,
+        "failed": [],
+        "librarySha256": "b0ff5ab8b1b465ff44afa9da4cceccbb2d857223e7e02354ab8230b6162ac992"
+      },
+      {
+        "name": "root-padding-compat-3-native-linux-net10.0",
+        "selection": "FullyQualifiedName~SvgRootPaddingReferenceTests|FullyQualifiedName~SvgCanvasBackgroundReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~SvgCanvasDensityReferenceTests|FullyQualifiedName~DevToolsConnectionTests|FullyQualifiedName~ChromeDiagnosticsTests|FullyQualifiedName~ChromeProcessTests",
+        "seconds": 31.417,
+        "total": 69,
+        "passed": 69,
+        "failed": [],
+        "librarySha256": "b0ff5ab8b1b465ff44afa9da4cceccbb2d857223e7e02354ab8230b6162ac992"
+      }
+    ],
+    "originalReplay": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 81.09867109986953,
+      "librarySha256": "8f60474191c33ecc1cb0fbe93c77d413b5ebbe99a6834dba29f0515c18d8fb37",
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 40,
+            "rendered": 161,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyExactPngs": 161,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 40,
+            "rendered": 161,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyExactPngs": 161,
+          "changedOriginals": []
+        }
+      }
+    },
+    "originalSemanticAudit": {
+      "windows": {
+        "reportsWithUnchangedSemantics": 204,
+        "previouslyExactPngsByteIdentical": 161,
+        "changes": {
+          "outcome": [],
+          "dimensions": [],
+          "options": [],
+          "runtime": [],
+          "sourceDiagnosticSha256": [],
+          "fontDiagnosticSha256": [],
+          "messageSha256": []
+        }
+      },
+      "linux": {
+        "reportsWithUnchangedSemantics": 204,
+        "previouslyExactPngsByteIdentical": 161,
+        "changes": {
+          "outcome": [],
+          "dimensions": [],
+          "options": [],
+          "runtime": [],
+          "sourceDiagnosticSha256": [],
+          "fontDiagnosticSha256": [],
+          "messageSha256": []
+        }
+      }
+    },
+    "packages": {
+      "version": "0.4.0-dev.1",
+      "published": false,
+      "files": [
+        {
+          "fileName": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "14ba5de31fd4c1abf7c1aba2e33ac48ae5d6d3af71b99e97aa24cc4d1171322f"
+        },
+        {
+          "fileName": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "19c0810caa6de0790f6ae087c13a2816ee75c7200a37eb2e800c6e0043e486f1"
+        }
+      ],
+      "assets": {
+        "net11.0": "8f60474191c33ecc1cb0fbe93c77d413b5ebbe99a6834dba29f0515c18d8fb37",
+        "net10.0": "b0ff5ab8b1b465ff44afa9da4cceccbb2d857223e7e02354ab8230b6162ac992"
+      },
+      "runtimeDependencies": 0,
+      "installedConsumers": [
+        {
+          "host": "windows",
+          "exitCode": 0,
+          "seconds": 12.766090200049803
+        },
+        {
+          "host": "linux",
+          "exitCode": 0,
+          "seconds": 81.48371179983951
+        }
+      ],
+      "scope": "Both runtimes on Windows/Linux; memory, HTTP/font/resource/output ownership, refusal/cancellation/refund/retry. Released0.3.0 unchanged."
+    },
+    "windowsDejaVu": {
+      "id": "dejavu",
+      "host": "windows",
+      "changedPixels": 75,
+      "maximumError": 17,
+      "alphaChangedPixels": 75,
+      "actualPngSha256": "71b1b8cd1159dab06d982aef86b48f4968838bb5ba699122962d0947f901dc34",
+      "frozenPngSha256": "d00220c0ab28b9805f43e7e86cda6165573021fb7dd7e2964531052d45c95b39",
+      "librarySha256": "8f60474191c33ecc1cb0fbe93c77d413b5ebbe99a6834dba29f0515c18d8fb37"
+    },
+    "limitations": "Full Windows native sweep retains solely the unchanged75-pixel DejaVu reference conflict. User authority remains pending; no reference/assertion changes or new green exact-head CI claim. Functional runner times include startup and concurrency; no benchmark or speed claim."
+  },
+  "remaining": [
+    "Implement root border paint/insets as one coherent follow-up using these shared box/content stages, including opacity placement, visibility, joins and fractional sizing/density.",
+    "Fourteen border-dependent controls in root-box-layout remain unadmitted. The complete mysvg original and all204 must be qualified after that change.",
+    "Root filters and root clip paths remain explicit scope refusals."
+  ]
+}

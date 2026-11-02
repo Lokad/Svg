@@ -232,7 +232,7 @@ internal static class SvgFontRequestDiscovery
                     TextStyle style;
                     if (inheritedLevels.Count == 0)
                     {
-                        SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, styleRules, paintResources, cancellationToken);
+                        SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, styleRules, styleStrings, paintResources, cancellationToken);
                         rootWidth = root.UserViewportWidth;
                         rootHeight = root.UserViewportHeight;
                         style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.Paint, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Transform, null, root.InheritedStroke.Stroke) { Markers = root.InheritedPresentation.Markers, OwnOpacity = root.InheritedPresentation.ElementOpacity, ElementDisplay = root.InheritedPresentation.ElementDisplay, PaintServerFill = root.InheritedPresentation.PaintServerFill, StrokeStyle = root.InheritedStroke, PaintOrder = root.InheritedPresentation.PaintOrder };

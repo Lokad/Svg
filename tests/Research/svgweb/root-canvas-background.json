@@ -859,5 +859,6 @@
     "Font bytes, text shaping/layout/fitting",
     "Existing reference images and exact tolerances",
     "Independent Windows DejaVu reference/assertion; authority question remains pending"
-  ]
+  ],
+  "implementationFollowUp": "root-css-padding-layout.json"
 }

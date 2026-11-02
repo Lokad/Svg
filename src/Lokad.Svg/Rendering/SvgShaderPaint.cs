@@ -93,6 +93,7 @@ internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byt
     /// Covered source and destination products remain together until the final shift.</remarks>
     internal void BlendBitmap(Span<byte> destination, byte coverage)
     {
+        if (coverage == 0) return;
         if (coverage == 255)
         {
             SvgConverter.BlendPremultipliedOver(destination, Red, Green, Blue, Alpha);

@@ -7,6 +7,16 @@ namespace Lokad.Svg.Tests;
 [Trait("Layer", "Mechanism")]
 public sealed class SvgAlphaBoundaryMechanismTests
 {
+    [Theory]
+    [InlineData(254)]
+    [InlineData(255)]
+    public void Zero_bitmap_coverage_preserves_destination_at_the_opaque_boundary(byte alpha)
+    {
+        byte[] pixel = [43, 86, 129, 172];
+        new SvgConstantShaderPaint(alpha, 0, 0, alpha).BlendBitmap(pixel, 0);
+        Assert.Equal(new byte[] { 43, 86, 129, 172 }, pixel);
+    }
+
     public static IEnumerable<object[]> Cases()
     {
         using JsonDocument vectors = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,

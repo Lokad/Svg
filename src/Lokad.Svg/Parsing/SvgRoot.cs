@@ -16,6 +16,7 @@ internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Hei
     internal SvgSourceDiagnostic? UnsupportedDiagnostic { get; init; }
     /// <summary>Paints the image canvas independently of root element visibility and source opacity.</summary>
     internal SvgSolidPaint CanvasBackground { get; init; }
+    internal SvgRootBoxLayout BoxLayout { get; init; }
 
     /// <summary>Borrows this scene's sealed bindings; child arenas separately borrow document-owned definitions.</summary>
     internal SvgFilterArena? FilterResources => SceneStorage?.Filters;
@@ -1000,7 +1001,7 @@ internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintO
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 
 /// <summary>Separates filter-output clipping, mask allocation regions and geometric viewport clips at layer restore.</summary>
-internal enum SvgLayerRegionKind : byte { Mask, Viewport, AffineViewport, Bounds, Filter, FilterOutputClip, ClipMask }
+internal enum SvgLayerRegionKind : byte { Mask, Viewport, AffineViewport, Bounds, Filter, FilterOutputClip, ClipMask, RootContentViewport }
 
 /// <summary>References retained geometry or marks an isolated layer; mask alpha applies before the separate outer opacity.</summary>
 internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, SvgPaintOpacity SourceOpacity, SvgClipBox? MaskRegion, int MaskContentIndex, byte MaskAlpha)

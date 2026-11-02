@@ -6,6 +6,28 @@ public sealed partial class OpenTypeFontTests
 {
     [Fact]
     [Trait("Layer", "Contract")]
+    public async Task Root_padding_validates_before_acquisition_and_keeps_prepared_text_mapping()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='48' height='24' style='padding:1.3px 4.25px 2px 3.5px;background-color:#2080c0'><text font-family='Example' font-size='12' x='2' y='14'>AA</text></svg>"u8.ToArray();
+        byte[] invalid = "<svg xmlns='http://www.w3.org/2000/svg' style='padding:-1px'><text font-family='Example'>A</text></svg>"u8.ToArray();
+        (var catalog, var provider, var source) = CreateExamplePack(CreateTriangleFont());
+        SvgRenderOptions options = new(null, 1.5, SvgColor.Transparent, SvgRenderLimits.Default);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, (await Assert.ThrowsAsync<SvgException>(async () =>
+        {
+            using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(invalid, catalog, provider, options, CancellationToken.None);
+        })).ErrorCode);
+        Assert.Equal(0, provider.RequestCount);
+        Assert.Equal(0, source.RequestCount);
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        byte[] expected = SvgConverter.ConvertToPng(input, new(null, 1.5, SvgColor.Transparent, SvgRenderLimits.Default, fonts), CancellationToken.None).ToArray();
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, options, CancellationToken.None);
+        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, source.RequestCount);
+    }
+
+    [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Canvas_background_validates_before_acquisition_and_preserves_prepared_retry()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='48' height='24' style='background-color:rgba(48,80,112,.7);opacity:.4;display:none'><text display='inherit' font-family='Unused'>X</text><text font-family='Example' font-size='12' x='2' y='14'>AA</text></svg>"u8.ToArray();

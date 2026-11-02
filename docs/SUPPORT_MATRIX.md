@@ -65,7 +65,13 @@ The outer root's CSS `background-color` paints the SVG image canvas behind eleme
 content, independently of root opacity and visibility. It supports ordinary color
 syntax and `currentColor`; `initial`, `unset` and root `inherit` use transparent.
 Backgrounds on other SVG elements have no effect where their styles are admitted.
-Root border/padding layout, root filters and root clip paths remain unsupported.
+Outer-root `padding` and its four side properties accept nonnegative fixed CSS
+lengths and percentages, with ordinary declaration priority. Nonzero bare numbers
+are not CSS padding lengths. Percentages use the natural image container width
+on every edge. Padding moves and clips content without enlarging the logical
+viewport or PNG; SVG percentage bases and text layout remain independent.
+Padding on other SVG elements has no effect where styles are admitted.
+Root borders, root filters and root clip paths remain unsupported.
 
 The natural image viewport rounds before uniform output scaling; extra pixels in
 the final raster are padding. Tiny or very large logical sizes retain their admitted

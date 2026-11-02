@@ -12,6 +12,41 @@ internal readonly record struct SvgRootImageMap(SvgAffineTransform Layout, SvgAf
     SvgAffineTransform Destination, SvgClipBox? Boundary)
 {
     internal SvgDrawingMap Drawing => new(Projection.Compose(Layout), Boundary is null ? null : Destination);
+    /// <summary>Maps CSS box coordinates without composing or canceling the SVG viewBox.</summary>
+    internal SvgDrawingMap BoxDrawing => new(SvgAffineTransform.FromScale(OutputScale, OutputScale), Boundary is null ? null : Destination);
+    private double OutputScale { get; init; }
+    internal SvgClipBox? ContentViewport { get; init; }
+    /// <summary>Retains the snapped CSS background/border paint rectangle, before SVG content projection.</summary>
+    internal SvgClipBox? BoxPaintBounds { get; init; }
+
+    internal static SvgRootImageMap Resolve(SvgViewBox? viewBox, SvgViewport logical, double outputScale, SvgRootBoxLayout box)
+    {
+        SvgRootImageMap image = Resolve(viewBox, logical, outputScale);
+        if (!box.HasPadding) return image;
+        double width = Math.Floor((float)logical.Width * 64d) / 64;
+        double height = Math.Floor((float)logical.Height * 64d) / 64;
+        if (width <= 0 || height <= 0 || !double.IsFinite(width) || !double.IsFinite(height))
+            (width, height) = (logical.Width, logical.Height);
+        double containingWidth = Math.Round(logical.Width, MidpointRounding.AwayFromZero);
+        SvgClipBox content = new(SvgRootBoxLayout.Resolve(box.Left, containingWidth),
+            SvgRootBoxLayout.Resolve(box.Top, containingWidth), width, height);
+        double boxWidth = width + content.X + SvgRootBoxLayout.Resolve(box.Right, containingWidth);
+        double boxHeight = height + content.Y + SvgRootBoxLayout.Resolve(box.Bottom, containingWidth);
+        double left = Math.Round(content.X, MidpointRounding.AwayFromZero), top = Math.Round(content.Y, MidpointRounding.AwayFromZero);
+        SvgClipBox clip = new(left, top, Math.Round(content.Right, MidpointRounding.AwayFromZero) - left,
+            Math.Round(content.Bottom, MidpointRounding.AwayFromZero) - top);
+        // SVGRootPainter adjusts document content through the snapped CSS border
+        // box. CSS box paint and its pre-snapped content clip do not use that map.
+        return image with
+        {
+            Layout = SvgAffineTransform.FromTranslation(content.X, content.Y).Compose(image.Layout),
+            Projection = SvgAffineTransform.FromScale(outputScale * ((float)Math.Round(boxWidth, MidpointRounding.AwayFromZero) / (float)boxWidth),
+                outputScale * ((float)Math.Round(boxHeight, MidpointRounding.AwayFromZero) / (float)boxHeight)),
+            ContentViewport = clip,
+            BoxPaintBounds = image.BoxPaintBounds is null ? null : new(0, 0,
+                Math.Round(boxWidth, MidpointRounding.AwayFromZero), Math.Round(boxHeight, MidpointRounding.AwayFromZero))
+        };
+    }
 
     internal static SvgRootImageMap Resolve(SvgViewBox? viewBox, SvgViewport logical, double outputScale)
     {
@@ -25,7 +60,7 @@ internal readonly record struct SvgRootImageMap(SvgAffineTransform Layout, SvgAf
             || !double.IsFinite(layoutWidth) || !double.IsFinite(layoutHeight))
         {
             SvgAffineTransform layout = Map(viewBox, logical.Width, logical.Height, logical);
-            return new(layout, SvgAffineTransform.FromScale(outputScale, outputScale), SvgAffineTransform.Identity, null);
+            return new(layout, SvgAffineTransform.FromScale(outputScale, outputScale), SvgAffineTransform.Identity, null) { OutputScale = outputScale };
         }
         // ImagePainter remaps a clipped source rectangle before SVGImage applies
         // its residual scale. Even identical snapped rectangles retain the two
@@ -35,7 +70,8 @@ internal readonly record struct SvgRootImageMap(SvgAffineTransform Layout, SvgAf
             SvgAffineTransform.FromScale(outputScale * (float)(naturalWidth / layoutWidth), outputScale * (float)(naturalHeight / layoutHeight)),
             SvgAffineTransform.FromScale(DestinationScale((float)layoutWidth, (float)naturalWidth, mapVisibleSource),
                 DestinationScale((float)layoutHeight, (float)naturalHeight, mapVisibleSource)),
-            new(0, 0, naturalWidth * outputScale, naturalHeight * outputScale));
+            new(0, 0, naturalWidth * outputScale, naturalHeight * outputScale))
+            { OutputScale = outputScale, BoxPaintBounds = new(0, 0, naturalWidth, naturalHeight) };
 
         static float DestinationScale(float layout, float natural, bool mapVisibleSource)
         {

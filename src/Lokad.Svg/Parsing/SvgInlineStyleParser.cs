@@ -36,6 +36,8 @@ internal readonly record struct InlineStyle(string? Color, string? Fill, string?
     internal string? Overflow { get; init; }
     /// <summary>Retains canvas color for the outermost SVG; other SVG elements have no CSS background box.</summary>
     internal string? BackgroundColor { get; init; }
+    /// <summary>Borrows the declaration source for outer-root CSS box layout; ordinary SVG elements have no padding box.</summary>
+    internal string? BoxLayoutDeclarations { get; init; }
 }
 
 
@@ -100,7 +102,7 @@ internal static class SvgInlineStyleParser
     {
         string? value = reader.GetAttribute("style");
         if (value is null) return default;
-        try { return ParseCore(value.AsSpan(), token, null, target); }
+        try { return ParseCore(value.AsSpan(), token, null, target, value); }
         catch (SvgException exception)
         {
             reader.MoveToElement();
@@ -112,32 +114,29 @@ internal static class SvgInlineStyleParser
     /// <summary>Checks bounded declaration syntax and cancellation for rules that cannot match a static image.
     /// Values have no font, paint or resource semantics and allocate no retained strings.</summary>
     internal static void ValidateInactiveRule(ReadOnlySpan<char> declarations, CancellationToken token)
-        => _ = ParseCore(declarations, token, null, Target.InactiveRule);
+        => _ = ParseCore(declarations, token, null, Target.InactiveRule, null);
     internal static InlineStyle Parse(string? value, CancellationToken cancellationToken)
-        => value is null ? default : Parse(value.AsSpan(), cancellationToken);
+        => value is null ? default : ParseCore(value.AsSpan(), cancellationToken, null, Target.Presentation, value);
 
     /// <summary>Parses inline paint declarations while tolerating the direct-text font declarations handled by text syntax.</summary>
     internal static InlineStyle Parse(string? value, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
-        => value is null ? default : Parse(value.AsSpan(), cancellationToken, allowsDirectTextFontProperties);
+        => value is null ? default : ParseCore(value.AsSpan(), cancellationToken, null, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation, value);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value, CancellationToken cancellationToken)
-        => ParseCore(value, cancellationToken, null, Target.Presentation);
-
-    private static InlineStyle Parse(ReadOnlySpan<char> value, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
-        => ParseCore(value, cancellationToken, null, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
+        => ParseCore(value, cancellationToken, null, Target.Presentation, null);
 
     /// <summary>Parses a rule block with CSS length admission, retaining strings in the caller's bounded store.</summary>
     internal static InlineStyle ParseStyleSheet(ReadOnlySpan<char> value, BudgetedParserStringStore strings, CancellationToken cancellationToken)
-        => ParseCore(value, cancellationToken, strings, Target.StyleSheet);
+        => ParseCore(value, cancellationToken, strings, Target.StyleSheet, null);
 
     internal static InlineStyle ParseGeometry(string? value, CancellationToken cancellationToken)
-        => value is null ? default : ParseCore(value.AsSpan(), cancellationToken, null, Target.Geometry);
+        => value is null ? default : ParseCore(value.AsSpan(), cancellationToken, null, Target.Geometry, value);
 
     /// <summary>Parses use declarations once, retaining the existing paint-only and container admission rules.</summary>
     internal static InlineStyle ParseUse(string? value, CancellationToken cancellationToken)
-        => value is null ? default : ParseCore(value.AsSpan(), cancellationToken, null, Target.LocalUse);
+        => value is null ? default : ParseCore(value.AsSpan(), cancellationToken, null, Target.LocalUse, value);
 
-    private static InlineStyle ParseCore(ReadOnlySpan<char> value, CancellationToken cancellationToken, BudgetedParserStringStore? strings, Target target)
+    private static InlineStyle ParseCore(ReadOnlySpan<char> value, CancellationToken cancellationToken, BudgetedParserStringStore? strings, Target target, string? borrowedSource)
     {
         bool allowsDirectTextFontProperties = target is Target.DirectText or Target.StyleSheet;
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null, clipRule = null, paintOrder = null;
@@ -145,6 +144,7 @@ internal static class SvgInlineStyleParser
         string? linecap = null, linejoin = null, dasharray = null, dashoffset = null, width = null, miterlimit = null, strokeOpacity = null, geometryWidth = null, geometryHeight = null;
         string? markerStart = null, markerMid = null, markerEnd = null, filter = null, overflow = null, backgroundColor = null;
         InlineImportantProperties important = InlineImportantProperties.None;
+        bool hasBoxLayout = false;
         Span<char> commentScratch = stackalloc char[2 * SvgSyntaxLimits.MaximumValueTokenCharacters + 1];
         SvgInlineDeclarationReader declarations = new(value, cancellationToken);
         while (declarations.TryRead(out ReadOnlySpan<char> rawDeclaration))
@@ -166,6 +166,7 @@ internal static class SvgInlineStyleParser
             if (propertyValue.Length == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty inline style declarations are not implemented.");
             if (property.Equals("color", StringComparison.OrdinalIgnoreCase)) Set(ref color, InlineImportantProperties.Color, property, propertyValue, strings, ref important, true);
             else if (property.Equals("background-color", StringComparison.OrdinalIgnoreCase)) Set(ref backgroundColor, InlineImportantProperties.BackgroundColor, property, propertyValue, strings, ref important, false);
+            else if (SvgRootBoxSyntax.IsLayoutProperty(property)) hasBoxLayout = true;
             else if (property.Equals("fill", StringComparison.OrdinalIgnoreCase)) Set(ref fill, InlineImportantProperties.Fill, property, propertyValue, strings, ref important, true);
             else if (property.Equals("fill-opacity", StringComparison.OrdinalIgnoreCase)) Set(ref fillOpacity, InlineImportantProperties.FillOpacity, property, propertyValue, strings, ref important, true);
             else if (property.Equals("stroke", StringComparison.OrdinalIgnoreCase)) Set(ref stroke, InlineImportantProperties.Stroke, property, propertyValue, strings, ref important, true);
@@ -239,7 +240,7 @@ internal static class SvgInlineStyleParser
                 || property.Equals("float", StringComparison.OrdinalIgnoreCase)) { } // No UI state or surrounding box flow exists in an SVG image.
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, WordSpacing = wordSpacing, TextDecoration = textDecoration, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, ClipRule = clipRule, PaintOrder = paintOrder, MarkerStart = markerStart, MarkerMid = markerMid, MarkerEnd = markerEnd, Filter = filter, Overflow = overflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, BackgroundColor = backgroundColor, Important = important };
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, WordSpacing = wordSpacing, TextDecoration = textDecoration, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, ClipRule = clipRule, PaintOrder = paintOrder, MarkerStart = markerStart, MarkerMid = markerMid, MarkerEnd = markerEnd, Filter = filter, Overflow = overflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, BackgroundColor = backgroundColor, BoxLayoutDeclarations = hasBoxLayout ? strings is null ? borrowedSource ?? value.ToString() : strings.Copy(value) : null, Important = important };
 
         static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> property, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important, bool mapKeywords)
         {

@@ -1,0 +1,475 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "dddeea148a7a7a1a14aaab8a988c4294c5133d99",
+  "captureRecipeRevision": "3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "mode": "explicit-image-viewport-with-device-density",
+  "background": "transparent",
+  "cases": [
+    {
+      "id": "padding-viewbox",
+      "input": "padding-viewbox.svg",
+      "inputSha256": "0bde83840bbf23e3a9aa025bad723afe390b54919df1c28d4a6ef2a5c4211f48",
+      "width": 64,
+      "height": 48,
+      "imageViewport": {
+        "width": 64,
+        "height": 48
+      },
+      "outputScale": 1,
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "64300750b161ade26d49e9a6822e2c32e8c9e7a831048c649ead856153606b51",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "64300750b161ade26d49e9a6822e2c32e8c9e7a831048c649ead856153606b51",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "64300750b161ade26d49e9a6822e2c32e8c9e7a831048c649ead856153606b51",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-viewbox.png",
+          "referenceSha256": "64300750b161ade26d49e9a6822e2c32e8c9e7a831048c649ead856153606b51"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "64300750b161ade26d49e9a6822e2c32e8c9e7a831048c649ead856153606b51",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "64300750b161ade26d49e9a6822e2c32e8c9e7a831048c649ead856153606b51",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "64300750b161ade26d49e9a6822e2c32e8c9e7a831048c649ead856153606b51",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-viewbox.png",
+          "referenceSha256": "64300750b161ade26d49e9a6822e2c32e8c9e7a831048c649ead856153606b51"
+        }
+      }
+    },
+    {
+      "id": "padding-source-alpha",
+      "input": "padding-source-alpha.svg",
+      "inputSha256": "c9de97f2139c8deec32b57207ff62e8c7b8312ecb2b9d29c615aa8a9c85811fb",
+      "width": 64,
+      "height": 48,
+      "imageViewport": {
+        "width": 64,
+        "height": 48
+      },
+      "outputScale": 1,
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "f7bd7ff96d150be8ab83736104e6985c26158bf72e0cc341b659bad267c4ff69",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f7bd7ff96d150be8ab83736104e6985c26158bf72e0cc341b659bad267c4ff69",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f7bd7ff96d150be8ab83736104e6985c26158bf72e0cc341b659bad267c4ff69",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-source-alpha.png",
+          "referenceSha256": "f7bd7ff96d150be8ab83736104e6985c26158bf72e0cc341b659bad267c4ff69"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "f7bd7ff96d150be8ab83736104e6985c26158bf72e0cc341b659bad267c4ff69",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f7bd7ff96d150be8ab83736104e6985c26158bf72e0cc341b659bad267c4ff69",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "f7bd7ff96d150be8ab83736104e6985c26158bf72e0cc341b659bad267c4ff69",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-source-alpha.png",
+          "referenceSha256": "f7bd7ff96d150be8ab83736104e6985c26158bf72e0cc341b659bad267c4ff69"
+        }
+      }
+    },
+    {
+      "id": "padding-clip-density",
+      "input": "padding-clip-density.svg",
+      "inputSha256": "cf9d10e2e232428b0adf3e8a11c04cfb2fe6c13b37cf1a0de1488ee56072874b",
+      "width": 24,
+      "height": 24,
+      "imageViewport": {
+        "width": 16,
+        "height": 16
+      },
+      "outputScale": 1.5,
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "2d7f751f285da079565b44b8a7a1d70f1e8745a1fbc846a565b791670c62cef3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "2d7f751f285da079565b44b8a7a1d70f1e8745a1fbc846a565b791670c62cef3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "2d7f751f285da079565b44b8a7a1d70f1e8745a1fbc846a565b791670c62cef3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-clip-density.png",
+          "referenceSha256": "2d7f751f285da079565b44b8a7a1d70f1e8745a1fbc846a565b791670c62cef3"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "2d7f751f285da079565b44b8a7a1d70f1e8745a1fbc846a565b791670c62cef3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "2d7f751f285da079565b44b8a7a1d70f1e8745a1fbc846a565b791670c62cef3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "2d7f751f285da079565b44b8a7a1d70f1e8745a1fbc846a565b791670c62cef3",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-clip-density.png",
+          "referenceSha256": "2d7f751f285da079565b44b8a7a1d70f1e8745a1fbc846a565b791670c62cef3"
+        }
+      }
+    },
+    {
+      "id": "padding-percent",
+      "input": "padding-percent.svg",
+      "inputSha256": "568c1781c8dd9a3f2f97ee6bc2b2ab75856d9dde261b0c89c652e3b9a3b4f06b",
+      "width": 17,
+      "height": 11,
+      "imageViewport": {
+        "width": 17.4,
+        "height": 11.4
+      },
+      "outputScale": 1,
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "e8a8eb2c8753e705d2696c65fc509db3b90005a3c9791377e8baa02ae454e6ea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e8a8eb2c8753e705d2696c65fc509db3b90005a3c9791377e8baa02ae454e6ea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e8a8eb2c8753e705d2696c65fc509db3b90005a3c9791377e8baa02ae454e6ea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-percent.png",
+          "referenceSha256": "e8a8eb2c8753e705d2696c65fc509db3b90005a3c9791377e8baa02ae454e6ea"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "e8a8eb2c8753e705d2696c65fc509db3b90005a3c9791377e8baa02ae454e6ea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e8a8eb2c8753e705d2696c65fc509db3b90005a3c9791377e8baa02ae454e6ea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e8a8eb2c8753e705d2696c65fc509db3b90005a3c9791377e8baa02ae454e6ea",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-percent.png",
+          "referenceSha256": "e8a8eb2c8753e705d2696c65fc509db3b90005a3c9791377e8baa02ae454e6ea"
+        }
+      }
+    },
+    {
+      "id": "padding-empty",
+      "input": "padding-empty.svg",
+      "inputSha256": "8f8344c2750a3ba4146ccb61d76096721f703c940aaf5b6f8a71dec3621b7422",
+      "width": 26,
+      "height": 17,
+      "imageViewport": {
+        "width": 17,
+        "height": 11
+      },
+      "outputScale": 1.5,
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "3e308f78bb79c58de663499888fccc9d19eded50960c2f6633d6dca9da37d453",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3e308f78bb79c58de663499888fccc9d19eded50960c2f6633d6dca9da37d453",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3e308f78bb79c58de663499888fccc9d19eded50960c2f6633d6dca9da37d453",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-empty.png",
+          "referenceSha256": "3e308f78bb79c58de663499888fccc9d19eded50960c2f6633d6dca9da37d453"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "3e308f78bb79c58de663499888fccc9d19eded50960c2f6633d6dca9da37d453",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3e308f78bb79c58de663499888fccc9d19eded50960c2f6633d6dca9da37d453",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3e308f78bb79c58de663499888fccc9d19eded50960c2f6633d6dca9da37d453",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-empty.png",
+          "referenceSha256": "3e308f78bb79c58de663499888fccc9d19eded50960c2f6633d6dca9da37d453"
+        }
+      }
+    },
+    {
+      "id": "padding-priority",
+      "input": "padding-priority.svg",
+      "inputSha256": "95b9a9c8c1ac95e28bfc37b0f4b9be816bebee4f79cb53ac22f2b40bde830942",
+      "width": 32,
+      "height": 24,
+      "imageViewport": {
+        "width": 32,
+        "height": 24
+      },
+      "outputScale": 1,
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "6292e06b59f3636b943fd8a80dea91477e9cfa71d79299866debe63101eb499e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6292e06b59f3636b943fd8a80dea91477e9cfa71d79299866debe63101eb499e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6292e06b59f3636b943fd8a80dea91477e9cfa71d79299866debe63101eb499e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-priority.png",
+          "referenceSha256": "6292e06b59f3636b943fd8a80dea91477e9cfa71d79299866debe63101eb499e"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "6292e06b59f3636b943fd8a80dea91477e9cfa71d79299866debe63101eb499e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6292e06b59f3636b943fd8a80dea91477e9cfa71d79299866debe63101eb499e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "6292e06b59f3636b943fd8a80dea91477e9cfa71d79299866debe63101eb499e",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-priority.png",
+          "referenceSha256": "6292e06b59f3636b943fd8a80dea91477e9cfa71d79299866debe63101eb499e"
+        }
+      }
+    },
+    {
+      "id": "padding-coincident-clips",
+      "input": "padding-coincident-clips.svg",
+      "inputSha256": "8567c0aa3a934d35aafe0331f8151181dc50a39ac94570e0f3bed6477a8f9ff1",
+      "width": 26,
+      "height": 17,
+      "imageViewport": {
+        "width": 17,
+        "height": 11
+      },
+      "outputScale": 1.5,
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "12e92e07279e65322b4658f7613b824e0d04d50590659aac9a09b0fbfad237e5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "12e92e07279e65322b4658f7613b824e0d04d50590659aac9a09b0fbfad237e5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "12e92e07279e65322b4658f7613b824e0d04d50590659aac9a09b0fbfad237e5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-coincident-clips.png",
+          "referenceSha256": "12e92e07279e65322b4658f7613b824e0d04d50590659aac9a09b0fbfad237e5"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "12e92e07279e65322b4658f7613b824e0d04d50590659aac9a09b0fbfad237e5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "12e92e07279e65322b4658f7613b824e0d04d50590659aac9a09b0fbfad237e5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "12e92e07279e65322b4658f7613b824e0d04d50590659aac9a09b0fbfad237e5",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-coincident-clips.png",
+          "referenceSha256": "12e92e07279e65322b4658f7613b824e0d04d50590659aac9a09b0fbfad237e5"
+        }
+      }
+    },
+    {
+      "id": "padding-quantized-zero",
+      "input": "padding-quantized-zero.svg",
+      "inputSha256": "15b8e70cf57b082da779f2711455b08341cadacf1670622292f43674b87ceb21",
+      "width": 26,
+      "height": 17,
+      "imageViewport": {
+        "width": 17,
+        "height": 11
+      },
+      "outputScale": 1.5,
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "81dfbf4cd93aca091ebaa51f7d799e9e0d7bf4a38f4148161ba35367ebd37042",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "81dfbf4cd93aca091ebaa51f7d799e9e0d7bf4a38f4148161ba35367ebd37042",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "81dfbf4cd93aca091ebaa51f7d799e9e0d7bf4a38f4148161ba35367ebd37042",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-quantized-zero.png",
+          "referenceSha256": "81dfbf4cd93aca091ebaa51f7d799e9e0d7bf4a38f4148161ba35367ebd37042"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "81dfbf4cd93aca091ebaa51f7d799e9e0d7bf4a38f4148161ba35367ebd37042",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "81dfbf4cd93aca091ebaa51f7d799e9e0d7bf4a38f4148161ba35367ebd37042",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "81dfbf4cd93aca091ebaa51f7d799e9e0d7bf4a38f4148161ba35367ebd37042",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/padding-quantized-zero.png",
+          "referenceSha256": "81dfbf4cd93aca091ebaa51f7d799e9e0d7bf4a38f4148161ba35367ebd37042"
+        }
+      }
+    }
+  ]
+}

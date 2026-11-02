@@ -178,6 +178,14 @@ snapped rectangles coincide; the recorded scene and logical layout stay separate
 The [source-rectangle evidence](../tests/Research/svgweb/root-visible-source.json)
 links native matrices, rounding boundaries and a canonical transformed ellipse.
 
+Root CSS box paint, SVG content and the image destination retain distinct maps.
+Padding resolves on the CSS layout grid; content projects through the snapped
+outer box after viewBox fitting, while its clip snaps separately in box coordinates.
+Preparation and rendering share that map. Canvas background rectangle coverage
+combines with image-boundary coverage before one solid-color store; constant-shader
+rounding cannot replace it. The [layout and paint evidence](../tests/Research/svgweb/root-css-padding-layout.json)
+links mechanisms, ownership, prepared text and independent native controls.
+
 Nested viewports retain the parent map outside their local viewBox map. Ordinary
 drawing bounds use native integer saturation/culling; resource pictures keep local
 visual bounds. Culled drawings retain inert anchors when ancestor effects can
@@ -198,8 +206,10 @@ An unpainted fill retained for a clipped stroke does not require curve source
 commands for viewport admission; the painted stroke keeps its own source commands.
 Replay scopes save and restore clip coverage, allocation enclosures and drawing maps
 together; their frames own replacement storage while the active state borrows it.
-Canvas coverage borrows either a tape or one analytic rectangle. Rectangles share
-the existing clip rounding and binary-region behavior without a full-surface tape.
+Canvas coverage borrows a tape or analytic image/content rectangles. Successive
+rectangles multiply their coverage separately even at coincident edges; geometric
+intersection only narrows their enclosure. They share the existing clip rounding
+and binary-region behavior without a full-surface tape.
 Direct draws consume image-boundary coverage separately; isolated groups consume
 it at restoration. Source captures clear coverage while retaining their enclosure.
 Parameter-space filter captures enclose source visual bounds before graph expansion,

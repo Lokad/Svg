@@ -6,6 +6,21 @@ namespace Lokad.Svg.Tests;
 [Trait("Layer", "Mechanism")]
 public sealed class SvgOpaqueBitmapClipTests
 {
+    [Theory]
+    [InlineData(0, 0, 255)]
+    [InlineData(25, 0, 64)]
+    [InlineData(0, 16, 64)]
+    [InlineData(25, 16, 16)]
+    public void Coincident_analytic_clips_keep_independent_coverage(int x, int y, byte expected)
+    {
+        SvgClipBox rectangle = new(0, 0, 25.5, 16.5);
+        SvgRasterClipMask mask = new(rectangle, rectangle);
+        Assert.Equal(expected, mask.GetAlpha(26, x, y));
+        Assert.Equal(expected, mask.GetAlphaAtOffset(26, (y * 26 + x) * 4));
+        Assert.True(mask.IsOpaqueRectangle(new(0, 0, 25, 16), 26, CancellationToken.None));
+        Assert.False(mask.IsOpaqueRectangle(new(0, 0, 26, 17), 26, CancellationToken.None));
+    }
+
     [Fact]
     public void Tape_opacity_query_checks_the_entire_intersection_and_borrows_live_bytes()
     {

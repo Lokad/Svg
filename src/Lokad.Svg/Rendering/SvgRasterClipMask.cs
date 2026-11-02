@@ -2,7 +2,7 @@ using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
 
-/// <summary>Borrows canvas coverage from either an RGBA tape or one analytic rectangle.</summary>
+/// <summary>Borrows canvas coverage from an RGBA tape or separately intersected analytic rectangles.</summary>
 /// <remarks>Owns no storage and retains no cache. The caller keeps the tape alive through
 /// synchronous replay, supplies its canvas stride, and checks cancellation during traversal.
 /// Rectangle coverage uses the same rounding as materialized viewport clips. An empty
@@ -13,24 +13,40 @@ internal readonly ref struct SvgRasterClipMask
     {
         Pixels = pixels;
         Rectangle = null;
+        ParentRectangle = null;
     }
 
     internal SvgRasterClipMask(SvgClipBox rectangle)
+        : this(rectangle, null) { }
+
+    /// <summary>Keeps the parent's AA coverage independent of the child, including coincident edges.</summary>
+    internal SvgRasterClipMask(SvgClipBox rectangle, SvgClipBox? parentRectangle)
     {
         Pixels = [];
         Rectangle = rectangle;
+        ParentRectangle = parentRectangle;
     }
 
     internal static SvgRasterClipMask Empty => new(ReadOnlySpan<byte>.Empty);
     internal ReadOnlySpan<byte> Pixels { get; }
     internal SvgClipBox? Rectangle { get; }
+    internal SvgClipBox? ParentRectangle { get; }
     internal bool IsEmpty => Pixels.IsEmpty && Rectangle is null;
 
     internal byte GetAlpha(int width, int x, int y)
-        => Rectangle is {} rectangle
+    {
+        byte alpha = Rectangle is {} rectangle
             ? SvgAnalyticRectangleClip.GetCoverage((rectangle.X, rectangle.Y, rectangle.Right, rectangle.Bottom),
                 rectangle.Antialiasing, x, y).Apply(255)
             : Pixels.IsEmpty ? (byte)255 : Pixels[(y * width + x) * 4 + 3];
+        if (ParentRectangle is {} parent)
+        {
+            byte inherited = SvgAnalyticRectangleClip.GetCoverage((parent.X, parent.Y, parent.Right, parent.Bottom),
+                parent.Antialiasing, x, y).Apply(255);
+            alpha = (byte)((alpha * inherited + 127) / 255);
+        }
+        return alpha;
+    }
 
     /// <summary>Tests whether a complete bitmap intersection has opaque rectangular coverage.</summary>
     /// <remarks>The caller supplies valid in-canvas bounds and stride and keeps coverage alive.

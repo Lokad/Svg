@@ -35,3 +35,7 @@ color; its RGBA reference has six independent healthy native captures.
 remaining border/layout work separate from closed canvas behavior.
 The [layout controls](../root-box-layout/README.md) freeze those open behaviors
 independently, with explicit output density and image/content boundaries.
+The [padding slice](../root-padding/README.md) now shares box/content maps and
+clipping. [Fractional canvas controls](../root-canvas-density/README.md) separately
+protect background rectangle coverage before the image boundary and solid store;
+the ownership test checks their native RGBA edges. Border painting remains open.

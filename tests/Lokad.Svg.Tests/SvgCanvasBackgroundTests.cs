@@ -72,7 +72,7 @@ public sealed class SvgCanvasBackgroundTests
         {
             if (css.Length != 0) SvgStyleSheet.Parse(css, 512, rules, strings, budget, CancellationToken.None);
             reader.MoveToContent();
-            SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, rules, null, CancellationToken.None);
+            SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, rules, strings, null, CancellationToken.None);
             Assert.True(root.InheritedPresentation.IsDisplayed);
             Assert.Equal(SvgDisplay.None, root.InheritedPresentation.ElementDisplay);
         }

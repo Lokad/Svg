@@ -34,6 +34,7 @@ internal ref struct SvgBinaryClipRectangles
             if (_rectangleVisited) return false;
             _rectangleVisited = true;
             _token.ThrowIfCancellationRequested();
+            if (_coverage.ParentRectangle is {} parent) rectangle = rectangle.Intersect(parent);
             int left = Math.Max(_area.Left, Round(rectangle.X, _bitmap.Left, _bitmap.Right));
             int top = Math.Max(_area.Top, Round(rectangle.Y, _bitmap.Top, _bitmap.Bottom));
             int right = Math.Min(_area.Right, Round(rectangle.Right, _bitmap.Left, _bitmap.Right));

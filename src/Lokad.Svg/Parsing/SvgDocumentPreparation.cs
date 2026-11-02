@@ -17,6 +17,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
     private RenderBudget.BudgetReservation? _fontRequestsStorage;
     private readonly RenderBudget.BudgetReservation _workspace;
     private SvgRootSyntax? _root;
+    private SvgRootBoxLayout _rootBoxLayout;
     private bool _structureInspected;
     private SvgInstanceFontDiscovery? _fontInstances;
     private SvgPaintResourceSelection? _paintResources;
@@ -131,7 +132,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
     {
         SvgRootSyntax root = ReadRoot(false);
         SvgViewport viewport = SvgDocumentSizing.Resolve(options.Viewport, root.Width, root.Height, root.ViewBox).LogicalViewport;
-        return SvgRootImageMap.Resolve(root.ViewBox, viewport, options.OutputScale).Drawing.Parameter;
+        return SvgRootImageMap.Resolve(root.ViewBox, viewport, options.OutputScale, _rootBoxLayout).Drawing.Parameter;
     }
 
     private SvgRootSyntax ReadRoot(bool inspectStructure)
@@ -157,6 +158,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
                 InlineStyle sheet = SvgRootStyleSheetParser.ResolveRoot(reader.GetAttribute("id"), reader.GetAttribute("class"), Rules, _token);
                 InlineStyle inline = SvgInlineStyleParser.Read(reader, _token, true);
                 _root = SvgRootSyntax.ParseComputed(reader, inline, sheet, _token);
+                _rootBoxLayout = SvgRootBoxSyntax.Resolve(reader, inline, Rules, Strings, _token);
                 if (!inspectStructure) return _root.Value;
             }
             _structureInspected = true;

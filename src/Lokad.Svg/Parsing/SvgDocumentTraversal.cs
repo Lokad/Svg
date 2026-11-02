@@ -15,7 +15,7 @@ internal static class SvgDocumentTraversal
             if (reader.NodeType != XmlNodeType.Element) continue;
             SvgStructuralAdmission.ValidateElementStructure(reader, limits);
             SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
-            SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, styleRules, paintResources, cancellationToken);
+            SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, styleRules, styleStrings, paintResources, cancellationToken);
             return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, root, outputMap, explicitViewport, styleRules, styleStrings, rasterScale, paintResources);
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
@@ -28,7 +28,7 @@ internal static class SvgDocumentTraversal
         if (reader.IsEmptyElement)
         {
             ValidateDocumentEnd(reader, cancellationToken);
-            return new SvgRoot(root.Width, root.Height, root.ViewBox, [], [], false, null) { CanvasBackground = root.CanvasBackground };
+            return new SvgRoot(root.Width, root.Height, root.ViewBox, [], [], false, null) { CanvasBackground = root.CanvasBackground, BoxLayout = root.BoxLayout };
         }
         int rootDepth = reader.Depth;
         root = root with { ContainingViewport = explicitViewport };
@@ -49,6 +49,10 @@ internal static class SvgDocumentTraversal
         state.OutputClip = new(0, 0, logicalViewport.Width * rasterScale, logicalViewport.Height * rasterScale);
         state.TextReplay = new(root, limits, fontSnapshot);
         if (root.SourceOpacity.Value != 1) state.Scene.BeginSourceOpacityScope(root.SourceOpacity, new(0));
+        bool contentClip = root.BoxLayout.HasPadding;
+        if (contentClip && SvgRootImageMap.Resolve(root.ViewBox, logicalViewport, rasterScale, root.BoxLayout).ContentViewport is {} rootContentViewport)
+            state.Scene.InsertCommands(state.Scene.CommandCount, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, rootContentViewport, -1, 255)
+                { RegionKind = SvgLayerRegionKind.RootContentViewport }]);
         while (reader.Read())
         {
             SvgSourceContext? sourceContext = reader.NodeType == XmlNodeType.Element ? SvgSourceContext.Capture(reader) : null;
@@ -544,6 +548,7 @@ internal static class SvgDocumentTraversal
                     SvgMaskSyntax.ResolvePendingLeafMasks(state, cancellationToken);
                     SvgMaskSyntax.ResolvePendingGroupMasks(state, cancellationToken);
                     SvgPatternUseReplay.Complete(state, cancellationToken);
+                    if (contentClip) state.Scene.EndOpacityScope();
                     if (root.SourceOpacity.Value != 1) state.Scene.EndOpacityScope();
                     SvgLeafMaskComposition.Emit(state, cancellationToken);
                     SvgSceneStorage sceneStorage = state.Scene.Build();
@@ -552,7 +557,7 @@ internal static class SvgDocumentTraversal
                     {
                         ValidateDocumentEnd(reader, cancellationToken);
                         return new SvgRoot(root.Width, root.Height, root.ViewBox, sceneStorage.Geometries, sceneStorage.Commands, state.HasUnsupportedContent, sceneStorage)
-                            { UnsupportedDiagnostic = state.UnsupportedDiagnostic, CanvasBackground = root.CanvasBackground };
+                            { UnsupportedDiagnostic = state.UnsupportedDiagnostic, CanvasBackground = root.CanvasBackground, BoxLayout = root.BoxLayout };
                     }
                     catch { sceneStorage.Dispose(); throw; }
                 }

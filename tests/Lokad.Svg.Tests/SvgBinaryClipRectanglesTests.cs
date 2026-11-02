@@ -3,8 +3,19 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Mechanism")]
 public sealed class SvgBinaryClipRectanglesTests
 {
+    [Fact]
+    public void Analytic_binary_region_intersects_both_borrowed_rectangles()
+    {
+        SvgRasterClipMask coverage = new(new SvgClipBox(0, 0, 8, 8), new SvgClipBox(1, 2, 3, 4));
+        SvgBinaryClipRectangles regions = new(coverage, 10, 10, new(0, 0, 10, 10), new(0, 0, 10, 10), CancellationToken.None);
+        Assert.True(regions.MoveNext());
+        Assert.Equal(new SvgAnalyticClipBounds(1, 2, 4, 6), regions.Current);
+        Assert.False(regions.MoveNext());
+    }
+
     [Theory]
     [InlineData(4.9, 4.9)]
     [InlineData(5.1, 5.1)]

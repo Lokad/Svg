@@ -2,8 +2,9 @@
 
 The [original CC0 controls](capture.json) freeze independent browser output before
 root border and padding admission. Each has three agreeing healthy captures on
-Windows and Linux. They are research evidence; these unsupported cases are not
-ordinary rendering assertions or completed conformance claims.
+Windows and Linux. `padding-130` and `padding-132` now have exact
+[canonical assertions](../../Lokad.Svg.VisualTests/SvgRootPaddingReferenceTests.cs).
+The remaining border-dependent contexts stay open research evidence.
 
 The controls separate responsibilities:
 
@@ -27,6 +28,8 @@ The shared correction must keep canvas paint, CSS box paint and SVG content maps
 distinct, including clipping and opacity bounds. Do not cancel an SVG viewBox map
 to reconstruct a CSS box map, infer layout from final ink, or adjust frozen pixels.
 Root filters and root clip paths remain explicit scope limitations.
+The [padding implementation](../root-padding/README.md) closes the shared placement,
+snapping and clipping slice; it does not close border painting.
 
 [Recorded outcomes and model requirements](../svgweb/root-css-box-layout.json)
 preserve all sixteen failing-before contexts on both hosts.
