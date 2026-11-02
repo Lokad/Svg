@@ -59,9 +59,8 @@ internal readonly record struct SvgRootSyntax(SvgRootLength? Width, SvgRootLengt
             if (value is null) return;
             ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
             if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Root position values exceed the configured syntax limit.");
-            if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2];
-            else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px root positions are implemented.");
-            if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double position) || !double.IsFinite(position)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Root positions must be finite numbers.");
+            if (!SvgCssLength.TrySplitFixedUnit(token, out ReadOnlySpan<char> number, out double factor)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Root positions require bare numbers or fixed CSS length units.");
+            if (!double.TryParse(number, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double position) || !double.IsFinite(position * factor)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Root positions must be finite numbers.");
         }
     }
 }

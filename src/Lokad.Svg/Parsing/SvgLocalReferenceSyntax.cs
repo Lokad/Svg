@@ -41,12 +41,13 @@ internal readonly record struct SvgLocalReferenceSyntax(string Id, double X, dou
     {
         if (value is null) return 0;
         double validated = SvgGeometrySyntax.ParseViewportDimension(value, baseValue);
-        ReadOnlySpan<char> number = value.AsSpan().Trim();
-        if (number.EndsWith("%")) return validated;
-        if (number.EndsWith("px", StringComparison.OrdinalIgnoreCase)) number = number[..^2].TrimEnd();
+        ReadOnlySpan<char> length = value.AsSpan().Trim(SvgCssWhitespace.Characters);
+        if (length.EndsWith("%")) return validated;
+        if (!SvgCssLength.TrySplitFixedUnit(length, out ReadOnlySpan<char> number, out double factor))
+            throw new InvalidOperationException("A validated fixed length must retain its unit syntax.");
         // Native local placement stores length scalars as floats before concatenating the source map.
         float native = SvgFloatNumber.ReadValidated(number, token);
         // Long leading-zero or rescaled mantissas can overflow intermediate float place values.
-        return float.IsFinite(native) ? native : (float)validated;
+        return float.IsFinite(native) ? (float)(native * factor) : (float)validated;
     }
 }

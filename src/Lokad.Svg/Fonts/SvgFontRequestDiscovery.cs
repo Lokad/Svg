@@ -266,8 +266,8 @@ internal static class SvgFontRequestDiscovery
                     {
                         SvgElementAttributePolicy.ValidatePattern(reader, cancellationToken);
                         parentAllowsText = true;
-                        double? patternWidth = reader.GetAttribute("width") is {} width ? SvgGeometrySyntax.ParseRectangleCoordinate(width) : null;
-                        double? patternHeight = reader.GetAttribute("height") is {} height ? SvgGeometrySyntax.ParseRectangleCoordinate(height) : null;
+                        double? patternWidth = reader.GetAttribute("width") is {} width ? SvgGeometrySyntax.ParseFixedCoordinate(width) : null;
+                        double? patternHeight = reader.GetAttribute("height") is {} height ? SvgGeometrySyntax.ParseFixedCoordinate(height) : null;
                         bool noTemplate = reader.GetAttribute("href") is null && reader.GetAttribute("href", "http://www.w3.org/1999/xlink") is null;
                         patternHasSize = patternWidth != 0 && patternHeight != 0 && (!noTemplate || patternWidth is not null && patternHeight is not null);
                         patternHasSize |= paintResources?.RequiresPatternContent(reader.GetAttribute("id")) == true;

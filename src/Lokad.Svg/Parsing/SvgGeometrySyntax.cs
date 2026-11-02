@@ -46,13 +46,47 @@ internal static class SvgGeometrySyntax
             int argumentsStart = position;
             while (position < input.Length && input[position] != ')') position++;
             if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transform arguments must end with ')'.");
-            SvgAffineTransform function = ParseTransformFunction(name, input[argumentsStart..position], cancellationToken);
-            // Local scale/translate lists use native float axis storage until a
-            // matrix, rotation or skew promotes the list to double precision.
-            // Enclosing groups still compose their finished local maps in double.
-            fullMatrix |= !(name.Equals("translate", StringComparison.Ordinal) || name.Equals("scale", StringComparison.Ordinal));
-            transform = fullMatrix ? transform.ComposeChecked(function) : ComposeAxis(transform, function);
+            if (name.Equals("rotate", StringComparison.Ordinal))
+            {
+                transform = AppendRotation(input[argumentsStart..position], transform, fullMatrix, cancellationToken);
+                fullMatrix = true;
+            }
+            else
+            {
+                SvgAffineTransform function = ParseTransformFunction(name, input[argumentsStart..position], cancellationToken);
+                // Local scale/translate lists use native float axis storage until a
+                // matrix, rotation or skew promotes the list to double precision.
+                // Enclosing groups still compose their finished local maps in double.
+                fullMatrix |= !(name.Equals("translate", StringComparison.Ordinal) || name.Equals("scale", StringComparison.Ordinal));
+                transform = fullMatrix ? transform.ComposeChecked(function) : ComposeAxis(transform, function);
+            }
             position = SkipTransformSeparator(input, position + 1);
+        }
+
+        static SvgAffineTransform AppendRotation(ReadOnlySpan<char> arguments, SvgAffineTransform preceding, bool fullMatrix, CancellationToken token)
+        {
+            Span<double> values = stackalloc double[3];
+            int count = 0;
+            DelimitedTokenReader tokens = new(arguments, SvgNumberListSyntax.Svg, 0);
+            while (tokens.TryReadValue(out ReadOnlySpan<char> value))
+            {
+                if (count == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "rotate() requires one angle or one angle with a center point.");
+                values[count++] = ParseTransformCoordinate(value, token);
+            }
+            if (count != 1 && count != 3) throw new SvgException(SvgErrorCode.MalformedInput, "rotate() requires one angle or one angle with a center point.");
+            if (count == 1) return preceding.ComposeChecked(SvgAffineTransform.FromRotationDegrees(values[0]));
+            // Validate the existing coordinate domain before retaining the native
+            // translate-to-centre, rotate, translate-back stages. Axis storage
+            // narrows the first translation before rotation promotes the list.
+            SvgAffineTransform rotation = SvgAffineTransform.FromRotationDegrees(values[0], values[1], values[2]);
+            preceding.ComposeChecked(rotation);
+            SvgAffineTransform centred = fullMatrix
+                ? preceding.Compose(SvgAffineTransform.FromTranslation(values[1], values[2]))
+                : SvgAffineTransform.FromScaleOffset(preceding.A, preceding.D,
+                    (float)preceding.A * (float)values[1] + (float)preceding.E,
+                    (float)preceding.D * (float)values[2] + (float)preceding.F);
+            return centred.Compose(rotation with { E = 0, F = 0 })
+                .ComposeChecked(SvgAffineTransform.FromTranslation(-values[1], -values[2]));
         }
 
         static SvgAffineTransform ComposeAxis(SvgAffineTransform outer, SvgAffineTransform inner)
@@ -77,17 +111,20 @@ internal static class SvgGeometrySyntax
         return position;
     }
 
-    internal static double ParseRectangleCoordinate(string value)
+    /// <summary>Resolves a contiguous fixed CSS length within the geometry coordinate domain.
+    /// Percentages require a viewport basis and are resolved separately.</summary>
+    internal static double ParseFixedCoordinate(string value)
     {
         ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
-        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle coordinate values exceed the configured syntax limit.");
-        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2];
-        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px rectangle coordinates are implemented.");
-        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle coordinates must be finite bounded numbers.");
+        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Geometry coordinate values exceed the configured syntax limit.");
+        if (!SvgCssLength.TrySplitFixedUnit(token, out ReadOnlySpan<char> number, out double factor)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Geometry coordinates require bare numbers or fixed CSS length units.");
+        if (!double.TryParse(number, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double parsed)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Geometry coordinates must be finite bounded numbers.");
+        double result = parsed * factor;
+        if (!double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Geometry coordinates must be finite bounded numbers.");
         return result;
     }
 
-    /// <summary>Resolves an explicit bare-number or percentage viewport dimension against its base.</summary>
+    /// <summary>Resolves an explicit fixed length or percentage viewport dimension against its base.</summary>
     internal static double ParseViewportDimension(string value, double? baseValue)
     {
         ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
@@ -101,7 +138,7 @@ internal static class SvgGeometrySyntax
             if (!double.IsFinite(resolved)) throw new SvgException(SvgErrorCode.LimitExceeded, "Percentage viewport dimensions exceed the admitted numeric range.");
             return resolved;
         }
-        return ParseRectangleCoordinate(value);
+        return ParseFixedCoordinate(value);
     }
 
     /// <summary>Computes a finite length times a finite factor over a positive divisor, retaining ordinary rounding while avoiding intermediate range loss.</summary>
@@ -240,12 +277,10 @@ internal static class SvgGeometrySyntax
     {
         bool isMatrix = name.Equals("matrix", StringComparison.Ordinal);
         bool isTranslate = name.Equals("translate", StringComparison.Ordinal);
-        bool isRotate = name.Equals("rotate", StringComparison.Ordinal);
         bool isSkewX = name.Equals("skewX", StringComparison.Ordinal);
         bool isSkewY = name.Equals("skewY", StringComparison.Ordinal);
-        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.Ordinal) && !isRotate && !isSkewX && !isSkewY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The transform function is not supported.");
+        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.Ordinal) && !isSkewX && !isSkewY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The transform function is not supported.");
         if (isTranslate) return ParseTranslate(arguments, cancellationToken);
-        if (isRotate) return ParseRotate(arguments, cancellationToken);
         if (isSkewX || isSkewY) return ParseSkew(arguments, isSkewY, cancellationToken);
         Span<double> values = stackalloc double[6];
         int valueCount = 0;
@@ -271,20 +306,6 @@ internal static class SvgGeometrySyntax
         double first = values[0]; double second = valueCount == 2 ? values[1] : first;
         if (first == 0 || second == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero finite scale() values are implemented.");
         return SvgAffineTransform.FromScaleOffset(first, second, 0, 0);
-    }
-
-    private static SvgAffineTransform ParseRotate(ReadOnlySpan<char> arguments, CancellationToken cancellationToken)
-    {
-        Span<double> values = stackalloc double[3];
-        int valueCount = 0;
-        DelimitedTokenReader tokens = new(arguments, SvgNumberListSyntax.Svg, 0);
-        while (tokens.TryReadValue(out ReadOnlySpan<char> value))
-        {
-            if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "rotate() requires one angle or one angle with a center point.");
-            values[valueCount++] = ParseTransformCoordinate(value, cancellationToken);
-        }
-        if (valueCount != 1 && valueCount != 3) throw new SvgException(SvgErrorCode.MalformedInput, "rotate() requires one angle or one angle with a center point.");
-        return valueCount == 1 ? SvgAffineTransform.FromRotationDegrees(values[0]) : SvgAffineTransform.FromRotationDegrees(values[0], values[1], values[2]);
     }
 
     private static SvgAffineTransform ParseSkew(ReadOnlySpan<char> arguments, bool skewY, CancellationToken cancellationToken)
@@ -394,7 +415,7 @@ internal static class SvgGeometrySyntax
         string noun = kind == SvgViewportCoordinateKind.Oval ? "oval" : "rectangle";
         string label = kind == SvgViewportCoordinateKind.Oval ? "Oval" : "Rectangle";
         ReadOnlySpan<char> token = value.AsSpan().Trim(SvgCssWhitespace.Characters);
-        if (!token.EndsWith("%", StringComparison.Ordinal)) return ParseRectangleCoordinate(value);
+        if (!token.EndsWith("%", StringComparison.Ordinal)) return ParseFixedCoordinate(value);
         if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, $"{label} coordinate values exceed the configured syntax limit.");
         if (basis is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, $"Percentage {noun} coordinates require a known user-space viewport.");
         if (!double.TryParse(token[..^1], SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double percent) || !double.IsFinite(percent))

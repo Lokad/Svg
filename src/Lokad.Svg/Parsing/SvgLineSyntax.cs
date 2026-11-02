@@ -15,10 +15,10 @@ internal readonly record struct SvgLineSyntax(double X1, double Y1, double X2, d
     }
     internal static SvgLineSyntax Parse(XmlReader reader)
     {
-        double x1 = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("x1") ?? "0");
-        double y1 = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("y1") ?? "0");
-        double x2 = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("x2") ?? "0");
-        double y2 = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("y2") ?? "0");
+        double x1 = SvgGeometrySyntax.ParseFixedCoordinate(reader.GetAttribute("x1") ?? "0");
+        double y1 = SvgGeometrySyntax.ParseFixedCoordinate(reader.GetAttribute("y1") ?? "0");
+        double x2 = SvgGeometrySyntax.ParseFixedCoordinate(reader.GetAttribute("x2") ?? "0");
+        double y2 = SvgGeometrySyntax.ParseFixedCoordinate(reader.GetAttribute("y2") ?? "0");
         return new SvgLineSyntax(x1, y1, x2, y2, reader.GetAttribute("stroke-width"));
     }
 }

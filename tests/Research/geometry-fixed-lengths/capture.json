@@ -1,0 +1,59 @@
+{
+  "width": 192,
+  "height": 128,
+  "cases": [
+    {
+      "id": "mixed-absolute-units",
+      "input": "mixed-absolute-units.svg",
+      "inputSha256": "9239f600f0d9a895be9ac918412b36877297932172f3a16f237fb28ce225b5d8",
+      "sourceBaseline": "4ccf665f781c97097b9d550199c454534a8817b9",
+      "context": "Original CC0 fixed geometry lengths, local use, nested viewport, masks and user/object pattern units; six native images frozen before admission changes.",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "cbbf1b3445bcda649ef440319e682fc26c63d0bacda1bf8b01a4f71fb12d4e08",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "cbbf1b3445bcda649ef440319e682fc26c63d0bacda1bf8b01a4f71fb12d4e08",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "cbbf1b3445bcda649ef440319e682fc26c63d0bacda1bf8b01a4f71fb12d4e08",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/mixed-absolute-units.png",
+          "referenceSha256": "cbbf1b3445bcda649ef440319e682fc26c63d0bacda1bf8b01a4f71fb12d4e08"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "cbbf1b3445bcda649ef440319e682fc26c63d0bacda1bf8b01a4f71fb12d4e08",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "cbbf1b3445bcda649ef440319e682fc26c63d0bacda1bf8b01a4f71fb12d4e08",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "cbbf1b3445bcda649ef440319e682fc26c63d0bacda1bf8b01a4f71fb12d4e08",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/mixed-absolute-units.png",
+          "referenceSha256": "cbbf1b3445bcda649ef440319e682fc26c63d0bacda1bf8b01a4f71fb12d4e08"
+        }
+      }
+    }
+  ]
+}

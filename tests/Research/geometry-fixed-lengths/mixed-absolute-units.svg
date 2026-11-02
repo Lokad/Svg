@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="128">
+  <defs>
+    <linearGradient id="paint"><stop stop-color="#2468ac"/><stop offset="1" stop-color="#e08428"/></linearGradient>
+    <rect id="tile" x="1mm" y="2pt" width="1pc" height="6mm" rx="1mm" fill="url(#paint)"/>
+    <pattern id="grid" patternUnits="userSpaceOnUse" x="1pt" y="1mm" width="8mm" height="8mm"><rect width="4mm" height="8mm" fill="#2468ac"/></pattern>
+    <pattern id="box" width=".00625in" height=".00625in"><rect width=".3" height=".3" fill="#e08428"/></pattern>
+    <mask id="mask" maskUnits="userSpaceOnUse" x="0" y="0" width="2in" height="1in"><rect width="2in" height="1in" fill="white"/></mask>
+  </defs>
+  <g transform="translate(.3 .4) rotate(3 96 64)">
+    <rect x="3mm" y="4pt" width=".35in" height="1pc" rx="2pt" fill="url(#paint)"/>
+    <circle cx="2cm" cy="1cm" r=".3cm" fill="#2468ac"/>
+    <ellipse cx="3.8cm" cy="1cm" rx="4mm" ry="2mm" fill="#e08428"/>
+    <line x1=".1in" y1="4pc" x2="1.5in" y2="4.2pc" stroke="#2468ac" stroke-width="1.5pt"/>
+    <use href="#tile" x="2.5cm" y="5pc"/>
+    <svg x="1.4in" y="4.5pc" width=".35in" height="7mm" viewBox="0 0 32 24"><ellipse cx="50%" cy="50%" rx="35%" ry="35%" fill="#2468ac"/></svg>
+    <rect x=".1in" y=".85in" width=".6in" height=".2in" fill="url(#grid)" mask="url(#mask)"/>
+    <rect x="8pc" y="240q" width="3pc" height="4mm" fill="#2468ac"/>
+    <rect x="8mm" y="28mm" width="40" height="12" fill="url(#box)"/>
+  </g>
+</svg>

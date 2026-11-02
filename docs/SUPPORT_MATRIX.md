@@ -50,7 +50,7 @@ layout text, independently of UTF-16 and original XML character indices.
 
 ### Document sizing and inspection
 
-Root lengths accept numbers, px/in/cm/mm/pt/pc and percentages. With neither
+Root lengths accept numbers, px/in/cm/mm/pt/pc/q and percentages. With neither
 dimension, the default is 300×150, including with a viewBox. One dimension uses
 the viewBox ratio, or the other axis's default without a viewBox. Percentages use
 the caller viewport or the corresponding 300/150 base. A caller viewport replaces
@@ -97,7 +97,12 @@ paint nothing; an ellipse copies its one supplied radius to the missing axis.
 Repeated/closing vertices and one/two-point lists retain ordinary stroke/marker
 rules. Whitespace-only paths remain subject to input and structural limits.
 
-Line endpoints accept fractional numbers/px, not percentages or other units.
+Rectangle and oval coordinates/radii, line endpoints, local-use placement,
+nested/image dimensions, user-space mask regions and pattern grids accept bare
+numbers and `px`, `in`, `cm`, `mm`, `pt`, `pc`, `q`. Unit conversion precedes each
+consumer's numeric/sign checks; geometry retains its bounded coordinate range.
+Existing viewport percentages retain their axis/diagonal bases. Line endpoints
+do not accept percentages; font-relative geometry lengths remain unsupported.
 Polygon/polyline coordinates and transform arguments are bare SVG numbers.
 Point-list native-float overflow discards the whole list, its markers and its own
 filter; ancestor filters can still process transparent input. Syntax and resource

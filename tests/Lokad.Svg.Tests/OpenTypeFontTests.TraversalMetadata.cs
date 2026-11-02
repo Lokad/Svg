@@ -6,6 +6,22 @@ public sealed partial class OpenTypeFontTests
 {
     [Fact]
     [Trait("Layer", "Contract")]
+    public async Task Physical_pattern_dimensions_preserve_selected_font_discovery_and_prepared_replay()
+    {
+        string content = "<defs>" + PatternFontDefinition("width='1pc' height='12pt'", PatternFontText) + "</defs>" + PatternFontTarget;
+        byte[] input = PatternFontInput(content);
+        byte[] control = PatternFontInput(content.Replace("width='1pc' height='12pt'", PatternFontSize, StringComparison.Ordinal));
+        (var catalog, var provider, var source) = PatternFontPack(false);
+        using SvgFontSnapshot controlFonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        byte[] expected = SvgConverter.ConvertToPng(control, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, controlFonts), CancellationToken.None).ToArray();
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(expected, prepared.ConvertToPng(CancellationToken.None).ToArray());
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, source.RequestCount);
+    }
+
+    [Fact]
+    [Trait("Layer", "Contract")]
     public async Task Inactive_css_preserves_one_selected_font_and_prepared_replay()
     {
         const string inactive = "g:hover text, text:focus{font-family:Unused;unsupported-paint:1}";

@@ -13,7 +13,7 @@ public sealed class SvgOvalPercentageLengthTests
     [InlineData("<circle cx='50%' cy='50%' r='1e80%'/>", SvgErrorCode.LimitExceeded)]
     [InlineData("<circle cx='3355443200%' cy='50%' r='20%'/>", SvgErrorCode.LimitExceeded)]
     [InlineData("<circle cx='1e12%' cy='50%' r='20%'/>", SvgErrorCode.LimitExceeded)]
-    [InlineData("<circle cx='50%' cy='50%' r='20cm'/>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<circle cx='50%' cy='50%' r='20em'/>", SvgErrorCode.UnsupportedFeature)]
     public void Rejected_oval_lengths_release_all_partial_owners(string content, SvgErrorCode error)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='32'><rect width='3' height='4'/>" + content + "</svg>");

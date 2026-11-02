@@ -48,7 +48,7 @@ internal static class SvgPatternSyntax
             return map;
         }
 
-        double? ParseOptional(string name) => reader.GetAttribute(name) is {} value ? SvgGeometrySyntax.ParseRectangleCoordinate(value) : null;
+        double? ParseOptional(string name) => reader.GetAttribute(name) is {} value ? SvgGeometrySyntax.ParseFixedCoordinate(value) : null;
         double? ParseExtent(string name)
         {
             double? value = ParseOptional(name);

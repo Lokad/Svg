@@ -244,7 +244,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
             }
             return result;
 
-            double? Dimension(string name) => reader.GetAttribute(name) is {} value ? SvgGeometrySyntax.ParseRectangleCoordinate(value) : null;
+            double? Dimension(string name) => reader.GetAttribute(name) is {} value ? SvgGeometrySyntax.ParseFixedCoordinate(value) : null;
             static void RetainEffect(string? value, EffectKind kind, int patternOwner, BudgetedParserList<PatternEffect> effects, BudgetedParserStringStore strings)
             {
                 if (value is not null && SvgLocalUrl.TryParseId(value, out string id)) effects.Add(new(patternOwner, new(strings.Copy(id), kind)));

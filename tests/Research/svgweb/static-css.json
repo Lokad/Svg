@@ -917,5 +917,9 @@
   "remaining": [
     "W1 physical geometry lengths, root CSS box paint, text-transform/text-align, other attributes, seventeen supplied-font gates, resource/XML/child groups",
     "P0/P2/P4/P5/P6/P7; no new full CI or release-completion claim"
-  ]
+  ],
+  "subsequentClosure": {
+    "record": "geometry-fixed-lengths.json",
+    "scope": "Shared physical geometry admission closes circles1.svg. The centred-rotation stage also closes a distinct fractional-pattern interaction; root CSS box paint remains open. Earlier measurements stay historical evidence."
+  }
 }

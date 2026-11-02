@@ -1,0 +1,550 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "4ccf665f781c97097b9d550199c454534a8817b9",
+  "scope": "Shared fixed geometry lengths and rotation-centre sequencing; root/marker/stroke conversion, percentages, text layout and sampling arithmetic retain their own stages. No public signature or ownership changes.",
+  "specifications": [
+    "https://www.w3.org/TR/SVG2/coords.html#Units"
+  ],
+  "nativeImplementationReview": [
+    "https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/core/svg/svg_transform.cc",
+    "https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/platform/transforms/affine_transform.cc"
+  ],
+  "implementation": [
+    "../../../src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgCssLength.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs",
+    "../../../src/Lokad.Svg/Parsing/SvgRootSyntax.cs"
+  ],
+  "sharedModel": [
+    "Reuse fixed-unit splitting and CSS-pixel factors for bare numbers, px/in/cm/mm/pt/pc/q. Geometry still validates resolved finite int32 coordinates; it does not use the root/translation float clamp.",
+    "Viewport dimensions retain double percentage multiplication/division. Oval/rectangle coordinates retain the existing float percentage stage and their axis/diagonal bases. Line percentages and font-relative geometry remain unsupported.",
+    "Root positions remain inert finite lengths with no geometry int32 cap. Fixed sign/extent checks remain consumer-owned.",
+    "Local use validates the shared length first, strips every admitted suffix before the native float-number reread, applies the factor and retains the fallback for overflowing intermediate mantissa place values.",
+    "Pattern parsing, paint eligibility and supplied-font discovery consume the same fixed-coordinate reader. Rename the former rectangle-only reader and diagnostic to describe its actual shared role.",
+    "A centred rotation contributes translate-to-centre, rotate and translate-back. A preceding axis list stores the first translation as floats before rotation promotes it. Already-promoted lists retain double composition. Preserve the former final-domain gate as well as the staged result gate; no pattern-specific sampling adjustment."
+  ],
+  "mechanisms": {
+    "lengthTest": "../../Lokad.Svg.Tests/SvgGeometryLengthTests.cs",
+    "lengthCases": 28,
+    "rotationTest": "../../Lokad.Svg.Tests/SvgCenteredRotationTests.cs",
+    "rotationCases": 6,
+    "roles": "Unit conversions, resolved boundaries, signed zero, contiguous/unsupported tokens, unknown viewport basis, use suffix reread/fallback, inert root domain and exact native float translation lanes. Existing negative-extent, percentage, cancellation, refusal and cleanup tests remain separate; the former unsupported cm radius is now explicitly admitted, while em retains the rejection contract."
+  },
+  "preparation": {
+    "test": "../../Lokad.Svg.Tests/OpenTypeFontTests.TraversalMetadata.cs",
+    "newCases": 1,
+    "responsibility": "Physical pattern dimensions reach both selection/discovery and retained preparation; one selected font acquisition and exact replay against the bare-pixel control. No API/ownership cross product."
+  },
+  "rendering": {
+    "test": "../../Lokad.Svg.VisualTests/SvgGeometryLengthReferenceTests.cs",
+    "manifest": "../geometry-fixed-lengths/capture.json",
+    "newCanonicalCases": 1,
+    "nativeCapturesFrozenBeforeImplementation": 6,
+    "existingReferencesChanged": 0,
+    "responsibility": "Physical primitive axes, local reference placement, nested viewport, user-space mask region, stroke units and user/object pattern grids under rotation. The rotated fractional repeat retains its original failing pixel."
+  },
+  "failingBefore": {
+    "lengthMechanisms": {
+      "seconds": 7.826409599976614,
+      "librarySha256": "5fbb95fb04fc054702df44775bb91fcea95a33b43164d902750a21213fed3bab",
+      "selected": 26,
+      "passed": 12,
+      "failed": 14
+    },
+    "rotationInteraction": {
+      "seconds": 8.177385000046343,
+      "librarySha256": "01c6c2a3e3b3d3f9a74c97a4d4530889486c6bd9395b049ef7d8a9ac9431e320",
+      "selected": 1,
+      "passed": 0,
+      "failed": 1
+    },
+    "rotationPixelDifference": {
+      "changedPixels": 1,
+      "maximumChannelError": 5,
+      "maximumAlphaError": 0,
+      "location": [
+        60,
+        88
+      ]
+    },
+    "numericPixelControl": [
+      {
+        "case": "authored",
+        "changedPixels": 1,
+        "maximumError": 5,
+        "mismatches": [
+          {
+            "xy": [
+              60,
+              88
+            ],
+            "native": [
+              36,
+              102,
+              173,
+              50
+            ],
+            "candidate": [
+              36,
+              107,
+              173,
+              50
+            ]
+          }
+        ]
+      },
+      {
+        "case": "authored-native",
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      {
+        "case": "pixels",
+        "changedPixels": 1,
+        "maximumError": 5,
+        "mismatches": [
+          {
+            "xy": [
+              60,
+              88
+            ],
+            "native": [
+              36,
+              102,
+              173,
+              50
+            ],
+            "candidate": [
+              36,
+              107,
+              173,
+              50
+            ]
+          }
+        ]
+      },
+      {
+        "case": "pixels-native",
+        "changedPixels": 0,
+        "maximumError": 0
+      }
+    ],
+    "focusedAfter": {
+      "seconds": 6.22348179994151,
+      "librarySha256": "d2ebcfc753918abe9b692616c65e88d6ee62f3437d04236f4514fdf69e9f0f8e",
+      "selected": 207,
+      "passed": 207,
+      "failed": 0
+    },
+    "canonicalAfter": {
+      "seconds": 6.222538799978793,
+      "librarySha256": "b94ed81998bd897e1a46e45261b373a43e4be7cf2fb8817cd106cda4602b08c8",
+      "selected": 1,
+      "passed": 1,
+      "failed": 0
+    },
+    "timingInterpretation": "Functional runner times include startup and concurrent host qualification. Selections differ for mechanisms; no development-speed or rendering-performance improvement is claimed."
+  },
+  "independentNativeMatrices": {
+    "cases": [
+      {
+        "transform": "rotate(3)",
+        "matrix": [
+          0.9986295347545738,
+          0.05233595624294383,
+          -0.05233595624294383,
+          0.9986295347545738,
+          0,
+          0
+        ],
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "transform": "rotate(3 96 64)",
+        "matrix": [
+          0.9986295347545738,
+          0.05233595624294383,
+          -0.05233595624294383,
+          0.9986295347545738,
+          3.4810658631093077,
+          -4.936542023615331
+        ],
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "transform": "translate(.3 .4) rotate(3 96 64)",
+        "matrix": [
+          0.9986295347545738,
+          0.05233595624294383,
+          -0.05233595624294383,
+          0.9986295347545738,
+          3.78106891486712,
+          -4.536540497736425
+        ],
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "transform": "scale(1.1 .9) translate(.3 .4) rotate(3 96 64)",
+        "matrix": [
+          1.0984925120392146,
+          0.04710236249032909,
+          -0.057569553115024645,
+          0.8987666169928916,
+          4.159178178167295,
+          -4.082887387446732
+        ],
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "transform": "matrix(1 0 0 1 .3 .4) rotate(3 96 64)",
+        "matrix": [
+          0.9986295347545738,
+          0.05233595624294383,
+          -0.05233595624294383,
+          0.9986295347545738,
+          3.7810658750302366,
+          -4.536542017654867
+        ],
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      },
+      {
+        "transform": "rotate(7) translate(.3 .4) rotate(3 96 64)",
+        "matrix": [
+          0.9848077530122079,
+          0.17364817766693033,
+          -0.17364817766693033,
+          0.9848077530122079,
+          4.305747780385076,
+          -4.0419313058209525
+        ],
+        "startupHealth": "healthy",
+        "profileCleaned": true
+      }
+    ],
+    "platforms": {
+      "windows": {
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "casesChecked": 6,
+        "matrixRecordSha256": "b3d1efcf3de5132ab766c4f6446f864cbfd994ab11a8a2f30aa01891bc5ebca7",
+        "startupHealth": "healthy",
+        "profilesCleaned": true
+      },
+      "linux": {
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "casesChecked": 6,
+        "matrixRecordSha256": "b3d1efcf3de5132ab766c4f6446f864cbfd994ab11a8a2f30aa01891bc5ebca7",
+        "startupHealth": "healthy",
+        "profilesCleaned": true
+      }
+    },
+    "platformMatricesAgree": true
+  },
+  "original": {
+    "name": "circles1.svg",
+    "sourceSha256": "32b93f88e6bdfdbe053142fba23a1afc8a48125890daa8c882aa5554fc155aed",
+    "sourceBytes": 678,
+    "logicalViewport": {
+      "Width": 300,
+      "Height": 150
+    },
+    "pixelDimensions": [
+      300,
+      150
+    ],
+    "controlRecipe": "Resolve only cm geometry attributes to bare CSS pixels in RAM using double number times 96/2.54. Native captures use the unmodified original. Production admission is unchanged.",
+    "attributesResolved": 6,
+    "controlPngSha256": "d47f5805bca333e335c662749b8721c9543755496329373cf072507fdd3ae424",
+    "hosts": {
+      "windows": {
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "captures": [
+          {
+            "pngSha256": "c9903c15590961aea4fcbe52ae0043d670ce64ec187780b2847d317d57ffc843",
+            "changedPixelsAgainstDoubleCssPixelControl": 0,
+            "maximumChannelError": 0,
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "c9903c15590961aea4fcbe52ae0043d670ce64ec187780b2847d317d57ffc843",
+            "changedPixelsAgainstDoubleCssPixelControl": 0,
+            "maximumChannelError": 0,
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "c9903c15590961aea4fcbe52ae0043d670ce64ec187780b2847d317d57ffc843",
+            "changedPixelsAgainstDoubleCssPixelControl": 0,
+            "maximumChannelError": 0,
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "linux": {
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "captures": [
+          {
+            "pngSha256": "c9903c15590961aea4fcbe52ae0043d670ce64ec187780b2847d317d57ffc843",
+            "changedPixelsAgainstDoubleCssPixelControl": 0,
+            "maximumChannelError": 0,
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "c9903c15590961aea4fcbe52ae0043d670ce64ec187780b2847d317d57ffc843",
+            "changedPixelsAgainstDoubleCssPixelControl": 0,
+            "maximumChannelError": 0,
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "c9903c15590961aea4fcbe52ae0043d670ce64ec187780b2847d317d57ffc843",
+            "changedPixelsAgainstDoubleCssPixelControl": 0,
+            "maximumChannelError": 0,
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      }
+    },
+    "sourceBodiesRetained": 0,
+    "attributeValuesRetained": 0,
+    "closure": "Unmodified circles1.svg now renders exactly against the six frozen native images on both hosts. The earlier RAM-only double-pixel control remains separate evidence; production admission was not changed during its capture.",
+    "candidateLibrarySha256": "d2ebcfc753918abe9b692616c65e88d6ee62f3437d04236f4514fdf69e9f0f8e"
+  },
+  "originals": {
+    "files": 204,
+    "seconds": 68.42059969995171,
+    "sourceSvgFilesRetained": 0,
+    "diagnosticValuesRetained": 0,
+    "librarySha256": "d2ebcfc753918abe9b692616c65e88d6ee62f3437d04236f4514fdf69e9f0f8e",
+    "hosts": {
+      "windows": {
+        "UnsupportedFeature": 41,
+        "rendered": 160,
+        "MalformedInput": 3
+      },
+      "linux": {
+        "UnsupportedFeature": 41,
+        "rendered": 160,
+        "MalformedInput": 3
+      }
+    },
+    "transitions": [
+      {
+        "name": "circles1.svg",
+        "host": "windows",
+        "before": "UnsupportedFeature",
+        "after": "rendered"
+      },
+      {
+        "name": "circles1.svg",
+        "host": "linux",
+        "before": "UnsupportedFeature",
+        "after": "rendered"
+      }
+    ],
+    "audit": {
+      "all204RuntimeAndOptionsUnchanged": true,
+      "previousExactPngsUnchangedPerHost": {
+        "windows": 159,
+        "linux": 159
+      },
+      "newIndependentNativeExactPerHost": {
+        "windows": 1,
+        "linux": 1
+      },
+      "metadataChanges": [
+        {
+          "name": "circles1.svg",
+          "host": "windows",
+          "fields": [
+            "outcome",
+            "pngSha256",
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn",
+            "messageSha256"
+          ]
+        },
+        {
+          "name": "circles1.svg",
+          "host": "linux",
+          "fields": [
+            "outcome",
+            "pngSha256",
+            "diagnosticElement",
+            "diagnosticAttribute",
+            "diagnosticLine",
+            "diagnosticColumn",
+            "messageSha256"
+          ]
+        }
+      ],
+      "completeDiagnosticHashChanges": [
+        {
+          "name": "circles1.svg",
+          "host": "windows",
+          "fields": [
+            "sourceDiagnosticSha256"
+          ]
+        },
+        {
+          "name": "circles1.svg",
+          "host": "linux",
+          "fields": [
+            "sourceDiagnosticSha256"
+          ]
+        }
+      ],
+      "expectedTransitionsOnly": true,
+      "sourceBodiesRetained": 0,
+      "diagnosticValuesRetained": 0
+    },
+    "closure": "160 exploratory exact default renders per host; 41 unsupported and 3 malformed remain open. Every previous rendered PNG remains byte-identical. Removing the physical-length gate fully closes circles1.svg in this declared default static context."
+  },
+  "qualification": [
+    {
+      "host": "windows",
+      "target": "net11.0",
+      "role": "core",
+      "passed": 36361,
+      "total": 36361,
+      "seconds": 60.226356300059706,
+      "librarySha256": "d2ebcfc753918abe9b692616c65e88d6ee62f3437d04236f4514fdf69e9f0f8e",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "windows",
+      "target": "net11.0",
+      "role": "native",
+      "passed": 46507,
+      "total": 46508,
+      "seconds": 273.0486614999827,
+      "librarySha256": "d2ebcfc753918abe9b692616c65e88d6ee62f3437d04236f4514fdf69e9f0f8e",
+      "exitCode": 1,
+      "knownUnchangedBaselineException": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+          "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "target": "net11.0",
+      "role": "core",
+      "passed": 36361,
+      "total": 36361,
+      "seconds": 68.958310611,
+      "librarySha256": "d2ebcfc753918abe9b692616c65e88d6ee62f3437d04236f4514fdf69e9f0f8e",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "linux",
+      "target": "net11.0",
+      "role": "native",
+      "passed": 46508,
+      "total": 46508,
+      "seconds": 299.40434272,
+      "librarySha256": "d2ebcfc753918abe9b692616c65e88d6ee62f3437d04236f4514fdf69e9f0f8e",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "windows",
+      "target": "net10.0",
+      "role": "core",
+      "passed": 266,
+      "total": 266,
+      "seconds": 9.909910399932414,
+      "librarySha256": "953dbda1a3403922a0445f509d14753e6dc517affba1b02b940c4a3857da628b",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "windows",
+      "target": "net10.0",
+      "role": "native",
+      "passed": 25,
+      "total": 25,
+      "seconds": 8.695512800011784,
+      "librarySha256": "953dbda1a3403922a0445f509d14753e6dc517affba1b02b940c4a3857da628b",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "linux",
+      "target": "net10.0",
+      "role": "core",
+      "passed": 266,
+      "total": 266,
+      "seconds": 8.822734274999988,
+      "librarySha256": "953dbda1a3403922a0445f509d14753e6dc517affba1b02b940c4a3857da628b",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    },
+    {
+      "host": "linux",
+      "target": "net10.0",
+      "role": "native",
+      "passed": 25,
+      "total": 25,
+      "seconds": 9.504700442,
+      "librarySha256": "953dbda1a3403922a0445f509d14753e6dc517affba1b02b940c4a3857da628b",
+      "exitCode": 0,
+      "knownUnchangedBaselineException": []
+    }
+  ],
+  "packages": {
+    "identity": "0.4.0-dev.1; qualified locally, never published",
+    "files": [
+      {
+        "file": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "8b5ddb85244cc8876514a4258a597efaec6dd90faae5f5583ed7b4c38b1885fe",
+        "librarySha256": {
+          "net10.0": "953dbda1a3403922a0445f509d14753e6dc517affba1b02b940c4a3857da628b",
+          "net11.0": "d2ebcfc753918abe9b692616c65e88d6ee62f3437d04236f4514fdf69e9f0f8e"
+        }
+      },
+      {
+        "file": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "a8e6dadc57cf2486e391e9110e6ff20e1cb68d2983acef565e1671065900308c"
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 7.385676800040528
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 57.519368099980056
+      }
+    ],
+    "scope": "Installed net10/net11 Windows/Linux consumers, package/symbol/dependency checks, memory/font/HTTP/resource/output paths, refusal, cancellation, cleanup and retry."
+  },
+  "unchanged": [
+    "Published 0.3.0",
+    "Existing reference, font and tolerance bytes",
+    "Text shaping/layout/fitting",
+    "Shader sampling and alpha arithmetic",
+    "Windows DejaVu reference and assertion; user authority remains pending"
+  ],
+  "remaining": [
+    "Root CSS background/border/content origin",
+    "W1 text/style/attribute, supplied-font, child and raster groups; all 204 need complete context accounting",
+    "P0/P2/P4/P5/P6/P7; no new green exact-head CI or release-completion claim"
+  ]
+}

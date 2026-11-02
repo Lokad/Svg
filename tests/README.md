@@ -46,6 +46,11 @@ The [descriptive-title control](Research/metadata-attributes/README.md) adds URI
 attribute admission and one canonical native image. It preserves actual reference
 and reserved-namespace checks without multiplying the API/ownership matrix.
 
+[Fixed geometry lengths](Research/geometry-fixed-lengths/README.md) separate unit
+and matrix mechanisms, one prepared-font contract and one canonical native image.
+Resolved ranges, percentage bases and rotation-centre stages keep distinct checks;
+the fractional-pattern interaction retains its independently frozen pixels.
+
 [Rendered use sources](Research/rendered-use-sources/README.md) separate source
 identity/placement, two ownership paths, one prepared-text contract and five
 canonical native images. Named use chains, empty targets and graph failures remain
