@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve the parent bitmap's drawing-matrix rounding when capturing filtered
+  paints, including draws without a recorded transform chain.
 - Preserve antialiased coverage beside bitmap borders when an output row is
   narrower than the mask's complete scan window; reserve span scratch separately.
 - Ignore unknown and inapplicable SVG attributes consistently while retaining

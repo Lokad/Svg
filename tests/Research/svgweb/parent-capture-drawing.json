@@ -1,0 +1,579 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "f2022130169b71ec1682573ab4d003bffe5f14ae",
+  "status": "Parent bitmap drawing boundary and complete Car filter discrepancy CLOSED. Every rendered default original is exploratory exact; unsupported/malformed and other supplied-context gaps remain open.",
+  "scope": {
+    "publicApiChanges": 0,
+    "existingReferenceChanges": 0,
+    "hostedSvgBodiesRetained": 0,
+    "hostedFragmentsRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "newRoutineRenderingCases": 1
+  },
+  "sourceLfSha256": {
+    "src/Lokad.Svg/SvgConverter.cs": "fecb662a9fa00ea7769105165838ab0a23a30a4e5837d1c52360e933b58d0c64",
+    "tests/Lokad.Svg.VisualTests/SvgRadialFilterCaptureReferenceTests.cs": "e907dc72b542fe2c95dd73e939853b897f0b0af88c2a3446393cffd9fa99c830"
+  },
+  "implementation": {
+    "source": "../../../src/Lokad.Svg/SvgConverter.cs",
+    "problem": "NativeDrawingReference bypassed the parent bitmap drawing stage when a captured paint had no recorded transform chain. Direct placement into compact storage changed an intermediate float rounding and the stored radial alpha.",
+    "change": "Use the retained parent recording/destination pair before applying the native source-device placement. The shared drawing reference serves all paints; existing recorded chains, geometry, source bounds, sampling origins, alpha stores and Gaussian kernels are unchanged.",
+    "nativeMatrixRule": "https://raw.githubusercontent.com/google/skia/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkMatrix.cpp"
+  },
+  "layers": {
+    "mechanisms": [
+      "../../Lokad.Svg.Tests/SvgRadialSourceBindingTests.cs",
+      "../../Lokad.Svg.Tests/SvgRecordedShaderCoordinatesTests.cs"
+    ],
+    "contracts": [
+      "../../Lokad.Svg.Tests/SvgConversionApiContractTests.cs",
+      "../../Lokad.Svg.Tests/SvgRectangleShaderOwnershipTests.cs"
+    ],
+    "rendering": "../../Lokad.Svg.VisualTests/SvgRadialFilterCaptureReferenceTests.cs",
+    "nativeControl": "../radial-filter-capture/capture.svg",
+    "captures": "../radial-filter-capture/capture.json",
+    "reason": "Existing direct matrix/definition and representative refusal/cancellation/ownership tests protect their distinct stages. One new canonical image protects the missing parent-to-capture interaction without a fixture/API product."
+  },
+  "ownedControl": {
+    "inputSha256": "75545ff2dceec957acb8ff9dffa4bc848893aedf0eede933452deeb9f15d739e",
+    "logicalViewport": {
+      "width": 1024.25,
+      "height": 1120.125
+    },
+    "outputSize": [
+      1024,
+      1120
+    ],
+    "healthyCapturesPerHost": 3,
+    "before": [
+      {
+        "host": "windows",
+        "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+        "libraryPngSha256": "10ed5d615c8c57e41f070cfe265e4c6396595e122dda2cccef062f3816f7faf3",
+        "changedPixels": 4,
+        "maximumError": 1,
+        "alphaChangedPixels": 4,
+        "pixels": [
+          {
+            "x": 680,
+            "y": 1039,
+            "actual": [
+              0,
+              0,
+              0,
+              47
+            ],
+            "native": [
+              0,
+              0,
+              0,
+              46
+            ]
+          },
+          {
+            "x": 676,
+            "y": 1041,
+            "actual": [
+              0,
+              0,
+              0,
+              35
+            ],
+            "native": [
+              0,
+              0,
+              0,
+              34
+            ]
+          },
+          {
+            "x": 680,
+            "y": 1042,
+            "actual": [
+              0,
+              0,
+              0,
+              79
+            ],
+            "native": [
+              0,
+              0,
+              0,
+              78
+            ]
+          },
+          {
+            "x": 676,
+            "y": 1043,
+            "actual": [
+              0,
+              0,
+              0,
+              35
+            ],
+            "native": [
+              0,
+              0,
+              0,
+              34
+            ]
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+        "libraryPngSha256": "10ed5d615c8c57e41f070cfe265e4c6396595e122dda2cccef062f3816f7faf3",
+        "changedPixels": 4,
+        "maximumError": 1,
+        "alphaChangedPixels": 4,
+        "pixels": [
+          {
+            "x": 680,
+            "y": 1039,
+            "actual": [
+              0,
+              0,
+              0,
+              47
+            ],
+            "native": [
+              0,
+              0,
+              0,
+              46
+            ]
+          },
+          {
+            "x": 676,
+            "y": 1041,
+            "actual": [
+              0,
+              0,
+              0,
+              35
+            ],
+            "native": [
+              0,
+              0,
+              0,
+              34
+            ]
+          },
+          {
+            "x": 680,
+            "y": 1042,
+            "actual": [
+              0,
+              0,
+              0,
+              79
+            ],
+            "native": [
+              0,
+              0,
+              0,
+              78
+            ]
+          },
+          {
+            "x": 676,
+            "y": 1043,
+            "actual": [
+              0,
+              0,
+              0,
+              35
+            ],
+            "native": [
+              0,
+              0,
+              0,
+              34
+            ]
+          }
+        ]
+      }
+    ],
+    "afterChangedPixels": {
+      "windows": 0,
+      "linux": 0
+    },
+    "diagnostics": {
+      "unfiltered": "Exact.",
+      "opaquePaint": "Exact.",
+      "zeroBlur": "One alpha difference before; exact after.",
+      "nonzeroBlur": "Four alpha differences before; exact after.",
+      "independence": "Independently authored rectangular path and radial parameters; no hosted geometry copied. The unfiltered or zero-blur cases cannot replace the nonzero-blur image."
+    }
+  },
+  "completeOriginal": {
+    "name": "tommek_Car.svg",
+    "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+    "priorClosure": "mask-scan-window.json",
+    "currentHosts": [
+      {
+        "host": "windows",
+        "logicalViewport": {
+          "Width": 1052.3622,
+          "Height": 744.09448
+        },
+        "outputSize": [
+          1052,
+          744
+        ],
+        "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+        "libraryPngSha256": "5f675bfe875627036f1414f9bdcfecf499ff9eaba2444856acfc42d93be6b9a2",
+        "nativePngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+        "captures": [
+          {
+            "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ],
+        "beforeChangedPixels": 2,
+        "afterChangedPixels": 0
+      },
+      {
+        "host": "linux",
+        "logicalViewport": {
+          "Width": 1052.3622,
+          "Height": 744.09448
+        },
+        "outputSize": [
+          1052,
+          744
+        ],
+        "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+        "libraryPngSha256": "5f675bfe875627036f1414f9bdcfecf499ff9eaba2444856acfc42d93be6b9a2",
+        "nativePngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+        "captures": [
+          {
+            "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "a82d494096dc29923d709fef2bceeeb5558ab308ea4b4bb6d599ca35a5fe0205",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ],
+        "beforeChangedPixels": 2,
+        "afterChangedPixels": 0
+      }
+    ]
+  },
+  "allOriginals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 70.2133838001173,
+    "librarySha256": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 166,
+        "changedOriginals": [
+          "tommek_Car.svg"
+        ]
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 166,
+        "changedOriginals": [
+          "tommek_Car.svg"
+        ]
+      }
+    }
+  },
+  "suppliedPrograms": {
+    "librarySha256": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+    "files": 19,
+    "seconds": 15.757421300048009,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0
+  },
+  "qualification": {
+    "sdk": "11.0.100-rc.3.26522.148",
+    "libraries": {
+      "net11.0": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+      "net10.0": "810183af8d93d2f3be1a358a51da6eb262a008450218a7911d671b6c1c50fa93"
+    },
+    "beforeFocused": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "exitCode": 1,
+        "seconds": 9.943111600121483,
+        "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+        "testAssemblySha256": "f4e7c88e7e547d5642dfccc682ac8e9996dfc6db137248cfee15fa76c86016b8",
+        "total": 2,
+        "passed": 1,
+        "failed": 1
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "exitCode": 1,
+        "seconds": 11.898533600149676,
+        "librarySha256": "6c9625bb2da0d6d446cbbddd61994f9906e437d4839d5cad65244b0ee442d523",
+        "testAssemblySha256": "f4e7c88e7e547d5642dfccc682ac8e9996dfc6db137248cfee15fa76c86016b8",
+        "total": 2,
+        "passed": 1,
+        "failed": 1
+      }
+    ],
+    "afterFocused": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 9.650009699864313,
+        "librarySha256": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+        "testAssemblySha256": "f4e7c88e7e547d5642dfccc682ac8e9996dfc6db137248cfee15fa76c86016b8",
+        "total": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 9.183121799957007,
+        "librarySha256": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+        "testAssemblySha256": "f4e7c88e7e547d5642dfccc682ac8e9996dfc6db137248cfee15fa76c86016b8",
+        "total": 2,
+        "passed": 2,
+        "failed": 0
+      }
+    ],
+    "sameSelection": "New radial capture and existing affine capture; identical test assembly in before/after runs. Startup and concurrent work are included; these are validation wall times, not benchmark or suite-speedup measurements.",
+    "fullNet11": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 71.91604200005531,
+        "librarySha256": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+        "testAssemblySha256": "ccde8c6499c0ce6fd2cfe199330d91133a43139bffb25b8298584244dfd20b6e",
+        "total": 36712,
+        "passed": 36712,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "exitCode": 1,
+        "seconds": 91.60219709994271,
+        "librarySha256": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+        "testAssemblySha256": "f4e7c88e7e547d5642dfccc682ac8e9996dfc6db137248cfee15fa76c86016b8",
+        "total": 46568,
+        "passed": 46567,
+        "failed": 1
+      },
+      {
+        "host": "windows",
+        "kind": "font-host",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 1.4260294998530298,
+        "librarySha256": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+        "testAssemblySha256": "7f304c3c8214e15773f5f732457ab74989a55626366d97a312a46f23b391f9a2",
+        "total": 10,
+        "passed": 10,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 55.72107469988987,
+        "librarySha256": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+        "testAssemblySha256": "ccde8c6499c0ce6fd2cfe199330d91133a43139bffb25b8298584244dfd20b6e",
+        "total": 36712,
+        "passed": 36712,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 201.97767050005496,
+        "librarySha256": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+        "testAssemblySha256": "f4e7c88e7e547d5642dfccc682ac8e9996dfc6db137248cfee15fa76c86016b8",
+        "total": 46568,
+        "passed": 46568,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "font-host",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 1.418484800029546,
+        "librarySha256": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+        "testAssemblySha256": "7f304c3c8214e15773f5f732457ab74989a55626366d97a312a46f23b391f9a2",
+        "total": 10,
+        "passed": 10,
+        "failed": 0
+      }
+    ],
+    "representativeNet10": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 38.60065930010751,
+        "librarySha256": "810183af8d93d2f3be1a358a51da6eb262a008450218a7911d671b6c1c50fa93",
+        "testAssemblySha256": "c70660a980eb46b11a9a28180b221bb16647f114dc0c6ced90b3e34453b9a21c",
+        "total": 12612,
+        "passed": 12612,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 20.889684400055557,
+        "librarySha256": "810183af8d93d2f3be1a358a51da6eb262a008450218a7911d671b6c1c50fa93",
+        "testAssemblySha256": "42df12b56aa171bbea884a96ca4e4107f2f524cd35bec1a27154b98b43075f5b",
+        "total": 831,
+        "passed": 831,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "font-host",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 1.3803089000284672,
+        "librarySha256": "810183af8d93d2f3be1a358a51da6eb262a008450218a7911d671b6c1c50fa93",
+        "testAssemblySha256": "8c8a89b923e15bf0f14eaffb1b24aae2c862150e8319c9e7f0d4f3e59d891c6a",
+        "total": 10,
+        "passed": 10,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 30.18998990021646,
+        "librarySha256": "810183af8d93d2f3be1a358a51da6eb262a008450218a7911d671b6c1c50fa93",
+        "testAssemblySha256": "c70660a980eb46b11a9a28180b221bb16647f114dc0c6ced90b3e34453b9a21c",
+        "total": 12612,
+        "passed": 12612,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 23.419679200043902,
+        "librarySha256": "810183af8d93d2f3be1a358a51da6eb262a008450218a7911d671b6c1c50fa93",
+        "testAssemblySha256": "42df12b56aa171bbea884a96ca4e4107f2f524cd35bec1a27154b98b43075f5b",
+        "total": 831,
+        "passed": 831,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "font-host",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 1.0528474000748247,
+        "librarySha256": "810183af8d93d2f3be1a358a51da6eb262a008450218a7911d671b6c1c50fa93",
+        "testAssemblySha256": "8c8a89b923e15bf0f14eaffb1b24aae2c862150e8319c9e7f0d4f3e59d891c6a",
+        "total": 10,
+        "passed": 10,
+        "failed": 0
+      }
+    ],
+    "compatibilityReceiptCorrection": "Initial .NET 10 test assemblies were stale and their observations are excluded. An explicit net10.0 build refreshed them; every retained receipt matches the qualified package-asset hash.",
+    "knownWindowsDejavu": {
+      "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "messageSha256": "15ab4032010f62b1c91ce4eddb7057b87e861968fc2aeac665899cd7357e5ee0",
+      "identicalToPreviousMilestone": true,
+      "changedPixels": 75,
+      "referenceAndAssertionPreserved": true,
+      "authority": "Pending independently. No exact-head CI green claim."
+    }
+  },
+  "packages": {
+    "version": "0.4.0-dev.1",
+    "runtimeDependencies": 0,
+    "archives": [
+      {
+        "kind": "nupkg",
+        "sha256": "4c67dbc563b8f5a4cda8562176b2e642d3042eeb1b1b4bcc4520244187e73caa",
+        "separateTimeRebuildByteIdentical": true,
+        "fixedZipEpoch": "1980-01-01T00:00:00",
+        "qualifiedAssets": {
+          "net11.0": "27275daf7cd7d3bede46913573576d2c2c45615594b6abebdca5a5a54951bb5c",
+          "net10.0": "810183af8d93d2f3be1a358a51da6eb262a008450218a7911d671b6c1c50fa93"
+        }
+      },
+      {
+        "kind": "snupkg",
+        "sha256": "03218c2ded12bdcdaf69435c0a7e09ace242b5f028246230e9d3f554b4a0ae11",
+        "separateTimeRebuildByteIdentical": true,
+        "fixedZipEpoch": "1980-01-01T00:00:00",
+        "qualifiedAssets": {}
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 6.988651999970898
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 68.02512410003692
+      }
+    ]
+  },
+  "next": "Continue static CSS text-transform/text-align and deeper child/font/resource/malformed contexts. All-original acceptance remains open at 34 unsupported and 3 malformed default outcomes."
+}

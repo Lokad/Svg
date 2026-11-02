@@ -3608,6 +3608,16 @@ public static partial class SvgConverter
             if (frame is { NativeCapturePlacement: {} nativeCapture, FilterSourceMap: {} captureRelation }
                 && activeViewport.DrawMap is null)
                 return SvgShaderMatrix.FromAffine(captureRelation.MapPreparedDrawing(target, nativeCapture));
+            if (frame is { FilterSourceMap: null, NativeDevice: {} captureDevice, RecordedDrawing: {} captureDrawing })
+            {
+                // Enter the parent bitmap before the compact source capture. Even
+                // a draw without a recording chain retains that float boundary.
+                SvgAffineTransform initial = captureDrawing.Recording;
+                if (sourcePlacement != SvgAffineTransform.Identity) initial = initial.ComposeChecked(sourcePlacement);
+                SvgAffineTransform recorded = activeViewport.DrawMap is {} captureMap
+                    ? captureMap.Prepare(initial, target) : initial.ComposeChecked(target);
+                return SvgShaderMatrix.FromAffine(captureDevice.FromGlobal.ComposeNative(captureDrawing.PlaceRecorded(recorded)));
+            }
             // Captures retain recorded/destination stages; only bare native layer frames
             // use the device reference prepared by their existing replay contract.
             if (activeViewport.DrawMap is null && frame is not null && drawingMap.Destination is null) return null;

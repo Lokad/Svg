@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "8b957f033b372ac9a8d54a7250f39e1b3d22a1a9",
-  "status": "Shared mask-window gap CLOSED; two lower RGB differences in the complete original remain OPEN. Prior isolation and diagnostic observations are retained below.",
+  "status": "Complete original filter discrepancy CLOSED by shared mask-window and parent bitmap drawing corrections. Historical isolation and diagnostic observations follow.",
   "original": "tommek_Car.svg",
   "inventory": "originals.json",
   "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
@@ -752,22 +752,14 @@
     }
   },
   "current": {
-    "evidence": "mask-scan-window.json",
+    "evidence": "parent-capture-drawing.json",
     "beforeChangedPixels": 8,
-    "afterChangedPixels": 2,
-    "maximumError": 1,
+    "afterChangedPixels": 0,
+    "maximumError": 0,
     "changedAlphaPixels": 0,
-    "remainingCoordinates": [
-      [
-        478,
-        606
-      ],
-      [
-        479,
-        614
-      ]
-    ],
+    "remainingCoordinates": [],
     "ownedAffineControlExact": true,
-    "remainingPaintContext": "Centered user-space radial with one translucent inherited stop; native source-capture equivalence remains unproven."
+    "ownedRadialControlExact": true,
+    "originalExactBothHosts": true
   }
 }

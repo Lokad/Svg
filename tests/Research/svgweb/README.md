@@ -6,8 +6,8 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 167 originals per host: **166 exploratory
-exact, one different**, with 34 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 167 originals per host: **167 exploratory
+exact**, with 34 UnsupportedFeature and 3 MalformedInput outcomes. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
@@ -16,12 +16,13 @@ whole-corpus acceptance remains open.
 
 The [attribute-applicability review](attribute-applicability.json) closes custom
 and inapplicable attribute gates plus explicit gradient-unit fallback. Five newly
-rendered originals match three healthy native captures per host; `tommek_Car.svg`
-retains two RGB differences of one unit. The [mask scan-window correction](mask-scan-window.json)
-closes its six other differences. The [filter isolation](car-filter-isolation.json)
-retains the remaining radial-gradient source context.
-An [independently authored affine stroke](../affine-filter-capture/README.md)
-retains the failing bitmap-boundary context without copying hosted geometry.
+rendered originals match three healthy native captures per host. The complete
+`tommek_Car.svg` is exact after the [mask scan-window](mask-scan-window.json) and
+[parent drawing-boundary](parent-capture-drawing.json) corrections. Independent
+[affine stroke](../affine-filter-capture/README.md) and
+[radial capture](../radial-filter-capture/README.md) controls retain both former
+failures without copying hosted geometry. [Filter isolation](car-filter-isolation.json)
+preserves the original-to-mechanism mapping.
 
 The [supplied-program inventory](supplied-original-contexts.json) pins all 19 font
 contexts and three stable healthy captures per host. The [current raster-strike correction](windows-small-strikes.json)

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024.25" height="1120.125">
+  <defs>
+    <linearGradient id="alpha">
+      <stop stop-color="black" />
+      <stop offset="1" stop-color="black" stop-opacity="0" />
+    </linearGradient>
+    <radialGradient id="paint" href="#alpha" gradientUnits="userSpaceOnUse"
+      cx="1024.7037648" cy="1423.3443053" r="8.8768387"
+      gradientTransform="matrix(1 0 0 0.48966102 0 726.38808245)" />
+    <filter id="blur" x="-1" y="-1" width="3" height="3">
+      <feGaussianBlur stdDeviation="3.9227024" />
+    </filter>
+  </defs>
+  <path d="M1018.4632324 1413.1516884H1030.9442972V1433.5369222H1018.4632324Z"
+    transform="matrix(0.6667 0 0 0.73217 -2.3322677 0.4896481)"
+    fill="url(#paint)" filter="url(#blur)" />
+</svg>
