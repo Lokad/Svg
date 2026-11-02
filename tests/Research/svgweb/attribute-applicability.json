@@ -997,7 +997,8 @@
           ]
         }
       ],
-      "next": "Preserve image/bounds/transform/sampling/alpha roles; isolate active filter consumers and shared rounding. Removing all100 filter bindings is exact. Retaining successive quarters localizes6 differences to bindings25-49 and2 to50-74; other quarters are exact. Zero-blur changes expose41 differences, so neither blur-kernel-only nor gradient-only causality is established. Controls are RAM-only, single exploratory Windows captures, not reference admission."
+      "next": "Preserve image/bounds/transform/sampling/alpha roles; isolate active filter consumers and shared rounding. Removing all100 filter bindings is exact. Retaining successive quarters localizes6 differences to bindings25-49 and2 to50-74; other quarters are exact. Zero-blur changes expose41 differences, so neither blur-kernel-only nor gradient-only causality is established. Controls are RAM-only, single exploratory Windows captures, not reference admission.",
+      "currentIsolation": "car-filter-isolation.json"
     },
     "textTransform": "One live text rule requests actual case mapping. Preserve original scalar addressing, font discovery and prepared layout; do not discard it as inert.",
     "textAlign": "Qualify preformatted-text applicability before changing admission.",

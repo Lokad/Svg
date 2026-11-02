@@ -17,8 +17,9 @@ whole-corpus acceptance remains open.
 The [attribute-applicability review](attribute-applicability.json) closes custom
 and inapplicable attribute gates plus explicit gradient-unit fallback. Five newly
 rendered originals match three healthy native captures per host; `tommek_Car.svg`
-retains eight RGB differences of one unit. Removing its filters makes it exact in
-an exploratory control; the shared filter/paint rounding investigation remains open.
+retains eight RGB differences of one unit. The [filter isolation](car-filter-isolation.json)
+maps them to two path inputs with one Gaussian blur each; the shared filter/paint
+rounding investigation remains open.
 
 The [supplied-program inventory](supplied-original-contexts.json) pins all 19 font
 contexts and three stable healthy captures per host. The [current raster-strike correction](windows-small-strikes.json)

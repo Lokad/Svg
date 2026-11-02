@@ -1,0 +1,379 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "8b957f033b372ac9a8d54a7250f39e1b3d22a1a9",
+  "status": "Open: exact source-preserving localization, no production change or reference admission.",
+  "original": "tommek_Car.svg",
+  "inventory": "originals.json",
+  "sourceSha256": "776f9112304e7b33dfbd51204ee07453fec320538faeeeedf85de7b28bb399f6",
+  "librarySha256": "088d74dade62bdd86a8ee483f069d259fedd84900797eb602f02a9e95ee953d5",
+  "contract": "RAM-only copies retain all source paint, geometry, styles and transforms. Disable filter bindings outside the retained half-open zero-based encounter-order interval. Attribute and inline-style bindings are counted together; filter definitions remain intact.",
+  "scope": {
+    "originalBindings": 100,
+    "host": "windows",
+    "exploratoryHealthyCaptures": 20,
+    "startupHealth": "healthy",
+    "profileCleaned": true,
+    "terminalExitCode": 0,
+    "seconds": 84.0923141001258,
+    "sourceBodiesRetained": 0,
+    "sourceFragmentsRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "existingReferencesChanged": 0
+  },
+  "result": {
+    "isolatedBindings": [
+      {
+        "index": 46,
+        "changedPixels": 6,
+        "maximumError": 1,
+        "alphaChangedPixels": 0,
+        "differenceBounds": [
+          763,
+          274,
+          774,
+          276
+        ],
+        "element": "path",
+        "elementIdSha256": "eff6f469a8436da1e0fad7086dcf521a45be36d2fba6df2abce1d0fc1e9554f0",
+        "filterIdSha256": "4439c214ca7c2fe84d3cefd88a739c60368741b5d35a7bb03ac68191bf93a065",
+        "primitiveCounts": {
+          "feGaussianBlur": 1
+        }
+      },
+      {
+        "index": 60,
+        "changedPixels": 2,
+        "maximumError": 1,
+        "alphaChangedPixels": 0,
+        "differenceBounds": [
+          478,
+          606,
+          480,
+          615
+        ],
+        "element": "path",
+        "elementIdSha256": "ef3bbc860117fb8a374a5edaed696decfa533c40d5c4688d1ea47c43bfb887d3",
+        "filterIdSha256": "f6230386ad0c81677050f86249655eab726f068afdf63c76c2c88c92c69df226",
+        "primitiveCounts": {
+          "feGaussianBlur": 1
+        }
+      }
+    ],
+    "isolatedDifferenceCoordinateUnionEqualsOriginalEight": true,
+    "unresolvedSplitInteractions": [],
+    "interpretation": "Two path inputs with one Gaussian blur each reproduce the complete original difference coordinates. This localizes the associated inputs, without establishing a kernel, source-capture, sampling, restoration or color-transfer cause."
+  },
+  "controls": [
+    {
+      "bindingBegin": 25,
+      "bindingEndExclusive": 37,
+      "inputSha256": "ca87063be45c1f3ebf8bf3d2d21722fc9db5985c6ba73ac89031b667a97e20fd",
+      "libraryPngSha256": "3a036075fd60e05a193519dd0c697578506e6048ea58584b7e5c37a7452d1ae0",
+      "nativePngSha256": "abf2d85cdede01f9f4476d041ffa0ee4715ab168defad95a8ba2ed4262e4634d",
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null
+    },
+    {
+      "bindingBegin": 37,
+      "bindingEndExclusive": 50,
+      "inputSha256": "6ad3141262e24cf5710bc8fb318631a4f236432c93ed40f2efacaa88de65368c",
+      "libraryPngSha256": "68e5452bf6f633d3191ec3689ef3ce2cdd595718b96f5fee67becf31b9623748",
+      "nativePngSha256": "e844a7c5a3cc2d89553ce01de1ab2ce90e2648d87821b9aeedb38d2074d1ec0b",
+      "changedPixels": 6,
+      "maximumError": 1,
+      "alphaChangedPixels": 0,
+      "differenceBounds": [
+        763,
+        274,
+        774,
+        276
+      ]
+    },
+    {
+      "bindingBegin": 50,
+      "bindingEndExclusive": 62,
+      "inputSha256": "6010b32ba57b3491bd46ff4cba926931cf11f680710d44bb86a23c8efede22ed",
+      "libraryPngSha256": "4e3746aee25d0b9a37a4d9241afbafe2a56cc8a0a7c7b29b6fcc3ad6a1ab81c0",
+      "nativePngSha256": "d2ecf0edb024fff82900622d000bc5cbb735acba7cd6515114b1617acb0a10c7",
+      "changedPixels": 2,
+      "maximumError": 1,
+      "alphaChangedPixels": 0,
+      "differenceBounds": [
+        478,
+        606,
+        480,
+        615
+      ]
+    },
+    {
+      "bindingBegin": 62,
+      "bindingEndExclusive": 75,
+      "inputSha256": "b143108a6e96ed25664cd997a604e041b0955f31d11a4a9c52192f574ef1aa46",
+      "libraryPngSha256": "da1da8ab9cbbba36fc1e10d5f463d13afe0c094aee2925e100b5e90583690237",
+      "nativePngSha256": "d7289b4bcc28c84fd409fdfedc8ce83bf926ecacb17ed4a2eeaa2acb6c20962d",
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null
+    },
+    {
+      "bindingBegin": 37,
+      "bindingEndExclusive": 43,
+      "inputSha256": "082853e9898c9bb1e5ce3c8dfcd059c83a57465b83c8b3a0d7b7b84203f774f4",
+      "libraryPngSha256": "18b65d2d594464f08c2fa56f7ac8172d2ab4feab0641616d822a99d3594fc603",
+      "nativePngSha256": "bb977501485c5bab24425e7f802231860d3c84d30cfffb22190614b4370f8ef4",
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null
+    },
+    {
+      "bindingBegin": 43,
+      "bindingEndExclusive": 50,
+      "inputSha256": "0610d96bd65cd14d3fef73cadf3563ea9236f540bf53c530c70b577f940c2dc3",
+      "libraryPngSha256": "7cbfcc370b6b97ba85c7bb6990b65081f59cb36900341de50885320d716ab2bc",
+      "nativePngSha256": "e99b6e52b10b1085314f2b0e4e12bf68dcc4cbeae999bb1bc528535676417a8c",
+      "changedPixels": 6,
+      "maximumError": 1,
+      "alphaChangedPixels": 0,
+      "differenceBounds": [
+        763,
+        274,
+        774,
+        276
+      ]
+    },
+    {
+      "bindingBegin": 50,
+      "bindingEndExclusive": 56,
+      "inputSha256": "7916f658e1477a4ca392e7ad9eba05925c10f78ddbea4da01ec15bc579aecc3e",
+      "libraryPngSha256": "778d2734c676073297ccce3c2a143b454adeff57a8660e2bfa05c058b243355a",
+      "nativePngSha256": "be43d927930dd74e8a2946b9f52622578eb3565169f553f60408493df8893a6f",
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null
+    },
+    {
+      "bindingBegin": 56,
+      "bindingEndExclusive": 62,
+      "inputSha256": "beff3f047194a71a6facab14038678cb72af60a75d58ea1305c1f36687215c0b",
+      "libraryPngSha256": "11f1ebd0c75ae436cc31a8ad1e4d75417a9ca1809a0269fd3492afe895b10bc1",
+      "nativePngSha256": "f29edf8d8ba0bd5ecb6615779e0514efd2c2d7a9a90c1f99ebe4caa79d4c2802",
+      "changedPixels": 2,
+      "maximumError": 1,
+      "alphaChangedPixels": 0,
+      "differenceBounds": [
+        478,
+        606,
+        480,
+        615
+      ]
+    },
+    {
+      "bindingBegin": 43,
+      "bindingEndExclusive": 46,
+      "inputSha256": "c4609de1aec8c728a15c66057ca985684fa664d1f343712751a48e9b31627855",
+      "libraryPngSha256": "df3051d0b5512c04e9e44543af768a336423985a617fdb4d7f09f6d0d8241f4d",
+      "nativePngSha256": "d053ab80a4d466143727cac12a8cf8e1dc24947d5747df092755528e2ac75b53",
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null
+    },
+    {
+      "bindingBegin": 46,
+      "bindingEndExclusive": 50,
+      "inputSha256": "c46720aeb3910e5ab9d28b08394af3c9c3f8127dbf2d6587df870394304289d7",
+      "libraryPngSha256": "d7e791d23a61b7d439e881e9067787a44bf2b3c5a6a5ff851d93710f06c07056",
+      "nativePngSha256": "c35843eb7605e2e1a0d518a94abd375ed8ac343ee33f30c07bb0e3a6bfc941cc",
+      "changedPixels": 6,
+      "maximumError": 1,
+      "alphaChangedPixels": 0,
+      "differenceBounds": [
+        763,
+        274,
+        774,
+        276
+      ]
+    },
+    {
+      "bindingBegin": 56,
+      "bindingEndExclusive": 59,
+      "inputSha256": "50c6ae3818d15a9898ebdec87c1d0c8148eb9ed1062b211c306e3d53ec865bc7",
+      "libraryPngSha256": "2965e4111bcd4b8f58cd5a977d98306035e3740aac4d14dcd862827d03bf2202",
+      "nativePngSha256": "d85c79bf8aa46f9c7d5469470c9bb5d5eb3b52a802fdcbf66fcfb25c46682aa3",
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null
+    },
+    {
+      "bindingBegin": 59,
+      "bindingEndExclusive": 62,
+      "inputSha256": "ec6608a8ceff927d3dc249a3e805628f520f87fa9b150fc6006f9e4097a77853",
+      "libraryPngSha256": "422ee28886aff05a07baf91cb4d50dfa1349d0b9e564a30e3b372352475c8b79",
+      "nativePngSha256": "506329f8c8f3886109fc7175207fd52e4788034e51152ec3b502bc9fbec9722e",
+      "changedPixels": 2,
+      "maximumError": 1,
+      "alphaChangedPixels": 0,
+      "differenceBounds": [
+        478,
+        606,
+        480,
+        615
+      ]
+    },
+    {
+      "bindingBegin": 46,
+      "bindingEndExclusive": 48,
+      "inputSha256": "30a7acec140b065fc86d6b2874f46c3d173c7174beeaaefa5e2afcd9b88f6fb8",
+      "libraryPngSha256": "c3223f6086959550132642d486fff808344db4b983dc830d283a5a8d7b1b32fc",
+      "nativePngSha256": "33c49ef69543a13de7174206369599a260b6000e6857d6696e48d476077f2321",
+      "changedPixels": 6,
+      "maximumError": 1,
+      "alphaChangedPixels": 0,
+      "differenceBounds": [
+        763,
+        274,
+        774,
+        276
+      ]
+    },
+    {
+      "bindingBegin": 48,
+      "bindingEndExclusive": 50,
+      "inputSha256": "fd16112dea660f160a69e050714e8b243062177b66f5b8047e08cdcd96137d1f",
+      "libraryPngSha256": "015d49360d9e521848cbfc5e8332aa6673f1c8368bf2243b993f830447fca70f",
+      "nativePngSha256": "a62f65022da5a6dc6d337754a8e9783c0144217f0ae2b01060378d8c1c55a959",
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null
+    },
+    {
+      "bindingBegin": 59,
+      "bindingEndExclusive": 60,
+      "inputSha256": "4641185031590728328ada42c2d28ff25adfd6e08e3f55819416044103431e17",
+      "libraryPngSha256": "be937c1ac1f020d993cfe7645d99550d252e6c0baf6af35c4c77717507bad764",
+      "nativePngSha256": "2f804ae518b94d09ebea812218617dd87b568449c79dc36625bf0a4b82705ca8",
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null,
+      "binding": {
+        "element": "path",
+        "elementIdSha256": "56091a1b98b17ae24e658144f0870c31e1abaff767757c1cbcece1418cd52da4",
+        "filterIdSha256": "f6230386ad0c81677050f86249655eab726f068afdf63c76c2c88c92c69df226",
+        "primitiveCounts": {
+          "feGaussianBlur": 1
+        }
+      }
+    },
+    {
+      "bindingBegin": 60,
+      "bindingEndExclusive": 62,
+      "inputSha256": "e42a54ea9dc0ff26f4a24dbe060c651884148b4f8db644007bb679413a81bac8",
+      "libraryPngSha256": "b094b23b8664ca10a2f4bbb464b1e9ebdcf738921ade0352025b9fa4723110a2",
+      "nativePngSha256": "cd2f0285b5bde39d9870c512385181e8b02870667cfa043f9210897633a6aee2",
+      "changedPixels": 2,
+      "maximumError": 1,
+      "alphaChangedPixels": 0,
+      "differenceBounds": [
+        478,
+        606,
+        480,
+        615
+      ]
+    },
+    {
+      "bindingBegin": 46,
+      "bindingEndExclusive": 47,
+      "inputSha256": "49a78bb5dfcb2f819a527ca7955295e2c62ca470c419336ee510587344db8987",
+      "libraryPngSha256": "a4f41528741cd4a8b4127a8d869a55d11a363a06552593a06e760a3fd84e4215",
+      "nativePngSha256": "286d716a881306f1684957b4dca6d83274066e64bb0674222674e2b1f08c80ed",
+      "changedPixels": 6,
+      "maximumError": 1,
+      "alphaChangedPixels": 0,
+      "differenceBounds": [
+        763,
+        274,
+        774,
+        276
+      ],
+      "binding": {
+        "element": "path",
+        "elementIdSha256": "eff6f469a8436da1e0fad7086dcf521a45be36d2fba6df2abce1d0fc1e9554f0",
+        "filterIdSha256": "4439c214ca7c2fe84d3cefd88a739c60368741b5d35a7bb03ac68191bf93a065",
+        "primitiveCounts": {
+          "feGaussianBlur": 1
+        }
+      }
+    },
+    {
+      "bindingBegin": 47,
+      "bindingEndExclusive": 48,
+      "inputSha256": "4c03d6615e9ce887960d118e2e2e1bb245f0702ea09f95ace646ecc0f45e325e",
+      "libraryPngSha256": "0d1f907af42621acdba55d3271e6473a1a00344f55724318f1f32b303ddaed1b",
+      "nativePngSha256": "0e652738f7073a74392a311326c61a83f37231c16efa6ad1c6050825c1bd7fba",
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null,
+      "binding": {
+        "element": "path",
+        "elementIdSha256": "0460295d64dad11f8a4a80a7cb670ab8ef5ac0f29d2b6d4f3b5eb8e7337ba9af",
+        "filterIdSha256": "be5d2bb5ca00162167da87dbba152602d7b35e852ac2aafa76d41a1131f27ed2",
+        "primitiveCounts": {
+          "feGaussianBlur": 1
+        }
+      }
+    },
+    {
+      "bindingBegin": 60,
+      "bindingEndExclusive": 61,
+      "inputSha256": "042db3ad97994111199bc88ccc3fa3a4d8f408a36332494058d5c101c4f192af",
+      "libraryPngSha256": "25ca696a33923664b0e9609d9afcbb0e5e13de668019af6aa602f716f9e75812",
+      "nativePngSha256": "c5348ef16a39b6d7dabaa622eeb63e34b17699db914c264904c59aee463a94a2",
+      "changedPixels": 2,
+      "maximumError": 1,
+      "alphaChangedPixels": 0,
+      "differenceBounds": [
+        478,
+        606,
+        480,
+        615
+      ],
+      "binding": {
+        "element": "path",
+        "elementIdSha256": "ef3bbc860117fb8a374a5edaed696decfa533c40d5c4688d1ea47c43bfb887d3",
+        "filterIdSha256": "f6230386ad0c81677050f86249655eab726f068afdf63c76c2c88c92c69df226",
+        "primitiveCounts": {
+          "feGaussianBlur": 1
+        }
+      }
+    },
+    {
+      "bindingBegin": 61,
+      "bindingEndExclusive": 62,
+      "inputSha256": "54357fad3b9dae1e7dc7a64c8effe6f951eee2b97ba3ad67cd6a2ad054fca137",
+      "libraryPngSha256": "92e0e12a8b29de8201eaaa7e2491868d0814b9a57bf68f093c52bbdd14b696c6",
+      "nativePngSha256": "2b6861a2cee7969eba6bcaefa6706a36099f5df05c88d87eb512bfc56d19576d",
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null,
+      "binding": {
+        "element": "path",
+        "elementIdSha256": "a59e2b0d656f04243820b3eb1adaa564a5c0aab4c1724c50ecd3d9c25332712f",
+        "filterIdSha256": "f6230386ad0c81677050f86249655eab726f068afdf63c76c2c88c92c69df226",
+        "primitiveCounts": {
+          "feGaussianBlur": 1
+        }
+      }
+    }
+  ],
+  "next": "Inspect shared source/grid/color/storage stages on these two inputs. Recompose an independently authored control; preserve scalar/bounds/map/alpha roles and existing failing-before regressions. Require exact complete-original Windows/Linux output and independent control admission before closure."
+}
