@@ -1,0 +1,337 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "eff5f6849ef9a7e349a5a8029073984c0483f552",
+  "status": "Solid root border layout/composition and integer image viewport qualified. Complete mysvg rendering remains open behind its explicit-font requirement.",
+  "specifications": [
+    "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/paint/box_border_painter.cc",
+    "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/paint/svg_root_painter.cc",
+    "https://www.w3.org/TR/css-backgrounds-3/"
+  ],
+  "sharedModel": [
+    "Resolve root padding and border declarations with one bounded edge-priority collector. Retain used border widths and colors as pure values; none/hidden styles have zero used width, nonzero subpixel widths use at least one CSS pixel, and percentage widths remain unsupported.",
+    "Preparation and rendering share border-plus-padding insets, snapped outer-box projection, CSS box paint coordinates and pre-snapped content clips. Logical sizing, text layout and SVG percentage bases remain unchanged.",
+    "Paint border commands inside root source opacity and before content clipping. Empty roots retain their box paint; root visibility suppresses border paint while explicit visible children keep their insets. Outer image generation preserves its display contract.",
+    "Uniform borders reuse rectangle-frame coverage. Translucent partial borders fill one side union. Distinct colors use native side order and miters; at most four opacity groups reuse analytic paths and existing layer restoration, reserving any required storage before allocation and releasing on every exit.",
+    "The integer device image viewport clips the fractional image AA footprint without another AA multiplication. It is independent of bitmap allocation, SVG content projection and CSS border geometry."
+  ],
+  "tests": {
+    "mechanism": "../../Lokad.Svg.Tests/SvgRootBorderLayoutTests.cs",
+    "mechanismCases": 37,
+    "ownership": "../../Lokad.Svg.Tests/SvgRootBoxOwnershipTests.cs",
+    "ownershipCases": 3,
+    "ownershipResponsibilities": [
+      "borrowed padding clip",
+      "uniform border frame",
+      "owned border opacity layer"
+    ],
+    "preparedText": "../../Lokad.Svg.Tests/OpenTypeFontTests.TraversalMetadata.cs",
+    "preparedTextCases": 2,
+    "sharedSetup": "Ownership and prepared-font cases retain independent selectable rows and distinct allocation/execution paths; no fixture/API product.",
+    "canonicalBorder": "../../Lokad.Svg.VisualTests/SvgRootBorderReferenceTests.cs",
+    "canonicalBorderCases": 18,
+    "integerImageViewport": "../../Lokad.Svg.Tests/SvgRootImageMapTests.cs",
+    "canonicalImageViewport": "../../Lokad.Svg.VisualTests/SvgRootImageDensityReferenceTests.cs",
+    "newImageViewportCases": 1,
+    "manifests": [
+      "../root-box-layout/capture.json",
+      "../root-border/capture.json",
+      "../root-image-density/capture.json"
+    ],
+    "nativeCapturesPerContextPerHost": 3,
+    "newlyAdmittedHealthyNativeReceipts": 114,
+    "comparisonWindow": "The unchanged fractional-2 reference is36x24; compare only its previously declared35x23 window. No rescaling, reference edits or tolerance."
+  },
+  "failingBefore": {
+    "rootBorderAdmission": {
+      "librarySha256": "8f60474191c33ecc1cb0fbe93c77d413b5ebbe99a6834dba29f0515c18d8fb37",
+      "outcome": "UnsupportedFeature",
+      "frozenBeforeAdmission": "root-css-box-layout.json",
+      "canonicalContexts": 14
+    },
+    "fractionalImageViewport": {
+      "librarySha256": "f611384cf1652ea6a5a3dbae55a019b0d6366a9164d809fc30795c42f1044e8d",
+      "input": "../root-image-density/fractional-overflow.svg",
+      "native": "Empty final row; preceding right edge RGBA255,255,255,191.",
+      "changedPixels": 13,
+      "affectedRow": 8,
+      "independentContexts": [
+        "overflowing solid SVG paint",
+        "empty canvas background",
+        "padded empty canvas background"
+      ],
+      "originalBorderContext": "fractional-0-75"
+    },
+    "partialBorderUnion": {
+      "librarySha256": "25ff75602463ae5f411cdf76f7a243626e95df4808f01ada707ab67b3df9d760",
+      "input": "../root-border/partial.svg",
+      "changedPixels": 23,
+      "maximumChannelError": 2,
+      "alphaChangedPixels": 22,
+      "cause": "Painting same-color translucent sides through an opacity layer changed AA stores; one native side-union path is required."
+    }
+  },
+  "qualification": {
+    "runs": [
+      {
+        "name": "root-border-milestone-1-core-windows-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg",
+        "seconds": 81.567,
+        "total": 36458,
+        "passed": 36458,
+        "failed": [],
+        "librarySha256": "49e337aec13c3f3ee0b4cb38eecbd1b87c1af46302b2472f853df0c4fd7d8b71"
+      },
+      {
+        "name": "root-border-milestone-1-core-linux-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg",
+        "seconds": 66.318,
+        "total": 36458,
+        "passed": 36458,
+        "failed": [],
+        "librarySha256": "49e337aec13c3f3ee0b4cb38eecbd1b87c1af46302b2472f853df0c4fd7d8b71"
+      },
+      {
+        "name": "root-border-milestone-1-native-windows-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg",
+        "seconds": 105.168,
+        "total": 46558,
+        "passed": 46557,
+        "failed": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ],
+        "librarySha256": "49e337aec13c3f3ee0b4cb38eecbd1b87c1af46302b2472f853df0c4fd7d8b71"
+      },
+      {
+        "name": "root-border-milestone-1-native-linux-net11.0",
+        "selection": "FullyQualifiedName~Lokad.Svg",
+        "seconds": 225.211,
+        "total": 46558,
+        "passed": 46558,
+        "failed": [],
+        "librarySha256": "49e337aec13c3f3ee0b4cb38eecbd1b87c1af46302b2472f853df0c4fd7d8b71"
+      },
+      {
+        "name": "root-border-compat-1-core-windows-net10.0",
+        "selection": "FullyQualifiedName~SvgRootBorderLayoutTests|FullyQualifiedName~SvgRootBoxLayoutTests|FullyQualifiedName~SvgRootImageMapTests|FullyQualifiedName~SvgCanvasBackground|FullyQualifiedName~SvgRootBoxOwnershipTests|FullyQualifiedName~Root_box_validates_before_acquisition|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgOpaqueBitmapClipTests|FullyQualifiedName~SvgBinaryClipRectanglesTests|FullyQualifiedName~PublicContractTests",
+        "seconds": 12.162,
+        "total": 1511,
+        "passed": 1511,
+        "failed": [],
+        "librarySha256": "3a4aa4eb46ee414acd77c6cd5f8482ac62dc18c64f2d4c5ea88711385798cc62"
+      },
+      {
+        "name": "root-border-compat-1-core-linux-net10.0",
+        "selection": "FullyQualifiedName~SvgRootBorderLayoutTests|FullyQualifiedName~SvgRootBoxLayoutTests|FullyQualifiedName~SvgRootImageMapTests|FullyQualifiedName~SvgCanvasBackground|FullyQualifiedName~SvgRootBoxOwnershipTests|FullyQualifiedName~Root_box_validates_before_acquisition|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgOpaqueBitmapClipTests|FullyQualifiedName~SvgBinaryClipRectanglesTests|FullyQualifiedName~PublicContractTests",
+        "seconds": 9.363,
+        "total": 1511,
+        "passed": 1511,
+        "failed": [],
+        "librarySha256": "3a4aa4eb46ee414acd77c6cd5f8482ac62dc18c64f2d4c5ea88711385798cc62"
+      },
+      {
+        "name": "root-border-compat-1-native-windows-net10.0",
+        "selection": "FullyQualifiedName~SvgRootBorderReferenceTests|FullyQualifiedName~SvgRootPaddingReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~SvgCanvasDensityReferenceTests|FullyQualifiedName~SvgCanvasBackgroundReferenceTests|FullyQualifiedName~DevToolsConnectionTests|FullyQualifiedName~ChromeDiagnosticsTests|FullyQualifiedName~ChromeProcessTests",
+        "seconds": 16.535,
+        "total": 88,
+        "passed": 88,
+        "failed": [],
+        "librarySha256": "3a4aa4eb46ee414acd77c6cd5f8482ac62dc18c64f2d4c5ea88711385798cc62"
+      },
+      {
+        "name": "root-border-compat-1-native-linux-net10.0",
+        "selection": "FullyQualifiedName~SvgRootBorderReferenceTests|FullyQualifiedName~SvgRootPaddingReferenceTests|FullyQualifiedName~SvgRootImageDensityReferenceTests|FullyQualifiedName~SvgCanvasDensityReferenceTests|FullyQualifiedName~SvgCanvasBackgroundReferenceTests|FullyQualifiedName~DevToolsConnectionTests|FullyQualifiedName~ChromeDiagnosticsTests|FullyQualifiedName~ChromeProcessTests",
+        "seconds": 12.29,
+        "total": 88,
+        "passed": 88,
+        "failed": [],
+        "librarySha256": "3a4aa4eb46ee414acd77c6cd5f8482ac62dc18c64f2d4c5ea88711385798cc62"
+      }
+    ],
+    "originalReplay": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 79.06411979999393,
+      "librarySha256": "49e337aec13c3f3ee0b4cb38eecbd1b87c1af46302b2472f853df0c4fd7d8b71",
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 40,
+            "rendered": 161,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyExactPngs": 161,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 40,
+            "rendered": 161,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyExactPngs": 161,
+          "changedOriginals": []
+        }
+      }
+    },
+    "originalSemanticAudit": {
+      "windows": {
+        "completeOriginalReports": 204,
+        "changedFields": {
+          "outcome": [],
+          "dimensions": [
+            "mysvg.svg"
+          ],
+          "options": [],
+          "runtime": [],
+          "sourceDiagnosticSha256": [
+            "mysvg.svg"
+          ],
+          "fontDiagnosticSha256": [],
+          "messageSha256": [
+            "mysvg.svg"
+          ]
+        },
+        "previouslyExactPngsByteIdentical": 161,
+        "mysvgDimensionsBefore": null,
+        "mysvgDimensionsAfter": {
+          "Width": {
+            "Value": 250,
+            "IsPercentage": false
+          },
+          "Height": {
+            "Value": 150,
+            "IsPercentage": false
+          },
+          "ViewBox": null,
+          "LogicalViewport": {
+            "Width": 250,
+            "Height": 150
+          },
+          "WidthSource": 0,
+          "HeightSource": 0,
+          "WidthUsesFallbackBase": false,
+          "HeightUsesFallbackBase": false
+        },
+        "defaultFontSnapshotGates": 18
+      },
+      "linux": {
+        "completeOriginalReports": 204,
+        "changedFields": {
+          "outcome": [],
+          "dimensions": [
+            "mysvg.svg"
+          ],
+          "options": [],
+          "runtime": [],
+          "sourceDiagnosticSha256": [
+            "mysvg.svg"
+          ],
+          "fontDiagnosticSha256": [],
+          "messageSha256": [
+            "mysvg.svg"
+          ]
+        },
+        "previouslyExactPngsByteIdentical": 161,
+        "mysvgDimensionsBefore": null,
+        "mysvgDimensionsAfter": {
+          "Width": {
+            "Value": 250,
+            "IsPercentage": false
+          },
+          "Height": {
+            "Value": 150,
+            "IsPercentage": false
+          },
+          "ViewBox": null,
+          "LogicalViewport": {
+            "Width": 250,
+            "Height": 150
+          },
+          "WidthSource": 0,
+          "HeightSource": 0,
+          "WidthUsesFallbackBase": false,
+          "HeightUsesFallbackBase": false
+        },
+        "defaultFontSnapshotGates": 18
+      }
+    },
+    "packages": {
+      "version": "0.4.0-dev.1",
+      "published": false,
+      "files": [
+        {
+          "fileName": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "66ed2a497eceec99a953458fe1d44f4e5d04cbe1816d031775e612b1bcdd8ef0"
+        },
+        {
+          "fileName": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "b14e2522621883bd47bd2442090386048017057c9535786166fc7055fa6f2940"
+        }
+      ],
+      "assets": {
+        "net11.0": "49e337aec13c3f3ee0b4cb38eecbd1b87c1af46302b2472f853df0c4fd7d8b71",
+        "net10.0": "3a4aa4eb46ee414acd77c6cd5f8482ac62dc18c64f2d4c5ea88711385798cc62"
+      },
+      "runtimeDependencies": 0,
+      "thirdPartyNoticesIncluded": true,
+      "installedConsumers": [
+        {
+          "host": "windows",
+          "exitCode": 0,
+          "seconds": 9.605599700007588
+        },
+        {
+          "host": "linux",
+          "exitCode": 0,
+          "seconds": 55.073518899967894
+        }
+      ],
+      "scope": "Installed net10/net11 consumers on both hosts; memory, HTTP/font/resource/output ownership, refusal, cancellation, cleanup and retry."
+    },
+    "windowsDejaVu": {
+      "changedPixels": 75,
+      "maximumChannelError": 17,
+      "alphaChangedPixels": 75,
+      "actualPngSha256": "71b1b8cd1159dab06d982aef86b48f4968838bb5ba699122962d0947f901dc34",
+      "frozenPngSha256": "d00220c0ab28b9805f43e7e86cda6165573021fb7dd7e2964531052d45c95b39",
+      "librarySha256": "49e337aec13c3f3ee0b4cb38eecbd1b87c1af46302b2472f853df0c4fd7d8b71",
+      "authority": "Pending; preserve reference/assertion; terminal CI41274755136 remains FAILED/CLOSED."
+    },
+    "elapsedTimes": "Functional runner time includes startup and concurrent work; no benchmark or speed claim.",
+    "validationTimeComparison": {
+      "beforeRecord": "root-css-padding-layout.json",
+      "beforeCoreTests": 36417,
+      "afterCoreTests": 36458,
+      "coreSeconds": {
+        "windows": {
+          "before": 83.3,
+          "after": 81.567
+        },
+        "linux": {
+          "before": 67.897,
+          "after": 66.318
+        }
+      },
+      "beforeNativeTests": 46539,
+      "afterNativeTests": 46558,
+      "nativeSeconds": {
+        "windows": {
+          "before": 105.896,
+          "after": 105.168
+        },
+        "linux": {
+          "before": 200.485,
+          "after": 225.211
+        }
+      },
+      "interpretation": "Different case counts, startup and concurrent work; these are measured milestone validation costs, not an isolated speed comparison. Ownership and prepared-font setup were consolidated without removing distinct paths."
+    }
+  },
+  "remaining": [
+    "Complete mysvg with explicit supplied fonts and independent native evidence. Its border gate is closed; the original remains UnsupportedFeature under default options, alongside18 default font-snapshot gates.",
+    "Continue the high-priority W1 static-gap review, including group CSS text-anchor and supplied fonts. Root filters, root clip paths, rounded borders and other border styles remain explicit scope limitations."
+  ]
+}

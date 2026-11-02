@@ -25,8 +25,8 @@ Each context protects a distinct interaction:
 
 [Direct mechanisms](../../Lokad.Svg.Tests/SvgRootBoxLayoutTests.cs) keep shorthand,
 units, boundaries, priority and numerical stages separate. One
-[ownership test](../../Lokad.Svg.Tests/SvgRootPaddingOwnershipTests.cs) protects
+[ownership test](../../Lokad.Svg.Tests/SvgRootBoxOwnershipTests.cs) protects
 analytic clipping, refusal, refunds and retry; one prepared-font contract protects
 validation before acquisition and matching output maps. The
 [record](../svgweb/root-css-padding-layout.json) preserves failing-before evidence.
-Root border painting remains open.
+[Border painting](../root-border/README.md) has its own composition controls.

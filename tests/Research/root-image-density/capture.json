@@ -322,6 +322,64 @@
           "referenceSha256": "07ab9a100cc8811da7e803727164e7a48fad1736fc71c700fda459d84189a053"
         }
       }
+    },
+    {
+      "id": "fractional-overflow-0-75",
+      "input": "fractional-overflow.svg",
+      "width": 13,
+      "height": 9,
+      "imageViewport": {
+        "width": 17.4,
+        "height": 11.4
+      },
+      "outputScale": 0.75,
+      "inputSha256": "14451cb4b78176bc2eed10e914808d42218b0402cc87b6c1ffb416cfa176bc02",
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "e1a3bab0b814d621a1662079dbf999b54cf8e84ab8f727a57f36a973922007c8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e1a3bab0b814d621a1662079dbf999b54cf8e84ab8f727a57f36a973922007c8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e1a3bab0b814d621a1662079dbf999b54cf8e84ab8f727a57f36a973922007c8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-overflow-0-75.png",
+          "referenceSha256": "e1a3bab0b814d621a1662079dbf999b54cf8e84ab8f727a57f36a973922007c8"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "e1a3bab0b814d621a1662079dbf999b54cf8e84ab8f727a57f36a973922007c8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e1a3bab0b814d621a1662079dbf999b54cf8e84ab8f727a57f36a973922007c8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "e1a3bab0b814d621a1662079dbf999b54cf8e84ab8f727a57f36a973922007c8",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "references/fractional-overflow-0-75.png",
+          "referenceSha256": "e1a3bab0b814d621a1662079dbf999b54cf8e84ab8f727a57f36a973922007c8"
+        }
+      }
     }
   ]
 }

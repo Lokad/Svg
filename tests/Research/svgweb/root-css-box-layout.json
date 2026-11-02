@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "2c536d2284b455131c37dd3e550f22d27be7193d",
-  "status": "root border/padding implementation open; native layout evidence frozen before admission",
+  "status": "Native box-layout evidence frozen before admission; padding and solid borders are qualified by the linked implementation records.",
   "manifest": "../root-box-layout/capture.json",
   "densityManifest": "../root-image-density/capture.json",
   "specifications": [
@@ -1164,5 +1164,6 @@
     "linuxWrapperCaptures": 12,
     "limits": "Functional runner time includes startup and concurrent work; no benchmark or performance improvement claim. No new full-suite/package or green exact-head CI claim."
   },
-  "implementationFollowUp": "root-css-padding-layout.json"
+  "implementationFollowUp": "root-css-padding-layout.json",
+  "borderImplementationFollowUp": "root-css-border-layout.json"
 }

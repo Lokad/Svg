@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "dddeea148a7a7a1a14aaab8a988c4294c5133d99",
-  "status": "Shared root padding placement, independent image/content clip coverage and canvas edge coverage qualified; root border painting remains open.",
+  "status": "Shared root padding placement, image/content clip coverage and canvas edges qualified; solid border painting qualified in the linked follow-up.",
   "specifications": [
     "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/layout/svg/layout_svg_root.cc",
     "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/paint/svg_root_painter.cc",
@@ -21,7 +21,7 @@
     "mechanismCases": 27,
     "bitmapBoundaryMechanism": "../../Lokad.Svg.Tests/SvgAlphaBoundaryMechanismTests.cs",
     "bitmapBoundaryCases": 2,
-    "ownership": "../../Lokad.Svg.Tests/SvgRootPaddingOwnershipTests.cs",
+    "ownership": "../../Lokad.Svg.Tests/SvgRootBoxOwnershipTests.cs",
     "ownershipCases": 1,
     "ownershipBound": "One output surface plus less than4096bytes of frame metadata; refusal refunds all allowance and retry reuses the same host.",
     "preparedText": "../../Lokad.Svg.Tests/OpenTypeFontTests.TraversalMetadata.cs",
@@ -444,8 +444,8 @@
     "limitations": "Full Windows native sweep retains solely the unchanged75-pixel DejaVu reference conflict. User authority remains pending; no reference/assertion changes or new green exact-head CI claim. Functional runner times include startup and concurrency; no benchmark or speed claim."
   },
   "remaining": [
-    "Implement root border paint/insets as one coherent follow-up using these shared box/content stages, including opacity placement, visibility, joins and fractional sizing/density.",
-    "Fourteen border-dependent controls in root-box-layout remain unadmitted. The complete mysvg original and all204 must be qualified after that change.",
-    "Root filters and root clip paths remain explicit scope refusals."
-  ]
+    "Solid border layout/composition closed by root-css-border-layout.json; preserve the existing padding and canvas regressions.",
+    "Root filters, root clip paths, rounded borders and other border styles remain explicit scope limitations."
+  ],
+  "borderImplementationFollowUp": "root-css-border-layout.json"
 }

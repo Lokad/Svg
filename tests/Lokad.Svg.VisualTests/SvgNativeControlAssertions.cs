@@ -40,7 +40,26 @@ internal static class SvgNativeControlAssertions
         Assert.Equal(width, expected.Width);
         Assert.Equal(height, expected.Height);
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
-        PixelComparison result = PixelComparer.Compare(expected, PngRgbaDecoder.Decode(png, pixels));
+        RgbaImage actual = PngRgbaDecoder.Decode(png, pixels);
+        if (row.TryGetProperty("comparisonWindow", out JsonElement window))
+        {
+            Assert.Equal(0, window.GetProperty("x").GetInt32());
+            Assert.Equal(0, window.GetProperty("y").GetInt32());
+            Assert.Equal(window.GetProperty("width").GetInt32(), actual.Width);
+            Assert.Equal(window.GetProperty("height").GetInt32(), actual.Height);
+            Assert.InRange(actual.Width, 1, expected.Width);
+            Assert.InRange(actual.Height, 1, expected.Height);
+            if (actual.Width != expected.Width || actual.Height != expected.Height)
+            {
+                // Only a declared native screenshot margin is excluded. Preserve
+                // its hash and pixels; never rescale either image or align ink.
+                byte[] comparison = new byte[checked(actual.Width * actual.Height * 4)];
+                for (int y = 0; y < actual.Height; y++)
+                    expected.Pixels.AsSpan(y * expected.Width * 4, actual.Width * 4).CopyTo(comparison.AsSpan(y * actual.Width * 4));
+                expected = new(actual.Width, actual.Height, comparison);
+            }
+        }
+        PixelComparison result = PixelComparer.Compare(expected, actual);
         Assert.True(result.IsExact, JsonSerializer.Serialize(result));
 
         static string Required(JsonElement element, string name) => element.GetProperty(name).GetString() ?? throw new InvalidDataException(name);

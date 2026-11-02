@@ -4,12 +4,14 @@ namespace Lokad.Svg.Tests;
 
 public sealed partial class OpenTypeFontTests
 {
-    [Fact]
+    [Theory]
+    [InlineData("padding:1.3px 4.25px 2px 3.5px", "padding:-1px")]
+    [InlineData("border:2px solid currentColor;padding:1.3px", "border:-1px solid red")]
     [Trait("Layer", "Contract")]
-    public async Task Root_padding_validates_before_acquisition_and_keeps_prepared_text_mapping()
+    public async Task Root_box_validates_before_acquisition_and_keeps_prepared_text_mapping(string declarations, string invalidDeclarations)
     {
-        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='48' height='24' style='padding:1.3px 4.25px 2px 3.5px;background-color:#2080c0'><text font-family='Example' font-size='12' x='2' y='14'>AA</text></svg>"u8.ToArray();
-        byte[] invalid = "<svg xmlns='http://www.w3.org/2000/svg' style='padding:-1px'><text font-family='Example'>A</text></svg>"u8.ToArray();
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='48' height='24' style='" + declarations + ";background-color:#2080c0'><text font-family='Example' font-size='12' x='2' y='14'>AA</text></svg>");
+        byte[] invalid = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' style='" + invalidDeclarations + "'><text font-family='Example'>A</text></svg>");
         (var catalog, var provider, var source) = CreateExamplePack(CreateTriangleFont());
         SvgRenderOptions options = new(null, 1.5, SvgColor.Transparent, SvgRenderLimits.Default);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, (await Assert.ThrowsAsync<SvgException>(async () =>

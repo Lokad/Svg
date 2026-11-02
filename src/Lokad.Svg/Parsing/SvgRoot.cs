@@ -998,7 +998,7 @@ internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintO
     }
 }
 
-internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
+internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup, RootBorder }
 
 /// <summary>Separates filter-output clipping, mask allocation regions and geometric viewport clips at layer restore.</summary>
 internal enum SvgLayerRegionKind : byte { Mask, Viewport, AffineViewport, Bounds, Filter, FilterOutputClip, ClipMask, RootContentViewport }

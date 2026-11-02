@@ -56,12 +56,16 @@ element opacity/visibility and root generation from computed display inheritance
 Mechanisms, two focused ownership/preparation contracts and five native inputs
 retain those boundaries without repeating the API matrix.
 
-[Image density controls](Research/root-image-density/README.md) retain one source
-and four native density contexts, with canonical conversion per context.
+[Image density controls](Research/root-image-density/README.md) retain five native
+contexts, separating the integer image viewport from fractional edge coverage.
 [Root padding](Research/root-padding/README.md) adds direct layout/cascade mechanisms,
 two focused contracts and ten native contexts. [Canvas edge controls](Research/root-canvas-density/README.md)
 separate geometry coverage from image-boundary coverage and the host backdrop.
-The remaining [border controls](Research/root-box-layout/README.md) stay open research.
+[Border controls](Research/root-box-layout/README.md) retain fourteen frozen layout
+contexts; four [edge composition controls](Research/root-border/README.md) cover
+mixed alpha, partial borders, transparent miters and current-color priority. Direct
+mechanisms and two ownership paths protect parsing, used widths, scope placement,
+refusal, refunds and retry. Padding and borders share prepared-font contract setup.
 
 [Rendered use sources](Research/rendered-use-sources/README.md) separate source
 identity/placement, two ownership paths, one prepared-text contract and five

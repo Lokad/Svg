@@ -185,6 +185,11 @@ Preparation and rendering share that map. Canvas background rectangle coverage
 combines with image-boundary coverage before one solid-color store; constant-shader
 rounding cannot replace it. The [layout and paint evidence](../tests/Research/svgweb/root-css-padding-layout.json)
 links mechanisms, ownership, prepared text and independent native controls.
+Root border paint sits inside source opacity and before content clipping. It retains
+CSS used widths separately from SVG strokes; uniform frames, translucent side
+unions and mixed-color opacity groups reuse the existing coverage and layer
+compositors. The [border evidence](../tests/Research/svgweb/root-css-border-layout.json)
+also distinguishes the integer image viewport from its fractional AA footprint.
 
 Nested viewports retain the parent map outside their local viewBox map. Ordinary
 drawing bounds use native integer saturation/culling; resource pictures keep local

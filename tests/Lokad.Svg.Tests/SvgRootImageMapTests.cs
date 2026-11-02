@@ -5,6 +5,17 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgRootImageMapTests
 {
+    [Fact]
+    [Trait("Layer", "Rendering")]
+    public void Fractional_density_keeps_the_integer_image_viewport_inside_the_allocated_bitmap()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='17.4' height='11.4'><rect x='-3' y='-3' width='40' height='40' fill='white'/></svg>"u8.ToArray();
+        byte[] pixels = SvgRasterTestHelper.RenderPixels(input, new(null, .75, SvgColor.Transparent, SvgRenderLimits.Default), out int width, out int height);
+        Assert.Equal((13, 9), (width, height));
+        Assert.All(pixels.AsSpan(8 * width * 4, width * 4).ToArray(), value => Assert.Equal(0, value));
+        // Independent native control: root-image-density/fractional-overflow.svg.
+        Assert.Equal(new byte[] { 255, 255, 255, 191 }, pixels.AsSpan((7 * width + 12) * 4, 4).ToArray());
+    }
     [Theory]
     [Trait("Layer", "Mechanism")]
     [InlineData(.75)]

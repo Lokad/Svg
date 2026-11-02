@@ -71,7 +71,12 @@ are not CSS padding lengths. Percentages use the natural image container width
 on every edge. Padding moves and clips content without enlarging the logical
 viewport or PNG; SVG percentage bases and text layout remain independent.
 Padding on other SVG elements has no effect where styles are admitted.
-Root borders, root filters and root clip paths remain unsupported.
+Root borders support fixed widths, width keywords and `solid`, `none` or `hidden`
+styles, including side declarations, color alpha, `currentColor` and declaration
+priority. Border insets participate in the same fixed image box as padding;
+`box-sizing` accepts `content-box` and `border-box` in that image context.
+Borders on other SVG elements have no effect where styles are admitted. Rounded
+or other border styles, root filters and root clip paths remain unsupported.
 
 The natural image viewport rounds before uniform output scaling; extra pixels in
 the final raster are padding. Tiny or very large logical sizes retain their admitted

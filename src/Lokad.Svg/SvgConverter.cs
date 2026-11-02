@@ -417,6 +417,11 @@ public static partial class SvgConverter
             && rootImage.Boundary is {} rootBoundary
             && (rootBoundary.Right < outputWidth || rootBoundary.Bottom < outputHeight))
         {
+            // The image's integer device viewport can be smaller than its AA
+            // footprint at fractional density. This binary enclosure contributes
+            // no extra coverage multiplication at an antialiased image edge.
+            rootBoundary = rootBoundary.Intersect(new(0, 0, Math.Round(rootBoundary.Width, MidpointRounding.AwayFromZero),
+                Math.Round(rootBoundary.Height, MidpointRounding.AwayFromZero)));
             SvgRasterClipMask mask = new(rootBoundary);
             int right = ClampCeiling(rootBoundary.Right, outputWidth), bottom = ClampCeiling(rootBoundary.Bottom, outputHeight);
             int middleX = Math.Max(0, (right - 1) / 2), middleY = Math.Max(0, (bottom - 1) / 2);
@@ -544,6 +549,176 @@ public static partial class SvgConverter
                     paint.Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), ViewportAlpha(coverage, x, y), SvgAnalyticPaintKind.Direct);
                 }
             }
+        }
+
+        // Border side ordering, miters and opacity groups adapt Blink at the
+        // revision in THIRD_PARTY_NOTICES.txt. Copyright 2015 The Chromium Authors.
+        void PaintRootBorder(byte[] destination)
+        {
+            if (rootImage.BoxPaintBounds is not {} outer || rootImage.BorderInnerBounds is not {} inner) return;
+            SvgRootBorder border = root.BoxLayout.Border;
+            SvgAffineTransform map = rootImage.BoxDrawing.Device;
+            double left = MapRectangleEdge(outer.X, map.A, map.E), top = MapRectangleEdge(outer.Y, map.D, map.F);
+            double right = MapRectangleEdge(outer.Right, map.A, map.E), bottom = MapRectangleEdge(outer.Bottom, map.D, map.F);
+            double il = MapRectangleEdge(inner.X, map.A, map.E), it = MapRectangleEdge(inner.Y, map.D, map.F);
+            double ir = MapRectangleEdge(inner.Right, map.A, map.E), ib = MapRectangleEdge(inner.Bottom, map.D, map.F);
+            int startX = Math.Max(layerBounds.Left, ClampFloor(left, outputWidth)), endX = Math.Min(layerBounds.Right, ClampCeiling(right, outputWidth));
+            int startY = Math.Max(layerBounds.Top, ClampFloor(top, outputHeight)), endY = Math.Min(layerBounds.Bottom, ClampCeiling(bottom, outputHeight));
+            if (border.Top.HasPaint && border.Right.HasPaint && border.Bottom.HasPaint && border.Left.HasPaint
+                && border.Top.Paint == border.Right.Paint && border.Top.Paint == border.Bottom.Paint && border.Top.Paint == border.Left.Paint)
+            {
+                SvgRectangleFrameCoverage frame = new(Fixed(left), Fixed(top), Fixed(right), Fixed(bottom), Fixed(il), Fixed(it), Fixed(ir), Fixed(ib));
+                SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(border.Top.Paint.Color);
+                Span<byte> operations = stackalloc byte[4];
+                for (int y = startY; y < endY; y++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    for (int x = startX; x < endX; x++)
+                    {
+                        if ((x & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        int count = frame.GetOperations(x, y, operations);
+                        for (int operation = 0; operation < count; operation++)
+                            paint.Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), ViewportAlpha(operations[operation], x, y), SvgAnalyticPaintKind.Direct);
+                    }
+                }
+                return;
+            }
+            // Solid edges use native side order. Upcoming opaque sides overdraw
+            // square corners; already painted sides retain the diagonal miter.
+            Span<SvgRootBorderSide> sides = stackalloc SvgRootBorderSide[4] { border.Top, border.Bottom, border.Right, border.Left };
+            SvgSolidPaint? common = null;
+            bool uniform = true;
+            foreach (SvgRootBorderSide edge in sides)
+            {
+                if (!edge.HasPaint) continue;
+                if (common is {} paint && edge.Paint != paint) uniform = false;
+                common = edge.Paint;
+            }
+            if (uniform && common is { Alpha: < 1 } uniformPaint)
+            {
+                // The native translucent partial-border fast path fills the
+                // union once. Painting its sides into a layer changes AA stores.
+                Span<SvgDevicePoint> rectangles = stackalloc SvgDevicePoint[16];
+                Span<int> contourEnds = stackalloc int[4];
+                int contours = 0, vertices = 0;
+                for (int side = 0; side < 4; side++)
+                {
+                    if (!sides[side].HasPaint) continue;
+                    double l = side == 2 ? ir : left, t = side == 1 ? ib : top;
+                    double r = side == 3 ? il : right, b = side == 0 ? it : bottom;
+                    rectangles[vertices++] = new(l, t); rectangles[vertices++] = new(r, t);
+                    rectangles[vertices++] = new(r, b); rectangles[vertices++] = new(l, b);
+                    contourEnds[contours++] = vertices;
+                }
+                PaintPath(rectangles[..vertices], contourEnds[..contours], uniformPaint.Color, destination, true);
+                return;
+            }
+            Span<int> order = stackalloc int[4];
+            int sideCount = 0, visible = 0;
+            for (int side = 0; side < 4; side++)
+            {
+                if (!sides[side].HasPaint) continue;
+                int position = sideCount++;
+                while (position > 0 && sides[order[position - 1]].Paint.Alpha > sides[side].Paint.Alpha)
+                { order[position] = order[position - 1]; position--; }
+                order[position] = side;
+                visible |= 1 << side;
+            }
+            PaintGroups(sides, order[..sideCount], sideCount, 1, destination, true, visible);
+
+            // At most four opacity groups. Each layer reserves its storage before
+            // allocation, clears inherited AA until restore, and releases on every
+            // exit. Equal-alpha adjacent edges paint opaque into one source image.
+            int PaintGroups(scoped ReadOnlySpan<SvgRootBorderSide> sides, scoped ReadOnlySpan<int> order, int end,
+                float effectiveAlpha, byte[] target, bool clipsAtPaint, int visible)
+            {
+                if (end == 0) return 15 ^ visible;
+                float alpha = sides[order[end - 1]].Paint.Alpha;
+                int first = end - 1, mask = 1 << order[first];
+                while (first > 0 && sides[order[first - 1]].Paint.Alpha == alpha) mask |= 1 << order[--first];
+                bool adjacent = (mask & 3) != 0 && (mask & 12) != 0;
+                bool isolate = alpha != 1 && (adjacent || first > 0);
+                using RenderBudget.BudgetReservation? owner = isolate ? budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface) : null;
+                byte[] pixels = isolate ? new byte[surfaceByteCount] : target;
+                int completed = PaintGroups(sides, order, first, isolate ? alpha : effectiveAlpha, pixels, isolate ? false : clipsAtPaint, visible);
+                float paintAlpha = isolate ? 1 : alpha / effectiveAlpha;
+                for (int index = first; index < end; index++)
+                {
+                    int side = order[index];
+                    SvgColor source = sides[side].Paint.Color;
+                    DrawSide(sides, side, completed, new(source.Red, source.Green, source.Blue,
+                        (byte)Math.Clamp((int)(paintAlpha * 255 + .5f), 0, 255)), pixels, isolate ? false : clipsAtPaint);
+                    completed |= 1 << side;
+                }
+                if (isolate)
+                {
+                    byte opacity = (byte)Math.Clamp((int)(alpha / effectiveAlpha * 255 + .5f), 0, 255);
+                    for (int y = startY; y < endY; y++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        for (int x = startX; x < endX; x++)
+                        {
+                            if ((x & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                            int offset = (y * outputWidth + x) * 4;
+                            byte clip = clipsAtPaint ? ViewportAlpha(255, x, y) : (byte)255;
+                            if (clip == 0 || pixels[offset + 3] == 0) continue;
+                            if (clipsAtPaint && !activeViewport.IsBinary)
+                                BlendClippedLayerPixel(target.AsSpan(offset, 4), pixels.AsSpan(offset, 4), opacity, 255, clip);
+                            else RestoreOpacityLayerPixel(target.AsSpan(offset, 4), pixels.AsSpan(offset, 4), opacity);
+                        }
+                    }
+                }
+                return completed;
+            }
+
+            void DrawSide(scoped ReadOnlySpan<SvgRootBorderSide> sides, int side, int completed, SvgColor color, byte[] target, bool clipsAtPaint)
+            {
+                Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[4];
+                Span<int> ends = stackalloc int[1] { 4 };
+                bool miterFirst = Miter(sides, side, side < 2 ? 3 : 0, completed);
+                bool miterSecond = Miter(sides, side, side < 2 ? 2 : 1, completed);
+                switch (side)
+                {
+                    case 0: points[0] = new(left, top); points[1] = new(right, top); points[2] = new(miterSecond ? ir : right, it); points[3] = new(miterFirst ? il : left, it); break;
+                    case 1: points[0] = new(miterFirst ? il : left, ib); points[1] = new(miterSecond ? ir : right, ib); points[2] = new(right, bottom); points[3] = new(left, bottom); break;
+                    case 2: points[0] = new(ir, miterFirst ? it : top); points[1] = new(right, top); points[2] = new(right, bottom); points[3] = new(ir, miterSecond ? ib : bottom); break;
+                    default: points[0] = new(left, top); points[1] = new(il, miterFirst ? it : top); points[2] = new(il, miterSecond ? ib : bottom); points[3] = new(left, bottom); break;
+                }
+                PaintPath(points, ends, color, target, clipsAtPaint);
+            }
+
+            void PaintPath(scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, SvgColor color, byte[] target, bool clipsAtPaint)
+            {
+                double minX = double.PositiveInfinity, minY = double.PositiveInfinity, maxX = double.NegativeInfinity, maxY = double.NegativeInfinity;
+                foreach (SvgDevicePoint point in points) { minX = Math.Min(minX, point.X); minY = Math.Min(minY, point.Y); maxX = Math.Max(maxX, point.X); maxY = Math.Max(maxY, point.Y); }
+                int x0 = Math.Max(startX, ClampFloor(minX, outputWidth)), x1 = Math.Min(endX, ClampCeiling(maxX, outputWidth));
+                int y0 = Math.Max(startY, ClampFloor(minY, outputHeight)), y1 = Math.Min(endY, ClampCeiling(maxY, outputHeight));
+                if (x0 >= x1 || y0 >= y1) return;
+                SvgAnalyticContourPreparation preparation = new(points, ends, [], false, null, SvgPolygonMapping.NativeFillEdges,
+                    [], [], new(Dispatch(minX, false), Dispatch(minY, false), Dispatch(maxX, true), Dispatch(maxY, true)), outputWidth, outputHeight);
+                using SvgAnalyticCoverage coverage = SvgAnalyticCoverage.Prepare(ref preparation,
+                    x0, x1, y0, y1, new(x0, x1), new SvgAnalyticClipContext(layerBounds),
+                    clipsAtPaint && activeViewport.HasMask && !activeViewport.IsBinary ? SvgAnalyticPaintClip.Antialiased : SvgAnalyticPaintClip.Binary,
+                    budget, out bool eligible, cancellationToken);
+                if (!eligible) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Root border side exceeds analytic polygon admission.");
+                SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(color);
+                for (int y = y0; y < y1; y++)
+                {
+                    coverage.PrepareRow(y, cancellationToken);
+                    for (int x = x0; x < x1; x++)
+                    {
+                        if ((x & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        coverage.PaintPixel(x, target.AsSpan((y * outputWidth + x) * 4, 4), paint,
+                            clipsAtPaint ? SvgAnalyticClipCoverage.FromMask(ViewportAlpha(255, x, y)) : SvgAnalyticClipCoverage.Full);
+                    }
+                }
+            }
+
+            static bool Miter(ReadOnlySpan<SvgRootBorderSide> sides, int side, int adjacent, int completed)
+                => sides[adjacent].Width > 0 && (completed & 1 << adjacent) != 0 && sides[side].Paint != sides[adjacent].Paint;
+
+            static long Fixed(double edge) => (long)Math.Clamp((float)edge * 256d, -(1L << 48), 1L << 48);
+            static int Dispatch(double edge, bool ceiling) => (int)Math.Clamp(ceiling ? Math.Ceiling(edge) : Math.Floor(edge), int.MinValue, int.MaxValue);
         }
 
         SvgPaintBounds FilterRegion(SvgFilterBinding binding, SvgFilterResource resource, SvgAffineTransform output)
@@ -2588,6 +2763,12 @@ public static partial class SvgConverter
                     if (depth-- == 0) break;
                     continue;
                 }
+                if (value.Kind == SvgDrawCommandKind.RootBorder)
+                {
+                    if (rootImage.BoxPaintBounds is {} box)
+                        IncludeBox(new(box.X, box.Y, box.Width, box.Height, default, false, null), rootImage.BoxDrawing.Parameter, 0);
+                    continue;
+                }
                 SvgGeometry geometry = root.Geometries[value.GeometryIndex];
                 SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
                 if (paint.IsEffectAnchor) continue;
@@ -2793,6 +2974,11 @@ public static partial class SvgConverter
                 {
                     SvgDrawCommand command = root.Commands[index++];
                     if (command.Kind != SvgDrawCommandKind.Geometry) ReleasePatternTile();
+                    if (command.Kind == SvgDrawCommandKind.RootBorder)
+                    {
+                        PaintRootBorder(destination);
+                        continue;
+                    }
                     if (command.Kind == SvgDrawCommandKind.EndGroup)
                     {
                         if (clipFrames is { Count: > 0 })

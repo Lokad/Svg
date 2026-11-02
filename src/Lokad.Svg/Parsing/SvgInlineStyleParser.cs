@@ -36,7 +36,7 @@ internal readonly record struct InlineStyle(string? Color, string? Fill, string?
     internal string? Overflow { get; init; }
     /// <summary>Retains canvas color for the outermost SVG; other SVG elements have no CSS background box.</summary>
     internal string? BackgroundColor { get; init; }
-    /// <summary>Borrows the declaration source for outer-root CSS box layout; ordinary SVG elements have no padding box.</summary>
+    /// <summary>Borrows outer-root CSS box declarations; ordinary SVG elements have no border/padding box.</summary>
     internal string? BoxLayoutDeclarations { get; init; }
 }
 

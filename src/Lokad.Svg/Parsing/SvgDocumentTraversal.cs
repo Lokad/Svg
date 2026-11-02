@@ -25,7 +25,8 @@ internal static class SvgDocumentTraversal
 
     private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, SvgRootAttributes root, SvgAffineTransform outputMap, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings, double rasterScale, SvgPaintResourceSelection? paintResources)
     {
-        if (reader.IsEmptyElement)
+        bool emptyRoot = reader.IsEmptyElement;
+        if (emptyRoot && (!root.BoxLayout.Border.HasPaint || !root.InheritedPresentation.IsVisible))
         {
             ValidateDocumentEnd(reader, cancellationToken);
             return new SvgRoot(root.Width, root.Height, root.ViewBox, [], [], false, null) { CanvasBackground = root.CanvasBackground, BoxLayout = root.BoxLayout };
@@ -49,10 +50,13 @@ internal static class SvgDocumentTraversal
         state.OutputClip = new(0, 0, logicalViewport.Width * rasterScale, logicalViewport.Height * rasterScale);
         state.TextReplay = new(root, limits, fontSnapshot);
         if (root.SourceOpacity.Value != 1) state.Scene.BeginSourceOpacityScope(root.SourceOpacity, new(0));
-        bool contentClip = root.BoxLayout.HasPadding;
+        if (root.BoxLayout.Border.HasPaint && root.InheritedPresentation.IsVisible)
+            state.Scene.InsertCommands(state.Scene.CommandCount, [new SvgDrawCommand(SvgDrawCommandKind.RootBorder, -1, 255, null, -1, 255)]);
+        bool contentClip = root.BoxLayout.HasInsets;
         if (contentClip && SvgRootImageMap.Resolve(root.ViewBox, logicalViewport, rasterScale, root.BoxLayout).ContentViewport is {} rootContentViewport)
             state.Scene.InsertCommands(state.Scene.CommandCount, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, rootContentViewport, -1, 255)
                 { RegionKind = SvgLayerRegionKind.RootContentViewport }]);
+        if (emptyRoot) return BuildOutput(reader, state, root, contentClip, cancellationToken);
         while (reader.Read())
         {
             SvgSourceContext? sourceContext = reader.NodeType == XmlNodeType.Element ? SvgSourceContext.Capture(reader) : null;
@@ -548,22 +552,27 @@ internal static class SvgDocumentTraversal
                     SvgMaskSyntax.ResolvePendingLeafMasks(state, cancellationToken);
                     SvgMaskSyntax.ResolvePendingGroupMasks(state, cancellationToken);
                     SvgPatternUseReplay.Complete(state, cancellationToken);
-                    if (contentClip) state.Scene.EndOpacityScope();
-                    if (root.SourceOpacity.Value != 1) state.Scene.EndOpacityScope();
-                    SvgLeafMaskComposition.Emit(state, cancellationToken);
-                    SvgSceneStorage sceneStorage = state.Scene.Build();
-                    state.ReleaseDefinitions();
-                    try
-                    {
-                        ValidateDocumentEnd(reader, cancellationToken);
-                        return new SvgRoot(root.Width, root.Height, root.ViewBox, sceneStorage.Geometries, sceneStorage.Commands, state.HasUnsupportedContent, sceneStorage)
-                            { UnsupportedDiagnostic = state.UnsupportedDiagnostic, CanvasBackground = root.CanvasBackground, BoxLayout = root.BoxLayout };
-                    }
-                    catch { sceneStorage.Dispose(); throw; }
+                    return BuildOutput(reader, state, root, contentClip, cancellationToken);
                 }
             }
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
+
+        static SvgRoot BuildOutput(XmlReader reader, SvgDocumentState state, SvgRootAttributes root, bool contentClip, CancellationToken cancellationToken)
+        {
+            if (contentClip) state.Scene.EndOpacityScope();
+            if (root.SourceOpacity.Value != 1) state.Scene.EndOpacityScope();
+            SvgLeafMaskComposition.Emit(state, cancellationToken);
+            SvgSceneStorage storage = state.Scene.Build();
+            state.ReleaseDefinitions();
+            try
+            {
+                ValidateDocumentEnd(reader, cancellationToken);
+                return new SvgRoot(root.Width, root.Height, root.ViewBox, storage.Geometries, storage.Commands, state.HasUnsupportedContent, storage)
+                    { UnsupportedDiagnostic = state.UnsupportedDiagnostic, CanvasBackground = root.CanvasBackground, BoxLayout = root.BoxLayout };
+            }
+            catch { storage.Dispose(); throw; }
+        }
 
         // Seal shader-mask replay under one parent-owned vector scene; failure releases staging owners.
         static void RegisterMaskScene(SvgDocumentState state, CancellationToken cancellationToken)
