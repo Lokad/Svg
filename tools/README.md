@@ -38,6 +38,11 @@ On Linux, compile the [native source-stage control](../tests/Research/svgweb/nat
 with `g++ -std=c++20 -O2 -ffp-contract=off tests/Research/svgweb/native-source-stages.cpp -o artifacts/native-source-stages`.
 Run `artifacts/native-source-stages` and compare its JSON with the
 [committed vectors](../tests/Lokad.Svg.Tests/TestData/native-source-stages.json).
+The [canvas-recording control](../tests/Research/svgweb/native-canvas-recording.cpp)
+uses the same compiler flags and emits the separate
+[canvas vectors](../tests/Lokad.Svg.Tests/TestData/native-canvas-recording.json).
+Both controls preserve native float operations; keep contraction disabled.
+
 Keep intermediate floating-point rounding enabled; this checks arithmetic stages
 separately from browser reference admission.
 

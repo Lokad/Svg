@@ -551,7 +551,7 @@ internal static class SvgDefinitionParser
                         SvgFilterArena filters = builder.Filters;
                         filters.BorrowResourcesFrom(state.DocumentFilters);
                         int binding = filters.AddBinding(filterId, default, default, group.Scope.InheritedPresentation.Transform,
-                            group.LengthBases, true, group.Scope.ClipPathId);
+                            group.LengthBases, true, group.Scope.ClipPathId, group.Scope.InheritedPresentation.RecordingTransform);
                         builder.BeginSourceOpacityScope(isolate ? SvgPaintOpacity.Opaque : group.SourceOpacity, group.Scope.RecordingScope);
                         int position = builder.CommandCount - 1;
                         builder.ReplaceCommand(position, builder.CommandAt(position) with { RegionKind = SvgLayerRegionKind.Filter, MaskContentIndex = binding });
@@ -1639,7 +1639,7 @@ CancellationToken cancellationToken)
         try
         {
             if (filtered && isDisplayed && (sourceStyle.GetDisplay() != SvgDisplay.None) && SvgPaintRecording.IsFilterSource(reader, context))
-                SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, state, context.CancellationToken);
+                SvgPaintRecording.WrapFilter(definition.Geometries, sourceStyle.Filter, context.ResolveTransform(reader), context.LengthBases, context.InheritedPresentation.RecordingTransform, state, context.CancellationToken);
             string? mask = SvgLocalUrl.ReadReference(reader, "mask");
             if (mask is not null)
             {

@@ -10,7 +10,7 @@ public sealed class SvgRecordedShaderCoordinatesTests
     [Trait("Layer", "Mechanism")]
     [InlineData(64)]
     [InlineData(65)]
-    public void Native_capture_follows_recorded_preparation_and_keeps_bitmap_origin_changes(int depth)
+    public void Shader_products_keep_native_preparation_before_external_bitmap_composition(int depth)
     {
         using JsonDocument document = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(
             AppContext.BaseDirectory, "TestData", "native-source-stages.json")));
@@ -21,14 +21,16 @@ public sealed class SvgRecordedShaderCoordinatesTests
         {
             SvgRecordedTransform recording = Chain(state, depth);
             long retained = budget.Snapshot().CurrentBytes;
-            SvgShaderCoordinates coordinates = SvgShaderCoordinates.CreateImage(new(1, 0, 0, 0, 1, 0), new(1, 0, 0, 0, 1, 0))
-                .WithCapturedDrawing(recording, SvgShaderMatrix.FromAffine(Matrix(row, "output")), Matrix(row, "initial"),
-                    recording.Map, budget, CancellationToken.None, Matrix(row, "capture"));
             foreach (int index in new[] { 0, 1, 0 })
             {
                 JsonElement origin = row.GetProperty("origins")[index];
-                Assert.True(coordinates.TryGetMatrix(new(origin.GetProperty("x").GetInt32(), origin.GetProperty("y").GetInt32()),
-                    out SvgShaderMatrix actual));
+                Assert.True(recording.TryMap(SvgShaderMatrix.FromAffine(Matrix(row, "output")), Matrix(row, "initial"),
+                    recording.Map, budget, CancellationToken.None, out SvgShaderMatrix prepared));
+                SvgAffineTransform capture = SvgAffineTransform.FromTranslation(-origin.GetProperty("x").GetInt32(),
+                    -origin.GetProperty("y").GetInt32()).ComposeNative(Matrix(row, "capture"));
+                SvgShaderMatrix local = SvgShaderMatrix.FromAffine(capture.ComposeNative(new(prepared.ScaleX, prepared.SkewY,
+                    prepared.SkewX, prepared.ScaleY, prepared.TranslateX, prepared.TranslateY)));
+                Assert.True(local.TryInvert(out SvgShaderMatrix actual));
                 JsonElement bits = origin.GetProperty("expectedBits");
                 Assert.Equal(6, bits.GetArrayLength());
                 SvgShaderMatrix expected = new(Lane(0), Lane(2), Lane(4), Lane(1), Lane(3), Lane(5));

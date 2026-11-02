@@ -300,9 +300,10 @@ internal struct SvgShaderCoordinates
         SvgAffineTransform initial, SvgAffineTransform target, RenderBudget budget, CancellationToken token)
         => WithRecordedDrawing(new(transform, output, initial, target, budget, token));
 
-    /// <summary>Retains a native source-device placement after the original recorded drawing.</summary>
-    /// <remarks>Borrowing, scratch accounting, cancellation and draw-local cache ownership follow WithRecordedDrawing.</remarks>
-    internal readonly SvgShaderCoordinates WithCapturedDrawing(SvgRecordedTransform transform, SvgShaderMatrix output,
+    /// <summary>Retains canvas recording products before entering a native source device.</summary>
+    /// <remarks>The immutable scene chain and budget are borrowed. Preparation owns and releases
+    /// scratch, observes cancellation and caches only in this draw-local value.</remarks>
+    internal readonly SvgShaderCoordinates WithCapturedCanvasDrawing(SvgRecordedTransform transform, SvgShaderMatrix output,
         SvgAffineTransform initial, SvgAffineTransform target, RenderBudget budget, CancellationToken token, SvgAffineTransform capturePlacement)
         => WithRecordedDrawing(new(transform, output, initial, target, budget, token) { CapturePlacement = capturePlacement });
 
@@ -362,7 +363,9 @@ internal struct SvgShaderCoordinates
                 SvgShaderMatrix output = drawing.CapturePlacement is null
                     ? drawing.Output with { TranslateX = drawing.Output.TranslateX - origin.X, TranslateY = drawing.Output.TranslateY - origin.Y }
                     : drawing.Output;
-                _canSample = drawing.Transform.TryMap(output, drawing.Initial, drawing.Target, drawing.Budget, drawing.Token, out local);
+                _canSample = drawing.CapturePlacement is not null
+                    ? drawing.Transform.TryMapCanvas(output,drawing.Initial,drawing.Target,drawing.Budget,drawing.Token,out local)
+                    : drawing.Transform.TryMap(output,drawing.Initial,drawing.Target,drawing.Budget,drawing.Token,out local);
                 if (!_canSample) return false;
                 if (drawing.CapturePlacement is {} capture)
                 {

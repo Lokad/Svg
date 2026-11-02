@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "86d17519b78fc60178cc121f8cf1e9a91874f556",
+  "status": "capture/origin area affected-qualified; full filter milestone remains open for existing supplied-font diagnostic",
+  "scope": "Preserve native recording, physical bitmap origins and boundary knowledge across nested, affine and offset filter captures.",
+  "sharedModel": [
+    "Keep canvas and shader matrix products distinct; prepare recorded drawing before entering a source device.",
+    "Initialize the device/recording pair consistently for all four capture paths. Temporary capture coordinates do not replace the original recording.",
+    "Keep independently rounded native device directions. Distinguish initialized image padding from known-transparent padding and cropping.",
+    "Include fractional child capture hints after enclosing the parent layout hint.",
+    "An isolated opacity child owns its shader bitmap; enclosing filter padding only anchors direct source draws."
+  ],
+  "native": {
+    "revision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "browser": "Chrome153.0.8010.52",
+    "sources": [
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkM44.cpp",
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkCanvas.cpp",
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkDevice.cpp",
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkImageFilterTypes.cpp",
+      "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkRasterPipeline_opts.h"
+    ]
+  },
+  "mechanisms": {
+    "canvas": "../../Lokad.Svg.Tests/SvgCapturedCanvasCoordinatesTests.cs",
+    "shader": "../../Lokad.Svg.Tests/SvgRecordedShaderCoordinatesTests.cs",
+    "solidSources": "../../Lokad.Svg.Tests/SvgFilterRecordingTests.cs",
+    "storage": "../../Lokad.Svg.Tests/SvgFilterImageStorageTests.cs",
+    "sourceHints": "../../Lokad.Svg.Tests/SvgFilterSourceHintTests.cs",
+    "generator": "native-canvas-recording.cpp",
+    "vectors": "../../Lokad.Svg.Tests/TestData/native-canvas-recording.json",
+    "vectorSha256": "0b7e54fe42cb286797c53777db7e1caab1a61b15dc09bc771488738e731c8aa4",
+    "nativeFlags": "-std=c++20 -O2 -Wall -Wextra -Werror -ffp-contract=off"
+  },
+  "ownership": "../../Lokad.Svg.Tests/SvgUniformFilterOwnershipTests.cs",
+  "rendering": "../../Lokad.Svg.VisualTests/SvgFilterSourceOpacityReferenceTests.cs",
+  "capture": "../filter-source-opacity/capture.json",
+  "canonical": {
+    "wide": {
+      "beforeChangedPixels": 4,
+      "beforeAlphaChangedPixels": 4,
+      "afterChangedPixels": 0,
+      "retainedExistingReference": true
+    },
+    "axis-source-recording": {
+      "before": {
+        "librarySha256": "c650e8de8f55833f901fbbdb16e2c33f09a4334af0dda0ea415917bfae1a03ab",
+        "changedPixels": 5,
+        "alphaChangedPixels": 4,
+        "maximumError": 7,
+        "totalChannelError": 25
+      },
+      "after": {
+        "librarySha256": "6c7e97dbbd7eedaa2153703b6d38c1bf3aac780b187bfa5cb19e2424dda31269",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      }
+    },
+    "isolated-source-bitmap": {
+      "before": {
+        "librarySha256": "c650e8de8f55833f901fbbdb16e2c33f09a4334af0dda0ea415917bfae1a03ab",
+        "changedPixels": 27,
+        "alphaChangedPixels": 0,
+        "maximumError": 12,
+        "totalChannelError": 345
+      },
+      "after": {
+        "librarySha256": "6c7e97dbbd7eedaa2153703b6d38c1bf3aac780b187bfa5cb19e2424dda31269",
+        "changedPixels": 0,
+        "alphaChangedPixels": 0,
+        "maximumError": 0,
+        "totalChannelError": 0
+      }
+    }
+  },
+  "original": {
+    "name": "juanmontoya_lingerie.svg",
+    "sourceSha256": "36827e99ce8c3f454590f15f55e682791e76ffc44fd235a6783326826e3ced1f",
+    "beforeChangedRgbPixels": 19,
+    "afterChangedPixels": 0
+  },
+  "originalReplay": {
+    "files": 204,
+    "seconds": 51.25740909995511,
+    "hosts": {
+      "windows": {
+        "rendered": 155,
+        "exploratoryExact": 155,
+        "UnsupportedFeature": 46,
+        "MalformedInput": 3,
+        "previouslyExactPngsByteIdentical": 154
+      },
+      "linux": {
+        "rendered": 155,
+        "exploratoryExact": 155,
+        "UnsupportedFeature": 46,
+        "MalformedInput": 3,
+        "previouslyExactPngsByteIdentical": 154
+      }
+    },
+    "sourceSvgFilesRetained": 0,
+    "unchangedOutcomesDiagnosticsDimensions": true,
+    "librarySha256": "3ec3f9d4b7b2b9360bf51d9cdbc7908f970c664179aaf56f36fb52db4a924753"
+  },
+  "preservedInteractions": [
+    "Existing source crop, flood, offset and shadow references",
+    "Scimitar filter recording and capture translation",
+    "Offset/merge parent-bitmap-map across raster boundaries",
+    "Filtered text, source glyph bounds and shader recording"
+  ],
+  "referencesRewritten": 0,
+  "validation": {
+    "windows": {
+      "net11Core": {
+        "seconds": 44.81330980011262,
+        "librarySha256": "3ec3f9d4b7b2b9360bf51d9cdbc7908f970c664179aaf56f36fb52db4a924753",
+        "passed": 36257,
+        "failed": 0
+      },
+      "net11Native": {
+        "seconds": 232.69262830005027,
+        "librarySha256": "3ec3f9d4b7b2b9360bf51d9cdbc7908f970c664179aaf56f36fb52db4a924753",
+        "passed": 46500,
+        "failed": 2
+      },
+      "net10RepresentativeCore": {
+        "passed": 184,
+        "seconds": 8.438505100086331
+      },
+      "net10RepresentativeNative": {
+        "passed": 1650,
+        "seconds": 17.2689381998498
+      },
+      "installedPackage": {
+        "targets": [
+          "net11.0",
+          "net10.0"
+        ],
+        "passed": true,
+        "seconds": 6.4405864998698235
+      }
+    },
+    "linux": {
+      "net11Core": {
+        "seconds": 47.086358063,
+        "librarySha256": "3ec3f9d4b7b2b9360bf51d9cdbc7908f970c664179aaf56f36fb52db4a924753",
+        "passed": 36257,
+        "failed": 0
+      },
+      "net11Native": {
+        "seconds": 248.77034916600002,
+        "librarySha256": "3ec3f9d4b7b2b9360bf51d9cdbc7908f970c664179aaf56f36fb52db4a924753",
+        "passed": 46501,
+        "failed": 1
+      },
+      "net10RepresentativeCore": {
+        "passed": 184,
+        "seconds": 10.164706061
+      },
+      "net10RepresentativeNative": {
+        "passed": 1650,
+        "seconds": 25.340975328
+      },
+      "installedPackage": {
+        "targets": [
+          "net11.0",
+          "net10.0"
+        ],
+        "passed": true,
+        "seconds": 55.49013540009037
+      }
+    }
+  },
+  "knownUnresolved": {
+    "affineSuppliedFontSource": {
+      "input": "../affine-source-exit-sheet/supplied-font-source.svg",
+      "sourceSha256": "37245dc41893d38fa666d61eab45a7801edbec5607c1513240e548911ab731f5",
+      "windowsChangedPixels": 4,
+      "linuxChangedPixels": 7,
+      "maximumAlphaError": 1,
+      "preservedBaseline": true,
+      "freshNativeCapturesPerHost": 3,
+      "freshNativeMatchesFrozenReference": true,
+      "status": "open; do not replace reference"
+    },
+    "windowsDejaVu": {
+      "test": "../../Lokad.Svg.VisualTests/SvgStaticTrueTypeFontTests.cs",
+      "status": "Existing frozen-reference authority question remains pending; preserve its exact assertion."
+    }
+  },
+  "staleAdmissionExpectations": {
+    "beforeProductionAlreadyAccepted": true,
+    "pointPatternInputsRetained": 16,
+    "pointPathPairsNowComparedExactly": true,
+    "useAliasNowComparedToFontFreeReference": true
+  }
+}

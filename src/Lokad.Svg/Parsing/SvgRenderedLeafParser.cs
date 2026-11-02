@@ -135,7 +135,7 @@ CancellationToken cancellationToken)
         // The same element owns both boundaries. Emission places its output
         // clip outside the mask rather than between mask and filter.
         int filterScope = mask is not null && clip is not null ? maskScope.Value : 0;
-        int binding = filters.AddBinding(id, sourceObjects ?? default, sourceVisuals ?? default, filterTransform, context.LengthBases, deferredPaint, clip);
+        int binding = filters.AddBinding(id, sourceObjects ?? default, sourceVisuals ?? default, filterTransform, context.LengthBases, deferredPaint, clip, context.InheritedPresentation.RecordingTransform);
         SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, filterScope, mask is null ? style.GetOpacity() : SvgPaintOpacity.Opaque, null, binding, 255) { RegionKind = SvgLayerRegionKind.Filter };
         state.Scene.InsertCommands(state.Scene.CommandCount, [new(SvgDrawCommandKind.EndGroup, 0, 255, null, -1, 255)]);
         state.Scene.InsertCommands(start, [begin]);

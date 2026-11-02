@@ -43,6 +43,8 @@ internal readonly record struct SvgFilterResource(SvgFilterRegion Region, SvgFil
 internal readonly record struct SvgFilterBinding(string? ReferenceId, int ResourceIndex, SvgPaintBounds ObjectBounds,
     SvgPaintBounds VisualBounds, SvgAffineTransform Transform, SvgViewportLengthBases LengthBases)
 {
+    /// <summary>Borrows the scene-owned canvas recording at this filter boundary.</summary>
+    internal SvgRecordedTransform? RecordingTransform { get; init; }
     internal bool GroupSource { get; init; }
     internal SvgPaintBounds? ParameterObjectBounds { get; init; }
     /// <summary>Retains painted source extents in filter parameters before scene-space enclosure.</summary>
@@ -57,11 +59,11 @@ internal readonly record struct SvgFilterBinding(string? ReferenceId, int Resour
 /// resolved resource indices refer to the shared document definitions, never another scene's bindings.</remarks>
 internal sealed record SvgRetainedFilter(SvgFilterBinding Binding)
 {
-    internal static SvgRetainedFilter? Create(string? filter, SvgAffineTransform transform, SvgViewportLengthBases lengthBases, SvgDocumentState state)
+    internal static SvgRetainedFilter? Create(string? filter, SvgAffineTransform transform, SvgViewportLengthBases lengthBases, SvgRecordedTransform? recording, SvgDocumentState state)
     {
         if (filter is null || filter.Trim() == "none") return null;
         if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
-        return new(new SvgFilterBinding(state.Strings.Copy(id), -1, default, default, transform, lengthBases));
+        return new(new SvgFilterBinding(state.Strings.Copy(id), -1, default, default, transform, lengthBases) { RecordingTransform = recording });
     }
 }
 
@@ -114,13 +116,13 @@ internal sealed class SvgFilterArena : IDisposable
     }
 
     internal int AddBinding(string id, SvgPaintBounds objectBounds, SvgPaintBounds visualBounds,
-        SvgAffineTransform transform, SvgViewportLengthBases lengthBases, bool groupSource, string? clipId)
+        SvgAffineTransform transform, SvgViewportLengthBases lengthBases, bool groupSource, string? clipId, SvgRecordedTransform? recording)
     {
         if (_sealed || _disposed) throw new InvalidOperationException("Filter construction is closed.");
         BudgetedParserStringStore strings = _strings ?? throw new InvalidOperationException("Filter strings are unavailable.");
         int index = _bindings.Count;
         _bindings.Add(new(strings.Copy(id), -1, objectBounds, visualBounds, transform, lengthBases)
-        { GroupSource = groupSource, ClipReferenceId = clipId is null ? null : strings.Copy(clipId) });
+        { GroupSource = groupSource, ClipReferenceId = clipId is null ? null : strings.Copy(clipId), RecordingTransform = recording });
         _hasPendingClips |= clipId is not null;
         return index;
     }
@@ -130,7 +132,7 @@ internal sealed class SvgFilterArena : IDisposable
     {
         if (_sealed || _disposed) throw new InvalidOperationException("Filter construction is closed.");
         if (binding.ReferenceId is {} id)
-            return AddBinding(id, binding.ObjectBounds, binding.VisualBounds, binding.Transform, binding.LengthBases, true, null);
+            return AddBinding(id, binding.ObjectBounds, binding.VisualBounds, binding.Transform, binding.LengthBases, true, null, binding.RecordingTransform);
         int index = _bindings.Count;
         _bindings.Add(binding with { GroupSource = true, ClipReferenceId = null, OutputClip = null });
         return index;

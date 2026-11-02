@@ -202,7 +202,7 @@ internal static class SvgResourceUseReplay
             {
                 if (reference.IsDisplayed)
                 {
-                    SvgPaintRecording.WrapFilter(mapped, reference.Filter, placement, reference.LengthBases, state, token);
+                    SvgPaintRecording.WrapFilter(mapped, reference.Filter, placement, reference.LengthBases, reference.RecordingTransform, state, token);
                     SvgReferenceResolver.ApplyMask(mapped, null, null, reference.SourceMaskReference, placement, state, token);
                 }
                 // Native use clipping surrounds the isolated mask/filter result. Its bounds

@@ -216,7 +216,7 @@
           "reference": "references/thin-curved-source-wide.png"
         }
       },
-      "status": "open-source-alpha-sampling",
+      "status": "candidate-qualified",
       "sourceBaseline": "de7d8a9df16d10b7bd53ef153b90c2da4e233a24",
       "baseline": {
         "windows": {
@@ -238,7 +238,7 @@
           "actualPngSha256": "c4ef54b089dd68ffe97c34dfcebad4d64c104ff53e80ec627c905ecbf3d92d2b"
         }
       },
-      "qualification": "../svgweb/group-opacity-stages.json"
+      "qualification": "../svgweb/filter-recording-devices.json"
     },
     {
       "id": "coloured-stroke-opacity",
@@ -719,6 +719,158 @@
         }
       },
       "qualification": "../svgweb/filter-opacity-source-origin.json"
+    },
+    {
+      "id": "axis-source-recording",
+      "input": "inputs/axis-source-recording.svg",
+      "inputSha256": "de539faeb8d2ae1af6a5deb92a5932db99022a59c36967d2439a8d6aab92cb1a",
+      "width": 858,
+      "height": 1074,
+      "logicalImageViewport": [
+        858.02069,
+        1074.1064
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "eff580f439b1715ab0ca76a23bba64f9ff8d1c9d84a04ea17cd36833f8913519",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "eff580f439b1715ab0ca76a23bba64f9ff8d1c9d84a04ea17cd36833f8913519",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "eff580f439b1715ab0ca76a23bba64f9ff8d1c9d84a04ea17cd36833f8913519",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "eff580f439b1715ab0ca76a23bba64f9ff8d1c9d84a04ea17cd36833f8913519",
+          "reference": "references/axis-source-recording.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "eff580f439b1715ab0ca76a23bba64f9ff8d1c9d84a04ea17cd36833f8913519",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "eff580f439b1715ab0ca76a23bba64f9ff8d1c9d84a04ea17cd36833f8913519",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "eff580f439b1715ab0ca76a23bba64f9ff8d1c9d84a04ea17cd36833f8913519",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "eff580f439b1715ab0ca76a23bba64f9ff8d1c9d84a04ea17cd36833f8913519",
+          "reference": "references/axis-source-recording.png"
+        }
+      },
+      "status": "candidate-qualified",
+      "sourceBaseline": "86d17519b78fc60178cc121f8cf1e9a91874f556",
+      "baseline": {
+        "windows": {
+          "librarySha256": "c650e8de8f55833f901fbbdb16e2c33f09a4334af0dda0ea415917bfae1a03ab",
+          "changedPixels": 5,
+          "alphaChangedPixels": 4,
+          "maximumError": 7,
+          "totalChannelError": 25
+        },
+        "linux": {
+          "librarySha256": "c650e8de8f55833f901fbbdb16e2c33f09a4334af0dda0ea415917bfae1a03ab",
+          "changedPixels": 5,
+          "alphaChangedPixels": 4,
+          "maximumError": 7,
+          "totalChannelError": 25
+        }
+      },
+      "qualification": "../svgweb/filter-recording-devices.json"
+    },
+    {
+      "id": "isolated-source-bitmap",
+      "input": "inputs/isolated-source-bitmap.svg",
+      "inputSha256": "9931cf88cc3c07cfdcb7a917d0e25bcf07b8d02bddeed493243ef3716532fc7e",
+      "width": 858,
+      "height": 1074,
+      "logicalImageViewport": [
+        858.02069,
+        1074.1064
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "89be3486a2c8373382916acaed524543af7347a87c281b437dfc4ceebe8c4480",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "89be3486a2c8373382916acaed524543af7347a87c281b437dfc4ceebe8c4480",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "89be3486a2c8373382916acaed524543af7347a87c281b437dfc4ceebe8c4480",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "89be3486a2c8373382916acaed524543af7347a87c281b437dfc4ceebe8c4480",
+          "reference": "references/isolated-source-bitmap.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "89be3486a2c8373382916acaed524543af7347a87c281b437dfc4ceebe8c4480",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "89be3486a2c8373382916acaed524543af7347a87c281b437dfc4ceebe8c4480",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "89be3486a2c8373382916acaed524543af7347a87c281b437dfc4ceebe8c4480",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "89be3486a2c8373382916acaed524543af7347a87c281b437dfc4ceebe8c4480",
+          "reference": "references/isolated-source-bitmap.png"
+        }
+      },
+      "status": "candidate-qualified",
+      "sourceBaseline": "86d17519b78fc60178cc121f8cf1e9a91874f556",
+      "baseline": {
+        "windows": {
+          "librarySha256": "c650e8de8f55833f901fbbdb16e2c33f09a4334af0dda0ea415917bfae1a03ab",
+          "changedPixels": 27,
+          "alphaChangedPixels": 0,
+          "maximumError": 12,
+          "totalChannelError": 345
+        },
+        "linux": {
+          "librarySha256": "c650e8de8f55833f901fbbdb16e2c33f09a4334af0dda0ea415917bfae1a03ab",
+          "changedPixels": 27,
+          "alphaChangedPixels": 0,
+          "maximumError": 12,
+          "totalChannelError": 345
+        }
+      },
+      "qualification": "../svgweb/filter-recording-devices.json"
     }
   ]
 }

@@ -24,12 +24,24 @@ internal sealed class SvgRecordedTransform
         Count = checked((parent?.Count ?? 0) + 1);
     }
 
+    private enum MatrixProduct { Shader, Canvas }
+
     /// <summary>Prepares a draw matrix in source recording order; false preserves the existing singular-map admission.</summary>
     /// <remarks>The caller's initial source map joins the first stage before narrowing;
     /// it can include authored layout, recorded projection and source placement.
     /// The output map belongs to the external bitmap/capture; target remains in scene coordinates.</remarks>
     internal bool TryMap(SvgShaderMatrix output, SvgAffineTransform initial, SvgAffineTransform target, RenderBudget budget,
-CancellationToken token, out SvgShaderMatrix result)
+        CancellationToken token, out SvgShaderMatrix result)
+        => TryMapCore(output, initial, target, budget, token, MatrixProduct.Shader, out result);
+
+    /// <summary>Prepares the recorded native canvas CTM before entering a filter device.</summary>
+    /// <remarks>Scratch ownership and cancellation follow TryMap; native canvas column products retain separate float additions.</remarks>
+    internal bool TryMapCanvas(SvgShaderMatrix output, SvgAffineTransform initial, SvgAffineTransform target, RenderBudget budget,
+        CancellationToken token, out SvgShaderMatrix result)
+        => TryMapCore(output, initial, target, budget, token, MatrixProduct.Canvas, out result);
+
+    private bool TryMapCore(SvgShaderMatrix output, SvgAffineTransform initial, SvgAffineTransform target, RenderBudget budget,
+        CancellationToken token, MatrixProduct product, out SvgShaderMatrix result)
     {
         result = default;
         token.ThrowIfCancellationRequested();
@@ -48,9 +60,17 @@ CancellationToken token, out SvgShaderMatrix result)
         {
             SvgAffineTransform stage = stages[stageIndex];
             if (stageIndex == 0 && initial != SvgAffineTransform.Identity) stage = initial.Compose(stage);
-            result = SvgShaderMatrix.Concat(result, SvgShaderMatrix.FromAffine(stage));
+            result = Concat(result, SvgShaderMatrix.FromAffine(stage), product);
         }
-        result = SvgShaderMatrix.Concat(result, SvgShaderMatrix.FromAffine(inverse.Compose(target)));
+        result = Concat(result, SvgShaderMatrix.FromAffine(inverse.Compose(target)), product);
         return result.IsFinite;
+
+        static SvgShaderMatrix Concat(SvgShaderMatrix outer, SvgShaderMatrix inner, MatrixProduct product)
+        {
+            if (product == MatrixProduct.Shader) return SvgShaderMatrix.Concat(outer, inner);
+            SvgAffineTransform canvas = new(outer.ScaleX, outer.SkewY, outer.SkewX, outer.ScaleY, outer.TranslateX, outer.TranslateY);
+            return SvgShaderMatrix.FromAffine(canvas.ComposeNative(new(inner.ScaleX, inner.SkewY, inner.SkewX, inner.ScaleY, inner.TranslateX, inner.TranslateY)));
+        }
+
     }
 }

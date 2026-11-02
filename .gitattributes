@@ -12,6 +12,8 @@ tests/Research/svgweb/opaque-gradient-native.cpp text eol=lf
 # Native bitmap-restore evidence uses byte-stable source and vectors.
 tests/Research/svgweb/native-device-restore.cpp text eol=lf
 tests/Lokad.Svg.Tests/TestData/native-device-restore.json text eol=lf
+tests/Research/svgweb/native-canvas-recording.cpp text eol=lf
+tests/Lokad.Svg.Tests/TestData/native-canvas-recording.json text eol=lf
 tests/Research/filter-source-opacity/inputs/thin-curved-source-wide.svg text eol=lf
 tests/Research/filter-source-opacity/inputs/coloured-stroke-opacity.svg text eol=lf
 tests/Research/filter-source-opacity/inputs/gradient-blur-opacity.svg text eol=lf

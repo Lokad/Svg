@@ -9,7 +9,7 @@ public sealed class SvgFilterImageStorageTests
     [Trait("Layer", "Mechanism")]
     [InlineData("<feOffset dx='0' dy='0'/>", true, "Deferred")]
     [InlineData("<feGaussianBlur stdDeviation='0'/>", true, "Deferred")]
-    [InlineData("<feGaussianBlur stdDeviation='.5'/>", false, "Padded")]
+    [InlineData("<feGaussianBlur stdDeviation='.5'/>", false, "InitializedPadding")]
     [InlineData("<feGaussianBlur stdDeviation='.5'/>", true, "Cropped")]
     [InlineData("<feGaussianBlur stdDeviation='.5' result='b'/><feOffset in='b' dx='0' dy='0'/>", true, "Cropped")]
     [InlineData("<feGaussianBlur stdDeviation='.5' result='b'/><feMerge><feMergeNode in='b'/></feMerge>", true, "Cropped")]
@@ -41,7 +41,7 @@ public sealed class SvgFilterImageStorageTests
                 SvgFilterUnits.UserSpace, SvgFilterColorSpace.Srgb,
                 new([new(SvgFilterPrimitiveKind.GaussianBlur, SvgFilterInput.SourceGraphic, sigma, sigma, 0, 0, default)], null), null);
             SvgFilterImageBounds image = SvgFilterPlayback.SourceImageBounds(resource, new(1, 1), Context(false), new(4, 4, 12, 12), scratch, CancellationToken.None);
-            Assert.Equal(sigma == .03f ? SvgFilterImageStorage.Deferred : SvgFilterImageStorage.Padded, image.Storage);
+            Assert.Equal(sigma == .03f ? SvgFilterImageStorage.Deferred : SvgFilterImageStorage.InitializedPadding, image.Storage);
             Assert.Equal(0, scratch.Snapshot().CurrentBytes);
         }
     }

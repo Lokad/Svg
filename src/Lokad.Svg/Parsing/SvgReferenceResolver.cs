@@ -1025,7 +1025,7 @@ internal static class SvgReferenceResolver
         {
             foreach (SvgGeometry geometry in sources) SvgMaskSyntax.ValidateMaskScopes(state, geometry);
             if (reference.IsDisplayed)
-                SvgPaintRecording.WrapFilter(sources, reference.Filter, PlainInstancePlacement(reference, frame), reference.LengthBases, state, cancellationToken);
+                SvgPaintRecording.WrapFilter(sources, reference.Filter, PlainInstancePlacement(reference, frame), reference.LengthBases, reference.RecordingTransform, state, cancellationToken);
             if (reference.IsDisplayed && (mask is not null || maskReference is not null))
                 ApplyMask(sources, frame, mask, maskReference, PlainInstancePlacement(reference, frame), state, cancellationToken);
             SvgClipBox? outputClip = reference.Filter is not null && frame is { HasAffineClipScope: false } output && output.Clip != SvgClipBox.Unbounded

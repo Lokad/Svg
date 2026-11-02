@@ -31,7 +31,7 @@ internal static class SvgLocalReferenceParser
             context.NamedColors, state.PaintResources, context.CancellationToken);
         SvgInheritedTextStyle textStyle = useStyle.TextStyle;
         SvgRecordedTransform? recording = context.InheritedPresentation.RecordingTransform;
-        if (state.PaintResources?.HasPaintServerReferences == true && (style.GetOpacity().Value != 1
+        if ((state.PaintResources?.HasPaintServerReferences == true || state.FilterGroupDepth > 0 || style.Filter is {} recordingFilter && recordingFilter.Trim() != "none") && (style.GetOpacity().Value != 1
             || SvgLocalUrl.ReadReference(reader, "clip-path") is not null || SvgLocalUrl.ReadReference(reader, "mask") is not null
             || style.Filter is {} filter && filter.Trim() != "none"))
             recording = state.Scene.RetainRecordedTransform(recording, context.ResolveTransform(reader), state.EffectiveFrame);

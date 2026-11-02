@@ -16,6 +16,18 @@ public sealed class SvgUniformFilterOwnershipTests
             "6ddfba1f66afb91737658738283bbf9269d4d138728a51b5d24c66090ee7e8b6");
     }
 
+    [Fact]
+    public void Borrowed_filter_recordings_survive_raster_refusal_cancellation_and_retry()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,
+            "TestData", "filter-source-opacity", "isolated-source-bitmap.svg"));
+        RenderBudget parser = new(new HostMemoryBudget(64_000_000));
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
+            SvgRasterOwnershipAssertions.ReleasesAfterFailures(scene, SvgRenderOptions.Default, 64_000_000,
+                "f0f9e01e74d4ecd4769ef238b5fe14c97f81be50afec7462c31cffceb0fe329f");
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [InlineData("controls-graphs-srgb-1-candidate-1p5")]
     [InlineData("controls-graphs-linear-9-candidate-1p5")]

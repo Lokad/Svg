@@ -538,10 +538,10 @@ CancellationToken token)
 
     /// <summary>Retains an authored local filter until its owning scene emits the completed source range.</summary>
     internal static void WrapFilter(Span<SvgGeometry> geometries, string? filter, SvgAffineTransform transform, SvgViewportLengthBases lengthBases,
-        SvgDocumentState state, CancellationToken token)
+        SvgRecordedTransform? recording, SvgDocumentState state, CancellationToken token)
     {
         if (geometries.IsEmpty) return;
-        if (SvgRetainedFilter.Create(filter, transform, lengthBases, state) is {} retained)
+        if (SvgRetainedFilter.Create(filter, transform, lengthBases, recording, state) is {} retained)
             WrapFilter(geometries, retained, state, token);
     }
 

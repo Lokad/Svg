@@ -284,7 +284,7 @@ public static partial class SvgConverter
 
     // Captures borrow the same recording/destination map as their parent canvas;
     // bitmap placement must not flatten those numerical stages into one matrix.
-    private readonly record struct RasterFrame(int Width, int Height, SvgDrawingMap Drawing)
+    private readonly record struct RasterFrame(int Width, int Height, SvgDrawingMap Drawing, SvgDrawingMap RecordedDrawing)
     {
         // Native filter sources use one padded device, with its content clip
         // separate from the physical bitmap origin.
@@ -308,6 +308,28 @@ public static partial class SvgConverter
         internal SvgFilterSourceMap? FilterSourceMap { get; init; }
         /// <summary>Places a prepared native drawing in the current source bitmap; FilterSourceMap retains its original recording.</summary>
         internal SvgAffineTransform? NativeCapturePlacement { get; init; }
+        /// <summary>Retains the physical native bitmap independently of compact source capture.</summary>
+        internal NativeBitmapDevice? NativeDevice { get; init; }
+    }
+
+    /// <summary>Preserves independently rounded native bitmap directions and their origin in compact storage.</summary>
+    /// <remarks>Immutable borrowed metadata owns no pixels. Coordinate changes allocate nothing; callers retain cancellation.</remarks>
+    private readonly record struct NativeBitmapDevice(SvgAffineTransform ToGlobal, SvgAffineTransform FromGlobal, SvgCpuBitmapOrigin OriginInFrame)
+    {
+        /// <summary>Starts native recording in the admitted root bitmap before replaying canvas transforms.</summary>
+        internal static NativeBitmapDevice ForRoot(SvgCpuBitmapOrigin origin)
+            => new(SvgAffineTransform.FromTranslation(-origin.X, -origin.Y),
+                SvgAffineTransform.FromTranslation(origin.X, origin.Y), new(0, 0));
+
+        internal NativeBitmapDevice InBitmap(SvgCpuBitmapOrigin origin)
+        {
+            SvgAffineTransform offset = SvgAffineTransform.FromTranslation(origin.X - OriginInFrame.X, origin.Y - OriginInFrame.Y);
+            return new(ToGlobal.ComposeNative(offset),
+                SvgAffineTransform.FromTranslation(-offset.E, -offset.F).ComposeNative(FromGlobal), origin);
+        }
+
+        internal NativeBitmapDevice InCapture(SvgCpuBitmapOrigin origin)
+            => this with { OriginInFrame = new(OriginInFrame.X - origin.X, OriginInFrame.Y - origin.Y) };
     }
 
     private readonly record struct SvgFilterReplayBinding(int Index, SvgFilterBinding Binding);
@@ -341,6 +363,7 @@ public static partial class SvgConverter
         SvgCpuRasterGrid rasterGrid = new(outputWidth, outputHeight,
             frame?.SingleBitmap == true || surfaceMode == RasterSurfaceMode.PremultipliedPattern);
         SvgAffineTransform sourcePlacement = frame?.SourcePlacement ?? SvgAffineTransform.Identity;
+        NativeBitmapDevice nativeDevice = frame?.NativeDevice ?? new(SvgAffineTransform.Identity, SvgAffineTransform.Identity, new(0, 0));
         if (!sourcePlacement.TryInvert(out SvgAffineTransform sourceInverse))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter source placement must be invertible.");
         long pixelCountLong = (long)outputWidth * outputHeight;
@@ -349,6 +372,7 @@ public static partial class SvgConverter
         int surfaceByteCount = pixelCount * 4;
         SvgRootImageMap rootImage = frame is null ? SvgRootImageMap.Resolve(root.ViewBox, new(width, height), options.OutputScale) : default;
         SvgDrawingMap drawingMap = frame is {} filterFrame ? filterFrame.Drawing : rootImage.Drawing;
+        SvgDrawingMap recordedDrawing = frame?.RecordedDrawing ?? drawingMap;
         SvgAffineTransform outputMap = drawingMap.Parameter;
         (double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset) = (outputMap.A, outputMap.E, outputMap.D, outputMap.F);
         SvgAffineTransform authoredRootMap = frame is null ? rootImage.Layout : SvgAffineTransform.Identity;
@@ -582,6 +606,12 @@ public static partial class SvgConverter
             return frame?.FilterSourceMap is {} relation
                 ? SvgAffineTransform.FromTranslation(horizontalOffset - origin.X, verticalOffset - origin.Y).ComposeNative(relation.NativePlacement) : null;
         }
+
+        // Every root capture prepares the same borrowed device/recording pair.
+        // Nested captures retain it; entering compact storage cannot replay the root shift.
+        (NativeBitmapDevice Device, SvgDrawingMap Drawing) PrepareNativeBitmap(SvgCpuBitmapOrigin origin)
+            => frame?.NativeDevice is not null ? (nativeDevice, recordedDrawing)
+                : (NativeBitmapDevice.ForRoot(origin), recordedDrawing.InBitmap(origin));
 
         // Each bordered destination bitmap determines its required source capture;
         // only its interior owns restored output. A non-null bitmap bounds the replay
@@ -855,8 +885,16 @@ public static partial class SvgConverter
                 primitiveMap = primitiveMap with { Regions = capturedRegion with { CapturedSourceBounds = new(
                     (float)(left - frameLeft + sourceContentClip.Left - 1), (float)(top - frameTop + sourceContentClip.Top - 1),
                     (float)(left - frameLeft + sourceContentClip.Right - 1), (float)(top - frameTop + sourceContentClip.Bottom - 1)) } };
-            RasterFrame captureFrame = new(sw + 2, sh + 2, drawingMap.InBitmap(new((int)left - 1, (int)top - 1)))
-            { SingleBitmap = true, ContentClip = sourceContentClip, RasterClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = destinationBitmap?.Origin ?? new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = nativeCaptureBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left - 1, (int)top - 1)) };
+            SvgCpuBitmapOrigin nativeCaptureOrigin = new((int)left - 1, (int)top - 1);
+            SvgCpuBitmapOrigin parentDeviceOrigin = destinationBitmap?.Origin
+                ?? (isolatedBitmapScope is {} parentScope ? new(parentScope.Bounds.Left, parentScope.Bounds.Top) : nativeDevice.OriginInFrame);
+            (NativeBitmapDevice captureParent, SvgDrawingMap captureRecording) =
+                PrepareNativeBitmap(destinationBitmap?.Origin ?? parentDeviceOrigin);
+            NativeBitmapDevice capturedDevice = frame?.FilterBinding is {} existingFilter && existingFilter.Index == command.MaskContentIndex
+                ? captureParent.InCapture(nativeCaptureOrigin)
+                : captureParent.InBitmap(parentDeviceOrigin).InBitmap(nativeCaptureOrigin).InCapture(nativeCaptureOrigin);
+            RasterFrame captureFrame = new(sw + 2, sh + 2, drawingMap.InBitmap(new((int)left - 1, (int)top - 1)), captureRecording)
+            { SingleBitmap = true, ContentClip = sourceContentClip, RasterClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = destinationBitmap?.Origin ?? new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = nativeCaptureBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left - 1, (int)top - 1)), NativeDevice = capturedDevice };
             // Region coordinates belong to the padded filter bitmap; sampled
             // source-image transforms retain their separate capture domain.
             if (primitiveMap.Regions is {} nativeRegions)
@@ -1048,12 +1086,12 @@ public static partial class SvgConverter
                 {
                     SvgCpuRasterContext bitmap = isolatedBitmapScope is {} owner ? owner.Bind(tile) : tile;
                     cancellationToken.ThrowIfCancellationRequested();
-                    RenderAffineBitmap(bitmap, opacityScope is {} opacityDevice ? opacityDevice.Bind(bitmap) : bitmap);
+                    RenderAffineBitmap(bitmap, opacityScope is {} opacityDevice ? opacityDevice.Bind(bitmap) : bitmap, tile.Origin);
                 }
                 return end + 1;
             }
 
-            void RenderAffineBitmap(SvgCpuRasterContext bitmap, SvgCpuRasterContext restoreBitmap)
+            void RenderAffineBitmap(SvgCpuRasterContext bitmap, SvgCpuRasterContext restoreBitmap, SvgCpuBitmapOrigin rasterOrigin)
             {
                 // Filter kernels require scale/translate coordinates. Keep their
                 // layer raster separate from the residual rotation/skew, just as
@@ -1064,17 +1102,23 @@ public static partial class SvgConverter
                 if (!arena.BindingAt(command.MaskContentIndex).Transform.TryInvert(out SvgAffineTransform parameterInverse)) return;
                 SvgAffineTransform ctm = MapFilterDrawingTransform(binding.Transform);
                 SvgShaderMatrix native = new((float)ctm.A, (float)ctm.C, (float)ctm.E, (float)ctm.B, (float)ctm.D, (float)ctm.F);
-                (float scaleX, float scaleY) = native.GetPictureScale();
+                (NativeBitmapDevice bitmapDevice, SvgDrawingMap originalDrawing) = PrepareNativeBitmap(rasterOrigin);
+                NativeBitmapDevice drawingDevice = bitmapDevice.InBitmap(restoreBitmap.Origin);
+                SvgShaderMatrix localNative = native with { TranslateX = native.TranslateX - restoreBitmap.Origin.X, TranslateY = native.TranslateY - restoreBitmap.Origin.Y };
+                SvgAffineTransform originalTarget = arena.BindingAt(command.MaskContentIndex).Transform;
+                SvgRecordedTransform? filterRecording = arena.BindingAt(command.MaskContentIndex).RecordingTransform;
+                if (filterRecording is not null && filterRecording.TryMapCanvas(SvgShaderMatrix.FromAffine(originalDrawing.Destination ?? SvgAffineTransform.Identity),
+                    originalDrawing.Recording, originalTarget, budget, cancellationToken, out SvgShaderMatrix globalDrawing))
+                {
+                    localNative = SvgShaderMatrix.FromAffine(drawingDevice.FromGlobal.ComposeNative(new(globalDrawing.ScaleX,globalDrawing.SkewY,globalDrawing.SkewX,globalDrawing.ScaleY,globalDrawing.TranslateX,globalDrawing.TranslateY)));
+                    native = localNative with { TranslateX = localNative.TranslateX + restoreBitmap.Origin.X, TranslateY = localNative.TranslateY + restoreBitmap.Origin.Y };
+                }
+                (float scaleX, float scaleY) = localNative.GetPictureScale();
                 SvgShaderMatrix remainder = new(native.ScaleX * (1f / scaleX), native.SkewX * (1f / scaleY), native.TranslateX,
                     native.SkewY * (1f / scaleX), native.ScaleY * (1f / scaleY), native.TranslateY);
                 if (!remainder.TryInvert(out SvgShaderMatrix inverse)) return;
-                // The enclosing opacity bitmap exists before filter creation.
-                // Prepare the source device in that parent, independently of tile storage.
-                SvgShaderMatrix localRemainder = remainder with
-                {
-                    TranslateX = remainder.TranslateX - restoreBitmap.Origin.X,
-                    TranslateY = remainder.TranslateY - restoreBitmap.Origin.Y
-                };
+                SvgShaderMatrix localRemainder = new(localNative.ScaleX * (1f / scaleX), localNative.SkewX * (1f / scaleY), localNative.TranslateX,
+                    localNative.SkewY * (1f / scaleX), localNative.ScaleY * (1f / scaleY), localNative.TranslateY);
                 if (!localRemainder.TryInvert(out SvgShaderMatrix localInverse)) return;
                 SvgAffineTransform layerMap = SvgAffineTransform.FromScale(scaleX, scaleY);
                 SvgAffineTransform placement = layerMap.ComposeChecked(parameterInverse);
@@ -1181,6 +1225,30 @@ public static partial class SvgConverter
                         : SvgAffineTransform.Identity, context.LengthBases, FilterRegion(parameterBinding, resource, SvgAffineTransform.Identity));
                     SvgPaintBounds parameterHint = SvgFilterPlayback.ParameterCaptureBounds(resource, parameterDistances,
                         parameterContext, parameterVisual, budget, cancellationToken);
+                    // A recorded child filter can extend beyond the parent's layout hint.
+                    // Keep fractional child placements after the parent's own enclosure.
+                    for (int childIndex = first; childIndex < end; childIndex++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        SvgDrawCommand childCommand = root.Commands[childIndex];
+                        if (childCommand.Kind != SvgDrawCommandKind.BeginGroup || childCommand.RegionKind != SvgLayerRegionKind.Filter) continue;
+                        SvgFilterBinding childBinding = arena.BindingAt(childCommand.MaskContentIndex);
+                        SvgFilterResource childFilter = arena.ResourceAt(childBinding.ResourceIndex);
+                        if (!childFilter.IsAvailable || !childBinding.Transform.TryInvert(out SvgAffineTransform childInverse)) continue;
+                        SvgPaintBounds childObjects = childBinding.ParameterObjectBounds ?? childBinding.ObjectBounds.MapLayout(childInverse, cancellationToken);
+                        SvgPaintBounds childVisual = childBinding.ParameterVisualBounds ?? childBinding.VisualBounds.MapLayout(childInverse, cancellationToken);
+                        SvgFilterBinding childLocal = childBinding with { Transform = SvgAffineTransform.Identity, ObjectBounds = childObjects, VisualBounds = childVisual };
+                        bool childObjectUnits = childFilter.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
+                        SvgFilterDeviceMap childDistances = childObjectUnits ? new(childObjects.Right-childObjects.Left,childObjects.Bottom-childObjects.Top) : new(1,1);
+                        SvgFilterRegionContext childContext = new(childObjectUnits
+                            ? SvgAffineTransform.FromScaleOffset(childDistances.ScaleX,childDistances.ScaleY,childObjects.Left,childObjects.Top) : SvgAffineTransform.Identity,
+                            childObjectUnits ? new(1,1) : new(childBinding.LengthBases.Width ?? width,childBinding.LengthBases.Height ?? height),
+                            FilterRegion(childLocal,childFilter,SvgAffineTransform.Identity));
+                        SvgPaintBounds childHint = SvgFilterPlayback.ParameterCaptureBounds(childFilter,childDistances,childContext,childVisual,budget,cancellationToken)
+                            .MapLayout(parameterInverse.Compose(childBinding.Transform),cancellationToken);
+                        parameterHint = new(MathF.Min(parameterHint.Left,childHint.Left),MathF.Min(parameterHint.Top,childHint.Top),
+                            MathF.Max(parameterHint.Right,childHint.Right),MathF.Max(parameterHint.Bottom,childHint.Bottom));
+                    }
                     SvgPaintBounds nativeHint = new(parameterHint.Left * scaleX, parameterHint.Top * scaleY, parameterHint.Right * scaleX, parameterHint.Bottom * scaleY);
                     SvgPaintBounds nativeSource = SvgFilterPlayback.RoundLayerBounds(nativeHint);
                     SvgFilterImageBounds storedImage = SvgFilterPlayback.SourceImageBounds(resource, distances, context, nativeSource, budget, cancellationToken);
@@ -1242,21 +1310,26 @@ public static partial class SvgConverter
                     if (restoreRight <= restoreLeft || restoreBottom <= restoreTop) return;
                     SvgRenderLimits layerLimits = limits;
                     SvgRoot borrowed = root with { Geometries = geometries, Commands = commands};
-                    SvgAffineTransform nativePlacement = new SvgAffineTransform(localInverse.ScaleX, localInverse.SkewY,
-                        localInverse.SkewX, localInverse.ScaleY, localInverse.TranslateX, localInverse.TranslateY)
-                        .ComposeNative(SvgAffineTransform.FromTranslation(-restoreBitmap.Origin.X, -restoreBitmap.Origin.Y)
-                            .ComposeNative(PlaceNativeSource(new(0, 0)) ?? SvgAffineTransform.Identity));
+                    NativeBitmapDevice sourceParent = bitmapDevice.InBitmap(restoreBitmap.Origin);
+                    SvgAffineTransform inverseDevice = InvertDevice(localRemainder);
+                    SvgAffineTransform nativePlacement = inverseDevice.ComposeNative(sourceParent.FromGlobal);
                     SvgAffineTransform deviceBasis = (frame?.FilterSourceMap is {} parentDevice
                         ? parentDevice.DeviceBasis : SvgAffineTransform.Identity).ComposeNative(new(
                             remainder.ScaleX, remainder.SkewY, remainder.SkewX, remainder.ScaleY, 0, 0));
+                    SvgAffineTransform localDevice = new(localRemainder.ScaleX, localRemainder.SkewY, localRemainder.SkewX, localRemainder.ScaleY,
+                        localRemainder.TranslateX, localRemainder.TranslateY);
+                    SvgAffineTransform sourceOrigin = SvgAffineTransform.FromTranslation(nativeSource.Left - 1, nativeSource.Top - 1);
+                    NativeBitmapDevice sourceDevice = new(sourceParent.ToGlobal.ComposeNative(localDevice).ComposeNative(sourceOrigin),
+                        SvgAffineTransform.FromTranslation(-sourceOrigin.E, -sourceOrigin.F).ComposeNative(inverseDevice.ComposeNative(sourceParent.FromGlobal)),
+                        new((int)(sourceOrigin.E - left), (int)(sourceOrigin.F - top)));
                     SvgFilterSourceMap sourceMap = new(arena.BindingAt(command.MaskContentIndex).Transform, layerMap,
-                        nativePlacement, frame?.FilterSourceMap is {} originalRelation ? originalRelation.Drawing : drawingMap, deviceBasis);
+                        nativePlacement, originalDrawing, deviceBasis);
                     using RasterizedSurface image = Rasterize(borrowed, new(options.Viewport, options.OutputScale, SvgColor.Transparent, layerLimits, options.FontSnapshot),
                         budget, RasterSurfaceMode.PremultipliedFilter,
                         new RasterFrame((int)frameWidth, (int)frameHeight,
-                            new(SvgAffineTransform.FromTranslation(-left, -top), null))
+                            new(SvgAffineTransform.FromTranslation(-left, -top), null), originalDrawing)
                         { SingleBitmap = true, FilterBinding = new(command.MaskContentIndex, local), SourcePlacement = placement,
-                            NativeSourceBounds = nativeSource, FilterSourceMap = sourceMap }, cancellationToken);
+                            NativeSourceBounds = nativeSource, FilterSourceMap = sourceMap, NativeDevice = sourceDevice }, cancellationToken);
                     // Native drawSpecial composes the stored image origin and
                     // transparent one-pixel outset before inverting its matrix.
                     // Subtracting that origin after inverse mapping changes phase.
@@ -1277,13 +1350,14 @@ public static partial class SvgConverter
                         RestoreFlood(image, nativeImage, remainder, new((int)left, (int)top), new(restoreLeft, restoreTop, restoreRight, restoreBottom));
                         return;
                     }
-                    SvgShaderMatrix subset = new(1, 0, nativeImage.Left - (nativeSource.Left - 1), 0, 1, nativeImage.Top - (nativeSource.Top - 1));
-                    SvgShaderMatrix edgeDevice = SvgShaderMatrix.Concat(SourceDeviceMap(remainder, nativeSource, new(0, 0)), subset);
-                    SvgShaderMatrix imageToDevice = SvgShaderMatrix.Concat(SourceDeviceMap(remainder, nativeSource, restoreBitmap.Origin), subset);
+                    NativeBitmapDevice restoreDevice = bitmapDevice.InBitmap(restoreBitmap.Origin);
+                    SvgShaderMatrix relativeDevice = SvgShaderMatrix.FromAffine(restoreDevice.FromGlobal.ComposeNative(sourceDevice.ToGlobal));
+                    SvgShaderMatrix imageToDevice = SvgShaderMatrix.Concat(relativeDevice,
+                        new(1, 0, nativeImage.Left - (float)sourceOrigin.E, 0, 1, nativeImage.Top - (float)sourceOrigin.F));
 
-                    // A crop discards padding knowledge. Only preserved padding can
-                    // supply transparent-border sampling instead of an AA image edge.
-                    bool imageEdges = storedImage.Storage == SvgFilterImageStorage.Cropped || RequiresImageEdges(remainder);
+                    // Cropped or merely initialized edges require image AA.
+                    // Only known-transparent padding can extend clamped sampling.
+                    bool imageEdges = storedImage.Storage is SvgFilterImageStorage.Cropped or SvgFilterImageStorage.InitializedPadding || RequiresImageEdges(remainder);
                     if (!imageEdges) imageToDevice = imageToDevice with
                     {
                         TranslateX = imageToDevice.TranslateX + (-imageToDevice.ScaleX - imageToDevice.SkewX),
@@ -1297,11 +1371,14 @@ public static partial class SvgConverter
                     bool opacityLayer = command.SourceOpacity.Value * foldedOpacity < 1;
                     Span<SvgDevicePoint> edgePoints = stackalloc SvgDevicePoint[4];
                     float imageWidth = nativeImage.Right - nativeImage.Left, imageHeight = nativeImage.Bottom - nativeImage.Top;
-                    SvgAffineTransform edgeMap = new(edgeDevice.ScaleX, edgeDevice.SkewY, edgeDevice.SkewX, edgeDevice.ScaleY, edgeDevice.TranslateX, edgeDevice.TranslateY);
+                    SvgAffineTransform edgeMap = new(imageToDevice.ScaleX, imageToDevice.SkewY, imageToDevice.SkewX, imageToDevice.ScaleY, imageToDevice.TranslateX, imageToDevice.TranslateY);
                     edgePoints[0] = SvgAuthoredPath.MapPoint(edgeMap, new(0, 0), new(0, 0));
                     edgePoints[1] = SvgAuthoredPath.MapPoint(edgeMap, new(imageWidth, 0), new(0, 0));
                     edgePoints[2] = SvgAuthoredPath.MapPoint(edgeMap, new(imageWidth, imageHeight), new(0, 0));
                     edgePoints[3] = SvgAuthoredPath.MapPoint(edgeMap, new(0, imageHeight), new(0, 0));
+                    for (int corner = 0; corner < edgePoints.Length; corner++)
+                        edgePoints[corner] = new(edgePoints[corner].X + restoreBitmap.Origin.X, edgePoints[corner].Y + restoreBitmap.Origin.Y);
+
                     // Requested output bounds limit storage and restoration. Edge
                     // construction and walking retain the owning bitmap's clip.
                     SvgAnalyticClipBounds edgeArea = new(Math.Max(layerBounds.Left, restoreBitmap.BitmapClip.Left), Math.Max(layerBounds.Top, restoreBitmap.BitmapClip.Top),
@@ -1392,6 +1469,17 @@ public static partial class SvgConverter
                         }
                     }
                     return;
+                }
+
+                // Native SkM44 affine inversion scales cofactors before translation products.
+                // The existing matrix admission has already rejected singular/nonfinite input.
+                static SvgAffineTransform InvertDevice(SvgShaderMatrix value)
+                {
+                    double a = value.ScaleX, b = value.SkewY, c = value.SkewX, d = value.ScaleY;
+                    double tx = value.TranslateX, ty = value.TranslateY;
+                    double scale = 1 / (a * d - b * c);
+                    return new((float)(d * scale), (float)(-b * scale), (float)(-c * scale), (float)(a * scale),
+                        (float)(d * (-tx * scale) - c * (-ty * scale)), (float)(a * (-ty * scale) - b * (-tx * scale)));
                 }
 
                 // Image origins concatenate after the destination bitmap's origin.
@@ -1880,11 +1968,12 @@ public static partial class SvgConverter
                     SvgRenderLimits replayLimits = original;
                     SvgRenderOptions replayOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, replayLimits, options.FontSnapshot);
                     int ox = bitmap.BitmapClip.Left, oy = bitmap.BitmapClip.Top;
+                    (NativeBitmapDevice replayDevice, SvgDrawingMap replayDrawing) = PrepareNativeBitmap(bitmap.Origin);
                     using RasterizedSurface result = Rasterize(scene, replayOptions, budget, RasterSurfaceMode.PremultipliedFilter,
-                        new RasterFrame(bitmap.BitmapClip.Right - ox, bitmap.BitmapClip.Bottom - oy, drawingMap.InBitmap(new(ox, oy)))
+                        new RasterFrame(bitmap.BitmapClip.Right - ox, bitmap.BitmapClip.Bottom - oy, drawingMap.InBitmap(new(ox, oy)), replayDrawing)
                         { SingleBitmap = true, ContentClip = new(clip.Left - ox, clip.Top - oy, clip.Right - ox, clip.Bottom - oy),
                             ParentOrigin = bitmap.Origin, CaptureOrigin = new(ox, oy), FilterBinding = new(command.MaskContentIndex, binding),
-                            SourcePlacement = sourcePlacement, NativeCapturePlacement = PlaceNativeSource(new(ox, oy)) }, cancellationToken);
+                            SourcePlacement = sourcePlacement, NativeCapturePlacement = PlaceNativeSource(new(ox, oy)), NativeDevice = replayDevice.InBitmap(bitmap.Origin).InBitmap(new(ox, oy)).InCapture(new(ox, oy)) }, cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
                     int x1 = Math.Max(clip.Left, bitmap.Interior.Left), y1 = Math.Max(clip.Top, bitmap.Interior.Top);
                     int x2 = Math.Min(clip.Right, bitmap.Interior.Right), y2 = Math.Min(clip.Bottom, bitmap.Interior.Bottom);
@@ -2038,9 +2127,10 @@ public static partial class SvgConverter
                             (float)(ownedSource.Bottom * verticalScale + verticalOffset));
                         sourceContentClip = SourceContentClip(content, new((int)left, (int)top), (int)sourceWidth, (int)sourceHeight);
                     }
+                    (NativeBitmapDevice captureDevice, SvgDrawingMap captureDrawing) = PrepareNativeBitmap(tile.Origin);
                     using RasterizedSurface captured = Rasterize(scene, captureOptions, budget, RasterSurfaceMode.PremultipliedFilter,
-                        new RasterFrame((int)sourceWidth, (int)sourceHeight, drawingMap.InBitmap(new((int)left, (int)top)))
-                        { SingleBitmap = true, ContentClip = sourceContentClip, ParentOrigin = tile.Origin, CaptureOrigin = new((int)left, (int)top), ImageShaderOrigin = sourceImageOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = nativeCaptureBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left, (int)top)) }, cancellationToken);
+                        new RasterFrame((int)sourceWidth, (int)sourceHeight, drawingMap.InBitmap(new((int)left, (int)top)), captureDrawing)
+                        { SingleBitmap = true, ContentClip = sourceContentClip, ParentOrigin = tile.Origin, CaptureOrigin = new((int)left, (int)top), ImageShaderOrigin = sourceImageOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = nativeCaptureBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left, (int)top)), NativeDevice = captureDevice.InBitmap(tile.Origin).InBitmap(new((int)left, (int)top)).InCapture(new((int)left, (int)top)) }, cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
                     int tw = tile.BitmapClip.Right - tile.BitmapClip.Left, th = tile.BitmapClip.Bottom - tile.BitmapClip.Top;
                     using RenderBudget.BudgetReservation tileOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(checked(tw * th * 4)), SvgMemoryCategory.Surface);
@@ -2270,11 +2360,13 @@ public static partial class SvgConverter
 
         SvgShaderSamplingContext ShaderSamplingContext()
         {
-            SvgCpuBitmapOrigin? source = surfaceMode == RasterSurfaceMode.PremultipliedFilter
+            // An isolated child owns its shader bitmap. The enclosing filter's
+            // padded image bounds seed only draws directly into that source.
+            SvgCpuBitmapOrigin? source = isolatedBitmapScope is null && surfaceMode == RasterSurfaceMode.PremultipliedFilter
                 && frame is { NativeSourceBounds: null, ImageShaderOrigin: {} sourceOrigin } sourceFrame
                 ? new(sourceOrigin.X - sourceFrame.CaptureOrigin.X, sourceOrigin.Y - sourceFrame.CaptureOrigin.Y) : null;
             SvgAffineTransform device = drawingMap.Device;
-            return new(rasterGrid, layerBounds, layerClipCoverage, frame?.NativeSourceBounds, source,
+            return new(rasterGrid, layerBounds, layerClipCoverage, isolatedBitmapScope is null ? frame?.NativeSourceBounds : null, source,
                 sourceInverse, device.A, device.D, device.E, device.F);
         }
 
@@ -3269,9 +3361,14 @@ public static partial class SvgConverter
         SvgShaderCoordinates PreserveRecordedShaderStages(SvgShaderCoordinates coordinates, SvgAffineTransform target)
         {
             if (frame is { NativeCapturePlacement: {} capturedPlacement, FilterSourceMap: {} capturedRelation } && activePaint.RecordingTransform is {} capturedRecording)
-                return coordinates.WithCapturedDrawing(capturedRecording,
+                return coordinates.WithCapturedCanvasDrawing(capturedRecording,
                     SvgShaderMatrix.FromAffine(capturedRelation.Drawing.Destination ?? SvgAffineTransform.Identity),
                     capturedRelation.Drawing.Recording, target, budget, cancellationToken, capturedPlacement);
+            if (frame is { FilterSourceMap: null, NativeDevice: {} sourceDevice, RecordedDrawing: {} sourceDrawing }
+                && activePaint.RecordingTransform is {} axisRecording)
+                return coordinates.WithCapturedCanvasDrawing(axisRecording,
+                    SvgShaderMatrix.FromAffine(sourceDrawing.Destination ?? SvgAffineTransform.Identity),
+                    sourceDrawing.Recording, target, budget, cancellationToken, sourceDevice.FromGlobal);
             if (activePaint.RecordingTransform is not {} recording) return coordinates;
             SvgAffineTransform initial = sourcePlacement == SvgAffineTransform.Identity ? drawingMap.Recording
                 : drawingMap.Recording.ComposeChecked(sourcePlacement);
@@ -3712,6 +3809,13 @@ public static partial class SvgConverter
                     && frame is { NativeCapturePlacement: not null, FilterSourceMap: {} sourceRelation }
                     && sourceRelation.Source == replay.SceneMap)
                     authoredMap = SvgAffineTransform.FromTranslation(horizontalOffset, verticalOffset).ComposeNative(sourceRelation.Layer);
+                if (!collectingViewportClip && coordinateSpace == PathCoordinateSpace.User
+                    && frame is { NativeCapturePlacement: {} preparedCapture, FilterSourceMap: {} preparedRelation }
+                    && preparedRelation.Source != replay.SceneMap && activePaint.RecordingTransform is {} sourceRecording
+                    && sourceRecording.TryMapCanvas(SvgShaderMatrix.FromAffine(preparedRelation.Drawing.Destination ?? SvgAffineTransform.Identity),
+                        preparedRelation.Drawing.Recording, replay.SceneMap, budget, cancellationToken, out SvgShaderMatrix originalDrawing))
+                    authoredMap = preparedCapture.ComposeNative(new(originalDrawing.ScaleX, originalDrawing.SkewY, originalDrawing.SkewX,
+                        originalDrawing.ScaleY, originalDrawing.TranslateX, originalDrawing.TranslateY));
                 if (authoredPath?.StrokeStyle?.NonScalingMap is {} nonScaling)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -3729,6 +3833,13 @@ public static partial class SvgConverter
                     float ty = (float)(authoredMap.F + sourceFrame.CaptureOrigin.Y) - parent.Y;
                     authoredMap = authoredMap with { E = tx + (parent.X - sourceFrame.CaptureOrigin.X), F = ty + (parent.Y - sourceFrame.CaptureOrigin.Y) };
                 }
+                if (!collectingViewportClip && coordinateSpace == PathCoordinateSpace.User
+                    && frame is { FilterSourceMap: null, NativeDevice: {} axisDevice, RecordedDrawing: {} sourceDrawing }
+                    && activePaint.RecordingTransform is {} axisRecording
+                    && axisRecording.TryMapCanvas(SvgShaderMatrix.FromAffine(sourceDrawing.Destination ?? SvgAffineTransform.Identity),
+                        sourceDrawing.Recording, replay.SceneMap, budget, cancellationToken, out SvgShaderMatrix axisDrawing))
+                    authoredMap = axisDevice.FromGlobal.ComposeNative(new(axisDrawing.ScaleX, axisDrawing.SkewY, axisDrawing.SkewX,
+                        axisDrawing.ScaleY, axisDrawing.TranslateX, axisDrawing.TranslateY));
                 SvgAffineTransform preparationMap = coordinateSpace == PathCoordinateSpace.Device
                     ? SvgAffineTransform.Identity : drawingMap.Parameter.ComposeChecked(sourcePlacement);
                 authored = replay.PrepareSource(preparationMap, isEvenOdd, budget, cancellationToken);
@@ -4409,8 +4520,8 @@ public static partial class SvgConverter
                     SvgShaderMatrix contentMap = new((float)sx, 0, (float)tx, 0, (float)sy, (float)ty);
                     SvgShaderMatrix pixelMap = new(pattern.TextureWidth / (float)sourceBox.Width, 0, 0, 0, pattern.TextureHeight / (float)sourceBox.Height, 0);
                     SvgShaderMatrix map = SvgShaderMatrix.Concat(pixelMap, contentMap);
-                    contentFrame = new(pattern.TextureWidth, pattern.TextureHeight,
-                        new(new(map.ScaleX, map.SkewY, map.SkewX, map.ScaleY, map.TranslateX, map.TranslateY), null));
+                    SvgDrawingMap tileDrawing = new(new(map.ScaleX, map.SkewY, map.SkewX, map.ScaleY, map.TranslateX, map.TranslateY), null);
+                    contentFrame = new(pattern.TextureWidth, pattern.TextureHeight, tileDrawing, tileDrawing);
                 }
                 RasterizedSurface rendered = Rasterize(tileRoot, tileOptions, budget, RasterSurfaceMode.PremultipliedPattern, contentFrame, cancellationToken);
                 return rendered;

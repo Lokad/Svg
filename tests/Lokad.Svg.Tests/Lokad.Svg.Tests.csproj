@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Update="TestData/native-canvas-recording.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-source-opacity/inputs/isolated-source-bitmap.svg" Link="TestData/filter-source-opacity/isolated-source-bitmap.svg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="../Shared/TestMemoryBudget.cs" Link="TestMemoryBudget.cs" />
   </ItemGroup>
   <ItemGroup>

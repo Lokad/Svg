@@ -6,8 +6,8 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 155 originals per host: **154 exploratory
-exact, one different**, with 46 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 155 originals per host: **155 exploratory
+exact, none different**, with 46 UnsupportedFeature and 3 MalformedInput outcomes. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
@@ -80,6 +80,7 @@ current inventory above governs overall status.
 | Completed curve strips | [Direct painting and clip construction](completed-strip-coverage.json). Completed direct fringes use the paint clip; pending mask rows and clip definitions keep path bounds. Circle, authored arcs and rounded rectangles protect distinct source builders. |
 | Short authored curves | [Closing chords](thin-authored-contours.json). Fallback sample count cannot suppress authored curved ink. Direct preparation/index tests, explicit suppression and ownership contracts, and three canonical fill/shader/clip fixtures protect distinct responsibilities. |
 | Fixed stroke lengths | [Shared unit conversion](fixed-stroke-lengths.json). Root, marker and stroke factors share one parser seam; callers retain sign/range/base/narrowing rules. Direct mechanisms, two existing selection contracts and one canonical native fixture protect distinct responsibilities. |
+| Filter recording and bitmap devices | [Shared recording, origins and padding](filter-recording-devices.json). Canvas and shader products stay distinct; all four capture paths share root setup. Three canonical controls protect fractional child hints, axis replay and isolated opacity; the complete default lingerie original is exact on both hosts. |
 | Isolated opacity and source raster scope | [Local enclosure and shared raster binding](opacity-source-scope.json). Recorded primitive strokes enclose before placement; filter hints stay fractional. Hairlines borrow the compositor grid and preserve source clip, origin and owned interior independently. Direct mechanisms and three leaf/group fixtures protect distinct recording graphs. |
 | Gradient declarations | [Typed lengths](gradient-lengths.json), [inheritance fixture](../../Fixtures/original/radial-coordinate-inheritance.svg), [stop identity fixture](../../Fixtures/original/gradient-stop-identities.svg). Preserve number/percentage intent, missing/default values, units, per-field inheritance, viewport resolution and metadata. |
 | Nested pattern content | [Content graph and native controls](nested-patterns.json). Borrow shared sealed scenes, validate cycles and actual content depth once, and retain forward/template/mask/glyph interactions. |

@@ -29,7 +29,7 @@ internal enum SvgFilterImageSampling : byte { Nearest, Linear }
 internal enum SvgFilterBoundsKind : byte { CaptureHint, StoredImage, Output }
 
 /// <summary>Distinguishes deferred paint from materialized images with preserved or cropped padding.</summary>
-internal enum SvgFilterImageStorage : byte { Deferred, Padded, Cropped }
+internal enum SvgFilterImageStorage : byte { Deferred, TransparentPadding, InitializedPadding, Cropped }
 
 /// <summary>Retains logical image bounds and storage history independently of pixel allocation and color space.</summary>
 internal readonly record struct SvgFilterImageBounds(SvgPaintBounds Bounds, SvgFilterImageStorage Storage);
@@ -280,7 +280,8 @@ internal static class SvgFilterPlayback
             {
                 SvgFilterImageStorage image = primitive.Input.Index < 0 ? SvgFilterImageStorage.Deferred : storage[primitive.Input.Index];
                 bool materialized = primitive.MaterializesImage(new(sigmaX, sigmaY));
-                if (materialized) image = SvgFilterImageStorage.Padded;
+                if (materialized) image = primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur
+                    ? SvgFilterImageStorage.InitializedPadding : SvgFilterImageStorage.TransparentPadding;
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Flood) image = SvgFilterImageStorage.Deferred;
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Merge && primitive.MergeCount == 1)
                 {

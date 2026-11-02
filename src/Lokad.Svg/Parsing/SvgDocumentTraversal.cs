@@ -264,7 +264,7 @@ internal static class SvgDocumentTraversal
                                     state.Scene.BeginSourceOpacityScope(SvgPaintOpacity.Opaque, parsedGroup.Scope.RecordingScope);
                                 SvgAffineTransform filterMap = SvgViewportFrame.MapGeometry(parsedGroup.Scope.InheritedPresentation.Transform, isolationParent);
                                 int binding = state.Scene.Filters.AddBinding(filterId, default, default,
-                                    filterMap, parsedGroup.LengthBases, true, groupClipId);
+                                    filterMap, parsedGroup.LengthBases, true, groupClipId, parsedGroup.Scope.InheritedPresentation.RecordingTransform);
                                 int position = state.Scene.CommandCount - 1;
                                 state.Scene.ReplaceCommand(position, state.Scene.CommandAt(position) with
                                 { RegionKind = SvgLayerRegionKind.Filter, MaskContentIndex = binding,
