@@ -19,6 +19,11 @@ public sealed class SvgWindowsScanBoundaryTests
 
     [Fact]
     [Trait("Layer", "Rendering")]
+    public Task Conditional_pixel_deltas_keep_touched_vertical_and_composite_targets()
+        => AssertNativeFontFixture("windows-conditional-targets", "original-conditional-targets", "ConditionalTouch");
+
+    [Fact]
+    [Trait("Layer", "Rendering")]
     public Task Stack_projection_keeps_supplied_components_and_the_independent_freedom_direction()
         => AssertNativeFontFixture("windows-stack-vectors", "original-stack-vectors", "StackVectors");
 

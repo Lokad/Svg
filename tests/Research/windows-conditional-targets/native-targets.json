@@ -1,0 +1,735 @@
+{
+  "schemaVersion": 1,
+  "license": "CC0-1.0",
+  "unitsPerEm": 2048,
+  "size": 32,
+  "sourcePoints": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      512
+    ],
+    [
+      512,
+      512
+    ],
+    [
+      512,
+      0
+    ]
+  ],
+  "conditionalFunction": "4b53234b515a58381b212159",
+  "transport": "Execute each recorded operation, read the selected current point coordinate, amplify each 26.6 unit into a pixel and paint an integer four-pixel band. Original and fitted frames remain separate.",
+  "nativeOracle": "Explicit DirectWrite glyph-run analysis; natural or symmetric ClearType and natural measurement. Three identical native alpha buffers per case. No native calls in production or ordinary tests.",
+  "nativeDllSha256": "45b8d6534fd6cd884bfc38a62c007da0d9d5f29324bcb1f31cbf0528bc2e7eae",
+  "nativeCapturesPerCase": 3,
+  "fonts": [
+    {
+      "profile": "natural",
+      "font": "fonts/ConditionalTargetsNatural.ttf",
+      "fontSha256": "067c74b8693001537be6518978adeedb4268fa06957995901f4a24c8f3772cbc",
+      "fontBytes": 3108,
+      "paintGlyphs": [
+        {
+          "id": "touched-y",
+          "glyph": 16,
+          "char": "O"
+        },
+        {
+          "id": "negative-y",
+          "glyph": 17,
+          "char": "P"
+        },
+        {
+          "id": "completed-iups",
+          "glyph": 18,
+          "char": "Q"
+        },
+        {
+          "id": "composite-untouched",
+          "glyph": 19,
+          "char": "R"
+        }
+      ],
+      "cases": [
+        {
+          "glyph": 2,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "untouched-y",
+          "operation": "0000b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 3,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "touched-y",
+          "operation": "00b0002e00b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 64,
+          "bounds": [
+            -1,
+            -68,
+            17,
+            -64
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 4,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "negative-y",
+          "operation": "00b0002e00b000b8ffc0b20b28002b",
+          "composite": false,
+          "nativeValue": -64,
+          "bounds": [
+            -1,
+            60,
+            17,
+            64
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 5,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "completed-iups",
+          "operation": "00b0002e303100b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 6,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "waived-touched",
+          "operation": "00b0002eb104038e00b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 64,
+          "bounds": [
+            -1,
+            -68,
+            17,
+            -64
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 7,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "waived-untouched",
+          "operation": "00b104038e00b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 8,
+          "sourcePoint": 0,
+          "axis": "x",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "touched-x",
+          "operation": "00b0002e01b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 9,
+          "sourcePoint": 0,
+          "axis": "x",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "oblique-x",
+          "operation": "00b0002e00b92000376d0a0eb000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 10,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "oblique-y",
+          "operation": "00b0002e00b92000376d0a0eb000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 11,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "loop-touched",
+          "operation": "00b0002e00b10001b00217b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 64,
+          "bounds": [
+            -1,
+            -68,
+            17,
+            -64
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 12,
+          "sourcePoint": 1,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "loop-untouched",
+          "operation": "00b0002e00b10001b00217b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 512,
+          "bounds": [
+            -1,
+            -516,
+            17,
+            -512
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 13,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "composite-untouched",
+          "operation": "0000b000b80040b20b28002b",
+          "composite": true,
+          "nativeValue": 64,
+          "bounds": [
+            -1,
+            -68,
+            17,
+            -64
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 14,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "waived-completed-iups",
+          "operation": "00b0002e3031b104038e00b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 15,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 4,
+          "id": "large-touched-y",
+          "operation": "00b0002e00b000b80200b20b28002b",
+          "composite": false,
+          "nativeValue": 512,
+          "bounds": [
+            -1,
+            -516,
+            17,
+            -512
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "profile": "symmetric",
+      "font": "fonts/ConditionalTargetsSymmetric.ttf",
+      "fontSha256": "5c83a569a5f5122e78ac6fbf5696bb4ff40f116d7452f941553e2e66615586e4",
+      "fontBytes": 3116,
+      "paintGlyphs": [
+        {
+          "id": "touched-y",
+          "glyph": 16,
+          "char": "O"
+        },
+        {
+          "id": "negative-y",
+          "glyph": 17,
+          "char": "P"
+        },
+        {
+          "id": "completed-iups",
+          "glyph": 18,
+          "char": "Q"
+        },
+        {
+          "id": "composite-untouched",
+          "glyph": 19,
+          "char": "R"
+        }
+      ],
+      "cases": [
+        {
+          "glyph": 2,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "untouched-y",
+          "operation": "0000b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 3,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "touched-y",
+          "operation": "00b0002e00b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 64,
+          "bounds": [
+            -1,
+            -68,
+            17,
+            -64
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 4,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "negative-y",
+          "operation": "00b0002e00b000b8ffc0b20b28002b",
+          "composite": false,
+          "nativeValue": -64,
+          "bounds": [
+            -1,
+            60,
+            17,
+            64
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 5,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "completed-iups",
+          "operation": "00b0002e303100b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 6,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "waived-touched",
+          "operation": "00b0002eb104038e00b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 64,
+          "bounds": [
+            -1,
+            -68,
+            17,
+            -64
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 7,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "waived-untouched",
+          "operation": "00b104038e00b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 8,
+          "sourcePoint": 0,
+          "axis": "x",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "touched-x",
+          "operation": "00b0002e01b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 9,
+          "sourcePoint": 0,
+          "axis": "x",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "oblique-x",
+          "operation": "00b0002e00b92000376d0a0eb000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 10,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "oblique-y",
+          "operation": "00b0002e00b92000376d0a0eb000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 11,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "loop-touched",
+          "operation": "00b0002e00b10001b00217b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 64,
+          "bounds": [
+            -1,
+            -68,
+            17,
+            -64
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 12,
+          "sourcePoint": 1,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "loop-untouched",
+          "operation": "00b0002e00b10001b00217b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 512,
+          "bounds": [
+            -1,
+            -516,
+            17,
+            -512
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 13,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "composite-untouched",
+          "operation": "0000b000b80040b20b28002b",
+          "composite": true,
+          "nativeValue": 64,
+          "bounds": [
+            -1,
+            -68,
+            17,
+            -64
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 14,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "waived-completed-iups",
+          "operation": "00b0002e3031b104038e00b000b80040b20b28002b",
+          "composite": false,
+          "nativeValue": 0,
+          "bounds": [
+            -1,
+            -4,
+            17,
+            0
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "glyph": 15,
+          "sourcePoint": 0,
+          "axis": "y",
+          "size": 32,
+          "nativeMode": 5,
+          "id": "large-touched-y",
+          "operation": "00b0002e00b000b80200b20b28002b",
+          "composite": false,
+          "nativeValue": 512,
+          "bounds": [
+            -1,
+            -516,
+            17,
+            -512
+          ],
+          "nativeAlphaSha256": "715f2f51420d25ff45f1b917e710be64b6bcb800b7ef5c5f48a1ac06436b6cf3",
+          "terminalExitCodes": [
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

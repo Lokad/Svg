@@ -319,6 +319,14 @@ python -B tests/Research/kerning-flags/derive-extension.py --output artifacts/re
 The producer verifies the source hash and unchanged glyph geometry. Compare its
 reported program hash with [the capture record](../tests/Research/kerning-flags/extension.json).
 Reference capture remains independent and requires fresh healthy platform triples.
+The [conditional-target programs](../tests/Research/windows-conditional-targets/README.md)
+have an independent CC0 recipe using the same development dependency. Rebuild into
+a new destination and require both recorded hashes:
+
+```powershell
+python -B tests/Research/windows-conditional-targets/derive.py --output-directory artifacts/research/conditional-targets
+```
+
 For original font comparisons, match initial generic-family selections as well as
 authored named families; the library's legacy last resort and browser ambient serif
 can select different programs. Preserve both input hashes and catalog bindings.

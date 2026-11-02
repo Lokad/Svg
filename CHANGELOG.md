@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Correct Windows glyph contours when a font applies conditional vertical pixel shifts.
 - Keep Windows fitted glyph originals/current points in their aligned metric frame;
   preserve the child paint origin independently of composite parent-program phantoms.
 - Resolve CSS/presentation text anchors through shared inheritance and chunk

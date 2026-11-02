@@ -3,10 +3,11 @@
 The original CC0 [font recipe](font-recipe.json) and [SVG](conditional-functions.svg)
 isolate Windows recognition of one exact conditional `SHPIX` function body.
 Recognition follows the function body across renaming. Its branch, stack and loop
-effects remain, while movement is suppressed. Equivalent inline code and an inert
-prefix or suffix execute their shifts. Native mode and completed interpolation
-do not change that distinction. The outside-size-range control retains the
-ordinary false branch.
+effects remain, while these untouched and horizontal targets suppress movement.
+Equivalent inline code and an inert prefix or suffix execute their shifts.
+Native mode does not remove recognition; the outside-size-range control retains
+the ordinary false branch. The [target controls](../windows-conditional-targets/README.md)
+separately protect eligible touched vertical and composite deltas.
 
 [Capture provenance](capture.json) pins the input, program, browser and separate
 Windows/Linux references: three agreeing fresh healthy processes per host.

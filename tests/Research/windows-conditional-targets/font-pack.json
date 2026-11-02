@@ -1,0 +1,22 @@
+{
+  "packId": "original-conditional-targets",
+  "files": [
+    {
+      "relativePath": "fonts/ConditionalTargetsSymmetric.ttf",
+      "byteSize": 3116,
+      "sha256": "5c83a569a5f5122e78ac6fbf5696bb4ff40f116d7452f941553e2e66615586e4"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "ConditionalTouch",
+      "resolvedFamily": "ConditionalTouch",
+      "relativeFontFile": "fonts/ConditionalTargetsSymmetric.ttf",
+      "weight": 400,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    }
+  ],
+  "fallbacks": []
+}

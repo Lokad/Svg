@@ -281,10 +281,10 @@ internal sealed partial class TrueTypeHinting : IDisposable
     private void Execute(ReadOnlyMemory<byte> program, TrueTypeHintProgramKind kind)
     {
         // Windows recognizes this exact conditional pixel-delta function body.
-        // It consumes the ordinary branch/loop operands but suppresses movement,
-        // including in native mode. Inline code and altered bodies still execute.
+        // Its shifts use legacy delta target eligibility, including in native
+        // mode. Inline code and altered bodies retain ordinary SHPIX behavior.
         ReadOnlySpan<byte> conditionalPixelDelta = [0x4B, 0x53, 0x23, 0x4B, 0x51, 0x5A, 0x58, 0x38, 0x1B, 0x21, 0x21, 0x59];
-        bool suppressPixelShift = kind == TrueTypeHintProgramKind.Glyph && _depth != 0 &&
+        bool usesLegacyPixelDelta = kind == TrueTypeHintProgramKind.Glyph && _depth != 0 &&
             _target.UsesWindowsArithmetic && _target.Grid == TrueTypeHintGrid.ClearType &&
             program.Span.SequenceEqual(conditionalPixelDelta);
         int pc = 0, conditionalDepth = 0;
@@ -414,7 +414,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     {
                         _token.ThrowIfCancellationRequested();
                         ref TrueTypeHintPoint point = ref Point(_zp2, Pop());
-                        if (!suppressPixelShift) MoveAlongFreedom(ref point, amount);
+                        if (!usesLegacyPixelDelta || CanMoveLegacyDelta(point)) MoveAlongFreedom(ref point, amount);
                     }
                     _loop = 1; break;
                 }
@@ -761,8 +761,7 @@ internal sealed partial class TrueTypeHinting : IDisposable
                     else
                     {
                         ref TrueTypeHintPoint point = ref Point(_zp0, p);
-                        if (ppem == AxisPpem && (kind != TrueTypeHintProgramKind.Glyph || !BackwardCompatible ||
-                            !(_iupX && _iupY) && _freedom.X == 0 && _freedom.Y != 0 && (_compositeGlyph || point.TouchedY)))
+                        if (ppem == AxisPpem && (kind != TrueTypeHintProgramKind.Glyph || !BackwardCompatible || CanMoveLegacyDelta(point)))
                             Move(ref point, amount, true);
                     }
                 }

@@ -13,6 +13,11 @@ internal sealed partial class TrueTypeHinting
 
     private bool BackwardCompatible => _target.Grid == TrueTypeHintGrid.ClearType && (_instructionControl & 4) == 0;
 
+    /// <summary>Checks legacy vertical delta eligibility without changing the borrowed target or interpreter state.</summary>
+    /// <remarks>Callers select the applicable compatibility policy; conditional pixel-delta functions retain this rule even with the native-mode waiver.</remarks>
+    private bool CanMoveLegacyDelta(in TrueTypeHintPoint point)
+        => !(_iupX && _iupY) && _freedom.X == 0 && _freedom.Y != 0 && (_compositeGlyph || point.TouchedY);
+
     private readonly record struct HintVector(int X, int Y)
     {
         internal static HintVector XAxis => new(16384, 0);

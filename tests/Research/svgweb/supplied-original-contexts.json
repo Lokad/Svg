@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "sourceBaseline": "476d7a407c24586d02c7d0a465282074b99c3165",
   "librarySha256": "c8a9a050e6d5e2cee264fab928722f022738bf99aa2f67ffa62c8a3192ea9767",
-  "status": "Nineteen supplied-program contexts investigated; ten complete originals closed in their declared static/font contexts. Two Windows discrepancies and seven legacy SVG-font originals remain open.",
+  "status": "Baseline supplied-program inventory and frozen native contexts. Its measurements retain ten exact complete originals, two Windows discrepancies and seven transported legacy contexts. The follow-up governs current closure and outcomes.",
   "scope": {
     "originalInventory": "originals.json",
     "defaultOutcomes": "default-outcomes.csv",
@@ -1396,5 +1396,6 @@
       "MalformedInput": 3
     },
     "timingMeaning": "Exploratory qualification elapsed time with two workers; no before/after test-suite speedup claimed."
-  }
+  },
+  "followUp": "windows-conditional-targets.json"
 }

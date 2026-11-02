@@ -1,0 +1,151 @@
+{
+  "scope": "Original CC0 controls paint touched positive/negative vertical targets, completed interpolation and an untouched composite target. Separate natural/symmetric numerical cases remain mechanisms.",
+  "width": 160,
+  "height": 48,
+  "browser": "Chrome 153.0.8010.52",
+  "input": "conditional-targets.svg",
+  "inputSha256": "3ada3b870a914963f7c0ef06d45833a37efaa677f6e1fc2a32e450d2ab113693",
+  "font": "fonts/ConditionalTargetsSymmetric.ttf",
+  "fontSha256": "5c83a569a5f5122e78ac6fbf5696bb4ff40f116d7452f941553e2e66615586e4",
+  "nativeSourceSha256": "852bbd14464001db1c7d15fb71a30b8a18223a08b15edad19f44087b7a57cc8b",
+  "nativeRecipe": "Embed the unchanged program with @font-face before </svg>; family ConditionalTouch, normal/400; no other source changes.",
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "2ca35af85061f0df3dc411220a01d5dcb25620f0dd8d9cb811468e4164232437",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "2ca35af85061f0df3dc411220a01d5dcb25620f0dd8d9cb811468e4164232437",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "2ca35af85061f0df3dc411220a01d5dcb25620f0dd8d9cb811468e4164232437",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "2ca35af85061f0df3dc411220a01d5dcb25620f0dd8d9cb811468e4164232437",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "fontUseProofs": {
+        "missingProgram": {
+          "nativeSourceSha256": "3ada3b870a914963f7c0ef06d45833a37efaa677f6e1fc2a32e450d2ab113693",
+          "pngSha256": "ca051a451be8f6ac3a2c60478e480fee47e2b41e67b005446b2209e4fcbd0534",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0,
+          "comparison": {
+            "dimensionsMatch": true,
+            "changedPixels": 1013,
+            "maximumError": 255,
+            "alphaChangedPixels": 1013,
+            "differenceBounds": [
+              7,
+              9,
+              150,
+              36
+            ]
+          }
+        },
+        "changedGeometry": {
+          "nativeSourceSha256": "6cadfeac5f34ae9424c4f0e9f3c105553a0b558ccd146b5d07a5646353bd3097",
+          "pngSha256": "6a6e5af722609003a335fb372929810e646aa28eeab6e25f32684a6f8f4bd716",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0,
+          "comparison": {
+            "dimensionsMatch": true,
+            "changedPixels": 80,
+            "maximumError": 255,
+            "alphaChangedPixels": 80,
+            "differenceBounds": [
+              7,
+              20,
+              137,
+              22
+            ]
+          }
+        }
+      }
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "191e93d96df848201532ba4c7baf3a353738d8b9ff08dfe86cc5da64c6a17c17",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "191e93d96df848201532ba4c7baf3a353738d8b9ff08dfe86cc5da64c6a17c17",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "191e93d96df848201532ba4c7baf3a353738d8b9ff08dfe86cc5da64c6a17c17",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "191e93d96df848201532ba4c7baf3a353738d8b9ff08dfe86cc5da64c6a17c17",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "fontUseProofs": {
+        "missingProgram": {
+          "nativeSourceSha256": "3ada3b870a914963f7c0ef06d45833a37efaa677f6e1fc2a32e450d2ab113693",
+          "pngSha256": "b21a798207b905620b93fbdab1db682ca1302b6802e019b723886d6ebe13a5bb",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0,
+          "comparison": {
+            "dimensionsMatch": true,
+            "changedPixels": 868,
+            "maximumError": 255,
+            "alphaChangedPixels": 868,
+            "differenceBounds": [
+              8,
+              9,
+              150,
+              35
+            ]
+          }
+        },
+        "changedGeometry": {
+          "nativeSourceSha256": "6cadfeac5f34ae9424c4f0e9f3c105553a0b558ccd146b5d07a5646353bd3097",
+          "pngSha256": "5c3176f313513342b2c353882ea97f80c2c61ec9249616fcc182422c5db732fe",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0,
+          "comparison": {
+            "dimensionsMatch": true,
+            "changedPixels": 64,
+            "maximumError": 255,
+            "alphaChangedPixels": 64,
+            "differenceBounds": [
+              8,
+              20,
+              136,
+              22
+            ]
+          }
+        }
+      }
+    }
+  },
+  "fontUseRecipe": {
+    "scope": "Single healthy negative font-use observations, not admitted references.",
+    "missingProgram": "Use the committed SVG without the embedded @font-face.",
+    "changedGeometry": "In RAM, change Y=512 to Y=640 on every simple glyph, recompute glyph bounds, and embed that otherwise unchanged font instead.",
+    "changedProgramSha256": "d4f60f0a4bcc71a728a1d9252c33bf4f55178d5a22aa70b6a7a371358a291469",
+    "committedProgramUnchanged": true
+  }
+}

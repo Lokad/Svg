@@ -5,7 +5,7 @@
   "implementation": "../../../src/Lokad.Svg/Fonts/TrueTypeHinting.cs",
   "model": {
     "exactFunctionBody": "4b53234b515a58381b212159",
-    "recognition": "An executed glyph function with this exact body under the Windows ClearType target suppresses SHPIX movement. Ordinary condition evaluation, operand validation/consumption, loop reset and cancellation remain.",
+    "recognition": "An executed glyph function with this exact body under Windows ClearType uses legacy delta target eligibility. The untouched and horizontal controls recorded here suppress movement; the follow-up qualifies eligible touched vertical and composite targets. Ordinary condition evaluation, operand validation/consumption, loop reset and cancellation remain.",
     "controls": "Renamed functions retain recognition; inline execution and inert prefix/suffix variants move points. The native-mode waiver and completed IUPs do not remove recognition. An unsatisfied size condition preserves the false branch.",
     "storage": "One invocation-local boolean; no cache, extra owning storage, font-name rule or API change."
   },
@@ -247,5 +247,6 @@
       "scope": "Unchanged supplied programs, source hashes, origins/layout and earlier native observations. The n discrepancy is closed by an independent mechanism; whole supplied/static original acceptance is not claimed. No private program or hosted payload is retained here."
     }
   },
-  "next": "Five controls for w/M/Z at 10 and k at 9 remain; traced native point/vector queries locate the outstanding diagonal fitting differences. Preserve exact query flags, scan preparation and all references. Other W1 static/font/resource acceptance remains open."
+  "next": "Five controls for w/M/Z at 10 and k at 9 remain; traced native point/vector queries locate the outstanding diagonal fitting differences. Preserve exact query flags, scan preparation and all references. Other W1 static/font/resource acceptance remains open.",
+  "followUp": "windows-conditional-targets.json"
 }
