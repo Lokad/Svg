@@ -309,13 +309,75 @@ internal static class SvgFilterPlayback
     /// use the caller's device grid. No pixels or caller storage are changed.</remarks>
     internal static SvgPaintBounds RequiredSourceBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgFilterRegionContext context, SvgPaintBounds requested, RenderBudget budget, CancellationToken token)
+        => RequiredSourceBounds(resource, map, context, requested, budget, token, out _);
+
+    /// <summary>Plans dynamic source demand and the input view retained by a terminal fractional offset.</summary>
+    /// <remarks>Both bounds use the requested output and primitive crops, independently of final image storage.
+    /// Resources are borrowed; all scratch shares the conversion budget, releases on every exit and
+    /// observes cancellation. Returned immutable bounds own no pixels.</remarks>
+    internal static SvgPaintBounds RequiredSourceBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
+        SvgFilterRegionContext context, SvgPaintBounds requested, RenderBudget budget, CancellationToken token,
+        out SvgPaintBounds? retainedInput)
     {
+        retainedInput = null;
         token.ThrowIfCancellationRequested();
         int count = resource.Primitives.Items.Length;
         if (count == 0) return default;
-        using RenderBudget.BudgetReservation owner = budget.Reserve(2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count), SvgMemoryCategory.Temporary);
+        SvgFilterInput final = ResolvePaintSource(resource, map, new(count - 1), token);
+        bool retainsInput = final.Index >= 0 && resource.Primitives.Items[final.Index] is { Kind: SvgFilterPrimitiveKind.Offset } terminal
+            && HasFractionalOffset(terminal, map);
+        bool plansStoredInput = retainsInput && context.SourceBounds is not null
+            && resource.Primitives.Items[final.Index].Input.Index >= 0;
+        using RenderBudget.BudgetReservation owner = budget.Reserve((plansStoredInput ? 3 : 2) * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count), SvgMemoryCategory.Temporary);
         SvgPaintBounds[] regions = new SvgPaintBounds[count], requests = new SvgPaintBounds[count];
-        return PrepareRequests(resource, map, context, requested, regions, requests, Span<SvgPaintBounds>.Empty, token);
+        SvgPaintBounds source = PrepareRequests(resource, map, context, requested, regions, requests, Span<SvgPaintBounds>.Empty, token);
+        if (retainsInput)
+        {
+            SvgFilterInput input = resource.Primitives.Items[final.Index].Input;
+            SvgPaintBounds requestedInput = input.Index < 0 ? source : requests[input.Index];
+            if (context.SourceBounds is {} sourceHint)
+            {
+                SvgPaintBounds extent = sourceHint;
+                if (plansStoredInput)
+                {
+                    SvgPaintBounds[] possible = new SvgPaintBounds[count];
+                    PrepareOutputBounds(resource, map, sourceHint, SvgFilterBoundsKind.StoredImage, regions, possible,
+                        Span<SvgFilterImageStorage>.Empty, token);
+                    extent = possible[input.Index];
+                }
+                requestedInput = new(MathF.Max(requestedInput.Left, extent.Left), MathF.Max(requestedInput.Top, extent.Top),
+                    MathF.Min(requestedInput.Right, extent.Right), MathF.Min(requestedInput.Bottom, extent.Bottom));
+            }
+            if (requestedInput.Right > requestedInput.Left && requestedInput.Bottom > requestedInput.Top) retainedInput = requestedInput;
+        }
+        return source;
+    }
+
+    // Authored distances retain this distinction before native matrix concatenation.
+    // Pure setup owns no storage; callers keep finite admission and cancellation.
+    private static bool HasFractionalOffset(SvgFilterPrimitive primitive, SvgFilterDeviceMap map)
+        => primitive.OffsetX * map.ScaleX != Math.Truncate(primitive.OffsetX * map.ScaleX)
+            || primitive.OffsetY * map.ScaleY != Math.Truncate(primitive.OffsetY * map.ScaleY);
+
+    // Effective-zero blurs and source aliases preserve paint through crops. Other
+    // identity pixel kernels materialize an image. Resources are borrowed; traversal
+    // allocates nothing, observes cancellation and rejects non-earlier aliases.
+    private static SvgFilterInput ResolvePaintSource(SvgFilterResource resource, SvgFilterDeviceMap map,
+        SvgFilterInput reference, CancellationToken token)
+    {
+        while (reference.Index >= 0)
+        {
+            token.ThrowIfCancellationRequested();
+            SvgFilterPrimitive alias = resource.Primitives.Items[reference.Index];
+            SvgFilterInput next;
+            if (alias.Kind == SvgFilterPrimitiveKind.GaussianBlur && (float)Math.Abs(alias.SigmaX * map.ScaleX) <= .03f && (float)Math.Abs(alias.SigmaY * map.ScaleY) <= .03f
+                || alias.Kind == SvgFilterPrimitiveKind.Offset && alias.OffsetX == 0 && alias.OffsetY == 0) next = alias.Input;
+            else if (alias.Kind == SvgFilterPrimitiveKind.Merge && alias.MergeCount == 1) next = resource.MergeInputs.Items[alias.MergeFirst];
+            else break;
+            if (next.Index >= reference.Index) throw new SvgException(SvgErrorCode.MalformedInput, "Filter aliases must refer to earlier results.");
+            reference = next;
+        }
+        return reference;
     }
 
     // Plans each node's requested output in the same grid as primitive regions.
@@ -720,8 +782,7 @@ internal static class SvgFilterPlayback
                     nearestSampling = !aligned;
                     if (index == finalPaintIndex && (directSource || primitive.Input.Index >= 0 && !uniform[primitive.Input.Index].Known)
                         && map.Regions is { DeferFinalOffset: true } && !aligned
-                        && (primitive.OffsetX * map.ScaleX != Math.Truncate(primitive.OffsetX * map.ScaleX)
-                            || primitive.OffsetY * map.ScaleY != Math.Truncate(primitive.OffsetY * map.ScaleY)))
+                        && HasFractionalOffset(primitive, map))
                     {
                         // Fractional nearest transforms retain their source until the
                         // affine draw. Integer-aligned outputs use the ordinary stored
@@ -1070,25 +1131,8 @@ internal static class SvgFilterPlayback
             => new(paint.Color.Red / 255f * paint.Alpha, paint.Color.Green / 255f * paint.Alpha,
                 paint.Color.Blue / 255f * paint.Alpha, paint.Alpha);
 
-        // Effective-zero blurs and source aliases preserve the dynamic source's
-        // paint path through crops. Other identity pixel kernels materialize an image.
         SvgFilterInput ResolvePaintSource(SvgFilterInput reference)
-        {
-            while (reference.Index >= 0)
-            {
-                token.ThrowIfCancellationRequested();
-                SvgFilterPrimitive alias = resource.Primitives.Items[reference.Index];
-
-                SvgFilterInput next;
-                if (alias.Kind == SvgFilterPrimitiveKind.GaussianBlur && (float)Math.Abs(alias.SigmaX * map.ScaleX) <= .03f && (float)Math.Abs(alias.SigmaY * map.ScaleY) <= .03f
-                    || alias.Kind == SvgFilterPrimitiveKind.Offset && alias.OffsetX == 0 && alias.OffsetY == 0) next = alias.Input;
-                else if (alias.Kind == SvgFilterPrimitiveKind.Merge && alias.MergeCount == 1) next = resource.MergeInputs.Items[alias.MergeFirst];
-                else break;
-                if (next.Index >= reference.Index) throw new SvgException(SvgErrorCode.MalformedInput, "Filter aliases must refer to earlier results.");
-                reference = next;
-            }
-            return reference;
-        }
+            => SvgFilterPlayback.ResolvePaintSource(resource, map, reference, token);
 
         // A retained alpha filter follows compatible sampling transforms. Two
         // nontrivial nearest transforms resolve the first image, consuming its

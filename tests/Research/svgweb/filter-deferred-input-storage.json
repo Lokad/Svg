@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "393877d39c4522032fb74b0d62319c598d4891ed",
+  "status": "Deferred input storage CLOSED; current filter milestone qualified. Independent Windows DejaVu authority and W1 static gaps remain open.",
+  "scope": "Keep a deferred offset input view independently of the final output allocation, including terminal paint aliases.",
+  "implementation": [
+    "../../../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
+    "../../../src/Lokad.Svg/SvgConverter.cs"
+  ],
+  "sharedModel": [
+    "Request planning and playback share alias resolution and fractional-distance eligibility.",
+    "Back-propagated input demand is intersected with the possible input image, never the whole filter region.",
+    "The existing affine buffer includes both the output and the retained input view. Native bitmap origins and sampling formulas stay unchanged.",
+    "Optional bounds scratch is budgeted in the same scope and released on all exits. No new pixel owner or public API."
+  ],
+  "mechanisms": {
+    "test": "../../Lokad.Svg.Tests/SvgFilterImageStorageTests.cs",
+    "newCases": 7,
+    "roles": [
+      "Positive and negative offsets",
+      "Terminal one-input merge and effective-zero blur aliases",
+      "Integer stored offsets and empty views",
+      "Large filter region constrained by a small possible image"
+    ],
+    "nativeRequestRule": "SkBlurImageFilter input bounds retain ceil(3*sigma) even for effective-zero paint aliases."
+  },
+  "canonical": {
+    "source": "../filter-source-opacity/inputs/deferred-input-storage.svg",
+    "manifest": "../filter-source-opacity/capture.json",
+    "test": "../../Lokad.Svg.VisualTests/SvgFilterSourceOpacityReferenceTests.cs",
+    "renderingPaths": 1,
+    "beforeChangedPixelsPerHost": 58,
+    "afterChangedPixelsPerHost": 0,
+    "freshNativeCapturesPerHost": 3,
+    "referencesRewritten": 0,
+    "apiOrOwnershipMatrixCasesAdded": 0
+  },
+  "affectedValidation": {
+    "windows": {
+      "core": {
+        "passed": 1865,
+        "failed": 0,
+        "seconds": 14.42553270002827,
+        "librarySha256": "77f286f81c791d27d4d7f597808dd01513923c5c1186ef8a3186c3e55de0b95b"
+      },
+      "native": {
+        "passed": 7858,
+        "failed": 0,
+        "seconds": 21.392643800005317,
+        "librarySha256": "77f286f81c791d27d4d7f597808dd01513923c5c1186ef8a3186c3e55de0b95b"
+      }
+    },
+    "linux": {
+      "core": {
+        "passed": 1865,
+        "failed": 0,
+        "seconds": 16.078430758000003,
+        "librarySha256": "77f286f81c791d27d4d7f597808dd01513923c5c1186ef8a3186c3e55de0b95b"
+      },
+      "native": {
+        "passed": 7858,
+        "failed": 0,
+        "seconds": 41.048355875,
+        "librarySha256": "77f286f81c791d27d4d7f597808dd01513923c5c1186ef8a3186c3e55de0b95b"
+      }
+    }
+  },
+  "exploratoryWindowsControls": [
+    {
+      "id": "negative-x",
+      "sourceSha256": "2536eb0b280fcbbd13b8d8844e43df076799a2c0342100817c1434d50a501598",
+      "before": {
+        "changed": 59,
+        "alpha": 59,
+        "maximum": 255,
+        "total": 18424
+      },
+      "after": {
+        "changed": 0,
+        "alpha": 0,
+        "maximum": 0,
+        "total": 0
+      },
+      "changes": {
+        "rectX": 47.25,
+        "dx": -2.25,
+        "dy": -1.5
+      }
+    },
+    {
+      "id": "positive-y",
+      "sourceSha256": "af236623f94da8d2bdbab1920e5f46ade1e41f489943afeed5c6265ce57bc982",
+      "before": {
+        "changed": 127,
+        "alpha": 127,
+        "maximum": 255,
+        "total": 39783
+      },
+      "after": {
+        "changed": 0,
+        "alpha": 0,
+        "maximum": 0,
+        "total": 0
+      },
+      "changes": {
+        "rectX": 30,
+        "rectY": 8.25,
+        "stdDeviation": [
+          0.75,
+          1.25
+        ],
+        "dx": 1.5,
+        "dy": 2.25
+      }
+    },
+    {
+      "id": "negative-y",
+      "sourceSha256": "d9b886aa7801595f30132d83b2effdae7817cfb526f7f90ba7cba452b16d2752",
+      "before": {
+        "changed": 128,
+        "alpha": 128,
+        "maximum": 255,
+        "total": 39611
+      },
+      "after": {
+        "changed": 0,
+        "alpha": 0,
+        "maximum": 0,
+        "total": 0
+      },
+      "changes": {
+        "rectX": 30,
+        "rectY": 56.25,
+        "stdDeviation": [
+          0.75,
+          1.25
+        ],
+        "dx": -1.5,
+        "dy": -2.25
+      }
+    },
+    {
+      "id": "merge-alias",
+      "sourceSha256": "ed5403f349a58157cffdd556f5f3555ff415c7efe36a46de6569e7680bd4cd5b",
+      "before": {
+        "changed": 58,
+        "alpha": 58,
+        "maximum": 255,
+        "total": 17029
+      },
+      "after": {
+        "changed": 0,
+        "alpha": 0,
+        "maximum": 0,
+        "total": 0
+      },
+      "changes": {
+        "offsetResult": "shift",
+        "tail": "single merge of shift"
+      }
+    },
+    {
+      "id": "blur-alias",
+      "sourceSha256": "685394edfaffc532ae3edb61cc07ff0cc1bd2f7335ab9826c86f635aee7de441",
+      "before": {
+        "changed": 58,
+        "alpha": 58,
+        "maximum": 255,
+        "total": 17029
+      },
+      "after": {
+        "changed": 0,
+        "alpha": 0,
+        "maximum": 0,
+        "total": 0
+      },
+      "changes": {
+        "offsetResult": "shift",
+        "tail": "zero Gaussian blur of shift"
+      }
+    },
+    {
+      "id": "linear-rgb",
+      "sourceSha256": "09598949283abaac78072ac69fa849c6e6ac156c1d94784a1d7189060c091fa9",
+      "before": {
+        "changed": 54,
+        "alpha": 54,
+        "maximum": 128,
+        "total": 12117
+      },
+      "after": {
+        "changed": 0,
+        "alpha": 0,
+        "maximum": 0,
+        "total": 0
+      },
+      "changes": {
+        "colorInterpolationFilters": "linearRGB"
+      }
+    }
+  ],
+  "remaining": "W1 static-state gaps and the independent Windows DejaVu baseline authority question remain open.",
+  "validation": {
+    "windows": {
+      "net11Core": {
+        "passed": 36265,
+        "failed": 0,
+        "seconds": 73.01434149988927,
+        "librarySha256": "77f286f81c791d27d4d7f597808dd01513923c5c1186ef8a3186c3e55de0b95b"
+      },
+      "net11Native": {
+        "passed": 46503,
+        "failed": 1,
+        "seconds": 93.94026440009475,
+        "librarySha256": "77f286f81c791d27d4d7f597808dd01513923c5c1186ef8a3186c3e55de0b95b"
+      },
+      "net10AffectedCore": {
+        "passed": 45,
+        "failed": 0,
+        "seconds": 10.453883499838412,
+        "librarySha256": "ae2a2f419475ebd0f62c76b9e356624fcb6b86891c15a392bf7f4d91ad8b7c3b"
+      },
+      "net10AffectedNative": {
+        "passed": 19,
+        "failed": 0,
+        "seconds": 8.19456550013274,
+        "librarySha256": "ae2a2f419475ebd0f62c76b9e356624fcb6b86891c15a392bf7f4d91ad8b7c3b"
+      },
+      "installedPackage": {
+        "targets": [
+          "net11.0",
+          "net10.0"
+        ],
+        "passed": true,
+        "seconds": 8.911894500022754
+      },
+      "wholeSuiteGreen": false
+    },
+    "linux": {
+      "net11Core": {
+        "passed": 36265,
+        "failed": 0,
+        "seconds": 85.706954216,
+        "librarySha256": "77f286f81c791d27d4d7f597808dd01513923c5c1186ef8a3186c3e55de0b95b"
+      },
+      "net11Native": {
+        "passed": 46504,
+        "failed": 0,
+        "seconds": 261.198493627,
+        "librarySha256": "77f286f81c791d27d4d7f597808dd01513923c5c1186ef8a3186c3e55de0b95b"
+      },
+      "net10AffectedCore": {
+        "passed": 45,
+        "failed": 0,
+        "seconds": 10.704010053000005,
+        "librarySha256": "ae2a2f419475ebd0f62c76b9e356624fcb6b86891c15a392bf7f4d91ad8b7c3b"
+      },
+      "net10AffectedNative": {
+        "passed": 19,
+        "failed": 0,
+        "seconds": 8.875288376,
+        "librarySha256": "ae2a2f419475ebd0f62c76b9e356624fcb6b86891c15a392bf7f4d91ad8b7c3b"
+      },
+      "installedPackage": {
+        "targets": [
+          "net11.0",
+          "net10.0"
+        ],
+        "passed": true,
+        "seconds": 57.509129900019616
+      },
+      "wholeSuiteGreen": true
+    }
+  },
+  "originals": {
+    "files": 204,
+    "renderedExactPerHost": 155,
+    "unsupportedPerHost": 46,
+    "malformedPerHost": 3,
+    "renderedPngFileHashesVerifiedUnchangedPerHost": 155,
+    "diagnosticsAndDimensionsUnchanged": true,
+    "sourceSvgFilesRetained": 0
+  },
+  "qualificationTimingNote": "Milestone suites ran concurrently with original replay and package checks; wall times are not isolated performance benchmarks.",
+  "exploratoryControlsSource": "Each control recomposes the committed canonical source with the listed attribute changes; exploratory cases do not duplicate the canonical fixture bank."
+}

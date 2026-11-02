@@ -947,6 +947,82 @@
         }
       },
       "qualification": "../svgweb/filter-materialized-subsets.json"
+    },
+    {
+      "id": "deferred-input-storage",
+      "input": "inputs/deferred-input-storage.svg",
+      "inputSha256": "16fd9c87b85b497fc104d788a4240c7a9cb6344b157852df87f228d13043721e",
+      "width": 144,
+      "height": 108,
+      "logicalImageViewport": [
+        144,
+        108
+      ],
+      "platforms": {
+        "windows": {
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "712d2aab4a680c275d818bd84207563d278b0eef26e57501b15f5ef51de726cb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "712d2aab4a680c275d818bd84207563d278b0eef26e57501b15f5ef51de726cb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "712d2aab4a680c275d818bd84207563d278b0eef26e57501b15f5ef51de726cb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "712d2aab4a680c275d818bd84207563d278b0eef26e57501b15f5ef51de726cb",
+          "reference": "references/deferred-input-storage.png"
+        },
+        "linux": {
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "712d2aab4a680c275d818bd84207563d278b0eef26e57501b15f5ef51de726cb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "712d2aab4a680c275d818bd84207563d278b0eef26e57501b15f5ef51de726cb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "712d2aab4a680c275d818bd84207563d278b0eef26e57501b15f5ef51de726cb",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "referenceSha256": "712d2aab4a680c275d818bd84207563d278b0eef26e57501b15f5ef51de726cb",
+          "reference": "references/deferred-input-storage.png"
+        }
+      },
+      "status": "candidate-qualified",
+      "sourceBaseline": "393877d39c4522032fb74b0d62319c598d4891ed",
+      "baseline": {
+        "windows": {
+          "changedPixels": 58,
+          "alphaChangedPixels": 58,
+          "maximumError": 255,
+          "totalChannelError": 17029,
+          "librarySha256": "630c5454de2af6566e1b38578b12c55532cdc0de4da6f6cf5835443b1c295a1d"
+        },
+        "linux": {
+          "changedPixels": 58,
+          "alphaChangedPixels": 58,
+          "maximumError": 255,
+          "totalChannelError": 17029,
+          "librarySha256": "630c5454de2af6566e1b38578b12c55532cdc0de4da6f6cf5835443b1c295a1d"
+        }
+      },
+      "qualification": "../svgweb/filter-deferred-input-storage.json"
     }
   ]
 }

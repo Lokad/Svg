@@ -7,6 +7,70 @@ public sealed class SvgFilterImageStorageTests
 {
     [Theory]
     [Trait("Layer", "Mechanism")]
+    [InlineData(2.25, 1.5, "", 3, 4, 8, 9)]
+    [InlineData(-2.25, -1.5, "", 8, 7, 13, 12)]
+    [InlineData(2.25, 0, "<feMerge><feMergeNode in='shift'/></feMerge>", 3, 6, 8, 10)]
+    // Native input planning retains ceil(3*sigma) even for an effective-zero paint alias.
+    [InlineData(0, -1.5, "<feGaussianBlur stdDeviation='.02'/>", 5, 6, 11, 13)]
+    public void Fractional_offset_retains_the_requested_input_view_through_aliases(double dx, double dy,
+        string suffix, float left, float top, float right, float bottom)
+    {
+        string x = dx.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+        string y = dy.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+        RenderBudget parser = new(new HostMemoryBudget(1_000_000)), scratch = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot root = Parse("<feGaussianBlur stdDeviation='1.25 .75'/><feOffset dx='" + x
+            + "' dy='" + y + "' result='shift'/>" + suffix, parser))
+        {
+            SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(16, 16), new(-10_000, -10_000, 10_000, 10_000))
+            { SourceBounds = new(4, 4, 12, 12) };
+            SvgFilterPlayback.RequiredSourceBounds(Resource(root), new(1, 1), context, new(6, 6, 10, 10),
+                scratch, CancellationToken.None, out SvgPaintBounds? retained);
+            Assert.Equal(new SvgPaintBounds(left, top, right, bottom), retained);
+            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData(2, -1, 6, 6, 10, 10)]
+    [InlineData(2.25, 1.5, -8, -8, -4, -4)]
+    public void Stored_offsets_and_empty_input_views_need_no_retained_image(double dx, double dy,
+        float left, float top, float right, float bottom)
+    {
+        string x = dx.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+        string y = dy.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+        RenderBudget parser = new(new HostMemoryBudget(1_000_000)), scratch = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot root = Parse("<feGaussianBlur stdDeviation='1.25 .75'/><feOffset dx='" + x + "' dy='" + y + "'/>", parser))
+        {
+            SvgFilterRegionContext context = Context(false) with { SourceBounds = new(4, 4, 12, 12) };
+            SvgFilterPlayback.RequiredSourceBounds(Resource(root), new(1, 1), context, new(left, top, right, bottom),
+                scratch, CancellationToken.None, out SvgPaintBounds? retained);
+            Assert.Null(retained);
+            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void Retained_storage_is_bounded_by_the_input_image_inside_a_large_filter_region()
+    {
+        RenderBudget parser = new(new HostMemoryBudget(1_000_000)), scratch = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot root = Parse("<feGaussianBlur stdDeviation='1.25 .75'/><feOffset dx='2.25' dy='1.5'/>", parser))
+        {
+            SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(16, 16), new(-10_000, -10_000, 10_000, 10_000))
+            { SourceBounds = new(4, 4, 12, 12) };
+            SvgFilterPlayback.RequiredSourceBounds(Resource(root), new(1, 1), context, new(-5_000, -5_000, 5_000, 5_000),
+                scratch, CancellationToken.None, out SvgPaintBounds? retained);
+            Assert.Equal(new SvgPaintBounds(0, 1, 16, 15), retained);
+            Assert.Equal(0, scratch.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("<feOffset dx='0' dy='0'/>", true, "Deferred")]
     [InlineData("<feGaussianBlur stdDeviation='0'/>", true, "Deferred")]
     [InlineData("<feGaussianBlur stdDeviation='.5'/>", false, "InitializedPadding")]

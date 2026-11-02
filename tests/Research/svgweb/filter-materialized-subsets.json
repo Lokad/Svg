@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "47337e98aad30a5f54af99a4113a7f54f546f5c5",
-  "status": "Materialized-subset origin fixed; recording bounds closed separately; deferred crop storage remains open.",
+  "status": "Materialized-subset origin and recording/storage follow-ups CLOSED; independent Windows DejaVu authority remains open.",
   "mechanism": "Materialized graph outputs own integer texel enclosures. Fractional output requests and virtual flood bounds remain separate; a later nearest offset must not reuse a fractional crop as its stored image origin.",
   "production": "../../../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
   "mechanismTest": "../../Lokad.Svg.Tests/SvgFilterOutputRequestTests.cs",
@@ -51,9 +51,10 @@
     }
   },
   "knownRemaining": {
-    "scope": "Deferred crop storage and the independent Windows DejaVu authority question remain open."
+    "scope": "The independent Windows DejaVu authority question and W1 static-state gaps remain open."
   },
   "subsequentClosure": {
-    "suppliedFontSource": "filter-recording-bounds.json"
+    "suppliedFontSource": "filter-recording-bounds.json",
+    "deferredCropStorage": "filter-deferred-input-storage.json"
   }
 }

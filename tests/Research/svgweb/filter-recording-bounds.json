@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "326b71e402e28b4b7f4b0362af9139d8164db30a",
-  "status": "Source recording bounds CLOSED; remaining deferred crop storage and Windows DejaVu authority stay open.",
+  "status": "Source recording bounds CLOSED; deferred crop storage closed separately. Independent Windows DejaVu authority remains open.",
   "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
   "sharedCause": "A source traversal computed font recording layout, then preferred the filter binding paint enclosure. Mapping a scene ink rectangle back to parameter coordinates chooses a different bitmap origin. Source recording bounds now win; path strokes use retained local visual extents before scene narrowing.",
   "recordingAndInkRemainSeparate": true,
@@ -140,7 +140,9 @@
     "hostedSvgBodiesRetained": 0
   },
   "remaining": {
-    "deferredCropStorage": "Retained intermediate images can extend outside the terminal output allocation. Adjacent crop controls remain under investigation; full filter milestone stays open.",
     "windowsDejaVu": "One existing frozen-reference authority conflict; exact reference and assertion preserved."
+  },
+  "subsequentClosure": {
+    "deferredCropStorage": "filter-deferred-input-storage.json"
   }
 }

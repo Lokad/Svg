@@ -1268,8 +1268,10 @@ public static partial class SvgConverter
                     desired = desired.Map(new(inverse.ScaleX, inverse.SkewY, inverse.SkewX, inverse.ScaleY, inverse.TranslateX, inverse.TranslateY), cancellationToken);
                     bool deferredSource = resource.Primitives.Items.Length > 0 && resource.Primitives.Items[^1].Kind == SvgFilterPrimitiveKind.Offset
                         && resource.Primitives.Items[^1].Input.Index < 0;
+                    SvgPaintBounds? retainedInput;
                     {
-                        SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, distances, context, desired, budget, cancellationToken);
+                        SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, distances, context with { SourceBounds = nativeSource }, desired,
+                            budget, cancellationToken, out retainedInput);
                         if (deferredSource || needed.Right > needed.Left && needed.Bottom > needed.Top)
                         {
                             nativeSource = new(MathF.Max(nativeSource.Left, needed.Left), MathF.Max(nativeSource.Top, needed.Top),
@@ -1288,10 +1290,13 @@ public static partial class SvgConverter
                     right = Math.Max(right, Math.Ceiling(MathF.Min(MathF.Min(layerRegion.Right, nativeImage.Right), desired.Right)));
                     bottom = Math.Max(bottom, Math.Ceiling(MathF.Min(MathF.Min(layerRegion.Bottom, nativeImage.Bottom), desired.Bottom)));
                     if (right <= left || bottom <= top) return;
-                    if (deferredSource)
+                    // A deferred transform replays its input, whose pixels may lie
+                    // outside the final image. Retain that requested view as well.
+                    SvgPaintBounds retainedBounds = deferredSource ? nativeSource : retainedInput ?? default;
+                    if (retainedBounds.Right > retainedBounds.Left && retainedBounds.Bottom > retainedBounds.Top)
                     {
-                        left = Math.Min(left, nativeSource.Left); top = Math.Min(top, nativeSource.Top);
-                        right = Math.Max(right, nativeSource.Right); bottom = Math.Max(bottom, nativeSource.Bottom);
+                        left = Math.Min(left, retainedBounds.Left); top = Math.Min(top, retainedBounds.Top);
+                        right = Math.Max(right, retainedBounds.Right); bottom = Math.Max(bottom, retainedBounds.Bottom);
                     }
                     double frameWidth = right - left, frameHeight = bottom - top;
                     SvgRenderLimits limits = options.Limits;

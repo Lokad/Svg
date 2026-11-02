@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "86d17519b78fc60178cc121f8cf1e9a91874f556",
-  "status": "Capture/origin and supplied-font recording bounds affected-qualified; deferred crop storage remains open.",
+  "status": "Capture/origin, supplied-font recording bounds and deferred crop storage CLOSED; independent Windows DejaVu authority and W1 static-state gaps remain open.",
   "scope": "Preserve native recording, physical bitmap origins and boundary knowledge across nested, affine and offset filter captures.",
   "sharedModel": [
     "Keep canvas and shader matrix products distinct; prepare recorded drawing before entering a source device.",
@@ -193,6 +193,12 @@
         "linux": 7
       },
       "changedPixelsAfterPerHost": 0,
+      "frozenReferencesUnchanged": true
+    },
+    "deferredCropStorage": {
+      "evidence": "filter-deferred-input-storage.json",
+      "canonicalBeforeChangedPixelsPerHost": 58,
+      "canonicalAfterChangedPixelsPerHost": 0,
       "frozenReferencesUnchanged": true
     }
   }

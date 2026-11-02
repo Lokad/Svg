@@ -271,6 +271,11 @@ in the parent picture's image hint and dither origin; parent capture separately
 includes their filtered output. Rescaled kernels read the captured subset;
 offsets/aliases can retain deferred sampled images until a
 consumer requires pixels.
+Deferred storage includes the input view needed before the offset as well as the
+final output. Request planning limits that view by primitive crops and possible
+image extents; planning and playback share alias resolution.
+[Storage regressions](../tests/Research/svgweb/filter-deferred-input-storage.json)
+protect those bounds without duplicating destination or ownership matrices.
 Source visuals are enclosed in parameter coordinates before graph expansion;
 capture and output image hints are enclosed there again before device placement.
 Path stroke layout visuals stay fractional through child placement and union;

@@ -27,5 +27,10 @@ keeps a fractional filter crop separate from its integer stored bitmap origin.
 Its [mechanism and rendering evidence](../svgweb/filter-materialized-subsets.json)
 protects blur-to-offset replay without fonts or an API matrix.
 
+The [deferred-input control](inputs/deferred-input-storage.svg) keeps a blurred
+input alive where its final offset brings pixels into the output crop. Its
+[storage evidence](../svgweb/filter-deferred-input-storage.json) pairs one canonical
+rendering path with direct request, crop and alias mechanisms.
+
 Use the [capture procedure](../../../tools/README.md#hosted-svgweb-inventory).
 Preserve native reference bytes and exact comparisons.

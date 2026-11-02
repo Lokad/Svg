@@ -310,6 +310,7 @@ for ancestor effects; empty basic shapes and absent images do not enlarge them.
 Clipped strokes retain their original source boxes. Crops of materialized images
 discard transparent-padding assumptions; rotated restoration retains the active
 clip bounds and the sampling colour transfer of zero-effect aliases.
+Final offsets retain earlier image pixels outside the output region when replay needs them.
 Empty tile restoration paints nothing. Image placement retains the owning bitmap's
 sampling phase; enclosing opacity stores restored pixels before paint-alpha modulation.
 Its painted-output bounds determine the sampling origin; source capture retains
