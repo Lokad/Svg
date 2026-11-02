@@ -2040,7 +2040,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan transform='translate(1)'>A</tspan></text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan style='font-size: 13'>A</tspan></text></svg>", null, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><foreignObject width='5' height='5'><text font-family='Unused'>x</text></foreignObject><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><rect id='r' width='5' height='5' fill='red'/></defs><use id='u' href='#r'/><use href='#u'/></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><rect id='r' width='5' height='5' fill='red'/></defs><use id='u' href='#r'/><use href='#u'/></svg>", null, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A😀</text></svg>", SvgErrorCode.UnresolvedResource, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><a href='#x'>A</a></text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><path id='p' d='M0,0 H5'/></defs><text font-family='Example' font-size='100' y='3'><textPath href='#p' method='stretch'>A</textPath></text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
@@ -2082,7 +2082,9 @@ public sealed partial class OpenTypeFontTests
             Assert.Equal(expectedCode, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None)).ErrorCode);
         else
         {
-            byte[] inline = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
+            byte[] inline = expectedRequests.Length == 0
+                ? "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect width='5' height='5' fill='red'/></svg>"u8.ToArray()
+                : "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
             Assert.Equal(SvgConverter.ConvertToPng(inline, options, CancellationToken.None).ToArray(),
                 SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
         }

@@ -22,15 +22,9 @@ public sealed class SvgPointListCoverageTests
     public void Point_lists_keep_authored_coverage_paint_and_placement(string shape, string consumer, string paint, string map, bool stroke, double scale)
     {
         // Actual SVG point/path pairs are independently calibrated, including
-        // output-only scaling. Nested pattern paints retain their restriction.
+        // output-only scaling and nested pattern consumers.
         var (path, points) = CoverageInputs(shape, consumer, paint, map, stroke);
         SvgRenderOptions options = new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default);
-        if (consumer == "pattern" && paint == "url(#p)")
-        {
-            foreach (byte[] input in new[] { points, path })
-                Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None)).ErrorCode);
-            return;
-        }
         SvgRasterTestHelper.AssertPixelsEqual(path, points, options);
     }
 
