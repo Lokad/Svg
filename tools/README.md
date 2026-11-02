@@ -335,6 +335,10 @@ dependency reproduces all five original CC0 font hashes:
 python -B tests/Research/windows-small-strikes/derive.py --output-directory artifacts/research/small-strikes
 ```
 
+The [legacy-declaration control](../tests/Research/legacy-font-declarations/README.md)
+borrows that program. With FontProbe, use its `font-pack.json` and
+`--font-root tests/Research/windows-small-strikes`; no additional font is generated.
+
 For original font comparisons, match initial generic-family selections as well as
 authored named families; the library's legacy last resort and browser ambient serif
 can select different programs. Preserve both input hashes and catalog bindings.

@@ -1,0 +1,100 @@
+{
+  "scope": "Owned inactive SVG1.1 font declaration versus explicit host-selected TrueType. Exaggerated glyphs and900/italic descriptors remain dormant.",
+  "width": 64,
+  "height": 48,
+  "browser": "Chrome153.0.8010.52",
+  "input": "declaration.svg",
+  "inputSha256": "6d2f507a8056849c5c1d16d5020404a8eadfb4456ed3d85b0472a8ccd357a586",
+  "font": "../windows-small-strikes/fonts/SmallNatural.ttf",
+  "fontSha256": "488bd27049efdc682b6c34fa41abd021a9200c226dc86d3a7afa384e1df7fb52",
+  "nativeSourceSha256": "0efca87871aefebffc20fd93c562e267e38de3aec568d0614975ad1977ed38f8",
+  "nativeRecipe": "Embed the unchanged borrowed CC0 program as CSS@font-face ProbeTiny normal400. No glyph/style/descriptor change to the SVG.",
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "4fd47a6cd6755246946cc72fb84885635ba12052b26c2fa2958fe8742a33a9d7",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "4fd47a6cd6755246946cc72fb84885635ba12052b26c2fa2958fe8742a33a9d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "4fd47a6cd6755246946cc72fb84885635ba12052b26c2fa2958fe8742a33a9d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "4fd47a6cd6755246946cc72fb84885635ba12052b26c2fa2958fe8742a33a9d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "controls": {
+        "withoutLegacyDefinition": {
+          "inputSha256": "84d860922d10dc8a0a2e4bc8fa10d6c83473c0b4eaac7a7fc0a9023620126e19",
+          "pngSha256": "4fd47a6cd6755246946cc72fb84885635ba12052b26c2fa2958fe8742a33a9d7",
+          "changedPixels": 0,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        "withoutHostProgram": {
+          "inputSha256": "6d2f507a8056849c5c1d16d5020404a8eadfb4456ed3d85b0472a8ccd357a586",
+          "pngSha256": "b87a6a6d493eba67764f3149f72e1749dffebd6cbce2bda98ee4d04413b01756",
+          "changedPixels": 48,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      }
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "7a0f58044bf61007869ebbc7d8975692ad0abaacbf146f3b75f217d616cad13d",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "7a0f58044bf61007869ebbc7d8975692ad0abaacbf146f3b75f217d616cad13d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "7a0f58044bf61007869ebbc7d8975692ad0abaacbf146f3b75f217d616cad13d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "7a0f58044bf61007869ebbc7d8975692ad0abaacbf146f3b75f217d616cad13d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "controls": {
+        "withoutLegacyDefinition": {
+          "inputSha256": "84d860922d10dc8a0a2e4bc8fa10d6c83473c0b4eaac7a7fc0a9023620126e19",
+          "pngSha256": "7a0f58044bf61007869ebbc7d8975692ad0abaacbf146f3b75f217d616cad13d",
+          "changedPixels": 0,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        "withoutHostProgram": {
+          "inputSha256": "6d2f507a8056849c5c1d16d5020404a8eadfb4456ed3d85b0472a8ccd357a586",
+          "pngSha256": "a0b27f0be2ffe34acc8f37adb44613b481193d107eff81ab25297c502da8e461",
+          "changedPixels": 22,
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      }
+    }
+  }
+}

@@ -17,9 +17,11 @@ whole-corpus acceptance remains open.
 The [supplied-program inventory](supplied-original-contexts.json) pins all 19 font
 contexts and three stable healthy captures per host. The [current raster-strike correction](windows-small-strikes.json)
 closes twelve complete originals, including blocks_game, helloworld, mysvg and snake,
-in those declared contexts. All nineteen supplied contexts are exact on both hosts;
-seven legacy SVG-font originals remain open because transported programs do not
-close legacy declaration semantics.
+in those declared contexts. All nineteen supplied contexts are exact on both hosts.
+The [legacy declaration review](legacy-font-declarations.json) accounts for the
+other seven: embedded font definitions are dormant in the current image contract.
+Historical SVG 1.1 inline-font rendering remains outside the implemented font formats;
+transported programs do not establish support for it.
 
 Resolve gaps by mechanism, preserving original-to-control mappings and independent
 references. A successful render, ambient font substitution or equal images alone
@@ -58,7 +60,7 @@ current inventory above governs overall status.
 | Windows movement compensation | [Movement state and rounding](windows-movement.json). Component-rounded compensation, explicit copy state, signed horizontal division and exact-ratio placement share one movement path. Eight direct mechanisms and one canonical original-font image protect independent platform behavior. Scoped matched Arial originals and all 173 diagnostic coordinates agree. |
 | Stack projection words | [Stack-vector loading](windows-stack-vectors.json). Preserve supplied Windows F2Dot14 values across query/load and following movement, while keeping line normalization, classic normalization and freedom independent. One canonical original-font image retains both platforms. |
 | Conditional hint functions | [Native recognition](windows-conditional-shift.json), [shared target eligibility](windows-conditional-targets.json). Conditional shifts and ordinary deltas share the vertical/composite target predicate while keeping their compatibility policies. Direct coordinates protect touch, IUP, loop, waiver and vector distinctions; two complementary canonical controls retain platform behavior. The complete matched-font snake original is exact. |
-| Font declarations and supplied programs | [Font contexts](font-contexts.json), [shared program model](shared-font-model.json), [original context inventory](supplied-original-contexts.json), [current outcomes](windows-small-strikes.json). Inline sizes retain their source context; GPOS extensions share payload resolution and freedom-copy hints preserve VM state. Explicit generic and named bindings close twelve complete originals; seven legacy SVG-font originals remain open. |
+| Font declarations and supplied programs | [Font contexts](font-contexts.json), [shared program model](shared-font-model.json), [original context inventory](supplied-original-contexts.json), [current outcomes](windows-small-strikes.json), [legacy declaration boundary](legacy-font-declarations.json). All nineteen supplied contexts are exact. Twelve ordinary originals are closed; the seven legacy documents retain explicit historical-format limitations, with their dormant declarations independently checked. |
 | Small Windows raster strikes | [Program and scanner boundaries](windows-small-strikes.json), [owned controls](../windows-small-strikes/README.md). Maximum-axis program admission and vertical scanner thresholds keep their separate size decisions. Scaled children retain execution under an admitted parent, and instruction-free parents retain their prepared scanner state. Fifty raw-mask mechanisms and one canonical native image close the tiny-serif discrepancy. |
 | Glyph recording and shader drawing | [Position recording](glyph-recording.json), [separate drawing binding](glyph-drawing-binding.json), [own controls](font-stages/capture.json). Filled glyphs share font recording while shaders retain their drawing map; layout, tangents and stroke semantics stay independent. Flat, root, group and curved-path graphs remain separate, with one canonical call per source. |
 | Light-fitted glyph edges | [Alignment-zone fitting](latin-blue-zone-fitting.json). Zone matching and completed placement have separate state. Contour-order linked fitting preserves interpolation anchors and shared-edge updates. Two direct topology regressions protect the cause; the remaining Windows coverage differences stay separate. |

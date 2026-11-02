@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="48">
+  <defs>
+    <font id="dormant" horiz-adv-x="10000">
+      <font-face font-family="ProbeTiny" font-weight="900" font-style="italic" units-per-em="16" ascent="10000">
+        <font-face-src><font-face-uri xlink:href="https://example.invalid/unused.ttf"/></font-face-src>
+      </font-face>
+      <missing-glyph d="M0 0H10000V10000H0Z"/>
+      <glyph unicode="A" horiz-adv-x="10000" d="M0 0H10000V10000H0Z"/>
+      <glyph unicode="B" horiz-adv-x="10000" d="M0 0H10000V10000H0Z"/>
+    </font>
+  </defs>
+  <rect x="4" y="4" width="8" height="4" fill="#2468ac"/>
+  <text x="24" y="32" font-family="ProbeTiny" font-size="8">A</text>
+</svg>

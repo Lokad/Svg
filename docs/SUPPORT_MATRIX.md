@@ -371,6 +371,12 @@ glyphs fail; conversion neither discovers fonts nor synthesizes styles.
 The opt-in [HTTP resolver](HTTP_FONTS.md) supplies a verified shared cache from a
 host-selected pack root; it adds no SVG-directed fetching or ambient font discovery.
 
+Legacy SVG `font`/`font-face` definitions inside `defs` are dormant: they do not
+register faces, fetch programs or change the live text request. Text still needs
+the host's supplied TrueType program. The removed SVG 1.1 font format is not an
+implemented font source; [declaration controls](../tests/Research/legacy-font-declarations/README.md)
+keep this boundary separate from supplied-program rendering.
+
 | Area | Accepted boundary |
 | --- | --- |
 | Programs | Standalone static TrueType, face index 0, composites and bounded hinting; unsupported executed instructions fail. |

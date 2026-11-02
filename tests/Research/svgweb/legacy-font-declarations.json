@@ -1,0 +1,849 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "dbca3b4ad2a5810f272b095ebae6ffbe5c11482d",
+  "status": "Declaration/support accounting is closed for all seven under the existing host-supplied TrueType image contract. Historical SVG1.1 inline-font rendering remains unsupported and is not counted as implemented.",
+  "scope": {
+    "productionChanges": 0,
+    "existingReferencesChanged": 0,
+    "hostedSourceBodiesRetained": 0,
+    "hostedFragmentsRetained": 0,
+    "privateFontBytesDistributed": 0,
+    "newFontBytes": 0,
+    "newRoutineCases": 3,
+    "acceptedOriginalFontOutlinesAndAdvancesChanged": false
+  },
+  "specifications": [
+    {
+      "url": "https://www.w3.org/TR/SVG2/changes.html#fonts",
+      "role": "SVG2 removes the SVG font feature and its font/glyph/font-face elements."
+    },
+    {
+      "url": "https://www.w3.org/TR/SVG11/fonts.html",
+      "role": "Historical inline-font outline/metric semantics, distinct from supplied TrueType binding."
+    }
+  ],
+  "contract": {
+    "support": "../../../docs/SUPPORT_MATRIX.md#text-and-fonts",
+    "rule": "Legacy declarations inside defs do not register a face or acquire their font URI. They do not change the live text family/style/weight. Text requires an explicitly supplied host program; missing programs remain an error.",
+    "scopeMeaning": "This clarifies the existing standalone static TrueType boundary. It does not implement SVG1.1 font rendering, equate similar AOSP outlines, infer styles from filenames, change a source outline or use transformed references to claim historical-format support.",
+    "currentContexts": "All19 complete supplied-program contexts remain exact;12 ordinary originals and7 historically inline-font documents retain their separate support accounting."
+  },
+  "method": {
+    "library": "Canonical supplied FontProbe, unchanged original body plus two RAM-only definition controls. The frozen qualified library is pinned below.",
+    "native": "Pinned Chrome153 on Windows/Linux, both with the same explicit programs and without them. Intact definitions, removed definitions and deliberately exaggerated paths/metrics produce equal output in every corresponding context.",
+    "controls": {
+      "intact": "Unmodified hosted source, verified against its source hash.",
+      "removed": "Remove the one legacy font subtree; leave visible text/styles and external host binding unchanged.",
+      "perturbed": "Replace only legacy glyph paths/advances and em/ascent with exaggerated original rectangle metrics, keeping declaration and text family identity."
+    },
+    "healthyBrowserCaptures": 84,
+    "libraryContexts": 42,
+    "exploratoryCapturesPerOriginalVariant": 1,
+    "referenceAdmission": "The supplied intact PNG hashes match the already admitted triples in supplied-original-contexts.json. New RAM-only controls are exploratory observations; they do not replace references.",
+    "genericEqualImagesRule": "Equal variants are controlled evidence of inactive definitions in this measured context; the7 originals and their distinct explicit bindings are all retained.",
+    "captureHealth": "All84 captures individually require healthy startup, profile cleanup and terminal exit0 before their hashes enter the record."
+  },
+  "originalReview": {
+    "librarySha256": "20a2a5ca3a3acce95aff03fec0e0be045b0138e5db7d1fbd3e3d5f4e5eb699d1",
+    "seconds": 180.2607577999588,
+    "cases": [
+      {
+        "name": "DroidSans-Bold.svg",
+        "sourceSha256": "b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed",
+        "fontDefinitions": 1,
+        "glyphDefinitions": 95,
+        "textNodes": 3,
+        "sourceVariants": {
+          "intact": "b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed",
+          "removed": "2faceaa0f5f58518af8ebeaca4e7fe3766afe2d604e86e0d8caae5f0e2ef2db8",
+          "perturbed": "2dd167b0f8e0956e8ce96b46a4e250b4946fa38f1c5d15087dcff12111798cf2"
+        },
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "1905506cbcab7313c6012c64d1f80f35f69e7e0cf89839a9ea45cfb1b9176092",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "27a1d546b950ade8557671d56a5897eecefc5e1b3dba9e2c71da00009947a4cf",
+                "inputSha256ByVariant": {
+                  "intact": "ea03a2db026943cc1341d1cf19828363e8112af1d0221c3e219d147b4bcaff8b",
+                  "removed": "79955961c8a0e01fe3fa527fb7c87a62dbdaef2db4d9e0a7b1a4da09acea0b61",
+                  "perturbed": "11722cfbc0cda34de635926b060e261aaa6947fdb5cdf082cc2d5da00a985aef"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "63a937e62e9f61b5a8f98cf0282c50d0cf7c4b82fce1b1f463cd6ad9e2fd2264",
+                "inputSha256ByVariant": {
+                  "intact": "b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed",
+                  "removed": "2faceaa0f5f58518af8ebeaca4e7fe3766afe2d604e86e0d8caae5f0e2ef2db8",
+                  "perturbed": "2dd167b0f8e0956e8ce96b46a4e250b4946fa38f1c5d15087dcff12111798cf2"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          },
+          "linux": {
+            "libraryPngSha256": "4fe1f73355bb3cb3a1906ab580b5ac5c3e7505c850aced3e96c92460353da471",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "1124f2c8a55ebb93844fb1ece7de2ca41332a79c965458fe93c668c873ae5a6f",
+                "inputSha256ByVariant": {
+                  "intact": "ea03a2db026943cc1341d1cf19828363e8112af1d0221c3e219d147b4bcaff8b",
+                  "removed": "79955961c8a0e01fe3fa527fb7c87a62dbdaef2db4d9e0a7b1a4da09acea0b61",
+                  "perturbed": "11722cfbc0cda34de635926b060e261aaa6947fdb5cdf082cc2d5da00a985aef"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "17cbf8f1c47b7efd716d1ca63731dda72122b8911a5a2e91a9ab8f4f26fb2464",
+                "inputSha256ByVariant": {
+                  "intact": "b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed",
+                  "removed": "2faceaa0f5f58518af8ebeaca4e7fe3766afe2d604e86e0d8caae5f0e2ef2db8",
+                  "perturbed": "2dd167b0f8e0956e8ce96b46a4e250b4946fa38f1c5d15087dcff12111798cf2"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "DroidSans.svg",
+        "sourceSha256": "258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b",
+        "fontDefinitions": 1,
+        "glyphDefinitions": 95,
+        "textNodes": 4,
+        "sourceVariants": {
+          "intact": "258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b",
+          "removed": "53b9c8c26abc7a3e814ab52838f6984525bda6092f0d777a1a574abf1fbe0a1e",
+          "perturbed": "fb90766c07a3b9e63261e7268cc92dade1c1e8a03d649be322a9cf0247aa1da4"
+        },
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "0dde9aecc62c64c6b363087a570988d5db9d8d6da9ff3d0e980cde42fc0f2714",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "b626b2385dc37d3b796226305d5361b99b352183db0408045cc4e002001424bd",
+                "inputSha256ByVariant": {
+                  "intact": "5aea5bc1bc3975fa4b286990e0484c7dc88d0cf191ff7de3ca822aab4fa2dd68",
+                  "removed": "876f5433dc16cfeed42cb14838d0753a9e0c38b0ae321a161246a2e545bd0797",
+                  "perturbed": "9ef44b60ea4b5ffb314f2015fe1f8e617eea1e80f37798646ee63fd7ff088000"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "63a937e62e9f61b5a8f98cf0282c50d0cf7c4b82fce1b1f463cd6ad9e2fd2264",
+                "inputSha256ByVariant": {
+                  "intact": "258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b",
+                  "removed": "53b9c8c26abc7a3e814ab52838f6984525bda6092f0d777a1a574abf1fbe0a1e",
+                  "perturbed": "fb90766c07a3b9e63261e7268cc92dade1c1e8a03d649be322a9cf0247aa1da4"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          },
+          "linux": {
+            "libraryPngSha256": "19e01136bfceba07813396f3d7d3fee9462aaf8b326e520302bdfd9f876c9744",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "0f11d0e666dad4e603cc191828cb037678ce6d2e876e064ab20eb1309d9eb7ec",
+                "inputSha256ByVariant": {
+                  "intact": "5aea5bc1bc3975fa4b286990e0484c7dc88d0cf191ff7de3ca822aab4fa2dd68",
+                  "removed": "876f5433dc16cfeed42cb14838d0753a9e0c38b0ae321a161246a2e545bd0797",
+                  "perturbed": "9ef44b60ea4b5ffb314f2015fe1f8e617eea1e80f37798646ee63fd7ff088000"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "17cbf8f1c47b7efd716d1ca63731dda72122b8911a5a2e91a9ab8f4f26fb2464",
+                "inputSha256ByVariant": {
+                  "intact": "258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b",
+                  "removed": "53b9c8c26abc7a3e814ab52838f6984525bda6092f0d777a1a574abf1fbe0a1e",
+                  "perturbed": "fb90766c07a3b9e63261e7268cc92dade1c1e8a03d649be322a9cf0247aa1da4"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "DroidSansMono.svg",
+        "sourceSha256": "c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d",
+        "fontDefinitions": 1,
+        "glyphDefinitions": 95,
+        "textNodes": 3,
+        "sourceVariants": {
+          "intact": "c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d",
+          "removed": "306bd643220fdb344b991c4b197fbdeca0018349078341956175dd853e1b4a3d",
+          "perturbed": "f7b823223d102c194a7a67b964fd532fbe9fbfe5e9ed0e939abf98a249ce4b79"
+        },
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "955dba989ccd56f1516eca8d7b9e2a583fd4d9392150da0a4476e64653dccbe5",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "211001fc7ee02c8e6be4b893d5a1c11a50842b580bb1b2e06913c9ee0f940f8e",
+                "inputSha256ByVariant": {
+                  "intact": "81953bf52c7ec3e7e76996060ee380e7ba6eddef1c5ab3c1b210908d54b7366b",
+                  "removed": "bc06433a5b82b888060b984ab823c05bc8788d7ae3f991ae972bca8035ed41d2",
+                  "perturbed": "ec219c07d897956315fe04c07ad9d89d3adb0826ddeacaeb4144258482b9536c"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "63a937e62e9f61b5a8f98cf0282c50d0cf7c4b82fce1b1f463cd6ad9e2fd2264",
+                "inputSha256ByVariant": {
+                  "intact": "c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d",
+                  "removed": "306bd643220fdb344b991c4b197fbdeca0018349078341956175dd853e1b4a3d",
+                  "perturbed": "f7b823223d102c194a7a67b964fd532fbe9fbfe5e9ed0e939abf98a249ce4b79"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          },
+          "linux": {
+            "libraryPngSha256": "7c09529f0897833e02aa27e9485343d004660ac5f8a636dfc5f1fd8efa1cc756",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "2a7959518fad187e60c60db53388c194a6626e73862447f94f778e10b41c622c",
+                "inputSha256ByVariant": {
+                  "intact": "81953bf52c7ec3e7e76996060ee380e7ba6eddef1c5ab3c1b210908d54b7366b",
+                  "removed": "bc06433a5b82b888060b984ab823c05bc8788d7ae3f991ae972bca8035ed41d2",
+                  "perturbed": "ec219c07d897956315fe04c07ad9d89d3adb0826ddeacaeb4144258482b9536c"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "17cbf8f1c47b7efd716d1ca63731dda72122b8911a5a2e91a9ab8f4f26fb2464",
+                "inputSha256ByVariant": {
+                  "intact": "c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d",
+                  "removed": "306bd643220fdb344b991c4b197fbdeca0018349078341956175dd853e1b4a3d",
+                  "perturbed": "f7b823223d102c194a7a67b964fd532fbe9fbfe5e9ed0e939abf98a249ce4b79"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "DroidSerif-Bold.svg",
+        "sourceSha256": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+        "fontDefinitions": 1,
+        "glyphDefinitions": 95,
+        "textNodes": 3,
+        "sourceVariants": {
+          "intact": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+          "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+          "perturbed": "6c74a9385eb4cb297701533e21bc5339fcbf7f1a1fa11b9337786c8900df6e86"
+        },
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "54e9d6ee0fc7c1dbe2b1d601b0170d3f53b370ea64e960e8902f888b63bd98b0",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "ad877cd7fa6fb71f52a31749a3fb383611db2691a859cee71608fd462b3e55e1",
+                "inputSha256ByVariant": {
+                  "intact": "d94d2d67b70689385feeb0e96b6ba168d98c602834b049e2dde88e37b89bdaa3",
+                  "removed": "6b4419d43f4286848e357131b1d64afe28b64398728657c34f08197c01c618d4",
+                  "perturbed": "c9f2950beb268900c6967e33111cbd77c34aba1ce8f873872ece32db4a5a3f7a"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "63a937e62e9f61b5a8f98cf0282c50d0cf7c4b82fce1b1f463cd6ad9e2fd2264",
+                "inputSha256ByVariant": {
+                  "intact": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+                  "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+                  "perturbed": "6c74a9385eb4cb297701533e21bc5339fcbf7f1a1fa11b9337786c8900df6e86"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          },
+          "linux": {
+            "libraryPngSha256": "67f115097ea0555bc44b15481721ba4a1fab6f9be0ea34b0e4d659bafa9738c5",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "7b1ecbd374dbb7c5c4094526005a6b3cd8c22b3d801f239ff746bb7f345dbf42",
+                "inputSha256ByVariant": {
+                  "intact": "d94d2d67b70689385feeb0e96b6ba168d98c602834b049e2dde88e37b89bdaa3",
+                  "removed": "6b4419d43f4286848e357131b1d64afe28b64398728657c34f08197c01c618d4",
+                  "perturbed": "c9f2950beb268900c6967e33111cbd77c34aba1ce8f873872ece32db4a5a3f7a"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "17cbf8f1c47b7efd716d1ca63731dda72122b8911a5a2e91a9ab8f4f26fb2464",
+                "inputSha256ByVariant": {
+                  "intact": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+                  "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+                  "perturbed": "6c74a9385eb4cb297701533e21bc5339fcbf7f1a1fa11b9337786c8900df6e86"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "DroidSerif-BoldItalic.svg",
+        "sourceSha256": "ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0f424f7f259",
+        "fontDefinitions": 1,
+        "glyphDefinitions": 95,
+        "textNodes": 3,
+        "sourceVariants": {
+          "intact": "ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0f424f7f259",
+          "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+          "perturbed": "a50fedb2bf48049db298da4f73bdde818118b784d533a7e008f5e984b6a3e66a"
+        },
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "b5f4a89dda303222f349d5387567fc236954cccdb459c6a59ddb87249066ade6",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "2ac3c6f4c2c8624cf1e3bb8d6cd4bd777c09a97cc547c2b6e7f318a23f166a4e",
+                "inputSha256ByVariant": {
+                  "intact": "e3c283af2ad1dd014d5a4f9ba0b2e2ff070e9be8a89bea6a3b2b26c042b1b55c",
+                  "removed": "c3ac4553dadce98ba96c20e0e47c372258400470ca0cb4257e598564ebd66d57",
+                  "perturbed": "be1370bd6f27d0bb6ddf0fb9154886f99615c7c781ea16937b73f526e4b68a14"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "63a937e62e9f61b5a8f98cf0282c50d0cf7c4b82fce1b1f463cd6ad9e2fd2264",
+                "inputSha256ByVariant": {
+                  "intact": "ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0f424f7f259",
+                  "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+                  "perturbed": "a50fedb2bf48049db298da4f73bdde818118b784d533a7e008f5e984b6a3e66a"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          },
+          "linux": {
+            "libraryPngSha256": "b33d400df43a98950cf7e8645ced094f05f0911dfce92b2c36874625597007cd",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "50accb21da1a53d3591c2336264f1b7083e8fcebdff1344217f541f62fc58870",
+                "inputSha256ByVariant": {
+                  "intact": "e3c283af2ad1dd014d5a4f9ba0b2e2ff070e9be8a89bea6a3b2b26c042b1b55c",
+                  "removed": "c3ac4553dadce98ba96c20e0e47c372258400470ca0cb4257e598564ebd66d57",
+                  "perturbed": "be1370bd6f27d0bb6ddf0fb9154886f99615c7c781ea16937b73f526e4b68a14"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "17cbf8f1c47b7efd716d1ca63731dda72122b8911a5a2e91a9ab8f4f26fb2464",
+                "inputSha256ByVariant": {
+                  "intact": "ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0f424f7f259",
+                  "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+                  "perturbed": "a50fedb2bf48049db298da4f73bdde818118b784d533a7e008f5e984b6a3e66a"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "DroidSerif-Italic.svg",
+        "sourceSha256": "e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73",
+        "fontDefinitions": 1,
+        "glyphDefinitions": 95,
+        "textNodes": 3,
+        "sourceVariants": {
+          "intact": "e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73",
+          "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+          "perturbed": "b0160e651209c40aa1e701ca48fa132b3222a73596d38ced90c58718f3b9493d"
+        },
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "ab4f6e1c7dd352dbd1bcc9fd931bd3eebe9e784d8f2c3e31a02c99b166ce20ca",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "c307b807a93f54ecb5abef13c2ccf30d283c9b01d672ff90a914a4e2208de5ab",
+                "inputSha256ByVariant": {
+                  "intact": "5cd70c7dfff94fb3d56280985f7c8475b4165f3cd2cf36cf34c6dafe0e3c8666",
+                  "removed": "04953e318b7aaf4ae09f5f06f406aae6bfa21d24f78249e8de77335704a2489a",
+                  "perturbed": "b3c542a38e8bd76689c8469eab9e3684282eb39135bc8f4dc78b529ba46f4733"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "63a937e62e9f61b5a8f98cf0282c50d0cf7c4b82fce1b1f463cd6ad9e2fd2264",
+                "inputSha256ByVariant": {
+                  "intact": "e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73",
+                  "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+                  "perturbed": "b0160e651209c40aa1e701ca48fa132b3222a73596d38ced90c58718f3b9493d"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          },
+          "linux": {
+            "libraryPngSha256": "e6e126c3f66a586378e2a2d0842af88d4c003b6b2da7ac21bf75387d2720f90e",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "ce345270482cfc5d8ed9d3c242ce97b178101c862faa0f876a7752437668552f",
+                "inputSha256ByVariant": {
+                  "intact": "5cd70c7dfff94fb3d56280985f7c8475b4165f3cd2cf36cf34c6dafe0e3c8666",
+                  "removed": "04953e318b7aaf4ae09f5f06f406aae6bfa21d24f78249e8de77335704a2489a",
+                  "perturbed": "b3c542a38e8bd76689c8469eab9e3684282eb39135bc8f4dc78b529ba46f4733"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "17cbf8f1c47b7efd716d1ca63731dda72122b8911a5a2e91a9ab8f4f26fb2464",
+                "inputSha256ByVariant": {
+                  "intact": "e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73",
+                  "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+                  "perturbed": "b0160e651209c40aa1e701ca48fa132b3222a73596d38ced90c58718f3b9493d"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "DroidSerif-Regular.svg",
+        "sourceSha256": "451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3",
+        "fontDefinitions": 1,
+        "glyphDefinitions": 95,
+        "textNodes": 3,
+        "sourceVariants": {
+          "intact": "451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3",
+          "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+          "perturbed": "38094af194a9d91128d0c21642cb2b8959c3311d6d6acdbeb00eb399e2f8c57e"
+        },
+        "hosts": {
+          "windows": {
+            "libraryPngSha256": "662e61585560b1ca52f29e08ea7e6a6cc4b4652cb5cfdc69b8f6d63517549358",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "77dbea065f37ca44e7cd9a0ee48dee7e33e53eb1df9f64c2681a749108014e49",
+                "inputSha256ByVariant": {
+                  "intact": "087f1c8929e94e218140d375d9e027a39ecc015e0263a7d61323c33c1a2958cc",
+                  "removed": "e967520d19412e9f4d92f1eb044036e6c22456b4915cbbf80ce3cc34629f8428",
+                  "perturbed": "30ceed60b084a8abd0a3ed5cb674bdb717b4a70ce3adf15eef46ee005f562de1"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "63a937e62e9f61b5a8f98cf0282c50d0cf7c4b82fce1b1f463cd6ad9e2fd2264",
+                "inputSha256ByVariant": {
+                  "intact": "451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3",
+                  "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+                  "perturbed": "38094af194a9d91128d0c21642cb2b8959c3311d6d6acdbeb00eb399e2f8c57e"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          },
+          "linux": {
+            "libraryPngSha256": "eb358b6837ff38ddacb23b23a64c883110109c7554cf7fc75736568203e0a925",
+            "exactLibraryVariants": [
+              "intact",
+              "removed",
+              "perturbed"
+            ],
+            "healthyNativeCaptures": 6,
+            "native": {
+              "supplied": {
+                "pngSha256": "9ab8766ee929db3a35c1b9aba6cb7b2d48880f0e5dc9fd4c2d4d886975807541",
+                "inputSha256ByVariant": {
+                  "intact": "087f1c8929e94e218140d375d9e027a39ecc015e0263a7d61323c33c1a2958cc",
+                  "removed": "e967520d19412e9f4d92f1eb044036e6c22456b4915cbbf80ce3cc34629f8428",
+                  "perturbed": "30ceed60b084a8abd0a3ed5cb674bdb717b4a70ce3adf15eef46ee005f562de1"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ],
+                "libraryPixelExact": true
+              },
+              "ambient": {
+                "pngSha256": "17cbf8f1c47b7efd716d1ca63731dda72122b8911a5a2e91a9ab8f4f26fb2464",
+                "inputSha256ByVariant": {
+                  "intact": "451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3",
+                  "removed": "c724b962bd24c837d638436e24565d1aba598a2a425fafac3f64292594d264c2",
+                  "perturbed": "38094af194a9d91128d0c21642cb2b8959c3311d6d6acdbeb00eb399e2f8c57e"
+                },
+                "exactVariants": [
+                  "intact",
+                  "removed",
+                  "perturbed"
+                ]
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "routineValidation": {
+    "mechanism": "../../Lokad.Svg.Tests/OpenTypeFontTests.LegacyDeclarations.cs",
+    "contract": "../../Lokad.Svg.Tests/OpenTypeFontTests.LegacyDeclarations.cs",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgLegacyFontDeclarationReferenceTests.cs",
+    "source": "../legacy-font-declarations/declaration.svg",
+    "capture": "../legacy-font-declarations/capture.json",
+    "borrowedFont": "../windows-small-strikes/fonts/SmallNatural.ttf",
+    "borrowedFontSha256": "488bd27049efdc682b6c34fa41abd021a9200c226dc86d3a7afa384e1df7fb52",
+    "responsibilities": "One discovery mechanism, one missing-snapshot/prepared host-acquisition contract and one canonical native image. Six existing scan/font image companions remain selected; no fixture/API matrix.",
+    "failingBefore": "No new production bug is claimed. These checks qualify and document existing behavior; the earlier failing-before font regressions and all their references remain unchanged.",
+    "sharedFixtureAssertion": "../../Lokad.Svg.VisualTests/NativeFontFixture.cs",
+    "structure": "One unchanged native fixture assertion is shared by two rendering test classes. Existing6 scan/font regression method identities, reference checks and canonical conversions are preserved."
+  },
+  "qualification": {
+    "status": "Focused mechanism/contract checks and all7 canonical scan/font companions pass on both runtimes and hosts.",
+    "lastFullMilestone": "windows-small-strikes.json",
+    "fullQualification": "Retain the dbca3b4ad source milestone. No production source changed in this declaration/support-accounting pass, so no repeated full-suite/package or exact-head green CI claim.",
+    "defaultOutcomes": "Unchanged production code; retain the full204 replay in windows-small-strikes.json.",
+    "windowsDejaVu": "Independent unchanged75-pixel reference conflict; authority pending. Preserve reference/assertion and never repoll terminal CI41274755136.",
+    "checks": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 2,
+        "seconds": 6.882780499989167,
+        "librarySha256": "5a7e8793851f1dec1b3c5663496da4ca0a57688b318a95d40c19d3dade0ffd79",
+        "testAssemblySha256": "5e242cad2e82b14a1a46ad3d80022bb84ae2848ba7735a1fb415e0458a1b58a7"
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 7,
+        "seconds": 7.720120399957523,
+        "librarySha256": "5a7e8793851f1dec1b3c5663496da4ca0a57688b318a95d40c19d3dade0ffd79",
+        "testAssemblySha256": "0f71ab3bf66231672170b44a69b1c0bf1745e0757a17734d248322049312d464"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 2,
+        "seconds": 9.926084199920297,
+        "librarySha256": "5a7e8793851f1dec1b3c5663496da4ca0a57688b318a95d40c19d3dade0ffd79",
+        "testAssemblySha256": "5e242cad2e82b14a1a46ad3d80022bb84ae2848ba7735a1fb415e0458a1b58a7"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 7,
+        "seconds": 10.065995099954307,
+        "librarySha256": "5a7e8793851f1dec1b3c5663496da4ca0a57688b318a95d40c19d3dade0ffd79",
+        "testAssemblySha256": "0f71ab3bf66231672170b44a69b1c0bf1745e0757a17734d248322049312d464"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 2,
+        "seconds": 6.527716800104827,
+        "librarySha256": "3523ce1f8277cf4cf9a5135e8b854d72a6052fd4b79d556173d6ddc2578766b5",
+        "testAssemblySha256": "484ceaed03c983b8a064956016c364a965425059a82bc0ac4f8ae52460931ac8"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 7,
+        "seconds": 7.280683099990711,
+        "librarySha256": "3523ce1f8277cf4cf9a5135e8b854d72a6052fd4b79d556173d6ddc2578766b5",
+        "testAssemblySha256": "e0a710863230844558e9fbea0d11ae73f3b37adff49550b8d61423e0867a3c28"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 2,
+        "seconds": 7.322283999994397,
+        "librarySha256": "3523ce1f8277cf4cf9a5135e8b854d72a6052fd4b79d556173d6ddc2578766b5",
+        "testAssemblySha256": "484ceaed03c983b8a064956016c364a965425059a82bc0ac4f8ae52460931ac8"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 7,
+        "seconds": 7.2095197001472116,
+        "librarySha256": "3523ce1f8277cf4cf9a5135e8b854d72a6052fd4b79d556173d6ddc2578766b5",
+        "testAssemblySha256": "e0a710863230844558e9fbea0d11ae73f3b37adff49550b8d61423e0867a3c28"
+      }
+    ],
+    "caseAccounting": "One new mechanism, one new host contract and one new canonical native image; each runtime/host selects2 core and7 rendering cases, preserving6 existing rendering companions.",
+    "timingMeaning": "Focused scopes and exploratory original-review times are separate. No suite-speedup or full-qualification claim.",
+    "initialFocusedComparison": {
+      "beforeTestMove": [
+        {
+          "host": "windows",
+          "kind": "core",
+          "passed": 2,
+          "seconds": 10.109430399956182
+        },
+        {
+          "host": "windows",
+          "kind": "visual",
+          "passed": 7,
+          "seconds": 10.930702300043777
+        },
+        {
+          "host": "linux",
+          "kind": "core",
+          "passed": 2,
+          "seconds": 12.178668099921197
+        },
+        {
+          "host": "linux",
+          "kind": "visual",
+          "passed": 7,
+          "seconds": 16.674754599807784
+        }
+      ],
+      "afterTestMove": [
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "kind": "core",
+          "passed": 2,
+          "seconds": 6.882780499989167,
+          "librarySha256": "5a7e8793851f1dec1b3c5663496da4ca0a57688b318a95d40c19d3dade0ffd79",
+          "testAssemblySha256": "5e242cad2e82b14a1a46ad3d80022bb84ae2848ba7735a1fb415e0458a1b58a7"
+        },
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "kind": "visual",
+          "passed": 7,
+          "seconds": 7.720120399957523,
+          "librarySha256": "5a7e8793851f1dec1b3c5663496da4ca0a57688b318a95d40c19d3dade0ffd79",
+          "testAssemblySha256": "0f71ab3bf66231672170b44a69b1c0bf1745e0757a17734d248322049312d464"
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "kind": "core",
+          "passed": 2,
+          "seconds": 9.926084199920297,
+          "librarySha256": "5a7e8793851f1dec1b3c5663496da4ca0a57688b318a95d40c19d3dade0ffd79",
+          "testAssemblySha256": "5e242cad2e82b14a1a46ad3d80022bb84ae2848ba7735a1fb415e0458a1b58a7"
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "kind": "visual",
+          "passed": 7,
+          "seconds": 10.065995099954307,
+          "librarySha256": "5a7e8793851f1dec1b3c5663496da4ca0a57688b318a95d40c19d3dade0ffd79",
+          "testAssemblySha256": "0f71ab3bf66231672170b44a69b1c0bf1745e0757a17734d248322049312d464"
+        }
+      ],
+      "meaning": "The same9 selected cases, moved assertion body and kept exact comparisons. Timings include startup/concurrent work; no suite-speedup claim."
+    }
+  },
+  "nextActions": [
+    "Continue static CSS text-transform/text-align and non-applicable/custom attributes, reviewing shared inheritance/addressing first.",
+    "Preserve the seven unsupported-child gates, three raster contexts, three malformed sources, eight deeper event-bearing originals and remaining P0/P2/P4/P5/P6/P7 work."
+  ]
+}
