@@ -282,6 +282,17 @@ does not establish native SVG-font support or whole-original acceptance. The
 [font record](../tests/Research/svgweb/font-contexts.json) separates these results
 from configured generic aliases and private, unredistributed Arial programs.
 
+The [supplied-original record](../tests/Research/svgweb/supplied-original-contexts.json)
+pins all nineteen request sets, program identities, native aliases, viewports and
+input/output hashes. Use explicit FontProbe catalogs/providers; bind the same bytes
+and descriptors with native `@font-face`. Match initial generic families as well
+as named requests. Preserve comments, processing instructions and nonfont content
+when materializing the native input in RAM; verify the inverse font changes restore
+the parsed original. Each host/context needs three healthy, profile-cleaned,
+terminal captures with identical PNG hashes. These font bindings qualify only the
+declared contexts; keep legacy SVG-font semantics separate. Private licensed font
+bytes stay outside the repository and packages.
+
 Keep CSS image resizing separate from canvas drawing destinations. The committed
 [root-boundary recipe](../tests/Research/svgweb/root-image-boundary.json) specifies
 its fractional canvas extent and independent native triples; substituting the same
