@@ -28,6 +28,9 @@ The [responsibility map](Research/release-baselines/test-responsibilities.md)
 records paint-bank membership, lazy loading, raster/PNG separation and measured
 validation costs, including the core pixel helpers, parser ownership helper, API fixture allocation and
 the [inert-paint split](Research/release-baselines/test-responsibilities.md#inert-paint-rendering-and-prepared-contracts).
+The [preformatted alignment control](Research/preformatted-text-align/README.md)
+keeps keyword and discovery mechanisms separate from one canonical image;
+the empty-symbol and painted-symbol cases retain distinct traversal paths.
 Equal images alone never establish redundancy. Preserve distinct
 source graphs, allocation paths, native companions, platform differences and
 exclusions. Rendering fixtures do not each need all twelve API forms.

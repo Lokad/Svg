@@ -394,6 +394,11 @@ keep this boundary separate from supplied-program rendering.
 | Text paths | One local open/closed geometry path per run, transformed/curved paths, advances/kerning, length/percentage startOffset, anchors/tangents, align/exact spacing and mixed direct/path text. |
 | Ligatures | Default Latin/DFLT Basic Latin, one unfiltered type-4 lookup, format-1 subtables, coverage 1/2 and 2–8 components in font order. |
 
+Validated CSS `text-align` declarations are inert on supported preformatted text
+and containers. Explicit positions and `text-anchor` retain their meaning;
+[native controls](../tests/Research/preformatted-text-align/README.md) cover styled
+spans and inherited path text. Auto-wrapped text is outside this layout contract.
+
 `text-anchor` accepts `start`, `middle`, `end`, `inherit`, `initial` and `unset`
 through presentation attributes and admitted inline/stylesheet contexts. Root,
 group, text and span scopes share inheritance and cascade rules. Each chunk uses

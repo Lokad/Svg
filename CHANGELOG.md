@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Admit inert `text-align` declarations on supported preformatted text and
+  containers, preserving anchors and explicit positioning.
 - Preserve the parent bitmap's drawing-matrix rounding when capturing filtered
   paints, including draws without a recorded transform chain.
 - Preserve antialiased coverage beside bitmap borders when an output row is

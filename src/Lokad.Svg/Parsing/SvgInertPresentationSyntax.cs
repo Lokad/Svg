@@ -91,7 +91,7 @@ internal static class SvgInertPresentationSyntax
         }
         if (property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) valid = Keyword(value, "normal italic oblique");
         else if (property.Equals("font-variant", StringComparison.OrdinalIgnoreCase)) valid = Keyword(value, "normal none small-caps");
-        else if (property.Equals("text-align", StringComparison.OrdinalIgnoreCase)) valid = Keyword(value, "left right center justify start end");
+        else if (property.Equals("text-align", StringComparison.OrdinalIgnoreCase)) valid = Keyword(value, "left right center justify start end match-parent");
         else if (property.Equals("writing-mode", StringComparison.OrdinalIgnoreCase)) valid = Keyword(value, "horizontal-tb vertical-rl vertical-lr lr-tb rl-tb tb-rl tb-lr lr rl tb");
         else if (property.Equals("text-anchor", StringComparison.OrdinalIgnoreCase)) valid = Keyword(value, "start middle end");
         else valid = Keyword(value, "normal pre nowrap pre-wrap pre-line break-spaces");

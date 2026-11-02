@@ -54,9 +54,7 @@ public sealed class SvgInertTypographyTests
     }
 
     [Theory]
-    [InlineData("<g style='text-align:center'><path d='M2 2H30V30Z'/></g>")]
     [InlineData("<text style='font-stretch:normal'>x</text>")]
-    [InlineData("<defs><symbol id='s' style='text-align:center'/></defs><use href='#s'/>")]
     [InlineData("<defs><path id='p' d='M2 2H30V30Z'/></defs><use href='#p' style='font-stretch:normal'/>")]
     public void Inert_geometry_handling_does_not_hide_text_or_container_semantics(string body)
     {

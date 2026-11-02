@@ -24,6 +24,11 @@ rendered originals match three healthy native captures per host. The complete
 failures without copying hosted geometry. [Filter isolation](car-filter-isolation.json)
 preserves the original-to-mechanism mapping.
 
+[Preformatted alignment](preformatted-text-align.json) validates unused text-align
+declarations through the shared style parser. svg2009 now reaches line-height;
+its deeper clip-child and path-style contexts remain open. Case transformation
+also remains open and requires its own source-addressing and font-discovery evidence.
+
 The [supplied-program inventory](supplied-original-contexts.json) pins all 19 font
 contexts and three stable healthy captures per host. The [current raster-strike correction](windows-small-strikes.json)
 closes twelve complete originals, including blocks_game, helloworld, mysvg and snake,
