@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "86d17519b78fc60178cc121f8cf1e9a91874f556",
-  "status": "capture/origin area affected-qualified; full filter milestone remains open for existing supplied-font diagnostic",
+  "status": "Capture/origin and supplied-font recording bounds affected-qualified; deferred crop storage remains open.",
   "scope": "Preserve native recording, physical bitmap origins and boundary knowledge across nested, affine and offset filter captures.",
   "sharedModel": [
     "Keep canvas and shader matrix products distinct; prepare recorded drawing before entering a source device.",
@@ -174,17 +174,6 @@
     }
   },
   "knownUnresolved": {
-    "affineSuppliedFontSource": {
-      "input": "../affine-source-exit-sheet/supplied-font-source.svg",
-      "sourceSha256": "37245dc41893d38fa666d61eab45a7801edbec5607c1513240e548911ab731f5",
-      "windowsChangedPixels": 4,
-      "linuxChangedPixels": 7,
-      "maximumAlphaError": 1,
-      "preservedBaseline": true,
-      "freshNativeCapturesPerHost": 3,
-      "freshNativeMatchesFrozenReference": true,
-      "status": "open; do not replace reference"
-    },
     "windowsDejaVu": {
       "test": "../../Lokad.Svg.VisualTests/SvgStaticTrueTypeFontTests.cs",
       "status": "Existing frozen-reference authority question remains pending; preserve its exact assertion."
@@ -195,5 +184,16 @@
     "pointPatternInputsRetained": 16,
     "pointPathPairsNowComparedExactly": true,
     "useAliasNowComparedToFontFreeReference": true
+  },
+  "closedFindings": {
+    "affineSuppliedFontSource": {
+      "evidence": "filter-recording-bounds.json",
+      "changedPixelsBefore": {
+        "windows": 4,
+        "linux": 7
+      },
+      "changedPixelsAfterPerHost": 0,
+      "frozenReferencesUnchanged": true
+    }
   }
 }

@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "326b71e402e28b4b7f4b0362af9139d8164db30a",
+  "status": "Source recording bounds CLOSED; remaining deferred crop storage and Windows DejaVu authority stay open.",
+  "implementation": "../../../src/Lokad.Svg/SvgConverter.cs",
+  "sharedCause": "A source traversal computed font recording layout, then preferred the filter binding paint enclosure. Mapping a scene ink rectangle back to parameter coordinates chooses a different bitmap origin. Source recording bounds now win; path strokes use retained local visual extents before scene narrowing.",
+  "recordingAndInkRemainSeparate": true,
+  "newOwnerTypes": 0,
+  "textLayoutOrSamplingFormulasChanged": false,
+  "nativeObservation": {
+    "browser": "Chrome153.0.8010.52",
+    "skiaRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "saveLayerBounds": [
+      11,
+      22,
+      72,
+      69
+    ],
+    "parameterGlyphRecordingEnclosure": [
+      13,
+      23,
+      66,
+      65
+    ],
+    "overridingSceneInkEnclosureBefore": [
+      11.196452,
+      29.319143,
+      70.12243,
+      60.75581
+    ],
+    "initialWrongCaptureHintBefore": [
+      9,
+      28,
+      77,
+      65
+    ]
+  },
+  "regressions": {
+    "font": {
+      "input": "../affine-source-exit-sheet/supplied-font-source.svg",
+      "sourceSha256": "37245dc41893d38fa666d61eab45a7801edbec5607c1513240e548911ab731f5",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "manifest": "../affine-source-exit-sheet/manifest.json",
+      "test": "../../Lokad.Svg.VisualTests/SvgFontLayoutDiagramTests.cs",
+      "platforms": {
+        "windows": {
+          "changedPixelsBefore": 4,
+          "changedPixelsAfter": 0,
+          "nativePngSha256": "8fe79ea92e76a3f463637b596cb0a47f5c24319160271c6d6a38a5cdd77c5f4b",
+          "freshNativeCaptures": 3,
+          "startupHealthyAndProfileCleaned": true
+        },
+        "linux": {
+          "changedPixelsBefore": 7,
+          "changedPixelsAfter": 0,
+          "nativePngSha256": "365aa1baf973848b91beceabcbac007fc39497549f9bb5c296ade7df0b03df74",
+          "freshNativeCaptures": 3,
+          "startupHealthyAndProfileCleaned": true
+        }
+      }
+    },
+    "stroke": {
+      "input": "../filter-source-opacity/inputs/gradient-stroke-blur-opacity.svg",
+      "test": "../../Lokad.Svg.VisualTests/SvgFilterSourceOpacityReferenceTests.cs",
+      "responsibility": "Retained local stroke extents prevent inverse scene-enclosure inflation. The recomputed-only trial regressed64 RGB pixels per host; retaining the source bounds restores exact output."
+    },
+    "mechanisms": [
+      "../../Lokad.Svg.Tests/SvgFilterSourceHintTests.cs",
+      "../../Lokad.Svg.Tests/SvgTextPaintBoundsTests.FilterSource.cs"
+    ],
+    "existingReferencesRewritten": 0,
+    "newFixtureOrApiMatrixCases": 0
+  },
+  "validation": {
+    "windows": {
+      "net11Core": {
+        "passed": 36258,
+        "failed": 0,
+        "seconds": 73.14897230011411,
+        "librarySha256": "630c5454de2af6566e1b38578b12c55532cdc0de4da6f6cf5835443b1c295a1d"
+      },
+      "net11Native": {
+        "passed": 46502,
+        "failed": 1,
+        "seconds": 94.38058730005287,
+        "librarySha256": "630c5454de2af6566e1b38578b12c55532cdc0de4da6f6cf5835443b1c295a1d"
+      },
+      "net10AffectedNative": {
+        "passed": 18,
+        "failed": 0,
+        "seconds": 11.479827399831265,
+        "librarySha256": "db6fd6d9c907c762f57c51ecaa58d4698bda3f0a9eecefe76c361152fa04aa5b"
+      },
+      "installedPackage": {
+        "targets": [
+          "net11.0",
+          "net10.0"
+        ],
+        "passed": true,
+        "seconds": 10.161069600144401
+      }
+    },
+    "linux": {
+      "net11Core": {
+        "passed": 36258,
+        "failed": 0,
+        "seconds": 77.513961982,
+        "librarySha256": "630c5454de2af6566e1b38578b12c55532cdc0de4da6f6cf5835443b1c295a1d"
+      },
+      "net11Native": {
+        "passed": 46503,
+        "failed": 0,
+        "seconds": 252.158682682,
+        "librarySha256": "630c5454de2af6566e1b38578b12c55532cdc0de4da6f6cf5835443b1c295a1d"
+      },
+      "net10AffectedNative": {
+        "passed": 18,
+        "failed": 0,
+        "seconds": 11.228795050000002,
+        "librarySha256": "db6fd6d9c907c762f57c51ecaa58d4698bda3f0a9eecefe76c361152fa04aa5b"
+      },
+      "installedPackage": {
+        "targets": [
+          "net11.0",
+          "net10.0"
+        ],
+        "passed": true,
+        "seconds": 56.22678770008497
+      }
+    }
+  },
+  "qualificationTimingNote": "Suites ran concurrently with original replay; these are validation wall times, not isolated performance benchmarks.",
+  "originals": {
+    "accounted": 204,
+    "renderedExactPerHost": 155,
+    "unsupportedPerHost": 46,
+    "malformedPerHost": 3,
+    "previousRenderedPngHashesUnchangedPerHost": 155,
+    "diagnosticsAndDimensionsUnchanged": true,
+    "hostedSvgBodiesRetained": 0
+  },
+  "remaining": {
+    "deferredCropStorage": "Retained intermediate images can extend outside the terminal output allocation. Adjacent crop controls remain under investigation; full filter milestone stays open.",
+    "windowsDejaVu": "One existing frozen-reference authority conflict; exact reference and assertion preserved."
+  }
+}

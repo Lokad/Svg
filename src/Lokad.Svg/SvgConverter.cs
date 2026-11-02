@@ -1177,10 +1177,11 @@ public static partial class SvgConverter
                                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine filter sources require retained geometry or supplied glyphs.");
                             geometries[geometryCount] = geometry;
                             item = item with { GeometryIndex = geometryCount++ };
+                            SvgRecordedPaintValue sourcePaint = GetRecordedPaintValue(geometry.RecordedPaint);
                             SvgRectangle box = SvgPathBounds.Compute(source.Commands, cancellationToken);
                             SvgPaintBounds bounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
                                 .Map(placement.ComposeChecked(source.SceneMap), cancellationToken);
-                            if (!GetRecordedPaintValue(geometry.RecordedPaint).IsMarkerContent)
+                            if (!sourcePaint.IsMarkerContent)
                             {
                                 objectBounds = Union(objectBounds, bounds);
                                 parameterObjectBounds = Union(parameterObjectBounds, new SvgPaintBounds((float)box.X, (float)box.Y,
@@ -1190,13 +1191,18 @@ public static partial class SvgConverter
                             box = SvgPathBounds.Compute(outline.Commands, cancellationToken);
                             visualBounds = Union(visualBounds, new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
                                 .Map(placement.ComposeChecked(outline.SceneMap), cancellationToken));
-                            parameterVisualBounds = Union(parameterVisualBounds, new SvgPaintBounds((float)box.X, (float)box.Y,
-                                (float)(box.X + box.Width), (float)(box.Y + box.Height)).Map(parameterInverse.ComposeChecked(outline.SceneMap), cancellationToken));
-                            if (GetRecordedPaintValue(geometry.RecordedPaint).VisualBounds is {} drawingHint)
+                            if (sourcePaint.SourceObjectBounds is { VisualBounds: {} sourceVisual } retained)
+                                parameterVisualBounds = Union(parameterVisualBounds, sourceVisual.MapLayout(
+                                    parameterInverse.Compose(retained.SceneMap), cancellationToken));
+                            else
                             {
-                                visualBounds = Union(visualBounds, drawingHint.Map(placement, cancellationToken));
-                                parameterVisualBounds = Union(parameterVisualBounds, drawingHint.Map(parameterInverse, cancellationToken));
+                                parameterVisualBounds = Union(parameterVisualBounds, new SvgPaintBounds((float)box.X, (float)box.Y,
+                                    (float)(box.X + box.Width), (float)(box.Y + box.Height)).Map(parameterInverse.ComposeChecked(outline.SceneMap), cancellationToken));
+                                if (sourcePaint.VisualBounds is {} fallbackHint)
+                                    parameterVisualBounds = Union(parameterVisualBounds, fallbackHint.Map(parameterInverse, cancellationToken));
                             }
+                            if (sourcePaint.VisualBounds is {} drawingHint)
+                                visualBounds = Union(visualBounds, drawingHint.Map(placement, cancellationToken));
                         }
                         commands[index - first + 1] = item;
                     }
@@ -1212,11 +1218,12 @@ public static partial class SvgConverter
                     SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, distances, context, visual, budget, cancellationToken);
                     // Capture hints are rounded before layer scaling. Inverting a
                     // layer-space hint loses authored fringes and perturbs integers.
-                    // Reuse visuals retained before scene narrowing. Inverting
-                    // a scene enclosure inflates strokes and moves the source
-                    // bitmap's shader/dither origin even when alpha is unchanged.
+                    // Prefer the source traversal's recording enclosure, including
+                    // font layout. The binding's paint enclosure can instead be an
+                    // ink rectangle mapped back from scene space, which changes
+                    // the bitmap origin and later clip/sampling rounding.
                     SvgPaintBounds parameterObjects = parameterObjectBounds ?? default,
-                        parameterVisual = binding.ParameterVisualBounds ?? parameterVisualBounds ?? default;
+                        parameterVisual = parameterVisualBounds ?? binding.ParameterVisualBounds ?? default;
                     SvgFilterBinding parameterBinding = binding with { Transform = SvgAffineTransform.Identity, ObjectBounds = parameterObjects, VisualBounds = parameterVisual };
                     SvgFilterDeviceMap parameterDistances = objectUnits
                         ? new(parameterObjects.Right - parameterObjects.Left, parameterObjects.Bottom - parameterObjects.Top) : new(1, 1);

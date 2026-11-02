@@ -195,6 +195,10 @@ then enclose the capture hint. Object boxes, layer/device enclosures and sampled
 bounds retain their own rounding. The [native stage observations](../tests/Research/svgweb/root-image-projection.json)
 and [capture bounds](../tests/Research/svgweb/filter-transform-review.json) distinguish
 these roles independently of equal final images.
+Capture hints use font recording enclosures and retained local stroke extents.
+Mapping an ink enclosure back from scene coordinates changes the source bitmap
+origin and subsequent clipping and image sampling. The existing font and stroke
+regressions protect this [shared bounds contract](../tests/Research/svgweb/filter-recording-bounds.json).
 
 Mask paint clips enclose the union of the resource region and target visual bounds
 in source space. Instance replay transfers local visual bounds and materialized

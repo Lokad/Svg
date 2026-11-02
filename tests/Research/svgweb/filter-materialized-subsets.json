@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "47337e98aad30a5f54af99a4113a7f54f546f5c5",
-  "status": "Materialized-subset origin fixed; remaining filter source/clip/restoration discrepancies stay open.",
+  "status": "Materialized-subset origin fixed; recording bounds closed separately; deferred crop storage remains open.",
   "mechanism": "Materialized graph outputs own integer texel enclosures. Fractional output requests and virtual flood bounds remain separate; a later nearest offset must not reuse a fractional crop as its stored image origin.",
   "production": "../../../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs",
   "mechanismTest": "../../Lokad.Svg.Tests/SvgFilterOutputRequestTests.cs",
@@ -51,13 +51,9 @@
     }
   },
   "knownRemaining": {
-    "suppliedFontSource": {
-      "input": "../affine-source-exit-sheet/supplied-font-source.svg",
-      "windowsChangedPixels": 4,
-      "linuxChangedPixels": 7,
-      "unchangedByThisFix": true,
-      "status": "Open; preserve layout and exact frozen references."
-    },
-    "scope": "Full cross-platform/package qualification remains at the filter milestone; the independent Windows DejaVu authority question remains open."
+    "scope": "Deferred crop storage and the independent Windows DejaVu authority question remain open."
+  },
+  "subsequentClosure": {
+    "suppliedFontSource": "filter-recording-bounds.json"
   }
 }
