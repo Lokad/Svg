@@ -610,5 +610,13 @@
       ],
       "viewportEvidence": "../../../tests/Research/svgweb/originals.json: svg.svg matchedViewportReview. The initial intrinsic-image experiment used a different viewport and is excluded."
     }
+  },
+  "followupCi": {
+    "runId": 41670978864,
+    "sourceCommit": "426d07f933f3e764e52776497349b0b3d260420e",
+    "url": "https://github.com/Lokad/Svg/actions/runs/41670978864",
+    "status": "FAILED/CLOSED; do not repoll.",
+    "ubuntu": "SUCCESS: full job including primary suites, .NET10 compatibility, developer tools and installed-package checks.",
+    "windows": "Only the unchanged DejaVu frozen-reference conflict: 1 failed, 46648 passed visual/integrity cases. No other failed test reported."
   }
 }

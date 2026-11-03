@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "source": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/displayWebStats.svg",
+  "sourceSha256": "bd78273e2605d4d039c766f2d5a1c294e21df06a8261b4cca1a1e15b9b7c3869",
+  "status": "OPEN: original animation boundary and deeper malformed source accounted; shared source diagnostics and remaining static contexts need review.",
+  "originalFirstGate": "Unsupported child beneath rect; structural inspection finds animate, animateTransform and set.",
+  "animationDeclarations": {
+    "animate": 53,
+    "animateColor": 24,
+    "animateTransform": 2,
+    "set": 4
+  },
+  "staticDiagnostic": {
+    "inputSha256": "c820875195731c70db64609321147c4112e7f630a813e820d3f35c726afd39b6",
+    "removedDeclarations": 83,
+    "nonAnimationXmlContentPreserved": true,
+    "hostFontContext": "Existing single Noto program with explicit generic mapping and fallback; no lexical inventory strings copied into a catalog. No original font or animation qualification.",
+    "outcome": {
+      "outcome": "MalformedInput",
+      "element": null,
+      "attribute": null,
+      "line": null,
+      "column": null,
+      "fontStage": null,
+      "messageSha256": "bff184f03658851c081737568d9605395c7b644bf613f74c781da68c24a03fde",
+      "throwType": "Lokad.Svg.Parsing.SvgRenderedGroupSourceParser",
+      "throwMethod": "BeginGroup"
+    }
+  },
+  "duplicateIdentifier": {
+    "idSha256": "eed84a0b904c7c7027c10f15c4b6f4aeb672bf37180e48dda77f46b31a68e4c4",
+    "occurrences": 2,
+    "elementRoles": [
+      "g",
+      "g"
+    ],
+    "empty": false,
+    "rawIdentifierRetained": false
+  },
+  "boundary": "Animation is outside the static renderer contract. Duplicate definition IDs are rejected as MalformedInput; the original source contains a real duplicate, rather than a source-specific parser exception.",
+  "standard": "https://www.w3.org/TR/SVG2/struct.html#IDAttribute",
+  "finding": "The duplicate-id rejection from SvgRenderedGroupSourceParser.BeginGroup lacks a public source diagnostic despite having the reader and id. Review the shared duplicate-id validation path and retain its strictness.",
+  "nextAction": "Add a minimal authored duplicate-id diagnostic regression and fix the common source-context boundary. Continue deeper static review with each deliberate invalid-source repair explicitly distinguished from original acceptance.",
+  "sourceSvgBodiesRetained": 0,
+  "sourceAttributeValuesRetained": 0,
+  "animationSupportClaimed": false,
+  "originalFontQualificationClaimed": false
+}
