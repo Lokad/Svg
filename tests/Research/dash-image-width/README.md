@@ -21,6 +21,12 @@ Production integration remains open: retain source/pattern ownership until the
 construction clip is known, then qualify thin and outline strokes and their maps.
 These controls remain research evidence until that shared stage is implemented.
 
+[Stroke-route controls](stroke-routes.json) extend the same mechanism to subpixel
+hairlines and wider outlines. The frozen `thin.svg` and `round.svg` inputs differ
+from native by twelve and thirty-seven pixels respectively; culling replay closes
+both on each host. Wider butt/square controls stay exact. These distinct paths
+must retain their existing dispatch rather than share a hairline-only correction.
+
 The [ny1 diagnostic](../svgweb/ny1-static-review.json) isolates its twelve residual
 pixels to one line, after removing the other 99 graphic elements. These controls
 contain no hosted geometry, fonts or external resources. Inputs use the repository
