@@ -31,6 +31,24 @@ internal readonly record struct SvgRectangleCoverage(long Left, long Top, long R
         }
         return (byte)((vertical * horizontal) >> 8);
     }
+
+    /// <summary>Returns the end of the native rectangle-blitter call containing a painted pixel.</summary>
+    /// <remarks>The clip is the bitmap construction window, independently of retained output.
+    /// Rounded edges and integer clipping precede dispatch. A single-row rectangle and fractional
+    /// top/bottom rows use 100-pixel calls even when their coverage rounds to 255; interior rows
+    /// use one rectangle call. Edge columns are separate vertical calls. This immutable lookup
+    /// allocates nothing; the caller owns pixel traversal and cancellation.</remarks>
+    internal int GetSpanEnd(int x, int y, SvgAnalyticClipBounds clip)
+    {
+        long left = Math.Max(Left, (long)clip.Left * 256), top = Math.Max(Top, (long)clip.Top * 256);
+        long right = Math.Min(Right, (long)clip.Right * 256), bottom = Math.Min(Bottom, (long)clip.Bottom * 256);
+        long first = (left + 255) >> 8, last = right >> 8;
+        if (x < first || x >= last) return x + 1;
+        bool scanline = (top >> 8) == ((bottom - 1) >> 8)
+            || (top & 255) != 0 && y == (top >> 8)
+            || (bottom & 255) != 0 && y == (bottom >> 8);
+        return (int)(scanline ? Math.Min(last, first + ((x - first) / 100 + 1) * 100) : last);
+    }
 }
 
 /// <summary>Retains one mapped rectangle and a separate byte paint clip within a finite pixel range.</summary>

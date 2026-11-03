@@ -3698,6 +3698,7 @@ public static partial class SvgConverter
             int sampleWidth = sampleBounds.Right - sampleBounds.Left, sampleHeight = sampleBounds.Bottom - sampleBounds.Top;
             bool sourceIsSubset = image.SourceRect != new SvgImageSourceRect(0, 0, image.Width, image.Height);
             SvgRectangleRaster raster = PrepareRectangle(image.Box);
+            SvgAnalyticClipBounds imageBounds = new(raster.Left, raster.Top, raster.Right, raster.Bottom);
             raster = raster with { Left = Math.Max(raster.Left, layerBounds.Left), Top = Math.Max(raster.Top, layerBounds.Top),
                 Right = Math.Min(raster.Right, layerBounds.Right), Bottom = Math.Min(raster.Bottom, layerBounds.Bottom) };
             if (raster.Left >= raster.Right || raster.Top >= raster.Bottom) return;
@@ -3743,6 +3744,7 @@ public static partial class SvgConverter
                 SvgCpuBitmapOrigin previousOrigin = default;
                 byte previousCoverage = 0;
                 bool seeded = false, filtering = true;
+                int nextSeedX = raster.Right;
                 long fixedX = 0, fixedY = 0, stepX = 0;
                 for (int x = raster.Left; x < raster.Right; x++)
                 {
@@ -3768,7 +3770,7 @@ public static partial class SvgConverter
                         else SampleAffine(sampleX, sampleY).Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), coverage);
                         continue;
                     }
-                    if (!seeded || origin != previousOrigin || coverage != previousCoverage)
+                    if (!seeded || x >= nextSeedX || origin != previousOrigin || coverage != previousCoverage)
                     {
                         if (!coordinates.TryGetMatrix(origin, out SvgShaderMatrix inverse))
                             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Embedded image coordinates are not finite and invertible.");
@@ -3787,6 +3789,17 @@ public static partial class SvgConverter
                         fixedX = (long)((double)pointX * 4294967296d);
                         fixedY = (long)((double)pointY * 4294967296d);
                         stepX = (long)((double)inverse.ScaleX * 4294967296d);
+                        SvgCpuRasterGrid.Enumerator contexts = rasterGrid.GetContexts(new(x, y, x + 1, y + 1));
+                        contexts.MoveNext();
+                        SvgAnalyticClipBounds bitmap = LayerRasterContext(contexts.Current).BitmapClip;
+                        SvgAnalyticClipBounds construction = new(Math.Max(imageBounds.Left, bitmap.Left), Math.Max(imageBounds.Top, bitmap.Top),
+                            Math.Min(imageBounds.Right, bitmap.Right), Math.Min(imageBounds.Bottom, bitmap.Bottom));
+                        int spanEnd = raster.Coverage.GetSpanEnd(x, y, construction);
+                        // Native shadeSpan also batches its coordinate buffer: one shared Y
+                        // word plus 127 filtered (or 254 unfiltered) X entries. Full-alpha
+                        // nearest sampling has a direct shader without that buffer.
+                        int maximum = filtering ? 127 : opacity == 255 ? int.MaxValue : 254;
+                        nextSeedX = x + Math.Min(spanEnd - x, maximum);
                         previousOrigin = origin; previousCoverage = coverage; seeded = true;
                     }
                     SvgConstantShaderPaint sample = Sample(fixedX, fixedY, filtering);

@@ -1,5 +1,5 @@
 {
-  "status": "OPEN failing-before image-fit sampling evidence. Authored sources and native references are frozen; not a supported-product baseline.",
+  "status": "Frozen failing-before sources/native references; current implementation qualification is recorded separately in qualification.json.",
   "librarySha256": "e84c1ec2910cea9d896175166327ab1a114643001f7e2bb2f81099b11f73f8e4",
   "fontSha256": null,
   "sourceCommit": "d70d216b83fcbbcfa36fec1eb659a881d0fb2f6c",
@@ -160,6 +160,89 @@
           ]
         }
       ]
+    },
+    {
+      "name": "wide.svg",
+      "sourceSha256": "57d9e7f27f69cc65ae901cb930357de228b46c25f980751d3ab5c9b6837742a6",
+      "diagnosticInputSha256": "57d9e7f27f69cc65ae901cb930357de228b46c25f980751d3ab5c9b6837742a6",
+      "nativeInputSha256": "57d9e7f27f69cc65ae901cb930357de228b46c25f980751d3ab5c9b6837742a6",
+      "removedDynamicElements": {},
+      "removedGraphicDescendants": 0,
+      "removedUnreferencedDuplicateIds": 0,
+      "expandedInternalMarkup": false,
+      "suppliedNoto": false,
+      "hosts": [
+        {
+          "host": "windows",
+          "outcome": "rendered",
+          "libraryPngSha256": "2b05e338f391d9193607670a41ed3ac1879998a849383013dbf2cc5bc72dd20b",
+          "width": 600,
+          "height": 300,
+          "logicalViewport": [
+            600,
+            300
+          ],
+          "changedPixels": 0,
+          "captures": [
+            {
+              "pngSha256": "9e76e7e00801e887175e00e5bf0d36b7348e3169888e3686b5768a9fe8fe9361",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 540
+            },
+            {
+              "pngSha256": "9e76e7e00801e887175e00e5bf0d36b7348e3169888e3686b5768a9fe8fe9361",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 584
+            },
+            {
+              "pngSha256": "9e76e7e00801e887175e00e5bf0d36b7348e3169888e3686b5768a9fe8fe9361",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 573
+            }
+          ]
+        },
+        {
+          "host": "linux",
+          "outcome": "rendered",
+          "libraryPngSha256": "2b05e338f391d9193607670a41ed3ac1879998a849383013dbf2cc5bc72dd20b",
+          "width": 600,
+          "height": 300,
+          "logicalViewport": [
+            600,
+            300
+          ],
+          "changedPixels": 0,
+          "captures": [
+            {
+              "pngSha256": "9e76e7e00801e887175e00e5bf0d36b7348e3169888e3686b5768a9fe8fe9361",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4186
+            },
+            {
+              "pngSha256": "9e76e7e00801e887175e00e5bf0d36b7348e3169888e3686b5768a9fe8fe9361",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 3936
+            },
+            {
+              "pngSha256": "9e76e7e00801e887175e00e5bf0d36b7348e3169888e3686b5768a9fe8fe9361",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4132
+            }
+          ]
+        }
+      ],
+      "captureContext": {
+        "driverSha256": "3acede20d26ff4b74a96f849f0fefa524419e296a7148768ea071fc954c2802e",
+        "librarySha256": "e84c1ec2910cea9d896175166327ab1a114643001f7e2bb2f81099b11f73f8e4",
+        "chrome": "153.0.8010.52",
+        "recipeVersion": 3
+      }
     }
   ],
   "sourceHashNormalization": "UTF-8 LF source bytes; all captures use exactly the committed authored file bytes.",
@@ -174,7 +257,8 @@
   "source": "../svgweb/remaining-static-gates.json",
   "distinctResponsibilities": {
     "meetPortrait": "Non-integer root projection and centered image meet fitting; two edge pixels differ on both hosts.",
-    "intrinsic": "Same decoded source at intrinsic scale; exact on both hosts. Protects decoding/premultiplication separately from fit/sampling."
+    "intrinsic": "Same decoded source at intrinsic scale; exact on both hosts. Protects decoding/premultiplication separately from fit/sampling.",
+    "wide": "Previously exact wider image crosses bordered compositor bitmaps and filtered coordinate-buffer spans."
   },
   "nextAction": "Diagnose image matrix/scanline seed/fractional-edge coverage through the authored image-fit-sampling witness and direct mechanisms. Preserve the two-pixel failing-before native references and exact intrinsic control; do not patch alpha rounding globally.",
   "targetFramework": "net11.0",

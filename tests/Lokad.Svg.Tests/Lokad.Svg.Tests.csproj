@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/image-fit-sampling/native-spans.json" Link="TestData/image-fit-sampling/native-spans.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/text-case-mapping/unicode-capitalization.csv" Link="TestData/unicode-capitalization.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/text-case-mapping/unicode-casing-words.csv" Link="TestData/unicode-casing-words.csv" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

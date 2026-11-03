@@ -1,0 +1,515 @@
+{
+  "status": "IMPLEMENTED and affected-qualified; full milestone/runtime/package gates pending.",
+  "sourceBaseCommit": "1d4f7479d3b988fbf6100be263af097b67e68cb7",
+  "implementationFilesLfSha256": {
+    "src/Lokad.Svg/Rendering/SvgRectangleCoverage.cs": "0fa51f55855be7f911fa804fd705896ef0438121fd94539b7b50bbd5509a02fb",
+    "src/Lokad.Svg/SvgConverter.cs": "cc14e11f1d4f4be2421db9c648b8bbaee80c0ee874e34d9a33ba4196c57840ff"
+  },
+  "librarySha256": {
+    "net11.0": "6fff236fbc162a8a4ca294ea561bf7ae131a747be69b7dd24207dfcdc495f2c8"
+  },
+  "problem": "Coverage bytes do not determine native bitmap shader invocation boundaries. Partial/single-row rectangle dispatch and the shader coordinate buffer can restart sampling inside equal-coverage runs.",
+  "change": "Retain image paint bounds separately from output iteration, bind span construction to the existing bitmap clip, and reseed fixed-point bitmap coordinates at native rectangle-call and coordinate-buffer boundaries. Preserve all interpolation, alpha, decoded pixels, transforms, ownership and public APIs.",
+  "nativeModel": {
+    "revision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "sourceFiles": [
+      {
+        "path": "src/core/SkScan_Antihair.cpp",
+        "sha256": "0ebcb5a161d9d0a1bede8d6b518e9d63803cfce25f51d46b380e4490323ffdd2"
+      },
+      {
+        "path": "src/core/SkBitmapProcState.cpp",
+        "sha256": "2d77e729547987c08a02d7487936dc2d37f1e48df5f090004d91758fff6bf306"
+      },
+      {
+        "path": "src/shaders/SkBitmapProcShader.cpp",
+        "sha256": "8fa8d2f3f661a27bf8d5284e4519a5c7a4e65951c7b0d41058737e8f10d92647"
+      }
+    ],
+    "partialAndSingleRowMaximum": 100,
+    "filteredCoordinateMaximum": 127,
+    "unfilteredCoordinateMaximum": 254,
+    "nearestFullAlpha": "Direct shader; no coordinate-buffer limit.",
+    "producerSourceSha256": "0bbbca432e931f523fdb24edb6161e0ac98723f67f07dd5067df945b55b17297",
+    "frozenVectorsSha256": "d24c42e5421ac2cc6ceb351054f2f238c55fb1b100fa65537a79b9c2de14c793",
+    "compileFlags": [
+      "-std=c++20",
+      "-O2",
+      "-ffp-contract=off",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "producerChecks": {
+      "windows": {
+        "exit": 0,
+        "vectorCount": 85,
+        "matchesFrozen": true
+      },
+      "linux": {
+        "exit": 0,
+        "vectorCount": 85,
+        "matchesFrozen": true
+      }
+    }
+  },
+  "coverage": {
+    "mechanismCases": 85,
+    "canonicalRenderingCases": 3,
+    "newOwnershipMatrixCases": 0,
+    "existingOwnership": "Affected image/bitmap tests retain refusal, cancellation, cleanup, retry, source retention and affine/varied allocation paths.",
+    "canonicalChecks": [
+      {
+        "host": "windows",
+        "cases": 3,
+        "passed": 3
+      },
+      {
+        "host": "linux",
+        "cases": 3,
+        "passed": 3
+      }
+    ],
+    "referenceImagesRemoved": 0,
+    "referenceImagesRewritten": 0,
+    "hostedSvgBodiesRetained": 0,
+    "hostedSourceAttributeValuesRetained": 0
+  },
+  "before": {
+    "sourceCommit": "1d4f7479d",
+    "librarySha256": "d6a061db7db8165b82a41e7fd6130b18a902b7297a46162f29cbdf2151772069",
+    "windowsCanonicalCases": 2,
+    "failed": 1,
+    "passed": 1,
+    "meetPortraitChangedPixels": 2,
+    "maximumAlphaError": 3
+  },
+  "focused": {
+    "librarySha256": "6fff236fbc162a8a4ca294ea561bf7ae131a747be69b7dd24207dfcdc495f2c8",
+    "rows": [
+      {
+        "host": "windows",
+        "kind": "mechanisms",
+        "exit": 0,
+        "seconds": 7.112671500071883,
+        "counters": {
+          "executed": "85",
+          "passed": "85",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "rendering",
+        "exit": 0,
+        "seconds": 6.117002499988303,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "mechanisms",
+        "exit": 0,
+        "seconds": 12.799415899906307,
+        "counters": {
+          "executed": "85",
+          "passed": "85",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "rendering",
+        "exit": 0,
+        "seconds": 8.936893800040707,
+        "counters": {
+          "executed": "2",
+          "passed": "2",
+          "failed": "0"
+        }
+      }
+    ]
+  },
+  "affected": {
+    "librarySha256": "6fff236fbc162a8a4ca294ea561bf7ae131a747be69b7dd24207dfcdc495f2c8",
+    "rows": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "exit": 0,
+        "seconds": 10.37709160009399,
+        "counters": {
+          "executed": "2202",
+          "passed": "2202",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "rendering",
+        "exit": 0,
+        "seconds": 11.212959399912506,
+        "counters": {
+          "executed": "422",
+          "passed": "422",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "exit": 0,
+        "seconds": 15.232332199811935,
+        "counters": {
+          "executed": "2202",
+          "passed": "2202",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "rendering",
+        "exit": 0,
+        "seconds": 12.86919689993374,
+        "counters": {
+          "executed": "422",
+          "passed": "422",
+          "failed": "0"
+        }
+      }
+    ],
+    "selections": {
+      "core": "(FullyQualifiedName~SvgImage|FullyQualifiedName~SvgUniformImageOpacity|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgAffineImageClip|FullyQualifiedName~SvgOpaqueBitmapClip|FullyQualifiedName~SvgFilterBitmap|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgRectanglePaint|FullyQualifiedName~PngImageDecoderTests)&Category!=Research",
+      "rendering": "(FullyQualifiedName~SvgImageFitSampling|FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgAffineFilter|FullyQualifiedName~SvgRadialFilter|FullyQualifiedName~SvgNestedFilter|FullyQualifiedName~SvgRootImage|FullyQualifiedName~SvgPattern|FullyQualifiedName~SvgNestedPattern|FullyQualifiedName~NativeReferenceImagesTests)&Category!=Research"
+    }
+  },
+  "originals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 127.08369889995083,
+    "librarySha256": "6fff236fbc162a8a4ca294ea561bf7ae131a747be69b7dd24207dfcdc495f2c8",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "staticDiagnosticReplay": {
+    "librarySha256": "6fff236fbc162a8a4ca294ea561bf7ae131a747be69b7dd24207dfcdc495f2c8",
+    "seconds": 31.489567499840632,
+    "hostedSvgBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "rows": [
+      {
+        "name": "anim1.svg",
+        "inputSha256": "7942478aa2b6d43600b66d59ff0233bb8c3b968f8ac95cd328554689b8ba37ec",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "993fcf0ea8e9a2d342ef2bb19652a1f77f2589600a858801f8e44246807a4f02",
+            "nativePngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "435b865f90ab3d76a366181f6cf9361706ee9eb5a56ad45a66afc5aef6138ced",
+            "nativePngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288"
+          }
+        ]
+      },
+      {
+        "name": "anim2.svg",
+        "inputSha256": "7942478aa2b6d43600b66d59ff0233bb8c3b968f8ac95cd328554689b8ba37ec",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "993fcf0ea8e9a2d342ef2bb19652a1f77f2589600a858801f8e44246807a4f02",
+            "nativePngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "435b865f90ab3d76a366181f6cf9361706ee9eb5a56ad45a66afc5aef6138ced",
+            "nativePngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288"
+          }
+        ]
+      },
+      {
+        "name": "anim3.svg",
+        "inputSha256": "01d0fc4eb0736ab7a69911cf8e641d4d47148b5c6777768c468de3a649042fa3",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "c4e22d2c1310669c33a0d707656545ebc2e185c0f6af84c61458fd8149de2cfb",
+            "nativePngSha256": "34f9054fae52dce9bf6224cf48bd3e2388ea061b0a4061e8058f578e77a0a761"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "82c248ed136cff062458ec7b7e35cac1794d26d4870f2651f25772db82ad32f5",
+            "nativePngSha256": "a32ee0d4effc15e8a806848bf527017ed0d1f398f9b0395be9cd892293e58ebc"
+          }
+        ]
+      },
+      {
+        "name": "pservers-grad-03-b-anim.svg",
+        "inputSha256": "901cbcd0c88a9bfe6d3535156cd9c291fcb8f02c6f4fe42281cef13fa03f9ca5",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "1ce781a8367158c3e21db5acfe9870132531e369be4d8886dffb17fa9a2c2fab",
+            "nativePngSha256": "6ab7834804b2182923973cbbf1772dff0768ba2f96b6926b946c92dee516e3e8"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "8ddb43ea9413642aee25b14066695ee9376ae340f3e411ce4d357ca5b379a682",
+            "nativePngSha256": "2427b1dea2e7bd5addba981d19b38ffca77818969a1d71af7978da645ef82a75"
+          }
+        ]
+      },
+      {
+        "name": "scimitar-anim.svg",
+        "inputSha256": "5f84c4415144324bda6ddace3fb123bdea17cd0806cdd97a6c187cf88955716d",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "938d321b936997fc851fbe97a6d009a1fb2ba3faacb6ee4c8fc14b96d6a4d8ac",
+            "nativePngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "938d321b936997fc851fbe97a6d009a1fb2ba3faacb6ee4c8fc14b96d6a4d8ac",
+            "nativePngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408"
+          }
+        ]
+      },
+      {
+        "name": "x11.svg",
+        "inputSha256": "3e8f6019ec6704ba591a22a77cc9d6c074d24f284f39acfed30aa6dc3367a764",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "69c534aadfa677011acf494c524d93d63df4a7b793cf7f6be748b39b076f0992",
+            "nativePngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "69c534aadfa677011acf494c524d93d63df4a7b793cf7f6be748b39b076f0992",
+            "nativePngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1"
+          }
+        ]
+      },
+      {
+        "name": "video1.svg",
+        "inputSha256": "acbd75d5d0eb797c0cb376fa4cbb0ba2144913434b6def13169e44f6b7d19602",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "bda76c338abf09180cdc368d80b1abb7b950ccde26904aa41ef8f67c3ff99eea",
+            "nativePngSha256": "b97ecc46a3d59adb48e6544fc937b24afb172bdedac39d0054f1c4dd952a5725"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "e99b29665fdd6701b57dd2b1b3dad16e58c2eb4a880e3afc1fc087a58571b56d",
+            "nativePngSha256": "ef467d4beadcabd2bc1266f697e38ba8af836e45d51d7b6c75d706b9a911eac2"
+          }
+        ]
+      },
+      {
+        "name": "image.svg",
+        "inputSha256": "cf26f013032b40b4c4ac540c98af4fa35dde742398cab8e74247c713b6479e58",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "56dc8696b09b4057390551dfe0b95e11f3684abf4bab7673b85457f1dd7e3715",
+            "nativePngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "56dc8696b09b4057390551dfe0b95e11f3684abf4bab7673b85457f1dd7e3715",
+            "nativePngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44"
+          }
+        ]
+      },
+      {
+        "name": "masking-path-04-b.svg",
+        "inputSha256": "254f228ce38a5a0b95ead459c3aea3ef45c48acdabc939dc7a45623dfd5269c5",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "UnsupportedFeature",
+            "messageSha256": "74f765a941d08df90499e4e2ad2ea8468113ea999e24d6461dce07c1e9a55145"
+          },
+          {
+            "host": "linux",
+            "outcome": "UnsupportedFeature",
+            "messageSha256": "74f765a941d08df90499e4e2ad2ea8468113ea999e24d6461dce07c1e9a55145"
+          }
+        ]
+      },
+      {
+        "name": "oscon.svg",
+        "inputSha256": "89e05955e9800c33d5c53a82461cc64a6b12f0830b0088824ae866dbd7411a19",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 2,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "4a8d892bc4f4a9527f7d5e9edb65efd6b99c373b2d4064c042b38fd8300d59e0",
+            "nativePngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 2,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "4a8d892bc4f4a9527f7d5e9edb65efd6b99c373b2d4064c042b38fd8300d59e0",
+            "nativePngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4"
+          }
+        ]
+      },
+      {
+        "name": "gaussian1.svg",
+        "inputSha256": "5b6a23f654d8217924129ca25f6d66a9ce36fd277e0bb2435024bffad1579152",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "f51862edd26e7f7b15548315cd6ebd4ceea8f94addb91fbf51ea6de438425a3b",
+            "nativePngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "f51862edd26e7f7b15548315cd6ebd4ceea8f94addb91fbf51ea6de438425a3b",
+            "nativePngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283"
+          }
+        ]
+      },
+      {
+        "name": "preserveAspectRatio.svg",
+        "inputSha256": "62a47bc4adf71c74c077a183888197ef2c0a695ae19bdbed4d57a8417efe53b2",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "641ee5d3d7c5ea99bb250bdd37f089b3d74a983d796f8f3f2c7b887bd52dc37d",
+            "nativePngSha256": "a648bf1fcf846d9fee98425008a9a73978c98ce8e4cf3ff9ba2656cf46d5981a"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "d2c319886593b0e911c69f8f7ca321531f00a9c3304151cd32e82aa244f4daa6",
+            "nativePngSha256": "232179316391a5376d83149b5b10adaa64ce7bae36e19185e7e1dda628fae235"
+          }
+        ]
+      },
+      {
+        "name": "smile.svg",
+        "inputSha256": "bc7e3c73c861478283e3d8d81553b971dea08fcb9f7b12a26feb94c8a30049bd",
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971",
+            "nativePngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a"
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "beforeChangedPixels": 0,
+            "afterChangedPixels": 0,
+            "libraryPngSha256": "0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971",
+            "nativePngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a"
+          }
+        ]
+      }
+    ]
+  },
+  "validationTiming": {
+    "selection": "Same two-case Windows image-fit selection, including VSTest discovery/startup/failure reporting; not a throughput benchmark or test-suite simplification claim.",
+    "beforeSeconds": 6.4432072,
+    "beforeFailures": 1,
+    "afterSeconds": 6.1170025,
+    "afterFailures": 0
+  },
+  "pendingQualification": [
+    "Unfiltered .NET 11 core and visual suites on Windows/Linux; preserve the independent known Windows DejaVu failure.",
+    "Explicit .NET 10 project builds and representative API/ownership/numerical/native compatibility, including the new mechanisms and render cases.",
+    "Dedicated font-host checks, deterministic package/symbol construction and installed consumers on both hosts/runtimes."
+  ]
+}

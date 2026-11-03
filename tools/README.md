@@ -430,6 +430,8 @@ Linux research tools. From the repository root:
 ```bash
 gcc -O2 -ffp-contract=off -fno-builtin -Wall -Wextra -Werror tests/Research/native-math-profiles/atan2-profile.c -ldl -o artifacts/atan2-profile
 g++ -std=c++20 -O2 -ffp-contract=off -Wall -Wextra -Werror tests/Research/native-math-profiles/endpoint-probe.cpp -o artifacts/endpoint-probe
+g++ -std=c++20 -O2 -ffp-contract=off -Wall -Wextra -Werror tests/Research/image-fit-sampling/native-spans.cpp -o artifacts/image-spans
+artifacts/image-spans > artifacts/image-spans.json
 artifacts/atan2-profile
 python3 -c 'import json; rows=json.load(open("tests/Lokad.Svg.Tests/TestData/endpoint-arc-native.json"))["cases"]; [print(r["id"], *r["p"]) for r in rows]' | artifacts/endpoint-probe
 ```

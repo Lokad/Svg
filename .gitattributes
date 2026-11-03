@@ -7,6 +7,7 @@ tests/Research/filter-color-matrix/*.svg -text whitespace=cr-at-eol
 tests/Research/native-path-replay/*.svg -text whitespace=cr-at-eol
 # Compiled-native vector hashes also require stable bytes across platforms.
 *.csv text eol=lf
+tests/Research/image-fit-sampling/native-spans.* text eol=lf
 # Native math reference producers and metadata have portable content hashes.
 tests/Research/native-math-profiles/*.c text eol=lf
 tests/Research/native-math-profiles/*.cpp text eol=lf

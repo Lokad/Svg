@@ -120,6 +120,10 @@ retain those boundaries without repeating the API matrix.
 
 [Image density controls](Research/root-image-density/README.md) retain five native
 contexts, separating the integer image viewport from fractional edge coverage.
+[Bitmap span controls](Research/image-fit-sampling/README.md) separate 85 direct
+native dispatch boundaries from three canonical image conversions. Intrinsic,
+fitted and wider tiled images protect distinct interactions; existing image
+ownership contracts cover refusal, cancellation and retry independently.
 [Root padding](Research/root-padding/README.md) adds direct layout/cascade mechanisms,
 two focused contracts and ten native contexts. [Canvas edge controls](Research/root-canvas-density/README.md)
 separate geometry coverage from image-boundary coverage and the host backdrop.
