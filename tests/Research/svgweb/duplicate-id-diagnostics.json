@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "status": "CLOSED: existing duplicate-ID rejections retain the second declaration location, without changing registries, messages or rejection order.",
+  "sourceCommitBefore": "20f9c24e5965238a08b886fd5320514dbcb81adf",
+  "librarySha256": "fadd951e606b3c1704d8fc5e7e02732c4631632dcb2c147ff87ac19823581d37",
+  "regressions": "../../Lokad.Svg.Tests/SvgSourceDiagnosticTests.cs",
+  "mechanismCoverage": {
+    "cases": 15,
+    "roles": [
+      "rendered group",
+      "named use",
+      "named leaf",
+      "definition text",
+      "symbol",
+      "shared linear/radial gradient registration",
+      "deferred vector pattern",
+      "empty, disabled and spatial masks",
+      "box, polygon and deferred-use clips",
+      "filter graph",
+      "bounded diagnostic strings with distinct long lookup keys"
+    ]
+  },
+  "ownershipCoverage": {
+    "cases": 2,
+    "paths": [
+      "pending vector pattern",
+      "unadopted filter resource"
+    ],
+    "requirements": [
+      "release parser and scene reservations after rejection",
+      "preserve borrowed budget",
+      "successful retry using the same budget"
+    ]
+  },
+  "implementation": "Capture bounded declaration context before resource traversal; use the existing streaming reader at immediate checks. Group stacks charge their actual enlarged value size; filter builders reserve their additional metadata. No retained XML, new ID registry, second parse or new public API.",
+  "failingBefore": {
+    "cases": 17,
+    "failed": 17,
+    "reason": "SourceDiagnostic null",
+    "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd"
+  },
+  "after": {
+    "cases": 17,
+    "passed": 17
+  },
+  "functionalElapsedSeconds": {
+    "before": 6.99,
+    "after": 6.838,
+    "interpretation": "Functional wall time including test-host startup; not a benchmark or speedup claim."
+  },
+  "qualification": [
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "fadd951e606b3c1704d8fc5e7e02732c4631632dcb2c147ff87ac19823581d37",
+      "selection": "FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgDefinition|FullyQualifiedName~SvgStructuralAdmissionTests|FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgMask|FullyQualifiedName~SvgClip|FullyQualifiedName~SvgPattern|FullyQualifiedName~SvgSymbol|FullyQualifiedName~SvgRootParserOwnershipTests",
+      "seconds": 10.241670400137082,
+      "counters": {
+        "executed": "2431",
+        "passed": "2431",
+        "failed": "0"
+      }
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "fadd951e606b3c1704d8fc5e7e02732c4631632dcb2c147ff87ac19823581d37",
+      "selection": "FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgDefinition|FullyQualifiedName~SvgStructuralAdmissionTests|FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgMask|FullyQualifiedName~SvgClip|FullyQualifiedName~SvgPattern|FullyQualifiedName~SvgSymbol|FullyQualifiedName~SvgRootParserOwnershipTests",
+      "seconds": 15.331755900057033,
+      "counters": {
+        "executed": "2431",
+        "passed": "2431",
+        "failed": "0"
+      }
+    },
+    {
+      "profile": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "fadd951e606b3c1704d8fc5e7e02732c4631632dcb2c147ff87ac19823581d37",
+      "selection": "FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedPatternReferenceTests|FullyQualifiedName~SvgDeferredClipReferenceTests|FullyQualifiedName~SvgLeafMaskReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests",
+      "seconds": 33.25462709995918,
+      "counters": {
+        "executed": "1935",
+        "passed": "1935",
+        "failed": "0"
+      }
+    },
+    {
+      "profile": "glibc243",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "fadd951e606b3c1704d8fc5e7e02732c4631632dcb2c147ff87ac19823581d37",
+      "selection": "FullyQualifiedName~SvgSymbolLocationReferenceTests|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgNestedPatternReferenceTests|FullyQualifiedName~SvgDeferredClipReferenceTests|FullyQualifiedName~SvgLeafMaskReferenceTests|FullyQualifiedName~SvgFilterStageReferenceTests",
+      "seconds": 28.193494000006467,
+      "counters": {
+        "executed": "1935",
+        "passed": "1935",
+        "failed": "0"
+      }
+    },
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "d55b95532a8f7139e1b730299a9949c08fc980e4cc7562ff28ad35b996642a28",
+      "selection": "FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRootParserOwnershipTests",
+      "seconds": 9.450605100020766,
+      "counters": {
+        "executed": "55",
+        "passed": "55",
+        "failed": "0"
+      }
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "d55b95532a8f7139e1b730299a9949c08fc980e4cc7562ff28ad35b996642a28",
+      "selection": "FullyQualifiedName~SvgSourceDiagnosticTests|FullyQualifiedName~SvgRenderedUseSourceTests|FullyQualifiedName~SvgRootParserOwnershipTests",
+      "seconds": 10.93207519990392,
+      "counters": {
+        "executed": "55",
+        "passed": "55",
+        "failed": "0"
+      }
+    }
+  ],
+  "hostedOriginalReplay": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 131.6270794000011,
+    "librarySha256": "fadd951e606b3c1704d8fc5e7e02732c4631632dcb2c147ff87ac19823581d37",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "preserved": [
+    "Existing references and exact comparisons",
+    "Original identifier lookup keys",
+    "Separate resource registries and their rejection timing",
+    "Filter resource adoption and finally cleanup",
+    "Windows DejaVu reference conflict remains separately unresolved"
+  ]
+}

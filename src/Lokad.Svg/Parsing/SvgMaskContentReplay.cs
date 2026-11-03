@@ -88,9 +88,9 @@ internal static class SvgMaskContentReplay
         token.ThrowIfCancellationRequested();
         string id = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask content registration requires an identifier."));
         if (state.Masks.TryGetValue(id, out _) || !state.MaskContents.TryAdd(id, new([], 255, state.MaskIsAlpha)))
-            throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-        if (state.MaskCustomRegion is {} region && !state.MaskRegions.TryAdd(id, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-        if (state.MaskFractionRegion is {} fractions && !state.MaskFractionRegions.TryAdd(id, fractions)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+            throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
+        if (state.MaskCustomRegion is {} region && !state.MaskRegions.TryAdd(id, region)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
+        if (state.MaskFractionRegion is {} fractions && !state.MaskFractionRegions.TryAdd(id, fractions)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
         state.DeferredMaskContents.Add(new(id, state.MaskReplayChildStart, state.MaskReplayChildCount, state.MaskIsAlpha, state.MaskObjectBoundingBoxContent));
     }
 

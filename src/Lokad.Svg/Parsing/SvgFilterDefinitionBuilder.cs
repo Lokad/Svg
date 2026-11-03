@@ -25,6 +25,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
     private int _mergeDepth = -1;
     private int _mergeIndex = -1;
     internal string? Id { get; private set; }
+    internal SvgSourceContext IdSource { get; private set; }
 
     private SvgFilterDefinitionBuilder(RenderBudget budget, CancellationToken token, RenderBudget.BudgetReservation owner)
     {
@@ -39,13 +40,14 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
     internal static SvgFilterDefinitionBuilder Create(XmlReader reader, RenderBudget budget, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
-        RenderBudget.BudgetReservation owner = budget.Reserve(384, SvgMemoryCategory.Parser);
+        RenderBudget.BudgetReservation owner = budget.Reserve(384 + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgSourceContext>(), SvgMemoryCategory.Parser);
         SvgFilterDefinitionBuilder builder;
         try { builder = new(budget, token, owner); }
         catch { owner.Dispose(); throw; }
         try
         {
             builder.Id = reader.GetAttribute("id") is string id ? builder._strings.Copy(id) : null;
+            builder.IdSource = SvgSourceContext.CaptureId(reader);
             try
             {
                 builder._region = new(Length(reader.GetAttribute("x"), new(-10, true)), Length(reader.GetAttribute("y"), new(-10, true)),

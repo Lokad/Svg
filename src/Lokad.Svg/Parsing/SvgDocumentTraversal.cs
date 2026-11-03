@@ -224,7 +224,7 @@ internal static class SvgDocumentTraversal
                         // local clipping, without losing the scalar viewport map.
                         if (isolates) state.IsolatedViewportDepth = reader.Depth;
                         string? groupId = reader.GetAttribute("id");
-                        SvgGroupSnapshotStart snapshot = new(groupId is null ? null : state.Strings.Copy(groupId), SvgLocalUrl.ReadReference(reader, "clip-path") is not null, SvgLocalUrl.ReadReference(reader, "mask") is not null);
+                        SvgGroupSnapshotStart snapshot = new(groupId is null ? null : state.Strings.Copy(groupId), SvgLocalUrl.ReadReference(reader, "clip-path") is not null, SvgLocalUrl.ReadReference(reader, "mask") is not null) { IdSource = SvgSourceContext.CaptureId(reader) };
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
                         string? groupClipId = parsedGroup.Scope.ClipPathId;
                         if (groupClipId is not null && !parsedGroup.Scope.HasFilter)
@@ -492,7 +492,7 @@ internal static class SvgDocumentTraversal
                     if (snapshotStart.Id is not null && group.Kind == SvgGroupKind.Group)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        if (state.Definitions.TryGetValue(snapshotStart.Id, out _) || state.GroupSnapshots.TryGetValue(snapshotStart.Id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                        if (state.Definitions.TryGetValue(snapshotStart.Id, out _) || state.GroupSnapshots.TryGetValue(snapshotStart.Id, out _)) throw snapshotStart.IdSource.DuplicateId("SVG definition ids must be unique.");
                         string retainedId = state.Strings.Copy(snapshotStart.Id);
                         bool hasViewport = false;
                         for (int viewportIndex = 0; viewportIndex < state.Viewports.Count; viewportIndex++)
@@ -501,7 +501,7 @@ internal static class SvgDocumentTraversal
                             SvgViewportFrame viewportFrame = state.Viewports[viewportIndex];
                             if (viewportFrame.ScaleX != 1 || viewportFrame.ScaleY != 1 || viewportFrame.OffsetX != 0 || viewportFrame.OffsetY != 0) { hasViewport = true; break; }
                         }
-                        if (!state.GroupSnapshots.TryAdd(retainedId, new SvgGroupSnapshot(snapshotStart.HasClip, snapshotStart.HasMask, hasViewport))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                        if (!state.GroupSnapshots.TryAdd(retainedId, new SvgGroupSnapshot(snapshotStart.HasClip, snapshotStart.HasMask, hasViewport))) throw snapshotStart.IdSource.DuplicateId("SVG definition ids must be unique.");
                     }
                     if (group.HasMaskScope) state.MaskScopes.RemoveLast();
                     if (group.Kind == SvgGroupKind.Group) state.GroupDepth--;
@@ -578,15 +578,15 @@ internal static class SvgDocumentTraversal
         static void RegisterMaskScene(SvgDocumentState state, CancellationToken cancellationToken)
         {
             string id = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask scene registration requires an identifier."));
-            if (state.Masks.TryGetValue(id, out _) || state.MaskContents.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+            if (state.Masks.TryGetValue(id, out _) || state.MaskContents.TryGetValue(id, out _)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
             SvgSceneBuilder builder = state.MaskContentBuilder ?? throw new InvalidOperationException("Mask scene registration requires a builder.");
             SvgLeafMaskComposition.Emit(state, builder, cancellationToken);
             SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
             try { state.Scene.AdoptVectorContent(content); }
             catch { content.Dispose(); throw; }
             if (!state.MaskContents.TryAdd(id, new([], 255, state.MaskIsAlpha) { VectorContent = content })) throw new InvalidOperationException("A mask scene must register once.");
-            if (state.MaskCustomRegion is {} region && !state.MaskRegions.TryAdd(id, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-            if (state.MaskFractionRegion is {} fractions && !state.MaskFractionRegions.TryAdd(id, fractions)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+            if (state.MaskCustomRegion is {} region && !state.MaskRegions.TryAdd(id, region)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
+            if (state.MaskFractionRegion is {} fractions && !state.MaskFractionRegions.TryAdd(id, fractions)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
         }
     }
 

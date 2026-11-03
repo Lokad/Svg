@@ -47,7 +47,9 @@ switch selection and pattern content inheritance.
 value and one-based XML location. Retained text keeps its source location; direct
 text instances also identify their referencing element. Unavailable fields are
 empty/null; strings are bounded to 256 UTF-16 code units. One failure is reported.
-An earlier unsupported source keeps its diagnostic when a later text node rejects.
+An earlier unsupported source keeps its diagnostic when a later text node rejects. Duplicate-ID
+rejections identify the second declaration's `id` attribute, including resources
+registered after their children are parsed.
 
 `FontDiagnostic` identifies the requested family/weight/style, selected face and
 fallback when known. Missing-glyph indices count Unicode scalars in normalized

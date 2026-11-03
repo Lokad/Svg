@@ -50,6 +50,12 @@ adds original-context mappings and empty-range ownership.
 mark-dependent witnesses, including their literal counterparts, through shared
 clusters, selected substitutions, attachments and canonical glyph-path painting.
 The remaining font/language boundaries stay explicit in the support matrix.
+[Duplicate-ID diagnostics](duplicate-id-diagnostics.json) retain the second declaration's
+location through deferred resource registration. The [displayWebStats review](display-web-stats-static.json)
+accounts for its animation and duplicate-ID boundaries; an explicitly animation-free,
+ID-repaired, supplied-font diagnostic is exact on both hosts. The original remains
+unsupported.
+
 ny1 now reaches the invalid CSS name `stroke-fill`; the complete original remains
 unsupported and needs a shared invalid-versus-unimplemented declaration review.
 

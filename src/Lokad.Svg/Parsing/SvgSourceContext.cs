@@ -16,6 +16,22 @@ internal readonly record struct SvgSourceContext(string ElementName, string Elem
     internal SvgSourceDiagnostic Describe(string attribute, string value)
         => new(ElementName, ElementId, attribute, value, LineNumber, LinePosition);
 
+    /// <summary>Retains the declaration's id position before traversal can advance to its children or closing tag.</summary>
+    internal static SvgSourceContext CaptureId(XmlReader reader)
+    {
+        SvgSourceContext source = Capture(reader);
+        if (!reader.MoveToAttribute("id")) return source;
+        (int? line, int? position) = Position(reader);
+        reader.MoveToElement();
+        return source with { LineNumber = line, LinePosition = position };
+    }
+
+    internal SvgException DuplicateId(string message)
+        => new(SvgErrorCode.MalformedInput, message, null, Describe("id", ElementId));
+
+    internal static SvgException DuplicateId(XmlReader reader, string message)
+        => CaptureId(reader).DuplicateId(message);
+
     internal static void Attach(XmlReader reader, SvgException exception)
     {
         if (exception.SourceDiagnostic is not null) return;

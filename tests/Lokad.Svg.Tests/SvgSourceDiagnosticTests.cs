@@ -1,7 +1,79 @@
+using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
+
 namespace Lokad.Svg.Tests;
 
 public sealed class SvgSourceDiagnosticTests
 {
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("<g id='same'/>", "<g id='same'/>\n", "g", "definition")]
+    [InlineData("<use id='same'/>", "<use id='same'/>", "use", "definition")]
+    [InlineData("<path id='same' d='M0 0L1 1'/>", "<rect id='same' width='1' height='1'/>", "rect", "definition")]
+    [InlineData("<defs><rect id='same'/></defs>", "<defs><text id='same'>A</text></defs>", "text", "definition")]
+    [InlineData("<defs><g id='same'/></defs>", "<defs><symbol id='same'>\n<rect/>\n</symbol></defs>", "symbol", "definition")]
+    [InlineData("<defs><linearGradient id='same'/></defs>", "<defs><radialGradient id='same'/></defs>", "radialGradient", "gradient")]
+    [InlineData("<defs><pattern id='same' width='2' height='2'/></defs>", "<defs><pattern id='same' width='2' height='2'>\n<rect width='1' height='1'/>\n</pattern></defs>", "pattern", "pattern")]
+    [InlineData("<defs><mask id='same'/></defs>", "<defs><mask id='same'/></defs>", "mask", "mask")]
+    [InlineData("<defs><mask id='same'/></defs>", "<defs><mask id='same' style='display:none'>\n<rect/>\n</mask></defs>", "mask", "mask")]
+    [InlineData("<defs><mask id='same'/></defs>", "<defs><mask id='same'>\n<path d='M0 0L8 0L0 8Z' fill='white'/>\n</mask></defs>", "mask", "mask")]
+    [InlineData("<defs><clipPath id='same'/></defs>", "<defs><clipPath id='same'>\n<rect width='4' height='4'/>\n</clipPath></defs>", "clipPath", "clip-path")]
+    [InlineData("<defs><clipPath id='same'/></defs>", "<defs><clipPath id='same' clipPathUnits='objectBoundingBox'>\n<path d='M0 0L1 0L0 1Z'/>\n</clipPath></defs>", "clipPath", "clip-path")]
+    [InlineData("<defs><clipPath id='same'/><path id='target' d='M0 0L8 0L0 8Z'/></defs>", "<defs><clipPath id='same'>\n<use href='#target'/>\n</clipPath></defs>", "clipPath", "clip-path")]
+    [InlineData("<defs><filter id='same'/></defs>", "<defs><filter id='same'>\n<feOffset dx='1'/>\n</filter></defs>", "filter", "filter")]
+    public void Duplicate_ids_identify_the_second_declaration_including_deferred_registration(string first, string second, string element, string resource)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>\n"
+            + first + "\n  " + second + "\n</svg>");
+        SvgException error = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.MalformedInput, error.ErrorCode);
+        Assert.Equal($"SVG {resource} ids must be unique.", error.Message);
+        SvgSourceDiagnostic source = Assert.IsType<SvgSourceDiagnostic>(error.SourceDiagnostic);
+        Assert.Equal(element, source.ElementName);
+        Assert.Equal("same", source.ElementId);
+        Assert.Equal("id", source.AttributeName);
+        Assert.Equal("same", source.AttributeValue);
+        Assert.Equal(3, source.LineNumber);
+        Assert.Equal(second.IndexOf("id='same'", StringComparison.Ordinal) + 3, source.LinePosition);
+    }
+
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void Deferred_duplicate_diagnostics_bound_the_identifier_without_truncating_lookup()
+    {
+        string common = new('i', 300);
+        string input = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs>"
+            + $"<pattern id='{common}a' width='1' height='1'/><pattern id='{common}b' width='1' height='1'/>"
+            + $"<pattern id='{common}b' width='1' height='1'/></defs></svg>";
+        SvgException error = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(input), SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.MalformedInput, error.ErrorCode);
+        SvgSourceDiagnostic source = Assert.IsType<SvgSourceDiagnostic>(error.SourceDiagnostic);
+        Assert.Equal(common[..256], source.ElementId);
+        Assert.Equal(common[..256], source.AttributeValue);
+        Assert.Equal(input.LastIndexOf("id='", StringComparison.Ordinal) + 1, source.LinePosition);
+    }
+
+    [Theory]
+    [Trait("Layer", "Contract")]
+    [InlineData("<pattern id='same' width='2' height='2'><path d='M0 0L1 0L0 1Z'/></pattern>")]
+    [InlineData("<filter id='same'><feOffset dx='1'/></filter>")]
+    public void Deferred_duplicate_rejection_releases_resources_and_preserves_borrowed_budget(string resource)
+    {
+        const string start = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>";
+        byte[] invalid = System.Text.Encoding.UTF8.GetBytes(start + "<defs>" + resource + resource + "</defs></svg>");
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
+        {
+            SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(invalid, SvgRenderLimits.Default, budget, CancellationToken.None));
+            Assert.Equal(SvgErrorCode.MalformedInput, error.ErrorCode);
+            Assert.Equal("id", Assert.IsType<SvgSourceDiagnostic>(error.SourceDiagnostic).AttributeName);
+            Assert.Equal(73, budget.Snapshot().CurrentBytes);
+            using (SvgRoot retry = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(start + "<rect width='4' height='4'/></svg>"), SvgRenderLimits.Default, budget, CancellationToken.None)) { }
+            Assert.Equal(73, budget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [Trait("Layer", "Mechanism")]
     [InlineData("<audio id='first'/>", "audio")]

@@ -27,7 +27,7 @@ internal static class SvgMaskSyntax
         token.ThrowIfCancellationRequested();
         string id = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask registration requires an identifier."));
         if (state.Masks.TryGetValue(id, out _) || !state.MaskContents.TryAdd(id, new([], 255, state.MaskIsAlpha) { IsDisabled = true })
-            || !state.Masks.TryAdd(id, 255)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+            || !state.Masks.TryAdd(id, 255)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
         if (state.MaskContentGeometries is {} geometries)
         {
             foreach (SvgGeometry geometry in geometries) geometry.Dispose();

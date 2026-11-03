@@ -39,7 +39,7 @@ internal static class SvgDefinitionParser
             SvgElementAttributePolicy.ValidateText(reader, cancellationToken);
             string? id = reader.GetAttribute("id");
             if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
-                throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                throw SvgSourceContext.DuplicateId(reader, "SVG definition ids must be unique.");
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
             SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, cancellationToken, true);
             SvgRetainedTextSource source = SvgRetainedTextSource.Capture(reader, context, state, limits);
@@ -71,7 +71,7 @@ internal static class SvgDefinitionParser
             bool symbolChild = state.SymbolDepth >= 0;
             string? id = reader.GetAttribute("id");
             if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
-                throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                throw SvgSourceContext.DuplicateId(reader, "SVG definition ids must be unique.");
             if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, cancellationToken);
             else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, cancellationToken);
             else if (reader.LocalName == "path") SvgElementAttributePolicy.ValidatePath(reader, cancellationToken);
@@ -147,10 +147,10 @@ internal static class SvgDefinitionParser
                 if (id is not null)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    if (state.Definitions.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                    if (state.Definitions.TryGetValue(id, out _)) throw SvgSourceContext.DuplicateId(reader, "SVG definition ids must be unique.");
                     string retainedId = state.Strings.Copy(id);
                     SvgDefinition registered = symbolChild ? definition with { SymbolFillBindings = source.SymbolFillBindings, BorrowedFromSymbol = true } : definition;
-                    if (!state.Definitions.TryAdd(retainedId, registered)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                    if (!state.Definitions.TryAdd(retainedId, registered)) throw SvgSourceContext.DuplicateId(reader, "SVG definition ids must be unique.");
                     retained = true;
                 }
             }
@@ -194,8 +194,9 @@ internal static class SvgDefinitionParser
                     SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken), state, limits)
             };
             string? id = reader.GetAttribute("id");
-            if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _))) throw SvgSourceContext.DuplicateId(reader, "SVG definition ids must be unique.");
             state.SymbolId = id is null ? null : state.Strings.Copy(id);
+            state.SymbolIdSource = SvgSourceContext.CaptureId(reader);
             state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), cancellationToken);
             state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, cancellationToken, presentation);
             state.SymbolDefinition.EstablishesViewport = true;
@@ -216,6 +217,7 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateClipPath(reader, cancellationToken);
             state.ClipPathId = reader.GetAttribute("id");
+            state.ClipPathIdSource = SvgSourceContext.CaptureId(reader);
             string? resourceClipId = SvgClipPathSyntax.ResolveClipId(reader, state);
             state.ClipResourceClipId = resourceClipId is null ? null : state.Strings.Copy(resourceClipId);
             state.ClipBox = null;
@@ -384,6 +386,7 @@ internal static class SvgDefinitionParser
                 ClipRule = style.ClipRule ?? maskContext.InheritedClipRule
             };
             state.MaskId = reader.GetAttribute("id");
+            state.MaskIdSource = SvgSourceContext.CaptureId(reader);
             state.MaskIsDisplayed = state.DefinitionResourcesDisplayed && style.GetDisplay() != SvgDisplay.None;
             state.MaskIsAlpha = SvgMaskSyntax.ParseMaskType(reader.GetAttribute("mask-type"));
             state.MaskObjectBoundingBoxContent = reader.GetAttribute("maskContentUnits") switch
@@ -494,6 +497,7 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidatePattern(reader, cancellationToken);
             state.PatternId = reader.GetAttribute("id");
+            state.PatternIdSource = SvgSourceContext.CaptureId(reader);
             state.PatternTemplate = SvgPatternSyntax.ParsePatternElement(reader, state, cancellationToken);
             state.PatternTile = state.PatternTemplate.Grid;
             SvgPaintableElementContext patternContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
@@ -685,7 +689,7 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateRadialGradient(reader, cancellationToken);
             state.RadialGradientId = reader.GetAttribute("id");
-            if (state.RadialGradientId is {} radialId) state.RadialGradientId = ClaimGradientId(state, radialId, cancellationToken);
+            if (state.RadialGradientId is {} radialId) state.RadialGradientId = ClaimGradientId(reader, state, radialId, cancellationToken);
             SvgPaintableElementContext gradientContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
             SvgComputedStyle gradientStyle = gradientContext.ResolveStyle(reader, true);
             SvgRadialTemplate template = SvgGradientSyntax.ParseRadialVector(reader, cancellationToken)
@@ -700,7 +704,7 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateLinearGradient(reader, cancellationToken);
             state.GradientId = reader.GetAttribute("id");
-            if (state.GradientId is {} linearId) state.GradientId = ClaimGradientId(state, linearId, cancellationToken);
+            if (state.GradientId is {} linearId) state.GradientId = ClaimGradientId(reader, state, linearId, cancellationToken);
             SvgPaintableElementContext gradientContext = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
             SvgComputedStyle gradientStyle = gradientContext.ResolveStyle(reader, true);
             SvgGradientTemplate template = SvgGradientSyntax.ParseLinearVector(reader, cancellationToken)
@@ -742,7 +746,7 @@ internal static class SvgDefinitionParser
             string? id = reader.GetAttribute("id");
             if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _)
                 || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
-                throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                throw SvgSourceContext.DuplicateId(reader, "SVG definition ids must be unique.");
             id = id is null ? null : state.Strings.Copy(id);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, namedColors, cancellationToken);
             InlineStyle inline = SvgInlineStyleParser.ReadUse(reader, cancellationToken);
@@ -840,7 +844,7 @@ internal static class SvgDefinitionParser
         {
             if (reader.GetAttribute("id") is not string id) return;
             if (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _))
-                throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                throw SvgSourceContext.DuplicateId(reader, "SVG definition ids must be unique.");
             // Ordinary uses replay authored paint/stroke independently of stroke-free clip coverage.
             state.Definitions.TryAdd(state.Strings.Copy(id), new([], false, null, null)
             {
@@ -1006,11 +1010,11 @@ internal static class SvgDefinitionParser
         }
     }
 
-    private static string ClaimGradientId(SvgDocumentState state, string id, CancellationToken cancellationToken)
+    private static string ClaimGradientId(XmlReader reader, SvgDocumentState state, string id, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         bool known = state.GradientRegistrations.TryGetValue(id, out SvgGradientRegistration registration);
-        if (known && registration.IsDefined) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
+        if (known && registration.IsDefined) throw SvgSourceContext.DuplicateId(reader, "SVG gradient ids must be unique.");
         string retained = state.Strings.Copy(id);
         if (known) state.GradientRegistrations.Replace(id, registration with { IsDefined = true });
         else if (!state.GradientRegistrations.TryAdd(retained, new(true, null))) throw new InvalidOperationException("Gradient identifiers register once.");
@@ -1459,7 +1463,7 @@ CancellationToken cancellationToken)
         cancellationToken.ThrowIfCancellationRequested();
         string retainedId = state.Strings.Copy(state.PatternId ?? throw new InvalidOperationException("Pattern registration requires an identifier."));
         SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern registration requires pattern dimensions.");
-        if (state.PatternDefinitions.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
+        if (state.PatternDefinitions.TryGetValue(retainedId, out _)) throw state.PatternIdSource.DuplicateId("SVG pattern ids must be unique.");
         if (state.PatternContentBuilder is {} builder)
         {
             int scopeCount = (state.PatternScopes?.Count ?? 0) - state.PatternScopeStart;
@@ -1472,7 +1476,7 @@ CancellationToken cancellationToken)
         }
         if (!state.PatternTemplate.IsDisplayed) tile = tile with { Content = null, VectorContent = null };
         SvgPatternDefinition definition = new(state.PatternTemplate, tile, state.PatternRectangleSource, state.PatternRectangleContext, false);
-        if (!state.PatternDefinitions.TryAdd(retainedId, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
+        if (!state.PatternDefinitions.TryAdd(retainedId, definition)) throw state.PatternIdSource.DuplicateId("SVG pattern ids must be unique.");
         if (definition.Template.Href is null)
         {
             if (!state.Patterns.TryAdd(retainedId, tile)) throw new InvalidOperationException("A pattern must register once.");
@@ -1485,20 +1489,20 @@ CancellationToken cancellationToken)
         cancellationToken.ThrowIfCancellationRequested();
         string retainedId = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask content registration requires an identifier."));
         SvgGeometry[] geometries = state.MaskContentGeometries ?? throw new InvalidOperationException("Mask content registration requires retained geometries.");
-        if (state.Masks.TryGetValue(retainedId, out _) || !state.MaskContents.TryAdd(retainedId, new SvgMaskContent(geometries, state.MaskContentLuminance, state.MaskContentIsAlpha))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-        if (state.MaskCustomRegion is SvgClipBox region && !state.MaskRegions.TryAdd(retainedId, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-        if (state.MaskFractionRegion is SvgClipBox fractions && !state.MaskFractionRegions.TryAdd(retainedId, fractions)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-        if (state.MaskContentBox is SvgClipBox content && !state.MaskContentBoxes.TryAdd(retainedId, content)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+        if (state.Masks.TryGetValue(retainedId, out _) || !state.MaskContents.TryAdd(retainedId, new SvgMaskContent(geometries, state.MaskContentLuminance, state.MaskContentIsAlpha))) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
+        if (state.MaskCustomRegion is SvgClipBox region && !state.MaskRegions.TryAdd(retainedId, region)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
+        if (state.MaskFractionRegion is SvgClipBox fractions && !state.MaskFractionRegions.TryAdd(retainedId, fractions)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
+        if (state.MaskContentBox is SvgClipBox content && !state.MaskContentBoxes.TryAdd(retainedId, content)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
     }
 
     internal static void RegisterMask(SvgDocumentState state, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         string retainedId = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask registration requires an identifier."));
-        if (state.MaskContents.TryGetValue(retainedId, out _) || !state.Masks.TryAdd(retainedId, state.MaskValue ?? 0)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-        if (state.MaskCustomRegion is SvgClipBox region && !state.MaskRegions.TryAdd(retainedId, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-        if (state.MaskFractionRegion is SvgClipBox fractions && !state.MaskFractionRegions.TryAdd(retainedId, fractions)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-        if (state.MaskContentBox is SvgClipBox content && !state.MaskContentBoxes.TryAdd(retainedId, content)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+        if (state.MaskContents.TryGetValue(retainedId, out _) || !state.Masks.TryAdd(retainedId, state.MaskValue ?? 0)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
+        if (state.MaskCustomRegion is SvgClipBox region && !state.MaskRegions.TryAdd(retainedId, region)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
+        if (state.MaskFractionRegion is SvgClipBox fractions && !state.MaskFractionRegions.TryAdd(retainedId, fractions)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
+        if (state.MaskContentBox is SvgClipBox content && !state.MaskContentBoxes.TryAdd(retainedId, content)) throw state.MaskIdSource.DuplicateId("SVG mask ids must be unique.");
         if (state.MaskValue is not null && state.MaskReplayChildCount == 1
             && state.MaskReplayChildren[state.MaskReplayChildStart].Source.LocalName == "rect")
         {
@@ -1517,7 +1521,7 @@ CancellationToken cancellationToken)
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip polygon registration requires an identifier."));
         SvgClipPolygon polygon = SvgClipDefinitionStaging.Complete(state, cancellationToken);
         if (state.Clips.TryGetValue(retainedId, out _) || state.ObjectClips.TryGetValue(retainedId, out _) || !state.ClipPolygons.TryAdd(retainedId, polygon))
-            throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
+            throw state.ClipPathIdSource.DuplicateId("SVG clip-path ids must be unique.");
     }
 
     internal static void RegisterClipBox(SvgDocumentState state, CancellationToken cancellationToken)
@@ -1529,17 +1533,17 @@ CancellationToken cancellationToken)
             if (state.ClipPolygon is not null) { RegisterClipPolygon(state, cancellationToken); return; }
         }
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip-path registration requires an identifier."));
-        if (state.ClipPolygons.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
+        if (state.ClipPolygons.TryGetValue(retainedId, out _)) throw state.ClipPathIdSource.DuplicateId("SVG clip-path ids must be unique.");
         if (!state.ClipIsDisplayed)
         {
             if (state.Clips.TryGetValue(retainedId, out _) || state.ObjectClips.TryGetValue(retainedId, out _)
                 || !state.ClipPolygons.TryAdd(retainedId, new([], []) { IsDisabled = true }))
-                throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
+                throw state.ClipPathIdSource.DuplicateId("SVG clip-path ids must be unique.");
             state.ClipPolygon?.SourcePath?.Dispose();
             state.ClipPolygon = null;
             return;
         }
-        if (state.ClipIsObjectBoundingBox) { if (state.Clips.TryGetValue(retainedId, out _) || !state.ObjectClips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique."); } else if (state.ObjectClips.TryGetValue(retainedId, out _) || !state.Clips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
+        if (state.ClipIsObjectBoundingBox) { if (state.Clips.TryGetValue(retainedId, out _) || !state.ObjectClips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw state.ClipPathIdSource.DuplicateId("SVG clip-path ids must be unique."); } else if (state.ObjectClips.TryGetValue(retainedId, out _) || !state.Clips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw state.ClipPathIdSource.DuplicateId("SVG clip-path ids must be unique.");
         state.ClipPolygon?.SourcePath?.Dispose();
         state.ClipPolygon = null;
     }
@@ -1552,6 +1556,11 @@ CancellationToken cancellationToken)
         try
         {
             if (builder.Id is string id) { state.Scene.Filters.AddResource(id, resource); adopted = true; }
+        }
+        catch (SvgException error) when (error.ErrorCode == SvgErrorCode.MalformedInput)
+        {
+            error.AttachSource(builder.IdSource.Describe("id", builder.IdSource.ElementId));
+            throw;
         }
         finally
         {
@@ -1573,7 +1582,7 @@ CancellationToken cancellationToken)
             token.ThrowIfCancellationRequested();
             if (state.SymbolId is string id)
             {
-                if (!state.Definitions.TryAdd(id, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                if (!state.Definitions.TryAdd(id, definition)) throw state.SymbolIdSource.DuplicateId("SVG definition ids must be unique.");
             }
             else state.RetainAnonymousSymbol(definition, token);
             if (state.MaskGroupChildIndex >= 0)

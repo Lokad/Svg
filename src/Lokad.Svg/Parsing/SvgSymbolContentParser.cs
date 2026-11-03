@@ -17,9 +17,13 @@ internal static class SvgSymbolContentParser
         string? clipId = Copy(SvgClipPathSyntax.ResolveClipId(reader, state));
         string? id = reader.GetAttribute("id");
         if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
-            throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            throw SvgSourceContext.DuplicateId(reader, "SVG definition ids must be unique.");
         id = id is null ? null : state.Strings.Copy(id);
-        if (definitionRoot) state.SymbolId = id;
+        if (definitionRoot)
+        {
+            state.SymbolId = id;
+            state.SymbolIdSource = SvgSourceContext.CaptureId(reader);
+        }
         InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, state, token);
         InlineStyle inline = reader.LocalName == "use" ? SvgInlineStyleParser.ReadUse(reader, token)
             : SvgInlineStyleParser.Read(reader, token, true);

@@ -289,6 +289,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal int PatternDepth { get; set; } = -1;
 
     internal string? PatternId { get; set; }
+    internal SvgSourceContext PatternIdSource { get; set; }
 
     internal string? GradientId { get; set; }
 
@@ -321,6 +322,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserList<SvgPatternContentScope>? PatternScopes { get; set; }
 
     internal string? MaskId { get; set; }
+    internal SvgSourceContext MaskIdSource { get; set; }
 
     internal bool MaskIsAlpha { get; set; }
     internal bool MaskIsDisplayed { get; set; } = true;
@@ -337,6 +339,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgClipBox? MaskContentBox { get; set; }
 
     internal string? ClipPathId { get; set; }
+    internal SvgSourceContext ClipPathIdSource { get; set; }
     internal string? ClipResourceClipId { get; set; }
 
     internal SvgClipBox? ClipBox { get; set; }
@@ -359,6 +362,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal SvgMarkerDefinition? MarkerDefinition { get; set; }
     internal string? SymbolId { get; set; }
+    internal SvgSourceContext SymbolIdSource { get; set; }
 
     internal SvgViewBox? SymbolViewBox { get; set; }
 
@@ -534,6 +538,7 @@ internal readonly record struct SvgGroupSnapshot(bool HasClip, bool HasMask, boo
 /// <summary>Tracks one open group boundary, aligned with the group scope stack.</summary>
 internal readonly record struct SvgGroupSnapshotStart(string? Id, bool HasClip, bool HasMask)
 {
+    internal SvgSourceContext IdSource { get; init; }
     /// <summary>Identifies this group's open deferred bindings; closed siblings remain outside its lifetime.</summary>
     internal int? PendingClip { get; init; }
     internal int? PendingMask { get; init; }

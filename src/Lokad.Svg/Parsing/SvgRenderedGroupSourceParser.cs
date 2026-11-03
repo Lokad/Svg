@@ -16,7 +16,7 @@ internal static class SvgRenderedGroupSourceParser
         if (state.RenderedGroupContent is null && id is null) return;
         if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _)
             || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
-            throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            throw SvgSourceContext.DuplicateId(reader, "SVG definition ids must be unique.");
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, root, state, colors, token);
         SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, token, true).ResolveOpacity(context.InheritedPresentation.ElementOpacity).ResolveDisplay(context.InheritedPresentation.ElementDisplay);
         _ = SvgPaintResolver.ResolveFallbacks(ref style, state.PaintResources, colors, reader.LocalName);
@@ -116,7 +116,7 @@ internal static class SvgRenderedGroupSourceParser
             (style.GetSourceDisplay() != SvgDisplay.None), style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true));
         if (id is not null && !state.Definitions.TryAdd(id, new([], false, null, null)
             { SymbolContent = new(content, start, 1), BorrowedFromSymbol = true }))
-            throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            throw SvgSourceContext.DuplicateId(reader, "SVG definition ids must be unique.");
         if (!standalone && clipId is not null) content.AddUnsupported();
 
         string? Copy(string? value)

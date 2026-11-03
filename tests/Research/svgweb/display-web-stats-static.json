@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "source": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/displayWebStats.svg",
   "sourceSha256": "bd78273e2605d4d039c766f2d5a1c294e21df06a8261b4cca1a1e15b9b7c3869",
-  "status": "OPEN: original animation boundary and deeper malformed source accounted; shared source diagnostics and remaining static contexts need review.",
+  "status": "ACCOUNTED: original animation and malformed duplicate-ID boundaries remain explicit; the declared animation-free, ID-repaired, supplied-font diagnostic is exact on both hosts.",
   "originalFirstGate": "Unsupported child beneath rect; structural inspection finds animate, animateTransform and set.",
   "animationDeclarations": {
     "animate": 53,
@@ -17,6 +17,17 @@
     "hostFontContext": "Existing single Noto program with explicit generic mapping and fallback; no lexical inventory strings copied into a catalog. No original font or animation qualification.",
     "outcome": {
       "outcome": "MalformedInput",
+      "element": "g",
+      "attribute": "id",
+      "line": 101,
+      "column": 46,
+      "fontStage": null,
+      "messageSha256": "bff184f03658851c081737568d9605395c7b644bf613f74c781da68c24a03fde",
+      "throwType": "Lokad.Svg.Parsing.SvgRenderedGroupSourceParser",
+      "throwMethod": "BeginGroup"
+    },
+    "beforeFix": {
+      "outcome": "MalformedInput",
       "element": null,
       "attribute": null,
       "line": null,
@@ -25,7 +36,8 @@
       "messageSha256": "bff184f03658851c081737568d9605395c7b644bf613f74c781da68c24a03fde",
       "throwType": "Lokad.Svg.Parsing.SvgRenderedGroupSourceParser",
       "throwMethod": "BeginGroup"
-    }
+    },
+    "sourceDiagnosticRegression": "duplicate-id-diagnostics.json"
   },
   "duplicateIdentifier": {
     "idSha256": "eed84a0b904c7c7027c10f15c4b6f4aeb672bf37180e48dda77f46b31a68e4c4",
@@ -39,10 +51,86 @@
   },
   "boundary": "Animation is outside the static renderer contract. Duplicate definition IDs are rejected as MalformedInput; the original source contains a real duplicate, rather than a source-specific parser exception.",
   "standard": "https://www.w3.org/TR/SVG2/struct.html#IDAttribute",
-  "finding": "The duplicate-id rejection from SvgRenderedGroupSourceParser.BeginGroup lacks a public source diagnostic despite having the reader and id. Review the shared duplicate-id validation path and retain its strictness.",
-  "nextAction": "Add a minimal authored duplicate-id diagnostic regression and fix the common source-context boundary. Continue deeper static review with each deliberate invalid-source repair explicitly distinguished from original acceptance.",
+  "finding": "CLOSED: shared duplicate-ID failures identify the second declaration id attribute, including deferred resources. The unchanged static diagnostic retains MalformedInput and its message hash.",
+  "nextAction": "Retain strict duplicate rejection and the orthogonal authored regressions. Animation remains outside the static image contract; neither the repaired diagnostic nor supplied fonts qualify the original animation or font context.",
   "sourceSvgBodiesRetained": 0,
   "sourceAttributeValuesRetained": 0,
   "animationSupportClaimed": false,
-  "originalFontQualificationClaimed": false
+  "originalFontQualificationClaimed": false,
+  "diagnosticIdRepair": {
+    "inputSha256": "eee3a71669f060293f50a2ad5e18df3a1bd4c0a61bcdded4ffb01609829d7668",
+    "operation": "Rename only the second duplicate group ID in RAM; no claim about accepting the malformed original.",
+    "changedIdentifiers": 1,
+    "nativeInputSha256": "5097794849ca64f51701af6684abbee2ca1a4da302a76658202f420e1e7d3765",
+    "font": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
+    "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "nativeFontContext": "Explicit Noto Sans regular for the initial generic family and all authored weights; native @font-face covers those requests without synthetic styling. Native-only font bindings reverse to the exact repaired XML. No original font qualification.",
+    "nonfontDiagnosticContentPreserved": true,
+    "librarySha256": "fadd951e606b3c1704d8fc5e7e02732c4631632dcb2c147ff87ac19823581d37",
+    "hosts": [
+      {
+        "host": "windows",
+        "libraryPngSha256": "a5d57028415487baa68574cf7708b2ef279260863c815d923028b729dfdc1deb",
+        "width": 300,
+        "height": 150,
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null,
+        "captures": [
+          {
+            "pngSha256": "8fc5f8e01b41bbc17a42565b4f42202211db2b06f1f06f837fd02aaaa5b763f4",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "8fc5f8e01b41bbc17a42565b4f42202211db2b06f1f06f837fd02aaaa5b763f4",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "8fc5f8e01b41bbc17a42565b4f42202211db2b06f1f06f837fd02aaaa5b763f4",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "libraryPngSha256": "7aa04163714793daeefc751b7498782d385a942016cfafb20e63bc094b242e8d",
+        "width": 300,
+        "height": 150,
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null,
+        "captures": [
+          {
+            "pngSha256": "5c460f80227e66b72fdbb66bee2b763c20033a6545db015bea8d3a5e3bda7ff9",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "5c460f80227e66b72fdbb66bee2b763c20033a6545db015bea8d3a5e3bda7ff9",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "5c460f80227e66b72fdbb66bee2b763c20033a6545db015bea8d3a5e3bda7ff9",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ]
+      }
+    ]
+  }
 }

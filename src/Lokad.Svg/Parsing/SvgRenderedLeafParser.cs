@@ -18,7 +18,7 @@ internal static class SvgRenderedLeafParser
         if (reader.LocalName == "text" && (state.RenderedGroupContent is not null || textId is not null))
         {
             if (textId is not null && (state.Definitions.TryGetValue(textId, out _) || state.GroupSnapshots.TryGetValue(textId, out _) || state.RenderedGroupDefinitions.TryGetValue(textId, out _)))
-                throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                throw SvgSourceContext.DuplicateId(reader, "SVG definition ids must be unique.");
             int sourceDepth = reader.Depth;
             SvgComputedStyle style = context.AuthoredStyle ?? throw new InvalidOperationException("A rendered leaf requires prepared declarations.");
             bool displayed = style.GetSourceDisplay() != SvgDisplay.None;
