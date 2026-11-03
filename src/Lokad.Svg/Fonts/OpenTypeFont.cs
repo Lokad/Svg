@@ -80,7 +80,8 @@ internal static partial class OpenTypeFont
         RequireTableLength(hmtx, hmtxBytes, "hmtx");
         bool extendWindowsSpans = tables.TryGetValue(NameTag, out OpenTypeTableRange name) && ValidateNameTable(data, name, cancellationToken);
         if (tables.TryGetValue(Os2Tag, out OpenTypeTableRange os2)) ValidateOs2Table(data, os2, cancellationToken);
-        OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, tables.TryGetValue(GdefTag, out OpenTypeTableRange gdef) ? gdef : null, glyphCount, cancellationToken) : null;
+        OpenTypeTableRange? gdefTable = tables.TryGetValue(GdefTag, out OpenTypeTableRange gdef) ? gdef : null;
+        OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, gdefTable, glyphCount, cancellationToken) : null;
         // Selected GPOS kerning takes precedence, including zero adjustments.
         // Unused legacy contents stay opaque; SFNT ranges were validated above.
         OpenTypeKernTable? kern = gpos is null && tables.TryGetValue(KernTag, out OpenTypeTableRange kernTable) ? ParseKernTable(data, kernTable, glyphCount, cancellationToken) : null;
@@ -90,6 +91,8 @@ internal static partial class OpenTypeFont
                 HasCompleteTrueTypeProfile = maxp.Length >= 32 && ReadUInt32(data, maxp.Offset) == 0x10000,
                 HasGlyphInstructions = maxp.Length >= 32 && ReadUInt32(data, maxp.Offset) == 0x10000 && ReadUInt16(data, maxp.Offset + 26) != 0,
                 ExtendWindowsLcdSpans = extendWindowsSpans,
+                GposTable = tables.ContainsKey(GposTag) ? gposTable : null,
+                GdefTable = gdefTable,
                 Gasp = tables.TryGetValue(0x67617370, out OpenTypeTableRange gasp) ? gasp : null
             };
 
@@ -959,6 +962,8 @@ internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort Gl
     internal bool HasGlyphInstructions { get; init; }
     internal OpenTypeTableRange? Gasp { get; init; }
     internal bool ExtendWindowsLcdSpans { get; init; }
+    internal OpenTypeTableRange? GposTable { get; init; }
+    internal OpenTypeTableRange? GdefTable { get; init; }
 }
 
 /// <summary>Retains bounded alphabetic line metrics in font units without owning additional font storage.</summary>
@@ -976,6 +981,8 @@ internal readonly record struct OpenTypeKernTable(OpenTypeTableRange Range, int 
 internal readonly record struct OpenTypeGposPairTable(OpenTypeTableRange Range, int FeatureOffset, int LookupListOffset, int PairPosOffset, int GlyphClassOffset)
 {
     internal bool HasFilteredPairs { get; init; }
+    internal int MarkClasses { get; init; }
+    internal int MarkSets { get; init; }
 }
 
 /// <summary>Represents the validated fixed header of one nonempty TrueType glyf record.</summary>

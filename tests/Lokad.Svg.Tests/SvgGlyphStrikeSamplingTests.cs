@@ -14,6 +14,28 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGlyphStrikeSamplingTests
 {
     [Theory]
+    [InlineData(1, 0, 0, 1)]
+    [InlineData(-1, 0, 0, 1)]
+    [InlineData(0, 1, -1, 0)]
+    public void Canonical_path_cutoff_is_strict_and_precedes_strike_relaxation(double a, double b, double c, double d)
+    {
+        SvgAffineTransform map = new(a, b, c, d, 1234, -5678);
+        Assert.False(SvgGlyphStrikeTransform.RequiresPath(MathF.BitDecrement(256), map));
+        Assert.False(SvgGlyphStrikeTransform.RequiresPath(256, map));
+        Assert.True(SvgGlyphStrikeTransform.RequiresPath(MathF.BitIncrement(256), map));
+    }
+
+    [Theory]
+    [InlineData(1, 0, 0, 1, false)]
+    [InlineData(1.001, 0, 0, 1, true)]
+    [InlineData(1, .001, 0, 1, true)]
+    [InlineData(1, 0, .001, 1, true)]
+    [InlineData(.8, .6, -.6, .8, false)]
+    [InlineData(.8, .601, -.6, .8, true)]
+    public void Canonical_path_selection_measures_both_transformed_font_axes(double a, double b, double c, double d, bool expected)
+        => Assert.Equal(expected, SvgGlyphStrikeTransform.RequiresPath(256, new(a, b, c, d, 0, 0)));
+
+    [Theory]
     [InlineData(1, 0, 0, 1, true)]
     [InlineData(-1, 0, 0, 1, true)]
     [InlineData(0, 1, -1, 0, true)]

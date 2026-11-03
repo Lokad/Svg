@@ -64,15 +64,16 @@ Conditional Turkish/Azerbaijani and Lithuanian casing uses pinned soft-dotted an
 canonical combining properties. Direct mechanisms cover lookahead, chunk/style
 continuity, empty intervals, original positions and recording ownership. A deletion
 refusal/cancellation/retry contract and a prepared deleted-font contract protect
-distinct lifetimes. The four admitted language controls keep one canonical path.
+distinct lifetimes. Language controls keep one canonical conversion path each.
 
-The broader language milestone remains **open**. The original
+The original
 [Turkic](turkic/control.svg) and [Lithuanian](lithuanian/control.svg) accent-heavy
-witnesses and their frozen native images remain unadmitted: retained combining
-marks reach the existing GPOS mark-positioning guard, including in their literal
-counterparts. They require shared cluster/substitution/attachment work. They are
-not replaced by the smaller admitted controls. [Projection evidence](../svgweb/text-language-projection.json)
-records both outcomes and the next shaping criteria.
+witnesses and their independent literal counterparts match their frozen native
+images exactly on both platforms. Shared clusters, canonical substitutions and
+actual mark attachments preserve the complete sources. The
+[shaping evidence](../svgweb/text-canonical-shaping.json) records the finite
+admission boundary; [projection evidence](../svgweb/text-language-projection.json)
+retains the preceding failure and source-position qualification.
 
 The shared projection recognizes default/English, Turkish, Azerbaijani and
 Lithuanian casing; other language tailoring remains open.

@@ -61,5 +61,5 @@
     }
   },
   "referenceReason": "Independent literal full-titlecase/source-context control. Native CSS observations are retained separately; original SVG positions address source scalars.",
-  "admission": "OPEN: unadmitted literal observation. Emitted combining marks reach the existing GPOS mark-positioning rejection. Preserve source, native input and PNG hashes; do not replace this witness with a simpler source."
+  "admission": "Admitted: the complete source and independently authored literal counterpart match the frozen platform references exactly. Canonical clusters, selected ccmp substitution and actual GPOS/GDEF attachment preserve the original source/native/PNG hashes. See ../../svgweb/text-canonical-shaping.json."
 }

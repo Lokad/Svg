@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Shape covered Latin combining sequences with canonical Unicode ordering,
+  font-covered composition, selected substitutions and actual mark attachments;
+  preserve source clusters through both text-length fitting modes.
+- Paint large transformed glyphs as canonical unhinted paths, preserving
+  translucent solid/gradient fills and clipping without oversized glyph masks.
 - Preserve source indices, text ownership and path bindings through Turkic and
   Lithuanian conditional casing. Empty font needs no longer acquire a font program;
   emitted combining marks remain subject to the documented shaping subset.

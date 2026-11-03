@@ -135,6 +135,10 @@ internal static class SvgGlyphLayout
             glyphCount++;
         }
         if (glyphCount == 0) return (new SvgPositionedGlyphStorage([], 0, null), deviceMetrics, new(false, 1));
+        using OwnedParserArray<SvgShapingGlyph> shaping = SvgTextShaping.Create(font, fontSize, text, letterSpacing,
+            letterSpacingSpans, positionAdjustments, paintSpans, fontSpans, nodeBoundaries, placementRanges, deviceMetrics, budget, cancellationToken);
+        bool shaped = shaping.Items.Length != 0;
+        if (shaped) glyphCount = shaping.Items.Length;
         RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + glyphCount * 32L), SvgMemoryCategory.Geometry);
         RenderBudget.BudgetReservation? clusterReservation = null;
         RenderBudget.BudgetReservation? paintReservation = null;
@@ -168,7 +172,7 @@ internal static class SvgGlyphLayout
                 glyphPaints = new SvgTextGlyphPaint[glyphCount];
             }
             GlyphSourceRange[]? sourceRanges = null;
-            OpenTypeGsubLigatureTable? ligatures = OpenTypeFont.GetLatinLigatures(font.Bytes, font.Metrics, cancellationToken);
+            OpenTypeGsubLigatureTable? ligatures = shaped ? null : OpenTypeFont.GetLatinLigatures(font.Bytes, font.Metrics, cancellationToken);
             Span<GlyphLookup> cachedLookups = stackalloc GlyphLookup[GlyphLookupCacheCapacity];
             int cachedLookupCount = 0;
             int glyphPosition = 0;
@@ -181,18 +185,24 @@ internal static class SvgGlyphLayout
             int mappedFontIndex = 0, mappedPlacementIndex = 0;
             int scalarIndex = 0;
             ushort firstDesignAdvance = 0;
+            int firstContextAdvance = 0;
             double firstWordGap = 0;
             var mappedScalars = text.EnumerateRunes();
-            while (mappedScalars.MoveNext())
+            while (shaped ? glyphPosition < shaping.Items.Length : mappedScalars.MoveNext())
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                Rune scalar = mappedScalars.Current;
+                SvgShapingGlyph shapedGlyph = shaped ? shaping.Items[glyphPosition] : default;
+                Rune scalar = shaped ? Rune.GetRuneAt(text, shapedGlyph.SourceOffset) : mappedScalars.Current;
                 SvgGlyphDeviceMetrics? characterMetrics = deviceMetrics;
-                if (!placementRanges.IsEmpty && deviceMetrics is {} sourceMetrics)
+                bool onTextPath = deviceMetrics is { IsTextPath: true };
+                if (!placementRanges.IsEmpty)
                 {
                     while (placementRanges[mappedPlacementIndex].End <= mappedSourceOffset) mappedPlacementIndex++;
-                    characterMetrics = sourceMetrics with { IsTextPath = placementRanges[mappedPlacementIndex].Path is not null };
+                    onTextPath = placementRanges[mappedPlacementIndex].Path is not null;
+                    if (deviceMetrics is {} sourceMetrics) characterMetrics = sourceMetrics with { IsTextPath = onTextPath };
                 }
+                if (shaped && shapedGlyph.Attachment.Parent >= 0 && onTextPath)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Attached combining marks on text paths are not supported.");
 
                 if (!fontSpans.IsEmpty)
                 {
@@ -202,7 +212,7 @@ internal static class SvgGlyphLayout
                     {
                         font = currentFont.Font;
                         cachedLookupCount = 0;
-                        ligatures = OpenTypeFont.GetLatinLigatures(font.Bytes, font.Metrics, cancellationToken);
+                        ligatures = shaped ? null : OpenTypeFont.GetLatinLigatures(font.Bytes, font.Metrics, cancellationToken);
                     }
                     fontSize = currentFont.FontSize;
                     scale = fontSize / font.UnitsPerEm;
@@ -211,31 +221,52 @@ internal static class SvgGlyphLayout
                 uint scalarValue = (uint)scalar.Value;
                 ushort glyphIndex = 0;
                 ushort advance = 0;
-                int lookupIndex = 0;
-                for (; lookupIndex < cachedLookupCount; lookupIndex++)
+                if (shaped)
                 {
-                    GlyphLookup cached = cachedLookups[lookupIndex];
-                    if (cached.Scalar != scalarValue) continue;
-                    glyphIndex = cached.GlyphIndex;
-                    advance = cached.Advance;
-                    break;
+                    glyphIndex = shapedGlyph.GlyphIndex;
+                    if (glyphIndex == 0)
+                    {
+                        int sourceScalarIndex = 0;
+                        foreach (Rune preceding in text.AsSpan(0, shapedGlyph.SourceOffset).EnumerateRunes())
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                            sourceScalarIndex++;
+                        }
+                        throw new SvgException(SvgErrorCode.UnresolvedResource, $"The selected font has no glyph for U+{scalar.Value:X4} at scalar index {sourceScalarIndex} in the normalized text run.", new SvgFontDiagnostic(SvgFontFailureStage.Glyph, font.Resolution.Resolution.Request.Family, font.Resolution.Resolution.Face.ResolvedFamily, font.Resolution.Resolution.Face.File.RelativePath + ":" + font.Resolution.Resolution.Face.FaceIndex, sourceElementId,
+                            font.Resolution.Resolution.Request.Weight, font.Resolution.Resolution.Request.Italic, font.Resolution.Resolution.IsFallback, scalar.Value, sourceScalarIndex));
+                    }
+                    advance = shapedGlyph.Attachment.Parent >= 0 || shapedGlyph.IsDefaultIgnorable ? (ushort)0 : OpenTypeFont.GetAdvanceWidth(font.Bytes, glyphIndex, font.Metrics, cancellationToken);
                 }
-                if (lookupIndex == cachedLookupCount)
+                else
                 {
-                    glyphIndex = OpenTypeFont.GetGlyphIndex(font.Bytes, scalarValue, font.Metrics, cancellationToken);
-                    if (glyphIndex == 0) throw new SvgException(SvgErrorCode.UnresolvedResource, $"The selected font has no glyph for U+{scalar.Value:X4} at scalar index {scalarIndex} in the normalized text run.", new SvgFontDiagnostic(SvgFontFailureStage.Glyph, font.Resolution.Resolution.Request.Family, font.Resolution.Resolution.Face.ResolvedFamily, font.Resolution.Resolution.Face.File.RelativePath + ":" + font.Resolution.Resolution.Face.FaceIndex, sourceElementId,
-                        font.Resolution.Resolution.Request.Weight, font.Resolution.Resolution.Request.Italic, font.Resolution.Resolution.IsFallback, scalar.Value, scalarIndex));
-                    OpenTypeFont.ValidateGlyphPositioning(font.Bytes, glyphIndex, font.Metrics, cancellationToken);
-                    advance = OpenTypeFont.GetAdvanceWidth(font.Bytes, glyphIndex, font.Metrics, cancellationToken);
-                    if (cachedLookupCount < cachedLookups.Length) cachedLookups[cachedLookupCount++] = new GlyphLookup(scalarValue, glyphIndex, advance);
+                    int lookupIndex = 0;
+                    for (; lookupIndex < cachedLookupCount; lookupIndex++)
+                    {
+                        GlyphLookup cached = cachedLookups[lookupIndex];
+                        if (cached.Scalar != scalarValue) continue;
+                        glyphIndex = cached.GlyphIndex;
+                        advance = cached.Advance;
+                        break;
+                    }
+                    if (lookupIndex == cachedLookupCount)
+                    {
+                        glyphIndex = OpenTypeFont.GetGlyphIndex(font.Bytes, scalarValue, font.Metrics, cancellationToken);
+                        if (glyphIndex == 0) throw new SvgException(SvgErrorCode.UnresolvedResource, $"The selected font has no glyph for U+{scalar.Value:X4} at scalar index {scalarIndex} in the normalized text run.", new SvgFontDiagnostic(SvgFontFailureStage.Glyph, font.Resolution.Resolution.Request.Family, font.Resolution.Resolution.Face.ResolvedFamily, font.Resolution.Resolution.Face.File.RelativePath + ":" + font.Resolution.Resolution.Face.FaceIndex, sourceElementId,
+                            font.Resolution.Resolution.Request.Weight, font.Resolution.Resolution.Request.Italic, font.Resolution.Resolution.IsFallback, scalar.Value, scalarIndex));
+                        OpenTypeFont.ValidateGlyphPositioning(font.Bytes, glyphIndex, font.Metrics, cancellationToken);
+                        advance = OpenTypeFont.GetAdvanceWidth(font.Bytes, glyphIndex, font.Metrics, cancellationToken);
+                        if (cachedLookupCount < cachedLookups.Length) cachedLookups[cachedLookupCount++] = new GlyphLookup(scalarValue, glyphIndex, advance);
+                    }
                 }
-                int sourceLength = scalar.Utf16SequenceLength;
+                int sourceLength = shaped ? GetSourceRange(sourceRanges, shaping.Items, glyphPosition, text, mappedSourceOffset).End - mappedSourceOffset : scalar.Utf16SequenceLength;
                 double spacing = GetLetterSpacing(mappedSourceOffset, letterSpacing, letterSpacingSpans, ref mappedSpacingIndex);
                 while (mappedPositionIndex < positionAdjustments.Length && positionAdjustments[mappedPositionIndex].Start <= mappedSourceOffset)
                 {
                     SvgTextPositionAdjustment adjustment = positionAdjustments[mappedPositionIndex++];
                     if (glyphRotations.Length != 0 && adjustment.Start == mappedSourceOffset) glyphRotations[glyphPosition] = adjustment.Rotation ?? 0;
                 }
+                if (shaped && glyphRotations.Length != 0 && glyphPosition > 0 && shaping.Items[glyphPosition - 1].ClusterStart == shapedGlyph.ClusterStart)
+                    glyphRotations[glyphPosition] = glyphRotations[glyphPosition - 1];
                 int sourceEnd = letterSpacingSpans.IsEmpty ? text.Length : letterSpacingSpans[mappedSpacingIndex].End;
                 if (!fontSpans.IsEmpty) sourceEnd = Math.Min(sourceEnd, fontSpans[mappedFontIndex].End);
                 if (!paintSpans.IsEmpty)
@@ -297,7 +328,12 @@ internal static class SvgGlyphLayout
                     ? metrics.IsTextPath ? metrics.GetAdvance(advance, 0, font.UnitsPerEm, fontSize, spacing, wordGap)
                         : metrics.GetAdvance(advance, font.UnitsPerEm, fontSize) + wordGap
                     : advance * scale + wordGap;
-                if (glyphPosition == 0) { firstDesignAdvance = advance; firstWordGap = wordGap; }
+                if (shaped && shapedGlyph.ContextAdvance != 0)
+                    scaledAdvance = characterMetrics is { UsesCharacterAdvances: true } contextMetrics
+                        ? contextMetrics.GetAdvance(advance, shapedGlyph.ContextAdvance, font.UnitsPerEm, fontSize,
+                            contextMetrics.IsTextPath ? spacing : 0, wordGap)
+                        : scaledAdvance + ScaleDesignOffset(shapedGlyph.ContextAdvance, new(font, fontSize), characterMetrics);
+                if (glyphPosition == 0) { firstDesignAdvance = advance; firstContextAdvance = shapedGlyph.ContextAdvance; firstWordGap = wordGap; }
                 if (!double.IsFinite(scaledAdvance)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
                 glyphs[glyphPosition++] = new SvgPositionedGlyph(glyphIndex, 0, originY, scaledAdvance);
                 mappedSourceOffset += sourceLength;
@@ -315,6 +351,7 @@ internal static class SvgGlyphLayout
                 bool positionedFragmentEnds = mappedPositionIndex < positionAdjustments.Length
                     && positionAdjustments[mappedPositionIndex].Start <= mappedSourceOffset;
                 if (fragments is not null && fragmentStart < glyphPosition
+                    && (!shaped || sourceLength != 0)
                     && (positionedFragmentEnds || mappedSourceOffset >= sourceEnd || characterMetrics is { UsesCharacterAdvances: true }))
                 {
                     int end = mappedNodeIndex < nodeBoundaries.Length ? Math.Min(mappedSourceOffset, nodeBoundaries[mappedNodeIndex].Offset) : mappedSourceOffset;
@@ -325,14 +362,16 @@ internal static class SvgGlyphLayout
             if (fragments is not null && fragmentSourceStart < text.Length)
                 fragments.Add(new(fragmentStart, glyphPosition, 0) { SourceStart = fragmentSourceStart, SourceEnd = text.Length });
             int positionedGlyphCount = glyphPosition;
-            if (positionedGlyphCount == 1 && fragments is not { Count: > 1 } && deviceMetrics is { UsesTextLengthSpacing: true } spacingMetrics)
+            bool singleCluster = shaped && shaping.Items[0].ClusterEnd == text.Length;
+            if ((positionedGlyphCount == 1 || singleCluster) && fragments is not { Count: > 1 } && deviceMetrics is { UsesTextLengthSpacing: true } spacingMetrics)
             {
                 SvgGlyphDeviceMetrics singleMetrics = spacingMetrics with { UsesTextLengthSpacing = false };
                 SvgGlyphFontStyle only = glyphFonts.Length == 0 ? new(font, fontSize) : glyphFonts[0];
                 double naturalAdvance = singleMetrics.IsTextPath
-                    ? singleMetrics.GetAdvance(firstDesignAdvance, 0, only.Font.UnitsPerEm, only.FontSize,
+                    ? singleMetrics.GetAdvance(firstDesignAdvance, firstContextAdvance, only.Font.UnitsPerEm, only.FontSize,
                         letterSpacingSpans.IsEmpty ? letterSpacing : letterSpacingSpans[0].LetterSpacing, firstWordGap)
-                    : singleMetrics.GetAdvance(firstDesignAdvance, only.Font.UnitsPerEm, only.FontSize) + firstWordGap;
+                    : singleMetrics.GetAdvance(firstDesignAdvance, only.Font.UnitsPerEm, only.FontSize) + firstWordGap
+                        + ScaleDesignOffset(firstContextAdvance, only, singleMetrics);
                 if (!double.IsFinite(naturalAdvance)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
                 glyphs[0] = glyphs[0] with { Advance = naturalAdvance };
                 deviceMetrics = singleMetrics;
@@ -350,7 +389,7 @@ internal static class SvgGlyphLayout
             for (int index = 0; index < positionedGlyphCount; index++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                GlyphSourceRange source = GetSourceRange(sourceRanges, index, text, sourceOffset);
+                GlyphSourceRange source = GetSourceRange(sourceRanges, shaping.Items, index, text, sourceOffset);
                 SvgPositionedGlyph glyph = glyphs[index];
                 SvgGlyphDeviceMetrics? glyphMetrics = deviceMetrics;
                 if (!placementRanges.IsEmpty && deviceMetrics is {} sourceMetrics)
@@ -364,7 +403,9 @@ internal static class SvgGlyphLayout
                 {
                     font = glyphFonts[index].Font; fontSize = glyphFonts[index].FontSize; scale = fontSize / font.UnitsPerEm;
                 }
+                bool clusterEnds = !shaped || index + 1 == positionedGlyphCount || shaping.Items[index + 1].ClusterStart != shaping.Items[index].ClusterStart;
                 double currentLetterSpacing = GetLetterSpacing(source.Start, letterSpacing, letterSpacingSpans, ref spacingSpanIndex);
+                if (!clusterEnds) currentLetterSpacing = 0;
                 int glyphSourceOffset = source.Start;
                 sourceOffset = source.End;
                 bool positionedFragmentEnds = false;
@@ -374,9 +415,9 @@ internal static class SvgGlyphLayout
                     positionedFragmentEnds |= positionAdjustments[positionBoundaryIndex].Start > glyphSourceOffset;
                     positionBoundaryIndex++;
                 }
-                positionedFragmentEnds |= positionBoundaryIndex < positionAdjustments.Length
+                positionedFragmentEnds |= clusterEnds && positionBoundaryIndex < positionAdjustments.Length
                     && positionAdjustments[positionBoundaryIndex].Start == sourceOffset;
-                bool chunkEnds = index + 1 == positionedGlyphCount || positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start == sourceOffset && positionAdjustments[positionBoundaryIndex].HasAbsolutePosition;
+                bool chunkEnds = clusterEnds && (index + 1 == positionedGlyphCount || positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start == sourceOffset && positionAdjustments[positionBoundaryIndex].HasAbsolutePosition);
                 bool nodeEnds = false, elementEnds = false;
                 while (nodeBoundaryIndex < nodeBoundaries.Length && nodeBoundaries[nodeBoundaryIndex].Offset <= sourceOffset)
                 {
@@ -395,7 +436,8 @@ internal static class SvgGlyphLayout
                     && ReferenceEquals(glyphPaints[index].Decoration, glyphPaints[index + 1].Decoration);
                 bool samePaint = glyphPaints.Length == 0 || index + 1 < positionedGlyphCount && glyphPaints[index] == glyphPaints[index + 1];
                 int pairAdjustment = 0;
-                if (!chunkEnds && !(elementEnds && scaledElementFontsDiffer) && sameFont && sameSpacing)
+                if (!chunkEnds && !(elementEnds && scaledElementFontsDiffer) && sameFont && sameSpacing
+                    && (!shaped || shaping.Items[index].Attachment.Parent < 0 && !shaping.Items[index].IsDefaultIgnorable))
                 {
                     if (font.Metrics.Gpos is { HasFilteredPairs: true })
                     {
@@ -404,7 +446,7 @@ internal static class SvgGlyphLayout
                             // Find each contiguous shaped run once. A filtered
                             // partner must not cross a font/size or absolute reset.
                             while (kerningBoundaryIndex < positionAdjustments.Length
-                                && (positionAdjustments[kerningBoundaryIndex].Start < sourceOffset || !positionAdjustments[kerningBoundaryIndex].HasAbsolutePosition))
+                                && (positionAdjustments[kerningBoundaryIndex].Start <= glyphSourceOffset || positionAdjustments[kerningBoundaryIndex].Start < sourceOffset || !positionAdjustments[kerningBoundaryIndex].HasAbsolutePosition))
                             {
                                 cancellationToken.ThrowIfCancellationRequested();
                                 kerningBoundaryIndex++;
@@ -436,29 +478,31 @@ internal static class SvgGlyphLayout
                                     if (following.LetterSpacing != runSpacing.LetterSpacing || following.WordSpacing != runSpacing.WordSpacing) break;
                                 }
                                 cancellationToken.ThrowIfCancellationRequested();
-                                runSourceEnd = GetSourceRange(sourceRanges, kerningRunEnd, text, runSourceEnd).End;
+                                runSourceEnd = GetSourceRange(sourceRanges, shaping.Items, kerningRunEnd, text, runSourceEnd).End;
                                 kerningRunEnd++;
                             }
                         }
-                        pairAdjustment = OpenTypeFont.GetPairAdjustment(font.Bytes, glyphs.AsSpan(index, kerningRunEnd - index), font.Metrics, cancellationToken);
+                        pairAdjustment = shaped
+                            ? OpenTypeFont.GetValidatedPairAdjustment(font.Bytes, glyphs.AsSpan(index, kerningRunEnd - index), font.Metrics, cancellationToken)
+                            : OpenTypeFont.GetPairAdjustment(font.Bytes, glyphs.AsSpan(index, kerningRunEnd - index), font.Metrics, cancellationToken);
                     }
-                    else pairAdjustment = OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, cancellationToken);
+                    else pairAdjustment = shaped
+                        ? OpenTypeFont.GetValidatedPairAdjustment(font.Bytes, glyphs.AsSpan(index, 2), font.Metrics, cancellationToken)
+                        : OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, cancellationToken);
                 }
                 double kerning = pairAdjustment * scale;
                 if (pairAdjustment != 0 && glyphMetrics is { UsesCharacterAdvances: false } scalarMetrics)
                 {
-                    float deviceSize = SvgGlyphDeviceMetrics.GetEffectiveFontSize(fontSize * scalarMetrics.Scale);
-                    long fontScale = (long)Math.Clamp((double)(deviceSize * 65536f), 0, int.MaxValue);
-                    long multiplier = (fontScale << 16) / font.UnitsPerEm;
-                    kerning = (double)(((Int128)pairAdjustment * multiplier + 32768) >> 16) / (65536 * scalarMetrics.Scale);
+                    kerning = ScaleDesignOffset(pairAdjustment, new(font, fontSize), scalarMetrics);
                 }
                 if (pairAdjustment != 0 && glyphMetrics is { UsesCharacterAdvances: true } pathMetrics)
                 {
                     ushort advance = OpenTypeFont.GetAdvanceWidth(font.Bytes, glyph.GlyphIndex, font.Metrics, cancellationToken);
+                    int designAdjustment = pairAdjustment + (shaped ? shaping.Items[index].ContextAdvance : 0);
                     glyph = glyph with { Advance = pathMetrics.IsTextPath
-                        ? pathMetrics.GetAdvance(advance, pairAdjustment, font.UnitsPerEm, fontSize, currentLetterSpacing,
+                        ? pathMetrics.GetAdvance(advance, designAdjustment, font.UnitsPerEm, fontSize, currentLetterSpacing,
                             GetWordGap(Rune.GetRuneAt(text, glyphSourceOffset), advance, wordSpacing, letterSpacingSpans, spacingSpanIndex))
-                        : pathMetrics.GetAdvance(advance, pairAdjustment, font.UnitsPerEm, fontSize) };
+                        : pathMetrics.GetAdvance(advance, designAdjustment, font.UnitsPerEm, fontSize) };
                     kerning = 0;
                 }
                 double nextX = chunkEnds || glyphMetrics is { IsTextPath: true } ? x + glyph.Advance : x + glyph.Advance + kerning + currentLetterSpacing;
@@ -528,7 +572,7 @@ internal static class SvgGlyphLayout
                     while (boundarySourceOffset < chunkEndSourceOffset)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        boundarySourceOffset = GetSourceRange(sourceRanges, chunkEnd, text, boundarySourceOffset).End;
+                        boundarySourceOffset = GetSourceRange(sourceRanges, shaping.Items, chunkEnd, text, boundarySourceOffset).End;
                         chunkEnd++;
                     }
                 }
@@ -542,7 +586,7 @@ internal static class SvgGlyphLayout
                     double positionedX = deviceMetrics is SvgGlyphDeviceMetrics positionMetrics
                         ? nominalOrigin + chunkShift + positionMetrics.RoundOffset(localX) : glyphs[index].X;
                     int sourceAdjustment = positionAdjustmentIndex;
-                    GlyphSourceRange source = GetSourceRange(sourceRanges, index, text, sourceOffset);
+                    GlyphSourceRange source = GetSourceRange(sourceRanges, shaping.Items, index, text, sourceOffset);
                     ApplyPositionAdjustment(ref relativeX, ref relativeY, positionedX, originY, source.Start, positionAdjustments, ref positionAdjustmentIndex, cancellationToken);
                     sourceOffset = source.End;
                     double adjustedX = positionedX + relativeX;
@@ -636,6 +680,31 @@ internal static class SvgGlyphLayout
                 chunkShift += chunkWidth - width;
             }
             }
+            if (shaped)
+            {
+                for (int index = 0; index < positionedGlyphCount; index++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    SvgGlyphAttachment attachment = shaping.Items[index].Attachment;
+                    if (attachment.Parent < 0) continue;
+                    if (attachment.Parent >= index) throw new InvalidOperationException("A mark attachment must reference a preceding glyph.");
+                    SvgGlyphFontStyle face = glyphFonts.Length == 0 ? new(font, fontSize) : glyphFonts[index];
+                    double attachedX = glyphs[attachment.Parent].X + ScaleDesignOffset(attachment.X, face, deviceMetrics) * fittedScale;
+                    double attachedY = glyphs[attachment.Parent].Y - ScaleDesignOffset(attachment.Y, face, deviceMetrics);
+                    if (!double.IsFinite(attachedX) || !double.IsFinite(attachedY))
+                        throw new SvgException(SvgErrorCode.LimitExceeded, "Attached text coordinates exceed the admitted numeric range.");
+                    glyphs[index] = glyphs[index] with { X = attachedX, Y = attachedY };
+                }
+                for (int index = 0; index < positionedGlyphCount; index++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (!shaping.Items[index].IsDefaultIgnorable) continue;
+                    SvgPreparedFont face = glyphFonts.Length == 0 ? font : glyphFonts[index].Font;
+                    ushort invisible = OpenTypeFont.GetGlyphIndex(face.Bytes, 0x20, face.Metrics, cancellationToken);
+                    if (invisible == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Default-ignorable text requires a supplied space glyph.");
+                    glyphs[index] = glyphs[index] with { GlyphIndex = invisible };
+                }
+            }
             OwnedParserArray<SvgTextPaintFragment> retainedFragments = !retainPaintFragments || fragments is null ? new([], null) : fragments.Detach();
             fragmentReservation = retainedFragments.Reservation;
             SvgPositionedGlyphStorage result = new(glyphs, positionedGlyphCount, reservation, glyphPaints, paintReservation, glyphFonts, fontReservation, glyphRotations, rotationReservation, retainedFragments.Items, fragmentReservation)
@@ -657,12 +726,29 @@ internal static class SvgGlyphLayout
         }
         finally { clusterReservation?.Dispose(); }
 
+        static double ScaleDesignOffset(int coordinate, SvgGlyphFontStyle face, SvgGlyphDeviceMetrics? metrics)
+        {
+            if (metrics is not {} native) return coordinate * (face.FontSize / face.Font.UnitsPerEm);
+            float size = SvgGlyphDeviceMetrics.GetEffectiveFontSize(face.FontSize * native.Scale);
+            long fontScale = (long)Math.Clamp((double)(size * 65536f), 0, int.MaxValue);
+            long multiplier = (fontScale << 16) / face.Font.UnitsPerEm;
+            return (double)(((Int128)coordinate * multiplier + 32768) >> 16) / (65536 * native.Scale);
+        }
+
         // One-to-one cmap runs borrow the string and need no source array. A
         // substituted glyph keeps its explicit emitted UTF-16 source interval;
         // positioning and filtered lookup traversal do not reconstruct it by
         // adding the lengths of preceding glyphs.
-        static GlyphSourceRange GetSourceRange(GlyphSourceRange[]? ranges, int index, string source, int scalarStart)
-            => ranges is null ? new(scalarStart, scalarStart + (char.IsSurrogatePair(source, scalarStart) ? 2 : 1)) : ranges[index];
+        static GlyphSourceRange GetSourceRange(GlyphSourceRange[]? ranges, ReadOnlySpan<SvgShapingGlyph> shaping, int index, string source, int scalarStart)
+        {
+            if (!shaping.IsEmpty)
+            {
+                SvgShapingGlyph glyph = shaping[index];
+                bool last = index + 1 == shaping.Length || shaping[index + 1].ClusterStart != glyph.ClusterStart;
+                return new(glyph.ClusterStart, last ? glyph.ClusterEnd : glyph.ClusterStart);
+            }
+            return ranges is null ? new(scalarStart, scalarStart + (char.IsSurrogatePair(source, scalarStart) ? 2 : 1)) : ranges[index];
+        }
 
         // Paint quantizes the final anchored source rectangle. Ordinary offsets
         // within a shaped fragment retain scalar precision.
@@ -919,7 +1005,7 @@ internal static class SvgGlyphLayout
     /// <summary>Represents one stack-resident per-run cmap and advance lookup.</summary>
     private readonly record struct GlyphLookup(uint Scalar, ushort GlyphIndex, ushort Advance);
 
-    /// <summary>One glyph's half-open interval in emitted UTF-16 text, before fitting or placement.</summary>
+    /// <summary>Monotone emitted UTF-16 addressing boundaries; only a cluster's last glyph consumes its source characters.</summary>
     private readonly record struct GlyphSourceRange(int Start, int End);
 }
 

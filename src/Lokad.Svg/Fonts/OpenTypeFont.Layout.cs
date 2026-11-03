@@ -4,6 +4,31 @@ using Lokad.Svg.Parsing;
 
 internal static partial class OpenTypeFont
 {
+    /// <summary>Visits a validated feature union in LookupList order, once per selected index.</summary>
+    /// <remarks>Borrowed feature offsets must already have bounded counts and valid lookup indices.
+    /// Allocates no selection array; observes cancellation while scanning each small feature.</remarks>
+    private static bool TryGetNextSelectedLookup(ReadOnlySpan<byte> data, OpenTypeTableRange table,
+        int lookupList, ReadOnlySpan<int> features, ref int previous, out int offset, CancellationToken token)
+    {
+        int next = int.MaxValue;
+        foreach (int feature in features)
+        {
+            if (feature == 0) continue;
+            int count = ReadUInt16(data, feature + 2);
+            for (int index = 0; index < count; index++)
+            {
+                token.ThrowIfCancellationRequested();
+                int candidate = ReadUInt16(data, feature + 4 + index * 2);
+                if (candidate > previous && candidate < next) next = candidate;
+            }
+        }
+        offset = 0;
+        if (next == int.MaxValue) return false;
+        previous = next;
+        offset = GetTableOffset(table, lookupList, ReadUInt16(data, lookupList + 2 + next * 2), 6, "OpenType selected lookup");
+        return true;
+    }
+
     /// <summary>Selects one feature through the default Latin language system, falling back to DFLT.</summary>
     /// <remarks>Feature tags can repeat across scripts. Only the selected language's feature indices
     /// select behavior; other language-specific features remain unused. Borrows validated table bytes,

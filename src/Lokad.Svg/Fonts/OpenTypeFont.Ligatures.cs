@@ -47,38 +47,44 @@ internal static partial class OpenTypeFont
         {
             token.ThrowIfCancellationRequested();
             int subtable = GetTableOffset(table, lookup, ReadUInt16(data, lookup + 6 + index * 2), 6, "GSUB ligature subtable");
-            if (ReadUInt16(data, subtable) != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only format-1 GSUB ligature substitution is supported.");
-            int coverage = GetTableOffset(table, subtable, ReadUInt16(data, subtable + 2), 4, "GSUB ligature coverage");
-            int coveredCount = ValidateGlyphCoverage(data, table, coverage, metrics.GlyphCount, token);
-            int setCount = ReadUInt16(data, subtable + 4);
-            if (setCount != coveredCount) throw InvalidFont("The GSUB ligature coverage and set counts differ.");
-            RequireTableRange(table, subtable, 6 + setCount * 2, "GSUB ligature sets");
-            for (int setIndex = 0; setIndex < setCount; setIndex++)
+            ValidateLigatureSubtable(data, table, subtable, metrics.GlyphCount, ref recordCount, token);
+        }
+        return new OpenTypeGsubLigatureTable(lookup);
+    }
+
+    private static void ValidateLigatureSubtable(ReadOnlySpan<byte> data, OpenTypeTableRange table, int subtable, int glyphCount, ref int recordCount, CancellationToken token)
+    {
+        RequireTableRange(table, subtable, 6, "GSUB ligature subtable");
+        if (ReadUInt16(data, subtable) != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only format-1 GSUB ligature substitution is supported.");
+        int coverage = GetTableOffset(table, subtable, ReadUInt16(data, subtable + 2), 4, "GSUB ligature coverage");
+        int coveredCount = ValidateGlyphCoverage(data, table, coverage, glyphCount, token);
+        int setCount = ReadUInt16(data, subtable + 4);
+        if (setCount != coveredCount) throw InvalidFont("The GSUB ligature coverage and set counts differ.");
+        RequireTableRange(table, subtable, 6 + setCount * 2, "GSUB ligature sets");
+        for (int setIndex = 0; setIndex < setCount; setIndex++)
+        {
+            token.ThrowIfCancellationRequested();
+            int set = GetTableOffset(table, subtable, ReadUInt16(data, subtable + 6 + setIndex * 2), 2, "GSUB LigatureSet");
+            int count = ReadUInt16(data, set);
+            recordCount += count;
+            if (recordCount > MaximumLigatureRecords) throw new SvgException(SvgErrorCode.LimitExceeded, "The GSUB ligature record count exceeds the admitted limit.");
+            RequireTableRange(table, set, 2 + count * 2, "GSUB LigatureSet");
+            for (int ligatureIndex = 0; ligatureIndex < count; ligatureIndex++)
             {
                 token.ThrowIfCancellationRequested();
-                int set = GetTableOffset(table, subtable, ReadUInt16(data, subtable + 6 + setIndex * 2), 2, "GSUB LigatureSet");
-                int count = ReadUInt16(data, set);
-                recordCount += count;
-                if (recordCount > MaximumLigatureRecords) throw new SvgException(SvgErrorCode.LimitExceeded, "The GSUB ligature record count exceeds the admitted limit.");
-                RequireTableRange(table, set, 2 + count * 2, "GSUB LigatureSet");
-                for (int ligatureIndex = 0; ligatureIndex < count; ligatureIndex++)
+                int ligature = GetTableOffset(table, set, ReadUInt16(data, set + 2 + ligatureIndex * 2), 4, "GSUB Ligature");
+                int components = ReadUInt16(data, ligature + 2);
+                if (components < 2) throw InvalidFont("A GSUB ligature needs at least two components.");
+                if (components > MaximumLigatureComponents) throw new SvgException(SvgErrorCode.LimitExceeded, "The GSUB ligature component count exceeds the admitted limit.");
+                RequireTableRange(table, ligature, 4 + (components - 1) * 2, "GSUB Ligature");
+                for (int component = 0; component < components; component++)
                 {
                     token.ThrowIfCancellationRequested();
-                    int ligature = GetTableOffset(table, set, ReadUInt16(data, set + 2 + ligatureIndex * 2), 4, "GSUB Ligature");
-                    int components = ReadUInt16(data, ligature + 2);
-                    if (components < 2) throw InvalidFont("A GSUB ligature needs at least two components.");
-                    if (components > MaximumLigatureComponents) throw new SvgException(SvgErrorCode.LimitExceeded, "The GSUB ligature component count exceeds the admitted limit.");
-                    RequireTableRange(table, ligature, 4 + (components - 1) * 2, "GSUB Ligature");
-                    for (int component = 0; component < components; component++)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        int glyph = ReadUInt16(data, ligature + (component == 0 ? 0 : 2 + component * 2));
-                        if (glyph == 0 || glyph >= metrics.GlyphCount) throw InvalidFont("A GSUB ligature references an invalid glyph.");
-                    }
+                    int glyph = ReadUInt16(data, ligature + (component == 0 ? 0 : 2 + component * 2));
+                    if (glyph == 0 || glyph >= glyphCount) throw InvalidFont("A GSUB ligature references an invalid glyph.");
                 }
             }
         }
-        return new OpenTypeGsubLigatureTable(lookup);
     }
 
     /// <summary>Matches contiguous Basic Latin letters within one spacing/position interval, in font preference order. Borrows all inputs; bounded and cancellable.</summary>

@@ -92,7 +92,7 @@ internal static partial class OpenTypeFont
                     int coverage = GetTableOffset(definitions, markSets, (int)relative, 4, "GDEF mark glyph set coverage");
                     ValidateGlyphCoverage(data, definitions, coverage, glyphCount, cancellationToken);
                 }
-                filteredPairs |= (flags & 6) != 0;
+                filteredPairs |= (flags & 0xFF1E) != 0;
             }
             for (int index = 0; index < count; index++)
             {
@@ -114,7 +114,7 @@ internal static partial class OpenTypeFont
                 else throw new SvgException(SvgErrorCode.UnsupportedFeature, "This GPOS kern lookup type or format is not supported.");
             }
         }
-        return graph with { PairPosOffset = firstPair, GlyphClassOffset = glyphClasses, HasFilteredPairs = filteredPairs };
+        return graph with { PairPosOffset = firstPair, GlyphClassOffset = glyphClasses, HasFilteredPairs = filteredPairs, MarkClasses = markClasses, MarkSets = markSets };
 
         static void ValidatePairSubtable(ReadOnlySpan<byte> data, OpenTypeTableRange table, int offset, ushort glyphCount, CancellationToken token)
         {
@@ -166,20 +166,40 @@ internal static partial class OpenTypeFont
         token.ThrowIfCancellationRequested();
         ReadOnlySpan<byte> data = bytes.Span;
         if (graph.GlyphClassOffset != 0 && GetGposClass(data, graph.GlyphClassOffset, glyph, token) == 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "GPOS mark positioning is not supported in direct text.");
-        int previous = -1;
-        while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, token))
+        ValidateContextualPositioning(data, glyph, graph, token);
+
+        static void ValidateContextualPositioning(ReadOnlySpan<byte> data, ushort glyph, OpenTypeGposPairTable graph, CancellationToken token)
         {
-            if (GetGposLookupType(data, graph.Range, lookup) == 2) continue;
-            int count = ReadUInt16(data, lookup + 4);
-            for (int index = 0; index < count; index++)
+            int previous = -1;
+            while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, token))
             {
-                token.ThrowIfCancellationRequested();
-                int subtable = ReadGposSubtable(data, graph.Range, lookup, index).Offset;
-                int coverage = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 2), 4, "OpenType coverage");
-                if (GetGlyphCoverageIndex(data, coverage, glyph, token) >= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The glyph requires unsupported contextual GPOS positioning.");
+                if (GetGposLookupType(data, graph.Range, lookup) == 2) continue;
+                int count = ReadUInt16(data, lookup + 4);
+                for (int index = 0; index < count; index++)
+                {
+                    token.ThrowIfCancellationRequested();
+                    int subtable = ReadGposSubtable(data, graph.Range, lookup, index).Offset;
+                    int coverage = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 2), 4, "OpenType coverage");
+                    if (GetGlyphCoverageIndex(data, coverage, glyph, token) >= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The glyph requires unsupported contextual GPOS positioning.");
+                }
             }
         }
     }
+
+    /// <summary>Checks a glyph after canonical shaping has established any mark attachment.</summary>
+    /// <remarks>The caller owns the complete shaped run and has validated/applied its contextual
+    /// advances and attachment graph against the same immutable font. Scalar entry points retain
+    /// their conservative contextual guard; this run has executed the selected contexts.</remarks>
+    internal static void ValidateShapedGlyphPositioning(ReadOnlyMemory<byte> bytes, SvgShapingGlyph glyph, OpenTypeFontMetrics metrics, CancellationToken token)
+    {
+        if (glyph.GlyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyph));
+        token.ThrowIfCancellationRequested();
+        if (glyph.Attachment.Parent < 0 && !glyph.IsDefaultIgnorable && metrics.Gpos is { GlyphClassOffset: not 0 } graph
+            && GetGposClass(bytes.Span, graph.GlyphClassOffset, glyph.GlyphIndex, token) == 3)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "GPOS mark positioning is not supported in direct text.");
+    }
+
+
 
     /// <summary>Accumulates ordered kerning lookups, stopping at the first matching subtable even when its adjustment is zero.</summary>
     internal static int GetPairAdjustment(ReadOnlyMemory<byte> bytes, ushort leftGlyphIndex, ushort rightGlyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
@@ -194,8 +214,8 @@ internal static partial class OpenTypeFont
         {
             if (GetGposLookupType(data, graph.Range, lookup) != 2) continue;
             int flags = ReadUInt16(data, lookup + 2);
-            if (IsPairGlyphIgnored(data, graph, leftGlyphIndex, flags, cancellationToken)
-                || IsPairGlyphIgnored(data, graph, rightGlyphIndex, flags, cancellationToken)) continue;
+            if (IsPairGlyphIgnored(data, graph, lookup, leftGlyphIndex, flags, cancellationToken)
+                || IsPairGlyphIgnored(data, graph, lookup, rightGlyphIndex, flags, cancellationToken)) continue;
             adjustment += GetLookupPairAdjustment(data, graph, lookup, leftGlyphIndex, rightGlyphIndex, cancellationToken);
         }
         return adjustment;
@@ -205,40 +225,44 @@ internal static partial class OpenTypeFont
     /// <remarks>Retains no storage. Each visited glyph/table step observes cancellation;
     /// actual mark-positioning and contextual glyphs keep their existing unsupported outcomes.</remarks>
     internal static int GetPairAdjustment(ReadOnlyMemory<byte> bytes, ReadOnlySpan<SvgPositionedGlyph> glyphs, OpenTypeFontMetrics metrics, CancellationToken token)
+        => GetRunPairAdjustment(bytes, glyphs, metrics, false, token);
+
+    /// <summary>Measures kerning within a run whose glyphs and actual mark attachments already passed admission.</summary>
+    /// <remarks>Borrows immutable font bytes and positioned glyphs without storage. The shaping
+    /// caller validates every glyph before this entry point, including last/sole glyphs. Lookup filters
+    /// still apply independently to each lookup's starting glyph and partner.</remarks>
+    internal static int GetValidatedPairAdjustment(ReadOnlyMemory<byte> bytes, ReadOnlySpan<SvgPositionedGlyph> glyphs, OpenTypeFontMetrics metrics, CancellationToken token)
+        => GetRunPairAdjustment(bytes, glyphs, metrics, true, token);
+
+    private static int GetRunPairAdjustment(ReadOnlyMemory<byte> bytes, ReadOnlySpan<SvgPositionedGlyph> glyphs, OpenTypeFontMetrics metrics, bool validated, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         if (glyphs.Length < 2) return 0;
         ushort left = glyphs[0].GlyphIndex;
         if (metrics.Gpos is not OpenTypeGposPairTable graph) return GetKerningAdjustment(bytes, left, glyphs[1].GlyphIndex, metrics, token);
-        ValidateGlyphPositioning(bytes, left, metrics, token);
+        if (!validated) ValidateGlyphPositioning(bytes, left, metrics, token);
         ReadOnlySpan<byte> data = bytes.Span;
         int adjustment = 0, previous = -1;
         while (TryGetNextKernLookup(data, graph, ref previous, out int lookup, token))
         {
             if (GetGposLookupType(data, graph.Range, lookup) != 2) continue;
             int flags = ReadUInt16(data, lookup + 2);
-            if (IsPairGlyphIgnored(data, graph, left, flags, token)) continue;
+            if (IsPairGlyphIgnored(data, graph, lookup, left, flags, token)) continue;
             int next = 1;
             for (; next < glyphs.Length; next++)
             {
                 token.ThrowIfCancellationRequested();
                 ushort right = glyphs[next].GlyphIndex;
-                ValidateGlyphPositioning(bytes, right, metrics, token);
-                if (!IsPairGlyphIgnored(data, graph, right, flags, token)) break;
+                if (!validated) ValidateGlyphPositioning(bytes, right, metrics, token);
+                if (!IsPairGlyphIgnored(data, graph, lookup, right, flags, token)) break;
             }
             if (next < glyphs.Length) adjustment += GetLookupPairAdjustment(data, graph, lookup, left, glyphs[next].GlyphIndex, token);
         }
         return adjustment;
     }
 
-    // Mark filtering is validated at admission; actual mark runs remain unsupported.
-    // Admitted base/ligature filtering applies to both lookup starts and partners.
-    private static bool IsPairGlyphIgnored(ReadOnlySpan<byte> data, OpenTypeGposPairTable graph, ushort glyph, int flags, CancellationToken token)
-    {
-        if ((flags & 6) == 0) return false;
-        int glyphClass = GetGposClass(data, graph.GlyphClassOffset, glyph, token);
-        return glyphClass == 1 && (flags & 2) != 0 || glyphClass == 2 && (flags & 4) != 0;
-    }
+    private static bool IsPairGlyphIgnored(ReadOnlySpan<byte> data, OpenTypeGposPairTable graph, int lookup, ushort glyph, int flags, CancellationToken token)
+        => IsLookupGlyphIgnored(data, new(graph.GlyphClassOffset, graph.MarkClasses, graph.MarkSets), lookup, glyph, flags, token);
 
     private static int GetLookupPairAdjustment(ReadOnlySpan<byte> data, OpenTypeGposPairTable graph, int lookup, ushort leftGlyphIndex, ushort rightGlyphIndex, CancellationToken cancellationToken)
     {
@@ -302,21 +326,7 @@ internal static partial class OpenTypeFont
     // Feature lookup indices are a set; execution order comes from the LookupList.
     // At most 32 selections are scanned per step, with no heap-owned index array.
     private static bool TryGetNextKernLookup(ReadOnlySpan<byte> data, OpenTypeGposPairTable graph, ref int previous, out int offset, CancellationToken token)
-    {
-        int next = int.MaxValue;
-        int count = ReadUInt16(data, graph.FeatureOffset + 2);
-        for (int index = 0; index < count; index++)
-        {
-            token.ThrowIfCancellationRequested();
-            int candidate = ReadUInt16(data, graph.FeatureOffset + 4 + index * 2);
-            if (candidate > previous && candidate < next) next = candidate;
-        }
-        offset = 0;
-        if (next == int.MaxValue) return false;
-        previous = next;
-        offset = GetTableOffset(graph.Range, graph.LookupListOffset, ReadUInt16(data, graph.LookupListOffset + 2 + next * 2), 6, "GPOS lookup");
-        return true;
-    }
+        => TryGetNextSelectedLookup(data, graph.Range, graph.LookupListOffset, [graph.FeatureOffset], ref previous, out offset, token);
 
     private static int ValidateGlyphCoverage(ReadOnlySpan<byte> data, OpenTypeTableRange table, int offset, int glyphCount, CancellationToken token)
     {

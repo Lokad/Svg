@@ -1,0 +1,62 @@
+{
+  "input": "control.svg",
+  "inputSha256": "6f47f360f98eb92b46aa0fd67d57c20ec9470f396326249f3ad54cf10b8c2b0b",
+  "nativeInputSha256": "1142ad780064d223f8647fff612e063d705f4bda52d7d1f5bf81c15260190356",
+  "font": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "width": 560,
+  "height": 176,
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "3317f327ca39a9bb28aa8be60d71edfe74f0681d21f10edfa28655b368aabf44",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "3317f327ca39a9bb28aa8be60d71edfe74f0681d21f10edfa28655b368aabf44",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "3317f327ca39a9bb28aa8be60d71edfe74f0681d21f10edfa28655b368aabf44",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "3317f327ca39a9bb28aa8be60d71edfe74f0681d21f10edfa28655b368aabf44",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "f1e059f6511803aa20ab223831c1efd30a8155622c2a6c1c293d6465ced8d973",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "f1e059f6511803aa20ab223831c1efd30a8155622c2a6c1c293d6465ced8d973",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "f1e059f6511803aa20ab223831c1efd30a8155622c2a6c1c293d6465ced8d973",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "f1e059f6511803aa20ab223831c1efd30a8155622c2a6c1c293d6465ced8d973",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    }
+  },
+  "referenceReason": "Independent native source: ligature/mark attachments, actual contextual kerning versus composed-pair kerning, default-ignorable ordering, and both length-adjust modes. Frozen before any library comparison."
+}

@@ -398,7 +398,7 @@ keep this boundary separate from supplied-program rendering.
 | Area | Accepted boundary |
 | --- | --- |
 | Programs | Standalone static TrueType, face index 0, composites and bounded hinting; unsupported executed instructions fail. |
-| Characters | Horizontal LTR ASCII, tested precomposed Latin and covered supplementary scalars; no bidi/joining/complex-script/mark shaping. |
+| Characters | Horizontal LTR ASCII, covered Latin combining sequences and supplementary scalars; no bidi, joining or general complex-script shaping. |
 | Layout | Ordered text/CDATA/whitespace, nested spans, inherited/per-span styles, scalar/list x/y/dx/dy/rotate, anchors, spacing, explicit lines, textLength spacing/spacingAndGlyphs and alphabetic/middle/hanging baselines. |
 | Painting | Affine solid/gradient/pattern fills and strokes, dashes/non-scaling widths/paint order and solid underline/overline/line-through. |
 | Text paths | One local open/closed geometry path per run, transformed/curved paths, advances/kerning, length/percentage startOffset, anchors/tangents, align/exact spacing and mixed direct/path text. |
@@ -445,10 +445,21 @@ the lowercase first letter unit and preserves other characters. Cased word start
 follow Unicode 17 UAX29 rules, including medial punctuation, numeric prefixes and
 connectors. Conditional language rules can add or remove combining dots; empty
 spans do not select a font or become another element's text. Emitted characters
-remain subject to the font-shaping subset: GPOS mark positioning is unsupported.
-The [language projection evidence](../tests/Research/svgweb/text-language-projection.json)
-retains two accent-heavy controls pending that prerequisite. Other content-language
-tailoring remains unsupported.
+remain subject to the font-shaping subset below. Complete accent-heavy language
+controls and their independent literal counterparts protect the emitted clusters;
+[shaping evidence](../tests/Research/svgweb/text-canonical-shaping.json) records
+their exact scope. Other content-language tailoring remains unsupported.
+
+Canonical Unicode 17 decomposition, stable combining-class ordering and
+font-covered recomposition precede selected Latin/DFLT `ccmp` substitution.
+The admitted substitutions are unfiltered single, ligature and bounded
+class-context substitutions calling single lookups. Shared source clusters retain
+original paint/position ownership. Selected GPOS `mark`/`mkmk` supports base,
+actual ligature-component and mark attachment with format-1 anchors and validated
+GDEF classes/filter sets. Contextual kerning admits bounded class contexts calling
+single X-advance adjustments. Marks and default-ignorables keep their context
+through positioning before their advances are zeroed. Unsupported selected lookup
+forms still reject; attached marks on text paths remain unsupported.
 
 `SvgFontFaceRequest.FromCss` preserves family order, quoting, escapes and named/
 generic identity. `SvgFontSelectionPolicy` supplies host generic mappings and
@@ -484,8 +495,8 @@ including zero adjustments, supersedes legacy kern; required legacy kern permits
 one horizontal format-0 subtable. Format-1 type-9 extensions preserve the supported
 inner lookup's behavior, outer flags and execution order; recursive/mixed-type
 extensions reject. Type-2 pairs admit RIGHT_TO_LEFT, IgnoreBaseGlyphs
-and IgnoreLigatures with validated GDEF. IgnoreMarks, mark attachment and format-1
-filter sets admit non-mark runs; actual mark positioning rejects. Other reserved
+and IgnoreLigatures with validated GDEF. IgnoreMarks, mark-attachment classes and
+format-1 filter sets also apply to admitted positioned-mark runs. Other reserved
 flags/types/formats and invalid metadata reject.
 
 Font discovery follows live pattern/mask/marker uses in their resource context.

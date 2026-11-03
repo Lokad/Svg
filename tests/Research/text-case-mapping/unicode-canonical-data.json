@@ -1,0 +1,24 @@
+{
+  "unicodeVersion": "17.0.0",
+  "sources": {
+    "UnicodeData.txt": {
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt",
+      "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
+    },
+    "DerivedNormalizationProps.txt": {
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/DerivedNormalizationProps.txt",
+      "sha256": "71fd6a206a2c0cdd41feb6b7f656aa31091db45e9cedc926985d718397f9e488"
+    },
+    "DerivedCoreProperties.txt": {
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/DerivedCoreProperties.txt",
+      "sha256": "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08"
+    }
+  },
+  "propertyRanges": 637,
+  "canonicalDecompositions": 2081,
+  "canonicalCompositions": 961,
+  "defaultIgnorableRanges": 17,
+  "maximumDecomposedScalars": 4,
+  "hangul": "Algorithmic canonical decomposition and composition.",
+  "dataLfSha256": "5569d24f01e846491c08255872b49588e4ef9f3d0d51e69ea26c854c0af4082a"
+}

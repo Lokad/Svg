@@ -45,8 +45,11 @@ original requirements. The [uppercase projection](text-case-projection.json),
 [lowercase context](text-lowercase-context.json) and
 [capitalization](text-capitalization.json) qualify original addressing, expansion,
 word continuity and transformed font discovery. [Conditional language projection](text-language-projection.json)
-adds original-context mappings and empty-range ownership; its broader rendering
-milestone remains open at two preserved mark-dependent witnesses.
+adds original-context mappings and empty-range ownership.
+[Canonical shaping and fitting](text-canonical-shaping.json) closes both preserved
+mark-dependent witnesses, including their literal counterparts, through shared
+clusters, selected substitutions, attachments and canonical glyph-path painting.
+The remaining font/language boundaries stay explicit in the support matrix.
 ny1 now reaches the invalid CSS name `stroke-fill`; the complete original remains
 unsupported and needs a shared invalid-versus-unimplemented declaration review.
 

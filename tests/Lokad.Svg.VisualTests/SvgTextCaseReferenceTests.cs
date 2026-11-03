@@ -31,4 +31,10 @@ public sealed class SvgTextCaseReferenceTests
     [InlineData("language-indexed")]
     public Task Language_casing_preserves_original_context_positions_and_empty_owners(string identity)
         => NativeFontFixture.AssertMatches("text-case-mapping/" + identity, "text-case-" + identity, "Example");
+
+    [Theory]
+    [InlineData("turkic")]
+    [InlineData("lithuanian")]
+    public Task Language_casing_preserves_complete_canonical_clusters_and_mark_attachment(string identity)
+        => NativeFontFixture.AssertMatches("text-case-mapping/" + identity, "text-case-" + identity, "Example");
 }

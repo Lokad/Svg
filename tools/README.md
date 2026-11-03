@@ -404,7 +404,7 @@ documents explicit local/HTTP font acquisition and host responsibilities.
 The package smoke script checks inline README file links before building
 and running its clean installed-package consumer.
 
-## Pinned case data
+## Pinned Unicode data
 
 Run `python -X utf8 tools/generate-unicode-case-data.py` to regenerate the
 [Unicode table](../src/Lokad.Svg/Parsing/SvgTextCasing.Data.cs) and its
@@ -413,6 +413,11 @@ The script verifies pinned Unicode 17 source hashes and keeps downloads in memor
 It includes upper/lower mappings, lowercase-initial titlecase mappings and pinned
 casing/word-context properties, soft-dotted characters and canonical combining
 classes needed by conditional language rules.
+Run `python -X utf8 tools/generate-unicode-canonical-data.py` for the separate
+[canonical shaping table](../src/Lokad.Svg/Fonts/SvgCanonicalText.Data.cs) and its
+[source hashes](../tests/Research/text-case-mapping/unicode-canonical-data.json).
+It pins combining classes, recursive decompositions, composition exclusions and
+default-ignorable properties, using the same hash-checked, memory-only downloads.
 It does not capture rendering references. Data licensing is included in
 [third-party notices](../THIRD_PARTY_NOTICES.txt); the [case bank](../tests/Research/text-case-mapping/README.md)
 describes native admission and the independent literal controls.

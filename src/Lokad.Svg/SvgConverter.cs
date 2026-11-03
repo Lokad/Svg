@@ -3664,7 +3664,7 @@ public static partial class SvgConverter
                     RasterizeRadialFill(geometry.Radial, destination, pass);
                     return;
                 case SvgGeometryKind.PolygonFill:
-                    RasterizePolygonFill(geometry.Polygon, geometry.AuthoredPath, destination, ReadOnlySpan<byte>.Empty);
+                    RasterizePolygonFill(geometry.Polygon, geometry.AuthoredPath, destination, ReadOnlySpan<byte>.Empty, PathCoordinateSpace.User);
                     return;
                 case SvgGeometryKind.GradientPolygon:
                     RasterizeGradientPolygon(geometry.GradientPolygon, geometry.AuthoredPath, destination);
@@ -4237,12 +4237,12 @@ public static partial class SvgConverter
             return activeViewport.Mask.IsOpaqueRectangle(clip, outputWidth, cancellationToken) ? paintClip : SvgAnalyticPaintClip.Antialiased;
         }
 
-        void RasterizePolygonFill(SvgPolygonFill polygon, SvgAuthoredPath? authoredPath, byte[] destination, ReadOnlySpan<byte> fontPreblend)
+        void RasterizePolygonFill(SvgPolygonFill polygon, SvgAuthoredPath? authoredPath, byte[] destination, ReadOnlySpan<byte> fontPreblend, PathCoordinateSpace coordinateSpace)
         {
             // Flattened fallback points do not establish whether an authored
             // curve encloses ink. No-fill paint still suppresses source replay.
             if (!polygon.HasFill || (polygon.Points.Length < 3 && fontPreblend.IsEmpty && authoredPath is null)) return;
-            using MappedPolygon raster = MapPolygon(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.QuadSpans, polygon.CubicSpans, polygon.Mapping, polygon.Clip, authoredPath, fontPreblend.Length == 0 ? PathCoordinateSpace.User : PathCoordinateSpace.Device);
+            using MappedPolygon raster = MapPolygon(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.QuadSpans, polygon.CubicSpans, polygon.Mapping, polygon.Clip, authoredPath, coordinateSpace);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgAnalyticPaint glyphPaint = ResolveSolidPaint(polygon.Color);
             if (surfaceMode == RasterSurfaceMode.PremultipliedFilter && fontPreblend.IsEmpty && !collectingViewportClip
@@ -5094,6 +5094,17 @@ public static partial class SvgConverter
                 && (glyphLinear is not null || glyphRadial is {} radialFactory && SvgShaderCoordinates.UsesRadialFactory(radialFactory));
             if (glyphSource is SvgGlyphRasterSource source && (OperatingSystem.IsLinux() || OperatingSystem.IsWindows()))
             {
+                if (glyph.StrokePaint is null && source.UsesCanonicalPath(device.A, device.D))
+                {
+                    using SvgAuthoredPath path = source.CreateCanonicalPath(device.A, device.E, device.D, device.F, budget, cancellationToken);
+                    if (glyph.Shader is null || collectingViewportClip)
+                    {
+                        using SvgPolygonFill fill = SvgPolygonFill.Create([], [], null, glyph.Color, true, false, SvgPolygonMapping.NativeFillEdges, null, null, budget);
+                        RasterizePolygonFill(fill, path, destination, ReadOnlySpan<byte>.Empty, PathCoordinateSpace.Device);
+                    }
+                    else RasterizeCanonicalShaderPath(path);
+                    return;
+                }
                 if (glyph.StrokePaint is {} strokePaint)
                 {
                     using SvgAuthoredPath path = source.CreateStrokePath(strokePaint, device.A, device.E, device.D, device.F, budget, cancellationToken);
@@ -5228,6 +5239,36 @@ public static partial class SvgConverter
             {
                 minimumX = Math.Min(minimumX, point.X); minimumY = Math.Min(minimumY, point.Y);
                 maximumX = Math.Max(maximumX, point.X); maximumY = Math.Max(maximumY, point.Y);
+            }
+
+            void RasterizeCanonicalShaderPath(SvgAuthoredPath path)
+            {
+                using MappedPolygon raster = MapPolygon([], [], null, false, [], [], SvgPolygonMapping.NativeFillEdges, null, path, PathCoordinateSpace.Device);
+                if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
+                SvgAnalyticContourPreparation preparation = new(raster.Points, raster.ContourEnds, ReadOnlySpan<int>.Empty,
+                    false, null, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(),
+                    outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
+                foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    SvgCpuRasterContext context = LayerRasterContext(cpuTile);
+                    if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
+                    using PolygonRaster traversal = new(ref preparation, raster, context, ActiveClipBounds(context),
+                        PolygonPaintClip(raster, context), context.Interior, budget, cancellationToken);
+                    for (int y = traversal.StartY; y < traversal.EndY; y++)
+                    {
+                        traversal.PrepareRow(y, cancellationToken);
+                        SvgAnalyticScanWindow window = traversal.GetPaintWindow();
+                        for (int x = window.Left; x < window.Right; x++)
+                        {
+                            if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                            SvgAnalyticPaint paint = GlyphPaintAt(x, y);
+                            if (activeViewport.HasMask && activeViewport.IsBinary && !activeViewport.IsRectangle && !maskLuminanceLayer)
+                                paint = paint.ThroughBinaryRegion();
+                            traversal.PaintPixel(x, destination.AsSpan((y * outputWidth + x) * 4, 4), paint, PolygonClipCoverage(raster, x, y));
+                        }
+                    }
+                }
             }
 
             // Native glyph strikes construct their mask in a small, independent bitmap.

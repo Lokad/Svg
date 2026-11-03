@@ -1,0 +1,521 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "5c480f130f965f10976bb59fa72dc09926722cf8",
+  "status": "CLOSED: finite canonical Latin shaping, complete Turkic/Lithuanian witnesses and both fitting modes. OPEN: other W1 contexts and the pre-existing Windows DejaVu reference-authority conflict.",
+  "scope": {
+    "newCoreCases": 95,
+    "newOwnershipContracts": 2,
+    "newCanonicalRenderingCases": 4,
+    "existingTestsRemoved": 0,
+    "existingReferencesChanged": 0,
+    "newPublicTypes": 0,
+    "newRuntimeDependencies": 0,
+    "hostedSvgBodiesRetained": 0
+  },
+  "model": {
+    "normalization": "Pinned Unicode 17 recursive canonical decomposition, stable class ordering and font-covered recomposition; Hangul is algorithmic. Ordinary cmap-only text retains its fast path.",
+    "clusters": "SourceOffset selects original paint ownership; shared ClusterStart/End survive reordering and substitutions. Only the last glyph consumes a cluster during fitting.",
+    "substitution": "Selected default Latin/DFLT ccmp: unfiltered singles, ligatures and bounded class contexts calling singles. Existing liga remains distinct.",
+    "positioning": "Shared bounded class-context validation; actual GPOS XAdvance execution; selected mark/mkmk base, actual ligature-component and mark anchors with validated GDEF filtering. Mark/default-ignorable advances are zeroed after positioning.",
+    "paths": "Before mask-strike relaxation, either transformed font axis strictly exceeding 256 pixels selects a 64-pixel unhinted canonical outline and unsnapped placement. Existing analytic fill, shader and clip stages paint directly without a glyph bitmap.",
+    "ownership": "Transient budgeted glyph/cluster and path-command owners; fonts stay borrowed. Peak-minus-one refusal, exact-peak retry and cancellation release storage.",
+    "boundaries": "Physical face/size, paint, spacing, absolute positions, native scaled-element nodes and placement boundaries remain distinct. Attached marks on text paths, other language tailoring and general bidi/complex-script shaping remain unsupported."
+  },
+  "independentControls": {
+    "text-mark-shaping": {
+      "inputSha256": "6f47f360f98eb92b46aa0fd67d57c20ec9470f396326249f3ad54cf10b8c2b0b",
+      "nativeInputSha256": "1142ad780064d223f8647fff612e063d705f4bda52d7d1f5bf81c15260190356",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "platforms": {
+        "windows": {
+          "referenceSha256": "3317f327ca39a9bb28aa8be60d71edfe74f0681d21f10edfa28655b368aabf44",
+          "healthyIdenticalCaptures": 3
+        },
+        "linux": {
+          "referenceSha256": "f1e059f6511803aa20ab223831c1efd30a8155622c2a6c1c293d6465ced8d973",
+          "healthyIdenticalCaptures": 3
+        }
+      }
+    },
+    "text-canonical-path": {
+      "inputSha256": "d7520d8f0527fc6dbbbfd4f67b1146b9aa9011ab956178109dfa541142077c4a",
+      "nativeInputSha256": "7ff8cefd67bca714b76a84814e9064f63ba78fff687efc213c4e167fbc76de52",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "platforms": {
+        "windows": {
+          "referenceSha256": "03f67b80906ed79381ddd729ad967c2644ba3fe5178263bd6c9daffc32b1dfc2",
+          "healthyIdenticalCaptures": 3
+        },
+        "linux": {
+          "referenceSha256": "1b5ccd915bf0b74eea021e38a6d840ad2d13d17266131dfdb5267b560806f09a",
+          "healthyIdenticalCaptures": 3
+        }
+      }
+    }
+  },
+  "languageWitnesses": {
+    "controlsAndLiteralCounterparts": "All eight platform comparisons exact; original input/native/reference hashes unchanged.",
+    "preparedReplay": [
+      {
+        "host": "windows",
+        "case": "text-case-mapping/turkic",
+        "kind": "control",
+        "inputSha256": "41d24ff3bccc8d379f67212dedbbf5ef3a9024b9527ef11ad1a8cd773c957772",
+        "changedPixels": 0,
+        "maxError": 0
+      },
+      {
+        "host": "windows",
+        "case": "text-case-mapping/turkic",
+        "kind": "reference",
+        "inputSha256": "57062f4ae234d469ba848647f7b092c0faf2215da71dd2147963c485dde49472",
+        "changedPixels": 0,
+        "maxError": 0
+      },
+      {
+        "host": "windows",
+        "case": "text-case-mapping/lithuanian",
+        "kind": "control",
+        "inputSha256": "169626e15aad9eac80d6518275a5f1cf7c31af5a70a881ac64a34d8a2d5f5e2e",
+        "changedPixels": 0,
+        "maxError": 0
+      },
+      {
+        "host": "windows",
+        "case": "text-case-mapping/lithuanian",
+        "kind": "reference",
+        "inputSha256": "3d612ed337010e7d898c651ee8e008ac224a264481fd53d42ff84504377e9e45",
+        "changedPixels": 0,
+        "maxError": 0
+      },
+      {
+        "host": "windows",
+        "case": "text-mark-shaping",
+        "kind": "control",
+        "inputSha256": "6f47f360f98eb92b46aa0fd67d57c20ec9470f396326249f3ad54cf10b8c2b0b",
+        "changedPixels": 0,
+        "maxError": 0
+      },
+      {
+        "host": "linux",
+        "case": "text-case-mapping/turkic",
+        "kind": "control",
+        "inputSha256": "41d24ff3bccc8d379f67212dedbbf5ef3a9024b9527ef11ad1a8cd773c957772",
+        "changedPixels": 0,
+        "maxError": 0
+      },
+      {
+        "host": "linux",
+        "case": "text-case-mapping/turkic",
+        "kind": "reference",
+        "inputSha256": "57062f4ae234d469ba848647f7b092c0faf2215da71dd2147963c485dde49472",
+        "changedPixels": 0,
+        "maxError": 0
+      },
+      {
+        "host": "linux",
+        "case": "text-case-mapping/lithuanian",
+        "kind": "control",
+        "inputSha256": "169626e15aad9eac80d6518275a5f1cf7c31af5a70a881ac64a34d8a2d5f5e2e",
+        "changedPixels": 0,
+        "maxError": 0
+      },
+      {
+        "host": "linux",
+        "case": "text-case-mapping/lithuanian",
+        "kind": "reference",
+        "inputSha256": "3d612ed337010e7d898c651ee8e008ac224a264481fd53d42ff84504377e9e45",
+        "changedPixels": 0,
+        "maxError": 0
+      },
+      {
+        "host": "linux",
+        "case": "text-mark-shaping",
+        "kind": "control",
+        "inputSha256": "6f47f360f98eb92b46aa0fd67d57c20ec9470f396326249f3ad54cf10b8c2b0b",
+        "changedPixels": 0,
+        "maxError": 0
+      }
+    ]
+  },
+  "failingBefore": [
+    {
+      "host": "windows",
+      "librarySha256": "cc82951ed82b996c7bbdcba80ecd80e524c80bd8752fc8317a52a44c167b475c",
+      "counters": {
+        "executed": "4",
+        "passed": "0",
+        "failed": "4"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgTextCaseReferenceTests.Language_casing_preserves_complete_canonical_clusters_and_mark_attachment(identity: \"turkic\")",
+          "message": "Lokad.Svg.SvgException : GPOS mark positioning is not supported in direct text."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgTextCaseReferenceTests.Language_casing_preserves_complete_canonical_clusters_and_mark_attachment(identity: \"lithuanian\")",
+          "message": "Lokad.Svg.SvgException : GPOS mark positioning is not supported in direct text."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgTextMarkReferenceTests.Canonical_marks_preserve_ligatures_contextual_advances_default_ignorables_and_fitting",
+          "message": "Lokad.Svg.SvgException : GPOS mark positioning is not supported in direct text."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgTextMarkReferenceTests.Canonical_glyph_paths_preserve_translucency_shaders_and_clipping",
+          "message": "{\"DimensionsMatch\":true,\"ChangedPixelCount\":3919,\"MaximumChannelError\":255,\"MeanAbsoluteError\":1.1912081473214287,\"RootMeanSquareError\":11.12860708477577,\"MaximumAlphaError\":221,\"AlphaChangedPixelCount\":3901,\"MinimumMismatchX\":34,\"MinimumMismatchY\":18,\"MaximumMismatchX\":340,\"MaximumMismatchY\":137,\"IsExact\":false}"
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "librarySha256": "cc82951ed82b996c7bbdcba80ecd80e524c80bd8752fc8317a52a44c167b475c",
+      "counters": {
+        "executed": "4",
+        "passed": "0",
+        "failed": "4"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgTextMarkReferenceTests.Canonical_glyph_paths_preserve_translucency_shaders_and_clipping",
+          "message": "{\"DimensionsMatch\":true,\"ChangedPixelCount\":3791,\"MaximumChannelError\":212,\"MeanAbsoluteError\":0.9202260044642857,\"RootMeanSquareError\":9.361322910222908,\"MaximumAlphaError\":130,\"AlphaChangedPixelCount\":3757,\"MinimumMismatchX\":34,\"MinimumMismatchY\":18,\"MaximumMismatchX\":339,\"MaximumMismatchY\":137,\"IsExact\":false}"
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgTextMarkReferenceTests.Canonical_marks_preserve_ligatures_contextual_advances_default_ignorables_and_fitting",
+          "message": "Lokad.Svg.SvgException : GPOS mark positioning is not supported in direct text."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgTextCaseReferenceTests.Language_casing_preserves_complete_canonical_clusters_and_mark_attachment(identity: \"turkic\")",
+          "message": "Lokad.Svg.SvgException : GPOS mark positioning is not supported in direct text."
+        },
+        {
+          "name": "Lokad.Svg.VisualTests.SvgTextCaseReferenceTests.Language_casing_preserves_complete_canonical_clusters_and_mark_attachment(identity: \"lithuanian\")",
+          "message": "Lokad.Svg.SvgException : GPOS mark positioning is not supported in direct text."
+        }
+      ]
+    }
+  ],
+  "rejectedCandidate": {
+    "cause": "Fused paint-origin arithmetic copied a distinct native DOM character-query stage. Full rendering qualification exposed five existing fi span contexts: direct, use, symbol, pattern and mask.",
+    "closure": "Restored the established unfused paint calculation. All five and all four new complete controls pass; frozen sources, DOM observations and PNGs remain intact. The two new origin mechanism assertions were corrected to the paint-stage contract, rather than the DOM query."
+  },
+  "coverage": {
+    "mechanism": "Canonical normalization, blocking/order/barriers, font coverage, substitutions/context references, malformed/unsupported anchors/classes/tables, real mark offsets and ligature components, source boundaries, fitting and strict transformed-axis cutoff.",
+    "contract": "Two new representative owners cover partial shaping cancellation and canonical-path storage; refusal/cleanup/exact-peak retry are direct. Existing API/destination/prepared contracts stay shared.",
+    "rendering": "Four canonical regressions add complete Turkic and Lithuanian witnesses, four-row ligature/context/CGJ/fitting and translucent/gradient/clipped path painting. Platform differences remain independent; no fixture/API multiplication.",
+    "inventory": "No original test names removed compared with the preceding full language milestone: +96 core includes the prior explicit-range case; +4 rendering."
+  },
+  "validation": {
+    "builds": {
+      "frameworks": [
+        "net11.0",
+        "net10.0"
+      ],
+      "warnings": 0,
+      "errors": 0
+    },
+    "focused": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "seconds": 15.057521999813616,
+        "counters": {
+          "executed": "262",
+          "passed": "262",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "seconds": 12.93534140009433,
+        "counters": {
+          "executed": "262",
+          "passed": "262",
+          "failed": "0"
+        }
+      }
+    ],
+    "milestone": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "seconds": 90.04422129993327,
+        "counters": {
+          "executed": "46648",
+          "passed": "46647",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "seconds": 253.23622479988262,
+        "counters": {
+          "executed": "46648",
+          "passed": "46648",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "seconds": 80.52026430005208,
+        "counters": {
+          "executed": "47288",
+          "passed": "47288",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font-host",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "seconds": 1.4665161001030356,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "seconds": 72.51868980005383,
+        "counters": {
+          "executed": "23658",
+          "passed": "23658",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "seconds": 12.58189949998632,
+        "counters": {
+          "executed": "23",
+          "passed": "23",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font-host",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "seconds": 1.5348728999961168,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "seconds": 60.297398699913174,
+        "counters": {
+          "executed": "47288",
+          "passed": "47288",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font-host",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "seconds": 1.5139355000574142,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "seconds": 43.84104119986296,
+        "counters": {
+          "executed": "23658",
+          "passed": "23658",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "seconds": 12.4118248000741,
+        "counters": {
+          "executed": "23",
+          "passed": "23",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font-host",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "seconds": 3.690241200150922,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "sameFourControlSelectionTiming": [
+      {
+        "host": "windows",
+        "beforeSeconds": 22.892290899995714,
+        "beforePassed": 0,
+        "beforeFailed": 4,
+        "afterSeconds": 11.199128200067207,
+        "afterPassed": 4,
+        "afterFailed": 0
+      },
+      {
+        "host": "linux",
+        "beforeSeconds": 30.594646600075066,
+        "beforePassed": 0,
+        "beforeFailed": 4,
+        "afterSeconds": 9.603710900060833,
+        "afterPassed": 4,
+        "afterFailed": 0
+      }
+    ],
+    "timingInterpretation": "Wall time includes process startup and concurrent qualification. Different success/failure work and host load prevent a speedup claim; this milestone adds coverage and removes no tests.",
+    "originals": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 58.927318499889225,
+      "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 34,
+            "rendered": 167,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 167,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 34,
+            "rendered": 167,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 167,
+          "changedOriginals": []
+        }
+      }
+    },
+    "suppliedContexts": {
+      "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+      "files": 19,
+      "seconds": 20.320558300008997,
+      "sourceBodiesRetained": 0,
+      "referenceChanges": 0
+    },
+    "completeStaticFilterDiagnostic": {
+      "staticInputSha256": "45937fbfb9ec0482e89745dcbb40693384e6269354563706ee04162cb57ca90e",
+      "nativeInputSha256": "d5f4563e03ed5f6742ceb8f40580de0fddf5f3d3e890c6ddd2b23909b80405be",
+      "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+      "results": [
+        {
+          "host": "windows",
+          "comparison": {
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null
+          },
+          "libraryPngSha256": "bd4645f8ce20e26629b7b0e6f3d169a3f94a92ab9d984a08dbbc6f2ab0cb310b",
+          "nativePngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d"
+        },
+        {
+          "host": "linux",
+          "comparison": {
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null
+          },
+          "libraryPngSha256": "967e6661a96150e88f14da5647c4de2d596bb1d7d5dff9be75b6957ea94aa828",
+          "nativePngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d"
+        }
+      ]
+    },
+    "packages": [
+      {
+        "kind": "nupkg",
+        "sha256": "cf6028405caf9a6be23f3dbc1d1cd6ba8a939f3d3240cb89908b7f1f746928a6",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true,
+        "assets": {
+          "net11.0": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+          "net10.0": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd"
+        },
+        "noRuntimeDependencies": true
+      },
+      {
+        "kind": "snupkg",
+        "sha256": "d677a3d7a026ccabaa48d49848ef43fab4a264640c5168a1ef80d43cfcb7ffb2",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 9.966268499847502
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 58.824144599959254
+      }
+    ]
+  },
+  "knownQualificationConflict": "Windows DejaVu frozen reference remains unchanged. The same existing single case fails with the same message hash; prior three healthy native captures match the candidate. No reference refresh or CI-green claim. User authority remains pending."
+}

@@ -116,8 +116,23 @@ Substituted glyphs keep explicit emitted UTF-16 source ranges through spacing,
 filtered pair lookup and position resets. Ordinary one-scalar glyphs borrow the
 text without allocating that scratch array; substituted runs charge and release
 it during layout. The [qualified source ranges](../tests/Research/svgweb/text-glyph-source-ranges.json)
-preserve current ligature behavior; canonical mark reordering, shared clusters and
-mark attachment remain separate open shaping work.
+preserve the ordinary ligature fast path. Marked runs use a transient shared-cluster
+map: source paint owners stay distinct from overlapping cluster ranges. Pinned
+canonical decomposition/order, font-covered composition and selected `ccmp`
+substitutions precede pair/context positioning and GDEF-backed attachments.
+Default-ignorables remain context barriers until positioning completes. Late
+zeroing preserves contextual execution without adding mark advances. Only the last
+glyph consumes a shared source cluster during fitting. Attachment design offsets
+share the existing font-size/fitting scale; no runtime shaping dependency is added.
+The [canonical shaping evidence](../tests/Research/svgweb/text-canonical-shaping.json)
+records mechanism, ownership and independent platform rendering coverage.
+
+Before relaxing a glyph-mask strike, transformed font axes select canonical
+unhinted paths above the native 256-pixel bound. These paths use the original
+unsnapped placement and existing analytic fill/clip/shader renderer. Smaller
+glyphs retain platform fitting, mask preblend and subpixel rounding. The
+[path control](../tests/Research/text-canonical-path/README.md) separates translucent
+solid, gradient and clipped-gradient paint; it creates no large glyph bitmap.
 Case projection resolves original SVG positioning lists before expanding text.
 It lifts source intervals into emitted UTF-16 offsets once; shaping retains its
 ordinary GSUB consumption and fitting model. Unchanged text borrows its inputs;

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="160" font-family="Example" font-size="24">
+  <defs>
+    <linearGradient id="paint"><stop stop-color="#6080c0" stop-opacity=".7"/><stop offset="1" stop-color="#c04060"/></linearGradient>
+    <clipPath id="clip"><path d="M32 84L310 92L290 150L20 136Z"/></clipPath>
+  </defs>
+  <text x="12" y="36" textLength="360" lengthAdjust="spacingAndGlyphs" fill="#4060a0" fill-opacity=".65">gj</text>
+  <text x="12" y="84" textLength="360" lengthAdjust="spacingAndGlyphs" fill="url(#paint)">gj</text>
+  <g clip-path="url(#clip)" opacity=".75"><text x="12" y="132" textLength="360" lengthAdjust="spacingAndGlyphs" fill="url(#paint)">gj</text></g>
+</svg>

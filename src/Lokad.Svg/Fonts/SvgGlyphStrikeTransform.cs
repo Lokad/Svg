@@ -11,6 +11,15 @@ internal readonly record struct SvgGlyphStrikeTransform(float DeviceSize, SvgAff
     /// <summary>Whether both glyph axes remain aligned with device axes, including quarter turns.</summary>
     internal bool HasAxisAlignedOutline => RelaxedMap.B == 0 && RelaxedMap.C == 0 || RelaxedMap.A == 0 && RelaxedMap.D == 0;
 
+    /// <summary>Chooses canonical outlines when either original font axis exceeds the native mask bound.</summary>
+    internal static bool RequiresPath(double fontSize, SvgAffineTransform map)
+    {
+        float size = (float)fontSize;
+        float a = size * (float)map.A, b = size * (float)map.B;
+        float c = size * (float)map.C, d = size * (float)map.D;
+        return a * a + b * b > 256f * 256f || c * c + d * d > 256f * 256f;
+    }
+
     internal static SvgGlyphStrikeTransform Create(double deviceFontSize, SvgAffineTransform map)
     {
         float size = (float)deviceFontSize;

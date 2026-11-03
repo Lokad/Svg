@@ -20,6 +20,13 @@ Bank ownership cases can share [asset loading and lifecycle assertions](Lokad.Sv
 while retaining separate names, inputs and allocation paths. Add one representative
 contract for a distinct path; rendering fixtures keep their canonical conversion.
 
+[Canonical shaping](Research/svgweb/text-canonical-shaping.json) separates Unicode,
+substitution, attachment and fitting mechanisms from two representative storage
+contracts. Complete Turkic/Lithuanian controls, a four-row mark control and one
+translucent/shader/path control retain independent native platform references;
+each uses the canonical conversion path. Strike cutoff boundaries stay in direct
+[sampling tests](Lokad.Svg.Tests/SvgGlyphStrikeSamplingTests.cs).
+
 [Text-anchor coverage](Research/text-anchor/README.md) separates cascade/compaction
 and chunk-layout mechanisms, two allocation/preparation contracts, and four
 canonical browser comparisons. [Windows point vectors](Research/windows-font-unit-scaling/expanded-points.json)

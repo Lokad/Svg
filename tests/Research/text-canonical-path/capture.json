@@ -1,0 +1,62 @@
+{
+  "input": "control.svg",
+  "inputSha256": "d7520d8f0527fc6dbbbfd4f67b1146b9aa9011ab956178109dfa541142077c4a",
+  "nativeInputSha256": "7ff8cefd67bca714b76a84814e9064f63ba78fff687efc213c4e167fbc76de52",
+  "font": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "width": 560,
+  "height": 160,
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "03f67b80906ed79381ddd729ad967c2644ba3fe5178263bd6c9daffc32b1dfc2",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "03f67b80906ed79381ddd729ad967c2644ba3fe5178263bd6c9daffc32b1dfc2",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "03f67b80906ed79381ddd729ad967c2644ba3fe5178263bd6c9daffc32b1dfc2",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "03f67b80906ed79381ddd729ad967c2644ba3fe5178263bd6c9daffc32b1dfc2",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "1b5ccd915bf0b74eea021e38a6d840ad2d13d17266131dfdb5267b560806f09a",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "1b5ccd915bf0b74eea021e38a6d840ad2d13d17266131dfdb5267b560806f09a",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "1b5ccd915bf0b74eea021e38a6d840ad2d13d17266131dfdb5267b560806f09a",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "1b5ccd915bf0b74eea021e38a6d840ad2d13d17266131dfdb5267b560806f09a",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    }
+  },
+  "referenceReason": "Independent native canonical-path source: translucent solid fill, gradient fill and clipped gradient opacity. Frozen before any library comparison of this source."
+}
