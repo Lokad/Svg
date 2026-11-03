@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "sourceCommit": "d70d216b83fcbbcfa36fec1eb659a881d0fb2f6c",
   "librarySha256": "e84c1ec2910cea9d896175166327ab1a114643001f7e2bb2f81099b11f73f8e4",
-  "status": "OPEN research: thirteen remaining parent/resource/XML gates classified; no new production admission or native reference admission.",
-  "method": "Fetch each indexed source and verify its hash in RAM. Record feature identifiers, counts and hashes only. Default/static-Noto projections run on Windows for gate discovery. No source body, fragment, href or ID value is retained.",
+  "status": "OPEN XML admission, direct text clipping and image-fit sampling. Eleven declared static diagnostics are exact on both hosts; original admission is unchanged.",
+  "method": "Fetch and hash-check hosted sources in bounded RAM; retain no bodies, fragments, hrefs or ID values. Remove explicit animation/media subtrees without removing static graphics/non-whitespace text/tails; remove only unused duplicate ordinary IDs. Expand XML markup entities only in declared external diagnostics. Bind explicit Noto where recorded; native input embeds the identical program with synthesis disabled and restores to the same non-font tree. Raster diagnostics replace external hrefs with authored inline PNGs and retain all other tree content. Each rendered diagnostic uses one canonical library conversion and three fresh healthy browser captures per host.",
   "rows": [
     {
       "name": "anim1.svg",
@@ -41,7 +41,89 @@
         "throwType": "Lokad.Svg.Parsing.SvgDefinitionParser",
         "throwMethod": "TryParse"
       },
-      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+      "disposition": "Declared dynamic-free static diagnostic is exact on both hosts. No graphics or non-whitespace text/tails were removed. Anim1/anim2 additionally remove one unused duplicate ordinary ID; five diagnostics declare supplied Noto. Original animation/media and original-font admission remain separate.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "7942478aa2b6d43600b66d59ff0233bb8c3b968f8ac95cd328554689b8ba37ec",
+        "nativeInputSha256": "8f4dcdc898481703d2ecf4af5e0aeba65da417c1eaa895bb8d6b9bf46800da96",
+        "removedDynamicElements": {
+          "animate": 5
+        },
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 1,
+        "expandedInternalMarkup": false,
+        "suppliedNoto": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "993fcf0ea8e9a2d342ef2bb19652a1f77f2589600a858801f8e44246807a4f02",
+            "width": 480,
+            "height": 360,
+            "logicalViewport": [
+              480,
+              360
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 2169
+              },
+              {
+                "pngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1932
+              },
+              {
+                "pngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1860
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "435b865f90ab3d76a366181f6cf9361706ee9eb5a56ad45a66afc5aef6138ced",
+            "width": 480,
+            "height": 360,
+            "logicalViewport": [
+              480,
+              360
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 12639
+              },
+              {
+                "pngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 9614
+              },
+              {
+                "pngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 8643
+              }
+            ]
+          }
+        ],
+        "contentRemovalAudit": {
+          "discardedNonWhitespaceTails": 0,
+          "discardedNonWhitespaceTextNodes": 0,
+          "removedGraphicDescendants": 0
+        }
+      }
     },
     {
       "name": "anim2.svg",
@@ -79,7 +161,89 @@
         "throwType": "Lokad.Svg.Parsing.SvgDefinitionParser",
         "throwMethod": "TryParse"
       },
-      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+      "disposition": "Declared dynamic-free static diagnostic is exact on both hosts. No graphics or non-whitespace text/tails were removed. Anim1/anim2 additionally remove one unused duplicate ordinary ID; five diagnostics declare supplied Noto. Original animation/media and original-font admission remain separate.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "7942478aa2b6d43600b66d59ff0233bb8c3b968f8ac95cd328554689b8ba37ec",
+        "nativeInputSha256": "8f4dcdc898481703d2ecf4af5e0aeba65da417c1eaa895bb8d6b9bf46800da96",
+        "removedDynamicElements": {
+          "animateTransform": 6
+        },
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 1,
+        "expandedInternalMarkup": false,
+        "suppliedNoto": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "993fcf0ea8e9a2d342ef2bb19652a1f77f2589600a858801f8e44246807a4f02",
+            "width": 480,
+            "height": 360,
+            "logicalViewport": [
+              480,
+              360
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1928
+              },
+              {
+                "pngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1905
+              },
+              {
+                "pngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1860
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "435b865f90ab3d76a366181f6cf9361706ee9eb5a56ad45a66afc5aef6138ced",
+            "width": 480,
+            "height": 360,
+            "logicalViewport": [
+              480,
+              360
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 6906
+              },
+              {
+                "pngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 7327
+              },
+              {
+                "pngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 9172
+              }
+            ]
+          }
+        ],
+        "contentRemovalAudit": {
+          "discardedNonWhitespaceTails": 0,
+          "discardedNonWhitespaceTextNodes": 0,
+          "removedGraphicDescendants": 0
+        }
+      }
     },
     {
       "name": "anim3.svg",
@@ -117,7 +281,89 @@
         "throwType": null,
         "throwMethod": null
       },
-      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+      "disposition": "Declared dynamic-free static diagnostic is exact on both hosts. No graphics or non-whitespace text/tails were removed. Anim1/anim2 additionally remove one unused duplicate ordinary ID; five diagnostics declare supplied Noto. Original animation/media and original-font admission remain separate.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "01d0fc4eb0736ab7a69911cf8e641d4d47148b5c6777768c468de3a649042fa3",
+        "nativeInputSha256": "e8628af265cbb391555c50f625e2a8a3e746d2c870bbf410abac119465320ccf",
+        "removedDynamicElements": {
+          "animateTransform": 6
+        },
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 0,
+        "expandedInternalMarkup": false,
+        "suppliedNoto": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "c4e22d2c1310669c33a0d707656545ebc2e185c0f6af84c61458fd8149de2cfb",
+            "width": 480,
+            "height": 360,
+            "logicalViewport": [
+              480,
+              360
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "34f9054fae52dce9bf6224cf48bd3e2388ea061b0a4061e8058f578e77a0a761",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1878
+              },
+              {
+                "pngSha256": "34f9054fae52dce9bf6224cf48bd3e2388ea061b0a4061e8058f578e77a0a761",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1835
+              },
+              {
+                "pngSha256": "34f9054fae52dce9bf6224cf48bd3e2388ea061b0a4061e8058f578e77a0a761",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1852
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "82c248ed136cff062458ec7b7e35cac1794d26d4870f2651f25772db82ad32f5",
+            "width": 480,
+            "height": 360,
+            "logicalViewport": [
+              480,
+              360
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "a32ee0d4effc15e8a806848bf527017ed0d1f398f9b0395be9cd892293e58ebc",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 6201
+              },
+              {
+                "pngSha256": "a32ee0d4effc15e8a806848bf527017ed0d1f398f9b0395be9cd892293e58ebc",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 9312
+              },
+              {
+                "pngSha256": "a32ee0d4effc15e8a806848bf527017ed0d1f398f9b0395be9cd892293e58ebc",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 6886
+              }
+            ]
+          }
+        ],
+        "contentRemovalAudit": {
+          "discardedNonWhitespaceTails": 0,
+          "discardedNonWhitespaceTextNodes": 0,
+          "removedGraphicDescendants": 0
+        }
+      }
     },
     {
       "name": "pservers-grad-03-b-anim.svg",
@@ -155,7 +401,89 @@
         "throwType": null,
         "throwMethod": null
       },
-      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+      "disposition": "Declared dynamic-free static diagnostic is exact on both hosts. No graphics or non-whitespace text/tails were removed. Anim1/anim2 additionally remove one unused duplicate ordinary ID; five diagnostics declare supplied Noto. Original animation/media and original-font admission remain separate.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "901cbcd0c88a9bfe6d3535156cd9c291fcb8f02c6f4fe42281cef13fa03f9ca5",
+        "nativeInputSha256": "2982f0a5168b77b48ea70dcb784d478448f02bf1acb3db335c272ce1ee1ac6c5",
+        "removedDynamicElements": {
+          "animate": 12
+        },
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 0,
+        "expandedInternalMarkup": false,
+        "suppliedNoto": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "1ce781a8367158c3e21db5acfe9870132531e369be4d8886dffb17fa9a2c2fab",
+            "width": 300,
+            "height": 150,
+            "logicalViewport": [
+              300,
+              150
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "6ab7834804b2182923973cbbf1772dff0768ba2f96b6926b946c92dee516e3e8",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1992
+              },
+              {
+                "pngSha256": "6ab7834804b2182923973cbbf1772dff0768ba2f96b6926b946c92dee516e3e8",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1962
+              },
+              {
+                "pngSha256": "6ab7834804b2182923973cbbf1772dff0768ba2f96b6926b946c92dee516e3e8",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 2032
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "8ddb43ea9413642aee25b14066695ee9376ae340f3e411ce4d357ca5b379a682",
+            "width": 300,
+            "height": 150,
+            "logicalViewport": [
+              300,
+              150
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "2427b1dea2e7bd5addba981d19b38ffca77818969a1d71af7978da645ef82a75",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 5789
+              },
+              {
+                "pngSha256": "2427b1dea2e7bd5addba981d19b38ffca77818969a1d71af7978da645ef82a75",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 7738
+              },
+              {
+                "pngSha256": "2427b1dea2e7bd5addba981d19b38ffca77818969a1d71af7978da645ef82a75",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 8468
+              }
+            ]
+          }
+        ],
+        "contentRemovalAudit": {
+          "discardedNonWhitespaceTails": 0,
+          "discardedNonWhitespaceTextNodes": 0,
+          "removedGraphicDescendants": 0
+        }
+      }
     },
     {
       "name": "scimitar-anim.svg",
@@ -195,7 +523,90 @@
         "throwType": null,
         "throwMethod": null
       },
-      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+      "disposition": "Declared dynamic-free static diagnostic is exact on both hosts. No graphics or non-whitespace text/tails were removed. Anim1/anim2 additionally remove one unused duplicate ordinary ID; five diagnostics declare supplied Noto. Original animation/media and original-font admission remain separate.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "5f84c4415144324bda6ddace3fb123bdea17cd0806cdd97a6c187cf88955716d",
+        "nativeInputSha256": "5f84c4415144324bda6ddace3fb123bdea17cd0806cdd97a6c187cf88955716d",
+        "removedDynamicElements": {
+          "audio": 1,
+          "animateTransform": 7
+        },
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 0,
+        "expandedInternalMarkup": false,
+        "suppliedNoto": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "938d321b936997fc851fbe97a6d009a1fb2ba3faacb6ee4c8fc14b96d6a4d8ac",
+            "width": 466,
+            "height": 265,
+            "logicalViewport": [
+              466.11172,
+              265.35126
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 823
+              },
+              {
+                "pngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 821
+              },
+              {
+                "pngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 823
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "938d321b936997fc851fbe97a6d009a1fb2ba3faacb6ee4c8fc14b96d6a4d8ac",
+            "width": 466,
+            "height": 265,
+            "logicalViewport": [
+              466.11172,
+              265.35126
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 12476
+              },
+              {
+                "pngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 9100
+              },
+              {
+                "pngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 9716
+              }
+            ]
+          }
+        ],
+        "contentRemovalAudit": {
+          "discardedNonWhitespaceTails": 0,
+          "discardedNonWhitespaceTextNodes": 0,
+          "removedGraphicDescendants": 0
+        }
+      }
     },
     {
       "name": "x11.svg",
@@ -233,7 +644,89 @@
         "throwType": null,
         "throwMethod": null
       },
-      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+      "disposition": "Declared dynamic-free static diagnostic is exact on both hosts. No graphics or non-whitespace text/tails were removed. Anim1/anim2 additionally remove one unused duplicate ordinary ID; five diagnostics declare supplied Noto. Original animation/media and original-font admission remain separate.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "3e8f6019ec6704ba591a22a77cc9d6c074d24f284f39acfed30aa6dc3367a764",
+        "nativeInputSha256": "3e8f6019ec6704ba591a22a77cc9d6c074d24f284f39acfed30aa6dc3367a764",
+        "removedDynamicElements": {
+          "audio": 1
+        },
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 0,
+        "expandedInternalMarkup": false,
+        "suppliedNoto": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "69c534aadfa677011acf494c524d93d63df4a7b793cf7f6be748b39b076f0992",
+            "width": 300,
+            "height": 150,
+            "logicalViewport": [
+              300,
+              150
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 623
+              },
+              {
+                "pngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 543
+              },
+              {
+                "pngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 531
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "69c534aadfa677011acf494c524d93d63df4a7b793cf7f6be748b39b076f0992",
+            "width": 300,
+            "height": 150,
+            "logicalViewport": [
+              300,
+              150
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 10868
+              },
+              {
+                "pngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 10477
+              },
+              {
+                "pngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 8332
+              }
+            ]
+          }
+        ],
+        "contentRemovalAudit": {
+          "discardedNonWhitespaceTails": 0,
+          "discardedNonWhitespaceTextNodes": 0,
+          "removedGraphicDescendants": 0
+        }
+      }
     },
     {
       "name": "video1.svg",
@@ -274,7 +767,90 @@
         "throwType": null,
         "throwMethod": null
       },
-      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+      "disposition": "Declared dynamic-free static diagnostic is exact on both hosts. No graphics or non-whitespace text/tails were removed. Anim1/anim2 additionally remove one unused duplicate ordinary ID; five diagnostics declare supplied Noto. Original animation/media and original-font admission remain separate.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "acbd75d5d0eb797c0cb376fa4cbb0ba2144913434b6def13169e44f6b7d19602",
+        "nativeInputSha256": "cfaf743705cb11f2416e16503759562c3cb90f59a74c1b604aa3ff87fac8220f",
+        "removedDynamicElements": {
+          "video": 1,
+          "animateTransform": 6
+        },
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 0,
+        "expandedInternalMarkup": false,
+        "suppliedNoto": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "bda76c338abf09180cdc368d80b1abb7b950ccde26904aa41ef8f67c3ff99eea",
+            "width": 480,
+            "height": 360,
+            "logicalViewport": [
+              480,
+              360
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "b97ecc46a3d59adb48e6544fc937b24afb172bdedac39d0054f1c4dd952a5725",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1851
+              },
+              {
+                "pngSha256": "b97ecc46a3d59adb48e6544fc937b24afb172bdedac39d0054f1c4dd952a5725",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1835
+              },
+              {
+                "pngSha256": "b97ecc46a3d59adb48e6544fc937b24afb172bdedac39d0054f1c4dd952a5725",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1894
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "e99b29665fdd6701b57dd2b1b3dad16e58c2eb4a880e3afc1fc087a58571b56d",
+            "width": 480,
+            "height": 360,
+            "logicalViewport": [
+              480,
+              360
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "ef467d4beadcabd2bc1266f697e38ba8af836e45d51d7b6c75d706b9a911eac2",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 8162
+              },
+              {
+                "pngSha256": "ef467d4beadcabd2bc1266f697e38ba8af836e45d51d7b6c75d706b9a911eac2",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 9345
+              },
+              {
+                "pngSha256": "ef467d4beadcabd2bc1266f697e38ba8af836e45d51d7b6c75d706b9a911eac2",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 9661
+              }
+            ]
+          }
+        ],
+        "contentRemovalAudit": {
+          "discardedNonWhitespaceTails": 0,
+          "discardedNonWhitespaceTextNodes": 0,
+          "removedGraphicDescendants": 0
+        }
+      }
     },
     {
       "name": "image.svg",
@@ -304,7 +880,89 @@
         "throwType": "Lokad.Svg.Parsing.SvgLeafParser",
         "throwMethod": "DecodeImage"
       },
-      "disposition": "External image resolution is outside default conversion; no original resource binding supplied. Next use explicit authored/host-bound PNG diagnostic content in the same structural context; no implicit retrieval or original-resource acceptance."
+      "disposition": "Authored inline-PNG structural diagnostic is exact on both hosts. Original external JPEG acquisition/decoding is outside default conversion; the replacement does not qualify that resource.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "cf26f013032b40b4c4ac540c98af4fa35dde742398cab8e74247c713b6479e58",
+        "nativeInputSha256": "cf26f013032b40b4c4ac540c98af4fa35dde742398cab8e74247c713b6479e58",
+        "removedDynamicElements": {},
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 0,
+        "expandedInternalMarkup": false,
+        "suppliedNoto": false,
+        "authoredReplacementImages": [
+          {
+            "width": 8,
+            "height": 6,
+            "pngSha256": "f82571362accc19c6013ce6c37a5ff04083ad0e5ce980c452bf017333e38da21"
+          }
+        ],
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "56dc8696b09b4057390551dfe0b95e11f3684abf4bab7673b85457f1dd7e3715",
+            "width": 1901,
+            "height": 1018,
+            "logicalViewport": [
+              1901,
+              1018
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 556
+              },
+              {
+                "pngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 535
+              },
+              {
+                "pngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 537
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "56dc8696b09b4057390551dfe0b95e11f3684abf4bab7673b85457f1dd7e3715",
+            "width": 1901,
+            "height": 1018,
+            "logicalViewport": [
+              1901,
+              1018
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 10429
+              },
+              {
+                "pngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 9823
+              },
+              {
+                "pngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 7798
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "name": "masking-path-04-b.svg",
@@ -339,7 +997,44 @@
         "throwType": "Lokad.Svg.Parsing.SvgLeafParser",
         "throwMethod": "DecodeImage"
       },
-      "disposition": "External image resolution is outside default conversion; no original resource binding supplied. Next use explicit authored/host-bound PNG diagnostic content in the same structural context; no implicit retrieval or original-resource acceptance."
+      "disposition": "After two authored inline PNG bindings and supplied Noto, traversal reaches an unsupported direct text clip child on both hosts. No independent full-image comparison is claimed; retain the explicit text-clip limitation and review its shared font/contour ownership before extension.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "254f228ce38a5a0b95ead459c3aea3ef45c48acdabc939dc7a45623dfd5269c5",
+        "nativeInputSha256": "a0852b414860938f894b15779f0e046c3614a69b1d692e78110a9376ccefd6a4",
+        "removedDynamicElements": {},
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 0,
+        "expandedInternalMarkup": false,
+        "suppliedNoto": true,
+        "authoredReplacementImages": [
+          {
+            "width": 8,
+            "height": 6,
+            "pngSha256": "f82571362accc19c6013ce6c37a5ff04083ad0e5ce980c452bf017333e38da21"
+          },
+          {
+            "width": 8,
+            "height": 6,
+            "pngSha256": "736af6e2206fc3f25cd0583c45e2acade0e73c0b64f29e6de5ce5d5126b62442"
+          }
+        ],
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "UnsupportedFeature",
+            "element": "text",
+            "attribute": null,
+            "messageSha256": "74f765a941d08df90499e4e2ad2ea8468113ea999e24d6461dce07c1e9a55145"
+          },
+          {
+            "host": "linux",
+            "outcome": "UnsupportedFeature",
+            "element": "text",
+            "attribute": null,
+            "messageSha256": "74f765a941d08df90499e4e2ad2ea8468113ea999e24d6461dce07c1e9a55145"
+          }
+        ]
+      }
     },
     {
       "name": "oscon.svg",
@@ -369,7 +1064,89 @@
         "throwType": "Lokad.Svg.Parsing.SvgLeafParser",
         "throwMethod": "DecodeImage"
       },
-      "disposition": "External image resolution is outside default conversion; no original resource binding supplied. Next use explicit authored/host-bound PNG diagnostic content in the same structural context; no implicit retrieval or original-resource acceptance."
+      "disposition": "Authored inline-PNG diagnostic has two stable differing pixels on each host. Independently authored image-fit-sampling/meet-portrait.svg reproduces them; intrinsic-size control is exact. Sampling investigation is OPEN; original external resource is not qualified.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "89e05955e9800c33d5c53a82461cc64a6b12f0830b0088824ae866dbd7411a19",
+        "nativeInputSha256": "89e05955e9800c33d5c53a82461cc64a6b12f0830b0088824ae866dbd7411a19",
+        "removedDynamicElements": {},
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 0,
+        "expandedInternalMarkup": false,
+        "suppliedNoto": false,
+        "authoredReplacementImages": [
+          {
+            "width": 8,
+            "height": 6,
+            "pngSha256": "f82571362accc19c6013ce6c37a5ff04083ad0e5ce980c452bf017333e38da21"
+          }
+        ],
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "12f89437e1bacae148b9067acd5c5ac21e514d2bdfc6c51bdacaaebc397146be",
+            "width": 300,
+            "height": 150,
+            "logicalViewport": [
+              300,
+              150
+            ],
+            "changedPixels": 2,
+            "captures": [
+              {
+                "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 527
+              },
+              {
+                "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 517
+              },
+              {
+                "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 529
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "12f89437e1bacae148b9067acd5c5ac21e514d2bdfc6c51bdacaaebc397146be",
+            "width": 300,
+            "height": 150,
+            "logicalViewport": [
+              300,
+              150
+            ],
+            "changedPixels": 2,
+            "captures": [
+              {
+                "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 13316
+              },
+              {
+                "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 8789
+              },
+              {
+                "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 7863
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "name": "gaussian1.svg",
@@ -393,7 +1170,82 @@
         "throwType": "Lokad.Svg.Parsing.SvgDefinitionParser",
         "throwMethod": "TryParse"
       },
-      "disposition": "Original duplicate ordinary ID is malformed. Next construct an explicitly ID-repaired RAM-only diagnostic and review its full filter graph."
+      "disposition": "The original duplicate ordinary ID remains malformed. Its declared diagnostic removes one unreferenced duplicate ID and is exact on both hosts through the complete filter graph, without font substitution.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "5b6a23f654d8217924129ca25f6d66a9ce36fd277e0bb2435024bffad1579152",
+        "nativeInputSha256": "5b6a23f654d8217924129ca25f6d66a9ce36fd277e0bb2435024bffad1579152",
+        "removedDynamicElements": {},
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 1,
+        "expandedInternalMarkup": false,
+        "suppliedNoto": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "f51862edd26e7f7b15548315cd6ebd4ceea8f94addb91fbf51ea6de438425a3b",
+            "width": 744,
+            "height": 1052,
+            "logicalViewport": [
+              744.09448819,
+              1052.3622047
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 612
+              },
+              {
+                "pngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 614
+              },
+              {
+                "pngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 575
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "f51862edd26e7f7b15548315cd6ebd4ceea8f94addb91fbf51ea6de438425a3b",
+            "width": 744,
+            "height": 1052,
+            "logicalViewport": [
+              744.09448819,
+              1052.3622047
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 9093
+              },
+              {
+                "pngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 7624
+              },
+              {
+                "pngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 9219
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "name": "preserveAspectRatio.svg",
@@ -440,7 +1292,82 @@
           }
         ]
       },
-      "disposition": "Open static/XML feature review: internal markup entities are rejected by the prolog contract. XML is well formed. Next compare an in-RAM expanded static diagnostic with native; do not label an original accepted or silently strip its graph."
+      "disposition": "Expanded static diagnostic is exact on both hosts at its declared fixed-pixel viewport. Original internal-entity admission is OPEN; expansion outside the library is not original acceptance.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "62a47bc4adf71c74c077a183888197ef2c0a695ae19bdbed4d57a8417efe53b2",
+        "nativeInputSha256": "09e4daed5bc39296053d31cf855d8f221a575fb65470363125f6432033926106",
+        "removedDynamicElements": {},
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 0,
+        "expandedInternalMarkup": true,
+        "suppliedNoto": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "641ee5d3d7c5ea99bb250bdd37f089b3d74a983d796f8f3f2c7b887bd52dc37d",
+            "width": 450,
+            "height": 300,
+            "logicalViewport": [
+              450.0,
+              300.0
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "a648bf1fcf846d9fee98425008a9a73978c98ce8e4cf3ff9ba2656cf46d5981a",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1891
+              },
+              {
+                "pngSha256": "a648bf1fcf846d9fee98425008a9a73978c98ce8e4cf3ff9ba2656cf46d5981a",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1908
+              },
+              {
+                "pngSha256": "a648bf1fcf846d9fee98425008a9a73978c98ce8e4cf3ff9ba2656cf46d5981a",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 1892
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "d2c319886593b0e911c69f8f7ca321531f00a9c3304151cd32e82aa244f4daa6",
+            "width": 450,
+            "height": 300,
+            "logicalViewport": [
+              450.0,
+              300.0
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "232179316391a5376d83149b5b10adaa64ce7bae36e19185e7e1dda628fae235",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 5250
+              },
+              {
+                "pngSha256": "232179316391a5376d83149b5b10adaa64ce7bae36e19185e7e1dda628fae235",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 5957
+              },
+              {
+                "pngSha256": "232179316391a5376d83149b5b10adaa64ce7bae36e19185e7e1dda628fae235",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 7562
+              }
+            ]
+          }
+        ]
+      }
     },
     {
       "name": "smile.svg",
@@ -487,7 +1414,82 @@
           }
         ]
       },
-      "disposition": "Open static/XML feature review: internal markup entities are rejected by the prolog contract. XML is well formed. Next compare an in-RAM expanded static diagnostic with native; do not label an original accepted or silently strip its graph."
+      "disposition": "Expanded static diagnostic is exact on both hosts at its declared fixed-pixel viewport. Original internal-entity admission is OPEN; expansion outside the library is not original acceptance.",
+      "staticDiagnostic": {
+        "diagnosticInputSha256": "bc7e3c73c861478283e3d8d81553b971dea08fcb9f7b12a26feb94c8a30049bd",
+        "nativeInputSha256": "bc7e3c73c861478283e3d8d81553b971dea08fcb9f7b12a26feb94c8a30049bd",
+        "removedDynamicElements": {},
+        "removedGraphicDescendants": 0,
+        "removedUnreferencedDuplicateIds": 0,
+        "expandedInternalMarkup": true,
+        "suppliedNoto": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "outcome": "rendered",
+            "libraryPngSha256": "0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971",
+            "width": 850,
+            "height": 700,
+            "logicalViewport": [
+              850.0,
+              700.0
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 10535
+              },
+              {
+                "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 646
+              },
+              {
+                "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 526
+              }
+            ]
+          },
+          {
+            "host": "linux",
+            "outcome": "rendered",
+            "libraryPngSha256": "0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971",
+            "width": 850,
+            "height": 700,
+            "logicalViewport": [
+              850.0,
+              700.0
+            ],
+            "changedPixels": 0,
+            "captures": [
+              {
+                "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 4838
+              },
+              {
+                "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 6208
+              },
+              {
+                "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+                "startupHealth": "healthy",
+                "profileCleaned": true,
+                "milliseconds": 5545
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "olderEventFollowups": {
@@ -506,11 +1508,62 @@
     "boundary": "Declared static/font contexts only; original animation and original-font qualification remain separate."
   },
   "nextActions": [
-    "Complete independent Windows/Linux comparisons for seven dynamic-free parent diagnostics, retaining distinct original outcomes. Anim1/anim2 also require explicit ID repair after Noto selection.",
-    "Account for three external image references with explicit bindings or authored inline PNG diagnostics; default conversion performs no SVG-directed network/file resolution.",
-    "Review both well-formed internal-markup entity documents through expanded RAM-only diagnostics and the shared XML-reader ownership/admission model.",
-    "Review the duplicate-ID-repaired gaussian1 filter diagnostic."
+    "Diagnose image matrix/scanline seed/fractional-edge coverage through the authored image-fit-sampling witness and direct mechanisms. Preserve the two-pixel failing-before native references and exact intrinsic control; do not patch alpha rounding globally.",
+    "Review shared internal-entity admission/reader ownership against the recorded criteria; expanded diagnostics already close geometry/font uncertainty.",
+    "Keep the direct-text clip limitation explicit. Review shared contour/font discovery before any extension; the raster-bound diagnostic still rejects and has no full-image acceptance.",
+    "Original animation/media, duplicate IDs, original fonts and external image resources retain their individual, explicit outcomes. No new default original is admitted by these diagnostics."
   ],
   "hostedSvgBodiesRetained": 0,
-  "hostedSourceAttributeValuesRetained": 0
+  "hostedSourceAttributeValuesRetained": 0,
+  "comparisonContext": {
+    "hosts": [
+      "Windows x64",
+      "Linux x64, Ubuntu 26 glibc/libm 2.43 overlay"
+    ],
+    "chrome": "153.0.8010.52",
+    "recipeVersion": 3,
+    "driverSha256": "811cc5f1f1a9ead516d5143f7f9e12ea5f3bed1be3ef8f22bf337beb71e19d67",
+    "fontPath": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "originalFontQualification": false,
+    "originalResourceQualification": false,
+    "newOriginalAdmissions": 0,
+    "diagnosticNativeCaptures": 72,
+    "exactlyComparedDiagnostics": 11,
+    "retainedHostedSvgBodies": 0,
+    "retainedHostedSourceAttributeValues": 0,
+    "targetFramework": "net11.0",
+    "sdk": "11.0.100-rc.3.26522.148",
+    "runtime": "11.0.0-rc.3.26522.148",
+    "chromeExecutableSha256": {
+      "windows": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "linux": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+    }
+  },
+  "viewportCorrection": "The earlier rejected-input inventory fell back to 300x150 for the two internal-entity documents. Those exploratory comparisons are invalid. Current expanded diagnostics use declared 450x300 and 850x700 viewports respectively; both are exact. Existing original-inventory images are historical observations, not renderer references.",
+  "rasterReplacementRecipe": "Each image is an authored 8x6 straight-RGBA PNG. For image ordinal i, at integer x=0..7,y=0..5: R=(31x+19y+37i)%256; G=(47x+11y+53i)%256; B=(13x+61y+71i)%256; A=[0,63,128,192,255][(x+2y+i)%5]. Existing image placement/fit/clip attributes remain unchanged. No original raster content is qualified.",
+  "xmlAdmissionReview": {
+    "status": "OPEN feature work; expanded geometry/font contexts are exact",
+    "sharedPolicy": "../../../src/Lokad.Svg/Parsing/SvgXmlReaderPolicy.cs",
+    "sharedOwner": "../../../src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs",
+    "currentContract": "One inert DOCTYPE, no external-subset loading, internal subsets rejected. One preparation owns ordinary reader workspace across stylesheet, font, structure and scene passes.",
+    "finding": "Enabling DtdProcessing.Parse alone adds declaration tables and expanded character work without a corresponding admission/storage contract. Keep the shared policy and owner; avoid a second XML/resolver pipeline.",
+    "closureCriteria": [
+      "Define bounded internal general-entity expansion using BCL grammar and existing structural/input limits; retain inert external-DTD semantics and explicit unsupported declaration kinds.",
+      "Admit declaration/expanded-reader storage before allocation; preserve cancellation, refusal, cleanup, retry and one shared preparation across discovery/lowering.",
+      "Preserve authored failing-before mechanisms, exact expanded controls and all existing prolog/encoding contracts; qualify both original contexts and replay all 204 sources after any shared change."
+    ]
+  },
+  "focusedXmlContractChecks": [
+    {
+      "host": "windows",
+      "passed": 209,
+      "failed": 0
+    },
+    {
+      "host": "linux",
+      "passed": 209,
+      "failed": 0
+    }
+  ]
 }

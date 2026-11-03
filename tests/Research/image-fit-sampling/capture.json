@@ -1,0 +1,187 @@
+{
+  "status": "OPEN failing-before image-fit sampling evidence. Authored sources and native references are frozen; not a supported-product baseline.",
+  "librarySha256": "e84c1ec2910cea9d896175166327ab1a114643001f7e2bb2f81099b11f73f8e4",
+  "fontSha256": null,
+  "sourceCommit": "d70d216b83fcbbcfa36fec1eb659a881d0fb2f6c",
+  "hostedSvgBodiesRetained": 0,
+  "sourceAttributeValuesRetained": 0,
+  "seconds": 71.36271360004321,
+  "rows": [
+    {
+      "name": "meet-portrait.svg",
+      "sourceSha256": "63595e3bcb19f89bf83cec4f1a8975b648e9a72f757a5230a0a4bc0f6c8b7d0c",
+      "diagnosticInputSha256": "63595e3bcb19f89bf83cec4f1a8975b648e9a72f757a5230a0a4bc0f6c8b7d0c",
+      "nativeInputSha256": "63595e3bcb19f89bf83cec4f1a8975b648e9a72f757a5230a0a4bc0f6c8b7d0c",
+      "removedDynamicElements": {},
+      "removedGraphicDescendants": 0,
+      "removedUnreferencedDuplicateIds": 0,
+      "expandedInternalMarkup": false,
+      "suppliedNoto": false,
+      "hosts": [
+        {
+          "host": "windows",
+          "outcome": "rendered",
+          "libraryPngSha256": "12f89437e1bacae148b9067acd5c5ac21e514d2bdfc6c51bdacaaebc397146be",
+          "width": 300,
+          "height": 150,
+          "logicalViewport": [
+            300,
+            150
+          ],
+          "changedPixels": 2,
+          "captures": [
+            {
+              "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 529
+            },
+            {
+              "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 10426
+            },
+            {
+              "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 536
+            }
+          ]
+        },
+        {
+          "host": "linux",
+          "outcome": "rendered",
+          "libraryPngSha256": "12f89437e1bacae148b9067acd5c5ac21e514d2bdfc6c51bdacaaebc397146be",
+          "width": 300,
+          "height": 150,
+          "logicalViewport": [
+            300,
+            150
+          ],
+          "changedPixels": 2,
+          "captures": [
+            {
+              "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6712
+            },
+            {
+              "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 9668
+            },
+            {
+              "pngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 7280
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "intrinsic.svg",
+      "sourceSha256": "72cc55c0bebefd921506af39e6818e532312c8bec26f20648e8ea18a9fd37ef8",
+      "diagnosticInputSha256": "72cc55c0bebefd921506af39e6818e532312c8bec26f20648e8ea18a9fd37ef8",
+      "nativeInputSha256": "72cc55c0bebefd921506af39e6818e532312c8bec26f20648e8ea18a9fd37ef8",
+      "removedDynamicElements": {},
+      "removedGraphicDescendants": 0,
+      "removedUnreferencedDuplicateIds": 0,
+      "expandedInternalMarkup": false,
+      "suppliedNoto": false,
+      "hosts": [
+        {
+          "host": "windows",
+          "outcome": "rendered",
+          "libraryPngSha256": "8b598015fe694e3a09346e436437204097fb876ba2f84bab863c205827669e54",
+          "width": 300,
+          "height": 150,
+          "logicalViewport": [
+            300,
+            150
+          ],
+          "changedPixels": 0,
+          "captures": [
+            {
+              "pngSha256": "89c8e887df3d046c0c383e87c796aa07ee21337c7251bc349079d89b3bd224b5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 498
+            },
+            {
+              "pngSha256": "89c8e887df3d046c0c383e87c796aa07ee21337c7251bc349079d89b3bd224b5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 531
+            },
+            {
+              "pngSha256": "89c8e887df3d046c0c383e87c796aa07ee21337c7251bc349079d89b3bd224b5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 636
+            }
+          ]
+        },
+        {
+          "host": "linux",
+          "outcome": "rendered",
+          "libraryPngSha256": "8b598015fe694e3a09346e436437204097fb876ba2f84bab863c205827669e54",
+          "width": 300,
+          "height": 150,
+          "logicalViewport": [
+            300,
+            150
+          ],
+          "changedPixels": 0,
+          "captures": [
+            {
+              "pngSha256": "89c8e887df3d046c0c383e87c796aa07ee21337c7251bc349079d89b3bd224b5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 7492
+            },
+            {
+              "pngSha256": "89c8e887df3d046c0c383e87c796aa07ee21337c7251bc349079d89b3bd224b5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 10151
+            },
+            {
+              "pngSha256": "89c8e887df3d046c0c383e87c796aa07ee21337c7251bc349079d89b3bd224b5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 9308
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sourceHashNormalization": "UTF-8 LF source bytes; all captures use exactly the committed authored file bytes.",
+  "method": "Canonical default library conversion, transparent 300x150 physical/logical image viewport. Three fresh native image-mode CDP screenshots per authored case and host; all healthy, profiles cleaned and PNGs identical within case/host. No native reference is generated by the library.",
+  "chrome": "153.0.8010.52",
+  "recipeVersion": 3,
+  "driverSha256": "811cc5f1f1a9ead516d5143f7f9e12ea5f3bed1be3ef8f22bf337beb71e19d67",
+  "hosts": [
+    "Windows x64",
+    "Linux x64, Ubuntu 26 glibc/libm 2.43 overlay"
+  ],
+  "source": "../svgweb/remaining-static-gates.json",
+  "distinctResponsibilities": {
+    "meetPortrait": "Non-integer root projection and centered image meet fitting; two edge pixels differ on both hosts.",
+    "intrinsic": "Same decoded source at intrinsic scale; exact on both hosts. Protects decoding/premultiplication separately from fit/sampling."
+  },
+  "nextAction": "Diagnose image matrix/scanline seed/fractional-edge coverage through the authored image-fit-sampling witness and direct mechanisms. Preserve the two-pixel failing-before native references and exact intrinsic control; do not patch alpha rounding globally.",
+  "targetFramework": "net11.0",
+  "sdk": "11.0.100-rc.3.26522.148",
+  "runtime": "11.0.0-rc.3.26522.148",
+  "chromeExecutableSha256": {
+    "windows": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "linux": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+  }
+}

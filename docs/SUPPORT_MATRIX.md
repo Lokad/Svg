@@ -5,6 +5,12 @@ on Windows and Linux, without runtime package dependencies. The .NET 11 target
 currently uses the RC SDK/runtime pinned in [global.json](../global.json). This is the current support
 contract; it does not imply full SVG, CSS or browser conformance.
 
+One inert DOCTYPE declaration is accepted without loading an external subset.
+Internal DTD subsets, including internal entity declarations, currently reject as
+`MalformedInput`; the reader does not expand them. The
+[XML declaration tests](../tests/Lokad.Svg.Tests/SvgDoctypeTests.cs) cover this
+boundary consistently through parsing and font discovery.
+
 ## Supported SVG subset
 
 | Area | Accepted features |
