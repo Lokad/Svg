@@ -7,6 +7,10 @@ namespace Lokad.Svg.VisualTests;
 [Trait("Layer", "Rendering")]
 public sealed class SvgTextAnchorReferenceTests
 {
+    [Fact]
+    public Task Uniform_child_anchor_survives_mixed_direct_path_interval_compaction()
+        => NativeFontFixture.AssertMatches("text-shared-anchor", "text-shared-anchor", "Example");
+
     [Theory]
     [InlineData("inherited")]
     [InlineData("chunks")]

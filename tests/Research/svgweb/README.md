@@ -32,6 +32,8 @@ also remains open and requires its own source-addressing and font-discovery evid
 The [physical-font interval correction](text-shaping-boundaries.json) keeps
 anchor-only changes from breaking ligatures. Its direct mechanisms, one ownership
 contract and one native image protect separate responsibilities. The
+[shared-range correction](text-shared-anchor.json) applies the same source-style
+comparison when eliding a default interval, retaining uniform child anchors. The
 [case-expansion model review](text-casing-model.json) retains independent literal
 controls: observed browser transformation alone does not establish original SVG
 character indexing. Case transformation remains unimplemented.

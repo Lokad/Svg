@@ -6,6 +6,26 @@ namespace Lokad.Svg.Tests;
 
 public sealed partial class OpenTypeFontTests
 {
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData((int)SvgTextAnchor.Middle, 128, -12)]
+    [InlineData((int)SvgTextAnchor.End, 116, -24)]
+    public async Task Shared_direct_and_path_chunks_keep_a_uniform_child_anchor(int anchor, double directX, double pathX)
+    {
+        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgInheritedTextStyle font = new("Example", 400, false, 20, SvgTextWhitespaceMode.Default, 0, (SvgTextAnchor)anchor);
+        SvgTextFontSpan[] spans = [new(0, 4, font)];
+        SvgTextPositionAdjustment[] positions = [new(0, 140, 38, 0, 0), new(2, 0, null, 0, 0)];
+        SvgTextPlacementRange[] ranges = [new(0, 2, null, null), new(2, 4, new("p", 0, false, null), null)];
+        SvgTextStyle style = new(new("Example", 400, false), 20, 0, 0, 0, 0, 0, SvgTextAnchor.Start, "shared-anchor");
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgTextRun run = SvgTextRunBuilder.CreateShared(style, "AAAA", [], positions, [], spans, [], ranges,
+            null, null, fonts, budget, CancellationToken.None))
+            Assert.Equal(new[] { directX, directX + 12, pathX, pathX + 12 }, run.Glyphs.ToArray().Select(glyph => glyph.X));
+        Assert.All(positions, position => Assert.Null(position.Anchor));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Fact]
     [Trait("Layer", "Contract")]
     public async Task Scoped_anchor_positions_release_owned_staging_after_refusal_and_retry()

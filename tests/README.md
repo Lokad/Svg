@@ -35,6 +35,8 @@ The [shaping-boundary control](Research/text-shaping-boundaries/README.md) keeps
 original anchor intervals separate from selected physical font intervals: seven
 direct mechanisms, one refusal/cleanup/retry contract and one canonical image
 protect source validation, genuine size boundaries and cross-node ligatures.
+The [shared-range control](Research/text-shared-anchor/README.md) adds direct
+middle/end coordinate mechanisms and one native image for uniform child anchors.
 Equal images alone never establish redundancy. Preserve distinct
 source graphs, allocation paths, native companions, platform differences and
 exclusions. Rendering fixtures do not each need all twelve API forms.

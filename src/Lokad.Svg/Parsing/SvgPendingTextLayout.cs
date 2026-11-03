@@ -128,8 +128,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
             }
             SvgTextStyle sharedStyle = _style with { X = 0, Y = 0, Dx = 0, Dy = 0, PositionLists = default };
             ReadOnlySpan<SvgTextFontSpan> fontIntervals = fonts.AsSpan();
-            if (fonts.Count == 1 && fonts[0].Font.Family == _style.Font.Family && fonts[0].Font.Weight == _style.Font.Weight
-                && fonts[0].Font.Italic == _style.Font.Italic && fonts[0].Font.FontSize == _style.FontSize)
+            if (fonts.Count == 1 && fonts[0].Font.HasSameFontAndAnchor(defaultFont))
                 fontIntervals = [];
             using RenderBudget.BudgetReservation sharedOwner = budget.Reserve(512, SvgMemoryCategory.Parser);
             using SvgTextRun shared = SvgTextRunBuilder.CreateShared(sharedStyle, text.Value, spacing.AsSpan(), resolved.AsSpan(), paints.AsSpan(),

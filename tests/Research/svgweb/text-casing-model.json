@@ -121,5 +121,28 @@
   "prerequisiteClosure": "text-shaping-boundaries.json",
   "hostedBodiesRetained": 0,
   "existingReferencesChanged": 0,
-  "inputsBase": "../text-shaping-boundaries/"
+  "inputsBase": "../text-shaping-boundaries/",
+  "sharedModelAudit": {
+    "sourceBaseline": "a4df8b29b8d5fd8a75747d2cd5e9823a9b3eb8db",
+    "sources": [
+      "../../../src/Lokad.Svg/Parsing/SvgTextPositionLists.cs",
+      "../../../src/Lokad.Svg/Parsing/SvgPendingTextLayout.cs",
+      "../../../src/Lokad.Svg/Fonts/SvgFontCoverageDiscovery.cs",
+      "../../../src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs",
+      "../../../src/Lokad.Svg/Fonts/SvgGlyphLayout.cs"
+    ],
+    "findings": [
+      "Position-list entries are consumed per original scalar and stored at normalized UTF-16 offsets. Mixed direct/path layout concatenates source ranges before applying root lists.",
+      "Streaming font coverage consumes normalized reader chunks; retained-instance discovery consumes extracted normalized runs. Both must use the same conversion semantics and emitted scalar coverage.",
+      "GlyphLayout sourceLengths describes GSUB consumption in its input string. Lifting original intervals into emitted text preserves this shaping/fitting meaning; zero-length expansion aliases would conflate it.",
+      "Source-style default elision also needs the complete anchor comparison; this prerequisite is closed in text-shared-anchor.json."
+    ],
+    "nextImplementation": "Resolve original positions first, then lift font/paint/node/recording/path metadata into emitted text at one governed boundary before shaping. Retain identity without material allocation. Define expansion storage and cleanup before allocating.",
+    "mappingSources": [
+      "https://www.w3.org/TR/SVG2/text.html#TermSVGCharacter",
+      "https://www.w3.org/TR/css-text-3/#text-transform-property",
+      "https://www.unicode.org/Public/17.0.0/ucd/SpecialCasing.txt"
+    ],
+    "casingRequirement": "CSS uses full Unicode mappings, including applicable context and known-language rules. SpecialCasing supplements simple one-to-one mappings. Reader/element boundaries cannot be treated as new capitalization words. Define the admitted language/character domain explicitly; culture-blind one-to-one conversion is insufficient."
+  }
 }

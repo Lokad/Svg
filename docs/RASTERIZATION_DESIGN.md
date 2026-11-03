@@ -393,7 +393,8 @@ prefixes retain their source items even without their own glyphs.
 
 Cursor layout applies relative offsets, fitting, absolute positions and anchors.
 Chunk anchors measure extrema of positioned advance edges, including backtracking.
-The shared inherited style retains anchor changes through font-interval compaction.
+The shared inherited style retains anchor changes through font-interval compaction
+and [default-interval elision](../tests/Research/text-shared-anchor/README.md).
 Only absolute chunk boundaries receive a scoped anchor; changes within a chunk do
 not split shaping. Borrowed position storage is copied only when its chunk metadata
 needs an override. [Mechanism and rendering evidence](../tests/Research/text-anchor/README.md)

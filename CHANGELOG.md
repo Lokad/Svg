@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve a uniform child anchor when joining direct text and text-path ranges,
+  using the same source-style comparison as interval compaction.
 - Preserve ligatures across anchor-only style intervals that select the same
   font face and size, retaining source positioning and actual shaping boundaries.
 - Admit inert `text-align` declarations on supported preformatted text and

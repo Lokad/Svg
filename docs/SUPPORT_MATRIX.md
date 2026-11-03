@@ -406,6 +406,8 @@ its first addressed character's anchor; absolute x/y starts another chunk, while
 an anchor-only change preserves continuous shaping. Text paths inherit group CSS;
 their own inline/stylesheet declarations remain unsupported. The
 [anchor controls](../tests/Research/text-anchor/README.md) protect these interactions.
+The [shared-range control](../tests/Research/text-shared-anchor/README.md) retains
+uniform child anchors when direct text and path text are joined.
 
 `SvgFontFaceRequest.FromCss` preserves family order, quoting, escapes and named/
 generic identity. `SvgFontSelectionPolicy` supplies host generic mappings and
