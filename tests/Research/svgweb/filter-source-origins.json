@@ -1,0 +1,637 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "cac9baf0e4589488cfc85f19635a4eb602c3d459",
+  "status": "CLOSED: compact filter source bitmap transition. OPEN: hosted static-context residual rounding and independent gradient sampling witnesses.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/SvgConverter.cs": "f416a00eda70368d71123f7992c6a1c0cc0fab4212b3fe3a35ad3767c4d2e99a",
+    "tests/Lokad.Svg.Tests/SvgFilterSourceOriginOwnershipTests.cs": "b8a8381f0997b5753b7f824f1471bc4be7be83fbb8a8eaf2e9cacfc841ec9f61",
+    "tests/Lokad.Svg.VisualTests/SvgFilterSourceOriginReferenceTests.cs": "53f46bf0ea3b06d9dada33c9d882dc5ba9d58cd8117b1697a4f5c42677056b41",
+    "tests/Lokad.Svg.Tests/Lokad.Svg.Tests.csproj": "cdf701f78687412e21f6e780fd37ddb3434f7b266ccc07c10a599fa20b99d0a0"
+  },
+  "scope": {
+    "canonicalRenderingCases": 4,
+    "ownershipContracts": 1,
+    "nativeCaptures": 24,
+    "coreCopiedSources": 1,
+    "coreCopiedHashSlices": 1,
+    "newResourceOwners": 0,
+    "newReplayPipelines": 0,
+    "existingReferenceChanges": 0,
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0
+  },
+  "model": {
+    "cause": "A filter replay already owning a compositor bitmap skipped the transition into compact source storage, moving source drawing or placing it wholly outside its allocation.",
+    "change": "Use the same parent-bitmap -> compact-source-bitmap -> capture transition for existing filter owners and ordinary source capture. No new condition, map framework, storage owner or graph path.",
+    "preserved": "Recorded drawing, shader sampling, parameter bounds, finite image views, text layout, exactness and all references."
+  },
+  "responsibilities": {
+    "rendering": "../../Lokad.Svg.VisualTests/SvgFilterSourceOriginReferenceTests.cs",
+    "ownership": "../../Lokad.Svg.Tests/SvgFilterSourceOriginOwnershipTests.cs",
+    "controls": "../filter-source-origins/README.md",
+    "nativeRecipe": "../filter-source-origins/capture.json",
+    "openWitnesses": "../filter-source-origins/open/observations.json",
+    "retention": "Four canonical cases distinguish compact storage, later compositor bitmap, solid versus gradient construction, and crossing the tile boundary. One representative tiled capture exercises refusal, cancellation, cleanup and retry. No fixture/API product."
+  },
+  "qualifiedLibrarySha256": {
+    "net11.0": "81682c400f2917f9e01f32eec3db306c0d5a08e0ce87481f87007aa5ac674509",
+    "net10.0": "0f00efe36684a08b7130caea90caea549142ed8c989d9565e9093510031d8be7"
+  },
+  "failingBefore": [
+    {
+      "host": "windows",
+      "identity": "compact-gradient",
+      "inputSha256": "ced832a75b7f792c98e46e7b1b0aa713f3b08794cb26747885a43d4efab16ee0",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null
+      }
+    },
+    {
+      "host": "windows",
+      "identity": "cross-tile",
+      "inputSha256": "8aa74f6fdd9727546940ef59c8e87f8da34dd8685fb1f08a05e7e0114228dc03",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 5445,
+        "maximumError": 255,
+        "alphaChangedPixels": 5445,
+        "differenceBounds": [
+          500,
+          55,
+          584,
+          124
+        ]
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null
+      }
+    },
+    {
+      "host": "windows",
+      "identity": "wide-gradient",
+      "inputSha256": "4986c229fc7ca00f613e937818aac87f8dac9459d875ff7c3d2074ef199f29b5",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 4783,
+        "maximumError": 255,
+        "alphaChangedPixels": 4783,
+        "differenceBounds": [
+          630,
+          55,
+          714,
+          113
+        ]
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null
+      }
+    },
+    {
+      "host": "windows",
+      "identity": "wide-solid",
+      "inputSha256": "2cb380ce734c25035294fbb0f0b38145cf82ebb1d31a2e80f6a24aa9d9fdfa25",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 4783,
+        "maximumError": 255,
+        "alphaChangedPixels": 4783,
+        "differenceBounds": [
+          630,
+          55,
+          714,
+          113
+        ]
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null
+      }
+    },
+    {
+      "host": "linux",
+      "identity": "compact-gradient",
+      "inputSha256": "ced832a75b7f792c98e46e7b1b0aa713f3b08794cb26747885a43d4efab16ee0",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null
+      }
+    },
+    {
+      "host": "linux",
+      "identity": "cross-tile",
+      "inputSha256": "8aa74f6fdd9727546940ef59c8e87f8da34dd8685fb1f08a05e7e0114228dc03",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 5445,
+        "maximumError": 255,
+        "alphaChangedPixels": 5445,
+        "differenceBounds": [
+          500,
+          55,
+          584,
+          124
+        ]
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null
+      }
+    },
+    {
+      "host": "linux",
+      "identity": "wide-gradient",
+      "inputSha256": "4986c229fc7ca00f613e937818aac87f8dac9459d875ff7c3d2074ef199f29b5",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 4783,
+        "maximumError": 255,
+        "alphaChangedPixels": 4783,
+        "differenceBounds": [
+          630,
+          55,
+          714,
+          113
+        ]
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null
+      }
+    },
+    {
+      "host": "linux",
+      "identity": "wide-solid",
+      "inputSha256": "2cb380ce734c25035294fbb0f0b38145cf82ebb1d31a2e80f6a24aa9d9fdfa25",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 4783,
+        "maximumError": 255,
+        "alphaChangedPixels": 4783,
+        "differenceBounds": [
+          630,
+          55,
+          714,
+          113
+        ]
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0,
+        "differenceBounds": null
+      }
+    }
+  ],
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 0,
+        "failed": 1,
+        "seconds": 9.035
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 1,
+        "failed": 3,
+        "seconds": 9.723
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 0,
+        "failed": 1,
+        "seconds": 8.869
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 1,
+        "failed": 3,
+        "seconds": 9.402
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 1,
+        "failed": 0,
+        "seconds": 9.537
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 4,
+        "failed": 0,
+        "seconds": 9.52
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 1,
+        "failed": 0,
+        "seconds": 9.904
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 4,
+        "failed": 0,
+        "seconds": 10.787
+      }
+    ],
+    "affected": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 604,
+        "failed": 0,
+        "seconds": 10.151
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 379,
+        "failed": 0,
+        "seconds": 11.268
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 604,
+        "failed": 0,
+        "seconds": 11.02
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 379,
+        "failed": 0,
+        "seconds": 12.866
+      }
+    ],
+    "milestone": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 41993,
+        "failed": 0,
+        "seconds": 78.249
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46618,
+        "failed": 1,
+        "seconds": 100.612
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.453
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 13832,
+        "failed": 0,
+        "seconds": 42.609
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 368,
+        "failed": 0,
+        "seconds": 12.275
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.472
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 41993,
+        "failed": 0,
+        "seconds": 50.565
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46619,
+        "failed": 0,
+        "seconds": 159.595
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.004
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 13832,
+        "failed": 0,
+        "seconds": 27.651
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 368,
+        "failed": 0,
+        "seconds": 11.289
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 2.496
+      }
+    ],
+    "method": "Identical compiled stable-API tests run against both library binaries. Three rendering cases and the ownership case fail before on both hosts; all pass after. Compact gradient is an unchanged passing control. Timings include discovery, startup and concurrent checks; no speedup claim.",
+    "knownFailure": {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "visual",
+      "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "messageSha256": "15ab4032010f62b1c91ce4eddb7057b87e861968fc2aeac665899cd7357e5ee0"
+    }
+  },
+  "hostedStaticContext": {
+    "name": "svg2009.svg",
+    "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+    "staticInputSha256": "45937fbfb9ec0482e89745dcbb40693384e6269354563706ee04162cb57ca90e",
+    "nativeInputSha256": "d5f4563e03ed5f6742ceb8f40580de0fddf5f3d3e890c6ddd2b23909b80405be",
+    "animationElementsRemoved": 11,
+    "nonanimationContentRestored": true,
+    "animationTailCharactersPreserved": 77,
+    "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "fontBindings": [
+      "Explicit host fallback to DiagnosticNoto for every authored request"
+    ],
+    "nativeFamily": "SvgDiagnosticNoto",
+    "fontSynthesis": false,
+    "bridge": {
+      "nonfontContentPreserved": true,
+      "fontBindingChanges": 5,
+      "strictHostFallback": true,
+      "legacyFontDeclarationsUnmodified": true
+    },
+    "dimensions": [
+      850,
+      200
+    ],
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "originalFontQualification": false,
+    "wholeOriginalAcceptance": false,
+    "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "outcome": "OPEN: displacement fixed, residual one-level sampling/rounding differences remain.",
+    "results": [
+      {
+        "host": "windows",
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "nativeCaptures": [
+          {
+            "pngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ],
+        "beforeLibraryPngSha256": "b96c00b4eb09a182b24e7ac1639928288d4cdf667059ab72ee9ce1165722b3e9",
+        "afterLibraryPngSha256": "890545be0d2e2f51be55de875a3a4caff6101ed87990fed8fb4d931fd2d5a78a",
+        "before": {
+          "dimensionsMatch": true,
+          "changedPixels": 18864,
+          "maximumError": 233,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            619,
+            58,
+            850,
+            200
+          ]
+        },
+        "after": {
+          "dimensionsMatch": true,
+          "changedPixels": 3926,
+          "maximumError": 1,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            621,
+            58,
+            850,
+            199
+          ]
+        }
+      },
+      {
+        "host": "linux",
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "nativeCaptures": [
+          {
+            "pngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ],
+        "beforeLibraryPngSha256": "cbbb3e3ca47f6171afea6a1c37cc6c508222cc94adecdef45f306770a5c80fd7",
+        "afterLibraryPngSha256": "b3cbc2f65eeccec1cb49a2f341d1e3b3180a5cf0f1757994d773e6a00711888b",
+        "before": {
+          "dimensionsMatch": true,
+          "changedPixels": 18846,
+          "maximumError": 233,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            619,
+            58,
+            850,
+            200
+          ]
+        },
+        "after": {
+          "dimensionsMatch": true,
+          "changedPixels": 3921,
+          "maximumError": 1,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            621,
+            58,
+            850,
+            199
+          ]
+        }
+      }
+    ]
+  },
+  "originalReplay": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 73.0152013998013,
+    "librarySha256": "81682c400f2917f9e01f32eec3db306c0d5a08e0ce87481f87007aa5ac674509",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "suppliedContexts": {
+    "librarySha256": "81682c400f2917f9e01f32eec3db306c0d5a08e0ce87481f87007aa5ac674509",
+    "files": 19,
+    "seconds": 15.434936600038782,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0,
+    "exactPerHost": 19
+  },
+  "packages": {
+    "version": "0.4.0-dev.1",
+    "archives": [
+      {
+        "kind": "nupkg",
+        "sha256": "bdcfc24d274a428ef5c9549cb2d2ede4a00108900e409e4ea3c5c78697553f2c",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true,
+        "assets": {
+          "net11.0": "81682c400f2917f9e01f32eec3db306c0d5a08e0ce87481f87007aa5ac674509",
+          "net10.0": "0f00efe36684a08b7130caea90caea549142ed8c989d9565e9093510031d8be7"
+        },
+        "noRuntimeDependencies": true
+      },
+      {
+        "kind": "snupkg",
+        "sha256": "a9b8b80b8362aaefb6ad59952603d901edbd526d558d33e8891726d533b8a88a",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 7.602317899931222
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 50.925741099985316
+      }
+    ],
+    "published": false
+  },
+  "next": "Qualify and isolate the separate identity/matrix gradient witnesses and the remaining one-level static-context discrepancy on the existing shared sampling/rounding model. The unchanged original animation gate, language/context work and remaining hosted review stay open. Preserve Windows DejaVu assertion/reference and pending authority; do not repoll terminal CI."
+}

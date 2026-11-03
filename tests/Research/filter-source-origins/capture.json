@@ -1,0 +1,248 @@
+{
+  "cases": [
+    {
+      "id": "compact-gradient",
+      "input": "compact-gradient.svg",
+      "width": 240,
+      "height": 160,
+      "inputSha256": "ced832a75b7f792c98e46e7b1b0aa713f3b08794cb26747885a43d4efab16ee0",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-compact-gradient.png",
+          "referenceSha256": "1002751cacf32dd67e87e702f104038390439ac3c95c7b9f831797a78f438428",
+          "rgbaSha256": "dd4ded124eddd1fd4ec05ae5a3b117927d434c229c6fafe456d7cc76411d3c43",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "1002751cacf32dd67e87e702f104038390439ac3c95c7b9f831797a78f438428",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "1002751cacf32dd67e87e702f104038390439ac3c95c7b9f831797a78f438428",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "1002751cacf32dd67e87e702f104038390439ac3c95c7b9f831797a78f438428",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-compact-gradient.png",
+          "referenceSha256": "1002751cacf32dd67e87e702f104038390439ac3c95c7b9f831797a78f438428",
+          "rgbaSha256": "dd4ded124eddd1fd4ec05ae5a3b117927d434c229c6fafe456d7cc76411d3c43",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "1002751cacf32dd67e87e702f104038390439ac3c95c7b9f831797a78f438428",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "1002751cacf32dd67e87e702f104038390439ac3c95c7b9f831797a78f438428",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "1002751cacf32dd67e87e702f104038390439ac3c95c7b9f831797a78f438428",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "cross-tile",
+      "input": "cross-tile.svg",
+      "width": 850,
+      "height": 200,
+      "inputSha256": "8aa74f6fdd9727546940ef59c8e87f8da34dd8685fb1f08a05e7e0114228dc03",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-cross-tile.png",
+          "referenceSha256": "e29fd9321e6991652419ab8d2e2cdee55262138152cb966875e994126485d246",
+          "rgbaSha256": "0955ccbaf6a192bfd57f68dd4976b3f3c69fbb370919396ead08e0ad3a7a19aa",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "e29fd9321e6991652419ab8d2e2cdee55262138152cb966875e994126485d246",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e29fd9321e6991652419ab8d2e2cdee55262138152cb966875e994126485d246",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e29fd9321e6991652419ab8d2e2cdee55262138152cb966875e994126485d246",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-cross-tile.png",
+          "referenceSha256": "e29fd9321e6991652419ab8d2e2cdee55262138152cb966875e994126485d246",
+          "rgbaSha256": "0955ccbaf6a192bfd57f68dd4976b3f3c69fbb370919396ead08e0ad3a7a19aa",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "e29fd9321e6991652419ab8d2e2cdee55262138152cb966875e994126485d246",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e29fd9321e6991652419ab8d2e2cdee55262138152cb966875e994126485d246",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e29fd9321e6991652419ab8d2e2cdee55262138152cb966875e994126485d246",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wide-gradient",
+      "input": "wide-gradient.svg",
+      "width": 850,
+      "height": 200,
+      "inputSha256": "4986c229fc7ca00f613e937818aac87f8dac9459d875ff7c3d2074ef199f29b5",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-wide-gradient.png",
+          "referenceSha256": "e187b7441557114310284ffccf07b5bf4ed71c6dc1d173c20b1a33ddc38776c2",
+          "rgbaSha256": "e3647223939a1712da493888cac51ba6db7f20e05f41e40ee0599cbce57dda70",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "e187b7441557114310284ffccf07b5bf4ed71c6dc1d173c20b1a33ddc38776c2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e187b7441557114310284ffccf07b5bf4ed71c6dc1d173c20b1a33ddc38776c2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e187b7441557114310284ffccf07b5bf4ed71c6dc1d173c20b1a33ddc38776c2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-wide-gradient.png",
+          "referenceSha256": "e187b7441557114310284ffccf07b5bf4ed71c6dc1d173c20b1a33ddc38776c2",
+          "rgbaSha256": "e3647223939a1712da493888cac51ba6db7f20e05f41e40ee0599cbce57dda70",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "e187b7441557114310284ffccf07b5bf4ed71c6dc1d173c20b1a33ddc38776c2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e187b7441557114310284ffccf07b5bf4ed71c6dc1d173c20b1a33ddc38776c2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e187b7441557114310284ffccf07b5bf4ed71c6dc1d173c20b1a33ddc38776c2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wide-solid",
+      "input": "wide-solid.svg",
+      "width": 850,
+      "height": 200,
+      "inputSha256": "2cb380ce734c25035294fbb0f0b38145cf82ebb1d31a2e80f6a24aa9d9fdfa25",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-wide-solid.png",
+          "referenceSha256": "04a0a33d00cd192ffccc422348432d0964d54f557472355da32a3eb28d24056f",
+          "rgbaSha256": "cd0bbadd6bdafcca3bcc05de4684fe256c611236df7243e3790ae184c856ee5e",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "04a0a33d00cd192ffccc422348432d0964d54f557472355da32a3eb28d24056f",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "04a0a33d00cd192ffccc422348432d0964d54f557472355da32a3eb28d24056f",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "04a0a33d00cd192ffccc422348432d0964d54f557472355da32a3eb28d24056f",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-wide-solid.png",
+          "referenceSha256": "04a0a33d00cd192ffccc422348432d0964d54f557472355da32a3eb28d24056f",
+          "rgbaSha256": "cd0bbadd6bdafcca3bcc05de4684fe256c611236df7243e3790ae184c856ee5e",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "04a0a33d00cd192ffccc422348432d0964d54f557472355da32a3eb28d24056f",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "04a0a33d00cd192ffccc422348432d0964d54f557472355da32a3eb28d24056f",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "04a0a33d00cd192ffccc422348432d0964d54f557472355da32a3eb28d24056f",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

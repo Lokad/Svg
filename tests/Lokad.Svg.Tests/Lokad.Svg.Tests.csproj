@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/filter-source-origins/wide-solid.svg" Link="TestData/filter-source-origins/wide-solid.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-source-origins/ownership.json" Link="TestData/filter-source-origins/ownership.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/filter-color-matrix/affine-offset.svg" Link="TestData/filter-color-matrix/affine-offset.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-color-matrix/ownership.json" Link="TestData/filter-color-matrix/ownership.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

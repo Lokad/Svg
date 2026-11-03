@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve compact filter-source origins in later compositor bitmaps, preventing
+  displaced or missing source drawings in tiled filter graphs.
 - Add all four color-matrix modes with retained color operations, finite image views
   and exact filter-chain, crop, sampling and alpha behavior.
 - Share span/path child-style resolution across layout and font discovery, retaining

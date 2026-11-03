@@ -1099,9 +1099,10 @@ public static partial class SvgConverter
                 ?? (isolatedBitmapScope is {} parentScope ? new(parentScope.Bounds.Left, parentScope.Bounds.Top) : nativeDevice.OriginInFrame);
             (NativeBitmapDevice captureParent, SvgDrawingMap captureRecording) =
                 PrepareNativeBitmap(destinationBitmap?.Origin ?? parentDeviceOrigin);
-            NativeBitmapDevice capturedDevice = frame?.FilterBinding is {} existingFilter && existingFilter.Index == command.MaskContentIndex
-                ? captureParent.InCapture(nativeCaptureOrigin)
-                : captureParent.InBitmap(parentDeviceOrigin).InBitmap(nativeCaptureOrigin).InCapture(nativeCaptureOrigin);
+            // Enter compact source storage even when this filter already owns a
+            // compositor bitmap. Its physical origin and capture origin differ.
+            NativeBitmapDevice capturedDevice = captureParent.InBitmap(parentDeviceOrigin)
+                .InBitmap(nativeCaptureOrigin).InCapture(nativeCaptureOrigin);
             RasterFrame captureFrame = new(sw + 2, sh + 2, drawingMap.InBitmap(new((int)left - 1, (int)top - 1)), captureRecording)
             { SingleBitmap = true, ContentClip = sourceContentClip, RasterClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = destinationBitmap?.Origin ?? new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = nativeCaptureBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left - 1, (int)top - 1)), NativeDevice = capturedDevice };
             // Region coordinates belong to the padded filter bitmap; sampled

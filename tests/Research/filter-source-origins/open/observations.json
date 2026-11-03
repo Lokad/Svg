@@ -1,0 +1,112 @@
+{
+  "status": "OPEN exploratory witnesses: single healthy native observation per host; not accepted references or routine tests.",
+  "cases": [
+    {
+      "id": "identity-gradient",
+      "input": "identity-gradient.svg",
+      "inputSha256": "45c124e35f3573b31aaf1992744a8b9b54c3f884fc1c234d9d89a1d6de6d9220",
+      "platforms": {
+        "windows": {
+          "reference": "windows-identity-gradient.png",
+          "referenceSha256": "1ddc0f82c398a616c20da57b8a4708a8956436ea4899a60ea44979a28539c785",
+          "comparison": {
+            "dimensionsMatch": true,
+            "changedPixels": 2538,
+            "maximumError": 5,
+            "alphaChangedPixels": 0,
+            "differenceBounds": [
+              91,
+              55,
+              159,
+              102
+            ]
+          },
+          "observations": 1,
+          "qualifiedReference": false,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        "linux": {
+          "reference": "linux-identity-gradient.png",
+          "referenceSha256": "1ddc0f82c398a616c20da57b8a4708a8956436ea4899a60ea44979a28539c785",
+          "comparison": {
+            "dimensionsMatch": true,
+            "changedPixels": 2538,
+            "maximumError": 5,
+            "alphaChangedPixels": 0,
+            "differenceBounds": [
+              91,
+              55,
+              159,
+              102
+            ]
+          },
+          "observations": 1,
+          "qualifiedReference": false,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      }
+    },
+    {
+      "id": "matrix-gradient",
+      "input": "matrix-gradient.svg",
+      "inputSha256": "85305ce7ba23802e0dad087be571f1c1cf6672c93cbb9999d2229ff03f41f9d0",
+      "platforms": {
+        "windows": {
+          "reference": "windows-matrix-gradient.png",
+          "referenceSha256": "5cf28c97f099cb9fdd0c9725d0b5b272d9a2a3f2b64af9013f23cdfd2635f0a8",
+          "comparison": {
+            "dimensionsMatch": true,
+            "changedPixels": 2110,
+            "maximumError": 12,
+            "alphaChangedPixels": 0,
+            "differenceBounds": [
+              91,
+              55,
+              159,
+              102
+            ]
+          },
+          "observations": 1,
+          "qualifiedReference": false,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        "linux": {
+          "reference": "linux-matrix-gradient.png",
+          "referenceSha256": "5cf28c97f099cb9fdd0c9725d0b5b272d9a2a3f2b64af9013f23cdfd2635f0a8",
+          "comparison": {
+            "dimensionsMatch": true,
+            "changedPixels": 2110,
+            "maximumError": 12,
+            "alphaChangedPixels": 0,
+            "differenceBounds": [
+              91,
+              55,
+              159,
+              102
+            ]
+          },
+          "observations": 1,
+          "qualifiedReference": false,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      }
+    }
+  ],
+  "sourceBaseline": "cac9baf0e",
+  "dimensions": [
+    240,
+    160
+  ]
+}

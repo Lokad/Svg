@@ -33,8 +33,10 @@ with spans; independent controls retain computed anchors, nesting and mixed runs
 The unchanged svg2009 original still reaches animateTransform. The
 [color-matrix milestone](filter-color-matrix.json) closes its deferred matrix gate;
 removing eleven clock-start declarations in RAM now renders with explicit diagnostic
-fonts. Independent native pixels for that declared static/font context remain open;
-neither diagnostic fonts nor removed animation qualifies the original. The
+fonts. The [source-origin review](filter-source-origins.json) independently matches
+those font bindings and closes the displaced filter capture. The remaining static
+differences are one channel level; neither diagnostic fonts nor removed animation
+qualifies the original. Independent sampling witnesses remain open. The
 [complete survey and model review](filter-color-matrix-review.json) retain the
 original requirements. Case transformation
 remains open beyond the [uppercase projection](text-case-projection.json) and

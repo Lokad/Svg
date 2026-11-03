@@ -402,6 +402,10 @@ Filter capture retains both directions of the native bitmap axes. Their rounded
 product can retain skew, selecting pipeline alpha before clip coverage instead of
 packed row blending. [Native controls](../tests/Research/svgweb/group-opacity-stages.json)
 protect this selection without snapping coefficients or changing references.
+An existing compositor bitmap still enters compact source storage before capture;
+retaining its origin alone can displace or erase later-tile source drawings.
+[Source-origin controls](../tests/Research/filter-source-origins/README.md) cover
+compact storage, second-tile solid/gradient construction and tile crossings.
 
 Color-matrix parameters are immutable values in the existing filter graph. A
 borrowed color program retains individual transfers and clamps until image sampling;
