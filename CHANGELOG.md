@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve source indices, text ownership and path bindings through Turkic and
+  Lithuanian conditional casing. Empty font needs no longer acquire a font program;
+  emitted combining marks remain subject to the documented shaping subset.
 - Support default-language capitalization with full Unicode titlecase mappings,
   original word context and source-indexed SVG positions.
 - Retain terminal colour programs through offset sampling and destination coverage,

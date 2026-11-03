@@ -1,0 +1,64 @@
+{
+  "input": "control.svg",
+  "inputSha256": "e4ce894a7eaaf549c29a0869991778cbe9d1a40c9246d409df52255d9dbfeb69",
+  "nativeControl": "control.svg",
+  "nativeControlSha256": "e4ce894a7eaaf549c29a0869991778cbe9d1a40c9246d409df52255d9dbfeb69",
+  "nativeInputSha256": "4f341e2b519ead14ee8d125de441d5128abff277eed37723e3b54b8eed6bd452",
+  "font": "../../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "width": 360,
+  "height": 144,
+  "platforms": {
+    "windows": {
+      "reference": "observations/windows-css.png",
+      "referenceSha256": "b359e752974c8420ab285d731953ef26bcb68cd9042754f240fe47ae5331571a",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "b359e752974c8420ab285d731953ef26bcb68cd9042754f240fe47ae5331571a",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "b359e752974c8420ab285d731953ef26bcb68cd9042754f240fe47ae5331571a",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "b359e752974c8420ab285d731953ef26bcb68cd9042754f240fe47ae5331571a",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "linux": {
+      "reference": "observations/linux-css.png",
+      "referenceSha256": "d9d7b8042290a6b88722cfc655cda4f39155baa0106ce8be669f7ece1dd78050",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "d9d7b8042290a6b88722cfc655cda4f39155baa0106ce8be669f7ece1dd78050",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "d9d7b8042290a6b88722cfc655cda4f39155baa0106ce8be669f7ece1dd78050",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "d9d7b8042290a6b88722cfc655cda4f39155baa0106ce8be669f7ece1dd78050",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    }
+  },
+  "referenceReason": "Native CSS observation, not the library reference. Preserve pinned-browser titlecase/context differences without adapting source context or literal controls."
+}

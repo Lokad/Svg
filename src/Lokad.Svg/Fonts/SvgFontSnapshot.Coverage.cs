@@ -21,6 +21,7 @@ public sealed partial class SvgFontSnapshot
             foreach (SvgFontCoverageRequest item in requests)
             {
                 token.ThrowIfCancellationRequested();
+                if (item.Scalars.Length == 0) continue;
                 using RenderBudget.BudgetReservation scalarScratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<bool>(item.Scalars.Length), SvgMemoryCategory.Temporary);
                 bool[] remaining = new bool[item.Scalars.Length];
                 int needed = 0;

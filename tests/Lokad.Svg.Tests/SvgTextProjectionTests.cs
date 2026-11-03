@@ -14,7 +14,7 @@ public sealed class SvgTextProjectionTests
     public void Pinned_full_uppercase_maps_the_unicode_scalar(int source, string expected)
     {
         Span<char> output = stackalloc char[3];
-        int length = SvgTextCasing.Write(new Rune(source), SvgTextTransform.Uppercase, string.Empty, false, false, output);
+        int length = SvgTextCasing.Write(new Rune(source), SvgTextTransform.Uppercase, string.Empty, SvgTextCasingConditions.None, output);
         Assert.Equal(expected, output[..length].ToString());
     }
 
@@ -162,19 +162,19 @@ public sealed class SvgTextProjectionTests
 
     [Theory]
     [Trait("Layer", "Mechanism")]
-    [InlineData("tr")]
+    [InlineData("el")]
     [InlineData("fr")]
     public void Unqualified_language_tailoring_is_explicit_without_affecting_unconverted_text(string language)
     {
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Convert(language)).ErrorCode);
         Span<char> literal = stackalloc char[3];
-        int length = SvgTextCasing.Write(new Rune('i'), SvgTextTransform.None, language, false, false, literal);
+        int length = SvgTextCasing.Write(new Rune('i'), SvgTextTransform.None, language, SvgTextCasingConditions.None, literal);
         Assert.Equal("i", literal[..length].ToString());
 
         static void Convert(string language)
         {
             Span<char> output = stackalloc char[3];
-            _ = SvgTextCasing.Write(new Rune('i'), SvgTextTransform.Uppercase, language, false, false, output);
+            _ = SvgTextCasing.Write(new Rune('i'), SvgTextTransform.Uppercase, language, SvgTextCasingConditions.None, output);
         }
     }
 }

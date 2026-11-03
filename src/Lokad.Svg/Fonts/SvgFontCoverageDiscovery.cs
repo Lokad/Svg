@@ -29,8 +29,9 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     private SvgTextWhitespaceNormalizer _normalizer;
     private FontKey _font = new(string.Empty, 400, false);
     private FontKey? _separator;
-    private readonly record struct PendingSigma(FontKey Font, string Language);
-    private PendingSigma? _pendingSigma;
+    private readonly record struct PendingCasing(FontKey Font, Rune Scalar, SvgTextTransform Transform,
+        string Language, SvgTextCasingConditions Conditions, SvgTextCasingLookahead Lookahead);
+    private PendingCasing? _pendingCase;
     private SvgTextCasingContext _context;
     private SvgTextTransform _transform;
     private string _language = string.Empty;
@@ -66,7 +67,7 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     /// <summary>Finishes original-character context after all normalized chunks of the element have been observed.</summary>
     internal void EndText()
     {
-        ResolvePendingSigma(false);
+        ResolvePending(false);
         _context = default;
     }
 
@@ -166,28 +167,35 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     private void AddMappedScalar(FontKey font, Rune scalar, SvgTextTransform transform, string language)
     {
         SvgTextCasingProperties properties = SvgTextCasing.GetProperties(scalar);
-        if ((properties & SvgTextCasingProperties.Ignorable) == 0)
-            ResolvePendingSigma((properties & SvgTextCasingProperties.Cased) != 0);
-        bool pendingSigma = transform == SvgTextTransform.Lowercase && scalar.Value == 0x3A3 && _context.PrecedingCased;
-        bool wordStart = _context.Observe(scalar, properties);
+        if (_pendingCase is {} pending && SvgTextCasing.TryResolve(pending.Lookahead, scalar, properties, out bool matched))
+            ResolvePending(matched);
+        SvgTextCasingLookahead lookahead = SvgTextCasing.GetLookahead(scalar, transform, language, _context.PrecedingCased);
+        SvgTextCasingConditions conditions = _context.Observe(scalar, properties);
         if (transform == SvgTextTransform.None) AddScalar(font, (uint)scalar.Value);
         else
         {
             Span<char> mapped = stackalloc char[3];
-            int length = SvgTextCasing.Write(scalar, transform, language, false, wordStart, mapped);
-            if (pendingSigma)
-                _pendingSigma = new(font, language);
-            else foreach (Rune emitted in mapped[..length].EnumerateRunes()) AddScalar(font, (uint)emitted.Value);
+            if (lookahead != SvgTextCasingLookahead.None)
+            {
+                if (_pendingCase is not null) throw new InvalidOperationException("A contextual scalar must resolve before another is deferred.");
+                _pendingCase = new(font, scalar, transform, language, conditions, lookahead);
+            }
+            else
+            {
+                int length = SvgTextCasing.Write(scalar, transform, language, conditions, mapped);
+                foreach (Rune emitted in mapped[..length].EnumerateRunes()) AddScalar(font, (uint)emitted.Value);
+            }
         }
     }
 
-    private void ResolvePendingSigma(bool followedByCased)
+    private void ResolvePending(bool matched)
     {
-        if (_pendingSigma is not {} pending) return;
+        if (_pendingCase is not {} pending) return;
         Span<char> mapped = stackalloc char[3];
-        int length = SvgTextCasing.Write(new Rune(0x3A3), SvgTextTransform.Lowercase, pending.Language, !followedByCased, false, mapped);
+        int length = SvgTextCasing.Write(pending.Scalar, pending.Transform, pending.Language,
+            pending.Conditions | SvgTextCasing.Resolve(pending.Lookahead, matched), mapped);
         foreach (Rune emitted in mapped[..length].EnumerateRunes()) AddScalar(pending.Font, (uint)emitted.Value);
-        _pendingSigma = null;
+        _pendingCase = null;
     }
 
     private void AddScalar(FontKey font, uint scalar)
@@ -213,7 +221,7 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     {
         if (_disposed) return;
         _requests = null;
-        _pendingSigma = null;
+        _pendingCase = null;
         _context = default;
         _entries.Dispose();
         _resultsReservation?.Dispose();

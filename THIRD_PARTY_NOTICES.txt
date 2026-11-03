@@ -410,7 +410,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Unicode case mapping and word classification data
 --------------------------------------
 
-Unicode 17.0.0 UnicodeData.txt, SpecialCasing.txt, DerivedCoreProperties.txt and
+Unicode 17.0.0 UnicodeData.txt, SpecialCasing.txt, DerivedCoreProperties.txt, PropList.txt and
 auxiliary/WordBreakProperty.txt provide the data in src/Lokad.Svg/Parsing/SvgTextCasing.Data.cs
 and its direct verification corpus.
 Source URLs and hashes: tests/Research/text-case-mapping/unicode-data.json.

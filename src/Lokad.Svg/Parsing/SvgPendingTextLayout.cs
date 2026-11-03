@@ -33,13 +33,13 @@ internal sealed class SvgPendingTextLayout : IDisposable
         using BudgetedParserList<SvgTextRecordingScope> recordings = new(budget, SvgMemoryCategory.Parser, token);
         int rootFirstText = -1;
         double rootRecordingWidth = 0;
-        using BudgetedParserList<MeasuredRange> measured = new(budget, SvgMemoryCategory.Parser, token);
         using BudgetedParserList<SvgTextPlacementRange> ranges = new(budget, SvgMemoryCategory.Parser, token);
         SvgInheritedTextStyle defaultFont = new(_style.Font.Family, _style.Font.Weight, _style.Font.Italic,
             _style.FontSize, SvgTextWhitespaceMode.Default, _style.LetterSpacing, _style.Anchor) { WordSpacing = _style.WordSpacing, TextTransform = _style.TextTransform, Language = _style.Language };
         using RenderBudget.BudgetReservation scratchOwner = budget.Reserve(1024, SvgMemoryCategory.Parser);
         SvgDevicePoint? followingOrigin = null;
         int offset = 0;
+        int lastElementIdentity = 0;
         try
         {
             foreach (SvgExtractedTextRun source in _sources.Items)
@@ -58,9 +58,12 @@ internal sealed class SvgPendingTextLayout : IDisposable
                     }
                     else recordings.Add(scope with { Start = checked(start + scope.Start), End = checked(start + scope.End), FirstText = checked(start + scope.FirstText) });
                 }
-                if (start != 0) nodes.Add(new(start, true));
+                if (start != 0) nodes.Add(new(start, true)
+                    { PreviousElementIdentity = lastElementIdentity, ElementIdentity = source.FirstElementIdentity });
                 foreach (SvgTextNodeBoundary node in source.NodeBoundaries.Items)
                 { token.ThrowIfCancellationRequested(); nodes.Add(node with { Offset = checked(start + node.Offset) }); }
+                lastElementIdentity = source.NodeBoundaries.Items.Length == 0 ? source.FirstElementIdentity
+                    : source.NodeBoundaries.Items[^1].ElementIdentity;
                 foreach (SvgTextPositionAdjustment adjustment in source.Layout.PositionAdjustments)
                 { token.ThrowIfCancellationRequested(); descendants.Add(adjustment with { Start = checked(start + adjustment.Start) }); }
                 if (source.Layout.LetterSpacingSpans.Length == 0) AddSpacing(start, offset, _style.LetterSpacing, _style.WordSpacing);
@@ -84,12 +87,11 @@ internal sealed class SvgPendingTextLayout : IDisposable
                             : reference.StartOffset * path.Baseline.OffsetScale;
                         if (!double.IsFinite(pathOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The resolved text-path offset is not finite.");
                         followingOrigin = path.EndPoint;
-                        measured.Add(new(path, pathOffset));
+                        ranges.Add(new(start, offset, source.Path, null) { MeasuredPath = path, MeasuredOffset = pathOffset });
                     }
                     catch { path.Dispose(); throw; }
                 }
-                else measured.Add(new(null, 0));
-                ranges.Add(new(start, offset, source.Path, source.Path is null && source.ResumeAfterPath is not null ? followingOrigin : null));
+                else ranges.Add(new(start, offset, null, source.ResumeAfterPath is not null ? followingOrigin : null));
             }
             if (rootFirstText >= 0) recordings.Add(new(0, offset, rootFirstText, rootRecordingWidth, true));
             using BudgetedText text = textBuffer.Detach();
@@ -148,7 +150,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
             for (int pass = needsObjectBox ? 0 : 1; pass < 2; pass++)
             {
                 int fragmentIndex = 0;
-                for (int index = 0; index < ranges.Count; index++)
+                for (int index = 0; index < projection.Placements.Length; index++)
                 {
                     token.ThrowIfCancellationRequested();
                     SvgTextPlacementRange range = projection.Placements[index];
@@ -172,11 +174,11 @@ internal sealed class SvgPendingTextLayout : IDisposable
                     catch { fragments.Dispose(); throw; }
                     using (view)
                     {
-                        SvgMeasuredTextPath? path = measured[index].Path;
+                        SvgMeasuredTextPath? path = range.MeasuredPath;
                         if (pass == 0)
                         {
                             SvgRectangle box = path is not null
-                                ? SvgTextPathLayout.MeasurePath(state, pending, view, path, measured[index].Offset, token)
+                                ? SvgTextPathLayout.MeasurePath(state, pending, view, path, range.MeasuredOffset, token)
                                 : SvgTextLayoutBounds.Measure(view, [], pending.Placement, state.TextBoundsMetrics, token);
                             if (box.Width > 0 && box.Height > 0)
                             {
@@ -194,14 +196,14 @@ internal sealed class SvgPendingTextLayout : IDisposable
                             }
                         }
                         else if (path is not null)
-                            SvgTextPathLayout.EmitPath(state, pending, view, path, measured[index].Offset, objectBox, limits, token);
+                            SvgTextPathLayout.EmitPath(state, pending, view, path, range.MeasuredOffset, objectBox, limits, token);
                         else SvgTextGlyphPainter.EmitDirect(view, pending.Placement, pending.ViewportClip, pending.Color, state,
                             limits.MaximumPathCommands, budget, pending.RecordingTransform, objectBox, token);
                     }
                 }
             }
         }
-        finally { foreach (MeasuredRange range in measured.AsSpan()) range.Path?.Dispose(); }
+        finally { foreach (SvgTextPlacementRange range in ranges.AsSpan()) range.MeasuredPath?.Dispose(); }
 
         static bool UsesObjectBox(string? value, SvgDocumentState state)
         {
@@ -232,8 +234,6 @@ internal sealed class SvgPendingTextLayout : IDisposable
             else fonts.Add(new(start, end, font));
         }
     }
-
-    private readonly record struct MeasuredRange(SvgMeasuredTextPath? Path, double Offset);
 
     public void Dispose()
     {

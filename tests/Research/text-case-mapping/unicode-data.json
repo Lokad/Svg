@@ -16,6 +16,10 @@
     "auxiliary/WordBreakProperty.txt": {
       "url": "https://www.unicode.org/Public/17.0.0/ucd/auxiliary/WordBreakProperty.txt",
       "sha256": "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852"
+    },
+    "PropList.txt": {
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/PropList.txt",
+      "sha256": "130dcddcaadaf071008bdfce1e7743e04fdfbc910886f017d9f9ac931d8c64dd"
     }
   },
   "changedScalars": 1580,
@@ -34,7 +38,14 @@
     "expansions": 48,
     "maximumEmittedUtf16UnitsPerScalar": 3
   },
-  "casingPropertyRanges": 628,
+  "casingPropertyRanges": 917,
+  "casingPropertyFlags": {
+    "Cased": 1,
+    "Case_Ignorable": 2,
+    "Soft_Dotted": 4,
+    "NonStarter": 8,
+    "Above": 16
+  },
   "casingWordRanges": 1051,
   "wordClasses": {
     "ALetter": 1,
@@ -48,5 +59,6 @@
     "Format": 5,
     "ZWJ": 5
   },
-  "language": "Default Unicode upper/lower mappings with Final_Sigma; capitalization uses titlecase only for lowercase first letter units. Language tailoring remains unfinished."
+  "conditionalMaximumEmittedUtf16UnitsPerScalar": 3,
+  "language": "Default/English and Unicode conditional Turkic/Lithuanian mappings. Additional content-language tailoring and mark positioning remain unfinished."
 }

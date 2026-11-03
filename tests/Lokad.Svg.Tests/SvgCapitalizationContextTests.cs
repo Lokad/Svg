@@ -14,7 +14,7 @@ public sealed class SvgCapitalizationContextTests
     public void First_lowercase_units_use_pinned_full_titlecase(int scalar, string expected)
     {
         Span<char> output = stackalloc char[3];
-        int length = SvgTextCasing.Write(new Rune(scalar), SvgTextTransform.Capitalize, string.Empty, false, true, output);
+        int length = SvgTextCasing.Write(new Rune(scalar), SvgTextTransform.Capitalize, string.Empty, SvgTextCasingConditions.WordStart, output);
         Assert.Equal(expected, output[..length].ToString());
     }
 
@@ -189,7 +189,7 @@ public sealed class SvgCapitalizationContextTests
         static void Convert(bool first)
         {
             Span<char> output = stackalloc char[3];
-            SvgTextCasing.Write(new Rune('i'), SvgTextTransform.Capitalize, "tr", false, first, output);
+            SvgTextCasing.Write(new Rune('i'), SvgTextTransform.Capitalize, "el", first ? SvgTextCasingConditions.WordStart : SvgTextCasingConditions.None, output);
         }
     }
 }

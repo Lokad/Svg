@@ -9,7 +9,8 @@ BASE = "https://www.unicode.org/Public/17.0.0/ucd/"
 EXPECTED = {"UnicodeData.txt": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
             "SpecialCasing.txt": "efc25faf19de21b92c1194c111c932e03d2a5eaf18194e33f1156e96de4c9588",
             "DerivedCoreProperties.txt": "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08",
-            "auxiliary/WordBreakProperty.txt": "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852"}
+            "auxiliary/WordBreakProperty.txt": "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852",
+            "PropList.txt": "130dcddcaadaf071008bdfce1e7743e04fdfbc910886f017d9f9ac931d8c64dd"}
 
 
 def main():
@@ -21,8 +22,11 @@ def main():
             raise ValueError("Pinned Unicode input hash changed: " + name)
         sources[name] = payload
     mappings = {"Uppercase": {}, "Lowercase": {}, "Titlecase": {}}
+    combining = {}
     for row in sources["UnicodeData.txt"].decode("utf-8").splitlines():
         fields = row.split(";")
+        if int(fields[3]):
+            combining[int(fields[0], 16)] = int(fields[3])
         for operation, index in [("Uppercase", 12), ("Lowercase", 13)]:
             if fields[index]:
                 mappings[operation][int(fields[0], 16)] = (int(fields[index], 16),)
@@ -55,6 +59,16 @@ def main():
         flag = 1 if fields[1].strip() == "Cased" else 2
         for scalar in range(first, last + 1):
             properties[scalar] = properties.get(scalar, 0) | flag
+    for row in sources["PropList.txt"].decode("utf-8").splitlines():
+        fields = row.split("#", 1)[0].strip().split(";")
+        if len(fields) < 2 or fields[1].strip() != "Soft_Dotted":
+            continue
+        bounds = fields[0].strip().split("..")
+        for scalar in range(int(bounds[0], 16), int(bounds[-1], 16) + 1):
+            assert scalar not in combining
+            properties[scalar] = properties.get(scalar, 0) | 4
+    for scalar, canonical_class in combining.items():
+        properties[scalar] = properties.get(scalar, 0) | 8 | (16 if canonical_class == 230 else 0)
     # CSS capitalization leaves an already-uppercase first letter unchanged.
     # Four uppercase digraphs have nonidentity Unicode titlecase mappings.
     titlecase = mappings.pop("Titlecase")
@@ -123,9 +137,9 @@ def main():
         lines.append(f"        0x{first:X}, 0x{last:X}, {value},")
     lines += ["    ];", "}", ""]
     (ROOT / "src/Lokad.Svg/Parsing/SvgTextCasing.Data.cs").write_bytes("\n".join(lines).encode("utf-8"))
-    (bank / "unicode-casing-properties.csv").write_bytes(("first;last;flags\n" + "".join(f"{a:X};{b:X};{c}\n" for a, b, c in ranges)).encode("ascii"))
+    (bank / "unicode-casing-properties.csv").write_bytes(("first;last;flags\n" + "".join(f"{a:X};{b:X};{c:X}\n" for a, b, c in ranges)).encode("ascii"))
     (bank / "unicode-casing-words.csv").write_bytes(("first;last;class\n" + "".join(f"{a:X};{b:X};{c}\n" for a, b, c in word_ranges)).encode("ascii"))
-    metadata = dict(unicodeVersion="17.0.0", sources={name: dict(url=BASE + name, sha256=hashlib.sha256(payload).hexdigest()) for name, payload in sources.items()}, **statistics["uppercase"], lowercase=statistics["lowercase"], capitalization=statistics["capitalization"], casingPropertyRanges=len(ranges), casingWordRanges=len(word_ranges), wordClasses=word_classes, language="Default Unicode upper/lower mappings with Final_Sigma; capitalization uses titlecase only for lowercase first letter units. Language tailoring remains unfinished.")
+    metadata = dict(unicodeVersion="17.0.0", sources={name: dict(url=BASE + name, sha256=hashlib.sha256(payload).hexdigest()) for name, payload in sources.items()}, **statistics["uppercase"], lowercase=statistics["lowercase"], capitalization=statistics["capitalization"], casingPropertyRanges=len(ranges), casingPropertyFlags=dict(Cased=1, Case_Ignorable=2, Soft_Dotted=4, NonStarter=8, Above=16), casingWordRanges=len(word_ranges), wordClasses=word_classes, conditionalMaximumEmittedUtf16UnitsPerScalar=3, language="Default/English and Unicode conditional Turkic/Lithuanian mappings. Additional content-language tailoring and mark positioning remain unfinished.")
     (bank / "unicode-data.json").write_bytes((json.dumps(metadata, indent=2) + "\n").encode("utf-8"))
     print(json.dumps(metadata))
 

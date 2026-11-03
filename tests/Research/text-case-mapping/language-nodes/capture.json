@@ -1,0 +1,64 @@
+{
+  "input": "control.svg",
+  "inputSha256": "3976089bff44fcd50d2a9f5fbae0f994afab235280c22c4c866bbe7b977dde58",
+  "nativeControl": "reference.svg",
+  "nativeControlSha256": "48fa9e161fa29840c11497239d9057e7a65a8448bbc396ae0f989628f982dddb",
+  "nativeInputSha256": "cb7f478cbff25660c0a9a317642e13133df103c079d1c57b0bd60e838da47439",
+  "font": "../../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "width": 360,
+  "height": 144,
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "64f9daff8da6740e12f83e209b791a7252d68adbd74b1b8049c91a4617b87e5d",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "64f9daff8da6740e12f83e209b791a7252d68adbd74b1b8049c91a4617b87e5d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "64f9daff8da6740e12f83e209b791a7252d68adbd74b1b8049c91a4617b87e5d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "64f9daff8da6740e12f83e209b791a7252d68adbd74b1b8049c91a4617b87e5d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "11f646505bb073199980172ebc49c3723cb837b02c5410d40c8f8be79e00db85",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "11f646505bb073199980172ebc49c3723cb837b02c5410d40c8f8be79e00db85",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "11f646505bb073199980172ebc49c3723cb837b02c5410d40c8f8be79e00db85",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "11f646505bb073199980172ebc49c3723cb837b02c5410d40c8f8be79e00db85",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    }
+  },
+  "referenceReason": "Independent literal full-titlecase/source-context control. Native CSS observations are retained separately; original SVG positions address source scalars."
+}

@@ -120,14 +120,20 @@ retained data. Streaming and retained-instance font discovery share the pinned
 scalar mapper. [Case evidence](../tests/Research/text-case-mapping/README.md)
 keeps original addressing distinct from transformed browser observations.
 Case context follows original scalars independently of whitespace chunk restarts.
-Projection can inspect following source characters; streaming font discovery keeps
-one pending sigma and its font until the next non-ignorable scalar or text end.
+Projection inspects following source characters; streaming font discovery keeps
+one pending scalar/font binding for sigma, Turkic dot lookahead or Lithuanian
+above-accent lookahead. Both routes use the same original-text predicates.
 Retained-instance discovery uses the same text lifecycle. Unicode cased/ignorable
 properties share a pinned lookup, including their overlap and possessive matching.
 Capitalization tracks the last two significant word classes in that same context.
 Pinned titlecase mappings affect only lowercase word initials; source positions
 and unchanged-text borrowing use the existing projection. Word classes require
 no pending text, new owner or general segmentation framework.
+Deletion removes empty spans before font selection and layout. Source indices
+still resolve positioning lists; deleted characters retain no absolute position
+or rotation, while relative offsets reach the next surviving character. Text-node
+owner identities and directly painted recording scopes survive projection. Each
+placement range borrows its measured path, replacing a parallel measurement list.
 The admitted resource dependency graph and paint selection remain owned by that
 preparation through acquisition, then serve lowering without a second collection.
 The [HTTP resolver](HTTP_FONTS.md) owns shared downloads/cache under a longer-lived

@@ -14,6 +14,10 @@ under its [OFL](../supplied-font-labels/fonts/OFL.txt):
 | [capitalize-path](capitalize-path/control.svg) | Word continuity across spans and a path, with independent whitespace lifetimes. |
 | [capitalize-indexed](capitalize-indexed/control.svg) | Original SVG positions and lowercase continuation after a titlecase expansion. |
 | [capitalize-words](capitalize-words/control.svg) | Numeric/connector prefixes, medial punctuation across spans and unchanged uppercase digraphs. |
+| [language-simple](language-simple/control.svg) | Turkic selection/subtags and Lithuanian dot deletion without retained marks. |
+| [language-nodes](language-nodes/control.svg) | Empty nodes and directly painted recording ownership under a filter. |
+| [language-path](language-path/control.svg) | Empty path removal, surviving path binding and endpoint transfer. |
+| [language-indexed](language-indexed/control.svg) | Source-index positions, rotations and relative displacement through deletion. |
 
 Each capture recipe binds its source, font and native control hashes, with three
 healthy profile-cleaned browser captures per platform. Basic/path capture their
@@ -56,8 +60,22 @@ text endings from whitespace restarts, preserve the deferred character's font,
 and use original characters when styles change. Deferred materialization refusal/
 cancellation/retry remains representative ownership coverage.
 
-The shared projection admits default Unicode uppercase/lowercase/capitalization
-with unspecified/English content language. Other language tailoring remains open.
+Conditional Turkish/Azerbaijani and Lithuanian casing uses pinned soft-dotted and
+canonical combining properties. Direct mechanisms cover lookahead, chunk/style
+continuity, empty intervals, original positions and recording ownership. A deletion
+refusal/cancellation/retry contract and a prepared deleted-font contract protect
+distinct lifetimes. The four admitted language controls keep one canonical path.
+
+The broader language milestone remains **open**. The original
+[Turkic](turkic/control.svg) and [Lithuanian](lithuanian/control.svg) accent-heavy
+witnesses and their frozen native images remain unadmitted: retained combining
+marks reach the existing GPOS mark-positioning guard, including in their literal
+counterparts. They require shared cluster/substitution/attachment work. They are
+not replaced by the smaller admitted controls. [Projection evidence](../svgweb/text-language-projection.json)
+records both outcomes and the next shaping criteria.
+
+The shared projection recognizes default/English, Turkish, Azerbaijani and
+Lithuanian casing; other language tailoring remains open.
 Existing font/shaping and character/glyph
 bounds remain independent. [Qualification](../svgweb/text-lowercase-context.json)
 records the exact scope and remaining original-source gates.

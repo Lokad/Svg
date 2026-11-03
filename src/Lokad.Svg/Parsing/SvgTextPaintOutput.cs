@@ -17,6 +17,7 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
     private int _length;
     private int _nextScopeIdentity;
     private int _lastEmittedScopeIdentity;
+    private int _firstEmittedScopeIdentity;
     private bool _startsTextNode;
     private BudgetedParserList<SvgTextNodeBoundary>? _nodeBoundaries;
     private BudgetedParserList<SvgTextRecordingScope>? _recordingScopes;
@@ -69,6 +70,7 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
         _layout.Append(value, letterSpacing, font.WordSpacing, scopeDepth, maximumLength, cancellationToken);
         SvgTextGlyphPaint paint = style.GlyphPaint;
         int start = _length;
+        if (start == 0) _firstEmittedScopeIdentity = _scopes[scopeDepth].Identity;
         if (paint.IsPainted && _scopes[scopeDepth].FirstText < 0)
         {
             var scope = _scopes[scopeDepth];
@@ -80,7 +82,9 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
             if (start != 0)
             {
                 _nodeBoundaries ??= new(_budget, SvgMemoryCategory.Parser, _cancellationToken);
-                if (_nodeBoundaries.Count == 0 || _nodeBoundaries[^1].Offset != start) _nodeBoundaries.Add(new(start, _scopes[scopeDepth].Identity != _lastEmittedScopeIdentity));
+                if (_nodeBoundaries.Count == 0 || _nodeBoundaries[^1].Offset != start)
+                    _nodeBoundaries.Add(new(start, _scopes[scopeDepth].Identity != _lastEmittedScopeIdentity)
+                    { PreviousElementIdentity = _lastEmittedScopeIdentity, ElementIdentity = _scopes[scopeDepth].Identity });
             }
             _startsTextNode = false;
         }
@@ -169,7 +173,8 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
             _nodeBoundaries = null;
             _startsTextNode = false;
             _length = 0;
-            return new(layout, path, spans, fonts, boundaries) { RecordingScopes = recordingScopes, ElementStroke = SvgTextRecordingStroke.FromStyle(root.Paint) };
+            return new(layout, path, spans, fonts, boundaries) { RecordingScopes = recordingScopes,
+                ElementStroke = SvgTextRecordingStroke.FromStyle(root.Paint), FirstElementIdentity = _firstEmittedScopeIdentity };
         }
         catch { recordingScopes.Dispose(); boundaries.Dispose(); fonts.Dispose(); spans.Dispose(); layout.Dispose(); throw; }
 

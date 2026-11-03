@@ -411,7 +411,8 @@ Run `python -X utf8 tools/generate-unicode-case-data.py` to regenerate the
 [direct mapping corpus](../tests/Research/text-case-mapping/unicode-data.json).
 The script verifies pinned Unicode 17 source hashes and keeps downloads in memory.
 It includes upper/lower mappings, lowercase-initial titlecase mappings and pinned
-casing/word-context properties.
+casing/word-context properties, soft-dotted characters and canonical combining
+classes needed by conditional language rules.
 It does not capture rendering references. Data licensing is included in
 [third-party notices](../THIRD_PARTY_NOTICES.txt); the [case bank](../tests/Research/text-case-mapping/README.md)
 describes native admission and the independent literal controls.

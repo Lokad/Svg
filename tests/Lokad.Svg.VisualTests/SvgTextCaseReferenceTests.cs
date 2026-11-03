@@ -23,4 +23,12 @@ public sealed class SvgTextCaseReferenceTests
     [InlineData("capitalize-words")]
     public Task Capitalization_uses_full_titlecase_and_original_word_context(string identity)
         => NativeFontFixture.AssertMatches("text-case-mapping/" + identity, "text-case-" + identity, "Example");
+
+    [Theory]
+    [InlineData("language-simple")]
+    [InlineData("language-nodes")]
+    [InlineData("language-path")]
+    [InlineData("language-indexed")]
+    public Task Language_casing_preserves_original_context_positions_and_empty_owners(string identity)
+        => NativeFontFixture.AssertMatches("text-case-mapping/" + identity, "text-case-" + identity, "Example");
 }

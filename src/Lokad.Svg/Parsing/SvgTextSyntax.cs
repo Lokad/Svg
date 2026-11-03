@@ -68,6 +68,7 @@ internal readonly record struct SvgTextLetterSpacingSpan(int Start, int End, dou
 /// <summary>Owns one extracted layout until its consumer disposes it; sibling path runs have independent whitespace and anchoring boundaries.</summary>
 internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, SvgTextPathReference? Path, OwnedParserArray<SvgTextPaintSpan> PaintSpans, OwnedParserArray<SvgTextFontSpan> FontSpans, OwnedParserArray<SvgTextNodeBoundary> NodeBoundaries) : IDisposable
 {
+    internal int FirstElementIdentity { get; init; }
     /// <summary>Owns normalized recording scopes independently of shaping and effective character paint.</summary>
     internal OwnedParserArray<SvgTextRecordingScope> RecordingScopes { get; init; } = new([], null);
     internal SvgTextRecordingStroke ElementStroke { get; init; } = SvgTextRecordingStroke.None;
@@ -77,7 +78,13 @@ internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, S
 }
 
 /// <summary>Marks a normalized UTF-16 text-node boundary and whether the owning text element changed.</summary>
-internal readonly record struct SvgTextNodeBoundary(int Offset, bool ChangesElement);
+internal readonly record struct SvgTextNodeBoundary(int Offset, bool ChangesElement)
+{
+    // Identities persist across extracted direct/path chunks. Projection can
+    // remove an empty node without inventing a change of owner afterward.
+    internal int PreviousElementIdentity { get; init; }
+    internal int ElementIdentity { get; init; }
+}
 
 /// <summary>Retains the normalized subtree and first directly painted text of one recording owner.</summary>
 /// <remarks>Offsets borrow the extracted text coordinate space; the containing array owns storage.

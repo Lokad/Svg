@@ -1,0 +1,968 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "9f342e6deab2cf2761898250499152b7c37257ed",
+  "status": "CLOSED: conditional language mapping mechanisms and projected empty-range ownership/positions. OPEN: the full language-rendering milestone. The complete Turkic and Lithuanian accent witnesses remain unadmitted at the unchanged GPOS mark-positioning guard; they are retained intact and are the next shared shaping prerequisite.",
+  "scope": {
+    "newLanguageMechanismCases": 57,
+    "expandedPropertyBoundaryCases": 418,
+    "newOwnershipContracts": 2,
+    "admittedCanonicalRenderingCases": 4,
+    "unadmittedMarkWitnesses": 2,
+    "nativeCaptures": 72,
+    "publicTypeChanges": 0,
+    "newRuntimeDependencies": 0,
+    "newFontBytes": 0,
+    "newResourceOwners": 0,
+    "removedParallelMeasurementLists": 1,
+    "changedExistingReferenceBytes": 0,
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0
+  },
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgTextCasing.cs": "712436c583169e6181bc9b9b53cbf0d3b8f304be7aeb83713569b3b636f0380e",
+    "src/Lokad.Svg/Parsing/SvgTextCasing.Data.cs": "298b5be4c252739e24d2af7e60ff56c5d9170fb976095e86211506f11ab56a5a",
+    "src/Lokad.Svg/Parsing/SvgTextProjection.cs": "0d28c90231375fe31908b21b6764cadb911442610cb8c6ae8949427d7f594317",
+    "src/Lokad.Svg/Parsing/SvgPendingTextLayout.cs": "d4c7b1c890aa3235627d7261c58269915c4ab3c1a7dea0e01fea83a6cce52e25",
+    "src/Lokad.Svg/Parsing/SvgTextSyntax.cs": "fcd0b02abe8c7a0e70f79ae147d7904e03200e5697b6899914a02ba2853c4032",
+    "src/Lokad.Svg/Parsing/SvgTextPaintOutput.cs": "c64ef314803cfae6bfc99f88332860c09305a3c5ea8edcd18d1370a0c0882301",
+    "src/Lokad.Svg/Parsing/SvgTextPlacementRange.cs": "b93f9f5fb73c75d4ef3b9226e6fc98141895efb0a98c5d06046cee68760fcff1",
+    "src/Lokad.Svg/Fonts/SvgFontCoverageDiscovery.cs": "718c4f7f5bc38fb958c0f0c92fd9f900194e7536d5e89953e082e15439ba16b2",
+    "src/Lokad.Svg/Fonts/SvgFontSnapshot.Coverage.cs": "f1629a2401ac483de0c4fb3c700c2afdb916b84d35af4cb45e1abaa76922ac0b",
+    "tests/Lokad.Svg.Tests/SvgLanguageCasingTests.cs": "d62368518a84c3fa6e1846f7e6e281c00773746eb2acbafd8403e8bf8725a83a",
+    "tests/Lokad.Svg.Tests/SvgLanguageCasingOwnershipTests.cs": "f18b7b3e12f2b73bdcf00c66d58b67b9610ed13f544a32679a0e09f8f7414b2d",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.Casing.cs": "299cfb533d8f1b3276d8469dbe1019edbaef49b579302a192b1316a4dee2cea7",
+    "tests/Lokad.Svg.Tests/SvgCapitalizationContextTests.cs": "2afeea5cbcdcf63e010337af8db1c3cc669e2f295ef4fee799a44a62e903762a",
+    "tests/Lokad.Svg.Tests/SvgTextProjectionTests.cs": "9d21c2808096d8d806df4c136b2d94b6b9a034108f73bdb1c7505753b68edcc1",
+    "tests/Lokad.Svg.Tests/SvgLowercaseContextTests.cs": "7118aff2706fa5c6b3cfbd0a174dafc82f70897e823ee76e20708363599c3d0d",
+    "tests/Lokad.Svg.VisualTests/SvgTextCaseReferenceTests.cs": "637b49d2e08dbe21ec8cf562dca955ca28a5b6550f22f7a68b928d5399e67953",
+    "tools/generate-unicode-case-data.py": "36e71b1cfbf338d9bfe9c4034b23898c5b4fee619e78c3c3e16df106a7781ab8",
+    "THIRD_PARTY_NOTICES.txt": "dde82e74d54510436fced024488d1bdfdd90498f2f1fc87bdd14695de7d25561"
+  },
+  "unicode": {
+    "unicodeVersion": "17.0.0",
+    "sources": {
+      "UnicodeData.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt",
+        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
+      },
+      "SpecialCasing.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/SpecialCasing.txt",
+        "sha256": "efc25faf19de21b92c1194c111c932e03d2a5eaf18194e33f1156e96de4c9588"
+      },
+      "DerivedCoreProperties.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/DerivedCoreProperties.txt",
+        "sha256": "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08"
+      },
+      "auxiliary/WordBreakProperty.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/auxiliary/WordBreakProperty.txt",
+        "sha256": "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852"
+      },
+      "PropList.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/PropList.txt",
+        "sha256": "130dcddcaadaf071008bdfce1e7743e04fdfbc910886f017d9f9ac931d8c64dd"
+      }
+    },
+    "changedScalars": 1580,
+    "simpleMappings": 1478,
+    "expansions": 102,
+    "maximumEmittedUtf16UnitsPerScalar": 3,
+    "lowercase": {
+      "changedScalars": 1488,
+      "simpleMappings": 1487,
+      "expansions": 1,
+      "maximumEmittedUtf16UnitsPerScalar": 2
+    },
+    "capitalization": {
+      "changedScalars": 1503,
+      "simpleMappings": 1455,
+      "expansions": 48,
+      "maximumEmittedUtf16UnitsPerScalar": 3
+    },
+    "casingPropertyRanges": 917,
+    "casingPropertyFlags": {
+      "Cased": 1,
+      "Case_Ignorable": 2,
+      "Soft_Dotted": 4,
+      "NonStarter": 8,
+      "Above": 16
+    },
+    "casingWordRanges": 1051,
+    "wordClasses": {
+      "ALetter": 1,
+      "Hebrew_Letter": 1,
+      "Numeric": 2,
+      "ExtendNumLet": 3,
+      "MidLetter": 4,
+      "MidNumLet": 4,
+      "Single_Quote": 4,
+      "Extend": 5,
+      "Format": 5,
+      "ZWJ": 5
+    },
+    "conditionalMaximumEmittedUtf16UnitsPerScalar": 3,
+    "language": "Default/English and Unicode conditional Turkic/Lithuanian mappings. Additional content-language tailoring and mark positioning remain unfinished."
+  },
+  "verificationCorporaSha256": {
+    "unicode-capitalization.csv": "94e03e834440c9b53471526a91191ac62aa9131d3a30223362bfa567b5b6b1de",
+    "unicode-casing-properties.csv": "00040cbe681d8ccbca424cc5eacd36043b86a3a04ba61423a43f97482c4e42ba",
+    "unicode-casing-words.csv": "f117cff696afd022605e1778b8678cb45df7e86d8af5c192abe96e3491c4325b",
+    "unicode-lowercase.csv": "da264ec4c9b90a7d2e9ec180e394a13e57e98f88b299feda2147951e4e0adeae",
+    "unicode-uppercase.csv": "a8f9efec4e9cbf5de397506340b79340175d5d345d88f8278482e5346287fd84"
+  },
+  "normativeSources": [
+    {
+      "url": "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/#G54277",
+      "interpretation": "Evaluate conditional casing against original text. Canonical combining class zero/230 bounds After_I, After_Soft_Dotted, Before_Dot and More_Above; case-ignorable precedence still controls Final_Sigma."
+    },
+    {
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/SpecialCasing.txt",
+      "interpretation": "Apply Turkic dot/dotless-I and Lithuanian soft-dot/above-accent mappings, including zero- and three-unit results. Other content languages remain explicit until their tailoring is qualified."
+    },
+    {
+      "url": "https://www.w3.org/TR/SVG2/text.html#TermAddressableCharacter",
+      "interpretation": "Positioning indices precede case conversion. Zero-emission absolute positions/rotations have no glyph target. Relative displacement transfers to the next surviving character, following the existing SVG treatment of nonglyph source components; this zero-emission extension is an explicit interpretation, not a pinned-browser indexing agreement."
+    }
+  ],
+  "implementation": {
+    "casing": "The existing context retains original word/case/combining state. Projection and streaming use the same lookahead predicates. Streaming holds one scalar/font binding, rather than retaining the text or an accent run. Empty needs do not enumerate a font selection or acquire a source.",
+    "projection": "Drop empty spacing/paint/font/placement spans. Retain original scalar addresses for positions; merge relative offsets and reject overflow, discard deleted absolute/rotation operands and avoid reading an emitted-end rune. Keep actual element identities across node deletion. Re-find surviving directly painted recording text while skipping descendant scopes.",
+    "paths": "Each range borrows its measured path and offset from the pending owner. Projection can remove an empty path range without reindexing a parallel measured-path array. Remove an endpoint transfer when its source path emitted no glyph. Original ranges retain every measured path until all views finish, then dispose on every exit.",
+    "preserved": "No glyph-layout/GSUB/GPOS implementation change, font-name patch, tolerance change or reference rewrite. Existing unconditional mapping/word corpora are byte-identical; cased/ignorable bits remain identical at every old/new property boundary."
+  },
+  "responsibilities": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgLanguageCasingTests.cs",
+    "mechanismAndOwnershipCounts": {
+      "Streaming_coverage_uses_the_same_context_across_reader_chunks": 25,
+      "Projection_uses_original_conditional_language_context": 25,
+      "Recording_owners_keep_the_first_surviving_direct_text_and_skip_children": 2,
+      "Deletion_projection_releases_partial_metadata_after_refusal_cancellation_and_retry": 1,
+      "Deletion_drops_empty_spans_without_losing_original_positions_or_node_owners": 2,
+      "Deferred_expansion_stays_in_its_original_font_and_deleted_marks_need_no_glyph": 1,
+      "Relative_transfer_overflow_refuses_and_releases_projection_storage": 2
+    },
+    "ownership": "../../Lokad.Svg.Tests/SvgLanguageCasingOwnershipTests.cs",
+    "prepared": "../../Lokad.Svg.Tests/OpenTypeFontTests.Casing.cs",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgTextCaseReferenceTests.cs",
+    "separation": "Direct scalar/combining/interval/position boundaries and two lifecycle/allocation paths protect the shared model. Four admitted images use one canonical conversion each. The two complete mark-dependent witnesses remain open research with native references; no fixture/API product or failed render counted as closure."
+  },
+  "rendering": [
+    {
+      "identity": "language-simple",
+      "admission": "Admitted canonical regression",
+      "literalRecipe": "../text-case-mapping/language-simple/capture.json",
+      "cssObservations": "../text-case-mapping/language-simple/capture-css.json",
+      "inputSha256": "72b89729155a12add59a5c40eb0ceb598d499f927e0f7300f189f6dfd8ec40a1",
+      "literalSha256": "c8412741f0cf4840e11605f85cdc320f21a9db41c9acb173bd2936d56d0dafb9",
+      "before": {
+        "windows": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        },
+        "linux": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        }
+      },
+      "after": {
+        "windows": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "linux": {
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      },
+      "nativeCssVersusLiteral": {
+        "windows": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "linux": {
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      }
+    },
+    {
+      "identity": "language-nodes",
+      "admission": "Admitted canonical regression",
+      "literalRecipe": "../text-case-mapping/language-nodes/capture.json",
+      "cssObservations": "../text-case-mapping/language-nodes/capture-css.json",
+      "inputSha256": "3976089bff44fcd50d2a9f5fbae0f994afab235280c22c4c866bbe7b977dde58",
+      "literalSha256": "48fa9e161fa29840c11497239d9057e7a65a8448bbc396ae0f989628f982dddb",
+      "before": {
+        "windows": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        },
+        "linux": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        }
+      },
+      "after": {
+        "windows": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "linux": {
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      },
+      "nativeCssVersusLiteral": {
+        "windows": {
+          "changedPixels": 24,
+          "maximumError": 64
+        },
+        "linux": {
+          "changedPixels": 72,
+          "maximumError": 129
+        }
+      }
+    },
+    {
+      "identity": "language-path",
+      "admission": "Admitted canonical regression",
+      "literalRecipe": "../text-case-mapping/language-path/capture.json",
+      "cssObservations": "../text-case-mapping/language-path/capture-css.json",
+      "inputSha256": "e0e598f2d30d712659750fc573664e5d8b53e73a4091136694248af56fd53d1c",
+      "literalSha256": "81c98e8fed015e01a7c2a86920a098390653d8f5142a51882367bd7c4ddb482a",
+      "before": {
+        "windows": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        },
+        "linux": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        }
+      },
+      "after": {
+        "windows": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "linux": {
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      },
+      "nativeCssVersusLiteral": {
+        "windows": {
+          "changedPixels": 231,
+          "maximumError": 255
+        },
+        "linux": {
+          "changedPixels": 225,
+          "maximumError": 255
+        }
+      }
+    },
+    {
+      "identity": "language-indexed",
+      "admission": "Admitted canonical regression",
+      "literalRecipe": "../text-case-mapping/language-indexed/capture.json",
+      "cssObservations": "../text-case-mapping/language-indexed/capture-css.json",
+      "inputSha256": "e4ce894a7eaaf549c29a0869991778cbe9d1a40c9246d409df52255d9dbfeb69",
+      "literalSha256": "12b68f0287e0a68227f51b7ce798167a67426db1eb4e9ee70e5fbdc767feae8b",
+      "before": {
+        "windows": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        },
+        "linux": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        }
+      },
+      "after": {
+        "windows": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "linux": {
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      },
+      "nativeCssVersusLiteral": {
+        "windows": {
+          "changedPixels": 225,
+          "maximumError": 255
+        },
+        "linux": {
+          "changedPixels": 212,
+          "maximumError": 255
+        }
+      }
+    },
+    {
+      "identity": "turkic",
+      "admission": "OPEN: unadmitted mark-shaping witness; preserve its complete source and frozen native images.",
+      "literalRecipe": "../text-case-mapping/turkic/capture.json",
+      "cssObservations": "../text-case-mapping/turkic/capture-css.json",
+      "inputSha256": "41d24ff3bccc8d379f67212dedbbf5ef3a9024b9527ef11ad1a8cd773c957772",
+      "literalSha256": "57062f4ae234d469ba848647f7b092c0faf2215da71dd2147963c485dde49472",
+      "before": {
+        "windows": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        },
+        "linux": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        }
+      },
+      "after": {
+        "windows": {
+          "exitCode": 1,
+          "messageSha256": "5bcd48acc5c03540d6d1c0c4598768566e9efa0c2f3f73e3c1604004c734b69c"
+        },
+        "linux": {
+          "exitCode": 1,
+          "messageSha256": "f0f799dac9bce9947e1ca95a094f9991aa0f326d7db627e9466be6434e38d744"
+        }
+      },
+      "nativeCssVersusLiteral": {
+        "windows": {
+          "changedPixels": 22,
+          "maximumError": 255
+        },
+        "linux": {
+          "changedPixels": 20,
+          "maximumError": 255
+        }
+      }
+    },
+    {
+      "identity": "lithuanian",
+      "admission": "OPEN: unadmitted mark-shaping witness; preserve its complete source and frozen native images.",
+      "literalRecipe": "../text-case-mapping/lithuanian/capture.json",
+      "cssObservations": "../text-case-mapping/lithuanian/capture-css.json",
+      "inputSha256": "169626e15aad9eac80d6518275a5f1cf7c31af5a70a881ac64a34d8a2d5f5e2e",
+      "literalSha256": "3d612ed337010e7d898c651ee8e008ac224a264481fd53d42ff84504377e9e45",
+      "before": {
+        "windows": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        },
+        "linux": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        }
+      },
+      "after": {
+        "windows": {
+          "exitCode": 1,
+          "messageSha256": "5bcd48acc5c03540d6d1c0c4598768566e9efa0c2f3f73e3c1604004c734b69c"
+        },
+        "linux": {
+          "exitCode": 1,
+          "messageSha256": "f0f799dac9bce9947e1ca95a094f9991aa0f326d7db627e9466be6434e38d744"
+        }
+      },
+      "nativeCssVersusLiteral": {
+        "windows": {
+          "changedPixels": 12,
+          "maximumError": 255
+        },
+        "linux": {
+          "changedPixels": 11,
+          "maximumError": 255
+        }
+      }
+    }
+  ],
+  "shapingPrerequisite": {
+    "status": "OPEN: implement the shared mark cluster/substitution/attachment model before claiming full language rendering; preserve both complete witnesses and every native PNG.",
+    "currentGuard": "src/Lokad.Svg/Fonts/OpenTypeFont.Gpos.cs:ValidateGlyphPositioning",
+    "message": "GPOS mark positioning is not supported in direct text.",
+    "verifiedGates": [
+      {
+        "identity": "turkic",
+        "variant": "control.svg",
+        "outcome": "UnsupportedFeature",
+        "element": "text",
+        "attribute": "",
+        "line": 1,
+        "column": 104,
+        "fontStage": null,
+        "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+      },
+      {
+        "identity": "turkic",
+        "variant": "reference.svg",
+        "outcome": "UnsupportedFeature",
+        "element": "text",
+        "attribute": "",
+        "line": 1,
+        "column": 104,
+        "fontStage": null,
+        "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+      },
+      {
+        "identity": "lithuanian",
+        "variant": "control.svg",
+        "outcome": "UnsupportedFeature",
+        "element": "text",
+        "attribute": "",
+        "line": 1,
+        "column": 118,
+        "fontStage": null,
+        "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+      },
+      {
+        "identity": "lithuanian",
+        "variant": "reference.svg",
+        "outcome": "UnsupportedFeature",
+        "element": "text",
+        "attribute": "",
+        "line": 1,
+        "column": 104,
+        "fontStage": null,
+        "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+      }
+    ],
+    "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "selectedGposFeatures": {
+      "mark": [
+        {
+          "lookup": 3,
+          "type": 4,
+          "extensionType": 9,
+          "flags": 0,
+          "classes": 4
+        },
+        {
+          "lookup": 4,
+          "type": 5,
+          "extensionType": 9,
+          "flags": 0,
+          "classes": 3
+        }
+      ],
+      "mkmk": [
+        {
+          "lookup": 5,
+          "type": 6,
+          "extensionType": 9,
+          "flags": 16,
+          "filterSet": 0,
+          "classes": 1
+        },
+        {
+          "lookup": 6,
+          "type": 6,
+          "extensionType": 9,
+          "flags": 16,
+          "filterSet": 1,
+          "classes": 1
+        },
+        {
+          "lookup": 7,
+          "type": 6,
+          "extensionType": 9,
+          "flags": 16,
+          "filterSet": 2,
+          "classes": 1
+        },
+        {
+          "lookup": 8,
+          "type": 6,
+          "extensionType": 9,
+          "flags": 16,
+          "filterSet": 3,
+          "classes": 1
+        }
+      ]
+    },
+    "exploratoryShaping": {
+      "harfbuzzVersion": "8.3.0",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "interpretation": "Exploratory system HarfBuzz glyph/cluster observations for independently authored strings; not a browser reference or package dependency.",
+      "results": [
+        {
+          "input": "i\u0307\u0301",
+          "glyphs": [
+            {
+              "glyph": 1766,
+              "cluster": 0,
+              "advance": 258,
+              "x": 0,
+              "y": 0,
+              "name": "dotlessi"
+            },
+            {
+              "glyph": 2661,
+              "cluster": 0,
+              "advance": 0,
+              "x": -129,
+              "y": 0,
+              "name": "uni0307"
+            },
+            {
+              "glyph": 2663,
+              "cluster": 0,
+              "advance": 0,
+              "x": 143,
+              "y": 201,
+              "name": "acutecomb"
+            }
+          ]
+        },
+        {
+          "input": "\u0131\u0301\u0307",
+          "glyphs": [
+            {
+              "glyph": 1766,
+              "cluster": 0,
+              "advance": 258,
+              "x": 0,
+              "y": 0,
+              "name": "dotlessi"
+            },
+            {
+              "glyph": 2663,
+              "cluster": 0,
+              "advance": 0,
+              "x": 143,
+              "y": 0,
+              "name": "acutecomb"
+            },
+            {
+              "glyph": 2661,
+              "cluster": 0,
+              "advance": 0,
+              "x": -129,
+              "y": 229,
+              "name": "uni0307"
+            }
+          ]
+        },
+        {
+          "input": "j\u0307\u0323\u0301",
+          "glyphs": [
+            {
+              "glyph": 1767,
+              "cluster": 0,
+              "advance": 258,
+              "x": 0,
+              "y": 0,
+              "name": "uni0237"
+            },
+            {
+              "glyph": 2694,
+              "cluster": 0,
+              "advance": 0,
+              "x": 62,
+              "y": -240,
+              "name": "dotbelowcomb"
+            },
+            {
+              "glyph": 2661,
+              "cluster": 0,
+              "advance": 0,
+              "x": -129,
+              "y": 0,
+              "name": "uni0307"
+            },
+            {
+              "glyph": 2663,
+              "cluster": 0,
+              "advance": 0,
+              "x": 143,
+              "y": 201,
+              "name": "acutecomb"
+            }
+          ]
+        },
+        {
+          "input": "i\u0301",
+          "glyphs": [
+            {
+              "glyph": 175,
+              "cluster": 0,
+              "advance": 258,
+              "x": 0,
+              "y": 0,
+              "name": "iacute"
+            }
+          ]
+        },
+        {
+          "input": "I\u0301",
+          "glyphs": [
+            {
+              "glyph": 143,
+              "cluster": 0,
+              "advance": 339,
+              "x": 0,
+              "y": 0,
+              "name": "Iacute"
+            }
+          ]
+        }
+      ],
+      "clusterUnits": "UTF-8 byte offsets",
+      "fontScale": [
+        1000,
+        1000
+      ],
+      "nominalGlyphs": {
+        "0x69": {
+          "name": "i",
+          "glyph": 76
+        },
+        "0x6a": {
+          "name": "j",
+          "glyph": 77
+        },
+        "0x131": {
+          "name": "dotlessi",
+          "glyph": 1766
+        },
+        "0x237": {
+          "name": "uni0237",
+          "glyph": 1767
+        },
+        "0x307": {
+          "name": "uni0307",
+          "glyph": 2661
+        },
+        "0x301": {
+          "name": "acutecomb",
+          "glyph": 2663
+        },
+        "0x323": {
+          "name": "dotbelowcomb",
+          "glyph": 2694
+        }
+      }
+    },
+    "reproduction": "HarfBuzz 8.3.0, the hash-verified committed Noto program, default guessed Latin segment properties, font scale 1000x1000. hb-shape with JSON output exposes glyph IDs, source clusters, advances and offsets. This is development-only exploration, not an installed runtime dependency or browser reference.",
+    "next": [
+      "Represent source clusters and run-local glyph placement through the existing shape/fit/paint pipeline. Preserve original SVG indices and distinct layout, source, stroke and storage bounds.",
+      "Account for composition/substitution and shared clusters before anchor offsets; observations show dotless base substitutions, reordered marks, common cluster IDs and nonzero mark-to-mark displacement.",
+      "Validate actual selected GPOS/GDEF features, filtering and anchor data; preserve unsupported-run guards until the corresponding mechanism is implemented. No arbitrary mark overlay or guard removal.",
+      "Qualify direct cluster/anchor/numerical/ownership boundaries and both frozen complete controls on Windows/Linux without altering sources, native inputs or pixels. Then close the language milestone."
+    ]
+  },
+  "qualifiedLibrarySha256": {
+    "net11.0": "69b38fde6bc716a7d35d69dfe581dda0264b4e0e01a89f3186e9dcba9cf7fcbb",
+    "net10.0": "270b403b6d4d5901ee32fb9b0c5974b15b3589b464bc81e5e489f83c495f1e8a"
+  },
+  "qualifiedTestAssemblySha256": {
+    "net11.0": {
+      "core": "0fadafaefcfc2493861d0449f6eb3806a237202e83c8df3eeec12e5c94c48a1f",
+      "visual": "0aa7435ea2bfcc1ac95374e5633dfe620f92d85889f7da0e41f4d4bb9db9be78",
+      "font-host": "a31762a9b9f5f2c8cc30be6104b21ea3c17f4d165ec44596d61b9927c2f2ffdd"
+    },
+    "net10.0": {
+      "core": "149637101993695496ed786fa6147756cfdd7a9c740678d8ed92416775c56b96",
+      "visual": "5792ba15e531934327bf6f088c669e4d8ec52f7161038aa22d3914c4dc2dbbea",
+      "font-host": "b1deb2e6263aef5ec783708efcd84b1390f3d754ec0888a4c103fa1b0e2a9188"
+    }
+  },
+  "beforeLibrarySha256": "8923e036407be92efb6b64abc33e25d0812ed8e3157ac8855e83c8b3653087d9",
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 0,
+        "failed": 4,
+        "seconds": 7.449
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 0,
+        "failed": 4,
+        "seconds": 10.979
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 58,
+        "failed": 0,
+        "seconds": 6.234
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 4,
+        "failed": 0,
+        "seconds": 6.876
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 58,
+        "failed": 0,
+        "seconds": 8.603
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 4,
+        "failed": 0,
+        "seconds": 8.499
+      }
+    ],
+    "affected": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 23865,
+        "failed": 0,
+        "seconds": 39.15
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 781,
+        "failed": 0,
+        "seconds": 18.304
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 23865,
+        "failed": 0,
+        "seconds": 38.777
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 781,
+        "failed": 0,
+        "seconds": 19.119
+      }
+    ],
+    "milestone": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 47192,
+        "failed": 0,
+        "seconds": 49.175
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46643,
+        "failed": 1,
+        "seconds": 62.118
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.327
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 23539,
+        "failed": 0,
+        "seconds": 29.695
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 19,
+        "failed": 0,
+        "seconds": 8.082
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.351
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 47192,
+        "failed": 0,
+        "seconds": 54.621
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46644,
+        "failed": 0,
+        "seconds": 156.533
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.149
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 23539,
+        "failed": 0,
+        "seconds": 31.02
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 19,
+        "failed": 0,
+        "seconds": 7.71
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 2.145
+      }
+    ],
+    "knownFailure": {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "messageSha256": "15ab4032010f62b1c91ce4eddb7057b87e861968fc2aeac665899cd7357e5ee0"
+    },
+    "method": "The identical compiled four admitted rendering tests reject the previous language gate and now match frozen literal references exactly. New internal-signature mechanisms are qualified on the candidate, not claimed as binary-compatible before tests. Timings include startup and concurrent work; no speedup claim. Full suites retain the same single Windows DejaVu failure."
+  },
+  "originalReplay": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 52.58847160008736,
+    "librarySha256": "69b38fde6bc716a7d35d69dfe581dda0264b4e0e01a89f3186e9dcba9cf7fcbb",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "suppliedContexts": {
+    "librarySha256": "69b38fde6bc716a7d35d69dfe581dda0264b4e0e01a89f3186e9dcba9cf7fcbb",
+    "files": 19,
+    "seconds": 16.29841330018826,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0,
+    "exactPerHost": 19
+  },
+  "staticContextReplay": {
+    "staticInputSha256": "45937fbfb9ec0482e89745dcbb40693384e6269354563706ee04162cb57ca90e",
+    "nativeInputSha256": "d5f4563e03ed5f6742ceb8f40580de0fddf5f3d3e890c6ddd2b23909b80405be",
+    "librarySha256": "69b38fde6bc716a7d35d69dfe581dda0264b4e0e01a89f3186e9dcba9cf7fcbb",
+    "results": [
+      {
+        "host": "windows",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "libraryPngSha256": "bd4645f8ce20e26629b7b0e6f3d169a3f94a92ab9d984a08dbbc6f2ab0cb310b",
+        "nativePngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d"
+      },
+      {
+        "host": "linux",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "libraryPngSha256": "967e6661a96150e88f14da5647c4de2d596bb1d7d5dff9be75b6957ea94aa828",
+        "nativePngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d"
+      }
+    ],
+    "recipe": "filter-destination-composition.json",
+    "wholeOriginalAcceptance": false,
+    "originalFontQualification": false
+  },
+  "packages": {
+    "version": "0.4.0-dev.1",
+    "archives": [
+      {
+        "kind": "nupkg",
+        "sha256": "000bc7a944bdd96ac37770fa793a439a7684839cecd8fa1733db8b3705c3559b",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true,
+        "assets": {
+          "net11.0": "69b38fde6bc716a7d35d69dfe581dda0264b4e0e01a89f3186e9dcba9cf7fcbb",
+          "net10.0": "270b403b6d4d5901ee32fb9b0c5974b15b3589b464bc81e5e489f83c495f1e8a"
+        },
+        "noRuntimeDependencies": true
+      },
+      {
+        "kind": "snupkg",
+        "sha256": "9e6173c06b85f45fa2e638bc08d3b71aaa2a04b38e5881dd4d6c5dc7de6d2e8b",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 6.552359899971634
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 41.74985250015743
+      }
+    ],
+    "published": false
+  },
+  "next": "Continue the shared mark-shaping prerequisite and both preserved complete language witnesses. Keep other language tailoring, lowercase path/native-policy review, ny1 and all-original accounting open. Preserve DejaVu authority and terminal CI state; no exact-head green or full-language milestone closure claim."
+}
