@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve locally enclosed drawable bounds when constructing filter source images,
+  keeping gradient sampling and dither origins exact through aliases and matrices.
 - Preserve compact filter-source origins in later compositor bitmaps, preventing
   displaced or missing source drawings in tiled filter graphs.
 - Add all four color-matrix modes with retained color operations, finite image views

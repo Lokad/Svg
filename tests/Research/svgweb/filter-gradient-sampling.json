@@ -1,0 +1,713 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "9fcbe0ccd4ac3d3264a102efaf2a641060ad7645",
+  "status": "CLOSED: both independent gradient witnesses, through shared drawable source-image bounds. OPEN: original static-context crop-edge and composition/native-context discrepancies.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgPaintRecording.cs": "0da4f1b95a69a3586bb9d877c7d102bbe39d1e539eee2b484c61e67bc55a3cf7",
+    "tests/Lokad.Svg.Tests/SvgRecordedSourceBoundsTests.cs": "c37f9d03b68c4b80c978a5868cde7ac66e17519a11ab549be0cabc12809211ca",
+    "tests/Lokad.Svg.VisualTests/SvgFilterGradientSamplingReferenceTests.cs": "c317de27172f44d92bef965c01c653bb0fa25df46d0a40f1c3e1512a34c1b05f"
+  },
+  "scope": {
+    "mechanismCases": 3,
+    "canonicalRenderingCases": 2,
+    "nativeCaptures": 12,
+    "additionalCoreCopiedSources": 0,
+    "additionalOwnershipMatrixCases": 0,
+    "newResourceOwners": 0,
+    "newReplayPipelines": 0,
+    "changedReferenceBytes": 0,
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0
+  },
+  "model": {
+    "cause": "Ordinary fills retained unrounded object bounds but omitted the locally enclosed drawable extent from source-image construction. The resulting image union seeded the wrong gradient dither origin.",
+    "change": "Populate the existing borrowed SourceVisualBounds field by enclosing local visual bounds before native float placement. Preserve unrounded object bounds, parameter-space output hints, source ink and existing sampling/color programs.",
+    "allocation": "No new field, resource owner, temporary collection, sampler branch, replay pipeline or public API."
+  },
+  "nativeSource": {
+    "releaseTag": "153.0.8010.52",
+    "path": "third_party/blink/renderer/core/paint/svg_model_object_painter.h",
+    "url": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/paint/svg_model_object_painter.h",
+    "sha256": "f0be83890ec4cd55c9ffc81dda38a7b87a1c8051a48db0e231cd59f0fdd5864b",
+    "bytes": 2951,
+    "contract": "SVGDrawingRecorder encloses each drawable visual rectangle locally; container effects retain their separately computed bounds.",
+    "license": "../../../THIRD_PARTY_NOTICES.txt"
+  },
+  "responsibilities": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgRecordedSourceBoundsTests.cs",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgFilterGradientSamplingReferenceTests.cs",
+    "controls": "../filter-gradient-sampling/README.md",
+    "nativeRecipe": "../filter-gradient-sampling/capture.json",
+    "retention": "Three direct cases cover fractional rectangle/path production, negative coordinates and reflection while retaining unrounded object bounds and scene cleanup. Two canonical native cases preserve offset-source and general color-matrix graph paths. Existing representative ownership/refusal/cancellation/retry cases cover the unchanged storage lifetimes; no fixture/API matrix."
+  },
+  "qualifiedLibrarySha256": {
+    "net11.0": "1390fed8785326f1e639ff3600cde4777806ced126a2410edd4de251fc6f50b5",
+    "net10.0": "916cd4cb034c214b44ac49df7124a99340383de039c87e49ea8f4c0b6aff15e1"
+  },
+  "qualifiedTestAssemblySha256": {
+    "net11.0": {
+      "core": "ff0371c8a19c04b4a1a921c4a7b5ad7703409db9c68f88801b9f08f578411abb",
+      "visual": "3f5f1891b184315662463f12042841944d3d9738ec69717a43ad2766b4bca1c5",
+      "font-host": "ead5400362d214dd31a51a656a96293c6a44a9400e6e7df7cd10b4ab00004ecf"
+    },
+    "net10.0": {
+      "core": "040d5e1089384570ce1e138e329c9739839e274fc94d9311f8c4c369a8e1d96e",
+      "visual": "fee92ba38132cc14425162a406016077b4563782ea02b0c9042b34ec165b01d4",
+      "font-host": "467fc905ed1af59eeb4306633fb60c854dc2aad641a204f330a1bd086eac10e2"
+    }
+  },
+  "beforeLibrarySha256": "81682c400f2917f9e01f32eec3db306c0d5a08e0ce87481f87007aa5ac674509",
+  "comparisons": [
+    {
+      "host": "windows",
+      "identity": "identity-gradient",
+      "inputSha256": "45c124e35f3573b31aaf1992744a8b9b54c3f884fc1c234d9d89a1d6de6d9220",
+      "referenceSha256": "1ddc0f82c398a616c20da57b8a4708a8956436ea4899a60ea44979a28539c785",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 2538,
+        "maximumError": 5,
+        "alphaChangedPixels": 0,
+        "differenceBounds": [
+          91,
+          55,
+          159,
+          102
+        ]
+      },
+      "afterChangedPixels": 0
+    },
+    {
+      "host": "windows",
+      "identity": "matrix-gradient",
+      "inputSha256": "85305ce7ba23802e0dad087be571f1c1cf6672c93cbb9999d2229ff03f41f9d0",
+      "referenceSha256": "5cf28c97f099cb9fdd0c9725d0b5b272d9a2a3f2b64af9013f23cdfd2635f0a8",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 2110,
+        "maximumError": 12,
+        "alphaChangedPixels": 0,
+        "differenceBounds": [
+          91,
+          55,
+          159,
+          102
+        ]
+      },
+      "afterChangedPixels": 0
+    },
+    {
+      "host": "linux",
+      "identity": "identity-gradient",
+      "inputSha256": "45c124e35f3573b31aaf1992744a8b9b54c3f884fc1c234d9d89a1d6de6d9220",
+      "referenceSha256": "1ddc0f82c398a616c20da57b8a4708a8956436ea4899a60ea44979a28539c785",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 2538,
+        "maximumError": 5,
+        "alphaChangedPixels": 0,
+        "differenceBounds": [
+          91,
+          55,
+          159,
+          102
+        ]
+      },
+      "afterChangedPixels": 0
+    },
+    {
+      "host": "linux",
+      "identity": "matrix-gradient",
+      "inputSha256": "85305ce7ba23802e0dad087be571f1c1cf6672c93cbb9999d2229ff03f41f9d0",
+      "referenceSha256": "5cf28c97f099cb9fdd0c9725d0b5b272d9a2a3f2b64af9013f23cdfd2635f0a8",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixels": 2110,
+        "maximumError": 12,
+        "alphaChangedPixels": 0,
+        "differenceBounds": [
+          91,
+          55,
+          159,
+          102
+        ]
+      },
+      "afterChangedPixels": 0
+    }
+  ],
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 0,
+        "failed": 3,
+        "seconds": 8.851
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 0,
+        "failed": 2,
+        "seconds": 9.682
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 0,
+        "failed": 3,
+        "seconds": 6.818
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 0,
+        "failed": 2,
+        "seconds": 8.339
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 3,
+        "failed": 0,
+        "seconds": 9.168
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 2,
+        "failed": 0,
+        "seconds": 7.498
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 3,
+        "failed": 0,
+        "seconds": 9.888
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 2,
+        "failed": 0,
+        "seconds": 8.599
+      }
+    ],
+    "affected": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 892,
+        "failed": 0,
+        "seconds": 11.293
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 381,
+        "failed": 0,
+        "seconds": 11.269
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 892,
+        "failed": 0,
+        "seconds": 12.392
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 381,
+        "failed": 0,
+        "seconds": 14.724
+      }
+    ],
+    "milestone": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 41996,
+        "failed": 0,
+        "seconds": 74.242
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46620,
+        "failed": 1,
+        "seconds": 95.302
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.545
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 13835,
+        "failed": 0,
+        "seconds": 43.082
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 370,
+        "failed": 0,
+        "seconds": 12.827
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.441
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 41996,
+        "failed": 0,
+        "seconds": 53.46
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46621,
+        "failed": 0,
+        "seconds": 236.332
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.097
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 13835,
+        "failed": 0,
+        "seconds": 29.541
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 370,
+        "failed": 0,
+        "seconds": 11.969
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 2.24
+      }
+    ],
+    "knownFailure": {
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "messageSha256": "15ab4032010f62b1c91ce4eddb7057b87e861968fc2aeac665899cd7357e5ee0"
+    },
+    "method": "Identical compiled stable-API/record tests run against both library binaries: three mechanisms and both rendering cases fail before on both hosts and pass after. Only nonempty selections count. Timings include discovery/startup and concurrent work; no speedup claim."
+  },
+  "hostedStaticContext": {
+    "priorDeclaredOptions": "filter-source-origins.json",
+    "staticInputSha256": "45937fbfb9ec0482e89745dcbb40693384e6269354563706ee04162cb57ca90e",
+    "nativeInputSha256": "d5f4563e03ed5f6742ceb8f40580de0fddf5f3d3e890c6ddd2b23909b80405be",
+    "librarySha256": "1390fed8785326f1e639ff3600cde4777806ced126a2410edd4de251fc6f50b5",
+    "results": [
+      {
+        "host": "windows",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 3926,
+          "maximumError": 1,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            621,
+            58,
+            850,
+            199
+          ]
+        },
+        "libraryPngSha256": "890545be0d2e2f51be55de875a3a4caff6101ed87990fed8fb4d931fd2d5a78a",
+        "nativePngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d"
+      },
+      {
+        "host": "linux",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 3921,
+          "maximumError": 1,
+          "alphaChangedPixels": 0,
+          "differenceBounds": [
+            621,
+            58,
+            850,
+            199
+          ]
+        },
+        "libraryPngSha256": "b3cbc2f65eeccec1cb49a2f341d1e3b3180a5cf0f1757994d773e6a00711888b",
+        "nativePngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d"
+      }
+    ],
+    "wholeOriginalAcceptance": false,
+    "originalFontQualification": false,
+    "outcome": "Unchanged one-level residual: 3,926 Windows / 3,921 Linux pixels, identical alpha. Native PNGs and declared RAM-only static/font inputs are unchanged."
+  },
+  "staticStageReview": {
+    "exploratory": true,
+    "nativeObservationsPerStageHost": 1,
+    "method": "The declared RAM-only static/font variant retains the filtered root branch; other rendering root branches get zero opacity, preserving definitions and references. Filter graph prefixes isolate successive stages. These are diagnostic variants, not original acceptance or qualified references.",
+    "results": [
+      {
+        "prefixStages": 1,
+        "staticInputSha256": "639ba9bc5346ec1a6eaa9e16f7c4e443d0f95d4d6f6d5ba9d5be17dee3d7bd01",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "hosts": {
+          "windows": {
+            "nativeInputSha256": "a753dba98c3fb13d1f9dcc09c56a62045a2ff9e89c22b54137c596b50074ff3f",
+            "libraryPngSha256": "6dd25ed0a785694a4025a329ff4263c541b274c63d545bf1ab98e94e88bd6c51",
+            "nativePngSha256": "1cd25b2def8ce1210eb245cf00f999344f6a9d73f02db0db8288e07975c56782"
+          },
+          "linux": {
+            "nativeInputSha256": "a753dba98c3fb13d1f9dcc09c56a62045a2ff9e89c22b54137c596b50074ff3f",
+            "libraryPngSha256": "6dd25ed0a785694a4025a329ff4263c541b274c63d545bf1ab98e94e88bd6c51",
+            "nativePngSha256": "1cd25b2def8ce1210eb245cf00f999344f6a9d73f02db0db8288e07975c56782"
+          }
+        }
+      },
+      {
+        "prefixStages": 2,
+        "staticInputSha256": "8763386384b7c4f801a6e11443dc624b6431f809613a9266a74d9e004c004f61",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "hosts": {
+          "windows": {
+            "nativeInputSha256": "59c7b1f17bfe9311f0e17b7f2c997da5b5d05b6efc2b0b0ec90d45a2a68af1bf",
+            "libraryPngSha256": "b8d15586aef7ce45c35ebb8faa9010750286ca9a87bbcd7a6b33f52b7e60d4e1",
+            "nativePngSha256": "8eb4e61fe932fca86c0b6a27fb20e88dd37556b33e839a4e79e48a8889fe57f5"
+          },
+          "linux": {
+            "nativeInputSha256": "59c7b1f17bfe9311f0e17b7f2c997da5b5d05b6efc2b0b0ec90d45a2a68af1bf",
+            "libraryPngSha256": "b8d15586aef7ce45c35ebb8faa9010750286ca9a87bbcd7a6b33f52b7e60d4e1",
+            "nativePngSha256": "8eb4e61fe932fca86c0b6a27fb20e88dd37556b33e839a4e79e48a8889fe57f5"
+          }
+        }
+      },
+      {
+        "prefixStages": 3,
+        "staticInputSha256": "3fc77078e268cc8d7f5a3fde67312b4e935f216f4768a830ea56c60fc0b04bbf",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 12,
+          "maximumError": 1,
+          "alphaChangedPixels": 12,
+          "differenceBounds": [
+            617,
+            152,
+            618,
+            198
+          ]
+        },
+        "hosts": {
+          "windows": {
+            "nativeInputSha256": "95559969f66ab6058dc8460d46e05d0d26df20b1852a5045718f9a8ecb93cf15",
+            "libraryPngSha256": "1d50efbc9d6d2840b6b7937b6f037f2e73906719bb6367772d552888b5e87232",
+            "nativePngSha256": "7a93bdfa18e68b84b8a7417b48d74ff55dd0cabe961bd81acd8609cacf9ce68b"
+          },
+          "linux": {
+            "nativeInputSha256": "95559969f66ab6058dc8460d46e05d0d26df20b1852a5045718f9a8ecb93cf15",
+            "libraryPngSha256": "1d50efbc9d6d2840b6b7937b6f037f2e73906719bb6367772d552888b5e87232",
+            "nativePngSha256": "7a93bdfa18e68b84b8a7417b48d74ff55dd0cabe961bd81acd8609cacf9ce68b"
+          }
+        }
+      },
+      {
+        "prefixStages": 4,
+        "staticInputSha256": "fccefd0f3394b665b657773324ff043f4904132589ed159f22a772fbe3318f82",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 9,
+          "maximumError": 1,
+          "alphaChangedPixels": 9,
+          "differenceBounds": [
+            617,
+            152,
+            618,
+            199
+          ]
+        },
+        "hosts": {
+          "windows": {
+            "nativeInputSha256": "b1fd203ee298fd2c7ba61e16e72a283432a1b02264c8c920b3296b1e19d033f6",
+            "libraryPngSha256": "084ee6617fe91590ab49adedcc7737e3f69552119178a406fe721cd95bbe4092",
+            "nativePngSha256": "7e3a9b5a6819adbb0ceb63ee6b2508b1671d7fd07b7c243c5d5adf4645f6d816"
+          },
+          "linux": {
+            "nativeInputSha256": "b1fd203ee298fd2c7ba61e16e72a283432a1b02264c8c920b3296b1e19d033f6",
+            "libraryPngSha256": "084ee6617fe91590ab49adedcc7737e3f69552119178a406fe721cd95bbe4092",
+            "nativePngSha256": "7e3a9b5a6819adbb0ceb63ee6b2508b1671d7fd07b7c243c5d5adf4645f6d816"
+          }
+        }
+      },
+      {
+        "prefixStages": 5,
+        "staticInputSha256": "3bbe260d9e40fb2d4dcbe49f4c0a07a9cd6497c5932367d95e194503faba6cfc",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 9,
+          "maximumError": 1,
+          "alphaChangedPixels": 9,
+          "differenceBounds": [
+            617,
+            152,
+            618,
+            199
+          ]
+        },
+        "hosts": {
+          "windows": {
+            "nativeInputSha256": "f8377ff493297c7f074c4ae268c8935c897b6a4a503d6fdba962b009d53a23a3",
+            "libraryPngSha256": "70d0d174ccb0cdc590e0d507d97742e705c299fcafea160e7d8d2d3723036a20",
+            "nativePngSha256": "329f2705e9f70ce15eaa46d861623073c52d7b9cd2c2f4ce6fb942aaf984f902"
+          },
+          "linux": {
+            "nativeInputSha256": "f8377ff493297c7f074c4ae268c8935c897b6a4a503d6fdba962b009d53a23a3",
+            "libraryPngSha256": "70d0d174ccb0cdc590e0d507d97742e705c299fcafea160e7d8d2d3723036a20",
+            "nativePngSha256": "329f2705e9f70ce15eaa46d861623073c52d7b9cd2c2f4ce6fb942aaf984f902"
+          }
+        }
+      },
+      {
+        "prefixStages": 6,
+        "staticInputSha256": "eefa87ed2388a854250d8ba7c48099c6d338bfbd2b8e0d3425432dc6b2686cff",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 22,
+          "maximumError": 1,
+          "alphaChangedPixels": 22,
+          "differenceBounds": [
+            617,
+            133,
+            618,
+            200
+          ]
+        },
+        "hosts": {
+          "windows": {
+            "nativeInputSha256": "74db2695c1dbbfba7177a535010c7589ce54482768adbd17d6418f1663e5fbdc",
+            "libraryPngSha256": "ffcf7b461dd6481a539b8cd90b321b550b05149192202def4f0134febd04d0f8",
+            "nativePngSha256": "29fb7ec5147a4d178c08c716e965a90db9e95a070225ec3936a79f27c0264f12"
+          },
+          "linux": {
+            "nativeInputSha256": "74db2695c1dbbfba7177a535010c7589ce54482768adbd17d6418f1663e5fbdc",
+            "libraryPngSha256": "ffcf7b461dd6481a539b8cd90b321b550b05149192202def4f0134febd04d0f8",
+            "nativePngSha256": "29fb7ec5147a4d178c08c716e965a90db9e95a070225ec3936a79f27c0264f12"
+          }
+        }
+      },
+      {
+        "prefixStages": 7,
+        "staticInputSha256": "65e074208f794b49dca06e87768858dd888a2cfce2454caa9389c52a5d6773e7",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 21,
+          "maximumError": 255,
+          "alphaChangedPixels": 21,
+          "differenceBounds": [
+            617,
+            136,
+            618,
+            192
+          ]
+        },
+        "hosts": {
+          "windows": {
+            "nativeInputSha256": "0d6a41000eda9641dec5daa404e19872aace6fb8ee507939b49ebcd3b03eb6d9",
+            "libraryPngSha256": "648a221f40d0812515b1c7bae7e1a1aa7c57a39ab2b9fb77d6ca0bc2baae0b0d",
+            "nativePngSha256": "21114ee0b1c6f15d7edec62e87ff52b07c25162b6e48ccd7a5e9d042535d1e99"
+          },
+          "linux": {
+            "nativeInputSha256": "0d6a41000eda9641dec5daa404e19872aace6fb8ee507939b49ebcd3b03eb6d9",
+            "libraryPngSha256": "648a221f40d0812515b1c7bae7e1a1aa7c57a39ab2b9fb77d6ca0bc2baae0b0d",
+            "nativePngSha256": "21114ee0b1c6f15d7edec62e87ff52b07c25162b6e48ccd7a5e9d042535d1e99"
+          }
+        }
+      },
+      {
+        "prefixStages": 8,
+        "staticInputSha256": "6d211312705550cb4dc426a03a1fd453d909b85d8dfdda77d33cc5b8e6bb49e6",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 15,
+          "maximumError": 255,
+          "alphaChangedPixels": 15,
+          "differenceBounds": [
+            617,
+            151,
+            618,
+            194
+          ]
+        },
+        "hosts": {
+          "windows": {
+            "nativeInputSha256": "c10533cc483bb636279fd5bbb730113e5207b83aa43051bd9599f209eb84b3d0",
+            "libraryPngSha256": "a16cb7530b177a74b192632de29e2ade5d854205adb81b9e1d0246a12d9bea8b",
+            "nativePngSha256": "c9c36f23988b3a22f3cd81e6e0bf7bc616bb128fdd75adbc7c0fd038b45095f3"
+          },
+          "linux": {
+            "nativeInputSha256": "c10533cc483bb636279fd5bbb730113e5207b83aa43051bd9599f209eb84b3d0",
+            "libraryPngSha256": "a16cb7530b177a74b192632de29e2ade5d854205adb81b9e1d0246a12d9bea8b",
+            "nativePngSha256": "c9c36f23988b3a22f3cd81e6e0bf7bc616bb128fdd75adbc7c0fd038b45095f3"
+          }
+        }
+      },
+      {
+        "prefixStages": 9,
+        "staticInputSha256": "7f3f5d0a317c89ebad09055d087d9565a5820b57fc2b16e452e8a2b1ea9fb6ed",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 38,
+          "maximumError": 255,
+          "alphaChangedPixels": 24,
+          "differenceBounds": [
+            617,
+            151,
+            618,
+            200
+          ]
+        },
+        "hosts": {
+          "windows": {
+            "nativeInputSha256": "6c15bde132da492d6845d5e69a870569078637d37a2390b789aea393d8d1e557",
+            "libraryPngSha256": "58527a323d5d6f3769c9177fc3dfdbda55fba1c469e5212e969df4d0ce5bb53b",
+            "nativePngSha256": "007933d2b1a7724a197d237ec427ee42f813709669ed23afa181bb10dbbc38be"
+          },
+          "linux": {
+            "nativeInputSha256": "6c15bde132da492d6845d5e69a870569078637d37a2390b789aea393d8d1e557",
+            "libraryPngSha256": "58527a323d5d6f3769c9177fc3dfdbda55fba1c469e5212e969df4d0ce5bb53b",
+            "nativePngSha256": "007933d2b1a7724a197d237ec427ee42f813709669ed23afa181bb10dbbc38be"
+          }
+        }
+      }
+    ],
+    "inference": "The first blur/matrix are exact in isolation. The first offset introduces a narrow crop-edge alpha discrepancy; later stages preserve/amplify that fringe. The much larger full-context difference requires the other drawing branches. Compare parent/native bitmap and composition contexts before attributing it solely to a white backdrop. Independent own white-backdrop two-shadow controls are exact in both sRGB and linearRGB in one Windows observation."
+  },
+  "originalReplay": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 86.79710249998607,
+    "librarySha256": "1390fed8785326f1e639ff3600cde4777806ced126a2410edd4de251fc6f50b5",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "suppliedContexts": {
+    "librarySha256": "1390fed8785326f1e639ff3600cde4777806ced126a2410edd4de251fc6f50b5",
+    "files": 19,
+    "seconds": 17.662962900009006,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0,
+    "exactPerHost": 19
+  },
+  "packages": {
+    "version": "0.4.0-dev.1",
+    "archives": [
+      {
+        "kind": "nupkg",
+        "sha256": "40e0a79cb5fc842e92b7f7a50ed04f0d13551a4feebe59d747067ac82ee2b048",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true,
+        "assets": {
+          "net11.0": "1390fed8785326f1e639ff3600cde4777806ced126a2410edd4de251fc6f50b5",
+          "net10.0": "916cd4cb034c214b44ac49df7124a99340383de039c87e49ea8f4c0b6aff15e1"
+        },
+        "noRuntimeDependencies": true
+      },
+      {
+        "kind": "snupkg",
+        "sha256": "6e5d2407b146d1c5cb969af73905d78face31e3dd7d3b96528787759cfabe892",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 7.577863399870694
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 52.92665799986571
+      }
+    ],
+    "published": false
+  },
+  "next": "Recompose the remaining isolated offset/crop fringe and original parent/composition context into meaningful independent controls, preserving the shared image/color model and exactness. Continue language/context and all-original scope. Keep Windows DejaVu reference/assertion and pending authority; never repoll terminal CI."
+}

@@ -29,7 +29,7 @@ internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity 
         : this(identity, alpha, foldable, SvgRecordedPaintRole.Fill, SvgPaintOrder.FillStrokeMarkers, scope, elementOpacity, opacityScope) { }
     // Source visual bounds survive lowering; they do not describe a shader coordinate box or a clip.
     internal SvgPaintBounds? VisualBounds { get; init; }
-    /// <summary>Retains native SVG visual bounds for source-image construction; painted ink stays in VisualBounds.</summary>
+    /// <summary>Retains native drawable bounds for source-image construction; ordinary draws enclose locally before placement. Painted ink stays in VisualBounds.</summary>
     internal SvgPaintBounds? SourceVisualBounds { get; init; }
     /// <summary>Retains SVG element visual bounds for filter output hints independently of recorded draws and captured ink.</summary>
     internal SvgPaintBounds? ElementVisualBounds { get; init; }
@@ -343,6 +343,12 @@ internal static class SvgPaintRecording
                     if (!float.IsPositiveInfinity(left)) objectBounds = new(left, top, right, bottom);
                 }
             }
+            // DrawingRecorder encloses each drawable locally before its canvas
+            // transform. Filter output hints enclose in parameter space instead;
+            // both extents contribute to the source image and its dither origin.
+            SvgPaintBounds? recordedSourceBounds = sourceVisualBox is {} rawVisual
+                ? new SvgPaintBounds(MathF.Floor(rawVisual.Left), MathF.Floor(rawVisual.Top),
+                    MathF.Ceiling(rawVisual.Right), MathF.Ceiling(rawVisual.Bottom)).Map(sourceObjectMap, token) : null;
             for (int index = 0; index < values.Length; index++)
             {
                 token.ThrowIfCancellationRequested();
@@ -413,6 +419,7 @@ internal static class SvgPaintRecording
                     {
                         RecordingTransform = source.RecordingTransform, PaintOrder = source.PaintOrder, IsStroke = identity == strokeId,
                         IsEffectAnchor = anchor, VisualBounds = anchor ? null : visualBounds,
+                        SourceVisualBounds = anchor ? null : recordedSourceBounds,
                         ObjectBounds = source.IsSuppressedSource ? null : objectBounds,
                         SourceObjectBounds = !source.IsSuppressedSource && sourceObjectBox is {} rawBox
                             ? new(rawBox, sourceObjectMap) { VisualBounds = sourceVisualBox } : null

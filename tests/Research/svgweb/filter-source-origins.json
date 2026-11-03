@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "cac9baf0e4589488cfc85f19635a4eb602c3d459",
-  "status": "CLOSED: compact filter source bitmap transition. OPEN: hosted static-context residual rounding and independent gradient sampling witnesses.",
+  "status": "CLOSED: compact filter source bitmap transition. Gradient witnesses closed separately by filter-gradient-sampling.json; hosted static-context residual rounding remains OPEN.",
   "sourceLfSha256": {
     "src/Lokad.Svg/SvgConverter.cs": "f416a00eda70368d71123f7992c6a1c0cc0fab4212b3fe3a35ad3767c4d2e99a",
     "tests/Lokad.Svg.Tests/SvgFilterSourceOriginOwnershipTests.cs": "b8a8381f0997b5753b7f824f1471bc4be7be83fbb8a8eaf2e9cacfc841ec9f61",
@@ -30,8 +30,8 @@
     "ownership": "../../Lokad.Svg.Tests/SvgFilterSourceOriginOwnershipTests.cs",
     "controls": "../filter-source-origins/README.md",
     "nativeRecipe": "../filter-source-origins/capture.json",
-    "openWitnesses": "../filter-source-origins/open/observations.json",
-    "retention": "Four canonical cases distinguish compact storage, later compositor bitmap, solid versus gradient construction, and crossing the tile boundary. One representative tiled capture exercises refusal, cancellation, cleanup and retry. No fixture/API product."
+    "retention": "Four canonical cases distinguish compact storage, later compositor bitmap, solid versus gradient construction, and crossing the tile boundary. One representative tiled capture exercises refusal, cancellation, cleanup and retry. No fixture/API product.",
+    "samplingWitnesses": "../filter-gradient-sampling/capture.json"
   },
   "qualifiedLibrarySha256": {
     "net11.0": "81682c400f2917f9e01f32eec3db306c0d5a08e0ce87481f87007aa5ac674509",
@@ -633,5 +633,5 @@
     ],
     "published": false
   },
-  "next": "Qualify and isolate the separate identity/matrix gradient witnesses and the remaining one-level static-context discrepancy on the existing shared sampling/rounding model. The unchanged original animation gate, language/context work and remaining hosted review stay open. Preserve Windows DejaVu assertion/reference and pending authority; do not repoll terminal CI."
+  "next": "Continue the remaining one-level static-context discrepancy on the shared sampling/rounding model. The separate gradient witnesses are closed by filter-gradient-sampling.json. Original animation, language/context and hosted review remain open; preserve the Windows DejaVu reference and pending authority."
 }

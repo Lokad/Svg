@@ -36,7 +36,8 @@ removing eleven clock-start declarations in RAM now renders with explicit diagno
 fonts. The [source-origin review](filter-source-origins.json) independently matches
 those font bindings and closes the displaced filter capture. The remaining static
 differences are one channel level; neither diagnostic fonts nor removed animation
-qualifies the original. Independent sampling witnesses remain open. The
+qualifies the original. The [drawable-enclosure review](filter-gradient-sampling.json)
+closes the two independent gradient sampling witnesses. The
 [complete survey and model review](filter-color-matrix-review.json) retain the
 original requirements. Case transformation
 remains open beyond the [uppercase projection](text-case-projection.json) and

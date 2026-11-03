@@ -23,6 +23,5 @@ evidence and the separate hosted static/font diagnostic. Hosted SVG bodies and
 attribute values are not retained. The static diagnostic does not qualify
 animation or the original font environment.
 
-The [open witnesses](open/observations.json) retain two separate gradient sampling
-findings. Each has one exploratory native observation per host, not a qualified
-reference. They are not included among the four passing source-origin cases.
+The separate [gradient sampling controls](../filter-gradient-sampling/README.md)
+retain the two further findings and their unchanged native observations.

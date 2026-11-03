@@ -406,6 +406,10 @@ An existing compositor bitmap still enters compact source storage before capture
 retaining its origin alone can displace or erase later-tile source drawings.
 [Source-origin controls](../tests/Research/filter-source-origins/README.md) cover
 compact storage, second-tile solid/gradient construction and tile crossings.
+Drawable recording bounds enclose locally before placement; filter-output hints
+enclose in parameter space. Their union seeds the source image and dither origin.
+[Gradient controls](../tests/Research/filter-gradient-sampling/README.md) protect
+both source aliases and a general color stage without rounding object bounds.
 
 Color-matrix parameters are immutable values in the existing filter graph. A
 borrowed color program retains individual transfers and clamps until image sampling;
