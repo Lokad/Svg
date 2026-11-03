@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve native rectangle-call and coordinate-buffer boundaries when sampling
+  embedded PNGs, including fractional edge rows and bitmap clips.
 - Construct culled dashes in their owning bitmap before thin-stroke or outline
   painting, preserving source calibration, phase and bitmap-origin rounding.
 - Resolve scalar/list text positions in fixed CSS units and em using each

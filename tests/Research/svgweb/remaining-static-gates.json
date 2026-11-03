@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "sourceCommit": "d70d216b83fcbbcfa36fec1eb659a881d0fb2f6c",
   "librarySha256": "e84c1ec2910cea9d896175166327ab1a114643001f7e2bb2f81099b11f73f8e4",
-  "status": "OPEN XML admission, direct text clipping and image-fit sampling. Eleven declared static diagnostics are exact on both hosts; original admission is unchanged.",
+  "status": "OPEN internal-entity admission and direct text clipping. Twelve declared static diagnostics are exact on both hosts after the shared bitmap-span fix; original admission is unchanged.",
   "method": "Fetch and hash-check hosted sources in bounded RAM; retain no bodies, fragments, hrefs or ID values. Remove explicit animation/media subtrees without removing static graphics/non-whitespace text/tails; remove only unused duplicate ordinary IDs. Expand XML markup entities only in declared external diagnostics. Bind explicit Noto where recorded; native input embeds the identical program with synthesis disabled and restores to the same non-font tree. Raster diagnostics replace external hrefs with authored inline PNGs and retain all other tree content. Each rendered diagnostic uses one canonical library conversion and three fresh healthy browser captures per host.",
   "rows": [
     {
@@ -1064,7 +1064,7 @@
         "throwType": "Lokad.Svg.Parsing.SvgLeafParser",
         "throwMethod": "DecodeImage"
       },
-      "disposition": "Authored inline-PNG diagnostic has two stable differing pixels on each host. Independently authored image-fit-sampling/meet-portrait.svg reproduces them; intrinsic-size control is exact. Sampling investigation is OPEN; original external resource is not qualified.",
+      "disposition": "The declared authored inline-PNG diagnostic is now exact on both hosts after shared bitmap-span reseeding. Initial two-pixel results and all native references remain unchanged in staticDiagnostic. The independent authored image-fit witness is qualified; original external resource content is not qualified.",
       "staticDiagnostic": {
         "diagnosticInputSha256": "89e05955e9800c33d5c53a82461cc64a6b12f0830b0088824ae866dbd7411a19",
         "nativeInputSha256": "89e05955e9800c33d5c53a82461cc64a6b12f0830b0088824ae866dbd7411a19",
@@ -1146,6 +1146,11 @@
             ]
           }
         ]
+      },
+      "afterBitmapSpanFix": {
+        "status": "exact",
+        "changedPixelsPerHost": 0,
+        "qualification": "../image-fit-sampling/qualification.json"
       }
     },
     {
@@ -1508,10 +1513,9 @@
     "boundary": "Declared static/font contexts only; original animation and original-font qualification remain separate."
   },
   "nextActions": [
-    "Diagnose image matrix/scanline seed/fractional-edge coverage through the authored image-fit-sampling witness and direct mechanisms. Preserve the two-pixel failing-before native references and exact intrinsic control; do not patch alpha rounding globally.",
-    "Review shared internal-entity admission/reader ownership against the recorded criteria; expanded diagnostics already close geometry/font uncertainty.",
-    "Keep the direct-text clip limitation explicit. Review shared contour/font discovery before any extension; the raster-bound diagnostic still rejects and has no full-image acceptance.",
-    "Original animation/media, duplicate IDs, original fonts and external image resources retain their individual, explicit outcomes. No new default original is admitted by these diagnostics."
+    "Review shared internal-general-entity admission and reader ownership against the recorded criteria; both expanded geometry/font diagnostics are exact.",
+    "Review shared contour/font discovery and ownership before extending direct text clipping. Its authored-raster/supplied-font diagnostic still rejects at the documented clip child; no full-image acceptance is claimed.",
+    "Keep source bitmap span mechanisms and canonical image controls as regression duties. Original animation/media, duplicate IDs, original fonts and external image resources retain their individual outcomes."
   ],
   "hostedSvgBodiesRetained": 0,
   "hostedSourceAttributeValuesRetained": 0,
@@ -1565,5 +1569,6 @@
       "passed": 209,
       "failed": 0
     }
-  ]
+  ],
+  "currentStaticQualification": "../image-fit-sampling/qualification.json"
 }

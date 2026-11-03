@@ -351,6 +351,8 @@ Recorded draws use ceil-sized decoded levels and Q15 source replacement; picture
 draws use floor-sized mips and float interpolation. Strict subsets clamp sampling.
 Reduction reserves scratch, charges samples and releases intermediate levels on
 failure. Image alpha/edges retain their own rules even for uniform colors.
+Axis-aligned bitmap sampling restarts coordinates at native rectangle-call and
+coordinate-buffer boundaries; equal coverage bytes can still cross such a boundary.
 
 ## Resources and effects
 

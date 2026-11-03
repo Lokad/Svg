@@ -1,7 +1,7 @@
 # Image fitting and sampling
 
-The renderer matches all three native controls in affected integration checks.
-[Qualification](qualification.json) records the remaining milestone gates;
+The qualified renderer matches all three native controls on both hosts and runtimes.
+[Qualification](qualification.json) records full, compatibility and package checks;
 [capture evidence](capture.json) retains the original inputs and three healthy,
 identical native captures per case and host.
 

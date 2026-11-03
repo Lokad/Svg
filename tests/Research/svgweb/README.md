@@ -15,10 +15,10 @@ Exact default output does not qualify other font, resource or static-state conte
 whole-corpus acceptance remains open.
 
 The [remaining-gate review](remaining-static-gates.json) follows all thirteen
-parent/resource/XML cases beyond their first rejection. Eleven declared static
+parent/resource/XML cases beyond their first rejection. Twelve declared static
 diagnostics are exact on both hosts. Internal-entity admission and direct text
-clipping remain open; an [authored image-fit witness](../image-fit-sampling/README.md)
-preserves a two-pixel sampling discrepancy. Diagnostic transformations, supplied
+clipping remain open; [shared bitmap-span sampling](../image-fit-sampling/README.md)
+closes the former two-pixel image-fit discrepancy. Diagnostic transformations, supplied
 fonts and replacement rasters do not qualify the corresponding originals.
 
 The [attribute-applicability review](attribute-applicability.json) closes custom
