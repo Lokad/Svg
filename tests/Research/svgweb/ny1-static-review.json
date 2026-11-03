@@ -46,7 +46,7 @@
   "strictCssBoundary": "Unknown and unimplemented active declarations reject through the same bounded parser. Browser error recovery for unknown names is outside the current admission contract; no name-specific production exception, ignore-all fallback or unsupported-property registry is introduced.",
   "standard": "https://www.w3.org/TR/css-syntax-3/#error-handling",
   "sourceAttributeValuesRetained": 0,
-  "nextAction": "Recompose an independent dashed-separator fixture and isolate the shared cause. Keep original invalid-CSS admission and supplied-font qualification separate; no hosted SVG body or raw attribute values retained.",
+  "nextAction": "Use the independent width controls to identify the native stage, then fix the shared cause or record its precise contract limitation. Preserve the unchanged original invalid-CSS boundary and all native references.",
   "beforePositionFix": {
     "nextGate": {
       "element": "tspan",
@@ -233,6 +233,78 @@
       321,
       247
     ],
-    "modelReview": "Review shared dash/path placement before adding geometry-specific branches; retain source/local/output transforms and accumulated numerical precision."
+    "modelReview": "Isolate native SVG-as-image viewport mapping and compositor screenshot stages from SVG DOM/dash geometry. The reference driver uses img plus Page.captureScreenshot; canvas is a separate path. Preserve native width-dependent controls; do not patch a coordinate, image size or global curve interpolation."
+  },
+  "standaloneLineIsolation": {
+    "selectedTraversalOrdinal": 75,
+    "removedOtherGraphicElements": 99,
+    "diagnostic": {
+      "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+      "diagnosticInputSha256": "a0655f16366bea033aa42cb2f26b7d9127503bf809b96b10fafb74fd9a84503a",
+      "nativeInputSha256": "7bdd57a80b95227c5cec6f08459d52ac04e81c16df6c6c91b21f401fa39bd77d",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "fontBindingChanges": 2,
+      "nonfontDiagnosticContentPreserved": true,
+      "librarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
+      "hostedSvgBodiesRetained": 0,
+      "sourceAttributeValuesRetained": 0,
+      "rows": [
+        {
+          "host": "windows",
+          "libraryPngSha256": "0fb1f29f56c14402a4b766de933988d8e8b3131cc29903a63f44d10090bea1c1",
+          "width": 600,
+          "height": 388,
+          "dimensionsMatch": true,
+          "changedPixels": 12,
+          "maximumError": 255,
+          "alphaChangedPixels": 12,
+          "differenceBounds": [
+            319,
+            193,
+            321,
+            247
+          ],
+          "captures": [
+            {
+              "pngSha256": "fcbaf04b768d04acb24cfb35436fec44f94506ee83fc36cc40036b8798277239",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        {
+          "host": "linux",
+          "libraryPngSha256": "0fb1f29f56c14402a4b766de933988d8e8b3131cc29903a63f44d10090bea1c1",
+          "width": 600,
+          "height": 388,
+          "dimensionsMatch": true,
+          "changedPixels": 12,
+          "maximumError": 255,
+          "alphaChangedPixels": 12,
+          "differenceBounds": [
+            319,
+            193,
+            321,
+            247
+          ],
+          "captures": [
+            {
+              "pngSha256": "fcbaf04b768d04acb24cfb35436fec44f94506ee83fc36cc40036b8798277239",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      ]
+    },
+    "meaning": "All twelve residual pixels persist with the single line alone; no hosted geometry is retained."
+  },
+  "imageWidthControl": {
+    "evidence": "../dash-image-width/capture.json",
+    "librarySameRegionChangedPixels": 0,
+    "nativeSameRegionChangedPixels": 16,
+    "controls": "Two authored inputs differ only in width; repeated on both hosts. No hosted attributes or geometry copied."
   }
 }

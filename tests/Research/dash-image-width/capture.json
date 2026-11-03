@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "status": "OPEN research: native SVG image mapping changes with surface width; shared stage still needs isolation. These are not newly admitted reference tests.",
+  "sourceCommit": "45f49f0660c6416c5c5be5877876712853757703",
+  "librarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
+  "background": "transparent",
+  "outputScale": 1,
+  "captureRecipeRevision": "3",
+  "inputs": "Authored independently; same line coordinates, colour and dash pattern. Only the outer width differs. No external resources or fonts.",
+  "rows": [
+    {
+      "host": "windows",
+      "cases": [
+        {
+          "name": "narrow",
+          "width": 40,
+          "height": 384,
+          "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+          "libraryPngSha256": "e25016f5c31b4d7f8a15bdb661a8e756778c561a27114b1abfb74a630af3bd77",
+          "reference": "references/88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3.png",
+          "changedPixels": 0,
+          "bounds": null,
+          "captures": [
+            {
+              "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        {
+          "name": "wide",
+          "width": 600,
+          "height": 384,
+          "inputSha256": "42bbb5cb1089bbdfdeac08695096635869b74b4891098477a91aeb7e72b5e44c",
+          "libraryPngSha256": "8a654eb04a8275e5b2117bba564f8707f301f9dbe501df9ea10a0e61f4b888a8",
+          "reference": "references/a6a2455efd067e748000c4a7d5d3007b152e9b6f69e5d53e3c21d9be1976977c.png",
+          "changedPixels": 16,
+          "bounds": [
+            16,
+            123,
+            18,
+            241
+          ],
+          "captures": [
+            {
+              "pngSha256": "a6a2455efd067e748000c4a7d5d3007b152e9b6f69e5d53e3c21d9be1976977c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a6a2455efd067e748000c4a7d5d3007b152e9b6f69e5d53e3c21d9be1976977c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a6a2455efd067e748000c4a7d5d3007b152e9b6f69e5d53e3c21d9be1976977c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      ],
+      "libraryChangedPixelsWhenOnlyWidthChanges": 0,
+      "nativeChangedPixelsWhenOnlyWidthChanges": 16,
+      "chromeVersion": "153.0.8010.52",
+      "chromeSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "nativeMathProfile": "Windows"
+    },
+    {
+      "host": "linux",
+      "cases": [
+        {
+          "name": "narrow",
+          "width": 40,
+          "height": 384,
+          "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+          "libraryPngSha256": "e25016f5c31b4d7f8a15bdb661a8e756778c561a27114b1abfb74a630af3bd77",
+          "reference": "references/88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3.png",
+          "changedPixels": 0,
+          "bounds": null,
+          "captures": [
+            {
+              "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        {
+          "name": "wide",
+          "width": 600,
+          "height": 384,
+          "inputSha256": "42bbb5cb1089bbdfdeac08695096635869b74b4891098477a91aeb7e72b5e44c",
+          "libraryPngSha256": "8a654eb04a8275e5b2117bba564f8707f301f9dbe501df9ea10a0e61f4b888a8",
+          "reference": "references/a6a2455efd067e748000c4a7d5d3007b152e9b6f69e5d53e3c21d9be1976977c.png",
+          "changedPixels": 16,
+          "bounds": [
+            16,
+            123,
+            18,
+            241
+          ],
+          "captures": [
+            {
+              "pngSha256": "a6a2455efd067e748000c4a7d5d3007b152e9b6f69e5d53e3c21d9be1976977c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a6a2455efd067e748000c4a7d5d3007b152e9b6f69e5d53e3c21d9be1976977c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "a6a2455efd067e748000c4a7d5d3007b152e9b6f69e5d53e3c21d9be1976977c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      ],
+      "libraryChangedPixelsWhenOnlyWidthChanges": 0,
+      "nativeChangedPixelsWhenOnlyWidthChanges": 16,
+      "chromeVersion": "153.0.8010.52",
+      "chromeSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "nativeMathProfile": "Ubuntu26 glibc2.43 CORE-MATH"
+    }
+  ],
+  "hostedSvgBodiesRetained": 0,
+  "hostedSourceAttributeValuesRetained": 0
+}

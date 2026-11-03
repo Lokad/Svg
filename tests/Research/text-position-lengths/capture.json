@@ -469,6 +469,21 @@
       },
       "deterministicRepeat": true,
       "includesCurrentChangelog": true
+    },
+    "ciQualification": {
+      "sourceCommit": "45f49f0660c6416c5c5be5877876712853757703",
+      "run": "https://github.com/Lokad/Svg/actions/runs/41689367522",
+      "status": "TERMINAL FAILED/CLOSED: Ubuntu fully successful, Windows only the preserved DejaVu case.",
+      "ubuntu": "Full primary/runtime/tool/package job successful.",
+      "windows": {
+        "corePassed": 47344,
+        "renderingPassed": 46650,
+        "renderingFailed": 1,
+        "fontHostPassed": 10,
+        "failure": "SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: dejavu)",
+        "referenceAndAssertionPreserved": true
+      },
+      "wholeRunGreen": false
     }
   }
 }
