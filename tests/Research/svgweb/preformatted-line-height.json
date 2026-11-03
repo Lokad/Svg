@@ -1,0 +1,479 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "ed32d51d75999f4814e11897a94de2ad05a57f81",
+  "status": "Explicit-position line-height admission and contiguous inert scalar tokens CLOSED. svg2009 clip-child/path-style, ny1 unknown CSS and the broader CSS/text milestone remain OPEN.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs": "3bd38ff5b3d782517845991fbd4c4eb0909c3cc85f78e46da8a6165bb03096e3",
+    "src/Lokad.Svg/Parsing/SvgInertPresentationSyntax.cs": "f6584dc4516e9c34dd6b04ad07def1b044fd32e0575e0a9c710a7b95a2e319c4",
+    "tests/Lokad.Svg.Tests/SvgLineHeightTests.cs": "26790311215ed56e226ce830739d3004170579547eb67d3d80bd221c83a7aa1b",
+    "tests/Lokad.Svg.VisualTests/SvgLineHeightReferenceTests.cs": "db7cebdb171ee870efc02bf390df6722a22eba076a4e5fe0bcd3d29d8470afd2"
+  },
+  "scope": {
+    "newRetainedStyleFields": 0,
+    "publicApiChanges": 0,
+    "newRuntimeDependencies": 0,
+    "newFontBytes": 0,
+    "existingReferenceChanges": 0,
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "mechanismCases": 35,
+    "canonicalRenderingCases": 1,
+    "researchInputs": 4,
+    "newOwnershipMatrixCases": 0
+  },
+  "model": {
+    "change": "Reuse the existing bounded inert-typography validator in every shared declaration target. Explicit baselines, anchors, font/paint spans and path placement retain their existing implementation. Inert numeric tokens use the common no-whitespace number styles and CSS-only boundary trimming.",
+    "boundary": "The admitted CSS pre uses legacy XML-preserve normalization, replacing tabs/newlines with spaces. Automatic SVG2 line boxes and leading remain outside the contract. Pinned native behavior agrees with the single-line controls; this is not SVG2 automatic-line-layout acceptance.",
+    "specification": "https://www.w3.org/TR/SVG2/text.html#LineHeightProperty",
+    "specificationReading": "SVG2 uses line-height for leading between automatic lines, not text on a path. Its CSS-pre forced-line layout is distinct from legacy XML normalization. The implementation retains explicit-position layout rather than adding an unused line-height field.",
+    "unknownDeclarations": "Unknown CSS names still reject through the common parser, including stroke-fill. No source-name exception or unimplemented-property registry is added; ny1 remains unsupported and its general declaration-semantics review remains open."
+  },
+  "responsibilities": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgLineHeightTests.cs",
+    "details": "17 accepted values, 11 refusal/value-boundary cases, 3 shared contiguous-token cases, 2 distinct container/use admission cases, one font/scalar-discovery case and one unchanged unknown-name contract.",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgLineHeightReferenceTests.cs",
+    "canonicalCapture": "../text-line-layout/capture.json",
+    "research": "Four independent CC0 inputs distinguish CSS pre, XML preserve, CSS pre with explicit line-height, and authored explicit baselines. Their native captures remain separate exploratory evidence.",
+    "ownership": "No new allocation or execution path. Existing representative conversion, prepared-font, memory/refusal/cancellation/retry and font-host coverage runs in the affected selection; numerical values are not multiplied across APIs or fixtures."
+  },
+  "nativeObservations": [
+    {
+      "input": "../text-line-layout/css-pre.svg",
+      "inputSha256": "10f2f4d8831ab3546828708bb4420db0f9485340ef3b43c713b6ebc44363aace",
+      "nativeInputSha256": "6f87018b5221450297de1b623ab1154b77b99a933ff0f0363a5fb72e4be0063c",
+      "platforms": {
+        "windows": {
+          "observation": "../text-line-layout/observations/windows-css-pre.png",
+          "pngSha256": "11245467397e281bf86446cc0feda499558515697841f85e40db64218e6c7368",
+          "captures": 3,
+          "healthy": 3,
+          "profilesCleaned": 3,
+          "allExitCodesZero": true,
+          "distinctPngs": 1,
+          "before": "success",
+          "afterChangedPixels": 0
+        },
+        "linux": {
+          "observation": "../text-line-layout/observations/linux-css-pre.png",
+          "pngSha256": "c6b1281e43011e49730b413272098409fd81faef1e425ee9a0b2634d125a20b4",
+          "captures": 3,
+          "healthy": 3,
+          "profilesCleaned": 3,
+          "allExitCodesZero": true,
+          "distinctPngs": 1,
+          "before": "success",
+          "afterChangedPixels": 0
+        }
+      }
+    },
+    {
+      "input": "../text-line-layout/xml-preserve.svg",
+      "inputSha256": "cb358184ea0e610082f7b42831839813cee7130b371900a69a43f941de4eb307",
+      "nativeInputSha256": "cf4e39d8e4915d6607ebdd4d633afc150ec428faa8bf0e40d4c7bdcc71d04a15",
+      "platforms": {
+        "windows": {
+          "observation": "../text-line-layout/observations/windows-xml-preserve.png",
+          "pngSha256": "11245467397e281bf86446cc0feda499558515697841f85e40db64218e6c7368",
+          "captures": 3,
+          "healthy": 3,
+          "profilesCleaned": 3,
+          "allExitCodesZero": true,
+          "distinctPngs": 1,
+          "before": "success",
+          "afterChangedPixels": 0
+        },
+        "linux": {
+          "observation": "../text-line-layout/observations/linux-xml-preserve.png",
+          "pngSha256": "c6b1281e43011e49730b413272098409fd81faef1e425ee9a0b2634d125a20b4",
+          "captures": 3,
+          "healthy": 3,
+          "profilesCleaned": 3,
+          "allExitCodesZero": true,
+          "distinctPngs": 1,
+          "before": "success",
+          "afterChangedPixels": 0
+        }
+      }
+    },
+    {
+      "input": "../text-line-layout/css-pre-line-height.svg",
+      "inputSha256": "a7db6c618bb9201ed86319b68c21bb47a1dd6c1da90de152e83499bf709d6d01",
+      "nativeInputSha256": "c04e8bb3351528313c9aa13bdbf9f36d77241ae8fc62997ab017c49d7965687e",
+      "platforms": {
+        "windows": {
+          "observation": "../text-line-layout/observations/windows-css-pre-line-height.png",
+          "pngSha256": "11245467397e281bf86446cc0feda499558515697841f85e40db64218e6c7368",
+          "captures": 3,
+          "healthy": 3,
+          "profilesCleaned": 3,
+          "allExitCodesZero": true,
+          "distinctPngs": 1,
+          "before": "svg-error",
+          "afterChangedPixels": 0
+        },
+        "linux": {
+          "observation": "../text-line-layout/observations/linux-css-pre-line-height.png",
+          "pngSha256": "c6b1281e43011e49730b413272098409fd81faef1e425ee9a0b2634d125a20b4",
+          "captures": 3,
+          "healthy": 3,
+          "profilesCleaned": 3,
+          "allExitCodesZero": true,
+          "distinctPngs": 1,
+          "before": "svg-error",
+          "afterChangedPixels": 0
+        }
+      }
+    },
+    {
+      "input": "../text-line-layout/explicit-lines.svg",
+      "inputSha256": "34c2f88ab82d90187414d34c51625a913fdde590f7ff6f29d25f028764657640",
+      "nativeInputSha256": "d248bbddfa81763f8c3c0b1637b0f3a2f83d81ebe4a6c7db360c8b534308f5ef",
+      "platforms": {
+        "windows": {
+          "observation": "../text-line-layout/observations/windows-explicit-lines.png",
+          "pngSha256": "df12d558bf10b2cf0cfea891dbfc9f83016c096bdb62b37be4b63921de460ce2",
+          "captures": 3,
+          "healthy": 3,
+          "profilesCleaned": 3,
+          "allExitCodesZero": true,
+          "distinctPngs": 1,
+          "before": "success",
+          "afterChangedPixels": 0
+        },
+        "linux": {
+          "observation": "../text-line-layout/observations/linux-explicit-lines.png",
+          "pngSha256": "4d0c1cf48a4f8cfcfff0d931c1fcf7ebf40a6fe5c84911e387db0e9f1d07b61c",
+          "captures": 3,
+          "healthy": 3,
+          "profilesCleaned": 3,
+          "allExitCodesZero": true,
+          "distinctPngs": 1,
+          "before": "success",
+          "afterChangedPixels": 0
+        }
+      }
+    }
+  ],
+  "nativeLineHeightVersusExplicitLines": {
+    "windows": {
+      "changedPixels": 456,
+      "maximumError": 255
+    },
+    "linux": {
+      "changedPixels": 400,
+      "maximumError": 255
+    }
+  },
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 8.765887400135398,
+        "passed": 4,
+        "failed": 31
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 8.833954500034451,
+        "passed": 0,
+        "failed": 1
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 7.51572659984231,
+        "passed": 4,
+        "failed": 31
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 8.330494499998167,
+        "passed": 0,
+        "failed": 1
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 9.234915100038052,
+        "passed": 35,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 9.604699699906632,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 7.893401200184599,
+        "passed": 35,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 7.855302599957213,
+        "passed": 1,
+        "failed": 0
+      }
+    ],
+    "identicalFocusedTestAssemblies": true,
+    "fullNet11Core": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 66.41725639998913,
+        "passed": 41916,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 53.61291759996675,
+        "passed": 41916,
+        "failed": 0
+      }
+    ],
+    "affectedSelection": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 42.7775135000702,
+        "passed": 18715,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 20.60660649999045,
+        "passed": 770,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "font-host",
+        "framework": "net11.0",
+        "seconds": 1.3818891998380423,
+        "passed": 10,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "seconds": 43.7194331001956,
+        "passed": 18715,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "seconds": 20.551648400025442,
+        "passed": 770,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "font-host",
+        "framework": "net10.0",
+        "seconds": 1.4819966000504792,
+        "passed": 10,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 33.41705009993166,
+        "passed": 18715,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 21.93003819999285,
+        "passed": 770,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "font-host",
+        "framework": "net11.0",
+        "seconds": 0.9374347000848502,
+        "passed": 10,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "seconds": 30.52220720006153,
+        "passed": 18715,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "seconds": 18.25758540001698,
+        "passed": 770,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "font-host",
+        "framework": "net10.0",
+        "seconds": 2.7801111000590026,
+        "passed": 10,
+        "failed": 0
+      }
+    ],
+    "beforeFailureReasons": {
+      "missingLineHeightAdmission": 21,
+      "incorrectUnknownPropertyOutcomeInsteadOfScalarValidation": 8,
+      "numberUnitGapAccepted": 3,
+      "perHost": true,
+      "includesCanonicalImage": true
+    },
+    "timing": "Focused before/after uses identical test assemblies and filters. Times include startup and concurrent work; they do not establish a speedup.",
+    "qualificationScope": "Both hosts and runtimes receive affected integration; .NET 11 also receives full core coverage because the shared scalar validator serves geometry. Full rendering/package qualification stays at ed32d51d7 until the next coherent text milestone; no exact-head package/CI-green claim.",
+    "lastFullMilestone": "text-lowercase-context.json",
+    "selections": {
+      "core": "FullyQualifiedName~SvgLineHeightTests|FullyQualifiedName~SvgInertTypographyTests|FullyQualifiedName~SvgText|FullyQualifiedName~SvgLowercaseContextTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgFontCoverageDiscoveryTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~SvgPaintOrderTests",
+      "visual": "FullyQualifiedName~SvgLineHeightReferenceTests|FullyQualifiedName~SvgText|FullyQualifiedName~SvgShapingIntervalReferenceTests|FullyQualifiedName~SvgMixed",
+      "font-host": "Unfiltered"
+    },
+    "focusedSelections": {
+      "core": "FullyQualifiedName~SvgLineHeightTests",
+      "visual": "FullyQualifiedName~SvgLineHeightReferenceTests"
+    }
+  },
+  "allOriginals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 57.14998379978351,
+    "librarySha256": "31157b5062500054c6fd237492ff7c99cbaabd0aeb242101b9e14a1a254abbf6",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "suppliedPrograms": {
+    "librarySha256": "31157b5062500054c6fd237492ff7c99cbaabd0aeb242101b9e14a1a254abbf6",
+    "files": 19,
+    "seconds": 15.448811399983242,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0
+  },
+  "nextOriginalGates": [
+    {
+      "name": "ny1.svg",
+      "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+      "hosts": {
+        "windows": {
+          "outcome": "UnsupportedFeature",
+          "diagnosticElement": "style",
+          "diagnosticAttribute": "",
+          "diagnosticLine": 20,
+          "diagnosticColumn": 4,
+          "messageSha256": "96c46dd5631af2ab4d8a59f1b4b9a2ce9335e5ff091ac2759e09a6816e4bb119",
+          "sourceDiagnosticSha256": "1acb8dc30a594049e274ef353a7a10ce076dfc9be01be4e1c77948ead073c4ca"
+        },
+        "linux": {
+          "outcome": "UnsupportedFeature",
+          "diagnosticElement": "style",
+          "diagnosticAttribute": "",
+          "diagnosticLine": 20,
+          "diagnosticColumn": 4,
+          "messageSha256": "96c46dd5631af2ab4d8a59f1b4b9a2ce9335e5ff091ac2759e09a6816e4bb119",
+          "sourceDiagnosticSha256": "1acb8dc30a594049e274ef353a7a10ce076dfc9be01be4e1c77948ead073c4ca"
+        }
+      },
+      "parentEvidence": "text-case-projection.json#nyNextGate"
+    },
+    {
+      "name": "svg2009.svg",
+      "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+      "hosts": {
+        "windows": {
+          "outcome": "UnsupportedFeature",
+          "diagnosticElement": "g",
+          "diagnosticAttribute": "",
+          "diagnosticLine": 47,
+          "diagnosticColumn": 8,
+          "messageSha256": "74f765a941d08df90499e4e2ad2ea8468113ea999e24d6461dce07c1e9a55145",
+          "sourceDiagnosticSha256": "76797ded9ec5faeddda5c29555554d39a45610978ef14227939af6b2df68526c"
+        },
+        "linux": {
+          "outcome": "UnsupportedFeature",
+          "diagnosticElement": "g",
+          "diagnosticAttribute": "",
+          "diagnosticLine": 47,
+          "diagnosticColumn": 8,
+          "messageSha256": "74f765a941d08df90499e4e2ad2ea8468113ea999e24d6461dce07c1e9a55145",
+          "sourceDiagnosticSha256": "76797ded9ec5faeddda5c29555554d39a45610978ef14227939af6b2df68526c"
+        }
+      },
+      "parentEvidence": "preformatted-text-align.json#deeperSvg2009"
+    }
+  ],
+  "next": "Review clip-resource child roles and reference selection before adding special cases, then own textPath styles. Keep capitalization/language tailoring, the retained path-context interpretation, all 204 originals and P0/P2/P4/P5/P6/P7 active.",
+  "browserSha256": {
+    "windows": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "linux": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+  },
+  "qualifiedLibrarySha256": {
+    "net11.0": "31157b5062500054c6fd237492ff7c99cbaabd0aeb242101b9e14a1a254abbf6",
+    "net10.0": "5624ea0d738d15528a1282c6e81450c117962e917748c9e2b41fcd70e22c1088"
+  },
+  "qualifiedTestAssemblySha256": {
+    "net11.0": {
+      "core": "e26c31a6a042994fcb6af4b3fc07e07cf88abeb171a3a6c75d8768afd12a4825",
+      "visual": "306e01ddd039ec23fcc62f636874372dfbc5f85e8ab88024a0c05b10de4d52cf",
+      "font-host": "ecd8770bcf8196e62bb7c08b75479e35b6f5930ad8733a414aa882baa094f421"
+    },
+    "net10.0": {
+      "core": "c5684a82a1135fd66f13c1e05deace723bb0f303328daf4ed98a081f8dfe5105",
+      "visual": "34191c034a7aa7314c6f99f8816382a584348691d1acd3fc1b7960881f4a50e0",
+      "font-host": "4c910ab71ef0a735b0a1baf733879df1c8986cdf1eae7741d9da87dcf7c60b85"
+    }
+  }
+}

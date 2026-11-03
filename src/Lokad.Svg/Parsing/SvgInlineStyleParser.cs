@@ -218,9 +218,10 @@ internal static class SvgInlineStyleParser
                 Set(ref overflow, InlineImportantProperties.Overflow, property, propertyValue, strings, ref important, false);
             }
             else if (property.Equals("preserveAspectRatio", StringComparison.OrdinalIgnoreCase)) ValidateImagePreserveAspectRatioDeclaration(propertyValue);
-            // Preformatted SVG text has no alignment box. Wrapped-text layout is
-            // separately unsupported, so a validated declaration retains no state.
-            else if (property.Equals("text-align", StringComparison.OrdinalIgnoreCase)) _ = ValidateInertTypography(property, propertyValue, cancellationToken);
+            // Supported text has explicit baselines and no alignment box or
+            // automatic line layout. These validated declarations retain no state.
+            else if (property.Equals("text-align", StringComparison.OrdinalIgnoreCase)
+                || property.Equals("line-height", StringComparison.OrdinalIgnoreCase)) _ = ValidateInertTypography(property, propertyValue, cancellationToken);
             else if (target == Target.Geometry && ValidateInertTypography(property, propertyValue, cancellationToken)) { }
             else if (ValidateRenderingDefaults(property, propertyValue, target == Target.Geometry, cancellationToken)) { }
             else if (property.Equals("font-variant", StringComparison.OrdinalIgnoreCase)) ValidateFontVariantDeclaration(propertyValue);

@@ -24,6 +24,10 @@ The [phantom-origin mechanisms](Research/windows-font-unit-scaling/phantom-origi
 add coordinate readouts and six native masks for parent-program versus child-paint
 ownership. They share the ordinary font/scan setup and add no API matrix.
 
+[Line-height coverage](Research/text-line-layout/README.md) keeps numerical and
+declaration boundaries in direct mechanisms, one canonical native image for
+explicit baselines/anchors/path text, and four exploratory line-layout controls.
+
 The [responsibility map](Research/release-baselines/test-responsibilities.md)
 records paint-bank membership, lazy loading, raster/PNG separation and measured
 validation costs, including the core pixel helpers, parser ownership helper, API fixture allocation and

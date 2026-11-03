@@ -24,9 +24,10 @@ rendered originals match three healthy native captures per host. The complete
 failures without copying hosted geometry. [Filter isolation](car-filter-isolation.json)
 preserves the original-to-mechanism mapping.
 
-[Preformatted alignment](preformatted-text-align.json) validates unused text-align
-declarations through the shared style parser. svg2009 now reaches line-height;
-its deeper clip-child and path-style contexts remain open. Case transformation
+[Preformatted alignment](preformatted-text-align.json) and
+[line height](preformatted-line-height.json) validate unused declarations through
+the shared style parser. svg2009 now reaches the clipPath child group in the
+unchanged original; clip-child and path-style contexts remain open. Case transformation
 remains open beyond the [uppercase projection](text-case-projection.json) and
 [lowercase context](text-lowercase-context.json), which qualify original addressing,
 expansion and transformed font discovery.

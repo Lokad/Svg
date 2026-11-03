@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="192" font-family="Example" font-size="22">
+  <style>text { line-height:0 } .middle { line-height:500%!important }</style>
+  <defs><path id="line" d="M12 164H308" /></defs>
+  <g fill="#2060a0" style="line-height:1.5">
+    <text x="12" y="32">AV<tspan x="12" y="64" style="line-height:2em">AV A</tspan></text>
+    <text x="160" y="100" text-anchor="middle" class="middle">AV <tspan style="line-height:normal">A</tspan></text>
+    <text x="308" y="136" text-anchor="end" style="line-height:48px!important">AV A</text>
+    <text text-anchor="middle"><textPath href="#line" startOffset="50%">AV A</textPath></text>
+  </g>
+</svg>

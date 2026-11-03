@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "ecbf575ce0bc71b17adb616913d5f3fe23bd06b2",
-  "status": "Preformatted text-align admission CLOSED. The CSS/text milestone remains OPEN: text-transform, line-height, clip-child roles and textPath style contexts still require shared-model work.",
+  "status": "Preformatted text-align admission CLOSED; historical qualification retained below. Current line-height admission is qualified separately; clip-child/path-style and the broader CSS/text milestone remain OPEN.",
   "scope": {
     "publicApiChanges": 0,
     "newRetainedStyleFields": 0,
@@ -462,5 +462,7 @@
     "ny1 uppercase matches one live text scope whose letters are already uppercase. That source cannot establish case-mapping correctness; use independent mixed-case, expansion and inheritance controls rather than a no-op-only admission.",
     "svg2009 now rejects line-height. A diagnostic variant removing only that declaration reaches an anonymous SVG g inside clipPath, confirmed by a unique source-line match. Determine child-role/native semantics and resource selection before a production change.",
     "The source also contains own textPath font-size/text-anchor styles. Preserve their semantics and existing layout when that gate is reached. Removing a declaration is diagnostic work, not original-file rendering qualification."
-  ]
+  ],
+  "qualifiedCommit": "f51053cea04e85fc8ff9c10221572e8692223b2a",
+  "currentLineHeightEvidence": "preformatted-line-height.json"
 }

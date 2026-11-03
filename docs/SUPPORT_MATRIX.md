@@ -399,6 +399,13 @@ and containers. Explicit positions and `text-anchor` retain their meaning;
 [native controls](../tests/Research/preformatted-text-align/README.md) cover styled
 spans and inherited path text. Auto-wrapped text is outside this layout contract.
 
+CSS `line-height` is validated and inert in the supported explicit-line layout;
+it creates no line boxes or baseline offsets. CSS `white-space:pre` currently uses
+the legacy `xml:space="preserve"` normalization: tabs and newlines become spaces.
+Automatic SVG2 line layout is outside this contract. Independent
+[line-layout controls](../tests/Research/text-line-layout/README.md) distinguish
+these behaviors from explicitly positioned lines and preserve native platform pixels.
+
 `text-anchor` accepts `start`, `middle`, `end`, `inherit`, `initial` and `unset`
 through presentation attributes and admitted inline/stylesheet contexts. Root,
 group, text and span scopes share inheritance and cascade rules. Each chunk uses

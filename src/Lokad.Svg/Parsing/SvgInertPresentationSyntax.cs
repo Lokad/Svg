@@ -32,9 +32,9 @@ internal static class SvgInertPresentationSyntax
         return true;
     }
 
-    /// <summary>Validates bounded typography on geometry that contains no text or font-relative lengths.</summary>
+    /// <summary>Validates bounded typography after the caller establishes that the declaration has no layout effect.</summary>
     /// <remarks>Values are borrowed and discarded; no font or string owner is created. Scalar scans
-    /// observe cancellation. Text/container callers retain their separate font rules.</remarks>
+    /// observe cancellation. Geometry and supported explicit-line text callers retain their separate font rules.</remarks>
     internal static bool TryValidateTypography(ReadOnlySpan<char> property, ReadOnlySpan<char> value, CancellationToken token)
     {
         const string properties = "font-family font-size font-style font-weight font-stretch font-variant text-align line-height writing-mode text-anchor letter-spacing word-spacing text-decoration white-space -inkscape-font-specification";
@@ -44,7 +44,7 @@ internal static class SvgInertPresentationSyntax
         if (!recognized) return false;
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Typography value exceeds the syntax limit.");
         token.ThrowIfCancellationRequested();
-        value = value.Trim();
+        value = SvgCssWhitespace.Trim(value);
         if (value.IsEmpty) throw new SvgException(SvgErrorCode.MalformedInput, "Typography values cannot be empty.");
         if (Keyword(value, "inherit initial unset revert")) return true;
         if (property.Equals("text-decoration", StringComparison.OrdinalIgnoreCase)) { _ = SvgTextDecorationSyntax.Parse(value); return true; }
@@ -119,7 +119,7 @@ internal static class SvgInertPresentationSyntax
 
         static double Number(ReadOnlySpan<char> input)
         {
-            if (!double.TryParse(input, NumberStyles.Float, CultureInfo.InvariantCulture, out double number) || !double.IsFinite(number))
+            if (!double.TryParse(input, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double number) || !double.IsFinite(number))
                 throw new SvgException(SvgErrorCode.MalformedInput, "Inert typography scalars must be finite numbers.");
             return number;
         }

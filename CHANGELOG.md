@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Admit validated `line-height` on explicitly positioned text without changing
+  layout; require contiguous number/unit tokens in inert typography.
 - Add default Unicode lowercase and source-context final-sigma handling across
   spans and paths; keep font discovery's whitespace and text lifetimes distinct.
 - Add pinned Unicode uppercase conversion with original SVG character addressing,
