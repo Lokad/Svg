@@ -948,7 +948,6 @@ public static partial class SvgConverter
             if (destinationBitmap is null)
             {
                 if (TryRenderOffsetSources()) return end + 1;
-                if (TryRenderFractionalOffsetBitmaps()) return end + 1;
                 if (rasterGrid.ContextCount > 1)
                 {
                     SvgAnalyticClipBounds previousBounds = layerBounds;
@@ -2146,76 +2145,6 @@ public static partial class SvgConverter
                 if (left < int.MinValue || top < int.MinValue)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source origin exceeds the coordinate range.");
                 return new((int)left, (int)top);
-            }
-
-            // Native source devices belong to individual compositor bitmaps.
-            // Reuse ordinary filter playback so graph stages, regions and limits
-            // retain one implementation; the child binding prevents recursive tiling.
-            bool TryRenderFractionalOffsetBitmaps()
-            {
-                if (rasterGrid.ContextCount <= 1 || frame?.FilterSourceMap is not null
-                    || frame?.FilterBinding is {} bitmapBinding && bitmapBinding.Index == command.MaskContentIndex)
-                    return false;
-                bool fractional = false;
-                foreach (SvgFilterPrimitive item in resource.Primitives.Items)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    if (item.Kind != SvgFilterPrimitiveKind.Offset) continue;
-                    double dx = item.OffsetX * primitiveMap.ScaleX, dy = item.OffsetY * primitiveMap.ScaleY;
-                    fractional |= dx != Math.Truncate(dx) || dy != Math.Truncate(dy);
-                }
-                if (!fractional) return false;
-                int commandCount = end - first + 2;
-                cancellationToken.ThrowIfCancellationRequested();
-                using RenderBudget.BudgetReservation commandsOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(commandCount), SvgMemoryCategory.Scene);
-                SvgDrawCommand[] commands = new SvgDrawCommand[commandCount];
-                commands[0] = command;
-                for (int index = first; index <= end; index++)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    commands[index - first + 1] = root.Commands[index];
-                }
-                SvgRoot scene = root with { Commands = commands};
-                SvgAnalyticClipBounds requested = new(Math.Max(layerBounds.Left, ClampFloor(region.Left, outputWidth)), Math.Max(layerBounds.Top, ClampFloor(region.Top, outputHeight)),
-                    Math.Min(layerBounds.Right, ClampCeiling(region.Right, outputWidth)), Math.Min(layerBounds.Bottom, ClampCeiling(region.Bottom, outputHeight)));
-                if (activeViewport.Bounds is {} viewport)
-                    requested = new(Math.Max(requested.Left, viewport.Left), Math.Max(requested.Top, viewport.Top), Math.Min(requested.Right, viewport.Right), Math.Min(requested.Bottom, viewport.Bottom));
-                if (requested.Right <= requested.Left || requested.Bottom <= requested.Top) return true;
-                foreach (SvgCpuRasterContext bitmap in rasterGrid.GetContexts(requested))
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    SvgAnalyticClipBounds clip = new(Math.Max(requested.Left, bitmap.BitmapClip.Left), Math.Max(requested.Top, bitmap.BitmapClip.Top),
-                        Math.Min(requested.Right, bitmap.BitmapClip.Right), Math.Min(requested.Bottom, bitmap.BitmapClip.Bottom));
-                    if (activeViewport.Coverage is {} coverage && coverage.TryGetBounds(bitmap.BitmapClip, out SvgAnalyticClipBounds bounded))
-                        clip = new(Math.Max(clip.Left, bounded.Left), Math.Max(clip.Top, bounded.Top), Math.Min(clip.Right, bounded.Right), Math.Min(clip.Bottom, bounded.Bottom));
-                    if (clip.Right <= clip.Left || clip.Bottom <= clip.Top) continue;
-                    SvgRenderLimits original = options.Limits;
-                    SvgRenderLimits replayLimits = original;
-                    SvgRenderOptions replayOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, replayLimits, options.FontSnapshot);
-                    int ox = bitmap.BitmapClip.Left, oy = bitmap.BitmapClip.Top;
-                    (NativeBitmapDevice replayDevice, SvgDrawingMap replayDrawing) = PrepareNativeBitmap(bitmap.Origin);
-                    using RasterizedSurface result = Rasterize(scene, replayOptions, budget, RasterSurfaceMode.PremultipliedFilter,
-                        new RasterFrame(bitmap.BitmapClip.Right - ox, bitmap.BitmapClip.Bottom - oy, drawingMap.InBitmap(new(ox, oy)), replayDrawing)
-                        { SingleBitmap = true, ContentClip = new(clip.Left - ox, clip.Top - oy, clip.Right - ox, clip.Bottom - oy),
-                            ParentOrigin = bitmap.Origin, CaptureOrigin = new(ox, oy), FilterBinding = new(command.MaskContentIndex, binding),
-                            SourcePlacement = sourcePlacement, NativeCapturePlacement = PlaceNativeSource(new(ox, oy)), NativeDevice = replayDevice.InBitmap(bitmap.Origin).InBitmap(new(ox, oy)).InCapture(new(ox, oy)) }, cancellationToken);
-                    cancellationToken.ThrowIfCancellationRequested();
-                    int x1 = Math.Max(clip.Left, bitmap.Interior.Left), y1 = Math.Max(clip.Top, bitmap.Interior.Top);
-                    int x2 = Math.Min(clip.Right, bitmap.Interior.Right), y2 = Math.Min(clip.Bottom, bitmap.Interior.Bottom);
-                    cancellationToken.ThrowIfCancellationRequested();
-                    for (int y = y1; y < y2; y++)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        for (int x = x1; x < x2; x++)
-                        {
-                            int at = ((y - oy) * result.Width + x - ox) * 4;
-                            int destinationIndex = (y * outputWidth + x) * 4;
-                            byte alpha = !activeViewport.HasMask ? (byte)255 : activeViewport.Mask.GetAlphaAtOffset(outputWidth, destinationIndex);
-                            if (alpha != 0) BlendClippedLayerPixel(destination.AsSpan(destinationIndex, 4), result.Pixels.AsSpan(at, 4), 255, 255, alpha);
-                        }
-                    }
-                }
-                return true;
             }
 
             // The image content is independent of its scratch padding and origin.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "cac9baf0e4589488cfc85f19635a4eb602c3d459",
-  "status": "CLOSED: compact filter source bitmap transition. Gradient witnesses closed separately by filter-gradient-sampling.json; hosted static-context residual rounding remains OPEN.",
+  "status": "CLOSED: compact filter source bitmap transition. Gradient witnesses and complete declared static context are closed by their linked milestones. Isolated offset-prefix crop fringes remain OPEN.",
   "sourceLfSha256": {
     "src/Lokad.Svg/SvgConverter.cs": "f416a00eda70368d71123f7992c6a1c0cc0fab4212b3fe3a35ad3767c4d2e99a",
     "tests/Lokad.Svg.Tests/SvgFilterSourceOriginOwnershipTests.cs": "b8a8381f0997b5753b7f824f1471bc4be7be83fbb8a8eaf2e9cacfc841ec9f61",
@@ -460,7 +460,7 @@
     "originalFontQualification": false,
     "wholeOriginalAcceptance": false,
     "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
-    "outcome": "OPEN: displacement fixed, residual one-level sampling/rounding differences remain.",
+    "outcome": "Historical pre-restoration observation retained below. The complete declared static/font context is now exact; see filter-destination-composition.json. Truncated offset-prefix crop fringes remain open.",
     "results": [
       {
         "host": "windows",
@@ -633,5 +633,6 @@
     ],
     "published": false
   },
-  "next": "Continue the remaining one-level static-context discrepancy on the shared sampling/rounding model. The separate gradient witnesses are closed by filter-gradient-sampling.json. Original animation, language/context and hosted review remain open; preserve the Windows DejaVu reference and pending authority."
+  "next": "Recompose the isolated offset-prefix crop fringe. The complete declared static/font context is exact through shared bitmap restoration. Language/context and all-original scope remain open; preserve the Windows DejaVu reference and pending authority.",
+  "currentStaticClosure": "filter-destination-composition.json"
 }

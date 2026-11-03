@@ -19,6 +19,7 @@ protect the offset-source fast path and the general color-matrix graph. Core
 output needs no additional fixture copies or API matrix.
 
 [Qualification](../svgweb/filter-gradient-sampling.json) retains failing-before
-evidence, timings and the separate hosted static/font diagnostic. That diagnostic
-still has one-level residual differences and does not qualify animation or the
-original font environment.
+evidence and timings. The declared hosted static/font diagnostic is now exact
+through [shared bitmap restoration](../svgweb/filter-destination-composition.json);
+truncated offset prefixes retain a separate crop fringe. Neither animation nor
+the original font environment is qualified.

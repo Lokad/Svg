@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Use the shared per-bitmap filter path for fractional offsets, preserving final
+  colour transfer, opacity and clipping during destination composition.
 - Preserve locally enclosed drawable bounds when constructing filter source images,
   keeping gradient sampling and dither origins exact through aliases and matrices.
 - Preserve compact filter-source origins in later compositor bitmaps, preventing

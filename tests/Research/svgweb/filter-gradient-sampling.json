@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "9fcbe0ccd4ac3d3264a102efaf2a641060ad7645",
-  "status": "CLOSED: both independent gradient witnesses, through shared drawable source-image bounds. OPEN: original static-context crop-edge and composition/native-context discrepancies.",
+  "status": "CLOSED: independent gradient witnesses through shared drawable bounds. Complete declared static/font context is closed by filter-destination-composition.json; isolated offset-prefix crop fringes remain OPEN.",
   "sourceLfSha256": {
     "src/Lokad.Svg/Parsing/SvgPaintRecording.cs": "0da4f1b95a69a3586bb9d877c7d102bbe39d1e539eee2b484c61e67bc55a3cf7",
     "tests/Lokad.Svg.Tests/SvgRecordedSourceBoundsTests.cs": "c37f9d03b68c4b80c978a5868cde7ac66e17519a11ab549be0cabc12809211ca",
@@ -388,7 +388,7 @@
     ],
     "wholeOriginalAcceptance": false,
     "originalFontQualification": false,
-    "outcome": "Unchanged one-level residual: 3,926 Windows / 3,921 Linux pixels, identical alpha. Native PNGs and declared RAM-only static/font inputs are unchanged."
+    "outcome": "Historical pre-restoration observation retained below. The complete declared static/font context is now exact; see filter-destination-composition.json. Truncated offset-prefix crop fringes remain open."
   },
   "staticStageReview": {
     "exploratory": true,
@@ -709,5 +709,6 @@
     ],
     "published": false
   },
-  "next": "Recompose the remaining isolated offset/crop fringe and original parent/composition context into meaningful independent controls, preserving the shared image/color model and exactness. Continue language/context and all-original scope. Keep Windows DejaVu reference/assertion and pending authority; never repoll terminal CI."
+  "next": "Recompose the isolated offset-prefix crop fringe. The complete declared static/font context is exact through shared bitmap restoration. Language/context and all-original scope remain open; preserve the Windows DejaVu reference and pending authority.",
+  "currentStaticClosure": "filter-destination-composition.json"
 }

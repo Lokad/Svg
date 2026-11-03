@@ -410,6 +410,11 @@ Drawable recording bounds enclose locally before placement; filter-output hints
 enclose in parameter space. Their union seeds the source image and dither origin.
 [Gradient controls](../tests/Research/filter-gradient-sampling/README.md) protect
 both source aliases and a general color stage without rounding object bounds.
+Fractional offsets use the same per-bitmap filter path as other graph stages.
+Final transferred paint composes directly into its destination; an extra byte
+bitmap would consume floating colour and clip/opacity stages too early.
+[Destination controls](../tests/Research/filter-bitmap-restoration/README.md)
+cover operating space, bitmap size, opacity and clipping across a tile boundary.
 
 Color-matrix parameters are immutable values in the existing filter graph. A
 borrowed color program retains individual transfers and clamps until image sampling;

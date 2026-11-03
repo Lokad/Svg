@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text.Json;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
@@ -7,6 +8,17 @@ namespace Lokad.Svg.Tests;
 /// <summary>Checks raster scratch lifetime while borrowing an already parsed scene and its font/options owners.</summary>
 internal static class SvgRasterOwnershipAssertions
 {
+    internal static void ParsesBankCaseAndReleasesAfterFailures(string bank, string inputName, SvgRenderOptions options, long maximumBytes, int expectedGeometryCount)
+    {
+        string folder = Path.Combine(AppContext.BaseDirectory, "TestData", bank);
+        using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder, "ownership.json")));
+        byte[] input = File.ReadAllBytes(Path.Combine(folder, inputName));
+        Assert.Equal(data.RootElement.GetProperty("inputSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
+        string expected = data.RootElement.GetProperty("rgbaSha256").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux")
+            .GetString() ?? throw new InvalidDataException();
+        ParsesAndReleasesAfterFailures(input, options, maximumBytes, expectedGeometryCount, expected);
+    }
+
     internal static void ParsesAndReleasesAfterFailures(byte[] input, SvgRenderOptions options, long maximumBytes, int expectedGeometryCount, string expectedRgbaSha256)
     {
         byte[] unchanged = input.ToArray();

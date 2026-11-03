@@ -33,11 +33,12 @@ with spans; independent controls retain computed anchors, nesting and mixed runs
 The unchanged svg2009 original still reaches animateTransform. The
 [color-matrix milestone](filter-color-matrix.json) closes its deferred matrix gate;
 removing eleven clock-start declarations in RAM now renders with explicit diagnostic
-fonts. The [source-origin review](filter-source-origins.json) independently matches
-those font bindings and closes the displaced filter capture. The remaining static
-differences are one channel level; neither diagnostic fonts nor removed animation
-qualifies the original. The [drawable-enclosure review](filter-gradient-sampling.json)
-closes the two independent gradient sampling witnesses. The
+fonts. The [source-origin review](filter-source-origins.json) closes the displaced
+capture; [drawable enclosure](filter-gradient-sampling.json) closes two independent
+gradient witnesses. [Shared destination composition](filter-destination-composition.json)
+makes the complete declared static/font diagnostic exact on Windows and Linux.
+Neither diagnostic fonts nor removed animation qualifies the unchanged original.
+Two truncated offset prefixes retain a narrow crop-edge alpha discrepancy. The
 [complete survey and model review](filter-color-matrix-review.json) retain the
 original requirements. Case transformation
 remains open beyond the [uppercase projection](text-case-projection.json) and

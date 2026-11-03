@@ -1,0 +1,309 @@
+{
+  "cases": [
+    {
+      "id": "clip-cross-tile",
+      "input": "clip-cross-tile.svg",
+      "width": 850,
+      "height": 200,
+      "inputSha256": "437ae760153c7674338e42ce2d12af5f1a61aef512ab8b5754d3374de0dfffe3",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-clip-cross-tile.png",
+          "referenceSha256": "b37de7b996443d7adb6666b666ca588d78389dbce2949334402a538079fd20f5",
+          "rgbaSha256": "3b9967788a52926b1fc6094969476740ea69701726582bf08852b3f34974193a",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "b37de7b996443d7adb6666b666ca588d78389dbce2949334402a538079fd20f5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b37de7b996443d7adb6666b666ca588d78389dbce2949334402a538079fd20f5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b37de7b996443d7adb6666b666ca588d78389dbce2949334402a538079fd20f5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-clip-cross-tile.png",
+          "referenceSha256": "b37de7b996443d7adb6666b666ca588d78389dbce2949334402a538079fd20f5",
+          "rgbaSha256": "3b9967788a52926b1fc6094969476740ea69701726582bf08852b3f34974193a",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "b37de7b996443d7adb6666b666ca588d78389dbce2949334402a538079fd20f5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b37de7b996443d7adb6666b666ca588d78389dbce2949334402a538079fd20f5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b37de7b996443d7adb6666b666ca588d78389dbce2949334402a538079fd20f5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "compact-linear-colour",
+      "input": "compact-linear-colour.svg",
+      "width": 240,
+      "height": 160,
+      "inputSha256": "1c52428de8cc22fbc9a01897ef4c718ba5e69e3ae620371ceeb17f3682debe88",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-compact-linear-colour.png",
+          "referenceSha256": "22e305e1ac56d57698f5ff75fde95543d5ea1cb524518b1c70412fab0756104c",
+          "rgbaSha256": "aa7019831b15efb2e4dd53df1c83759435321dd10ee4fd7602b713af236b2d44",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "22e305e1ac56d57698f5ff75fde95543d5ea1cb524518b1c70412fab0756104c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "22e305e1ac56d57698f5ff75fde95543d5ea1cb524518b1c70412fab0756104c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "22e305e1ac56d57698f5ff75fde95543d5ea1cb524518b1c70412fab0756104c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-compact-linear-colour.png",
+          "referenceSha256": "22e305e1ac56d57698f5ff75fde95543d5ea1cb524518b1c70412fab0756104c",
+          "rgbaSha256": "aa7019831b15efb2e4dd53df1c83759435321dd10ee4fd7602b713af236b2d44",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "22e305e1ac56d57698f5ff75fde95543d5ea1cb524518b1c70412fab0756104c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "22e305e1ac56d57698f5ff75fde95543d5ea1cb524518b1c70412fab0756104c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "22e305e1ac56d57698f5ff75fde95543d5ea1cb524518b1c70412fab0756104c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "opacity-linear",
+      "input": "opacity-linear.svg",
+      "width": 850,
+      "height": 200,
+      "inputSha256": "26cc93f6f7a3dcf14c9ed9f1189ccb5e81d69116565d30f61c73df98bed2e33c",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-opacity-linear.png",
+          "referenceSha256": "69205ab089e8a72b2aee65710bdb7a7d192c49252768c990fdd819423c5f3a14",
+          "rgbaSha256": "8f3c5bb984d1f2794bfaacfc39ba834756f2fd75cdd824cdfb7e18213271c5b4",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "69205ab089e8a72b2aee65710bdb7a7d192c49252768c990fdd819423c5f3a14",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "69205ab089e8a72b2aee65710bdb7a7d192c49252768c990fdd819423c5f3a14",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "69205ab089e8a72b2aee65710bdb7a7d192c49252768c990fdd819423c5f3a14",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-opacity-linear.png",
+          "referenceSha256": "69205ab089e8a72b2aee65710bdb7a7d192c49252768c990fdd819423c5f3a14",
+          "rgbaSha256": "8f3c5bb984d1f2794bfaacfc39ba834756f2fd75cdd824cdfb7e18213271c5b4",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "69205ab089e8a72b2aee65710bdb7a7d192c49252768c990fdd819423c5f3a14",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "69205ab089e8a72b2aee65710bdb7a7d192c49252768c990fdd819423c5f3a14",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "69205ab089e8a72b2aee65710bdb7a7d192c49252768c990fdd819423c5f3a14",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wide-linear-colour",
+      "input": "wide-linear-colour.svg",
+      "width": 850,
+      "height": 200,
+      "inputSha256": "f270158080d434f11310da56773194c3154071360dd80731d797030c8cf2f2a8",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-wide-linear-colour.png",
+          "referenceSha256": "5b9635a5a178c865806b895003092aeec9dfcd7533b471a4f09aa5c78b85c632",
+          "rgbaSha256": "b343520bf998cf6e60bb0792d57b697a3bf1ef7c1ad81658ec37981274b75838",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "5b9635a5a178c865806b895003092aeec9dfcd7533b471a4f09aa5c78b85c632",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5b9635a5a178c865806b895003092aeec9dfcd7533b471a4f09aa5c78b85c632",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5b9635a5a178c865806b895003092aeec9dfcd7533b471a4f09aa5c78b85c632",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-wide-linear-colour.png",
+          "referenceSha256": "5b9635a5a178c865806b895003092aeec9dfcd7533b471a4f09aa5c78b85c632",
+          "rgbaSha256": "b343520bf998cf6e60bb0792d57b697a3bf1ef7c1ad81658ec37981274b75838",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "5b9635a5a178c865806b895003092aeec9dfcd7533b471a4f09aa5c78b85c632",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5b9635a5a178c865806b895003092aeec9dfcd7533b471a4f09aa5c78b85c632",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5b9635a5a178c865806b895003092aeec9dfcd7533b471a4f09aa5c78b85c632",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "wide-srgb-colour",
+      "input": "wide-srgb-colour.svg",
+      "width": 850,
+      "height": 200,
+      "inputSha256": "f5b06a34a2bee76439e12e489cce5fb8d492f5749722689b7597ff55a3af47a4",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-wide-srgb-colour.png",
+          "referenceSha256": "96ffdf1371a7ae6d83470b8cd0b3d883f958119ef1f5303f1800c5f4e33134bc",
+          "rgbaSha256": "54dcd140702bb6554dce34b23e7d0759baddd5c9eac9766d139671a55d5b4784",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "96ffdf1371a7ae6d83470b8cd0b3d883f958119ef1f5303f1800c5f4e33134bc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "96ffdf1371a7ae6d83470b8cd0b3d883f958119ef1f5303f1800c5f4e33134bc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "96ffdf1371a7ae6d83470b8cd0b3d883f958119ef1f5303f1800c5f4e33134bc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-wide-srgb-colour.png",
+          "referenceSha256": "96ffdf1371a7ae6d83470b8cd0b3d883f958119ef1f5303f1800c5f4e33134bc",
+          "rgbaSha256": "54dcd140702bb6554dce34b23e7d0759baddd5c9eac9766d139671a55d5b4784",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "96ffdf1371a7ae6d83470b8cd0b3d883f958119ef1f5303f1800c5f4e33134bc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "96ffdf1371a7ae6d83470b8cd0b3d883f958119ef1f5303f1800c5f4e33134bc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "96ffdf1371a7ae6d83470b8cd0b3d883f958119ef1f5303f1800c5f4e33134bc",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -16,6 +16,10 @@ defines supported behavior.
 | Integrity | Manifest identities, hashes, capture context, licensing, corpus partition and provenance. Existing combined fixtures retain these assertions until their responsibilities are separated. |
 | Research | Extended numerical-context products remain individually selectable with `Category=Research` and run in full qualification. Former failing interactions remain routine. |
 
+Bank ownership cases can share [asset loading and lifecycle assertions](Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs)
+while retaining separate names, inputs and allocation paths. Add one representative
+contract for a distinct path; rendering fixtures keep their canonical conversion.
+
 [Text-anchor coverage](Research/text-anchor/README.md) separates cascade/compaction
 and chunk-layout mechanisms, two allocation/preparation contracts, and four
 canonical browser comparisons. [Windows point vectors](Research/windows-font-unit-scaling/expanded-points.json)
