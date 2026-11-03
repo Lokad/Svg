@@ -85,9 +85,26 @@ public sealed class SvgClipRectangleSourceTests
     [Theory]
     [InlineData("<rect id='s' width='-1' height='6'/>", SvgErrorCode.MalformedInput)]
     [InlineData("<rect id='s' width='8' height='6' transform='unknown(1)'/>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<g id='s'><rect width='8' height='6'/></g>", SvgErrorCode.UnsupportedFeature)]
     public void Rectangle_source_retention_does_not_broaden_clip_admission(string source, SvgErrorCode code)
         => Assert.Equal(code, Assert.Throws<SvgException>(() => Render("<defs><clipPath id='c'>" + source + "</clipPath></defs>")).ErrorCode);
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Clip_group_rectangle_ids_follow_dormant_and_selected_roles(bool selected)
+    {
+        const string source = "<defs><clipPath id='c'><g id='s'><rect width='8' height='6'/></g></clipPath></defs>";
+        using SvgRoot root = SvgRootParser.Parse(Input(source + (selected ? "<use href='#s'/>" : "")), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.False(root.HasUnsupportedChild);
+        if (selected)
+        {
+            SvgRectangle rectangle = Assert.Single(root.Rectangles);
+            Assert.Equal(8, rectangle.Width);
+            Assert.Equal(6, rectangle.Height);
+        }
+        else Assert.Empty(root.Geometries);
+    }
 
     [Fact]
     public void Denial_cancellation_and_retry_release_retained_rectangle_sources()

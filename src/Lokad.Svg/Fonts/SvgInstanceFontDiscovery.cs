@@ -88,7 +88,9 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 Kind kind = !svgElement ? Kind.Opaque : reader.LocalName switch
                 {
                     "g" or "a" or "svg" or "switch" => Kind.Container,
-                    "defs" or "symbol" or "pattern" => Kind.Definition,
+                    // A clip resource is dormant, while its descendants remain
+                    // ordinary ID targets for independent drawing instances.
+                    "defs" or "symbol" or "pattern" or "clipPath" => Kind.Definition,
                     "mask" when owner._maskGeometry => Kind.Mask,
                     "marker" when owner._paintGeometry => Kind.Marker,
                     "text" => Kind.Text, "use" => Kind.Use,

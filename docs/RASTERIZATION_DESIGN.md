@@ -22,6 +22,13 @@ and deferred opacity bind at replay. Resource references borrow their scene;
 sealed child scenes retain storage after parser staging ends. Partial construction
 and failure release owners deterministically.
 
+Clip contribution and ID selection are independent. A group inside a clip resource
+uses dormant ordered replay without adding its descendants to the clip silhouette.
+Its IDs remain ordinary instance targets. Font indexing treats the clip as a
+definition scope: unselected text stays inactive, while selected descendants use
+the consuming instance's inheritance. The existing group and reference owners
+serve both roles.
+
 Pattern paints borrow sealed child scenes, including through template aliases,
 glyph shaders and masks. One budgeted iterative walk validates content cycles and
 recursive depth before rasterization; template aliases do not add scene depth.

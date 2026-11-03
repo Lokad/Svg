@@ -211,8 +211,12 @@ visible alias may supply its own. An alias's own hidden display suppresses borro
 
 Clip paths accept rectangles/rounded rectangles, paths, polygons/polylines, circles, ellipses,
 restricted uses, ordered child unions, compound winding, both resource units and
-affine maps. Container groups, direct line/text children and XML
-transform/fill/opacity on `clipPath` reject. A clip-resource `use` must reference
+affine maps. Group children contribute no clip silhouette; their IDs and descendant
+IDs remain available to independent drawing instances. A clip-resource `use` that
+targets a group also contributes no contour. The
+[child-role controls](../tests/Research/clip-child-roles/README.md) protect these
+distinct roles and selected text-font acquisition. Direct line/text children and XML
+transform/fill/opacity on `clipPath` reject. A geometric clip-resource `use` must reference
 one contour; plain rectangles and empty/compound sources through that use reject.
 Multiple uses and mixtures with direct children form an ordered union; local
 geometry may be defined later. Both resource units apply to referenced content;

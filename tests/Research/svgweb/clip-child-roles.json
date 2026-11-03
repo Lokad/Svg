@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "7d292bb6c33a88162b61201b6e47b549ce241621",
+  "status": "Clip-group contribution, ordinary ID selection and selected font acquisition CLOSED. The complete svg2009 original now reaches animateTransform; animation/static-state and deeper textPath questions remain separately accounted, not whole-original acceptance.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs": "baa36df514995b7f1cbcd5466a51ede1a4717ddbe566b21fbd8377033b315281",
+    "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "3495078c1363449766b4b4ea4c8a8e1a31f9bf72070064998e15591bae03f8e2",
+    "tests/Lokad.Svg.Tests/SvgClipChildRoleTests.cs": "9b0cbe7049ab197ddd977708173bfc9b51b450255d561ef859bd587e7e4be606",
+    "tests/Lokad.Svg.Tests/SvgClipGroupOwnershipTests.cs": "4cb84b4480188d7e9e459ee77a82073cc9ae4387c2f631d50f8e6ca51a8f31ba",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.ClipGroups.cs": "21a1c21b0b3a6d5c81b61ad6c83eed0a1f80412a5471f66496a4d4a424421013",
+    "tests/Lokad.Svg.VisualTests/SvgClipChildRoleReferenceTests.cs": "081a877212d0a0b44cd68f5fa7f7c07352b3fece410f10d40392640258e15718",
+    "tests/Lokad.Svg.Tests/SvgClipRectangleSourceTests.cs": "1edb5b827e88e3e89cbf70e904efabde00aade8d94fcb6e8b3da55e45690bd80",
+    "tests/Lokad.Svg.Tests/SvgClipVisibilityTests.cs": "25fe4e89772bad10c66773fe4e69ed0e418d0c38aec34ef6bb1b8147027e0ae1",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs": "c60a26eb621d72a3c698f92e9f79f20fc64e5fd43fdef63ec0f17c5c0b661e2c"
+  },
+  "scope": {
+    "publicApiChanges": 0,
+    "newRuntimeDependencies": 0,
+    "newFontBytes": 0,
+    "newReplayPipelines": 0,
+    "existingReferenceChanges": 0,
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "newMechanismCases": 10,
+    "migratedExistingCases": 3,
+    "focusedMechanismCases": 13,
+    "newOwnershipContracts": 2,
+    "canonicalRenderingCases": 7,
+    "diagnosticBaselineCases": 1
+  },
+  "model": {
+    "rule": "Groups inside clipPath are dormant definitions, not flattened clip contours. Their IDs and descendant IDs remain ordinary use targets. A selected leaf excludes enclosing transforms; a selected group retains its own transform. The existing resource-use replay already treats container references as contributing no clip contour.",
+    "implementation": "Admit clip-child groups through the existing dormant-group builder and ownership transfer. Font indexing classifies clipPath as a definition scope, keeping descendants addressable while ordinary resource traversal leaves text inactive. No source-name exception, anonymous-only shortcut, new DOM collector or geometry framework.",
+    "specification": "https://www.w3.org/TR/css-masking-1/#elementdef-clippath",
+    "interpretation": "The specification distinguishes shape silhouettes from container references. Independent pinned native controls establish ignored group contribution, valid sibling survival and ordinary ID-selection behavior; no claim of general browser conformance.",
+    "remainingBoundaries": "Direct line/text clip children, XML clipPath transform/fill/opacity, unsupported referenced geometry and retained-group mask restrictions keep their existing explicit admission boundaries."
+  },
+  "responsibilities": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgClipChildRoleTests.cs",
+    "parserOwnership": "../../Lokad.Svg.Tests/SvgClipGroupOwnershipTests.cs",
+    "preparedOwnership": "../../Lokad.Svg.Tests/OpenTypeFontTests.ClipGroups.cs",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgClipChildRoleReferenceTests.cs",
+    "nativeCapture": "../clip-child-roles/capture.json",
+    "rationale": "Mechanisms check both admission flags and exact empty clip bindings, selective font/scalar needs and duplicate IDs. One parser lifecycle case overlaps clip sources with dormant group ownership; one prepared case opens only the selected font. Seven role-specific images each use one canonical call; no fixture/API product."
+  },
+  "migratedTests": [
+    {
+      "source": "../../Lokad.Svg.Tests/SvgClipRectangleSourceTests.cs",
+      "prior": "Rectangle_source_retention_does_not_broaden_clip_admission: group row",
+      "current": "Clip_group_rectangle_ids_follow_dormant_and_selected_roles",
+      "reason": "Retain the formerly unused group input as a direct admission case and add its selected rectangle-ID state. Negative dimensions and unknown transforms still reject."
+    },
+    {
+      "source": "../../Lokad.Svg.Tests/OpenTypeFontTests.SupportLocations.cs",
+      "prior": "Clip_resource_attributes_and_group_children_keep_their_documented_restrictions: group row",
+      "current": "Clip_groups_remain_dormant_with_a_retained_empty_binding",
+      "reason": "Move the exact group source from duplicate raw/prepared rejection checks to one parser mechanism. All three unsupported clip-container attribute cases retain their restrictions; representative preparation is tested separately."
+    },
+    {
+      "source": "../../Lokad.Svg.Tests/SvgClipVisibilityTests.cs",
+      "prior": "Hidden_clip_containers_remain_unsupported",
+      "current": "Hidden_clip_groups_do_not_contribute_geometry",
+      "reason": "Retain the hidden group body and assert successful admission with an exact zero-area binding. The neighboring hidden compound-path restriction remains unchanged."
+    }
+  ],
+  "qualifiedLibrarySha256": {
+    "net11.0": "218f396724d4985a065dddef7dbb6992be84a80fae815c9ef6efc2ae690fac6d",
+    "net10.0": "a4509f93bed63f77ee8efb49677115751ed5a43370d099b1f472cb933fbc8aef"
+  },
+  "qualifiedTestAssemblySha256": {
+    "net11.0": {
+      "core": "b6cd727be22660418acba70c1f82050f66e5ba226751c2625727b7fe36e355f5",
+      "visual": "d36f3a969900ff94b0ce3a34bede65eaec701eda24f810a55094ce166ecd8562",
+      "font-host": "d3ae19166857c6fa39e980cb6e20fda17b8eaf8ec51acfe657b9ac5293aef43d"
+    },
+    "net10.0": {
+      "core": "d6b25dabb0983ae111f4c65811cd1ee8ba2b2f42feaaebf84add51543330820b",
+      "visual": "3fe3a90d61b8c6ba650d8c7a193ba6de6cec04eb9a02be0be1c2c786317063ae",
+      "font-host": "0238c1f571b9b321841ec78c688d054c862426aab422d76bbec93647161c5691"
+    }
+  },
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 0,
+        "failed": 15,
+        "seconds": 8.986760099884123
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "passed": 0,
+        "failed": 7,
+        "seconds": 9.335122099844739
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 0,
+        "failed": 15,
+        "seconds": 10.903040000004694
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "passed": 0,
+        "failed": 7,
+        "seconds": 12.892866299953312
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 15,
+        "failed": 0,
+        "seconds": 12.107943700160831
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "passed": 7,
+        "failed": 0,
+        "seconds": 11.945695200003684
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 15,
+        "failed": 0,
+        "seconds": 18.714897900121287
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "passed": 7,
+        "failed": 0,
+        "seconds": 12.458112599793822
+      }
+    ],
+    "milestone": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 41928,
+        "failed": 0,
+        "seconds": 76.77386429999024
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "passed": 17952,
+        "failed": 0,
+        "seconds": 55.95831669983454
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 41928,
+        "failed": 0,
+        "seconds": 48.268226800020784
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "passed": 17952,
+        "failed": 0,
+        "seconds": 30.15938730002381
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "passed": 46583,
+        "failed": 1,
+        "seconds": 91.68060560012236
+      },
+      {
+        "host": "windows",
+        "kind": "font-host",
+        "framework": "net11.0",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.3484636000357568
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "passed": 845,
+        "failed": 0,
+        "seconds": 20.262226700084284
+      },
+      {
+        "host": "windows",
+        "kind": "font-host",
+        "framework": "net10.0",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.4210267001762986
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "passed": 46584,
+        "failed": 0,
+        "seconds": 172.58480069995858
+      },
+      {
+        "host": "linux",
+        "kind": "font-host",
+        "framework": "net11.0",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.648318300023675
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "passed": 845,
+        "failed": 0,
+        "seconds": 28.279752100119367
+      },
+      {
+        "host": "linux",
+        "kind": "font-host",
+        "framework": "net10.0",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 3.711020499933511
+      }
+    ],
+    "identicalFocusedTestAssemblies": true,
+    "representativeNet10Selections": {
+      "core": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~TrueTypeCompositeStateTests|FullyQualifiedName~SvgAnalyticStorageWindowTests|FullyQualifiedName~SvgAnalyticPaintTests|FullyQualifiedName~SvgAnalyticScanWindowTests|FullyQualifiedName~SvgAttributeApplicabilityTests|FullyQualifiedName~SvgEventAttributeTests|FullyQualifiedName~SvgForeignMetadataTests|FullyQualifiedName~SvgInertPresentationTests|FullyQualifiedName~SvgStyleSheetTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests)&Category!=Research|FullyQualifiedName~SvgClipChildRoleTests|FullyQualifiedName~SvgClipGroupOwnershipTests|FullyQualifiedName~SvgClipRectangleSourceTests|FullyQualifiedName~SvgClipVisibilityTests|FullyQualifiedName~Prepared_clip_descendant|FullyQualifiedName~SvgLineHeightTests|FullyQualifiedName~SvgLowercaseContextTests|FullyQualifiedName~SvgTextProjectionTests|FullyQualifiedName~SvgFontCoverageDiscoveryTests|FullyQualifiedName~Prepared_lowercase|FullyQualifiedName~Prepared_uppercase|FullyQualifiedName~SvgTextAlignmentTests|FullyQualifiedName~SvgTextAnchorTests|FullyQualifiedName~SvgInertTypographyTests",
+      "visual": "FullyQualifiedName~SvgAffineFilterCaptureReferenceTests|FullyQualifiedName~SvgAttributeApplicabilityReferenceTests|FullyQualifiedName~SvgLegacyFontDeclarationReferenceTests|FullyQualifiedName~SvgMetadataAttributeReferenceTests|FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgWindowsScanBoundaryTests|FullyQualifiedName~SvgClipChildRoleReferenceTests|FullyQualifiedName~SvgLineHeightReferenceTests|FullyQualifiedName~SvgTextAlignmentReferenceTests|FullyQualifiedName~SvgTextCaseReferenceTests|FullyQualifiedName~SvgShapingIntervalReferenceTests",
+      "font-host": "Unfiltered"
+    },
+    "renderingEvidenceReuse": "After migrating test-only rejection expectations, final core suites were rerun. Library, visual and font-host assembly hashes remain identical to the full rendering/font-host run; its results are retained without rerunning unchanged binaries.",
+    "timing": "Focused selections use identical compiled test assemblies before/after. Times include startup and concurrent qualification; no speedup claim.",
+    "knownWindowsDejavu": {
+      "failureIdentityAndMessageUnchanged": true,
+      "referenceAndAssertionPreserved": true,
+      "authority": "Pending independently; terminal CI41274755136 remains FAILED/CLOSED and was not repolled."
+    }
+  },
+  "allOriginals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 56.10753359994851,
+    "librarySha256": "218f396724d4985a065dddef7dbb6992be84a80fae815c9ef6efc2ae690fac6d",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "suppliedPrograms": {
+    "librarySha256": "218f396724d4985a065dddef7dbb6992be84a80fae815c9ef6efc2ae690fac6d",
+    "files": 19,
+    "seconds": 19.91537950001657,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0
+  },
+  "originalStructure": {
+    "name": "svg2009.svg",
+    "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "clipChildGroups": [
+      {
+        "parent": "clipPath",
+        "attributeNames": [],
+        "childKinds": [
+          "path"
+        ],
+        "definitionIdSha256": "d7375fdc7a0751e13f5eeae3f9146c281fb9e46c82c181f5971257996be03cf7",
+        "lexicalUrlReferences": 0,
+        "descendantIds": 0,
+        "descendantElements": 3
+      }
+    ]
+  },
+  "animationReview": {
+    "name": "svg2009.svg",
+    "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "animationElements": 11,
+    "startClassCounts": {
+      "clock": 11
+    },
+    "qualification": "Derived start-syntax classification only; event-only appearance is not static image-mode acceptance or a complete timing-graph evaluation.",
+    "authoredBeginCount": 11,
+    "parentKinds": [
+      "g",
+      "text"
+    ]
+  },
+  "nextOriginalGate": {
+    "name": "svg2009.svg",
+    "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+    "hosts": {
+      "windows": {
+        "outcome": "UnsupportedFeature",
+        "diagnosticElement": "animateTransform",
+        "diagnosticAttribute": "",
+        "diagnosticLine": 266,
+        "diagnosticColumn": 6,
+        "messageSha256": "74f765a941d08df90499e4e2ad2ea8468113ea999e24d6461dce07c1e9a55145",
+        "sourceDiagnosticSha256": "c63309a994ec5c8278ff1265d0484e964b7153864905ca642a15561aa6c97143"
+      },
+      "linux": {
+        "outcome": "UnsupportedFeature",
+        "diagnosticElement": "animateTransform",
+        "diagnosticAttribute": "",
+        "diagnosticLine": 266,
+        "diagnosticColumn": 6,
+        "messageSha256": "74f765a941d08df90499e4e2ad2ea8468113ea999e24d6461dce07c1e9a55145",
+        "sourceDiagnosticSha256": "c63309a994ec5c8278ff1265d0484e964b7153864905ca642a15561aa6c97143"
+      }
+    }
+  },
+  "packages": {
+    "version": "0.4.0-dev.1",
+    "archives": [
+      {
+        "kind": "nupkg",
+        "sha256": "48e05048949f89da6cb0f7b4edc86c2dafa69d785041470f70f568add2fb17de",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true,
+        "assets": {
+          "net11.0": "218f396724d4985a065dddef7dbb6992be84a80fae815c9ef6efc2ae690fac6d",
+          "net10.0": "a4509f93bed63f77ee8efb49677115751ed5a43370d099b1f472cb933fbc8aef"
+        },
+        "noRuntimeDependencies": true
+      },
+      {
+        "kind": "snupkg",
+        "sha256": "53f55a7cb20cd818c1bab2458a2e76b2c09361162305396b57f4de9f60f23785",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 6.909021100029349
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 57.143344399984926
+      }
+    ],
+    "published": false
+  },
+  "next": "Account for svg2009 clock-start animation/static-state boundaries before any deeper variant. Own textPath styles, capitalization/language tailoring, retained path-context compatibility and the full PLAN remain open. Never count removed source declarations as complete-original acceptance."
+}

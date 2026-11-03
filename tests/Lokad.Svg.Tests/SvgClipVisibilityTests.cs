@@ -124,8 +124,15 @@ public sealed class SvgClipVisibilityTests
     }
 
     [Fact]
-    public void Hidden_clip_containers_remain_unsupported()
-        => Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Render(Clipped("<g display='none'><rect width='8' height='8'/></g>", ""))).ErrorCode);
+    [Trait("Layer", "Mechanism")]
+    public void Hidden_clip_groups_do_not_contribute_geometry()
+    {
+        using SvgRoot root = SvgRootParser.Parse(Input(Clipped("<g display='none'><rect width='8' height='8'/></g>", "")), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.False(root.HasUnsupportedChild);
+        SvgRectangle rectangle = Assert.Single(root.Rectangles);
+        Assert.Equal(0, rectangle.Width);
+        Assert.Equal(0, rectangle.Height);
+    }
 
     [Fact]
     public void Hidden_referenced_compound_paths_keep_the_single_contour_admission_boundary()

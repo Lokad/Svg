@@ -28,6 +28,10 @@ ownership. They share the ordinary font/scan setup and add no API matrix.
 declaration boundaries in direct mechanisms, one canonical native image for
 explicit baselines/anchors/path text, and four exploratory line-layout controls.
 
+[Clip-child roles](Research/clip-child-roles/README.md) separate parser/font-selection
+mechanisms, two ownership/preparation contracts and seven canonical native cases.
+Resource contribution and independent ID selection remain distinct responsibilities.
+
 The [responsibility map](Research/release-baselines/test-responsibilities.md)
 records paint-bank membership, lazy loading, raster/PNG separation and measured
 validation costs, including the core pixel helpers, parser ownership helper, API fixture allocation and

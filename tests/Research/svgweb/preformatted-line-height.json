@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "ed32d51d75999f4814e11897a94de2ad05a57f81",
-  "status": "Explicit-position line-height admission and contiguous inert scalar tokens CLOSED. svg2009 clip-child/path-style, ny1 unknown CSS and the broader CSS/text milestone remain OPEN.",
+  "status": "Explicit-position line-height admission and contiguous inert scalar tokens CLOSED. Historical qualification below retained; current clip-group contribution/ID-selection evidence is separate. svg2009 animation/static-state and deeper text questions remain open.",
   "sourceLfSha256": {
     "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs": "3bd38ff5b3d782517845991fbd4c4eb0909c3cc85f78e46da8a6165bb03096e3",
     "src/Lokad.Svg/Parsing/SvgInertPresentationSyntax.cs": "f6584dc4516e9c34dd6b04ad07def1b044fd32e0575e0a9c710a7b95a2e319c4",
@@ -475,5 +475,7 @@
       "visual": "34191c034a7aa7314c6f99f8816382a584348691d1acd3fc1b7960881f4a50e0",
       "font-host": "4c910ab71ef0a735b0a1baf733879df1c8986cdf1eae7741d9da87dcf7c60b85"
     }
-  }
+  },
+  "qualifiedCommit": "7d292bb6c33a88162b61201b6e47b549ce241621",
+  "currentClipRoleEvidence": "clip-child-roles.json"
 }

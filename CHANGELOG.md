@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Keep groups inside clip resources dormant while preserving their IDs for
+  independent geometry and font-bearing instances.
 - Admit validated `line-height` on explicitly positioned text without changing
   layout; require contiguous number/unit tokens in inert typography.
 - Add default Unicode lowercase and source-context final-sigma handling across

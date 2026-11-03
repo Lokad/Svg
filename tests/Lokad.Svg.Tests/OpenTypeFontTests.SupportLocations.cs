@@ -1,3 +1,5 @@
+using Lokad.Svg.Parsing;
+
 namespace Lokad.Svg.Tests;
 
 public sealed partial class OpenTypeFontTests
@@ -85,11 +87,22 @@ public sealed partial class OpenTypeFontTests
     [InlineData("transform='translate(0)'", "<rect width='16' height='16'/>")]
     [InlineData("fill='red'", "<rect width='16' height='16'/>")]
     [InlineData("opacity='.5'", "<rect width='16' height='16'/>")]
-    [InlineData("", "<g><rect width='16' height='16'/></g>")]
-    public async Task Clip_resource_attributes_and_group_children_keep_their_documented_restrictions(string attributes, string child)
+    public async Task Clip_resource_attributes_keep_their_documented_restrictions(string attributes, string child)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c' " + attributes + ">" + child + "</clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/></svg>");
         await AssertSupportAdmission(input, false);
+    }
+
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void Clip_groups_remain_dormant_with_a_retained_empty_binding()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><g><rect width='16' height='16'/></g></clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/></svg>"u8.ToArray();
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.False(root.HasUnsupportedChild);
+        SvgRectangle rectangle = Assert.Single(root.Rectangles);
+        Assert.Equal(0, rectangle.Width);
+        Assert.Equal(0, rectangle.Height);
     }
 
     [Theory]

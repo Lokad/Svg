@@ -26,8 +26,11 @@ preserves the original-to-mechanism mapping.
 
 [Preformatted alignment](preformatted-text-align.json) and
 [line height](preformatted-line-height.json) validate unused declarations through
-the shared style parser. svg2009 now reaches the clipPath child group in the
-unchanged original; clip-child and path-style contexts remain open. Case transformation
+the shared style parser. [Clip-group roles](clip-child-roles.json) preserve dormant
+contribution, ordinary IDs and selected font acquisition through existing replay.
+The unchanged svg2009 original now reaches animateTransform; eleven clock-start
+animation declarations and deeper static path-style contexts remain separately
+accounted, without whole-original acceptance. Case transformation
 remains open beyond the [uppercase projection](text-case-projection.json) and
 [lowercase context](text-lowercase-context.json), which qualify original addressing,
 expansion and transformed font discovery.

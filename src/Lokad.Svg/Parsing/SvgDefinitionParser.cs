@@ -19,10 +19,12 @@ internal static class SvgDefinitionParser
         bool symbolLocation = state.SymbolDepth >= 0 && state.SymbolDefinition is {} activeSymbol && reader.Depth == activeSymbol.ChildDepth(state.SymbolDepth);
         if (symbolLocation && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgSymbolContentParser.TryParse(reader, root, state, namedColors, cancellationToken, false)) return true;
         bool inDefinitions = (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1) || symbolLocation;
-        if (inDefinitions && state.SymbolDepth < 0 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "g")
+        bool clipChild = state.ClipPathDepth >= 0 && reader.Depth == state.ClipPathDepth + 1;
+        if ((inDefinitions || clipChild) && state.SymbolDepth < 0 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "g")
         {
             // A dormant group shares ordered source replay with symbols, without
-            // adding a viewport or painting its definition location.
+            // adding a viewport or painting its definition location. A clip child
+            // contributes no silhouette; its IDs still serve ordinary references.
             state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, cancellationToken,
                 new(SvgPaint.Default, default, null, false, null, null, SvgPaintOpacity.Opaque));
             _ = SvgSymbolContentParser.TryParse(reader, root, state, namedColors, cancellationToken, true);
