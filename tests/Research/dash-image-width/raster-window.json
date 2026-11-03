@@ -1,0 +1,1204 @@
+{
+  "schemaVersion": 1,
+  "status": "CAUSE ISOLATED; production integration OPEN. No new reference-test admission.",
+  "productionSourceCommit": "45f49f0660c6416c5c5be5877876712853757703",
+  "librarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
+  "pins": {
+    "windows": {
+      "version": "153.0.8010.52",
+      "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "nativeMathProfile": "Windows"
+    },
+    "linux": {
+      "version": "153.0.8010.52",
+      "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "nativeMathProfile": "Ubuntu26 glibc2.43 CORE-MATH"
+    }
+  },
+  "recipe": {
+    "status": "Research isolation; canonical capture recipe 3 and existing references are unchanged.",
+    "chromeLaunch": "Same isolated process, sandbox, --headless=new and --disable-gpu as the committed ChromeProcess.",
+    "pageEnable": true,
+    "networkBlockedURLs": [
+      "http://*",
+      "https://*",
+      "file://*",
+      "ftp://*",
+      "ws://*",
+      "wss://*"
+    ],
+    "emulation": {
+      "deviceScaleFactor": 1,
+      "mobile": false,
+      "width": "row.pageWidth",
+      "height": "row.pageHeight"
+    },
+    "background": {
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "a": 0
+    },
+    "htmlStyle": "html,body{margin:0;overflow:hidden;background:transparent}",
+    "imageMode": "Append a block img whose data:image/svg+xml;base64 source is the unchanged authored input; CSS width=row.imageWidth px and height=384px.",
+    "inlineMode": "Append the unchanged authored SVG directly after the style; no wrapper or other content.",
+    "wait": "Page.loadEventFired, img.decode() when present, then requestAnimationFrame.",
+    "measurement": "img/svg.getBoundingClientRect(); inline line.getScreenCTM(); devicePixelRatio; visualViewport.scale",
+    "screenshot": {
+      "method": "Page.captureScreenshot",
+      "format": "png",
+      "fromSurface": true,
+      "captureBeyondViewport": false,
+      "clip": {
+        "x": 0,
+        "y": 0,
+        "width": 40,
+        "height": "min(384,row.pageHeight)",
+        "scale": 1
+      }
+    },
+    "health": "Close browser and dispose process before admitting PNG; require healthy diagnostics and cleaned profile. Three fresh processes per case/host."
+  },
+  "nativeCaptureCount": 60,
+  "nativeCaptureWallSeconds": 74.896,
+  "rows": [
+    {
+      "host": "windows",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 40,
+      "pageHeight": 384,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 0,
+      "bounds": null,
+      "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+      "rgbaSha256": "1a6695fc289c833966d1885b86c89cf61279fb03d2bef87d2b02cc7d3d5936e5",
+      "captures": [
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "references/88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3.png"
+    },
+    {
+      "host": "windows",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 40,
+      "pageHeight": 384,
+      "mode": "inline",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 0,
+      "bounds": null,
+      "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+      "rgbaSha256": "1a6695fc289c833966d1885b86c89cf61279fb03d2bef87d2b02cc7d3d5936e5",
+      "captures": [
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "references/88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3.png"
+    },
+    {
+      "host": "windows",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 600,
+      "pageHeight": 384,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+      "rgbaSha256": "25376be6f8bb361a0282862d2290a96b0e11f79d7b389dcd555b2f2b8a076733",
+      "captures": [
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b.png"
+    },
+    {
+      "host": "windows",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 600,
+      "pageHeight": 384,
+      "mode": "inline",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+      "rgbaSha256": "25376be6f8bb361a0282862d2290a96b0e11f79d7b389dcd555b2f2b8a076733",
+      "captures": [
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b.png"
+    },
+    {
+      "host": "windows",
+      "input": "wide.svg",
+      "inputSha256": "42bbb5cb1089bbdfdeac08695096635869b74b4891098477a91aeb7e72b5e44c",
+      "imageWidth": 600,
+      "pageWidth": 40,
+      "pageHeight": 384,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          600,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 0,
+      "bounds": null,
+      "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+      "rgbaSha256": "1a6695fc289c833966d1885b86c89cf61279fb03d2bef87d2b02cc7d3d5936e5",
+      "captures": [
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "references/88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3.png"
+    },
+    {
+      "host": "windows",
+      "input": "wide.svg",
+      "inputSha256": "42bbb5cb1089bbdfdeac08695096635869b74b4891098477a91aeb7e72b5e44c",
+      "imageWidth": 600,
+      "pageWidth": 40,
+      "pageHeight": 384,
+      "mode": "inline",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          600,
+          384
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 0,
+      "bounds": null,
+      "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+      "rgbaSha256": "1a6695fc289c833966d1885b86c89cf61279fb03d2bef87d2b02cc7d3d5936e5",
+      "captures": [
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "references/88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3.png"
+    },
+    {
+      "host": "windows",
+      "input": "wide.svg",
+      "inputSha256": "42bbb5cb1089bbdfdeac08695096635869b74b4891098477a91aeb7e72b5e44c",
+      "imageWidth": 600,
+      "pageWidth": 600,
+      "pageHeight": 384,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          600,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+      "rgbaSha256": "25376be6f8bb361a0282862d2290a96b0e11f79d7b389dcd555b2f2b8a076733",
+      "captures": [
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b.png"
+    },
+    {
+      "host": "windows",
+      "input": "wide.svg",
+      "inputSha256": "42bbb5cb1089bbdfdeac08695096635869b74b4891098477a91aeb7e72b5e44c",
+      "imageWidth": 600,
+      "pageWidth": 600,
+      "pageHeight": 384,
+      "mode": "inline",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          600,
+          384
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+      "rgbaSha256": "25376be6f8bb361a0282862d2290a96b0e11f79d7b389dcd555b2f2b8a076733",
+      "captures": [
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b.png"
+    },
+    {
+      "host": "windows",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 40,
+      "pageHeight": 256,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+      "rgbaSha256": "5723573d8892bba15fa3c9205cf2a17bdcc58d221fee962291bb7e96c17e45f4",
+      "captures": [
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070.png"
+    },
+    {
+      "host": "windows",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 600,
+      "pageHeight": 256,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+      "rgbaSha256": "5723573d8892bba15fa3c9205cf2a17bdcc58d221fee962291bb7e96c17e45f4",
+      "captures": [
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070.png"
+    },
+    {
+      "host": "linux",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 40,
+      "pageHeight": 384,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 0,
+      "bounds": null,
+      "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+      "rgbaSha256": "1a6695fc289c833966d1885b86c89cf61279fb03d2bef87d2b02cc7d3d5936e5",
+      "captures": [
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "references/88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3.png"
+    },
+    {
+      "host": "linux",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 40,
+      "pageHeight": 384,
+      "mode": "inline",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 0,
+      "bounds": null,
+      "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+      "rgbaSha256": "1a6695fc289c833966d1885b86c89cf61279fb03d2bef87d2b02cc7d3d5936e5",
+      "captures": [
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "references/88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3.png"
+    },
+    {
+      "host": "linux",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 600,
+      "pageHeight": 384,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+      "rgbaSha256": "25376be6f8bb361a0282862d2290a96b0e11f79d7b389dcd555b2f2b8a076733",
+      "captures": [
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b.png"
+    },
+    {
+      "host": "linux",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 600,
+      "pageHeight": 384,
+      "mode": "inline",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+      "rgbaSha256": "25376be6f8bb361a0282862d2290a96b0e11f79d7b389dcd555b2f2b8a076733",
+      "captures": [
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b.png"
+    },
+    {
+      "host": "linux",
+      "input": "wide.svg",
+      "inputSha256": "42bbb5cb1089bbdfdeac08695096635869b74b4891098477a91aeb7e72b5e44c",
+      "imageWidth": 600,
+      "pageWidth": 40,
+      "pageHeight": 384,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          600,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 0,
+      "bounds": null,
+      "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+      "rgbaSha256": "1a6695fc289c833966d1885b86c89cf61279fb03d2bef87d2b02cc7d3d5936e5",
+      "captures": [
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "references/88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3.png"
+    },
+    {
+      "host": "linux",
+      "input": "wide.svg",
+      "inputSha256": "42bbb5cb1089bbdfdeac08695096635869b74b4891098477a91aeb7e72b5e44c",
+      "imageWidth": 600,
+      "pageWidth": 40,
+      "pageHeight": 384,
+      "mode": "inline",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          600,
+          384
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 0,
+      "bounds": null,
+      "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+      "rgbaSha256": "1a6695fc289c833966d1885b86c89cf61279fb03d2bef87d2b02cc7d3d5936e5",
+      "captures": [
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "references/88944f987969d400a143f6e5e5ef587522f7b1e1576f04619b258a69cff5e1b3.png"
+    },
+    {
+      "host": "linux",
+      "input": "wide.svg",
+      "inputSha256": "42bbb5cb1089bbdfdeac08695096635869b74b4891098477a91aeb7e72b5e44c",
+      "imageWidth": 600,
+      "pageWidth": 600,
+      "pageHeight": 384,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          600,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+      "rgbaSha256": "25376be6f8bb361a0282862d2290a96b0e11f79d7b389dcd555b2f2b8a076733",
+      "captures": [
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b.png"
+    },
+    {
+      "host": "linux",
+      "input": "wide.svg",
+      "inputSha256": "42bbb5cb1089bbdfdeac08695096635869b74b4891098477a91aeb7e72b5e44c",
+      "imageWidth": 600,
+      "pageWidth": 600,
+      "pageHeight": 384,
+      "mode": "inline",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          600,
+          384
+        ],
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+      "rgbaSha256": "25376be6f8bb361a0282862d2290a96b0e11f79d7b389dcd555b2f2b8a076733",
+      "captures": [
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/0cb9d8e2072825743953be047e60c6a467a662bbe77e61b3ff80fb9fb69c430b.png"
+    },
+    {
+      "host": "linux",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 40,
+      "pageHeight": 256,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+      "rgbaSha256": "5723573d8892bba15fa3c9205cf2a17bdcc58d221fee962291bb7e96c17e45f4",
+      "captures": [
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070.png"
+    },
+    {
+      "host": "linux",
+      "input": "narrow.svg",
+      "inputSha256": "f6b6f487b3e253f0f46ebd1ad90d968fd0970242dc37aab64b75b0d401d40c7a",
+      "imageWidth": 40,
+      "pageWidth": 600,
+      "pageHeight": 256,
+      "mode": "image",
+      "measurement": {
+        "rect": [
+          0,
+          0,
+          40,
+          384
+        ],
+        "matrix": null,
+        "dpr": 1,
+        "scale": 1
+      },
+      "changedFromNarrowNative": 16,
+      "bounds": [
+        16,
+        123,
+        18,
+        241
+      ],
+      "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+      "rgbaSha256": "5723573d8892bba15fa3c9205cf2a17bdcc58d221fee962291bb7e96c17e45f4",
+      "captures": [
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "screenshot": "evidence/092b12b150ae7310c732da4636f8ec354253746362fea5620e728def02c5d070.png"
+    }
+  ],
+  "model": {
+    "source": "../../../src/Lokad.Svg/Rendering/SvgCpuRasterGrid.cs",
+    "nativeSource": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/utils/SkDashPath.cpp",
+    "stage": "clip_line/cull_path trims eligible source lines in phase before SkPathMeasure cuts dash intervals. Bitmap construction clips differ from owned output interiors.",
+    "authoredControl": {
+      "rows": [
+        {
+          "host": "windows",
+          "beforeChangedPixels": 16,
+          "culledResearchReplayChangedPixels": 0,
+          "combinedRgbaSha256": "25376be6f8bb361a0282862d2290a96b0e11f79d7b389dcd555b2f2b8a076733"
+        },
+        {
+          "host": "linux",
+          "beforeChangedPixels": 16,
+          "culledResearchReplayChangedPixels": 0,
+          "combinedRgbaSha256": "25376be6f8bb361a0282862d2290a96b0e11f79d7b389dcd555b2f2b8a076733"
+        }
+      ],
+      "bitmapClips": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          0,
+          254,
+          256,
+          384
+        ]
+      ],
+      "strokeOutset": 2,
+      "ownedRowSplit": 255,
+      "phasePreservingEndpoints": [
+        [
+          7,
+          259
+        ],
+        [
+          250,
+          367
+        ]
+      ]
+    },
+    "ny1Diagnostic": {
+      "status": "Research replay, not a production fix or reference admission",
+      "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+      "diagnosticInputSha256": "85bce8c43bf349c9accb3a34ef2b349fe46e47131c3f481167f451ea5c944988",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "librarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
+      "bitmapClips": [
+        [
+          0,
+          0,
+          256,
+          256
+        ],
+        [
+          0,
+          254,
+          256,
+          388
+        ]
+      ],
+      "strokeOutset": 2,
+      "ownedRowSplit": 255,
+      "hostedSvgBodiesRetained": 0,
+      "hostedSourceAttributeValuesRetained": 0,
+      "rows": [
+        {
+          "host": "windows",
+          "originalLibraryPngSha256": "8bc6ec0c5bd0bc98708c982de9c66240f5407a69b7302427d1505c496ca26983",
+          "nativePngSha256": "1260f21d6ecdad88946b5c900a5f45f2d32ce662e08230af5e1520a4fbe9cba1",
+          "beforeChangedPixels": 12,
+          "culledResearchReplayChangedPixels": 0,
+          "combinedRgbaSha256": "feb7c63b2f604c7439fba0759a3d0df33f66d792b4c347a9367d22a8d3b733d6",
+          "culledDiagnosticInputSha256": [
+            "05f603135abdae65a03fcf9b882ac8a6946274d93f1d25e0763d83cf829768f8",
+            "a4560710956676dbc5f141e78d0c09c55eecabe656bc6036b1065808840d5347"
+          ]
+        },
+        {
+          "host": "linux",
+          "originalLibraryPngSha256": "600f283a5597e4a515285f892cb951e7209bb588c57876000e020ea8f82441d3",
+          "nativePngSha256": "b9e220601b1f15dbd4d955a65d65b0ba2ec95fea335c9eb51e2cecba2619629a",
+          "beforeChangedPixels": 12,
+          "culledResearchReplayChangedPixels": 0,
+          "combinedRgbaSha256": "6cf4835c9ea5fac9058191e851cd855135d1368aa91004725b481460b8ba3f19",
+          "culledDiagnosticInputSha256": [
+            "05f603135abdae65a03fcf9b882ac8a6946274d93f1d25e0763d83cf829768f8",
+            "a4560710956676dbc5f141e78d0c09c55eecabe656bc6036b1065808840d5347"
+          ]
+        }
+      ]
+    },
+    "interpretation": "The existing grid, stroke outset and phase-preserving native line culling exactly reproduce both complete authored and ny1 diagnostic images on both hosts. This is a research replay using RAM-only diagnostic inputs, not integrated production rendering. No text, reference, interpolation, tolerance or original admission changed."
+  },
+  "nextAction": "Retain the undashed source and dash pattern through owned scene replay; construct dashes against the actual bitmap clip before measurement. Preserve pathLength source scaling, transforms, thin/outline and paint paths, cancellation/refusal/retry and all original references. Qualify shared stage before closing ny1.",
+  "hostedSvgBodiesRetained": 0,
+  "hostedSourceAttributeValuesRetained": 0,
+  "existingMechanismChecks": {
+    "filter": "(FullyQualifiedName~SvgNativeDashPathTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgLineDashDirectionTests|FullyQualifiedName~SvgOrthogonalDashTests|FullyQualifiedName~SvgZeroDashTests|FullyQualifiedName~SvgEllipseDashSourceTests)&Category!=Research",
+    "rows": [
+      {
+        "host": "windows",
+        "total": 83,
+        "passed": 83,
+        "failed": 0,
+        "wallSeconds": 9.65
+      },
+      {
+        "host": "linux",
+        "total": 83,
+        "passed": 83,
+        "failed": 0,
+        "wallSeconds": 14.303
+      }
+    ],
+    "scope": "Existing qualified library, no production changes; focused investigation, not a new full-package milestone."
+  }
+}

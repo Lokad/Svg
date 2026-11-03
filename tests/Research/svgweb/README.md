@@ -60,7 +60,10 @@ The [ny1 review](ny1-static-review.json) accounts for strict unknown-CSS admissi
 Its declared CSS-repaired diagnostic resolves font-relative text positions
 through a shared declaration-length basis and
 [authored controls](../text-position-lengths/README.md). The complete diagnostic
-renders; twelve residual separator pixels persist without any text.
+renders; twelve residual separator pixels persist without any text. The
+[raster-window review](../dash-image-width/README.md) isolates phase-preserving
+line culling before dash measurement: a research replay removes the complete
+residual on both hosts. Production integration remains open.
 
 The [physical-font interval correction](text-shaping-boundaries.json) keeps
 anchor-only changes from breaking ligatures. Its direct mechanisms, one ownership

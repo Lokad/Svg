@@ -46,7 +46,7 @@
   "strictCssBoundary": "Unknown and unimplemented active declarations reject through the same bounded parser. Browser error recovery for unknown names is outside the current admission contract; no name-specific production exception, ignore-all fallback or unsupported-property registry is introduced.",
   "standard": "https://www.w3.org/TR/css-syntax-3/#error-handling",
   "sourceAttributeValuesRetained": 0,
-  "nextAction": "Use the independent width controls to identify the native stage, then fix the shared cause or record its precise contract limitation. Preserve the unchanged original invalid-CSS boundary and all native references.",
+  "nextAction": "Implement shared raster-context dash construction identified in ../dash-image-width/raster-window.json, then qualify unchanged CSS-repaired/font diagnostic. Research replay of the same bitmap culling removes all twelve pixels on both hosts; production integration remains open.",
   "beforePositionFix": {
     "nextGate": {
       "element": "tspan",
@@ -233,7 +233,7 @@
       321,
       247
     ],
-    "modelReview": "Isolate native SVG-as-image viewport mapping and compositor screenshot stages from SVG DOM/dash geometry. The reference driver uses img plus Page.captureScreenshot; canvas is a separate path. Preserve native width-dependent controls; do not patch a coordinate, image size or global curve interpolation."
+    "modelReview": "Existing raster bitmap clips and native phase-preserving line culling before dash measurement reproduce the full diagnostic exactly on both hosts in research. Retain source/pattern ownership through replay; preserve interpolation, text and all independent references."
   },
   "standaloneLineIsolation": {
     "selectedTraversalOrdinal": 75,
@@ -306,5 +306,6 @@
     "librarySameRegionChangedPixels": 0,
     "nativeSameRegionChangedPixels": 16,
     "controls": "Two authored inputs differ only in width; repeated on both hosts. No hosted attributes or geometry copied."
-  }
+  },
+  "rasterWindowReview": "../dash-image-width/raster-window.json"
 }
