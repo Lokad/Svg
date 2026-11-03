@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add default Unicode lowercase and source-context final-sigma handling across
+  spans and paths; keep font discovery's whitespace and text lifetimes distinct.
 - Add pinned Unicode uppercase conversion with original SVG character addressing,
   transformed font discovery and governed expansion storage.
 - Preserve a uniform child anchor when joining direct text and text-path ranges,

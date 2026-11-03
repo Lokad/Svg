@@ -1,0 +1,65 @@
+{
+  "inputSha256": "751cbdca52a35203df59e84b0b40f6e2986f24b0c32392a0dbccf42e04da1f78",
+  "nativeControl": "reference.svg",
+  "nativeControlSha256": "fe39c5b155d671414f7b40834f4b1d2545c7bed473f0bb1d5edfbf39230e04b0",
+  "nativeInputSha256": "1c385d5efe139fbdb73737852f9fdf170466a982d99f6814665f9536ce37fd8b",
+  "input": "control.svg",
+  "font": "../../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "width": 240,
+  "height": 112,
+  "platforms": {
+    "windows": {
+      "reference": "references/windows-literal.png",
+      "referenceSha256": "faafc7fdcb9f0596f77fd02b09bc8ecaeaf98072f3cee61855a2cca8d9872e7b",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "faafc7fdcb9f0596f77fd02b09bc8ecaeaf98072f3cee61855a2cca8d9872e7b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "faafc7fdcb9f0596f77fd02b09bc8ecaeaf98072f3cee61855a2cca8d9872e7b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "faafc7fdcb9f0596f77fd02b09bc8ecaeaf98072f3cee61855a2cca8d9872e7b",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "linux": {
+      "reference": "references/linux-literal.png",
+      "referenceSha256": "0a4cd3e8c5e07e99ee4c29f89bd9f3272caae5d239879ddb5f1a5fda1a04814f",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "0a4cd3e8c5e07e99ee4c29f89bd9f3272caae5d239879ddb5f1a5fda1a04814f",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0a4cd3e8c5e07e99ee4c29f89bd9f3272caae5d239879ddb5f1a5fda1a04814f",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0a4cd3e8c5e07e99ee4c29f89bd9f3272caae5d239879ddb5f1a5fda1a04814f",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    }
+  },
+  "cssObservation": "capture-css.json",
+  "referenceReason": "Independent literal under the declared original-text context model. CSS requires inline boundaries to be ignored for text transformation, and SVG applies CSS layout before mapping text onto paths; inferring continuity across textPath retains one original text-element context. Pinned Chrome instead restarts sigma context at path boundaries; its captures remain unchanged in capture-css.json."
+}

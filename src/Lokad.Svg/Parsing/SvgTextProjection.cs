@@ -51,6 +51,7 @@ internal ref struct SvgTextProjection
         if (!fonts.IsEmpty && fontEnd != source.Length) throw new ArgumentException("Source text styles must cover the original text.", nameof(fonts));
         Span<char> output = stackalloc char[3];
         int sourceOffset = 0, fontIndex = 0, emittedLength = 0;
+        SvgTextCasingContext context = default;
         bool changed = false, needsMap = false;
         foreach (Rune scalar in source.EnumerateRunes())
         {
@@ -58,7 +59,7 @@ internal ref struct SvgTextProjection
             while (fontIndex < fonts.Length && sourceOffset >= fonts[fontIndex].End) fontIndex++;
             SvgTextTransform transform = fonts.IsEmpty ? style.TextTransform : fonts[fontIndex].Font.TextTransform;
             string language = fonts.IsEmpty ? style.Language : fonts[fontIndex].Font.Language;
-            int length = SvgTextCasing.Write(scalar, transform, language, output);
+            int length = WriteSource(source, sourceOffset, scalar, transform, language, ref context, output, token);
             changed |= !source.AsSpan(sourceOffset, scalar.Utf16SequenceLength).SequenceEqual(output[..length]);
             needsMap |= length != scalar.Utf16SequenceLength;
             emittedLength = checked(emittedLength + length);
@@ -76,14 +77,14 @@ internal ref struct SvgTextProjection
                 Array.Fill(_map.Items, -1);
             }
             using BudgetedTextBuffer emitted = new(budget);
-            sourceOffset = 0; fontIndex = 0;
+            sourceOffset = 0; fontIndex = 0; context = default;
             foreach (Rune scalar in source.EnumerateRunes())
             {
                 token.ThrowIfCancellationRequested();
                 while (fontIndex < fonts.Length && sourceOffset >= fonts[fontIndex].End) fontIndex++;
                 SvgTextTransform transform = fonts.IsEmpty ? style.TextTransform : fonts[fontIndex].Font.TextTransform;
                 string language = fonts.IsEmpty ? style.Language : fonts[fontIndex].Font.Language;
-                int length = SvgTextCasing.Write(scalar, transform, language, output);
+                int length = WriteSource(source, sourceOffset, scalar, transform, language, ref context, output, token);
                 if (needsMap) _map.Items[sourceOffset] = emitted.Length;
                 emitted.Append(output[..length], emittedLength, token);
                 sourceOffset += scalar.Utf16SequenceLength;
@@ -145,6 +146,26 @@ internal ref struct SvgTextProjection
             }
         }
         catch { Dispose(); throw; }
+
+        static int WriteSource(string source, int offset, Rune scalar, SvgTextTransform transform, string language,
+            ref SvgTextCasingContext context, Span<char> output, CancellationToken token)
+        {
+            bool final = false;
+            if (transform == SvgTextTransform.Lowercase && scalar.Value == 0x3A3 && context.PrecedingCased)
+            {
+                final = true;
+                foreach (Rune following in source.AsSpan(offset + scalar.Utf16SequenceLength).EnumerateRunes())
+                {
+                    token.ThrowIfCancellationRequested();
+                    SvgTextCasingProperties properties = SvgTextCasing.GetProperties(following);
+                    if ((properties & SvgTextCasingProperties.Ignorable) != 0) continue;
+                    final = (properties & SvgTextCasingProperties.Cased) == 0;
+                    break;
+                }
+            }
+            context.Observe(SvgTextCasing.GetProperties(scalar));
+            return SvgTextCasing.Write(scalar, transform, language, final, output);
+        }
 
         static int Map(ReadOnlySpan<int> map, int offset)
         {

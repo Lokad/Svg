@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "Exploratory comparison retained independently of the now-qualified default-uppercase projection. Other operations and language tailoring remain OPEN.",
+  "status": "Original source/emitted-index observations retained. Default uppercase/lowercase projection/context is qualified separately; capitalization, other languages and the path-context compatibility interpretation remain open.",
   "specification": "https://svgwg.org/svg2-draft/text.html",
   "specifiedSourceRule": "SVG character indices are determined before text-transform. Original scalar/UTF-16 addressing must remain distinct from emitted shaping characters.",
   "sourceText": "\u00dfa",
@@ -131,7 +131,7 @@
       "GlyphLayout sourceLengths describes GSUB consumption in its input string. Lifting original intervals into emitted text preserves this shaping/fitting meaning; zero-length expansion aliases would conflate it.",
       "Source-style default elision also needs the complete anchor comparison; this prerequisite is closed in text-shared-anchor.json."
     ],
-    "nextImplementation": "Extend context-sensitive operations/language tailoring on the qualified source-to-emitted model; deletion and empty intervals need explicit review before admission.",
+    "nextImplementation": "Review capitalization, language tailoring/deletion and the retained path-context browser discrepancy on the qualified original/emitted model.",
     "mappingSources": [
       "https://www.w3.org/TR/SVG2/text.html#TermSVGCharacter",
       "https://www.w3.org/TR/css-text-3/#text-transform-property",
@@ -146,5 +146,6 @@
     "Font coverage, shaping, spacing and fitting must see the transformed typographic text; keep these responsibilities distinct from original position-list addresses.",
     "Preserve span/node/paint/anchor/absolute-reset boundaries. Do not globally rewrite the source string or admit only unchanged-uppercase documents.",
     "Resolve language-sensitive and admitted-character boundaries explicitly before feature admission. Native literal controls complement the observed browser transformation behavior."
-  ]
+  ],
+  "qualifiedContext": "text-lowercase-context.json"
 }

@@ -1,0 +1,455 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "a8f8db91dba75003171f69a9e38265ce94e1e498",
+  "status": "Default Unicode lowercase, final-sigma context and distinct text/whitespace discovery lifetimes are qualified under the declared source-context model. Pinned browser CSS path-context parity differs and is retained explicitly; capitalization, language tailoring, ny1 and the broader PLAN remain OPEN.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Fonts/SvgFontCoverageDiscovery.cs": "681442976e555536519a4f519b8ec3eadd45c818bb846f759e5373a4ff4627dc",
+    "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs": "d9c852f5b53253bc62036d811daca841b8f9519969b24e698f5951ee5f4d06be",
+    "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "6291a33e66605e57aafb8c8ceb8277ec75e865aad0296fcf0a8a55ae0a7a841a",
+    "src/Lokad.Svg/Parsing/SvgTextCasing.cs": "5c2b1909f1d2b7c2a6b9ebb8bbee956e1afa669c96baa532f98c9a00c1eac814",
+    "src/Lokad.Svg/Parsing/SvgTextCasing.Data.cs": "069ef8c4aec89dece9963077cacaf628bb292278ce0bc1b7033315a52b72caac",
+    "src/Lokad.Svg/Parsing/SvgTextProjection.cs": "7b1104a0c3436f040583e0ae252a8914335f04ffb1ba315412f2f6d39c9e2f2f",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.Casing.cs": "2e45b44b1a72396345ffaa10b411d0bbabcf408ba8c03709fa5c7121303f3e3d",
+    "tests/Lokad.Svg.Tests/SvgFontCoverageDiscoveryTests.cs": "f070512d6bf914a9a2f4d6119469475d6cfc5444aa1fad15ecc2dc14ee17dd6c",
+    "tests/Lokad.Svg.Tests/SvgLowercaseContextTests.cs": "cab471ac6c2720a85469ecffaa2e2040f1444a62b4e1bc188e749be2798270df",
+    "tests/Lokad.Svg.Tests/SvgTextProjectionTests.cs": "8ec27b842d3a55c97536fbdf6f8e0e798256b4c43f3e657bcc35f750d800dee1",
+    "tests/Lokad.Svg.VisualTests/SvgTextCaseReferenceTests.cs": "83f4c042adfee08266a712689419b38b0a8be17858adee50c5c70e112720d10c",
+    "tools/generate-unicode-case-data.py": "1e1842caff0ce3b03e1ddcd2d4d34e34babd9b9e4ca826846ef5c16d4d90eff9",
+    "tools/Lokad.Svg.PackageSmoke/HttpFontQualification.cs": "2781c085c6f508007ee61cca58d6d4b808bc7a4cd1a6657100cfd9adfd6c3488",
+    "tools/test-package.ps1": "6a7807fbe3980dbd4a9f8248299b4b2d08db6554c2373939153db1686c54285a"
+  },
+  "scope": {
+    "publicTypeChanges": 0,
+    "newRuntimeDependencies": 0,
+    "newFontBytes": 0,
+    "existingReferenceChanges": 0,
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "newMechanismCases": 3541,
+    "newOwnershipCases": 3,
+    "newCanonicalRenderingCases": 2
+  },
+  "unicode": {
+    "unicodeVersion": "17.0.0",
+    "sources": {
+      "UnicodeData.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt",
+        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
+      },
+      "SpecialCasing.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/SpecialCasing.txt",
+        "sha256": "efc25faf19de21b92c1194c111c932e03d2a5eaf18194e33f1156e96de4c9588"
+      },
+      "DerivedCoreProperties.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/DerivedCoreProperties.txt",
+        "sha256": "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08"
+      }
+    },
+    "changedScalars": 1580,
+    "simpleMappings": 1478,
+    "expansions": 102,
+    "maximumEmittedUtf16UnitsPerScalar": 3,
+    "lowercase": {
+      "changedScalars": 1488,
+      "simpleMappings": 1487,
+      "expansions": 1,
+      "maximumEmittedUtf16UnitsPerScalar": 2
+    },
+    "casingPropertyRanges": 628,
+    "language": "Default Unicode upper/lower mappings with Final_Sigma; capitalization and other language tailoring remain unfinished."
+  },
+  "verificationCorporaSha256": {
+    "unicode-uppercase.csv": "a8f9efec4e9cbf5de397506340b79340175d5d345d88f8278482e5346287fd84",
+    "unicode-lowercase.csv": "da264ec4c9b90a7d2e9ec180e394a13e57e98f88b299feda2147951e4e0adeae",
+    "unicode-casing-properties.csv": "3cb7cc514f4aa4166adad1bc4878c1956a382f6de15581c46bfd0d0d208ff90a"
+  },
+  "implementation": {
+    "change": "Use original Unicode Cased/Case_Ignorable properties with possessive overlap handling. Projection inspects following original scalars; streaming coverage retains one sigma/font/language until the next non-ignorable scalar or text end. Both routes share scalar conversion and source-context advancement.",
+    "boundaries": "A logical text element owns case context. Direct/path whitespace restarts preserve their independent trailing/leading-space rules without creating a casing boundary. Retained-instance discovery explicitly begins/ends the same logical scope. Original character addresses and emitted shaping/GSUB roles remain separate.",
+    "ownership": "No new material text collector or generic framework. Pending context is bounded by one scalar binding; refusal/cancellation/disposal preserve shared allowance and allow retry. The package fixture provider now names its selected file explicitly while retaining the unused-face guard."
+  },
+  "responsibilities": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgLowercaseContextTests.cs",
+    "details": "1,488 default mapping cases, 2,030 property-boundary cases and 23 context/expansion/lifecycle cases. Context uses original characters across styles, handles cased/ignorable overlap, keeps the pending font, and distinguishes logical text endings from direct/path whitespace.",
+    "ownership": "../../Lokad.Svg.Tests/SvgFontCoverageDiscoveryTests.cs",
+    "prepared": "../../Lokad.Svg.Tests/OpenTypeFontTests.Casing.cs",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgTextCaseReferenceTests.cs",
+    "reason": "Direct data and boundary mechanisms remain exhaustive without rendering/API multiplication. Two deferred-owner failure paths and one prepared direct/instance contract represent distinct execution/allocation paths. Two canonical images retain span/end and mixed path/whitespace interactions."
+  },
+  "rendering": {
+    "lowercase": {
+      "recipe": "../text-case-mapping/lowercase/capture.json",
+      "inputSha256": "b5fbf9056be0179d6afbdb9c53b5055f61520eed22484f178809a44db773895d",
+      "nativeControl": "control.svg",
+      "healthyCapturesPerHost": 3,
+      "qualifiedCanonicalChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    "lowercase-path": {
+      "recipe": "../text-case-mapping/lowercase-path/capture.json",
+      "inputSha256": "751cbdca52a35203df59e84b0b40f6e2986f24b0c32392a0dbccf42e04da1f78",
+      "nativeControl": "reference.svg",
+      "healthyCapturesPerHost": 3,
+      "qualifiedCanonicalChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    }
+  },
+  "sourceContextInterpretation": {
+    "status": "Declared model with a documented browser discrepancy, not native CSS parity.",
+    "sources": [
+      "https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/",
+      "https://www.w3.org/TR/css-text-3/#text-transform-property",
+      "https://www.w3.org/TR/SVG2/text.html"
+    ],
+    "inference": "CSS text transformation ignores inline boundaries. SVG treats text children as inline and performs CSS layout before path mapping. From these rules, the renderer retains original case context across textPath boundaries. A literal control independently fixes the intended sigma forms.",
+    "cssObservations": "../text-case-mapping/lowercase-path/capture-css.json",
+    "literalControl": "../text-case-mapping/lowercase-path/reference.svg",
+    "literalRecipe": "../text-case-mapping/lowercase-path/capture.json",
+    "results": [
+      {
+        "host": "windows",
+        "libraryVsLiteral": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "cssVsLiteral": {
+          "changedPixels": 219,
+          "maximumError": 255
+        }
+      },
+      {
+        "host": "linux",
+        "libraryVsLiteral": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "cssVsLiteral": {
+          "changedPixels": 218,
+          "maximumError": 255
+        }
+      }
+    ],
+    "existingCssCapturesUnchanged": true,
+    "open": "Review this compatibility interpretation independently; preserve both observations and the original-source rule, without silently calling the CSS screenshots exact."
+  },
+  "qualification": {
+    "sdk": "11.0.100-rc.3.26522.148",
+    "libraries": {
+      "net11.0": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+      "net10.0": "c7033bf19009833ce059723ab7dcd1b2416844d03bda51d447d7cfe1b394ae3b"
+    },
+    "beforeFocused": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 8.9913734998554,
+        "librarySha256": "6b49943276a8ffabb5d9f4af2a951310790d449a8f7360a840969d325af72b48",
+        "testAssemblySha256": "10329ed6f6a5f92038969efd7c4cf3418a98c94ee0a6434d5450b2ac9b86a7ae",
+        "total": 1,
+        "passed": 0,
+        "failed": 1
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 9.240216900128871,
+        "librarySha256": "6b49943276a8ffabb5d9f4af2a951310790d449a8f7360a840969d325af72b48",
+        "testAssemblySha256": "1eba3a93334e8b01860b8c461c156ffb009c538b44482eed67e6a85a86ffd51a",
+        "total": 2,
+        "passed": 0,
+        "failed": 2
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 10.426381499972194,
+        "librarySha256": "6b49943276a8ffabb5d9f4af2a951310790d449a8f7360a840969d325af72b48",
+        "testAssemblySha256": "10329ed6f6a5f92038969efd7c4cf3418a98c94ee0a6434d5450b2ac9b86a7ae",
+        "total": 1,
+        "passed": 0,
+        "failed": 1
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 12.127789299935102,
+        "librarySha256": "6b49943276a8ffabb5d9f4af2a951310790d449a8f7360a840969d325af72b48",
+        "testAssemblySha256": "1eba3a93334e8b01860b8c461c156ffb009c538b44482eed67e6a85a86ffd51a",
+        "total": 2,
+        "passed": 0,
+        "failed": 2
+      }
+    ],
+    "afterFocused": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 7.501139599829912,
+        "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+        "testAssemblySha256": "10329ed6f6a5f92038969efd7c4cf3418a98c94ee0a6434d5450b2ac9b86a7ae",
+        "total": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 9.170911199878901,
+        "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+        "testAssemblySha256": "1eba3a93334e8b01860b8c461c156ffb009c538b44482eed67e6a85a86ffd51a",
+        "total": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 13.314996500033885,
+        "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+        "testAssemblySha256": "10329ed6f6a5f92038969efd7c4cf3418a98c94ee0a6434d5450b2ac9b86a7ae",
+        "total": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 12.776174099883065,
+        "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+        "testAssemblySha256": "1eba3a93334e8b01860b8c461c156ffb009c538b44482eed67e6a85a86ffd51a",
+        "total": 2,
+        "passed": 2,
+        "failed": 0
+      }
+    ],
+    "milestone": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 73.95774480002001,
+        "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+        "testAssemblySha256": "10329ed6f6a5f92038969efd7c4cf3418a98c94ee0a6434d5450b2ac9b86a7ae",
+        "total": 41881,
+        "passed": 41881,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 95.56079880008474,
+        "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+        "testAssemblySha256": "1eba3a93334e8b01860b8c461c156ffb009c538b44482eed67e6a85a86ffd51a",
+        "total": 46576,
+        "passed": 46575,
+        "failed": 1
+      },
+      {
+        "host": "windows",
+        "kind": "font-host",
+        "framework": "net11.0",
+        "seconds": 1.0404292999301106,
+        "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+        "testAssemblySha256": "ad44fe9a4d0891904998b948f745e667f5a2661cb53040c8bfa0427647d5e8a7",
+        "total": 10,
+        "passed": 10,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "seconds": 42.03847590018995,
+        "librarySha256": "c7033bf19009833ce059723ab7dcd1b2416844d03bda51d447d7cfe1b394ae3b",
+        "testAssemblySha256": "6b24936d76bc1dd177c6987b847521f86969178859dca9377f251d6dea0a9161",
+        "total": 17853,
+        "passed": 17853,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "seconds": 20.75268830009736,
+        "librarySha256": "c7033bf19009833ce059723ab7dcd1b2416844d03bda51d447d7cfe1b394ae3b",
+        "testAssemblySha256": "6693313c31d31cf44f908db3e9797f4e7702909b4539e9e08050783240c2683f",
+        "total": 837,
+        "passed": 837,
+        "failed": 0
+      },
+      {
+        "host": "windows",
+        "kind": "font-host",
+        "framework": "net10.0",
+        "seconds": 1.0853256001137197,
+        "librarySha256": "c7033bf19009833ce059723ab7dcd1b2416844d03bda51d447d7cfe1b394ae3b",
+        "testAssemblySha256": "4e54954468e7edb4f6786c4c389c571952e0356abf53d18b881906218374ef0e",
+        "total": 10,
+        "passed": 10,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "seconds": 49.0678501999937,
+        "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+        "testAssemblySha256": "10329ed6f6a5f92038969efd7c4cf3418a98c94ee0a6434d5450b2ac9b86a7ae",
+        "total": 41881,
+        "passed": 41881,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "seconds": 161.70638949982822,
+        "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+        "testAssemblySha256": "1eba3a93334e8b01860b8c461c156ffb009c538b44482eed67e6a85a86ffd51a",
+        "total": 46576,
+        "passed": 46576,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "font-host",
+        "framework": "net11.0",
+        "seconds": 1.041591899935156,
+        "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+        "testAssemblySha256": "ad44fe9a4d0891904998b948f745e667f5a2661cb53040c8bfa0427647d5e8a7",
+        "total": 10,
+        "passed": 10,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "seconds": 28.138494200073183,
+        "librarySha256": "c7033bf19009833ce059723ab7dcd1b2416844d03bda51d447d7cfe1b394ae3b",
+        "testAssemblySha256": "6b24936d76bc1dd177c6987b847521f86969178859dca9377f251d6dea0a9161",
+        "total": 17853,
+        "passed": 17853,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "seconds": 24.82470510015264,
+        "librarySha256": "c7033bf19009833ce059723ab7dcd1b2416844d03bda51d447d7cfe1b394ae3b",
+        "testAssemblySha256": "6693313c31d31cf44f908db3e9797f4e7702909b4539e9e08050783240c2683f",
+        "total": 837,
+        "passed": 837,
+        "failed": 0
+      },
+      {
+        "host": "linux",
+        "kind": "font-host",
+        "framework": "net10.0",
+        "seconds": 2.753064800053835,
+        "librarySha256": "c7033bf19009833ce059723ab7dcd1b2416844d03bda51d447d7cfe1b394ae3b",
+        "testAssemblySha256": "4e54954468e7edb4f6786c4c389c571952e0356abf53d18b881906218374ef0e",
+        "total": 10,
+        "passed": 10,
+        "failed": 0
+      }
+    ],
+    "timing": "Identical focused assemblies and selection before/after. Wall time includes startup and concurrent work; no performance or speedup claim.",
+    "knownWindowsDejavu": {
+      "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "failureIdentityAndMessageUnchanged": true,
+      "referenceAndAssertionPreserved": true,
+      "authority": "Pending independently; no exact-head green CI claim."
+    }
+  },
+  "allOriginals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 62.77812010003254,
+    "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "suppliedPrograms": {
+    "librarySha256": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+    "files": 19,
+    "seconds": 17.71063180011697,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0
+  },
+  "packages": {
+    "version": "0.4.0-dev.1",
+    "archives": [
+      {
+        "kind": "nupkg",
+        "sha256": "ac5092cd4e27355b1506a8bced3335a314ef531a95003e49f1ee8b4e8e567bf1",
+        "separateTimeRebuildByteIdentical": true,
+        "fixedZipEpoch": "1980-01-01T00:00:00",
+        "qualifiedAssets": {
+          "net11.0": "976089826eeba565f773ae0fd4eaacc21d645886aafa3940b8f6682f2e651411",
+          "net10.0": "c7033bf19009833ce059723ab7dcd1b2416844d03bda51d447d7cfe1b394ae3b"
+        }
+      },
+      {
+        "kind": "snupkg",
+        "sha256": "be55c7803ca0d4cba8aeef170c020eae7b9dc2ca60552bcf53914e3289c49a34",
+        "separateTimeRebuildByteIdentical": true,
+        "fixedZipEpoch": "1980-01-01T00:00:00",
+        "qualifiedAssets": {}
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 5.3535333999898285
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 57.43940689996816
+      }
+    ],
+    "lowercaseSmoke": "Existing CC0 Secondary program covers lowercase e-acute; installed preparation converts source capital e-acute and discovers/render its emitted scalar on both runtimes/hosts.",
+    "newFontBytes": 0,
+    "fixtureCorrection": "The first consumer run found a hardcoded Primary.ttf-only fixture provider. Its selected filename is now explicit for both existing programs; the unused-face guard remains."
+  },
+  "remaining": [
+    "Capitalization across original source boundaries.",
+    "Other language tailoring, including deletion/empty intervals and position transfer.",
+    "Independent review of the retained browser path-context discrepancy.",
+    "ny1 invalid CSS versus valid unimplemented declarations; svg2009 line-height/clip-child/path styles and every remaining PLAN area."
+  ]
+}

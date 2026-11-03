@@ -29,6 +29,9 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     private SvgTextWhitespaceNormalizer _normalizer;
     private FontKey _font = new(string.Empty, 400, false);
     private FontKey? _separator;
+    private readonly record struct PendingSigma(FontKey Font, string Language);
+    private PendingSigma? _pendingSigma;
+    private SvgTextCasingContext _context;
     private SvgTextTransform _transform;
     private string _language = string.Empty;
     private bool _hasOutput;
@@ -44,10 +47,27 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
         _entries = new(budget, SvgMemoryCategory.Parser, 128);
     }
 
+    /// <summary>Begins a logical text element, finishing any prior source context and its pending case decision.</summary>
     internal void BeginText()
     {
+        EndText();
+        BeginWhitespaceRun(false, false);
+    }
+
+    /// <summary>Restarts whitespace at a direct/path boundary without ending original-character case context.</summary>
+    internal void BeginWhitespaceRun(bool preserveTrailingWhitespace, bool hasPriorText)
+    {
+        if (preserveTrailingWhitespace && _separator is {} separator)
+            AddMappedScalar(separator, new Rune(' '), SvgTextTransform.None, string.Empty);
         _normalizer = new(SvgTextWhitespaceMode.Default);
-        _separator = null; _hasOutput = false; _highSurrogate = '\0';
+        _separator = null; _hasOutput = hasPriorText; _highSurrogate = '\0';
+    }
+
+    /// <summary>Finishes original-character context after all normalized chunks of the element have been observed.</summary>
+    internal void EndText()
+    {
+        ResolvePendingSigma(false);
+        _context = default;
     }
 
     internal void SetFont(SvgInheritedTextStyle font)
@@ -66,6 +86,7 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (_requests is not null) throw new InvalidOperationException("Coverage collection has already finished.");
+        EndText();
         using BudgetedParserList<uint> scalars = new(_budget, SvgMemoryCategory.Parser, _token);
         foreach (Entry entry in _entries.Values)
         {
@@ -110,7 +131,7 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     public void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, CancellationToken cancellationToken)
     {
         if (value.IsEmpty) return;
-        if (_separator is {} separator) { AddScalar(separator, 32); _separator = null; }
+        if (_separator is {} separator) { AddMappedScalar(separator, new Rune(' '), SvgTextTransform.None, string.Empty); _separator = null; }
         AddScalars(_font, value, _transform, _language); _hasOutput = true;
     }
 
@@ -134,19 +155,38 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
         if (_highSurrogate != '\0')
         {
             if (end == 0 || !char.IsLowSurrogate(value[0])) throw new SvgException(SvgErrorCode.MalformedInput, "Text contains an incomplete Unicode scalar.");
-            AddMappedScalar(this, font, new Rune(char.ConvertToUtf32(_highSurrogate, value[0])), transform, language);
+            AddMappedScalar(font, new Rune(char.ConvertToUtf32(_highSurrogate, value[0])), transform, language);
             _highSurrogate = '\0'; first = 1;
         }
         if (first < end && char.IsHighSurrogate(value[end - 1])) _highSurrogate = value[--end];
-        foreach (Rune scalar in value[first..end].EnumerateRunes()) AddMappedScalar(this, font, scalar, transform, language);
+        foreach (Rune scalar in value[first..end].EnumerateRunes()) AddMappedScalar(font, scalar, transform, language);
 
-        static void AddMappedScalar(SvgFontCoverageDiscovery owner, FontKey font, Rune scalar, SvgTextTransform transform, string language)
+    }
+
+    private void AddMappedScalar(FontKey font, Rune scalar, SvgTextTransform transform, string language)
+    {
+        SvgTextCasingProperties properties = SvgTextCasing.GetProperties(scalar);
+        if ((properties & SvgTextCasingProperties.Ignorable) == 0)
+            ResolvePendingSigma((properties & SvgTextCasingProperties.Cased) != 0);
+        if (transform == SvgTextTransform.None) AddScalar(font, (uint)scalar.Value);
+        else
         {
-            if (transform == SvgTextTransform.None) { owner.AddScalar(font, (uint)scalar.Value); return; }
             Span<char> mapped = stackalloc char[3];
-            int length = SvgTextCasing.Write(scalar, transform, language, mapped);
-            foreach (Rune emitted in mapped[..length].EnumerateRunes()) owner.AddScalar(font, (uint)emitted.Value);
+            int length = SvgTextCasing.Write(scalar, transform, language, false, mapped);
+            if (transform == SvgTextTransform.Lowercase && scalar.Value == 0x3A3 && _context.PrecedingCased)
+                _pendingSigma = new(font, language);
+            else foreach (Rune emitted in mapped[..length].EnumerateRunes()) AddScalar(font, (uint)emitted.Value);
         }
+        _context.Observe(properties);
+    }
+
+    private void ResolvePendingSigma(bool followedByCased)
+    {
+        if (_pendingSigma is not {} pending) return;
+        Span<char> mapped = stackalloc char[3];
+        int length = SvgTextCasing.Write(new Rune(0x3A3), SvgTextTransform.Lowercase, pending.Language, !followedByCased, mapped);
+        foreach (Rune emitted in mapped[..length].EnumerateRunes()) AddScalar(pending.Font, (uint)emitted.Value);
+        _pendingSigma = null;
     }
 
     private void AddScalar(FontKey font, uint scalar)
@@ -172,6 +212,8 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     {
         if (_disposed) return;
         _requests = null;
+        _pendingSigma = null;
+        _context = default;
         _entries.Dispose();
         _resultsReservation?.Dispose();
         _disposed = true;

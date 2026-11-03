@@ -78,6 +78,7 @@ Copy-Item -LiteralPath (Join-Path $PSScriptRoot '../tests/Shared/TestMemoryBudge
 $consumerAssets = Join-Path $consumer 'assets'
 New-Item -ItemType Directory -Path $consumerAssets | Out-Null
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot '../tests/Research/glyph-fallback/fonts/Primary.ttf') -Destination (Join-Path $consumerAssets 'Primary.ttf')
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot '../tests/Research/glyph-fallback/fonts/Secondary.ttf') -Destination (Join-Path $consumerAssets 'Secondary.ttf')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot '../tests/Research/glyph-fallback/LICENSE.txt') -Destination (Join-Path $consumerAssets 'LICENSE.txt')
 $consumerProject = Join-Path $consumer 'Lokad.Svg.PackageSmoke.csproj'
 $packageCache = Join-Path $consumer 'nuget-packages'

@@ -173,7 +173,7 @@ internal static class SvgFontRequestDiscovery
                             _ = SvgTextPathSyntax.Parse(reader, cancellationToken);
                             childWhitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, null, inheritedWhitespaceMode);
                             admittedTextSpan = true;
-                            if (!reader.IsEmptyElement) { textPathDepth = reader.Depth; coverage?.BeginText(); }
+                            if (!reader.IsEmptyElement) { textPathDepth = reader.Depth; coverage?.BeginWhitespaceRun(preserveTrailingWhitespace: true, hasPriorText: false); }
                         }
                         catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnsupportedFeature) { admittedTextSpan = false; }
                     }
@@ -405,7 +405,7 @@ internal static class SvgFontRequestDiscovery
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
-                    if (reader.Depth == textPathDepth) { textPathDepth = -1; hasPriorText = false; pendingWhitespace = null; coverage?.BeginText(); }
+                    if (reader.Depth == textPathDepth) { textPathDepth = -1; hasPriorText = false; pendingWhitespace = null; coverage?.BeginWhitespaceRun(preserveTrailingWhitespace: false, hasPriorText: true); }
                     if (reader.Depth == skipDepth) skipDepth = -1;
                     if (switchScopes.Count > 0 && switchScopes[switchScopes.Count - 1].Depth == reader.Depth) switchScopes.RemoveLast();
                     if (reader.Depth == inertDepth) inertDepth = -1;
@@ -426,6 +426,7 @@ internal static class SvgFontRequestDiscovery
                         if (wasGroup) groupDepth--;
                         if (candidateState.HasRequest)
                         {
+                            coverage?.EndText();
                             if (activeTextPainted)
                             {
                                 AddCandidate(candidateState, requestKeys, cancellationToken);

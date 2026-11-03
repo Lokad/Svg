@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <None Include="../Research/text-case-mapping/unicode-uppercase.csv" Link="TestData/unicode-uppercase.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-case-mapping/unicode-lowercase.csv" Link="TestData/unicode-lowercase.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-case-mapping/unicode-casing-properties.csv" Link="TestData/unicode-casing-properties.csv" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <None Update="TestData/native-canvas-recording.json" CopyToOutputDirectory="PreserveNewest" />

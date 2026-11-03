@@ -571,6 +571,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
             if (authoredStyle.Filter is {} filter) addFilter(filter);
             ObservePaint(paint.GlyphPaint);
             SvgFontFaceRequest request = SvgFontFaceRequest.FromCss(style.Font.Family, style.Font.Weight, style.Font.Italic, style.SourceContext, _token);
+            coverage?.BeginText();
             foreach (SvgExtractedTextRun run in runs.AsSpan())
             {
                 _token.ThrowIfCancellationRequested();
@@ -587,6 +588,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                     coverage?.ObserveNormalized(spanRequest, run.Layout.Value.AsSpan(span.Start, span.End - span.Start), span.Font.TextTransform, span.Font.Language);
                 }
             }
+            coverage?.EndText();
         }
         finally { foreach (SvgExtractedTextRun run in runs.AsSpan()) run.Dispose(); }
 

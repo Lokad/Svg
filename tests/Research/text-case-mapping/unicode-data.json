@@ -8,11 +8,22 @@
     "SpecialCasing.txt": {
       "url": "https://www.unicode.org/Public/17.0.0/ucd/SpecialCasing.txt",
       "sha256": "efc25faf19de21b92c1194c111c932e03d2a5eaf18194e33f1156e96de4c9588"
+    },
+    "DerivedCoreProperties.txt": {
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/DerivedCoreProperties.txt",
+      "sha256": "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08"
     }
   },
   "changedScalars": 1580,
   "simpleMappings": 1478,
   "expansions": 102,
   "maximumEmittedUtf16UnitsPerScalar": 3,
-  "language": "Default Unicode only; conditional and language-tailored casing is separate unfinished work."
+  "lowercase": {
+    "changedScalars": 1488,
+    "simpleMappings": 1487,
+    "expansions": 1,
+    "maximumEmittedUtf16UnitsPerScalar": 2
+  },
+  "casingPropertyRanges": 628,
+  "language": "Default Unicode upper/lower mappings with Final_Sigma; capitalization and other language tailoring remain unfinished."
 }

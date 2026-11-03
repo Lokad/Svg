@@ -26,13 +26,31 @@ internal static class HttpFontQualification
         byte[] text = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text x='2' y='24' font-family='Example' font-size='20'>A</text></svg>"u8.ToArray();
         byte[] shape = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8'/></svg>"u8.ToArray();
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(manifest, "smoke");
-        using SvgFontSnapshot explicitFonts = await SvgFontSnapshot.CreateAsync(text, catalog, new Programs(font), CancellationToken.None);
+        using SvgFontSnapshot explicitFonts = await SvgFontSnapshot.CreateAsync(text, catalog, new Programs(font, "Primary.ttf"), CancellationToken.None);
         byte[] expected = SvgConverter.ConvertToPng(text,
             new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, explicitFonts), CancellationToken.None).ToArray();
         byte[] uppercase = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='text-transform:uppercase'><text x='2' y='24' font-family='Example' font-size='20'>a</text></svg>"u8.ToArray();
-        using (SvgPreparedDocument projected = await SvgPreparedDocument.CreateAsync(uppercase, catalog, new Programs(font), SvgRenderOptions.Default, CancellationToken.None))
+        using (SvgPreparedDocument projected = await SvgPreparedDocument.CreateAsync(uppercase, catalog, new Programs(font, "Primary.ttf"), SvgRenderOptions.Default, CancellationToken.None))
             if (!expected.AsSpan().SequenceEqual(projected.ConvertToPng(CancellationToken.None).Span))
                 throw new InvalidOperationException("Installed case projection did not discover and render the emitted glyph.");
+        byte[] lowercaseFont = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "assets", "Secondary.ttf"));
+        byte[] lowercaseManifest = JsonSerializer.SerializeToUtf8Bytes(new
+        {
+            packId = "case-smoke",
+            files = new[] { new { relativePath = "Secondary.ttf", byteSize = lowercaseFont.Length, sha256 = Convert.ToHexStringLower(SHA256.HashData(lowercaseFont)) } },
+            families = new[] { new { requestedFamily = "Example", resolvedFamily = "Example", relativeFontFile = "Secondary.ttf" } }
+        });
+        SvgFontPackCatalog lowercaseCatalog = SvgFontPackCatalog.Parse(lowercaseManifest, "case-smoke");
+        byte[] literalLowercase = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text x='2' y='24' font-family='Example' font-size='20'>é</text></svg>"u8.ToArray();
+        using (SvgFontSnapshot lowercaseFonts = await SvgFontSnapshot.CreateAsync(literalLowercase, lowercaseCatalog, new Programs(lowercaseFont, "Secondary.ttf"), CancellationToken.None))
+        {
+            ReadOnlyMemory<byte> literal = SvgConverter.ConvertToPng(literalLowercase,
+                new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, lowercaseFonts), CancellationToken.None);
+            byte[] lowercase = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='text-transform:lowercase'><text x='2' y='24' font-family='Example' font-size='20'>É</text></svg>"u8.ToArray();
+            using SvgPreparedDocument converted = await SvgPreparedDocument.CreateAsync(lowercase, lowercaseCatalog, new Programs(lowercaseFont, "Secondary.ttf"), SvgRenderOptions.Default, CancellationToken.None);
+            if (!literal.Span.SequenceEqual(converted.ConvertToPng(CancellationToken.None).Span))
+                throw new InvalidOperationException("Installed lowercase projection did not discover and render the emitted glyph.");
+        }
         await CachedLifecycleAsync(manifest, font, text, shape, expected);
         await AcquisitionRefusalAsync(manifest, font, text);
         await ShutdownDuringAcquisitionAsync(manifest, font, text);
@@ -217,13 +235,13 @@ internal static class HttpFontQualification
         }
     }
 
-    private sealed class Programs(ReadOnlyMemory<byte> font) : ISvgFontProgramSourceProvider
+    private sealed class Programs(ReadOnlyMemory<byte> font, string selectedPath) : ISvgFontProgramSourceProvider
     {
         /// <summary>Loans immutable caller-held fixture bytes through snapshot disposal; concurrent reads honor cancellation.</summary>
         public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            if (file.RelativePath != "Primary.ttf") throw new InvalidOperationException("The explicit provider selected an unused face.");
+            if (file.RelativePath != selectedPath) throw new InvalidOperationException("The explicit provider selected an unused face.");
             return ValueTask.FromResult<ISvgFontProgramSource?>(new SvgMemoryFontProgramSource(file.RelativePath, font));
         }
     }

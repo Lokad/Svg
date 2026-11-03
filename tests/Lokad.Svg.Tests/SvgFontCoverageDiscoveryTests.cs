@@ -7,6 +7,47 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgFontCoverageDiscoveryTests
 {
+    [Theory]
+    [Trait("Layer", "Contract")]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Deferred_casing_materialization_cleans_up_after_refusal_or_cancellation_and_retries(bool cancellation)
+    {
+        using HostMemoryBudget host = new(1_000_000);
+        RenderBudget budget = new(host);
+        using CancellationTokenSource cancelled = new();
+        using (SvgFontCoverageDiscovery coverage = new(budget, cancelled.Token))
+        {
+            ObservePending(coverage);
+            if (cancellation)
+            {
+                cancelled.Cancel();
+                Assert.Equal(cancelled.Token, Assert.Throws<OperationCanceledException>(() => coverage.GetScalars(new("Example", 400, false))).CancellationToken);
+            }
+            else
+            {
+                host.Limit = host.Reserved;
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => coverage.GetScalars(new("Example", 400, false))).ErrorCode);
+                host.Limit = 1_000_000;
+                Assert.Equal(new uint[] { 0x61, 0x3C2 }, coverage.GetScalars(new("Example", 400, false)).Order());
+            }
+        }
+        Assert.Equal(0, host.Reserved);
+        using (SvgFontCoverageDiscovery retry = new(budget, CancellationToken.None))
+        {
+            ObservePending(retry);
+            Assert.Equal(new uint[] { 0x61, 0x3C2 }, retry.GetScalars(new("Example", 400, false)).Order());
+        }
+        Assert.Equal(0, host.Reserved);
+        Assert.False(host.Disposed);
+
+        static void ObservePending(SvgFontCoverageDiscovery coverage)
+        {
+            coverage.BeginText();
+            coverage.ObserveNormalized(new("Example", 400, false), "AΣ", SvgTextTransform.Lowercase, string.Empty);
+        }
+    }
+
     [Fact]
     [Trait("Layer", "Mechanism")]
     public void Discovery_carries_a_split_scalar_without_retaining_trimmed_whitespace()
