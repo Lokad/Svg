@@ -410,7 +410,8 @@ Run `python -X utf8 tools/generate-unicode-case-data.py` to regenerate the
 [Unicode table](../src/Lokad.Svg/Parsing/SvgTextCasing.Data.cs) and its
 [direct mapping corpus](../tests/Research/text-case-mapping/unicode-data.json).
 The script verifies pinned Unicode 17 source hashes and keeps downloads in memory.
-It includes upper/lower mappings and the cased/ignorable context properties.
+It includes upper/lower mappings, lowercase-initial titlecase mappings and pinned
+casing/word-context properties.
 It does not capture rendering references. Data licensing is included in
 [third-party notices](../THIRD_PARTY_NOTICES.txt); the [case bank](../tests/Research/text-case-mapping/README.md)
-describes native admission and the independent indexed literal control.
+describes native admission and the independent literal controls.

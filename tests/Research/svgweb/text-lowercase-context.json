@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "a8f8db91dba75003171f69a9e38265ce94e1e498",
-  "status": "Default Unicode lowercase, final-sigma context and distinct text/whitespace discovery lifetimes are qualified under the declared source-context model. Pinned browser CSS path-context parity differs and is retained explicitly; capitalization, language tailoring, ny1 and the broader PLAN remain OPEN.",
+  "status": "Historical qualification: Default Unicode lowercase, final-sigma context and distinct text/whitespace discovery lifetimes are qualified under the declared source-context model. Pinned browser CSS path-context parity differs and is retained explicitly; capitalization, language tailoring, ny1 and the broader PLAN remain OPEN. Current update: default-language capitalization is now closed by text-capitalization.json; other language tailoring and the previously retained browser observations remain explicit.",
   "sourceLfSha256": {
     "src/Lokad.Svg/Fonts/SvgFontCoverageDiscovery.cs": "681442976e555536519a4f519b8ec3eadd45c818bb846f759e5373a4ff4627dc",
     "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs": "d9c852f5b53253bc62036d811daca841b8f9519969b24e698f5951ee5f4d06be",
@@ -451,5 +451,6 @@
     "Other language tailoring, including deletion/empty intervals and position transfer.",
     "Independent review of the retained browser path-context discrepancy.",
     "ny1 invalid CSS versus valid unimplemented declarations; svg2009 line-height/clip-child/path styles and every remaining PLAN area."
-  ]
+  ],
+  "currentCapitalizationClosure": "text-capitalization.json"
 }

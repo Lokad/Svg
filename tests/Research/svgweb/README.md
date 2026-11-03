@@ -41,10 +41,10 @@ Neither diagnostic fonts nor removed animation qualifies the unchanged original.
 [Terminal colour coverage](filter-color-program-coverage.json) closes the two
 remaining offset-prefix crop fringes; all nine diagnostic prefixes are exact. The
 [complete survey and model review](filter-color-matrix-review.json) retain the
-original requirements. Case transformation
-remains open beyond the [uppercase projection](text-case-projection.json) and
-[lowercase context](text-lowercase-context.json), which qualify original addressing,
-expansion and transformed font discovery.
+original requirements. The [uppercase projection](text-case-projection.json),
+[lowercase context](text-lowercase-context.json) and
+[capitalization](text-capitalization.json) qualify original addressing, expansion,
+word continuity and transformed font discovery. Other language tailoring remains open.
 ny1 now reaches the invalid CSS name `stroke-fill`; the complete original remains
 unsupported and needs a shared invalid-versus-unimplemented declaration review.
 
@@ -56,8 +56,8 @@ comparison when eliding a default interval, retaining uniform child anchors. The
 [case-expansion model review](text-casing-model.json) retains independent literal
 controls: observed browser transformation alone does not establish original SVG
 character indexing. The [case projection bank](../text-case-mapping/README.md)
-qualifies default upper/lowercase independently; capitalization and other language
-tailoring remain open.
+qualifies default upper/lowercase and capitalization independently; other language
+tailoring remains open.
 
 The [supplied-program inventory](supplied-original-contexts.json) pins all 19 font
 contexts and three stable healthy captures per host. The [current raster-strike correction](windows-small-strikes.json)

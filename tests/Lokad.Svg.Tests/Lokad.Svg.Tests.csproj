@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/text-case-mapping/unicode-capitalization.csv" Link="TestData/unicode-capitalization.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/text-case-mapping/unicode-casing-words.csv" Link="TestData/unicode-casing-words.csv" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/filter-color-program-coverage/coloured-srgb.svg" Link="TestData/filter-color-program-coverage/coloured-srgb.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-color-program-coverage/ownership.json" Link="TestData/filter-color-program-coverage/ownership.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

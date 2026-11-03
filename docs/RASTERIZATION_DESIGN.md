@@ -124,6 +124,10 @@ Projection can inspect following source characters; streaming font discovery kee
 one pending sigma and its font until the next non-ignorable scalar or text end.
 Retained-instance discovery uses the same text lifecycle. Unicode cased/ignorable
 properties share a pinned lookup, including their overlap and possessive matching.
+Capitalization tracks the last two significant word classes in that same context.
+Pinned titlecase mappings affect only lowercase word initials; source positions
+and unchanged-text borrowing use the existing projection. Word classes require
+no pending text, new owner or general segmentation framework.
 The admitted resource dependency graph and paint selection remain owned by that
 preparation through acquisition, then serve lowering without a second collection.
 The [HTTP resolver](HTTP_FONTS.md) owns shared downloads/cache under a longer-lived

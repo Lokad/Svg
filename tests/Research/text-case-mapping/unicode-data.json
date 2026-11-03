@@ -12,6 +12,10 @@
     "DerivedCoreProperties.txt": {
       "url": "https://www.unicode.org/Public/17.0.0/ucd/DerivedCoreProperties.txt",
       "sha256": "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08"
+    },
+    "auxiliary/WordBreakProperty.txt": {
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/auxiliary/WordBreakProperty.txt",
+      "sha256": "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852"
     }
   },
   "changedScalars": 1580,
@@ -24,6 +28,25 @@
     "expansions": 1,
     "maximumEmittedUtf16UnitsPerScalar": 2
   },
+  "capitalization": {
+    "changedScalars": 1503,
+    "simpleMappings": 1455,
+    "expansions": 48,
+    "maximumEmittedUtf16UnitsPerScalar": 3
+  },
   "casingPropertyRanges": 628,
-  "language": "Default Unicode upper/lower mappings with Final_Sigma; capitalization and other language tailoring remain unfinished."
+  "casingWordRanges": 1051,
+  "wordClasses": {
+    "ALetter": 1,
+    "Hebrew_Letter": 1,
+    "Numeric": 2,
+    "ExtendNumLet": 3,
+    "MidLetter": 4,
+    "MidNumLet": 4,
+    "Single_Quote": 4,
+    "Extend": 5,
+    "Format": 5,
+    "ZWJ": 5
+  },
+  "language": "Default Unicode upper/lower mappings with Final_Sigma; capitalization uses titlecase only for lowercase first letter units. Language tailoring remains unfinished."
 }

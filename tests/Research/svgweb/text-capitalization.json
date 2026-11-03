@@ -1,0 +1,606 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "a4296043ddbcd23d521a2f206271174c9893e741",
+  "status": "CLOSED: default-language capitalization, full titlecase expansions and original word context across reader/style/font/path boundaries. Other content-language tailoring, deleted intervals/position transfer, retained lowercase CSS path observations, ny1 and broader all-original scope remain open.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgTextCasing.cs": "25cc20b77c78ad816832ee14cb982a91d3bed1bb562aaac1e7e0fdee2d60b921",
+    "src/Lokad.Svg/Parsing/SvgTextCasing.Data.cs": "5180eaf8cc56be08a364c8fb7819f201e6ced4ac8edd4a8d24ff7ef96ba8334f",
+    "src/Lokad.Svg/Parsing/SvgTextProjection.cs": "e343aab2cd524b80e57a5d81d9b8a10b24ff866c9c8c91438988be0b41b4104c",
+    "src/Lokad.Svg/Fonts/SvgFontCoverageDiscovery.cs": "0f8df31f292a2123d9e9c1763cd633e53cfcc6f1dbba1a4163e371b26eaa018b",
+    "tests/Lokad.Svg.Tests/SvgCapitalizationContextTests.cs": "77cbdaa7a6aac1d4f0404061158817a0cf602563133715fbe0306aa349988b5a",
+    "tests/Lokad.Svg.Tests/SvgTextProjectionTests.cs": "95a274838968c4433f116ba19132a1b7d74ff53cf09c3bc5cce8e48c6909bc29",
+    "tests/Lokad.Svg.Tests/SvgLowercaseContextTests.cs": "b079003403f1ea8a804082406025e357ad9385877d5bbb8255535a826df23070",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.Casing.cs": "37d8b25980ae7d9682d73acda0296bb00f0d352277027ae3e3b3c628cbeae171",
+    "tests/Lokad.Svg.VisualTests/SvgTextCaseReferenceTests.cs": "4f471fb1fbe18ea7fac56288dc0f10faed495cc2cdbe6bc86fcc66fb2ae80ef2",
+    "tools/generate-unicode-case-data.py": "577f6045d86b5cfa1d1df70ff02c0da82389bc71017486dd1e4a867b2311a39e",
+    "THIRD_PARTY_NOTICES.txt": "7c457c14cc34f0d5f08db7b7059e55b9506a4223ce02b10c096f238d9ee7dc82"
+  },
+  "scope": {
+    "newMechanismCases": 4714,
+    "newPreparedContracts": 1,
+    "newCanonicalRenderingCases": 4,
+    "literalNativeCaptures": 24,
+    "nativeCssObservationCaptures": 24,
+    "publicTypeChanges": 0,
+    "newRuntimeDependencies": 0,
+    "newFontBytes": 0,
+    "newResourceOwners": 0,
+    "changedExistingReferenceBytes": 0,
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0
+  },
+  "normativeSources": [
+    {
+      "url": "https://www.w3.org/TR/2026/CRD-css-text-3-20260814/#text-transform-property",
+      "interpretation": "Titlecase a lowercase first typographic letter unit; preserve other characters. Word definitions can vary between implementations. Inline boundaries do not create word boundaries."
+    },
+    {
+      "url": "https://www.unicode.org/reports/tr29/tr29-47.html#Word_Boundaries",
+      "interpretation": "Use Unicode 17 letter-word starts. WB4 ignores combining/format characters; WB5/7/10/13b determine the starts of every cased mapping using two preceding significant classes."
+    },
+    {
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/SpecialCasing.txt",
+      "interpretation": "Use full titlecase mappings, with context from original text. Four uppercase digraph mappings are excluded because CSS leaves an already-uppercase unit unchanged."
+    }
+  ],
+  "unicode": {
+    "unicodeVersion": "17.0.0",
+    "sources": {
+      "UnicodeData.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt",
+        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
+      },
+      "SpecialCasing.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/SpecialCasing.txt",
+        "sha256": "efc25faf19de21b92c1194c111c932e03d2a5eaf18194e33f1156e96de4c9588"
+      },
+      "DerivedCoreProperties.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/DerivedCoreProperties.txt",
+        "sha256": "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08"
+      },
+      "auxiliary/WordBreakProperty.txt": {
+        "url": "https://www.unicode.org/Public/17.0.0/ucd/auxiliary/WordBreakProperty.txt",
+        "sha256": "72274cac1e6b919507db35655c3e175aa27274668a1ece95c28d2069f2ad9852"
+      }
+    },
+    "changedScalars": 1580,
+    "simpleMappings": 1478,
+    "expansions": 102,
+    "maximumEmittedUtf16UnitsPerScalar": 3,
+    "lowercase": {
+      "changedScalars": 1488,
+      "simpleMappings": 1487,
+      "expansions": 1,
+      "maximumEmittedUtf16UnitsPerScalar": 2
+    },
+    "capitalization": {
+      "changedScalars": 1503,
+      "simpleMappings": 1455,
+      "expansions": 48,
+      "maximumEmittedUtf16UnitsPerScalar": 3
+    },
+    "casingPropertyRanges": 628,
+    "casingWordRanges": 1051,
+    "wordClasses": {
+      "ALetter": 1,
+      "Hebrew_Letter": 1,
+      "Numeric": 2,
+      "ExtendNumLet": 3,
+      "MidLetter": 4,
+      "MidNumLet": 4,
+      "Single_Quote": 4,
+      "Extend": 5,
+      "Format": 5,
+      "ZWJ": 5
+    },
+    "language": "Default Unicode upper/lower mappings with Final_Sigma; capitalization uses titlecase only for lowercase first letter units. Language tailoring remains unfinished."
+  },
+  "verificationCorporaSha256": {
+    "unicode-capitalization.csv": "94e03e834440c9b53471526a91191ac62aa9131d3a30223362bfa567b5b6b1de",
+    "unicode-casing-words.csv": "f117cff696afd022605e1778b8678cb45df7e86d8af5c192abe96e3491c4325b",
+    "unicode-uppercase.csv": "a8f9efec4e9cbf5de397506340b79340175d5d345d88f8278482e5346287fd84",
+    "unicode-lowercase.csv": "da264ec4c9b90a7d2e9ec180e394a13e57e98f88b299feda2147951e4e0adeae",
+    "unicode-casing-properties.csv": "3cb7cc514f4aa4166adad1bc4878c1956a382f6de15581c46bfd0d0d208ff90a"
+  },
+  "implementation": {
+    "change": "Extend the existing scalar mapper and original-text context with pinned capitalization mappings and two significant word classes. Projection and streaming coverage use the same scalar/context rules. Logical text end resets context; direct/path whitespace restarts do not. No text collector or general segmentation framework.",
+    "boundaries": "The generator verifies that every nonidentity mapping has ALetter word class except ignorable U+0345. All mapping/property inputs are hash-pinned Unicode 17. Existing upper/lower/property corpora remain byte-identical; independent regeneration reproduces every table and metadata byte.",
+    "preserved": "Original SVG addressing precedes expansion; existing interval lifting, shaping, GSUB, fitting and retained ownership remain intact. Unchanged noninitial text can borrow its source under a zero-byte host allowance. Other languages still reject before invariant conversion, including noninitial capitalization positions."
+  },
+  "responsibilities": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgCapitalizationContextTests.cs",
+    "mechanismCounts": {
+      "Word_classes_keep_pinned_unicode_boundaries": 3173,
+      "First_lowercase_units_use_pinned_full_titlecase": 1503,
+      "Expansion_lifts_original_positions_and_keeps_noninitial_style_boundaries": 1,
+      "Projection_uses_original_word_context_and_preserves_other_characters": 11,
+      "Reader_chunks_preserve_supplementary_scalars_and_word_context": 9,
+      "Coverage_keeps_original_context_across_literal_styles_and_font_changes": 8,
+      "Unqualified_language_tailoring_is_explicit_at_every_word_position": 2,
+      "Path_whitespace_restarts_preserve_original_word_context": 4,
+      "Literal_prefix_context_can_keep_the_borrowed_identity_without_allocation": 1,
+      "Logical_text_end_resets_word_context": 1
+    },
+    "coverage": "../../Lokad.Svg.Tests/SvgFontCoverageDiscoveryTests.cs",
+    "prepared": "../../Lokad.Svg.Tests/OpenTypeFontTests.Casing.cs",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgTextCaseReferenceTests.cs",
+    "consolidation": "Three separately named direct/instance prepared contracts share one ordinary setup/assertion helper. Existing upper/lower input/control bytes and provider/source acquisition assertions remain unchanged. One new prepared path protects emitted-only capitalization discovery; no fixture/API matrix.",
+    "preservedPreparedInputHashes": {
+      "lowercase": {
+        "inputSha256": "893824fdb411eaee9dcd7454a87171e0cab7c7aac7b2a44f7b79e2cc0840faf2",
+        "controlSha256": "fbcd84019f0cb419892421fe68dee28984eb61af90d68ac686b5669baae4b669"
+      },
+      "uppercase": {
+        "inputSha256": "a148c15d33d19ca71d80a03848e445baad1e7093db67df567b46a08e9e05028f",
+        "controlSha256": "0e74284d896a160390a4e357d808bb2d6e934721a8a5395085674e7728b9888a"
+      }
+    },
+    "selection": "Direct mappings and numerical/property boundaries stay exhaustive in mechanisms. Four independently authored canonical controls cover expansion/fitting/inheritance, mixed direct/path context, original indices and punctuation/word-policy interactions."
+  },
+  "rendering": [
+    {
+      "identity": "capitalize",
+      "referenceRecipe": "../text-case-mapping/capitalize/capture.json",
+      "nativeCssObservations": "../text-case-mapping/capitalize/capture-css.json",
+      "inputSha256": "a28c96c1d6189bc10016b724b0b5be46e80f2f7e969c15adaf8ca33a4715b6fc",
+      "literalSha256": "52fe80ba6ec3b89aaddeab291b4998dc9296e606f1a17d5bc0dfef20cbf5d033",
+      "before": {
+        "windows": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        },
+        "linux": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        }
+      },
+      "after": {
+        "windows": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "linux": {
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      },
+      "nativeCssVersusLiteral": {
+        "windows": {
+          "changedPixels": 2014,
+          "maximumError": 255
+        },
+        "linux": {
+          "changedPixels": 1869,
+          "maximumError": 255
+        }
+      }
+    },
+    {
+      "identity": "capitalize-path",
+      "referenceRecipe": "../text-case-mapping/capitalize-path/capture.json",
+      "nativeCssObservations": "../text-case-mapping/capitalize-path/capture-css.json",
+      "inputSha256": "b7b6c39293c6f6a835090eba30f44c1914af19743cf4063a251ff438e74f6844",
+      "literalSha256": "d15027490713f0d06d0911636a831e124f4af8bd6fd2b6c166c79f70587abb94",
+      "before": {
+        "windows": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        },
+        "linux": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        }
+      },
+      "after": {
+        "windows": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "linux": {
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      },
+      "nativeCssVersusLiteral": {
+        "windows": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "linux": {
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      }
+    },
+    {
+      "identity": "capitalize-indexed",
+      "referenceRecipe": "../text-case-mapping/capitalize-indexed/capture.json",
+      "nativeCssObservations": "../text-case-mapping/capitalize-indexed/capture-css.json",
+      "inputSha256": "17fa5881be3c52fab730ed0bb34628a704b45396eae7327fbcbe879c38584010",
+      "literalSha256": "9821e4df5bb5fd8cd02cbf874bab343c33bed912f8e924c9b603f6e0afaf4617",
+      "before": {
+        "windows": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        },
+        "linux": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        }
+      },
+      "after": {
+        "windows": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "linux": {
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      },
+      "nativeCssVersusLiteral": {
+        "windows": {
+          "changedPixels": 277,
+          "maximumError": 255
+        },
+        "linux": {
+          "changedPixels": 254,
+          "maximumError": 255
+        }
+      }
+    },
+    {
+      "identity": "capitalize-words",
+      "referenceRecipe": "../text-case-mapping/capitalize-words/capture.json",
+      "nativeCssObservations": "../text-case-mapping/capitalize-words/capture-css.json",
+      "inputSha256": "70de369d01a80ed73767a4ec8b36a973d92d968d2ae954579f8f4ae2ab38cd63",
+      "literalSha256": "0e37493c42da22cc60312f66e6708ba5c5f208bb8ea123cba65da64c43eb95b6",
+      "before": {
+        "windows": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        },
+        "linux": {
+          "exitCode": 1,
+          "unsupportedFeature": true
+        }
+      },
+      "after": {
+        "windows": {
+          "changedPixels": 0,
+          "maximumError": 0
+        },
+        "linux": {
+          "changedPixels": 0,
+          "maximumError": 0
+        }
+      },
+      "nativeCssVersusLiteral": {
+        "windows": {
+          "changedPixels": 2046,
+          "maximumError": 255
+        },
+        "linux": {
+          "changedPixels": 1857,
+          "maximumError": 255
+        }
+      }
+    }
+  ],
+  "qualifiedLibrarySha256": {
+    "net11.0": "8923e036407be92efb6b64abc33e25d0812ed8e3157ac8855e83c8b3653087d9",
+    "net10.0": "57b2a94b49f69d1abaac7d79ee34be306d3973d8f91b3093dd8db5692b8fd756"
+  },
+  "qualifiedTestAssemblySha256": {
+    "net11.0": {
+      "core": "08ce9bb3304f65270b9a589ea53007edd90b84d867edd41482bdb6aa0f769980",
+      "visual": "93915a1caa73e78dda29a564621667a72c7627333128be3e4b3d7eb63cae075f",
+      "font-host": "46800e556d0019790827e320bae5b9111b923588948e8bc9edc32e13f2deb8b1"
+    },
+    "net10.0": {
+      "core": "193404ed360df2c87884496917f91b2b902b0abc3c682df4c09d2bb9cbe8e640",
+      "visual": "03a09243920347b7bae0f40b7b9bf16b07c89b2dc881f3032adc0e013fe95c5e",
+      "font-host": "c8cc95db2c7b916c45f1f610389a1d8bb3a4f04794c3ce708639081d90dbf939"
+    }
+  },
+  "beforeLibrarySha256": "1352822e05a1c8a373fa108e40a85f5188238c98778f5c2b20ade24793cec07f",
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 0,
+        "failed": 4,
+        "seconds": 9.581
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 0,
+        "failed": 4,
+        "seconds": 11.839
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 4713,
+        "failed": 0,
+        "seconds": 10.945
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 4,
+        "failed": 0,
+        "seconds": 10.167
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 4713,
+        "failed": 0,
+        "seconds": 10.376
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 4,
+        "failed": 0,
+        "seconds": 8.491
+      }
+    ],
+    "affected": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 23388,
+        "failed": 0,
+        "seconds": 46.073
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 777,
+        "failed": 0,
+        "seconds": 20.073
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 23388,
+        "failed": 0,
+        "seconds": 35.425
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 777,
+        "failed": 0,
+        "seconds": 21.14
+      }
+    ],
+    "milestone": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 46715,
+        "failed": 0,
+        "seconds": 77.376
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46639,
+        "failed": 1,
+        "seconds": 244.468
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 2.558
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 23062,
+        "failed": 0,
+        "seconds": 46.778
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 15,
+        "failed": 0,
+        "seconds": 11.009
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.604
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 46715,
+        "failed": 0,
+        "seconds": 51.263
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46640,
+        "failed": 0,
+        "seconds": 176.638
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.165
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 23062,
+        "failed": 0,
+        "seconds": 31.53
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 15,
+        "failed": 0,
+        "seconds": 8.902
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 3.738
+      }
+    ],
+    "knownFailure": {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "visual",
+      "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "messageSha256": "15ab4032010f62b1c91ce4eddb7057b87e861968fc2aeac665899cd7357e5ee0"
+    },
+    "method": "The same compiled four rendering tests reject before through the public conversion path and pass now against unchanged independently captured literal references. New scalar/mechanism tests target the new internal signature and are not claimed as binary-compatible before tests. Timings include startup/discovery and concurrent work; no speedup claim."
+  },
+  "nativeInterpretation": "The library follows the stated full-mapping/source-context policy. Three healthy captures per kind/case/host retain both literal controls and original CSS observations. Pinned CSS images differ on expansions, uppercase digraphs and punctuation; the path control agrees. These are explicit browser observations, never references rewritten to match implementation.",
+  "originalReplay": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 83.38820779998787,
+    "librarySha256": "8923e036407be92efb6b64abc33e25d0812ed8e3157ac8855e83c8b3653087d9",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "suppliedContexts": {
+    "librarySha256": "8923e036407be92efb6b64abc33e25d0812ed8e3157ac8855e83c8b3653087d9",
+    "files": 19,
+    "seconds": 16.159088800195605,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0,
+    "exactPerHost": 19
+  },
+  "staticContextReplay": {
+    "staticInputSha256": "45937fbfb9ec0482e89745dcbb40693384e6269354563706ee04162cb57ca90e",
+    "nativeInputSha256": "d5f4563e03ed5f6742ceb8f40580de0fddf5f3d3e890c6ddd2b23909b80405be",
+    "librarySha256": "8923e036407be92efb6b64abc33e25d0812ed8e3157ac8855e83c8b3653087d9",
+    "results": [
+      {
+        "host": "windows",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "libraryPngSha256": "bd4645f8ce20e26629b7b0e6f3d169a3f94a92ab9d984a08dbbc6f2ab0cb310b",
+        "nativePngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d"
+      },
+      {
+        "host": "linux",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "libraryPngSha256": "967e6661a96150e88f14da5647c4de2d596bb1d7d5dff9be75b6957ea94aa828",
+        "nativePngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d"
+      }
+    ],
+    "recipe": "filter-destination-composition.json",
+    "wholeOriginalAcceptance": false,
+    "originalFontQualification": false
+  },
+  "packages": {
+    "version": "0.4.0-dev.1",
+    "archives": [
+      {
+        "kind": "nupkg",
+        "sha256": "88614f5e9db637c8849aced68130a6f8b4d8141805311c521b830c415bd2a318",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true,
+        "assets": {
+          "net11.0": "8923e036407be92efb6b64abc33e25d0812ed8e3157ac8855e83c8b3653087d9",
+          "net10.0": "57b2a94b49f69d1abaac7d79ee34be306d3973d8f91b3093dd8db5692b8fd756"
+        },
+        "noRuntimeDependencies": true
+      },
+      {
+        "kind": "snupkg",
+        "sha256": "4b6c737450084972a3af7d38f9314f473b9c8c53ae16a15797a6408e98bbc68e",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 8.2683909998741
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 53.03273560013622
+      }
+    ],
+    "published": false
+  },
+  "next": "Continue language tailoring only after empty interval, recording-scope and position-transfer semantics are qualified on original source addresses. Preserve existing text layout and references, explicit source-context/browser distinctions, pending DejaVu authority and terminal CI state. No exact-head green or whole-original acceptance claim."
+}

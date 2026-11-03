@@ -14,7 +14,7 @@ public sealed class SvgTextProjectionTests
     public void Pinned_full_uppercase_maps_the_unicode_scalar(int source, string expected)
     {
         Span<char> output = stackalloc char[3];
-        int length = SvgTextCasing.Write(new Rune(source), SvgTextTransform.Uppercase, string.Empty, false, output);
+        int length = SvgTextCasing.Write(new Rune(source), SvgTextTransform.Uppercase, string.Empty, false, false, output);
         Assert.Equal(expected, output[..length].ToString());
     }
 
@@ -35,6 +35,7 @@ public sealed class SvgTextProjectionTests
     [InlineData("text-transform:initial", "", (int)SvgTextTransform.None)]
     [InlineData("text-transform:inherit", "", (int)SvgTextTransform.Uppercase)]
     [InlineData("text-transform:unset", "", (int)SvgTextTransform.Uppercase)]
+    [InlineData("text-transform:capitalize", "", (int)SvgTextTransform.Capitalize)]
     [InlineData("text-transform:none", "text-transform:uppercase!important", (int)SvgTextTransform.Uppercase)]
     [InlineData("text-transform:none!important", "text-transform:uppercase!important", (int)SvgTextTransform.None)]
     public void Case_selection_keeps_cascade_and_global_keyword_semantics(string inline, string sheet, int expected)
@@ -167,13 +168,13 @@ public sealed class SvgTextProjectionTests
     {
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => Convert(language)).ErrorCode);
         Span<char> literal = stackalloc char[3];
-        int length = SvgTextCasing.Write(new Rune('i'), SvgTextTransform.None, language, false, literal);
+        int length = SvgTextCasing.Write(new Rune('i'), SvgTextTransform.None, language, false, false, literal);
         Assert.Equal("i", literal[..length].ToString());
 
         static void Convert(string language)
         {
             Span<char> output = stackalloc char[3];
-            _ = SvgTextCasing.Write(new Rune('i'), SvgTextTransform.Uppercase, language, false, output);
+            _ = SvgTextCasing.Write(new Rune('i'), SvgTextTransform.Uppercase, language, false, false, output);
         }
     }
 }

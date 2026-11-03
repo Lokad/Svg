@@ -14,7 +14,7 @@ public sealed class SvgLowercaseContextTests
     public void Default_lowercase_uses_the_pinned_full_unicode_mapping(int scalar, string expected)
     {
         Span<char> output = stackalloc char[3];
-        int length = SvgTextCasing.Write(new Rune(scalar), SvgTextTransform.Lowercase, string.Empty, false, output);
+        int length = SvgTextCasing.Write(new Rune(scalar), SvgTextTransform.Lowercase, string.Empty, false, false, output);
         Assert.Equal(expected, output[..length].ToString());
     }
 

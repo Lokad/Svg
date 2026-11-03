@@ -163,8 +163,8 @@ internal ref struct SvgTextProjection
                     break;
                 }
             }
-            context.Observe(SvgTextCasing.GetProperties(scalar));
-            return SvgTextCasing.Write(scalar, transform, language, final, output);
+            bool wordStart = context.Observe(scalar, SvgTextCasing.GetProperties(scalar));
+            return SvgTextCasing.Write(scalar, transform, language, final, wordStart, output);
         }
 
         static int Map(ReadOnlySpan<int> map, int offset)

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Support default-language capitalization with full Unicode titlecase mappings,
+  original word context and source-indexed SVG positions.
 - Retain terminal colour programs through offset sampling and destination coverage,
   preserving low-alpha rounding through integer, fractional and zero offsets.
 - Use the shared per-bitmap filter path for fractional offsets, preserving final

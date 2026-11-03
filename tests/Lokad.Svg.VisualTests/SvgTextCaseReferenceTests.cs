@@ -15,4 +15,12 @@ public sealed class SvgTextCaseReferenceTests
     [InlineData("lowercase-path")]
     public Task Lowercase_keeps_original_context_across_spans_paths_and_text_boundaries(string identity)
         => NativeFontFixture.AssertMatches("text-case-mapping/" + identity, "text-case-" + identity, "Example");
+
+    [Theory]
+    [InlineData("capitalize")]
+    [InlineData("capitalize-path")]
+    [InlineData("capitalize-indexed")]
+    [InlineData("capitalize-words")]
+    public Task Capitalization_uses_full_titlecase_and_original_word_context(string identity)
+        => NativeFontFixture.AssertMatches("text-case-mapping/" + identity, "text-case-" + identity, "Example");
 }

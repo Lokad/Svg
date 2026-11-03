@@ -168,23 +168,24 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
         SvgTextCasingProperties properties = SvgTextCasing.GetProperties(scalar);
         if ((properties & SvgTextCasingProperties.Ignorable) == 0)
             ResolvePendingSigma((properties & SvgTextCasingProperties.Cased) != 0);
+        bool pendingSigma = transform == SvgTextTransform.Lowercase && scalar.Value == 0x3A3 && _context.PrecedingCased;
+        bool wordStart = _context.Observe(scalar, properties);
         if (transform == SvgTextTransform.None) AddScalar(font, (uint)scalar.Value);
         else
         {
             Span<char> mapped = stackalloc char[3];
-            int length = SvgTextCasing.Write(scalar, transform, language, false, mapped);
-            if (transform == SvgTextTransform.Lowercase && scalar.Value == 0x3A3 && _context.PrecedingCased)
+            int length = SvgTextCasing.Write(scalar, transform, language, false, wordStart, mapped);
+            if (pendingSigma)
                 _pendingSigma = new(font, language);
             else foreach (Rune emitted in mapped[..length].EnumerateRunes()) AddScalar(font, (uint)emitted.Value);
         }
-        _context.Observe(properties);
     }
 
     private void ResolvePendingSigma(bool followedByCased)
     {
         if (_pendingSigma is not {} pending) return;
         Span<char> mapped = stackalloc char[3];
-        int length = SvgTextCasing.Write(new Rune(0x3A3), SvgTextTransform.Lowercase, pending.Language, !followedByCased, mapped);
+        int length = SvgTextCasing.Write(new Rune(0x3A3), SvgTextTransform.Lowercase, pending.Language, !followedByCased, false, mapped);
         foreach (Rune emitted in mapped[..length].EnumerateRunes()) AddScalar(pending.Font, (uint)emitted.Value);
         _pendingSigma = null;
     }

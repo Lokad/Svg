@@ -431,7 +431,7 @@ CSS precedence, inherited anchors, nested spans and mixed direct/path text.
 The [shared-range control](../tests/Research/text-shared-anchor/README.md) retains
 uniform child anchors when direct text and path text are joined.
 
-CSS `text-transform` admits `uppercase`, `lowercase`, `none`, `inherit`, `initial`
+CSS `text-transform` admits `uppercase`, `lowercase`, `capitalize`, `none`, `inherit`, `initial`
 and `unset` through root, group, text and span inheritance/cascade. Conversion uses
 pinned Unicode 17 full default mappings, including expansions and contextual final
 sigma, with unspecified or English content language. Original SVG scalar positions
@@ -439,8 +439,10 @@ precede conversion; shaping, fitting and font coverage use emitted text. Context
 continues across source chunks, styles and path boundaries within one text element;
 the [case controls](../tests/Research/text-case-mapping/README.md) retain independent
 literal evidence where pinned browser CSS processing differs. Existing character/
-glyph bounds and font-shaping limitations still apply. Capitalization and other
-language tailoring remain unsupported.
+glyph bounds and font-shaping limitations still apply. Capitalization titlecases
+the lowercase first letter unit and preserves other characters. Cased word starts
+follow Unicode 17 UAX29 rules, including medial punctuation, numeric prefixes and
+connectors. Other content-language tailoring remains unsupported.
 
 `SvgFontFaceRequest.FromCss` preserves family order, quoting, escapes and named/
 generic identity. `SvgFontSelectionPolicy` supplies host generic mappings and

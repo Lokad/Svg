@@ -10,6 +10,10 @@ under its [OFL](../supplied-font-labels/fonts/OFL.txt):
 | [indexed](indexed/control.svg) | Original SVG x-list addresses after expansion; compare the independently authored [literal counterpart](indexed/reference.svg). |
 | [lowercase](lowercase/control.svg) | Original-case context across spans and literal overrides, with a separate logical text end. |
 | [lowercase-path](lowercase-path/control.svg) | Context across path boundaries and continuation whitespace, using an independent [literal counterpart](lowercase-path/reference.svg). |
+| [capitalize](capitalize/control.svg) | Full titlecase expansions, fitting, inherited selection and a literal override. |
+| [capitalize-path](capitalize-path/control.svg) | Word continuity across spans and a path, with independent whitespace lifetimes. |
+| [capitalize-indexed](capitalize-indexed/control.svg) | Original SVG positions and lowercase continuation after a titlecase expansion. |
+| [capitalize-words](capitalize-words/control.svg) | Numeric/connector prefixes, medial punctuation across spans and unchanged uppercase digraphs. |
 
 Each capture recipe binds its source, font and native control hashes, with three
 healthy profile-cleaned browser captures per platform. Basic/path capture their
@@ -28,6 +32,16 @@ The literal counterpart has three healthy captures per host; the original CSS
 observations remain distinct from that reference. [Context evidence](../svgweb/text-lowercase-context.json)
 records both outcomes and the interpretation.
 
+Capitalization uses full Unicode titlecase mappings for lowercase word initials,
+with UAX29 cased-word starts. Inline boundaries preserve the original word context;
+digits and connectors can prevent a following letter from being word-initial.
+Each capitalization case has an independently authored literal counterpart. Its
+native CSS observations remain separate: pinned Chrome omits some expansions,
+changes uppercase digraphs and uses different punctuation boundaries. Those images
+and the literal controls remain unchanged in their `capture-css.json`/`capture.json`
+recipes. [Capitalization evidence](../svgweb/text-capitalization.json) records the
+normative rules, exact scope and observed differences.
+
 [Direct mechanisms](../../Lokad.Svg.Tests/SvgTextProjectionTests.cs) exercise the
 [pinned Unicode mappings](unicode-data.json), inherited selection, original lists,
 interval lifting, rotation, identity, boundaries and expansion storage. A temporary
@@ -42,8 +56,8 @@ text endings from whitespace restarts, preserve the deferred character's font,
 and use original characters when styles change. Deferred materialization refusal/
 cancellation/retry remains representative ownership coverage.
 
-The shared projection admits default Unicode uppercase/lowercase with unspecified/
-English content language. Capitalization and other language tailoring remain open.
+The shared projection admits default Unicode uppercase/lowercase/capitalization
+with unspecified/English content language. Other language tailoring remains open.
 Existing font/shaping and character/glyph
 bounds remain independent. [Qualification](../svgweb/text-lowercase-context.json)
 records the exact scope and remaining original-source gates.

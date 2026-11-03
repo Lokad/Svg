@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "fab220cf62a14fa6e0f29caebdb81fff9b405a14",
-  "status": "Original uppercase/projection qualification retained at qualifiedCommit. Current default upper/lowercase context and remaining scope are recorded in text-lowercase-context.json.",
+  "status": "Historical qualification: Original uppercase/projection qualification retained at qualifiedCommit. Current default upper/lowercase context and remaining scope are recorded in text-lowercase-context.json. Current update: default-language capitalization is now closed by text-capitalization.json; other language tailoring and the previously retained browser observations remain explicit.",
   "sourceLfSha256": {
     "src/Lokad.Svg/Fonts/SvgFontCoverageDiscovery.cs": "ad8478e12344be94d8ae29a5996acd8f5a88111ed850f1e4833a3c229c67f617",
     "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "e29a7829046782507e7b41d8d370843fd497346f364aa76f5cf85348e122eaea",
@@ -462,5 +462,6 @@
   },
   "next": "Complete context-sensitive case operations/languages on the shared model, and review ny1 stroke-fill as invalid CSS separately from valid unsupported properties. Keep svg2009 line-height/clip-child/path-style and the full PLAN scope active.",
   "qualifiedCommit": "a8f8db91dba75003171f69a9e38265ce94e1e498",
-  "currentContextEvidence": "text-lowercase-context.json"
+  "currentContextEvidence": "text-lowercase-context.json",
+  "currentCapitalizationClosure": "text-capitalization.json"
 }
