@@ -6,9 +6,10 @@ using System.Runtime.InteropServices;
 namespace Lokad.Svg.Rendering;
 
 /// <summary>Dispatches retained centerlines to native thin-stroke curve and line coverage.</summary>
-/// <remarks>Allocates no storage and borrows immutable commands, the caller's surface and optional
+/// <remarks>Borrows immutable commands, the caller's surface and optional
 /// canvas-sized RGBA clip tape or analytic rectangle. The caller supplies the active grid and raster scope;
-/// each bound bitmap constructs curves in local coordinates
+/// each bound bitmap constructs curves in local coordinates. Cullable dash sources own private
+/// budgeted command arrays through traversal, releasing them on success, refusal or cancellation;
 /// and paints only its owned interior. The caller keeps the clip tape alive throughout replay;
 /// pixel visits include its rounded clip-alpha product. Bounds, context visits, commands, closure
 /// lookahead and coverage consume cancellable work. Wider strokes keep their outline route.
@@ -19,9 +20,9 @@ internal static class SvgHairlineStroke
     internal static bool TryRasterize(SvgAuthoredPath path, SvgDrawingMap drawingMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
         SvgRasterClipMask viewportMask, bool binaryViewport, Span<byte> destination, int width, int height,
-        SvgCpuRasterGrid grid, SvgCpuRasterScope scope, CancellationToken cancellationToken)
+        SvgCpuRasterGrid grid, SvgCpuRasterScope scope, RenderBudget budget, CancellationToken cancellationToken)
         => TryRasterizeCore(path, drawingMap, color, constantPaint, Span<SvgShaderSampler>.Empty,
-            clip, antialiasing, viewportMask, binaryViewport, destination, width, height, grid, scope, cancellationToken);
+            clip, antialiasing, viewportMask, binaryViewport, destination, width, height, grid, scope, budget, cancellationToken);
 
     /// <summary>Replays the same native hairline geometry with a borrowed per-pixel shader material.</summary>
     /// <remarks>Sampler/ramp/texture ownership remains with the caller. Eligible replay updates the
@@ -30,14 +31,14 @@ internal static class SvgHairlineStroke
     internal static bool TryRasterize(SvgAuthoredPath path, SvgDrawingMap drawingMap, ref SvgShaderSampler shader,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
         SvgRasterClipMask viewportMask, bool binaryViewport, Span<byte> destination, int width, int height,
-        SvgCpuRasterGrid grid, SvgCpuRasterScope scope, CancellationToken cancellationToken)
+        SvgCpuRasterGrid grid, SvgCpuRasterScope scope, RenderBudget budget, CancellationToken cancellationToken)
         => TryRasterizeCore(path, drawingMap, default, null, MemoryMarshal.CreateSpan(ref shader, 1),
-            clip, antialiasing, viewportMask, binaryViewport, destination, width, height, grid, scope, cancellationToken);
+            clip, antialiasing, viewportMask, binaryViewport, destination, width, height, grid, scope, budget, cancellationToken);
 
     private static bool TryRasterizeCore(SvgAuthoredPath path, SvgDrawingMap drawingMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
         Span<SvgShaderSampler> shaders, (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
         SvgRasterClipMask viewportMask, bool binaryViewport, Span<byte> destination, int width, int height,
-        SvgCpuRasterGrid grid, SvgCpuRasterScope scope, CancellationToken cancellationToken)
+        SvgCpuRasterGrid grid, SvgCpuRasterScope scope, RenderBudget budget, CancellationToken cancellationToken)
     {
         if (path.StrokeStyle is not SvgAuthoredStrokeStyle style) return false;
         cancellationToken.ThrowIfCancellationRequested();
@@ -49,19 +50,19 @@ internal static class SvgHairlineStroke
         if (!(lengthX <= 1 && lengthY <= 1)) return false;
         if (!viewportMask.Pixels.IsEmpty && viewportMask.Pixels.Length != checked(width * height * 4))
             throw new ArgumentException("Viewport mask must match the destination canvas.", nameof(viewportMask));
-        scoped ReadOnlySpan<SvgAuthoredPathCommand> commands = path.Commands;
+        scoped ReadOnlySpan<SvgAuthoredPathCommand> sourceCommands = path.Commands;
         Span<SvgAuthoredPathCommand> rectangleCommands = stackalloc SvgAuthoredPathCommand[5];
-        if (style.Shape == SvgAuthoredStrokeShape.Rectangle && commands.Length == 5)
+        if (style.Shape == SvgAuthoredStrokeShape.Rectangle && sourceCommands.Length == 5)
         {
             // General-mapped drawRect falls back to a path starting at top-left.
             // The rounded-rectangle source starts at bottom-left. Hairline segment
             // overlap makes that otherwise equivalent contour order observable.
-            rectangleCommands[0] = commands[1] with { Verb = SvgAuthoredPathVerb.Move };
-            rectangleCommands[1] = commands[2];
-            rectangleCommands[2] = commands[3];
-            rectangleCommands[3] = commands[0] with { Verb = SvgAuthoredPathVerb.Line };
-            rectangleCommands[4] = commands[4];
-            commands = rectangleCommands;
+            rectangleCommands[0] = sourceCommands[1] with { Verb = SvgAuthoredPathVerb.Move };
+            rectangleCommands[1] = sourceCommands[2];
+            rectangleCommands[2] = sourceCommands[3];
+            rectangleCommands[3] = sourceCommands[0] with { Verb = SvgAuthoredPathVerb.Line };
+            rectangleCommands[4] = sourceCommands[4];
+            sourceCommands = rectangleCommands;
         }
         float coverage = (lengthX + lengthY) * .5f;
         if (!shaders.IsEmpty) shaders[0].ApplyHairlineCoverage(coverage);
@@ -69,7 +70,7 @@ internal static class SvgHairlineStroke
         SvgAnalyticPaint paint = constantPaint is {} constant
             ? SvgAnalyticPaint.Constant(coverage == 1 ? constant : SvgShaderPaint.ConstantGradient(new SvgGradientStop(0, color) { Alpha = alpha / 255f }, 1))
             : SvgAnalyticPaint.Solid(color with { Alpha = alpha });
-        SvgRectangle sourceBounds = SvgPathBounds.Compute(commands, cancellationToken);
+        SvgRectangle sourceBounds = SvgPathBounds.Compute(sourceCommands, cancellationToken);
         Span<SvgDevicePoint> corners = stackalloc SvgDevicePoint[4];
         corners[0] = new(sourceBounds.X, sourceBounds.Y);
         corners[1] = new(sourceBounds.X + sourceBounds.Width, sourceBounds.Y);
@@ -95,6 +96,11 @@ internal static class SvgHairlineStroke
             cancellationToken.ThrowIfCancellationRequested();
             SvgCpuRasterContext context = scope.Bind(tile);
             if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
+            OwnedParserArray<SvgAuthoredPathCommand> filtered = new([], null);
+            bool refiltered = path.DashSource is {} dash && dash.TryFilter(map, new(context.BitmapClip, context.Origin), budget, cancellationToken, out filtered);
+            using OwnedParserArray<SvgAuthoredPathCommand> filteredOwner = filtered;
+            scoped ReadOnlySpan<SvgAuthoredPathCommand> commands = refiltered ? filtered.Items : sourceCommands;
+            if (commands.IsEmpty) continue;
             SvgCpuBitmapOrigin origin = context.Origin;
             // An opaque bitmap intersection is binary even when the complete
             // path escapes it. Otherwise the AA wrapper's quick containment

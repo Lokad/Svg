@@ -26,6 +26,8 @@ public static partial class SvgConverter
     /// <summary>Owns mapped polygon points with raster bounds, clip and their surface reservation until the rasterizer releases them.</summary>
     private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, int PathStartX, int PathStartY, int PathEndX, int PathEndY, (double Left, double Top, double Right, double Bottom)? Clip, SvgClipAntialiasing ClipAntialiasing, bool ClipContainsPath, SvgDeviceBounds CompleteBounds, SvgQuadSpan[] QuadSpans, SvgCubicSpan[] CubicSpans, RenderBudget.BudgetReservation? Reservation, int[] ContourEnds, int[]? Signs, SvgPreparedPathContours? Authored, SvgAffineTransform AuthoredMap, SvgPolygonMapping Mapping) : IDisposable
     {
+        /// <summary>Borrows the retained dash source and its outline/preparation maps through this paint.</summary>
+        internal SvgDashPolygonSource? Dash { get; init; }
         public void Dispose() { Reservation?.Dispose(); Authored?.Dispose(); }
 
         /// <summary>Gets bordered construction when complete mapped path/control bounds escape this bitmap or the SVG clip.</summary>
@@ -2535,7 +2537,7 @@ public static partial class SvgConverter
                 drawingMap.Compose(sourcePlacement),
                 ref shader, clip is {} bounds ? MapClipBounds(bounds, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
                 clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewport.Mask, activeViewport.IsBinary,
-                destination, outputWidth, outputHeight, rasterGrid, RasterScope(), cancellationToken);
+                destination, outputWidth, outputHeight, rasterGrid, RasterScope(), budget, cancellationToken);
             return painted;
         }
 
@@ -3631,7 +3633,7 @@ public static partial class SvgConverter
                     drawingMap.Compose(sourcePlacement), ResolveSolidColor(stroke.Color), surfaceMode == RasterSurfaceMode.PremultipliedPattern ? PatternSolidPaint(stroke.Color) : null,
                     stroke.Clip is SvgClipBox clip ? MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
                     stroke.Clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewport.Mask, activeViewport.IsBinary,
-                    destination, outputWidth, outputHeight, rasterGrid, RasterScope(), cancellationToken);
+                    destination, outputWidth, outputHeight, rasterGrid, RasterScope(), budget, cancellationToken);
                 if (rendered) return;
             }
             switch (geometry.Kind)
@@ -3985,6 +3987,7 @@ public static partial class SvgConverter
         {
             SvgPreparedPathContours? authored = null;
             SvgAffineTransform authoredMap = SvgAffineTransform.Identity;
+            SvgAffineTransform preparationMap = SvgAffineTransform.Identity;
             SvgAuthoredPath? replay = authoredPath;
             // Wider strokes replay their generated source outline; the original
             // centerline remains separate for hairline coverage and width dispatch.
@@ -4041,7 +4044,7 @@ public static partial class SvgConverter
                         sourceDrawing.Recording, replay.SceneMap, budget, cancellationToken, out SvgShaderMatrix axisDrawing))
                     authoredMap = axisDevice.FromGlobal.ComposeNative(new(axisDrawing.ScaleX, axisDrawing.SkewY, axisDrawing.SkewX,
                         axisDrawing.ScaleY, axisDrawing.TranslateX, axisDrawing.TranslateY));
-                SvgAffineTransform preparationMap = coordinateSpace == PathCoordinateSpace.Device
+                preparationMap = coordinateSpace == PathCoordinateSpace.Device
                     ? SvgAffineTransform.Identity : drawingMap.Parameter.ComposeChecked(sourcePlacement);
                 authored = replay.PrepareSource(preparationMap, isEvenOdd, budget, cancellationToken);
                 points = authored.Points; contourEnds = authored.ContourEnds; signs = authored.Signs;
@@ -4136,7 +4139,11 @@ public static partial class SvgConverter
                             && bounds.Left <= completeLeft && bounds.Top <= completeTop && bounds.Right >= completeRight && bounds.Bottom >= completeBottom;
                     }
                     transferred = true;
-                    return new MappedPolygon(mapped, startX, startY, endX, endY, pathStartX, pathStartY, pathEndX, pathEndY, mappedClip, clip?.Antialiasing ?? SvgClipAntialiasing.None, clipContainsPath, completeBounds, mappedSpans, mappedCubics, mappedReservation, contourEnds, signs, authored, authoredMap, mapping);
+                    return new MappedPolygon(mapped, startX, startY, endX, endY, pathStartX, pathStartY, pathEndX, pathEndY, mappedClip, clip?.Antialiasing ?? SvgClipAntialiasing.None, clipContainsPath, completeBounds, mappedSpans, mappedCubics, mappedReservation, contourEnds, signs, authored, authoredMap, mapping)
+                    {
+                        Dash = authoredPath?.DashSource is {} dash && replay is {} outline
+                            ? new(dash, outline.SceneMap, preparationMap) : null
+                    };
                 }
                 catch
                 {
@@ -5669,65 +5676,9 @@ public static partial class SvgConverter
             return new(startX, startY, endX, endY, coverage, clip);
         }
 
-        // Maps retained cubic controls through the output scale without grid snapping, like quadratic controls.
-        static SvgCubicSpan[] MapCubicSpanControls(SvgCubicSpan[] spans, double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset, int outputWidth, int outputHeight, out bool canvasContainsControls, SvgAffineTransform? authoredMap, CancellationToken cancellationToken)
-        {
-            canvasContainsControls = true;
-            if (spans.Length == 0) return Array.Empty<SvgCubicSpan>();
-            SvgCubicSpan[] mapped = new SvgCubicSpan[spans.Length];
-            for (int index = 0; index < spans.Length; index++)
-            {
-                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                SvgDevicePoint first = spans[index].FirstControl;
-                SvgDevicePoint second = spans[index].SecondControl;
-                SvgDevicePoint mappedFirst = authoredMap is {} firstMap ? SvgAuthoredPath.MapPoint(firstMap, first, new(0, 0)) : new(MapNativePolygonEdge(first.X, horizontalScale, horizontalOffset), MapNativePolygonEdge(first.Y, verticalScale, verticalOffset));
-                SvgDevicePoint mappedSecond = authoredMap is {} secondMap ? SvgAuthoredPath.MapPoint(secondMap, second, new(0, 0)) : new(MapNativePolygonEdge(second.X, horizontalScale, horizontalOffset), MapNativePolygonEdge(second.Y, verticalScale, verticalOffset));
-                canvasContainsControls &= mappedFirst.X >= 0 && mappedFirst.X <= outputWidth && mappedFirst.Y >= 0 && mappedFirst.Y <= outputHeight
-                    && mappedSecond.X >= 0 && mappedSecond.X <= outputWidth && mappedSecond.Y >= 0 && mappedSecond.Y <= outputHeight;
-                mapped[index] = new SvgCubicSpan(spans[index].Contour, spans[index].StartIndex, spans[index].EndIndex, mappedFirst, mappedSecond);
-            }
-            return mapped;
-        }
-
-                // Maps retained quadratic controls through the output scale without grid snapping; curve data never takes the quarter discipline.
-        static SvgQuadSpan[] MapQuadSpanControls(SvgQuadSpan[] spans, double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset, int outputWidth, int outputHeight, bool nativeMapping, out bool canvasContainsControls, SvgAffineTransform? authoredMap, CancellationToken cancellationToken)
-        {
-            canvasContainsControls = true;
-            if (spans.Length == 0) return Array.Empty<SvgQuadSpan>();
-            SvgQuadSpan[] mapped = new SvgQuadSpan[spans.Length];
-            for (int index = 0; index < spans.Length; index++)
-            {
-                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                SvgDevicePoint control = spans[index].Control;
-                bool native = nativeMapping || spans[index].ConicWeight != 1f;
-                SvgDevicePoint mappedControl = authoredMap is {} map ? SvgAuthoredPath.MapPoint(map, control, new(0, 0)) : native
-                    ? new(MapNativePolygonEdge(control.X, horizontalScale, horizontalOffset), MapNativePolygonEdge(control.Y, verticalScale, verticalOffset))
-                    : new(MapEdge(control.X, horizontalScale, horizontalOffset), MapEdge(control.Y, verticalScale, verticalOffset));
-                canvasContainsControls &= mappedControl.X >= 0 && mappedControl.X <= outputWidth && mappedControl.Y >= 0 && mappedControl.Y <= outputHeight;
-                mapped[index] = spans[index] with { Control = mappedControl };
-            }
-            return mapped;
-        }
-
-                static double MapEdge(double value, double scale, double offset)
-        {
-            double scaled = value * scale + offset;
-            if (!double.IsFinite(scaled)) throw new SvgException(SvgErrorCode.LimitExceeded, "Output scaling and viewBox mapping exceed the admitted numeric range.");
-            return scaled;
-        }
-
         static double MapRectangleEdge(double value, double scale, double offset)
         {
             return MapNativePolygonEdge(value, scale, offset);
-        }
-
-        static double MapNativePolygonEdge(double value, double scale, double offset)
-        {
-            double mapped = MapEdge(value, scale, offset);
-            // SkMatrix::Scale_pts narrows each operand and rounds the product
-            // before adding translation, including retained curve controls and endpoints.
-            float native = (float)value * (float)scale + (float)offset;
-            return float.IsFinite(native) ? native : mapped;
         }
 
         static int ClampFloor(double value, int maximum) => value <= 0 ? 0 : value >= maximum ? maximum : checked((int)Math.Floor(value));

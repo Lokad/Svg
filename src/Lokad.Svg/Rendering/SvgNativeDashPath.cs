@@ -18,6 +18,16 @@ internal static class SvgNativeDashPath
     internal static OwnedParserArray<SvgAuthoredPathCommand> Filter(ReadOnlySpan<SvgAuthoredPathCommand> commands,
         ReadOnlySpan<double> intervals, double offset, double? pathLength, SvgAffineTransform pointMap, float resolutionScale,
         RenderBudget budget, CancellationToken token)
+        => FilterCore(commands, intervals, offset, pathLength, pointMap, resolutionScale, null, budget, token);
+
+    internal static OwnedParserArray<SvgAuthoredPathCommand> FilterClipped(ReadOnlySpan<SvgAuthoredPathCommand> commands,
+        ReadOnlySpan<double> intervals, double offset, double? pathLength, SvgAffineTransform pointMap, float resolutionScale,
+        SvgDashCull cull, RenderBudget budget, CancellationToken token)
+        => FilterCore(commands, intervals, offset, pathLength, pointMap, resolutionScale, cull, budget, token);
+
+    private static OwnedParserArray<SvgAuthoredPathCommand> FilterCore(ReadOnlySpan<SvgAuthoredPathCommand> commands,
+        ReadOnlySpan<double> intervals, double offset, double? pathLength, SvgAffineTransform pointMap, float resolutionScale,
+        SvgDashCull? cull, RenderBudget budget, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         if (!(resolutionScale > 0) || !float.IsFinite(resolutionScale))
@@ -35,61 +45,8 @@ internal static class SvgNativeDashPath
         bool active = false;
         bool singleLine = commands.Length == 3 && commands[0].Verb == SvgAuthoredPathVerb.Move
             && commands[1].Verb == SvgAuthoredPathVerb.Line && commands[2].Verb == SvgAuthoredPathVerb.End;
-        Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[4];
-        Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
-        foreach (SvgAuthoredPathCommand command in commands)
-        {
-            token.ThrowIfCancellationRequested();
-            switch (command.Verb)
-            {
-                case SvgAuthoredPathVerb.Move:
-                    if (active) FinishContour(false);
-                    current = first = Narrow(command.First); active = true;
-                    break;
-                case SvgAuthoredPathVerb.Line:
-                case SvgAuthoredPathVerb.Quadratic:
-                case SvgAuthoredPathVerb.Cubic:
-                case SvgAuthoredPathVerb.Conic:
-                    SvgMeasuredCurveKind kind = command.Verb switch
-                    {
-                        SvgAuthoredPathVerb.Line => SvgMeasuredCurveKind.Line,
-                        SvgAuthoredPathVerb.Quadratic => SvgMeasuredCurveKind.Quadratic,
-                        SvgAuthoredPathVerb.Conic => SvgMeasuredCurveKind.Conic,
-                        _ => SvgMeasuredCurveKind.Cubic
-                    };
-                    int count = kind == SvgMeasuredCurveKind.Line ? 2 : kind == SvgMeasuredCurveKind.Cubic ? 4 : 3;
-                    points[0] = current; points[1] = Narrow(command.First);
-                    if (count >= 3) points[2] = Narrow(command.Second);
-                    if (count == 4) points[3] = Narrow(command.Third);
-                    AddCurve(kind, points[..count], kind == SvgMeasuredCurveKind.Conic ? (float)command.Third.X : 1);
-                    current = points[count - 1];
-                    break;
-                case SvgAuthoredPathVerb.Arc:
-                    token.ThrowIfCancellationRequested();
-                    int arcCount = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
-                        (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0,
-                        command.Third, arcs, token);
-                    points[0] = current;
-                    if (arcCount == 0) { points[1] = Narrow(command.Third); AddCurve(SvgMeasuredCurveKind.Line, points[..2], 1); }
-                    else for (int part = 0; part < arcCount; part++)
-                    {
-                        points[1] = arcs[part].Control; points[2] = arcs[part].End;
-                        AddCurve(SvgMeasuredCurveKind.Conic, points[..3], arcs[part].Weight);
-                        points[0] = points[2];
-                    }
-                    current = Narrow(command.Third);
-                    break;
-                case SvgAuthoredPathVerb.Close:
-                    points[0] = current; points[1] = first;
-                    AddCurve(SvgMeasuredCurveKind.Line, points[..2], 1);
-                    current = first; FinishContour(true); active = false;
-                    break;
-                case SvgAuthoredPathVerb.End:
-                    FinishContour(false); active = false;
-                    break;
-            }
-        }
-        if (active) FinishContour(false);
+        SvgAffineTransform measurementMap = pointMap;
+        MeasureCommands(commands);
         double totalLength = 0;
         foreach (Contour contour in contours.AsSpan()) { token.ThrowIfCancellationRequested(); totalLength += contour.Distance; }
         double factor = pathLength is double declared && totalLength > 0 ? totalLength / declared : 1;
@@ -112,6 +69,7 @@ internal static class SvgNativeDashPath
             if (phaseOffset == period) phaseOffset = 0;
         }
         else if (phaseOffset >= period) phaseOffset %= period;
+        float normalizedPhase = phaseOffset;
         int initialIndex = 0;
         float initialLength = pattern[0];
         for (int at = 0; at < pattern.Count; at++)
@@ -120,6 +78,18 @@ internal static class SvgNativeDashPath
             float gap = pattern[at];
             if (phaseOffset > gap || (phaseOffset == gap && gap != 0)) phaseOffset -= gap;
             else { initialIndex = at; initialLength = gap - phaseOffset; break; }
+        }
+        if (cull is {} bounds)
+        {
+            using OwnedParserArray<SvgAuthoredPathCommand> clipped = SvgDashCulling.Cull(commands, pointMap, bounds,
+                period, normalizedPhase, pattern.AsSpan(), initialIndex, (float)totalLength, budget, token, out bool changed);
+            if (changed)
+            {
+                curves.Clear(); steps.Clear(); contours.Clear();
+                current = first = default; firstCurve = 0; distance = 0; active = false;
+                measurementMap = SvgAffineTransform.Identity;
+                MeasureCommands(clipped.Items);
+            }
         }
         double dashCount = 0;
         foreach (Contour contour in contours.AsSpan())
@@ -154,6 +124,65 @@ internal static class SvgNativeDashPath
         }
         return output.Detach();
 
+        void MeasureCommands(ReadOnlySpan<SvgAuthoredPathCommand> sourceCommands)
+        {
+            Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[4];
+            Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
+            foreach (SvgAuthoredPathCommand command in sourceCommands)
+            {
+                token.ThrowIfCancellationRequested();
+                switch (command.Verb)
+                {
+                    case SvgAuthoredPathVerb.Move:
+                        if (active) FinishContour(false);
+                        current = first = Narrow(command.First); active = true;
+                        break;
+                    case SvgAuthoredPathVerb.Line:
+                    case SvgAuthoredPathVerb.Quadratic:
+                    case SvgAuthoredPathVerb.Cubic:
+                    case SvgAuthoredPathVerb.Conic:
+                        SvgMeasuredCurveKind kind = command.Verb switch
+                        {
+                            SvgAuthoredPathVerb.Line => SvgMeasuredCurveKind.Line,
+                            SvgAuthoredPathVerb.Quadratic => SvgMeasuredCurveKind.Quadratic,
+                            SvgAuthoredPathVerb.Conic => SvgMeasuredCurveKind.Conic,
+                            _ => SvgMeasuredCurveKind.Cubic
+                        };
+                        int count = kind == SvgMeasuredCurveKind.Line ? 2 : kind == SvgMeasuredCurveKind.Cubic ? 4 : 3;
+                        points[0] = current; points[1] = Narrow(command.First);
+                        if (count >= 3) points[2] = Narrow(command.Second);
+                        if (count == 4) points[3] = Narrow(command.Third);
+                        AddCurve(kind, points[..count], kind == SvgMeasuredCurveKind.Conic ? (float)command.Third.X : 1);
+                        current = points[count - 1];
+                        break;
+                    case SvgAuthoredPathVerb.Arc:
+                        token.ThrowIfCancellationRequested();
+                        int arcCount = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
+                            (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0,
+                            command.Third, arcs, token);
+                        points[0] = current;
+                        if (arcCount == 0) { points[1] = Narrow(command.Third); AddCurve(SvgMeasuredCurveKind.Line, points[..2], 1); }
+                        else for (int part = 0; part < arcCount; part++)
+                        {
+                            points[1] = arcs[part].Control; points[2] = arcs[part].End;
+                            AddCurve(SvgMeasuredCurveKind.Conic, points[..3], arcs[part].Weight);
+                            points[0] = points[2];
+                        }
+                        current = Narrow(command.Third);
+                        break;
+                    case SvgAuthoredPathVerb.Close:
+                        points[0] = current; points[1] = first;
+                        AddCurve(SvgMeasuredCurveKind.Line, points[..2], 1);
+                        current = first; FinishContour(true); active = false;
+                        break;
+                    case SvgAuthoredPathVerb.End:
+                        FinishContour(false); active = false;
+                        break;
+                }
+            }
+            if (active) FinishContour(false);
+        }
+
         void FinishContour(bool closed)
         {
             token.ThrowIfCancellationRequested();
@@ -169,8 +198,8 @@ internal static class SvgNativeDashPath
             {
                 token.ThrowIfCancellationRequested();
                 float x = (float)source[at].X, y = (float)source[at].Y;
-                mapped[at] = new(((float)pointMap.A * x + (float)pointMap.C * y) + (float)pointMap.E,
-                    ((float)pointMap.B * x + (float)pointMap.D * y) + (float)pointMap.F);
+                mapped[at] = new(((float)measurementMap.A * x + (float)measurementMap.C * y) + (float)measurementMap.E,
+                    ((float)measurementMap.B * x + (float)measurementMap.D * y) + (float)measurementMap.F);
                 if (!float.IsFinite((float)mapped[at].X) || !float.IsFinite((float)mapped[at].Y))
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Dash coordinates exceed the admitted numeric range.");
             }

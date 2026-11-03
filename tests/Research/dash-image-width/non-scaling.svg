@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="384">
+  <g transform="translate(3.25 2.5) scale(1.25 .875)">
+    <line x1="17" y1="7" x2="17" y2="367" stroke="#385e96" stroke-width=".5" stroke-dasharray="1 2" vector-effect="non-scaling-stroke"/>
+  </g>
+</svg>

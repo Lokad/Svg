@@ -179,6 +179,12 @@ interaction. One [canonical native fixture](Fixtures/original/fixed-stroke-lengt
 protects inherited width, mixed dash units and signed offsets; the
 [evidence](Research/svgweb/fixed-stroke-lengths.json) retains the original
 observations separately from successful length parsing.
+The [dash-culling mechanisms](Lokad.Svg.Tests/SvgDashCullingTests.cs) cover axis
+eligibility, phase, source calibration, empty contours and bitmap-origin rounding.
+Three [ownership contracts](Lokad.Svg.Tests/SvgDashSourceOwnershipTests.cs) protect
+thin/outline refusal, cleanup, retry, copies and transfer. Seven canonical
+[native controls](Research/dash-image-width/README.md) cover width-dependent
+construction and distinct mapped, non-scaling and shader/clip interactions.
 The [recorded-enclosure mechanisms](Lokad.Svg.Tests/SvgRecordedSourceEnclosureTests.cs)
 keep local drawing bounds separate from fractional filter visuals. Four
 [scope cases](Lokad.Svg.Tests/SvgRasterScopeTests.cs) and two retained-origin

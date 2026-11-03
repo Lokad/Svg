@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "CAUSE ISOLATED; production integration OPEN. No new reference-test admission.",
+  "status": "Original failing-before/research evidence preserved; shared production stage is qualified in qualification.json.",
   "productionSourceCommit": "45f49f0660c6416c5c5be5877876712853757703",
   "librarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
   "pins": {
@@ -1200,5 +1200,6 @@
       }
     ],
     "scope": "Existing qualified library, no production changes; focused investigation, not a new full-package milestone."
-  }
+  },
+  "productionQualification": "qualification.json"
 }

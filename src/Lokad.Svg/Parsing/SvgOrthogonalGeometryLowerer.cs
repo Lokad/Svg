@@ -1478,6 +1478,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgNativeStrokeResolution resolution)
     {
         OwnedParserArray<SvgAuthoredPathCommand> commands = new([], null);
+        SvgAuthoredDashSource? dashSource = null;
         try
         {
             SvgAffineTransform retainedMap = deviceMap;
@@ -1498,6 +1499,17 @@ internal ref struct SvgOrthogonalGeometryLowering
                 sourceBounds = nonScaling ? deviceMap.Apply(originalBounds) : originalBounds;
                 commands = SvgNativeDashPath.Filter(authored.AsSpan(), dashes, dashOffset, pathLength,
                     nonScaling ? constructionMap : SvgAffineTransform.Identity, resolutionScale, budget, _cancellationToken);
+                SvgAffineTransform dashMap = nonScaling ? constructionMap : SvgAffineTransform.Identity;
+                if (resolution != SvgNativeStrokeResolution.GlyphStrike && SvgDashCulling.IsEligible(authored.AsSpan(), dashMap, _cancellationToken))
+                {
+                    OwnedParserArray<SvgAuthoredPathCommand> undashed = authored.Detach();
+                    try
+                    {
+                        dashSource = SvgAuthoredDashSource.Create(undashed, dashes, dashMap, dashOffset, pathLength,
+                            new((float)(nonScaling ? deviceWidth : width), (float)miterLimit, cap, join, resolutionScale), budget, _cancellationToken);
+                    }
+                    catch { undashed.Dispose(); throw; }
+                }
                 if (nonScaling) { retainedMap = outlineMap; constructionMap = SvgAffineTransform.Identity; }
             }
             SvgParsedGeometry stroked = LowerNativeStrokePath(commands.Items, constructionMap,
@@ -1507,14 +1519,15 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 if (stroked.Geometries.Length == 1)
                 {
-                    stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new SvgAuthoredStrokeStyle(nonScaling ? deviceWidth : width, nonScaling ? outlineMap : deviceMap, cap, shape) { SourceBounds = sourceBounds, NonScalingMap = nonScalingMap }, stroked.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Missing native stroke outline."), budget) };
+                    stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new SvgAuthoredStrokeStyle(nonScaling ? deviceWidth : width, nonScaling ? outlineMap : deviceMap, cap, shape) { SourceBounds = sourceBounds, NonScalingMap = nonScalingMap }, stroked.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Missing native stroke outline."), dashSource, budget) };
                     commands = new([], null);
+                    dashSource = null;
                 }
                 return stroked;
             }
             catch { stroked.Discard(); throw; }
         }
-        finally { commands.Dispose(); }
+        finally { commands.Dispose(); dashSource?.Dispose(); }
     }
 
     /// <summary>Constructs native source outlines and scene fallback geometry, reserving both before allocation.</summary>
@@ -1551,16 +1564,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                     _cancellationToken.ThrowIfCancellationRequested();
                     // Native point density includes zero-length outline verbs. Retain
                     // their source commands; edge construction discards their empty edges.
-                    SvgAuthoredPathCommand verb = command.Verb switch
-                    {
-                        SvgStrokeOutlineVerb.Move => new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, command.End.Device(), default, default),
-                        SvgStrokeOutlineVerb.Line => new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, command.End.Device(), default, default),
-                        SvgStrokeOutlineVerb.Quadratic => new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, command.Control.Device(), command.End.Device(), default),
-                        SvgStrokeOutlineVerb.Conic => new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, command.Control.Device(), command.End.Device(), new(command.Weight, 0)),
-                        SvgStrokeOutlineVerb.Close => new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default),
-                        _ => throw new InvalidOperationException("Invalid native stroke outline verb."),
-                    };
-                    source.Add(verb);
+                    source.Add(command.ToAuthoredPath());
                 }
                 OwnedParserArray<SvgAuthoredPathCommand> owned = source.Detach();
                 try { result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.Create(owned, outlineMap, budget) }; }

@@ -36,7 +36,7 @@
     }
   ],
   "schemaVersion": 1,
-  "status": "OPEN: font-relative positions CLOSED; the declared CSS-repaired/font diagnostic renders with an isolated twelve-pixel nontext separator residual.",
+  "status": "CLOSED declared CSS-repaired/supplied-Noto diagnostic: font-relative positions and bitmap-local separator dashes are exact on both hosts. Original invalid CSS and original font admission remain outside this closure.",
   "source": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ny1.svg",
   "sourceCommit": "309184ac440760bc605efcd59b9fe550cb32f1db",
   "librarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
@@ -46,7 +46,7 @@
   "strictCssBoundary": "Unknown and unimplemented active declarations reject through the same bounded parser. Browser error recovery for unknown names is outside the current admission contract; no name-specific production exception, ignore-all fallback or unsupported-property registry is introduced.",
   "standard": "https://www.w3.org/TR/css-syntax-3/#error-handling",
   "sourceAttributeValuesRetained": 0,
-  "nextAction": "Implement shared raster-context dash construction identified in ../dash-image-width/raster-window.json, then qualify unchanged CSS-repaired/font diagnostic. Research replay of the same bitmap culling removes all twelve pixels on both hosts; production integration remains open.",
+  "nextAction": "Resume the remaining W1 parent/static, explicit-raster, malformed-source and deeper-event gates. Preserve strict invalid-CSS admission and all native/text references.",
   "beforePositionFix": {
     "nextGate": {
       "element": "tspan",
@@ -223,18 +223,6 @@
     ],
     "meaning": "Every changed pixel and both RGBA values are identical with all text removed. This isolation has one healthy native process per host; the complete diagnostic retains three per host. No original acceptance or reference admission is claimed."
   },
-  "nextGate": {
-    "category": "Nontext dotted separator coverage/placement",
-    "changedPixelsPerHost": 12,
-    "maximumAlphaError": 2,
-    "bounds": [
-      319,
-      193,
-      321,
-      247
-    ],
-    "modelReview": "Existing raster bitmap clips and native phase-preserving line culling before dash measurement reproduce the full diagnostic exactly on both hosts in research. Retain source/pattern ownership through replay; preserve interpolation, text and all independent references."
-  },
   "standaloneLineIsolation": {
     "selectedTraversalOrdinal": 75,
     "removedOtherGraphicElements": 99,
@@ -307,5 +295,43 @@
     "nativeSameRegionChangedPixels": 16,
     "controls": "Two authored inputs differ only in width; repeated on both hosts. No hosted attributes or geometry copied."
   },
-  "rasterWindowReview": "../dash-image-width/raster-window.json"
+  "rasterWindowReview": "../dash-image-width/raster-window.json",
+  "productionDashQualification": "../dash-image-width/qualification.json",
+  "afterDashFix": {
+    "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+    "diagnosticInputSha256": "85bce8c43bf349c9accb3a34ef2b349fe46e47131c3f481167f451ea5c944988",
+    "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "librarySha256": "e84c1ec2910cea9d896175166327ab1a114643001f7e2bb2f81099b11f73f8e4",
+    "hostedSvgBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "rows": [
+      {
+        "host": "windows",
+        "beforeChangedPixels": 12,
+        "afterChangedPixels": 0,
+        "libraryPngSha256": "68375e64d687b615d8b6c595ed63b3a52ecf0be00c27c247de5827d0fe1e0a60",
+        "nativePngSha256": "1260f21d6ecdad88946b5c900a5f45f2d32ce662e08230af5e1520a4fbe9cba1"
+      },
+      {
+        "host": "linux",
+        "beforeChangedPixels": 12,
+        "afterChangedPixels": 0,
+        "libraryPngSha256": "894d41161c338e74e514efbb75d8a1ee039b0d58adfdf7a128769e0974069d0d",
+        "nativePngSha256": "b9e220601b1f15dbd4d955a65d65b0ba2ec95fea335c9eb51e2cecba2619629a"
+      }
+    ]
+  },
+  "beforeDashFix": {
+    "category": "Before bitmap-local dash construction",
+    "changedPixelsPerHost": 12,
+    "maximumAlphaError": 2,
+    "bounds": [
+      319,
+      193,
+      321,
+      247
+    ],
+    "modelReview": "Existing raster bitmap clips and native phase-preserving line culling before dash measurement reproduce the full diagnostic exactly on both hosts in research. Retain source/pattern ownership through replay; preserve interpolation, text and all independent references.",
+    "afterChangedPixelsPerHost": 0
+  }
 }

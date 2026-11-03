@@ -9,7 +9,18 @@ namespace Lokad.Svg.Rendering;
 internal enum SvgStrokeOutlineVerb { Move, Line, Quadratic, Conic, Close }
 
 /// <summary>One native directed outline command; quadratic/conic controls and weights remain retained.</summary>
-internal readonly record struct SvgStrokeOutlineCommand(SvgStrokeOutlineVerb Verb, Point Control, Point End, float Weight);
+internal readonly record struct SvgStrokeOutlineCommand(SvgStrokeOutlineVerb Verb, Point Control, Point End, float Weight)
+{
+    internal SvgAuthoredPathCommand ToAuthoredPath() => Verb switch
+    {
+        SvgStrokeOutlineVerb.Move => new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, End.Device(), default, default),
+        SvgStrokeOutlineVerb.Line => new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, End.Device(), default, default),
+        SvgStrokeOutlineVerb.Quadratic => new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, Control.Device(), End.Device(), default),
+        SvgStrokeOutlineVerb.Conic => new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, Control.Device(), End.Device(), new(Weight, 0)),
+        SvgStrokeOutlineVerb.Close => new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default),
+        _ => throw new InvalidOperationException("Invalid native stroke outline verb.")
+    };
+}
 
 /// <summary>Constructs native curve offsets, joins and caps before flattening or final placement.</summary>
 /// <remarks>Input and output belong to the caller. Private buffers are reserved before allocation and

@@ -76,7 +76,7 @@ public sealed class SvgHairlineCoverageTests
             byte[] destination = new byte[64 * 64 * 4];
             Assert.True(SvgHairlineStroke.TryRasterize(path, new(SvgAffineTransform.FromScale(1.5, 1.5), null), new(255, 0, 0, 255), null,
                 null, SvgClipAntialiasing.None, new(mask), binary, destination, 64, 64,
-                new(64, 64), new(new(0, 0, 64, 64), false), CancellationToken.None));
+                new(64, 64), new(new(0, 0, 64, 64), false), new RenderBudget(), CancellationToken.None));
             return destination;
         }
     }

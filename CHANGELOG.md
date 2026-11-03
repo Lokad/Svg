@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Construct culled dashes in their owning bitmap before thin-stroke or outline
+  painting, preserving source calibration, phase and bitmap-origin rounding.
 - Resolve scalar/list text positions in fixed CSS units and em using each
   declaration's computed font size, including span and instance replay.
 - Shape covered Latin combining sequences with canonical Unicode ordering,

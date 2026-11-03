@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="384">
+  <defs>
+    <linearGradient id="paint" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="384">
+      <stop offset="0" stop-color="#dd503c" stop-opacity=".6"/>
+      <stop offset="1" stop-color="#3154c0" stop-opacity=".85"/>
+    </linearGradient>
+    <clipPath id="clip"><rect x="16.25" y="4.5" width="4" height="350.25"/></clipPath>
+  </defs>
+  <g clip-path="url(#clip)">
+    <line x1="17" y1="7" x2="17" y2="367" stroke="url(#paint)" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 2"/>
+  </g>
+</svg>

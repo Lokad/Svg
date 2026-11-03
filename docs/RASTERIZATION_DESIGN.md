@@ -184,6 +184,15 @@ Retain directed lines, quadratics, cubics and rational conics until transforms
 and [stroke construction](../src/Lokad.Svg/Rendering/SvgNativePathStroke.cs) are known.
 Early flattening changes offset curves, joins, dashes, bounds and fringe coverage.
 
+Cullable dashed lines and rectangles retain owned source verbs and patterns until
+their bitmap construction context is known. Source length calibrates `pathLength`
+before phase-preserving culling and dash measurement. The inverse construction map
+uses the narrowed matrix and bitmap origin; owned output interiors remain separate.
+Thin strokes and wider outlines share this stage and keep their existing paint
+paths. Glyph-strike filtering remains before canvas replay. The
+[dash controls](../tests/Research/dash-image-width/README.md) retain independent
+references and distinguish geometry, ownership and rendering responsibilities.
+
 A shallow curve can enclose ink against its closing chord even when its fallback
 contains only two endpoints. Fill execution and clip staging retain that authored
 source; preparation adds a closing sample without changing verbs or native point

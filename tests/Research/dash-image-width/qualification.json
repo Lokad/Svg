@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "status": "CLOSED shared dash-construction milestone. Whole-suite green remains blocked by the unchanged Windows DejaVu reference conflict.",
+  "version": "0.4.0-dev.1",
+  "sourceBaseCommit": "f800a13b4",
+  "implementationFilesLfSha256": {
+    "Parsing/SvgAuthoredDashSource.cs": "ece6e65f62bbdb6fc030f6cc1a4a8ade4b1582dab9713f263f120e760787a7d8",
+    "Parsing/SvgAuthoredPath.cs": "915ca893c369808a8ddb2c808ad1c1d247a78486a348c6db2ca2aee0d2fc0a13",
+    "Parsing/SvgOrthogonalGeometryLowerer.cs": "cb8242e71218528dab9a64503e0df32e2b68b2decd13d4aad7cf78eff08472fb",
+    "Rendering/SvgDashCulling.cs": "3adddd74da77e752dfd576dd036a68ba4e9756fc8b322a5a2ae90168e84f7d34",
+    "Rendering/SvgHairlineStroke.cs": "ef2d9b1752f8899dda04dd549a11244b9b88cf6abff02ccabc8215fb92211e23",
+    "Rendering/SvgNativeDashPath.cs": "c3e176f55d6bc6745dd1079dad2b00b67421c5a4259a7585c90cd1b11476ee1a",
+    "Rendering/SvgNativePathStroke.cs": "99f65547b36ec1d8cd358ee776aef9b594292ebb5987602315b1bf983a37da5d",
+    "SvgConverter.PathMapping.cs": "2fa7fe8e0aa58295e37ab6f21cf2a8b35f716ba449f454f7d64291fd074cc48e",
+    "SvgConverter.PolygonRaster.cs": "a61d2172ffd7ae0d7d9636d396e4a4b78853b6e3b06e9017647616074fa0a104",
+    "SvgConverter.cs": "1e6d6e221df91060fb19dbbf650449136e2fc23a526576b3da9678a33f7bd21c"
+  },
+  "librarySha256": {
+    "net11.0": "e84c1ec2910cea9d896175166327ab1a114643001f7e2bb2f81099b11f73f8e4",
+    "net10.0": "980c42fb092f92fe55eeb77bc09a61c56b5d56290a523dedb8cec932478e706b"
+  },
+  "scope": "Cull eligible source lines/rectangles in the actual bitmap construction context before dash measurement, preserving undashed calibration and distinct thin/outline paints. Glyph-strike filtering remains before canvas replay.",
+  "coverage": {
+    "directMechanisms": 23,
+    "ownershipContracts": 3,
+    "canonicalNativeRenderingCases": 7,
+    "existingReferencesRemoved": 0,
+    "existingReferencesRewritten": 0,
+    "tolerancesChanged": 0,
+    "additionalApiFixtureProducts": 0
+  },
+  "validation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "suite": "Lokad.Svg.Tests",
+      "total": 47370,
+      "passed": 47370,
+      "failed": 0,
+      "wallSeconds": 62.69,
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "suite": "Lokad.Svg.VisualTests",
+      "total": 46658,
+      "passed": 46657,
+      "failed": 1,
+      "wallSeconds": 235.405,
+      "failures": [
+        "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")"
+      ]
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "suite": "Lokad.Svg.Tests",
+      "total": 47370,
+      "passed": 47370,
+      "failed": 0,
+      "wallSeconds": 51.605,
+      "failures": []
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "suite": "Lokad.Svg.VisualTests",
+      "total": 46658,
+      "passed": 46658,
+      "failed": 0,
+      "wallSeconds": 177.037,
+      "failures": []
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "suite": "core",
+      "total": 12288,
+      "passed": 12288,
+      "failed": 0,
+      "wallSeconds": 25.604
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "suite": "core",
+      "total": 12288,
+      "passed": 12288,
+      "failed": 0,
+      "wallSeconds": 27.855
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "suite": "visual",
+      "total": 826,
+      "passed": 826,
+      "failed": 0,
+      "wallSeconds": 13.797
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "suite": "visual",
+      "total": 826,
+      "passed": 826,
+      "failed": 0,
+      "wallSeconds": 24.226
+    },
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "suite": "font-host",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "wallSeconds": 0.53
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "suite": "font-host",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "wallSeconds": 0.641
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "suite": "font-host",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "wallSeconds": 2.363
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "suite": "font-host",
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "wallSeconds": 2.411
+    }
+  ],
+  "canonicalSelectionTiming": {
+    "rows": [
+      {
+        "version": "before",
+        "wallSeconds": 9.252,
+        "exitCode": 1,
+        "total": 7,
+        "passed": 3,
+        "failed": 4
+      },
+      {
+        "version": "after",
+        "wallSeconds": 5.875,
+        "exitCode": 0,
+        "total": 7,
+        "passed": 7,
+        "failed": 0
+      }
+    ],
+    "interpretation": "Single Windows functional wall times, including discovery, process startup and failure reporting. The before version has four failures; this is not a throughput benchmark or test-suite speedup claim."
+  },
+  "originals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 117.0592236998491,
+    "librarySha256": "e84c1ec2910cea9d896175166327ab1a114643001f7e2bb2f81099b11f73f8e4",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "declaredFontContexts": {
+    "count": 21,
+    "unchangedReferenceComparisons": 21,
+    "regularContexts": 19,
+    "additionalContexts": 2,
+    "profile": "Nineteen contexts replay their original Windows/Linux reference profiles (Linux glibc2.39); Steps/bloglines replay Windows and Ubuntu26 glibc2.43. Unfiltered primary qualification uses Ubuntu26 glibc2.43.",
+    "referencesRewritten": 0
+  },
+  "ny1": {
+    "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+    "diagnosticInputSha256": "85bce8c43bf349c9accb3a34ef2b349fe46e47131c3f481167f451ea5c944988",
+    "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "librarySha256": "e84c1ec2910cea9d896175166327ab1a114643001f7e2bb2f81099b11f73f8e4",
+    "hostedSvgBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "rows": [
+      {
+        "host": "windows",
+        "beforeChangedPixels": 12,
+        "afterChangedPixels": 0,
+        "libraryPngSha256": "68375e64d687b615d8b6c595ed63b3a52ecf0be00c27c247de5827d0fe1e0a60",
+        "nativePngSha256": "1260f21d6ecdad88946b5c900a5f45f2d32ce662e08230af5e1520a4fbe9cba1"
+      },
+      {
+        "host": "linux",
+        "beforeChangedPixels": 12,
+        "afterChangedPixels": 0,
+        "libraryPngSha256": "894d41161c338e74e514efbb75d8a1ee039b0d58adfdf7a128769e0974069d0d",
+        "nativePngSha256": "b9e220601b1f15dbd4d955a65d65b0ba2ec95fea335c9eb51e2cecba2619629a"
+      }
+    ]
+  },
+  "packages": {
+    "files": [
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "e1314c2661f68bc282c843080bcf53f52341f78c689bcb636709bd3b6564832c",
+        "bytes": 2414135
+      },
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "0593b199d191e1f9ae54a2a2f01b85c7f9250cd87170b5afab431e2bae30f75c",
+        "bytes": 717076
+      }
+    ],
+    "repeatedPackBytesIdentical": true,
+    "assetsMatchQualifiedLibraries": true,
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 14.396416600095108
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 64.15450220019557
+      }
+    ],
+    "publication": "None; published 0.3.0 remains unchanged."
+  },
+  "knownWindowsFailure": "SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: dejavu); assertion/reference preserved; user authority remains pending.",
+  "hostedSvgBodiesRetained": 0,
+  "hostedSourceAttributeValuesRetained": 0,
+  "implementationDirectory": "../../../src/Lokad.Svg"
+}

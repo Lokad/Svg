@@ -476,7 +476,7 @@
   "hostedSvgBodiesRetained": 0,
   "hostedSourceAttributeValuesRetained": 0,
   "schemaVersion": 1,
-  "status": "OPEN production integration; independent witnesses frozen before implementation, not newly admitted reference tests.",
+  "status": "Original failing-before/research evidence preserved; shared production stage is qualified in qualification.json.",
   "productionSourceCommit": "45f49f0660c6416c5c5be5877876712853757703",
   "librarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
   "captureRecipe": "Canonical recipe 3, transparent, scale 1, matching physical/image viewport sizes; pinned browser/native profiles in raster-window.json.",
@@ -498,5 +498,6 @@
   "ownedRowSplit": 255,
   "phaseRule": "Outset each construction clip by half the source stroke width times default miter limit 4; trim eligible line endpoints in phase before measuring/cutting intervals, then paint only the existing grid interior.",
   "nativeCaptureCount": 48,
-  "meaning": "Shared culling replay closes subpixel hairlines and a wider round-cap outline, while butt/square wider controls remain exact. This rules out a hairline-only fix. Equal images do not establish interchangeable paths; retain distinct native dispatch and stroke mechanisms."
+  "meaning": "Shared culling replay closes subpixel hairlines and a wider round-cap outline, while butt/square wider controls remain exact. This rules out a hairline-only fix. Equal images do not establish interchangeable paths; retain distinct native dispatch and stroke mechanisms.",
+  "productionQualification": "qualification.json"
 }

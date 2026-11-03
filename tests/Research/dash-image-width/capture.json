@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "OPEN production integration; native raster-window culling cause isolated in raster-window.json. Original captures are unchanged; these remain research controls.",
+  "status": "Original failing-before/research evidence preserved; shared production stage is qualified in qualification.json.",
   "sourceCommit": "45f49f0660c6416c5c5be5877876712853757703",
   "librarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
   "background": "transparent",
@@ -161,5 +161,6 @@
   ],
   "hostedSvgBodiesRetained": 0,
   "hostedSourceAttributeValuesRetained": 0,
-  "rasterWindowReview": "raster-window.json"
+  "rasterWindowReview": "raster-window.json",
+  "productionQualification": "qualification.json"
 }

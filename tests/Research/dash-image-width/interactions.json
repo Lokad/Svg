@@ -1,0 +1,197 @@
+{
+  "rows": [
+    {
+      "host": "windows",
+      "input": "position-phase.svg",
+      "inputSha256": "86875abdc89acd6b82c8a0ce9921888287682cc9bfdbbb32b3fa6857bf6a005a",
+      "width": 600,
+      "height": 384,
+      "beforeChangedPixels": 24,
+      "afterChangedPixels": 0,
+      "captures": [
+        {
+          "pngSha256": "1666197d4b6338a853b9f1b706fea26993b94aed703bdb80d8e768187a988df8",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "1666197d4b6338a853b9f1b706fea26993b94aed703bdb80d8e768187a988df8",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "1666197d4b6338a853b9f1b706fea26993b94aed703bdb80d8e768187a988df8",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "reference": "references/1666197d4b6338a853b9f1b706fea26993b94aed703bdb80d8e768187a988df8.png"
+    },
+    {
+      "host": "windows",
+      "input": "shader-clip.svg",
+      "inputSha256": "7ec47c71137164272f346b442ca57a121eaea9578c54b645989b22040eab2aa2",
+      "width": 600,
+      "height": 384,
+      "beforeChangedPixels": 0,
+      "afterChangedPixels": 0,
+      "captures": [
+        {
+          "pngSha256": "e01f739f63357d29bec7c49f6703610fd7f76766369a2858a54b9a343d2a6c16",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "e01f739f63357d29bec7c49f6703610fd7f76766369a2858a54b9a343d2a6c16",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "e01f739f63357d29bec7c49f6703610fd7f76766369a2858a54b9a343d2a6c16",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "reference": "references/e01f739f63357d29bec7c49f6703610fd7f76766369a2858a54b9a343d2a6c16.png"
+    },
+    {
+      "host": "linux",
+      "input": "position-phase.svg",
+      "inputSha256": "86875abdc89acd6b82c8a0ce9921888287682cc9bfdbbb32b3fa6857bf6a005a",
+      "width": 600,
+      "height": 384,
+      "beforeChangedPixels": 24,
+      "afterChangedPixels": 0,
+      "captures": [
+        {
+          "pngSha256": "1666197d4b6338a853b9f1b706fea26993b94aed703bdb80d8e768187a988df8",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "1666197d4b6338a853b9f1b706fea26993b94aed703bdb80d8e768187a988df8",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "1666197d4b6338a853b9f1b706fea26993b94aed703bdb80d8e768187a988df8",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "reference": "references/1666197d4b6338a853b9f1b706fea26993b94aed703bdb80d8e768187a988df8.png"
+    },
+    {
+      "host": "linux",
+      "input": "shader-clip.svg",
+      "inputSha256": "7ec47c71137164272f346b442ca57a121eaea9578c54b645989b22040eab2aa2",
+      "width": 600,
+      "height": 384,
+      "beforeChangedPixels": 0,
+      "afterChangedPixels": 0,
+      "captures": [
+        {
+          "pngSha256": "e01f739f63357d29bec7c49f6703610fd7f76766369a2858a54b9a343d2a6c16",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "e01f739f63357d29bec7c49f6703610fd7f76766369a2858a54b9a343d2a6c16",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "e01f739f63357d29bec7c49f6703610fd7f76766369a2858a54b9a343d2a6c16",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "reference": "references/e01f739f63357d29bec7c49f6703610fd7f76766369a2858a54b9a343d2a6c16.png"
+    },
+    {
+      "host": "windows",
+      "input": "non-scaling.svg",
+      "inputSha256": "76a4b90298ac92abc8a78e6c1705b28797c01c8b6898436f918c6258c5ef71da",
+      "width": 600,
+      "height": 384,
+      "beforeChangedPixels": 0,
+      "afterChangedPixels": 0,
+      "captures": [
+        {
+          "pngSha256": "7d8f80c2b14cf570f8214947a61c93d6b7d982186c9be24b4e13ad5a9ed49ff1",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "7d8f80c2b14cf570f8214947a61c93d6b7d982186c9be24b4e13ad5a9ed49ff1",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "7d8f80c2b14cf570f8214947a61c93d6b7d982186c9be24b4e13ad5a9ed49ff1",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "reference": "references/7d8f80c2b14cf570f8214947a61c93d6b7d982186c9be24b4e13ad5a9ed49ff1.png"
+    },
+    {
+      "host": "linux",
+      "input": "non-scaling.svg",
+      "inputSha256": "76a4b90298ac92abc8a78e6c1705b28797c01c8b6898436f918c6258c5ef71da",
+      "width": 600,
+      "height": 384,
+      "beforeChangedPixels": 0,
+      "afterChangedPixels": 0,
+      "captures": [
+        {
+          "pngSha256": "7d8f80c2b14cf570f8214947a61c93d6b7d982186c9be24b4e13ad5a9ed49ff1",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "7d8f80c2b14cf570f8214947a61c93d6b7d982186c9be24b4e13ad5a9ed49ff1",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "7d8f80c2b14cf570f8214947a61c93d6b7d982186c9be24b4e13ad5a9ed49ff1",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "reference": "references/7d8f80c2b14cf570f8214947a61c93d6b7d982186c9be24b4e13ad5a9ed49ff1.png"
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "Independent references admitted to seven-case canonical rendering coverage; final qualification is in qualification.json.",
+  "sourceBodies": "Repository-authored controls; no hosted SVG data.",
+  "captureRecipeRevision": "3",
+  "outputScale": 1,
+  "background": "transparent",
+  "nativeCaptureCount": 18,
+  "beforeLibrarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
+  "afterLibrarySha256": "59f3a7b150c2ee1748584b8cf32ddac3463809b05476c249320f55413fb621fc",
+  "meaning": "position-phase protects original pathLength calibration, signed phase and fractional translation through thin replay. shader-clip preserves the distinct wider shader and clip path even though it was already exact. non-scaling preserves the separate pre-transformed centerline and inverse host-map route.",
+  "hostedSvgBodiesRetained": 0,
+  "hostedSourceAttributeValuesRetained": 0,
+  "productionQualification": "qualification.json"
+}

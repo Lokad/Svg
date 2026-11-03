@@ -75,9 +75,9 @@ public sealed class SvgOpaqueBitmapClipTests
             SvgDrawingMap drawing = new(SvgAffineTransform.Identity, null);
             SvgColor color = new(176, 96, 48, 255);
             Assert.True(SvgHairlineStroke.TryRasterize(path, drawing, color, null, null, SvgClipAntialiasing.None,
-                SvgRasterClipMask.Empty, true, expected, 64, 64, grid, scope, CancellationToken.None));
+                SvgRasterClipMask.Empty, true, expected, 64, 64, grid, scope, budget, CancellationToken.None));
             Assert.True(SvgHairlineStroke.TryRasterize(path, drawing, color, null, null, SvgClipAntialiasing.None,
-                new SvgRasterClipMask(clip), false, actual, 64, 64, grid, scope, CancellationToken.None));
+                new SvgRasterClipMask(clip), false, actual, 64, 64, grid, scope, budget, CancellationToken.None));
             Assert.True(expected.AsSpan().SequenceEqual(actual));
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
