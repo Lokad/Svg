@@ -421,3 +421,23 @@ default-ignorable properties, using the same hash-checked, memory-only downloads
 It does not capture rendering references. Data licensing is included in
 [third-party notices](../THIRD_PARTY_NOTICES.txt); the [case bank](../tests/Research/text-case-mapping/README.md)
 describes native admission and the independent literal controls.
+
+## Native math reference profiles
+
+The [reference probes](../tests/Research/native-math-profiles/README.md) are optional
+Linux research tools. From the repository root:
+
+```bash
+gcc -O2 -ffp-contract=off -fno-builtin -Wall -Wextra -Werror tests/Research/native-math-profiles/atan2-profile.c -ldl -o artifacts/atan2-profile
+g++ -std=c++20 -O2 -ffp-contract=off -Wall -Wextra -Werror tests/Research/native-math-profiles/endpoint-probe.cpp -o artifacts/endpoint-probe
+artifacts/atan2-profile
+python3 -c 'import json; rows=json.load(open("tests/Lokad.Svg.Tests/TestData/endpoint-arc-native.json"))["cases"]; [print(r["id"], *r["p"]) for r in rows]' | artifacts/endpoint-probe
+```
+
+Keep outputs separate from frozen data. To compare libm versions, use verified
+distribution libraries in an isolated mount namespace, without installing them.
+Preserve normal `/proc` and `/dev` mounts for Chrome's existing sandbox. Keep the
+pinned executable, launch flags, source/font hashes and capture recipe unchanged;
+require three healthy, profile-cleaned native captures for each new companion.
+Record package checksums, compiler flags and native results. Ordinary tests need
+neither a native compiler nor another installed libc.

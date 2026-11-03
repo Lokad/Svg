@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.VisualDiff;
+using Lokad.Svg.Testing;
 
 namespace Lokad.Svg.VisualTests;
 
@@ -66,6 +67,46 @@ public sealed class SvgTextPaintBoundsReferenceTests
     [Trait("Layer", "Integrity")]
     public void Shared_paint_stages_retain_native_context_fonts_and_stable_platform_triples()
         => AssertPreciseSourceCapture("paint-stage-images.json", 10, 5);
+
+    [Fact]
+    [Trait("Layer", "Integrity")]
+    public void Core_math_companions_preserve_original_inputs_and_independent_healthy_native_triples()
+    {
+        string directory = Path.Combine(ResearchCorpus.Root, "native-math-profiles");
+        using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "image-capture.json")));
+        JsonElement root = capture.RootElement;
+        byte[] originalBytes = System.Text.Encoding.UTF8.GetBytes(File.ReadAllText(Path.Combine(Folder(), "precision-pattern-images.json"))
+            .Replace("\r\n", "\n", StringComparison.Ordinal));
+        Assert.Equal(Required(root, "originalCaptureLfSha256"), Convert.ToHexStringLower(SHA256.HashData(originalBytes)));
+        using JsonDocument original = JsonDocument.Parse(originalBytes);
+        Dictionary<string, JsonElement> cases = original.RootElement.GetProperty("cases").EnumerateArray()
+            .ToDictionary(row => Required(row, "id"), StringComparer.Ordinal);
+        Assert.Equal(new[] { "spacing-paint-453-candidate", "spacing-paint-453-control", "spacing-paint-455-candidate", "spacing-paint-455-control" },
+            root.GetProperty("cases").EnumerateObject().Select(row => row.Name).Order(StringComparer.Ordinal));
+        foreach (JsonProperty row in root.GetProperty("cases").EnumerateObject())
+        {
+            JsonElement source = cases[row.Name], current = row.Value;
+            Assert.Equal(Required(source, "sourceSha256"), Required(current, "sourceSha256"));
+            Assert.Equal(Required(source, "nativeSourceSha256"), Required(current, "nativeInputSha256"));
+            JsonElement reference = current.GetProperty("reference");
+            byte[] png = File.ReadAllBytes(Path.Combine(directory, Required(reference, "path")));
+            Assert.Equal(Required(reference, "sha256"), Convert.ToHexStringLower(SHA256.HashData(png)));
+            RgbaImage decoded = PngRgbaDecoder.Decode(png, 32_768);
+            Assert.Equal(240, decoded.Width); Assert.Equal(120, decoded.Height);
+            Assert.Equal(Required(reference, "rgbaSha256"), Convert.ToHexStringLower(SHA256.HashData(decoded.Pixels)));
+            Assert.Equal(3, current.GetProperty("captures").GetArrayLength());
+            foreach (JsonElement process in current.GetProperty("captures").EnumerateArray())
+            {
+                Assert.Equal(Required(reference, "sha256"), Required(process, "pngSha256"));
+                Assert.Equal("healthy", Required(process, "startupHealth"));
+                Assert.True(process.GetProperty("profileCleaned").GetBoolean());
+                Assert.False(process.GetProperty("stderrTruncated").GetBoolean());
+                Assert.Equal(0, process.GetProperty("sandboxAccessFailures").GetInt32());
+                Assert.Equal(0, process.GetProperty("networkServiceCrashes").GetInt32());
+                Assert.Equal(0, process.GetProperty("terminalExitCode").GetInt32());
+            }
+        }
+    }
 
     private static void AssertPreciseSourceCapture(string file, int caseCount, int pairCount)
     {
@@ -145,17 +186,26 @@ public sealed class SvgTextPaintBoundsReferenceTests
             }
         }
 
-        static string Required(JsonElement value, string property)
-            => value.GetProperty(property).GetString() ?? throw new InvalidDataException("Missing pattern capture value.");
     }
+
+    private static string Required(JsonElement value, string property)
+        => value.GetProperty(property).GetString() ?? throw new InvalidDataException("Missing native capture value.");
 
     private static async Task AssertNativeImage(string captureFile, string id, bool replayPrepared)
     {
         using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), captureFile)));
         JsonElement row = data.RootElement.GetProperty("cases").EnumerateArray().Single(item => item.GetProperty("id").GetString() == id);
         JsonElement image = row.GetProperty("references").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux");
+        string referenceDirectory = Folder();
+        using JsonDocument? coreMath = NativeMathProfile.Atan2 == NativeAtan2Profile.CoreMath && captureFile == "precision-pattern-images.json"
+            ? JsonDocument.Parse(File.ReadAllBytes(Path.Combine(ResearchCorpus.Root, "native-math-profiles", "image-capture.json"))) : null;
+        if (coreMath is {} current && current.RootElement.GetProperty("cases").TryGetProperty(id, out JsonElement companion))
+        {
+            image = companion.GetProperty("reference");
+            referenceDirectory = Path.Combine(ResearchCorpus.Root, "native-math-profiles");
+        }
         byte[] input = File.ReadAllBytes(Path.Combine(Folder(), row.GetProperty("input").GetString() ?? throw new InvalidDataException()));
-        byte[] reference = File.ReadAllBytes(Path.Combine(Folder(), image.GetProperty("path").GetString() ?? throw new InvalidDataException()));
+        byte[] reference = File.ReadAllBytes(Path.Combine(referenceDirectory, image.GetProperty("path").GetString() ?? throw new InvalidDataException()));
         Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
         Assert.Equal(image.GetProperty("sha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(reference)));
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(Folder(), "font-pack.json")), "r99-fonts");

@@ -5,6 +5,7 @@ using TextEncoding = System.Text.Encoding;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
+using Lokad.Svg.Testing;
 
 namespace Lokad.Svg.Tests;
 
@@ -56,6 +57,8 @@ public sealed partial class SvgTextPaintBoundsTests
         using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(DataPath(captureFile)));
         Assert.Equal(capture.RootElement.GetProperty("vectorSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(bytes)));
         using JsonDocument vectors = JsonDocument.Parse(bytes);
+        using JsonDocument? coreMath = NativeMathProfile.Atan2 == NativeAtan2Profile.CoreMath
+            ? JsonDocument.Parse(File.ReadAllBytes(DataPath("core-math-path-boxes.json"))) : null;
         string platform = OperatingSystem.IsWindows() ? "windows" : "linux";
         foreach (JsonElement row in vectors.RootElement.EnumerateArray())
         {
@@ -70,7 +73,11 @@ public sealed partial class SvgTextPaintBoundsTests
                     .First(geometry => geometry.Kind == SvgGeometryKind.GlyphContours).Glyph.Shader);
                 SvgGradientTransform box = (shader.Gradient.SourcePaint ?? throw new InvalidDataException("Missing source path box.")).Data.Local;
                 double[] actual = [box.E, box.F, box.A, box.D];
-                double[] expected = row.GetProperty(platform).EnumerateArray().Select(value => value.GetDouble()).ToArray();
+                JsonElement reference = row.GetProperty(platform);
+                if (coreMath is {} current && current.RootElement.GetProperty(vectorsFile).TryGetProperty(
+                    row.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing path vector id."), out JsonElement companion))
+                    reference = companion;
+                double[] expected = reference.EnumerateArray().Select(value => value.GetDouble()).ToArray();
                 Assert.True(expected.SequenceEqual(actual), row.GetProperty("id").GetString() + ": expected "
                     + JsonSerializer.Serialize(expected) + ", actual " + JsonSerializer.Serialize(actual));
             }

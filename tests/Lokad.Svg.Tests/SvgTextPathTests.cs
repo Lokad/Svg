@@ -2,6 +2,7 @@ using System.Xml;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
+using Lokad.Svg.Testing;
 
 namespace Lokad.Svg.Tests;
 
@@ -160,9 +161,10 @@ public sealed class SvgTextPathTests
         // representation rather than rounding a double at a decimal boundary.
         Assert.Equal(17.154211044311523f, (float)map.E);
         Assert.Equal(49.75111770629883f, (float)map.F);
-        // Existing Windows/Linux placement diagnostics retain the native libm
-        // difference of one scalar ULP; both expected angles stay unchanged.
-        float nativeAngle = OperatingSystem.IsWindows() ? -50.969764709472656f : -50.96976852416992f;
+        // Independent browser diagnostics retain both native atan2f profiles.
+        // CORE-MATH and Windows agree here; the legacy angle remains unchanged.
+        float nativeAngle = OperatingSystem.IsWindows() || NativeMathProfile.Atan2 == NativeAtan2Profile.CoreMath
+            ? -50.969764709472656f : -50.96976852416992f;
         Assert.Equal(nativeAngle, (float)(Math.Atan2(map.B, map.A) * 180 / Math.PI));
         Assert.InRange(path.Baseline.Length, 159.22885, 159.22886);
     }

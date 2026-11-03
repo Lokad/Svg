@@ -1,0 +1,161 @@
+{
+  "profile": "CORE-MATH atan2f",
+  "originalCapture": "../text-paint-bounds/precision-pattern-images.json",
+  "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+  "fontBindings": "Unchanged original native CSS and both pinned programs; exact original nativeInputSha256 for every case. Newer glibc alone is selected in a private mount namespace; Chrome launch flags and executable are unchanged.",
+  "cases": {
+    "spacing-paint-453-candidate": {
+      "sourceSha256": "1ba4cb57423f8a9cfd919983e512f14b3673042e50c4ddd48e097dc50d817de4",
+      "nativeInputSha256": "71ddd65b654ee3780321836a60fff68b244e058dacdcfcd766483e7d92b7ec12",
+      "reference": {
+        "path": "references/ff586fb11cd5d8b3e8cf5b11f0610a010d20becc71775720f53135950fba2b91.png",
+        "sha256": "ff586fb11cd5d8b3e8cf5b11f0610a010d20becc71775720f53135950fba2b91",
+        "rgbaSha256": "46864b8d2b2429e03fb5ce132f51cbc1d60bc3d5513c91f47a414977bf347ea6"
+      },
+      "captures": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "ff586fb11cd5d8b3e8cf5b11f0610a010d20becc71775720f53135950fba2b91",
+          "terminalExitCode": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "ff586fb11cd5d8b3e8cf5b11f0610a010d20becc71775720f53135950fba2b91",
+          "terminalExitCode": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "ff586fb11cd5d8b3e8cf5b11f0610a010d20becc71775720f53135950fba2b91",
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "spacing-paint-453-control": {
+      "sourceSha256": "4553e6070062a894ce3733e32d71297f9acf256dd2bc20f163a13a95240be6bd",
+      "nativeInputSha256": "ddf09b43dea1ba39c9b84b34c03c256bcff08af3bb526aa6307b02cd85db57e6",
+      "reference": {
+        "path": "references/52d4a5edbf7bef078defd68dca8a06410a5557709d3604df1dba96a3e73b0945.png",
+        "sha256": "52d4a5edbf7bef078defd68dca8a06410a5557709d3604df1dba96a3e73b0945",
+        "rgbaSha256": "4a40c9fda1737def4b8f9a35ac779d7ecefe5b5979ba23fb8a167775a2e13605"
+      },
+      "captures": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "52d4a5edbf7bef078defd68dca8a06410a5557709d3604df1dba96a3e73b0945",
+          "terminalExitCode": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "52d4a5edbf7bef078defd68dca8a06410a5557709d3604df1dba96a3e73b0945",
+          "terminalExitCode": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "52d4a5edbf7bef078defd68dca8a06410a5557709d3604df1dba96a3e73b0945",
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "spacing-paint-455-candidate": {
+      "sourceSha256": "5feda2fc0fc83079bf4ed8dfa52c133e126e3ced670cb88ab314345116416d37",
+      "nativeInputSha256": "9aa7f7031916774ea5550b120975bbb7824b6c3472709891f77812cbfde6b6cb",
+      "reference": {
+        "path": "references/ae823e1ed137e0261a9e4406081c64aa222ab30624e4f0c53b9d713364608e6e.png",
+        "sha256": "ae823e1ed137e0261a9e4406081c64aa222ab30624e4f0c53b9d713364608e6e",
+        "rgbaSha256": "582510de856a8dbae11dd023df4249f537ac5ca3861346d7deb62b586a0b5761"
+      },
+      "captures": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "ae823e1ed137e0261a9e4406081c64aa222ab30624e4f0c53b9d713364608e6e",
+          "terminalExitCode": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "ae823e1ed137e0261a9e4406081c64aa222ab30624e4f0c53b9d713364608e6e",
+          "terminalExitCode": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "ae823e1ed137e0261a9e4406081c64aa222ab30624e4f0c53b9d713364608e6e",
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "spacing-paint-455-control": {
+      "sourceSha256": "a5876731cfda7dbd39a5c5c1f76bf16556d442eae76e7baa5d750c196f1c3dc4",
+      "nativeInputSha256": "0a35c91dbb7bfb22c438dd53e3b902ee49beeda2806d8affad110e537b46af06",
+      "reference": {
+        "path": "references/da1b3a6662e420fcb3921cb14727d95089e764450eaf9309d0945102b0b17a43.png",
+        "sha256": "da1b3a6662e420fcb3921cb14727d95089e764450eaf9309d0945102b0b17a43",
+        "rgbaSha256": "81c0634f669ec1afd2168379200858221efdd222f1534c903913f4d260e46345"
+      },
+      "captures": [
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "da1b3a6662e420fcb3921cb14727d95089e764450eaf9309d0945102b0b17a43",
+          "terminalExitCode": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "da1b3a6662e420fcb3921cb14727d95089e764450eaf9309d0945102b0b17a43",
+          "terminalExitCode": 0
+        },
+        {
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "stderrTruncated": false,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "pngSha256": "da1b3a6662e420fcb3921cb14727d95089e764450eaf9309d0945102b0b17a43",
+          "terminalExitCode": 0
+        }
+      ]
+    }
+  },
+  "originalCaptureLfSha256": "23dc434b5f9f40aa877434bdd20abfe1c785f66468652fb13238c697c51da0e8"
+}

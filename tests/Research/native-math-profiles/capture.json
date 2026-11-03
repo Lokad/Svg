@@ -1,0 +1,614 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "db3cf187d7d8eebb62e58ea98ba071151aa7d09f",
+  "status": "Independent native companions captured before test reference selection changes; no Lokad.Svg production change.",
+  "environment": {
+    "legacy": "Ubuntu 24.04/glibc 2.39",
+    "current": "Same host/assemblies/executable with Ubuntu libc6 2.43-2ubuntu2.4 in a private mount namespace",
+    "packageUrl": "https://security.ubuntu.com/ubuntu/pool/main/g/glibc/libc6_2.43-2ubuntu2.4_amd64.deb",
+    "packageSha256": "a613b457f3ff9c84ebd28af8a05afdec22605ad9aed87c71e3a6ae5170aeb9ca",
+    "checksumSource": "https://packages.ubuntu.com/resolute/amd64/libc6/download",
+    "hostInstallationChanged": false,
+    "chromeLaunchFlagsChanged": false
+  },
+  "profileProbe": {
+    "source": "atan2-profile.c",
+    "sourceSha256": "601bbb63103bbc477e4a4485e2f7c2f1a11fe096529895920667a4f3130df52d",
+    "input": [
+      1,
+      7
+    ],
+    "legacyResultBits": "3E114D77",
+    "coreMathResultBits": "3E114D76",
+    "method": "Native dlsym atan2f through each libm, not Lokad.Svg. The fixed input is unrelated to every rendering fixture."
+  },
+  "endpoint": {
+    "source": "endpoint-probe.cpp",
+    "sourceSha256": "cbc751488e6cded93048b4b6ab47ea8ed7966d8247a2e473fd3b9f774031f6cf",
+    "originalSkiaRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "originalSourceUrl": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPathBuilder.cpp",
+    "originalSourceSha256": "39873986d063779e00bc9850924c82de381a30c66c2f775be697aee0f8b56374",
+    "compilerFlags": "GCC 13.3 -std=c++20 -O2 -ffp-contract=off -Wall -Wextra -Werror",
+    "caseSource": "../../Lokad.Svg.Tests/TestData/endpoint-arc-native.json",
+    "legacyMatchesAll36FrozenRows": true,
+    "coreMathMatchesAll36ExistingWindowsRows": true,
+    "changedNativeRows": 4,
+    "legacyCsvLfSha256": "e852eb575ef5ccb177b080ad4f7f791044b23a06eda821aa6c774eb0e2123645",
+    "coreMathCsvLfSha256": "22ba82887cf98349a269ac11f8899f0faafd050e33f59e5814279816013bae59"
+  },
+  "dom": {
+    "inputs": [
+      "../text-paint-bounds/path-vectors.json",
+      "../text-paint-bounds/spaced-path-vectors.json",
+      "../curved-font-documents/curved-midpoint.svg"
+    ],
+    "inputSha256": [
+      "5afc210baa263b9c5a7c2a374f679dfdb44ac0637adf8cfc0959f28cbed52ac7",
+      "2a1db2099fb094dc693b3c479523351ff9eceffdeb6453580a201204e372b8b6",
+      "d05a438a5faeeafc73cdce1a37131a5adbe60c6f31cb55e4a3cd2c320b3ae06c"
+    ],
+    "fonts": "The same ReviewFont regular/ReviewMono bold programs and bindings as the original captures; inherited fantasy in the curved control is explicitly bound to the same regular program.",
+    "valuesPerCapture": 26,
+    "companion": "text-path-boxes.json",
+    "companionSha256": "67340ed299bd30d06b261a2ad4be3e9b0797a76791880a25d918235ef39aa379",
+    "curvedPlacement": {
+      "sourceStartUnchanged": [
+        17.154211044311523,
+        49.75111770629883
+      ],
+      "legacyAngle": -50.96976852416992,
+      "coreMathAngle": -50.969764709472656
+    },
+    "captures": {
+      "glibc239": [
+        {
+          "valuesSha256": "4d147f4fa30e7a13377133b834bc0eda00a771277e76ae0290662b164095765d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "valuesSha256": "4d147f4fa30e7a13377133b834bc0eda00a771277e76ae0290662b164095765d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "valuesSha256": "4d147f4fa30e7a13377133b834bc0eda00a771277e76ae0290662b164095765d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "glibc243": [
+        {
+          "valuesSha256": "51ce484a87dd8aa9d23170ba13a1714f3aa2dcc58f831f61ca96d72c611b0d9a",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "valuesSha256": "51ce484a87dd8aa9d23170ba13a1714f3aa2dcc58f831f61ca96d72c611b0d9a",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "valuesSha256": "51ce484a87dd8aa9d23170ba13a1714f3aa2dcc58f831f61ca96d72c611b0d9a",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "changedFrozenBoxVectors": 5
+  },
+  "rendering": {
+    "cases": 4,
+    "companion": "image-capture.json",
+    "companionSha256": "5dc46d5491526795c67b9dc356fe89ff50f1759f08b625327f3ee9b9d824bad6",
+    "healthyIdenticalCapturesPerCase": 3,
+    "matchedNativeComparisons": {
+      "spacing-paint-453-candidate": {
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      "spacing-paint-453-control": {
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      "spacing-paint-455-candidate": {
+        "changedPixels": 0,
+        "maximumError": 0
+      },
+      "spacing-paint-455-control": {
+        "changedPixels": 0,
+        "maximumError": 0
+      }
+    }
+  },
+  "invariants": {
+    "existingSourcesChanged": 0,
+    "existingReferencesChanged": 0,
+    "rendererChanges": 0,
+    "testExclusions": 0,
+    "toleranceChanges": 0
+  },
+  "qualification": {
+    "reproducedCiFailures": 10,
+    "reproduction": [
+      {
+        "profile": "glibc239",
+        "kind": "core",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 0,
+        "seconds": 17.504056199919432,
+        "counters": {
+          "executed": "140",
+          "passed": "140",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc239",
+        "kind": "visual",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 0,
+        "seconds": 32.58820230001584,
+        "counters": {
+          "executed": "557",
+          "passed": "557",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 1,
+        "seconds": 11.595611099852249,
+        "counters": {
+          "executed": "140",
+          "passed": "134",
+          "failed": "6"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Path_paint_boxes_use_original_source_maps_before_paint_truncation_and_output_placement(vectorsFile: \"path-vectors.json\", captureFile: \"path-capture.json\", outputScale: 1)",
+            "message": "offset: expected [2.9225404262542725,-5.1330671310424805,43.14315414428711,36.498287200927734], actual [2.9225409030914307,-5.1330671310424805,43.143150329589844,36.498287200927734]"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Path_paint_boxes_use_original_source_maps_before_paint_truncation_and_output_placement(vectorsFile: \"spaced-path-vectors.json\", captureFile: \"spaced-path-capture.json\", outputScale: 1.5)",
+            "message": "fraction: expected [-5.219821453094482,0.03183400630950928,44.38909149169922,42.35892105102539], actual [-5.219821453094482,0.031833961606025696,44.38909149169922,42.35892105102539]"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Path_paint_boxes_use_original_source_maps_before_paint_truncation_and_output_placement(vectorsFile: \"spaced-path-vectors.json\", captureFile: \"spaced-path-capture.json\", outputScale: 1)",
+            "message": "fraction: expected [-5.219821453094482,0.03183400630950928,44.38909149169922,42.35892105102539], actual [-5.219821453094482,0.031833961606025696,44.38909149169922,42.35892105102539]"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgEndpointArcTests.Endpoint_conics_match_original_native_float_vectors(id: \"rotated-negative\")",
+            "message": "Assert.Equal() Failure: Values differ\nExpected: 1074976395\nActual:   1074976394"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Path_paint_boxes_use_original_source_maps_before_paint_truncation_and_output_placement(vectorsFile: \"path-vectors.json\", captureFile: \"path-capture.json\", outputScale: 1.5)",
+            "message": "offset: expected [2.9225404262542725,-5.1330671310424805,43.14315414428711,36.498287200927734], actual [2.9225409030914307,-5.1330671310424805,43.143150329589844,36.498287200927734]"
+          },
+          {
+            "name": "Lokad.Svg.Tests.SvgTextPathTests.Retained_curved_A_placement_matches_independent_browser_character_geometry",
+            "message": "Assert.Equal() Failure: Values differ\nExpected: -50.9697685\nActual:   -50.9697647"
+          }
+        ]
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 1,
+        "seconds": 20.11728519992903,
+        "counters": {
+          "executed": "557",
+          "passed": "553",
+          "failed": "4"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-455-candidate\")",
+            "message": "spacing-paint-455-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-453-control\")",
+            "message": "spacing-paint-453-control"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-453-candidate\")",
+            "message": "spacing-paint-453-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-455-control\")",
+            "message": "spacing-paint-455-control"
+          }
+        ]
+      }
+    ],
+    "fullMilestone": [
+      {
+        "profile": "glibc239",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "exitCode": 0,
+        "seconds": 15.758614599937573,
+        "counters": {
+          "executed": "140",
+          "passed": "140",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc239",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "exitCode": 0,
+        "seconds": 23.27956339996308,
+        "counters": {
+          "executed": "558",
+          "passed": "558",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 0,
+        "seconds": 60.58366739982739,
+        "counters": {
+          "executed": "47288",
+          "passed": "47288",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 0,
+        "seconds": 314.9730901001021,
+        "counters": {
+          "executed": "46649",
+          "passed": "46649",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "exitCode": 0,
+        "seconds": 15.102761099813506,
+        "counters": {
+          "executed": "140",
+          "passed": "140",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 0,
+        "seconds": 76.98579790000804,
+        "counters": {
+          "executed": "47288",
+          "passed": "47288",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "exitCode": 0,
+        "seconds": 23.03124270006083,
+        "counters": {
+          "executed": "558",
+          "passed": "558",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 1,
+        "seconds": 290.3017717001494,
+        "counters": {
+          "executed": "46649",
+          "passed": "46648",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      }
+    ],
+    "compatibilityCoreMath": [
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "exitCode": 0,
+        "seconds": 13.51262759999372,
+        "counters": {
+          "executed": "140",
+          "passed": "140",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "exitCode": 0,
+        "seconds": 22.706226700218394,
+        "counters": {
+          "executed": "558",
+          "passed": "558",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "finalFocused": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 0,
+        "seconds": 12.769663700135425,
+        "counters": {
+          "executed": "140",
+          "passed": "140",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 0,
+        "seconds": 24.916247199987993,
+        "counters": {
+          "executed": "558",
+          "passed": "558",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc239",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 0,
+        "seconds": 15.075730500044301,
+        "counters": {
+          "executed": "140",
+          "passed": "140",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc239",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 0,
+        "seconds": 25.95940240006894,
+        "counters": {
+          "executed": "558",
+          "passed": "558",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 0,
+        "seconds": 16.259529399918392,
+        "counters": {
+          "executed": "140",
+          "passed": "140",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "exitCode": 0,
+        "seconds": 20.541671799961478,
+        "counters": {
+          "executed": "558",
+          "passed": "558",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "exitCode": 0,
+        "seconds": 19.90741980005987,
+        "counters": {
+          "executed": "558",
+          "passed": "558",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc239",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "exitCode": 0,
+        "seconds": 27.360220200149342,
+        "counters": {
+          "executed": "558",
+          "passed": "558",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd",
+        "exitCode": 0,
+        "seconds": 23.87788280006498,
+        "counters": {
+          "executed": "558",
+          "passed": "558",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "finalFocusedSourceChange": "After the full run, only the new integrity method was adjusted to hash the existing capture metadata in portable LF form. Final focused runs cover that method on all profiles/runtimes; existing cases and renderer are unchanged.",
+    "timing": "Wall time includes startup/concurrency. The same 140 core cases pass before on legacy libm and after on both profiles. Rendering/integrity increases from 557 to 558 cases, adding one provenance check. No performance or test-consolidation claim.",
+    "harnessCorrection": "Two isolated .NET10 attempts aborted before running any tests with read-only /proc and /dev. Correct normal mounts produced 140 core and 558 visual passes; zero-execution attempts are excluded from validation.",
+    "package": {
+      "nupkgSha256": "cf6028405caf9a6be23f3dbc1d1cd6ba8a939f3d3240cb89908b7f1f746928a6",
+      "assets": {
+        "net11.0": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+        "net10.0": "fa4fc280014755e075724afcad5d9b120e524a69771368a0c9bc07bc6639afbd"
+      },
+      "byteIdenticalToPreviouslyQualifiedInstalledPackage": true,
+      "repacked": false
+    },
+    "originalsCoreMath": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 31.39777320018038,
+      "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+      "hosts": {
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 34,
+            "rendered": 167,
+            "MalformedInput": 3
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 166,
+          "changedOriginals": [
+            "svg.svg"
+          ]
+        }
+      }
+    },
+    "changedOriginalMatchedNative": {
+      "name": "svg.svg",
+      "url": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/svg.svg",
+      "sourceSha256": "f367188940f36e0053777941ea72820d272dacc5e2fadaf03ba837b55947081a",
+      "width": 300,
+      "height": 150,
+      "fontContext": "None",
+      "sourceSvgBodiesRetained": 0,
+      "rows": [
+        {
+          "profile": "glibc239",
+          "captures": [
+            {
+              "pngSha256": "9fe354018c0e06ce1034fd5530cfd3b29e2d71846295abd7f8e151a1d3c7b58a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "9fe354018c0e06ce1034fd5530cfd3b29e2d71846295abd7f8e151a1d3c7b58a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "9fe354018c0e06ce1034fd5530cfd3b29e2d71846295abd7f8e151a1d3c7b58a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ],
+          "comparisonWithCoreMathLibrary": {
+            "changedPixels": 1,
+            "maximumError": 1
+          }
+        },
+        {
+          "profile": "glibc243",
+          "captures": [
+            {
+              "pngSha256": "d74b6959311fef630ad714c948f56643aca176974ac97889f8fb47bef67a9cb4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "d74b6959311fef630ad714c948f56643aca176974ac97889f8fb47bef67a9cb4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "d74b6959311fef630ad714c948f56643aca176974ac97889f8fb47bef67a9cb4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ],
+          "comparisonWithCoreMathLibrary": {
+            "changedPixels": 0,
+            "maximumError": 0
+          }
+        }
+      ],
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "viewportEvidence": "../../../tests/Research/svgweb/originals.json: svg.svg matchedViewportReview. The initial intrinsic-image experiment used a different viewport and is excluded."
+    }
+  }
+}

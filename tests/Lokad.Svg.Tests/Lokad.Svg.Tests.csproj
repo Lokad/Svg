@@ -30,6 +30,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../Shared/TestMemoryBudget.cs" Link="TestMemoryBudget.cs" />
+    <Compile Include="../Shared/NativeMathProfile.cs" Link="NativeMathProfile.cs" />
+    <None Include="../Research/native-math-profiles/text-path-boxes.json" Link="TestData/text-paint-bounds/core-math-path-boxes.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <None Include="../Research/text-instance-composition/mechanisms/*.svg" Link="TestData/text-instance-composition/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

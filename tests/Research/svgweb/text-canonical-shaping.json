@@ -546,6 +546,6 @@
       ]
     },
     "localLinuxQualification": "Ubuntu 24.04 / glibc 2.39-0ubuntu8.9; all reported local Linux suites remain green. The CI runner alias selected Ubuntu 26.04.1.",
-    "diagnostic": "OPEN: shared host-math/profile discrepancy is a hypothesis, supported by one-ULP angle/arc differences and the changed runner distribution. Reproduce with the newer native math environment and compare independent native functions/browser captures before changing implementation or reference selection. No reference/assertion/tolerance changes and no runner pin used to suppress these failures."
+    "diagnostic": "Resolved by independently measured native atan2f reference companions. Swapping only isolated native math libraries reproduces all ten failures; the original Skia function and healthy browser captures confirm the newer results. Renderer and existing references remain unchanged. See ../native-math-profiles/capture.json; follow-up exact-head CI remains pending."
   }
 }

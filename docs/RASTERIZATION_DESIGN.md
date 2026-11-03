@@ -127,6 +127,12 @@ share the existing font-size/fitting scale; no runtime shaping dependency is add
 The [canonical shaping evidence](../tests/Research/svgweb/text-canonical-shaping.json)
 records mechanism, ownership and independent platform rendering coverage.
 
+Native scalar `atan2f` can differ across Linux libm versions. Reference selection
+uses an independent BCL scalar probe, with separately captured exact native
+companions for path angles, source boxes and affected pattern images. The
+[math-profile evidence](../tests/Research/native-math-profiles/README.md) preserves
+the original references; renderer arithmetic and coverage remain unchanged.
+
 Before relaxing a glyph-mask strike, transformed font axes select canonical
 unhinted paths above the native 256-pixel bound. These paths use the original
 unsnapped placement and existing analytic fill/clip/shader renderer. Smaller

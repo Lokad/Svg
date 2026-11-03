@@ -6,6 +6,12 @@ Windows/Linux/package qualification at coherent milestones. The
 package and reference evidence; the [support matrix](../docs/SUPPORT_MATRIX.md)
 defines supported behavior.
 
+[Native math profiles](Research/native-math-profiles/README.md) preserve exact
+legacy and CORE-MATH references for the same affected cases. Independent native
+functions and healthy browser triples establish each companion; a fixed BCL scalar
+probe selects the host profile without inspecting renderer output. An unrecognized probe result
+fails qualification. Existing sources, references and assertions stay intact.
+
 ## Responsibilities
 
 | Layer | Purpose and representative tests |
