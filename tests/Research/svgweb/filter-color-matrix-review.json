@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "status": "OPEN: complete corpus survey and shared-stage review; no color-matrix implementation or original acceptance claim.",
+  "sourceBaseline": "ecfd311d99e800bc72019c0e99e2f960b5fbff5a",
+  "inventory": {
+    "sourceFilesChecked": 204,
+    "sourceHashesVerified": 204,
+    "malformedXmlFiles": 0,
+    "filesWithColorMatrices": 1,
+    "matrixElements": 4,
+    "types": {
+      "matrix": 4
+    },
+    "sources": [
+      {
+        "name": "svg2009.svg",
+        "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+        "xmlParsed": true,
+        "matrices": [
+          {
+            "type": "matrix",
+            "valuesPresent": true,
+            "numberTokens": 20,
+            "finiteNumbers": true,
+            "input": "default",
+            "ownColorSpace": "inherited",
+            "explicitSubregion": false,
+            "createsAlphaFromTransparent": false,
+            "changesAlpha": true,
+            "mixesAlphaIntoColor": false
+          },
+          {
+            "type": "matrix",
+            "valuesPresent": true,
+            "numberTokens": 20,
+            "finiteNumbers": true,
+            "input": "default",
+            "ownColorSpace": "inherited",
+            "explicitSubregion": false,
+            "createsAlphaFromTransparent": false,
+            "changesAlpha": true,
+            "mixesAlphaIntoColor": false
+          },
+          {
+            "type": "matrix",
+            "valuesPresent": true,
+            "numberTokens": 20,
+            "finiteNumbers": true,
+            "input": "named-result",
+            "ownColorSpace": "inherited",
+            "explicitSubregion": false,
+            "createsAlphaFromTransparent": false,
+            "changesAlpha": false,
+            "mixesAlphaIntoColor": true
+          },
+          {
+            "type": "matrix",
+            "valuesPresent": true,
+            "numberTokens": 20,
+            "finiteNumbers": true,
+            "input": "default",
+            "ownColorSpace": "inherited",
+            "explicitSubregion": false,
+            "createsAlphaFromTransparent": false,
+            "changesAlpha": true,
+            "mixesAlphaIntoColor": false
+          }
+        ]
+      }
+    ],
+    "hostedBodiesRetained": 0,
+    "attributeValuesRetained": 0
+  },
+  "reviewedSourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgFilterArena.cs": "db429c7b4d91d0d6a18261f18da37e3359ef27ba38b30acd678c725f5b72594e",
+    "src/Lokad.Svg/Parsing/SvgFilterDefinitionBuilder.cs": "8cb056527c153ddbfc1d69783193a989aca58b0033113427ea91c57113e3c660",
+    "src/Lokad.Svg/Rendering/SvgFilterColorTransfer.cs": "33a6fa566f2122f06a8dda6a6b46467e89fed1a5ebd95f82e56faad04f6079f5",
+    "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs": "57d270a25522dacec23f0efd5f9b543519685d9e616866736483e1c2ce2e3bfa"
+  },
+  "structuralFindings": [
+    {
+      "area": "Parameters",
+      "finding": "The existing primitive graph has no color-matrix parameter type. Add a precise immutable matrix value and validate external numbers at the definition boundary; do not repurpose blur, offset or flood fields."
+    },
+    {
+      "area": "Color and alpha",
+      "finding": "SvgFilterColorTransfer performs color-space transfer on premultiplied samples. A matrix also mixes channels and changes alpha; it needs its own bounded arithmetic kernel, with temporary unpremultiplication and subsequent premultiplication. Reuse existing transfer stages rather than folding them through matrix/clamp boundaries."
+    },
+    {
+      "area": "Bounds and crops",
+      "finding": "Source, stored-image, construction and output extents already have separate metadata. A matrix capable of making transparent input opaque can affect its primitive region beyond source ink. Do not inherit the ordinary source-only output bound unconditionally."
+    },
+    {
+      "area": "Sampling",
+      "finding": "Deferred source color filters use a small enum for existing operations. An arbitrary matrix must retain operation order, color space, crop coverage and byte-storage boundaries; do not collapse it into an existing enum value or snap affine maps."
+    },
+    {
+      "area": "Ownership",
+      "finding": "Reuse the existing filter frame/surface admission and cancellation lifecycle. Matrix coefficients need no new resource provider, cache, scene owner or replay pipeline."
+    }
+  ],
+  "closureCriteria": {
+    "mechanisms": [
+      "Direct finite-number, token-count/default and matrix arithmetic boundaries, including alpha zero, alpha changes, clamping and channel coupling.",
+      "Direct output-bound distinction for transparent-black-preserving versus alpha-generating matrices; retain authored subregions."
+    ],
+    "contracts": [
+      "One representative matrix/frame refusal, cleanup, cancellation and retry interaction, preserving borrowed storage and successful reuse."
+    ],
+    "rendering": [
+      "Independent native controls for alpha changes and alpha-to-color coupling, then named-result chains and both working color spaces.",
+      "One canonical conversion per control; add crop, affine sampling and adjacent materialization only for distinct interactions.",
+      "Never derive reference images from production output or copy hosted attribute snippets."
+    ],
+    "originals": [
+      "Recheck unchanged originals and all nineteen supplied-font contexts.",
+      "Continue the RAM-only static diagnostic beyond the matrix gate with explicit fonts/static-state; animation still prevents whole-original acceptance."
+    ],
+    "qualification": "Focused mechanisms and native rendering during development; affected integration before promotion; full Windows/Linux/package qualification at a coherent filter milestone."
+  },
+  "specification": "https://www.w3.org/TR/filter-effects-1/#feColorMatrixElement"
+}
