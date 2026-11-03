@@ -64,12 +64,15 @@ character indexing. The [case projection bank](../text-case-mapping/README.md)
 qualifies default upper/lowercase and capitalization independently; other language
 tailoring remains open.
 
-The [supplied-program inventory](supplied-original-contexts.json) pins all 19 font
+The [supplied-program inventory](supplied-original-contexts.json) pins the first 19 font
 contexts and three stable healthy captures per host. The [current raster-strike correction](windows-small-strikes.json)
 closes twelve complete originals, including blocks_game, helloworld, mysvg and snake,
-in those declared contexts. All nineteen supplied contexts are exact on both hosts.
+in those declared contexts. These nineteen supplied contexts are exact on both hosts.
 The [legacy declaration review](legacy-font-declarations.json) accounts for the
 other seven: embedded font definitions are dormant in the current image contract.
+[Two additional declared contexts](supplied-original-contexts-additional.json) make
+Steps and bloglines exact with an explicitly matched Noto program, bringing the
+total to 21. Their unmodified font-free defaults still require host fonts.
 Historical SVG 1.1 inline-font rendering remains outside the implemented font formats;
 transported programs do not establish support for it.
 

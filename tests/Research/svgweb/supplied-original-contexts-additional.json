@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "db3cf187d7d8eebb62e58ea98ba071151aa7d09f",
+  "status": "CLOSED: two additional explicit supplied-program static contexts. The unchanged font-free originals still require a host font snapshot; no ambient/original-font or dynamic behavior claim.",
+  "librarySha256": "d0780a8ab23091b0ee0c75d0faecee39ea56179dfd714243b7d15ec6eb0b88fd",
+  "priorContexts": "supplied-original-contexts.json",
+  "totalDeclaredExactContexts": 21,
+  "sourceBodiesRetained": 0,
+  "sourceAttributeValuesRetained": 0,
+  "font": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
+  "validation": "Both unchanged original bodies are submitted to prepared public conversion in RAM. The host explicitly binds requested families to the same existing Noto Sans regular program; native font declarations alone are rebound in RAM to that physical program. SVG image static state, geometry, text, source dimensions and inactive scripts/events are preserved. Three healthy identical native captures per host.",
+  "rows": [
+    {
+      "name": "Steps.svg",
+      "sourceSha256": "bb86d3eca3502649661d892cbfdb8ad604611b3cdf48b5f131461536476715af",
+      "nativeInputSha256": "14cfe1744e3b1db406a034380010cd1f18765633f729dba56bfd95a1040c328f",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "fontContext": "Explicit host Noto Sans regular for every discovered family; identical physical program on both sides. Native font declarations alone are rebound in RAM. This is a declared supplied-font context, not original ambient-font qualification.",
+      "bridge": {
+        "nonfontContentPreserved": true,
+        "fontBindingChanges": 4,
+        "strictHostFallback": true,
+        "legacyFontDeclarationsUnmodified": true
+      },
+      "sourceBodiesRetained": 0,
+      "hosts": [
+        {
+          "host": "windows",
+          "outcome": "rendered",
+          "pngSha256": "e3ae075e6f1a0cdc2fa1f4fc19bf9355b43a7f02e1d21a37f72ac3877753df85",
+          "strictHostFallback": true,
+          "originalFontQualification": false,
+          "width": 600,
+          "height": 600,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "bounds": null,
+          "captures": [
+            {
+              "pngSha256": "ba046ca2d0d5633aaf4958d72611148f253b6430f9f72f690aa346e5b688e01c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ba046ca2d0d5633aaf4958d72611148f253b6430f9f72f690aa346e5b688e01c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ba046ca2d0d5633aaf4958d72611148f253b6430f9f72f690aa346e5b688e01c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        {
+          "host": "linux",
+          "outcome": "rendered",
+          "pngSha256": "00852916c8868773b5d5bb5083aacd9bf726b5e5bc046301923d276c4dd70af6",
+          "strictHostFallback": true,
+          "originalFontQualification": false,
+          "width": 600,
+          "height": 600,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "bounds": null,
+          "captures": [
+            {
+              "pngSha256": "7845a2dad0a1d7d89be3b203c66d9ffc9c20ff08872619a16e46578a7da3e395",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "7845a2dad0a1d7d89be3b203c66d9ffc9c20ff08872619a16e46578a7da3e395",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "7845a2dad0a1d7d89be3b203c66d9ffc9c20ff08872619a16e46578a7da3e395",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bloglines.svg",
+      "sourceSha256": "4bb1b6ee3347cd5dfe48f6755eb0504058dd59d3e78a653678d55271b3c85324",
+      "nativeInputSha256": "7aba1d24da6bbab6201fbcb904efa7915f5abd69265fc627a78779b4b14d3b4f",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "fontContext": "Explicit host Noto Sans regular for every discovered family; identical physical program on both sides. Native font declarations alone are rebound in RAM. This is a declared supplied-font context, not original ambient-font qualification.",
+      "bridge": {
+        "nonfontContentPreserved": true,
+        "fontBindingChanges": 3,
+        "strictHostFallback": true,
+        "legacyFontDeclarationsUnmodified": true
+      },
+      "sourceBodiesRetained": 0,
+      "hosts": [
+        {
+          "host": "windows",
+          "outcome": "rendered",
+          "pngSha256": "70386d8aca86d100c6e12915ffafb63dc2c41441f598c415399cf9873f5fbc1d",
+          "strictHostFallback": true,
+          "originalFontQualification": false,
+          "width": 300,
+          "height": 150,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "bounds": null,
+          "captures": [
+            {
+              "pngSha256": "afe3c9fbfb53ea72d39c13ef3a92bc9b5b4fc4503205d0d15c3d9c5acba35f05",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "afe3c9fbfb53ea72d39c13ef3a92bc9b5b4fc4503205d0d15c3d9c5acba35f05",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "afe3c9fbfb53ea72d39c13ef3a92bc9b5b4fc4503205d0d15c3d9c5acba35f05",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        {
+          "host": "linux",
+          "outcome": "rendered",
+          "pngSha256": "c270fdfa994da71d4b93ef14d6c0101fe23f46b0109b785343de7e3d2aa9af8e",
+          "strictHostFallback": true,
+          "originalFontQualification": false,
+          "width": 300,
+          "height": 150,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "bounds": null,
+          "captures": [
+            {
+              "pngSha256": "77857e9733168ec955e1257d437e03d092137ae271496a387e7d57d6b5090bed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "77857e9733168ec955e1257d437e03d092137ae271496a387e7d57d6b5090bed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "77857e9733168ec955e1257d437e03d092137ae271496a387e7d57d6b5090bed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "existingOrthogonalCoverage": [
+    "../../Lokad.Svg.Tests/SvgStaticScriptTests.cs",
+    "../../Lokad.Svg.Tests/SvgEventAttributeTests.cs",
+    "../../Lokad.Svg.Tests/SvgAttributeApplicabilityTests.cs",
+    "../text-case-mapping/README.md",
+    "../text-node-boundaries/README.md"
+  ],
+  "testResponsibilities": "No new production gap was exposed. Existing orthogonal script/event/attribute and supplied-font text controls protect the mechanisms; these complete original comparisons extend provenance/context accounting without another test/API matrix. Hosted source bodies and native SVG inputs are not retained."
+}
