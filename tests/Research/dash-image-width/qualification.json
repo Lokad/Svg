@@ -256,5 +256,14 @@
   "knownWindowsFailure": "SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: dejavu); assertion/reference preserved; user authority remains pending.",
   "hostedSvgBodiesRetained": 0,
   "hostedSourceAttributeValuesRetained": 0,
-  "implementationDirectory": "../../../src/Lokad.Svg"
+  "implementationDirectory": "../../../src/Lokad.Svg",
+  "ci": {
+    "sourceCommit": "d70d216b83fcbbcfa36fec1eb659a881d0fb2f6c",
+    "run": 41713210845,
+    "state": "FAILED/CLOSED",
+    "ubuntu": "SUCCESS; unfiltered primary, compatibility, tooling and installed-package qualification",
+    "windows": "Core47370 and font-host10 pass; rendering46657 pass, only preserved DejaVu failure; subsequent steps skipped by CI. Local both-runtime/package gates remain qualified above.",
+    "referenceAndAssertionPreserved": true,
+    "repeatPolling": "Do not repoll terminal run."
+  }
 }

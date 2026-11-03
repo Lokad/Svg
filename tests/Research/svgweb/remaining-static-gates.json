@@ -1,0 +1,516 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "d70d216b83fcbbcfa36fec1eb659a881d0fb2f6c",
+  "librarySha256": "e84c1ec2910cea9d896175166327ab1a114643001f7e2bb2f81099b11f73f8e4",
+  "status": "OPEN research: thirteen remaining parent/resource/XML gates classified; no new production admission or native reference admission.",
+  "method": "Fetch each indexed source and verify its hash in RAM. Record feature identifiers, counts and hashes only. Default/static-Noto projections run on Windows for gate discovery. No source body, fragment, href or ID value is retained.",
+  "rows": [
+    {
+      "name": "anim1.svg",
+      "sourceSha256": "3bf2ce86dc2e904a95ecb7617fed044d694ff7c8ca2700dd42d69043e3e0475e",
+      "xmlWellFormed": true,
+      "dynamicElements": {
+        "animate": 5
+      },
+      "imageReferences": [],
+      "duplicateIdGroups": 2,
+      "duplicateIdOccurrences": 2,
+      "removedDynamicElements": {
+        "animate": 5
+      },
+      "removedGraphicDescendants": 0,
+      "projection": {
+        "inputSha256": "6e191dab4b2cc0e4498d03eee20069ecd90d03d2916bb51cb2d05e36390cee68",
+        "outcome": "UnsupportedFeature",
+        "pngSha256": null,
+        "element": "text",
+        "attribute": "",
+        "line": 13,
+        "column": 18,
+        "messageSha256": "53f930386244b7b59afff86da8731631045ffc38fc968d1e0b11cf694c383c10"
+      },
+      "declaredNotoProjection": {
+        "inputSha256": "6e191dab4b2cc0e4498d03eee20069ecd90d03d2916bb51cb2d05e36390cee68",
+        "outcome": "MalformedInput",
+        "pngSha256": null,
+        "element": "rect",
+        "attribute": "id",
+        "line": 20,
+        "column": 27,
+        "messageSha256": "bff184f03658851c081737568d9605395c7b644bf613f74c781da68c24a03fde",
+        "throwType": "Lokad.Svg.Parsing.SvgDefinitionParser",
+        "throwMethod": "TryParse"
+      },
+      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+    },
+    {
+      "name": "anim2.svg",
+      "sourceSha256": "b8d377c37778c3e8231ce916d3b01dcf430a0535ba002126aaa25d909a6e4bf9",
+      "xmlWellFormed": true,
+      "dynamicElements": {
+        "animateTransform": 6
+      },
+      "imageReferences": [],
+      "duplicateIdGroups": 3,
+      "duplicateIdOccurrences": 3,
+      "removedDynamicElements": {
+        "animateTransform": 6
+      },
+      "removedGraphicDescendants": 0,
+      "projection": {
+        "inputSha256": "6e191dab4b2cc0e4498d03eee20069ecd90d03d2916bb51cb2d05e36390cee68",
+        "outcome": "UnsupportedFeature",
+        "pngSha256": null,
+        "element": "text",
+        "attribute": "",
+        "line": 13,
+        "column": 18,
+        "messageSha256": "53f930386244b7b59afff86da8731631045ffc38fc968d1e0b11cf694c383c10"
+      },
+      "declaredNotoProjection": {
+        "inputSha256": "6e191dab4b2cc0e4498d03eee20069ecd90d03d2916bb51cb2d05e36390cee68",
+        "outcome": "MalformedInput",
+        "pngSha256": null,
+        "element": "rect",
+        "attribute": "id",
+        "line": 20,
+        "column": 27,
+        "messageSha256": "bff184f03658851c081737568d9605395c7b644bf613f74c781da68c24a03fde",
+        "throwType": "Lokad.Svg.Parsing.SvgDefinitionParser",
+        "throwMethod": "TryParse"
+      },
+      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+    },
+    {
+      "name": "anim3.svg",
+      "sourceSha256": "3c26307c866001375a1e6228f8e14a733db3e9446c98bc29bd6e5a11208be345",
+      "xmlWellFormed": true,
+      "dynamicElements": {
+        "animateTransform": 6
+      },
+      "imageReferences": [],
+      "duplicateIdGroups": 0,
+      "duplicateIdOccurrences": 0,
+      "removedDynamicElements": {
+        "animateTransform": 6
+      },
+      "removedGraphicDescendants": 0,
+      "projection": {
+        "inputSha256": "01d0fc4eb0736ab7a69911cf8e641d4d47148b5c6777768c468de3a649042fa3",
+        "outcome": "UnsupportedFeature",
+        "pngSha256": null,
+        "element": "text",
+        "attribute": "",
+        "line": 13,
+        "column": 18,
+        "messageSha256": "53f930386244b7b59afff86da8731631045ffc38fc968d1e0b11cf694c383c10"
+      },
+      "declaredNotoProjection": {
+        "inputSha256": "01d0fc4eb0736ab7a69911cf8e641d4d47148b5c6777768c468de3a649042fa3",
+        "outcome": "rendered",
+        "pngSha256": "c4e22d2c1310669c33a0d707656545ebc2e185c0f6af84c61458fd8149de2cfb",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "messageSha256": null,
+        "throwType": null,
+        "throwMethod": null
+      },
+      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+    },
+    {
+      "name": "pservers-grad-03-b-anim.svg",
+      "sourceSha256": "36726fb7ab5239ee321b72027eddc7dcf5dfedb0ee60250e64102a93f04816e2",
+      "xmlWellFormed": true,
+      "dynamicElements": {
+        "animate": 12
+      },
+      "imageReferences": [],
+      "duplicateIdGroups": 0,
+      "duplicateIdOccurrences": 0,
+      "removedDynamicElements": {
+        "animate": 12
+      },
+      "removedGraphicDescendants": 0,
+      "projection": {
+        "inputSha256": "901cbcd0c88a9bfe6d3535156cd9c291fcb8f02c6f4fe42281cef13fa03f9ca5",
+        "outcome": "UnsupportedFeature",
+        "pngSha256": null,
+        "element": "text",
+        "attribute": "",
+        "line": 45,
+        "column": 4,
+        "messageSha256": "53f930386244b7b59afff86da8731631045ffc38fc968d1e0b11cf694c383c10"
+      },
+      "declaredNotoProjection": {
+        "inputSha256": "901cbcd0c88a9bfe6d3535156cd9c291fcb8f02c6f4fe42281cef13fa03f9ca5",
+        "outcome": "rendered",
+        "pngSha256": "1ce781a8367158c3e21db5acfe9870132531e369be4d8886dffb17fa9a2c2fab",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "messageSha256": null,
+        "throwType": null,
+        "throwMethod": null
+      },
+      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+    },
+    {
+      "name": "scimitar-anim.svg",
+      "sourceSha256": "177834a4c8cb24612d33866ce0de51eb79c5c785d701609df71f7808d1ade572",
+      "xmlWellFormed": true,
+      "dynamicElements": {
+        "audio": 1,
+        "animateTransform": 7
+      },
+      "imageReferences": [],
+      "duplicateIdGroups": 1,
+      "duplicateIdOccurrences": 1,
+      "removedDynamicElements": {
+        "audio": 1,
+        "animateTransform": 7
+      },
+      "removedGraphicDescendants": 0,
+      "projection": {
+        "inputSha256": "5f84c4415144324bda6ddace3fb123bdea17cd0806cdd97a6c187cf88955716d",
+        "outcome": "rendered",
+        "pngSha256": "938d321b936997fc851fbe97a6d009a1fb2ba3faacb6ee4c8fc14b96d6a4d8ac",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "messageSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "declaredNotoProjection": {
+        "inputSha256": "5f84c4415144324bda6ddace3fb123bdea17cd0806cdd97a6c187cf88955716d",
+        "outcome": "rendered",
+        "pngSha256": "938d321b936997fc851fbe97a6d009a1fb2ba3faacb6ee4c8fc14b96d6a4d8ac",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "messageSha256": null,
+        "throwType": null,
+        "throwMethod": null
+      },
+      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+    },
+    {
+      "name": "x11.svg",
+      "sourceSha256": "3e84d54927b69c7177ea2b5162bbe55a0ff02bec0f843d0c047db5df0fa31d6f",
+      "xmlWellFormed": true,
+      "dynamicElements": {
+        "audio": 1
+      },
+      "imageReferences": [],
+      "duplicateIdGroups": 0,
+      "duplicateIdOccurrences": 0,
+      "removedDynamicElements": {
+        "audio": 1
+      },
+      "removedGraphicDescendants": 0,
+      "projection": {
+        "inputSha256": "3e8f6019ec6704ba591a22a77cc9d6c074d24f284f39acfed30aa6dc3367a764",
+        "outcome": "rendered",
+        "pngSha256": "69c534aadfa677011acf494c524d93d63df4a7b793cf7f6be748b39b076f0992",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "messageSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "declaredNotoProjection": {
+        "inputSha256": "3e8f6019ec6704ba591a22a77cc9d6c074d24f284f39acfed30aa6dc3367a764",
+        "outcome": "rendered",
+        "pngSha256": "69c534aadfa677011acf494c524d93d63df4a7b793cf7f6be748b39b076f0992",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "messageSha256": null,
+        "throwType": null,
+        "throwMethod": null
+      },
+      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+    },
+    {
+      "name": "video1.svg",
+      "sourceSha256": "e6941453371664e5d392af70aab97cc2d9d02ca0b406324553dcaaaf0e38fcff",
+      "xmlWellFormed": true,
+      "dynamicElements": {
+        "video": 1,
+        "animate": 6,
+        "animateTransform": 7
+      },
+      "imageReferences": [],
+      "duplicateIdGroups": 0,
+      "duplicateIdOccurrences": 0,
+      "removedDynamicElements": {
+        "video": 1,
+        "animateTransform": 6
+      },
+      "removedGraphicDescendants": 0,
+      "projection": {
+        "inputSha256": "acbd75d5d0eb797c0cb376fa4cbb0ba2144913434b6def13169e44f6b7d19602",
+        "outcome": "UnsupportedFeature",
+        "pngSha256": null,
+        "element": "text",
+        "attribute": "",
+        "line": 15,
+        "column": 18,
+        "messageSha256": "53f930386244b7b59afff86da8731631045ffc38fc968d1e0b11cf694c383c10"
+      },
+      "declaredNotoProjection": {
+        "inputSha256": "acbd75d5d0eb797c0cb376fa4cbb0ba2144913434b6def13169e44f6b7d19602",
+        "outcome": "rendered",
+        "pngSha256": "bda76c338abf09180cdc368d80b1abb7b950ccde26904aa41ef8f67c3ff99eea",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "messageSha256": null,
+        "throwType": null,
+        "throwMethod": null
+      },
+      "disposition": "Original animation/media is outside the static contract. The RAM-only projection removes explicit dynamic subtrees and no graphic descendants. Continue through supplied-font/duplicate-ID gates and independent full-image comparison; a rendered projection is not closure."
+    },
+    {
+      "name": "image.svg",
+      "sourceSha256": "6c183668da499d712611df9dfb85820f7d92e5b0813d2edc5927e93d4f4ac052",
+      "xmlWellFormed": true,
+      "dynamicElements": {},
+      "imageReferences": [
+        {
+          "kind": "absolute",
+          "scheme": "http",
+          "extension": ".jpg"
+        }
+      ],
+      "duplicateIdGroups": 0,
+      "duplicateIdOccurrences": 0,
+      "removedDynamicElements": {},
+      "removedGraphicDescendants": 0,
+      "declaredNotoProjection": {
+        "inputSha256": "6c183668da499d712611df9dfb85820f7d92e5b0813d2edc5927e93d4f4ac052",
+        "outcome": "UnsupportedFeature",
+        "pngSha256": null,
+        "element": "image",
+        "attribute": "",
+        "line": 15,
+        "column": 8,
+        "messageSha256": "688ee16b3aec91ee6cc646fe92baedf8c353f64eab567fc554aeaf0035601639",
+        "throwType": "Lokad.Svg.Parsing.SvgLeafParser",
+        "throwMethod": "DecodeImage"
+      },
+      "disposition": "External image resolution is outside default conversion; no original resource binding supplied. Next use explicit authored/host-bound PNG diagnostic content in the same structural context; no implicit retrieval or original-resource acceptance."
+    },
+    {
+      "name": "masking-path-04-b.svg",
+      "sourceSha256": "cbc79d87c656da74497bb2169c23c9b2fe7ba7d16c595d232f63b92d78058b3c",
+      "xmlWellFormed": true,
+      "dynamicElements": {},
+      "imageReferences": [
+        {
+          "kind": "relative",
+          "scheme": "",
+          "extension": ".png"
+        },
+        {
+          "kind": "relative",
+          "scheme": "",
+          "extension": ".png"
+        }
+      ],
+      "duplicateIdGroups": 0,
+      "duplicateIdOccurrences": 0,
+      "removedDynamicElements": {},
+      "removedGraphicDescendants": 0,
+      "declaredNotoProjection": {
+        "inputSha256": "cbc79d87c656da74497bb2169c23c9b2fe7ba7d16c595d232f63b92d78058b3c",
+        "outcome": "UnsupportedFeature",
+        "pngSha256": null,
+        "element": "image",
+        "attribute": "",
+        "line": 68,
+        "column": 10,
+        "messageSha256": "688ee16b3aec91ee6cc646fe92baedf8c353f64eab567fc554aeaf0035601639",
+        "throwType": "Lokad.Svg.Parsing.SvgLeafParser",
+        "throwMethod": "DecodeImage"
+      },
+      "disposition": "External image resolution is outside default conversion; no original resource binding supplied. Next use explicit authored/host-bound PNG diagnostic content in the same structural context; no implicit retrieval or original-resource acceptance."
+    },
+    {
+      "name": "oscon.svg",
+      "sourceSha256": "e265238fd7c1eb1bb7272d2d4646f93bee75392edb4e01404a3136b19f673ee7",
+      "xmlWellFormed": true,
+      "dynamicElements": {},
+      "imageReferences": [
+        {
+          "kind": "absolute",
+          "scheme": "http",
+          "extension": ""
+        }
+      ],
+      "duplicateIdGroups": 0,
+      "duplicateIdOccurrences": 0,
+      "removedDynamicElements": {},
+      "removedGraphicDescendants": 0,
+      "declaredNotoProjection": {
+        "inputSha256": "e265238fd7c1eb1bb7272d2d4646f93bee75392edb4e01404a3136b19f673ee7",
+        "outcome": "UnsupportedFeature",
+        "pngSha256": null,
+        "element": "image",
+        "attribute": "",
+        "line": 3,
+        "column": 6,
+        "messageSha256": "688ee16b3aec91ee6cc646fe92baedf8c353f64eab567fc554aeaf0035601639",
+        "throwType": "Lokad.Svg.Parsing.SvgLeafParser",
+        "throwMethod": "DecodeImage"
+      },
+      "disposition": "External image resolution is outside default conversion; no original resource binding supplied. Next use explicit authored/host-bound PNG diagnostic content in the same structural context; no implicit retrieval or original-resource acceptance."
+    },
+    {
+      "name": "gaussian1.svg",
+      "sourceSha256": "b42317c5ef25185d178126be853f02660b5300feab1bbcd1ae5a9e1d1e661395",
+      "xmlWellFormed": true,
+      "dynamicElements": {},
+      "imageReferences": [],
+      "duplicateIdGroups": 1,
+      "duplicateIdOccurrences": 1,
+      "removedDynamicElements": {},
+      "removedGraphicDescendants": 0,
+      "declaredNotoProjection": {
+        "inputSha256": "b42317c5ef25185d178126be853f02660b5300feab1bbcd1ae5a9e1d1e661395",
+        "outcome": "MalformedInput",
+        "pngSha256": null,
+        "element": "rect",
+        "attribute": "id",
+        "line": 220,
+        "column": 8,
+        "messageSha256": "bff184f03658851c081737568d9605395c7b644bf613f74c781da68c24a03fde",
+        "throwType": "Lokad.Svg.Parsing.SvgDefinitionParser",
+        "throwMethod": "TryParse"
+      },
+      "disposition": "Original duplicate ordinary ID is malformed. Next construct an explicitly ID-repaired RAM-only diagnostic and review its full filter graph."
+    },
+    {
+      "name": "preserveAspectRatio.svg",
+      "sourceSha256": "1a567ae0ddcfb78474a7313673960004ef67bade3d0b8eea9719bee934888dcd",
+      "xmlWellFormed": true,
+      "dynamicElements": {},
+      "imageReferences": [],
+      "duplicateIdGroups": 0,
+      "duplicateIdOccurrences": 0,
+      "removedDynamicElements": {},
+      "removedGraphicDescendants": 0,
+      "declaredNotoProjection": {
+        "inputSha256": "1a567ae0ddcfb78474a7313673960004ef67bade3d0b8eea9719bee934888dcd",
+        "outcome": "MalformedInput",
+        "pngSha256": null,
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "messageSha256": "5bb5d8c62922d01467328892188f4ff157918876bd4eab24b06c98b2f68b97f8",
+        "throwType": "Lokad.Svg.Parsing.SvgXmlReaderPolicy",
+        "throwMethod": "<Create>g__ValidateProlog|1_0"
+      },
+      "prologClassification": {
+        "name": "preserveAspectRatio.svg",
+        "hasDoctype": true,
+        "hasInternalSubset": true,
+        "entityCount": 3,
+        "entityClasses": [
+          {
+            "external": false,
+            "replacementIsUri": false,
+            "replacementContainsMarkup": true
+          },
+          {
+            "external": false,
+            "replacementIsUri": false,
+            "replacementContainsMarkup": true
+          },
+          {
+            "external": false,
+            "replacementIsUri": false,
+            "replacementContainsMarkup": true
+          }
+        ]
+      },
+      "disposition": "Open static/XML feature review: internal markup entities are rejected by the prolog contract. XML is well formed. Next compare an in-RAM expanded static diagnostic with native; do not label an original accepted or silently strip its graph."
+    },
+    {
+      "name": "smile.svg",
+      "sourceSha256": "e3d8f00248a02b117b030e0bb64beab3f492727e9298706c768ce7849fce7e33",
+      "xmlWellFormed": true,
+      "dynamicElements": {},
+      "imageReferences": [],
+      "duplicateIdGroups": 0,
+      "duplicateIdOccurrences": 0,
+      "removedDynamicElements": {},
+      "removedGraphicDescendants": 0,
+      "declaredNotoProjection": {
+        "inputSha256": "e3d8f00248a02b117b030e0bb64beab3f492727e9298706c768ce7849fce7e33",
+        "outcome": "MalformedInput",
+        "pngSha256": null,
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "messageSha256": "5bb5d8c62922d01467328892188f4ff157918876bd4eab24b06c98b2f68b97f8",
+        "throwType": "Lokad.Svg.Parsing.SvgXmlReaderPolicy",
+        "throwMethod": "<Create>g__ValidateProlog|1_0"
+      },
+      "prologClassification": {
+        "name": "smile.svg",
+        "hasDoctype": true,
+        "hasInternalSubset": true,
+        "entityCount": 3,
+        "entityClasses": [
+          {
+            "external": false,
+            "replacementIsUri": false,
+            "replacementContainsMarkup": true
+          },
+          {
+            "external": false,
+            "replacementIsUri": false,
+            "replacementContainsMarkup": true
+          },
+          {
+            "external": false,
+            "replacementIsUri": false,
+            "replacementContainsMarkup": true
+          }
+        ]
+      },
+      "disposition": "Open static/XML feature review: internal markup entities are rejected by the prolog contract. XML is well formed. Next compare an in-RAM expanded static diagnostic with native; do not label an original accepted or silently strip its graph."
+    }
+  ],
+  "olderEventFollowups": {
+    "status": "Accounted by subsequent committed closures; earlier eight first-gate observations are historical.",
+    "suppliedProgramContexts": [
+      "Steps.svg",
+      "USStates.svg",
+      "blocks_game.svg",
+      "helloworld.svg",
+      "snake.svg"
+    ],
+    "suppliedEvidence": "../dash-image-width/qualification.json",
+    "displayWebStats": "display-web-stats-static.json",
+    "mouseEvents": "attribute-applicability.json",
+    "photos": "root-canvas-background.json",
+    "boundary": "Declared static/font contexts only; original animation and original-font qualification remain separate."
+  },
+  "nextActions": [
+    "Complete independent Windows/Linux comparisons for seven dynamic-free parent diagnostics, retaining distinct original outcomes. Anim1/anim2 also require explicit ID repair after Noto selection.",
+    "Account for three external image references with explicit bindings or authored inline PNG diagnostics; default conversion performs no SVG-directed network/file resolution.",
+    "Review both well-formed internal-markup entity documents through expanded RAM-only diagnostics and the shared XML-reader ownership/admission model.",
+    "Review the duplicate-ID-repaired gaussian1 filter diagnostic."
+  ],
+  "hostedSvgBodiesRetained": 0,
+  "hostedSourceAttributeValuesRetained": 0
+}
