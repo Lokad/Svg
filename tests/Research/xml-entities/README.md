@@ -32,4 +32,6 @@ graph with the same declared font binding. This retains the original Windows/Lin
 font difference. Hosted SVG bodies are not stored here.
 
 [Qualification](qualification.json) records source and binary identities, all-204
-replay, validation times and the remaining milestone gates.
+replay, full host/runtime/package checks, validation times and remaining scope.
+The independent Windows DejaVu baseline conflict is unchanged; it prevents an
+overall green-suite or release-closure claim.

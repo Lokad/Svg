@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "sourceCommit": "d70d216b83fcbbcfa36fec1eb659a881d0fb2f6c",
   "librarySha256": "e84c1ec2910cea9d896175166327ab1a114643001f7e2bb2f81099b11f73f8e4",
-  "status": "OPEN direct text clipping and original dynamic/font/resource contexts. Internal general-entity admission is implemented and the two original XML inputs advance; twelve declared static diagnostics remain exact on both hosts.",
+  "status": "OPEN direct text clipping and original dynamic/font/resource contexts. Internal general-entity admission is CLOSED at the qualified XML milestone; twelve declared static diagnostics remain exact on both hosts.",
   "method": "Fetch and hash-check hosted sources in bounded RAM; retain no bodies, fragments, hrefs or ID values. Remove explicit animation/media subtrees without removing static graphics/non-whitespace text/tails; remove only unused duplicate ordinary IDs. Expand XML markup entities only in declared external diagnostics. Bind explicit Noto where recorded; native input embeds the identical program with synthesis disabled and restores to the same non-font tree. Raster diagnostics replace external hrefs with authored inline PNGs and retain all other tree content. Each rendered diagnostic uses one canonical library conversion and three fresh healthy browser captures per host.",
   "rows": [
     {

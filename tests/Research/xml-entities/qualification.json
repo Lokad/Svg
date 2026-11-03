@@ -1,5 +1,5 @@
 {
-  "status": "Implemented and affected integration passed; full source-commit/runtime/package milestone qualification pending.",
+  "status": "CLOSED internal general-entity admission milestone: local full .NET11 Windows/Linux, representative .NET10, font-host and deterministic installed-package qualification. The independent Windows DejaVu reference conflict remains unchanged; overall release/CI closure is not claimed.",
   "sourceBaseCommit": "845e95cef045c4aaf276f68728dbb167f0167e56",
   "filesLfSha256": {
     "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "4808584274ee0b6b105981bb29ea8414deacd503cd652eadd7ddd544b3467b8f",
@@ -308,12 +308,293 @@
   "nativeSummary": "Thirty fresh healthy captures: four authored cases plus unmodified hosted smile, three per host. Three canonical authored cases and smile are exact. Numeric-ampersand research control has 66 changed pixels per host. Original preserveAspectRatio with supplied Noto matches the existing independent expanded-graph/native-font reference on both hosts.",
   "timingInterpretation": "Validation wall times include process/runner startup. Different selections are not a before/after performance benchmark or a test-suite speedup.",
   "remaining": [
-    "Full source-commit host/runtime/package milestone qualification.",
-    "Preserved independent Windows DejaVu reference conflict; do not rewrite reference/assertion.",
-    "Direct text clipping and the remaining original font/resource/dynamic contexts."
+    "Independent Windows DejaVu baseline conflict: unchanged failure/message, frozen reference/assertion retained.",
+    "Direct text clipping and original dynamic/font/resource contexts; no whole-collection acceptance claim.",
+    "Chrome/BCL numeric-ampersand normalization disagreement remains explicit research evidence; general parser normalization follows the documented BCL/XML contract."
   ],
   "sources": [
     "https://www.w3.org/TR/xml/#intern-replacement",
     "https://learn.microsoft.com/en-us/dotnet/api/system.xml.xmlreadersettings.maxcharactersfromentities"
-  ]
+  ],
+  "qualifiedSourceCommit": "0ca7906db10bc6ab5a576de19038d27e1773f2b6",
+  "qualifiedLibrarySha256": {
+    "net11.0": "762547d369efdec9be4d1304a08326a18a168a23142a16135ee5133c07b69882",
+    "net10.0": "98e1c8995eab5f0d709d33c45675834fcc6408618369410d7bd3d0b64959436f"
+  },
+  "assemblyIdentity": "Original replay/native/focused/diagnostic assets were built at the source-base stamp; milestone assets were rebuilt at the qualified source commit. Every recorded production file LF hash is unchanged. Package lib assets equal the qualified DLLs.",
+  "primaryQualification": {
+    "filters": {
+      "Lokad.Svg.Tests": "",
+      "Lokad.Svg.VisualTests": ""
+    },
+    "rows": [
+      {
+        "librarySha256": "762547d369efdec9be4d1304a08326a18a168a23142a16135ee5133c07b69882",
+        "host": "windows",
+        "project": "Lokad.Svg.Tests",
+        "failures": [],
+        "exitCode": 0,
+        "wallSeconds": 50.193,
+        "counters": {
+          "total": "47498",
+          "executed": "47498",
+          "passed": "47498",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "librarySha256": "762547d369efdec9be4d1304a08326a18a168a23142a16135ee5133c07b69882",
+        "host": "windows",
+        "project": "Lokad.Svg.VisualTests",
+        "failures": [
+          "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")"
+        ],
+        "exitCode": 1,
+        "wallSeconds": 248.314,
+        "counters": {
+          "total": "46664",
+          "executed": "46664",
+          "passed": "46663",
+          "failed": "1",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "librarySha256": "762547d369efdec9be4d1304a08326a18a168a23142a16135ee5133c07b69882",
+        "host": "linux",
+        "project": "Lokad.Svg.Tests",
+        "failures": [],
+        "exitCode": 0,
+        "wallSeconds": 65.325,
+        "counters": {
+          "total": "47498",
+          "executed": "47498",
+          "passed": "47498",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "librarySha256": "762547d369efdec9be4d1304a08326a18a168a23142a16135ee5133c07b69882",
+        "host": "linux",
+        "project": "Lokad.Svg.VisualTests",
+        "failures": [],
+        "exitCode": 0,
+        "wallSeconds": 177.356,
+        "counters": {
+          "total": "46664",
+          "executed": "46664",
+          "passed": "46664",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      }
+    ]
+  },
+  "runtimeCompatibility": [
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "98e1c8995eab5f0d709d33c45675834fcc6408618369410d7bd3d0b64959436f",
+      "testAssemblySha256": "132a408fd13da194ea05c5a4af237d48aeed9a174e0090fcd3a38dd8444efb8f",
+      "selection": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgDashSourceOwnershipTests|FullyQualifiedName~SvgNativeDashPathTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgImagePaintTests|FullyQualifiedName~SvgHairlineCoverageTests|FullyQualifiedName~SvgOpaqueBitmapClipTests|FullyQualifiedName~SvgFilterSpriteMechanismTests|FullyQualifiedName~SvgTextPositionLengthTests|FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~BudgetedTextBufferTests|FullyQualifiedName~SvgAttributeGrammarTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 25.748598099919036,
+      "counters": {
+        "executed": "12625",
+        "passed": "12625",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "98e1c8995eab5f0d709d33c45675834fcc6408618369410d7bd3d0b64959436f",
+      "testAssemblySha256": "132a408fd13da194ea05c5a4af237d48aeed9a174e0090fcd3a38dd8444efb8f",
+      "selection": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgDashSourceOwnershipTests|FullyQualifiedName~SvgNativeDashPathTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgImagePaintTests|FullyQualifiedName~SvgHairlineCoverageTests|FullyQualifiedName~SvgOpaqueBitmapClipTests|FullyQualifiedName~SvgFilterSpriteMechanismTests|FullyQualifiedName~SvgTextPositionLengthTests|FullyQualifiedName~SvgTextSyntaxTests|FullyQualifiedName~BudgetedTextBufferTests|FullyQualifiedName~SvgAttributeGrammarTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 28.736077399924397,
+      "counters": {
+        "executed": "12625",
+        "passed": "12625",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "98e1c8995eab5f0d709d33c45675834fcc6408618369410d7bd3d0b64959436f",
+      "testAssemblySha256": "ff907e61f30796aeeb1c0959fa47bbe5db91ee36e714a1991453aea35533fac3",
+      "selection": "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgTextPositionLengthReferenceTests|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgXmlEntityReferenceTests",
+      "exitCode": 0,
+      "seconds": 30.076798500027508,
+      "counters": {
+        "executed": "832",
+        "passed": "832",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "98e1c8995eab5f0d709d33c45675834fcc6408618369410d7bd3d0b64959436f",
+      "testAssemblySha256": "ff907e61f30796aeeb1c0959fa47bbe5db91ee36e714a1991453aea35533fac3",
+      "selection": "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgTextPositionLengthReferenceTests|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgXmlEntityReferenceTests",
+      "exitCode": 0,
+      "seconds": 27.78826419985853,
+      "counters": {
+        "executed": "832",
+        "passed": "832",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "fontHostQualification": [
+    {
+      "profile": "windows",
+      "kind": "font-host",
+      "framework": "net11.0",
+      "librarySha256": "762547d369efdec9be4d1304a08326a18a168a23142a16135ee5133c07b69882",
+      "testAssemblySha256": "6d74b9996b469a2f89d2f7edb61e5d02f11f3864350f34feb31828db03d880f1",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 1.7685958999209106,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "windows",
+      "kind": "font-host",
+      "framework": "net10.0",
+      "librarySha256": "98e1c8995eab5f0d709d33c45675834fcc6408618369410d7bd3d0b64959436f",
+      "testAssemblySha256": "79d6a11ea35645426ed28759980dceadb46c7aaf043fc4c3b2318bb8adf82f64",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 1.8037596000358462,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "font-host",
+      "framework": "net11.0",
+      "librarySha256": "762547d369efdec9be4d1304a08326a18a168a23142a16135ee5133c07b69882",
+      "testAssemblySha256": "6d74b9996b469a2f89d2f7edb61e5d02f11f3864350f34feb31828db03d880f1",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 1.4373115999624133,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "font-host",
+      "framework": "net10.0",
+      "librarySha256": "98e1c8995eab5f0d709d33c45675834fcc6408618369410d7bd3d0b64959436f",
+      "testAssemblySha256": "79d6a11ea35645426ed28759980dceadb46c7aaf043fc4c3b2318bb8adf82f64",
+      "selection": "Unfiltered",
+      "exitCode": 0,
+      "seconds": 1.2069072001613677,
+      "counters": {
+        "executed": "10",
+        "passed": "10",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "deterministicPackages": [
+    {
+      "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+      "bytes": 2415783,
+      "sha256": "928603b8185447005d51496fed0baf6f40429381fa6eabe8e98ef814a48dd42f"
+    },
+    {
+      "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+      "bytes": 718470,
+      "sha256": "d22cedf3cff61fe8a3b7c03476af225d6a818b7d8d6c57b5c1f2a0efc121a939"
+    }
+  ],
+  "installedPackages": [
+    {
+      "host": "windows",
+      "exitCode": 0,
+      "seconds": 8.523027000017464
+    },
+    {
+      "host": "linux",
+      "exitCode": 0,
+      "seconds": 79.52025519986637
+    }
+  ],
+  "installedConsumer": {
+    "source": "../../../tools/Lokad.Svg.PackageSmoke/Program.cs",
+    "sourceLfSha256": "31818a1fd1ffa7d812836b8c14323366866334d277ad21084c05c6bcece5560c",
+    "coverage": "Existing installed public/host/HTTP/ownership contracts plus one canonical nested-entity conversion compared with the ordinary red rectangle. Both target assets on both hosts; no package publication."
+  }
 }
