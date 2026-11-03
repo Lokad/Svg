@@ -56,8 +56,9 @@ accounts for its animation and duplicate-ID boundaries; an explicitly animation-
 ID-repaired, supplied-font diagnostic is exact on both hosts. The original remains
 unsupported.
 
-ny1 now reaches the invalid CSS name `stroke-fill`; the complete original remains
-unsupported and needs a shared invalid-versus-unimplemented declaration review.
+The [ny1 review](ny1-static-review.json) accounts for strict unknown-CSS admission.
+Removing its invalid declaration in RAM reaches unsupported font-relative text
+positions, isolated by [authored controls](../text-position-lengths/README.md).
 
 The [physical-font interval correction](text-shaping-boundaries.json) keeps
 anchor-only changes from breaking ligatures. Its direct mechanisms, one ownership

@@ -1,0 +1,178 @@
+{
+  "relativeInputSha256": "74267f6da1020f1b394ebf991c51060727fac86527511d811148f72992a3fdac",
+  "absoluteInputSha256": "a99f849469d3d8f47041e5cc1210e129480a73f58ec409472d1117f023d75e0b",
+  "nativeInputSha256": "e8d76685b054b278650ff1b99acd01b72e0d4ac952a4462f384d2da30400d639",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "librarySha256": "fadd951e606b3c1704d8fc5e7e02732c4631632dcb2c147ff87ac19823581d37",
+  "relativeBeforeFailure": [
+    {
+      "host": "windows",
+      "result": {
+        "outcome": "UnsupportedFeature",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "fontStage": null,
+        "messageSha256": "01463760804d669b118c793f88c493381fda23d2a1b0aa5bf38c41d1798bc052",
+        "throwType": "Lokad.Svg.Parsing.SvgTextPositionLists",
+        "throwMethod": "ReadToken"
+      }
+    },
+    {
+      "host": "linux",
+      "result": {
+        "outcome": "UnsupportedFeature",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "fontStage": null,
+        "messageSha256": "01463760804d669b118c793f88c493381fda23d2a1b0aa5bf38c41d1798bc052",
+        "throwType": "Lokad.Svg.Parsing.SvgTextPositionLists",
+        "throwMethod": "ReadToken"
+      }
+    }
+  ],
+  "rows": [
+    {
+      "host": "windows",
+      "libraryPngSha256": "184f48b846b1e05c359f0aee9301ef662e6c210bf8041f9c77e194b4c3e2a8a9",
+      "width": 192,
+      "height": 144,
+      "dimensionsMatch": true,
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null,
+      "captures": [
+        {
+          "pngSha256": "3f3c9e1a8ee8c06ce2b575108662d47cedfa533ca7dfb33b878673fec41582e6",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "3f3c9e1a8ee8c06ce2b575108662d47cedfa533ca7dfb33b878673fec41582e6",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "3f3c9e1a8ee8c06ce2b575108662d47cedfa533ca7dfb33b878673fec41582e6",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "relativeNativeCaptures": [
+        {
+          "pngSha256": "3f3c9e1a8ee8c06ce2b575108662d47cedfa533ca7dfb33b878673fec41582e6",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "3f3c9e1a8ee8c06ce2b575108662d47cedfa533ca7dfb33b878673fec41582e6",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "3f3c9e1a8ee8c06ce2b575108662d47cedfa533ca7dfb33b878673fec41582e6",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "reference": "references/windows.png",
+      "chromeSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "chromeVersion": "153.0.8010.52",
+      "background": "transparent",
+      "outputScale": 1,
+      "nativeMathProfile": "Windows",
+      "captureRecipeRevision": "3",
+      "captureMode": "SVG image with explicit logical viewport"
+    },
+    {
+      "host": "linux",
+      "libraryPngSha256": "2a1d491fc6bf9b1ec076f9b38115e52e5ba4bcdb6b140944a914e912d0bacbd6",
+      "width": 192,
+      "height": 144,
+      "dimensionsMatch": true,
+      "changedPixels": 0,
+      "maximumError": 0,
+      "alphaChangedPixels": 0,
+      "differenceBounds": null,
+      "captures": [
+        {
+          "pngSha256": "6a4de70b45aec813d5107d7dee2b4afac951e15b7a10c29d4540e63e77c64eb4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "6a4de70b45aec813d5107d7dee2b4afac951e15b7a10c29d4540e63e77c64eb4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "6a4de70b45aec813d5107d7dee2b4afac951e15b7a10c29d4540e63e77c64eb4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "relativeNativeCaptures": [
+        {
+          "pngSha256": "6a4de70b45aec813d5107d7dee2b4afac951e15b7a10c29d4540e63e77c64eb4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "6a4de70b45aec813d5107d7dee2b4afac951e15b7a10c29d4540e63e77c64eb4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "6a4de70b45aec813d5107d7dee2b4afac951e15b7a10c29d4540e63e77c64eb4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "reference": "references/linux.png",
+      "chromeSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "chromeVersion": "153.0.8010.52",
+      "background": "transparent",
+      "outputScale": 1,
+      "nativeMathProfile": "Ubuntu26 glibc2.43 CORE-MATH",
+      "captureRecipeRevision": "3",
+      "captureMode": "SVG image with explicit logical viewport"
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "OPEN: relative em positions reject; independent numeric controls and the native em counterparts are exact. This bank is research evidence, not new admitted syntax.",
+  "sourceCommit": "309184ac440760bc605efcd59b9fe550cb32f1db",
+  "font": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
+  "inputFiles": {
+    "relative.svg": "74267f6da1020f1b394ebf991c51060727fac86527511d811148f72992a3fdac",
+    "absolute.svg": "747fec1b17cd8758c7ea125ea27032301b0e7210fcbb4c797ed63338e94ae086"
+  },
+  "cases": [
+    "Inherited font size",
+    "Overridden child font size",
+    "Smaller child size within a larger inherited font",
+    "Per-character relative positioning list"
+  ],
+  "inputNormalization": "The numeric control is serialized by ElementTree with the default SVG namespace before conversion; absoluteInputSha256 identifies those bytes. relativeInputSha256 identifies the authored relative.svg bytes. Native inputs insert only the pinned font-face stylesheet; removing it restores each parsed source. No hosted SVG data appears in these authored inputs.",
+  "nativeFontBinding": "Same Noto Sans regular program under DiagnosticNoto, normal style, weight range 1..1000, font-synthesis:none; logical image viewport192x144 and density1.",
+  "scope": "Coordinates remain in their declaration font context before descendant merging. Bare/px arithmetic, original scalar ownership, list cursors, source offsets and path IgnoreY must stay unchanged.",
+  "hostedSourceAttributeValuesRetained": 0,
+  "relativeNativeInputSha256": "a5fe77af851de0d4bdccaff628eb64bab337d357d3a6d5228ef19dad2b9b4412",
+  "hostedSvgBodiesRetained": 0
+}

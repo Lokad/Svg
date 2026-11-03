@@ -160,5 +160,21 @@
     "Separate resource registries and their rejection timing",
     "Filter resource adoption and finally cleanup",
     "Windows DejaVu reference conflict remains separately unresolved"
-  ]
+  ],
+  "ciQualification": {
+    "sourceCommit": "309184ac440760bc605efcd59b9fe550cb32f1db",
+    "run": "https://github.com/Lokad/Svg/actions/runs/41678944820",
+    "status": "TERMINAL FAILED/CLOSED: Ubuntu successful; Windows has only the preserved DejaVu case.",
+    "ubuntu": "Full primary suites, .NET10 compatibility, tools, nupkg construction and installed-package consumer checks pass.",
+    "windows": {
+      "corePassed": 47305,
+      "coreFailed": 0,
+      "renderingPassed": 46648,
+      "renderingFailed": 1,
+      "fontHostPassed": 10,
+      "failure": "SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: dejavu)",
+      "referenceAndAssertionPreserved": true
+    },
+    "wholeRunGreen": false
+  }
 }

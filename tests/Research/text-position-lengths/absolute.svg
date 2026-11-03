@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="144" font-family="DiagnosticNoto" font-size="16">
+  <text x="8" y="20" fill="#235b91">A<tspan dy="16">B</tspan></text>
+  <text x="72" y="20" fill="#b24f27">A<tspan font-size="24" dy="24">B</tspan></text>
+  <g font-size="24" fill="#487734"><text x="8" y="88">A<tspan font-size="8" dy="16">B</tspan></text></g>
+  <text x="104" y="88" fill="#794f98"><tspan dy="16 8">AB</tspan></text>
+</svg>

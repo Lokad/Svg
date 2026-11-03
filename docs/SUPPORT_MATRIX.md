@@ -293,6 +293,8 @@ exact-equality attribute selectors, lists, element+ID/class, descendants and
 children. Specificity, source order, inline priority, inheritance and `!important`
 apply. Empty/comment-only stylesheets are no-ops. Comments preserve token boundaries
 and quoted text; namespace declarations on style/defs are accepted.
+Active unknown or unsupported property names reject; CSS error recovery remains
+unsupported.
 
 `:hover`, `:active`, `:focus`, `:focus-visible` and `:focus-within` are admitted
 as inactive states in image conversion. Such components retain class specificity;

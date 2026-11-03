@@ -1,0 +1,59 @@
+{
+  "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+  "removedInvalidDeclarations": 1,
+  "remainingXmlContentPreserved": true,
+  "sourceBodiesRetained": 0,
+  "rows": [
+    {
+      "context": "original",
+      "inputSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+      "result": {
+        "outcome": "UnsupportedFeature",
+        "element": "style",
+        "attribute": "",
+        "line": 20,
+        "column": 4,
+        "fontStage": null,
+        "messageSha256": "96c46dd5631af2ab4d8a59f1b4b9a2ce9335e5ff091ac2759e09a6816e4bb119",
+        "throwType": "Lokad.Svg.Parsing.SvgInlineStyleParser",
+        "throwMethod": "ParseCore"
+      }
+    },
+    {
+      "context": "diagnostic-invalid-name-removal",
+      "inputSha256": "85bce8c43bf349c9accb3a34ef2b349fe46e47131c3f481167f451ea5c944988",
+      "result": {
+        "outcome": "UnsupportedFeature",
+        "element": null,
+        "attribute": null,
+        "line": null,
+        "column": null,
+        "fontStage": null,
+        "messageSha256": "01463760804d669b118c793f88c493381fda23d2a1b0aa5bf38c41d1798bc052",
+        "throwType": "Lokad.Svg.Parsing.SvgTextPositionLists",
+        "throwMethod": "ReadToken"
+      }
+    }
+  ],
+  "schemaVersion": 1,
+  "status": "OPEN: strict unknown-property admission precedes a distinct font-relative text-position gap.",
+  "source": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ny1.svg",
+  "sourceCommit": "309184ac440760bc605efcd59b9fe550cb32f1db",
+  "librarySha256": "fadd951e606b3c1704d8fc5e7e02732c4631632dcb2c147ff87ac19823581d37",
+  "font": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
+  "context": "Explicit DiagnosticNoto generic mapping/fallback into one regular Noto program; no original font qualification.",
+  "strictCssBoundary": "Unknown and unimplemented active declarations reject through the same bounded parser. Browser error recovery for unknown names is outside the current admission contract; no name-specific production exception, ignore-all fallback or unsupported-property registry is introduced.",
+  "standard": "https://www.w3.org/TR/css-syntax-3/#error-handling",
+  "nextGate": {
+    "element": "tspan",
+    "attribute": "dy",
+    "unit": "em",
+    "occurrences": 20,
+    "parser": "SvgTextPositionLists.ReadToken",
+    "reason": "Only bare numbers and pixels are currently read; spans resolve inherited font properties after coordinate parsing.",
+    "authoredControls": "../text-position-lengths/capture.json"
+  },
+  "sourceAttributeValuesRetained": 0,
+  "nextAction": "Resolve one shared declaration-owned text-length context before extending accepted units; retain existing positions/casing/shaping and known interactions. Re-run this complete diagnostic after the mechanism fix. The unchanged original retains its invalid-CSS rejection."
+}
