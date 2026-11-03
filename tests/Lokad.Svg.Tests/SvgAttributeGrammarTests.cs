@@ -69,7 +69,7 @@ public sealed class SvgAttributeGrammarTests
     public void Dash_and_text_lists_reject_missing_comma_values(string value)
     {
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgStrokeStyleSyntax.ParseDasharray(value)).ErrorCode);
-        Assert.Throws<SvgException>(() => SvgTextPositionLists.ReadFirst(value, out _));
+        Assert.Throws<SvgException>(() => SvgTextPositionLists.ReadFirst(value, new(16), SvgTextCoordinateKind.Length, out _));
     }
 
     [Theory]
@@ -78,7 +78,7 @@ public sealed class SvgAttributeGrammarTests
     [InlineData("0\t,\n1,2")]
     public void Text_span_cursors_resume_at_the_original_list_position(string value)
     {
-        SvgTextPositionSpanCursor cursor = new(new(0, 3, new(value, null, null, null, "0,10,20"), null));
+        SvgTextPositionSpanCursor cursor = new(new(0, 3, new(value, null, null, null, "0,10,20", new(16)), null));
         for (int index = 0; index < 3; index++)
         {
             SvgTextPositionValue position = cursor.Next();

@@ -79,7 +79,7 @@ public sealed class SvgLowercaseContextTests
     public void Lowercase_expansion_lifts_positions_and_inherited_child_selection(bool childLiteral)
     {
         SvgTextStyle style = new(new("Example", 400, false), 20, 0, 0, 0, 0, 0, SvgTextAnchor.Start, "expansion")
-            { TextTransform = SvgTextTransform.Lowercase, PositionLists = new("12 132", null, null, null, null) };
+            { TextTransform = SvgTextTransform.Lowercase, PositionLists = new("12 132", null, null, null, null, new(20)) };
         SvgInheritedTextStyle lower = new("Example", 400, false, 20, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start)
             { TextTransform = SvgTextTransform.Lowercase };
         SvgInheritedTextStyle literal = new("Example", 400, false, 20, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start);

@@ -408,6 +408,11 @@ keep this boundary separate from supplied-program rendering.
 | Text paths | One local open/closed geometry path per run, transformed/curved paths, advances/kerning, length/percentage startOffset, anchors/tangents, align/exact spacing and mixed direct/path text. |
 | Ligatures | Default Latin/DFLT Basic Latin, one unfiltered type-4 lookup, format-1 subtables, coverage 1/2 and 2–8 components in font order. |
 
+Text x/y/dx/dy accept finite numbers, fixed CSS length units and `em` from the
+declaring element's computed font size. Lists retain that basis across descendant
+font changes and instance replay. Rotation is unitless; percentages and `ex` text
+positions remain unsupported.
+
 Validated CSS `text-align` declarations are inert on supported preformatted text
 and containers. Explicit positions and `text-anchor` retain their meaning;
 [native controls](../tests/Research/preformatted-text-align/README.md) cover styled

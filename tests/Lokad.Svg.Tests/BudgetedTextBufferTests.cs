@@ -15,7 +15,7 @@ public sealed class BudgetedTextBufferTests
             SvgTextWhitespaceNormalizer parent = new(SvgTextWhitespaceMode.Default, 1, 0, false);
             parent.Append("A ", output, 20, CancellationToken.None);
             output.EnterStyleSpan(SvgTextPaintStyle.Default, new("Example", 400, false, 18, SvgTextWhitespaceMode.Default, 1, SvgTextAnchor.Start));
-            output.EnterPositioningSpan(new SvgTextPositionLists("20 30", null, null, null, null), 1, CancellationToken.None);
+            output.EnterPositioningSpan(new SvgTextPositionLists("20 30", null, null, null, null, new(16)), 1, CancellationToken.None);
             SvgTextWhitespaceNormalizer child = new(SvgTextWhitespaceMode.Default, 1, 1, true);
             child.Append(" B ", output, 20, CancellationToken.None);
             output.ExitPositioningSpan(1);
@@ -38,11 +38,11 @@ public sealed class BudgetedTextBufferTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(20_000));
         using SvgTextLayoutBuffer buffer = new(budget, 0, CancellationToken.None);
         buffer.Append("A", 0, 0, 20, CancellationToken.None);
-        buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30 40", null, null, null, "5 10"), 1, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30 40", null, null, null, "5 10", new(16)), 1, CancellationToken.None);
         buffer.Append(" ", 0, 0, 20, CancellationToken.None);
         buffer.Append("\ud83d", 0, 1, 20, CancellationToken.None);
         buffer.Append("\ude00", 0, 1, 20, CancellationToken.None);
-        buffer.EnterPositioningSpan(new SvgTextPositionLists(null, null, "0 2", null, "0"), 2, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionLists(null, null, "0 2", null, "0", new(16)), 2, CancellationToken.None);
         buffer.Append("BC", 0, 2, 20, CancellationToken.None);
         buffer.ExitPositioningSpan(2);
         buffer.Append("D", 0, 1, 20, CancellationToken.None);
@@ -80,7 +80,7 @@ public sealed class BudgetedTextBufferTests
         static void Run(RenderBudget budget, CancellationToken token, CancellationTokenSource? cancelBeforeDetach)
         {
             using SvgTextLayoutBuffer buffer = new(budget, 0, token);
-            buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30", null, null, null, "0 10"), 1, token);
+            buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30", null, null, null, "0 10", new(16)), 1, token);
             buffer.Append("ABC", 0, 4, 1, 20, token);
             buffer.ExitPositioningSpan(1);
             cancelBeforeDetach?.Cancel();

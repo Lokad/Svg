@@ -36,24 +36,203 @@
     }
   ],
   "schemaVersion": 1,
-  "status": "OPEN: strict unknown-property admission precedes a distinct font-relative text-position gap.",
+  "status": "OPEN: font-relative positions CLOSED; the declared CSS-repaired/font diagnostic renders with an isolated twelve-pixel nontext separator residual.",
   "source": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/ny1.svg",
   "sourceCommit": "309184ac440760bc605efcd59b9fe550cb32f1db",
-  "librarySha256": "fadd951e606b3c1704d8fc5e7e02732c4631632dcb2c147ff87ac19823581d37",
+  "librarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
   "font": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
   "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
   "context": "Explicit DiagnosticNoto generic mapping/fallback into one regular Noto program; no original font qualification.",
   "strictCssBoundary": "Unknown and unimplemented active declarations reject through the same bounded parser. Browser error recovery for unknown names is outside the current admission contract; no name-specific production exception, ignore-all fallback or unsupported-property registry is introduced.",
   "standard": "https://www.w3.org/TR/css-syntax-3/#error-handling",
-  "nextGate": {
-    "element": "tspan",
-    "attribute": "dy",
-    "unit": "em",
-    "occurrences": 20,
-    "parser": "SvgTextPositionLists.ReadToken",
-    "reason": "Only bare numbers and pixels are currently read; spans resolve inherited font properties after coordinate parsing.",
-    "authoredControls": "../text-position-lengths/capture.json"
-  },
   "sourceAttributeValuesRetained": 0,
-  "nextAction": "Resolve one shared declaration-owned text-length context before extending accepted units; retain existing positions/casing/shaping and known interactions. Re-run this complete diagnostic after the mechanism fix. The unchanged original retains its invalid-CSS rejection."
+  "nextAction": "Recompose an independent dashed-separator fixture and isolate the shared cause. Keep original invalid-CSS admission and supplied-font qualification separate; no hosted SVG body or raw attribute values retained.",
+  "beforePositionFix": {
+    "nextGate": {
+      "element": "tspan",
+      "attribute": "dy",
+      "unit": "em",
+      "occurrences": 20,
+      "parser": "SvgTextPositionLists.ReadToken",
+      "reason": "Only bare numbers and pixels are currently read; spans resolve inherited font properties after coordinate parsing.",
+      "authoredControls": "../text-position-lengths/capture.json"
+    },
+    "librarySha256": "fadd951e606b3c1704d8fc5e7e02732c4631632dcb2c147ff87ac19823581d37"
+  },
+  "afterPositionFix": {
+    "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+    "diagnosticInputSha256": "85bce8c43bf349c9accb3a34ef2b349fe46e47131c3f481167f451ea5c944988",
+    "nativeInputSha256": "6836c9b27080fbdd21921aa912abc64edb2fc8395afcd8fc095697ebaba43695",
+    "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "fontBindingChanges": 2,
+    "nonfontDiagnosticContentPreserved": true,
+    "librarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
+    "hostedSvgBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0,
+    "rows": [
+      {
+        "host": "windows",
+        "libraryPngSha256": "8bc6ec0c5bd0bc98708c982de9c66240f5407a69b7302427d1505c496ca26983",
+        "width": 600,
+        "height": 388,
+        "dimensionsMatch": true,
+        "changedPixels": 12,
+        "maximumError": 255,
+        "alphaChangedPixels": 12,
+        "differenceBounds": [
+          319,
+          193,
+          321,
+          247
+        ],
+        "captures": [
+          {
+            "pngSha256": "1260f21d6ecdad88946b5c900a5f45f2d32ce662e08230af5e1520a4fbe9cba1",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "1260f21d6ecdad88946b5c900a5f45f2d32ce662e08230af5e1520a4fbe9cba1",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "1260f21d6ecdad88946b5c900a5f45f2d32ce662e08230af5e1520a4fbe9cba1",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "libraryPngSha256": "600f283a5597e4a515285f892cb951e7209bb588c57876000e020ea8f82441d3",
+        "width": 600,
+        "height": 388,
+        "dimensionsMatch": true,
+        "changedPixels": 12,
+        "maximumError": 255,
+        "alphaChangedPixels": 12,
+        "differenceBounds": [
+          319,
+          193,
+          321,
+          247
+        ],
+        "captures": [
+          {
+            "pngSha256": "b9e220601b1f15dbd4d955a65d65b0ba2ec95fea335c9eb51e2cecba2619629a",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "b9e220601b1f15dbd4d955a65d65b0ba2ec95fea335c9eb51e2cecba2619629a",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          },
+          {
+            "pngSha256": "b9e220601b1f15dbd4d955a65d65b0ba2ec95fea335c9eb51e2cecba2619629a",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "terminalExitCode": 0
+          }
+        ]
+      }
+    ]
+  },
+  "nontextIsolation": {
+    "removedTextElements": 50,
+    "diagnostic": {
+      "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+      "diagnosticInputSha256": "3623243943e25c72839b69c7f7b68a2f2cc3ea794ed6388e6712a060f4447ae8",
+      "nativeInputSha256": "7493b1bf41c2a09a58e1d177de10e75b71e38641b565658e50740d7361320e07",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "fontBindingChanges": 2,
+      "nonfontDiagnosticContentPreserved": true,
+      "librarySha256": "d8b83d457b499949bc3e10eca62e60c2ffe6d8fe5d34ba3b116a27727207901a",
+      "hostedSvgBodiesRetained": 0,
+      "sourceAttributeValuesRetained": 0,
+      "rows": [
+        {
+          "host": "windows",
+          "libraryPngSha256": "2b05c844f0db634bd5b93c752548ecd0ff2dd35481f4143bdf5a457e661aa87f",
+          "width": 600,
+          "height": 388,
+          "dimensionsMatch": true,
+          "changedPixels": 12,
+          "maximumError": 255,
+          "alphaChangedPixels": 12,
+          "differenceBounds": [
+            319,
+            193,
+            321,
+            247
+          ],
+          "captures": [
+            {
+              "pngSha256": "bb46fbd4b1d4740c93b1cb88284fd1936e02b4e5822edcdde55068722a0712a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        {
+          "host": "linux",
+          "libraryPngSha256": "2b05c844f0db634bd5b93c752548ecd0ff2dd35481f4143bdf5a457e661aa87f",
+          "width": 600,
+          "height": 388,
+          "dimensionsMatch": true,
+          "changedPixels": 12,
+          "maximumError": 255,
+          "alphaChangedPixels": 12,
+          "differenceBounds": [
+            319,
+            193,
+            321,
+            247
+          ],
+          "captures": [
+            {
+              "pngSha256": "bb46fbd4b1d4740c93b1cb88284fd1936e02b4e5822edcdde55068722a0712a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      ]
+    },
+    "comparison": [
+      {
+        "host": "windows",
+        "changedPixels": 12,
+        "residualRgbaTuplesEqualAfterRemovingAll50TextElements": true,
+        "maximumAlphaError": 2
+      },
+      {
+        "host": "linux",
+        "changedPixels": 12,
+        "residualRgbaTuplesEqualAfterRemovingAll50TextElements": true,
+        "maximumAlphaError": 2
+      }
+    ],
+    "meaning": "Every changed pixel and both RGBA values are identical with all text removed. This isolation has one healthy native process per host; the complete diagnostic retains three per host. No original acceptance or reference admission is claimed."
+  },
+  "nextGate": {
+    "category": "Nontext dotted separator coverage/placement",
+    "changedPixelsPerHost": 12,
+    "maximumAlphaError": 2,
+    "bounds": [
+      319,
+      193,
+      321,
+      247
+    ],
+    "modelReview": "Review shared dash/path placement before adding geometry-specific branches; retain source/local/output transforms and accumulated numerical precision."
+  }
 }

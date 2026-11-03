@@ -2,8 +2,8 @@
 
 These authored controls isolate inherited and overridden font sizes and a scalar
 positioning list. Browser `em` positions match their numeric counterparts; the
-numeric controls also match the library exactly. The relative input currently
-rejects. [Capture evidence](capture.json) pins both inputs, programs, platform
+numeric and relative controls match the library exactly. [Capture evidence](capture.json)
+pins the before failure, both inputs, programs, platform
 references and three healthy captures of each input per host.
 
 Resolve each declaration against its own computed font size before descendant
@@ -12,9 +12,16 @@ and span cursors need the same length contract. Preserve existing numeric/px
 arithmetic, original scalar ownership and ignored path Y positions. Rotation is
 an angle, with a separate grammar.
 
-The [ny1 review](../svgweb/ny1-static-review.json) reaches this gap after an explicit
-RAM-only invalid-CSS repair. Neither that repair nor these supplied-font controls
-qualify the unchanged hosted source.
+The [rounding observations](rounding-dom.json) distinguish native double-precision
+unit resolution from early float multiplication. Load each authored input in that
+record's pinned font context, wait for `document.fonts.ready`, then query the text's
+`getBBox()`, `getStartPositionOfChar(0)`, `getEndPositionOfChar(0)` and
+`getRotationOfChar(0)`. Each host has three healthy identical observations.
+
+The [ny1 review](../svgweb/ny1-static-review.json) now renders after an explicit
+RAM-only invalid-CSS repair. Its twelve residual separator pixels remain unchanged
+after removing every text element. Neither that repair nor supplied fonts qualify
+the unchanged hosted source.
 
 To reproduce, supply the pinned Noto program to prepared conversion under
 `DiagnosticNoto`. For native image capture, insert only an `@font-face` stylesheet

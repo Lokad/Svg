@@ -1,0 +1,261 @@
+{
+  "inputSha256": "bacb4c3bee2f524832e7b0e74b9769014efdf9aa6f2dc673b37308490be80eab",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "rows": [
+    {
+      "host": "windows",
+      "observations": [
+        {
+          "id": "root-em",
+          "box": [
+            56.33319091796875,
+            86,
+            10,
+            18
+          ],
+          "angle": 0,
+          "start": [
+            57.33319091796875,
+            100
+          ],
+          "end": [
+            65.86444091796875,
+            100
+          ]
+        },
+        {
+          "id": "span-em",
+          "box": [
+            56.33319091796875,
+            86,
+            10,
+            18
+          ],
+          "angle": 0,
+          "start": [
+            57.33319091796875,
+            100
+          ],
+          "end": [
+            65.86444091796875,
+            100
+          ]
+        },
+        {
+          "id": "numeric-double",
+          "box": [
+            56.33319091796875,
+            86,
+            10,
+            18
+          ],
+          "angle": 0,
+          "start": [
+            57.33319091796875,
+            100
+          ],
+          "end": [
+            65.86444091796875,
+            100
+          ]
+        },
+        {
+          "id": "numeric-float",
+          "box": [
+            56.333194732666016,
+            86,
+            9.999996185302734,
+            18
+          ],
+          "angle": 0,
+          "start": [
+            57.333194732666016,
+            100
+          ],
+          "end": [
+            65.86444091796875,
+            100
+          ]
+        },
+        {
+          "id": "root-pt",
+          "box": [
+            0.46666669845581055,
+            86,
+            10,
+            18
+          ],
+          "angle": 0,
+          "start": [
+            1.4666666984558105,
+            100
+          ],
+          "end": [
+            9.997917175292969,
+            100
+          ]
+        }
+      ],
+      "captures": [
+        {
+          "observationSha256": "c7b77c647deaa1f8a036d0d48883eb6265656fd81269ce715d6a359954396c56",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "observationSha256": "c7b77c647deaa1f8a036d0d48883eb6265656fd81269ce715d6a359954396c56",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "observationSha256": "c7b77c647deaa1f8a036d0d48883eb6265656fd81269ce715d6a359954396c56",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "chromeVersion": "153.0.8010.52",
+      "chromeSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "nativeMathProfile": "Windows"
+    },
+    {
+      "host": "linux",
+      "observations": [
+        {
+          "id": "root-em",
+          "box": [
+            57.33319091796875,
+            86,
+            9,
+            18
+          ],
+          "angle": 0,
+          "start": [
+            57.33319091796875,
+            100
+          ],
+          "end": [
+            65.86444091796875,
+            100
+          ]
+        },
+        {
+          "id": "span-em",
+          "box": [
+            57.33319091796875,
+            86,
+            9,
+            18
+          ],
+          "angle": 0,
+          "start": [
+            57.33319091796875,
+            100
+          ],
+          "end": [
+            65.86444091796875,
+            100
+          ]
+        },
+        {
+          "id": "numeric-double",
+          "box": [
+            57.33319091796875,
+            86,
+            9,
+            18
+          ],
+          "angle": 0,
+          "start": [
+            57.33319091796875,
+            100
+          ],
+          "end": [
+            65.86444091796875,
+            100
+          ]
+        },
+        {
+          "id": "numeric-float",
+          "box": [
+            57.333194732666016,
+            86,
+            8.999996185302734,
+            18
+          ],
+          "angle": 0,
+          "start": [
+            57.333194732666016,
+            100
+          ],
+          "end": [
+            65.86444091796875,
+            100
+          ]
+        },
+        {
+          "id": "root-pt",
+          "box": [
+            1.4666666984558105,
+            86,
+            9,
+            18
+          ],
+          "angle": 0,
+          "start": [
+            1.4666666984558105,
+            100
+          ],
+          "end": [
+            9.997917175292969,
+            100
+          ]
+        }
+      ],
+      "captures": [
+        {
+          "observationSha256": "5b06a67e83a330b5113b7ff43e79c500c7f0a068abf1f858608790c5e68386ce",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "observationSha256": "5b06a67e83a330b5113b7ff43e79c500c7f0a068abf1f858608790c5e68386ce",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "observationSha256": "5b06a67e83a330b5113b7ff43e79c500c7f0a068abf1f858608790c5e68386ce",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "chromeVersion": "153.0.8010.52",
+      "chromeSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "nativeMathProfile": "Ubuntu26 glibc2.43 CORE-MATH"
+    }
+  ],
+  "schemaVersion": 1,
+  "inputs": "rounding-dom-inputs.json",
+  "font": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontFamily": "ReviewFont",
+  "fontWeight": 400,
+  "fontStyle": "normal",
+  "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
+  "viewport": [
+    560,
+    176
+  ],
+  "deviceScaleFactor": 1,
+  "queries": [
+    "getBBox()",
+    "getStartPositionOfChar(0)",
+    "getEndPositionOfChar(0)",
+    "getRotationOfChar(0)"
+  ],
+  "observation": "Root and span em positions match the numeric-double control; early float multiplication differs by one float ULP. Bounds remain independent platform observations. No renderer values selected these native results."
+}

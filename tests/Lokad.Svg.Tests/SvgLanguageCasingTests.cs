@@ -86,7 +86,7 @@ public sealed class SvgLanguageCasingTests
     {
         string source = trailing ? "I\u0307" : "I\u0307a";
         SvgTextStyle style = new(new("Example", 400, false), 20, 0, 0, 0, 0, 0, SvgTextAnchor.Start, "deletion")
-            { TextTransform = SvgTextTransform.Lowercase, Language = "tr", PositionLists = new("12 120 132", "48", "0 7 3", null, "5 15 25") };
+            { TextTransform = SvgTextTransform.Lowercase, Language = "tr", PositionLists = new("12 120 132", "48", "0 7 3", null, "5 15 25", new(20)) };
         SvgInheritedTextStyle font = new("Example", 400, false, 20, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start)
             { TextTransform = SvgTextTransform.Lowercase, Language = "tr" };
         SvgTextFontSpan[] fonts = trailing ? [new(0, 1, font), new(1, 2, font)] : [new(0, 1, font), new(1, 2, font), new(2, 3, font)];

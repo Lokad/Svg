@@ -57,8 +57,10 @@ ID-repaired, supplied-font diagnostic is exact on both hosts. The original remai
 unsupported.
 
 The [ny1 review](ny1-static-review.json) accounts for strict unknown-CSS admission.
-Removing its invalid declaration in RAM reaches unsupported font-relative text
-positions, isolated by [authored controls](../text-position-lengths/README.md).
+Its declared CSS-repaired diagnostic resolves font-relative text positions
+through a shared declaration-length basis and
+[authored controls](../text-position-lengths/README.md). The complete diagnostic
+renders; twelve residual separator pixels persist without any text.
 
 The [physical-font interval correction](text-shaping-boundaries.json) keeps
 anchor-only changes from breaking ligatures. Its direct mechanisms, one ownership

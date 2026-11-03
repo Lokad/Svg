@@ -83,7 +83,7 @@ public sealed partial class OpenTypeFontTests
         SvgInheritedTextStyle end = start.WithAnchor(SvgTextAnchor.End);
         SvgTextFontSpan[] spans = [new(0, 1, start), new(1, 2, end), new(2, 3, start)];
         SvgTextStyle style = new(new("Example", 400, false), 20, 0, 0, 0, 0, 0, SvgTextAnchor.Start, "anchor");
-        if (ancestorPositions) style = style with { PositionLists = new("0 100 200", null, null, null, null) };
+        if (ancestorPositions) style = style with { PositionLists = new("0 100 200", null, null, null, null, new(20)) };
         SvgTextPositionAdjustment[] positions = ancestorPositions ? [] : [new(1, 100, null, 0, 0), new(2, 200, null, 0, 0)];
         RenderBudget budget = new(new HostMemoryBudget(1_000_000));
         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AAA", [], positions, [], spans, null, null, fonts, budget, CancellationToken.None))

@@ -1,4 +1,3 @@
-using System.Globalization;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -6,17 +5,14 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Borrows bounded authored coordinate tokens until normalized text is available.</summary>
 /// <remarks>XML storage belongs to the parser allowance. Material list/glyph arrays
 /// are allocated under the run's budget; validation retains no arrays or owners.</remarks>
-internal readonly record struct SvgTextPositionLists(string? X, string? Y, string? Dx, string? Dy, string? Rotate)
+internal readonly record struct SvgTextPositionLists(string? X, string? Y, string? Dx, string? Dy, string? Rotate, SvgTextPositionBasis Basis)
 {
     internal int CharacterOffset { get; init; }
     /// <summary>Preserves authored Y boundaries while suppressing their coordinate effect on a horizontal text path.</summary>
     internal bool IgnoreY { get; init; }
     internal bool IsEmpty => X is null && Y is null && Dx is null && Dy is null && Rotate is null;
 
-    internal static double ReadFirst(string? value, out bool multiple)
-        => ReadFirst(value, true, out multiple);
-
-    internal static double ReadFirst(string? value, bool allowPixels, out bool multiple)
+    internal static double ReadFirst(string? value, SvgTextPositionBasis basis, SvgTextCoordinateKind kind, out bool multiple)
     {
         multiple = false;
         if (value is null) return 0;
@@ -25,20 +21,9 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
         SvgGeometrySyntax.DelimitedTokenReader reader = new(value.AsSpan(), SvgNumberListSyntax.Svg, 0);
         if (!reader.TryReadValue(out ReadOnlySpan<char> first))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text coordinate lists must contain finite numbers.");
-        double result = ReadToken(first, allowPixels);
-        while (reader.TryReadValue(out ReadOnlySpan<char> token)) { _ = ReadToken(token, allowPixels); multiple = true; }
+        double result = basis.Read(first, kind);
+        while (reader.TryReadValue(out ReadOnlySpan<char> token)) { _ = basis.Read(token, kind); multiple = true; }
         return result;
-    }
-
-    internal static double ReadToken(ReadOnlySpan<char> token)
-        => ReadToken(token, true);
-
-    internal static double ReadToken(ReadOnlySpan<char> token, bool allowPixels)
-    {
-        if (allowPixels && token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2];
-        if (!double.TryParse(token, SvgFloatNumber.TokenStyles, CultureInfo.InvariantCulture, out double value) || !double.IsFinite(value))
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text coordinate lists must contain finite numbers.");
-        return value;
     }
 
     /// <summary>Builds root positions over normalized scalar boundaries, merging existing descendant adjustments.</summary>
@@ -55,18 +40,18 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
             token.ThrowIfCancellationRequested();
             _ = xs.TryReadValue(out _); _ = ys.TryReadValue(out _);
             _ = dxs.TryReadValue(out _); _ = dys.TryReadValue(out _);
-            if (rotations.TryReadValue(out ReadOnlySpan<char> previous)) lastRotation = ReadToken(previous, false);
+            if (rotations.TryReadValue(out ReadOnlySpan<char> previous)) lastRotation = Basis.Read(previous, SvgTextCoordinateKind.Rotation);
         }
         int sourceOffset = 0, descendantIndex = 0;
         foreach (System.Text.Rune scalar in text.EnumerateRunes())
         {
             token.ThrowIfCancellationRequested();
-            double? x = xs.TryReadValue(out ReadOnlySpan<char> xv) ? ReadToken(xv) : null;
-            double? y = ys.TryReadValue(out ReadOnlySpan<char> yv) ? ReadToken(yv) : null;
+            double? x = xs.TryReadValue(out ReadOnlySpan<char> xv) ? Basis.Read(xv, SvgTextCoordinateKind.Length) : null;
+            double? y = ys.TryReadValue(out ReadOnlySpan<char> yv) ? Basis.Read(yv, SvgTextCoordinateKind.Length) : null;
             bool hasDx = dxs.TryReadValue(out ReadOnlySpan<char> dxv), hasDy = dys.TryReadValue(out ReadOnlySpan<char> dyv);
-            double dx = hasDx ? ReadToken(dxv) : 0;
-            double dy = hasDy ? ReadToken(dyv) : 0;
-            if (rotations.TryReadValue(out ReadOnlySpan<char> rotation)) lastRotation = ReadToken(rotation, false);
+            double dx = hasDx ? Basis.Read(dxv, SvgTextCoordinateKind.Length) : 0;
+            double dy = hasDy ? Basis.Read(dyv, SvgTextCoordinateKind.Length) : 0;
+            if (rotations.TryReadValue(out ReadOnlySpan<char> rotation)) lastRotation = Basis.Read(rotation, SvgTextCoordinateKind.Rotation);
             double? angle = lastRotation;
             if (descendantIndex < descendants.Length && descendants[descendantIndex].Start == sourceOffset)
             {

@@ -26,7 +26,7 @@ public sealed class SvgLanguageCasingOwnershipTests
         static void Project(RenderBudget budget, CancellationToken token)
         {
             SvgTextStyle style = new(new("Example", 400, false), 20, 0, 0, 0, 0, 0, SvgTextAnchor.Start, "retry")
-                { TextTransform = SvgTextTransform.Lowercase, Language = "tr", PositionLists = new("12 80 132", null, "0 7 3", null, "5 15 25") };
+                { TextTransform = SvgTextTransform.Lowercase, Language = "tr", PositionLists = new("12 80 132", null, "0 7 3", null, "5 15 25", new(20)) };
             using SvgTextProjection projection = new(style, "I\u0307a", [], [], [], [],
                 [new(1, true) { PreviousElementIdentity = 1, ElementIdentity = 0 }, new(2, true) { PreviousElementIdentity = 0, ElementIdentity = 2 }],
                 [new(0, 1, null, null), new(1, 2, new("p", 0, false, null), null), new(2, 3, null, new(100, 20))],

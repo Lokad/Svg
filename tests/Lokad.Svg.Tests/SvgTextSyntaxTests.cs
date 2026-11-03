@@ -167,7 +167,7 @@ public sealed class SvgTextSyntaxTests
     [Fact]
     public void Root_lists_follow_normalized_scalar_boundaries_and_descendant_precedence()
     {
-        SvgTextPositionLists lists = new("8 24 40", "28", "0 1", null, "0 10 -10");
+        SvgTextPositionLists lists = new("8 24 40", "28", "0 1", null, "0 10 -10", new(16));
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000));
         using (OwnedParserArray<SvgTextPositionAdjustment> positions = lists.Build("A😀B", [new(3, 50, null, 2, -1)], budget, CancellationToken.None))
         {
@@ -180,7 +180,6 @@ public sealed class SvgTextSyntaxTests
 
     [Theory]
     [InlineData("1 NaN")]
-    [InlineData("1 2em")]
     [InlineData("1 20%")]
     [InlineData("1 1e309")]
     public void Root_lists_validate_every_value_before_layout(string value)
@@ -200,7 +199,7 @@ public sealed class SvgTextSyntaxTests
     [Fact]
     public void Denied_or_cancelled_list_preparation_releases_partial_storage()
     {
-        SvgTextPositionLists lists = new("1 2 3 4 5", null, null, null, "0 10");
+        SvgTextPositionLists lists = new("1 2 3 4 5", null, null, null, "0 10", new(16));
         RenderBudget denied = new RenderBudget(new HostMemoryBudget(1));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => lists.Build("ABCDE", [], denied, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
@@ -339,10 +338,9 @@ public sealed class SvgTextSyntaxTests
 
     [Theory]
     [InlineData("x", "20%")]
-    [InlineData("y", "1em")]
     [InlineData("x", "NaN")]
     [InlineData("y", "1e309")]
-    public void Rejects_absolute_span_units_and_nonfinite_values(string axis, string value)
+    public void Rejects_unresolved_span_percentages_and_nonfinite_values(string axis, string value)
     {
         using XmlReader reader = XmlReader.Create(new StringReader($"<tspan {axis}='{value}'/>"));
         reader.Read();

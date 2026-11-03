@@ -1,0 +1,22 @@
+[
+  {
+    "id": "root-em",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='180' height='144'><text font-family='ReviewFont' font-size='13.3333' x='4.3em' y='100'>A</text></svg>"
+  },
+  {
+    "id": "span-em",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='180' height='144'><text font-family='ReviewFont' font-size='16' y='100'><tspan font-size='13.3333' dx='4.3em'>A</tspan></text></svg>"
+  },
+  {
+    "id": "numeric-double",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='180' height='144'><text font-family='ReviewFont' font-size='13.3333' x='57.33319' y='100'>A</text></svg>"
+  },
+  {
+    "id": "numeric-float",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='180' height='144'><text font-family='ReviewFont' font-size='13.3333' x='57.333194732666016' y='100'>A</text></svg>"
+  },
+  {
+    "id": "root-pt",
+    "source": "<svg xmlns='http://www.w3.org/2000/svg' width='180' height='144'><text font-family='ReviewFont' font-size='13.3333' x='1.1pt' y='100'>A</text></svg>"
+  }
+]

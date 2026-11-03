@@ -13,6 +13,8 @@ tests/Research/native-math-profiles/*.cpp text eol=lf
 tests/Research/native-math-profiles/*.json text eol=lf
 # Preserve the hashed browser sampling probe on every checkout.
 tests/Research/svgweb/highp-bilinear.js text eol=lf
+# The authored DOM observation input is hashed as bytes.
+tests/Research/text-position-lengths/rounding-dom-inputs.json text eol=lf
 # Preserve the hashed compiled-native coverage source across platforms.
 tests/Research/svgweb/opaque-gradient-native.cpp text eol=lf
 # Native bitmap-restore evidence uses byte-stable source and vectors.

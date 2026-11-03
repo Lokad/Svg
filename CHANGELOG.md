@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Resolve scalar/list text positions in fixed CSS units and em using each
+  declaration's computed font size, including span and instance replay.
 - Shape covered Latin combining sequences with canonical Unicode ordering,
   font-covered composition, selected substitutions and actual mark attachments;
   preserve source clusters through both text-length fitting modes.

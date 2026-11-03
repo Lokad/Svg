@@ -344,10 +344,11 @@ internal static class SvgTextSyntax
         double parsedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : ParseSpacing(letterSpacingValue);
         SvgTextAnchor anchor = ParseAnchor(textAnchor ?? reader.GetAttribute("text-anchor"), inherited.Anchor);
         string? x = reader.GetAttribute("x"), y = reader.GetAttribute("y"), dx = reader.GetAttribute("dx"), dy = reader.GetAttribute("dy"), rotate = reader.GetAttribute("rotate");
-        double firstX = SvgTextPositionLists.ReadFirst(x, out bool manyX), firstY = SvgTextPositionLists.ReadFirst(y, out bool manyY);
-        double firstDx = SvgTextPositionLists.ReadFirst(dx, out bool manyDx), firstDy = SvgTextPositionLists.ReadFirst(dy, out bool manyDy);
-        if (rotate is not null) _ = SvgTextPositionLists.ReadFirst(rotate, false, out _);
-        SvgTextPositionLists lists = manyX || manyY || manyDx || manyDy || rotate is not null ? new(x, y, dx, dy, rotate) : default;
+        SvgTextPositionBasis basis = new(fontSize);
+        double firstX = SvgTextPositionLists.ReadFirst(x, basis, SvgTextCoordinateKind.Length, out bool manyX), firstY = SvgTextPositionLists.ReadFirst(y, basis, SvgTextCoordinateKind.Length, out bool manyY);
+        double firstDx = SvgTextPositionLists.ReadFirst(dx, basis, SvgTextCoordinateKind.Length, out bool manyDx), firstDy = SvgTextPositionLists.ReadFirst(dy, basis, SvgTextCoordinateKind.Length, out bool manyDy);
+        if (rotate is not null) _ = SvgTextPositionLists.ReadFirst(rotate, basis, SvgTextCoordinateKind.Rotation, out _);
+        SvgTextPositionLists lists = manyX || manyY || manyDx || manyDy || rotate is not null ? new(x, y, dx, dy, rotate, basis) : default;
         double? textLength = reader.GetAttribute("textLength") is string authoredLength ? SvgGeometrySyntax.ParseTextCoordinate(authoredLength) : null;
         if (textLength < 0) throw new SvgException(SvgErrorCode.MalformedInput, "textLength must be nonnegative.");
         SvgTextLengthAdjust lengthAdjust = reader.GetAttribute("lengthAdjust") switch
@@ -491,19 +492,21 @@ internal static class SvgTextSyntax
         SvgTextWhitespaceMode mode = xmlSpace is null ? inherited.WhitespaceMode : ParseXmlWhitespaceMode(xmlSpace);
         if (SvgInlineStyleParser.MergeWithImportance(whiteSpace, inlineImportant, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important) is string specifiedWhiteSpace) mode = ParseCssWhitespaceMode(specifiedWhiteSpace);
         string? letterSpacing = SvgInlineStyleParser.MergeWithImportance(inlineLetterSpacing, inlineImportant, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important) ?? presentationLetterSpacing;
-        double? firstX = x is null ? null : SvgTextPositionLists.ReadFirst(x, out _);
-        double? firstY = y is null ? null : SvgTextPositionLists.ReadFirst(y, out _);
-        double? firstDx = dx is null ? null : SvgTextPositionLists.ReadFirst(dx, out _);
-        double? firstDy = dy is null ? null : SvgTextPositionLists.ReadFirst(dy, out _);
-        if (rotate is not null) _ = SvgTextPositionLists.ReadFirst(rotate, false, out _);
-        SvgTextPositionOffset? positionOffset = x is null && y is null && dx is null && dy is null ? null : new(firstX, firstY, firstDx, firstDy);
-        style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : ParseSpacing(letterSpacing), positionOffset)
-        { PositionLists = new(x, y, dx, dy, rotate),
-            Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, parsedInline, styleSheet), inherited.Paint),
-            Font = SvgTextInheritance.Resolve(reader, inherited.Font, SvgInlineStyleParser.MergeFont(parsedInline.TextFont, parsedInline.Important, styleSheet.TextFont, styleSheet.Important), null, null,
+        SvgInheritedTextStyle font = SvgTextInheritance.Resolve(reader, inherited.Font, SvgInlineStyleParser.MergeFont(parsedInline.TextFont, parsedInline.Important, styleSheet.TextFont, styleSheet.Important), null, null,
                 SvgInlineStyleParser.MergeWithImportance(parsedInline.WordSpacing, parsedInline.Important, InlineImportantProperties.WordSpacing, styleSheet.WordSpacing, styleSheet.Important),
                 SvgInlineStyleParser.MergeWithImportance(parsedInline.TextAnchor, parsedInline.Important, InlineImportantProperties.TextAnchor, styleSheet.TextAnchor, styleSheet.Important),
-                SvgInlineStyleParser.MergeWithImportance(parsedInline.TextTransform, parsedInline.Important, InlineImportantProperties.TextTransform, styleSheet.TextTransform, styleSheet.Important)) };
+                SvgInlineStyleParser.MergeWithImportance(parsedInline.TextTransform, parsedInline.Important, InlineImportantProperties.TextTransform, styleSheet.TextTransform, styleSheet.Important));
+        SvgTextPositionBasis basis = new(font.FontSize);
+        double? firstX = x is null ? null : SvgTextPositionLists.ReadFirst(x, basis, SvgTextCoordinateKind.Length, out _);
+        double? firstY = y is null ? null : SvgTextPositionLists.ReadFirst(y, basis, SvgTextCoordinateKind.Length, out _);
+        double? firstDx = dx is null ? null : SvgTextPositionLists.ReadFirst(dx, basis, SvgTextCoordinateKind.Length, out _);
+        double? firstDy = dy is null ? null : SvgTextPositionLists.ReadFirst(dy, basis, SvgTextCoordinateKind.Length, out _);
+        if (rotate is not null) _ = SvgTextPositionLists.ReadFirst(rotate, basis, SvgTextCoordinateKind.Rotation, out _);
+        SvgTextPositionOffset? positionOffset = x is null && y is null && dx is null && dy is null ? null : new(firstX, firstY, firstDx, firstDy);
+        style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : ParseSpacing(letterSpacing), positionOffset)
+        { PositionLists = new(x, y, dx, dy, rotate, basis),
+            Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, parsedInline, styleSheet), inherited.Paint),
+            Font = font };
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, parsedInline, styleSheet, inherited.Font.Decoration, (style.Paint with { IsDisplayed = true, IsVisible = true }).GlyphPaint);
         if (decoration != style.Font.Decoration) style = style with { Font = style.Font.WithDecoration(decoration) };
         style = style with { Paint = style.Paint with { Decoration = decoration } };

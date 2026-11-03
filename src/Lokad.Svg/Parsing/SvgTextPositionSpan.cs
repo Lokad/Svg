@@ -24,17 +24,18 @@ internal struct SvgTextPositionSpanCursor
             _applied = true;
             return new(scalar.X, scalar.Y, scalar.Dx, scalar.Dy, null, false);
         }
-        double? x = Read(_span.Lists.X, ref _x, true), y = Read(_span.Lists.Y, ref _y, true);
-        double? dx = Read(_span.Lists.Dx, ref _dx, true), dy = Read(_span.Lists.Dy, ref _dy, true);
-        if (Read(_span.Lists.Rotate, ref _rotate, false) is double angle) _lastRotation = angle;
+        SvgTextPositionBasis basis = _span.Lists.Basis;
+        double? x = Read(_span.Lists.X, ref _x, basis, SvgTextCoordinateKind.Length), y = Read(_span.Lists.Y, ref _y, basis, SvgTextCoordinateKind.Length);
+        double? dx = Read(_span.Lists.Dx, ref _dx, basis, SvgTextCoordinateKind.Length), dy = Read(_span.Lists.Dy, ref _dy, basis, SvgTextCoordinateKind.Length);
+        if (Read(_span.Lists.Rotate, ref _rotate, basis, SvgTextCoordinateKind.Rotation) is double angle) _lastRotation = angle;
         return new(x, y, dx, dy, _lastRotation, true);
 
-        static double? Read(string? source, ref int offset, bool pixels)
+        static double? Read(string? source, ref int offset, SvgTextPositionBasis basis, SvgTextCoordinateKind kind)
         {
             SvgGeometrySyntax.DelimitedTokenReader reader = new(source.AsSpan(), SvgNumberListSyntax.Svg, offset);
             bool found = reader.TryReadValue(out ReadOnlySpan<char> value);
             offset = reader.Consumed;
-            return found ? SvgTextPositionLists.ReadToken(value, pixels) : null;
+            return found ? basis.Read(value, kind) : null;
         }
     }
 }

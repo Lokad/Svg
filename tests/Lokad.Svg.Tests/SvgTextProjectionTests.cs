@@ -55,7 +55,7 @@ public sealed class SvgTextProjectionTests
     public void Expansion_lifts_original_lists_and_all_source_intervals_once()
     {
         SvgTextStyle style = new(new("Example", 400, false), 20, 12, 48, 0, 0, 0, SvgTextAnchor.Start, "projection")
-            { TextTransform = SvgTextTransform.Uppercase, PositionLists = new("12 132", "48", null, null, "5 15") };
+            { TextTransform = SvgTextTransform.Uppercase, PositionLists = new("12 132", "48", null, null, "5 15", new(20)) };
         SvgInheritedTextStyle upper = new("Example", 400, false, 20, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start)
             { TextTransform = SvgTextTransform.Uppercase };
         SvgInheritedTextStyle literal = new("Example", 400, false, 20, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.End);
@@ -138,7 +138,7 @@ public sealed class SvgTextProjectionTests
         static void Project(RenderBudget budget, CancellationToken token)
         {
             SvgTextStyle style = new(new("Example", 400, false), 20, 0, 0, 0, 0, 0, SvgTextAnchor.Start, "retry")
-                { TextTransform = SvgTextTransform.Uppercase, PositionLists = new("12 132", null, null, null, "5") };
+                { TextTransform = SvgTextTransform.Uppercase, PositionLists = new("12 132", null, null, null, "5", new(20)) };
             using SvgTextProjection projection = new(style, "ßa", [], [], [], [], [], [], [], budget, token);
             Assert.Equal("SSA", projection.Value);
         }

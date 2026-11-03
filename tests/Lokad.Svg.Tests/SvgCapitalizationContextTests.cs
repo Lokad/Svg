@@ -113,7 +113,7 @@ public sealed class SvgCapitalizationContextTests
     public void Expansion_lifts_original_positions_and_keeps_noninitial_style_boundaries()
     {
         SvgTextStyle style = new(new("Example", 400, false), 20, 0, 0, 0, 0, 0, SvgTextAnchor.Start, "capitalize")
-            { TextTransform = SvgTextTransform.Capitalize, PositionLists = new("12 132", null, null, null, "5 15") };
+            { TextTransform = SvgTextTransform.Capitalize, PositionLists = new("12 132", null, null, null, "5 15", new(20)) };
         SvgInheritedTextStyle selected = new("Example", 400, false, 20, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start)
             { TextTransform = SvgTextTransform.Capitalize };
         SvgInheritedTextStyle bold = new("Example", 700, false, 20, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start)

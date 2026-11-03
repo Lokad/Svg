@@ -42,7 +42,7 @@ public sealed partial class OpenTypeFontTests
     [Fact]
     public void Continuation_coordinate_lists_consume_prior_scalars_and_keep_rotation_repetition()
     {
-        SvgTextPositionLists lists = new("1 2 3 4", "10 20 30 40", "0 1 2 3", null, "5 15") { CharacterOffset = 2 };
+        SvgTextPositionLists lists = new("1 2 3 4", "10 20 30 40", "0 1 2 3", null, "5 15", new(16)) { CharacterOffset = 2 };
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(100_000));
         using (OwnedParserArray<SvgTextPositionAdjustment> positions = lists.Build("AA", [], budget, CancellationToken.None))
         {
