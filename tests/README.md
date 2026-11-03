@@ -37,6 +37,9 @@ direct mechanisms, one refusal/cleanup/retry contract and one canonical image
 protect source validation, genuine size boundaries and cross-node ligatures.
 The [shared-range control](Research/text-shared-anchor/README.md) adds direct
 middle/end coordinate mechanisms and one native image for uniform child anchors.
+The [case projection bank](Research/text-case-mapping/README.md) adds direct Unicode
+and source-index mechanisms, representative temporary/prepared ownership, and three
+canonical native controls. Indexed expansion uses an independent literal reference.
 Equal images alone never establish redundancy. Preserve distinct
 source graphs, allocation paths, native companions, platform differences and
 exclusions. Rendering fixtures do not each need all twelve API forms.

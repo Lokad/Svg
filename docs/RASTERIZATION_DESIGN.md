@@ -105,6 +105,13 @@ Adjacent intervals selecting the identical face object and size share shaping;
 paint, node and positioning boundaries retain their independent rules. The
 [ligature control](../tests/Research/text-shaping-boundaries/README.md) protects
 this separation and the original scalar-boundary validation.
+Case projection resolves original SVG positioning lists before expanding text.
+It lifts source intervals into emitted UTF-16 offsets once; shaping retains its
+ordinary GSUB consumption and fitting model. Unchanged text borrows its inputs;
+material conversion reserves temporary text/maps/arrays until layout has copied
+retained data. Streaming and retained-instance font discovery share the pinned
+scalar mapper. [Case evidence](../tests/Research/text-case-mapping/README.md)
+keeps original addressing distinct from transformed browser observations.
 The admitted resource dependency graph and paint selection remain owned by that
 preparation through acquisition, then serve lowering without a second collection.
 The [HTTP resolver](HTTP_FONTS.md) owns shared downloads/cache under a longer-lived

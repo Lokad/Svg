@@ -403,3 +403,13 @@ For resource, package and isolated-conversion commands, see the repository
 documents explicit local/HTTP font acquisition and host responsibilities.
 The package smoke script checks inline README file links before building
 and running its clean installed-package consumer.
+
+## Pinned uppercase data
+
+Run `python -X utf8 tools/generate-unicode-uppercase.py` to regenerate the
+[Unicode table](../src/Lokad.Svg/Parsing/SvgTextCasing.Data.cs) and its
+[direct mapping corpus](../tests/Research/text-case-mapping/unicode-data.json).
+The script verifies pinned Unicode 17 source hashes and keeps downloads in memory.
+It does not capture rendering references. Data licensing is included in
+[third-party notices](../THIRD_PARTY_NOTICES.txt); the [case bank](../tests/Research/text-case-mapping/README.md)
+describes native admission and the independent indexed literal control.

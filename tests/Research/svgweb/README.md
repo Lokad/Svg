@@ -27,7 +27,10 @@ preserves the original-to-mechanism mapping.
 [Preformatted alignment](preformatted-text-align.json) validates unused text-align
 declarations through the shared style parser. svg2009 now reaches line-height;
 its deeper clip-child and path-style contexts remain open. Case transformation
-also remains open and requires its own source-addressing and font-discovery evidence.
+remains open beyond the [default-uppercase increment](text-case-projection.json),
+which qualifies original addressing, expansion and transformed font discovery.
+ny1 now reaches the invalid CSS name `stroke-fill`; the complete original remains
+unsupported and needs a shared invalid-versus-unimplemented declaration review.
 
 The [physical-font interval correction](text-shaping-boundaries.json) keeps
 anchor-only changes from breaking ligatures. Its direct mechanisms, one ownership
@@ -36,7 +39,8 @@ contract and one native image protect separate responsibilities. The
 comparison when eliding a default interval, retaining uniform child anchors. The
 [case-expansion model review](text-casing-model.json) retains independent literal
 controls: observed browser transformation alone does not establish original SVG
-character indexing. Case transformation remains unimplemented.
+character indexing. The [case projection bank](../text-case-mapping/README.md)
+qualifies uppercase independently; other operations and language tailoring remain open.
 
 The [supplied-program inventory](supplied-original-contexts.json) pins all 19 font
 contexts and three stable healthy captures per host. The [current raster-strike correction](windows-small-strikes.json)

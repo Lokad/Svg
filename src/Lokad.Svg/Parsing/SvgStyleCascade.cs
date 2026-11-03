@@ -27,6 +27,8 @@ internal struct SvgStyleCascade
     private string? _wordSpacing;
     private string? _textDecoration;
     private string? _textAnchor;
+    private string? _textTransform;
+    private CssDeclarationRank _textTransformRank;
     private CssDeclarationRank _textAnchorRank;
     private string? _linecap;
     private string? _linejoin;
@@ -101,6 +103,7 @@ internal struct SvgStyleCascade
         Apply(ref _wordSpacing, ref _wordSpacingRank, style.WordSpacing, (style.Important & InlineImportantProperties.WordSpacing) != 0, specificity);
         Apply(ref _textDecoration, ref _textDecorationRank, style.TextDecoration, (style.Important & InlineImportantProperties.TextDecoration) != 0, specificity);
         Apply(ref _textAnchor, ref _textAnchorRank, style.TextAnchor, (style.Important & InlineImportantProperties.TextAnchor) != 0, specificity);
+        Apply(ref _textTransform, ref _textTransformRank, style.TextTransform, (style.Important & InlineImportantProperties.TextTransform) != 0, specificity);
         Apply(ref _linecap, ref _linecapRank, style.Linecap, (style.Important & InlineImportantProperties.Linecap) != 0, specificity);
         Apply(ref _linejoin, ref _linejoinRank, style.Linejoin, (style.Important & InlineImportantProperties.Linejoin) != 0, specificity);
         Apply(ref _dasharray, ref _dasharrayRank, style.Dasharray, (style.Important & InlineImportantProperties.Dasharray) != 0, specificity);
@@ -138,6 +141,7 @@ internal struct SvgStyleCascade
         if (_wordSpacingRank.Important) important |= InlineImportantProperties.WordSpacing;
         if (_textDecorationRank.Important) important |= InlineImportantProperties.TextDecoration;
         if (_textAnchorRank.Important) important |= InlineImportantProperties.TextAnchor;
+        if (_textTransformRank.Important) important |= InlineImportantProperties.TextTransform;
         if (_linecapRank.Important) important |= InlineImportantProperties.Linecap;
         if (_linejoinRank.Important) important |= InlineImportantProperties.Linejoin;
         if (_dasharrayRank.Important) important |= InlineImportantProperties.Dasharray;
@@ -147,7 +151,7 @@ internal struct SvgStyleCascade
         if (_strokeOpacityRank.Important) important |= InlineImportantProperties.StrokeOpacity;
         if (_geometryWidthRank.Important) important |= InlineImportantProperties.GeometryWidth;
         if (_geometryHeightRank.Important) important |= InlineImportantProperties.GeometryHeight;
-        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, WordSpacing = _wordSpacing, TextDecoration = _textDecoration, TextAnchor = _textAnchor, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, ClipRule = _clipRule, PaintOrder = _paintOrder, Filter = _filter, MarkerEnd = _markerEnd, MarkerMid = _markerMid, MarkerStart = _markerStart, Overflow = _overflow, GeometryWidth = _geometryWidth, GeometryHeight = _geometryHeight, BackgroundColor = _backgroundColor, Important = important };
+        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, WordSpacing = _wordSpacing, TextDecoration = _textDecoration, TextAnchor = _textAnchor, TextTransform = _textTransform, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, ClipRule = _clipRule, PaintOrder = _paintOrder, Filter = _filter, MarkerEnd = _markerEnd, MarkerMid = _markerMid, MarkerStart = _markerStart, Overflow = _overflow, GeometryWidth = _geometryWidth, GeometryHeight = _geometryHeight, BackgroundColor = _backgroundColor, Important = important };
     }
 
     private static void Apply(ref string? value, ref CssDeclarationRank currentRank, string? candidate, bool candidateImportant, CssSpecificity specificity)

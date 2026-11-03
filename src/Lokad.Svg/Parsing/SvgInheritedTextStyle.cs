@@ -31,19 +31,21 @@ internal sealed class SvgInheritedTextStyle
     internal SvgInheritedTextStyle WithWhitespaceMode(SvgTextWhitespaceMode whitespaceMode)
     {
         if (whitespaceMode is not (SvgTextWhitespaceMode.Default or SvgTextWhitespaceMode.Preserve)) throw new ArgumentOutOfRangeException(nameof(whitespaceMode));
-        return new SvgInheritedTextStyle(Family, Weight, Italic, FontSize, whitespaceMode, LetterSpacing, Anchor) { WordSpacing = WordSpacing, Decoration = Decoration };
+        return new SvgInheritedTextStyle(Family, Weight, Italic, FontSize, whitespaceMode, LetterSpacing, Anchor) { WordSpacing = WordSpacing, Decoration = Decoration, TextTransform = TextTransform, Language = Language };
     }
 
     internal SvgInheritedTextStyle WithDecoration(SvgTextDecorationStyle? decoration)
-        => new(Family, Weight, Italic, FontSize, WhitespaceMode, LetterSpacing, Anchor) { WordSpacing = WordSpacing, Decoration = decoration };
+        => new(Family, Weight, Italic, FontSize, WhitespaceMode, LetterSpacing, Anchor) { WordSpacing = WordSpacing, Decoration = decoration, TextTransform = TextTransform, Language = Language };
 
     internal SvgInheritedTextStyle WithAnchor(SvgTextAnchor anchor)
-        => anchor == Anchor ? this : new(Family, Weight, Italic, FontSize, WhitespaceMode, LetterSpacing, anchor) { WordSpacing = WordSpacing, Decoration = Decoration };
+        => anchor == Anchor ? this : new(Family, Weight, Italic, FontSize, WhitespaceMode, LetterSpacing, anchor) { WordSpacing = WordSpacing, Decoration = Decoration, TextTransform = TextTransform, Language = Language };
 
-    /// <summary>Tests the state retained by font intervals; whitespace, spacing and paint have separate intervals.</summary>
-    internal bool HasSameFontAndAnchor(SvgInheritedTextStyle other)
+    /// <summary>Tests source font, anchor and case selection; whitespace, spacing and paint have separate intervals.</summary>
+    internal bool HasSameRunStyle(SvgInheritedTextStyle other)
         => string.Equals(Family, other.Family, StringComparison.OrdinalIgnoreCase) && Weight == other.Weight
-            && Italic == other.Italic && FontSize == other.FontSize && Anchor == other.Anchor;
+            && Italic == other.Italic && FontSize == other.FontSize && Anchor == other.Anchor
+            && TextTransform == other.TextTransform && (TextTransform == SvgTextTransform.None
+                || string.Equals(Language, other.Language, StringComparison.OrdinalIgnoreCase));
 
     internal string? Family { get; }
     internal int Weight { get; }
@@ -54,6 +56,8 @@ internal sealed class SvgInheritedTextStyle
     internal double WordSpacing { get; init; }
     internal SvgTextDecorationStyle? Decoration { get; init; }
     internal SvgTextAnchor Anchor { get; }
+    internal SvgTextTransform TextTransform { get; init; }
+    internal string Language { get; init; } = string.Empty;
 }
 
 /// <summary>Combines inline, presentation, and ancestor text properties using the direct-text precedence subset.</summary>
@@ -65,7 +69,8 @@ internal static class SvgTextInheritance
             SvgInlineStyleParser.MergeWithImportance(inline.WhiteSpace, inline.Important, InlineImportantProperties.WhiteSpace, sheet.WhiteSpace, sheet.Important),
             SvgInlineStyleParser.MergeWithImportance(inline.LetterSpacing, inline.Important, InlineImportantProperties.LetterSpacing, sheet.LetterSpacing, sheet.Important),
             SvgInlineStyleParser.MergeWithImportance(inline.WordSpacing, inline.Important, InlineImportantProperties.WordSpacing, sheet.WordSpacing, sheet.Important),
-            SvgInlineStyleParser.MergeWithImportance(inline.TextAnchor, inline.Important, InlineImportantProperties.TextAnchor, sheet.TextAnchor, sheet.Important));
+            SvgInlineStyleParser.MergeWithImportance(inline.TextAnchor, inline.Important, InlineImportantProperties.TextAnchor, sheet.TextAnchor, sheet.Important),
+            SvgInlineStyleParser.MergeWithImportance(inline.TextTransform, inline.Important, InlineImportantProperties.TextTransform, sheet.TextTransform, sheet.Important));
     /// <summary>Parses a container xml:space declaration with the inherited mode as its default.</summary>
     private static SvgTextWhitespaceMode ParseContainerXmlSpace(string value)
     {
@@ -81,6 +86,9 @@ internal static class SvgTextInheritance
         => Resolve(reader, inherited, inline, whiteSpace, letterSpacing, wordSpacing, null);
 
     internal static SvgInheritedTextStyle Resolve(XmlReader reader, SvgInheritedTextStyle inherited, SvgTextInlineFontProperties inline, string? whiteSpace, string? letterSpacing, string? wordSpacing, string? textAnchor)
+        => Resolve(reader, inherited, inline, whiteSpace, letterSpacing, wordSpacing, textAnchor, null);
+
+    internal static SvgInheritedTextStyle Resolve(XmlReader reader, SvgInheritedTextStyle inherited, SvgTextInlineFontProperties inline, string? whiteSpace, string? letterSpacing, string? wordSpacing, string? textAnchor, string? textTransform)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string family = SvgTextFontSyntax.ResolveFamily(inline.Family ?? reader.GetAttribute("font-family"), inherited.Family);
@@ -98,6 +106,6 @@ internal static class SvgTextInheritance
         double resolvedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgTextSyntax.ParseSpacing(letterSpacingValue);
         string? wordSpacingValue = wordSpacing ?? reader.GetAttribute("word-spacing");
         double resolvedWordSpacing = wordSpacingValue is null ? inherited.WordSpacing : SvgTextSyntax.ParseSpacing(wordSpacingValue);
-        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing, SvgTextSyntax.ParseAnchor(textAnchor ?? reader.GetAttribute("text-anchor"), inherited.Anchor)) { WordSpacing = resolvedWordSpacing, Decoration = inherited.Decoration };
+        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing, SvgTextSyntax.ParseAnchor(textAnchor ?? reader.GetAttribute("text-anchor"), inherited.Anchor)) { WordSpacing = resolvedWordSpacing, Decoration = inherited.Decoration, TextTransform = SvgTextCasing.Parse(textTransform.AsSpan(), inherited.TextTransform), Language = SvgTextCasing.ReadLanguage(reader, inherited.Language) };
     }
 }

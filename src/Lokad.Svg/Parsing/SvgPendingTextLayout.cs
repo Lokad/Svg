@@ -36,7 +36,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
         using BudgetedParserList<MeasuredRange> measured = new(budget, SvgMemoryCategory.Parser, token);
         using BudgetedParserList<SvgTextPlacementRange> ranges = new(budget, SvgMemoryCategory.Parser, token);
         SvgInheritedTextStyle defaultFont = new(_style.Font.Family, _style.Font.Weight, _style.Font.Italic,
-            _style.FontSize, SvgTextWhitespaceMode.Default, _style.LetterSpacing, _style.Anchor) { WordSpacing = _style.WordSpacing };
+            _style.FontSize, SvgTextWhitespaceMode.Default, _style.LetterSpacing, _style.Anchor) { WordSpacing = _style.WordSpacing, TextTransform = _style.TextTransform, Language = _style.Language };
         using RenderBudget.BudgetReservation scratchOwner = budget.Reserve(1024, SvgMemoryCategory.Parser);
         SvgDevicePoint? followingOrigin = null;
         int offset = 0;
@@ -128,12 +128,14 @@ internal sealed class SvgPendingTextLayout : IDisposable
             }
             SvgTextStyle sharedStyle = _style with { X = 0, Y = 0, Dx = 0, Dy = 0, PositionLists = default };
             ReadOnlySpan<SvgTextFontSpan> fontIntervals = fonts.AsSpan();
-            if (fonts.Count == 1 && fonts[0].Font.HasSameFontAndAnchor(defaultFont))
+            if (fonts.Count == 1 && fonts[0].Font.HasSameRunStyle(defaultFont))
                 fontIntervals = [];
             using RenderBudget.BudgetReservation sharedOwner = budget.Reserve(512, SvgMemoryCategory.Parser);
-            using SvgTextRun shared = SvgTextRunBuilder.CreateShared(sharedStyle, text.Value, spacing.AsSpan(), resolved.AsSpan(), paints.AsSpan(),
-                fontIntervals, nodes.AsSpan(), ranges.AsSpan(), _paint, _metrics, snapshot, budget, token);
-            shared.RetainRecordingScopes(recordings.AsSpan(), _sources.Items[0].ElementStroke, budget, token);
+            using SvgTextProjection projection = new(sharedStyle, text.Value, spacing.AsSpan(), resolved.AsSpan(), paints.AsSpan(),
+                fontIntervals, nodes.AsSpan(), ranges.AsSpan(), recordings.AsSpan(), budget, token);
+            using SvgTextRun shared = SvgTextRunBuilder.CreateShared(projection.Style, projection.Value, projection.Spacing, projection.Positions, projection.Paints,
+                projection.Fonts, projection.Nodes, projection.Placements, _paint, _metrics, snapshot, budget, token);
+            shared.RetainRecordingScopes(projection.Recordings, _sources.Items[0].ElementStroke, budget, token);
             ReadOnlySpan<SvgTextPaintFragment> sharedFragments = shared.PaintFragments;
             bool needsObjectBox = pending.FilterGroupDepth > 0;
             for (int index = 0; index < shared.Glyphs.Length && !needsObjectBox; index++)
@@ -149,7 +151,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
                 for (int index = 0; index < ranges.Count; index++)
                 {
                     token.ThrowIfCancellationRequested();
-                    SvgTextPlacementRange range = ranges[index];
+                    SvgTextPlacementRange range = projection.Placements[index];
                     using BudgetedParserList<SvgTextPaintFragment> viewFragments = new(budget, SvgMemoryCategory.Geometry, token);
                     int first = -1, last = 0;
                     while (fragmentIndex < sharedFragments.Length && sharedFragments[fragmentIndex].SourceStart < range.End)
@@ -225,7 +227,7 @@ internal sealed class SvgPendingTextLayout : IDisposable
         void AddFont(int start, int end, SvgInheritedTextStyle font)
         {
             token.ThrowIfCancellationRequested();
-            if (fonts.Count != 0 && fonts[^1].End == start && fonts[^1].Font.HasSameFontAndAnchor(font))
+            if (fonts.Count != 0 && fonts[^1].End == start && fonts[^1].Font.HasSameRunStyle(font))
                 fonts[^1] = fonts[^1] with { End = end };
             else fonts.Add(new(start, end, font));
         }

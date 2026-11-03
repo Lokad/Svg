@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "Exploratory source-versus-shaped-index model review; no case-mapping implementation or new library contract is admitted.",
+  "status": "Exploratory comparison retained independently of the now-qualified default-uppercase projection. Other operations and language tailoring remain OPEN.",
   "specification": "https://svgwg.org/svg2-draft/text.html",
   "specifiedSourceRule": "SVG character indices are determined before text-transform. Original scalar/UTF-16 addressing must remain distinct from emitted shaping characters.",
   "sourceText": "\u00dfa",
@@ -112,12 +112,6 @@
     }
   ],
   "inference": "For these inputs the pinned browser output matches the emitted-text-index literal and differs from the source-index literal on both hosts. Its case-transformed screenshot alone cannot establish original-source-index correctness.",
-  "requiredModel": [
-    "Build SVG position lists and original source diagnostics against original characters; retain a mapping when case conversion changes the emitted sequence.",
-    "Font coverage, shaping, spacing and fitting must see the transformed typographic text; keep these responsibilities distinct from original position-list addresses.",
-    "Preserve span/node/paint/anchor/absolute-reset boundaries. Do not globally rewrite the source string or admit only unchanged-uppercase documents.",
-    "Resolve language-sensitive and admitted-character boundaries explicitly before feature admission. Native literal controls complement the observed browser transformation behavior."
-  ],
   "prerequisiteClosure": "text-shaping-boundaries.json",
   "hostedBodiesRetained": 0,
   "existingReferencesChanged": 0,
@@ -137,12 +131,20 @@
       "GlyphLayout sourceLengths describes GSUB consumption in its input string. Lifting original intervals into emitted text preserves this shaping/fitting meaning; zero-length expansion aliases would conflate it.",
       "Source-style default elision also needs the complete anchor comparison; this prerequisite is closed in text-shared-anchor.json."
     ],
-    "nextImplementation": "Resolve original positions first, then lift font/paint/node/recording/path metadata into emitted text at one governed boundary before shaping. Retain identity without material allocation. Define expansion storage and cleanup before allocating.",
+    "nextImplementation": "Extend context-sensitive operations/language tailoring on the qualified source-to-emitted model; deletion and empty intervals need explicit review before admission.",
     "mappingSources": [
       "https://www.w3.org/TR/SVG2/text.html#TermSVGCharacter",
       "https://www.w3.org/TR/css-text-3/#text-transform-property",
       "https://www.unicode.org/Public/17.0.0/ucd/SpecialCasing.txt"
     ],
-    "casingRequirement": "CSS uses full Unicode mappings, including applicable context and known-language rules. SpecialCasing supplements simple one-to-one mappings. Reader/element boundaries cannot be treated as new capitalization words. Define the admitted language/character domain explicitly; culture-blind one-to-one conversion is insufficient."
-  }
+    "casingRequirement": "CSS uses full Unicode mappings, including applicable context and known-language rules. SpecialCasing supplements simple one-to-one mappings. Reader/element boundaries cannot be treated as new capitalization words. Define the admitted language/character domain explicitly; culture-blind one-to-one conversion is insufficient.",
+    "implementedProjection": "text-case-projection.json"
+  },
+  "qualifiedProjection": "text-case-projection.json",
+  "modelResponsibilities": [
+    "Build SVG position lists and original source diagnostics against original characters; retain a mapping when case conversion changes the emitted sequence.",
+    "Font coverage, shaping, spacing and fitting must see the transformed typographic text; keep these responsibilities distinct from original position-list addresses.",
+    "Preserve span/node/paint/anchor/absolute-reset boundaries. Do not globally rewrite the source string or admit only unchanged-uppercase documents.",
+    "Resolve language-sensitive and admitted-character boundaries explicitly before feature admission. Native literal controls complement the observed browser transformation behavior."
+  ]
 }

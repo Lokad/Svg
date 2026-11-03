@@ -29,6 +29,10 @@ internal static class HttpFontQualification
         using SvgFontSnapshot explicitFonts = await SvgFontSnapshot.CreateAsync(text, catalog, new Programs(font), CancellationToken.None);
         byte[] expected = SvgConverter.ConvertToPng(text,
             new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, explicitFonts), CancellationToken.None).ToArray();
+        byte[] uppercase = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='text-transform:uppercase'><text x='2' y='24' font-family='Example' font-size='20'>a</text></svg>"u8.ToArray();
+        using (SvgPreparedDocument projected = await SvgPreparedDocument.CreateAsync(uppercase, catalog, new Programs(font), SvgRenderOptions.Default, CancellationToken.None))
+            if (!expected.AsSpan().SequenceEqual(projected.ConvertToPng(CancellationToken.None).Span))
+                throw new InvalidOperationException("Installed case projection did not discover and render the emitted glyph.");
         await CachedLifecycleAsync(manifest, font, text, shape, expected);
         await AcquisitionRefusalAsync(manifest, font, text);
         await ShutdownDuringAcquisitionAsync(manifest, font, text);

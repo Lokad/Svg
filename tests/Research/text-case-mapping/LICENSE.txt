@@ -1,0 +1,9 @@
+SPDX-License-Identifier: CC0-1.0
+
+The original SVG controls, literal counterparts and native reference images in
+this directory are dedicated to the public domain under CC0 1.0 Universal.
+https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+unicode-uppercase.csv is derived from Unicode 17.0.0 data under Unicode License V3;
+see ../../../THIRD_PARTY_NOTICES.txt. The shared Noto Sans program retains its OFL
+license in ../supplied-font-labels/fonts/OFL.txt.

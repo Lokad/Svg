@@ -1,0 +1,64 @@
+{
+  "inputSha256": "89d32a3a8ff8f38b55204ea84cf1bff9b57f3b367bd0f7966062f6fcafb898bb",
+  "nativeControl": "reference.svg",
+  "nativeControlSha256": "a8fae1a3f1edfcd7abb7951bb9629659f32c1f11bbf32e9c94c94555b0e7bd6e",
+  "nativeInputSha256": "65c291c88c848427fd8a83f59c162f69bf4c0d1ab5e95c7dfb9884d4c24a9897",
+  "input": "control.svg",
+  "font": "../../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "width": 240,
+  "height": 112,
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "1462bd8f3bbd904852fe8e980dad9722bb38dc0c9412e0ca65dbf26025ce4ab1",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "1462bd8f3bbd904852fe8e980dad9722bb38dc0c9412e0ca65dbf26025ce4ab1",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "1462bd8f3bbd904852fe8e980dad9722bb38dc0c9412e0ca65dbf26025ce4ab1",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "1462bd8f3bbd904852fe8e980dad9722bb38dc0c9412e0ca65dbf26025ce4ab1",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "d37c556ba86e6174cb7127923f7175fa27b7a5c053845669677064741dd1d1df",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "d37c556ba86e6174cb7127923f7175fa27b7a5c053845669677064741dd1d1df",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "d37c556ba86e6174cb7127923f7175fa27b7a5c053845669677064741dd1d1df",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "d37c556ba86e6174cb7127923f7175fa27b7a5c053845669677064741dd1d1df",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    }
+  },
+  "referenceReason": "Literal source-index control; pinned Chrome indexes its own transformed screenshot differently. SVG positioning addresses the original scalars."
+}

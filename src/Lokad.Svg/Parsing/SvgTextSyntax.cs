@@ -305,7 +305,7 @@ internal static class SvgTextSyntax
     {
         ArgumentNullException.ThrowIfNull(reader);
         InlineStyle inline = SvgInlineStyleParser.Read(reader, cancellationToken, true);
-        return Parse(reader, inline.TextFont, inherited, inline.LetterSpacing, inline.WordSpacing, inline.TextAnchor);
+        return Parse(reader, inline.TextFont, inherited, inline.LetterSpacing, inline.WordSpacing, inline.TextAnchor, inline.TextTransform);
     }
 
     /// <summary>Parses direct text declarations when no resolved scalar letter spacing is present.</summary>
@@ -320,6 +320,9 @@ internal static class SvgTextSyntax
         => Parse(reader, inline, inherited, letterSpacing, wordSpacing, null);
 
     internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline, SvgInheritedTextStyle inherited, string? letterSpacing, string? wordSpacing, string? textAnchor)
+        => Parse(reader, inline, inherited, letterSpacing, wordSpacing, textAnchor, null);
+
+    internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline, SvgInheritedTextStyle inherited, string? letterSpacing, string? wordSpacing, string? textAnchor, string? textTransform)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string family = SvgTextFontSyntax.ResolveFamily(inline.Family ?? reader.GetAttribute("font-family"), inherited.Family);
@@ -355,6 +358,7 @@ internal static class SvgTextSyntax
         };
         return new SvgTextStyle(SvgFontFaceRequest.FromCss(family, weight, italic), fontSize, firstX, firstY, firstDx, firstDy, parsedLetterSpacing, anchor, reader.GetAttribute("id") ?? string.Empty)
         { PositionLists = lists, TextLength = textLength, LengthAdjust = lengthAdjust, Baseline = baseline,
+            TextTransform = SvgTextCasing.Parse(textTransform.AsSpan(), inherited.TextTransform), Language = SvgTextCasing.ReadLanguage(reader, inherited.Language),
             WordSpacing = (wordSpacing ?? reader.GetAttribute("word-spacing")) is string specifiedWordSpacing ? ParseSpacing(specifiedWordSpacing) : inherited.WordSpacing,
             SourceContext = SvgSourceContext.Capture(reader) };
     }
@@ -492,7 +496,8 @@ internal static class SvgTextSyntax
             Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, parsedInline, styleSheet), inherited.Paint),
             Font = SvgTextInheritance.Resolve(reader, inherited.Font, SvgInlineStyleParser.MergeFont(parsedInline.TextFont, parsedInline.Important, styleSheet.TextFont, styleSheet.Important), null, null,
                 SvgInlineStyleParser.MergeWithImportance(parsedInline.WordSpacing, parsedInline.Important, InlineImportantProperties.WordSpacing, styleSheet.WordSpacing, styleSheet.Important),
-                SvgInlineStyleParser.MergeWithImportance(parsedInline.TextAnchor, parsedInline.Important, InlineImportantProperties.TextAnchor, styleSheet.TextAnchor, styleSheet.Important)) };
+                SvgInlineStyleParser.MergeWithImportance(parsedInline.TextAnchor, parsedInline.Important, InlineImportantProperties.TextAnchor, styleSheet.TextAnchor, styleSheet.Important),
+                SvgInlineStyleParser.MergeWithImportance(parsedInline.TextTransform, parsedInline.Important, InlineImportantProperties.TextTransform, styleSheet.TextTransform, styleSheet.Important)) };
         SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, parsedInline, styleSheet, inherited.Font.Decoration, (style.Paint with { IsDisplayed = true, IsVisible = true }).GlyphPaint);
         if (decoration != style.Font.Decoration) style = style with { Font = style.Font.WithDecoration(decoration) };
         style = style with { Paint = style.Paint with { Decoration = decoration } };
@@ -584,6 +589,8 @@ internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double Fon
     internal SvgTextLengthAdjust LengthAdjust { get; init; }
     internal SvgTextBaseline Baseline { get; init; }
     internal double WordSpacing { get; init; }
+    internal SvgTextTransform TextTransform { get; init; }
+    internal string Language { get; init; } = string.Empty;
 }
 
 internal enum SvgTextLengthAdjust { Spacing, SpacingAndGlyphs }

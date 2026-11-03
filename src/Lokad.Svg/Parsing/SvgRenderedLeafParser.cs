@@ -416,7 +416,7 @@ CancellationToken cancellationToken)
                     textPlacement = textFrame.MapText(textPlacement);
                 }
                 // ResolveTextShape validates fill-rule syntax; SVG text keeps glyph winding independent of that property.
-                SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing, resolvedText.WordSpacing, resolvedText.TextAnchor);
+                SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing, resolvedText.WordSpacing, resolvedText.TextAnchor, resolvedText.TextTransform);
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
                 SvgTextPaintStyle textPaint = SvgTextPaintStyle.ResolveElement(textElement.Style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.InheritedStroke.Stroke, state.PaintResources);
                 textPaint = textPaint with { TextOpacity = SvgPaintOpacity.Opaque, StrokeStyle = context.InheritedStroke.ResolveChild(textElement.Style), PaintOrder = textElement.Style.PaintOrder ?? context.InheritedPresentation.PaintOrder };
@@ -425,7 +425,7 @@ CancellationToken cancellationToken)
                 using BudgetedParserList<SvgExtractedTextRun> textRuns = new(budget, SvgMemoryCategory.Parser, cancellationToken);
                 try
                 {
-                    SvgInheritedTextStyle rootTextFont = new(textStyle.Font.Family, textStyle.Font.Weight, textStyle.Font.Italic, textStyle.FontSize, whitespaceMode, textStyle.LetterSpacing, textStyle.Anchor) { WordSpacing = textStyle.WordSpacing, Decoration = textPaint.Decoration };
+                    SvgInheritedTextStyle rootTextFont = new(textStyle.Font.Family, textStyle.Font.Weight, textStyle.Font.Italic, textStyle.FontSize, whitespaceMode, textStyle.LetterSpacing, textStyle.Anchor) { WordSpacing = textStyle.WordSpacing, Decoration = textPaint.Decoration, TextTransform = textStyle.TextTransform, Language = textStyle.Language };
                     ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, textPaint, rootTextFont, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits, budget, cancellationToken, textRuns, out int sourceCharacterCount, out int childNodeCount);
                     state.TextCharacterCount += sourceCharacterCount;
                     state.NodeCount += childNodeCount;
@@ -493,8 +493,11 @@ CancellationToken cancellationToken)
                         SvgTextRun run;
                         try
                         {
-                            run = SvgTextRunBuilder.Create(runStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, extracted.PaintSpans.Items, extracted.FontSpans.Items, extracted.NodeBoundaries.Items, textPaint.GlyphPaint, deviceMetrics, fontSnapshot, budget, cancellationToken);
-                            try { run.RetainRecordingScopes(extracted.RecordingScopes.Items, extracted.ElementStroke, budget, cancellationToken); }
+                            using SvgTextProjection projection = new(runStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments,
+                                extracted.PaintSpans.Items, extracted.FontSpans.Items, extracted.NodeBoundaries.Items, [], extracted.RecordingScopes.Items, budget, cancellationToken);
+                            run = SvgTextRunBuilder.Create(projection.Style, projection.Value, projection.Spacing, projection.Positions, projection.Paints,
+                                projection.Fonts, projection.Nodes, textPaint.GlyphPaint, deviceMetrics, fontSnapshot, budget, cancellationToken);
+                            try { run.RetainRecordingScopes(projection.Recordings, extracted.ElementStroke, budget, cancellationToken); }
                             catch { run.Dispose(); throw; }
                         }
                         catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnresolvedResource && state.DeferredPaintLeaves.Count > 0)

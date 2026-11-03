@@ -29,6 +29,8 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     private SvgTextWhitespaceNormalizer _normalizer;
     private FontKey _font = new(string.Empty, 400, false);
     private FontKey? _separator;
+    private SvgTextTransform _transform;
+    private string _language = string.Empty;
     private bool _hasOutput;
     private char _highSurrogate;
     private int _count;
@@ -49,13 +51,16 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     }
 
     internal void SetFont(SvgInheritedTextStyle font)
-        => _font = new(font.Family ?? "serif", font.Weight, font.Italic);
+    { _font = new(font.Family ?? "serif", font.Weight, font.Italic); _transform = font.TextTransform; _language = font.Language; }
 
     internal void Observe(ReadOnlySpan<char> value, SvgTextWhitespaceMode mode)
         => _normalizer.Append(value, mode, this, int.MaxValue, _token);
 
     internal void ObserveNormalized(SvgFontFaceRequest request, ReadOnlySpan<char> value)
-        => AddScalars(new(request.Family, request.Weight, request.Italic), value);
+        => ObserveNormalized(request, value, SvgTextTransform.None, string.Empty);
+
+    internal void ObserveNormalized(SvgFontFaceRequest request, ReadOnlySpan<char> value, SvgTextTransform transform, string language)
+        => AddScalars(new(request.Family, request.Weight, request.Italic), value, transform, language);
 
     internal uint[] GetScalars(SvgFontFaceRequest request)
     {
@@ -106,7 +111,7 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     {
         if (value.IsEmpty) return;
         if (_separator is {} separator) { AddScalar(separator, 32); _separator = null; }
-        AddScalars(_font, value); _hasOutput = true;
+        AddScalars(_font, value, _transform, _language); _hasOutput = true;
     }
 
     /// <summary>Defers a separator until subsequent text proves that it survives normalization; no caller storage is retained.</summary>
@@ -123,17 +128,25 @@ internal sealed class SvgFontCoverageDiscovery : ISvgTextOutput, IDisposable
     void ISvgTextOutput.ExitPositioningSpan(int scopeDepth)
         => throw new InvalidOperationException("Coverage discovery consumes normalized characters, not positioning events.");
 
-    private void AddScalars(FontKey font, ReadOnlySpan<char> value)
+    private void AddScalars(FontKey font, ReadOnlySpan<char> value, SvgTextTransform transform, string language)
     {
         int first = 0, end = value.Length;
         if (_highSurrogate != '\0')
         {
             if (end == 0 || !char.IsLowSurrogate(value[0])) throw new SvgException(SvgErrorCode.MalformedInput, "Text contains an incomplete Unicode scalar.");
-            AddScalar(font, (uint)char.ConvertToUtf32(_highSurrogate, value[0]));
+            AddMappedScalar(this, font, new Rune(char.ConvertToUtf32(_highSurrogate, value[0])), transform, language);
             _highSurrogate = '\0'; first = 1;
         }
         if (first < end && char.IsHighSurrogate(value[end - 1])) _highSurrogate = value[--end];
-        foreach (Rune scalar in value[first..end].EnumerateRunes()) AddScalar(font, (uint)scalar.Value);
+        foreach (Rune scalar in value[first..end].EnumerateRunes()) AddMappedScalar(this, font, scalar, transform, language);
+
+        static void AddMappedScalar(SvgFontCoverageDiscovery owner, FontKey font, Rune scalar, SvgTextTransform transform, string language)
+        {
+            if (transform == SvgTextTransform.None) { owner.AddScalar(font, (uint)scalar.Value); return; }
+            Span<char> mapped = stackalloc char[3];
+            int length = SvgTextCasing.Write(scalar, transform, language, mapped);
+            foreach (Rune emitted in mapped[..length].EnumerateRunes()) owner.AddScalar(font, (uint)emitted.Value);
+        }
     }
 
     private void AddScalar(FontKey font, uint scalar)

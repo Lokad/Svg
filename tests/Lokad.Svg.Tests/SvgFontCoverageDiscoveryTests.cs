@@ -8,9 +8,40 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFontCoverageDiscoveryTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Discovery_carries_a_split_scalar_without_retaining_trimmed_whitespace()
     {
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgFontCoverageDiscovery coverage = new(budget, CancellationToken.None))
+        {
+            coverage.BeginText(); coverage.SetFont(SvgInheritedTextStyle.Default);
+            coverage.Observe(" \t", SvgTextWhitespaceMode.Default);
+            coverage.Observe("\uD835", SvgTextWhitespaceMode.Default);
+            coverage.Observe("\uDC00", SvgTextWhitespaceMode.Default);
+            coverage.Observe(" \n", SvgTextWhitespaceMode.Default);
+            Assert.Equal(new uint[] { 0x1D400 }, coverage.GetScalars(new("serif", 400, false)));
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
 
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Coverage_requests_emitted_scalars_in_streaming_and_normalized_paths(bool streaming)
+    {
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using SvgFontCoverageDiscovery coverage = new(budget, CancellationToken.None);
+        SvgInheritedTextStyle style = new("Example", 400, false, 20, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start)
+            { TextTransform = SvgTextTransform.Uppercase };
+        if (streaming)
+        {
+            coverage.BeginText(); coverage.SetFont(style);
+            coverage.Observe("ßa\uD801", SvgTextWhitespaceMode.Default);
+            coverage.Observe("\uDC28", SvgTextWhitespaceMode.Default);
+        }
+        else coverage.ObserveNormalized(new("Example", 400, false), "ßa\U00010428", style.TextTransform, style.Language);
+        Assert.Equal(new uint[] { 0x41, 0x53, 0x10400 }, coverage.GetScalars(new("Example", 400, false)).Order());
     }
 
     [Fact]

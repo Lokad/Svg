@@ -86,14 +86,14 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
         }
         _lastEmittedScopeIdentity = _scopes[scopeDepth].Identity;
         _length = checked(start + value.Length);
-        if (_fontSpans is not null || !font.HasSameFontAndAnchor(_defaultFont))
+        if (_fontSpans is not null || !font.HasSameRunStyle(_defaultFont))
         {
             if (_fontSpans is null)
             {
                 _fontSpans = new(_budget, SvgMemoryCategory.Parser, _cancellationToken);
                 if (start != 0) _fontSpans.Add(new(0, start, _defaultFont));
             }
-            if (_fontSpans.Count != 0 && _fontSpans[^1].Font.HasSameFontAndAnchor(font)) _fontSpans[^1] = _fontSpans[^1] with { End = _length };
+            if (_fontSpans.Count != 0 && _fontSpans[^1].Font.HasSameRunStyle(font)) _fontSpans[^1] = _fontSpans[^1] with { End = _length };
             else _fontSpans.Add(new(start, _length, font));
         }
         if (_spans is null && paint == _defaultPaint) return;

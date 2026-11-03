@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add pinned Unicode uppercase conversion with original SVG character addressing,
+  transformed font discovery and governed expansion storage.
 - Preserve a uniform child anchor when joining direct text and text-path ranges,
   using the same source-style comparison as interval compaction.
 - Preserve ligatures across anchor-only style intervals that select the same

@@ -542,7 +542,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         SvgComputedStyle authoredStyle = context.ResolveStyle(reader, true);
         context = context with { AuthoredStyle = authoredStyle with { Filter = null } };
         SvgResolvedDirectTextElement resolved = context.ResolveTextShape(reader, _state.PaintResources);
-        SvgTextStyle style = SvgTextSyntax.Parse(reader, resolved.InlineFont, inherited.TextStyle, resolved.LetterSpacing, resolved.WordSpacing, resolved.TextAnchor);
+        SvgTextStyle style = SvgTextSyntax.Parse(reader, resolved.InlineFont, inherited.TextStyle, resolved.LetterSpacing, resolved.WordSpacing, resolved.TextAnchor, resolved.TextTransform);
         SvgTextWhitespaceMode whitespace = SvgTextSyntax.ParseWhitespaceMode(reader, resolved.WhiteSpace, inherited.TextStyle.WhitespaceMode);
         SvgTextPaintStyle paint = SvgTextPaintStyle.ResolveElement(resolved.PaintableElement.Style with { Filter = null }, inherited.Presentation.Paint,
             inherited.Presentation.IsDisplayed, inherited.Presentation.IsVisible, inherited.Stroke.Stroke, _state.PaintResources);
@@ -550,7 +550,7 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         paint = paint with { Decoration = SvgTextDecorationSyntax.Resolve(resolved.TextDecoration ?? reader.GetAttribute("text-decoration"), inherited.TextStyle.Decoration,
             (paint with { IsDisplayed = true, IsVisible = true }).GlyphPaint) };
         SvgInheritedTextStyle font = new(style.Font.Family, style.Font.Weight, style.Font.Italic, style.FontSize, whitespace, style.LetterSpacing, style.Anchor)
-            { WordSpacing = style.WordSpacing, Decoration = paint.Decoration };
+            { WordSpacing = style.WordSpacing, Decoration = paint.Decoration, TextTransform = style.TextTransform, Language = style.Language };
         SvgTextMetricScope metrics = inherited.Presentation.TextMetrics.Enter(authoredStyle.Filter, _state.PaintResources);
         paint = paint.ResolveResources(_state.PaintResources, metrics.NeedsBounds, metrics.CanSuppress);
         using BudgetedParserList<SvgExtractedTextRun> runs = new(_state.Budget, SvgMemoryCategory.Parser, _token);
@@ -577,14 +577,14 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
                 if (run.FontSpans.Items.Length == 0)
                 {
                     addFace(request);
-                    coverage?.ObserveNormalized(request, run.Layout.Value.AsSpan());
+                    coverage?.ObserveNormalized(request, run.Layout.Value.AsSpan(), style.TextTransform, style.Language);
                 }
                 else foreach (SvgTextFontSpan span in run.FontSpans.Items)
                 {
                     _token.ThrowIfCancellationRequested();
                     SvgFontFaceRequest spanRequest = SvgFontFaceRequest.FromCss(span.Font.Family ?? "serif", span.Font.Weight, span.Font.Italic, style.SourceContext, _token);
                     addFace(spanRequest);
-                    coverage?.ObserveNormalized(spanRequest, run.Layout.Value.AsSpan(span.Start, span.End - span.Start));
+                    coverage?.ObserveNormalized(spanRequest, run.Layout.Value.AsSpan(span.Start, span.End - span.Start), span.Font.TextTransform, span.Font.Language);
                 }
             }
         }

@@ -409,6 +409,15 @@ their own inline/stylesheet declarations remain unsupported. The
 The [shared-range control](../tests/Research/text-shared-anchor/README.md) retains
 uniform child anchors when direct text and path text are joined.
 
+CSS `text-transform` admits `uppercase`, `none`, `inherit`, `initial` and `unset`
+through root, group, text and span inheritance/cascade. Uppercase uses pinned
+Unicode 17 full default mappings, including expansions, with unspecified or English
+content language. Original SVG scalar positions precede conversion; shaping,
+spacing, fitting and font coverage use emitted text. Existing character/glyph
+bounds and font-shaping limitations still apply. Lowercase, capitalization and
+other language tailoring remain unsupported. [Case controls](../tests/Research/text-case-mapping/README.md)
+retain numerical, ownership and independent native responsibilities.
+
 `SvgFontFaceRequest.FromCss` preserves family order, quoting, escapes and named/
 generic identity. `SvgFontSelectionPolicy` supplies host generic mappings and
 fallback restrictions. CSS requests use directional weight fallback, including

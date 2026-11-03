@@ -17,5 +17,6 @@ records the former Windows/Linux pixel failures and qualification.
 The separate [case-expansion comparison](../svgweb/text-casing-model.json) is
 exploratory research. Its original inputs and observed PNGs preserve the difference
 between source-character indexing and the pinned browser's transformed-text
-behavior. These observations do not admit a case-mapping implementation or replace
-the renderer's original source-addressing contract.
+behavior. These observations preserve the original source-addressing contract;
+the [uppercase projection bank](../text-case-mapping/README.md) supplies independent
+feature qualification.
