@@ -74,7 +74,7 @@ internal static class SvgTextRunBuilder
             firstRequestedFont ??= face;
             if (snapshot.HasCoverageAlternatives(request, cancellationToken))
                 AddCoverageSpans(request, face, span.Font.FontSize, span.Start, span.End);
-            else resolvedFonts.Add(new(span.Start, span.End, new(face, span.Font.FontSize)));
+            else AddResolvedFont(resolvedFonts, new(span.Start, span.End, new(face, span.Font.FontSize)), text);
         }
         SvgPreparedFont font = firstRequestedFont is not null ? firstRequestedFont
             : snapshot.GetFont(style.Font, style.SourceElementId, cancellationToken);
@@ -165,12 +165,33 @@ internal static class SvgTextRunBuilder
                 SvgPreparedFont selected = snapshot.GetFontForScalar(request, primary, (uint)scalar.Value, cancellationToken);
                 if (current is not null && !ReferenceEquals(current, selected))
                 {
-                    resolvedFonts.Add(new(groupStart, offset, new(current, fontSize)));
+                    AddResolvedFont(resolvedFonts, new(groupStart, offset, new(current, fontSize)), text);
                     groupStart = offset;
                 }
                 current = selected; offset += scalar.Utf16SequenceLength;
             }
-            if (current is not null) resolvedFonts.Add(new(groupStart, end, new(current, fontSize)));
+            if (current is not null) AddResolvedFont(resolvedFonts, new(groupStart, end, new(current, fontSize)), text);
+        }
+
+        // Original style/anchor intervals remain available above. Only a change
+        // of selected face or size ends a physical-font shaping interval here.
+        static void AddResolvedFont(BudgetedParserList<SvgTextResolvedFontSpan> destination, SvgTextResolvedFontSpan span, string source)
+        {
+            if (destination.Count != 0)
+            {
+                SvgTextResolvedFontSpan previous = destination[^1];
+                // Invalid/empty scalar boundaries must remain visible to the
+                // layout validator; coalescing cannot make them appear valid.
+                if (previous.End == span.Start && previous.End > previous.Start && span.End > span.Start
+                    && span.Start > 0 && span.Start < source.Length && !char.IsSurrogatePair(source, span.Start - 1)
+                    && ReferenceEquals(previous.Style.Font, span.Style.Font)
+                    && previous.Style.FontSize == span.Style.FontSize)
+                {
+                    destination[^1] = previous with { End = span.End };
+                    return;
+                }
+            }
+            destination.Add(span);
         }
 
         static double AdjustGlyphs(SvgPositionedGlyphStorage storage, SvgPreparedFont font, SvgTextStyle style, SvgGlyphDeviceMetrics? metrics, SvgTextFittingResult fittingResult,

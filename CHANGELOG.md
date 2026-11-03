@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve ligatures across anchor-only style intervals that select the same
+  font face and size, retaining source positioning and actual shaping boundaries.
 - Admit inert `text-align` declarations on supported preformatted text and
   containers, preserving anchors and explicit positioning.
 - Preserve the parent bitmap's drawing-matrix rounding when capturing filtered

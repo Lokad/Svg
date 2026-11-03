@@ -29,6 +29,13 @@ declarations through the shared style parser. svg2009 now reaches line-height;
 its deeper clip-child and path-style contexts remain open. Case transformation
 also remains open and requires its own source-addressing and font-discovery evidence.
 
+The [physical-font interval correction](text-shaping-boundaries.json) keeps
+anchor-only changes from breaking ligatures. Its direct mechanisms, one ownership
+contract and one native image protect separate responsibilities. The
+[case-expansion model review](text-casing-model.json) retains independent literal
+controls: observed browser transformation alone does not establish original SVG
+character indexing. Case transformation remains unimplemented.
+
 The [supplied-program inventory](supplied-original-contexts.json) pins all 19 font
 contexts and three stable healthy captures per host. The [current raster-strike correction](windows-small-strikes.json)
 closes twelve complete originals, including blocks_game, helloworld, mysvg and snake,

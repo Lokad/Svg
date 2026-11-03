@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "status": "Exploratory source-versus-shaped-index model review; no case-mapping implementation or new library contract is admitted.",
+  "specification": "https://svgwg.org/svg2-draft/text.html",
+  "specifiedSourceRule": "SVG character indices are determined before text-transform. Original scalar/UTF-16 addressing must remain distinct from emitted shaping characters.",
+  "sourceText": "\u00dfa",
+  "emittedText": "SSA",
+  "font": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "inputs": "Original CC0 controls under ../text-shaping-boundaries/research/; only @font-face is materialized in RAM using the identical shared program.",
+  "scope": "Exploratory comparison only: one healthy native process per input/host, not reference admission or a library case-mapping contract.",
+  "observations": [
+    {
+      "host": "windows",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "seconds": 6.699528299970552,
+      "captures": [
+        {
+          "id": "uppercase-source",
+          "input": "research/uppercase-source.svg",
+          "inputSha256": "fe56ae1d2031b8b08e2d53081e748c632d4ebce612cdc1d7e28e62d47e825f2f",
+          "nativeInputSha256": "a2b75c15131bb3e6501799e0218bbe3bd11f78780949ca11d41a07264fbc2566",
+          "observation": "research/observations/windows-uppercase-source.png",
+          "pngSha256": "1fe76a20feec3a558bc70fe6978d95b3b62c17beb7940eb6e6daf01d24aea49d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "id": "uppercase-transformed-index",
+          "input": "research/uppercase-transformed-index.svg",
+          "inputSha256": "5a50c5a318a2448457d670805785f7c77fce50848152e9442859e473e98ee0ba",
+          "nativeInputSha256": "05e5caaf2f72c32a9f7d65c9175ad944490ef223b1ca320678b58551192bc30f",
+          "observation": "research/observations/windows-uppercase-transformed-index.png",
+          "pngSha256": "1fe76a20feec3a558bc70fe6978d95b3b62c17beb7940eb6e6daf01d24aea49d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "id": "uppercase-source-index",
+          "input": "research/uppercase-source-index.svg",
+          "inputSha256": "1ffb0cd26425f7f447a3ab826c26444a3e60b04950a2d3c5d2ca17a8e6f20b2b",
+          "nativeInputSha256": "265f00d790aeecb6db16c00f9ec152f5951bcd42f37cd5ba366fa7843609453f",
+          "observation": "research/observations/windows-uppercase-source-index.png",
+          "pngSha256": "1462bd8f3bbd904852fe8e980dad9722bb38dc0c9412e0ca65dbf26025ce4ab1",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "sourceVsTransformedIndexLiteral": {
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0
+      },
+      "sourceVsSourceIndexLiteral": {
+        "changedPixels": 427,
+        "maximumError": 255,
+        "alphaChangedPixels": 427
+      }
+    },
+    {
+      "host": "linux",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "seconds": 21.05851610004902,
+      "captures": [
+        {
+          "id": "uppercase-source",
+          "input": "research/uppercase-source.svg",
+          "inputSha256": "fe56ae1d2031b8b08e2d53081e748c632d4ebce612cdc1d7e28e62d47e825f2f",
+          "nativeInputSha256": "a2b75c15131bb3e6501799e0218bbe3bd11f78780949ca11d41a07264fbc2566",
+          "observation": "research/observations/linux-uppercase-source.png",
+          "pngSha256": "da4b8087c875d9b6258ab6fc1634f0ddd3dbe30adba695299807d84551f8e152",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "id": "uppercase-transformed-index",
+          "input": "research/uppercase-transformed-index.svg",
+          "inputSha256": "5a50c5a318a2448457d670805785f7c77fce50848152e9442859e473e98ee0ba",
+          "nativeInputSha256": "05e5caaf2f72c32a9f7d65c9175ad944490ef223b1ca320678b58551192bc30f",
+          "observation": "research/observations/linux-uppercase-transformed-index.png",
+          "pngSha256": "da4b8087c875d9b6258ab6fc1634f0ddd3dbe30adba695299807d84551f8e152",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "id": "uppercase-source-index",
+          "input": "research/uppercase-source-index.svg",
+          "inputSha256": "1ffb0cd26425f7f447a3ab826c26444a3e60b04950a2d3c5d2ca17a8e6f20b2b",
+          "nativeInputSha256": "265f00d790aeecb6db16c00f9ec152f5951bcd42f37cd5ba366fa7843609453f",
+          "observation": "research/observations/linux-uppercase-source-index.png",
+          "pngSha256": "d37c556ba86e6174cb7127923f7175fa27b7a5c053845669677064741dd1d1df",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "sourceVsTransformedIndexLiteral": {
+        "changedPixels": 0,
+        "maximumError": 0,
+        "alphaChangedPixels": 0
+      },
+      "sourceVsSourceIndexLiteral": {
+        "changedPixels": 397,
+        "maximumError": 255,
+        "alphaChangedPixels": 397
+      }
+    }
+  ],
+  "inference": "For these inputs the pinned browser output matches the emitted-text-index literal and differs from the source-index literal on both hosts. Its case-transformed screenshot alone cannot establish original-source-index correctness.",
+  "requiredModel": [
+    "Build SVG position lists and original source diagnostics against original characters; retain a mapping when case conversion changes the emitted sequence.",
+    "Font coverage, shaping, spacing and fitting must see the transformed typographic text; keep these responsibilities distinct from original position-list addresses.",
+    "Preserve span/node/paint/anchor/absolute-reset boundaries. Do not globally rewrite the source string or admit only unchanged-uppercase documents.",
+    "Resolve language-sensitive and admitted-character boundaries explicitly before feature admission. Native literal controls complement the observed browser transformation behavior."
+  ],
+  "prerequisiteClosure": "text-shaping-boundaries.json",
+  "hostedBodiesRetained": 0,
+  "existingReferencesChanged": 0,
+  "inputsBase": "../text-shaping-boundaries/"
+}

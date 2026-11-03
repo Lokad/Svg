@@ -1,0 +1,7 @@
+SPDX-License-Identifier: CC0-1.0
+
+These original SVG controls, native references and exploratory observations are
+dedicated to the public domain under CC0 1.0 Universal. The shared Noto Sans program
+retains its OFL license in ../supplied-font-labels/fonts/OFL.txt.
+
+https://creativecommons.org/publicdomain/zero/1.0/legalcode

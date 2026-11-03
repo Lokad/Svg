@@ -100,6 +100,11 @@ and glyph samplers share this material rule; hairline opacity can disable reduct
 Prepared-document font discovery borrows the same collected styles, reader
 workspace and active budget used by lowering. Discovery control storage is
 temporary; selected font bytes stay alive through the prepared operation.
+Source font/anchor intervals remain distinct from resolved physical font intervals.
+Adjacent intervals selecting the identical face object and size share shaping;
+paint, node and positioning boundaries retain their independent rules. The
+[ligature control](../tests/Research/text-shaping-boundaries/README.md) protects
+this separation and the original scalar-boundary validation.
 The admitted resource dependency graph and paint selection remain owned by that
 preparation through acquisition, then serve lowering without a second collection.
 The [HTTP resolver](HTTP_FONTS.md) owns shared downloads/cache under a longer-lived

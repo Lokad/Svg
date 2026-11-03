@@ -31,6 +31,10 @@ the [inert-paint split](Research/release-baselines/test-responsibilities.md#iner
 The [preformatted alignment control](Research/preformatted-text-align/README.md)
 keeps keyword and discovery mechanisms separate from one canonical image;
 the empty-symbol and painted-symbol cases retain distinct traversal paths.
+The [shaping-boundary control](Research/text-shaping-boundaries/README.md) keeps
+original anchor intervals separate from selected physical font intervals: seven
+direct mechanisms, one refusal/cleanup/retry contract and one canonical image
+protect source validation, genuine size boundaries and cross-node ligatures.
 Equal images alone never establish redundancy. Preserve distinct
 source graphs, allocation paths, native companions, platform differences and
 exclusions. Rendering fixtures do not each need all twelve API forms.
