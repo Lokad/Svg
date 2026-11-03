@@ -159,7 +159,7 @@ function Test-MemoryArtifact([object] $ChromeFingerprint)
 {
     $summaryFile = Get-SingleFile $MemoryDirectory '*-summary.json' 'Memory probe artifact'
     $summary = Get-Content -LiteralPath $summaryFile.FullName -Raw | ConvertFrom-Json
-    Assert-Equal 3 (Get-RequiredProperty $summary 'schemaVersion' 'Memory summary') 'Memory summary schema version'
+    Assert-Equal 4 (Get-RequiredProperty $summary 'schemaVersion' 'Memory summary') 'Memory summary schema version'
     $runId = [string](Get-RequiredProperty $summary 'runId' 'Memory summary')
     if ($runId -notmatch '^[0-9a-f]{32}$') { Fail 'Memory summary run id is not a lowercase GUID without separators.' }
     $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
@@ -183,6 +183,8 @@ function Test-MemoryArtifact([object] $ChromeFingerprint)
         'xml-workspace' = 'svg-error'
         'xml-reader-text-1' = 'xml-reader-measured'; 'xml-reader-text-2' = 'xml-reader-measured'; 'xml-reader-text-3' = 'xml-reader-measured'
         'xml-attributes' = 'svg-error'; 'xml-reader-1' = 'xml-reader-measured'; 'xml-reader-2' = 'xml-reader-measured'; 'xml-reader-3' = 'xml-reader-measured'
+        'xml-doctype-conversion' = 'success'; 'xml-reader-doctype-1' = 'xml-reader-measured'; 'xml-reader-doctype-2' = 'xml-reader-measured'; 'xml-reader-doctype-3' = 'xml-reader-measured'
+        'xml-subset-conversion' = 'svg-error'; 'xml-subset-xml-reader' = 'svg-error'
         'xml-reader-attribute-values-1' = 'xml-reader-measured'; 'xml-reader-attribute-values-2' = 'xml-reader-measured'; 'xml-reader-attribute-values-3' = 'xml-reader-measured'
         cancellation = 'cancelled'; 'parser-cancellation' = 'cancelled'; 'background-cancellation' = 'cancelled'
         'font-discovery-deep-groups' = 'success'; 'font-discovery-deep-groups-denied' = 'svg-error'
@@ -208,16 +210,23 @@ function Test-MemoryArtifact([object] $ChromeFingerprint)
     }
     foreach ($name in $expectedOutcomes.Keys) { if (-not $reportsByName.ContainsKey($name)) { Fail "Memory summary is missing report $name." } }
     foreach ($name in @('limit', 'image-denied', 'pattern-memory-denied', 'xml-workspace', 'xml-attributes', 'font-discovery-deep-groups-denied')) { Assert-Equal 'LimitExceeded' (Get-RequiredProperty $reportsByName[$name] 'svgErrorCode' "Memory report $name") "Memory report $name error code" }
+    foreach ($name in @('xml-subset-conversion', 'xml-subset-xml-reader')) { Assert-Equal 'MalformedInput' (Get-RequiredProperty $reportsByName[$name] 'svgErrorCode' "Memory report $name") "Memory report $name error code" }
+    $ordinaryWorkspace = [long](Get-RequiredProperty $reportsByName['xml-reader-1'] 'xmlReaderWorkspaceBytes' 'Ordinary XML reader report')
+    foreach ($name in @('xml-reader-doctype-1', 'xml-reader-doctype-2', 'xml-reader-doctype-3')) {
+        if ([long](Get-RequiredProperty $reportsByName[$name] 'xmlReaderWorkspaceBytes' "Memory report $name") -le $ordinaryWorkspace) { Fail "Memory report $name omitted the transient prolog workspace." }
+    }
     Assert-Equal 'UnsupportedFeature' (Get-RequiredProperty $reportsByName['font-discovery-distinct-requests'] 'svgErrorCode' "Memory report font-discovery-distinct-requests") "Memory report font-discovery-distinct-requests error code"
     foreach ($name in @('font-discovery-deep-groups', 'font-discovery-deep-groups-denied', 'font-discovery-empty-texts', 'font-discovery-distinct-requests', 'font-discovery-cancelled')) { Assert-Equal 0 ([int64](Get-RequiredProperty $reportsByName[$name] 'discoveryCurrentBytes' "Memory report $name")) "Memory report $name retained ledger bytes" }
     foreach ($name in @('font-discovery-deep-groups-denied', 'font-discovery-cancelled')) { if ($reportsByName[$name].PSObject.Properties.Name -contains 'discoveryRequestCount') { Fail "Memory report $name unexpectedly discovered requests." } }
 
-    foreach ($name in @($expectedOutcomes.Keys | Where-Object { $_ -notin @('success', 'image', 'pattern') })) { if (Test-Path -LiteralPath (Join-Path $MemoryDirectory "$runId-$name.png")) { Fail "Memory report $name unexpectedly wrote a PNG." } }
+    foreach ($name in @($expectedOutcomes.Keys | Where-Object { $_ -notin @('success', 'image', 'pattern', 'xml-doctype-conversion') })) { if (Test-Path -LiteralPath (Join-Path $MemoryDirectory "$runId-$name.png")) { Fail "Memory report $name unexpectedly wrote a PNG." } }
 
     $inputFiles = @{
         success = $fixture; limit = $fixture; image = (Join-Path $MemoryDirectory "$runId-image.svg"); 'image-denied' = (Join-Path $MemoryDirectory "$runId-image.svg"); pattern = (Join-Path $MemoryDirectory "$runId-pattern.svg"); 'pattern-memory-denied' = (Join-Path $MemoryDirectory "$runId-pattern.svg"); 'xml-workspace' = (Join-Path $MemoryDirectory "$runId-xml-workspace.svg")
         'xml-reader-text-1' = (Join-Path $MemoryDirectory "$runId-xml-workspace.svg"); 'xml-reader-text-2' = (Join-Path $MemoryDirectory "$runId-xml-workspace.svg"); 'xml-reader-text-3' = (Join-Path $MemoryDirectory "$runId-xml-workspace.svg")
         'xml-attributes' = (Join-Path $MemoryDirectory "$runId-xml-attributes.svg"); 'xml-reader-1' = (Join-Path $MemoryDirectory "$runId-xml-attributes.svg"); 'xml-reader-2' = (Join-Path $MemoryDirectory "$runId-xml-attributes.svg"); 'xml-reader-3' = (Join-Path $MemoryDirectory "$runId-xml-attributes.svg")
+        'xml-doctype-conversion' = (Join-Path $MemoryDirectory "$runId-xml-reader-doctype.svg"); 'xml-reader-doctype-1' = (Join-Path $MemoryDirectory "$runId-xml-reader-doctype.svg"); 'xml-reader-doctype-2' = (Join-Path $MemoryDirectory "$runId-xml-reader-doctype.svg"); 'xml-reader-doctype-3' = (Join-Path $MemoryDirectory "$runId-xml-reader-doctype.svg")
+        'xml-subset-conversion' = (Join-Path $MemoryDirectory "$runId-xml-reader-subset.svg"); 'xml-subset-xml-reader' = (Join-Path $MemoryDirectory "$runId-xml-reader-subset.svg")
         'xml-reader-attribute-values-1' = (Join-Path $MemoryDirectory "$runId-xml-reader-attribute-values.svg"); 'xml-reader-attribute-values-2' = (Join-Path $MemoryDirectory "$runId-xml-reader-attribute-values.svg"); 'xml-reader-attribute-values-3' = (Join-Path $MemoryDirectory "$runId-xml-reader-attribute-values.svg")
         cancellation = (Join-Path $MemoryDirectory "$runId-cancellation.svg"); 'parser-cancellation' = (Join-Path $MemoryDirectory "$runId-parser-cancellation.svg"); 'background-cancellation' = (Join-Path $MemoryDirectory "$runId-background-cancellation.svg")
         'font-discovery-deep-groups' = (Join-Path $MemoryDirectory "$runId-font-discovery-deep-groups.svg"); 'font-discovery-deep-groups-denied' = (Join-Path $MemoryDirectory "$runId-font-discovery-deep-groups.svg")
@@ -229,8 +238,11 @@ function Test-MemoryArtifact([object] $ChromeFingerprint)
         Assert-Equal ([IO.FileInfo]::new($inputPath).Length) (Get-RequiredProperty $reportsByName[$name] 'inputBytes' "Memory report $name") "Memory report $name input byte count"
         Assert-Hash (Get-RequiredProperty $reportsByName[$name] 'inputSha256' "Memory report $name") (Get-Hash $inputPath) "Memory report $name input hash"
     }
-    $successOutput = Join-Path $MemoryDirectory "$runId-success.png"
-    Assert-Equal ([IO.FileInfo]::new($successOutput).Length) (Get-RequiredProperty $reportsByName['success'] 'pngBytes' 'Memory success report') 'Memory success PNG byte count'
+    foreach ($name in @('success', 'image', 'pattern', 'xml-doctype-conversion')) {
+        $output = Join-Path $MemoryDirectory "$runId-$name.png"
+        if (-not (Test-Path -LiteralPath $output -PathType Leaf)) { Fail "Memory report $name did not retain its PNG." }
+        Assert-Equal ([IO.FileInfo]::new($output).Length) (Get-RequiredProperty $reportsByName[$name] 'pngBytes' "Memory report $name") "Memory report $name PNG byte count"
+    }
 }
 
 $chromeFingerprint = Test-ChromeArtifact

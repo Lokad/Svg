@@ -1,10 +1,11 @@
 using System.Xml;
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 using ReadOnlyMemoryStream = Lokad.Svg.Parsing.ReadOnlyMemoryStream;
 
 namespace Lokad.Svg.MemoryProbe;
 
-/// <summary>Measures one warmed BCL XML-reader traversal using the renderer's stream and reader settings.</summary>
+/// <summary>Measures one warmed BCL traversal with the shared reader policy and its peak workspace admission.</summary>
 internal static class XmlReaderWorkspaceProbe
 {
     internal static XmlReaderWorkspaceMeasurement Measure(ReadOnlyMemory<byte> svg, SvgRenderLimits limits)
@@ -15,32 +16,27 @@ internal static class XmlReaderWorkspaceProbe
         long managedAllocatedBytes = GC.GetTotalAllocatedBytes(precise: true) - allocationStart;
         return new XmlReaderWorkspaceMeasurement(
             managedAllocatedBytes,
-            SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement),
+            traversal.WorkspaceBytes,
             traversal.TouchedCharacters,
             traversal.TextNodeCount,
             traversal.ReaderSetupManagedAllocatedBytes,
             traversal.ReaderTraversalManagedAllocatedBytes,
             traversal.AttributeAccessManagedAllocatedBytes);
-    }
 
-    private static void WarmReader(SvgRenderLimits limits)
-    {
-        ReadOnlyMemory<byte> warmInput = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
-        Traverse(warmInput, limits);
-        Traverse(warmInput, limits);
+        static void WarmReader(SvgRenderLimits limits)
+        {
+            Traverse("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), limits);
+            Traverse("<?xml version='1.0'?><!DOCTYPE svg><svg/>"u8.ToArray(), limits);
+        }
     }
 
     private static XmlReaderTraversalMeasurement Traverse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits)
     {
         long setupStart = GC.GetTotalAllocatedBytes(precise: true);
-        XmlReaderSettings settings = new()
-        {
-            DtdProcessing = DtdProcessing.Prohibit,
-            XmlResolver = null,
-            MaxCharactersInDocument = limits.MaximumInputBytes,
-            IgnoreComments = true,
-            IgnoreProcessingInstructions = true
-        };
+        RenderBudget budget = new();
+        using RenderBudget.BudgetReservation workspace = budget.Reserve(
+            SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
+        XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, CancellationToken.None);
         long touchedCharacters = 0;
         long textNodeCount = 0;
         long attributeAccessManagedAllocatedBytes = 0;
@@ -63,7 +59,8 @@ internal static class XmlReaderWorkspaceProbe
             reader.MoveToElement();
         }
         long readerTraversalManagedAllocatedBytes = GC.GetTotalAllocatedBytes(precise: true) - traversalStart;
-        return new XmlReaderTraversalMeasurement(touchedCharacters, textNodeCount, readerSetupManagedAllocatedBytes, readerTraversalManagedAllocatedBytes, attributeAccessManagedAllocatedBytes);
+        return new XmlReaderTraversalMeasurement(touchedCharacters, textNodeCount, readerSetupManagedAllocatedBytes,
+            readerTraversalManagedAllocatedBytes, attributeAccessManagedAllocatedBytes, budget.Snapshot().PeakBytes);
     }
 }
 
@@ -81,4 +78,5 @@ internal readonly record struct XmlReaderTraversalMeasurement(
     long TextNodeCount,
     long ReaderSetupManagedAllocatedBytes,
     long ReaderTraversalManagedAllocatedBytes,
-    long AttributeAccessManagedAllocatedBytes);
+    long AttributeAccessManagedAllocatedBytes,
+    long WorkspaceBytes);

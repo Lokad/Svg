@@ -169,14 +169,14 @@ $missingSummary = Copy-MemoryReports $missingMemory
 $missingEdited = Get-Content -LiteralPath $missingSummary.FullName -Raw | ConvertFrom-Json
 $missingEdited.reports = @($missingEdited.reports | Where-Object { $_.name -ne 'limit' })
 $missingEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $missingSummary.FullName -NoNewline -Encoding utf8
-Assert-ValidatorRejects $goodDirectory $missingMemory '*contains 24 reports*' 'a missing memory report'
+Assert-ValidatorRejects $goodDirectory $missingMemory '*contains 30 reports*' 'a missing memory report'
 
 $duplicateMemory = Join-Path $runDirectory 'memory-duplicate-report'
 $duplicateSummary = Copy-MemoryReports $duplicateMemory
 $duplicateEdited = Get-Content -LiteralPath $duplicateSummary.FullName -Raw | ConvertFrom-Json
 $duplicateEdited.reports = @($duplicateEdited.reports) + @($duplicateEdited.reports[0])
 $duplicateEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $duplicateSummary.FullName -NoNewline -Encoding utf8
-Assert-ValidatorRejects $goodDirectory $duplicateMemory '*contains 26 reports*' 'a duplicated memory report'
+Assert-ValidatorRejects $goodDirectory $duplicateMemory '*contains 32 reports*' 'a duplicated memory report'
 
 $unexpectedMemory = Join-Path $runDirectory 'memory-unexpected-report'
 $unexpectedSummary = Copy-MemoryReports $unexpectedMemory
@@ -207,6 +207,20 @@ $outcomeEdited = Get-Content -LiteralPath $outcomeSummary.FullName -Raw | Conver
 @($outcomeEdited.reports | Where-Object { $_.name -eq 'success' })[0].report.outcome = 'svg-error'
 $outcomeEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $outcomeSummary.FullName -NoNewline -Encoding utf8
 Assert-ValidatorRejects $goodDirectory $outcomeMemory '*outcome*' 'a flipped memory outcome'
+
+$prologMemory = Join-Path $runDirectory 'memory-missing-prolog-workspace'
+$prologSummary = Copy-MemoryReports $prologMemory
+$prologEdited = Get-Content -LiteralPath $prologSummary.FullName -Raw | ConvertFrom-Json
+$ordinaryXml = @($prologEdited.reports | Where-Object { $_.name -eq 'xml-reader-1' })[0].report
+@($prologEdited.reports | Where-Object { $_.name -eq 'xml-reader-doctype-1' })[0].report.xmlReaderWorkspaceBytes = $ordinaryXml.xmlReaderWorkspaceBytes
+$prologEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $prologSummary.FullName -NoNewline -Encoding utf8
+Assert-ValidatorRejects $goodDirectory $prologMemory '*prolog workspace*' 'an omitted XML prolog workspace'
+
+$doctypePngMemory = Join-Path $runDirectory 'memory-missing-doctype-png'
+$doctypePngSummary = Copy-MemoryReports $doctypePngMemory
+$doctypePngEdited = Get-Content -LiteralPath $doctypePngSummary.FullName -Raw | ConvertFrom-Json
+Remove-Item -LiteralPath (Join-Path $doctypePngMemory "$($doctypePngEdited.runId)-xml-doctype-conversion.png")
+Assert-ValidatorRejects $goodDirectory $doctypePngMemory '*did not retain its PNG*' 'a missing inert-DOCTYPE conversion PNG'
 
 $schemaChrome = Join-Path $runDirectory 'chrome-bad-schema'
 New-Item -ItemType Directory -Force -Path $schemaChrome | Out-Null

@@ -32,6 +32,12 @@ discovery. Full unfiltered Windows/Linux tests, resource/font-host probes and
 installed-package checks remain milestone/CI gates. Keep browser captures and
 references unchanged when reorganizing tests.
 
+`test-memory-probe.ps1` exercises the shared XML-reader policy in conversion and
+allocation modes. Reader workspace reports include peak admitted prolog storage;
+managed allocation totals are separate observations. Memory artifact schema 4
+requires inert-DOCTYPE and internal-subset parity, checked by
+`test-validate-ci-artifacts.ps1`; use the validator from the producing commit.
+
 For the [bilinear numeric probe](../tests/Research/svgweb/highp-bilinear.js),
 evaluate the script with DevTools `Runtime.evaluate` in the pinned browser and
 retain the returned rows. Color-dodge over transparent black selects the floating

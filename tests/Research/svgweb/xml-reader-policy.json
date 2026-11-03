@@ -1,0 +1,91 @@
+{
+  "status": "CLOSED diagnostic-policy alignment; internal-entity admission remains OPEN.",
+  "sourceBaseCommit": "ebc253bafe4b1ca748a9588d517e2781aace5f00",
+  "filesLfSha256": {
+    "tools/Lokad.Svg.MemoryProbe/XmlReaderWorkspaceProbe.cs": "86ddef583676c88da7b1dd3b0b562e2f19ff33bc15cbfcad1f2a5e49fa9fb804",
+    "tools/test-memory-probe.ps1": "51cd9436258e1fe37d4e63bf32cd2f2e8c5fdc29fe2e0579a665a2d424a83ec6",
+    "tools/validate-ci-artifacts.ps1": "464d0c522eff4c75879f1a5d04217d9fadec1c28adaf96c864280b91350e44f5",
+    "tools/test-validate-ci-artifacts.ps1": "0ee4fc5f697d822b27b0c0bf4260dc1f720f82c0f24262ce4b0a1153e6d9aff2"
+  },
+  "finding": "The diagnostic hardcoded DtdProcessing.Prohibit while production admitted inert declarations through the shared policy. It also reported only ordinary reader workspace.",
+  "before": {
+    "inputSha256": "c91e9196dd247a0462d1a5b4bdd95839915b9c8643c50e6ad421eab61c24a13e",
+    "framework": "net11.0",
+    "host": "windows",
+    "xmlReaderOutcome": "unhandled-XmlException",
+    "exitCode": 1,
+    "productionInertDeclarations": "Already admitted; protected by SvgDoctypeTests."
+  },
+  "change": "Use SvgXmlReaderPolicy.Create and the ordinary-reader reservation in one diagnostic owner. Report the peak admitted workspace, including temporary prolog storage. Warm both reader paths. Keep managed allocation totals separate from storage admission.",
+  "coverage": "Three fresh-process inert-declaration measurements, successful conversion, and internal-subset rejection in conversion/reader modes. Existing text, attributes, font discovery, cancellation, image and pattern scenarios remain. Artifact schema 4 requires all 31 reports; verifier self-tests retain missing/duplicate/outcome/hash checks and add missing prolog admission and conversion PNG cases.",
+  "validation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "exitCode": 0,
+      "seconds": 15.25781390001066,
+      "rendererSha256": "ad872b2bffafdf7ad7c4245eaa3e420eb494f9708ffedfaf347b32b127b753dd",
+      "summarySchemaVersion": 4,
+      "requiredReports": 31,
+      "ordinaryWorkspaceBytes": 131072,
+      "inertDoctypeWorkspaceBytes": 163840,
+      "inertDoctypeManagedAllocationBytes": [
+        9552,
+        9552,
+        9552
+      ]
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "exitCode": 0,
+      "seconds": 16.179508100030944,
+      "rendererSha256": "2c7b185d6d2b8eddb9e58a4ee80537becb3a7e87ed7b98de04410196bbbffd3c",
+      "summarySchemaVersion": 4,
+      "requiredReports": 31,
+      "ordinaryWorkspaceBytes": 131072,
+      "inertDoctypeWorkspaceBytes": 163840,
+      "inertDoctypeManagedAllocationBytes": [
+        9552,
+        9552,
+        9552
+      ]
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "exitCode": 0,
+      "seconds": 168.04911980009638,
+      "rendererSha256": "ad872b2bffafdf7ad7c4245eaa3e420eb494f9708ffedfaf347b32b127b753dd",
+      "summarySchemaVersion": 4,
+      "requiredReports": 31,
+      "ordinaryWorkspaceBytes": 131072,
+      "inertDoctypeWorkspaceBytes": 163840,
+      "inertDoctypeManagedAllocationBytes": [
+        9632,
+        9632,
+        9632
+      ]
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "exitCode": 0,
+      "seconds": 172.7000824001152,
+      "rendererSha256": "2c7b185d6d2b8eddb9e58a4ee80537becb3a7e87ed7b98de04410196bbbffd3c",
+      "summarySchemaVersion": 4,
+      "requiredReports": 31,
+      "ordinaryWorkspaceBytes": 131072,
+      "inertDoctypeWorkspaceBytes": 163840,
+      "inertDoctypeManagedAllocationBytes": [
+        9552,
+        9552,
+        9552
+      ]
+    }
+  ],
+  "rendererImplementationChanged": false,
+  "productionEntityAdmissionChanged": false,
+  "retainedHostedSvgBodies": 0,
+  "nextAction": "Review bounded internal-general-entity tables and expanded-reader storage under the existing shared preparation owner before enabling BCL DTD parsing. Preserve source diagnostics, cancellation/refusal/cleanup/retry and inert external-subset semantics."
+}

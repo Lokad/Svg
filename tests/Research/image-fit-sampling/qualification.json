@@ -747,5 +747,16 @@
     "contextsWithSvgImageNodes": 0,
     "textAndFontImplementationChanged": false,
     "fullFontAndRenderingCoverage": "Full primary and representative compatibility suites preserve existing shaping, layout, positions, fitting and ownership. The independent DejaVu failure is unchanged."
+  },
+  "ci": {
+    "runId": 41727626481,
+    "headSha": "ebc253bafe4b1ca748a9588d517e2781aace5f00",
+    "status": "completed",
+    "conclusion": "failure",
+    "terminal": true,
+    "ubuntu": "Full primary, compatibility, font-host, tools, artifact verification and package/installed-consumer steps passed.",
+    "windows": "Core 47,455 and font-host 10 passed. Visual 46,660 passed with only the preserved DejaVu failure. Later qualification steps were skipped after that failure.",
+    "soleFailedCase": "SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: dejavu)",
+    "repoll": false
   }
 }

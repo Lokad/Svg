@@ -166,6 +166,24 @@ if ($xmlAttributesProbe['outcome'] -ne 'svg-error' -or $xmlAttributesProbe['svgE
 
 Assert-XmlReaderMeasurements -Name 'xml-reader' -InputPath $xmlAttributeInput -MinimumTouchedCharacters 1
 
+$xmlDoctypeInput = Join-Path $ResultsDirectory "$runId-xml-reader-doctype.svg"
+[IO.File]::WriteAllText($xmlDoctypeInput, '<?xml version="1.0"?><!DOCTYPE svg SYSTEM "urn:lokad-svg:inert"><svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><rect width="2" height="2"/></svg>', [Text.UTF8Encoding]::new($false))
+$xmlDoctypeOutput = Join-Path $ResultsDirectory "$runId-xml-doctype-conversion.png"
+$xmlDoctypeConversion = Invoke-Probe -Name 'xml-doctype-conversion' -InputPath $xmlDoctypeInput -Output $xmlDoctypeOutput -ExpectedExitCode 0 -ExtraArguments @()
+if ($xmlDoctypeConversion['outcome'] -ne 'success' -or -not (Test-Path -LiteralPath $xmlDoctypeOutput)) { throw 'The inert DOCTYPE did not retain production conversion admission.' }
+Assert-XmlReaderMeasurements -Name 'xml-reader-doctype' -InputPath $xmlDoctypeInput -MinimumTouchedCharacters 1 -MinimumTextNodes 0
+$xmlOrdinaryMeasurement = ($reports | Where-Object { $_.name -eq 'xml-reader-1' }).report
+$xmlDoctypeMeasurement = $reports[$reports.Count - 1].report
+if ([long]$xmlDoctypeMeasurement.xmlReaderWorkspaceBytes -le [long]$xmlOrdinaryMeasurement.xmlReaderWorkspaceBytes) { throw 'The XML reader report omitted the transient prolog workspace.' }
+
+$xmlSubsetInput = Join-Path $ResultsDirectory "$runId-xml-reader-subset.svg"
+[IO.File]::WriteAllText($xmlSubsetInput, '<!DOCTYPE svg [<!ENTITY box "<rect/>">]><svg xmlns="http://www.w3.org/2000/svg">&box;</svg>', [Text.UTF8Encoding]::new($false))
+foreach ($xmlMode in @('conversion', 'xml-reader')) {
+    $xmlSubsetOutput = Join-Path $ResultsDirectory "$runId-xml-subset-$xmlMode.png"
+    $xmlSubset = Invoke-Probe -Name "xml-subset-$xmlMode" -InputPath $xmlSubsetInput -Output $xmlSubsetOutput -ExpectedExitCode 1 -ExtraArguments @('--mode', $xmlMode)
+    if ($xmlSubset['outcome'] -ne 'svg-error' -or $xmlSubset['svgErrorCode'] -ne 'MalformedInput' -or (Test-Path -LiteralPath $xmlSubsetOutput)) { throw "Internal-subset admission differs in $xmlMode mode." }
+}
+
 $xmlReaderAttributeValueInput = Join-Path $ResultsDirectory "$runId-xml-reader-attribute-values.svg"
 $xmlReaderAttributeValue = New-Object string('x', 4KB)
 $xmlReaderAttributeValues = (0..254 | ForEach-Object { " data-a$_=`"$xmlReaderAttributeValue`"" }) -join ''
@@ -233,7 +251,7 @@ $fingerprints = @($reports | ForEach-Object { $_.report.operatingSystem + '|' + 
 if ($fingerprints.Count -ne 1) { throw 'The child-process reports do not share one runtime/platform fingerprint.' }
 $runtime = $reports[0].report
 $summary = [ordered]@{
-    schemaVersion = 3
+    schemaVersion = 4
     runId = $runId
     fixtureSha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant()
     runtimeFingerprint = [ordered]@{
@@ -248,4 +266,4 @@ $summary = [ordered]@{
 $summaryPath = Join-Path $ResultsDirectory "$runId-summary.json"
 [IO.File]::WriteAllText($summaryPath, ($summary | ConvertTo-Json -Depth 6), [Text.UTF8Encoding]::new($false))
 
-Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements for text and attribute shapes, fresh-process font-discovery ledger scenarios, two fresh-process embedded-image conversion scenarios, and two fresh-process pattern tile scenarios. Summary retained at $summaryPath."
+Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements for text, attributes and inert DOCTYPEs, shared internal-subset rejection, font-discovery ledger scenarios, embedded-image conversion and pattern tiles. Summary retained at $summaryPath."

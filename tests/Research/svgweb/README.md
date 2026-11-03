@@ -20,6 +20,9 @@ diagnostics are exact on both hosts. Internal-entity admission and direct text
 clipping remain open; [shared bitmap-span sampling](../image-fit-sampling/README.md)
 closes the former two-pixel image-fit discrepancy. Diagnostic transformations, supplied
 fonts and replacement rasters do not qualify the corresponding originals.
+The [reader-policy review](xml-reader-policy.json) aligns allocation diagnostics
+with production's inert-declaration policy and peak prolog admission. Internal
+entity expansion remains open and requires shared ownership work.
 
 The [attribute-applicability review](attribute-applicability.json) closes custom
 and inapplicable attribute gates plus explicit gradient-unit fallback. Five newly
