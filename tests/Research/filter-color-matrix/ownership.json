@@ -1,0 +1,8 @@
+{
+  "input": "affine-offset.svg",
+  "inputSha256": "8f24f3abd4b5949956316283f9d050f7e51d86b331c450da4b60fcde2582e15f",
+  "rgbaSha256": {
+    "windows": "913c7017ee42a42510a84d52a276ae82fe175ac92c29cb3f42d8f3c38fee3ecb",
+    "linux": "913c7017ee42a42510a84d52a276ae82fe175ac92c29cb3f42d8f3c38fee3ecb"
+  }
+}

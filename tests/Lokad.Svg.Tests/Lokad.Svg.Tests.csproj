@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/filter-color-matrix/affine-offset.svg" Link="TestData/filter-color-matrix/affine-offset.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-color-matrix/ownership.json" Link="TestData/filter-color-matrix/ownership.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/text-case-mapping/unicode-uppercase.csv" Link="TestData/unicode-uppercase.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/text-case-mapping/unicode-lowercase.csv" Link="TestData/unicode-lowercase.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/text-case-mapping/unicode-casing-properties.csv" Link="TestData/unicode-casing-properties.csv" CopyToOutputDirectory="PreserveNewest" />

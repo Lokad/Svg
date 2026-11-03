@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "status": "OPEN: complete corpus survey and shared-stage review; no color-matrix implementation or original acceptance claim.",
+  "status": "CLOSED by the color-matrix implementation and qualified native/ownership milestone; whole-original static/font acceptance remains OPEN.",
   "sourceBaseline": "ecfd311d99e800bc72019c0e99e2f960b5fbff5a",
   "inventory": {
     "sourceFilesChecked": 204,
@@ -118,5 +118,6 @@
     ],
     "qualification": "Focused mechanisms and native rendering during development; affected integration before promotion; full Windows/Linux/package qualification at a coherent filter milestone."
   },
-  "specification": "https://www.w3.org/TR/filter-effects-1/#feColorMatrixElement"
+  "specification": "https://www.w3.org/TR/filter-effects-1/#feColorMatrixElement",
+  "implementationEvidence": "filter-color-matrix.json"
 }

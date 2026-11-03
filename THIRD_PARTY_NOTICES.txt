@@ -21,7 +21,7 @@ inside focal-cone coordinate construction, nonzero clip bounds, per-bitmap clip 
 and clip construction order, and retained convex shape classification,
 and antialiased line/curve hairline coverage/dispatch,
 and fused CPU Gaussian three-box blur with scaled integer division,
-progressive image-filter rescaling and sRGB filter transfer functions.
+progressive image-filter rescaling, straight-RGBA color matrices and sRGB filter transfer functions.
 Source-image subsets, mip selection and premultiplied box/triangle reduction
 also adapt the bitmap-device, mipmap and pixmap-draw sources listed below.
 Filter image requests, pending crop/color stages and nearest shader boundary
@@ -67,6 +67,7 @@ src/core/SkContourMeasure.cpp, src/utils/SkDashPath.cpp, src/core/SkBlurEngine.c
 src/core/SkBlurEngine.h, src/core/SkVx.h,
 src/core/SkColorSpace.cpp, src/core/SkColorSpaceXformSteps.cpp,
 src/effects/colorfilters/SkColorSpaceXformColorFilter.cpp,
+src/effects/colorfilters/SkMatrixColorFilter.cpp,
 src/effects/imagefilters/SkBlurImageFilter.cpp, src/effects/imagefilters/SkMatrixTransformImageFilter.cpp,
 src/effects/imagefilters/SkBlendImageFilter.cpp, src/effects/imagefilters/SkDropShadowImageFilter.cpp,
 src/effects/imagefilters/SkCropImageFilter.cpp, src/effects/colorfilters/SkBlendModeColorFilter.cpp,

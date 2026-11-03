@@ -1,0 +1,1599 @@
+{
+  "width": 144,
+  "height": 96,
+  "cases": [
+    {
+      "id": "identity",
+      "input": "identity.svg",
+      "inputSha256": "d820046ffb0707dcf40b98ddc9aba923e4f7cc424fff1ad8ca791bd1bf146e18",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-identity.png",
+          "referenceSha256": "624cba5ec28c38d55273406ecf1a10ca6b90587db89755f310c12e34984a1f7c",
+          "rgbaSha256": "89fd3d22f15d2821b3d84f814e4b3eee42e9cc8fb2f2b2a7da7504c21a48fccd",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "624cba5ec28c38d55273406ecf1a10ca6b90587db89755f310c12e34984a1f7c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "624cba5ec28c38d55273406ecf1a10ca6b90587db89755f310c12e34984a1f7c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "624cba5ec28c38d55273406ecf1a10ca6b90587db89755f310c12e34984a1f7c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-identity.png",
+          "referenceSha256": "624cba5ec28c38d55273406ecf1a10ca6b90587db89755f310c12e34984a1f7c",
+          "rgbaSha256": "89fd3d22f15d2821b3d84f814e4b3eee42e9cc8fb2f2b2a7da7504c21a48fccd",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "624cba5ec28c38d55273406ecf1a10ca6b90587db89755f310c12e34984a1f7c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "624cba5ec28c38d55273406ecf1a10ca6b90587db89755f310c12e34984a1f7c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "624cba5ec28c38d55273406ecf1a10ca6b90587db89755f310c12e34984a1f7c",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "alpha-scale",
+      "input": "alpha-scale.svg",
+      "inputSha256": "dab9e4b3385c14dcffca2bf5a0eb9bcac64201277adcf81dd8adec2024654989",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-alpha-scale.png",
+          "referenceSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+          "rgbaSha256": "71f0b757366821ba9b913826cc6d37b30f9faadcb3276f337d1483b6ad5c1ffd",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-alpha-scale.png",
+          "referenceSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+          "rgbaSha256": "71f0b757366821ba9b913826cc6d37b30f9faadcb3276f337d1483b6ad5c1ffd",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "rgb-to-alpha",
+      "input": "rgb-to-alpha.svg",
+      "inputSha256": "52c6262c632f39c3f67a75a0b0ae5fcd0f21f2656f167b31bd694b9dcaac37d4",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-rgb-to-alpha.png",
+          "referenceSha256": "8487d9605f57448e39d918f38ee82320f33b4259e65740afa3b21f338ef3584d",
+          "rgbaSha256": "570f7808bc992c5bf990beaf149b5b5ea8c67ae02eb7de61986fb4e0e45d3288",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "8487d9605f57448e39d918f38ee82320f33b4259e65740afa3b21f338ef3584d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "8487d9605f57448e39d918f38ee82320f33b4259e65740afa3b21f338ef3584d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "8487d9605f57448e39d918f38ee82320f33b4259e65740afa3b21f338ef3584d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-rgb-to-alpha.png",
+          "referenceSha256": "8487d9605f57448e39d918f38ee82320f33b4259e65740afa3b21f338ef3584d",
+          "rgbaSha256": "570f7808bc992c5bf990beaf149b5b5ea8c67ae02eb7de61986fb4e0e45d3288",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "8487d9605f57448e39d918f38ee82320f33b4259e65740afa3b21f338ef3584d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "8487d9605f57448e39d918f38ee82320f33b4259e65740afa3b21f338ef3584d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "8487d9605f57448e39d918f38ee82320f33b4259e65740afa3b21f338ef3584d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "alpha-to-rgb",
+      "input": "alpha-to-rgb.svg",
+      "inputSha256": "79b2402610a46e9e1ac1453179c1d217e8a90fd1a21275f8eab86804bf72a737",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-alpha-to-rgb.png",
+          "referenceSha256": "52709e8179a0fabd7a81c4a2ca48b8545a01e55b5993b881b4356d5b68479927",
+          "rgbaSha256": "2d150eda28cf8194468e91ab4c51e06c9c1299875db59d3ac3e175abc767b301",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "52709e8179a0fabd7a81c4a2ca48b8545a01e55b5993b881b4356d5b68479927",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "52709e8179a0fabd7a81c4a2ca48b8545a01e55b5993b881b4356d5b68479927",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "52709e8179a0fabd7a81c4a2ca48b8545a01e55b5993b881b4356d5b68479927",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-alpha-to-rgb.png",
+          "referenceSha256": "52709e8179a0fabd7a81c4a2ca48b8545a01e55b5993b881b4356d5b68479927",
+          "rgbaSha256": "2d150eda28cf8194468e91ab4c51e06c9c1299875db59d3ac3e175abc767b301",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "52709e8179a0fabd7a81c4a2ca48b8545a01e55b5993b881b4356d5b68479927",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "52709e8179a0fabd7a81c4a2ca48b8545a01e55b5993b881b4356d5b68479927",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "52709e8179a0fabd7a81c4a2ca48b8545a01e55b5993b881b4356d5b68479927",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "transparent-offset",
+      "input": "transparent-offset.svg",
+      "inputSha256": "9e32f198df9d44540052fe18542ffd54f7726f4219f50c6c527b64ff575bfb1a",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-transparent-offset.png",
+          "referenceSha256": "7b6b4b6163f37e85f52ec75a67e135a29cf29962923b12c4542c01f324120727",
+          "rgbaSha256": "9e6875ca9db8ed60fb2b5b44a89f4f0c40441872dfdb2ef97268ce9be99f879e",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "7b6b4b6163f37e85f52ec75a67e135a29cf29962923b12c4542c01f324120727",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "7b6b4b6163f37e85f52ec75a67e135a29cf29962923b12c4542c01f324120727",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "7b6b4b6163f37e85f52ec75a67e135a29cf29962923b12c4542c01f324120727",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-transparent-offset.png",
+          "referenceSha256": "7b6b4b6163f37e85f52ec75a67e135a29cf29962923b12c4542c01f324120727",
+          "rgbaSha256": "9e6875ca9db8ed60fb2b5b44a89f4f0c40441872dfdb2ef97268ce9be99f879e",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "7b6b4b6163f37e85f52ec75a67e135a29cf29962923b12c4542c01f324120727",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "7b6b4b6163f37e85f52ec75a67e135a29cf29962923b12c4542c01f324120727",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "7b6b4b6163f37e85f52ec75a67e135a29cf29962923b12c4542c01f324120727",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "linear",
+      "input": "linear.svg",
+      "inputSha256": "b05ac7262851a070cab55c7b6568d801eacfe3c443c16eb48a1d96fd1bb90bbd",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-linear.png",
+          "referenceSha256": "c704829d25640fd49204796fc17d515ad3a5f38fb4d1ecd751af072689303cb4",
+          "rgbaSha256": "eefe5a24bd6ec87dc7db8af406a466f9c03a5ec94f2ab2523ee9ac394e32e15f",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "c704829d25640fd49204796fc17d515ad3a5f38fb4d1ecd751af072689303cb4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c704829d25640fd49204796fc17d515ad3a5f38fb4d1ecd751af072689303cb4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c704829d25640fd49204796fc17d515ad3a5f38fb4d1ecd751af072689303cb4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-linear.png",
+          "referenceSha256": "c704829d25640fd49204796fc17d515ad3a5f38fb4d1ecd751af072689303cb4",
+          "rgbaSha256": "eefe5a24bd6ec87dc7db8af406a466f9c03a5ec94f2ab2523ee9ac394e32e15f",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "c704829d25640fd49204796fc17d515ad3a5f38fb4d1ecd751af072689303cb4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c704829d25640fd49204796fc17d515ad3a5f38fb4d1ecd751af072689303cb4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c704829d25640fd49204796fc17d515ad3a5f38fb4d1ecd751af072689303cb4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "named-chain",
+      "input": "named-chain.svg",
+      "inputSha256": "53b6a883e0f7d4f58c2cad97bd16ee6cf9b50ab916c496f68db222cd8b8e33f0",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-named-chain.png",
+          "referenceSha256": "ef1ec335d04b29dea31c0c1c8da76398feb17109fee5016c95f54cc8e4ece02b",
+          "rgbaSha256": "441cc5808589db3b7b2ff64cdeeaeb7e0741e3a6156c3d32e49b58b91037ce5b",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "ef1ec335d04b29dea31c0c1c8da76398feb17109fee5016c95f54cc8e4ece02b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ef1ec335d04b29dea31c0c1c8da76398feb17109fee5016c95f54cc8e4ece02b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ef1ec335d04b29dea31c0c1c8da76398feb17109fee5016c95f54cc8e4ece02b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-named-chain.png",
+          "referenceSha256": "ef1ec335d04b29dea31c0c1c8da76398feb17109fee5016c95f54cc8e4ece02b",
+          "rgbaSha256": "441cc5808589db3b7b2ff64cdeeaeb7e0741e3a6156c3d32e49b58b91037ce5b",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "ef1ec335d04b29dea31c0c1c8da76398feb17109fee5016c95f54cc8e4ece02b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ef1ec335d04b29dea31c0c1c8da76398feb17109fee5016c95f54cc8e4ece02b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ef1ec335d04b29dea31c0c1c8da76398feb17109fee5016c95f54cc8e4ece02b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "matrix-chain",
+      "input": "matrix-chain.svg",
+      "inputSha256": "da4fdbd208eb0bdaf68b5947a321f0cbd3a18dfa69281c8777360d1e71e1a95a",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-matrix-chain.png",
+          "referenceSha256": "fa2bc4f93d96024ad1bf958828d414980bf3e1db2c963c0ab90594f01bd0b955",
+          "rgbaSha256": "9eaedb72c3ba0876d7f0109d1641c99563d485ac5755f3dbeb305ecd3734bc7c",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "fa2bc4f93d96024ad1bf958828d414980bf3e1db2c963c0ab90594f01bd0b955",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "fa2bc4f93d96024ad1bf958828d414980bf3e1db2c963c0ab90594f01bd0b955",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "fa2bc4f93d96024ad1bf958828d414980bf3e1db2c963c0ab90594f01bd0b955",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-matrix-chain.png",
+          "referenceSha256": "fa2bc4f93d96024ad1bf958828d414980bf3e1db2c963c0ab90594f01bd0b955",
+          "rgbaSha256": "9eaedb72c3ba0876d7f0109d1641c99563d485ac5755f3dbeb305ecd3734bc7c",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "fa2bc4f93d96024ad1bf958828d414980bf3e1db2c963c0ab90594f01bd0b955",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "fa2bc4f93d96024ad1bf958828d414980bf3e1db2c963c0ab90594f01bd0b955",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "fa2bc4f93d96024ad1bf958828d414980bf3e1db2c963c0ab90594f01bd0b955",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "crop",
+      "input": "crop.svg",
+      "inputSha256": "7bf5397bd7b1e841571d0438a2cba383408f8bc10fddc9460c4a546292a6ed13",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-crop.png",
+          "referenceSha256": "c6bec18e78cf18c6010397e63531fc5e8e115eeca2c893ea5f09ac0183e4d2e4",
+          "rgbaSha256": "641f20e69783c1166d8fe19e3002358231311d5f265e2f1f9ef61dada41983e6",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "c6bec18e78cf18c6010397e63531fc5e8e115eeca2c893ea5f09ac0183e4d2e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c6bec18e78cf18c6010397e63531fc5e8e115eeca2c893ea5f09ac0183e4d2e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c6bec18e78cf18c6010397e63531fc5e8e115eeca2c893ea5f09ac0183e4d2e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-crop.png",
+          "referenceSha256": "c6bec18e78cf18c6010397e63531fc5e8e115eeca2c893ea5f09ac0183e4d2e4",
+          "rgbaSha256": "641f20e69783c1166d8fe19e3002358231311d5f265e2f1f9ef61dada41983e6",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "c6bec18e78cf18c6010397e63531fc5e8e115eeca2c893ea5f09ac0183e4d2e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c6bec18e78cf18c6010397e63531fc5e8e115eeca2c893ea5f09ac0183e4d2e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "c6bec18e78cf18c6010397e63531fc5e8e115eeca2c893ea5f09ac0183e4d2e4",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "affine-offset",
+      "input": "affine-offset.svg",
+      "inputSha256": "8f24f3abd4b5949956316283f9d050f7e51d86b331c450da4b60fcde2582e15f",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-affine-offset.png",
+          "referenceSha256": "b5e8c9d40893a93da99f5a0da65c470b40e6a3a5aeeffbc648f73b5e5ea62360",
+          "rgbaSha256": "913c7017ee42a42510a84d52a276ae82fe175ac92c29cb3f42d8f3c38fee3ecb",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "b5e8c9d40893a93da99f5a0da65c470b40e6a3a5aeeffbc648f73b5e5ea62360",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b5e8c9d40893a93da99f5a0da65c470b40e6a3a5aeeffbc648f73b5e5ea62360",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b5e8c9d40893a93da99f5a0da65c470b40e6a3a5aeeffbc648f73b5e5ea62360",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-affine-offset.png",
+          "referenceSha256": "b5e8c9d40893a93da99f5a0da65c470b40e6a3a5aeeffbc648f73b5e5ea62360",
+          "rgbaSha256": "913c7017ee42a42510a84d52a276ae82fe175ac92c29cb3f42d8f3c38fee3ecb",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "b5e8c9d40893a93da99f5a0da65c470b40e6a3a5aeeffbc648f73b5e5ea62360",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b5e8c9d40893a93da99f5a0da65c470b40e6a3a5aeeffbc648f73b5e5ea62360",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b5e8c9d40893a93da99f5a0da65c470b40e6a3a5aeeffbc648f73b5e5ea62360",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "uniform",
+      "input": "uniform.svg",
+      "inputSha256": "61d9bb655b1a03afc9c0015696da57290d5e3dbc4eac09525bf7c935529f3151",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-uniform.png",
+          "referenceSha256": "565a7c7191047053cc34e8a3beae9772692ac6d2aea64b6a8652cfb136db3925",
+          "rgbaSha256": "8c296428d875808381a5f18e7ebf7dfe516ad071dfe4d6080255b4275b74bfe2",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "565a7c7191047053cc34e8a3beae9772692ac6d2aea64b6a8652cfb136db3925",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "565a7c7191047053cc34e8a3beae9772692ac6d2aea64b6a8652cfb136db3925",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "565a7c7191047053cc34e8a3beae9772692ac6d2aea64b6a8652cfb136db3925",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-uniform.png",
+          "referenceSha256": "565a7c7191047053cc34e8a3beae9772692ac6d2aea64b6a8652cfb136db3925",
+          "rgbaSha256": "8c296428d875808381a5f18e7ebf7dfe516ad071dfe4d6080255b4275b74bfe2",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "565a7c7191047053cc34e8a3beae9772692ac6d2aea64b6a8652cfb136db3925",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "565a7c7191047053cc34e8a3beae9772692ac6d2aea64b6a8652cfb136db3925",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "565a7c7191047053cc34e8a3beae9772692ac6d2aea64b6a8652cfb136db3925",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "clamp",
+      "input": "clamp.svg",
+      "inputSha256": "c574c40618ee872d0da8c2554bc1a6143896cb908a78145348bdebd919471523",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-clamp.png",
+          "referenceSha256": "56ded89f1fcfaa550361b8343f6395dc1c4ed7e657cdf85cc33e6aa9ee55be60",
+          "rgbaSha256": "ef88a3863b1671f2802fee19dbfced04d1094798059ef1d1f131ca1ea219374a",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "56ded89f1fcfaa550361b8343f6395dc1c4ed7e657cdf85cc33e6aa9ee55be60",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "56ded89f1fcfaa550361b8343f6395dc1c4ed7e657cdf85cc33e6aa9ee55be60",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "56ded89f1fcfaa550361b8343f6395dc1c4ed7e657cdf85cc33e6aa9ee55be60",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-clamp.png",
+          "referenceSha256": "56ded89f1fcfaa550361b8343f6395dc1c4ed7e657cdf85cc33e6aa9ee55be60",
+          "rgbaSha256": "ef88a3863b1671f2802fee19dbfced04d1094798059ef1d1f131ca1ea219374a",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "56ded89f1fcfaa550361b8343f6395dc1c4ed7e657cdf85cc33e6aa9ee55be60",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "56ded89f1fcfaa550361b8343f6395dc1c4ed7e657cdf85cc33e6aa9ee55be60",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "56ded89f1fcfaa550361b8343f6395dc1c4ed7e657cdf85cc33e6aa9ee55be60",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturate",
+      "input": "saturate.svg",
+      "inputSha256": "5b0ed551bed00e71e99915e1a27cac2ddab433394a4bd9b69c7fd355cbb6791f",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-saturate.png",
+          "referenceSha256": "2b4e53ef9b1ab054dfb998bd07f58e8f41c806df7a7876d119440f770ebc21ee",
+          "rgbaSha256": "3f35af7c92b011fb8d6851568272947686d0aad54267d431fd4f86bed5dff35f",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "2b4e53ef9b1ab054dfb998bd07f58e8f41c806df7a7876d119440f770ebc21ee",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "2b4e53ef9b1ab054dfb998bd07f58e8f41c806df7a7876d119440f770ebc21ee",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "2b4e53ef9b1ab054dfb998bd07f58e8f41c806df7a7876d119440f770ebc21ee",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-saturate.png",
+          "referenceSha256": "2b4e53ef9b1ab054dfb998bd07f58e8f41c806df7a7876d119440f770ebc21ee",
+          "rgbaSha256": "3f35af7c92b011fb8d6851568272947686d0aad54267d431fd4f86bed5dff35f",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "2b4e53ef9b1ab054dfb998bd07f58e8f41c806df7a7876d119440f770ebc21ee",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "2b4e53ef9b1ab054dfb998bd07f58e8f41c806df7a7876d119440f770ebc21ee",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "2b4e53ef9b1ab054dfb998bd07f58e8f41c806df7a7876d119440f770ebc21ee",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "hue-rotate",
+      "input": "hue-rotate.svg",
+      "inputSha256": "1c1887e8b2cf65477c73ab8c8faec37d5a0325e3d5b8c78eca132f943dc7fe1d",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-hue-rotate.png",
+          "referenceSha256": "88be5de58fbb736118e8334c7328d9367631577c86d54d2f6ed4d3a806cdf0f7",
+          "rgbaSha256": "1d5c7f5fe67caa29405f9e5999060a2ec42f3fac5820fea7ff8a972b6adabbfa",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "88be5de58fbb736118e8334c7328d9367631577c86d54d2f6ed4d3a806cdf0f7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "88be5de58fbb736118e8334c7328d9367631577c86d54d2f6ed4d3a806cdf0f7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "88be5de58fbb736118e8334c7328d9367631577c86d54d2f6ed4d3a806cdf0f7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-hue-rotate.png",
+          "referenceSha256": "88be5de58fbb736118e8334c7328d9367631577c86d54d2f6ed4d3a806cdf0f7",
+          "rgbaSha256": "1d5c7f5fe67caa29405f9e5999060a2ec42f3fac5820fea7ff8a972b6adabbfa",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "88be5de58fbb736118e8334c7328d9367631577c86d54d2f6ed4d3a806cdf0f7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "88be5de58fbb736118e8334c7328d9367631577c86d54d2f6ed4d3a806cdf0f7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "88be5de58fbb736118e8334c7328d9367631577c86d54d2f6ed4d3a806cdf0f7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "luminance-alpha",
+      "input": "luminance-alpha.svg",
+      "inputSha256": "11d49d36d42880f3b45e12db4e82a435e7a5ea1303e14e024b4649097556a66e",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-luminance-alpha.png",
+          "referenceSha256": "38577ea5e9285ec2a3eb7dfab1a0101dfde1c0b18d5df91d205ee31e58fef52b",
+          "rgbaSha256": "0f3eba1499897ec11d3cd1591cc2ec7e0845f8cc27274345bfecca916f4f86a7",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "38577ea5e9285ec2a3eb7dfab1a0101dfde1c0b18d5df91d205ee31e58fef52b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "38577ea5e9285ec2a3eb7dfab1a0101dfde1c0b18d5df91d205ee31e58fef52b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "38577ea5e9285ec2a3eb7dfab1a0101dfde1c0b18d5df91d205ee31e58fef52b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-luminance-alpha.png",
+          "referenceSha256": "38577ea5e9285ec2a3eb7dfab1a0101dfde1c0b18d5df91d205ee31e58fef52b",
+          "rgbaSha256": "0f3eba1499897ec11d3cd1591cc2ec7e0845f8cc27274345bfecca916f4f86a7",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "38577ea5e9285ec2a3eb7dfab1a0101dfde1c0b18d5df91d205ee31e58fef52b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "38577ea5e9285ec2a3eb7dfab1a0101dfde1c0b18d5df91d205ee31e58fef52b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "38577ea5e9285ec2a3eb7dfab1a0101dfde1c0b18d5df91d205ee31e58fef52b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "affine-matrix",
+      "input": "affine-matrix.svg",
+      "inputSha256": "b720760a1835cb9bde2af2b759dfb7ed04fc8532e1c62d7448024a205c61274a",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-affine-matrix.png",
+          "referenceSha256": "3d7e2e5f3573a84cb59690617c5b719b17d924989c9a328dffd5e5975e102138",
+          "rgbaSha256": "5a0892ee8b0096154812f074145d33181b929db25a148d697ffaf9d8daa5ab4a",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "3d7e2e5f3573a84cb59690617c5b719b17d924989c9a328dffd5e5975e102138",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "3d7e2e5f3573a84cb59690617c5b719b17d924989c9a328dffd5e5975e102138",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "3d7e2e5f3573a84cb59690617c5b719b17d924989c9a328dffd5e5975e102138",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-affine-matrix.png",
+          "referenceSha256": "3d7e2e5f3573a84cb59690617c5b719b17d924989c9a328dffd5e5975e102138",
+          "rgbaSha256": "5a0892ee8b0096154812f074145d33181b929db25a148d697ffaf9d8daa5ab4a",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "3d7e2e5f3573a84cb59690617c5b719b17d924989c9a328dffd5e5975e102138",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "3d7e2e5f3573a84cb59690617c5b719b17d924989c9a328dffd5e5975e102138",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "3d7e2e5f3573a84cb59690617c5b719b17d924989c9a328dffd5e5975e102138",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "affine-before",
+      "input": "affine-before.svg",
+      "inputSha256": "ea2041ac255a70c4878b50bd9741cfcacfac270fee198bac7bb81e6677aeb6ab",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-affine-before.png",
+          "referenceSha256": "7a11b1f685a64d1047ce6dff112ffc70dac1483bb479f0bc5afae36008bb1e3b",
+          "rgbaSha256": "1c527b3472919abacecb7cf0a83afddd82ac0f20a04193ce72e72c9b9affce14",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "7a11b1f685a64d1047ce6dff112ffc70dac1483bb479f0bc5afae36008bb1e3b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "7a11b1f685a64d1047ce6dff112ffc70dac1483bb479f0bc5afae36008bb1e3b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "7a11b1f685a64d1047ce6dff112ffc70dac1483bb479f0bc5afae36008bb1e3b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-affine-before.png",
+          "referenceSha256": "7a11b1f685a64d1047ce6dff112ffc70dac1483bb479f0bc5afae36008bb1e3b",
+          "rgbaSha256": "1c527b3472919abacecb7cf0a83afddd82ac0f20a04193ce72e72c9b9affce14",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "7a11b1f685a64d1047ce6dff112ffc70dac1483bb479f0bc5afae36008bb1e3b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "7a11b1f685a64d1047ce6dff112ffc70dac1483bb479f0bc5afae36008bb1e3b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "7a11b1f685a64d1047ce6dff112ffc70dac1483bb479f0bc5afae36008bb1e3b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "affine-after",
+      "input": "affine-after.svg",
+      "inputSha256": "5c226e6ba4dd82f4baf9acf897b7ad884ae4df44c6bf0ba95289c667864ba93a",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-affine-after.png",
+          "referenceSha256": "05fd260b9778ec9e63d73eebccf3ab64ee75e1be6c211a2a92163ce1f761774e",
+          "rgbaSha256": "08ce066875c35db210cef0c498c72cf6090e60173287f22c1b0587f05efa8d5a",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "05fd260b9778ec9e63d73eebccf3ab64ee75e1be6c211a2a92163ce1f761774e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "05fd260b9778ec9e63d73eebccf3ab64ee75e1be6c211a2a92163ce1f761774e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "05fd260b9778ec9e63d73eebccf3ab64ee75e1be6c211a2a92163ce1f761774e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-affine-after.png",
+          "referenceSha256": "05fd260b9778ec9e63d73eebccf3ab64ee75e1be6c211a2a92163ce1f761774e",
+          "rgbaSha256": "08ce066875c35db210cef0c498c72cf6090e60173287f22c1b0587f05efa8d5a",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "05fd260b9778ec9e63d73eebccf3ab64ee75e1be6c211a2a92163ce1f761774e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "05fd260b9778ec9e63d73eebccf3ab64ee75e1be6c211a2a92163ce1f761774e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "05fd260b9778ec9e63d73eebccf3ab64ee75e1be6c211a2a92163ce1f761774e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "flat-offset",
+      "input": "flat-offset.svg",
+      "inputSha256": "68734d2c1c850cc996f002dc1b63923a7ef8929743a00644db60e7cd2bd99f0d",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-flat-offset.png",
+          "referenceSha256": "97eb730cf76a9fd0540e271feb2a350164277272126b570caf007bcc3315a8ef",
+          "rgbaSha256": "359f85b3d33bdc95c9a9816a2896ddd803aa2cf5fa27f0caa37a82686016335e",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "97eb730cf76a9fd0540e271feb2a350164277272126b570caf007bcc3315a8ef",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "97eb730cf76a9fd0540e271feb2a350164277272126b570caf007bcc3315a8ef",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "97eb730cf76a9fd0540e271feb2a350164277272126b570caf007bcc3315a8ef",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-flat-offset.png",
+          "referenceSha256": "97eb730cf76a9fd0540e271feb2a350164277272126b570caf007bcc3315a8ef",
+          "rgbaSha256": "359f85b3d33bdc95c9a9816a2896ddd803aa2cf5fa27f0caa37a82686016335e",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "97eb730cf76a9fd0540e271feb2a350164277272126b570caf007bcc3315a8ef",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "97eb730cf76a9fd0540e271feb2a350164277272126b570caf007bcc3315a8ef",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "97eb730cf76a9fd0540e271feb2a350164277272126b570caf007bcc3315a8ef",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "cropped-chain",
+      "input": "cropped-chain.svg",
+      "inputSha256": "1eff363174022ebf058431e30e819cbeffdb5a21561a52b1808eb8100363c0bc",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-cropped-chain.png",
+          "referenceSha256": "ff3a2361d0d8227d3e9c1db0d4c058bdd84f911387756702c41b4658094b31be",
+          "rgbaSha256": "b42e6539e706cf6cef714aa115c64275e6169ac024273b700aa6c61a199ba5fa",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "ff3a2361d0d8227d3e9c1db0d4c058bdd84f911387756702c41b4658094b31be",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ff3a2361d0d8227d3e9c1db0d4c058bdd84f911387756702c41b4658094b31be",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ff3a2361d0d8227d3e9c1db0d4c058bdd84f911387756702c41b4658094b31be",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-cropped-chain.png",
+          "referenceSha256": "ff3a2361d0d8227d3e9c1db0d4c058bdd84f911387756702c41b4658094b31be",
+          "rgbaSha256": "b42e6539e706cf6cef714aa115c64275e6169ac024273b700aa6c61a199ba5fa",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "ff3a2361d0d8227d3e9c1db0d4c058bdd84f911387756702c41b4658094b31be",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ff3a2361d0d8227d3e9c1db0d4c058bdd84f911387756702c41b4658094b31be",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ff3a2361d0d8227d3e9c1db0d4c058bdd84f911387756702c41b4658094b31be",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "source-alpha",
+      "input": "source-alpha.svg",
+      "inputSha256": "ff88d73c5b9686a7dc4892880806c4d04d0d4f1c3e5e9fc5f96a1c09d5afff6e",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-source-alpha.png",
+          "referenceSha256": "3dba8a8a1aea8b7386beb8882d2bab462c7d568850b8e98c408140d8cc03e948",
+          "rgbaSha256": "316302744a9cf70f983554ee5368c0fe90f5414953934604a6afde5dcfe37a06",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "3dba8a8a1aea8b7386beb8882d2bab462c7d568850b8e98c408140d8cc03e948",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "3dba8a8a1aea8b7386beb8882d2bab462c7d568850b8e98c408140d8cc03e948",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "3dba8a8a1aea8b7386beb8882d2bab462c7d568850b8e98c408140d8cc03e948",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-source-alpha.png",
+          "referenceSha256": "3dba8a8a1aea8b7386beb8882d2bab462c7d568850b8e98c408140d8cc03e948",
+          "rgbaSha256": "316302744a9cf70f983554ee5368c0fe90f5414953934604a6afde5dcfe37a06",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "3dba8a8a1aea8b7386beb8882d2bab462c7d568850b8e98c408140d8cc03e948",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "3dba8a8a1aea8b7386beb8882d2bab462c7d568850b8e98c408140d8cc03e948",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "3dba8a8a1aea8b7386beb8882d2bab462c7d568850b8e98c408140d8cc03e948",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "matrix-blur",
+      "input": "matrix-blur.svg",
+      "inputSha256": "286bbbcfba19212f5587b764647ff4d0813aa57d002a74ce830dbcc95d204a6a",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-matrix-blur.png",
+          "referenceSha256": "2be791f820a4c569f08bfa48765f068ae5720ce2736361b15913289003181447",
+          "rgbaSha256": "c7a634db79a87b2ae48b3f20c0b12841c23a874cdc6dba5497cc9566ed13de95",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "2be791f820a4c569f08bfa48765f068ae5720ce2736361b15913289003181447",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "2be791f820a4c569f08bfa48765f068ae5720ce2736361b15913289003181447",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "2be791f820a4c569f08bfa48765f068ae5720ce2736361b15913289003181447",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-matrix-blur.png",
+          "referenceSha256": "2be791f820a4c569f08bfa48765f068ae5720ce2736361b15913289003181447",
+          "rgbaSha256": "c7a634db79a87b2ae48b3f20c0b12841c23a874cdc6dba5497cc9566ed13de95",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "2be791f820a4c569f08bfa48765f068ae5720ce2736361b15913289003181447",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "2be791f820a4c569f08bfa48765f068ae5720ce2736361b15913289003181447",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "2be791f820a4c569f08bfa48765f068ae5720ce2736361b15913289003181447",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "matrix-merge",
+      "input": "matrix-merge.svg",
+      "inputSha256": "acfcf419f668c271a2313963156314226c86132cee830d13e32cca54d6dc6579",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-matrix-merge.png",
+          "referenceSha256": "e0ab69eb41b16af5cd069a1912854d5b02dccba76a15147a9925d78c70febb63",
+          "rgbaSha256": "48f5880b18831cc6e655aac9aca3df359b779cffccc481373b1b47e033b09873",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "e0ab69eb41b16af5cd069a1912854d5b02dccba76a15147a9925d78c70febb63",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e0ab69eb41b16af5cd069a1912854d5b02dccba76a15147a9925d78c70febb63",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e0ab69eb41b16af5cd069a1912854d5b02dccba76a15147a9925d78c70febb63",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-matrix-merge.png",
+          "referenceSha256": "e0ab69eb41b16af5cd069a1912854d5b02dccba76a15147a9925d78c70febb63",
+          "rgbaSha256": "48f5880b18831cc6e655aac9aca3df359b779cffccc481373b1b47e033b09873",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "e0ab69eb41b16af5cd069a1912854d5b02dccba76a15147a9925d78c70febb63",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e0ab69eb41b16af5cd069a1912854d5b02dccba76a15147a9925d78c70febb63",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e0ab69eb41b16af5cd069a1912854d5b02dccba76a15147a9925d78c70febb63",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "matrix-composite",
+      "input": "matrix-composite.svg",
+      "inputSha256": "29189665f3a20b9e84980bad3748ffc6ed69c6ea5eb1ef5f6f513b607c9f2fec",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-matrix-composite.png",
+          "referenceSha256": "f340b5f5bb559c58f2fd47058a70844aa7a1062034c7106524d2d87f3eb201c7",
+          "rgbaSha256": "7faf1b1b2f9cd66504606d6bd42e2b74266ec2313c8856a13c4cfff093bf1874",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "f340b5f5bb559c58f2fd47058a70844aa7a1062034c7106524d2d87f3eb201c7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "f340b5f5bb559c58f2fd47058a70844aa7a1062034c7106524d2d87f3eb201c7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "f340b5f5bb559c58f2fd47058a70844aa7a1062034c7106524d2d87f3eb201c7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-matrix-composite.png",
+          "referenceSha256": "f340b5f5bb559c58f2fd47058a70844aa7a1062034c7106524d2d87f3eb201c7",
+          "rgbaSha256": "7faf1b1b2f9cd66504606d6bd42e2b74266ec2313c8856a13c4cfff093bf1874",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "f340b5f5bb559c58f2fd47058a70844aa7a1062034c7106524d2d87f3eb201c7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "f340b5f5bb559c58f2fd47058a70844aa7a1062034c7106524d2d87f3eb201c7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "f340b5f5bb559c58f2fd47058a70844aa7a1062034c7106524d2d87f3eb201c7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "matrix-zero-alias",
+      "input": "matrix-zero-alias.svg",
+      "inputSha256": "d920dfc69163fbc2fe841fcb3b96c9463237bdab728ab9c7b6a21dc731578c4e",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-matrix-zero-alias.png",
+          "referenceSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+          "rgbaSha256": "71f0b757366821ba9b913826cc6d37b30f9faadcb3276f337d1483b6ad5c1ffd",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-matrix-zero-alias.png",
+          "referenceSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+          "rgbaSha256": "71f0b757366821ba9b913826cc6d37b30f9faadcb3276f337d1483b6ad5c1ffd",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "0a6dc004ec61a400f5c05a7a5b479738c80d0c23bbaf35f2b12b2d553ede53ed",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "blur-matrix",
+      "input": "blur-matrix.svg",
+      "inputSha256": "4ee4ab3484f3f0ad5da0eca0f11964256a1fc86febf9f3308f7d9bf71d8facda",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-blur-matrix.png",
+          "referenceSha256": "5799bc4baccbe5818eda5b51d47e3d14e1a790920e26428d46fe88245463e9a5",
+          "rgbaSha256": "e48e6975ef13728322e7740c1b9935365199428ee526de481af3044067170672",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "5799bc4baccbe5818eda5b51d47e3d14e1a790920e26428d46fe88245463e9a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5799bc4baccbe5818eda5b51d47e3d14e1a790920e26428d46fe88245463e9a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5799bc4baccbe5818eda5b51d47e3d14e1a790920e26428d46fe88245463e9a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-blur-matrix.png",
+          "referenceSha256": "5799bc4baccbe5818eda5b51d47e3d14e1a790920e26428d46fe88245463e9a5",
+          "rgbaSha256": "e48e6975ef13728322e7740c1b9935365199428ee526de481af3044067170672",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "5799bc4baccbe5818eda5b51d47e3d14e1a790920e26428d46fe88245463e9a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5799bc4baccbe5818eda5b51d47e3d14e1a790920e26428d46fe88245463e9a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5799bc4baccbe5818eda5b51d47e3d14e1a790920e26428d46fe88245463e9a5",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "affine-uniform",
+      "input": "affine-uniform.svg",
+      "inputSha256": "b9c3412c09fcca56269fdf5473eb786713895c0537333452e9ec5288a5e0175f",
+      "platforms": {
+        "windows": {
+          "reference": "observations/windows-affine-uniform.png",
+          "referenceSha256": "22db512a65035efc30abb9cddf61761ed12087cc64b6aa0764cc0da6c779302a",
+          "rgbaSha256": "751b02fd522787cc919016e0cd31371fc2b751f010158b4406b5d3d8b8e33436",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "22db512a65035efc30abb9cddf61761ed12087cc64b6aa0764cc0da6c779302a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "22db512a65035efc30abb9cddf61761ed12087cc64b6aa0764cc0da6c779302a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "22db512a65035efc30abb9cddf61761ed12087cc64b6aa0764cc0da6c779302a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "observations/linux-affine-uniform.png",
+          "referenceSha256": "22db512a65035efc30abb9cddf61761ed12087cc64b6aa0764cc0da6c779302a",
+          "rgbaSha256": "751b02fd522787cc919016e0cd31371fc2b751f010158b4406b5d3d8b8e33436",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "22db512a65035efc30abb9cddf61761ed12087cc64b6aa0764cc0da6c779302a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "22db512a65035efc30abb9cddf61761ed12087cc64b6aa0764cc0da6c779302a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "22db512a65035efc30abb9cddf61761ed12087cc64b6aa0764cc0da6c779302a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -32,6 +32,12 @@ explicit baselines/anchors/path text, and four exploratory line-layout controls.
 mechanisms, two ownership/preparation contracts and seven canonical native cases.
 Resource contribution and independent ID selection remain distinct responsibilities.
 
+[Color matrices](Research/filter-color-matrix/README.md) separate numerical and
+bound mechanisms, one shared parser/raster ownership contract and canonical native
+controls. Only that contract's input and small hash manifest are copied into core
+test output. Consumer, crop and sampling cases protect distinct execution paths;
+they do not repeat the API matrix.
+
 [Text-path styles](Research/text-path-styles/README.md) keep cascade, applicability,
 reference limits and emitted-font discovery in direct mechanisms. Two contracts
 cover selective preparation and borrowed storage; four canonical native images

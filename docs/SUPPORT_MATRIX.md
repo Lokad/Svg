@@ -344,10 +344,16 @@ display does not suppress its content; display-none defining defs prevents
 activation. Symbol display-none suppresses instances. Extreme transforms may
 collapse visual bounds without removing object bounds/filter eligibility.
 
-Filters accept `feGaussianBlur`, `feOffset`, `feFlood`, `feComposite` over/in,
+Filters accept `feGaussianBlur`, `feOffset`, `feFlood`, `feColorMatrix`, `feComposite` over/in,
 `feMerge`, `feBlend` normal/multiply/screen and `feDropShadow`. Inputs are
 SourceGraphic, SourceAlpha or earlier exact result names. Both unit systems,
 primitive/filter regions, local CSS references and sRGB/linearRGB spaces work.
+Color matrices support matrix/saturate/hueRotate/luminanceToAlpha, with finite
+single-precision coefficients and the declared type's exact value count. Omitted
+values use identity; luminanceToAlpha ignores values. Matrix evaluation uses straight
+channels, clamps, then premultiplies. Alpha-generating matrices can fill the primitive
+region beyond source ink. [Native controls](../tests/Research/filter-color-matrix/README.md)
+cover transfer, sampling, crops and existing filter consumers.
 Result/input names retain case and whitespace; missing/forward/cyclic references
 fail explicitly. Intermediate surfaces obey dimension, pixel and memory limits.
 

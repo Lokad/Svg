@@ -2,7 +2,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal enum SvgFilterPrimitiveKind : byte { GaussianBlur, Offset, DropShadow, Merge, Flood, Composite, Blend, Unsupported }
+internal enum SvgFilterPrimitiveKind : byte { GaussianBlur, Offset, DropShadow, Merge, Flood, Composite, Blend, ColorMatrix, Unsupported }
 internal enum SvgFilterComposition : byte { Over, In, Multiply, Screen }
 internal enum SvgFilterUnits : byte { ObjectBoundingBox, UserSpace }
 internal enum SvgFilterColorSpace : byte { LinearRgb, Srgb }
@@ -24,6 +24,7 @@ internal readonly record struct SvgFilterPrimitive(SvgFilterPrimitiveKind Kind, 
     internal SvgFilterComposition Composition { get; init; }
     internal int MergeFirst { get; init; }
     internal int MergeCount { get; init; }
+    internal SvgFilterColorMatrix ColorMatrix { get; init; }
 
     /// <summary>Identifies native pixel-image construction; aliases and uniform flood paint retain their prior representation.</summary>
     internal bool MaterializesImage(SvgGaussianDeviation deviation)

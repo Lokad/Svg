@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "1a51e98fcadd363763b227b49bed9140dcd4ae75",
+  "status": "CLOSED: color-matrix modes, shared unpremultiplication, retained color operations and finite resolved image views. Whole svg2009/native-font/static-state acceptance remains OPEN.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgFilterArena.cs": "80f6afb12e850fbfef657e8e3bed4a988fc6c1789acb2a97c3c800c4bc5b77bd",
+    "src/Lokad.Svg/Parsing/SvgFilterDefinitionBuilder.cs": "ce34b8f743e1d4b2c5729ca07048a06da1d9b67f91f0e982b7ca689cc16f113a",
+    "src/Lokad.Svg/Parsing/SvgFilterColorMatrixSyntax.cs": "845006e88a19ba5b695659b5e046f2a70ecc605c8c5e31197c4a292c224c7625",
+    "src/Lokad.Svg/Rendering/SvgFilterColorMatrix.cs": "c4a469e2288a04f839210de8581b606aeb00970dbf0f230b94b9620d4d2d20df",
+    "src/Lokad.Svg/Rendering/SvgFilterColorProgram.cs": "e1d9fd93f744578718650718b3b1556dd512e4a87da1428f983c15688fe3f340",
+    "src/Lokad.Svg/Rendering/SvgFilterColorTransfer.cs": "4e9c57ae3893105a9b96d81972f582e3375a6e4780d0a016e41fa4e9aa5339a4",
+    "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs": "75a42eaecaa452ea32f740599be2b04c301c1bce3ad53321eb5fd938d90f3eee",
+    "src/Lokad.Svg/Rendering/SvgShaderPaint.cs": "526d3a7c794da65f411d9d67b947da706b298b0dbcdb76929976aabfdb259899",
+    "src/Lokad.Svg/SvgConverter.cs": "6b1519b31f5932d53a2a110e542918ef32d3c163a61585c8a8c093f69181e723",
+    "tests/Lokad.Svg.Tests/SvgFilterColorMatrixTests.cs": "300f1a504c8d0060a2265ee076727f95223618d15e1b4a97434a0aaa1a92b8c6",
+    "tests/Lokad.Svg.Tests/SvgFilterColorMatrixOwnershipTests.cs": "380aef6455123d5b04989c54cdafa9e52e9fc1e6a473469a1c79a1b86ec2f7a5",
+    "tests/Lokad.Svg.VisualTests/SvgFilterColorMatrixReferenceTests.cs": "a6eb40b4bdb270eda64cfa81d1f136b3448d60f731397c8e938ffad6df8c94c6",
+    "tests/Lokad.Svg.Tests/Lokad.Svg.Tests.csproj": "24710b196e9f9bc9e4c502a3a2a13c231dcc13d306db322c6e21b3298fcfbf90"
+  },
+  "scope": {
+    "mechanismCases": 35,
+    "ownershipContracts": 1,
+    "canonicalRenderingCases": 27,
+    "nativeCaptures": 162,
+    "coreCopiedInputs": 1,
+    "coreCopiedHashSlices": 1,
+    "newFontBytes": 0,
+    "newResourceOwners": 0,
+    "newReplayPipelines": 0,
+    "existingReferenceChanges": 0,
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0
+  },
+  "model": {
+    "parameters": "Four modes lower to twenty immutable finite float coefficients in the existing graph.",
+    "arithmetic": "Shared native unpremultiplication uses zero for zero/overflowing reciprocals. Each matrix evaluates straight channels with ordered FMA, clamps and premultiplies; compatible stages retain separate clamps/transfers without byte images.",
+    "colorLifetime": "A pending program borrows immutable scene coefficients. Uniform paints preserve their floating lanes. Composition consumes color programs before byte storage.",
+    "geometry": "Keep drawing placement operands, composed sampling maps and finite resolved image views distinct. A capture-grid union cannot expand a resolved view. Color operations precede image-edge coverage.",
+    "allocation": "Reuse existing scene arrays, raster tables, surface owners and cancellation. Bounded visit/view metadata stays on the invocation stack; deferred and resolving paths avoid evaluating then discarding a matrix frame."
+  },
+  "responsibilities": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgFilterColorMatrixTests.cs",
+    "ownership": "../../Lokad.Svg.Tests/SvgFilterColorMatrixOwnershipTests.cs",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgFilterColorMatrixReferenceTests.cs",
+    "controls": "../filter-color-matrix/README.md",
+    "nativeRecipe": "../filter-color-matrix/capture.json",
+    "beforeEvidence": "The same compiled stable-API tests fail before on both hosts: two shared numerical boundaries, one ownership input and all 27 rendering inputs. New internal-type mechanisms are not used for old-library comparisons.",
+    "retention": "35 direct mechanisms, one representative parser/raster lifecycle and 27 canonical sources. Distinct graph, crop, sampling, uniform and consumer paths remain individually selectable; no fixture/API product, reference rewrite or tolerance change."
+  },
+  "qualifiedLibrarySha256": {
+    "net11.0": "c527a9a8e35192d5938c31215e8938c33e220f35e4523ce713219b3d85e87ea6",
+    "net10.0": "cf15fc377383d56ffef52abd9b6256b8faec6606e3f025a122b14c0ea8df1c7e"
+  },
+  "qualifiedTestAssemblySha256": {
+    "net11.0": {
+      "core": "c517af5f87c4ee64d32cba1983f556e1176df42156d46e7d1453f0b870fbc093",
+      "visual": "fabe26d8ab7dee395bb2462315cf32d0d1088160ab9f9cb3c1b28078aef3d780",
+      "font-host": "db9a12d3c3652f5f48b0dc7edd95755bea844114622295f2a7d09ffd67de15ee"
+    },
+    "net10.0": {
+      "core": "cf0edda17b0776a7e01db8d95a43c6ab40d1cedf170801927d96fc46d1edeacf",
+      "visual": "3ef8161cac43227c4889f95a57c3491967cccde2dccdf45c8d7cb37113051b6d",
+      "font-host": "4d60309e3eb82afbcd988054462b24dcdb89c8149fbcf5b8a8b946c66f97fc06"
+    }
+  },
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 0,
+        "failed": 3,
+        "seconds": 8.889
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 0,
+        "failed": 27,
+        "seconds": 9.432
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 0,
+        "failed": 3,
+        "seconds": 11.737
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 0,
+        "failed": 27,
+        "seconds": 15.602
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 3,
+        "failed": 0,
+        "seconds": 7.653
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 27,
+        "failed": 0,
+        "seconds": 9.398
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 3,
+        "failed": 0,
+        "seconds": 13.237
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 27,
+        "failed": 0,
+        "seconds": 15.222
+      }
+    ],
+    "mechanisms": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 36,
+        "failed": 0,
+        "seconds": 9.637
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 36,
+        "failed": 0,
+        "seconds": 10.616
+      }
+    ],
+    "milestone": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 41992,
+        "failed": 0,
+        "seconds": 73.547
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46614,
+        "failed": 1,
+        "seconds": 93.778
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.385
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 13831,
+        "failed": 0,
+        "seconds": 42.842
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 364,
+        "failed": 0,
+        "seconds": 12.133
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.412
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 41992,
+        "failed": 0,
+        "seconds": 51.183
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46615,
+        "failed": 0,
+        "seconds": 171.188
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.328
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 13831,
+        "failed": 0,
+        "seconds": 29.083
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 364,
+        "failed": 0,
+        "seconds": 12.78
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 4.203
+      }
+    ]
+  },
+  "timing": "Same compiled focused tests before/after; process startup and concurrent checks are included. The timings are functional qualification observations, not renderer throughput or a test-suite speedup.",
+  "allOriginals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 77.36365959979594,
+    "librarySha256": "c527a9a8e35192d5938c31215e8938c33e220f35e4523ce713219b3d85e87ea6",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "suppliedContexts": {
+    "librarySha256": "c527a9a8e35192d5938c31215e8938c33e220f35e4523ce713219b3d85e87ea6",
+    "files": 19,
+    "seconds": 17.767771700164303,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0
+  },
+  "packages": [
+    {
+      "kind": "nupkg",
+      "sha256": "f4e3b3e05b13c1c7b322b6c721a2c3e200d641eb5dc169bf863c4a1e070c82be",
+      "separateTimeByteIdentical": true,
+      "fixedZipEpoch": true,
+      "assets": {
+        "net11.0": "c527a9a8e35192d5938c31215e8938c33e220f35e4523ce713219b3d85e87ea6",
+        "net10.0": "cf15fc377383d56ffef52abd9b6256b8faec6606e3f025a122b14c0ea8df1c7e"
+      },
+      "noRuntimeDependencies": true
+    },
+    {
+      "kind": "snupkg",
+      "sha256": "a03429b3d83ad2af4b835aaecc672812cef927c232e3335189021163067bacc3",
+      "separateTimeByteIdentical": true,
+      "fixedZipEpoch": true
+    }
+  ],
+  "installedPackageConsumers": [
+    {
+      "host": "windows",
+      "exitCode": 0,
+      "seconds": 6.530810400145128
+    },
+    {
+      "host": "linux",
+      "exitCode": 0,
+      "seconds": 57.88014420005493
+    }
+  ],
+  "staticDiagnostic": {
+    "name": "svg2009.svg",
+    "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+    "animationElementsRemoved": 11,
+    "fontContext": "Explicit diagnostic Noto bindings only; no original-font qualification.",
+    "results": [
+      {
+        "host": "windows",
+        "variant": "original",
+        "inputSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+        "result": {
+          "outcome": "UnsupportedFeature",
+          "element": "animateTransform",
+          "attribute": "",
+          "line": 266,
+          "column": 6,
+          "fontStage": null,
+          "messageSha256": "74f765a941d08df90499e4e2ad2ea8468113ea999e24d6461dce07c1e9a55145",
+          "exceptionFrames": [
+            "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseContent",
+            "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolvedCore",
+            "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolved",
+            "Lokad.Svg.Parsing.SvgRenderedLeafParser.TryParse",
+            "Lokad.Svg.Parsing.SvgDocumentTraversal.TraverseRoot",
+            "Lokad.Svg.Parsing.SvgDocumentTraversal.Parse"
+          ],
+          "fontBindings": 3,
+          "originalFontQualification": false
+        }
+      },
+      {
+        "host": "windows",
+        "variant": "without-animation",
+        "inputSha256": "d18bf30b9129a1ffd2f50be1a4ee66d6960767587d2de0ea41f47b12b9997bc2",
+        "result": {
+          "outcome": "rendered",
+          "fontBindings": 3,
+          "pngSha256": "b96c00b4eb09a182b24e7ac1639928288d4cdf667059ab72ee9ce1165722b3e9",
+          "originalFontQualification": false
+        }
+      },
+      {
+        "host": "linux",
+        "variant": "original",
+        "inputSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+        "result": {
+          "outcome": "UnsupportedFeature",
+          "element": "animateTransform",
+          "attribute": "",
+          "line": 266,
+          "column": 6,
+          "fontStage": null,
+          "messageSha256": "74f765a941d08df90499e4e2ad2ea8468113ea999e24d6461dce07c1e9a55145",
+          "exceptionFrames": [
+            "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseContent",
+            "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolvedCore",
+            "Lokad.Svg.Parsing.SvgRenderedLeafParser.ParseResolved",
+            "Lokad.Svg.Parsing.SvgRenderedLeafParser.TryParse",
+            "Lokad.Svg.Parsing.SvgDocumentTraversal.TraverseRoot",
+            "Lokad.Svg.Parsing.SvgDocumentTraversal.Parse"
+          ],
+          "fontBindings": 3,
+          "originalFontQualification": false
+        }
+      },
+      {
+        "host": "linux",
+        "variant": "without-animation",
+        "inputSha256": "d18bf30b9129a1ffd2f50be1a4ee66d6960767587d2de0ea41f47b12b9997bc2",
+        "result": {
+          "outcome": "rendered",
+          "fontBindings": 3,
+          "pngSha256": "cbbb3e3ca47f6171afea6a1c37cc6c508222cc94adecdef45f306770a5c80fd7",
+          "originalFontQualification": false
+        }
+      }
+    ],
+    "nextAction": "Declare static state and matched font context, capture independent native observations in RAM, and account for remaining pixel gaps. Original animation rejection is unchanged."
+  },
+  "knownWindowsDejavu": {
+    "failureIdentityAndMessageUnchanged": true,
+    "messageSha256": "15ab4032010f62b1c91ce4eddb7057b87e861968fc2aeac665899cd7357e5ee0",
+    "referenceAndAssertionPreserved": true,
+    "lastIndependentDifferenceCount": 75,
+    "currentPixelDifferenceCountRemeasured": false,
+    "authority": "Pending independently; terminal CI41274755136 remains FAILED/CLOSED and was not repolled."
+  },
+  "qualificationBoundary": "Full .NET 11 core/rendering and both font-host runtimes on Windows/Linux; representative .NET 10 core/rendering plus installed-package consumers on both hosts. One unchanged Windows DejaVu conflict remains; no new CI-green or publication claim."
+}

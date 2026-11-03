@@ -403,6 +403,19 @@ product can retain skew, selecting pipeline alpha before clip coverage instead o
 packed row blending. [Native controls](../tests/Research/svgweb/group-opacity-stages.json)
 protect this selection without snapping coefficients or changing references.
 
+Color-matrix parameters are immutable values in the existing filter graph. A
+borrowed color program retains individual transfers and clamps until image sampling;
+it borrows scene coefficients and adds no resource owner or replay pipeline. Native
+unorm loads precede straight-channel evaluation and premultiplication. Matrix chains
+do not introduce byte images between compatible stages. Uniform inputs retain their
+original floating paint rather than reloading quantized flood pixels.
+
+When another sampling operation consumes a pending draw, its placement operands,
+image map and finite source view remain distinct. A resolved view is not expanded
+as a capture-grid hint. Color operations precede image-edge coverage; alpha bias
+can extend output to the primitive region. [The matrix controls](../tests/Research/filter-color-matrix/README.md)
+protect these stages, including both orders of blur, composition, aliases and crops.
+
 ## Supplied fonts
 
 Shared bounded layout preserves source text/span ranges, font/paint selection,

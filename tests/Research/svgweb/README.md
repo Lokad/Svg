@@ -30,11 +30,13 @@ the shared style parser. [Clip-group roles](clip-child-roles.json) preserve dorm
 contribution, ordinary IDs and selected font acquisition through existing replay.
 [Text-path child styles](text-path-styles.json) share cascade and font discovery
 with spans; independent controls retain computed anchors, nesting and mixed runs.
-The unchanged svg2009 original still reaches animateTransform. Removing its eleven
-clock-start declarations in RAM reaches a deferred feColorMatrix rejection. The
-[complete matrix survey and shared-stage review](filter-color-matrix-review.json)
-record the next filter milestone; neither diagnostic fonts nor removed animation
-qualifies the original. Case transformation
+The unchanged svg2009 original still reaches animateTransform. The
+[color-matrix milestone](filter-color-matrix.json) closes its deferred matrix gate;
+removing eleven clock-start declarations in RAM now renders with explicit diagnostic
+fonts. Independent native pixels for that declared static/font context remain open;
+neither diagnostic fonts nor removed animation qualifies the original. The
+[complete survey and model review](filter-color-matrix-review.json) retain the
+original requirements. Case transformation
 remains open beyond the [uppercase projection](text-case-projection.json) and
 [lowercase context](text-lowercase-context.json), which qualify original addressing,
 expansion and transformed font discovery.

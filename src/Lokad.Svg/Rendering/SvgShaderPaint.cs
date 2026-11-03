@@ -143,6 +143,19 @@ internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byt
 /// check cancellation between rows. Samples retain no input storage.</remarks>
 internal readonly record struct SvgShaderPaint(float Red, float Green, float Blue, float Alpha)
 {
+    /// <summary>Loads four borrowed premultiplied bytes into the native unorm shader lanes.</summary>
+    internal static SvgShaderPaint ReadPremultiplied(ReadOnlySpan<byte> pixel)
+    {
+        const float scale = 1f / 255f;
+        return new(pixel[0] * scale, pixel[1] * scale, pixel[2] * scale, pixel[3] * scale);
+    }
+
+    /// <summary>Matches native unpremultiplication for zero and reciprocal-overflow alpha.</summary>
+    internal static float UnpremultiplyScale(float alpha)
+    {
+        float inverse = alpha > 0 ? 1 / alpha : 0;
+        return float.IsFinite(inverse) ? inverse : 0;
+    }
     /// <summary>Samples a filtered bitmap while retaining floating interpolation through the final store.</summary>
     /// <remarks>Pixels are borrowed premultiplied RGBA8. Dimensions and coordinates are caller-validated;
     /// transparent borders belong to filter surfaces. The caller checks cancellation during sampling.</remarks>

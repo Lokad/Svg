@@ -16,7 +16,7 @@ internal static class SvgFilterColorTransfer
     internal static SvgShaderPaint Convert(SvgShaderPaint sample, SvgFilterColorSpace destination)
     {
         if (sample.Alpha <= 0) return default;
-        float inverse = 1 / sample.Alpha;
+        float inverse = SvgShaderPaint.UnpremultiplyScale(sample.Alpha);
         return new(Channel(sample.Red * inverse, destination) * sample.Alpha,
             Channel(sample.Green * inverse, destination) * sample.Alpha,
             Channel(sample.Blue * inverse, destination) * sample.Alpha, sample.Alpha);

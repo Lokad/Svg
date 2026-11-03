@@ -1988,7 +1988,7 @@ public static partial class SvgConverter
                                 float px = x + .5f - deviceOrigin.X, py = y + .5f - deviceOrigin.Y;
                                 float u = px * inverse.ScaleX + (py * inverse.SkewX + inverse.TranslateX);
                                 float v = px * inverse.SkewY + (py * inverse.ScaleY + inverse.TranslateY);
-                                if (image.FilterColorSpace == SvgFilterColorSpace.LinearRgb
+                                if (deferred.ColorProgram is not null || image.FilterColorSpace == SvgFilterColorSpace.LinearRgb
                                     || deferred.ColorFilter is SvgFilterDeferredColorFilter.SourceAlpha or SvgFilterDeferredColorFilter.LinearRgbRoundTrip)
                                 {
                                     (u, v) = inverse.Map(px, py);
@@ -2004,9 +2004,12 @@ public static partial class SvgConverter
                                         int sy = (int)Math.Clamp(MathF.Floor(v), 0, sourceHeight - 1) + (int)deferred.SourceBounds.Top;
                                         int at = (sy * image.Width + sx) * 4;
                                         sampled = (uint)sx < (uint)image.Width && (uint)sy < (uint)image.Height
-                                            ? new(image.Pixels[at] / 255f, image.Pixels[at + 1] / 255f, image.Pixels[at + 2] / 255f, image.Pixels[at + 3] / 255f) : default;
+                                            ? deferred.ColorProgram is not null ? SvgShaderPaint.ReadPremultiplied(image.Pixels.AsSpan(at, 4))
+                                                : new(image.Pixels[at] / 255f, image.Pixels[at + 1] / 255f, image.Pixels[at + 2] / 255f, image.Pixels[at + 3] / 255f) : default;
                                     }
-                                    if (image.FilterColorSpace == SvgFilterColorSpace.LinearRgb)
+                                    if (deferred.ColorProgram is {} colorProgram)
+                                        sampled = colorProgram.Apply(sampled, SvgFilterColorSpace.Srgb);
+                                    else if (image.FilterColorSpace == SvgFilterColorSpace.LinearRgb)
                                         sampled = SvgFilterColorTransfer.Convert(sampled, SvgFilterColorSpace.Srgb);
                                     else if (deferred.ColorFilter == SvgFilterDeferredColorFilter.LinearRgbRoundTrip)
                                         sampled = SvgFilterColorTransfer.Convert(SvgFilterColorTransfer.Convert(sampled, SvgFilterColorSpace.LinearRgb), SvgFilterColorSpace.Srgb);

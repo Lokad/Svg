@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add all four color-matrix modes with retained color operations, finite image views
+  and exact filter-chain, crop, sampling and alpha behavior.
 - Share span/path child-style resolution across layout and font discovery, retaining
   computed CSS anchors and consistent plain/xlink path-reference limits.
 - Keep groups inside clip resources dormant while preserving their IDs for

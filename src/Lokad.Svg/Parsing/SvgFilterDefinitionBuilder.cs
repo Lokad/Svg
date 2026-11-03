@@ -109,6 +109,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
                 "feFlood" => SvgFilterPrimitiveKind.Flood,
                 "feComposite" => SvgFilterPrimitiveKind.Composite,
                 "feBlend" => SvgFilterPrimitiveKind.Blend,
+                "feColorMatrix" => SvgFilterPrimitiveKind.ColorMatrix,
                 _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter primitive '" + reader.LocalName + "' is not implemented.")
             };
             ValidateAttributes(reader, kind switch
@@ -119,6 +120,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
                 SvgFilterPrimitiveKind.Flood => "id result flood-color flood-opacity color-interpolation-filters x y width height",
                 SvgFilterPrimitiveKind.Composite => "id in in2 result operator color-interpolation-filters x y width height",
                 SvgFilterPrimitiveKind.Blend => "id in in2 result mode color-interpolation-filters x y width height",
+                SvgFilterPrimitiveKind.ColorMatrix => "id in result type values color-interpolation-filters x y width height",
                 _ => "id in result dx dy stdDeviation flood-color flood-opacity color-interpolation-filters x y width height"
             });
             SvgFilterColorSpace colorSpace = ColorSpace(reader.GetAttribute("color-interpolation-filters"), _colorSpace);
@@ -139,6 +141,8 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
             primitive = new(kind, Input(reader.GetAttribute("in"), _primitives.Count), sigmaX, sigmaY, dx, dy, new(paint.Color, opacity))
             {
                 ColorSpace = colorSpace,
+                ColorMatrix = kind == SvgFilterPrimitiveKind.ColorMatrix
+                    ? SvgFilterColorMatrixSyntax.Parse(reader.GetAttribute("type"), reader.GetAttribute("values"), _token) : default,
                 Region = ReadRegion(reader), MergeFirst = _mergeInputs.Count,
                 SecondInput = kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend
                     ? Input(reader.GetAttribute("in2"), _primitives.Count) : SvgFilterInput.SourceGraphic,
