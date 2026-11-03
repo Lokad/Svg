@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "b579cadf4e8b3ab46d1be482696514803138c315",
-  "status": "CLOSED: shared filter destination composition, opacity/clip interactions and complete declared svg2009 static/font context. OPEN: two truncated offset-prefix crop fringes (7/8 alpha pixels).",
+  "status": "CLOSED: shared destination composition, opacity/clip interactions and complete declared static/font context. The separately retained prefix fringe is now closed by filter-color-program-coverage.json.",
   "sourceLfSha256": {
     "src/Lokad.Svg/SvgConverter.cs": "e1dbdab88b609ae11cbd53f0e1d39c11ea501a727accc25e847bce3f09e6286c",
     "tests/Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs": "29f191ad2b216976aee1bf1493848542390d950062d67f1cb04887f23ae1ecbb",
@@ -1130,7 +1130,7 @@
         }
       }
     ],
-    "next": "Recompose prefixes three/eight into an independent crop/offset control. Both hosts retain 7/8 alpha discrepancies (maximum one) in one crop column; all other prefixes, including the complete ninth stage, are exact. Equal complete output does not close those two prefix interactions."
+    "next": "Historical before/after diagnostics retained below. Terminal colour coverage now closes both remaining prefix fringes without changing native inputs or PNGs; see filter-color-program-coverage.json."
   },
   "originalReplay": {
     "sourceSvgFilesRetained": 0,
@@ -1201,5 +1201,6 @@
     ],
     "published": false
   },
-  "next": "Continue the isolated crop fringe, then language/context and all-original work in PLAN.md. Preserve the shared model, all references and known interaction cases. The unchanged original still rejects animation; no original-font or animation acceptance. Keep the Windows DejaVu assertion/reference and pending authority, without repolling terminal CI."
+  "next": "Continue language/context and all-original scope. Preserve all native observations and qualified mechanisms; complete static/font and prefix diagnostics are closed under their declared options. Keep the Windows DejaVu reference and pending authority; do not repoll terminal CI.",
+  "currentPrefixClosure": "filter-color-program-coverage.json"
 }

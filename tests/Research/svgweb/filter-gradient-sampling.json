@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "9fcbe0ccd4ac3d3264a102efaf2a641060ad7645",
-  "status": "CLOSED: independent gradient witnesses through shared drawable bounds. Complete declared static/font context is closed by filter-destination-composition.json; isolated offset-prefix crop fringes remain OPEN.",
+  "status": "CLOSED: independent gradient witnesses through shared drawable bounds. Complete declared static/font context and isolated offset-prefix fringes are closed by their linked milestones.",
   "sourceLfSha256": {
     "src/Lokad.Svg/Parsing/SvgPaintRecording.cs": "0da4f1b95a69a3586bb9d877c7d102bbe39d1e539eee2b484c61e67bc55a3cf7",
     "tests/Lokad.Svg.Tests/SvgRecordedSourceBoundsTests.cs": "c37f9d03b68c4b80c978a5868cde7ac66e17519a11ab549be0cabc12809211ca",
@@ -388,7 +388,7 @@
     ],
     "wholeOriginalAcceptance": false,
     "originalFontQualification": false,
-    "outcome": "Historical pre-restoration observation retained below. The complete declared static/font context is now exact; see filter-destination-composition.json. Truncated offset-prefix crop fringes remain open."
+    "outcome": "Historical pre-restoration observations retained below. Shared destination composition closes the complete declared static/font context; terminal colour coverage closes all isolated prefixes. No animation or original-font acceptance is claimed."
   },
   "staticStageReview": {
     "exploratory": true,
@@ -709,6 +709,7 @@
     ],
     "published": false
   },
-  "next": "Recompose the isolated offset-prefix crop fringe. The complete declared static/font context is exact through shared bitmap restoration. Language/context and all-original scope remain open; preserve the Windows DejaVu reference and pending authority.",
-  "currentStaticClosure": "filter-destination-composition.json"
+  "next": "Continue language/context and all-original scope. Preserve all native observations and qualified mechanisms; complete static/font and prefix diagnostics are closed under their declared options. Keep the Windows DejaVu reference and pending authority; do not repoll terminal CI.",
+  "currentStaticClosure": "filter-destination-composition.json",
+  "currentPrefixClosure": "filter-color-program-coverage.json"
 }

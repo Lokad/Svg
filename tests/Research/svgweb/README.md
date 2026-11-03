@@ -38,7 +38,8 @@ capture; [drawable enclosure](filter-gradient-sampling.json) closes two independ
 gradient witnesses. [Shared destination composition](filter-destination-composition.json)
 makes the complete declared static/font diagnostic exact on Windows and Linux.
 Neither diagnostic fonts nor removed animation qualifies the unchanged original.
-Two truncated offset prefixes retain a narrow crop-edge alpha discrepancy. The
+[Terminal colour coverage](filter-color-program-coverage.json) closes the two
+remaining offset-prefix crop fringes; all nine diagnostic prefixes are exact. The
 [complete survey and model review](filter-color-matrix-review.json) retain the
 original requirements. Case transformation
 remains open beyond the [uppercase projection](text-case-projection.json) and

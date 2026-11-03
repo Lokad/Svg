@@ -1,0 +1,721 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "dd1636e005305ba18660af59cba78424daa6b6d1",
+  "status": "CLOSED: terminal colour-program sampling and coverage, including the two isolated crop fringes and trailing zero-offset, zero-blur and single-input merge aliases. All nine declared static/font filter prefixes and the complete diagnostic are exact on both hosts. Broader language/context and all-original qualification remain open.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Rendering/SvgFilterPlayback.cs": "87359a8018648518a780ec41792407f16a3ebfe83abb663a172a8a2e6520cfdc",
+    "tests/Lokad.Svg.Tests/SvgFilterColorProgramCoverageTests.cs": "612d443d16c3a31a62c9dda419914ff892e5d21434e5bc633c0041db54438cce",
+    "tests/Lokad.Svg.VisualTests/SvgFilterColorProgramCoverageReferenceTests.cs": "66a8da8cce7db64c73f2528f6ceb6bc85ee56efd503668f8b750ddd29d092993",
+    "tests/Lokad.Svg.Tests/Lokad.Svg.Tests.csproj": "e05575445fcff4354c118abfe05860cb4d05f7ca9cb117ce6d8fef8de199423a"
+  },
+  "scope": {
+    "mechanismCases": 1,
+    "ownershipContracts": 1,
+    "canonicalRenderingCases": 10,
+    "bankNativeCaptures": 60,
+    "newResourceOwners": 0,
+    "newReplayPipelines": 0,
+    "changedReferenceBytes": 0,
+    "hostedBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0
+  },
+  "model": {
+    "cause": "An offset consumed a pending matrix as rounded byte texels before its destination clip. Integer and zero offsets also need fractional colour lanes; trailing identity nodes must preserve the effective final draw.",
+    "change": "Sample the existing borrowed colour program from its finite input view and retain floating paint in the existing budgeted final sample owner. Reuse one local offset-map calculation. Skip unused matrix byte evaluation only for its immediate sole terminal consumer. Follow the existing effective-paint index through aliases.",
+    "preserved": "Native affine mapping, resolved image bounds, graph-stage colour transfer, sample ownership, cancellation and cleanup keep their existing contracts. No source-name branch, extra replay pipeline, new coordinate abstraction or tolerance change."
+  },
+  "responsibilities": {
+    "mechanismAndOwnership": "../../Lokad.Svg.Tests/SvgFilterColorProgramCoverageTests.cs",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgFilterColorProgramCoverageReferenceTests.cs",
+    "controls": "../filter-color-program-coverage/README.md",
+    "nativeRecipe": "../filter-color-program-coverage/capture.json",
+    "retention": "One direct alpha-rounding mechanism and one representative sRGB retained-sample lifecycle contract. Ten canonical cases distinguish fractional/integer/zero draws, a matrix control, white/coloured paint, both operating spaces and three distinct trailing aliases. Equal PNGs do not merge those alias execution paths. Core copies only one source and its ownership hash slice; no fixture/API product."
+  },
+  "qualifiedLibrarySha256": {
+    "net11.0": "1352822e05a1c8a373fa108e40a85f5188238c98778f5c2b20ade24793cec07f",
+    "net10.0": "347ef6433457895a0628bbb9b9282c256f0568bc9d70e1066f082a0f5eba156d"
+  },
+  "qualifiedTestAssemblySha256": {
+    "net11.0": {
+      "core": "b15b628b80dfd9dd729f66cec2e42e5b579362ab618b538133ed10cc05453289",
+      "visual": "5f0e99ea44e7ff5aa9e840a0bab43746321854f02dca07b33234a87a1c2ce4b5",
+      "font-host": "3bb1e416957642b229633bbcda4ac9f6d060f6dd11cee10489f59ac15cb56347"
+    },
+    "net10.0": {
+      "core": "93c48e8894524afc36071cafc932158e160aa1b515bbeb28927f007962074619",
+      "visual": "7b2f32357b4cd38fa819edbd68b812944b1a890d3d836dae7fb04e4c21e0660d",
+      "font-host": "0b62a2b504bba4646abed226f5d7fb5ddb433011ca7464cc5eae3910a0dfe824"
+    }
+  },
+  "beforeLibrarySha256": "0ba0821dad924141e60c6e7442533ad7fa2da2c1e74593142595a17c2be3696f",
+  "comparisons": [
+    {
+      "identity": "blur-alias",
+      "inputSha256": "70f43a3b54a388954fd1d1aab6aae7ea4ce9189dca2d24f6523fec663d216f69",
+      "beforeChangedPixels": {
+        "windows": 3,
+        "linux": 3
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "identity": "coloured-linear",
+      "inputSha256": "d92203678b0884fc8632e209bfc7ec391d081b46aec250f1e474ac233e8f9620",
+      "beforeChangedPixels": {
+        "windows": 2937,
+        "linux": 2937
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "identity": "coloured-srgb",
+      "inputSha256": "a98653925d6597a40a9dceb13f5f110eee6a5d8fbc9c66167a168e03ef2df168",
+      "beforeChangedPixels": {
+        "windows": 109,
+        "linux": 109
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "identity": "fractional-clip",
+      "inputSha256": "72406af8869c00775df5cb7728980eb8fe81566cafcd79c8e6229a679f63dc36",
+      "beforeChangedPixels": {
+        "windows": 3,
+        "linux": 3
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "identity": "integer-clip",
+      "inputSha256": "dc37cd2e114f4d82b47f4025b2f8fd5c65c578ccbda2fba976a24704c211671e",
+      "beforeChangedPixels": {
+        "windows": 5,
+        "linux": 5
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "identity": "matrix-control",
+      "inputSha256": "d3a6364f0dee57318c608caa9947f6d21e582a53bc9c9a12a5e1af7ea703dc09",
+      "beforeChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "identity": "merge-alias",
+      "inputSha256": "95add3731d8ee14d5c9a3c8daaa4fe81cbb9f0c9baacc1bf169e2715b2e5d7d7",
+      "beforeChangedPixels": {
+        "windows": 3,
+        "linux": 3
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "identity": "offset-alias",
+      "inputSha256": "c15ae235f61e926c610a2adb05db1ad0d239e0c3c198b0b8fcfc013b82fa7f88",
+      "beforeChangedPixels": {
+        "windows": 3,
+        "linux": 3
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "identity": "white-fractional",
+      "inputSha256": "6b3796f19b52b9f1a3b21e197f346818197f262dfce61efb47e25d4923a6702c",
+      "beforeChangedPixels": {
+        "windows": 3,
+        "linux": 3
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    },
+    {
+      "identity": "zero-alias",
+      "inputSha256": "23afbfa5e583f4a5a0654d695cf29b38ba5af1e113160c4b2e5e137e6958170c",
+      "beforeChangedPixels": {
+        "windows": 1,
+        "linux": 1
+      },
+      "afterChangedPixels": {
+        "windows": 0,
+        "linux": 0
+      }
+    }
+  ],
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 1,
+        "failed": 1,
+        "seconds": 9.147
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 1,
+        "failed": 9,
+        "seconds": 10.47
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 1,
+        "failed": 1,
+        "seconds": 8.437
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 1,
+        "failed": 9,
+        "seconds": 8.525
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 2,
+        "failed": 0,
+        "seconds": 10.191
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 10.33
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 2,
+        "failed": 0,
+        "seconds": 9.826
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 9.462
+      }
+    ],
+    "affected": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 896,
+        "failed": 0,
+        "seconds": 11.61
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 396,
+        "failed": 0,
+        "seconds": 11.458
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 896,
+        "failed": 0,
+        "seconds": 11.875
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 396,
+        "failed": 0,
+        "seconds": 14.262
+      }
+    ],
+    "milestone": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 42000,
+        "failed": 0,
+        "seconds": 76.373
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46635,
+        "failed": 1,
+        "seconds": 94.865
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.436
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 13839,
+        "failed": 0,
+        "seconds": 41.587
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 385,
+        "failed": 0,
+        "seconds": 12.363
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.298
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 42000,
+        "failed": 0,
+        "seconds": 56.893
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 46636,
+        "failed": 0,
+        "seconds": 213.366
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.117
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 13839,
+        "failed": 0,
+        "seconds": 29.537
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 385,
+        "failed": 0,
+        "seconds": 18.785
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 16.528
+      }
+    ],
+    "knownFailure": {
+      "host": "windows",
+      "framework": "net11.0",
+      "kind": "visual",
+      "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "messageSha256": "15ab4032010f62b1c91ce4eddb7057b87e861968fc2aeac665899cd7357e5ee0"
+    },
+    "method": "Identical compiled tests on both libraries: the ownership case and nine canonical images fail before, then all pass. The direct mechanism and matrix-only control already pass. Timings include startup, discovery and concurrent work; no speedup claim. Full .NET 11 suites and representative .NET 10 compatibility run at this milestone; the unchanged Windows DejaVu failure remains explicit."
+  },
+  "staticPrefixReview": {
+    "exploratory": true,
+    "nativeObservationsPerStageHost": 1,
+    "recipe": "Same declared RAM-only static/font diagnostic as filter-destination-composition.json, other drawing root branches at zero opacity, graph truncated to each prefix. Verify unchanged source/native inputs and PNG observations. These prefix variants are diagnostic observations, not whole-original acceptance or native reference admission.",
+    "results": [
+      {
+        "prefixStages": 1,
+        "staticInputSha256": "639ba9bc5346ec1a6eaa9e16f7c4e443d0f95d4d6f6d5ba9d5be17dee3d7bd01",
+        "nativeInputSha256": "a753dba98c3fb13d1f9dcc09c56a62045a2ff9e89c22b54137c596b50074ff3f",
+        "before": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "after": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "nativePngSha256": {
+          "windows": "1cd25b2def8ce1210eb245cf00f999344f6a9d73f02db0db8288e07975c56782",
+          "linux": "1cd25b2def8ce1210eb245cf00f999344f6a9d73f02db0db8288e07975c56782"
+        }
+      },
+      {
+        "prefixStages": 2,
+        "staticInputSha256": "8763386384b7c4f801a6e11443dc624b6431f809613a9266a74d9e004c004f61",
+        "nativeInputSha256": "59c7b1f17bfe9311f0e17b7f2c997da5b5d05b6efc2b0b0ec90d45a2a68af1bf",
+        "before": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "after": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "nativePngSha256": {
+          "windows": "8eb4e61fe932fca86c0b6a27fb20e88dd37556b33e839a4e79e48a8889fe57f5",
+          "linux": "8eb4e61fe932fca86c0b6a27fb20e88dd37556b33e839a4e79e48a8889fe57f5"
+        }
+      },
+      {
+        "prefixStages": 3,
+        "staticInputSha256": "3fc77078e268cc8d7f5a3fde67312b4e935f216f4768a830ea56c60fc0b04bbf",
+        "nativeInputSha256": "95559969f66ab6058dc8460d46e05d0d26df20b1852a5045718f9a8ecb93cf15",
+        "before": {
+          "dimensionsMatch": true,
+          "changedPixels": 7,
+          "maximumError": 1,
+          "alphaChangedPixels": 7,
+          "differenceBounds": [
+            617,
+            157,
+            618,
+            199
+          ]
+        },
+        "after": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "nativePngSha256": {
+          "windows": "7a93bdfa18e68b84b8a7417b48d74ff55dd0cabe961bd81acd8609cacf9ce68b",
+          "linux": "7a93bdfa18e68b84b8a7417b48d74ff55dd0cabe961bd81acd8609cacf9ce68b"
+        },
+        "reference": "static-context/diagnostic-prefix-3.png"
+      },
+      {
+        "prefixStages": 4,
+        "staticInputSha256": "fccefd0f3394b665b657773324ff043f4904132589ed159f22a772fbe3318f82",
+        "nativeInputSha256": "b1fd203ee298fd2c7ba61e16e72a283432a1b02264c8c920b3296b1e19d033f6",
+        "before": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "after": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "nativePngSha256": {
+          "windows": "7e3a9b5a6819adbb0ceb63ee6b2508b1671d7fd07b7c243c5d5adf4645f6d816",
+          "linux": "7e3a9b5a6819adbb0ceb63ee6b2508b1671d7fd07b7c243c5d5adf4645f6d816"
+        }
+      },
+      {
+        "prefixStages": 5,
+        "staticInputSha256": "3bbe260d9e40fb2d4dcbe49f4c0a07a9cd6497c5932367d95e194503faba6cfc",
+        "nativeInputSha256": "f8377ff493297c7f074c4ae268c8935c897b6a4a503d6fdba962b009d53a23a3",
+        "before": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "after": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "nativePngSha256": {
+          "windows": "329f2705e9f70ce15eaa46d861623073c52d7b9cd2c2f4ce6fb942aaf984f902",
+          "linux": "329f2705e9f70ce15eaa46d861623073c52d7b9cd2c2f4ce6fb942aaf984f902"
+        }
+      },
+      {
+        "prefixStages": 6,
+        "staticInputSha256": "eefa87ed2388a854250d8ba7c48099c6d338bfbd2b8e0d3425432dc6b2686cff",
+        "nativeInputSha256": "74db2695c1dbbfba7177a535010c7589ce54482768adbd17d6418f1663e5fbdc",
+        "before": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "after": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "nativePngSha256": {
+          "windows": "29fb7ec5147a4d178c08c716e965a90db9e95a070225ec3936a79f27c0264f12",
+          "linux": "29fb7ec5147a4d178c08c716e965a90db9e95a070225ec3936a79f27c0264f12"
+        }
+      },
+      {
+        "prefixStages": 7,
+        "staticInputSha256": "65e074208f794b49dca06e87768858dd888a2cfce2454caa9389c52a5d6773e7",
+        "nativeInputSha256": "0d6a41000eda9641dec5daa404e19872aace6fb8ee507939b49ebcd3b03eb6d9",
+        "before": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "after": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "nativePngSha256": {
+          "windows": "21114ee0b1c6f15d7edec62e87ff52b07c25162b6e48ccd7a5e9d042535d1e99",
+          "linux": "21114ee0b1c6f15d7edec62e87ff52b07c25162b6e48ccd7a5e9d042535d1e99"
+        }
+      },
+      {
+        "prefixStages": 8,
+        "staticInputSha256": "6d211312705550cb4dc426a03a1fd453d909b85d8dfdda77d33cc5b8e6bb49e6",
+        "nativeInputSha256": "c10533cc483bb636279fd5bbb730113e5207b83aa43051bd9599f209eb84b3d0",
+        "before": {
+          "dimensionsMatch": true,
+          "changedPixels": 8,
+          "maximumError": 1,
+          "alphaChangedPixels": 8,
+          "differenceBounds": [
+            617,
+            157,
+            618,
+            194
+          ]
+        },
+        "after": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "nativePngSha256": {
+          "windows": "c9c36f23988b3a22f3cd81e6e0bf7bc616bb128fdd75adbc7c0fd038b45095f3",
+          "linux": "c9c36f23988b3a22f3cd81e6e0bf7bc616bb128fdd75adbc7c0fd038b45095f3"
+        },
+        "reference": "static-context/diagnostic-prefix-8.png"
+      },
+      {
+        "prefixStages": 9,
+        "staticInputSha256": "7f3f5d0a317c89ebad09055d087d9565a5820b57fc2b16e452e8a2b1ea9fb6ed",
+        "nativeInputSha256": "6c15bde132da492d6845d5e69a870569078637d37a2390b789aea393d8d1e557",
+        "before": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "after": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "nativePngSha256": {
+          "windows": "007933d2b1a7724a197d237ec427ee42f813709669ed23afa181bb10dbbc38be",
+          "linux": "007933d2b1a7724a197d237ec427ee42f813709669ed23afa181bb10dbbc38be"
+        }
+      }
+    ]
+  },
+  "hostedStaticContext": {
+    "staticInputSha256": "45937fbfb9ec0482e89745dcbb40693384e6269354563706ee04162cb57ca90e",
+    "nativeInputSha256": "d5f4563e03ed5f6742ceb8f40580de0fddf5f3d3e890c6ddd2b23909b80405be",
+    "librarySha256": "1352822e05a1c8a373fa108e40a85f5188238c98778f5c2b20ade24793cec07f",
+    "results": [
+      {
+        "host": "windows",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "libraryPngSha256": "bd4645f8ce20e26629b7b0e6f3d169a3f94a92ab9d984a08dbbc6f2ab0cb310b",
+        "nativePngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d",
+        "reference": "static-context/windows-svg2009-noto.png"
+      },
+      {
+        "host": "linux",
+        "comparison": {
+          "dimensionsMatch": true,
+          "changedPixels": 0,
+          "maximumError": 0,
+          "alphaChangedPixels": 0,
+          "differenceBounds": null
+        },
+        "libraryPngSha256": "967e6661a96150e88f14da5647c4de2d596bb1d7d5dff9be75b6957ea94aa828",
+        "nativePngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d",
+        "reference": "static-context/linux-svg2009-noto.png"
+      }
+    ],
+    "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+    "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+    "animationElementsRemoved": 11,
+    "animationTailCharactersPreserved": 77,
+    "wholeOriginalAcceptance": false,
+    "originalFontQualification": false,
+    "nativeRecipe": "filter-destination-composition.json",
+    "outcome": "CLOSED under the declared static/font options. Eleven animation nodes are removed only in memory; all remaining text/tails and source declarations are preserved. Library and native use the same explicitly supplied Noto program, without synthesis. The unchanged original still rejects animateTransform at line 266/column 6."
+  },
+  "originalReplay": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 66.53226229990833,
+    "librarySha256": "1352822e05a1c8a373fa108e40a85f5188238c98778f5c2b20ade24793cec07f",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "suppliedContexts": {
+    "librarySha256": "1352822e05a1c8a373fa108e40a85f5188238c98778f5c2b20ade24793cec07f",
+    "files": 19,
+    "seconds": 22.080173599999398,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0,
+    "exactPerHost": 19
+  },
+  "packages": {
+    "version": "0.4.0-dev.1",
+    "archives": [
+      {
+        "kind": "nupkg",
+        "sha256": "eb05d4b45d72d6c7da612ade1e760531e0914a05a161d65117cf278995cb8192",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true,
+        "assets": {
+          "net11.0": "1352822e05a1c8a373fa108e40a85f5188238c98778f5c2b20ade24793cec07f",
+          "net10.0": "347ef6433457895a0628bbb9b9282c256f0568bc9d70e1066f082a0f5eba156d"
+        },
+        "noRuntimeDependencies": true
+      },
+      {
+        "kind": "snupkg",
+        "sha256": "6e803eba3502f306d31b006e7cef285de16fc2b1f16ecc1543f00d28d5b41f63",
+        "separateTimeByteIdentical": true,
+        "fixedZipEpoch": true
+      }
+    ],
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 9.583565199980512
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 45.95991149987094
+      }
+    ],
+    "published": false
+  },
+  "next": "Continue the original-text language/context milestone and deeper original-source accounting. Preserve the qualified shared image model, all reference bytes and existing text-layout evidence. Keep the Windows DejaVu assertion/reference, pending authority and terminal CI state. No exact-head green or release claim."
+}

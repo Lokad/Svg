@@ -802,6 +802,16 @@ internal static class SvgFilterPlayback
                             linear[index] = image.Input.Index >= 0 && linear[image.Input.Index];
                             evaluatedMatrix = true;
                         }
+                        else if (index + 1 == finalIndex && !uniform[index].Known
+                            && resource.Primitives.Items[finalIndex] is { Kind: SvgFilterPrimitiveKind.Offset } terminal
+                            && terminal.Input.Index == index && IsAlignedImageTransform(image.InputToOutput)
+                            && PrepareOffset(terminal, map.Regions.Value.NativeMapping?.Origin
+                                ?? new((int)imageBounds[index].Left - 1, (int)imageBounds[index].Top - 1)).NativeDraw is null)
+                        {
+                            // Its only consumer draws the pending program directly;
+                            // do not evaluate and discard an intermediate byte image.
+                            evaluatedMatrix = true;
+                        }
                         else if (sampled)
                         {
                             // A following image operation consumes this draw. Apply
@@ -878,19 +888,7 @@ internal static class SvgFilterPlayback
                     SvgPaintBounds? inputBounds = primitive.Input.Index >= 0 ? imageBounds[primitive.Input.Index] : map.Regions?.SourceBounds;
                     SvgPaintBounds bounds = inputBounds ?? new(0, 0, width, height);
                     SvgCpuBitmapOrigin nativeOrigin = map.Regions?.NativeMapping?.Origin ?? new((int)bounds.Left - 1, (int)bounds.Top - 1);
-                    SvgShaderMatrix placed = new(1, 0, (float)(primitive.OffsetX * map.ScaleX), 0, 1, (float)(primitive.OffsetY * map.ScaleY));
-                    SvgShaderMatrix? nativeTransform = null;
-                    if (map.Regions?.NativeMapping is {} nativeMapping && nativeMapping.Coordinates.TryInvert(out SvgShaderMatrix parameterInverse))
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // Retain the conjugated matrix, including finite residual skew.
-                        // Reducing it to a vector can select a different native image blitter.
-                        placed = SvgShaderMatrix.Concat(nativeMapping.Coordinates,
-                            SvgShaderMatrix.Concat(new(1, 0, (float)primitive.OffsetX, 0, 1, (float)primitive.OffsetY), parameterInverse));
-                        SvgShaderMatrix forward = SvgShaderMatrix.Concat(new(1, 0, nativeOrigin.X, 0, 1, nativeOrigin.Y),
-                            SvgShaderMatrix.Concat(placed, new(1, 0, -nativeOrigin.X, 0, 1, -nativeOrigin.Y)));
-                        if (forward.ScaleX != 1 || forward.ScaleY != 1 || forward.SkewX != 0 || forward.SkewY != 0) nativeTransform = forward;
-                    }
+                    (SvgShaderMatrix placed, SvgShaderMatrix? nativeTransform) = PrepareOffset(primitive, nativeOrigin);
                     if (primitive.Input.Index < 0 || !uniform[primitive.Input.Index].Known)
                     {
                         token.ThrowIfCancellationRequested();
@@ -1072,7 +1070,21 @@ internal static class SvgFilterPlayback
                             }
                             else if (directSource && map.Regions?.PictureOutput == true) imagePaint = OffsetImagePaint.Constant;
                         }
-                        Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY,
+                        if ((index == finalIndex || index == finalPaintIndex) && nativeTransform is null && primitive.Input.Index >= 0
+                            && sampledOffsets[primitive.Input.Index] is { ColorProgram: {} program } pending
+                            && IsAlignedImageTransform(pending.InputToOutput))
+                        {
+                            // A terminal image draw keeps its input's colour filter
+                            // through sampling and the destination's later coverage.
+                            SvgShaderMatrix placement = SvgShaderMatrix.Concat(placed, pending.DrawPlacement);
+                            SvgFilterColorSpace sourceSpace = pending.Input.Index >= 0 && linear[pending.Input.Index]
+                                ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb;
+                            Offset(ReadInput(pending.Input, index, graphic), output, placement.TranslateX, placement.TranslateY,
+                                new(pending.Bounds, pending.IsResolvedView), null, null, OffsetImagePaint.FloatingSamples,
+                                new(sourceSpace, colorSpace, colorSpace) { ColorProgram = program with { LastStage = index } }, imageBounds[index]);
+                            inputLinear = colorSpace == SvgFilterColorSpace.LinearRgb;
+                        }
+                        else Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY,
                             new(inputBounds, primitive.Input.Index >= 0 && resolvedViews[primitive.Input.Index]), null, nativeTransform, imagePaint, new(inputLinear ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb, inputLinear ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb, inputLinear ? SvgFilterColorSpace.LinearRgb : SvgFilterColorSpace.Srgb), new(0, 0, width, height));
                         if (map.Regions is not null)
                             RetainSampledImage(index, primitive.Input, placed, nativeTransform, bounds, aligned,
@@ -1283,6 +1295,26 @@ internal static class SvgFilterPlayback
         static SvgShaderPaint FloodPaint(SvgSolidPaint paint)
             => new(paint.Color.Red / 255f * paint.Alpha, paint.Color.Green / 255f * paint.Alpha,
                 paint.Color.Blue / 255f * paint.Alpha, paint.Alpha);
+
+        // Prepare the native drawing operands once per setup visit. This borrowed
+        // arithmetic owns no storage; graph visitors retain cancellation and budget.
+        (SvgShaderMatrix Placement, SvgShaderMatrix? NativeDraw) PrepareOffset(SvgFilterPrimitive primitive, SvgCpuBitmapOrigin nativeOrigin)
+        {
+            SvgShaderMatrix placed = new(1, 0, (float)(primitive.OffsetX * map.ScaleX), 0, 1, (float)(primitive.OffsetY * map.ScaleY));
+            SvgShaderMatrix? nativeTransform = null;
+            if (map.Regions?.NativeMapping is {} nativeMapping && nativeMapping.Coordinates.TryInvert(out SvgShaderMatrix parameterInverse))
+            {
+                token.ThrowIfCancellationRequested();
+                // Retain the conjugated matrix, including finite residual skew.
+                // Reducing it to a vector can select a different native image blitter.
+                placed = SvgShaderMatrix.Concat(nativeMapping.Coordinates,
+                    SvgShaderMatrix.Concat(new(1, 0, (float)primitive.OffsetX, 0, 1, (float)primitive.OffsetY), parameterInverse));
+                SvgShaderMatrix forward = SvgShaderMatrix.Concat(new(1, 0, nativeOrigin.X, 0, 1, nativeOrigin.Y),
+                    SvgShaderMatrix.Concat(placed, new(1, 0, -nativeOrigin.X, 0, 1, -nativeOrigin.Y)));
+                if (forward.ScaleX != 1 || forward.ScaleY != 1 || forward.SkewX != 0 || forward.SkewY != 0) nativeTransform = forward;
+            }
+            return (placed, nativeTransform);
+        }
 
         SvgFilterInput ResolvePaintSource(SvgFilterInput reference)
             => SvgFilterPlayback.ResolvePaintSource(resource, map, reference, token);
@@ -1716,9 +1748,11 @@ internal static class SvgFilterPlayback
             if (fractional) token.ThrowIfCancellationRequested();
             if (fractional && imagePaint is OffsetImagePaint.Floating or OffsetImagePaint.FloatingSamples or OffsetImagePaint.SourceAlpha)
                 token.ThrowIfCancellationRequested();
-            Span<SvgShaderPaint> coveredSamples = fractional && imagePaint == OffsetImagePaint.FloatingSamples
+            // Colour-filter results retain fractional lanes even for integer or
+            // zero translations; a later clip must not see a rounded byte image.
+            Span<SvgShaderPaint> coveredSamples = (fractional || convertImage) && imagePaint == OffsetImagePaint.FloatingSamples
                 ? AllocateSamples() : Span<SvgShaderPaint>.Empty;
-            if (!coveredSamples.IsEmpty) linearOffsetSamples = true;
+            if (!coveredSamples.IsEmpty) linearOffsetSamples = transfer.Destination == SvgFilterColorSpace.LinearRgb;
             // SkImageFilters::Offset uses nearest sampling, retaining the legacy
             // layer-space pixel displacement rather than bilinear interpolation.
             if (dx != Math.Truncate(dx)) dx = Math.Floor((float)dx + .5f);
@@ -1743,7 +1777,13 @@ internal static class SvgFilterPlayback
                         Span<byte> pixel = output.Slice((y * width + x) * 4, 4);
                         if (convertImage)
                         {
-                            ReadImagePaint(input, at).Blend(pixel, alpha);
+                            SvgShaderPaint paint = ReadImagePaint(input, at);
+                            if (!coveredSamples.IsEmpty)
+                            {
+                                float weight = alpha * (1f / 255f);
+                                coveredSamples[y * width + x] = new(paint.Red * weight, paint.Green * weight, paint.Blue * weight, paint.Alpha * weight);
+                            }
+                            paint.Blend(pixel, alpha);
                             continue;
                         }
                         // Linear image coverage stays unquantized through color transfer.
@@ -1779,8 +1819,12 @@ internal static class SvgFilterPlayback
                     if (sx >= 0 && sx < width && sy >= 0 && sy < height)
                     {
                         int at = (int)(sy * width + sx) * 4;
-                        if (convertImage || imagePaint == OffsetImagePaint.SourceAlpha) ReadImagePaint(input, at)
-                            .Blend(output.Slice((y * width + x) * 4, 4), 255);
+                        if (convertImage || imagePaint == OffsetImagePaint.SourceAlpha)
+                        {
+                            SvgShaderPaint paint = ReadImagePaint(input, at);
+                            if (!coveredSamples.IsEmpty) coveredSamples[y * width + x] = paint;
+                            paint.Blend(output.Slice((y * width + x) * 4, 4), 255);
+                        }
                         else new SvgConstantShaderPaint(input[at], input[at + 1], input[at + 2], input[at + 3])
                             .BlendBitmap(output.Slice((y * width + x) * 4, 4), 255);
                     }

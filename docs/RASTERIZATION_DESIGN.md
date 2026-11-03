@@ -415,6 +415,14 @@ Final transferred paint composes directly into its destination; an extra byte
 bitmap would consume floating colour and clip/opacity stages too early.
 [Destination controls](../tests/Research/filter-bitmap-restoration/README.md)
 cover operating space, bitmap size, opacity and clipping across a tile boundary.
+Terminal offsets retain compatible colour programs through image sampling and
+later destination coverage, including trailing zero-offset, zero-blur and single-input
+merge aliases. An immediately
+preceding matrix skips unused byte evaluation when that terminal draw is its sole
+consumer. Existing final sample storage preserves fractional lanes without a new
+replay or resource owner.
+[Coverage controls](../tests/Research/filter-color-program-coverage/README.md)
+protect rounding order and both operating spaces.
 
 Color-matrix parameters are immutable values in the existing filter graph. A
 borrowed color program retains individual transfers and clamps until image sampling;

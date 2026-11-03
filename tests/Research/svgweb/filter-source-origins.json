@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "cac9baf0e4589488cfc85f19635a4eb602c3d459",
-  "status": "CLOSED: compact filter source bitmap transition. Gradient witnesses and complete declared static context are closed by their linked milestones. Isolated offset-prefix crop fringes remain OPEN.",
+  "status": "CLOSED: compact filter source bitmap transition. Independent gradient witnesses, complete declared static/font context and isolated offset-prefix crop fringes are closed by their linked milestones.",
   "sourceLfSha256": {
     "src/Lokad.Svg/SvgConverter.cs": "f416a00eda70368d71123f7992c6a1c0cc0fab4212b3fe3a35ad3767c4d2e99a",
     "tests/Lokad.Svg.Tests/SvgFilterSourceOriginOwnershipTests.cs": "b8a8381f0997b5753b7f824f1471bc4be7be83fbb8a8eaf2e9cacfc841ec9f61",
@@ -460,7 +460,7 @@
     "originalFontQualification": false,
     "wholeOriginalAcceptance": false,
     "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
-    "outcome": "Historical pre-restoration observation retained below. The complete declared static/font context is now exact; see filter-destination-composition.json. Truncated offset-prefix crop fringes remain open.",
+    "outcome": "Historical pre-restoration observations retained below. Shared destination composition closes the complete declared static/font context; terminal colour coverage closes all isolated prefixes. No animation or original-font acceptance is claimed.",
     "results": [
       {
         "host": "windows",
@@ -633,6 +633,7 @@
     ],
     "published": false
   },
-  "next": "Recompose the isolated offset-prefix crop fringe. The complete declared static/font context is exact through shared bitmap restoration. Language/context and all-original scope remain open; preserve the Windows DejaVu reference and pending authority.",
-  "currentStaticClosure": "filter-destination-composition.json"
+  "next": "Continue language/context and all-original scope. Preserve all native observations and qualified mechanisms; complete static/font and prefix diagnostics are closed under their declared options. Keep the Windows DejaVu reference and pending authority; do not repoll terminal CI.",
+  "currentStaticClosure": "filter-destination-composition.json",
+  "currentPrefixClosure": "filter-color-program-coverage.json"
 }

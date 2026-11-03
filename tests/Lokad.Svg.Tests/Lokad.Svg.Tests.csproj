@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/filter-color-program-coverage/coloured-srgb.svg" Link="TestData/filter-color-program-coverage/coloured-srgb.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/filter-color-program-coverage/ownership.json" Link="TestData/filter-color-program-coverage/ownership.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="../Research/filter-bitmap-restoration/wide-linear-colour.svg" Link="TestData/filter-bitmap-restoration/wide-linear-colour.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/filter-bitmap-restoration/ownership.json" Link="TestData/filter-bitmap-restoration/ownership.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

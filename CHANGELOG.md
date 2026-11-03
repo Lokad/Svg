@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Retain terminal colour programs through offset sampling and destination coverage,
+  preserving low-alpha rounding through integer, fractional and zero offsets.
 - Use the shared per-bitmap filter path for fractional offsets, preserving final
   colour transfer, opacity and clipping during destination composition.
 - Preserve locally enclosed drawable bounds when constructing filter source images,

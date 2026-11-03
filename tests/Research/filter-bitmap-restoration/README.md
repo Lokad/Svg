@@ -20,6 +20,7 @@ remain individually selectable.
 
 [Qualification](../svgweb/filter-destination-composition.json) records before/after
 evidence and the declared hosted static/font context. That complete diagnostic is
-exact; truncated offset prefixes still have a separate narrow crop-edge alpha
-discrepancy. No hosted SVG bodies or attribute values are retained. Animation and
-the original font environment are outside this diagnostic's acceptance claim.
+exact; [terminal colour coverage](../svgweb/filter-color-program-coverage.json)
+closes the separate prefix crop fringe. No hosted SVG bodies or attribute values
+are retained. Animation and the original font environment are outside this
+diagnostic's acceptance claim.

@@ -21,5 +21,6 @@ output needs no additional fixture copies or API matrix.
 [Qualification](../svgweb/filter-gradient-sampling.json) retains failing-before
 evidence and timings. The declared hosted static/font diagnostic is now exact
 through [shared bitmap restoration](../svgweb/filter-destination-composition.json);
-truncated offset prefixes retain a separate crop fringe. Neither animation nor
-the original font environment is qualified.
+[terminal colour coverage](../svgweb/filter-color-program-coverage.json) closes
+the remaining prefix fringe. Neither animation nor the original font environment
+is qualified.
