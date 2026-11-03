@@ -517,5 +517,35 @@
       }
     ]
   },
-  "knownQualificationConflict": "Windows DejaVu frozen reference remains unchanged. The same existing single case fails with the same message hash; prior three healthy native captures match the candidate. No reference refresh or CI-green claim. User authority remains pending."
+  "knownQualificationConflict": "Windows DejaVu frozen reference remains unchanged. The same existing single case fails with the same message hash; prior three healthy native captures match the candidate. No reference refresh or CI-green claim. User authority remains pending.",
+  "ciObservation": {
+    "runId": 41658356945,
+    "sourceCommit": "db3cf187d7d8eebb62e58ea98ba071151aa7d09f",
+    "url": "https://github.com/Lokad/Svg/actions/runs/41658356945",
+    "status": "FAILED/CLOSED; do not repoll this terminal run.",
+    "windows": "47288 core and 46647 rendering passed; the sole rendering failure is the unchanged DejaVu reference conflict.",
+    "ubuntu": {
+      "runnerImage": "ubuntu-26.04",
+      "osVersion": "26.04.1",
+      "imageVersion": "20261025.179.1",
+      "corePassed": 47282,
+      "coreFailed": 6,
+      "renderingPassed": 46644,
+      "renderingFailed": 4,
+      "failures": [
+        "Lokad.Svg.Tests.SvgTextPathTests.Retained_curved_A_placement_matches_independent_browser_character_geometry",
+        "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-455-control\")",
+        "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-453-candidate\")",
+        "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-455-candidate\")",
+        "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Glyph_pattern_matrices_match_each_original_native_image(id: \"spacing-paint-453-control\")",
+        "Lokad.Svg.Tests.SvgEndpointArcTests.Endpoint_conics_match_original_native_float_vectors(id: \"rotated-negative\")",
+        "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Path_paint_boxes_use_original_source_maps_before_paint_truncation_and_output_placement(vectorsFile: \"path-vectors.json\", captureFile: \"path-capture.json\", outputScale: 1)",
+        "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Path_paint_boxes_use_original_source_maps_before_paint_truncation_and_output_placement(vectorsFile: \"spaced-path-vectors.json\", captureFile: \"spaced-path-capture.json\", outputScale: 1.5)",
+        "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Path_paint_boxes_use_original_source_maps_before_paint_truncation_and_output_placement(vectorsFile: \"spaced-path-vectors.json\", captureFile: \"spaced-path-capture.json\", outputScale: 1)",
+        "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Path_paint_boxes_use_original_source_maps_before_paint_truncation_and_output_placement(vectorsFile: \"path-vectors.json\", captureFile: \"path-capture.json\", outputScale: 1.5)"
+      ]
+    },
+    "localLinuxQualification": "Ubuntu 24.04 / glibc 2.39-0ubuntu8.9; all reported local Linux suites remain green. The CI runner alias selected Ubuntu 26.04.1.",
+    "diagnostic": "OPEN: shared host-math/profile discrepancy is a hypothesis, supported by one-ULP angle/arc differences and the changed runner distribution. Reproduce with the newer native math environment and compare independent native functions/browser captures before changing implementation or reference selection. No reference/assertion/tolerance changes and no runner pin used to suppress these failures."
+  }
 }
