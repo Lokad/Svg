@@ -26,17 +26,19 @@ public sealed class SvgTextPathTests
     }
 
     [Theory]
-    [InlineData("", null)]
-    [InlineData("text-anchor='inherit'", null)]
+    [InlineData("", (int)SvgTextAnchor.Middle)]
+    [InlineData("text-anchor='inherit'", (int)SvgTextAnchor.Middle)]
     [InlineData("text-anchor='start'", (int)SvgTextAnchor.Start)]
     [InlineData("text-anchor='middle'", (int)SvgTextAnchor.Middle)]
     [InlineData("text-anchor='end'", (int)SvgTextAnchor.End)]
-    public void Child_path_anchor_retains_explicit_overrides_and_inheritance(string attributes, int? expected)
+    public void Child_path_anchor_resolves_declarations_and_inheritance(string attributes, int expected)
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<textPath href='#p' " + attributes + "/>"));
         reader.Read();
-        SvgTextAnchor? actual = SvgTextPathSyntax.Parse(reader, CancellationToken.None).Anchor;
-        Assert.Equal(expected, actual is {} anchor ? (int)anchor : null);
+        SvgTextSpanStyle inherited = new(SvgTextWhitespaceMode.Default, 0) { Font = SvgInheritedTextStyle.Default.WithAnchor(SvgTextAnchor.Middle) };
+        SvgTextPathReference actual = SvgTextPathSyntax.Read(reader, inherited, default, CancellationToken.None, out SvgTextSpanStyle style);
+        Assert.Equal((SvgTextAnchor)expected, actual.Anchor);
+        Assert.Equal((SvgTextAnchor)expected, style.Font.Anchor);
     }
 
     [Theory]
@@ -53,7 +55,8 @@ public sealed class SvgTextPathTests
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<textPath " + attributes + "/>"));
         reader.Read();
-        Assert.Equal(category, Assert.Throws<SvgException>(() => SvgTextPathSyntax.Parse(reader, CancellationToken.None)).ErrorCode);
+        Assert.Equal(category, Assert.Throws<SvgException>(() => SvgTextPathSyntax.Read(reader,
+            new(SvgTextWhitespaceMode.Default, 0) { Font = SvgInheritedTextStyle.Default }, default, CancellationToken.None, out _)).ErrorCode);
     }
 
     [Theory]

@@ -27,7 +27,17 @@ internal static class SvgElementAttributePolicy
     internal static void ValidateText(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Text, "Text", cancellationToken);
 
     /// <summary>Validates the whitespace-and-letter-spacing nested span subset before direct-text extraction.</summary>
-    internal static void ValidateTextSpan(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.TextSpan, "Text span", cancellationToken);
+    internal static void ValidateTextSpan(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.TextChild, "Text span", cancellationToken);
+
+    internal static void ValidateTextPath(XmlReader reader, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.TextChild, "Text path", cancellationToken);
+
+    /// <summary>Identifies shared text-child presentation names; callers validate values and element-specific applicability.</summary>
+    internal static bool IsTextChildPresentationAttribute(XmlReader reader)
+        => reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class" or "vector-effect"
+            or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "word-spacing"
+            or "text-decoration" or "text-anchor" or "style" or "color" or "fill" or "fill-opacity" or "stroke"
+            or "stroke-width" or "stroke-opacity" or "stroke-linecap" or "stroke-linejoin" or "stroke-miterlimit"
+            or "stroke-dasharray" or "stroke-dashoffset" or "fill-rule" or "display" or "visibility" or "paint-order";
 
     internal static void ValidateDefinitionContainer(XmlReader reader, CancellationToken cancellationToken)
     {
@@ -80,6 +90,9 @@ internal static class SvgElementAttributePolicy
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (IsInertEventAttribute(reader)) continue;
+            if (kind == SvgElementKind.TextChild && element == "textPath"
+                && (reader.Name == "xmlns" || reader.Prefix == "xmlns" || SvgTextPathSyntax.IsReferenceAttribute(reader)
+                    || SvgAttributeSemantics.IsInert(element, reader))) continue;
             if (kind == SvgElementKind.Root && reader.NamespaceURI.Length == 0
                 && reader.LocalName is "viewport-fill" or "viewport-fill-opacity")
             {
@@ -95,7 +108,7 @@ internal static class SvgElementAttributePolicy
             if (IsAllowed(reader, kind))
             {
                 bool isInheritedStrokeStyle = reader.LocalName == "stroke-dasharray" || reader.LocalName == "stroke-dashoffset" || reader.LocalName == "stroke-linecap" || reader.LocalName == "stroke-linejoin";
-                bool isInheritedContainer = isInheritedStrokeStyle && kind is SvgElementKind.Group or SvgElementKind.Root or SvgElementKind.Use or SvgElementKind.Pattern or SvgElementKind.Marker or SvgElementKind.Text or SvgElementKind.TextSpan;
+                bool isInheritedContainer = isInheritedStrokeStyle && kind is SvgElementKind.Group or SvgElementKind.Root or SvgElementKind.Use or SvgElementKind.Pattern or SvgElementKind.Marker or SvgElementKind.Text or SvgElementKind.TextChild;
                 bool roundInstanceJoin = kind == SvgElementKind.Use && reader.LocalName == "stroke-linejoin";
                 if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader, reader.LocalName, reader.Value, kind is SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Line or SvgElementKind.Rectangle || isInheritedContainer, kind == SvgElementKind.Line || isInheritedContainer, kind == SvgElementKind.Rectangle || isInheritedContainer, (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)) || roundInstanceJoin || isInheritedContainer, kind is SvgElementKind.Path or SvgElementKind.Circle or SvgElementKind.PointList or SvgElementKind.Rectangle or SvgElementKind.Line || isInheritedContainer, cancellationToken);
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "font-variant") SvgTextFontSyntax.ValidateFontVariant(reader.Value.AsSpan());
@@ -152,7 +165,7 @@ internal static class SvgElementAttributePolicy
     {
         if (IsDescriptiveLinkTitle(reader)) return true;
         if (kind == SvgElementKind.Group && reader.NamespaceURI.Length == 0 && reader.LocalName == "filter") return true;
-        // Language metadata does not select a font or introduce host shaping in the admitted label subset.
+        // Content language belongs to text case context; its syntax remains bounded here.
         if (reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "lang")
         {
             if (reader.Value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG language metadata exceeds the configured syntax limit.");
@@ -162,11 +175,11 @@ internal static class SvgElementAttributePolicy
         if (reader.NamespaceURI.Length == 0 && (reader.LocalName is "role" or "tabindex" or "focusable" or "pointer-events" or "cursor" || reader.LocalName.StartsWith("aria-", StringComparison.Ordinal) || reader.LocalName.StartsWith("data-", StringComparison.Ordinal))) return true;
         if (reader.NamespaceURI.Length == 0 && reader.LocalName is "marker" or "marker-start" or "marker-mid" or "marker-end" or "enable-background") return true;
         if (reader.NamespaceURI.Length == 0 && reader.LocalName == "filter" && kind is SvgElementKind.Use or SvgElementKind.Rectangle or SvgElementKind.Line or SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Image or SvgElementKind.Text) return true;
-        if (reader.NamespaceURI.Length == 0 && reader.LocalName == "paint-order" && kind is SvgElementKind.Root or SvgElementKind.Group or SvgElementKind.Use or SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Line or SvgElementKind.Rectangle or SvgElementKind.Circle or SvgElementKind.Text or SvgElementKind.TextSpan or SvgElementKind.Symbol or SvgElementKind.Marker or SvgElementKind.Mask or SvgElementKind.Pattern)
+        if (reader.NamespaceURI.Length == 0 && reader.LocalName == "paint-order" && kind is SvgElementKind.Root or SvgElementKind.Group or SvgElementKind.Use or SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Line or SvgElementKind.Rectangle or SvgElementKind.Circle or SvgElementKind.Text or SvgElementKind.TextChild or SvgElementKind.Symbol or SvgElementKind.Marker or SvgElementKind.Mask or SvgElementKind.Pattern)
         { _ = SvgPaintOrderSyntax.Parse(reader.Value); return true; }
-        if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow" && kind is SvgElementKind.Group or SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Line or SvgElementKind.Rectangle or SvgElementKind.Circle or SvgElementKind.Use or SvgElementKind.Text or SvgElementKind.TextSpan) return true;
+        if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow" && kind is SvgElementKind.Group or SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Line or SvgElementKind.Rectangle or SvgElementKind.Circle or SvgElementKind.Use or SvgElementKind.Text or SvgElementKind.TextChild) return true;
         if ((kind is SvgElementKind.Group or SvgElementKind.Use or SvgElementKind.Image or SvgElementKind.LinearGradient or SvgElementKind.RadialGradient or SvgElementKind.Pattern) && reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") return true;
-        if ((kind is SvgElementKind.Root or SvgElementKind.Group or SvgElementKind.Text or SvgElementKind.TextSpan) && reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space") return true;
+        if ((kind is SvgElementKind.Root or SvgElementKind.Group or SvgElementKind.Text or SvgElementKind.TextChild) && reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space") return true;
         if (reader.NamespaceURI.Length != 0 && (reader.NamespaceURI == "http://www.w3.org/1999/xlink" || reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace")) return false;
         if (reader.NamespaceURI.Length != 0) return true;
         if (reader.LocalName == "vector-effect" && kind == SvgElementKind.Use)
@@ -187,7 +200,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.PointList => reader.LocalName is "id" or "class" or "points" or "vector-effect" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-opacity" or "stroke-width" or "stroke-miterlimit" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "clip-rule" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "pathLength" or "color-interpolation",
             SvgElementKind.Circle => reader.LocalName is "id" or "class" or "cx" or "cy" or "r" or "rx" or "ry" or "vector-effect" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-opacity" or "stroke-width" or "stroke-miterlimit" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "clip-rule" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "pathLength" or "color-interpolation",
             SvgElementKind.Text => reader.LocalName is "id" or "class" or "vector-effect" or "x" or "y" or "dx" or "dy" or "rotate" or "textLength" or "lengthAdjust" or "dominant-baseline" or "transform" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-variant" or "font-size" or "letter-spacing" or "word-spacing" or "text-decoration" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-opacity" or "stroke-width" or "stroke-miterlimit" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "clip-rule" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "pathLength" or "color-interpolation",
-            SvgElementKind.TextSpan => reader.LocalName is "id" or "class" or "vector-effect" or "font-family" or "font-weight" or "font-style" or "font-size" or "x" or "y" or "dx" or "dy" or "rotate" or "letter-spacing" or "word-spacing" or "text-decoration" or "text-anchor" or "style" or "color" or "fill" or "fill-opacity" or "stroke" or "stroke-width" or "stroke-opacity" or "stroke-linecap" or "stroke-linejoin" or "stroke-miterlimit" or "stroke-dasharray" or "stroke-dashoffset" or "fill-rule" or "display" or "visibility",
+            SvgElementKind.TextChild => IsTextChildPresentationAttribute(reader) || reader.LocalName is "x" or "y" or "dx" or "dy" or "rotate",
             SvgElementKind.Marker => reader.LocalName is "font-family" or "font-weight" or "font-style" or "font-size" or "id" or "class" or "viewBox" or "preserveAspectRatio" or "markerUnits" or "markerWidth" or "markerHeight" or "refX" or "refY" or "orient" or "overflow" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-opacity" or "stroke-width" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "stroke-miterlimit" or "opacity" or "display" or "visibility" or "style",
             SvgElementKind.Symbol => reader.LocalName is "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "word-spacing" or "text-decoration" or "text-anchor" or "id" or "class" or "viewBox" or "preserveAspectRatio" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-opacity" or "stroke-width" or "stroke-miterlimit" or "opacity" or "display" or "visibility" or "style",
             SvgElementKind.ClipPath => reader.LocalName is "id" or "class" or "style" or "clipPathUnits" or "clip-rule" or "clip-path"
@@ -218,5 +231,5 @@ internal static class SvgElementAttributePolicy
 
     private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "stroke-miterlimit" or "stroke-opacity" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "vector-effect" or "clip-rule" or "opacity" or "display" or "visibility" or "version" or "baseProfile" or "focusable" or "target" or "rel" or "hreflang" or "download" or "type" or "clip-path" or "clipPathUnits" or "mask" or "mask-type" or "patternUnits" or "patternContentUnits" or "x1" or "y1" or "x2" or "y2" or "offset" or "stop-color" or "stop-opacity" or "gradientUnits" or "spreadMethod" or "cx" or "cy" or "r" or "fx" or "fy" or "fr" or "x" or "y" or "dx" or "dy" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "overflow" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "word-spacing" or "text-decoration" or "space";
 
-    private enum SvgElementKind { Root, Group, Rectangle, Line, Use, Path, PointList, Circle, Text, TextSpan, Symbol, Marker, NestedViewport, ClipPath, Mask, Image, Pattern, LinearGradient, RadialGradient, GradientStop }
+    private enum SvgElementKind { Root, Group, Rectangle, Line, Use, Path, PointList, Circle, Text, TextChild, Symbol, Marker, NestedViewport, ClipPath, Mask, Image, Pattern, LinearGradient, RadialGradient, GradientStop }
 }

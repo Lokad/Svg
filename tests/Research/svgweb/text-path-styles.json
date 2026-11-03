@@ -1,0 +1,321 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "5ad0b175ac22030e690808725e0a54f2612f5e01",
+  "status": "Shared text-path child styles, computed CSS anchors and reference-domain limits CLOSED. Whole svg2009 acceptance remains OPEN.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs": "4924a6dff53e49acd929dce02210cc0f3ac35ef76ee9feab09a020810584fede",
+    "src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs": "51feb38df2cefd68621f562deb2e709e8bece430ac24eed498903df2229af892",
+    "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs": "2404ef2ef0490897bab7b3244850aa9f68ccfa53822475f5e7bd97b1d4e4deae",
+    "src/Lokad.Svg/Parsing/SvgTextPathSyntax.cs": "56a26f2d84076cf2b9cbcb45cfc8d1b52690482e478371d41cf1b547f216d9ba",
+    "src/Lokad.Svg/Parsing/SvgTextSyntax.cs": "c452d6533527f7eeafaa5045c194f5593c107d4bf27e02a2c00949c3b4242db4",
+    "tests/Lokad.Svg.Tests/SvgTextPathStyleTests.cs": "77d96b8ac72407c248798d07b48095465b94a67cf9f23eede7a3008106f7d5e5",
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.TextPathStyles.cs": "98cc52b622a1a9806315316d7f5f796a79ce6dd8ec597b6a380d69a699d5abb2",
+    "tests/Lokad.Svg.Tests/SvgParseOwnershipAssertions.cs": "d94513335d1fce76fd4ef04739c4e0e5035a30814ea5783c08f2ff801b1ecc7e",
+    "tests/Lokad.Svg.Tests/SvgTextPathTests.cs": "0f441bb571c47fe7e4bfac61448c709012322430bead79569d912e6244ddb468",
+    "tests/Lokad.Svg.Tests/SvgTextAnchorTests.cs": "198e1c6ddb8e44f869dcc3f6cf316a291af3be1d30d00ac9af9b1b9691c2ffd3",
+    "tests/Lokad.Svg.Tests/SvgTextSyntaxTests.cs": "352a65530c184fd6efd70892fd7e75e113a494641bd156511379b6f2a569763a",
+    "tests/Lokad.Svg.Tests/SvgAttributeApplicabilityTests.cs": "3e53252c03720bcdd8f6dd06d632e2a7f06230b8e1a8aff0be1fa17e15092949",
+    "tests/Lokad.Svg.VisualTests/SvgTextPathStyleReferenceTests.cs": "fb833522ec3692397b233c53098558b68292bd8135e92dd732c7c48ecb484eac"
+  },
+  "scope": {
+    "newMechanismCases": 26,
+    "newContractCases": 2,
+    "canonicalRenderingCases": 4,
+    "nativeCaptures": 48,
+    "existingReferenceChanges": 0,
+    "newFontBytes": 0,
+    "hostedBodiesRetained": 0,
+    "attributeValuesRetained": 0
+  },
+  "model": {
+    "sharedResolver": "tspan and textPath resolve presentation through the same child-style reader in layout and font discovery.",
+    "placement": "Carry the computed path anchor after cascade, including parent-equal interval elision; retain existing chunk shaping and rounding.",
+    "applicability": "Path x/y/dx/dy/rotate remain inert rather than entering span position lists.",
+    "remainingAdmission": "Child opacity/filter, geometry CSS, transform and textLength remain explicit unsupported boundaries.",
+    "referenceDomain": "Plain href and xlink:href use the same identifier-length domain, independent of scalar-token limits."
+  },
+  "responsibilities": {
+    "mechanisms": "../../Lokad.Svg.Tests/SvgTextPathStyleTests.cs",
+    "contracts": "../../Lokad.Svg.Tests/OpenTypeFontTests.TextPathStyles.cs",
+    "rendering": "../../Lokad.Svg.VisualTests/SvgTextPathStyleReferenceTests.cs",
+    "controls": "../text-path-styles/README.md",
+    "consolidation": "Remove the test-only whitespace wrapper and share the child presentation name set. Existing span/path tests migrate to the common reader; two contracts reuse existing ownership/font helpers. No fixture/API product.",
+    "beforeEvidence": "Identical compiled stable-API tests: six core failures (two plain-reference boundaries, two discovery paths and two contracts), four core passes and all four image cases failing per host. New internal-reader cases are excluded from the old-library comparison.",
+    "literalEvidence": "Old library renders every independent literal exactly; every old styled form rejects. Native styled and literal observations match exactly on each host.",
+    "initialTestFailure": "Six new whole-style comparisons initially compared immutable font objects by identity. Assertions now compare every font value; production binaries are unchanged by that correction."
+  },
+  "qualifiedLibrarySha256": {
+    "net11.0": "a6c38c29476514db85a90f977022086e6d13d9d83af890453ac6bbd53ef66c0f",
+    "net10.0": "9ff104b21cd006641672c396583348f51f585dc5ff66fa932892603fe533b2a1"
+  },
+  "qualifiedTestAssemblySha256": {
+    "net11.0": {
+      "core": "4bbaa629544baf6b6f3d72e5d980fb4cdcbf7a60466d1752db9c6afadf4a879c",
+      "visual": "61fd214af616fce09d25c42f6a0628cf5bd4018488de95c98b331576c29e8bb4",
+      "font-host": "be4f9f771a2e95885ef9f6f83bc51a317bc0948990f668591264c581ae11822a"
+    },
+    "net10.0": {
+      "core": "312ae2fd2e0099dcd1b4ef0b9ab2f001ceaaffcb7f9e028654005f435a50f9b1",
+      "visual": "3596f88faf063cd098d517bf13cee1504218354ae604d02b55e1b4161336c6ef",
+      "font-host": "91c898b1cd36b939733f80fd70714919bb46ec9099774e683465b3966804e854"
+    }
+  },
+  "validation": {
+    "before": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 4,
+        "failed": 6,
+        "seconds": 8.732
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 0,
+        "failed": 4,
+        "seconds": 9.305
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 4,
+        "failed": 6,
+        "seconds": 7.316
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 0,
+        "failed": 4,
+        "seconds": 7.681
+      }
+    ],
+    "after": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 7.575
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 4,
+        "failed": 0,
+        "seconds": 7.763
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 9.749
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 4,
+        "failed": 0,
+        "seconds": 10.003
+      }
+    ],
+    "mechanisms": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 193,
+        "failed": 0,
+        "seconds": 8.175
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 193,
+        "failed": 0,
+        "seconds": 12.695
+      }
+    ],
+    "affected": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 18753,
+        "failed": 0,
+        "seconds": 42.885
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 774,
+        "failed": 0,
+        "seconds": 20.27
+      },
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.43
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 18753,
+        "failed": 0,
+        "seconds": 44.552
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 774,
+        "failed": 0,
+        "seconds": 20.745
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.752
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 18753,
+        "failed": 0,
+        "seconds": 32.778
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "visual",
+        "passed": 774,
+        "failed": 0,
+        "seconds": 22.836
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 1.188
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "core",
+        "passed": 18753,
+        "failed": 0,
+        "seconds": 33.713
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "visual",
+        "passed": 774,
+        "failed": 0,
+        "seconds": 20.88
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "kind": "font-host",
+        "passed": 10,
+        "failed": 0,
+        "seconds": 5.758
+      }
+    ],
+    "core-full": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 41956,
+        "failed": 0,
+        "seconds": 69.506
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "kind": "core",
+        "passed": 41956,
+        "failed": 0,
+        "seconds": 50.437
+      }
+    ]
+  },
+  "timing": "Process/test startup and concurrent work are included. Focused core/image seconds before -> after: Windows 8.732/9.305 -> 7.575/7.763; Linux 7.316/7.681 -> 9.749/10.003. No throughput or simplification speedup claim.",
+  "originalReplay": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 51.555587199982256,
+    "librarySha256": "a6c38c29476514db85a90f977022086e6d13d9d83af890453ac6bbd53ef66c0f",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 34,
+          "rendered": 167,
+          "MalformedInput": 3
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": []
+      }
+    }
+  },
+  "suppliedContexts": {
+    "librarySha256": "a6c38c29476514db85a90f977022086e6d13d9d83af890453ac6bbd53ef66c0f",
+    "files": 19,
+    "seconds": 16.490077800117433,
+    "sourceBodiesRetained": 0,
+    "referenceChanges": 0
+  },
+  "staticDiagnostic": {
+    "name": "svg2009.svg",
+    "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+    "originalGate": {
+      "element": "animateTransform",
+      "line": 266,
+      "column": 6
+    },
+    "animationElementsRemoved": 11,
+    "variantSha256": "d18bf30b9129a1ffd2f50be1a4ee66d6960767587d2de0ea41f47b12b9997bc2",
+    "deeperGate": {
+      "primitive": "feColorMatrix",
+      "count": 4,
+      "messageSha256": "cbf6a7607b6ef00a8bbb17854d6829418424d0eccd8f1feea69b62551850a9b2",
+      "stage": "SvgFilterArena.ResolveReference / deferred definition rejection"
+    },
+    "fontContext": "Explicit diagnostic Noto binding only; not original-font qualification.",
+    "nextAction": "Review color-matrix types and existing color-transform stages, then author small independent controls. Do not drop filters or claim original acceptance."
+  },
+  "qualificationBoundary": "Focused and affected validation only, plus full .NET 11 core for shared attribute policy. Prior full rendering/package milestone is 5ad0b175a; its Windows DejaVu conflict remains unresolved. No current full-package or exact-head CI-green claim."
+}

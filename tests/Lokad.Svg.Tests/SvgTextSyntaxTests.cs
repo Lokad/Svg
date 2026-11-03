@@ -304,13 +304,13 @@ public sealed class SvgTextSyntaxTests
         using XmlReader rejectedSpacing = XmlReader.Create(new StringReader("<tspan style='white-space: pre; letter-spacing: 2'/>"));
         rejectedSpacing.Read();
 
-        Assert.True(SvgTextSyntax.TryParseTspanStyle(accepted, new SvgTextSpanStyle(SvgTextWhitespaceMode.Preserve, 1), default, CancellationToken.None, out SvgTextSpanStyle style));
+        Assert.True(SvgTextSyntax.TryParseChildStyle(accepted, new SvgTextSpanStyle(SvgTextWhitespaceMode.Preserve, 1), default, CancellationToken.None, out SvgTextSpanStyle style));
         Assert.Equal(SvgTextWhitespaceMode.Default, style.WhitespaceMode);
         Assert.Equal(3, style.LetterSpacing);
         Assert.Equal(new SvgTextPositionOffset(0, 12, 2, -4), style.PositionOffset);
-        Assert.True(SvgTextSyntax.TryParseTspanStyle(sized, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out SvgTextSpanStyle fontStyle));
+        Assert.True(SvgTextSyntax.TryParseChildStyle(sized, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out SvgTextSpanStyle fontStyle));
         Assert.Equal(12, fontStyle.Font.FontSize);
-        Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(rejectedSpacing, SvgTextWhitespaceMode.Default, default, CancellationToken.None, out _));
+        Assert.True(SvgTextSyntax.TryParseChildStyle(rejectedSpacing, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out _));
     }
 
     [Fact]
@@ -332,7 +332,7 @@ public sealed class SvgTextSyntaxTests
     {
         using XmlReader reader = XmlReader.Create(new StringReader($"<tspan {axis}='{value}'/>"));
         reader.Read();
-        Assert.True(SvgTextSyntax.TryParseTspanStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default,
+        Assert.True(SvgTextSyntax.TryParseChildStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default,
             CancellationToken.None, out SvgTextSpanStyle style));
         Assert.Equal(value, axis == "x" ? style.PositionLists.X : style.PositionLists.Y);
     }
@@ -347,7 +347,7 @@ public sealed class SvgTextSyntaxTests
         using XmlReader reader = XmlReader.Create(new StringReader($"<tspan {axis}='{value}'/>"));
         reader.Read();
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgTextSyntax.TryParseTspanStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out _));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgTextSyntax.TryParseChildStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out _));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }

@@ -1,0 +1,108 @@
+{
+  "input": "control.svg",
+  "inputSha256": "219a81f4fdb567bb63a113d729591f59afe1af13622c17469c0134471d763c29",
+  "nativeInputSha256": "44d867c212056a22a9b79748e3bd9e8c8031d4bdaa2e36281ecbcd2f19678e0c",
+  "font": "../../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "width": 360,
+  "height": 192,
+  "literalControl": "reference.svg",
+  "literalInputSha256": "13a78572792afb85a88bda58b65d3b7dcaf00ba0fc8c243848a079b9ad74e807",
+  "literalNativeInputSha256": "37f3beec149a86d2df085a1afce2847e0892dbe300e91c38c8b32d19049c80e6",
+  "platforms": {
+    "windows": {
+      "reference": "references/windows.png",
+      "referenceSha256": "0ff227fe16dc208c9e2a4a567ae4bcdc7953cfeb5d4aef781d4b2ab919bd026c",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "0ff227fe16dc208c9e2a4a567ae4bcdc7953cfeb5d4aef781d4b2ab919bd026c",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0ff227fe16dc208c9e2a4a567ae4bcdc7953cfeb5d4aef781d4b2ab919bd026c",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0ff227fe16dc208c9e2a4a567ae4bcdc7953cfeb5d4aef781d4b2ab919bd026c",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "literalReference": "references/windows-literal.png",
+      "literalReferenceSha256": "0ff227fe16dc208c9e2a4a567ae4bcdc7953cfeb5d4aef781d4b2ab919bd026c",
+      "literalCaptures": [
+        {
+          "pngSha256": "0ff227fe16dc208c9e2a4a567ae4bcdc7953cfeb5d4aef781d4b2ab919bd026c",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0ff227fe16dc208c9e2a4a567ae4bcdc7953cfeb5d4aef781d4b2ab919bd026c",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "0ff227fe16dc208c9e2a4a567ae4bcdc7953cfeb5d4aef781d4b2ab919bd026c",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    },
+    "linux": {
+      "reference": "references/linux.png",
+      "referenceSha256": "abfc893da7fba30b329e7f6f25e5338a5279ac9fe1b30dd649e489aa24c232f4",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "abfc893da7fba30b329e7f6f25e5338a5279ac9fe1b30dd649e489aa24c232f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "abfc893da7fba30b329e7f6f25e5338a5279ac9fe1b30dd649e489aa24c232f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "abfc893da7fba30b329e7f6f25e5338a5279ac9fe1b30dd649e489aa24c232f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ],
+      "literalReference": "references/linux-literal.png",
+      "literalReferenceSha256": "abfc893da7fba30b329e7f6f25e5338a5279ac9fe1b30dd649e489aa24c232f4",
+      "literalCaptures": [
+        {
+          "pngSha256": "abfc893da7fba30b329e7f6f25e5338a5279ac9fe1b30dd649e489aa24c232f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "abfc893da7fba30b329e7f6f25e5338a5279ac9fe1b30dd649e489aa24c232f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        },
+        {
+          "pngSha256": "abfc893da7fba30b329e7f6f25e5338a5279ac9fe1b30dd649e489aa24c232f4",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0
+        }
+      ]
+    }
+  }
+}

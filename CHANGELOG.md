@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Share span/path child-style resolution across layout and font discovery, retaining
+  computed CSS anchors and consistent plain/xlink path-reference limits.
 - Keep groups inside clip resources dormant while preserving their IDs for
   independent geometry and font-bearing instances.
 - Admit validated `line-height` on explicitly positioned text without changing

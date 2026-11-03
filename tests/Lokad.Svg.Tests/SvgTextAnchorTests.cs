@@ -90,7 +90,7 @@ public sealed class SvgTextAnchorTests
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<tspan text-anchor='end' style='text-anchor:middle'/>"));
         Assert.True(reader.Read());
-        Assert.True(SvgTextSyntax.TryParseTspanStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out SvgTextSpanStyle span));
+        Assert.True(SvgTextSyntax.TryParseChildStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out SvgTextSpanStyle span));
         Assert.Equal(SvgTextAnchor.Middle, span.Font.Anchor);
         Assert.Null(span.PositionOffset);
         Assert.True(span.PositionLists.IsEmpty);

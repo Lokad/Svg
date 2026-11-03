@@ -28,6 +28,8 @@ preserves the original-to-mechanism mapping.
 [line height](preformatted-line-height.json) validate unused declarations through
 the shared style parser. [Clip-group roles](clip-child-roles.json) preserve dormant
 contribution, ordinary IDs and selected font acquisition through existing replay.
+[Text-path child styles](text-path-styles.json) share cascade and font discovery
+with spans; independent controls retain computed anchors, nesting and mixed runs.
 The unchanged svg2009 original now reaches animateTransform; eleven clock-start
 animation declarations and deeper static path-style contexts remain separately
 accounted, without whole-original acceptance. Case transformation

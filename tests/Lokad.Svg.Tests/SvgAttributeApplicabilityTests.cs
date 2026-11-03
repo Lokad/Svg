@@ -60,7 +60,7 @@ public sealed class SvgAttributeApplicabilityTests
         using XmlReader reader = XmlReader.Create(source);
         reader.MoveToContent();
         if (element == "textPath") Assert.Equal("p", SvgTextPathSyntax.Parse(reader, CancellationToken.None).PathId);
-        else Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(reader, SvgTextWhitespaceMode.Default, default, CancellationToken.None, out _));
+        else Assert.True(SvgTextSyntax.TryParseChildStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default, CancellationToken.None, out _));
         Assert.Equal(XmlNodeType.Element, reader.NodeType);
         Assert.Equal("untouched", reader.GetAttribute("export-data"));
     }

@@ -414,9 +414,14 @@ these behaviors from explicitly positioned lines and preserve native platform pi
 through presentation attributes and admitted inline/stylesheet contexts. Root,
 group, text and span scopes share inheritance and cascade rules. Each chunk uses
 its first addressed character's anchor; absolute x/y starts another chunk, while
-an anchor-only change preserves continuous shaping. Text paths inherit group CSS;
-their own inline/stylesheet declarations remain unsupported. The
+an anchor-only change preserves continuous shaping. Text paths share spans' font,
+paint, whitespace and anchor cascade, including their own inline/stylesheet rules.
+Placement uses the computed path anchor; inapplicable path x/y/dx/dy/rotate
+attributes do not introduce positioning lists. Child opacity/filter, transforms
+and textLength remain unsupported. The
 [anchor controls](../tests/Research/text-anchor/README.md) protect these interactions.
+The [path-style controls](../tests/Research/text-path-styles/README.md) protect
+CSS precedence, inherited anchors, nested spans and mixed direct/path text.
 The [shared-range control](../tests/Research/text-shared-anchor/README.md) retains
 uniform child anchors when direct text and path text are joined.
 

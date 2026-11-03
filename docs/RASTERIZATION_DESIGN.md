@@ -418,6 +418,12 @@ Only absolute chunk boundaries receive a scoped anchor; changes within a chunk d
 not split shaping. Borrowed position storage is copied only when its chunk metadata
 needs an override. [Mechanism and rendering evidence](../tests/Research/text-anchor/README.md)
 keeps these responsibilities separate.
+Spans and text paths share one child-style resolver in extraction and font
+discovery. Reference syntax remains separate from presentation: path placement
+receives the computed anchor after CSS precedence, even when the resulting font
+interval matches its parent and is elided. Inapplicable path coordinates do not
+become span position lists. [Independent path controls](../tests/Research/text-path-styles/README.md)
+retain cascade, nested-font and mixed-run interactions without changing layout math.
 Fragment origins and anchor shifts truncate separately. Text boxes join fitted
 ink and physical source rectangles; drawing enclosures remain local. Mixed
 direct/path text shares parent shaping storage, with scoped views owning only

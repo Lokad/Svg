@@ -765,19 +765,16 @@ CancellationToken cancellationToken)
                     if (subtree.Depth != 1 || textPath is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only direct text-path children are implemented.");
                     RetainLayout(text, null, previousPath, true, runs);
                     text.BeginTextChunk(false);
-                    SvgTextPathReference parsed = SvgTextPathSyntax.Parse(subtree, cancellationToken);
-                    textPath = parsed with { PathId = state.Strings.Copy(parsed.PathId) };
                     InlineStyle pathStyle = SvgDocumentStyleResolver.Resolve(subtree, state, cancellationToken);
-                    if (!pathStyle.Equals(default(InlineStyle))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Styles on text-path children are not implemented.");
-                    childStyle = new(SvgTextSyntax.ParseWhitespaceMode(subtree, null, inheritedStyle.WhitespaceMode), inheritedStyle.LetterSpacing)
-                        { Paint = inheritedStyle.Paint, Font = inheritedStyle.Font.WithAnchor(parsed.Anchor ?? inheritedStyle.Font.Anchor) };
+                    SvgTextPathReference parsed = SvgTextPathSyntax.Read(subtree, inheritedStyle, pathStyle, cancellationToken, out childStyle);
+                    textPath = parsed with { PathId = state.Strings.Copy(parsed.PathId) };
                 }
                 else
                 {
                     if (subtree.LocalName != "tspan") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded text span children are implemented.");
                     SvgElementAttributePolicy.ValidateTextSpan(subtree, cancellationToken);
                     InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(subtree, state, cancellationToken);
-                    if (!SvgTextSyntax.TryParseTspanStyle(subtree, inheritedStyle, styleSheet, cancellationToken, out childStyle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded whitespace, scalar positioning and solid-paint tspan children are implemented.");
+                    if (!SvgTextSyntax.TryParseChildStyle(subtree, inheritedStyle, styleSheet, cancellationToken, out childStyle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded whitespace, scalar positioning and solid-paint tspan children are implemented.");
                     if (textPath is not null && childStyle.PositionOffset is SvgTextPositionOffset pathOffset && (pathOffset.X is not null || pathOffset.Y is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Absolute span coordinates on text paths are not implemented.");
                 }
                 if (!subtree.IsEmptyElement)

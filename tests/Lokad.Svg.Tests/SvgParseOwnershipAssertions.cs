@@ -1,5 +1,6 @@
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
+using Lokad.Svg.Fonts;
 
 namespace Lokad.Svg.Tests;
 
@@ -7,23 +8,27 @@ namespace Lokad.Svg.Tests;
 internal static class SvgParseOwnershipAssertions
 {
     internal static void PreservesBorrowedStorageOnDenialCancellationAndRetry(byte[] input)
+        => PreservesBorrowedStorageOnDenialCancellationAndRetry(input, null);
+
+    /// <summary>Borrows the optional font snapshot through parsing and retries; its owner retains disposal responsibility.</summary>
+    internal static void PreservesBorrowedStorageOnDenialCancellationAndRetry(byte[] input, SvgFontSnapshot? fonts)
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         long peak;
         using (RenderBudget.BudgetReservation borrowed = budget.Reserve(73, SvgMemoryCategory.Scene))
         {
-            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)) { peak = budget.Snapshot().PeakBytes; }
+            using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None)) { peak = budget.Snapshot().PeakBytes; }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
             using CancellationTokenSource cancellation = new(); cancellation.Cancel();
-            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, cancellation.Token)).CancellationToken);
-            using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)) { }
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, cancellation.Token)).CancellationToken);
+            using (SvgRoot retry = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, fonts, CancellationToken.None)) { }
             Assert.Equal(73, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         RenderBudget denied = new RenderBudget(new HostMemoryBudget(peak - 1));
         using (RenderBudget.BudgetReservation borrowed = denied.Reserve(73, SvgMemoryCategory.Scene))
         {
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, fonts, CancellationToken.None)).ErrorCode);
             Assert.Equal(73, denied.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, denied.Snapshot().CurrentBytes);

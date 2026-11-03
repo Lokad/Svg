@@ -32,6 +32,12 @@ explicit baselines/anchors/path text, and four exploratory line-layout controls.
 mechanisms, two ownership/preparation contracts and seven canonical native cases.
 Resource contribution and independent ID selection remain distinct responsibilities.
 
+[Text-path styles](Research/text-path-styles/README.md) keep cascade, applicability,
+reference limits and emitted-font discovery in direct mechanisms. Two contracts
+cover selective preparation and borrowed storage; four canonical native images
+cover distinct cascade, nesting and mixed-run interactions. Literal controls remain
+independent diagnostic evidence rather than an additional API matrix.
+
 The [responsibility map](Research/release-baselines/test-responsibilities.md)
 records paint-bank membership, lazy loading, raster/PNG separation and measured
 validation costs, including the core pixel helpers, parser ownership helper, API fixture allocation and

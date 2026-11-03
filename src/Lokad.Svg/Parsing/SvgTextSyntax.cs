@@ -397,10 +397,12 @@ internal static class SvgTextSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only default and preserve xml:space values are supported for direct text.");
     }
 
-    /// <summary>Recognizes bounded nested whitespace, positioning and solid-paint declarations over the parent values.</summary>
-    internal static bool TryParseTspanStyle(XmlReader reader, SvgTextSpanStyle inherited, InlineStyle styleSheet, CancellationToken cancellationToken, out SvgTextSpanStyle style)
+    /// <summary>Resolves bounded span/path whitespace and presentation over parent values; only spans own positioning lists.</summary>
+    internal static bool TryParseChildStyle(XmlReader reader, SvgTextSpanStyle inherited, InlineStyle styleSheet, CancellationToken cancellationToken, out SvgTextSpanStyle style)
     {
         ArgumentNullException.ThrowIfNull(reader);
+        string element = reader.LocalName;
+        bool textPath = element == "textPath";
         style = inherited;
         if (HasUnsupportedProperties(styleSheet)) return false;
         string? xmlSpace = null;
@@ -418,6 +420,8 @@ internal static class SvgTextSyntax
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (SvgElementAttributePolicy.IsInertEventAttribute(reader)) continue;
+            if (textPath && (reader.Name == "xmlns" || reader.Prefix == "xmlns" || SvgTextPathSyntax.IsReferenceAttribute(reader)
+                || SvgAttributeSemantics.IsInert(element, reader))) continue;
             if (reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space")
             {
                 if (xmlSpace is not null) { reader.MoveToElement(); style = inherited; return false; }
@@ -470,13 +474,8 @@ internal static class SvgTextSyntax
                 rotate = reader.Value;
                 continue;
             }
-            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class") continue;
-            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "font-family" or "font-weight" or "font-style" or "font-size") continue;
-            if (reader.NamespaceURI.Length == 0 && reader.LocalName == "word-spacing") continue;
-            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "text-decoration" or "text-anchor") continue;
-            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "color" or "fill" or "fill-opacity" or "stroke" or "fill-rule" or "display" or "visibility"
-                or "stroke-width" or "stroke-opacity" or "stroke-linecap" or "stroke-linejoin" or "stroke-miterlimit" or "stroke-dasharray" or "stroke-dashoffset" or "paint-order" or "vector-effect") continue;
-            if (SvgAttributeSemantics.IsInert("tspan", reader)) continue;
+            if (SvgElementAttributePolicy.IsTextChildPresentationAttribute(reader)) continue;
+            if (SvgAttributeSemantics.IsInert(element, reader)) continue;
             reader.MoveToElement();
             style = inherited;
             return false;
@@ -508,13 +507,7 @@ internal static class SvgTextSyntax
 
     }
 
-    /// <summary>Recognizes admitted nested text spans while returning only the inherited whitespace mode needed by font discovery.</summary>
-    internal static bool TryParseTspanWhitespaceMode(XmlReader reader, SvgTextWhitespaceMode inherited, InlineStyle styleSheet, CancellationToken cancellationToken, out SvgTextWhitespaceMode mode)
-    {
-        bool parsed = TryParseTspanStyle(reader, new SvgTextSpanStyle(inherited, 0), styleSheet, cancellationToken, out SvgTextSpanStyle style);
-        mode = style.WhitespaceMode;
-        return parsed;
-    }
+
 
     /// <summary>Resolves the winning bounded CSS/presentation anchor over its inherited value.</summary>
     internal static SvgTextAnchor ParseAnchor(string? value, SvgTextAnchor inherited)

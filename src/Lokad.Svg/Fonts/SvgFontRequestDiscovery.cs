@@ -157,10 +157,10 @@ internal static class SvgFontRequestDiscovery
                     bool hasGroupAncestor = groupDepth != 0;
                     SvgTextWhitespaceMode inheritedWhitespaceMode = whitespaceLevels.Count == 0 ? SvgTextWhitespaceMode.Default : whitespaceLevels[whitespaceLevels.Count - 1];
                     SvgTextWhitespaceMode childWhitespaceMode = inheritedWhitespaceMode;
-                    InlineStyle tspanStyleSheet = insideDirectText && isSvgElement && reader.LocalName == "tspan" ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, cancellationToken) : default;
+                    InlineStyle childStyleSheet = insideDirectText && isSvgElement && reader.LocalName is ("tspan" or "textPath") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, cancellationToken) : default;
                     bool admittedTextSpan = false;
                     SvgTextSpanStyle? parsedTextSpan = null;
-                    if (insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanStyle(reader, new SvgTextSpanStyle(inheritedWhitespaceMode, 0) { Paint = inheritedLevels[^1].TextPaint(paintResources), Font = inheritedLevels[^1].Text }, tspanStyleSheet, cancellationToken, out SvgTextSpanStyle spanStyle))
+                    if (insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseChildStyle(reader, new SvgTextSpanStyle(inheritedWhitespaceMode, 0) { Paint = inheritedLevels[^1].TextPaint(paintResources), Font = inheritedLevels[^1].Text }, childStyleSheet, cancellationToken, out SvgTextSpanStyle spanStyle))
                     {
                         childWhitespaceMode = spanStyle.WhitespaceMode;
                         admittedTextSpan = textPathDepth < 0 || spanStyle.PositionOffset is not SvgTextPositionOffset offset || offset.X is null && offset.Y is null;
@@ -170,8 +170,11 @@ internal static class SvgFontRequestDiscovery
                     {
                         try
                         {
-                            _ = SvgTextPathSyntax.Parse(reader, cancellationToken);
-                            childWhitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, null, inheritedWhitespaceMode);
+                            _ = SvgTextPathSyntax.Read(reader, new SvgTextSpanStyle(inheritedWhitespaceMode, 0)
+                                { Paint = inheritedLevels[^1].TextPaint(paintResources), Font = inheritedLevels[^1].Text },
+                                childStyleSheet, cancellationToken, out SvgTextSpanStyle pathStyle);
+                            childWhitespaceMode = pathStyle.WhitespaceMode;
+                            parsedTextSpan = pathStyle;
                             admittedTextSpan = true;
                             if (!reader.IsEmptyElement) { textPathDepth = reader.Depth; coverage?.BeginWhitespaceRun(preserveTrailingWhitespace: true, hasPriorText: false); }
                         }
