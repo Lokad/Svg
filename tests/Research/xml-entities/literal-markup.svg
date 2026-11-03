@@ -1,0 +1,8 @@
+<!DOCTYPE svg [
+<!ENTITY size "6">
+<!ENTITY color "#1688cc">
+<!ENTITY shade "&#38;color;">
+<!ENTITY mark "<rect x='1' y='2' width='&size;' height='11' fill='&color;'/>">
+<!ENTITY group "<g transform='translate(3 0)'>&mark;</g>">
+]>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16">&group;</svg>

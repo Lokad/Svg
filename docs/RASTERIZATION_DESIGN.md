@@ -107,6 +107,17 @@ and glyph samplers share this material rule; hairline opacity can disable reduct
 Prepared-document font discovery borrows the same collected styles, reader
 workspace and active budget used by lowering. Discovery control storage is
 temporary; selected font bytes stay alive through the prepared operation.
+The [XML admission policy](../src/Lokad.Svg/Parsing/SvgXmlReaderPolicy.cs) grows
+that same owner before the BCL parses internal general entities. A streaming
+classification pass counts declarations, literal sizes and possible references;
+it stores neither names nor replacement text. An acyclic path uses at most the
+declared entity count, giving a conservative expansion bound capped at the existing
+XML character ceiling. Saturation admits storage rather than rejecting a document.
+Declaration tables and overlapping UTF-16 value buffers retain separate coarse
+allowances. BCL parsing validates names, references and cycles. Entity-bearing
+inputs bypass raw-byte style/font/resource shortcuts; there is no expanded copy
+or second resolver. [Entity evidence](../tests/Research/xml-entities/README.md)
+separates mechanisms, ownership and browser rendering.
 Source font/anchor intervals remain distinct from resolved physical font intervals.
 Adjacent intervals selecting the identical face object and size share shaping;
 paint, node and positioning boundaries retain their independent rules. The

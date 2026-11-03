@@ -87,7 +87,7 @@ internal sealed class SvgPaintResourceSelection : IDisposable
     {
         token.ThrowIfCancellationRequested();
         ReadOnlySpan<byte> bytes = svg.Span;
-        if (!bytes.Contains((byte)0) && bytes.IndexOf("pattern"u8) < 0 && bytes.IndexOf("Gradient"u8) < 0 && bytes.IndexOf("filter"u8) < 0) return null;
+        if (settings.DtdProcessing != DtdProcessing.Parse && !bytes.Contains((byte)0) && bytes.IndexOf("pattern"u8) < 0 && bytes.IndexOf("Gradient"u8) < 0 && bytes.IndexOf("filter"u8) < 0) return null;
         SvgPreparationProbe.Observe(SvgPreparationPhase.PaintIndex);
         token.ThrowIfCancellationRequested();
         RenderBudget.BudgetReservation owner = budget.Reserve(512, SvgMemoryCategory.Parser);

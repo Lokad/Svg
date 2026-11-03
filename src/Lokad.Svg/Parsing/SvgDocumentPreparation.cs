@@ -68,7 +68,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
         SvgDocumentPreparation? result = null;
         try
         {
-            XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, token);
+            XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, workspace, token);
             result = new(svg, limits, budget, token, workspace, settings);
             SvgRootStyleSheetParser.Collect(svg, settings, limits, result.Rules, result.Strings, budget, token);
             return result;
@@ -108,7 +108,7 @@ internal sealed class SvgDocumentPreparation : IDisposable
         {
             ReadOnlySpan<byte> bytes = _svg.Span;
             SvgInstanceFontDiscovery? consumers = _fontInstancesCollected ? _fontInstances
-                : bytes.Contains((byte)0) || bytes.IndexOf("pattern"u8) >= 0 ? GetFontInstances() : null;
+                : Settings.DtdProcessing == DtdProcessing.Parse || bytes.Contains((byte)0) || bytes.IndexOf("pattern"u8) >= 0 ? GetFontInstances() : null;
             _paintResources = SvgPaintResourceSelection.Create(_svg, Settings, _limits, Rules, Strings, _budget, _token, consumers);
             _paintResourcesCollected = true;
         }

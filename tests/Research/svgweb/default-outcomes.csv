@@ -142,7 +142,7 @@ penrose-tiling.svg,6ed1535de70e89cc866c7209bffb97de14a295c4e0d1a66b8147fefbf6b71
 photos.svg,e693ebedc37daae273f7b2f3b09eb76e1a2a9a35490b05b05e1fa816bca8ada9,rendered,exact,0,0,300,150,4e31151eb3421ef025bf2a88235f141e6ba1899656d0ad366f2c92bae5cd1ef7,4e31151eb3421ef025bf2a88235f141e6ba1899656d0ad366f2c92bae5cd1ef7,,,,,
 php.svg,5099fa1fa1569849d7a0f00f0119da9e7f6d1672f7b627c65a18189c8cb6c7c0,rendered,exact,0,0,300,150,0f69e5b7b99e45a92c6fdfa087815d10a973a255d2350979e217cfc4691b8210,0f69e5b7b99e45a92c6fdfa087815d10a973a255d2350979e217cfc4691b8210,,,,,
 poi.svg,489baa6c11d7e2952a3dc28f741bcca91a2148674ce8048926a56a23fa07272e,rendered,exact,0,0,300,150,a1da7b2870ab219d628b19cfe23d8969cd1c9c88ca17f189456ac5cc67163f3d,a1da7b2870ab219d628b19cfe23d8969cd1c9c88ca17f189456ac5cc67163f3d,,,,,
-preserveAspectRatio.svg,1a567ae0ddcfb78474a7313673960004ef67bade3d0b8eea9719bee934888dcd,MalformedInput,,,,,,,,,,,,SVG XML internal DTD subsets are not admitted.
+preserveAspectRatio.svg,1a567ae0ddcfb78474a7313673960004ef67bade3d0b8eea9719bee934888dcd,UnsupportedFeature,,,,450,300,,,text,,24,6,SVG text requires a prepared font snapshot.
 pservers-grad-03-b-anim.svg,36726fb7ab5239ee321b72027eddc7dcf5dfedb0ee60250e64102a93f04816e2,UnsupportedFeature,,,,300,150,,,rect,,50,5,This SVG child element is not implemented yet.
 pservers-grad-03-b.svg,3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4,UnsupportedFeature,,,,300,150,,,text,,57,4,SVG text requires a prepared font snapshot.
 pull.svg,cb9263d7f5da168b005edf1d3499e278a53a78bc1a2ed1f59faea71d28adacc9,rendered,exact,0,0,300,150,7e55dd69c1ba305fdf732ef0fcbb08a434ad00e80dbd870e34aa24f65f0942c0,7e55dd69c1ba305fdf732ef0fcbb08a434ad00e80dbd870e34aa24f65f0942c0,,,,,
@@ -169,7 +169,7 @@ scion.svg,39b6486403588426bca3e9cbf470e5bea69d4ca565a1e6237111e666a01808cb,rende
 semweb.svg,ca2342bc648e2055ea2ff921d0d909464c8575ba14b65e1bbb55b759640621a2,rendered,exact,0,0,300,150,91ec0615798625431e19250ec317a06a40db173b957ae008311ec1276cbe6b31,91ec0615798625431e19250ec317a06a40db173b957ae008311ec1276cbe6b31,,,,,
 shapes-polygon-01-t.svg,ba00b071ec66e3b98ac2de924563f69d72e714ab02adbbe1dd1266b418ea144e,UnsupportedFeature,,,,300,150,,,text,revision,70,3,SVG text requires a prepared font snapshot.
 shapes-polyline-01-t.svg,3d636692e459edc01b768cc607b0b1b3fcd06c379616a3771a06ae8dfc8324ca,UnsupportedFeature,,,,300,150,,,text,revision,81,3,SVG text requires a prepared font snapshot.
-smile.svg,e3d8f00248a02b117b030e0bb64beab3f492727e9298706c768ce7849fce7e33,MalformedInput,,,,,,,,,,,,SVG XML internal DTD subsets are not admitted.
+smile.svg,e3d8f00248a02b117b030e0bb64beab3f492727e9298706c768ce7849fce7e33,rendered,exact,0,0,850,700,0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971,0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971,,,,,
 snake.svg,52ac4b0c97fdd51ec9a93a618389164f3ebe60bd2cc0caabe781a1e011343072,UnsupportedFeature,,,,600,500,,,text,,247,2,SVG text requires a prepared font snapshot.
 star.svg,20a60ffa611d75706135caf3b0fad1116b40cc39bb078e782074e82a95d6034d,rendered,exact,0,0,300,150,1e8ca59ab217ba26854a9ba6e4c14c562e8a4bfa27dae113f2ac91e4e056f79d,1e8ca59ab217ba26854a9ba6e4c14c562e8a4bfa27dae113f2ac91e4e056f79d,,,,,
 svg.svg,f367188940f36e0053777941ea72820d272dacc5e2fadaf03ba837b55947081a,rendered,exact,0,0,300,150,9ba32e3633726806dc788447d8fa7fca21dc25f1c0ac0e17a7b5abd9dd8cf718,6270d140b852258201361b48813bfde0aaa5185afb7e6ce1d7234703ebbc89c0,,,,,

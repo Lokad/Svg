@@ -169,14 +169,14 @@ $missingSummary = Copy-MemoryReports $missingMemory
 $missingEdited = Get-Content -LiteralPath $missingSummary.FullName -Raw | ConvertFrom-Json
 $missingEdited.reports = @($missingEdited.reports | Where-Object { $_.name -ne 'limit' })
 $missingEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $missingSummary.FullName -NoNewline -Encoding utf8
-Assert-ValidatorRejects $goodDirectory $missingMemory '*contains 30 reports*' 'a missing memory report'
+Assert-ValidatorRejects $goodDirectory $missingMemory '*contains 34 reports*' 'a missing memory report'
 
 $duplicateMemory = Join-Path $runDirectory 'memory-duplicate-report'
 $duplicateSummary = Copy-MemoryReports $duplicateMemory
 $duplicateEdited = Get-Content -LiteralPath $duplicateSummary.FullName -Raw | ConvertFrom-Json
 $duplicateEdited.reports = @($duplicateEdited.reports) + @($duplicateEdited.reports[0])
 $duplicateEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $duplicateSummary.FullName -NoNewline -Encoding utf8
-Assert-ValidatorRejects $goodDirectory $duplicateMemory '*contains 32 reports*' 'a duplicated memory report'
+Assert-ValidatorRejects $goodDirectory $duplicateMemory '*contains 36 reports*' 'a duplicated memory report'
 
 $unexpectedMemory = Join-Path $runDirectory 'memory-unexpected-report'
 $unexpectedSummary = Copy-MemoryReports $unexpectedMemory
@@ -215,6 +215,21 @@ $ordinaryXml = @($prologEdited.reports | Where-Object { $_.name -eq 'xml-reader-
 @($prologEdited.reports | Where-Object { $_.name -eq 'xml-reader-doctype-1' })[0].report.xmlReaderWorkspaceBytes = $ordinaryXml.xmlReaderWorkspaceBytes
 $prologEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $prologSummary.FullName -NoNewline -Encoding utf8
 Assert-ValidatorRejects $goodDirectory $prologMemory '*prolog workspace*' 'an omitted XML prolog workspace'
+
+$entityMemory = Join-Path $runDirectory 'memory-missing-entity-workspace'
+$entitySummary = Copy-MemoryReports $entityMemory
+$entityEdited = Get-Content -LiteralPath $entitySummary.FullName -Raw | ConvertFrom-Json
+$inertXml = @($entityEdited.reports | Where-Object { $_.name -eq 'xml-reader-doctype-1' })[0].report
+@($entityEdited.reports | Where-Object { $_.name -eq 'xml-reader-entities-1' })[0].report.xmlReaderWorkspaceBytes = $inertXml.xmlReaderWorkspaceBytes
+$entityEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $entitySummary.FullName -NoNewline -Encoding utf8
+Assert-ValidatorRejects $goodDirectory $entityMemory '*retained entity workspace*' 'an omitted XML entity workspace'
+
+$expansionMemory = Join-Path $runDirectory 'memory-unexpanded-entity'
+$expansionSummary = Copy-MemoryReports $expansionMemory
+$expansionEdited = Get-Content -LiteralPath $expansionSummary.FullName -Raw | ConvertFrom-Json
+@($expansionEdited.reports | Where-Object { $_.name -eq 'xml-reader-entities-1' })[0].report.xmlReaderTouchedCharacters = 1
+$expansionEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $expansionSummary.FullName -NoNewline -Encoding utf8
+Assert-ValidatorRejects $goodDirectory $expansionMemory '*did not expand the nested attribute entity*' 'an unexpanded XML entity measurement'
 
 $doctypePngMemory = Join-Path $runDirectory 'memory-missing-doctype-png'
 $doctypePngSummary = Copy-MemoryReports $doctypePngMemory

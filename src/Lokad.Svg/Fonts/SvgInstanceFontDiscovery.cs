@@ -52,14 +52,15 @@ internal sealed class SvgInstanceFontDiscovery : IDisposable
         BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, CancellationToken token)
     {
         ReadOnlySpan<byte> bytes = svg.Span;
-        if (!bytes.Contains((byte)0) && (bytes.IndexOf("text"u8) < 0 || bytes.IndexOf("use"u8) < 0 && bytes.IndexOf("mask"u8) < 0)
+        bool expandedNames = settings.DtdProcessing == DtdProcessing.Parse || bytes.Contains((byte)0);
+        if (!expandedNames && (bytes.IndexOf("text"u8) < 0 || bytes.IndexOf("use"u8) < 0 && bytes.IndexOf("mask"u8) < 0)
             && (bytes.IndexOf("marker"u8) < 0 || bytes.IndexOf("ex"u8) < 0)
             && (bytes.IndexOf("pattern"u8) < 0 || bytes.IndexOf("text"u8) < 0 && (bytes.IndexOf("marker"u8) < 0 || bytes.IndexOf("ex"u8) < 0))) return null;
         SvgPreparationProbe.Observe(SvgPreparationPhase.FontIndex);
         SvgInstanceFontDiscovery result = new(limits, rules, strings, budget, token,
-            bytes.Contains((byte)0) || bytes.IndexOf("marker"u8) >= 0,
-            bytes.Contains((byte)0) || bytes.IndexOf("mask"u8) >= 0,
-            bytes.Contains((byte)0) || bytes.IndexOf("pattern"u8) >= 0);
+            expandedNames || bytes.IndexOf("marker"u8) >= 0,
+            expandedNames || bytes.IndexOf("mask"u8) >= 0,
+            expandedNames || bytes.IndexOf("pattern"u8) >= 0);
         try { Read(result, svg, settings); return result; }
         catch { result.Dispose(); throw; }
 

@@ -6,8 +6,8 @@ source hash/size, declarations, lexical font/resource use and platform outcomes.
 Fetch bodies into bounded memory and discard them. Ordinary tests are offline;
 this directory contains metadata and original orthogonal controls.
 
-The current default conversion renders 167 originals per host: **167 exploratory
-exact**, with 34 UnsupportedFeature and 3 MalformedInput outcomes. The
+The current default conversion renders 168 originals per host: **168 exploratory
+exact**, with 35 UnsupportedFeature and 1 MalformedInput outcome. The
 [current outcomes](default-outcomes.csv) list every source's status and first gate;
 the inventory retains historical observations separately.
 These observations use transparent output without supplied fonts/resources.
@@ -16,13 +16,16 @@ whole-corpus acceptance remains open.
 
 The [remaining-gate review](remaining-static-gates.json) follows all thirteen
 parent/resource/XML cases beyond their first rejection. Twelve declared static
-diagnostics are exact on both hosts. Internal-entity admission and direct text
-clipping remain open; [shared bitmap-span sampling](../image-fit-sampling/README.md)
+diagnostics are exact on both hosts. Internal-entity admission is implemented;
+direct text clipping remains open; [shared bitmap-span sampling](../image-fit-sampling/README.md)
 closes the former two-pixel image-fit discrepancy. Diagnostic transformations, supplied
 fonts and replacement rasters do not qualify the corresponding originals.
 The [reader-policy review](xml-reader-policy.json) aligns allocation diagnostics
-with production's inert-declaration policy and peak prolog admission. Internal
-entity expansion remains open and requires shared ownership work.
+with production's shared policy and peak prolog admission. The
+[entity extension](../xml-entities/README.md) adds retained expansion allowance:
+all 167 earlier rendered PNGs are unchanged, unmodified smile is native-exact,
+and unmodified preserveAspectRatio with supplied Noto matches its declared
+font-bound reference. Full milestone qualification is recorded separately.
 
 The [attribute-applicability review](attribute-applicability.json) closes custom
 and inapplicable attribute gates plus explicit gradient-unit fallback. Five newly

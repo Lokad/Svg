@@ -1,0 +1,319 @@
+{
+  "status": "Implemented and affected integration passed; full source-commit/runtime/package milestone qualification pending.",
+  "sourceBaseCommit": "845e95cef045c4aaf276f68728dbb167f0167e56",
+  "filesLfSha256": {
+    "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "4808584274ee0b6b105981bb29ea8414deacd503cd652eadd7ddd544b3467b8f",
+    "src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs": "ef3900c2a6bbe65ff58c7610622360edb4e7e12dbf70605986317d37bc04139d",
+    "src/Lokad.Svg/Parsing/SvgPaintResourceSelection.cs": "3c362bc6c876d7d423a6625b72645a2c902c652e73b4a5ad58482224efa9c676",
+    "src/Lokad.Svg/Parsing/SvgRootStyleSheetParser.cs": "50dbcd3f97bfefe4fb26223096314508e83c0f3581ba52162cf6943e1f347ab8",
+    "src/Lokad.Svg/Parsing/SvgXmlReaderPolicy.cs": "279351b822749591e12104fd203ad8fc9674ac7d5b315b37ceae9701ba88493d",
+    "tools/Lokad.Svg.MemoryProbe/XmlReaderWorkspaceProbe.cs": "4f894a9153cc3700407e1efe57c448f9cc71839fef9d34ff2fc69cbb4e262043"
+  },
+  "investigationLibrarySha256": {
+    "net11.0": "168b106fa6307c62188d6c8aeb6a46fb5f6db7a351117fc28ecd41373e1d3bad",
+    "net10.0": "2ffbf0ab0e26291a7d841a300d66e37bf8dad57d1071b04c39a135ce040ad018"
+  },
+  "before": {
+    "framework": "net11.0",
+    "host": "windows",
+    "cases": 23,
+    "failed": 15,
+    "passed": 8,
+    "wallSeconds": 8.6924746,
+    "baselineLibrarySha256": "ad872b2bffafdf7ad7c4245eaa3e420eb494f9708ffedfaf347b32b127b753dd",
+    "scope": "Authored admission/preparation mechanisms. Eight rejection cases already passed; three font assertions subsequently compare request values rather than object identity."
+  },
+  "change": "Keep the BCL as the parser. Stream source-derived counts without an entity-name graph, retain declaration/expanded-reader allowances in the existing preparation owner, and bypass raw-byte discovery shortcuts for entity-bearing inputs. No DOM, expanded input copy, custom resolver, public API change or new quota.",
+  "accounting": {
+    "expansionBound": "L * (1 + R + ... + R^(N-1)) * U; N declarations, L maximum raw literal UTF-16 length, R maximum raw literal ampersands, U body ampersands. Cap at existing MaximumInputBytes character ceiling without rejecting on estimate saturation.",
+    "retainedAdditionalBytes": "16384 + 8 * subset UTF-16 characters + 1024 * declarations + 8 * bounded expanded characters",
+    "meaning": "Conservative admission, not a claim of exact physical or cumulative allocations. Temporary prolog storage remains separate. BCL validates grammar and rejects cycles/actual character overflow."
+  },
+  "coverage": "Direct XML mechanisms retain numeric/reference, encoding and structural boundaries; representative ownership checks retain refusal/cancellation/cleanup/retry and BCL rejection; one prepared-font case protects actual asynchronous acquisition. Three canonical native cases use one ordinary API each. Literal versus encoded resources protect distinct discovery paths even when images agree.",
+  "focused": [
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "168b106fa6307c62188d6c8aeb6a46fb5f6db7a351117fc28ecd41373e1d3bad",
+      "testAssemblySha256": "6a784696838730ec36fa970dce1407f2aa15613aa9b6c36782bdc963fabf4a0c",
+      "selection": "FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~PublicContractTests",
+      "exitCode": 0,
+      "seconds": 6.960256500169635,
+      "counters": {
+        "executed": "359",
+        "passed": "359",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "2ffbf0ab0e26291a7d841a300d66e37bf8dad57d1071b04c39a135ce040ad018",
+      "testAssemblySha256": "0b8474e409c1fed88a5d84a6a5fbdbb0449b572e550d3bb634894f778e6569a9",
+      "selection": "FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~PublicContractTests",
+      "exitCode": 0,
+      "seconds": 8.864807999925688,
+      "counters": {
+        "executed": "359",
+        "passed": "359",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "168b106fa6307c62188d6c8aeb6a46fb5f6db7a351117fc28ecd41373e1d3bad",
+      "testAssemblySha256": "6a784696838730ec36fa970dce1407f2aa15613aa9b6c36782bdc963fabf4a0c",
+      "selection": "FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~PublicContractTests",
+      "exitCode": 0,
+      "seconds": 14.716483999975026,
+      "counters": {
+        "executed": "359",
+        "passed": "359",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "2ffbf0ab0e26291a7d841a300d66e37bf8dad57d1071b04c39a135ce040ad018",
+      "testAssemblySha256": "0b8474e409c1fed88a5d84a6a5fbdbb0449b572e550d3bb634894f778e6569a9",
+      "selection": "FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~PublicContractTests",
+      "exitCode": 0,
+      "seconds": 12.628060500137508,
+      "counters": {
+        "executed": "359",
+        "passed": "359",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "affected": [
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "168b106fa6307c62188d6c8aeb6a46fb5f6db7a351117fc28ecd41373e1d3bad",
+      "testAssemblySha256": "4c938ed40c0174b44ecf1ba6bd152070c5a555a3039312198a484cd1ec3ef573",
+      "selection": "(FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~SvgPreparation|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgPaintResource|FullyQualifiedName~SvgPattern|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgInstanceFont)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 32.44236300000921,
+      "counters": {
+        "executed": "12269",
+        "passed": "12269",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "2ffbf0ab0e26291a7d841a300d66e37bf8dad57d1071b04c39a135ce040ad018",
+      "testAssemblySha256": "0aecd364c218564a85f55bde8823790e2594ee325e36203560a976cd5c944a71",
+      "selection": "(FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~SvgPreparation|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgPaintResource|FullyQualifiedName~SvgPattern|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgInstanceFont)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 32.466177499853075,
+      "counters": {
+        "executed": "12269",
+        "passed": "12269",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "168b106fa6307c62188d6c8aeb6a46fb5f6db7a351117fc28ecd41373e1d3bad",
+      "testAssemblySha256": "4c938ed40c0174b44ecf1ba6bd152070c5a555a3039312198a484cd1ec3ef573",
+      "selection": "(FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~SvgPreparation|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgPaintResource|FullyQualifiedName~SvgPattern|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgInstanceFont)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 34.97929379995912,
+      "counters": {
+        "executed": "12269",
+        "passed": "12269",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "2ffbf0ab0e26291a7d841a300d66e37bf8dad57d1071b04c39a135ce040ad018",
+      "testAssemblySha256": "0aecd364c218564a85f55bde8823790e2594ee325e36203560a976cd5c944a71",
+      "selection": "(FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgRootParserTests|FullyQualifiedName~SvgPreparation|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~PublicContractTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgPaintResource|FullyQualifiedName~SvgPattern|FullyQualifiedName~SvgStyleSheet|FullyQualifiedName~SvgInstanceFont)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 35.47898510005325,
+      "counters": {
+        "executed": "12269",
+        "passed": "12269",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "168b106fa6307c62188d6c8aeb6a46fb5f6db7a351117fc28ecd41373e1d3bad",
+      "testAssemblySha256": "523391453876bf75190dfd393eb115d3d5f6dbdd74582b9bd47f751cad55148f",
+      "selection": "FullyQualifiedName~SvgXmlEntityReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests",
+      "exitCode": 0,
+      "seconds": 7.6053067001048476,
+      "counters": {
+        "executed": "6",
+        "passed": "6",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "168b106fa6307c62188d6c8aeb6a46fb5f6db7a351117fc28ecd41373e1d3bad",
+      "testAssemblySha256": "523391453876bf75190dfd393eb115d3d5f6dbdd74582b9bd47f751cad55148f",
+      "selection": "FullyQualifiedName~SvgXmlEntityReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests",
+      "exitCode": 0,
+      "seconds": 8.834803000092506,
+      "counters": {
+        "executed": "6",
+        "passed": "6",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "diagnosticValidation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "exit": 0,
+      "seconds": 11.72097189980559,
+      "librarySha256": "168b106fa6307c62188d6c8aeb6a46fb5f6db7a351117fc28ecd41373e1d3bad",
+      "schemaVersion": 5,
+      "reports": 35,
+      "entityReaderWorkspaceBytes": [
+        2986952,
+        2986952,
+        2986952
+      ],
+      "entityReaderManagedAllocatedBytes": [
+        100912,
+        100912,
+        100912
+      ]
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "exit": 0,
+      "seconds": 13.064661500044167,
+      "librarySha256": "2ffbf0ab0e26291a7d841a300d66e37bf8dad57d1071b04c39a135ce040ad018",
+      "schemaVersion": 5,
+      "reports": 35,
+      "entityReaderWorkspaceBytes": [
+        2986952,
+        2986952,
+        2986952
+      ],
+      "entityReaderManagedAllocatedBytes": [
+        100912,
+        100912,
+        100912
+      ]
+    },
+    {
+      "host": "linux",
+      "framework": "net11.0",
+      "exit": 0,
+      "seconds": 143.25606799987145,
+      "librarySha256": "168b106fa6307c62188d6c8aeb6a46fb5f6db7a351117fc28ecd41373e1d3bad",
+      "schemaVersion": 5,
+      "reports": 35,
+      "entityReaderWorkspaceBytes": [
+        2986952,
+        2986952,
+        2986952
+      ],
+      "entityReaderManagedAllocatedBytes": [
+        100992,
+        100992,
+        100992
+      ]
+    },
+    {
+      "host": "linux",
+      "framework": "net10.0",
+      "exit": 0,
+      "seconds": 170.29046559985727,
+      "librarySha256": "2ffbf0ab0e26291a7d841a300d66e37bf8dad57d1071b04c39a135ce040ad018",
+      "schemaVersion": 5,
+      "reports": 35,
+      "entityReaderWorkspaceBytes": [
+        2986952,
+        2986952,
+        2986952
+      ],
+      "entityReaderManagedAllocatedBytes": [
+        100912,
+        100912,
+        100912
+      ]
+    }
+  ],
+  "originalReplay": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 134.0781857999973,
+    "librarySha256": "168b106fa6307c62188d6c8aeb6a46fb5f6db7a351117fc28ecd41373e1d3bad",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": [
+          "preserveAspectRatio.svg",
+          "smile.svg"
+        ]
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 167,
+        "changedOriginals": [
+          "preserveAspectRatio.svg",
+          "smile.svg"
+        ]
+      }
+    }
+  },
+  "nativeCapture": "capture.json",
+  "nativeSummary": "Thirty fresh healthy captures: four authored cases plus unmodified hosted smile, three per host. Three canonical authored cases and smile are exact. Numeric-ampersand research control has 66 changed pixels per host. Original preserveAspectRatio with supplied Noto matches the existing independent expanded-graph/native-font reference on both hosts.",
+  "timingInterpretation": "Validation wall times include process/runner startup. Different selections are not a before/after performance benchmark or a test-suite speedup.",
+  "remaining": [
+    "Full source-commit host/runtime/package milestone qualification.",
+    "Preserved independent Windows DejaVu reference conflict; do not rewrite reference/assertion.",
+    "Direct text clipping and the remaining original font/resource/dynamic contexts."
+  ],
+  "sources": [
+    "https://www.w3.org/TR/xml/#intern-replacement",
+    "https://learn.microsoft.com/en-us/dotnet/api/system.xml.xmlreadersettings.maxcharactersfromentities"
+  ]
+}

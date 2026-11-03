@@ -916,9 +916,9 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Internal_doctype_subset_is_reported_as_malformed_public_input()
+    public void Unsupported_internal_subset_declaration_is_reported_as_malformed_public_input()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<!DOCTYPE svg []><svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<!DOCTYPE svg [<!ATTLIST svg width CDATA '1'>]><svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 

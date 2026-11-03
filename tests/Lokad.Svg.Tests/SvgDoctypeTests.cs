@@ -55,8 +55,9 @@ public sealed class SvgDoctypeTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<?xml version='1.0' encoding='" + new string('x', 10_000) + "'?>" + RedSvg);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(32 * 1024));
+        using RenderBudget.BudgetReservation workspace = budget.Reserve(0, SvgMemoryCategory.Parser);
         SvgException denied = Assert.Throws<SvgException>(() => SvgXmlReaderPolicy.Create(input,
-            SvgRenderLimits.Default, budget, CancellationToken.None));
+            SvgRenderLimits.Default, budget, workspace, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -74,8 +75,8 @@ public sealed class SvgDoctypeTests
             ("<!DOCTYPE\nsvg\tSYSTEM\r\n'uri' >", true),
             ("<!-- <!DOCTYPE svg [fake]> -->", true),
             ("<?note <!DOCTYPE svg [fake]> ?>", true),
-            ("<!DOCTYPE svg []>", false),
-            ("<!DOCTYPE svg [<!ENTITY x 'red'>]>", false),
+            ("<!DOCTYPE svg []>", true),
+            ("<!DOCTYPE svg [<!ENTITY x 'red'>]>", true),
             ("<!DOCTYPE svg [<!ENTITY x SYSTEM 'file:///does-not-exist'>]>", false),
             ("<!DOCTYPE svg [<!ENTITY % x '<!ENTITY y \"red\">'>%x;]>", false),
             ("<!DOCTYPE svg><!DOCTYPE svg>", false),
@@ -86,6 +87,7 @@ public sealed class SvgDoctypeTests
         foreach (string encoding in new[] { "utf8", "utf8-bom", "utf16le-bom", "utf16be-bom", "utf16le", "utf16be", "utf32le-bom", "utf32be-bom", "latin1" })
         {
             foreach ((string prolog, bool admitted) in cases) yield return [prolog + RedSvg, encoding, admitted];
+            yield return ["<!DOCTYPE svg [<!ENTITY color 'red'>]>" + RedSvg.Replace("fill='red'", "fill='&color;'", StringComparison.Ordinal), encoding, true];
             yield return [RedSvg + "<!DOCTYPE svg>", encoding, false];
             yield return ["<!DOCTYPE svg>" + RedSvg.Replace("fill='red'", "fill='&external;'", StringComparison.Ordinal), encoding, false];
         }
@@ -125,7 +127,7 @@ public sealed class SvgDoctypeTests
     {
         byte[] admitted = Encode("<!--lookalike <!DOCTYPE fake []> --><?note ???><!DOCTYPE svg SYSTEM '[literal]'>" + RedSvg, encoding, false);
         Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(RedSvg), SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(admitted, SvgRenderOptions.Default, CancellationToken.None).ToArray());
-        byte[] rejected = Encode("<!--before--><!DOCTYPE svg []>" + RedSvg, encoding, false);
+        byte[] rejected = Encode("<!--before--><!DOCTYPE svg [<!ENTITY x SYSTEM 'uri'>]>" + RedSvg, encoding, false);
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(rejected, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
     }
 
@@ -169,14 +171,16 @@ public sealed class SvgDoctypeTests
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, CancellationToken.None)).ErrorCode);
     }
 
-    [Fact]
-    public void External_dtd_contents_do_not_supply_entities_or_default_attributes()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void External_dtd_contents_do_not_supply_entities_or_default_attributes(bool internalSubset)
     {
         string path = Path.Combine(Path.GetTempPath(), "lokad-svg-doctype-" + Guid.NewGuid().ToString("N") + ".dtd");
         File.WriteAllText(path, "<!ENTITY external 'red'><!ATTLIST rect fill CDATA 'blue'>");
         try
         {
-            string prolog = "<!DOCTYPE svg SYSTEM '" + new Uri(path).AbsoluteUri + "'>";
+            string prolog = "<!DOCTYPE svg SYSTEM '" + new Uri(path).AbsoluteUri + "'" + (internalSubset ? " [<!ENTITY local 'red'>]" : "") + ">";
             string document = RedSvg.Replace(" fill='red'", "", StringComparison.Ordinal);
             Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(document), SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(prolog + document), SvgRenderOptions.Default, CancellationToken.None).ToArray());
             byte[] entity = System.Text.Encoding.UTF8.GetBytes(prolog + RedSvg.Replace("fill='red'", "fill='&external;'", StringComparison.Ordinal));
@@ -312,7 +316,8 @@ public sealed class SvgDoctypeTests
         long Measure(byte[] input)
         {
             long before = GC.GetAllocatedBytesForCurrentThread();
-            SvgXmlReaderPolicy.Create(input, SvgRenderLimits.Default, budget, CancellationToken.None);
+            using RenderBudget.BudgetReservation workspace = budget.Reserve(0, SvgMemoryCategory.Parser);
+            SvgXmlReaderPolicy.Create(input, SvgRenderLimits.Default, budget, workspace, CancellationToken.None);
             return GC.GetAllocatedBytesForCurrentThread() - before;
         }
     }

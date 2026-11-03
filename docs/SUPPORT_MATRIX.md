@@ -5,11 +5,16 @@ on Windows and Linux, without runtime package dependencies. The .NET 11 target
 currently uses the RC SDK/runtime pinned in [global.json](../global.json). This is the current support
 contract; it does not imply full SVG, CSS or browser conformance.
 
-One inert DOCTYPE declaration is accepted without loading an external subset.
-Internal DTD subsets, including internal entity declarations, currently reject as
-`MalformedInput`; the reader does not expand them. The
+One DOCTYPE is accepted without loading an external subset. Internal general
+entities may supply markup, attributes and text, including nested references.
+The shared BCL reader expands them under the existing XML character ceiling
+(`MaximumInputBytes`); exceeding that ceiling is malformed XML. Reader workspace
+is admitted before parsing and held through preparation. Parameter/external entity
+declarations and other DTD declaration kinds reject as `MalformedInput`. The
 [XML declaration tests](../tests/Lokad.Svg.Tests/SvgDoctypeTests.cs) cover this
-boundary consistently through parsing and font discovery.
+boundary consistently through parsing and font discovery; the
+[entity tests](../tests/Lokad.Svg.Tests/SvgInternalEntityTests.cs) protect expansion,
+resource selection, cancellation and storage ownership.
 
 ## Supported SVG subset
 

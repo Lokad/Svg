@@ -4,22 +4,25 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Admits one inert DOCTYPE declaration consistently across XML consumers.</summary>
+/// <summary>Admits one DOCTYPE and internal general entities consistently across XML consumers.</summary>
 internal static class SvgXmlReaderPolicy
 {
     private const int PrologWorkspaceBytes = 32 * 1024;
 
-    /// <remarks>The caller retains immutable input and reserves its ordinary XML-reader workspace. This method owns and releases a fixed prolog workspace plus any allowance for unusually long declaration tokens before returning settings. Prolog traversals check cancellation in bounded chunks. It creates no DOM or whole-input string, never resolves a resource, and is safe for concurrent independent calls. Internal subsets and duplicate declarations are rejected before the main reader can skip them.</remarks>
-    internal static XmlReaderSettings Create(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
+    /// <remarks>The caller retains immutable input and its ordinary reader reservation through every reader's completion. This method grows that reservation for internal declarations and expanded reader storage before the BCL parses them. It owns only temporary prolog storage. Scans check cancellation in bounded chunks, retain no entity names or replacement text, create no DOM or whole-input string, and never resolve a resource. Independent calls are thread safe. Other subset declarations and duplicate DOCTYPEs reject before the main reader can skip them.</remarks>
+    internal static XmlReaderSettings Create(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget,
+        RenderBudget.BudgetReservation readerWorkspace, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
-        bool declaration;
-        try { declaration = ValidateProlog(svg, budget, cancellationToken); }
+        DtdProcessing processing;
+        try { processing = ValidateProlog(svg, limits.MaximumInputBytes, budget, readerWorkspace, cancellationToken); }
         catch (DecoderFallbackException) { throw Malformed(); }
-        return new() { DtdProcessing = declaration ? DtdProcessing.Ignore : DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
+        return new() { DtdProcessing = processing, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes,
+            MaxCharactersFromEntities = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
 
-        static bool ValidateProlog(ReadOnlyMemory<byte> svg, RenderBudget budget, CancellationToken token)
+        static DtdProcessing ValidateProlog(ReadOnlyMemory<byte> svg, int maximumCharacters, RenderBudget budget,
+            RenderBudget.BudgetReservation readerWorkspace, CancellationToken token)
         {
             ReadOnlySpan<byte> bytes = svg.Span;
             (int stride, bool bigEndian, int offset) = Detect(bytes);
@@ -29,7 +32,7 @@ internal static class SvgXmlReaderPolicy
                 if ((start - offset) % 4096 == 0) token.ThrowIfCancellationRequested();
                 start += stride;
             }
-            if (Unit(bytes, start, stride, bigEndian) != '<' || Unit(bytes, start + stride, stride, bigEndian) is not ('?' or '!')) return false;
+            if (Unit(bytes, start, stride, bigEndian) != '<' || Unit(bytes, start + stride, stride, bigEndian) is not ('?' or '!')) return DtdProcessing.Prohibit;
 
             using RenderBudget.BudgetReservation reservation = budget.Reserve(PrologWorkspaceBytes, SvgMemoryCategory.Parser);
             System.Text.Encoding encoding = stride switch { 2 => bigEndian ? System.Text.Encoding.BigEndianUnicode : System.Text.Encoding.Unicode, 4 => new UTF32Encoding(bigEndian, true, true), _ => System.Text.Encoding.UTF8 };
@@ -55,25 +58,26 @@ internal static class SvgXmlReaderPolicy
             using ReadOnlyMemoryStream stream = new(svg);
             using StreamReader text = new(stream, encoding, true, 1024, false);
             PrologCursor cursor = new(text, token);
-            bool found = false;
+            DtdProcessing mode = DtdProcessing.Prohibit;
+            int declarations = 0, subsetCharacters = 0, maximumLiteral = 0, maximumReferences = 0;
             int next = cursor.Read();
             if (next == 0xfeff) next = cursor.Read();
             while (true)
             {
                 while (IsSpace(next)) next = cursor.Read();
-                if (next != '<') return found;
+                if (next != '<') break;
                 next = cursor.Read();
                 if (next == '?') { cursor.SkipUntil("?>"); next = cursor.Read(); continue; }
-                if (next != '!') return found;
+                if (next != '!') break;
                 next = cursor.Read();
                 if (next == '-')
                 {
-                    if (cursor.Read() != '-') return found;
+                    if (cursor.Read() != '-') break;
                     cursor.SkipUntil("-->"); next = cursor.Read(); continue;
                 }
-                if (next != 'D' || !MatchText(ref cursor, "OCTYPE")) return found;
-                if (found) throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML contains more than one DOCTYPE declaration.");
-                found = true;
+                if (next != 'D' || !MatchText(ref cursor, "OCTYPE")) break;
+                if (mode != DtdProcessing.Prohibit) throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML contains more than one DOCTYPE declaration.");
+                mode = DtdProcessing.Ignore;
                 int quote = 0;
                 while (true)
                 {
@@ -81,10 +85,101 @@ internal static class SvgXmlReaderPolicy
                     if (next < 0) throw Malformed();
                     if (quote != 0) { if (next == quote) quote = 0; continue; }
                     if (next is '\'' or '"') quote = next;
-                    else if (next == '[') throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML internal DTD subsets are not admitted.");
+                    else if (next == '[')
+                    {
+                        int subsetStart = cursor.Position;
+                        (declarations, maximumLiteral, maximumReferences) = ReadSubset(ref cursor);
+                        subsetCharacters = cursor.Position - subsetStart;
+                        mode = DtdProcessing.Parse;
+                        do { next = cursor.Read(); } while (IsSpace(next));
+                        if (next != '>') throw Malformed();
+                        break;
+                    }
                     else if (next == '>') break;
                 }
                 next = cursor.Read();
+            }
+
+            if (mode == DtdProcessing.Parse)
+            {
+                // Count possible uses in the body, including harmless lookalikes in
+                // comments/CDATA. Do not resolve names or materialize replacement text.
+                int references = 0;
+                if (declarations != 0)
+                {
+                    for (; next >= 0; next = cursor.Read()) if (next == '&') references++;
+                }
+                long expanded = ExpansionBound(declarations, maximumLiteral, maximumReferences, references, maximumCharacters);
+                // The ordinary reservation still covers source-sized reader buffers.
+                // Retain coarse allowances for DTD tables/literals and expanded value
+                // buffers (UTF-16 growth/copy overlap), not just final output strings.
+                readerWorkspace.Grow(16 * 1024L + 8L * subsetCharacters + 1024L * declarations + 8L * expanded);
+            }
+            token.ThrowIfCancellationRequested();
+            return mode;
+
+            static (int Declarations, int MaximumLiteral, int MaximumReferences) ReadSubset(ref PrologCursor input)
+            {
+                int count = 0, literal = 0, references = 0;
+                while (true)
+                {
+                    int value;
+                    do { value = input.Read(); } while (IsSpace(value));
+                    if (value == ']') return (count, literal, references);
+                    if (value != '<') throw Malformed();
+                    value = input.Read();
+                    if (value == '?') { input.SkipUntil("?>"); continue; }
+                    if (value != '!') throw Malformed();
+                    value = input.Read();
+                    if (value == '-')
+                    {
+                        if (input.Read() != '-') throw Malformed();
+                        input.SkipUntil("-->");
+                        continue;
+                    }
+                    if (value != 'E' || !MatchText(ref input, "NTITY") || !IsSpace(input.Read())) throw SubsetNotAdmitted();
+                    do { value = input.Read(); } while (IsSpace(value));
+                    if (value < 0 || value is '%' or '\'' or '"' or '>') throw SubsetNotAdmitted();
+                    // Names and replacement grammar are validated by the BCL. Only
+                    // classify internal literal declarations here; no name table.
+                    while (!IsSpace(value))
+                    {
+                        if (value < 0 || value is '\'' or '"' or '>') throw Malformed();
+                        value = input.Read();
+                    }
+                    do { value = input.Read(); } while (IsSpace(value));
+                    if (value is not ('\'' or '"')) throw SubsetNotAdmitted();
+                    int quote = value, length = 0, amps = 0;
+                    while ((value = input.Read()) != quote)
+                    {
+                        if (value < 0) throw Malformed();
+                        length++;
+                        if (value == '&') amps++;
+                    }
+                    do { value = input.Read(); } while (IsSpace(value));
+                    if (value != '>') throw Malformed();
+                    count++;
+                    literal = Math.Max(literal, length);
+                    references = Math.Max(references, amps);
+                }
+
+                static SvgException SubsetNotAdmitted() => new(SvgErrorCode.MalformedInput,
+                    "Only internal general entity declarations are admitted in an SVG XML subset.");
+            }
+
+            static long ExpansionBound(int declarations, int literal, int references, int uses, int ceiling)
+            {
+                // A valid active reference path has at most N declared entities:
+                // cycles reject in the BCL. Raw literal length bounds normalized
+                // length, and each raw ampersand can introduce at most one reference.
+                // L * (1 + R + ... + R^(N-1)) therefore bounds one expansion and
+                // intermediate replacement text. Numeric ampersands are included.
+                // Saturation only bounds storage admission; it never rejects input.
+                long bound = 0;
+                if (references <= 1) bound = Math.Min(ceiling, (long)literal * (references == 0 ? Math.Min(declarations, 1) : declarations));
+                else for (int depth = 0; depth < declarations && bound < ceiling; depth++)
+                    bound = Math.Min(ceiling, literal + references * bound);
+                return Math.Min(ceiling, uses * bound);
             }
 
             static bool Match(ReadOnlySpan<byte> input, int position, int unit, bool be, ReadOnlySpan<char> expected)
@@ -165,6 +260,7 @@ internal static class SvgXmlReaderPolicy
     private struct PrologCursor(StreamReader reader, CancellationToken token)
     {
         private int _position;
+        internal int Position => _position;
         internal int Read()
         {
             if (_position % 4096 == 0)

@@ -12,9 +12,9 @@ internal static class SvgRootStyleSheetParser
         cancellationToken.ThrowIfCancellationRequested();
         SvgPreparationProbe.Observe(SvgPreparationPhase.StyleSheets);
         // XML names are literal. ASCII-compatible inputs without either spelling
-        // need no second reader; wide encodings fall through to ordinary XML parsing.
+        // need no second reader. Wide encodings and entity-expanded names must parse.
         ReadOnlySpan<byte> bytes = svg.Span;
-        if (!bytes.Contains((byte)0) && bytes.IndexOf("<style"u8) < 0 && bytes.IndexOf(":style"u8) < 0) return;
+        if (settings.DtdProcessing != DtdProcessing.Parse && !bytes.Contains((byte)0) && bytes.IndexOf("<style"u8) < 0 && bytes.IndexOf(":style"u8) < 0) return;
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, settings);
         int rootDepth = -1, descriptionDepth = -1, nodes = 0;

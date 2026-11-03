@@ -1,0 +1,363 @@
+{
+  "recipe": 3,
+  "librarySha256": "168b106fa6307c62188d6c8aeb6a46fb5f6db7a351117fc28ecd41373e1d3bad",
+  "seconds": 93.68727599992417,
+  "hostedSourceBodiesRetained": 0,
+  "rows": [
+    {
+      "name": "literal-markup.svg",
+      "sourceSha256": "808b506cea1cff64bca9f60f1ef8eda25a0c4c921433c76516736edcec339a90",
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryPngSha256": "8d7d78d4c023763e0b93fead34f9393b3c3024b3e5d6cd05d26ce58ef7efcde7",
+          "width": 32,
+          "height": 16,
+          "captures": [
+            {
+              "pngSha256": "2ce89b29ec8df30d35e76fca7c99037da4ace45d370fe0b853fdabe8e763f11a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 547
+            },
+            {
+              "pngSha256": "2ce89b29ec8df30d35e76fca7c99037da4ace45d370fe0b853fdabe8e763f11a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 575
+            },
+            {
+              "pngSha256": "2ce89b29ec8df30d35e76fca7c99037da4ace45d370fe0b853fdabe8e763f11a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 526
+            }
+          ],
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "changedPixels": 0,
+          "nativePngSha256": "2ce89b29ec8df30d35e76fca7c99037da4ace45d370fe0b853fdabe8e763f11a"
+        },
+        {
+          "host": "linux",
+          "libraryPngSha256": "8d7d78d4c023763e0b93fead34f9393b3c3024b3e5d6cd05d26ce58ef7efcde7",
+          "width": 32,
+          "height": 16,
+          "captures": [
+            {
+              "pngSha256": "2ce89b29ec8df30d35e76fca7c99037da4ace45d370fe0b853fdabe8e763f11a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4953
+            },
+            {
+              "pngSha256": "2ce89b29ec8df30d35e76fca7c99037da4ace45d370fe0b853fdabe8e763f11a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6496
+            },
+            {
+              "pngSha256": "2ce89b29ec8df30d35e76fca7c99037da4ace45d370fe0b853fdabe8e763f11a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 7012
+            }
+          ],
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "changedPixels": 0,
+          "nativePngSha256": "2ce89b29ec8df30d35e76fca7c99037da4ace45d370fe0b853fdabe8e763f11a"
+        }
+      ],
+      "routineRenderingReference": true
+    },
+    {
+      "name": "literal-resources.svg",
+      "sourceSha256": "d8d317fecaf33279e0c0b674175e04aff02df54c3fd7bed3d08bcb1efd7ee803",
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryPngSha256": "de1869f9681594a01cbb9e5a375083d315395310b0e549fbaea71f8a888ba013",
+          "width": 32,
+          "height": 16,
+          "captures": [
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 540
+            },
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 548
+            },
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 585
+            }
+          ],
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "changedPixels": 0,
+          "nativePngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8"
+        },
+        {
+          "host": "linux",
+          "libraryPngSha256": "de1869f9681594a01cbb9e5a375083d315395310b0e549fbaea71f8a888ba013",
+          "width": 32,
+          "height": 16,
+          "captures": [
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4593
+            },
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4432
+            },
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5857
+            }
+          ],
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "changedPixels": 0,
+          "nativePngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8"
+        }
+      ],
+      "routineRenderingReference": true
+    },
+    {
+      "name": "nested-markup.svg",
+      "sourceSha256": "d0fce6ffa75526aa1a651c70759b41ab6fc218199b2b7add646ffbef8ee77718",
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryPngSha256": "8d7d78d4c023763e0b93fead34f9393b3c3024b3e5d6cd05d26ce58ef7efcde7",
+          "width": 32,
+          "height": 16,
+          "captures": [
+            {
+              "pngSha256": "3dc4b46e763d48fe2b4af6a763228f81028354c685a6f5326425a1059e7574f9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 10367
+            },
+            {
+              "pngSha256": "3dc4b46e763d48fe2b4af6a763228f81028354c685a6f5326425a1059e7574f9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 493
+            },
+            {
+              "pngSha256": "3dc4b46e763d48fe2b4af6a763228f81028354c685a6f5326425a1059e7574f9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 485
+            }
+          ],
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "changedPixels": 66,
+          "nativePngSha256": "3dc4b46e763d48fe2b4af6a763228f81028354c685a6f5326425a1059e7574f9"
+        },
+        {
+          "host": "linux",
+          "libraryPngSha256": "8d7d78d4c023763e0b93fead34f9393b3c3024b3e5d6cd05d26ce58ef7efcde7",
+          "width": 32,
+          "height": 16,
+          "captures": [
+            {
+              "pngSha256": "3dc4b46e763d48fe2b4af6a763228f81028354c685a6f5326425a1059e7574f9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4033
+            },
+            {
+              "pngSha256": "3dc4b46e763d48fe2b4af6a763228f81028354c685a6f5326425a1059e7574f9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 3229
+            },
+            {
+              "pngSha256": "3dc4b46e763d48fe2b4af6a763228f81028354c685a6f5326425a1059e7574f9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4405
+            }
+          ],
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "changedPixels": 66,
+          "nativePngSha256": "3dc4b46e763d48fe2b4af6a763228f81028354c685a6f5326425a1059e7574f9"
+        }
+      ],
+      "routineRenderingReference": false
+    },
+    {
+      "name": "encoded-resources.svg",
+      "sourceSha256": "f21084537dc98d89ae67e7d081bd6b1048f3efee1e9e9007bbfa5962e8dead8b",
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryPngSha256": "de1869f9681594a01cbb9e5a375083d315395310b0e549fbaea71f8a888ba013",
+          "width": 32,
+          "height": 16,
+          "captures": [
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 520
+            },
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 10421
+            },
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 530
+            }
+          ],
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "changedPixels": 0,
+          "nativePngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8"
+        },
+        {
+          "host": "linux",
+          "libraryPngSha256": "de1869f9681594a01cbb9e5a375083d315395310b0e549fbaea71f8a888ba013",
+          "width": 32,
+          "height": 16,
+          "captures": [
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 3799
+            },
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 3786
+            },
+            {
+              "pngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 3535
+            }
+          ],
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "changedPixels": 0,
+          "nativePngSha256": "65fb2f6c498dd1ca071183c3d24a03dd96ce36058f318a62b37e8fb4bd28efd8"
+        }
+      ],
+      "routineRenderingReference": true
+    },
+    {
+      "name": "smile.svg",
+      "sourceSha256": "e3d8f00248a02b117b030e0bb64beab3f492727e9298706c768ce7849fce7e33",
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryPngSha256": "0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971",
+          "width": 850,
+          "height": 700,
+          "captures": [
+            {
+              "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 534
+            },
+            {
+              "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 529
+            },
+            {
+              "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 10457
+            }
+          ],
+          "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "changedPixels": 0,
+          "nativePngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a"
+        },
+        {
+          "host": "linux",
+          "libraryPngSha256": "0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971",
+          "width": 850,
+          "height": 700,
+          "captures": [
+            {
+              "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4576
+            },
+            {
+              "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 3809
+            },
+            {
+              "pngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4021
+            }
+          ],
+          "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "changedPixels": 0,
+          "nativePngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a"
+        }
+      ],
+      "routineRenderingReference": false
+    },
+    {
+      "name": "preserveAspectRatio.svg",
+      "sourceSha256": "1a567ae0ddcfb78474a7313673960004ef67bade3d0b8eea9719bee934888dcd",
+      "hosts": [
+        {
+          "host": "windows",
+          "libraryPngSha256": "641ee5d3d7c5ea99bb250bdd37f089b3d74a983d796f8f3f2c7b887bd52dc37d",
+          "width": 450,
+          "height": 300,
+          "captures": [],
+          "referenceContext": "Prior independently captured expanded graph with explicit Noto binding; managed input is the original unmodified XML and supplied Noto.",
+          "changedPixels": 0,
+          "nativePngSha256": "a648bf1fcf846d9fee98425008a9a73978c98ce8e4cf3ff9ba2656cf46d5981a"
+        },
+        {
+          "host": "linux",
+          "libraryPngSha256": "d2c319886593b0e911c69f8f7ca321531f00a9c3304151cd32e82aa244f4daa6",
+          "width": 450,
+          "height": 300,
+          "captures": [],
+          "referenceContext": "Prior independently captured expanded graph with explicit Noto binding; managed input is the original unmodified XML and supplied Noto.",
+          "changedPixels": 0,
+          "nativePngSha256": "232179316391a5376d83149b5b10adaa64ce7bae36e19185e7e1dda628fae235"
+        }
+      ],
+      "routineRenderingReference": false
+    }
+  ],
+  "status": "Native literal/encoded resource and original smile comparisons are exact; numeric-ampersand control differs by 66 pixels on each host. Preserve all captured inputs and pixels.",
+  "chromeVersion": "153.0.8010.52",
+  "authoredInputsLicense": "CC0-1.0"
+}

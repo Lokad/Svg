@@ -27,6 +27,7 @@ internal static class XmlReaderWorkspaceProbe
         {
             Traverse("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), limits);
             Traverse("<?xml version='1.0'?><!DOCTYPE svg><svg/>"u8.ToArray(), limits);
+            Traverse("<!DOCTYPE s [<!ENTITY x ''>]><s>&x;</s>"u8.ToArray(), limits);
         }
     }
 
@@ -36,7 +37,7 @@ internal static class XmlReaderWorkspaceProbe
         RenderBudget budget = new();
         using RenderBudget.BudgetReservation workspace = budget.Reserve(
             SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
-        XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, CancellationToken.None);
+        XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, workspace, CancellationToken.None);
         long touchedCharacters = 0;
         long textNodeCount = 0;
         long attributeAccessManagedAllocatedBytes = 0;

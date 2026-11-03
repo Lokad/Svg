@@ -34,8 +34,9 @@ references unchanged when reorganizing tests.
 
 `test-memory-probe.ps1` exercises the shared XML-reader policy in conversion and
 allocation modes. Reader workspace reports include peak admitted prolog storage;
-managed allocation totals are separate observations. Memory artifact schema 4
-requires inert-DOCTYPE and internal-subset parity, checked by
+managed allocation totals are separate observations. Memory artifact schema 5
+requires inert-DOCTYPE, nested internal-entity and external-entity rejection
+parity, checked by
 `test-validate-ci-artifacts.ps1`; use the validator from the producing commit.
 
 For the [bilinear numeric probe](../tests/Research/svgweb/highp-bilinear.js),

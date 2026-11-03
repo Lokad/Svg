@@ -177,12 +177,22 @@ $xmlDoctypeMeasurement = $reports[$reports.Count - 1].report
 if ([long]$xmlDoctypeMeasurement.xmlReaderWorkspaceBytes -le [long]$xmlOrdinaryMeasurement.xmlReaderWorkspaceBytes) { throw 'The XML reader report omitted the transient prolog workspace.' }
 
 $xmlSubsetInput = Join-Path $ResultsDirectory "$runId-xml-reader-subset.svg"
-[IO.File]::WriteAllText($xmlSubsetInput, '<!DOCTYPE svg [<!ENTITY box "<rect/>">]><svg xmlns="http://www.w3.org/2000/svg">&box;</svg>', [Text.UTF8Encoding]::new($false))
+[IO.File]::WriteAllText($xmlSubsetInput, '<!DOCTYPE svg [<!ENTITY box SYSTEM "urn:lokad-svg:unresolved">]><svg xmlns="http://www.w3.org/2000/svg">&box;</svg>', [Text.UTF8Encoding]::new($false))
 foreach ($xmlMode in @('conversion', 'xml-reader')) {
     $xmlSubsetOutput = Join-Path $ResultsDirectory "$runId-xml-subset-$xmlMode.png"
     $xmlSubset = Invoke-Probe -Name "xml-subset-$xmlMode" -InputPath $xmlSubsetInput -Output $xmlSubsetOutput -ExpectedExitCode 1 -ExtraArguments @('--mode', $xmlMode)
-    if ($xmlSubset['outcome'] -ne 'svg-error' -or $xmlSubset['svgErrorCode'] -ne 'MalformedInput' -or (Test-Path -LiteralPath $xmlSubsetOutput)) { throw "Internal-subset admission differs in $xmlMode mode." }
+    if ($xmlSubset['outcome'] -ne 'svg-error' -or $xmlSubset['svgErrorCode'] -ne 'MalformedInput' -or (Test-Path -LiteralPath $xmlSubsetOutput)) { throw "External-entity declaration admission differs in $xmlMode mode." }
 }
+
+$xmlEntityInput = Join-Path $ResultsDirectory "$runId-xml-reader-entities.svg"
+$xmlEntityLiteral = New-Object string('x', 2048)
+[IO.File]::WriteAllText($xmlEntityInput, '<!DOCTYPE svg [<!ENTITY a "' + $xmlEntityLiteral + '"><!ENTITY label "&a;&a;&a;&a;"><!ENTITY red "red"><!ENTITY box "<rect width=''2'' height=''2'' fill=''&red;''/>">]><svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><metadata><probe xmlns="urn:lokad:probe" value="&label;"/></metadata>&box;</svg>', [Text.UTF8Encoding]::new($false))
+$xmlEntityOutput = Join-Path $ResultsDirectory "$runId-xml-entity-conversion.png"
+$xmlEntityConversion = Invoke-Probe -Name 'xml-entity-conversion' -InputPath $xmlEntityInput -Output $xmlEntityOutput -ExpectedExitCode 0 -ExtraArguments @()
+if ($xmlEntityConversion['outcome'] -ne 'success' -or -not (Test-Path -LiteralPath $xmlEntityOutput)) { throw 'Internal general entities did not retain production conversion admission.' }
+Assert-XmlReaderMeasurements -Name 'xml-reader-entities' -InputPath $xmlEntityInput -MinimumTouchedCharacters 8192 -MinimumTextNodes 0
+$xmlEntityMeasurement = $reports[$reports.Count - 1].report
+if ([long]$xmlEntityMeasurement.xmlReaderWorkspaceBytes -le [long]$xmlDoctypeMeasurement.xmlReaderWorkspaceBytes) { throw 'The XML reader report omitted retained entity workspace.' }
 
 $xmlReaderAttributeValueInput = Join-Path $ResultsDirectory "$runId-xml-reader-attribute-values.svg"
 $xmlReaderAttributeValue = New-Object string('x', 4KB)
@@ -251,7 +261,7 @@ $fingerprints = @($reports | ForEach-Object { $_.report.operatingSystem + '|' + 
 if ($fingerprints.Count -ne 1) { throw 'The child-process reports do not share one runtime/platform fingerprint.' }
 $runtime = $reports[0].report
 $summary = [ordered]@{
-    schemaVersion = 4
+    schemaVersion = 5
     runId = $runId
     fixtureSha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant()
     runtimeFingerprint = [ordered]@{
@@ -266,4 +276,4 @@ $summary = [ordered]@{
 $summaryPath = Join-Path $ResultsDirectory "$runId-summary.json"
 [IO.File]::WriteAllText($summaryPath, ($summary | ConvertTo-Json -Depth 6), [Text.UTF8Encoding]::new($false))
 
-Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements for text, attributes and inert DOCTYPEs, shared internal-subset rejection, font-discovery ledger scenarios, embedded-image conversion and pattern tiles. Summary retained at $summaryPath."
+Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements for text, attributes, inert DOCTYPEs and internal entities, shared external-entity rejection, font-discovery ledger scenarios, embedded-image conversion and pattern tiles. Summary retained at $summaryPath."

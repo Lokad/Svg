@@ -403,6 +403,9 @@ unit/rounding/ownership mechanisms from five canonical native rendering fixtures
 | [Admission/cancellation map](Research/release-baselines/parser-validation.md) | Structural/numerical checks and real ownership contracts retained after fuel/private-cap removal. |
 
 Collection manifests/READMEs own case identities, options, exclusions and licenses.
+The [internal-entity checks](Research/xml-entities/README.md) separate XML and
+ownership mechanisms, one prepared-font interaction and three canonical native
+cases; numeric-ampersand browser differences remain explicit research evidence.
 Historical document totals, percentage gates and exploratory quotas are not
 completion criteria. Retained cases keep their own contracts regardless of the
 collection name.
