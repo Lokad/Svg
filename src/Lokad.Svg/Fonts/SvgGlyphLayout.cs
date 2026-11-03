@@ -167,7 +167,7 @@ internal static class SvgGlyphLayout
                 paintReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgTextGlyphPaint>(glyphCount), SvgMemoryCategory.Geometry);
                 glyphPaints = new SvgTextGlyphPaint[glyphCount];
             }
-            int[]? sourceLengths = null;
+            GlyphSourceRange[]? sourceRanges = null;
             OpenTypeGsubLigatureTable? ligatures = OpenTypeFont.GetLatinLigatures(font.Bytes, font.Metrics, cancellationToken);
             Span<GlyphLookup> cachedLookups = stackalloc GlyphLookup[GlyphLookupCacheCapacity];
             int cachedLookupCount = 0;
@@ -267,15 +267,17 @@ internal static class SvgGlyphLayout
                     sourceEnd = Math.Min(sourceEnd, nodeBoundaries[shapingNodeIndex].Offset);
                 if (spacing == 0 && ligatures is {} graph && OpenTypeFont.TryGetLatinLigature(font.Bytes, font.Metrics, graph, text, mappedSourceOffset, sourceEnd, glyphIndex, cancellationToken, out ushort ligatureGlyph, out int ligatureLength))
                 {
-                    if (sourceLengths is null)
+                    if (sourceRanges is null)
                     {
-                        clusterReservation = budget.Reserve(checked(32L + glyphCount * 4L), SvgMemoryCategory.Geometry);
-                        sourceLengths = new int[glyphCount];
-                        int previousIndex = 0;
+                        clusterReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<GlyphSourceRange>(glyphCount), SvgMemoryCategory.Geometry);
+                        sourceRanges = new GlyphSourceRange[glyphCount];
+                        int previousIndex = 0, previousOffset = 0;
                         foreach (Rune previous in text.AsSpan(0, mappedSourceOffset).EnumerateRunes())
                         {
                             cancellationToken.ThrowIfCancellationRequested();
-                            sourceLengths[previousIndex++] = previous.Utf16SequenceLength;
+                            int end = previousOffset + previous.Utf16SequenceLength;
+                            sourceRanges[previousIndex++] = new(previousOffset, end);
+                            previousOffset = end;
                         }
                     }
                     for (int component = 1; component < ligatureLength; component++)
@@ -289,7 +291,7 @@ internal static class SvgGlyphLayout
                     OpenTypeFont.ValidateGlyphPositioning(font.Bytes, glyphIndex, font.Metrics, cancellationToken);
                     advance = OpenTypeFont.GetAdvanceWidth(font.Bytes, glyphIndex, font.Metrics, cancellationToken);
                 }
-                if (sourceLengths is not null) sourceLengths[glyphPosition] = sourceLength;
+                if (sourceRanges is not null) sourceRanges[glyphPosition] = new(mappedSourceOffset, mappedSourceOffset + sourceLength);
                 double wordGap = GetWordGap(scalar, advance, wordSpacing, letterSpacingSpans, mappedSpacingIndex);
                 double scaledAdvance = characterMetrics is SvgGlyphDeviceMetrics metrics
                     ? metrics.IsTextPath ? metrics.GetAdvance(advance, 0, font.UnitsPerEm, fontSize, spacing, wordGap)
@@ -348,11 +350,12 @@ internal static class SvgGlyphLayout
             for (int index = 0; index < positionedGlyphCount; index++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                GlyphSourceRange source = GetSourceRange(sourceRanges, index, text, sourceOffset);
                 SvgPositionedGlyph glyph = glyphs[index];
                 SvgGlyphDeviceMetrics? glyphMetrics = deviceMetrics;
                 if (!placementRanges.IsEmpty && deviceMetrics is {} sourceMetrics)
                 {
-                    while (placementRanges[glyphPlacementIndex].End <= sourceOffset) glyphPlacementIndex++;
+                    while (placementRanges[glyphPlacementIndex].End <= source.Start) glyphPlacementIndex++;
                     glyphMetrics = sourceMetrics with { IsTextPath = placementRanges[glyphPlacementIndex].Path is not null };
                 }
 
@@ -361,9 +364,9 @@ internal static class SvgGlyphLayout
                 {
                     font = glyphFonts[index].Font; fontSize = glyphFonts[index].FontSize; scale = fontSize / font.UnitsPerEm;
                 }
-                double currentLetterSpacing = GetLetterSpacing(sourceOffset, letterSpacing, letterSpacingSpans, ref spacingSpanIndex);
-                int glyphSourceOffset = sourceOffset;
-                sourceOffset += sourceLengths is null ? char.IsSurrogatePair(text, sourceOffset) ? 2 : 1 : sourceLengths[index];
+                double currentLetterSpacing = GetLetterSpacing(source.Start, letterSpacing, letterSpacingSpans, ref spacingSpanIndex);
+                int glyphSourceOffset = source.Start;
+                sourceOffset = source.End;
                 bool positionedFragmentEnds = false;
                 while (positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start < sourceOffset)
                 {
@@ -433,7 +436,7 @@ internal static class SvgGlyphLayout
                                     if (following.LetterSpacing != runSpacing.LetterSpacing || following.WordSpacing != runSpacing.WordSpacing) break;
                                 }
                                 cancellationToken.ThrowIfCancellationRequested();
-                                runSourceEnd += sourceLengths is null ? char.IsSurrogatePair(text, runSourceEnd) ? 2 : 1 : sourceLengths[kerningRunEnd];
+                                runSourceEnd = GetSourceRange(sourceRanges, kerningRunEnd, text, runSourceEnd).End;
                                 kerningRunEnd++;
                             }
                         }
@@ -525,7 +528,7 @@ internal static class SvgGlyphLayout
                     while (boundarySourceOffset < chunkEndSourceOffset)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
-                        boundarySourceOffset += sourceLengths is null ? char.IsSurrogatePair(text, boundarySourceOffset) ? 2 : 1 : sourceLengths[chunkEnd];
+                        boundarySourceOffset = GetSourceRange(sourceRanges, chunkEnd, text, boundarySourceOffset).End;
                         chunkEnd++;
                     }
                 }
@@ -539,8 +542,9 @@ internal static class SvgGlyphLayout
                     double positionedX = deviceMetrics is SvgGlyphDeviceMetrics positionMetrics
                         ? nominalOrigin + chunkShift + positionMetrics.RoundOffset(localX) : glyphs[index].X;
                     int sourceAdjustment = positionAdjustmentIndex;
-                    ApplyPositionAdjustment(ref relativeX, ref relativeY, positionedX, originY, sourceOffset, positionAdjustments, ref positionAdjustmentIndex, cancellationToken);
-                    sourceOffset += sourceLengths is null ? char.IsSurrogatePair(text, sourceOffset) ? 2 : 1 : sourceLengths[index];
+                    GlyphSourceRange source = GetSourceRange(sourceRanges, index, text, sourceOffset);
+                    ApplyPositionAdjustment(ref relativeX, ref relativeY, positionedX, originY, source.Start, positionAdjustments, ref positionAdjustmentIndex, cancellationToken);
+                    sourceOffset = source.End;
                     double adjustedX = positionedX + relativeX;
                     double advanceEdge = adjustedX + glyphs[index].Advance;
                     if (index == chunkStart) anchorOrigin = adjustedX;
@@ -652,6 +656,13 @@ internal static class SvgGlyphLayout
             throw;
         }
         finally { clusterReservation?.Dispose(); }
+
+        // One-to-one cmap runs borrow the string and need no source array. A
+        // substituted glyph keeps its explicit emitted UTF-16 source interval;
+        // positioning and filtered lookup traversal do not reconstruct it by
+        // adding the lengths of preceding glyphs.
+        static GlyphSourceRange GetSourceRange(GlyphSourceRange[]? ranges, int index, string source, int scalarStart)
+            => ranges is null ? new(scalarStart, scalarStart + (char.IsSurrogatePair(source, scalarStart) ? 2 : 1)) : ranges[index];
 
         // Paint quantizes the final anchored source rectangle. Ordinary offsets
         // within a shaped fragment retain scalar precision.
@@ -907,6 +918,9 @@ internal static class SvgGlyphLayout
 
     /// <summary>Represents one stack-resident per-run cmap and advance lookup.</summary>
     private readonly record struct GlyphLookup(uint Scalar, ushort GlyphIndex, ushort Advance);
+
+    /// <summary>One glyph's half-open interval in emitted UTF-16 text, before fitting or placement.</summary>
+    private readonly record struct GlyphSourceRange(int Start, int End);
 }
 
 /// <summary>Owns a budget reservation for one positioned-glyph array until direct text lowering completes.</summary>

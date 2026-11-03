@@ -84,6 +84,35 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(53, positions.Glyphs[1].Y);
     }
 
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public async Task Late_ligatures_preserve_supplementary_prefixes_and_following_face_positions()
+    {
+        byte[] bytes = CreateLigatureFont(false);
+        OpenTypeTableRange cmap = Assert.IsType<OpenTypeTableRange>(OpenTypeFont.ParseMetrics(bytes, CancellationToken.None).Cmap);
+        WriteUInt16(bytes, cmap.Offset + 12 + 14, 66); // A–B select glyphs 1–2.
+        using SvgFontSnapshot latin = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
+        using SvgFontSnapshot supplementary = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFormat12Font())], CancellationToken.None);
+        SvgPreparedFont face = Assert.Single(latin.Fonts), emoji = Assert.Single(supplementary.Fonts);
+        SvgTextResolvedFontSpan[] fonts = [new(0, 2, new(emoji, 20)), new(2, 6, new(face, 20)), new(6, 8, new(emoji, 20))];
+        RenderBudget budget = new(new HostMemoryBudget(4_096));
+        using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(face, "😀AAAB😀", 20, 10, 40, 0, [],
+            [new(5, 100, 50, 2, 3), new(6, 200, 60, 4, 5)], [], fonts, SvgTextAnchor.Start, null, budget, "label", CancellationToken.None))
+        {
+            Assert.Equal(4, glyphs.Glyphs.Length);
+            Assert.Equal(10, glyphs.Glyphs[0].X);
+            Assert.Equal(10 + 12_000d / 1024, glyphs.Glyphs[1].X);
+            Assert.Equal(102, glyphs.Glyphs[2].X);
+            Assert.Equal(53, glyphs.Glyphs[2].Y);
+            Assert.Equal(204, glyphs.Glyphs[3].X);
+            Assert.Equal(65, glyphs.Glyphs[3].Y);
+            Assert.Equal(emoji, glyphs.GlyphFonts[0].Font);
+            Assert.Equal(face, glyphs.GlyphFonts[1].Font);
+            Assert.Equal(emoji, glyphs.GlyphFonts[3].Font);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [InlineData("default", 1)]
     [InlineData("other-script", 2)]
@@ -133,8 +162,15 @@ public sealed partial class OpenTypeFontTests
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateLigatureFont(false))], CancellationToken.None);
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
-        RenderBudget denied = new RenderBudget(new HostMemoryBudget(128));
+        RenderBudget measured = new(new HostMemoryBudget(1_024));
+        using (SvgGlyphLayout.CreateStorage(font, "AAA", 20, 0, 0, measured, CancellationToken.None)) { }
+        Assert.Equal(0, measured.Snapshot().CurrentBytes);
+        HostMemoryBudget host = new(measured.Snapshot().PeakBytes - 1);
+        RenderBudget denied = new(host);
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(font, "AAA", 20, 0, 0, denied, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        host.Limit = measured.Snapshot().PeakBytes;
+        using (SvgGlyphLayout.CreateStorage(font, "AAA", 20, 0, 0, denied, CancellationToken.None)) { }
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_024));
         using (SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(font, "AAAAAA", 20, 0, 0, SvgTextAnchor.Start, budget, CancellationToken.None))

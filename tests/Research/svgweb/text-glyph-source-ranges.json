@@ -1,0 +1,568 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "f1e267ac142fa79e1edcd203381f29f06f856e85",
+  "status": "CLOSED: explicit source ranges for existing ligature shaping. OPEN: canonical normalization, glyph clusters, ccmp substitution and mark attachment; no additional text or font admission.",
+  "scope": {
+    "newMechanismCases": 1,
+    "strengthenedOwnershipContracts": 1,
+    "referenceBytesChanged": 0,
+    "newPublicTypes": 0,
+    "newRuntimeDependencies": 0,
+    "newResourceOwners": 0,
+    "hostedSvgBodiesRetained": 0,
+    "sourceAttributeValuesRetained": 0
+  },
+  "model": {
+    "sourceUnits": "Half-open emitted UTF-16 intervals after case projection; original SVG addresses still resolve before projection.",
+    "ordinaryRuns": "One-to-one cmap runs borrow the input string, allocating no source scratch.",
+    "substitutedRuns": "One transient array records explicit source start/end per glyph; spacing, filtered pair traversal and absolute positioning consume those intervals.",
+    "memory": "Source-array capacity is the input scalar count N. Charge changes from 32+4*N to 32+8*N bytes only when a ligature is formed. The same reservation lifetime ends in the layout finally block; no array is retained by the scene.",
+    "boundaries": "Physical face/size, paint, spacing, absolute position, node/native font scale and path rules stay unchanged.",
+    "limitations": "Current admitted glyph ranges remain monotone and disjoint. They do not yet represent reordered source association or multiple glyphs sharing a cluster. No guard was removed, no offset guessed and no mark rendering claim made."
+  },
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs": "c7088da592dda197ef93185fab2ba98566ea7c52290d5800939baaca781e0058",
+    "tests/Lokad.Svg.Tests/OpenTypeFontLigatureTests.cs": "fae1effbfd300c0ce3118a1908b27d4d0d0e489fff68894d08b84b4a91784bd3"
+  },
+  "coverage": {
+    "mechanism": "The new case forms a ligature after a supplementary scalar, then checks separate UTF-16 absolute resets and selected physical faces. Existing filtered-GPOS cases cover lookahead over ligatures/supplementary input, spacing/font boundaries and last/sole glyph rejection.",
+    "ownership": "The existing ligature contract now measures the peak, refuses at peak-minus-one, checks zero live bytes, retries at exact peak, and retains cancellation cleanup. No fixture/API matrix added.",
+    "rendering": "Existing canonical text, mixed-run and shaping-interval images; all references/tolerances unchanged."
+  },
+  "builds": [
+    {
+      "framework": "net11.0",
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "framework": "net10.0",
+      "warnings": 0,
+      "errors": 0
+    }
+  ],
+  "qualification": {
+    "before-2": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "selection": "FullyQualifiedName~ligatur|FullyQualifiedName~Ligatur|FullyQualifiedName~Gpos_|FullyQualifiedName~supplementary|FullyQualifiedName~Missing_scalar_index|FullyQualifiedName~Font_interval_coalescing",
+        "exitCode": 0,
+        "seconds": 8.818383199861273,
+        "librarySha256": "69b38fde6bc716a7d35d69dfe581dda0264b4e0e01a89f3186e9dcba9cf7fcbb",
+        "testAssemblySha256": "bcf656100f9cddc87325a50c9f3660d04a2da125b5005e3ef9092c30380cd98b",
+        "counters": {
+          "total": "137",
+          "executed": "137",
+          "passed": "137",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "selection": "FullyQualifiedName~ligatur|FullyQualifiedName~Ligatur|FullyQualifiedName~Gpos_|FullyQualifiedName~supplementary|FullyQualifiedName~Missing_scalar_index|FullyQualifiedName~Font_interval_coalescing",
+        "exitCode": 0,
+        "seconds": 10.184553500032052,
+        "librarySha256": "69b38fde6bc716a7d35d69dfe581dda0264b4e0e01a89f3186e9dcba9cf7fcbb",
+        "testAssemblySha256": "bcf656100f9cddc87325a50c9f3660d04a2da125b5005e3ef9092c30380cd98b",
+        "counters": {
+          "total": "137",
+          "executed": "137",
+          "passed": "137",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      }
+    ],
+    "after-1": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "selection": "FullyQualifiedName~ligatur|FullyQualifiedName~Ligatur|FullyQualifiedName~Gpos_|FullyQualifiedName~supplementary|FullyQualifiedName~Missing_scalar_index|FullyQualifiedName~Font_interval_coalescing",
+        "exitCode": 0,
+        "seconds": 7.860772399930283,
+        "librarySha256": "cc82951ed82b996c7bbdcba80ecd80e524c80bd8752fc8317a52a44c167b475c",
+        "testAssemblySha256": "bcf656100f9cddc87325a50c9f3660d04a2da125b5005e3ef9092c30380cd98b",
+        "counters": {
+          "total": "137",
+          "executed": "137",
+          "passed": "137",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "selection": "FullyQualifiedName~ligatur|FullyQualifiedName~Ligatur|FullyQualifiedName~Gpos_|FullyQualifiedName~supplementary|FullyQualifiedName~Missing_scalar_index|FullyQualifiedName~Font_interval_coalescing",
+        "exitCode": 0,
+        "seconds": 9.449388899840415,
+        "librarySha256": "cc82951ed82b996c7bbdcba80ecd80e524c80bd8752fc8317a52a44c167b475c",
+        "testAssemblySha256": "bcf656100f9cddc87325a50c9f3660d04a2da125b5005e3ef9092c30380cd98b",
+        "counters": {
+          "total": "137",
+          "executed": "137",
+          "passed": "137",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      }
+    ],
+    "affected-1": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "selection": "FullyQualifiedName~SvgText|FullyQualifiedName~SvgLanguageCasing|FullyQualifiedName~SvgCapitalization|FullyQualifiedName~SvgLowercase|FullyQualifiedName~SvgFontCoverage|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgConversionApiContract|FullyQualifiedName~SvgCooperative|FullyQualifiedName~SvgMemory",
+        "exitCode": 0,
+        "seconds": 38.87741809990257,
+        "librarySha256": "cc82951ed82b996c7bbdcba80ecd80e524c80bd8752fc8317a52a44c167b475c",
+        "testAssemblySha256": "bcf656100f9cddc87325a50c9f3660d04a2da125b5005e3ef9092c30380cd98b",
+        "counters": {
+          "total": "23866",
+          "executed": "23866",
+          "passed": "23866",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "selection": "FullyQualifiedName~SvgText|FullyQualifiedName~SvgMixed|FullyQualifiedName~SvgShapingInterval",
+        "exitCode": 0,
+        "seconds": 17.73640049993992,
+        "librarySha256": "cc82951ed82b996c7bbdcba80ecd80e524c80bd8752fc8317a52a44c167b475c",
+        "testAssemblySha256": "7020798829851dac33edf14da51fa53eca5d42f07b34c0c6642f1af073571afe",
+        "counters": {
+          "total": "781",
+          "executed": "781",
+          "passed": "781",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "selection": "FullyQualifiedName~SvgText|FullyQualifiedName~SvgLanguageCasing|FullyQualifiedName~SvgCapitalization|FullyQualifiedName~SvgLowercase|FullyQualifiedName~SvgFontCoverage|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgConversionApiContract|FullyQualifiedName~SvgCooperative|FullyQualifiedName~SvgMemory",
+        "exitCode": 0,
+        "seconds": 42.747337099863216,
+        "librarySha256": "cc82951ed82b996c7bbdcba80ecd80e524c80bd8752fc8317a52a44c167b475c",
+        "testAssemblySha256": "bcf656100f9cddc87325a50c9f3660d04a2da125b5005e3ef9092c30380cd98b",
+        "counters": {
+          "total": "23866",
+          "executed": "23866",
+          "passed": "23866",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "selection": "FullyQualifiedName~SvgText|FullyQualifiedName~SvgMixed|FullyQualifiedName~SvgShapingInterval",
+        "exitCode": 0,
+        "seconds": 22.96713799983263,
+        "librarySha256": "cc82951ed82b996c7bbdcba80ecd80e524c80bd8752fc8317a52a44c167b475c",
+        "testAssemblySha256": "7020798829851dac33edf14da51fa53eca5d42f07b34c0c6642f1af073571afe",
+        "counters": {
+          "total": "781",
+          "executed": "781",
+          "passed": "781",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      }
+    ],
+    "compatibility-1": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "selection": "FullyQualifiedName~ligatur|FullyQualifiedName~Ligatur|FullyQualifiedName~Gpos_|FullyQualifiedName~supplementary|FullyQualifiedName~Missing_scalar_index|FullyQualifiedName~Font_interval_coalescing",
+        "exitCode": 0,
+        "seconds": 10.26844279980287,
+        "librarySha256": "20695666e3c4040a6e4995538c697b75120b006b0fe786e420952c723edd355b",
+        "testAssemblySha256": "a4fc1a399af9ad791036b914419a27fd15a45cc543a5c770cd1e873bcb2b840e",
+        "counters": {
+          "total": "137",
+          "executed": "137",
+          "passed": "137",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "selection": "FullyQualifiedName~ligatur|FullyQualifiedName~Ligatur|FullyQualifiedName~Gpos_|FullyQualifiedName~supplementary|FullyQualifiedName~Missing_scalar_index|FullyQualifiedName~Font_interval_coalescing",
+        "exitCode": 0,
+        "seconds": 15.293395699933171,
+        "librarySha256": "20695666e3c4040a6e4995538c697b75120b006b0fe786e420952c723edd355b",
+        "testAssemblySha256": "a4fc1a399af9ad791036b914419a27fd15a45cc543a5c770cd1e873bcb2b840e",
+        "counters": {
+          "total": "137",
+          "executed": "137",
+          "passed": "137",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      }
+    ]
+  },
+  "focusedTiming": [
+    {
+      "host": "windows",
+      "executed": 137,
+      "beforeSeconds": 8.818383199861273,
+      "afterSeconds": 7.860772399930283
+    },
+    {
+      "host": "linux",
+      "executed": 137,
+      "beforeSeconds": 10.184553500032052,
+      "afterSeconds": 9.449388899840415
+    }
+  ],
+  "timingInterpretation": "Identical compiled tests and selections against before/current libraries. Includes startup and two-host concurrency; no speedup claim. The first isolated baseline attempt lacked kerning-flags assets and is excluded; every failure was DirectoryNotFoundException. The corrected baseline copied only those required assets and passed.",
+  "unresolvedWitnesses": {
+    "unchangedFiles": [
+      {
+        "path": "tests/Research/text-case-mapping/turkic/capture-css.json",
+        "sha256": "72c81ba81c4839367cc7649ceb148f17e4e4e9e46904b02a71a0306d53363fd7"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/turkic/capture.json",
+        "sha256": "f5200c8c0422169ec7df792e60cc0271d236dbdbb7371a50d78daa8394c674bb"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/turkic/control.svg",
+        "sha256": "41d24ff3bccc8d379f67212dedbbf5ef3a9024b9527ef11ad1a8cd773c957772"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/turkic/font-pack.json",
+        "sha256": "f2d576ad22284527b9a8d35b79615a568f578b16015ffd5e395134ec4cdb14cb"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/turkic/observations/linux-css.png",
+        "sha256": "f45384f44c6783adae33dbfff82791c2c9ee9ef82a319ac4e84eb75f0fb7817e"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/turkic/observations/windows-css.png",
+        "sha256": "32f8c69112acff1491b9fb6fe8375702bc75261423cf04a05f8403806dba8ebe"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/turkic/reference.svg",
+        "sha256": "57062f4ae234d469ba848647f7b092c0faf2215da71dd2147963c485dde49472"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/turkic/references/linux.png",
+        "sha256": "823eb4287eaab394d4f9054d785118af702b22322efda2914896299959167cc5"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/turkic/references/windows.png",
+        "sha256": "9e1bc6933f8953c3e73d250c3e838beda7fb05d5d05d27cffba5e11ab485f904"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/lithuanian/capture-css.json",
+        "sha256": "c29451e8ded881435af4f989e4162b94958cc729034d51567feb6e76f1d7cf3c"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/lithuanian/capture.json",
+        "sha256": "b356e0e1dd3a028d452da3701110dedbb9b9eced6f294107b8c25473a393d972"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/lithuanian/control.svg",
+        "sha256": "169626e15aad9eac80d6518275a5f1cf7c31af5a70a881ac64a34d8a2d5f5e2e"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/lithuanian/font-pack.json",
+        "sha256": "79b4233a04433c91eb8e4a7e465b69eef9b76749823b0b5b39a2c2a68fe987b1"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/lithuanian/observations/linux-css.png",
+        "sha256": "1e1cddb3546d5bad17457e2a8a37914744f88a879106f30bcff95fc1f99f425b"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/lithuanian/observations/windows-css.png",
+        "sha256": "8367791837b9e5742e375c7b40d152db95557a36e447dc77021d23885ef8ceac"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/lithuanian/reference.svg",
+        "sha256": "3d612ed337010e7d898c651ee8e008ac224a264481fd53d42ff84504377e9e45"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/lithuanian/references/linux.png",
+        "sha256": "148d20e2e2d55e47ecc3d56684253e3467483bfa13b0ab4819581752cc17971c"
+      },
+      {
+        "path": "tests/Research/text-case-mapping/lithuanian/references/windows.png",
+        "sha256": "1b96864078791ca722aa437dcbc1f019aa0ca410cdfdb76549da4dd73366aa41"
+      }
+    ],
+    "results": [
+      {
+        "host": "windows",
+        "case": "turkic",
+        "kind": "control",
+        "inputSha256": "41d24ff3bccc8d379f67212dedbbf5ef3a9024b9527ef11ad1a8cd773c957772",
+        "exitCode": 0,
+        "result": {
+          "outcome": "UnsupportedFeature",
+          "element": "text",
+          "attribute": "",
+          "line": 1,
+          "column": 104,
+          "fontStage": null,
+          "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+        }
+      },
+      {
+        "host": "windows",
+        "case": "turkic",
+        "kind": "reference",
+        "inputSha256": "57062f4ae234d469ba848647f7b092c0faf2215da71dd2147963c485dde49472",
+        "exitCode": 0,
+        "result": {
+          "outcome": "UnsupportedFeature",
+          "element": "text",
+          "attribute": "",
+          "line": 1,
+          "column": 104,
+          "fontStage": null,
+          "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+        }
+      },
+      {
+        "host": "windows",
+        "case": "lithuanian",
+        "kind": "control",
+        "inputSha256": "169626e15aad9eac80d6518275a5f1cf7c31af5a70a881ac64a34d8a2d5f5e2e",
+        "exitCode": 0,
+        "result": {
+          "outcome": "UnsupportedFeature",
+          "element": "text",
+          "attribute": "",
+          "line": 1,
+          "column": 118,
+          "fontStage": null,
+          "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+        }
+      },
+      {
+        "host": "windows",
+        "case": "lithuanian",
+        "kind": "reference",
+        "inputSha256": "3d612ed337010e7d898c651ee8e008ac224a264481fd53d42ff84504377e9e45",
+        "exitCode": 0,
+        "result": {
+          "outcome": "UnsupportedFeature",
+          "element": "text",
+          "attribute": "",
+          "line": 1,
+          "column": 104,
+          "fontStage": null,
+          "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+        }
+      },
+      {
+        "host": "linux",
+        "case": "turkic",
+        "kind": "control",
+        "inputSha256": "41d24ff3bccc8d379f67212dedbbf5ef3a9024b9527ef11ad1a8cd773c957772",
+        "exitCode": 0,
+        "result": {
+          "outcome": "UnsupportedFeature",
+          "element": "text",
+          "attribute": "",
+          "line": 1,
+          "column": 104,
+          "fontStage": null,
+          "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+        }
+      },
+      {
+        "host": "linux",
+        "case": "turkic",
+        "kind": "reference",
+        "inputSha256": "57062f4ae234d469ba848647f7b092c0faf2215da71dd2147963c485dde49472",
+        "exitCode": 0,
+        "result": {
+          "outcome": "UnsupportedFeature",
+          "element": "text",
+          "attribute": "",
+          "line": 1,
+          "column": 104,
+          "fontStage": null,
+          "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+        }
+      },
+      {
+        "host": "linux",
+        "case": "lithuanian",
+        "kind": "control",
+        "inputSha256": "169626e15aad9eac80d6518275a5f1cf7c31af5a70a881ac64a34d8a2d5f5e2e",
+        "exitCode": 0,
+        "result": {
+          "outcome": "UnsupportedFeature",
+          "element": "text",
+          "attribute": "",
+          "line": 1,
+          "column": 118,
+          "fontStage": null,
+          "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+        }
+      },
+      {
+        "host": "linux",
+        "case": "lithuanian",
+        "kind": "reference",
+        "inputSha256": "3d612ed337010e7d898c651ee8e008ac224a264481fd53d42ff84504377e9e45",
+        "exitCode": 0,
+        "result": {
+          "outcome": "UnsupportedFeature",
+          "element": "text",
+          "attribute": "",
+          "line": 1,
+          "column": 104,
+          "fontStage": null,
+          "messageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50"
+        }
+      }
+    ],
+    "guardMessageSha256": "a5ab1e99e3fed02732cc108caa083553b6bfd534ea87610e24f885df1c076b50",
+    "next": "Represent cluster identity separately from each glyph source association, then canonical composition/reordering, selected ccmp substitutions and validated GPOS/GDEF attachments. Close both complete literal native references on Windows and Linux before language milestone closure."
+  },
+  "qualificationScope": "Affected integration and representative .NET 10 checks only. Full runtime/platform/package qualification is deferred to the coherent mark-shaping milestone. The prior DejaVu conflict and terminal CI state are unchanged.",
+  "primarySources": [
+    {
+      "title": "OpenType GPOS",
+      "url": "https://learn.microsoft.com/en-us/typography/opentype/spec/gpos"
+    },
+    {
+      "title": "HarfBuzz cluster semantics",
+      "url": "https://harfbuzz.github.io/working-with-harfbuzz-clusters.html"
+    }
+  ]
+}

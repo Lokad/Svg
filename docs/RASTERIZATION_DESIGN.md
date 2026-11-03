@@ -112,6 +112,12 @@ Adjacent intervals selecting the identical face object and size share shaping;
 paint, node and positioning boundaries retain their independent rules. The
 [ligature control](../tests/Research/text-shaping-boundaries/README.md) protects
 this separation and the original scalar-boundary validation.
+Substituted glyphs keep explicit emitted UTF-16 source ranges through spacing,
+filtered pair lookup and position resets. Ordinary one-scalar glyphs borrow the
+text without allocating that scratch array; substituted runs charge and release
+it during layout. The [qualified source ranges](../tests/Research/svgweb/text-glyph-source-ranges.json)
+preserve current ligature behavior; canonical mark reordering, shared clusters and
+mark attachment remain separate open shaping work.
 Case projection resolves original SVG positioning lists before expanding text.
 It lifts source intervals into emitted UTF-16 offsets once; shaping retains its
 ordinary GSUB consumption and fitting model. Unchanged text borrows its inputs;
