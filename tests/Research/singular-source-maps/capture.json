@@ -1,0 +1,306 @@
+{
+  "status": "Open singular geometry-map admission gap; independent controls for shared-model design. No references or runtime behavior changed.",
+  "sourceCommit": "24ce76a65407f0ee4c9147110830e01b640ba3da",
+  "developmentLibrarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
+  "originalAliasReview": "../release-baselines/r85-alias-review.json",
+  "originalCandidateIds": [
+    "r74-intrinsics-48-candidate",
+    "r74-intrinsics-49-candidate",
+    "r74-intrinsics-50-candidate",
+    "r74-intrinsics-51-candidate",
+    "r74-intrinsics-52-candidate",
+    "r74-intrinsics-53-candidate",
+    "r74-intrinsics-54-candidate",
+    "r74-intrinsics-55-candidate"
+  ],
+  "originalFontContext": "Original candidates and controls retain their explicit caller programs and separate platform targets in the alias review; these controls are font-free.",
+  "primaryModel": "https://www.w3.org/TR/css-transforms-1/#transform-function-lists",
+  "nativeComparisons": 72,
+  "independentHealthyProcesses": 6,
+  "launches": [
+    {
+      "host": "windows",
+      "attempt": 1,
+      "terminalExitCode": 0,
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 525,
+        "debuggerReadyMilliseconds": 173,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    },
+    {
+      "host": "windows",
+      "attempt": 2,
+      "terminalExitCode": 0,
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 607,
+        "debuggerReadyMilliseconds": 128,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    },
+    {
+      "host": "windows",
+      "attempt": 3,
+      "terminalExitCode": 0,
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome.exe",
+        "elapsedMilliseconds": 518,
+        "debuggerReadyMilliseconds": 133,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    },
+    {
+      "host": "linux",
+      "attempt": 1,
+      "terminalExitCode": 0,
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5180,
+        "debuggerReadyMilliseconds": 3568,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    },
+    {
+      "host": "linux",
+      "attempt": 2,
+      "terminalExitCode": 0,
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 5585,
+        "debuggerReadyMilliseconds": 3668,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    },
+    {
+      "host": "linux",
+      "attempt": 3,
+      "terminalExitCode": 0,
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "health": {
+        "schemaVersion": 1,
+        "executableName": "chrome",
+        "elapsedMilliseconds": 4574,
+        "debuggerReadyMilliseconds": 3120,
+        "sandboxAccessFailures": 0,
+        "networkServiceCrashes": 0,
+        "stderrTruncated": false,
+        "profileCleaned": true,
+        "startupHealth": "healthy"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "leaf-zero-scale",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><rect x='4' y='4' width='20' height='20' fill='blue' transform='scale(0)'/></svg>",
+      "sourceSha256": "91fbe40f0fea95feb791bd1ea44ce3de3f831c34cadf18476d1376d2eb55e44a",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "path-zero-x",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><path d='M4 4H24V24H4Z' fill='blue' transform='scale(0 1)'/></svg>",
+      "sourceSha256": "41ca100bbbcd0641ba739f60a29ea9815551ecfa6c4394c3af97cd7aaadc6c0c",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "polyline-singular-matrix",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><polyline points='4,4 24,4 14,24' fill='blue' transform='matrix(1 1 1 1 0 0)'/></svg>",
+      "sourceSha256": "7edeb87c15bb1e296a7fdb18fb8d9e82a35b79f107e3a068f8562f452450e9a2",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "non-scaling-line",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><line x1='4' y1='4' x2='24' y2='24' stroke='blue' stroke-width='2' vector-effect='non-scaling-stroke' transform='scale(0 1)'/></svg>",
+      "sourceSha256": "631c3a703e31001c54290d0ea2b4e7294ee850136942cadd3e48a272b919d1a9",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "group-zero-y",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g transform='scale(1 0)'><rect x='4' y='4' width='20' height='20' fill='blue'/></g></svg>",
+      "sourceSha256": "374397db00465dce5cff1f27df3597453818ca72393bc490c1d0311fa6343e30",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "use-zero-scale",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><rect x='4' y='4' width='20' height='20' fill='blue' id='s'/></defs><use href='#s' transform='scale(0)'/></svg>",
+      "sourceSha256": "191dfeba9f45783226d656b17b23b821e96db88ba02685807bd125ead59f6583",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "source-zero-scale",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><rect x='4' y='4' width='20' height='20' fill='blue' id='s' transform='scale(0)'/></defs><use href='#s'/></svg>",
+      "sourceSha256": "bf6c0fec55e4420c96a1ff716d106266340ba6f4077d2f311c181c7706f98cdf",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "parent-flood-singular-child",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#f)'><rect x='4' y='4' width='20' height='20' fill='blue' transform='scale(0)'/></g></svg>",
+      "sourceSha256": "bd483c7f383f2bee35da5e3b98a018920105c8b2195b2291c7548fd9b52330c5",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 1024
+      }
+    },
+    {
+      "id": "leaf-flood-singular-map",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><rect x='4' y='4' width='20' height='20' fill='blue' filter='url(#f)' transform='scale(0)'/></svg>",
+      "sourceSha256": "5bfb668ed6dfbef90f750f049e67afed778b7deba252495c082403d8316598fe",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "group-flood-singular-map",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g transform='scale(0)' filter='url(#f)'><rect x='4' y='4' width='20' height='20' fill='blue'/></g></svg>",
+      "sourceSha256": "08ae021dce3225d5b2b552f9ece1effce640c3ff760dd3925833e27a75270f6a",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "mask-singular-child",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><rect x='4' y='4' width='20' height='20' fill='white' transform='scale(0)'/></mask></defs><rect x='4' y='4' width='20' height='20' fill='blue' mask='url(#m)'/></svg>",
+      "sourceSha256": "6c7daa567d3262f7d08f15d4be7df368d12bf692ee0158d4d5ccff4325e02181",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "clip-singular-child",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><clipPath id='c'><rect x='4' y='4' width='20' height='20' fill='blue' transform='scale(0)'/></clipPath></defs><rect x='4' y='4' width='20' height='20' fill='blue' clip-path='url(#c)'/></svg>",
+      "sourceSha256": "d640c795d3a3224bd22b1ca6496a78f9e7bf31aeeab7721110ca6e85cbe61a12",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    }
+  ]
+}

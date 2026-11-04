@@ -1,5 +1,5 @@
 {
-  "status": "Local source qualification closed; clean-commit package binding and matching CI remain to record.",
+  "status": "Affine source retention and all 84 original admissions closed; deterministic clean-commit packages and installed consumers qualified. Matching CI is terminal: Ubuntu passes; Windows retains only the unchanged DejaVu reference authority conflict.",
   "baseCommit": "7b2b966cae443c9ca78341a48d35594dcf137bdd",
   "productionSourceLfSha256": {
     "src/Lokad.Svg/Parsing/SvgGradientSyntax.cs": "334137629b633ee6cd36a646e534f86a7ebd7bce2a95c3dfb9ea326edab9c689",
@@ -557,9 +557,229 @@
     "duties": "Distinct allocation paths, refusal, cancellation, disposal and retry remain covered. Mechanisms assert scene budgets return to zero. No API matrix repeated per rendering input."
   },
   "nextActions": [
-    "Bind deterministic packages to the committed source and qualify installed consumers on both runtimes and hosts.",
-    "Review eight zero-scale admissions through a singular-map/source-domain design; keep the current precise boundary separate.",
-    "The linked 12-input empty-paint audit is native exact; continue the wider R85/R86 composition review."
+    "Review singular geometry maps using the original eight candidates and the independent twelve-control bank in ../singular-source-maps/README.md.",
+    "Preserve the pending Windows DejaVu reference authority boundary; do not change the frozen target or assertion.",
+    "Continue the wider R85/R86 composition review; the 12-input empty-paint audit found no additional defect."
   ],
-  "emptyPaintAudit": "../affine-source-retention/empty-paint-audit.json"
+  "emptyPaintAudit": "../affine-source-retention/empty-paint-audit.json",
+  "promotion": {
+    "sourceCommit": "24ce76a65407f0ee4c9147110830e01b640ba3da",
+    "sourceGitTree": "6d227d23e2cb087fa8b3898d86debe9125dfb37b",
+    "allQualifiedSourceHashesMatchCommit": true,
+    "packageIdentity": {
+      "sourceCommit": "24ce76a65407f0ee4c9147110830e01b640ba3da",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "33c40e6d177cd6d65f0de9d91ababae89a31fe7444659623c58ad1c8449768f1"
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "d2b7813e73f616611588d29b66f93948ffebd552d59378fe6f387888e71e76af"
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "bb4405499db4039a06bea2ac1c2f1f4fb58206ff2ab3fec82977d42935a8ec00",
+        "net10.0": "349e63dc84d1ab365641b4dddee0747e92e3a52994e63445bcedf3d68596e2a9"
+      },
+      "repeatPackagesByteIdentical": true,
+      "noRuntimeDependencies": true,
+      "noSvgFixtures": true,
+      "seconds": 30.49446909991093
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "librarySha256": "bb4405499db4039a06bea2ac1c2f1f4fb58206ff2ab3fec82977d42935a8ec00"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "librarySha256": "349e63dc84d1ab365641b4dddee0747e92e3a52994e63445bcedf3d68596e2a9"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "librarySha256": "bb4405499db4039a06bea2ac1c2f1f4fb58206ff2ab3fec82977d42935a8ec00"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "librarySha256": "349e63dc84d1ab365641b4dddee0747e92e3a52994e63445bcedf3d68596e2a9"
+      }
+    ],
+    "consumerScenarios": "Shared admission, retained result ownership, synchronous/asynchronous conversion, overlap rejection, dimensions, font-free inspection, bounded output, diagnostics, font catalog and HTTP selection/reuse/cancellation/shutdown/borrowers/refusal.",
+    "packagedBank": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "bb4405499db4039a06bea2ac1c2f1f4fb58206ff2ab3fec82977d42935a8ec00",
+        "testAssemblySha256": "d0501831376a93f271247df86d386ea75bf402cf7d5b5c4b930b45721a1172de",
+        "exitCode": 0,
+        "seconds": 12.351968000177294,
+        "counters": {
+          "executed": "84",
+          "passed": "84",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "bb4405499db4039a06bea2ac1c2f1f4fb58206ff2ab3fec82977d42935a8ec00",
+        "testAssemblySha256": "d0501831376a93f271247df86d386ea75bf402cf7d5b5c4b930b45721a1172de",
+        "exitCode": 0,
+        "seconds": 14.249506900086999,
+        "counters": {
+          "executed": "84",
+          "passed": "84",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "349e63dc84d1ab365641b4dddee0747e92e3a52994e63445bcedf3d68596e2a9",
+        "testAssemblySha256": "39fa5e614b82b21fee66b208d495ba7f394a1d76fbf6da3f86d3bff118052635",
+        "exitCode": 0,
+        "seconds": 13.082833199994639,
+        "counters": {
+          "executed": "84",
+          "passed": "84",
+          "failed": "0"
+        }
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "349e63dc84d1ab365641b4dddee0747e92e3a52994e63445bcedf3d68596e2a9",
+        "testAssemblySha256": "39fa5e614b82b21fee66b208d495ba7f394a1d76fbf6da3f86d3bff118052635",
+        "exitCode": 0,
+        "seconds": 11.194690899923444,
+        "counters": {
+          "executed": "84",
+          "passed": "84",
+          "failed": "0"
+        }
+      }
+    ],
+    "ci": {
+      "runId": 41858007174,
+      "url": "https://github.com/Lokad/Svg/actions/runs/41858007174",
+      "sourceCommit": "24ce76a65407f0ee4c9147110830e01b640ba3da",
+      "status": "completed",
+      "conclusion": "failure",
+      "terminalClosed": true,
+      "doNotRepoll": true,
+      "logSha256": "65178726cf4b073783b2b5998f51f683b783d456e9f4ec89feef9e23195c25ed",
+      "jobs": [
+        {
+          "name": "build-and-test (ubuntu-latest)",
+          "conclusion": "success",
+          "failedSteps": []
+        },
+        {
+          "name": "build-and-test (windows-latest)",
+          "conclusion": "failure",
+          "failedSteps": [
+            "Run dotnet test Lokad.Svg.slnx -c Release --no-build"
+          ]
+        }
+      ],
+      "testResults": [
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.FontProbe.Tests",
+          "failed": 0,
+          "passed": 10,
+          "skipped": 0,
+          "total": 10
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.Tests",
+          "failed": 0,
+          "passed": 47592,
+          "skipped": 0,
+          "total": 47592
+        },
+        {
+          "host": "linux",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.VisualTests",
+          "failed": 0,
+          "passed": 70975,
+          "skipped": 0,
+          "total": 70975
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "assembly": "Lokad.Svg.Tests",
+          "failed": 0,
+          "passed": 12847,
+          "skipped": 0,
+          "total": 12847
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "assembly": "Lokad.Svg.VisualTests",
+          "failed": 0,
+          "passed": 1104,
+          "skipped": 0,
+          "total": 1104
+        },
+        {
+          "host": "linux",
+          "framework": "net10.0",
+          "assembly": "Lokad.Svg.FontProbe.Tests",
+          "failed": 0,
+          "passed": 10,
+          "skipped": 0,
+          "total": 10
+        },
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.FontProbe.Tests",
+          "failed": 0,
+          "passed": 10,
+          "skipped": 0,
+          "total": 10
+        },
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.Tests",
+          "failed": 0,
+          "passed": 47592,
+          "skipped": 0,
+          "total": 47592
+        },
+        {
+          "host": "windows",
+          "framework": "net11.0",
+          "assembly": "Lokad.Svg.VisualTests",
+          "failed": 1,
+          "passed": 70974,
+          "skipped": 0,
+          "total": 70975
+        }
+      ],
+      "windowsLaterNet10AndPackageSteps": "Skipped after the unchanged full-suite DejaVu failure; separately qualified by matching local runtime/package checks."
+    },
+    "published": false
+  }
 }
