@@ -1,5 +1,5 @@
 {
-  "status": "The original800 hairline and200 alpha pairs are native exact through the qualified package and six fresh healthy browser processes. Other R86 cohorts remain separate.",
+  "status": "Original800 hairline/200 alpha pairs are native exact through the qualified package and six fresh browser processes; optional regressions pass both hosts/runtimes and Ubuntu full CI. Windows retains solely the unchanged DejaVu reference assertion. Source/native joins close the named R86 final/solid-order lineages through existing qualifications.",
   "sourceReviewBaseCommit": "e1fef7d05e239138c3260960b97aa62687b7682e",
   "runtimePackage": {
     "sourceCommit": "ec8c8de7a1b9b4dac249bffd123f962f160f8b84",
@@ -390,7 +390,7 @@
       ]
     }
   ],
-  "remaining": "The5520-row R86 lineage, non-scaling/effect composition and11468-row wide collection require their own source/context joins. Existing3416 alias/3456 composition qualifications stay closed.",
+  "remaining": "The3481 stroke-final and11468 wide lineages still require explicit source/context joins. Preserve unequal pairs and keep the qualified R86 hairline, final, solid-order, source-context, symbol and R85 composition/alias cohorts closed.",
   "testResponsibilities": {
     "mechanismCases": 200,
     "ownershipCases": 12,
@@ -574,5 +574,210 @@
         "routine21CasesSeconds": 11.675233699847013
       }
     ]
+  },
+  "existingLineageQualifications": [
+    {
+      "originalBank": "r86-extended",
+      "originalPairs": 4608,
+      "originalInputs": 9216,
+      "sourceAndScaleIdentitiesMatch": true,
+      "originalNativeTargetsMatch": true,
+      "pngEncodingDifferences": 0,
+      "currentManifest": "../filter-source-contexts/capture.json",
+      "currentQualification": "filter-source-context-qualification.json",
+      "sourceAndTargetJoinSha256": "acc07576cb280b30f64053bffe02a1675ed8a81647d7f04d92b1812be35de346",
+      "originalScriptBundleSha256": "c1a916a5ba5fdf53d5933af632bc5682814fa3f300a2c0d2cfb3ecbbbb57bb6a"
+    },
+    {
+      "originalBank": "r86-symbol",
+      "originalPairs": 480,
+      "originalInputs": 960,
+      "sourceAndScaleIdentitiesMatch": true,
+      "originalNativeTargetsMatch": true,
+      "pngEncodingDifferences": 0,
+      "currentManifest": "../symbol-fractional-frames/canvas-capture.json",
+      "currentQualification": "symbol-canvas-qualification.json",
+      "sourceAndTargetJoinSha256": "cab4af7e3fd386e5c291c0ade3e3494c014c985ccc5cac85d85dac8748aee24c",
+      "originalScriptBundleSha256": "847e1b1a68a236856dd0907bd142c63e6cf5e412ff3e2efc76984f8ce5656cbf"
+    },
+    {
+      "originalBank": "paint-corners-review",
+      "originalPairs": 288,
+      "originalInputs": 576,
+      "sourceAndScaleIdentitiesMatch": true,
+      "originalNativeTargetsMatch": true,
+      "bothHostsExactInExistingQualification": true,
+      "currentManifest": "../rectangle-shader-frames/admission-review.json",
+      "currentQualification": "rectangle-source-qualification.json",
+      "qualifiedCombinedInputs": 9338,
+      "sourceAndTargetJoinSha256": "de6c17bc32d89b27ebacf05ea9c0797222dd74cdb80dd1dc617f45fb8078ef5a",
+      "originalScriptBundleSha256": "ab56d26b1368f3c253599504cfe0eb8b67db1b55e62bd4104e2687559a2dd23e"
+    },
+    {
+      "originalBank": "paint-corner-path-review",
+      "originalPairs": 144,
+      "originalInputs": 288,
+      "sourceAndScaleIdentitiesMatch": true,
+      "originalNativeTargetsMatch": true,
+      "bothHostsExactInExistingQualification": true,
+      "currentManifest": "../rectangle-shader-frames/admission-review.json",
+      "currentQualification": "rectangle-source-qualification.json",
+      "qualifiedCombinedInputs": 9338,
+      "sourceAndTargetJoinSha256": "3c88b0f57462650be341810dad59860702d90899dc6f1cfb54f18c64d2135747",
+      "originalScriptBundleSha256": "91a4459327473c440ceab6b34d702015a7deabb4c816650a5d83ede24bc43add"
+    },
+    {
+      "originalBank": "r86-solid-order",
+      "originalPairs": 576,
+      "originalInputs": 1152,
+      "sourceAndScaleIdentitiesMatch": true,
+      "originalNativeTargetsMatch": true,
+      "bothHostsExactInExistingQualification": true,
+      "currentManifest": "../rectangle-shader-frames/admission-review.json",
+      "currentQualification": "rectangle-source-qualification.json",
+      "qualifiedCombinedInputs": 9338,
+      "sourceAndTargetJoinSha256": "099a74843bfd8b036ea750a07798029ebd922cda1624bbb849b22ca85500579a",
+      "originalScriptBundleSha256": "a812c3107c8e94b6cff54829250bb99f0885a3ea825ca0604d012648e6bfd7eb"
+    }
+  ],
+  "lineageScope": "All5520 original r86-final pairs join existing qualifications:4608 source-context,480 symbol,288 corner and144 corner-path pairs. The separate576 solid-order pairs also join their qualified combined replay. All12192 source/options/native target identities match; no duplicate rendering product is added.",
+  "ci": {
+    "runId": 41919803793,
+    "url": "https://github.com/Lokad/Svg/actions/runs/41919803793",
+    "sourceCommit": "850398b2b97e60743d7109f6550fce0d1c01278f",
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalClosed": true,
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47617,
+            "skipped": 0,
+            "total": 47617
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73312,
+            "skipped": 0,
+            "total": 73312
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12865,
+            "skipped": 0,
+            "total": 12865
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "skipped": 0,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          }
+        ],
+        "logSha256": "03d6fd61c979ae6a4df1b8feaaa3d6392e600df0340ad07989428a4c1f7b6228",
+        "steps": [
+          {
+            "name": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 API, ownership and numerical compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 representative native rendering compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 font host compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+            "conclusion": "success"
+          }
+        ]
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47617,
+            "skipped": 0,
+            "total": 47617
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73311,
+            "skipped": 0,
+            "total": 73312
+          }
+        ],
+        "logSha256": "f92aa9f899b1769c825767323d27465fd7d202784cc84d64457567faa69c50b6",
+        "steps": [
+          {
+            "name": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+            "conclusion": "failure"
+          },
+          {
+            "name": ".NET 10 API, ownership and numerical compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": ".NET 10 representative native rendering compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": ".NET 10 font host compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+            "conclusion": "skipped"
+          }
+        ]
+      }
+    },
+    "boundary": "Windows .NET10 and package steps are skipped after the existing net11 visual failure. Local affected checks retain both runtimes/hosts against the matching ec8c8de7a package. Frozen DejaVu target/assertion remain unchanged; reference authority is pending."
   }
 }
