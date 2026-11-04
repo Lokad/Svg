@@ -1,5 +1,5 @@
 {
-  "status": "Command-view milestone passes local full/platform and affected runtime checks; matching committed-source packages and CI follow promotion.",
+  "status": "Command-view milestone passes local full/platform checks, affected runtime coverage, matching committed-source packages and full Ubuntu CI. Windows retains only the unchanged DejaVu reference conflict.",
   "sourceBaseCommit": "d5924ddbc128912849646c0a320616d8be53b616",
   "sourceLfSha256": {
     "src/Lokad.Svg/Parsing/SvgRoot.cs": "3f24a26b7e19aabfa1ff265860bd5e43aef0954db83f1e9f75c733f37a8ce0e6",
@@ -492,5 +492,55 @@
   "hostedSvgBodiesRetained": 0,
   "rawSourceAttributeValuesRetained": 0,
   "previousPrecisionCohort": "source-paint-qualification.json",
-  "build": "Release solution and explicit .NET10 core/visual builds pass with zero warnings/errors. Benchmark project is compiled only."
+  "build": "Release solution and explicit .NET10 core/visual builds pass with zero warnings/errors. Benchmark project is compiled only.",
+  "committedPackage": {
+    "sourceCommit": "c6f9bb3b3638514fba70e119706a910a46c2bcd9",
+    "files": [
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "4dc7d1160abcb6ee2b663e6d5c75ea54fcb23642bc62816a03d98d528f2668a4"
+      },
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "a7ae498d97178ac0e64f8505893a1e08064cbb850004617de18668a90a3682dd"
+      }
+    ],
+    "librarySha256": {
+      "net11.0": "884eb745a00f29d7eca0208b3a9af7c73ac9f7b8ee58cbc879d058dffb0cf895",
+      "net10.0": "4648e3a934142c75daa4da448c5e83bb764a98b886da0990085fb3c658946fa9"
+    },
+    "repeatPackagesByteIdentical": true,
+    "noRuntimeDependencies": true,
+    "noSvgFixtures": true,
+    "seconds": 4.796021200018004,
+    "isolatedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 6.467296299990267
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 38.701984600163996
+      }
+    ]
+  },
+  "ci": {
+    "run": 41784410614,
+    "url": "https://github.com/Lokad/Svg/actions/runs/41784410614",
+    "headSha": "c6f9bb3b3638514fba70e119706a910a46c2bcd9",
+    "status": "terminal CLOSED",
+    "conclusion": "failure",
+    "ubuntu": "Entire workflow passed, including both runtimes, tools and installed packages.",
+    "windows": {
+      "corePassed": 47553,
+      "fontHostPassed": 10,
+      "renderingPassed": 46705,
+      "renderingFailed": 1,
+      "soleFailure": "Unchanged DejaVu frozen-reference conflict",
+      "laterRuntimeToolsAndPackageSteps": "skipped"
+    },
+    "authority": "No reference/assertion changed; the known DejaVu authority remains pending. No whole-CI green claim."
+  }
 }
