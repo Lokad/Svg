@@ -38,6 +38,12 @@ keep source-size admission separate from canonical rendering: offset, blur and
 offset/merge replay retain refusal, cancellation, cleanup and retry without
 copying every source command into raster storage.
 
+[Scene-admission contracts](Research/release-baselines/invocation-ownership.json)
+cover raw, catalog-prepared and HTTP-prepared rejection after lowering. They retain
+the source diagnostic, one preparation, borrowed owners, released charges and
+successful retry through the shared gate in
+[invocation/output code](../src/Lokad.Svg/SvgConverter.Invocation.cs).
+
 The [text-paint correction](Research/release-baselines/precision-current.md) combines
 direct matrix/source-box mechanisms, all 39 original images across four banks and
 three independent vector controls. Each image uses one canonical conversion;

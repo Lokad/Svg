@@ -1,0 +1,273 @@
+{
+  "status": "Invocation/output separation and shared scene admission qualified. Full local suites, deterministic packages, installed consumers and unchanged hosted replay close the milestone; matching CI retains solely unchanged Windows DejaVu.",
+  "source": {
+    "baseCommit": "045cb83d9",
+    "sourceCommit": "d539927c9481a30ea245202ef6b24345addf13dc",
+    "rasterMembersPreservedLfSha256": "5482b2f82b43a17a09ebb477f59202418d8581dfbccff75ef5f14f672d20e9c6",
+    "inspectionMemberPreservedLfSha256": "8ee259041d1f2635a33654a88d8ffbbf9ab929e08ad3bacbb1d24bced2676f4f",
+    "conversionDisposeBodyPreservedLfSha256": "368443c231dc68b8b8f2f7c1877fa07e1557aad3c6e4267c388bea59f899478a",
+    "converterLinesBefore": 5912,
+    "converterLinesAfter": 5695,
+    "invocationLines": 241,
+    "oneSceneLoweringBody": true,
+    "rawAndBothPreparedConsumersUpdated": true,
+    "sourceLfSha256": {
+      "src/Lokad.Svg/SvgConverter.cs": "5482b2f82b43a17a09ebb477f59202418d8581dfbccff75ef5f14f672d20e9c6",
+      "src/Lokad.Svg/SvgConverter.Invocation.cs": "a94d4fac7cbb3b250c4c2717a27e88a16553b45e6a4f7078703f329a5ea3e822",
+      "src/Lokad.Svg/SvgPreparedDocument.cs": "845b5aca6c77da9e0c90925b52da8ac1e410825071431abfc18fd3b7510584c7",
+      "tests/Lokad.Svg.Tests/OpenTypeFontTests.SharedMemory.cs": "e0d4c21dcf1c5d185e45e394fcf8f965842af255592c05df942ab9de25685c36"
+    }
+  },
+  "change": {
+    "invocationFile": "../../../src/Lokad.Svg/SvgConverter.Invocation.cs",
+    "sharedGate": "SvgConverter.LowerPreparedScene",
+    "removedDuplicate": "SvgPreparedDocument.LowerPrepared and the raw inline parse/admission sequence.",
+    "ownership": "Raw and retained document callers share scene admission; preparation/fonts/budget stay borrowed. The gate releases unsupported scenes before diagnostic propagation. Existing RasterizedConversion retains raw root/surface/scope, and prepared documents keep their retained owners. Encoding and result/destination paths keep their existing owners.",
+    "publicSignaturesUnchanged": true,
+    "numericalRasterMembersUnchanged": true,
+    "newParserOrLifetimeWrappers": 0
+  },
+  "validation": {
+    "baselineAdmissionCasesPerHost": 3,
+    "admissionPaths": [
+      "raw owned result",
+      "catalog prepared",
+      "HTTP prepared"
+    ],
+    "checks": "Scene preparation once, retained unsupported source diagnostic, input immutability, released host charges, borrowed host/client/resolver and successful immediate retry. Existing representative API/capture/font/destination contracts remain.",
+    "affectedCorePerHostFramework": 272,
+    "affectedVisualPerHostFramework": 168,
+    "fullLocal": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "corePassed": 47620,
+        "visualPassed": 73311,
+        "visualFailed": 1,
+        "fontPassed": 10
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "corePassed": 47620,
+        "visualPassed": 73312,
+        "visualFailed": 0,
+        "fontPassed": 10
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "corePassed": 47620,
+        "visualPassed": 73311,
+        "visualFailed": 1,
+        "fontPassed": 10
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "corePassed": 47620,
+        "visualPassed": 73312,
+        "visualFailed": 0,
+        "fontPassed": 10
+      }
+    ],
+    "packagedAffected": {
+      "frameworks": [
+        "net11.0",
+        "net10.0"
+      ],
+      "hosts": [
+        "windows",
+        "linux"
+      ],
+      "corePerCombination": 272,
+      "visualPerCombination": 168,
+      "allMatchPackageAssets": true
+    },
+    "newCases": 3,
+    "frozenReferencesRewritten": 0,
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "developmentLibrarySha256": {
+      "net11.0": "91fbb99e2bb1c4d7dff33fdbc617983ed700aa2e0502690595b1534a3e138e40",
+      "net10.0": "56ac2ddb95df867ff85b3bbe4ddce78de4d4538f152dc06bc7f8f48db022c21e"
+    }
+  },
+  "promotion": {
+    "package": {
+      "sourceCommit": "d539927c9481a30ea245202ef6b24345addf13dc",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "e02108cf4513f6d2b0db2c22be203fa46ccbb62fe5bee7d0f05d932a7e37d188"
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "e1e07491bdfacfd0d64697e37a636b5ddb0ba18fccbd7ac5aa12cd21b8a5dda9"
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "c300d62cde587a94bf64d0058816acff9c76b8e667a4b247e1a9a92dba26b473",
+        "net10.0": "d8377ec436fcebb703bdc1aef4be750e6f7edba87bfc8b5094c7f27a17d34ce5"
+      },
+      "repeatPackagesByteIdentical": true,
+      "noRuntimeDependencies": true,
+      "noSvgFixtures": true,
+      "seconds": 32.01381340017542
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0
+      }
+    ],
+    "published": false
+  },
+  "hostedOriginalReplay": {
+    "sourceCommit": "d539927c9481a30ea245202ef6b24345addf13dc",
+    "librarySha256": "c300d62cde587a94bf64d0058816acff9c76b8e667a4b247e1a9a92dba26b473",
+    "originals": 204,
+    "sourceIdentitySha256": "98ecf4d5a1cf3e31dff4873101e6e5521726d264407793e9086d74e8e6b058aa",
+    "outcomeAndPngRecordSha256": "342e9bcc7fd937df15f22d8e1998e5aba06e1aea08a2d08a791b098b11b39a72",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "allSourceHashesAndDiagnosticMetadataUnchanged": true,
+    "suppliedOriginalContexts": {
+      "inputs": 22,
+      "exactPerHost": 22,
+      "unchangedQualifiedPngsPerHost": 22,
+      "identityAndOutputSha256": "c3f3a619d219e4da3430e4669546338e07c17a35a22e7d9dd9c4ed90282b17e0"
+    },
+    "staticDiagnostics": {
+      "inputs": 13,
+      "exactPerHost": 13,
+      "projectedInputAndOutputSha256": "0a5be1bfa6bcd5049ecef84ddb720618afc192664b3aedc9a56f143989f2a96b"
+    },
+    "retention": {
+      "hostedSvgFiles": 0,
+      "hostedFragments": 0,
+      "rawSourceAttributes": 0
+    },
+    "scope": "Original default outcomes and existing supplied/projected contexts remain distinct. Default168 rendered/35Unsupported/1Malformed; no broader SVG-font/resource/dynamic admission is claimed."
+  },
+  "ci": {
+    "runId": 41932398538,
+    "sourceCommit": "d539927c9481a30ea245202ef6b24345addf13dc",
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalClosed": true,
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47620,
+            "total": 47620
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73312,
+            "total": 73312
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12868,
+            "total": 12868
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          }
+        ],
+        "logSha256": "c17d8bc08d3451652a0da143cfe3f1394d07a9f76238ba586af75c0ecc8269a6"
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47620,
+            "total": 47620
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73311,
+            "total": 73312
+          }
+        ],
+        "logSha256": "e35a34fe5ddf94b03d548610b258660902af308ee8faeb23b2594edc0ed570fb"
+      }
+    },
+    "boundary": "Windows .NET10/package CI steps skip after unchanged DejaVu. Full local Windows/Linux .NET11/.NET10 and installed-package checks are retained; frozen target/assertion remain pending authority."
+  },
+  "remaining": "Scene/layer replay versus raster-preparation and paint-execution separation, and any concrete redundant capture/copy, remain under review. No renderer/quiet-VM performance claim follows this structural change."
+}
