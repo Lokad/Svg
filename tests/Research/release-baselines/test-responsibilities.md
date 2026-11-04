@@ -101,6 +101,13 @@ P2 still needs suite-wide classification and review of remaining repeated fixtur
 work.
 This loader change does not establish that those tasks are closed.
 
+The [shader ownership map](shader-ownership.json) keeps 20 rectangle, hairline and
+zero-radius cases while sharing their identical separate-parser/raster lifecycle.
+Their borrowed charge, refusal peaks, exact cancellation and retry pixels remain.
+Ten paint-pair inputs replace a zero-iteration work-counter loop with the existing
+real parser refusal/cancellation/retry helper. All 30 cases remain individually
+selectable as contracts; independent rendering and shared-allowance cases stay separate.
+
 Validation: all 41,335 paint/integrity checks pass on Windows and Linux under
 .NET 11. The normalized mechanism/contract selection passes 1,990 checks on each
 runtime/host combination. A .NET 10 rendering selection retains 619 text, clip and

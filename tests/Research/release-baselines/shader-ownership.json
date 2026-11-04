@@ -1,0 +1,290 @@
+{
+  "status": "Twenty existing shader ownership cases share their identical separate-allowance lifecycle. Ten existing paint-pair inputs now exercise real memory refusal/cancellation/retry instead of a zero-iteration work-counter loop.",
+  "baseCommit": "8550c91df42b8035d9c103e28e552a52b41c3184",
+  "productionSourceCommit": "70d38675b3279748043a27449a7bdbe33f3b1508",
+  "productionQualification": "singular-source-qualification.json",
+  "helper": "../../Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs",
+  "callers": [
+    "../../Lokad.Svg.Tests/SvgRectangleShaderOwnershipTests.cs",
+    "../../Lokad.Svg.Tests/SvgShaderHairlineOwnershipTests.cs",
+    "../../Lokad.Svg.Tests/SvgZeroRadiusSymbolOwnershipTests.cs"
+  ],
+  "cases": {
+    "extracted": 20,
+    "repaired": 10,
+    "before": 30,
+    "after": 30,
+    "removed": 0,
+    "normalizedDisplayNamesLfSha256": "8d4a5a5166120e155378d461c62ab4f42c2739a0d341ecee50374eb0c21f3a61",
+    "renamedMethod": {
+      "before": "Every_parser_work_denial_releases_fill_and_partial_stroke_owners",
+      "after": "Paint_pair_owners_release_after_memory_refusal_cancellation_and_retry",
+      "theoryRows": 10
+    },
+    "layer": "Contract"
+  },
+  "contracts": {
+    "input": "All original input builders and theory data are unchanged. Input immutability, supported paint-pair admission and successful scene cleanup remain.",
+    "borrower": "The 73-byte sibling scene reservation survives successful parse/disposal; parser denial still uses measured peak minus sibling minus one, then returns to zero.",
+    "separateAllowances": "Parser and raster have independent owners and peaks. Raster denial remains peak minus one; do not substitute the shared-allowance helper.",
+    "cancellation": "The 20 shader cases retain the exact raster exception type and token; every raster surface and temporary reservation is released.",
+    "retry": "Compare every retry pixel with the original successful raster, release the retained scene before its sibling, then assert both allowances empty.",
+    "paintPairs": "The existing parser helper now actually refuses memory, preserves a borrowed reservation, checks caller cancellation, releases failed parsing and retries. This is representative real admission, not a claim to sweep every allocation."
+  },
+  "inputConstructionLfSha256": {
+    "SvgRectangleShaderOwnershipTests.cs": "0216624918f365a45ed00b7aebfe5879c470b925d3079a61a72bb318c0589e07",
+    "SvgShaderHairlineOwnershipTests.cs": "22d7dbe30b79cfe6c8c9cbaeb467f4cf2cc57c990ca1204b7701e82fe08e9aa1",
+    "SvgZeroRadiusSymbolOwnershipTests.cs": "a79de5131ffc8add0cd42ccf2ed4f216a0589df2b605ce30402b0c62d190a360",
+    "SvgPaintFillStrokeOwnershipTests.cs": "b6072998c3a01eb9822ba51a999f5dea1e7b57ddf488ae403acd333fe519c2e2"
+  },
+  "sourceLfSha256": {
+    "SvgRectangleShaderOwnershipTests.cs": "db37251fc9ac8785153d3a882ed975e7fb7942c24c4c0fbe0c0a9c1f8ec282fc",
+    "SvgShaderHairlineOwnershipTests.cs": "8b4a69f8b174936a1f9730684a381ced43bac32c01ea9271790f28b9e4dc55f9",
+    "SvgZeroRadiusSymbolOwnershipTests.cs": "c22b32fd0322ffb37ad65a3badc785a3d670b329e44619d7a6eca09bf00b7c18",
+    "SvgPaintFillStrokeOwnershipTests.cs": "7f4dc0ca8d52e615d9748acbc4e9a4c5c4c844b846739620ba5c05bdcdb1093c",
+    "SvgRasterOwnershipAssertions.cs": "77d3f58960546f945c8dcbeaba38644e5fec68a43ec1abaef117d330ead66dcf"
+  },
+  "changes": {
+    "netLinesRemoved": 54,
+    "productionCode": 0,
+    "fixtureOrReferenceChanges": 0,
+    "toleranceChanges": 0,
+    "newFrameworks": 0
+  },
+  "validation": {
+    "focusedBefore": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "testAssemblySha256": "23de8b615cdea68053b2403ef5d94f50358e518999251c9010df24addbad39dc",
+        "selection": "FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgZeroRadiusSymbolOwnershipTests|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests",
+        "exitCode": 0,
+        "seconds": 8.837494800100103,
+        "counters": {
+          "executed": "30",
+          "passed": "30",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "testAssemblySha256": "23de8b615cdea68053b2403ef5d94f50358e518999251c9010df24addbad39dc",
+        "selection": "FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgZeroRadiusSymbolOwnershipTests|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests",
+        "exitCode": 0,
+        "seconds": 11.481027300003916,
+        "counters": {
+          "executed": "30",
+          "passed": "30",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "focusedAfter": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "testAssemblySha256": "4c5e153c65f4978b9b74ff3f2b31d05e715fa934071db0d8edc4f595ac56bd61",
+        "selection": "FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgZeroRadiusSymbolOwnershipTests|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests",
+        "exitCode": 0,
+        "seconds": 9.958336599869654,
+        "counters": {
+          "executed": "30",
+          "passed": "30",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "testAssemblySha256": "4c5e153c65f4978b9b74ff3f2b31d05e715fa934071db0d8edc4f595ac56bd61",
+        "selection": "FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgZeroRadiusSymbolOwnershipTests|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests",
+        "exitCode": 0,
+        "seconds": 10.155713999876752,
+        "counters": {
+          "executed": "30",
+          "passed": "30",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "focusedNet10": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "79013d4707f8d3ac9924f5da10b29e4dd177f11420d934ad3d41364de9479c12",
+        "testAssemblySha256": "29be4256b635f8663fcb327bc8d4ca91462a90b1bf6f3a90d5e0c4d98d665576",
+        "selection": "FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgZeroRadiusSymbolOwnershipTests|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests",
+        "exitCode": 0,
+        "seconds": 13.047717000124976,
+        "counters": {
+          "executed": "30",
+          "passed": "30",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "79013d4707f8d3ac9924f5da10b29e4dd177f11420d934ad3d41364de9479c12",
+        "testAssemblySha256": "29be4256b635f8663fcb327bc8d4ca91462a90b1bf6f3a90d5e0c4d98d665576",
+        "selection": "FullyQualifiedName~SvgRectangleShaderOwnershipTests|FullyQualifiedName~SvgShaderHairlineOwnershipTests|FullyQualifiedName~SvgZeroRadiusSymbolOwnershipTests|FullyQualifiedName~SvgPaintFillStrokeOwnershipTests",
+        "exitCode": 0,
+        "seconds": 13.772471000207588,
+        "counters": {
+          "executed": "30",
+          "passed": "30",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "integration": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "testAssemblySha256": "4c5e153c65f4978b9b74ff3f2b31d05e715fa934071db0d8edc4f595ac56bd61",
+        "selection": "FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgRectanglePaintOverlapTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgParseOwnership",
+        "exitCode": 0,
+        "seconds": 13.989831000100821,
+        "counters": {
+          "executed": "1973",
+          "passed": "1973",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+        "testAssemblySha256": "4c5e153c65f4978b9b74ff3f2b31d05e715fa934071db0d8edc4f595ac56bd61",
+        "selection": "FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgRectanglePaintOverlapTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgParseOwnership",
+        "exitCode": 0,
+        "seconds": 15.293805399909616,
+        "counters": {
+          "executed": "1973",
+          "passed": "1973",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "40948a153cc51aaa21a1bd32975bbd28743dcdb0d8e9caf606114d619fd274f2",
+        "testAssemblySha256": "565d168302868ecd1a53471be4eeafce94e8c9fedf3977f774df23512bf966cc",
+        "selection": "FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests",
+        "exitCode": 0,
+        "seconds": 12.717888100072742,
+        "counters": {
+          "executed": "36",
+          "passed": "36",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "40948a153cc51aaa21a1bd32975bbd28743dcdb0d8e9caf606114d619fd274f2",
+        "testAssemblySha256": "565d168302868ecd1a53471be4eeafce94e8c9fedf3977f774df23512bf966cc",
+        "selection": "FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests",
+        "exitCode": 0,
+        "seconds": 11.105859200004488,
+        "counters": {
+          "executed": "36",
+          "passed": "36",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "79013d4707f8d3ac9924f5da10b29e4dd177f11420d934ad3d41364de9479c12",
+        "testAssemblySha256": "29be4256b635f8663fcb327bc8d4ca91462a90b1bf6f3a90d5e0c4d98d665576",
+        "selection": "FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgRectanglePaintOverlapTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgParseOwnership",
+        "exitCode": 0,
+        "seconds": 13.265346700092778,
+        "counters": {
+          "executed": "1973",
+          "passed": "1973",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "79013d4707f8d3ac9924f5da10b29e4dd177f11420d934ad3d41364de9479c12",
+        "testAssemblySha256": "29be4256b635f8663fcb327bc8d4ca91462a90b1bf6f3a90d5e0c4d98d665576",
+        "selection": "FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgRectanglePaintOverlapTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgParseOwnership",
+        "exitCode": 0,
+        "seconds": 15.008071500109509,
+        "counters": {
+          "executed": "1973",
+          "passed": "1973",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "d01df153261bfed353f6f205d2c1fa175663c951413878e1c2a595c0c964b104",
+        "testAssemblySha256": "4f03ea6e97eb2bcab7907891f12fd3674023d431f84d14c502be73590f5af2d0",
+        "selection": "FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests",
+        "exitCode": 0,
+        "seconds": 14.015865500085056,
+        "counters": {
+          "executed": "36",
+          "passed": "36",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "d01df153261bfed353f6f205d2c1fa175663c951413878e1c2a595c0c964b104",
+        "testAssemblySha256": "4f03ea6e97eb2bcab7907891f12fd3674023d431f84d14c502be73590f5af2d0",
+        "selection": "FullyQualifiedName~SvgRectanglePaintOverlapReferenceTests|FullyQualifiedName~SvgShaderHairlineReferenceTests|FullyQualifiedName~SvgZeroRadiusPaintReferenceTests",
+        "exitCode": 0,
+        "seconds": 13.736024499870837,
+        "counters": {
+          "executed": "36",
+          "passed": "36",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "timing": "One paired functional observation per host, same exact packaged renderer, 30 cases before/after. Includes host/discovery/TRX; excludes build. Workstation timing establishes no speedup or renderer-performance claim. The benefit is shared responsibility and meaningful refusal coverage."
+  },
+  "remaining": "Suite-wide P2 classification, text-node responsibilities and numerical-context selection remain open; no full-suite simplification or correctness-review closure is claimed."
+}

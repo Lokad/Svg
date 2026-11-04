@@ -4,6 +4,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Contract")]
 public sealed class SvgPaintFillStrokeOwnershipTests
 {
     [Theory]
@@ -17,7 +18,7 @@ public sealed class SvgPaintFillStrokeOwnershipTests
     [InlineData("#444444", "url(#empty-linear)")]
     [InlineData("url(#empty-pattern)", "url(#radial)")]
     [InlineData("url(#linear)", "url(#empty-pattern)")]
-    public void Every_parser_work_denial_releases_fill_and_partial_stroke_owners(string fill, string stroke)
+    public void Paint_pair_owners_release_after_memory_refusal_cancellation_and_retry(string fill, string stroke)
     {
         byte[] input = TextEncoding.UTF8.GetBytes("""
             <svg xmlns='http://www.w3.org/2000/svg' width='44' height='32'>
@@ -31,22 +32,11 @@ public sealed class SvgPaintFillStrokeOwnershipTests
             <path d='M6,25 Q21,3 36,25 Z'
             """ + " fill='" + fill + "' stroke='" + stroke + "' stroke-width='2'/></svg>");
         RenderBudget success = new RenderBudget(new HostMemoryBudget(1_000_000));
-        long parserWork;
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, success, null, CancellationToken.None))
         {
             Assert.False(scene.HasUnsupportedChild);
-            parserWork = 0L;
         }
         Assert.Equal(0, success.Snapshot().CurrentBytes);
-        for (long limit = 0; limit < parserWork; limit++)
-        {
-            RenderBudget denied = new RenderBudget(new HostMemoryBudget(1_000_000));
-            SvgException error = Assert.Throws<SvgException>(() =>
-            {
-                using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, CancellationToken.None);
-            });
-            Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
-            Assert.Equal(0, denied.Snapshot().CurrentBytes);
-        }
+        SvgParseOwnershipAssertions.PreservesBorrowedStorageOnDenialCancellationAndRetry(input);
     }
 }

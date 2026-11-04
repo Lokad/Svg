@@ -8,6 +8,40 @@ namespace Lokad.Svg.Tests;
 /// <summary>Checks separate or shared parsing/raster lifetimes while borrowing input, scene and font/options owners.</summary>
 internal static class SvgRasterOwnershipAssertions
 {
+    /// <summary>Checks separate parser/raster allowances while a sibling scene reservation stays borrowed.</summary>
+    /// <remarks>Each call owns its scenes, surfaces, allowances, pixel copy and cancellation source.
+    /// Input stays borrowed and unchanged. Parser refusal excludes the sibling charge; raster refusal
+    /// uses its independent peak. Exact cancellation tokens and retry pixels retain the original contracts.</remarks>
+    internal static void SeparateBudgetsPreserveBorrowedSceneAfterFailures(byte[] input, SvgRenderOptions options, long maximumBytes)
+    {
+        const long borrowedBytes = 73;
+        byte[] unchanged = input.ToArray();
+        RenderBudget parser = new(new HostMemoryBudget(maximumBytes));
+        using (RenderBudget.BudgetReservation borrower = parser.Reserve(borrowedBytes, SvgMemoryCategory.Scene))
+        {
+            using (SvgRootParser.Parse(input, options.Limits, parser, null, CancellationToken.None)) { }
+            Assert.Equal(borrowedBytes, parser.Snapshot().CurrentBytes);
+            RenderBudget denied = new(new HostMemoryBudget(parser.Snapshot().PeakBytes - borrowedBytes - 1));
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, options.Limits, denied, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+            using SvgRoot root = SvgRootParser.Parse(input, options.Limits, parser, CancellationToken.None);
+            RenderBudget raster = new(new HostMemoryBudget(maximumBytes));
+            byte[] expected;
+            using (SvgConverter.RasterizedSurface first = SvgConverter.Rasterize(root, options, raster, CancellationToken.None)) expected = first.Pixels.ToArray();
+            Assert.Equal(0, raster.Snapshot().CurrentBytes);
+            RenderBudget rasterDenied = new(new HostMemoryBudget(raster.Snapshot().PeakBytes - 1));
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, options, rasterDenied, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, rasterDenied.Snapshot().CurrentBytes);
+            using CancellationTokenSource canceled = new(); canceled.Cancel();
+            Assert.Equal(canceled.Token, Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(root, options, raster, canceled.Token)).CancellationToken);
+            Assert.Equal(0, raster.Snapshot().CurrentBytes);
+            using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, options, raster, CancellationToken.None)) Assert.Equal(expected, retry.Pixels);
+            Assert.Equal(0, raster.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, input);
+    }
+
     /// <summary>Checks parsing and rasterization under one allowance, retaining the full refusal sweep and retry path.</summary>
     /// <remarks>Input/options/fonts stay borrowed. Each scene and surface is disposed before checking
     /// the shared allowance. Parsing keeps identity construction scale and the explicit viewport;
