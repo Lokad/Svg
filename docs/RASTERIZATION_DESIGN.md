@@ -294,6 +294,12 @@ source stroke independently of fill material. The
 retain original source/target identities and separate direct, group-inherited and
 use-supplied stroke routes.
 
+An unpainted source keeps its own opacity/mask/clip bindings inside its parent
+effects. A synthetic empty-scope carrier keeps ancestor bindings around generated
+output. These are explicit paint roles; bounds and pixel emptiness do not establish
+effect ownership. [Empty-source controls](../tests/Research/filter-empty-sources/README.md)
+preserve the distinct cases.
+
 A fractional root image clipped by its integer viewport remaps the visible source
 rectangle before residual image scaling. Keep both float stages even when the
 snapped rectangles coincide; the recorded scene and logical layout stay separate.

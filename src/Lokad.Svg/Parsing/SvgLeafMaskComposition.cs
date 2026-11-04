@@ -342,13 +342,13 @@ internal static class SvgLeafMaskComposition
                         outputClip = scene.Filters.OutputClipAt(filter.MaskContentIndex);
                         anchorIndex = index + 2;
                     }
-                    // Empty filtered sources carry ancestor bindings on a non-painting
-                    // anchor. Those bindings enclose the generated output, including
-                    // the filter's own mask/clip composition.
+                    // A synthetic empty-scope carrier holds ancestor bindings around
+                    // generated output. An ordinary unpainted shape's own bindings
+                    // remain inside its parent filter, independently of source bounds.
                     if (anchorIndex >= 0 && anchorIndex < count && scene.CommandAt(anchorIndex) is { Kind: SvgDrawCommandKind.Geometry } anchorCommand)
                     {
                         SvgGeometry anchor = scene.GeometryAt(anchorCommand.GeometryIndex);
-                        if (scene.GetRecordedPaintValue(anchor.RecordedPaint).IsEffectAnchor && anchor.LeafMask is {} ancestors)
+                        if (scene.GetRecordedPaintValue(anchor.RecordedPaint).IsScopeAnchor && anchor.LeafMask is {} ancestors)
                         {
                             bool retainedFilter = false;
                             for (SvgLeafMaskBinding? binding = ancestors; binding is not null; binding = binding.Inner)

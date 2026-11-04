@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Preserve enclosing filter output when stroke-only children have zero element
+  opacity; keep child opacity inside its parent filter.
 - Keep native source strokes for retained rectangles independently of solid or
   shader material, including inherited and use-supplied strokes.
 - Preserve retained canvas stages and bitmap-local clip classification in isolated

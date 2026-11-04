@@ -1,5 +1,5 @@
 {
-  "status": "Open review: one shared empty-source/filter-output correctness area (eight original candidates) and three explicit transform admission boundaries (92 inputs). Independent platform references are preserved; no implementation/reference change is promoted by this assessment.",
+  "status": "Historical failing-before review. The eight shared filter residuals are closed by empty-source qualification; 92 transform boundaries remain open. Original source bytes, targets, platform distinctions and observations below remain unchanged.",
   "sourceCommit": "aba2306ecf45aec9a4322efd77404f12892c908a",
   "license": "MIT; font programs retain their existing notices.",
   "scope": {
@@ -982,5 +982,6 @@
     "Review native source retention for affine rectangle fills and nonuniform outlines before relaxing the 84 visibility-family admissions.",
     "Keep the eight zero-scale transform cases as a separate precise boundary pending a singular-transform/source-domain design.",
     "Preserve all source identities, naturally distinct platform references, original targets and failing-before observations."
-  ]
+  ],
+  "currentFilterQualification": "empty-source-qualification.json"
 }

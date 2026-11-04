@@ -13,7 +13,7 @@ internal readonly record struct SvgRecordedPaint(int Identity)
 internal readonly record struct SvgRecordingScope(int Value);
 internal readonly record struct SvgPaintOperationIdentity(int Value);
 [Flags]
-internal enum SvgRecordedPaintRole : byte { Fill = 0, Stroke = 1, MarkerContent = 2, EffectAnchor = 4, PreparedDrawing = 8 }
+internal enum SvgRecordedPaintRole : byte { Fill = 0, Stroke = 1, MarkerContent = 2, EffectAnchor = 4, PreparedDrawing = 8, ScopeAnchor = 16 }
 internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, SvgRecordedPaintRole Role, SvgPaintOrder PaintOrder, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
 {
     internal SvgRecordedTransform? RecordingTransform { get; init; }
@@ -24,6 +24,10 @@ internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity 
     internal bool IsMarkerContent { get => (Role & SvgRecordedPaintRole.MarkerContent) != 0; init => Role = value ? Role | SvgRecordedPaintRole.MarkerContent : Role & ~SvgRecordedPaintRole.MarkerContent; }
     /// <summary>Marks a non-painting target carrying effects; only real source bounds contribute to ancestors.</summary>
     internal bool IsEffectAnchor { get => (Role & SvgRecordedPaintRole.EffectAnchor) != 0; init => Role = value ? Role | SvgRecordedPaintRole.EffectAnchor : Role & ~SvgRecordedPaintRole.EffectAnchor; }
+    /// <summary>Marks a synthetic empty-scope carrier whose bindings enclose that scope's generated output.</summary>
+    /// <remarks>An ordinary unpainted source keeps its own bindings inside its parent effects.
+    /// Only CreateEffectAnchor assigns this role; it adds no storage or owner.</remarks>
+    internal bool IsScopeAnchor { get => (Role & SvgRecordedPaintRole.ScopeAnchor) != 0; init => Role = value ? Role | SvgRecordedPaintRole.ScopeAnchor : Role & ~SvgRecordedPaintRole.ScopeAnchor; }
     /// <summary>Marks drawing coordinates already prepared with their physical text/fragment placement.</summary>
     /// <remarks>Output retains the complete prepared map; ancestor canvas stages still belong
     /// to shader preparation. The marker owns no storage and survives scene/instance rebinding.</remarks>
@@ -136,7 +140,7 @@ internal static class SvgPaintRecording
     internal static SvgGeometry CreateEffectAnchor(SvgSceneBuilder scene, SvgDocumentState state, SvgRecordingScope scope)
     {
         SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), 0, false,
-            scope, SvgPaintOpacity.Opaque, scope) { IsEffectAnchor = true };
+            scope, SvgPaintOpacity.Opaque, scope) { IsEffectAnchor = true, IsScopeAnchor = true };
         return SvgGeometry.FromRectangle(default) with { RecordedPaint = scene.RegisterRecordedPaint(paint) };
     }
 

@@ -60,6 +60,10 @@ The [rectangle source controls](Research/rectangle-shader-frames/admission-revie
 keep 24 original admission regressions and six independent source-role images on
 the same canonical path. Six mechanisms cover cached and reconstructed strokes;
 existing rectangle ownership contracts retain refusal, cleanup and retry.
+The [unpainted filter sources](Research/filter-empty-sources/README.md) retain
+eight originals and twelve independent controls through one owned-PNG path.
+Two mechanisms distinguish source/scope roles and command order; one shared-budget
+contract preserves refusal, cancellation, cleanup and retry.
 
 The [alpha and gradient layer map](Research/release-baselines/alpha-gradient-responsibilities.json)
 keeps 35 numerical mechanisms independently selectable from nine storage, API and

@@ -18,8 +18,6 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
         "fragment-stages.json", "precision-source-images.json", "precision-screening.json"
     }.ToFrozenDictionary(static file => file,
         static file => new PaintReferenceBank("text-paint-bounds", file), StringComparer.Ordinal);
-    private static readonly Lazy<SvgFontPackCatalog> TextCatalog = new(static () =>
-        SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(Folder(), "font-pack.json")), "r99-fonts"));
     public static IEnumerable<object[]> Cases()
         => CaptureCases("image-capture.json");
 
@@ -290,8 +288,8 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
         Assert.Equal(row.GetProperty("sourceSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
         if (reference is not null)
             Assert.Equal(image.GetProperty("sha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(reference)));
-        SvgFontPackCatalog catalog = TextCatalog.Value;
-        FontPrograms provider = new();
+        SvgFontPackCatalog catalog = NotoPaintPrograms.Catalog;
+        NotoPaintPrograms provider = new();
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
         SvgRenderOptions options = new(null, row.GetProperty("outputScale").GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         byte[] actual = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
@@ -315,26 +313,4 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
 
     private static string Folder() => Path.Combine(ResearchCorpus.Root, "text-paint-bounds");
 
-    private sealed class FontPrograms : ISvgFontProgramSourceProvider
-    {
-        private static readonly Lazy<byte[]> Regular = new(static () => File.ReadAllBytes(
-            Path.Combine(ResearchCorpus.Root, "supplied-font-labels/fonts/NotoSans-Regular.ttf")));
-        private static readonly Lazy<byte[]> Mono = new(static () => File.ReadAllBytes(
-            Path.Combine(ResearchCorpus.Root, "supplied-font-documents/fonts/NotoSansMono-Bold.ttf")));
-
-        /// <summary>Returns immutable process-lifetime borrowed bytes, observes cancellation and permits concurrent requests.</summary>
-        /// <remarks>The fixture owns the host input bytes; each snapshot retains its ordinary acquisition,
-        /// admission and disposal. Sharing these inputs retains no renderer reservations.</remarks>
-        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            byte[] bytes = file.RelativePath switch
-            {
-                "sans.ttf" => Regular.Value,
-                "mono.ttf" => Mono.Value,
-                _ => throw new InvalidDataException("Unknown fixture font program.")
-            };
-            return ValueTask.FromResult<ISvgFontProgramSource?>(new SvgMemoryFontProgramSource(file.RelativePath, bytes));
-        }
-    }
 }

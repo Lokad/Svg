@@ -1,0 +1,538 @@
+{
+  "status": "Ordinary unpainted-source versus synthetic scope-carrier roles qualified locally. All eight original filter residuals are closed; matching committed-source packages and CI remain pending. The unchanged Windows DejaVu reference conflict and 92 transform boundaries remain separate.",
+  "sourceBaseCommit": "10067646ba9fa022b2463c2543b39a7906d792d1",
+  "sourceLfSha256": {
+    ".github/workflows/ci.yml": "5ef1a347d851193f6124dcd600fb26c677bc0271f01497efd27a76396f32d095",
+    "src/Lokad.Svg/Parsing/SvgLeafMaskComposition.cs": "f44adae46356899a980366032db3029534a11338aac92407c52bafedc78c9063",
+    "src/Lokad.Svg/Parsing/SvgPaintRecording.cs": "16fd37874efd1a8c7ea68cd5389a42bdb4bec5b27da124fa49df314c5f6794b2",
+    "tests/Lokad.Svg.VisualTests/SvgTextPaintBoundsReferenceTests.cs": "c24895f383633086b3d0d57309ceb0dace4548e90d22acf930cc9dff42218c97",
+    "tests/Lokad.Svg.Tests/SvgEmptyFilterSourceTests.cs": "e357131abf08231234d6badabd736401b478bec64015188fc2ed4e1094353c18",
+    "tests/Lokad.Svg.VisualTests/SvgEmptyFilterSourceReferenceTests.cs": "e2b5673a0be0801d5deec816255f6c3f00d581abdbb75a325935aec7585d71df",
+    "tests/Lokad.Svg.VisualTests/NotoPaintPrograms.cs": "11a1540c8b268bf4c43f0e89e33ee7865eeb4424c0a2a749a3cc9fa849ca24ec"
+  },
+  "manifest": "../filter-empty-sources/capture.json",
+  "manifestLfSha256": "87155113e62ccc6c6686c52a63ffcffef099e972def8386d03b3fdf2d7aca516",
+  "scope": "Closes the eight opacity-zero stroke/enclosing-flood originals and their shared command-emission cause. Broader transform/shader/text findings remain separate.",
+  "sharedCause": {
+    "before": "Command emission treated every nonpainting geometry as a carrier for empty-scope ancestor bindings. A real source shape with its own zero opacity could move that opacity outside its parent filter.",
+    "after": "The existing paint-role byte distinguishes synthetic scope carriers from ordinary unpainted shapes. Only synthetic carriers move ancestor bindings around generated output. Source bounds do not decide ownership.",
+    "storage": "No new paint record field, pixel owner, cache, renderer or public API; the flag occupies the existing byte. Scene/instance copying preserves the complete role.",
+    "text": "No layout, shaping, fitting, font selection, rounding or reference change. Native paint fixtures share their existing immutable catalog/program inputs through one small helper."
+  },
+  "originals": {
+    "inputs": 8,
+    "afterNativeExactPerHost": 8,
+    "sourceAndTargetIdentitiesUnchanged": true
+  },
+  "references": {
+    "controlNativeComparisons": 72,
+    "healthyFreshProcesses": 12,
+    "stableTriplesPerPlatform": true,
+    "newReferenceFiles": 3,
+    "authority": "Independent pinned browser targets, original inputs/options and declared font programs; all frozen references and platform differences are preserved.",
+    "fullAliasNativeComparisons": 20496,
+    "originalNativeComparisons": 48
+  },
+  "combinedOriginals": [
+    {
+      "host": "windows",
+      "originalInputs": 3416,
+      "nativeExact": 3324,
+      "unchangedAdmissionBoundaries": 92,
+      "correctedOriginals": [
+        "r74-primitives-25-candidate",
+        "r74-primitives-27-candidate",
+        "r74-primitives-57-candidate",
+        "r74-primitives-59-candidate",
+        "r74-primitives-89-candidate",
+        "r74-primitives-91-candidate",
+        "r74-primitives-121-candidate",
+        "r74-primitives-123-candidate"
+      ],
+      "priorExactLosses": 0,
+      "admissionLosses": 0,
+      "previouslyAdmittedPngsByteIdentical": 3316
+    },
+    {
+      "host": "linux",
+      "originalInputs": 3416,
+      "nativeExact": 3324,
+      "unchangedAdmissionBoundaries": 92,
+      "correctedOriginals": [
+        "r74-primitives-25-candidate",
+        "r74-primitives-27-candidate",
+        "r74-primitives-57-candidate",
+        "r74-primitives-59-candidate",
+        "r74-primitives-89-candidate",
+        "r74-primitives-91-candidate",
+        "r74-primitives-121-candidate",
+        "r74-primitives-123-candidate"
+      ],
+      "priorExactLosses": 0,
+      "admissionLosses": 0,
+      "previouslyAdmittedPngsByteIdentical": 3316
+    }
+  ],
+  "validation": {
+    "fullNet11": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4b423f1cd67e6bc6f6eddbafb37a5baafa4fe53433fbfb892c3871c9c6fd02cd",
+        "testAssemblySha256": "6a9be9941c09e8c059e0a461332f1bad6635e75e096ac6e2965b0c9ee0c1028c",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 72.91311510000378,
+        "counters": {
+          "executed": "47584",
+          "passed": "47584",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4b423f1cd67e6bc6f6eddbafb37a5baafa4fe53433fbfb892c3871c9c6fd02cd",
+        "testAssemblySha256": "6a9be9941c09e8c059e0a461332f1bad6635e75e096ac6e2965b0c9ee0c1028c",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 74.87365370010957,
+        "counters": {
+          "executed": "47584",
+          "passed": "47584",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4b423f1cd67e6bc6f6eddbafb37a5baafa4fe53433fbfb892c3871c9c6fd02cd",
+        "testAssemblySha256": "03951da82363e69055f9a997ee43b9f3de46367075bd1fe9656125da47572eae",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 304.4769570999779,
+        "counters": {
+          "executed": "70891",
+          "passed": "70890",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4b423f1cd67e6bc6f6eddbafb37a5baafa4fe53433fbfb892c3871c9c6fd02cd",
+        "testAssemblySha256": "03951da82363e69055f9a997ee43b9f3de46367075bd1fe9656125da47572eae",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 330.183972600149,
+        "counters": {
+          "executed": "70891",
+          "passed": "70891",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "4b423f1cd67e6bc6f6eddbafb37a5baafa4fe53433fbfb892c3871c9c6fd02cd",
+        "testAssemblySha256": "aeab41ed2981561c17188701c5e65e2a84fe58506ea32a39f7d34056d4774230",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 2.7960330999922007,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "4b423f1cd67e6bc6f6eddbafb37a5baafa4fe53433fbfb892c3871c9c6fd02cd",
+        "testAssemblySha256": "aeab41ed2981561c17188701c5e65e2a84fe58506ea32a39f7d34056d4774230",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.36456110002473,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "compatibilityNet10": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "5ab683b7171c5cfc127207aeaf357099246a6b8c41b0f01e4d44ccd350dc5054",
+        "testAssemblySha256": "2fb4a31b7ae3905323fe0c8e0da25484ac7be5799417557f6dd6e51b2f308c1b",
+        "selection": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgGlyphLcdCoverageTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgRasterScopeTests|FullyQualifiedName~SvgAnalyticStorageWindowTests|FullyQualifiedName~SvgFilterStoredImageBoundsTests|FullyQualifiedName~SvgFilterSourceHintTests|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests|FullyQualifiedName~SvgRectangleSourceTests|FullyQualifiedName~SvgEmptyFilterSourceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 48.04823399987072,
+        "counters": {
+          "executed": "12839",
+          "passed": "12839",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "5ab683b7171c5cfc127207aeaf357099246a6b8c41b0f01e4d44ccd350dc5054",
+        "testAssemblySha256": "2fb4a31b7ae3905323fe0c8e0da25484ac7be5799417557f6dd6e51b2f308c1b",
+        "selection": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgGlyphLcdCoverageTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgRasterScopeTests|FullyQualifiedName~SvgAnalyticStorageWindowTests|FullyQualifiedName~SvgFilterStoredImageBoundsTests|FullyQualifiedName~SvgFilterSourceHintTests|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests|FullyQualifiedName~SvgRectangleSourceTests|FullyQualifiedName~SvgEmptyFilterSourceTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 43.06755700008944,
+        "counters": {
+          "executed": "12839",
+          "passed": "12839",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "5ab683b7171c5cfc127207aeaf357099246a6b8c41b0f01e4d44ccd350dc5054",
+        "testAssemblySha256": "d33784414669c73c86d8be7baad2b0bed80879b67c2f5c71c757caf0a8ef67fc",
+        "selection": "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgXmlEntityReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|(FullyQualifiedName~SvgShaderContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgFilterSourceContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgSymbolCanvasReferenceTests&Category!=Research)|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests",
+        "exitCode": 0,
+        "seconds": 45.12559979991056,
+        "counters": {
+          "executed": "1020",
+          "passed": "1020",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "5ab683b7171c5cfc127207aeaf357099246a6b8c41b0f01e4d44ccd350dc5054",
+        "testAssemblySha256": "d33784414669c73c86d8be7baad2b0bed80879b67c2f5c71c757caf0a8ef67fc",
+        "selection": "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgXmlEntityReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|(FullyQualifiedName~SvgShaderContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgFilterSourceContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgSymbolCanvasReferenceTests&Category!=Research)|FullyQualifiedName~SvgRectangleSourceReferenceTests|FullyQualifiedName~SvgEmptyFilterSourceReferenceTests",
+        "exitCode": 0,
+        "seconds": 40.06203610007651,
+        "counters": {
+          "executed": "1020",
+          "passed": "1020",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "5ab683b7171c5cfc127207aeaf357099246a6b8c41b0f01e4d44ccd350dc5054",
+        "testAssemblySha256": "86f2ee44552a104893d993aba14b1c431395da9eba1ce8591a307e869e4bfa1d",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 3.0653209001757205,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "5ab683b7171c5cfc127207aeaf357099246a6b8c41b0f01e4d44ccd350dc5054",
+        "testAssemblySha256": "86f2ee44552a104893d993aba14b1c431395da9eba1ce8591a307e869e4bfa1d",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 7.255875100148842,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "affectedIntegration": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4b423f1cd67e6bc6f6eddbafb37a5baafa4fe53433fbfb892c3871c9c6fd02cd",
+        "testAssemblySha256": "6a9be9941c09e8c059e0a461332f1bad6635e75e096ac6e2965b0c9ee0c1028c",
+        "selection": "FullyQualifiedName~SvgEmpty|FullyQualifiedName~SvgLeafMask|FullyQualifiedName~SvgMask|FullyQualifiedName~SvgClip|FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgUseInstance|FullyQualifiedName~SvgDefinition|FullyQualifiedName~SvgAffineRectangleStroke|FullyQualifiedName~SvgTransformedRectangle|FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgShader|FullyQualifiedName~SvgNonScaling|FullyQualifiedName~SvgAnalytic|FullyQualifiedName~SvgCpuRaster|FullyQualifiedName~SvgRasterScope|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgSymbol|FullyQualifiedName~SvgCapturedCanvas|FullyQualifiedName~SvgRecorded|FullyQualifiedName~SvgConic|FullyQualifiedName~SvgBitmapLocal",
+        "exitCode": 0,
+        "seconds": 21.43042890005745,
+        "counters": {
+          "executed": "6841",
+          "passed": "6841",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "4b423f1cd67e6bc6f6eddbafb37a5baafa4fe53433fbfb892c3871c9c6fd02cd",
+        "testAssemblySha256": "6a9be9941c09e8c059e0a461332f1bad6635e75e096ac6e2965b0c9ee0c1028c",
+        "selection": "FullyQualifiedName~SvgEmpty|FullyQualifiedName~SvgLeafMask|FullyQualifiedName~SvgMask|FullyQualifiedName~SvgClip|FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgUseInstance|FullyQualifiedName~SvgDefinition|FullyQualifiedName~SvgAffineRectangleStroke|FullyQualifiedName~SvgTransformedRectangle|FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgShader|FullyQualifiedName~SvgNonScaling|FullyQualifiedName~SvgAnalytic|FullyQualifiedName~SvgCpuRaster|FullyQualifiedName~SvgRasterScope|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgSymbol|FullyQualifiedName~SvgCapturedCanvas|FullyQualifiedName~SvgRecorded|FullyQualifiedName~SvgConic|FullyQualifiedName~SvgBitmapLocal",
+        "exitCode": 0,
+        "seconds": 29.748683499870822,
+        "counters": {
+          "executed": "6841",
+          "passed": "6841",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4b423f1cd67e6bc6f6eddbafb37a5baafa4fe53433fbfb892c3871c9c6fd02cd",
+        "testAssemblySha256": "03951da82363e69055f9a997ee43b9f3de46367075bd1fe9656125da47572eae",
+        "selection": "FullyQualifiedName~SvgEmpty|FullyQualifiedName~SvgMask|FullyQualifiedName~SvgClip|FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgZeroRadius|FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgShader|FullyQualifiedName~SvgTextPaintBounds|Name~filter-|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgSymbolCanvasReferenceTests",
+        "exitCode": 0,
+        "seconds": 48.9981849999167,
+        "counters": {
+          "executed": "26851",
+          "passed": "26851",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "4b423f1cd67e6bc6f6eddbafb37a5baafa4fe53433fbfb892c3871c9c6fd02cd",
+        "testAssemblySha256": "03951da82363e69055f9a997ee43b9f3de46367075bd1fe9656125da47572eae",
+        "selection": "FullyQualifiedName~SvgEmpty|FullyQualifiedName~SvgMask|FullyQualifiedName~SvgClip|FullyQualifiedName~SvgRectangle|FullyQualifiedName~SvgZeroRadius|FullyQualifiedName~SvgFilter|FullyQualifiedName~SvgShader|FullyQualifiedName~SvgTextPaintBounds|Name~filter-|FullyQualifiedName~SvgSymbolInstanceReferenceTests|FullyQualifiedName~SvgSymbolCanvasReferenceTests",
+        "exitCode": 0,
+        "seconds": 77.05551519989967,
+        "counters": {
+          "executed": "26851",
+          "passed": "26851",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "failingBefore": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "67c8a7f8f158b01d19bac143302502df1b08176e764d2b1e80cde49f2971cb56",
+        "testAssemblySha256": "03951da82363e69055f9a997ee43b9f3de46367075bd1fe9656125da47572eae",
+        "selection": "FullyQualifiedName~SvgEmptyFilterSourceReferenceTests",
+        "exitCode": 1,
+        "seconds": 16.458277400117368,
+        "counters": {
+          "executed": "20",
+          "passed": "8",
+          "failed": "12"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-121-candidate\")",
+            "message": "r74-primitives-121-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-123-candidate\")",
+            "message": "r74-primitives-123-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-27-candidate\")",
+            "message": "r74-primitives-27-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-57-candidate\")",
+            "message": "r74-primitives-57-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"radial-stroke-zero-element\")",
+            "message": "radial-stroke-zero-element"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"pattern-stroke-clipped-parent\")",
+            "message": "pattern-stroke-clipped-parent"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-91-candidate\")",
+            "message": "r74-primitives-91-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"pattern-stroke-zero-element\")",
+            "message": "pattern-stroke-zero-element"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-59-candidate\")",
+            "message": "r74-primitives-59-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-25-candidate\")",
+            "message": "r74-primitives-25-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"solid-stroke-zero-element\")",
+            "message": "solid-stroke-zero-element"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-89-candidate\")",
+            "message": "r74-primitives-89-candidate"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "67c8a7f8f158b01d19bac143302502df1b08176e764d2b1e80cde49f2971cb56",
+        "testAssemblySha256": "03951da82363e69055f9a997ee43b9f3de46367075bd1fe9656125da47572eae",
+        "selection": "FullyQualifiedName~SvgEmptyFilterSourceReferenceTests",
+        "exitCode": 1,
+        "seconds": 17.034726800164208,
+        "counters": {
+          "executed": "20",
+          "passed": "8",
+          "failed": "12"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"pattern-stroke-clipped-parent\")",
+            "message": "pattern-stroke-clipped-parent"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"pattern-stroke-zero-element\")",
+            "message": "pattern-stroke-zero-element"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-121-candidate\")",
+            "message": "r74-primitives-121-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"solid-stroke-zero-element\")",
+            "message": "solid-stroke-zero-element"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-123-candidate\")",
+            "message": "r74-primitives-123-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-27-candidate\")",
+            "message": "r74-primitives-27-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-89-candidate\")",
+            "message": "r74-primitives-89-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-57-candidate\")",
+            "message": "r74-primitives-57-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-59-candidate\")",
+            "message": "r74-primitives-59-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"radial-stroke-zero-element\")",
+            "message": "radial-stroke-zero-element"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-25-candidate\")",
+            "message": "r74-primitives-25-candidate"
+          },
+          {
+            "name": "Lokad.Svg.VisualTests.SvgEmptyFilterSourceReferenceTests.Unpainted_sources_keep_parent_filter_output_and_distinct_scope_effects(id: \"r74-primitives-91-candidate\")",
+            "message": "r74-primitives-91-candidate"
+          }
+        ]
+      }
+    ]
+  },
+  "responsibilities": {
+    "routineImages": 20,
+    "originalImages": 8,
+    "orthogonalControls": 12,
+    "canonicalPath": "Synchronous owned PNG with explicit original font snapshot context where declared.",
+    "directMechanisms": 2,
+    "sharedBudgetContracts": 1,
+    "contract": "One representative refusal sweep, cancellation, cleanup and retry; existing empty-group, leaf-mask and clip contracts remain independent.",
+    "retainedInteractions": [
+      "solid/linear/radial/pattern source paints",
+      "fill versus stroke/element opacity",
+      "display and visibility",
+      "leaf versus parent filter/opacity order",
+      "ancestor clipping",
+      "synthetic empty-scope effects"
+    ]
+  },
+  "svgweb": {
+    "originals": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 147.8763230999466,
+      "librarySha256": "4b423f1cd67e6bc6f6eddbafb37a5baafa4fe53433fbfb892c3871c9c6fd02cd",
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        }
+      }
+    },
+    "suppliedOriginalFontContexts": 22,
+    "allSuppliedContextPngsUnchanged": true,
+    "staticDiagnostics": 13,
+    "allDiagnosticPixelsExact": true,
+    "hostedSvgBodiesRetained": 0,
+    "rawAttributeValuesRetained": 0
+  },
+  "limitations": [
+    "Unchanged Windows DejaVu frozen-reference conflict; reference and assertion preserved.",
+    "84 affine rectangle/nonuniform-outline and eight zero-scale transform boundaries remain open in the complete alias review.",
+    "Quiet-VM renderer performance remains unmeasured."
+  ],
+  "promotion": {
+    "packages": "Pending clean-commit deterministic package/consumer binding.",
+    "ci": "Pending matching production commit.",
+    "published": false
+  }
+}

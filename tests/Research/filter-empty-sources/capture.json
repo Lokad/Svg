@@ -1,0 +1,320 @@
+{
+  "purpose": "Distinct ordinary unpainted-source and synthetic scope-carrier roles. Original source bytes and independent native images are unchanged.",
+  "license": "MIT",
+  "review": "../release-baselines/r85-alias-review.json",
+  "originalCases": 8,
+  "orthogonalControls": 12,
+  "canonicalConversion": "Synchronous owned PNG; explicit original font snapshot context where declared.",
+  "sourceFontCatalog": "../text-paint-bounds/font-pack.json",
+  "nativeValidation": {
+    "originalProcesses": 6,
+    "controlComparisons": 72,
+    "controlProcesses": 6,
+    "stableTriplesPerHost": true,
+    "sourceAndTargetIdentitiesUnchanged": true,
+    "fullAliasComparisons": 20496,
+    "originalImageComparisons": 48
+  },
+  "cases": [
+    {
+      "id": "r74-primitives-25-candidate",
+      "kind": "original",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><text x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text></pattern></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+      "sourceSha256": "16ca2a1b0ab970d1e221e0e9b05cec6b3604ccf142f1f2f85062a8459b0cc92c",
+      "outputScale": 1,
+      "fontContext": true,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r74-primitives-27-candidate",
+      "kind": "original",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><text x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text></pattern></defs></svg>",
+      "sourceSha256": "bd3221f51f145bd4cf240065a3199f2a641bd4eb4f423924b46e76496cf88c95",
+      "outputScale": 1,
+      "fontContext": true,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r74-primitives-57-candidate",
+      "kind": "original",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><use href='#t'/></pattern></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+      "sourceSha256": "305654d7c93f233f3be15642178ea74ec1160d17e6698379ea6d90d9940102d4",
+      "outputScale": 1,
+      "fontContext": true,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r74-primitives-59-candidate",
+      "kind": "original",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><use href='#t'/></pattern></defs></svg>",
+      "sourceSha256": "e2da0b9a94811c01c10f90f3ed1107d99bdbbcc2043f948259802df1460c66f4",
+      "outputScale": 1,
+      "fontContext": true,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r74-primitives-89-candidate",
+      "kind": "original",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><g><text x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text></g></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+      "sourceSha256": "def3b770e09a0d12759ed1c0107bb585422bad4255448662b20e26a9ed05f124",
+      "outputScale": 1,
+      "fontContext": true,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r74-primitives-91-candidate",
+      "kind": "original",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><g><text x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text></g></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs></svg>",
+      "sourceSha256": "e1ee062697fe05b0050192db0301b474cbf633b24787ad42c6b9aeeb7d52cd97",
+      "outputScale": 1,
+      "fontContext": true,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r74-primitives-121-candidate",
+      "kind": "original",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+      "sourceSha256": "90697bed3090294c62ce35e2dce54ced3f0173fd00d37aea7670870f33e9cf93",
+      "outputScale": 1,
+      "fontContext": true,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "r74-primitives-123-candidate",
+      "kind": "original",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='outer' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#outer)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs></svg>",
+      "sourceSha256": "fe67fe5f89ef1387ff43f516bd50b41204d246aa18337c3b7e354b6523d2f53c",
+      "outputScale": 1,
+      "fontContext": true,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "pattern-stroke-zero-element",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+      "sourceSha256": "ad35a3402c2ce81c2986e8af951e6b55da3625452f6d84804943551134a84b65",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "solid-stroke-zero-element",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='green' stroke-width='2' opacity='0'/></g></svg>",
+      "sourceSha256": "280b69ee20ce61ee5348540ef185d0952ee728605a75f0908256a74694fcc7d5",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "linear-stroke-zero-element",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#l)' stroke-width='2' opacity='0'/></g></svg>",
+      "sourceSha256": "f471e5955780b2c3f297e6c69247442face68af1ce8873d15a673ac862a9ac98",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "radial-stroke-zero-element",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#r)' stroke-width='2' opacity='0'/></g></svg>",
+      "sourceSha256": "99255db2e838b79f20366e6ff2d286231c46370827979575a0e1873237935cf1",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "pattern-fill-zero-element",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='url(#p)' opacity='0'/></g></svg>",
+      "sourceSha256": "28fe2778d4ce1099e892d1374c0e8e178d41c38ba79b91251e5f1d11d4eea9a9",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "pattern-stroke-zero-paint",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' stroke-opacity='0'/></g></svg>",
+      "sourceSha256": "e6c6725e61147397132c1b63a6ada940b875d927d26759f6b6d191502cad377b",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "pattern-stroke-display-none",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' display='none'/></g></svg>",
+      "sourceSha256": "dd8f3af2c63589bfd471212f28dfd862e110a1ad71fbe07acb329fe44397fd8b",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "pattern-stroke-hidden",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' visibility='hidden'/></g></svg>",
+      "sourceSha256": "cb22dedeb33f90b038a7f04846f97421e0691d998c8bb3c8748da47d503b75d7",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "pattern-stroke-filled-zero-element",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g filter='url(#f)'><rect width='32' height='32' fill='red' stroke='url(#p)' stroke-width='2' opacity='0'/></g></svg>",
+      "sourceSha256": "be8bd041f34be54e31fc66f6840fef00aaab407a8fb75aa67a77c5ae0323f314",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/9fbb2b43b1bf1006.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "pattern-stroke-leaf-filter",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0' filter='url(#f)'/></svg>",
+      "sourceSha256": "0fa8d1c3ed4b1c2ff961a80b76aacd5773e26d2697b59afed80997afe2d06007",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/0f4860d85f00a238.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "pattern-stroke-parent-opacity",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g opacity='0'><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></g></svg>",
+      "sourceSha256": "aefb9446fc05f64fd0407d7c4c4bd15c270c0acbe07d106373fb116970629bf4",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/0f4860d85f00a238.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "id": "pattern-stroke-clipped-parent",
+      "kind": "control",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><linearGradient id='l'><stop stop-color='red'/><stop offset='1' stop-color='green'/></linearGradient><radialGradient id='r'><stop stop-color='red'/><stop offset='1' stop-color='green'/></radialGradient><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='green'/></pattern><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><g clip-path='url(#c)'><g filter='url(#f)'><rect width='32' height='32' fill='none' stroke='url(#p)' stroke-width='2' opacity='0'/></g></g></svg>",
+      "sourceSha256": "69addaa63b9ac6ce01d7a2d7bc5c813cdae1e6d1b39dc09accaf285af1113dee",
+      "outputScale": 1,
+      "fontContext": false,
+      "reference": {
+        "path": "references/9ca4e825adcc3104.png",
+        "pngSha256": "9ca4e825adcc31045fcf256ee04153d5d54f092a91ff41d5270112ff9177b8a1",
+        "rgbaSha256": "7c7b6ae69a562b0f1c347082227cc9606fde3bd6b180002b31b1a0fb0ed59963",
+        "width": 32,
+        "height": 32
+      }
+    }
+  ]
+}
