@@ -1,0 +1,284 @@
+{
+  "status": "Five core copy globs replaced with the existing contracts' input lists. All case identities, full visual banks and source/reference bytes remain unchanged.",
+  "sourceBaseCommit": "809d11ea25ce980082675ad211e9e7fd36ea5b20",
+  "project": "../../Lokad.Svg.Tests/Lokad.Svg.Tests.csproj",
+  "previousCopyQualification": "text-node-copy.json",
+  "productionHashEvidence": "../text-clip/qualification.json",
+  "productionSourceHashesMatch": true,
+  "banks": [
+    {
+      "bank": "container-shader-inheritance",
+      "coreConsumer": "../../Lokad.Svg.Tests/SvgContainerShaderInheritanceTests.cs",
+      "copiedBefore": 192,
+      "copiedAfter": 15,
+      "bytesBefore": 120729,
+      "bytesAfter": 8886,
+      "retainedInputs": [
+        "current-color-border-transparent.svg",
+        "group-opacity-overlap-transparent.svg",
+        "image-no-fill-transparent.svg",
+        "linear-alias-excludes-transparent.svg",
+        "linear-definition-excludes-transparent.svg",
+        "linear-group-copy-transparent.svg",
+        "linear-native-shapes-transparent.svg",
+        "linear-root-direct-transparent.svg",
+        "linear-root-use-transparent.svg",
+        "masked-leaf-transparent.svg",
+        "pattern-group-copy-transparent.svg",
+        "pattern-native-shapes-transparent.svg",
+        "pattern-symbol-fill-transparent.svg",
+        "radial-group-direct-transparent.svg",
+        "tile-alpha-e93d8f-white.svg"
+      ],
+      "freshOutputExactlyMatchesRetainedInputs": true
+    },
+    {
+      "bank": "instance-shader-opacity",
+      "coreConsumer": "../../Lokad.Svg.Tests/SvgInstanceShaderOpacityTests.cs",
+      "copiedBefore": 150,
+      "copiedAfter": 12,
+      "bytesBefore": 68030,
+      "bytesAfter": 5305,
+      "retainedInputs": [
+        "css-source-transparent.svg",
+        "current-color-stroke-transparent.svg",
+        "linear-definition-transparent.svg",
+        "linear-use-fill-transparent.svg",
+        "mixed-symbol-use-fill-transparent.svg",
+        "nested-shader-use-fill-transparent.svg",
+        "path-use-fill-transparent.svg",
+        "pattern-negative-phase-transparent.svg",
+        "pattern-root-minified-transparent.svg",
+        "pattern-scaled-instance-transparent.svg",
+        "pattern-symbol-transparent.svg",
+        "radial-symbol-transparent.svg"
+      ],
+      "freshOutputExactlyMatchesRetainedInputs": true
+    },
+    {
+      "bank": "rendered-group-styles",
+      "coreConsumer": "../../Lokad.Svg.Tests/SvgRenderedGroupStyleTests.cs",
+      "copiedBefore": 123,
+      "copiedAfter": 11,
+      "bytesBefore": 39788,
+      "bytesAfter": 3479,
+      "retainedInputs": [
+        "css-source-transparent.svg",
+        "current-color-fill-transparent.svg",
+        "dashed-path-transparent.svg",
+        "empty-forward-transparent.svg",
+        "fill-rule-transparent.svg",
+        "forward-chain-transparent.svg",
+        "masked-leaf-style-transparent.svg",
+        "masked-use-style-transparent.svg",
+        "nested-groups-transparent.svg",
+        "paint-server-ancestor-transparent.svg",
+        "thin-scaled-ellipse-transparent.svg"
+      ],
+      "freshOutputExactlyMatchesRetainedInputs": true
+    },
+    {
+      "bank": "use-stroke-style",
+      "coreConsumer": "../../Lokad.Svg.Tests/SvgUseStrokeStyleTests.cs",
+      "copiedBefore": 99,
+      "copiedAfter": 7,
+      "bytesBefore": 34980,
+      "bytesAfter": 2462,
+      "retainedInputs": [
+        "circle-transparent.svg",
+        "css-source-transparent.svg",
+        "dashed-path-transparent.svg",
+        "magnified-symbol-transparent.svg",
+        "nested-use-own-transparent.svg",
+        "plain-rectangle-transparent.svg",
+        "symbol-mixed-transparent.svg"
+      ],
+      "freshOutputExactlyMatchesRetainedInputs": true
+    },
+    {
+      "bank": "viewport-percentage-bases",
+      "coreConsumer": "../../Lokad.Svg.Tests/SvgViewportPercentageTests.cs",
+      "copiedBefore": 81,
+      "copiedAfter": 9,
+      "bytesBefore": 29322,
+      "bytesAfter": 2891,
+      "retainedInputs": [
+        "deep-nested-percent-transparent.svg",
+        "nested-image-percent-transparent.svg",
+        "nested-match-transparent.svg",
+        "nested-use-scaled-transparent.svg",
+        "root-match-transparent.svg",
+        "root-native-percent-transparent.svg",
+        "root-percent-no-viewbox-transparent.svg",
+        "root-symbol-default-transparent.svg",
+        "root-viewbox-only-transparent.svg"
+      ],
+      "freshOutputExactlyMatchesRetainedInputs": true
+    }
+  ],
+  "copyTotals": {
+    "before": {
+      "copyItems": 1632,
+      "svgCopies": 1481,
+      "svgBytes": 853558
+    },
+    "after": {
+      "copyItems": 1041,
+      "svgCopies": 890,
+      "svgBytes": 583732
+    },
+    "removedCopiedSvgs": 591,
+    "removedCopiedBytes": 269826,
+    "frameworkCopySetsIdentical": true
+  },
+  "preserved": {
+    "casesRemoved": 0,
+    "caseNamesChanged": 0,
+    "svgSourcesChanged": 0,
+    "nativeReferencesChanged": 0,
+    "productionChanges": 0,
+    "fullInvocationRefusalSweepAndViewportPaths": true,
+    "patternSourceSelectionCopies": 55,
+    "patternReason": "The core theory consumes every manifest source and an additional inert-typography fixture; its complete copy set remains needed."
+  },
+  "validation": {
+    "affectedCaseNamesEqualBeforeAfter": 65,
+    "before": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7737959f492fada1dbfbe69147a30127b9642d11bed59893bec95d54b0695055",
+        "testAssemblySha256": "504562d670bb0ba00c59bf3bf312e6246af3dfb1128910c7c86bf8a18713866a",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 7.47650650003925,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "7737959f492fada1dbfbe69147a30127b9642d11bed59893bec95d54b0695055",
+        "testAssemblySha256": "504562d670bb0ba00c59bf3bf312e6246af3dfb1128910c7c86bf8a18713866a",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 11.374995399964973,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "after": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "39dd4ece5da65ac82c1b443db8af0134060a55016495419b905c13de0ff52a8c",
+        "testAssemblySha256": "77def95c83cdaaf9f5ec1f9697e2fc21be63fc1e3c39d301d4c413f7f94b6a0b",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 8.008977899793535,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "39dd4ece5da65ac82c1b443db8af0134060a55016495419b905c13de0ff52a8c",
+        "testAssemblySha256": "77def95c83cdaaf9f5ec1f9697e2fc21be63fc1e3c39d301d4c413f7f94b6a0b",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 12.260036800056696,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "net10": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "6abff6566063e2fcb735f201d5e75ffa0626de83690bb4c01e422e755d92fc79",
+        "testAssemblySha256": "4cbc2d113c783160ec1746227aeeb4e5261541577f2ac8183e0a5854103d7b92",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 8.31270379992202,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "6abff6566063e2fcb735f201d5e75ffa0626de83690bb4c01e422e755d92fc79",
+        "testAssemblySha256": "4cbc2d113c783160ec1746227aeeb4e5261541577f2ac8183e0a5854103d7b92",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 11.125833100173622,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "fullFreshCore": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "39dd4ece5da65ac82c1b443db8af0134060a55016495419b905c13de0ff52a8c",
+        "testAssemblySha256": "77def95c83cdaaf9f5ec1f9697e2fc21be63fc1e3c39d301d4c413f7f94b6a0b",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 48.53255690005608,
+        "counters": {
+          "executed": "47545",
+          "passed": "47545",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "39dd4ece5da65ac82c1b443db8af0134060a55016495419b905c13de0ff52a8c",
+        "testAssemblySha256": "77def95c83cdaaf9f5ec1f9697e2fc21be63fc1e3c39d301d4c413f7f94b6a0b",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 51.106354099931195,
+        "counters": {
+          "executed": "47545",
+          "passed": "47545",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "timingInterpretation": "Single shared-machine functional observations including process/discovery/WSL startup. Windows 7.48 to 8.01 seconds and Linux 11.37 to 12.26 for the same 65 .NET11 cases. No speed improvement or renderer throughput change is established. Fresh .NET11 output passes every 47,545 core case per host; fresh .NET10 output passes the same 65 affected cases. Broader native/runtime/package gates remain coherent-milestone/CI duties."
+}

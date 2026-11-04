@@ -31,6 +31,9 @@ API/ownership fixtures. The visual suite still reads the complete bank from the
 repository. [Copy qualification](Research/release-baselines/text-node-copy.json)
 checks fresh output, unchanged test identities, ownership coverage and measured
 before/after validation; reducing copied data does not remove rendering coverage.
+The [shader/group/viewport copy lists](Research/release-baselines/shader-viewport-copy.json)
+likewise retain their 54 contract inputs while their complete visual banks remain
+in the repository. Pattern-source selection still needs every manifest source.
 
 [Canonical shaping](Research/svgweb/text-canonical-shaping.json) separates Unicode,
 substitution, attachment and fitting mechanisms from two representative storage

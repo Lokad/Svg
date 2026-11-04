@@ -191,11 +191,60 @@
     <None Include="../Fixtures/candidates/inv-061.svg" Link="TestData/south-africa-flag.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-065.svg" Link="TestData/portugal-flag.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-057.svg" Link="TestData/malta-flag.svg" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/viewport-percentage-bases/*.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/container-shader-inheritance/*.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/instance-shader-opacity/*.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/use-stroke-style/*.svg" Link="TestData/use-stroke-style/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/rendered-group-styles/*.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/viewport-percentage-bases/deep-nested-percent-transparent.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/viewport-percentage-bases/nested-image-percent-transparent.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/viewport-percentage-bases/nested-match-transparent.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/viewport-percentage-bases/nested-use-scaled-transparent.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/viewport-percentage-bases/root-match-transparent.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/viewport-percentage-bases/root-native-percent-transparent.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/viewport-percentage-bases/root-percent-no-viewbox-transparent.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/viewport-percentage-bases/root-symbol-default-transparent.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/viewport-percentage-bases/root-viewbox-only-transparent.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/current-color-border-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/group-opacity-overlap-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/image-no-fill-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/linear-alias-excludes-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/linear-definition-excludes-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/linear-group-copy-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/linear-native-shapes-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/linear-root-direct-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/linear-root-use-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/masked-leaf-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/pattern-group-copy-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/pattern-native-shapes-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/pattern-symbol-fill-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/radial-group-direct-transparent.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/container-shader-inheritance/tile-alpha-e93d8f-white.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/css-source-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/current-color-stroke-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/linear-definition-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/linear-use-fill-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/mixed-symbol-use-fill-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/nested-shader-use-fill-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/path-use-fill-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/pattern-negative-phase-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/pattern-root-minified-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/pattern-scaled-instance-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/pattern-symbol-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/instance-shader-opacity/radial-symbol-transparent.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-style/circle-transparent.svg" Link="TestData/use-stroke-style/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-style/css-source-transparent.svg" Link="TestData/use-stroke-style/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-style/dashed-path-transparent.svg" Link="TestData/use-stroke-style/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-style/magnified-symbol-transparent.svg" Link="TestData/use-stroke-style/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-style/nested-use-own-transparent.svg" Link="TestData/use-stroke-style/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-style/plain-rectangle-transparent.svg" Link="TestData/use-stroke-style/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-style/symbol-mixed-transparent.svg" Link="TestData/use-stroke-style/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/rendered-group-styles/css-source-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/rendered-group-styles/current-color-fill-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/rendered-group-styles/dashed-path-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/rendered-group-styles/empty-forward-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/rendered-group-styles/fill-rule-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/rendered-group-styles/forward-chain-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/rendered-group-styles/masked-leaf-style-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/rendered-group-styles/masked-use-style-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/rendered-group-styles/nested-groups-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/rendered-group-styles/paint-server-ancestor-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/rendered-group-styles/thin-scaled-ellipse-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/use-stroke-opacity/*.svg" Link="TestData/use-stroke-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/use-paint-properties/*.svg" Link="TestData/use-paint-properties/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/symbol-viewport-opacity/*.svg" Link="TestData/symbol-viewport-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
