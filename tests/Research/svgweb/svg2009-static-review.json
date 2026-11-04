@@ -1,0 +1,174 @@
+{
+  "sourceName": "svg2009.svg",
+  "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+  "diagnosticInputSha256": "35ac8215e277b1ec6adfa3b0cc63502996b85b36be3f9d44123e9981bb022b1e",
+  "nativeInputSha256": "4a028a1495eadb04e26f259c829be9bd16ec42a8419ce4817d9c8266809031a7",
+  "removedClockStartDeclarations": 11,
+  "allTextAndTailsPreserved": true,
+  "retainedComments": 5,
+  "retainedProcessingInstructions": 0,
+  "originalTextSha256": "7c325fc71212c927dae07f115474ece6b21b9a2b86ba6a961ed93a29ea752e03",
+  "logicalViewport": [
+    850,
+    200
+  ],
+  "physicalViewport": [
+    850,
+    200
+  ],
+  "recipeRevision": 3,
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "hostedSvgBodiesRetained": 0,
+  "rawAttributeValuesRetained": 0,
+  "elapsedSeconds": 21.90155370021239,
+  "hosts": [
+    {
+      "host": "windows",
+      "librarySha256": "16af28ecfa5454307a2c0af9888112f2cd46a06c7f37cc0d260453d90f3125ea",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captures": [
+        {
+          "pngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0,
+          "milliseconds": 2021
+        },
+        {
+          "pngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0,
+          "milliseconds": 2044
+        },
+        {
+          "pngSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0,
+          "milliseconds": 1979
+        }
+      ],
+      "libraryPngSha256": "bd4645f8ce20e26629b7b0e6f3d169a3f94a92ab9d984a08dbbc6f2ab0cb310b",
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "reference": "static-context/windows-svg2009-noto.png",
+      "referenceSha256": "dc428f63aa74f5e59fff0b7f89b49eecb830d2f637a4876b23a7f50491e5a83d"
+    },
+    {
+      "host": "linux",
+      "librarySha256": "16af28ecfa5454307a2c0af9888112f2cd46a06c7f37cc0d260453d90f3125ea",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captures": [
+        {
+          "pngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0,
+          "milliseconds": 5495
+        },
+        {
+          "pngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0,
+          "milliseconds": 4847
+        },
+        {
+          "pngSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d",
+          "startupHealth": "healthy",
+          "profileCleaned": true,
+          "terminalExitCode": 0,
+          "milliseconds": 4762
+        }
+      ],
+      "libraryPngSha256": "967e6661a96150e88f14da5647c4de2d596bb1d7d5dff9be75b6957ea94aa828",
+      "changedPixels": 0,
+      "alphaChangedPixels": 0,
+      "reference": "static-context/linux-svg2009-noto.png",
+      "referenceSha256": "1ff75326173b4f38acfdc0445bfb4bb554c7ff438c062aff6f57c8ccff20da8d"
+    }
+  ],
+  "schemaVersion": 1,
+  "qualifiedSourceCommit": "37077f4914617d28a6bc9ea6ef2e18d8d4eb4a04",
+  "status": "Current timing/base-state accounting revalidated against the already-closed filter milestone. The declared animation-disabled / supplied-Noto diagnostic is exact on both hosts; the unchanged animated original and its SVG-font outlines remain outside this closure.",
+  "source": "https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/svg2009.svg",
+  "processingMode": {
+    "specification": "https://www.w3.org/TR/SVG/conform.html",
+    "rule": "Disabling declarative animation leaves base values; it is distinct from sampling the animated timeline at zero. The diagnostic removes the animation declarations before ordinary native image capture; it does not freeze an animated image or change production admission."
+  },
+  "timingReview": {
+    "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+    "startSigns": {
+      "zero": 6,
+      "positive": 5
+    },
+    "durationClasses": {
+      "positive-clock": 11
+    },
+    "endBehavior": {
+      "freeze": 11
+    },
+    "repeatClasses": {
+      "default-once": 11
+    },
+    "targetClasses": {
+      "transform": 9,
+      "paint": 2
+    },
+    "timingGraphEdges": 0,
+    "originalFontDefinitions": 1,
+    "originalGlyphDefinitions": 95,
+    "rawAttributeValuesRetained": 0,
+    "hostedSvgBodiesRetained": 0,
+    "explicitEndDeclarations": 0,
+    "explicitRepeatDurationDeclarations": 0,
+    "authoredTimingAttributeNames": {
+      "id": 4,
+      "attributeName": 11,
+      "type": 9,
+      "from": 7,
+      "to": 8,
+      "begin": 11,
+      "dur": 11,
+      "fill": 11,
+      "values": 3,
+      "keyTimes": 2
+    }
+  },
+  "font": {
+    "file": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "license": "../supplied-font-labels/fonts/OFL.txt",
+    "binding": "Managed discovery selects the supplied regular Noto program through explicit generic-family mappings and ordered fallback. Native font-family declarations select DiagnosticNoto, embedded from the identical program; font synthesis is disabled. Legacy SVG font/glyph declarations remain present but their outlines are not the qualified font context."
+  },
+  "projection": {
+    "recipe": "Fetch/hash/parse in bounded RAM with Python minidom, preserving document comments, processing instructions and adjacent text nodes. Remove only nine SVG animateTransform and two animate elements, all childless. Verify the complete text/CDATA/comment/PI stream before and after, including all whitespace. Leave graphics, definitions, IDs, filters, dormant clip groups, paths, typography, coordinates and five comments intact. Serialize with document.toxml(encoding=\"utf-8\"); verify the diagnostic hash. Native capture alone maps every font-family attribute and CSS declaration to DiagnosticNoto, adds the root family when absent and one embedded-font style at the root start. Preserve original text-node types when changing a style declaration. Invert all font changes and require byte-identical diagnostic serialization. Verify the separate native hash. Retain neither SVG body.",
+    "allGraphicContentPreserved": true,
+    "allTextAndTailsPreserved": true,
+    "removedGraphicDescendants": 0,
+    "removedAnimationElementChildren": 0,
+    "duplicateIdRepair": false,
+    "retainedComments": 5,
+    "retainedProcessingInstructions": 0,
+    "allTextNodeBoundariesPreserved": true
+  },
+  "referencePolicy": "Three fresh healthy, profile-cleaned pinned Chrome processes per host, transparent 850 x 200 image viewport and physical capture, recipe 3. Compare exact RGBA; preserve platform differences. No existing input or reference changed.",
+  "existingOrthogonalCoverage": [
+    "../clip-child-roles/README.md",
+    "../text-path-styles/README.md",
+    "../filter-color-matrix/README.md",
+    "../mask-text-recording/README.md",
+    "../text-clip/README.md"
+  ],
+  "boundaries": [
+    "No SMIL timing evaluator, clock, event dispatch or animation support is added.",
+    "No original SVG body, fragment, attribute value, glyph outline or font program is copied into this repository. Native PNGs and derived metadata are retained.",
+    "The default original outcome stays UnsupportedFeature at animateTransform. Removing eleven declarations and binding Noto is a declared diagnostic, not acceptance of the unchanged source."
+  ],
+  "priorStaticQualification": "filter-color-program-coverage.json",
+  "priorStaticInputSha256": "45937fbfb9ec0482e89745dcbb40693384e6269354563706ee04162cb57ca90e",
+  "referenceStorageShared": true,
+  "newRenderingCases": 0,
+  "productionChanges": 0,
+  "libraryIdentity": "Frozen library SHA identifies the qualified clip milestone; production file LF hashes in ../text-clip/qualification.json match the current source. Commit metadata differs from the current checkout."
+}

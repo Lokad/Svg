@@ -313,6 +313,13 @@ terminal captures with identical PNG hashes. These font bindings qualify only th
 declared contexts; keep legacy SVG-font semantics separate. Private licensed font
 bytes stay outside the repository and packages.
 
+For an animation-disabled diagnostic, preserve adjacent text nodes when removing
+animation elements; ElementTree removal also discards their tails. Retain document
+comments/PIs and verify the text-node stream before and after. Record clock classes
+and exact projection hashes separately from the unchanged animated source. The
+[svg2009 review](../tests/Research/svgweb/svg2009-static-review.json) pins this recipe
+and reuses existing references; it does not represent an animated frame at time zero.
+
 Keep CSS image resizing separate from canvas drawing destinations. The committed
 [root-boundary recipe](../tests/Research/svgweb/root-image-boundary.json) specifies
 its fractional canvas extent and independent native triples; substituting the same

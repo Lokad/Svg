@@ -44,7 +44,10 @@ the shared style parser. [Clip-group roles](clip-child-roles.json) preserve dorm
 contribution, ordinary IDs and selected font acquisition through existing replay.
 [Text-path child styles](text-path-styles.json) share cascade and font discovery
 with spans; independent controls retain computed anchors, nesting and mixed runs.
-The unchanged svg2009 original still reaches animateTransform. The
+The unchanged svg2009 original still reaches animateTransform. Its
+[timing/base-state review](svg2009-static-review.json) reuses the filter milestone's
+exact native images, preserves all text/comments and separates disabled animation
+from time-zero sampling. The
 [color-matrix milestone](filter-color-matrix.json) closes its deferred matrix gate;
 removing eleven clock-start declarations in RAM now renders with explicit diagnostic
 fonts. The [source-origin review](filter-source-origins.json) closes the displaced

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sourceBaseline": "7d292bb6c33a88162b61201b6e47b549ce241621",
-  "status": "Clip-group contribution, ordinary ID selection and selected font acquisition CLOSED. The complete svg2009 original now reaches animateTransform; animation/static-state and deeper textPath questions remain separately accounted, not whole-original acceptance.",
+  "status": "Clip-group contribution, ordinary ID selection and selected font acquisition CLOSED. The unchanged svg2009 source still reaches animateTransform; its declared animation-disabled base-state/Noto diagnostic is separately exact in currentOriginalReview. Historical observations below remain unchanged.",
   "sourceLfSha256": {
     "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs": "baa36df514995b7f1cbcd5466a51ede1a4717ddbe566b21fbd8377033b315281",
     "src/Lokad.Svg/Fonts/SvgInstanceFontDiscovery.cs": "3495078c1363449766b4b4ea4c8a8e1a31f9bf72070064998e15591bae03f8e2",
@@ -387,5 +387,6 @@
     ],
     "published": false
   },
-  "next": "Account for svg2009 clock-start animation/static-state boundaries before any deeper variant. Own textPath styles, capitalization/language tailoring, retained path-context compatibility and the full PLAN remain open. Never count removed source declarations as complete-original acceptance."
+  "next": "Preserve dormant clip roles and the original animation rejection. Follow currentOriginalReview for the explicit base-state/Noto context; do not count that diagnostic as original timeline or SVG-font support.",
+  "currentOriginalReview": "svg2009-static-review.json"
 }
