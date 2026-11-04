@@ -5,6 +5,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
+[Trait("Layer", "Mechanism")]
 public sealed class SvgUniformImageOpacityTests
 {
     public static IEnumerable<object[]> AlphaCases()

@@ -1,0 +1,110 @@
+{
+  "status": "All 103 original cases retain their inputs, bodies, assertions and identities; 99 mechanisms and four ownership contracts are independently selectable.",
+  "sourceBaseCommit": "406bd2b395106f9ca836ff561277d2d04a8fdb17",
+  "change": "Four Layer traits only; no helper, new framework, fixture, production, reference or tolerance change.",
+  "casesBefore": 103,
+  "casesAfter": 103,
+  "mechanismCases": 99,
+  "contractCases": 4,
+  "caseIdentitySha256": "bfeeacaee0872dea41602f35bbe49ab4f990e53d62245e4c87c4c704759ea0e5",
+  "caseIdentityEncoding": "Sorted [TRX testId,testName] pairs encoded as compact ensure_ascii JSON in UTF-8.",
+  "sourceBodiesAndDataIdenticalAfterRemovingTraits": true,
+  "productionSourceUnchanged": true,
+  "mapping": [
+    {
+      "file": "../../Lokad.Svg.Tests/SvgUniformImageOpacityTests.cs",
+      "beforeLfSha256": "1997db59ae8b55557a2a4dcfe39ad4b86b3535b625c19128efa395eb8e1ae22f",
+      "afterLfSha256": "f6d9d5ef3c9891689aa50910c212aa52fcbaa018bbaf91042ab17186fa7d6e0f",
+      "methods": {
+        "Mechanism": [
+          "Uniform_images_keep_bitmap_alpha_rounding_through_opacity_owners",
+          "Uniform_image_color_uses_bitmap_opacity_before_unpremultiplication"
+        ],
+        "Contract": []
+      }
+    },
+    {
+      "file": "../../Lokad.Svg.Tests/SvgUniformGroupMaskTests.cs",
+      "beforeLfSha256": "bcbe2c610225b2c5fa29e3156a89d2d6277554e5431c8f3cda687baa2a530b2b",
+      "afterLfSha256": "9d551c6716aa689a150fd435fc81808082f2eb10ec181705f0caeff52732a14f",
+      "methods": {
+        "Mechanism": [
+          "Deferred_mask_scopes_follow_expanded_children_without_absorbing_siblings"
+        ],
+        "Contract": [
+          "Partial_mask_resolution_releases_scene_storage_on_memory_and_token_denial",
+          "Isolated_mask_surfaces_release_storage_on_memory_and_token_denial"
+        ]
+      }
+    }
+  ],
+  "coverage": {
+    "mechanisms": "All eight alpha values, three opacity values and four relevant direct/group/use/symbol ownership placements retain their 96 exact numerical cases; a separate colored-image unpremultiply case and two forward/backward mask-command mechanisms remain. These paths protect native integer bitmap opacity and separate mask/sibling behavior.",
+    "contracts": "Four forward/backward parser and isolated-surface cases retain separate scene/raster allowances, measured peak-minus-one refusal, exact cancellation token and zero-current cleanup. No combined allowance or retry sequence is substituted.",
+    "rendering": "Independent browser-backed images and failing-before interactions remain in their existing banks. These numerical/ownership tests add no rendering fixture or API cross-product."
+  },
+  "selection": "(FullyQualifiedName~SvgUniformImageOpacityTests|FullyQualifiedName~SvgUniformGroupMaskTests)&Layer=Mechanism (or Layer=Contract)",
+  "validation": [
+    {
+      "host": "windows",
+      "framework": "net11.0",
+      "beforeSeconds": 10.079971199855208,
+      "afterSeconds": 7.56928709987551,
+      "mechanismSeconds": 7.137012300081551,
+      "contractSeconds": 6.88924410007894,
+      "passedBefore": 103,
+      "passedAfter": 103,
+      "passedMechanisms": 99,
+      "passedContracts": 4,
+      "librarySha256": "0ebfefdb8a16d769134938c2aa4b9e0c4ab6934c83c13616b420d2b47c40e56f",
+      "beforeTestAssemblySha256": "a73136f3c1053f22fcf2dcb22b343a954006127ebab598153dc516d7d80c5e71",
+      "afterTestAssemblySha256": "ae1ccf78e0e980e0a1d4e79dc10d91a30049104196534e1894905c90bcfcd464"
+    },
+    {
+      "host": "windows",
+      "framework": "net10.0",
+      "beforeSeconds": 7.283661900088191,
+      "afterSeconds": 6.420156199950725,
+      "mechanismSeconds": 6.8917234998662025,
+      "contractSeconds": 6.833660600008443,
+      "passedBefore": 103,
+      "passedAfter": 103,
+      "passedMechanisms": 99,
+      "passedContracts": 4,
+      "librarySha256": "187bab11074b46be385bc9bd795cd34031eb9c8aeb0d8a4bcf0cb5108e4cc72c",
+      "beforeTestAssemblySha256": "23c310063aea891824eec55fd21bdd7eab5f1dfb7623f3fa52fc73b483c05724",
+      "afterTestAssemblySha256": "197b5368c8603460ba4e1f1137f16d0c186f13072101ad77b98ba11102eb1596"
+    },
+    {
+      "host": "glibc243",
+      "framework": "net11.0",
+      "beforeSeconds": 15.50536200008355,
+      "afterSeconds": 11.094252600101754,
+      "mechanismSeconds": 8.521493900101632,
+      "contractSeconds": 8.452057700138539,
+      "passedBefore": 103,
+      "passedAfter": 103,
+      "passedMechanisms": 99,
+      "passedContracts": 4,
+      "librarySha256": "0ebfefdb8a16d769134938c2aa4b9e0c4ab6934c83c13616b420d2b47c40e56f",
+      "beforeTestAssemblySha256": "a73136f3c1053f22fcf2dcb22b343a954006127ebab598153dc516d7d80c5e71",
+      "afterTestAssemblySha256": "ae1ccf78e0e980e0a1d4e79dc10d91a30049104196534e1894905c90bcfcd464"
+    },
+    {
+      "host": "glibc243",
+      "framework": "net10.0",
+      "beforeSeconds": 9.785710900090635,
+      "afterSeconds": 9.906688200077042,
+      "mechanismSeconds": 8.067901000147685,
+      "contractSeconds": 8.052156100049615,
+      "passedBefore": 103,
+      "passedAfter": 103,
+      "passedMechanisms": 99,
+      "passedContracts": 4,
+      "librarySha256": "187bab11074b46be385bc9bd795cd34031eb9c8aeb0d8a4bcf0cb5108e4cc72c",
+      "beforeTestAssemblySha256": "23c310063aea891824eec55fd21bdd7eab5f1dfb7623f3fa52fc73b483c05724",
+      "afterTestAssemblySha256": "197b5368c8603460ba4e1f1137f16d0c186f13072101ad77b98ba11102eb1596"
+    }
+  ],
+  "timing": "Single functional observations include discovery, startup and TRX, excluding builds. Four trait additions do not establish a speedup; focused filters separate responsibilities. Production milestone full/platform/package qualification remains separate."
+}

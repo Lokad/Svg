@@ -8,6 +8,7 @@ public sealed class SvgUniformGroupMaskTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Mechanism")]
     public void Deferred_mask_scopes_follow_expanded_children_without_absorbing_siblings(bool forward)
     {
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
@@ -31,6 +32,7 @@ public sealed class SvgUniformGroupMaskTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Contract")]
     public void Partial_mask_resolution_releases_scene_storage_on_memory_and_token_denial(bool forward)
     {
         RenderBudget measured = new RenderBudget(new HostMemoryBudget(10_000_000));
@@ -51,6 +53,7 @@ public sealed class SvgUniformGroupMaskTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    [Trait("Layer", "Contract")]
     public void Isolated_mask_surfaces_release_storage_on_memory_and_token_denial(bool forward)
     {
         RenderBudget sceneBudget = new RenderBudget(new HostMemoryBudget(10_000_000)), measured = new RenderBudget(new HostMemoryBudget(10_000_000));

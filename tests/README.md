@@ -39,6 +39,9 @@ checks admit retained drawing stages before contour allocation and verify retry.
 The [alpha and gradient layer map](Research/release-baselines/alpha-gradient-responsibilities.json)
 keeps 35 numerical mechanisms independently selectable from nine storage, API and
 cleanup contracts. All 44 original cases, inputs and assertions remain unchanged.
+The [opacity/mask layer map](Research/release-baselines/opacity-test-layers.json)
+likewise separates 99 bitmap-rounding/command mechanisms from four parser/surface
+ownership contracts, retaining all 103 cases and their distinct placements.
 
 Core output copies the 24 selected text-node contract inputs and two separate
 API/ownership fixtures. The visual suite still reads the complete bank from the
