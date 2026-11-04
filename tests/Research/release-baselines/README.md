@@ -38,6 +38,8 @@ and preserves the relocated background witness, full cases and .NET 10 selection
 filter descriptors to their owners, numerical boundaries and independent witnesses.
 [Invocation ownership](invocation-ownership.json) separates output lifetimes and
 shares raw/catalog/HTTP scene admission, with unchanged raster members and hosted replay.
+[Filter capture storage](filter-capture-storage.json) removes a duplicate source
+buffer for matching grids, retaining guarded borrowing, shifted copies and exact pixels.
 [Blur image identity](blur-image-identity.json) shares one cutoff across bounds,
 aliases and playback while keeping copying pixel kernels distinct from image aliases.
 [Original R86 hairlines](r86-hairline-qualification.json) close 800 geometry and200

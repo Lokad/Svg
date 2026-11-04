@@ -38,6 +38,11 @@ keep source-size admission separate from canonical rendering: offset, blur and
 offset/merge replay retain refusal, cancellation, cleanup and retry without
 copying every source command into raster storage.
 
+[Capture-storage contracts](Research/release-baselines/filter-capture-storage.json)
+separate aligned-buffer reuse, wider blur requests, color-matrix output and shifted
+grid copying. Four allowance/refusal/retry cases retain pre-change pixel hashes;
+existing stage and browser-reference tests protect filter arithmetic and interactions.
+
 [Scene-admission contracts](Research/release-baselines/invocation-ownership.json)
 cover raw, catalog-prepared and HTTP-prepared rejection after lowering. They retain
 the source diagnostic, one preparation, borrowed owners, released charges and
