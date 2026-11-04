@@ -13,7 +13,7 @@ retain global scale adjustment and stem fitting but skip alignment-zone matches.
 The alias affects the glyph even when requested through A.
 
 The offline tests assert all four contour edges against the native vectors,
-unchanged source bytes, work limits, cancellation and released storage. These
+unchanged source bytes, cancellation during classification and released storage. These
 controls qualify fitting behavior; they introduce no mark shaping or new text
 scope. Private face documents remain separate complete-document acceptance cases.
 

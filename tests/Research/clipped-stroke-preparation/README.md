@@ -23,7 +23,7 @@ test admission, nonfinite cached rejection and local/canvas range boundaries.
 The [cache contract](../../Lokad.Svg.Tests/SvgCpuRasterContextTests.cs) checks
 one-time classification, repeated setup and unchanged run dispatch.
 Two selected [ownership witnesses](../../Lokad.Svg.Tests/SvgClippedStrokeOwnershipTests.cs)
-exercise opacity-layer and nested-viewport allocation, refusal, work limits,
+exercise opacity-layer and nested-viewport allocation, memory refusal,
 cancellation, cleanup and retry. Each rendering input uses its own reference
 through canonical conversion; the general API matrix retains destination and
 prepared-document coverage.

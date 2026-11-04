@@ -22,8 +22,9 @@ coverage during painting, before mask multiplication, exactly once.
 
 Nine direct [mechanism cases](../../Lokad.Svg.Tests/SvgOrderedClipTests.cs) test
 these contracts; the [native boundary traces](native-boundaries.json) independently
-record the two- and three-operand paths. Existing 42/43-child admission tests
-retain their million-unit work limit. Five selected
+record the two- and three-operand paths. Existing
+[42/43-child tests](../../Lokad.Svg.Tests/SvgCompoundClipAdmissionTests.cs)
+protect the native-path/mask transition and released storage. Five selected
 [ownership/replay cases](../../Lokad.Svg.Tests/SvgOrderedClipOwnershipTests.cs)
 cover borrowed ordered operands, affine fallback, isolated opacity, object-box
 registration and prepared use replay, including refusal, cancellation, cleanup

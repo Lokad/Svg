@@ -21,7 +21,7 @@ changed-program control for each of the seven fonts. Offline tests verify asset
 identities, acquisition/selection, independent metrics and exact raw/prepared
 pixels. Focused controls additionally protect lookahead across later font/size/
 absolute boundaries, ligature and supplementary-scalar source lengths, lookup
-ordering/zero adjustment, malformed definitions, work/cancellation and cleanup.
+ordering/zero adjustment, malformed definitions, cancellation and cleanup.
 
 RIGHT_TO_LEFT is ignored for type-2 lookups; it does not enable bidi text.
 IgnoreBaseGlyphs/IgnoreLigatures filter GDEF classes 1/2. IgnoreMarks, attachment

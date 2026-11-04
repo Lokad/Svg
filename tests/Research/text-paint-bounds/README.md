@@ -59,7 +59,7 @@ Recording owners include their descendants, even when child paints differ.
 Hidden or paintless text can contribute to layout without recording a draw.
 These image origins remain separate from tight ink capture and shader coordinates.
 Dedicated contracts cover copied scope storage, borrowed range views, scratch
-refusal/work/cancellation cleanup and a prepared asynchronous stream retry.
+memory refusal, cancellation cleanup and a prepared asynchronous stream retry.
 The image collection does not repeat the destination/ownership matrix.
 
 The [full precision screen](precision-screening.json) retains all 480 original
