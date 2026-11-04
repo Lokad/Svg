@@ -24,6 +24,8 @@ local paint before texture sizing and removes the integer-tile sampling shortcut
 gradients and patterns, including group, instance and symbol recording.
 [Retained rectangle strokes](rectangle-source-qualification.json) closes the
 material-dependent source-retention gap and its 24 original use admissions.
+[Unpainted filter sources](empty-source-qualification.json) separates real source
+bindings from synthetic scope carriers and closes eight original filter residuals.
 [Governed host qualification](host-api-qualification.md) maps resolver, admission,
 shutdown and asynchronous output contracts to source and installed-package evidence.
 
