@@ -2,8 +2,10 @@
 
 Production admission changes retain their [contract map](parser-validation.md).
 The suite uses complementary layers; class names alone do not classify every case.
-Existing traits now consistently use `Mechanism`, `Contract`, `Rendering` and
-`Integrity`; the former plural spellings are normalized without changing cases.
+Classified cases use `Mechanism`, `Contract`, `Rendering` and `Integrity`; former
+plural spellings are normalized without changing cases. The current metadata
+inventory still finds two legacy `Layer=Research` prepared-replay methods and
+unclassified methods; layer-only selection does not replace affected/full coverage.
 The explicit `Category=Research` selection remains independent of the layer.
 
 | Responsibility | Retained coverage |

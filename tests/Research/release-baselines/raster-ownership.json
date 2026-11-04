@@ -1,5 +1,5 @@
 {
-  "status": "Focused raster-only ownership setup consolidation qualified; all42 affected identities and existing pixel/lifetime assertions remain.",
+  "status": "Raster-only ownership setup consolidation qualified on both hosts/runtimes. Matching CI is terminal: Ubuntu full, compatibility and package checks pass; Windows retains only the unchanged DejaVu reference assertion.",
   "baseCommit": "7299faa7c",
   "sourceLfSha256": {
     "tests/Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs": "fa3c42dccafcd72c83ebf9557021310adee7915157abc9439635033389762995",
@@ -23,7 +23,7 @@
     "affectedCases": 42,
     "retainedSeparateCases": "Seven uniform-filter raster contracts, thirteen bitmap-scratch contracts and eight solid/text-paint raster contracts retain their source/options/native hashes. One recursive parser contract and thirteen prepared cancellation/destination contracts remain unchanged.",
     "sharedSetup": "One existing helper class now owns the common parse-once, scene lifetime and parser-cleanup sequence. The unchanged raster helper owns native hashing, measured refusal, exact cancellation and byte-exact retry.",
-    "preserved": "Separate parser/raster allowances remain explicit, including1MB/256MB bitmap cases; no new parser refusal, shared-budget route, API form or fixture product is added. Input copies/assertions stay at their original call sites, including before font acquisition. Per-case font snapshots/providers stay with their owners.",
+    "preserved": "Separate parser/raster allowances remain explicit, including 1 MB/256 MiB bitmap cases; no new parser refusal, shared-budget route, API form or fixture product is added. Input copies/assertions stay at their original call sites, including before font acquisition. Per-case font snapshots/providers stay with their owners.",
     "testCasesRemoved": 0,
     "referencesChanged": 0,
     "productionChanges": 0,
@@ -84,5 +84,174 @@
     ],
     "conclusion": "Small setup refactor; no reliable validation speedup established. Startup and host noise dominate this local sample. This is not renderer throughput or quiet-VM performance."
   },
-  "next": "Resume shared bounds/maps and remaining consumer/placement responsibility review. Whole P2 and broader historical correctness work remain open."
+  "next": "Resume shared bounds/maps and remaining consumer/placement responsibility review. Whole P2 and broader historical correctness work remain open.",
+  "followupReview": {
+    "scope": "Read-only metadata inventory of ordinary Fact/Theory method definitions with class/base/method traits; theory data is not expanded. Counts are method definitions, not test cases.",
+    "assemblies": [
+      {
+        "assembly": "Lokad.Svg.Tests",
+        "sha256": "fc8a20ff571981721209121f0ef3f4e1f3e197252b0fe7c1c52c56415d09d593",
+        "methodDefinitions": 4644,
+        "withoutLayer": 1955
+      },
+      {
+        "assembly": "Lokad.Svg.VisualTests",
+        "sha256": "904d156d4d6f77316fcbd2a85732bb4929ca1a9f1c932cc21660d1fec88682af",
+        "methodDefinitions": 430,
+        "withoutLayer": 288
+      }
+    ],
+    "legacyResearchLayerMethods": [
+      {
+        "class": "Lokad.Svg.Tests.OpenTypeFontTests",
+        "method": "Inert_paint_servers_extended_prepared_equivalence",
+        "categoryPreserved": "Research"
+      },
+      {
+        "class": "Lokad.Svg.Tests.OpenTypeFontTests",
+        "method": "Inert_template_paints_extended_prepared_equivalence",
+        "categoryPreserved": "Research"
+      }
+    ],
+    "next": "Classify the two extended inert-paint prepared methods as Contract while retaining Category=Research; first exclude Research explicitly in fast development filter examples. Review the public background native witness with overlapping Contract/Rendering duties. Classify remaining methods by behavior and measured cost; preserve full and affected-class validation until classification is complete."
+  },
+  "ci": {
+    "runId": 41925309945,
+    "sourceCommit": "8a5f52182bd21fc09f9937e921aee5443c559674",
+    "allQualifiedSourceHashesMatchCommit": true,
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalClosed": true,
+    "jobs": {
+      "ubuntu": {
+        "conclusion": "success",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47617,
+            "skipped": 0,
+            "total": 47617
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 73312,
+            "skipped": 0,
+            "total": 73312
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 12865,
+            "skipped": 0,
+            "total": 12865
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 1150,
+            "skipped": 0,
+            "total": 1150
+          },
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net10.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          }
+        ],
+        "logSha256": "6f45ac1a6ee6735901006fa15b5ff1b1df5d454b5738c698b2ecd6602dd170a2",
+        "steps": [
+          {
+            "name": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 API, ownership and numerical compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 representative native rendering compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": ".NET 10 font host compatibility",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+            "conclusion": "success"
+          }
+        ]
+      },
+      "windows": {
+        "conclusion": "failure",
+        "tests": [
+          {
+            "assembly": "Lokad.Svg.FontProbe.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 10,
+            "skipped": 0,
+            "total": 10
+          },
+          {
+            "assembly": "Lokad.Svg.Tests.dll",
+            "framework": "net11.0",
+            "failed": 0,
+            "passed": 47617,
+            "skipped": 0,
+            "total": 47617
+          },
+          {
+            "assembly": "Lokad.Svg.VisualTests.dll",
+            "framework": "net11.0",
+            "failed": 1,
+            "passed": 73311,
+            "skipped": 0,
+            "total": 73312
+          }
+        ],
+        "logSha256": "5a93333515f74326ed4e2013cb6ef9b30bee9ef33cfc5fc5eaee04fe9c7e545d",
+        "steps": [
+          {
+            "name": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+            "conclusion": "failure"
+          },
+          {
+            "name": ".NET 10 API, ownership and numerical compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": ".NET 10 representative native rendering compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": ".NET 10 font host compatibility",
+            "conclusion": "skipped"
+          },
+          {
+            "name": "Run tools/test-package.ps1 -PackageDirectory artifacts/nuget -ResultsDirectory artifacts/package-smoke",
+            "conclusion": "skipped"
+          }
+        ]
+      }
+    },
+    "boundary": "Windows .NET10/package steps are skipped after the existing net11 visual failure. Local affected/integration checks pass both runtimes/hosts against the unchanged ec8c8de7a packaged renderer. Frozen DejaVu target/assertion remain unchanged pending reference authority."
+  }
 }
