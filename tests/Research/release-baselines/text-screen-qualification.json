@@ -1,5 +1,5 @@
 {
-  "status": "Named original full-screen cohort and shared rendering setup pass local full rendering plus both-host/runtime focused qualification. New-head CI follows promotion.",
+  "status": "Named original full-screen cohort and shared rendering setup qualified locally on both runtimes/hosts and matching CI. Ubuntu entire workflow passes; Windows retains only the unchanged DejaVu frozen-reference conflict.",
   "sourceBaseCommit": "5ae7b8e16fb1d95016daa3900d693fe3919e4c0e",
   "rendererSourceTreeGitId": "921084460e39aa378f87a567480b3c6c09e59598",
   "rendererSourceUnchanged": true,
@@ -414,5 +414,34 @@
   "timingScope": "Single functional observations include discovery, host startup and TRX, excluding build. .NET11 Windows does not improve. No statistical speedup or renderer-performance claim. Quiet-VM work remains open.",
   "productionDependenciesAdded": 0,
   "referenceImagesRewritten": 0,
-  "build": "Release solution and explicit .NET10 visual builds pass with zero warnings/errors. No timed benchmarks run."
+  "build": "Release solution and explicit .NET10 visual builds pass with zero warnings/errors. No timed benchmarks run.",
+  "qualificationHead": "6102b71cefbe1ac1023badc937cff75020d518cc",
+  "ci": {
+    "run": 41790790664,
+    "url": "https://github.com/Lokad/Svg/actions/runs/41790790664",
+    "headSha": "6102b71cefbe1ac1023badc937cff75020d518cc",
+    "status": "terminal CLOSED",
+    "conclusion": "failure",
+    "ubuntu": {
+      "entireWorkflowPassed": true,
+      "corePassed": 47553,
+      "renderingPassed": 47667,
+      "fontHostPassed": 10,
+      "net10": {
+        "corePassed": 12723,
+        "renderingPassed": 839,
+        "fontHostPassed": 10
+      },
+      "toolsAndInstalledPackagesPassed": true
+    },
+    "windows": {
+      "corePassed": 47553,
+      "renderingPassed": 47666,
+      "renderingFailed": 1,
+      "fontHostPassed": 10,
+      "soleFailure": "Unchanged DejaVu frozen-reference conflict",
+      "laterRuntimeToolsAndPackageSteps": "skipped"
+    },
+    "authority": "No reference or assertion changed. DejaVu authority remains pending; no whole-CI green claim."
+  }
 }
