@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "scope": "Original stroke-paint inputs closed by forwarding the existing fragment drawing map independently of glyph ink. No source, reference, font, option or tolerance changes.",
+  "scope": "Original stroke-paint inputs closed by fragment forwarding and separate reference/physical-font/fragment drawing stages. All original sources, fonts, options and platform references remain.",
   "nativeVerification": "../release-baselines/precision-native-verification.json",
   "cases": [
     {
@@ -110,6 +110,80 @@
             "changedPixels": 57,
             "alphaChangedPixels": 56,
             "sum": 6501
+          }
+        }
+      }
+    },
+    {
+      "id": "spacing-paint-430-candidate",
+      "originalName": "spacing-paint-430",
+      "role": "candidate",
+      "group": "matrix-pattern-userSpaceOnUse-stroke-1",
+      "input": "precision-residuals/inputs/spacing-paint-430-candidate.svg",
+      "sourceSha256": "ffaea73b7c33a3c7d9f574003ed64505c20044f71eac3f6793c13d8787a1a5e6",
+      "nativeSourceSha256": "a24866bd24c051494ff87602b24ba6acdfc0965ddbe5340ddfc410e0ea860773",
+      "font": true,
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "precision-residuals/references/b19e41768352d647d2a6a18929325f3c4f41067db91c24ddd4b7d782d6c382e0.png",
+          "sha256": "b19e41768352d647d2a6a18929325f3c4f41067db91c24ddd4b7d782d6c382e0",
+          "rgbaSha256": "5809eba9f5a45c888fd6900e3b2e113048c37e6efc7f73fad96a525dff29bb78",
+          "width": 160,
+          "height": 80,
+          "observation": {
+            "changedPixels": 1,
+            "alphaChangedPixels": 0,
+            "sum": 4
+          }
+        },
+        "linux": {
+          "path": "precision-residuals/references/cae9b8971bd4305188db81479b5315e23469cf88ccc630ee15fcace73e503a52.png",
+          "sha256": "cae9b8971bd4305188db81479b5315e23469cf88ccc630ee15fcace73e503a52",
+          "rgbaSha256": "4de4caca07cf7d7af6a55f39838447c37d38f9f297f1702a0b0b532b89c1a8fe",
+          "width": 160,
+          "height": 80,
+          "observation": {
+            "changedPixels": 1,
+            "alphaChangedPixels": 0,
+            "sum": 4
+          }
+        }
+      }
+    },
+    {
+      "id": "spacing-paint-430-control",
+      "originalName": "spacing-paint-430",
+      "role": "control",
+      "group": "matrix-pattern-userSpaceOnUse-stroke-1",
+      "input": "precision-residuals/inputs/spacing-paint-430-control.svg",
+      "sourceSha256": "802600fdfae91fd43ced9ad8a0eed2a6eefb574028d2d17b0f73cdc37c89a7cf",
+      "nativeSourceSha256": "4fb729b51304e328142bdc30ddbccb2739a24564e78d85b68d7b3eea1974aa78",
+      "font": true,
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "precision-residuals/references/2a1529b7b32d263e48d2f5288b741739ff623a716d492ee614ace1fe448a2316.png",
+          "sha256": "2a1529b7b32d263e48d2f5288b741739ff623a716d492ee614ace1fe448a2316",
+          "rgbaSha256": "9c8613cfd6d179c409ef3487f5e292506b49f46de9f0cc8eac2ae49a55e81feb",
+          "width": 160,
+          "height": 80,
+          "observation": {
+            "changedPixels": 1,
+            "alphaChangedPixels": 0,
+            "sum": 4
+          }
+        },
+        "linux": {
+          "path": "precision-residuals/references/7d9e8e0eaf1ef3f9dcd85632f749415b1c7c34000ac09154d86a62582b91042c.png",
+          "sha256": "7d9e8e0eaf1ef3f9dcd85632f749415b1c7c34000ac09154d86a62582b91042c",
+          "rgbaSha256": "09aeec396209f3f5059cb1bfc859f148b1e529736f6130dcd7d92e9d344dfeaa",
+          "width": 160,
+          "height": 80,
+          "observation": {
+            "changedPixels": 1,
+            "alphaChangedPixels": 0,
+            "sum": 4
           }
         }
       }

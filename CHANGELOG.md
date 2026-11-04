@@ -2,8 +2,9 @@
 
 ## Unreleased
 
-- Keep curved text stroke gradients and patterns in the fragment drawing frame,
-  preserving glyph layout and fixing source-map and repeat-edge color differences.
+- Preserve fragment drawing coordinates and separate physical font/canvas stages
+  for text gradients and patterns, fixing stroke repeat edges and transformed color
+  differences while retaining glyph layout.
 - Support supplied text in clip paths through shared shaping and ordered mask
   replay, preserving layout bounds, source opacity, intersections and group isolation.
 - Preserve native rectangle-call and coordinate-buffer boundaries when sampling

@@ -70,7 +70,7 @@ public sealed class SvgTextPaintBoundsReferenceTests
         Assert.Equal(Required(native.RootElement, "sourceManifestLfSha256"), Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(original))));
         Dictionary<string, JsonElement> cases = source.RootElement.GetProperty("cases").EnumerateArray().ToDictionary(row => Required(row, "id"), StringComparer.Ordinal);
         Assert.Equal(39, cases.Count);
-        Assert.Equal(3, bank.RootElement.GetProperty("cases").GetArrayLength());
+        Assert.Equal(5, bank.RootElement.GetProperty("cases").GetArrayLength());
         foreach (JsonElement row in bank.RootElement.GetProperty("cases").EnumerateArray())
             Assert.True(JsonElement.DeepEquals(cases[Required(row, "id")], row));
         Assert.Equal(new[] { "linux", "windows" }, native.RootElement.GetProperty("hosts").EnumerateArray()
@@ -101,6 +101,14 @@ public sealed class SvgTextPaintBoundsReferenceTests
             }
         }
     }
+
+    public static IEnumerable<object[]> FragmentStageCases() => CaptureCases("fragment-stages.json");
+
+    [Theory]
+    [MemberData(nameof(FragmentStageCases))]
+    [Trait("Layer", "Rendering")]
+    public Task Text_fragment_stage_controls_match_independent_vector_drawings(string id)
+        => AssertNativeImage("fragment-stages.json", id, false);
 
     private static IEnumerable<object[]> CaptureCases(string file)
     {

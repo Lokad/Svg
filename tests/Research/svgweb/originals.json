@@ -10351,11 +10351,11 @@
     "originalAcceptance": "gaussian2.svg and lineargradient3.svg are exact in three fresh healthy/profile-cleaned native captures on each host under default static transparent conversion. Other contexts and remaining original differences/gates stay separate."
   },
   "currentReview": {
-    "evidence": "../release-baselines/stroke-drawing-qualification.json",
+    "evidence": "../release-baselines/fragment-drawing-qualification.json",
     "outcomesFile": "default-outcomes.csv",
-    "sourceBaseline": "29c8254e70a8c8730ab9b2b26a4a48e3156087dc",
-    "sourceIdentity": "The qualification's LF source hashes identify the shared stroke-drawing implementation; sourceBaseline is the worktree assembly stamp.",
-    "librarySha256": "dfab71da8354b2e86210a8146e7c687ba69441793c4946c3fbe3db502c8e3354",
+    "sourceBaseline": "df8a844bce8723a33d65ea544286c99e875eeaa2",
+    "sourceIdentity": "The qualification's LF source hashes identify separate reference/font/fragment drawing stages; sourceBaseline is the worktree assembly stamp.",
+    "librarySha256": "86cba1e787676b2c74e9d575cb144a0592e217f018f11639454d4effbcc8ec6c",
     "allSourceHashesRecheckedPerHost": 204,
     "sourceSvgFilesRetained": 0,
     "countsPerHost": {
@@ -10382,7 +10382,7 @@
           "supplied-original-contexts.json",
           "supplied-original-contexts-additional.json",
           "../xml-entities/qualification.json",
-          "../release-baselines/stroke-drawing-qualification.json"
+          "../release-baselines/fragment-drawing-qualification.json"
         ],
         "selection": "19 supplied original contexts, Steps/bloglines, and unchanged original XML preserveAspectRatio with Noto."
       },
@@ -10390,7 +10390,7 @@
         "count": 11,
         "evidence": [
           "remaining-static-gates.json",
-          "../release-baselines/stroke-drawing-qualification.json"
+          "../release-baselines/fragment-drawing-qualification.json"
         ],
         "selection": "The 13 declared diagnostic rows excluding smile (already default exact) and preserveAspectRatio (supplied-program context)."
       },

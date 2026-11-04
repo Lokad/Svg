@@ -39,9 +39,12 @@ graph, ownership and canonical rendering responsibilities.
 Picture sampling repeats each floating bilinear tap before clamping and gathering
 its pixel. Rounded reciprocal multiplication can cross a period boundary before
 the corresponding integer address does; the next tap cannot be inferred by adding
-one to the first address. Glyph shaders share the existing fragment drawing
-transform with decorations, keeping its paint origin separate from fitted glyph
-ink. [Repeat evidence](../tests/Research/svgweb/pattern-repeat-addressing.json)
+one to the first address. Text paints retain the enclosing reference, physical
+font scale and fragment transform separately before native canvas composition.
+Linear/radial/pattern fills and strokes share these stages; decorations retain
+the logical map, and fitted glyph ink keeps its independent placement.
+[Fragment evidence](../tests/Research/release-baselines/fragment-drawing-qualification.json)
+checks the rounding boundary without changing final sampling or blending. [Repeat evidence](../tests/Research/svgweb/pattern-repeat-addressing.json)
 retains direct arithmetic vectors and the original glyph interactions.
 
 Pattern registration, font discovery and resource selection share declaration

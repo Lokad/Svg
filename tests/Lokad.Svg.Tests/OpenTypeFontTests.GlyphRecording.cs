@@ -50,9 +50,9 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         SvgPreparedFont font = Assert.Single(fonts.Fonts);
         using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, 1, font.Metrics, new RenderBudget(new HostMemoryBudget(10_000)), CancellationToken.None);
-        // This single-contour, three-segment fixture previously needed 224 bytes.
-        // Its independent affine drawing binding retains another 48 bytes.
-        using HostMemoryBudget host = new(224);
+        // This single-contour, three-segment fixture previously needed 272 bytes.
+        // Separate reference/fragment maps and physical font scale retain 56 more.
+        using HostMemoryBudget host = new(272);
         RenderBudget budget = new(host);
         bool transformed = false;
         using (GlyphOutlineProbe.Arm(() => transformed = true))
@@ -62,11 +62,11 @@ public sealed partial class OpenTypeFontTests
         }
         Assert.False(transformed);
         Assert.Equal(0, host.Reserved);
-        host.Limit = 272;
+        host.Limit = 328;
         using (SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font, new(1, 2, 3, 1), 100, decoded, budget, CancellationToken.None))
         using (SvgGlyphGeometry retained = SvgGlyphGeometry.Create(contours, new SvgColor(0, 0, 0, 255)))
         {
-            Assert.Equal(272, host.Reserved);
+            Assert.Equal(328, host.Reserved);
             Assert.Equal(3, Assert.Single(retained.Contours).Segments.Length);
             Assert.Equal(3, decoded.Segments.Length);
         }

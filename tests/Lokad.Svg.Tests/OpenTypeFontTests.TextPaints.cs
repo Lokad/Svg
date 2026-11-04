@@ -24,7 +24,7 @@ public sealed partial class OpenTypeFontTests
                 .Select(geometry => geometry.Glyph).ToArray();
             SvgGlyphGeometry fill = Assert.Single(glyphs, glyph => glyph.StrokePaint is null);
             SvgGlyphGeometry stroke = Assert.Single(glyphs, glyph => glyph.StrokePaint is not null);
-            Assert.Equal(fill.ShaderDrawingMap, stroke.ShaderDrawingMap);
+            Assert.Equal(fill.ShaderDrawing, stroke.ShaderDrawing);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

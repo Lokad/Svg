@@ -6,6 +6,22 @@ namespace Lokad.Svg.Tests;
 [Trait("Layer", "Mechanism")]
 public sealed class SvgTextPaintMatrixTests
 {
+    [Fact]
+    public void Physical_fragment_stages_retain_the_native_pattern_half_byte_boundary()
+    {
+        // Independent source/capture controls: Research/text-paint-bounds/fragment-stages.json.
+        SvgAffineTransform parent = new(1, 0.25, 0.10000000149011612, 1, 1, 2);
+        SvgTextShaderDrawing drawing = new(parent, new(0.97138491179582087, -0.23751074320001905, 0.23751074320001905, 0.97138491179582087, -12.496974333067485, 10.006951651313926), 1.0179636478424072f);
+        SvgShaderMatrix canvas = drawing.AppendTo(SvgShaderMatrix.FromAffine(parent));
+        SvgShaderMatrix local = SvgShaderMatrix.FromAffine(drawing.RebaseLocal(parent, SvgAffineTransform.Identity));
+        SvgShaderCoordinates coordinates = SvgShaderCoordinates.CreateImage(canvas,
+            SvgShaderMatrix.Concat(local, new(8f / 9f, 0, 0, 0, 8f / 9f, 0)));
+        Assert.True(coordinates.TryMap(26, 25, default, out (float X, float Y) point));
+        Assert.Equal(1104523580u, BitConverter.SingleToUInt32Bits(point.X));
+        Assert.Equal(1045995008u, BitConverter.SingleToUInt32Bits(point.X + .5f - MathF.Floor(point.X + .5f)));
+        Assert.Equal(parent.ComposeChecked(drawing.Fragment), drawing.Map);
+    }
+
     [Theory]
     [InlineData(1, 0, 0, 1, 0, 0)]
     [InlineData(1, 0, 0, 1, 7, -3)]
@@ -17,15 +33,14 @@ public sealed class SvgTextPaintMatrixTests
         SvgAffineTransform glyph = new(a, b, c, d, e, f);
         SvgAffineTransform reference = new(2, 0, 0, 4, 10, 20);
         SvgAffineTransform pattern = new(1, 0, 0, 2, 3, 5);
-        SvgAffineTransform local = SvgTextShader.RebaseLocal(glyph, reference, pattern);
+        SvgAffineTransform local = new SvgTextShaderDrawing(glyph, SvgAffineTransform.Identity, 1).RebaseLocal(reference, pattern);
         Assert.Equal(reference.ComposeChecked(pattern), glyph.ComposeChecked(local));
     }
 
     [Fact]
     public void Glyph_local_paint_requires_an_invertible_drawing_map()
     {
-        SvgException error = Assert.Throws<SvgException>(() => SvgTextShader.RebaseLocal(
-            new(1, 0, 0, 0, 0, 0), SvgAffineTransform.Identity, SvgAffineTransform.Identity));
+        SvgException error = Assert.Throws<SvgException>(() => new SvgTextShaderDrawing(new(1, 0, 0, 0, 0, 0), SvgAffineTransform.Identity, 1).RebaseLocal(SvgAffineTransform.Identity, SvgAffineTransform.Identity));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
     }
 
@@ -37,7 +52,7 @@ public sealed class SvgTextPaintMatrixTests
         // The first two glyph maps from the retained grid-pattern control.
         // Flattening these stages to their mathematical identity loses the second boundary.
         SvgAffineTransform glyph = new(cosine, sine, -sine, cosine, x, y);
-        SvgAffineTransform local = SvgTextShader.RebaseLocal(glyph, SvgAffineTransform.Identity, SvgAffineTransform.Identity);
+        SvgAffineTransform local = new SvgTextShaderDrawing(glyph, SvgAffineTransform.Identity, 1).RebaseLocal(SvgAffineTransform.Identity, SvgAffineTransform.Identity);
         SvgShaderMatrix draw = SvgShaderMatrix.Concat(new(1.5f, 0, 0, 0, 1.5f, 0), Narrow(glyph));
         SvgShaderMatrix total = SvgShaderMatrix.Concat(draw, Narrow(local));
         (float scaleX, float scaleY) = total.GetPictureScale();

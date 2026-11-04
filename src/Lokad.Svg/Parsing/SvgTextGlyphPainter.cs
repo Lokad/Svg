@@ -14,24 +14,50 @@ internal readonly record struct SvgPlacedTextGlyph(SvgPositionedGlyph Position, 
 }
 
 /// <summary>Keeps the native fragment origin separate from its drawing transform for glyph shaders and decoration rectangles.</summary>
-internal readonly record struct SvgTextFragmentDrawing(SvgDevicePoint Origin, SvgAffineTransform Map);
+internal readonly record struct SvgTextFragmentDrawing(SvgDevicePoint Origin, SvgTextShaderDrawing Shader)
+{
+    internal SvgAffineTransform Map => Shader.Map;
+}
+
+/// <summary>Retains the enclosing text reference, fragment transform and physical font scale as separate drawing stages.</summary>
+/// <remarks>Immutable, allocation-free scene metadata; contour admission includes its storage.
+/// Logical maps remain available for layout. Raster callers own recording preparation, budget and cancellation.</remarks>
+internal readonly record struct SvgTextShaderDrawing(SvgAffineTransform Reference, SvgAffineTransform Fragment, float FontScale)
+{
+    internal static SvgTextShaderDrawing Identity => new(SvgAffineTransform.Identity, SvgAffineTransform.Identity, 1);
+    internal SvgAffineTransform Map => Reference.ComposeChecked(Fragment);
+    private SvgAffineTransform PhysicalFragment => Fragment with { E = Fragment.E * FontScale, F = Fragment.F * FontScale };
+
+    /// <summary>Prepares shader-local coordinates before float narrowing, without cancelling a rounded enclosing canvas map.</summary>
+    internal SvgAffineTransform RebaseLocal(SvgAffineTransform referencing, SvgAffineTransform local)
+    {
+        if (!PhysicalFragment.TryInvert(out SvgAffineTransform inverse))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text fragment drawing must be invertible.");
+        SvgAffineTransform reference = SvgAffineTransform.Identity;
+        if (Reference != referencing)
+        {
+            if (!Reference.TryInvert(out SvgAffineTransform parentInverse))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text shader placement must be invertible.");
+            reference = parentInverse.ComposeChecked(referencing);
+        }
+        return inverse.ComposeChecked(SvgAffineTransform.FromScale(FontScale, FontScale)).ComposeChecked(reference).ComposeChecked(local);
+    }
+
+    /// <summary>Appends physical font and fragment stages to the caller-prepared enclosing canvas.</summary>
+    internal SvgShaderMatrix AppendTo(SvgShaderMatrix parent)
+    {
+        if (Fragment == SvgAffineTransform.Identity && FontScale == 1) return parent;
+        SvgAffineTransform canvas = new(parent.ScaleX, parent.SkewY, parent.SkewX, parent.ScaleY, parent.TranslateX, parent.TranslateY);
+        return SvgShaderMatrix.FromAffine(canvas.ComposeNative(SvgAffineTransform.FromScale(1f / FontScale, 1f / FontScale)).ComposeNative(PhysicalFragment));
+    }
+}
 
 /// <summary>Borrows one immutable scene-owned text paint; variants contain exactly one bound paint source.</summary>
 /// <remarks>Implementations retain no parser state or font ownership. Scene construction reserves metadata
 /// and dominant stop/tile storage before publication. Raster replay borrows the value, admits temporary
 /// sampling storage through the operation's budget and observes cancellation. Immutable variants
 /// support concurrent independent conversions.</remarks>
-internal abstract record SvgTextShader
-{
-    /// <summary>Retains the glyph drawing stage separately from the shader-local stage before float narrowing.</summary>
-    /// <remarks>Bounded, allocation-free arithmetic. No owners or cancellation state are retained.</remarks>
-    internal static SvgAffineTransform RebaseLocal(SvgAffineTransform glyphMap, SvgAffineTransform referencing, SvgAffineTransform local)
-    {
-        if (!glyphMap.TryInvert(out SvgAffineTransform inverse))
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text shader placement must be invertible.");
-        return inverse.ComposeChecked(referencing).ComposeChecked(local);
-    }
-}
+internal abstract record SvgTextShader;
 internal sealed record SvgTextLinearShader(SvgLinearGradient Gradient) : SvgTextShader;
 internal sealed record SvgTextRadialShader(SvgRadialGradient Gradient) : SvgTextShader;
 internal sealed record SvgTextPatternShader(SvgPatternGeometry Pattern) : SvgTextShader;
@@ -158,8 +184,8 @@ internal static class SvgTextGlyphPainter
                         if (map.IsTranslation) { position = position.Translate(map); map = SvgAffineTransform.Identity; }
                     }
                     if (size == 0) continue;
-                    SvgAffineTransform shaderDrawingMap = paths.IsEmpty ? map : placed.Drawing.Map;
-                    SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, paint.Color, font.Font, position, size, map, state.OutputTextScale, shaderDrawingMap, budget);
+                    SvgTextShaderDrawing shaderDrawing = paths.IsEmpty ? new(map, SvgAffineTransform.Identity, 1) : placed.Drawing.Shader;
+                    SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, paint.Color, font.Font, position, size, map, state.OutputTextScale, shaderDrawing, budget);
                     glyph.Shader = shader;
                     try
                     {
@@ -190,8 +216,8 @@ internal static class SvgTextGlyphPainter
                 using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, placed.Position, font.FontSize, placed.Map, budget, token);
                 if (contours.Contours.Length == 0) continue;
                 stroke = stroke with { FontScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(state.TextFontTransform(placement)) };
-                SvgAffineTransform shaderDrawingMap = paths.IsEmpty ? placed.Map : placed.Drawing.Map;
-                SvgGlyphGeometry glyph = SvgGlyphGeometry.CreateStroke(contours, stroke, font.Font, placed.Position, font.FontSize, placed.Map, shaderDrawingMap, budget);
+                SvgTextShaderDrawing shaderDrawing = paths.IsEmpty ? new(placed.Map, SvgAffineTransform.Identity, 1) : placed.Drawing.Shader;
+                SvgGlyphGeometry glyph = SvgGlyphGeometry.CreateStroke(contours, stroke, font.Font, placed.Position, font.FontSize, placed.Map, shaderDrawing, budget);
                 glyph.Shader = shader;
                 try
                 {

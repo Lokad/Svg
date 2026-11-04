@@ -226,7 +226,7 @@ CancellationToken token)
                 if (glyphMap.IsTranslation)
                 {
                     SvgDevicePoint origin = glyphMap.Apply(placed.X, placed.Y);
-                    drawing = new(origin, SvgAffineTransform.FromScaleOffset(stretch, 1, origin.X - stretch * origin.X, 0));
+                    drawing = new(origin, new(pending.Placement, SvgAffineTransform.FromScaleOffset(stretch, 1, origin.X - stretch * origin.X, 0), (float)pathScale));
                 }
                 else
                 {
@@ -243,9 +243,8 @@ CancellationToken token)
                     SvgDevicePoint origin = new(MathF.Truncate(cx * 64) / (64 * scale), (MathF.Truncate((cy - ascent) * 64) / 64 + ascent) / scale);
                     SvgAffineTransform map = glyphMap.ComposeChecked(SvgAffineTransform.FromScale(stretch, 1))
                         .ComposeChecked(SvgAffineTransform.FromTranslation(-cx / scale, -cy / scale));
-                    drawing = new(origin, map);
+                    drawing = new(origin, new(pending.Placement, map, (float)pathScale));
                 }
-                drawing = drawing with { Map = pending.Placement.ComposeChecked(drawing.Map) };
             }
             // A zero tangent angle uses the native horizontal strike, even on a curved baseline.
             if (!horizontalPlacement && glyphMap.A == 1 && glyphMap.B == 0 && glyphMap.C == 0 && glyphMap.D == 1)

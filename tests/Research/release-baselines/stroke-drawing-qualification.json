@@ -12,7 +12,7 @@
   },
   "change": "Forward the existing fragment drawing map through stroke construction, independently of fitted glyph placement. Reuse scene-owned drawing metadata, contour/source transfer, sampling and existing owners; no coordinate framework, new allocation path, public API or runtime dependency.",
   "nativeVerification": "precision-native-verification.json",
-  "currentReplay": "precision-current.csv",
+  "currentReplay": "precision-before-fragment.csv",
   "beforeReplay": "precision-before-stroke.csv",
   "closedOriginalInputs": [
     "spacing-paint-219-control",
@@ -504,5 +504,6 @@
       "laterSteps": "Skipped after the full-test failure; local matching-source checks qualify packages on both runtimes separately."
     },
     "action": "CLOSED: never repoll this terminal run. Preserve the DejaVu reference/assertion pending the existing authority decision; no whole-CI green claim."
-  }
+  },
+  "followup": "fragment-drawing-qualification.json"
 }

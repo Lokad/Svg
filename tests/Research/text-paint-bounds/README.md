@@ -33,9 +33,9 @@ preserve the original 31 Windows and 34 Linux differences. The
 [pattern-matrix acceptance record](precision-pattern-images.json) closes 13
 complete original pairs with 26 canonical rendering cases. These reuse the same
 source and image files. The subsequent [shared paint-stage record](paint-stage-images.json)
-has 31 of the 39 original inputs exact on both hosts and lists the remaining 8.
-Two original radial pairs and three orthogonal group/use/symbol pairs add 10
-individual image cases. Three fresh, healthy captures per host reproduce every
+closes two original radial pairs and adds three orthogonal group/use/symbol
+pairs through 10 individual image cases. The [current review](../release-baselines/precision-current.md)
+tracks the two remaining witnesses; all 39 original inputs and targets stay retained. Three fresh, healthy captures per host reproduce every
 original promoted PNG byte. Both font styles, unequal companions, meaningful equal
 scope controls and platform differences remain. The
 [shared pattern correction](../release-baselines/text-pattern-matrices.md) and

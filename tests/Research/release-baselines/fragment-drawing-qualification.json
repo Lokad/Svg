@@ -1,0 +1,459 @@
+{
+  "status": "Locally qualified shared fragment-stage milestone; matching source package/CI is next. Windows preserves the unchanged DejaVu reference conflict.",
+  "sourceBaseCommit": "df8a844bce8723a33d65ea544286c99e875eeaa2",
+  "assemblyIdentity": "Worktree libraries carry sourceBaseCommit; LF source hashes bind the changed implementation.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgRoot.cs": "902349e0f485742a154d7afb95956856df96c6c49e0b1f1c56062384665a4036",
+    "src/Lokad.Svg/Parsing/SvgTextGlyphPainter.cs": "f51eb8a7eeeb8e0178aaaf5bef5e36f6369de2a68dc5ac7cb929010dab53a3ea",
+    "src/Lokad.Svg/Parsing/SvgTextPathLayout.cs": "5e4cc6a4b93217125297ebf50a21697f18fd3c350afb1e5ea8bf8a6288923c5b",
+    "src/Lokad.Svg/SvgConverter.cs": "5adfdf90c37567e7aca87f0620b5c6f245a74062a5ac4f3da9966d5ffd2811cc"
+  },
+  "librarySha256": {
+    "net11.0": "86cba1e787676b2c74e9d575cb144a0592e217f018f11639454d4effbcc8ec6c",
+    "net10.0": "dbf0f3f5c23d52d75c69f8afb59fa69fbcba910c5807737fbaf753f82d834b65"
+  },
+  "change": "Retain text reference, physical font scale and fragment transform separately, appending native canvas stages before capture placement. Linear/radial/pattern paints and fill/stroke share this value. Layout, shaping, glyph strike/contours, sampling and final rounding retain their existing paths.",
+  "ownership": "The immutable drawing value replaces the old affine field: 56 additional bytes are admitted before contour allocation/transform, then transfer with the existing scene reservation. No new owner/cache/recording node; the existing contract refuses 272 bytes and succeeds/cleans up/retries at 328.",
+  "beforeReplay": "precision-before-fragment.csv",
+  "currentReplay": "precision-current.csv",
+  "closedOriginalInputs": [
+    "spacing-paint-430-candidate",
+    "spacing-paint-430-control"
+  ],
+  "remainingOriginalInputs": [
+    "spacing-paint-224-control",
+    "spacing-paint-232-control"
+  ],
+  "exactOnBothHosts": 37,
+  "previousExactLosses": 0,
+  "changedCandidatePngsPerHost": [
+    "spacing-paint-430-candidate",
+    "spacing-paint-430-control"
+  ],
+  "originalNativeVerification": "precision-native-verification.json",
+  "independentVectorControls": "../text-paint-bounds/fragment-stages.json",
+  "nativeControlImages": 3,
+  "nativeControlComparisons": 18,
+  "upstream": [
+    {
+      "path": "third_party/blink/renderer/core/layout/svg/svg_text_layout_algorithm.cc",
+      "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/layout/svg/svg_text_layout_algorithm.cc",
+      "sha256": "1ac64cb801e5165e1801dd246a5a52bb21126d2e9c1c74a99e7ac1e7c256e29c",
+      "bytes": 37524
+    },
+    {
+      "path": "third_party/blink/renderer/core/paint/text_fragment_painter.cc",
+      "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/paint/text_fragment_painter.cc",
+      "sha256": "c71348941650c88bbe6a123071838289d068514235231b768360086238f9d096",
+      "bytes": 36640
+    },
+    {
+      "path": "third_party/blink/renderer/core/paint/svg_model_object_painter.cc",
+      "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/paint/svg_model_object_painter.cc",
+      "sha256": "ed8b0d787000400446845379f4b783256c930b02f00868fdb4afa72c43c4e565",
+      "bytes": 2837
+    },
+    {
+      "path": "third_party/blink/renderer/platform/transforms/affine_transform.cc",
+      "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/platform/transforms/affine_transform.cc",
+      "sha256": "69555f7c9769925050c74d896dd52237dfce1e854470e4276e081c2c30609b65",
+      "bytes": 10364
+    },
+    {
+      "path": "third_party/blink/renderer/core/layout/inline/fragment_item.cc",
+      "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/layout/inline/fragment_item.cc",
+      "sha256": "84b18c2d6258babb6b10618962a625770b45852e34d0b51e6708848c273da75c",
+      "bytes": 50492
+    }
+  ],
+  "validation": {
+    "focusedNet11": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "86cba1e787676b2c74e9d575cb144a0592e217f018f11639454d4effbcc8ec6c",
+        "testAssemblySha256": "cf024b30feef13fff9121c18bf336fc7ea3bd1262f03264d542dc5f8dfe55141",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~Glyph_drawing_metadata_is_admitted",
+        "exitCode": 0,
+        "seconds": 8.570995700079948,
+        "counters": {
+          "executed": "177",
+          "passed": "177",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "86cba1e787676b2c74e9d575cb144a0592e217f018f11639454d4effbcc8ec6c",
+        "testAssemblySha256": "3c44a4b118e9d863d7af0954b95901fc03c20de5b5d39baa04d34b6f93c726b4",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 17.210353800095618,
+        "counters": {
+          "executed": "577",
+          "passed": "577",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "86cba1e787676b2c74e9d575cb144a0592e217f018f11639454d4effbcc8ec6c",
+        "testAssemblySha256": "cf024b30feef13fff9121c18bf336fc7ea3bd1262f03264d542dc5f8dfe55141",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~Glyph_drawing_metadata_is_admitted",
+        "exitCode": 0,
+        "seconds": 16.841739099938422,
+        "counters": {
+          "executed": "177",
+          "passed": "177",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "86cba1e787676b2c74e9d575cb144a0592e217f018f11639454d4effbcc8ec6c",
+        "testAssemblySha256": "3c44a4b118e9d863d7af0954b95901fc03c20de5b5d39baa04d34b6f93c726b4",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 19.929574199952185,
+        "counters": {
+          "executed": "577",
+          "passed": "577",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "focusedNet10": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "dbf0f3f5c23d52d75c69f8afb59fa69fbcba910c5807737fbaf753f82d834b65",
+        "testAssemblySha256": "57a4a779ff9c20b419d9e19d1cfbea3872effb750f8c44cbe18ddcb55aff1f1e",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~Glyph_drawing_metadata_is_admitted",
+        "exitCode": 0,
+        "seconds": 11.244190800003707,
+        "counters": {
+          "executed": "177",
+          "passed": "177",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "dbf0f3f5c23d52d75c69f8afb59fa69fbcba910c5807737fbaf753f82d834b65",
+        "testAssemblySha256": "105735b7363fa2598355eb637ff4c630193a98536faa57620eea4a2c76006d72",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 17.94562889984809,
+        "counters": {
+          "executed": "577",
+          "passed": "577",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "dbf0f3f5c23d52d75c69f8afb59fa69fbcba910c5807737fbaf753f82d834b65",
+        "testAssemblySha256": "57a4a779ff9c20b419d9e19d1cfbea3872effb750f8c44cbe18ddcb55aff1f1e",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~Glyph_drawing_metadata_is_admitted",
+        "exitCode": 0,
+        "seconds": 14.382614400004968,
+        "counters": {
+          "executed": "177",
+          "passed": "177",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "dbf0f3f5c23d52d75c69f8afb59fa69fbcba910c5807737fbaf753f82d834b65",
+        "testAssemblySha256": "105735b7363fa2598355eb637ff4c630193a98536faa57620eea4a2c76006d72",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 20.60145609988831,
+        "counters": {
+          "executed": "577",
+          "passed": "577",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "fullNet11": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "86cba1e787676b2c74e9d575cb144a0592e217f018f11639454d4effbcc8ec6c",
+        "testAssemblySha256": "cf024b30feef13fff9121c18bf336fc7ea3bd1262f03264d542dc5f8dfe55141",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 51.45195459993556,
+        "counters": {
+          "executed": "47549",
+          "passed": "47549",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "86cba1e787676b2c74e9d575cb144a0592e217f018f11639454d4effbcc8ec6c",
+        "testAssemblySha256": "cf024b30feef13fff9121c18bf336fc7ea3bd1262f03264d542dc5f8dfe55141",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 55.17904469999485,
+        "counters": {
+          "executed": "47549",
+          "passed": "47549",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "86cba1e787676b2c74e9d575cb144a0592e217f018f11639454d4effbcc8ec6c",
+        "testAssemblySha256": "3c44a4b118e9d863d7af0954b95901fc03c20de5b5d39baa04d34b6f93c726b4",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 61.58305040001869,
+        "counters": {
+          "executed": "46701",
+          "passed": "46700",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "86cba1e787676b2c74e9d575cb144a0592e217f018f11639454d4effbcc8ec6c",
+        "testAssemblySha256": "3c44a4b118e9d863d7af0954b95901fc03c20de5b5d39baa04d34b6f93c726b4",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 171.72234959993511,
+        "counters": {
+          "executed": "46701",
+          "passed": "46701",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "testIdentityAudit": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "previousCases": 47548,
+      "currentCases": 47549,
+      "removedOrRenamedCases": 0,
+      "addedCaseIds": [
+        "04bcf7eb-f1cb-94e3-3a63-2d6660d4c57d"
+      ]
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "previousCases": 46696,
+      "currentCases": 46701,
+      "removedOrRenamedCases": 0,
+      "addedCaseIds": [
+        "0e22140a-227b-0f6d-e145-366e37837917",
+        "357402fe-2580-a401-d9e7-b4ffac95b071",
+        "7e092e52-dc3d-7606-2b62-b0b81abf2e92",
+        "c475e811-bd44-493d-7dbb-506c2ed02e8d",
+        "cacba1a1-9c0f-fb84-e025-adc6b1403c25"
+      ]
+    },
+    {
+      "host": "glibc243",
+      "kind": "core",
+      "previousCases": 47548,
+      "currentCases": 47549,
+      "removedOrRenamedCases": 0,
+      "addedCaseIds": [
+        "04bcf7eb-f1cb-94e3-3a63-2d6660d4c57d"
+      ]
+    },
+    {
+      "host": "glibc243",
+      "kind": "visual",
+      "previousCases": 46696,
+      "currentCases": 46701,
+      "removedOrRenamedCases": 0,
+      "addedCaseIds": [
+        "0e22140a-227b-0f6d-e145-366e37837917",
+        "357402fe-2580-a401-d9e7-b4ffac95b071",
+        "7e092e52-dc3d-7606-2b62-b0b81abf2e92",
+        "c475e811-bd44-493d-7dbb-506c2ed02e8d",
+        "cacba1a1-9c0f-fb84-e025-adc6b1403c25"
+      ]
+    }
+  ],
+  "originals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 91.534035500139,
+    "librarySha256": "86cba1e787676b2c74e9d575cb144a0592e217f018f11639454d4effbcc8ec6c",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "outcomesOptionsDimensionsAndDiagnosticsUnchanged": true
+  },
+  "suppliedProgramContexts": {
+    "originals": 19,
+    "additionalNoto": 2,
+    "originalXmlNoto": 1,
+    "unchangedQualifiedPngsOnBothHosts": true
+  },
+  "declaredStaticDiagnostics": {
+    "cases": 13,
+    "exactOnBothHosts": true,
+    "seconds": 20.08977109985426
+  },
+  "referenceFilesChanged": 0,
+  "hostedSvgBodiesRetained": 0,
+  "rawSourceAttributeValuesRetained": 0,
+  "timingScope": "Single functional validation costs; neither renderer benchmarks nor qualified speedups.",
+  "failingBefore": {
+    "librarySourceCommit": "3b609957f895afe9b95384f858b02c03f6448d0b",
+    "librarySha256": "729bea3e8c2958987a73d98779b51cfd442930b834472896f29806df6c6d1f8e",
+    "replayedOriginalsPerHost": 39,
+    "allPngsMatchCommittedBeforeReplay": true,
+    "closedWitnesses": [
+      {
+        "id": "spacing-paint-430-candidate",
+        "sourceHash": "ffaea73b7c33a3c7d9f574003ed64505c20044f71eac3f6793c13d8787a1a5e6",
+        "pngSha256": "0e557c299ef74fc2095e6b39e14b3c50db7bee0a627d4500de67ab525fdf75db",
+        "referenceSha256": "b19e41768352d647d2a6a18929325f3c4f41067db91c24ddd4b7d782d6c382e0",
+        "difference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1,
+          "MaximumChannelError": 4,
+          "MeanAbsoluteError": 7.8125e-05,
+          "RootMeanSquareError": 0.017677669529663688,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 26,
+          "MinimumMismatchY": 25,
+          "MaximumMismatchX": 26,
+          "MaximumMismatchY": 25,
+          "IsExact": false
+        },
+        "host": "windows"
+      },
+      {
+        "id": "spacing-paint-430-control",
+        "sourceHash": "802600fdfae91fd43ced9ad8a0eed2a6eefb574028d2d17b0f73cdc37c89a7cf",
+        "pngSha256": "aec93fc9b1d15a77b5bb51008be2264c92cffa2653c9c1e7201c08b5cfb6b775",
+        "referenceSha256": "2a1529b7b32d263e48d2f5288b741739ff623a716d492ee614ace1fe448a2316",
+        "difference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1,
+          "MaximumChannelError": 2,
+          "MeanAbsoluteError": 7.8125e-05,
+          "RootMeanSquareError": 0.0125,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 26,
+          "MinimumMismatchY": 25,
+          "MaximumMismatchX": 26,
+          "MaximumMismatchY": 25,
+          "IsExact": false
+        },
+        "host": "windows"
+      },
+      {
+        "id": "spacing-paint-430-candidate",
+        "sourceHash": "ffaea73b7c33a3c7d9f574003ed64505c20044f71eac3f6793c13d8787a1a5e6",
+        "pngSha256": "6b62154879e616afcd9fe44b1658779b33e4df95ed9b3a8b7ea66aaf00c34968",
+        "referenceSha256": "cae9b8971bd4305188db81479b5315e23469cf88ccc630ee15fcace73e503a52",
+        "difference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1,
+          "MaximumChannelError": 4,
+          "MeanAbsoluteError": 7.8125e-05,
+          "RootMeanSquareError": 0.017677669529663688,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 26,
+          "MinimumMismatchY": 25,
+          "MaximumMismatchX": 26,
+          "MaximumMismatchY": 25,
+          "IsExact": false
+        },
+        "host": "linux"
+      },
+      {
+        "id": "spacing-paint-430-control",
+        "sourceHash": "802600fdfae91fd43ced9ad8a0eed2a6eefb574028d2d17b0f73cdc37c89a7cf",
+        "pngSha256": "748c93ad70505079ea8cc72279c991645409f27389a860a3cf8a4cb09d3c1be9",
+        "referenceSha256": "7d9e8e0eaf1ef3f9dcd85632f749415b1c7c34000ac09154d86a62582b91042c",
+        "difference": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1,
+          "MaximumChannelError": 2,
+          "MeanAbsoluteError": 7.8125e-05,
+          "RootMeanSquareError": 0.0125,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 26,
+          "MinimumMismatchY": 25,
+          "MaximumMismatchX": 26,
+          "MaximumMismatchY": 25,
+          "IsExact": false
+        },
+        "host": "linux"
+      }
+    ]
+  },
+  "build": "Release solution and explicit .NET 10 core/rendering builds pass with warnings treated as errors; zero warnings/errors. Compiling the benchmark project runs no benchmark."
+}

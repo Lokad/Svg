@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent font-free vector controls for flattening versus separate parent/fragment/physical-font canvas stages. Newly authored sources; every image is compared through one canonical conversion.",
+  "recipe": "Decode each SVG through Image and draw to its own 160x80 transparent canvas at DPR1, using pinned Chrome 153.0.8010.52. Three fresh healthy/profile-cleaned processes per host.",
+  "cases": [
+    {
+      "id": "flattened",
+      "input": "fragment-stage-flattened.svg",
+      "sourceSha256": "aac3aea3e77ccd962ac30a622878396758c260724d0804eb283b35ecd3364474",
+      "nativeSourceSha256": "aac3aea3e77ccd962ac30a622878396758c260724d0804eb283b35ecd3364474",
+      "font": false,
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "fragment-stage-references/12fece9e3e952b5d2c97160f1b2e142002f2169b60d02b196680e573604a1eb3.png",
+          "sha256": "12fece9e3e952b5d2c97160f1b2e142002f2169b60d02b196680e573604a1eb3",
+          "rgbaSha256": "9aaef8c79bb62e6eb6cf4c1b8da5d9a9d83b6f19c03eb93acd532038bdcd4ff1",
+          "width": 160,
+          "height": 80,
+          "observedPixel26_25": [
+            53,
+            0,
+            202,
+            130
+          ],
+          "freshPngSha256s": [
+            "12fece9e3e952b5d2c97160f1b2e142002f2169b60d02b196680e573604a1eb3",
+            "12fece9e3e952b5d2c97160f1b2e142002f2169b60d02b196680e573604a1eb3",
+            "12fece9e3e952b5d2c97160f1b2e142002f2169b60d02b196680e573604a1eb3"
+          ]
+        },
+        "linux": {
+          "path": "fragment-stage-references/12fece9e3e952b5d2c97160f1b2e142002f2169b60d02b196680e573604a1eb3.png",
+          "sha256": "12fece9e3e952b5d2c97160f1b2e142002f2169b60d02b196680e573604a1eb3",
+          "rgbaSha256": "9aaef8c79bb62e6eb6cf4c1b8da5d9a9d83b6f19c03eb93acd532038bdcd4ff1",
+          "width": 160,
+          "height": 80,
+          "observedPixel26_25": [
+            53,
+            0,
+            202,
+            130
+          ],
+          "freshPngSha256s": [
+            "12fece9e3e952b5d2c97160f1b2e142002f2169b60d02b196680e573604a1eb3",
+            "12fece9e3e952b5d2c97160f1b2e142002f2169b60d02b196680e573604a1eb3",
+            "12fece9e3e952b5d2c97160f1b2e142002f2169b60d02b196680e573604a1eb3"
+          ]
+        }
+      }
+    },
+    {
+      "id": "fragment",
+      "input": "fragment-stage-fragment.svg",
+      "sourceSha256": "ad8e3b6234cf1d7ef8cdbafaa7be49f664c96eda19963781bd01099712320fcc",
+      "nativeSourceSha256": "ad8e3b6234cf1d7ef8cdbafaa7be49f664c96eda19963781bd01099712320fcc",
+      "font": false,
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "fragment-stage-references/e9331b1ffd9df92c0bf7c1e5be29c20da7f85063934c1bf6c15898f0419b1f52.png",
+          "sha256": "e9331b1ffd9df92c0bf7c1e5be29c20da7f85063934c1bf6c15898f0419b1f52",
+          "rgbaSha256": "49201e9ff865ec3a38eca047bf784a62fbf82498f1e88b9c97832bbcecc8151e",
+          "width": 160,
+          "height": 80,
+          "observedPixel26_25": [
+            55,
+            0,
+            200,
+            130
+          ],
+          "freshPngSha256s": [
+            "e9331b1ffd9df92c0bf7c1e5be29c20da7f85063934c1bf6c15898f0419b1f52",
+            "e9331b1ffd9df92c0bf7c1e5be29c20da7f85063934c1bf6c15898f0419b1f52",
+            "e9331b1ffd9df92c0bf7c1e5be29c20da7f85063934c1bf6c15898f0419b1f52"
+          ]
+        },
+        "linux": {
+          "path": "fragment-stage-references/e9331b1ffd9df92c0bf7c1e5be29c20da7f85063934c1bf6c15898f0419b1f52.png",
+          "sha256": "e9331b1ffd9df92c0bf7c1e5be29c20da7f85063934c1bf6c15898f0419b1f52",
+          "rgbaSha256": "49201e9ff865ec3a38eca047bf784a62fbf82498f1e88b9c97832bbcecc8151e",
+          "width": 160,
+          "height": 80,
+          "observedPixel26_25": [
+            55,
+            0,
+            200,
+            130
+          ],
+          "freshPngSha256s": [
+            "e9331b1ffd9df92c0bf7c1e5be29c20da7f85063934c1bf6c15898f0419b1f52",
+            "e9331b1ffd9df92c0bf7c1e5be29c20da7f85063934c1bf6c15898f0419b1f52",
+            "e9331b1ffd9df92c0bf7c1e5be29c20da7f85063934c1bf6c15898f0419b1f52"
+          ]
+        }
+      }
+    },
+    {
+      "id": "physical-fragment",
+      "input": "fragment-stage-physical-fragment.svg",
+      "sourceSha256": "1297ca38ce08233bba458cca050647e44e02c3b81f398d6b63208d47e93498f0",
+      "nativeSourceSha256": "1297ca38ce08233bba458cca050647e44e02c3b81f398d6b63208d47e93498f0",
+      "font": false,
+      "outputScale": 1,
+      "references": {
+        "windows": {
+          "path": "fragment-stage-references/6b3f59b9d55c9b071ceddb25decfea99b58c7b6fe70ab37bdf08b36491496589.png",
+          "sha256": "6b3f59b9d55c9b071ceddb25decfea99b58c7b6fe70ab37bdf08b36491496589",
+          "rgbaSha256": "945a98de063abaf8cc8435a1c885e61a0f6719eab535a513c49324b55f11fdf7",
+          "width": 160,
+          "height": 80,
+          "observedPixel26_25": [
+            55,
+            0,
+            200,
+            130
+          ],
+          "freshPngSha256s": [
+            "6b3f59b9d55c9b071ceddb25decfea99b58c7b6fe70ab37bdf08b36491496589",
+            "6b3f59b9d55c9b071ceddb25decfea99b58c7b6fe70ab37bdf08b36491496589",
+            "6b3f59b9d55c9b071ceddb25decfea99b58c7b6fe70ab37bdf08b36491496589"
+          ]
+        },
+        "linux": {
+          "path": "fragment-stage-references/6b3f59b9d55c9b071ceddb25decfea99b58c7b6fe70ab37bdf08b36491496589.png",
+          "sha256": "6b3f59b9d55c9b071ceddb25decfea99b58c7b6fe70ab37bdf08b36491496589",
+          "rgbaSha256": "945a98de063abaf8cc8435a1c885e61a0f6719eab535a513c49324b55f11fdf7",
+          "width": 160,
+          "height": 80,
+          "observedPixel26_25": [
+            55,
+            0,
+            200,
+            130
+          ],
+          "freshPngSha256s": [
+            "6b3f59b9d55c9b071ceddb25decfea99b58c7b6fe70ab37bdf08b36491496589",
+            "6b3f59b9d55c9b071ceddb25decfea99b58c7b6fe70ab37bdf08b36491496589",
+            "6b3f59b9d55c9b071ceddb25decfea99b58c7b6fe70ab37bdf08b36491496589"
+          ]
+        }
+      }
+    }
+  ],
+  "hosts": [
+    {
+      "host": "windows",
+      "captures": [
+        {
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 456,
+            "debuggerReadyMilliseconds": 127,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "seconds": 0.5405753999948502
+        },
+        {
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 428,
+            "debuggerReadyMilliseconds": 130,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "seconds": 0.4962168000638485
+        },
+        {
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 479,
+            "debuggerReadyMilliseconds": 143,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "seconds": 0.5529810001607984
+        }
+      ],
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+    },
+    {
+      "host": "linux",
+      "captures": [
+        {
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 3974,
+            "debuggerReadyMilliseconds": 2780,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "seconds": 6.752481300150976
+        },
+        {
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 3749,
+            "debuggerReadyMilliseconds": 2560,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "seconds": 5.021649300120771
+        },
+        {
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 3828,
+            "debuggerReadyMilliseconds": 2736,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          },
+          "seconds": 4.594637299887836
+        }
+      ],
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+    }
+  ]
+}
