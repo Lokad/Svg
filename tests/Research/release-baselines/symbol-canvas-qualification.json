@@ -1,5 +1,5 @@
 {
-  "status": "Original symbol canvas screen and local platform/runtime qualification closed. Matching committed-source packages and CI remain pending; unchanged Windows DejaVu authority conflict remains open.",
+  "status": "Original symbol canvas screen, committed-source deterministic packages and matching CI qualified. Ubuntu entire workflow passes; Windows retains only the unchanged DejaVu frozen-reference conflict. Broader shader/admission work remains open.",
   "sourceBaseCommit": "0f7699fbcb5ca362a0c42eaf1d56f829614b2ea0",
   "sourceLfSha256": {
     ".github/workflows/ci.yml": "eaf50130477587b8ff06132405e9e6b386d135da1500300e636ed3b49d247f0f",
@@ -1394,8 +1394,215 @@
     "authority": "Re-fetch/hash in bounded RAM only. All default outcomes and 168 PNGs remain unchanged; 22 supplied-program contexts and 13 declared diagnostic projections remain exact. Separate source reviews retain their own evidence."
   },
   "promotion": {
-    "packages": "Pending matching clean-commit deterministic packages and installed consumers.",
-    "ci": "Pending matching production commit. Never repoll older terminal workflows.",
+    "sourceCommit": "71aa741f0b354554c493a04e0b75b34b0d092a5e",
+    "sourceGitTree": "1d916f5ee374c6d77463f465042356e0e2de463d",
+    "allQualifiedSourceHashesMatchCommit": true,
+    "packageIdentity": {
+      "sourceCommit": "71aa741f0b354554c493a04e0b75b34b0d092a5e",
+      "files": [
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+          "sha256": "27832fc422ff7c0fd2b7f49b18e08198291629df8647c8a704cf2cd6b230195f"
+        },
+        {
+          "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+          "sha256": "5110661ce4b7dddc6f2de0fdd4c3ecdc64291b7d362a006152d4969f59883380"
+        }
+      ],
+      "librarySha256": {
+        "net11.0": "358928274d095b1a26d48036020f40c2d1e1bbe700370a9f668e3bbea19f4c8a",
+        "net10.0": "d447b6271b31adb387d97cda469958ed844931679b9cf041e33f70e86f4ccce0"
+      },
+      "repeatPackagesByteIdentical": true,
+      "noRuntimeDependencies": true,
+      "noSvgFixtures": true,
+      "seconds": 5.413211500039324
+    },
+    "installedConsumers": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "librarySha256": "358928274d095b1a26d48036020f40c2d1e1bbe700370a9f668e3bbea19f4c8a"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "librarySha256": "d447b6271b31adb387d97cda469958ed844931679b9cf041e33f70e86f4ccce0"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "librarySha256": "358928274d095b1a26d48036020f40c2d1e1bbe700370a9f668e3bbea19f4c8a"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "librarySha256": "d447b6271b31adb387d97cda469958ed844931679b9cf041e33f70e86f4ccce0"
+      }
+    ],
+    "consumerScenarios": "Shared admission, retained result ownership, synchronous/asynchronous conversion, overlap rejection, dimensions, font-free inspection, bounded output, diagnostics, font catalog, HTTP selection/reuse/cancellation/shutdown/borrowers and refusal.",
+    "packagedBank": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "358928274d095b1a26d48036020f40c2d1e1bbe700370a9f668e3bbea19f4c8a",
+        "testAssemblySha256": "7b489c0750f3b5506a0b556bf8f64e24796ee93141be76d75e750e60aef676f3",
+        "selection": "FullyQualifiedName~SvgSymbolCanvasReferenceTests",
+        "exitCode": 0,
+        "seconds": 15.873905099928379,
+        "counters": {
+          "executed": "977",
+          "passed": "977",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "358928274d095b1a26d48036020f40c2d1e1bbe700370a9f668e3bbea19f4c8a",
+        "testAssemblySha256": "7b489c0750f3b5506a0b556bf8f64e24796ee93141be76d75e750e60aef676f3",
+        "selection": "FullyQualifiedName~SvgSymbolCanvasReferenceTests",
+        "exitCode": 0,
+        "seconds": 14.910845200065523,
+        "counters": {
+          "executed": "977",
+          "passed": "977",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "d447b6271b31adb387d97cda469958ed844931679b9cf041e33f70e86f4ccce0",
+        "testAssemblySha256": "c6ef4cae551d424382efc4243d09c6b9f1c06c3dc98f68a1a4ffe119b3559384",
+        "selection": "FullyQualifiedName~SvgSymbolCanvasReferenceTests",
+        "exitCode": 0,
+        "seconds": 17.838766699889675,
+        "counters": {
+          "executed": "977",
+          "passed": "977",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "d447b6271b31adb387d97cda469958ed844931679b9cf041e33f70e86f4ccce0",
+        "testAssemblySha256": "c6ef4cae551d424382efc4243d09c6b9f1c06c3dc98f68a1a4ffe119b3559384",
+        "selection": "FullyQualifiedName~SvgSymbolCanvasReferenceTests",
+        "exitCode": 0,
+        "seconds": 20.00802189996466,
+        "counters": {
+          "executed": "977",
+          "passed": "977",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "ci": {
+      "runId": 41832872750,
+      "sourceCommit": "71aa741f0b354554c493a04e0b75b34b0d092a5e",
+      "status": "completed",
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "host": "ubuntu-latest",
+          "conclusion": "success",
+          "wholeWorkflow": true
+        },
+        {
+          "host": "windows-latest",
+          "conclusion": "failure",
+          "failedStep": "Run dotnet test Lokad.Svg.slnx -c Release --no-build",
+          "failures": [
+            "SvgStaticTrueTypeFontTests: dejavu"
+          ],
+          "referenceAndAssertionUnchanged": true
+        }
+      ],
+      "checks": [
+        {
+          "host": "windows-latest",
+          "framework": "net11.0",
+          "kind": "core",
+          "executed": 47575,
+          "failed": 0
+        },
+        {
+          "host": "windows-latest",
+          "framework": "net11.0",
+          "kind": "visual",
+          "executed": 70841,
+          "failed": 1
+        },
+        {
+          "host": "windows-latest",
+          "framework": "net11.0",
+          "kind": "font",
+          "executed": 10,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net11.0",
+          "kind": "core",
+          "executed": 47575,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net11.0",
+          "kind": "visual",
+          "executed": 70841,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net11.0",
+          "kind": "font",
+          "executed": 10,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net10.0",
+          "kind": "core",
+          "executed": 12830,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net10.0",
+          "kind": "visual",
+          "executed": 970,
+          "failed": 0
+        },
+        {
+          "host": "ubuntu-latest",
+          "framework": "net10.0",
+          "kind": "font",
+          "executed": 10,
+          "failed": 0
+        }
+      ],
+      "ubuntuPackageConsumer": true,
+      "windowsLaterSteps": "Skipped after the unchanged frozen-reference failure; matching local .NET 10 and installed-package checks qualify both hosts separately.",
+      "workflowLogSha256": "6ef7e28c43d5a2a9695669caccb2f90a1d41663c5a0d1376165c1e8204e911a8",
+      "terminal": true,
+      "repoll": false
+    },
     "published": false
   }
 }

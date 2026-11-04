@@ -1,0 +1,1087 @@
+{
+  "status": "Open: 24 rectangle-use admission gaps. All other reviewed inputs retain exact qualified targets. Wide-edge offscreen targets were previously rejected; original outputs still match unchanged committed browser references.",
+  "sourceCommit": "71aa741f0b354554c493a04e0b75b34b0d092a5e",
+  "previousSourceCommit": "9abf3b8bd9b6e47ee8731bbb7f9f7f4708c9f7f8",
+  "replay": {
+    "originalPairs": 4669,
+    "originalInputs": 9338,
+    "hosts": [
+      "windows",
+      "linux"
+    ],
+    "allOriginalOutputsAndErrorsUnchanged": true,
+    "priorExactLosses": 0,
+    "admissionLosses": 0,
+    "qualifiedExactInputs": 9314,
+    "unsupportedInputs": 24,
+    "canonicalPath": "Synchronous owned PNG",
+    "groups": [
+      {
+        "group": "r85-stroke-execution/.:r85-clip-gain",
+        "inputs": 18,
+        "exactAgainstOriginalOffscreenTarget": 18,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r85-stroke-execution/.:r85-degenerate",
+        "inputs": 72,
+        "exactAgainstOriginalOffscreenTarget": 72,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r85-stroke-execution/.:stroke-wide-gains",
+        "inputs": 36,
+        "exactAgainstOriginalOffscreenTarget": 36,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r85-stroke-execution/extended:r85-extended",
+        "inputs": 2304,
+        "exactAgainstOriginalOffscreenTarget": 2304,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r85-stroke-execution/integer:r85-integer",
+        "inputs": 1152,
+        "exactAgainstOriginalOffscreenTarget": 1152,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r85-stroke-execution/overlap-review:paint-overlap-review",
+        "inputs": 96,
+        "exactAgainstOriginalOffscreenTarget": 96,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-execution/.:r86-channels",
+        "inputs": 12,
+        "exactAgainstOriginalOffscreenTarget": 12,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-execution/hairline-alpha:r86-hairline-alpha",
+        "inputs": 400,
+        "exactAgainstOriginalOffscreenTarget": 400,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-execution/hairline-review:r86-hairline-review",
+        "inputs": 1600,
+        "exactAgainstOriginalOffscreenTarget": 1600,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-execution/solid-order:r86-solid-order",
+        "inputs": 1152,
+        "exactAgainstOriginalOffscreenTarget": 1152,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-hairline-execution/clip-review:hairline-clip-review",
+        "inputs": 24,
+        "exactAgainstOriginalOffscreenTarget": 24,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-hairline-execution/composition-review:hairline-composition-review",
+        "inputs": 192,
+        "exactAgainstOriginalOffscreenTarget": 192,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-hairline-execution/edges:hairline-edge",
+        "inputs": 24,
+        "exactAgainstOriginalOffscreenTarget": 0,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-hairline-execution/palette:hairline-palette",
+        "inputs": 288,
+        "exactAgainstOriginalOffscreenTarget": 288,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-paint-overlap/.:paint-layer",
+        "inputs": 96,
+        "exactAgainstOriginalOffscreenTarget": 96,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-paint-overlap/.:paint-overlap",
+        "inputs": 1008,
+        "exactAgainstOriginalOffscreenTarget": 1008,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-paint-overlap/corner-path-review:paint-corner-path-review",
+        "inputs": 288,
+        "exactAgainstOriginalOffscreenTarget": 288,
+        "explicitRejections": 0
+      },
+      {
+        "group": "r86-paint-overlap/corner-review:paint-corners-review",
+        "inputs": 576,
+        "exactAgainstOriginalOffscreenTarget": 552,
+        "explicitRejections": 24
+      }
+    ]
+  },
+  "authority": "No production change, reference rewrite, tolerance change or admission closure is claimed by this review. Each original role and output scale remains independent.",
+  "sources": {
+    "1e02699ef438fb472cda37b64332c4e0dd9f99c06284d7d7a962942292e07f11": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='q'><stop stop-color='yellow'/><stop offset='1' stop-color='cyan'/></linearGradient><symbol id='s' viewBox='0 0 32 32'><rect x='4' y='4' width='20' height='20' fill='url(#q)' stroke='blue' stroke-width='.5' stroke-opacity='.75' /></symbol></defs><g transform='translate(.5 .25)'><use href='#s' width='32' height='32'/></g></svg>",
+    "fc4fe663b97a0b19b3e1017258da15a8fba8d4a2b20b63639e8565c213299a6e": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='q'><stop stop-color='yellow'/><stop offset='1' stop-color='cyan'/></linearGradient><rect x='4' y='4' width='20' height='20' fill='url(#q)' stroke='blue' stroke-width='.5' stroke-opacity='.75'  id='s'/></defs><g transform='scale(.75 1.1)'><use href='#s'/></g></svg>",
+    "d6ad6bd131627f1c57b49487a4f9396d43e2d41709db4431108e53ed7ce3a4bf": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='q'><stop stop-color='yellow'/><stop offset='1' stop-color='cyan'/></linearGradient><symbol id='s' viewBox='0 0 32 32'><rect x='4' y='4' width='20' height='20' fill='url(#q)' stroke='blue' stroke-width='.5' stroke-opacity='.75' /></symbol></defs><g transform='scale(.75 1.1)'><use href='#s' width='32' height='32'/></g></svg>",
+    "98ffb56d81e80893f4f415424f66a00a928bb18c50888fa5103216af8c090674": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='q'><stop stop-color='yellow'/><stop offset='1' stop-color='cyan'/></linearGradient><symbol id='s' viewBox='0 0 32 32'><rect x='4' y='4' width='20' height='20' fill='url(#q)' stroke='blue' stroke-width='2' stroke-opacity='.75' /></symbol></defs><g transform='translate(.5 .25)'><use href='#s' width='32' height='32'/></g></svg>",
+    "7359c251b9b51b06939e77993e352a539285db67b9a7c9f9e6eddbe8c3130a78": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='q'><stop stop-color='yellow'/><stop offset='1' stop-color='cyan'/></linearGradient><rect x='4' y='4' width='20' height='20' fill='url(#q)' stroke='blue' stroke-width='2' stroke-opacity='.75'  id='s'/></defs><g transform='scale(.75 1.1)'><use href='#s'/></g></svg>",
+    "324ad4ce5a74c82ea7053518a383b4c8b2cdca20629e0471811690881585df75": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='q'><stop stop-color='yellow'/><stop offset='1' stop-color='cyan'/></linearGradient><symbol id='s' viewBox='0 0 32 32'><rect x='4' y='4' width='20' height='20' fill='url(#q)' stroke='blue' stroke-width='2' stroke-opacity='.75' /></symbol></defs><g transform='scale(.75 1.1)'><use href='#s' width='32' height='32'/></g></svg>"
+  },
+  "cases": [
+    {
+      "id": "paint-corners-review-10-control",
+      "sourceSha256": "1e02699ef438fb472cda37b64332c4e0dd9f99c06284d7d7a962942292e07f11",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-10",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": ".5",
+        "pose": "translate(.5 .25)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "a1c456c5bcc4e85ece88b8f530c06575bc72dbb3ca8276dc45e8d96e7a3eb1cf",
+        "rgbaSha256": "7533ae11eebf31c3a9d43b9e890450c0563c4c14167617706c14989c944b3b21"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-11-control",
+      "sourceSha256": "1e02699ef438fb472cda37b64332c4e0dd9f99c06284d7d7a962942292e07f11",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-11",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": ".5",
+        "pose": "translate(.5 .25)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "41f323c2b562efd1fb416ef7efb303698415c3ef61b2c3c1403950931a81fb76",
+        "rgbaSha256": "6d2fdacf591b26b92bca3397dd2bf590733a0594e4e8d5adea0f4d38050e40dd"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-18-control",
+      "sourceSha256": "fc4fe663b97a0b19b3e1017258da15a8fba8d4a2b20b63639e8565c213299a6e",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-18",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": ".5",
+        "pose": "scale(.75 1.1)",
+        "consumer": "use",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "1df53a4b6aa7603e3fa8bc3d8cef550cd8afb5688cb8f29c658fa446e3049801",
+        "rgbaSha256": "baa5984808c125e6683e5b724e7bf0d58e03aa408d670f97f6cadc29b9d1413e"
+      },
+      "libraryError": "UnsupportedFeature:Only uniformly scaled rectangle strokes on use instances are implemented."
+    },
+    {
+      "id": "paint-corners-review-19-control",
+      "sourceSha256": "fc4fe663b97a0b19b3e1017258da15a8fba8d4a2b20b63639e8565c213299a6e",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-19",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": ".5",
+        "pose": "scale(.75 1.1)",
+        "consumer": "use",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "54c27e775bacf94812fe13b647e54eeb44e4dfd0b411bc4edc7eb61285491152",
+        "rgbaSha256": "f31e356f694b8309004b3178c78ac0884ffb8806a54048e3df2a968e7997aecc"
+      },
+      "libraryError": "UnsupportedFeature:Only uniformly scaled rectangle strokes on use instances are implemented."
+    },
+    {
+      "id": "paint-corners-review-22-control",
+      "sourceSha256": "d6ad6bd131627f1c57b49487a4f9396d43e2d41709db4431108e53ed7ce3a4bf",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-22",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": ".5",
+        "pose": "scale(.75 1.1)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "1df53a4b6aa7603e3fa8bc3d8cef550cd8afb5688cb8f29c658fa446e3049801",
+        "rgbaSha256": "baa5984808c125e6683e5b724e7bf0d58e03aa408d670f97f6cadc29b9d1413e"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-23-control",
+      "sourceSha256": "d6ad6bd131627f1c57b49487a4f9396d43e2d41709db4431108e53ed7ce3a4bf",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-23",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": ".5",
+        "pose": "scale(.75 1.1)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "54c27e775bacf94812fe13b647e54eeb44e4dfd0b411bc4edc7eb61285491152",
+        "rgbaSha256": "f31e356f694b8309004b3178c78ac0884ffb8806a54048e3df2a968e7997aecc"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-34-control",
+      "sourceSha256": "98ffb56d81e80893f4f415424f66a00a928bb18c50888fa5103216af8c090674",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-34",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": "2",
+        "pose": "translate(.5 .25)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "fad64fb084245c121d0f2a33bab4e632a23c213a6f525b7cc51d268a6eef5522",
+        "rgbaSha256": "65740d779e86c9d9c8595421718431028dc81bef045a3d2d125f0c0f2b136f4c"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-35-control",
+      "sourceSha256": "98ffb56d81e80893f4f415424f66a00a928bb18c50888fa5103216af8c090674",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-35",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": "2",
+        "pose": "translate(.5 .25)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "7596bb814f54e0d4aef0d149af77b986d42540bd17a62fb3ac0cccff811289a8",
+        "rgbaSha256": "1fedb0ec7312de183423642a5f4d60fab9711332c5414d9d7d3fc3c60c26ad08"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-42-control",
+      "sourceSha256": "7359c251b9b51b06939e77993e352a539285db67b9a7c9f9e6eddbe8c3130a78",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-42",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": "2",
+        "pose": "scale(.75 1.1)",
+        "consumer": "use",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "a0ac4ebe0aa33d01212c0a38f46fbe7ae2374c1cdfb82c7273333c873cca42b1",
+        "rgbaSha256": "d8dd2dd1f734710f65290ae557bfce30b0e568ad97e1c6095a93dfb48f5f463e"
+      },
+      "libraryError": "UnsupportedFeature:Only uniformly scaled rectangle strokes on use instances are implemented."
+    },
+    {
+      "id": "paint-corners-review-43-control",
+      "sourceSha256": "7359c251b9b51b06939e77993e352a539285db67b9a7c9f9e6eddbe8c3130a78",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-43",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": "2",
+        "pose": "scale(.75 1.1)",
+        "consumer": "use",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "dad9df58c21534e8356931571e6a07dc36a327bf882c85208b56a4d8595647ae",
+        "rgbaSha256": "b9662db1d004043e120975a4c9dc68d0ebfacc46c9fcaf5f0fc905d6514b0c88"
+      },
+      "libraryError": "UnsupportedFeature:Only uniformly scaled rectangle strokes on use instances are implemented."
+    },
+    {
+      "id": "paint-corners-review-46-control",
+      "sourceSha256": "324ad4ce5a74c82ea7053518a383b4c8b2cdca20629e0471811690881585df75",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-46",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": "2",
+        "pose": "scale(.75 1.1)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "a0ac4ebe0aa33d01212c0a38f46fbe7ae2374c1cdfb82c7273333c873cca42b1",
+        "rgbaSha256": "d8dd2dd1f734710f65290ae557bfce30b0e568ad97e1c6095a93dfb48f5f463e"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-47-control",
+      "sourceSha256": "324ad4ce5a74c82ea7053518a383b4c8b2cdca20629e0471811690881585df75",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-47",
+        "mode": "solid",
+        "corners": "rx='0' ry='4'",
+        "width": "2",
+        "pose": "scale(.75 1.1)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "dad9df58c21534e8356931571e6a07dc36a327bf882c85208b56a4d8595647ae",
+        "rgbaSha256": "b9662db1d004043e120975a4c9dc68d0ebfacc46c9fcaf5f0fc905d6514b0c88"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-58-control",
+      "sourceSha256": "1e02699ef438fb472cda37b64332c4e0dd9f99c06284d7d7a962942292e07f11",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-58",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": ".5",
+        "pose": "translate(.5 .25)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "a1c456c5bcc4e85ece88b8f530c06575bc72dbb3ca8276dc45e8d96e7a3eb1cf",
+        "rgbaSha256": "7533ae11eebf31c3a9d43b9e890450c0563c4c14167617706c14989c944b3b21"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-59-control",
+      "sourceSha256": "1e02699ef438fb472cda37b64332c4e0dd9f99c06284d7d7a962942292e07f11",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-59",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": ".5",
+        "pose": "translate(.5 .25)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "41f323c2b562efd1fb416ef7efb303698415c3ef61b2c3c1403950931a81fb76",
+        "rgbaSha256": "6d2fdacf591b26b92bca3397dd2bf590733a0594e4e8d5adea0f4d38050e40dd"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-66-control",
+      "sourceSha256": "fc4fe663b97a0b19b3e1017258da15a8fba8d4a2b20b63639e8565c213299a6e",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-66",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": ".5",
+        "pose": "scale(.75 1.1)",
+        "consumer": "use",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "1df53a4b6aa7603e3fa8bc3d8cef550cd8afb5688cb8f29c658fa446e3049801",
+        "rgbaSha256": "baa5984808c125e6683e5b724e7bf0d58e03aa408d670f97f6cadc29b9d1413e"
+      },
+      "libraryError": "UnsupportedFeature:Only uniformly scaled rectangle strokes on use instances are implemented."
+    },
+    {
+      "id": "paint-corners-review-67-control",
+      "sourceSha256": "fc4fe663b97a0b19b3e1017258da15a8fba8d4a2b20b63639e8565c213299a6e",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-67",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": ".5",
+        "pose": "scale(.75 1.1)",
+        "consumer": "use",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "54c27e775bacf94812fe13b647e54eeb44e4dfd0b411bc4edc7eb61285491152",
+        "rgbaSha256": "f31e356f694b8309004b3178c78ac0884ffb8806a54048e3df2a968e7997aecc"
+      },
+      "libraryError": "UnsupportedFeature:Only uniformly scaled rectangle strokes on use instances are implemented."
+    },
+    {
+      "id": "paint-corners-review-70-control",
+      "sourceSha256": "d6ad6bd131627f1c57b49487a4f9396d43e2d41709db4431108e53ed7ce3a4bf",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-70",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": ".5",
+        "pose": "scale(.75 1.1)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "1df53a4b6aa7603e3fa8bc3d8cef550cd8afb5688cb8f29c658fa446e3049801",
+        "rgbaSha256": "baa5984808c125e6683e5b724e7bf0d58e03aa408d670f97f6cadc29b9d1413e"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-71-control",
+      "sourceSha256": "d6ad6bd131627f1c57b49487a4f9396d43e2d41709db4431108e53ed7ce3a4bf",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-71",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": ".5",
+        "pose": "scale(.75 1.1)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "54c27e775bacf94812fe13b647e54eeb44e4dfd0b411bc4edc7eb61285491152",
+        "rgbaSha256": "f31e356f694b8309004b3178c78ac0884ffb8806a54048e3df2a968e7997aecc"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-82-control",
+      "sourceSha256": "98ffb56d81e80893f4f415424f66a00a928bb18c50888fa5103216af8c090674",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-82",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": "2",
+        "pose": "translate(.5 .25)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "fad64fb084245c121d0f2a33bab4e632a23c213a6f525b7cc51d268a6eef5522",
+        "rgbaSha256": "65740d779e86c9d9c8595421718431028dc81bef045a3d2d125f0c0f2b136f4c"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-83-control",
+      "sourceSha256": "98ffb56d81e80893f4f415424f66a00a928bb18c50888fa5103216af8c090674",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-83",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": "2",
+        "pose": "translate(.5 .25)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "7596bb814f54e0d4aef0d149af77b986d42540bd17a62fb3ac0cccff811289a8",
+        "rgbaSha256": "1fedb0ec7312de183423642a5f4d60fab9711332c5414d9d7d3fc3c60c26ad08"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-90-control",
+      "sourceSha256": "7359c251b9b51b06939e77993e352a539285db67b9a7c9f9e6eddbe8c3130a78",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-90",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": "2",
+        "pose": "scale(.75 1.1)",
+        "consumer": "use",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "a0ac4ebe0aa33d01212c0a38f46fbe7ae2374c1cdfb82c7273333c873cca42b1",
+        "rgbaSha256": "d8dd2dd1f734710f65290ae557bfce30b0e568ad97e1c6095a93dfb48f5f463e"
+      },
+      "libraryError": "UnsupportedFeature:Only uniformly scaled rectangle strokes on use instances are implemented."
+    },
+    {
+      "id": "paint-corners-review-91-control",
+      "sourceSha256": "7359c251b9b51b06939e77993e352a539285db67b9a7c9f9e6eddbe8c3130a78",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-91",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": "2",
+        "pose": "scale(.75 1.1)",
+        "consumer": "use",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "dad9df58c21534e8356931571e6a07dc36a327bf882c85208b56a4d8595647ae",
+        "rgbaSha256": "b9662db1d004043e120975a4c9dc68d0ebfacc46c9fcaf5f0fc905d6514b0c88"
+      },
+      "libraryError": "UnsupportedFeature:Only uniformly scaled rectangle strokes on use instances are implemented."
+    },
+    {
+      "id": "paint-corners-review-94-control",
+      "sourceSha256": "324ad4ce5a74c82ea7053518a383b4c8b2cdca20629e0471811690881585df75",
+      "outputScale": 1,
+      "metadata": {
+        "name": "paint-corners-review-94",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": "2",
+        "pose": "scale(.75 1.1)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1,
+        "font": false
+      },
+      "native": {
+        "width": 32,
+        "height": 32,
+        "pngSha256": "a0ac4ebe0aa33d01212c0a38f46fbe7ae2374c1cdfb82c7273333c873cca42b1",
+        "rgbaSha256": "d8dd2dd1f734710f65290ae557bfce30b0e568ad97e1c6095a93dfb48f5f463e"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    },
+    {
+      "id": "paint-corners-review-95-control",
+      "sourceSha256": "324ad4ce5a74c82ea7053518a383b4c8b2cdca20629e0471811690881585df75",
+      "outputScale": 1.5,
+      "metadata": {
+        "name": "paint-corners-review-95",
+        "mode": "solid",
+        "corners": "rx='4' ry='0'",
+        "width": "2",
+        "pose": "scale(.75 1.1)",
+        "consumer": "symbol",
+        "fill": "url(#q)",
+        "scale": 1.5,
+        "font": false
+      },
+      "native": {
+        "width": 48,
+        "height": 48,
+        "pngSha256": "dad9df58c21534e8356931571e6a07dc36a327bf882c85208b56a4d8595647ae",
+        "rgbaSha256": "b9662db1d004043e120975a4c9dc68d0ebfacc46c9fcaf5f0fc905d6514b0c88"
+      },
+      "libraryError": "UnsupportedFeature:Rectangle use references with strokes are not implemented."
+    }
+  ],
+  "nativeValidation": {
+    "comparisons": 144,
+    "pngTargetsUnchanged": true,
+    "launches": [
+      [
+        {
+          "host": "windows",
+          "attempt": 1,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 1.5777143000159413,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 959,
+            "debuggerReadyMilliseconds": 522,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "windows",
+          "attempt": 2,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 0.8011096999980509,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 715,
+            "debuggerReadyMilliseconds": 146,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "windows",
+          "attempt": 3,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 1.0230112001299858,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 888,
+            "debuggerReadyMilliseconds": 197,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ],
+      [
+        {
+          "host": "linux",
+          "attempt": 1,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 17.124592599924654,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 7228,
+            "debuggerReadyMilliseconds": 5738,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "linux",
+          "attempt": 2,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 5.7078758999705315,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 4865,
+            "debuggerReadyMilliseconds": 3106,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "linux",
+          "attempt": 3,
+          "kind": "additional",
+          "terminalExitCode": 0,
+          "seconds": 5.626427999930456,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 4658,
+            "debuggerReadyMilliseconds": 2944,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ]
+    ]
+  },
+  "closedOracleDistinction": {
+    "evidence": "../shader-hairlines/capture.json",
+    "rows": [
+      {
+        "id": "hairline-edge-0-candidate",
+        "originalSourceSha256": "454f91fed5a9ef7051b657bf8ad7cee46de33d255a253e90d66bdd2800eea515",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "43811ffad58a4890daa35e7653f5e6d376f0acca2299dad0e94ad08229af4821",
+        "committedBrowserCase": "seam-0-candidate",
+        "committedSourceSha256": "454f91fed5a9ef7051b657bf8ad7cee46de33d255a253e90d66bdd2800eea515",
+        "committedReferenceSha256": "c8e272422c3c18e81142f37759ba988c54aa8a0cd21c38cac531ac46c87b9650",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-0-control",
+        "originalSourceSha256": "04d7f3e0145530d8eb6c0d94a37f94d9a89c09ba985776e6329326f446610423",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "43811ffad58a4890daa35e7653f5e6d376f0acca2299dad0e94ad08229af4821",
+        "committedBrowserCase": "seam-0-control",
+        "committedSourceSha256": "04d7f3e0145530d8eb6c0d94a37f94d9a89c09ba985776e6329326f446610423",
+        "committedReferenceSha256": "c8e272422c3c18e81142f37759ba988c54aa8a0cd21c38cac531ac46c87b9650",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-1-candidate",
+        "originalSourceSha256": "454f91fed5a9ef7051b657bf8ad7cee46de33d255a253e90d66bdd2800eea515",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "65c4895926a174f3fe74e903dd73f57f6796425b18994c8e57f804201215cc5c",
+        "committedBrowserCase": "seam-1-candidate",
+        "committedSourceSha256": "90564f2d9f6d474e144520542bb2820b479b54018a41522e514c822b17584736",
+        "committedReferenceSha256": "def4648a1b6d7596bf62a6c0b1a83a9d43dbfca8f0138684de05607863410bbd",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-1-control",
+        "originalSourceSha256": "04d7f3e0145530d8eb6c0d94a37f94d9a89c09ba985776e6329326f446610423",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "65c4895926a174f3fe74e903dd73f57f6796425b18994c8e57f804201215cc5c",
+        "committedBrowserCase": "seam-1-control",
+        "committedSourceSha256": "d3e62fb9359158e6a4080f6265692d921e21eb37bcb4a28f5e369ca6aad5acb1",
+        "committedReferenceSha256": "def4648a1b6d7596bf62a6c0b1a83a9d43dbfca8f0138684de05607863410bbd",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-2-candidate",
+        "originalSourceSha256": "59944317510d3eec872619c5b295f9df75ebb5b283441b7439124379d84df12e",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "33c924b219772c1ed9b7f32c3610df28d3d7509dbb008696fe592428ccd188df",
+        "committedBrowserCase": "seam-2-candidate",
+        "committedSourceSha256": "59944317510d3eec872619c5b295f9df75ebb5b283441b7439124379d84df12e",
+        "committedReferenceSha256": "b18476028d55e2a545882965a5eb0a46cdafea740daa85fb321e88d9e88a6732",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-2-control",
+        "originalSourceSha256": "eedcf76e9d847c3025856717a6e4e75ffc786cc71f586eac52152402ba27f066",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "33c924b219772c1ed9b7f32c3610df28d3d7509dbb008696fe592428ccd188df",
+        "committedBrowserCase": "seam-2-control",
+        "committedSourceSha256": "eedcf76e9d847c3025856717a6e4e75ffc786cc71f586eac52152402ba27f066",
+        "committedReferenceSha256": "b18476028d55e2a545882965a5eb0a46cdafea740daa85fb321e88d9e88a6732",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-3-candidate",
+        "originalSourceSha256": "59944317510d3eec872619c5b295f9df75ebb5b283441b7439124379d84df12e",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "7b92d5067e03e317ebb9bc44bb38a390be2ba1e2a967840b689f05c2daa22404",
+        "committedBrowserCase": "seam-3-candidate",
+        "committedSourceSha256": "bb9304dc3448374af67c5677e6380c17222a0a48d95ab74350d82187e2e92d08",
+        "committedReferenceSha256": "dd3407ef33cbef2fdc7b101d74f8dc46d0ad497bf06f1a123ba713d571b9e94f",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-3-control",
+        "originalSourceSha256": "eedcf76e9d847c3025856717a6e4e75ffc786cc71f586eac52152402ba27f066",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "7b92d5067e03e317ebb9bc44bb38a390be2ba1e2a967840b689f05c2daa22404",
+        "committedBrowserCase": "seam-3-control",
+        "committedSourceSha256": "dc41d77ac5259a33ab9d82fe6594b7a1c32b7e51f5a513a819c81973cea7ebbc",
+        "committedReferenceSha256": "dd3407ef33cbef2fdc7b101d74f8dc46d0ad497bf06f1a123ba713d571b9e94f",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-4-candidate",
+        "originalSourceSha256": "3e5ed3dd43c7a575f3412545a282eaae7199d38be66e34f910946152b0551e3f",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "7ef1ee474eba477e8abfd3f2087fc4815b3068dd43dd459ec617677fe48c2927",
+        "committedBrowserCase": "seam-4-candidate",
+        "committedSourceSha256": "3e5ed3dd43c7a575f3412545a282eaae7199d38be66e34f910946152b0551e3f",
+        "committedReferenceSha256": "69b4b0e4eac0ef670fecfb2cc6e9ab48ae2234c222d09c7d8c18be6a6a510dce",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-4-control",
+        "originalSourceSha256": "a7f2c24a389477023a0c794ab43d9f6f922d82be4fdfc565350a1dcf42b4d28b",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "7ef1ee474eba477e8abfd3f2087fc4815b3068dd43dd459ec617677fe48c2927",
+        "committedBrowserCase": "seam-4-control",
+        "committedSourceSha256": "a7f2c24a389477023a0c794ab43d9f6f922d82be4fdfc565350a1dcf42b4d28b",
+        "committedReferenceSha256": "69b4b0e4eac0ef670fecfb2cc6e9ab48ae2234c222d09c7d8c18be6a6a510dce",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-5-candidate",
+        "originalSourceSha256": "3e5ed3dd43c7a575f3412545a282eaae7199d38be66e34f910946152b0551e3f",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "615892d8e1b2734e2b2c07242220f585b0ee9918393a6daa436b2f83f50ffa2d",
+        "committedBrowserCase": "seam-5-candidate",
+        "committedSourceSha256": "5a8b7c6a122c762748c7d3934ac47c198f309d03d58533a4df4a61af2d9019dc",
+        "committedReferenceSha256": "8d1f6de1737baae6583a761fd35b05a08391b0ddaf29a07733694dfbda82f723",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-5-control",
+        "originalSourceSha256": "a7f2c24a389477023a0c794ab43d9f6f922d82be4fdfc565350a1dcf42b4d28b",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "615892d8e1b2734e2b2c07242220f585b0ee9918393a6daa436b2f83f50ffa2d",
+        "committedBrowserCase": "seam-5-control",
+        "committedSourceSha256": "1544d0049da726164c7cb91635ce6ff1e7184af9dd65fde0d7917e36ace1a35e",
+        "committedReferenceSha256": "8d1f6de1737baae6583a761fd35b05a08391b0ddaf29a07733694dfbda82f723",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-6-candidate",
+        "originalSourceSha256": "9a585a06030a92ff22bd9391d7c36de22f98d561c72f4052952a1f41277ebb8d",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "2826298377263fa2b40bf004e8b2ac0c0f028303016df25d78172b84bb136a00",
+        "committedBrowserCase": "seam-6-candidate",
+        "committedSourceSha256": "9a585a06030a92ff22bd9391d7c36de22f98d561c72f4052952a1f41277ebb8d",
+        "committedReferenceSha256": "058b7917e09151875a1cde6e4ea6fb229eaada7b479a77ffe0a15c12eb6b0d5c",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-6-control",
+        "originalSourceSha256": "5ca62dea98527623f279667f985f0f8a3b3912417080fe4e6197e15d6c062f6f",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "2826298377263fa2b40bf004e8b2ac0c0f028303016df25d78172b84bb136a00",
+        "committedBrowserCase": "seam-6-control",
+        "committedSourceSha256": "5ca62dea98527623f279667f985f0f8a3b3912417080fe4e6197e15d6c062f6f",
+        "committedReferenceSha256": "058b7917e09151875a1cde6e4ea6fb229eaada7b479a77ffe0a15c12eb6b0d5c",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-7-candidate",
+        "originalSourceSha256": "9a585a06030a92ff22bd9391d7c36de22f98d561c72f4052952a1f41277ebb8d",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "1b8d8e525e1265ad76d3c732b7a11690e849c59ee22e3eedea7871a415860fb5",
+        "committedBrowserCase": "seam-7-candidate",
+        "committedSourceSha256": "185fa972040991320e96b2e810d888f3d7fb815cbc446d494b705e62e3f5c91c",
+        "committedReferenceSha256": "3120cf65dd4599b3d8eebb5715730dd40d87da0fb60c823ce429d4fd222ba278",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-7-control",
+        "originalSourceSha256": "5ca62dea98527623f279667f985f0f8a3b3912417080fe4e6197e15d6c062f6f",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "1b8d8e525e1265ad76d3c732b7a11690e849c59ee22e3eedea7871a415860fb5",
+        "committedBrowserCase": "seam-7-control",
+        "committedSourceSha256": "f71c9f567822e23546e0e974b053b15d092978a8dd681e020868f26073b8aa7c",
+        "committedReferenceSha256": "3120cf65dd4599b3d8eebb5715730dd40d87da0fb60c823ce429d4fd222ba278",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-8-candidate",
+        "originalSourceSha256": "3afebf28b306f052ebad831d6aea03a7d3085e8254bc8bfd797fcdeaf747cf10",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "33552021df5da4b5c97addd84fa19a655a8b60a415eb51c8865dfba9005afce4",
+        "committedBrowserCase": "seam-8-candidate",
+        "committedSourceSha256": "3afebf28b306f052ebad831d6aea03a7d3085e8254bc8bfd797fcdeaf747cf10",
+        "committedReferenceSha256": "8ab6c4455dfcca367341001b4026fb2683210f5f1794252fc3e8c5a5b4955aff",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-8-control",
+        "originalSourceSha256": "3d8c14f1b550c40508e45219ab8ee7d32f715df77f11b194b986bd05bc9afccf",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "33552021df5da4b5c97addd84fa19a655a8b60a415eb51c8865dfba9005afce4",
+        "committedBrowserCase": "seam-8-control",
+        "committedSourceSha256": "3d8c14f1b550c40508e45219ab8ee7d32f715df77f11b194b986bd05bc9afccf",
+        "committedReferenceSha256": "8ab6c4455dfcca367341001b4026fb2683210f5f1794252fc3e8c5a5b4955aff",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-9-candidate",
+        "originalSourceSha256": "3afebf28b306f052ebad831d6aea03a7d3085e8254bc8bfd797fcdeaf747cf10",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "ad4888e92b63b9270a30353ed25c56d11c980c9677f2f543240b915281746f39",
+        "committedBrowserCase": "seam-9-candidate",
+        "committedSourceSha256": "24c33935ab5a112c3341112d38b01c10d9a0f07de13ae34d8ffc07a5245f55fb",
+        "committedReferenceSha256": "36024c962b50b15e1624f8aed5a23dbbb608281ef6a47bd21acf4e4cf41eccba",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-9-control",
+        "originalSourceSha256": "3d8c14f1b550c40508e45219ab8ee7d32f715df77f11b194b986bd05bc9afccf",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "ad4888e92b63b9270a30353ed25c56d11c980c9677f2f543240b915281746f39",
+        "committedBrowserCase": "seam-9-control",
+        "committedSourceSha256": "1b77459bfb82f69389d6251f1484665de66b96da977312109b01eb155430d730",
+        "committedReferenceSha256": "36024c962b50b15e1624f8aed5a23dbbb608281ef6a47bd21acf4e4cf41eccba",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-10-candidate",
+        "originalSourceSha256": "8f882da92d73c03316a6613ae47f0351ac817fdbc484639a65180eb39f000c9f",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "4e306bd9d5ec74b4f1ea1154010e4bd109d9178f74cac6ccf7042713339d431e",
+        "committedBrowserCase": "seam-10-candidate",
+        "committedSourceSha256": "8f882da92d73c03316a6613ae47f0351ac817fdbc484639a65180eb39f000c9f",
+        "committedReferenceSha256": "03b1af3c578e58555a2a7a861fbff545524d6bfee2319cc31d7ee63b8231c400",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-10-control",
+        "originalSourceSha256": "f915e727f8e42398967295393b2f6a14e170473800ae2feb458e20f19a833b46",
+        "outputScale": 1,
+        "rejectedOffscreenTargetPngSha256": "4e306bd9d5ec74b4f1ea1154010e4bd109d9178f74cac6ccf7042713339d431e",
+        "committedBrowserCase": "seam-10-control",
+        "committedSourceSha256": "f915e727f8e42398967295393b2f6a14e170473800ae2feb458e20f19a833b46",
+        "committedReferenceSha256": "03b1af3c578e58555a2a7a861fbff545524d6bfee2319cc31d7ee63b8231c400",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-11-candidate",
+        "originalSourceSha256": "8f882da92d73c03316a6613ae47f0351ac817fdbc484639a65180eb39f000c9f",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "4d90655434713e5069255663a30a1aa617ae89e4e6046e6a90dc1a263537dee4",
+        "committedBrowserCase": "seam-11-candidate",
+        "committedSourceSha256": "b933f998812a1c718beba6f75bdfc5d503a1a556d51f9fd1eea59dbbc83afc01",
+        "committedReferenceSha256": "08868901f5ae44078693d25e97c2fa5d7a50d8ea870553198030da282e1dcbaa",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      },
+      {
+        "id": "hairline-edge-11-control",
+        "originalSourceSha256": "f915e727f8e42398967295393b2f6a14e170473800ae2feb458e20f19a833b46",
+        "outputScale": 1.5,
+        "rejectedOffscreenTargetPngSha256": "4d90655434713e5069255663a30a1aa617ae89e4e6046e6a90dc1a263537dee4",
+        "committedBrowserCase": "seam-11-control",
+        "committedSourceSha256": "74734b4f09e08738cd21450693d062c5da3b5fd990bd3e3d6f8f56fb704a1810",
+        "committedReferenceSha256": "08868901f5ae44078693d25e97c2fa5d7a50d8ea870553198030da282e1dcbaa",
+        "sourceNormalization": "Scale 1.5: root width/height 520/64 become 780/96 with viewBox 0 0 520 64; scale 1 source is unchanged.",
+        "bothOriginalOutputsExactAgainstCommittedBrowserReference": true
+      }
+    ],
+    "reason": "The original wide-seam offscreen SVG-image/canvas route differed from independent browser rendering. Its targets remain recorded as rejected observations. All original outputs match the existing committed browser references on both hosts."
+  },
+  "nextAction": "Remove the stale primitive-rectangle fill/stroke placement coupling by reusing retained source lowering. Preserve solid/shader, direct/use/symbol, native stroke, opacity, source clips, refusal and cleanup paths. Verify new admissions against all original and orthogonal controls before promotion."
+}
