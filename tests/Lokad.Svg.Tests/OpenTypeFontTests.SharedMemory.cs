@@ -7,6 +7,65 @@ public sealed partial class OpenTypeFontTests
 {
     public enum GovernedDestination { Owned, Memory, Stream }
 
+    public enum SceneAdmissionPath { Raw, Catalog, Http }
+
+    [Theory]
+    [Trait("Layer", "Contract")]
+    [InlineData(SceneAdmissionPath.Raw)]
+    [InlineData(SceneAdmissionPath.Catalog)]
+    [InlineData(SceneAdmissionPath.Http)]
+    public async Task Unsupported_lowered_scenes_release_owners_and_preserve_diagnostics_and_retry(SceneAdmissionPath path)
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='4' height='4'/><foreignObject id='unsupported'/></svg>"u8.ToArray();
+        byte[] unchanged = input.ToArray();
+        byte[] retryInput = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='4' height='4'/></svg>"u8.ToArray();
+        using TestMemoryBudget host = new(2_000_000);
+        SvgRenderOptions options = SvgRenderOptions.Default.WithMemoryBudget(host);
+        (var catalog, var provider, _) = CreateUnusedFontPack();
+        using HttpFontHandler? handler = path == SceneAdmissionPath.Http
+            ? new((_, _) => throw new InvalidOperationException("Font-free scenes must not acquire HTTP resources.")) : null;
+        using HttpClient? client = handler is {} transport ? new(transport) : null;
+        await using SvgHttpFontPackResolver? resolver = client is {} borrowedClient
+            ? SvgHttpFontPackResolver.Create("test-pack", new("https://fonts.invalid/pack/"), borrowedClient, HttpFontOptions(), host) : null;
+        long retained = host.Reserved;
+        int scenes = 0;
+        using (Lokad.Svg.Parsing.SvgPreparationProbe.Arm(phase =>
+        {
+            if (phase == Lokad.Svg.Parsing.SvgPreparationPhase.Scene) scenes++;
+        }))
+        {
+            SvgException error = await Assert.ThrowsAsync<SvgException>(async () =>
+            {
+                using SvgPngResult result = await Convert(input);
+            });
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+            Assert.Equal("unsupported", error.SourceDiagnostic?.ElementId);
+            Assert.Equal(1, error.SourceDiagnostic?.LineNumber);
+        }
+        Assert.Equal(1, scenes);
+        Assert.Equal(retained, host.Reserved);
+        using (SvgPngResult result = await Convert(retryInput))
+        {
+            Assert.True(result.Memory.Length > 0);
+            Assert.True(host.Reserved > retained);
+        }
+        Assert.Equal(retained, host.Reserved);
+        Assert.False(host.Disposed);
+        Assert.Equal(0, provider.RequestCount);
+        Assert.Equal(0, handler?.Requests ?? 0);
+        Assert.Equal(unchanged, input);
+
+        async Task<SvgPngResult> Convert(byte[] svg)
+        {
+            if (path == SceneAdmissionPath.Raw)
+                return SvgConverter.ConvertToOwnedPng(svg, options, CancellationToken.None);
+            using SvgPreparedDocument document = path == SceneAdmissionPath.Catalog
+                ? await SvgPreparedDocument.CreateAsync(svg, catalog, provider, options, CancellationToken.None)
+                : await SvgPreparedDocument.CreateAsync(svg, resolver ?? throw new InvalidOperationException("Missing HTTP resolver."), options, CancellationToken.None);
+            return document.ConvertToOwnedPng(CancellationToken.None);
+        }
+    }
+
     public static IEnumerable<object[]> GovernedOutputCases()
     {
         foreach (bool prepared in new[] { false, true })

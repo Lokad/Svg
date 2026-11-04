@@ -45,7 +45,7 @@ public sealed class SvgPreparedDocument : IDisposable
             options = preparation.ResolveRasterOptions(options);
             snapshot = await SvgFontSnapshot.CreateAsync(preparation, catalog, provider, options.FontSelectionPolicy, cancellationToken).ConfigureAwait(false);
             SvgRenderOptions preparedOptions = options.WithFontSnapshot(snapshot);
-            root = LowerPrepared(svg, preparedOptions, budget, preparation, cancellationToken);
+            root = SvgConverter.LowerPreparedScene(svg, preparedOptions, budget, preparation, cancellationToken);
             return new(preparedOptions, snapshot, root, budget, execution, null, options.MemoryBudget);
         }
         catch
@@ -104,7 +104,7 @@ public sealed class SvgPreparedDocument : IDisposable
             }
             snapshot.AdoptDiscoveredRequests(preparation);
             SvgRenderOptions preparedOptions = options.WithFontSnapshot(snapshot);
-            root = LowerPrepared(svg, preparedOptions, budget, preparation, cancellationToken);
+            root = SvgConverter.LowerPreparedScene(svg, preparedOptions, budget, preparation, cancellationToken);
             return new(preparedOptions, snapshot, root, budget, execution, sources, memoryBudget);
         }
         catch
@@ -115,17 +115,6 @@ public sealed class SvgPreparedDocument : IDisposable
             sources?.Dispose();
             throw;
         }
-    }
-
-    private static SvgRoot LowerPrepared(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget,
-        SvgDocumentPreparation preparation, CancellationToken token)
-    {
-        SvgAffineTransform outputMap = preparation.GetOutputMap(options);
-        SvgRoot root = SvgRootParser.ParsePrepared(svg, options.Limits, budget, options.FontSnapshot, token,
-            outputMap, options.Viewport, options.OutputScale, preparation);
-        if (!root.HasUnsupportedChild) return root;
-        root.Dispose();
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.", null, root.UnsupportedDiagnostic);
     }
 
     /// <summary>Converts this prepared document once and releases its retained font lease.</summary>
