@@ -4,7 +4,9 @@
 
 - Preserve fragment drawing coordinates and separate physical font/canvas stages
   for text gradients and patterns, fixing stroke repeat edges and transformed color
-  differences while retaining glyph layout.
+  differences while retaining glyph layout. Form physical source rectangles before
+  rotation and compose pattern origins before narrowing to preserve fractional-scale
+  paint bounds.
 - Support supplied text in clip paths through shared shaping and ordered mask
   replay, preserving layout bounds, source opacity, intersections and group isolation.
 - Preserve native rectangle-call and coordinate-buffer boundaries when sampling

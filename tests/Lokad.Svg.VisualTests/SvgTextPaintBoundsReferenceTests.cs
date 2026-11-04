@@ -110,6 +110,14 @@ public sealed class SvgTextPaintBoundsReferenceTests
     public Task Text_fragment_stage_controls_match_independent_vector_drawings(string id)
         => AssertNativeImage("fragment-stages.json", id, false);
 
+    public static IEnumerable<object[]> SourceRectangleCases() => CaptureCases("precision-source-images.json");
+
+    [Theory]
+    [MemberData(nameof(SourceRectangleCases))]
+    [Trait("Layer", "Rendering")]
+    public Task Source_rectangles_and_pattern_origins_retain_each_original_native_image(string id)
+        => AssertNativeImage("precision-source-images.json", id, false);
+
     private static IEnumerable<object[]> CaptureCases(string file)
     {
         using JsonDocument data = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder(), file)));

@@ -4614,11 +4614,14 @@ public static partial class SvgConverter
             if (pattern.VectorContent is not null)
             {
                 float width = (float)coordinates.Width, height = (float)coordinates.Height;
-                SvgShaderMatrix localMap = new((float)shader.A, (float)shader.C, (float)shader.E, (float)shader.B, (float)shader.D, (float)shader.F);
+                // The source tile origin joins the local pattern transform before
+                // native float narrowing; picture-image scale is appended later.
+                SvgAffineTransform patternOrigin = SvgAffineTransform.FromTranslation((float)coordinates.OriginX, (float)coordinates.OriginY);
+                SvgShaderMatrix localMap = SvgShaderMatrix.FromAffine(shader.ComposeChecked(patternOrigin));
                 SvgShaderMatrix drawMap;
                 if (pattern.PaintMatrices is {} stages)
                 {
-                    SvgAffineTransform local = stages.Pattern;
+                    SvgAffineTransform local = stages.Pattern.ComposeChecked(patternOrigin);
                     SvgTextShaderDrawing target = new(stages.Target, SvgAffineTransform.Identity, 1);
                     if (glyphDrawing != SvgTextShaderDrawing.Identity)
                     {
@@ -4644,7 +4647,7 @@ public static partial class SvgConverter
                 if (pixelsX <= 0 || pixelsY <= 0 || pixelsX > options.Limits.MaximumDimension || pixelsY > options.Limits.MaximumDimension)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile dimensions exceed the configured limit.");
                 float tileScaleX = (float)pixelsX / width, tileScaleY = (float)pixelsY / height;
-                SvgShaderMatrix imageLocal = SvgShaderMatrix.Concat(localMap, new(1f / tileScaleX, 0, (float)coordinates.OriginX, 0, 1f / tileScaleY, (float)coordinates.OriginY));
+                SvgShaderMatrix imageLocal = SvgShaderMatrix.Concat(localMap, new(1f / tileScaleX, 0, 0, 0, 1f / tileScaleY, 0));
                 SvgShaderMatrix imageMap = SvgShaderMatrix.Concat(drawMap, imageLocal);
                 if (!imageMap.TryInvert(out _)) return false;
                 mapped = new(default, 0, 0, pixelsX, pixelsY, pattern.Fill, pattern.Opacity, pattern.Stroke)

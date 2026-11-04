@@ -96,7 +96,13 @@ CancellationToken token)
                     map = map with { E = map.E * scale, F = map.F * scale };
                     float inlineWidth = (float)(run.Glyphs[index].Advance * scale);
                     while (sourceFragment + 1 < run.PaintFragments.Length && index >= run.PaintFragments[sourceFragment].End) sourceFragment++;
-                    Include(Fragment(index, index + 1, inlineWidth, default).Map(map, token).Scale(inverseScale, inverseScale), index, sourceFragment);
+                    // Native text forms the physical float rectangle before rotation.
+                    // Moving a glyph-local rectangle afterward loses its corner rounding.
+                    SvgDevicePoint center = map.Apply(run.Glyphs[index].Advance * scale / 2, -run.Glyphs[index].Y * scale);
+                    float cx = (float)center.X, cy = (float)center.Y;
+                    SourceBox fragmentBox = Fragment(index, index + 1, inlineWidth, new(cx, cy));
+                    SvgAffineTransform nativeMap = map.ComposeChecked(SvgAffineTransform.FromTranslation(-cx, -cy));
+                    Include(fragmentBox.Map(nativeMap, token).Scale(inverseScale, inverseScale), index, sourceFragment);
                 }
             }
             else if (!run.PaintFragments.IsEmpty)

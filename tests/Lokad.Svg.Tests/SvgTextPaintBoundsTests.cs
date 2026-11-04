@@ -12,6 +12,29 @@ namespace Lokad.Svg.Tests;
 public sealed partial class SvgTextPaintBoundsTests
 {
     [Fact]
+    [Trait("Layer", "Mechanism")]
+    public async Task Curved_source_boxes_form_physical_float_rectangles_before_rotation()
+    {
+        // Native box triples: release-baselines/fragment-drawing-qualification.json,
+        // remainingBoxDiagnosis. Paint consumers share these source bounds.
+        byte[] input = TextEncoding.UTF8.GetBytes(Document("<defs><path id='baseline' d='M4 36Q70 8 140 36'/></defs>"
+            + "<text xml:space='preserve' font-family='serif' font-size='24' letter-spacing='-.1' text-anchor='end' fill='url(#g)'><textPath href='#baseline' startOffset='90%'>AVj</textPath></text>"));
+        using SvgFontSnapshot snapshot = await CreateSnapshotAsync();
+        RenderBudget budget = new(new HostMemoryBudget(8_000_000));
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
+        {
+            SvgTextLinearShader shader = Assert.IsType<SvgTextLinearShader>(root.Geometries.ToArray()
+                .First(geometry => geometry.Kind == SvgGeometryKind.GlyphContours).Glyph.Shader);
+            SvgGradientTransform box = (shader.Gradient.SourcePaint ?? throw new InvalidDataException("Missing source box.")).Data.Local;
+            double[] expected = OperatingSystem.IsWindows()
+                ? [90.90333557128906, -2.4720852375030518, 43.64524841308594, 40.35708999633789]
+                : [91.88868713378906, -2.301560163497925, 42.65989685058594, 40.18656539916992];
+            Assert.Equal(expected, new[] { box.E, box.F, box.A, box.D });
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Source_paint_boxes_match_native_ink_anchors_positions_spacing_and_font_fragments()
     {
         using SvgFontSnapshot snapshot = await CreateSnapshotAsync();

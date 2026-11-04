@@ -31,8 +31,9 @@ explicit viewports and exact retry pixels. Their 54 named cases use `Layer=Contr
 the existing separate-parser/raster lifetime checks remain independent.
 
 The [text-paint correction](Research/release-baselines/precision-current.md) combines
-direct matrix/paint mechanisms, five original stroke images and three independent
-vector controls. Each image uses one canonical conversion. Separate ownership
+direct matrix/source-box mechanisms, all 39 original images across four banks and
+three independent vector controls. Each image uses one canonical conversion;
+output-density and opacity companions retain distinct interactions. Separate ownership
 checks admit retained drawing stages before contour allocation and verify retry.
 
 The [alpha and gradient layer map](Research/release-baselines/alpha-gradient-responsibilities.json)

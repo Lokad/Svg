@@ -44,7 +44,11 @@ font scale and fragment transform separately before native canvas composition.
 Linear/radial/pattern fills and strokes share these stages; decorations retain
 the logical map, and fitted glyph ink keeps its independent placement.
 [Fragment evidence](../tests/Research/release-baselines/fragment-drawing-qualification.json)
-checks the rounding boundary without changing final sampling or blending. [Repeat evidence](../tests/Research/svgweb/pattern-repeat-addressing.json)
+checks the rounding boundary without changing final sampling or blending.
+Source text boxes form physical float rectangles before mapping their corners.
+Pattern tile origins join the local transform before float narrowing; picture-image
+scale follows it. [Source evidence](../tests/Research/release-baselines/source-paint-qualification.json)
+protects these stages across output densities. [Repeat evidence](../tests/Research/svgweb/pattern-repeat-addressing.json)
 retains direct arithmetic vectors and the original glyph interactions.
 
 Pattern registration, font discovery and resource selection share declaration

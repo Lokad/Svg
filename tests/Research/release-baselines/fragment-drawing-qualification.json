@@ -15,7 +15,7 @@
   "change": "Retain text reference, physical font scale and fragment transform separately, appending native canvas stages before capture placement. Linear/radial/pattern paints and fill/stroke share this value. Layout, shaping, glyph strike/contours, sampling and final rounding retain their existing paths.",
   "ownership": "The immutable drawing value replaces the old affine field: 56 additional bytes are admitted before contour allocation/transform, then transfer with the existing scene reservation. No new owner/cache/recording node; the existing contract refuses 272 bytes and succeeds/cleans up/retries at 328.",
   "beforeReplay": "precision-before-fragment.csv",
-  "currentReplay": "precision-current.csv",
+  "currentReplay": "precision-before-source.csv",
   "closedOriginalInputs": [
     "spacing-paint-430-candidate",
     "spacing-paint-430-control"
@@ -823,5 +823,6 @@
       "reasonRejected": "It closes both remaining original witnesses but loses the previously exact Linux 233 pair at scale 1.5. No scale-specific exception or rounding epsilon is promoted."
     },
     "nextAction": "Represent the physical source rectangle and bounding-box transform consistently across scale 1/1.5, preserving the Linux 233 pair and every existing native numeric/image case. Qualify the shared cause before changing production."
-  }
+  },
+  "followup": "source-paint-qualification.json"
 }

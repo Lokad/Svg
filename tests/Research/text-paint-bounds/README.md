@@ -35,12 +35,15 @@ complete original pairs with 26 canonical rendering cases. These reuse the same
 source and image files. The subsequent [shared paint-stage record](paint-stage-images.json)
 closes two original radial pairs and adds three orthogonal group/use/symbol
 pairs through 10 individual image cases. The [current review](../release-baselines/precision-current.md)
-tracks the two remaining witnesses; all 39 original inputs and targets stay retained. Three fresh, healthy captures per host reproduce every
+closes all 39 original inputs. The [source-rectangle bank](precision-source-images.json)
+protects radial/pattern bounds, output density and opacity through five individual
+canonical conversions. Direct numerical mechanisms own rectangle rounding;
+ownership contracts remain separate. Three fresh, healthy captures per host reproduce every
 original promoted PNG byte. Both font styles, unequal companions, meaningful equal
 scope controls and platform differences remain. The
 [shared pattern correction](../release-baselines/text-pattern-matrices.md) and
 [drawing-stage model](../release-baselines/paint-stages.md) describe the scope;
-remaining differences keep their original independent targets.
+broader text review retains its original independent targets.
 
 [Filter-source images](filter-source-images.json) retain 135 independently captured
 inputs through one canonical conversion path. They cover direct/path text,

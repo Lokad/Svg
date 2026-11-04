@@ -1,0 +1,593 @@
+{
+  "status": "Source-rectangle and pattern-origin milestone passes local full and focused qualification. Matching committed-source packages and CI follow promotion.",
+  "sourceBaseCommit": "98b5b6e4ff02e135e66473d981bc7af5dbfd0c73",
+  "assemblyIdentity": "Worktree libraries carry sourceBaseCommit; LF source hashes bind the changed implementation.",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgTextLayoutBounds.cs": "0a66c47e4143446474b4abca9ffc209bd42dfa8530db9548129857dcb0d90e87",
+    "src/Lokad.Svg/SvgConverter.cs": "afc86d353f5b2aed0c26a1a7e6b92924fb9b0d9b70736e361a53b121332c5c0f"
+  },
+  "librarySha256": {
+    "net11.0": "63914bab5772f1d269e029d7aad3ea0c2fdb4b06944cd6b95666ad1a62ae7613",
+    "net10.0": "43f2593a32b07e5432b06f472d70ea98f9708f10580edb2145d1d7866d5661e5"
+  },
+  "change": "Form the physical float source rectangle before mapping its corners; compose the pattern tile origin in the local double transform before native float narrowing, then append picture-image scale. No output-scale branch, epsilon or sampler change.",
+  "preserved": "Text sizing, shaping, fitted glyph placement, contour ownership, retained drawing stages, budgets, sampling and final alpha rounding keep their existing contracts. No new public API, allocation path or dependency.",
+  "beforeReplay": "precision-before-source.csv",
+  "currentReplay": "precision-current.csv",
+  "originalNativeVerification": "precision-native-verification.json",
+  "originalBoxDiagnosis": "fragment-drawing-qualification.json",
+  "exactOnBothHosts": 39,
+  "remainingOriginalPrecisionInputs": [],
+  "closedOriginalInputs": [
+    "spacing-paint-224-control",
+    "spacing-paint-232-control"
+  ],
+  "previousExactLosses": 0,
+  "changedCandidatePngs": {
+    "windows": [
+      "spacing-paint-224-control"
+    ],
+    "linux": [
+      "spacing-paint-232-control"
+    ]
+  },
+  "canonicalOriginalRegressionBanks": {
+    "spacing-paint-9-candidate": [
+      "paint-stage-images.json"
+    ],
+    "spacing-paint-9-control": [
+      "paint-stage-images.json"
+    ],
+    "spacing-paint-45-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-45-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-47-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-47-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-69-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-69-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-71-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-71-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-117-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-117-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-119-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-119-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-165-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-165-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-167-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-167-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-219-control": [
+      "precision-stroke-images.json"
+    ],
+    "spacing-paint-224-control": [
+      "precision-source-images.json"
+    ],
+    "spacing-paint-232-candidate": [
+      "precision-source-images.json"
+    ],
+    "spacing-paint-232-control": [
+      "precision-source-images.json"
+    ],
+    "spacing-paint-233-candidate": [
+      "precision-source-images.json"
+    ],
+    "spacing-paint-233-control": [
+      "precision-source-images.json"
+    ],
+    "spacing-paint-357-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-357-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-359-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-359-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-421-control": [
+      "paint-stage-images.json"
+    ],
+    "spacing-paint-430-candidate": [
+      "precision-stroke-images.json"
+    ],
+    "spacing-paint-430-control": [
+      "precision-stroke-images.json"
+    ],
+    "spacing-paint-453-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-453-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-455-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-455-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-477-candidate": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-477-control": [
+      "precision-pattern-images.json"
+    ],
+    "spacing-paint-479-candidate": [
+      "precision-stroke-images.json"
+    ],
+    "spacing-paint-479-control": [
+      "precision-stroke-images.json"
+    ]
+  },
+  "failingBefore": [
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "2152d92140eba39fea5becbd07ed10291f9350f823623195032e345ba8761ca9",
+      "testAssemblySha256": "a4b5c656cb66cfadf5691ce854b7e4e3c585ae74441976e5a6e4f082863d2495",
+      "selection": "FullyQualifiedName~Curved_source_boxes_form_physical_float_rectangles_before_rotation",
+      "exitCode": 1,
+      "seconds": 8.182420399971306,
+      "counters": {
+        "executed": "1",
+        "passed": "0",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Curved_source_boxes_form_physical_float_rectangles_before_rotation",
+          "message": "Assert.Equal() Failure: Collections differ\r\n                                                    \u2193 (pos 2)\r\nExpected: [90.903335571289062, -2.4720852375030518, 43.645248413085938, 40.357089996337891]\r\nActual:   [90.903335571289062, -2.4720852375030518, 43.645263671875, 40.357093811035156]\r\n                                                    \u2191 (pos 2)"
+        }
+      ]
+    },
+    {
+      "profile": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "2152d92140eba39fea5becbd07ed10291f9350f823623195032e345ba8761ca9",
+      "testAssemblySha256": "561e1922986beaa409c77dff76ac498a279adfe38807e013ee75a79bfcc3fb53",
+      "selection": "FullyQualifiedName~Source_rectangles_and_pattern_origins_retain_each_original_native_image",
+      "exitCode": 1,
+      "seconds": 7.830119000049308,
+      "counters": {
+        "executed": "5",
+        "passed": "4",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-224-control\")",
+          "message": "spacing-paint-224-control"
+        }
+      ]
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "2152d92140eba39fea5becbd07ed10291f9350f823623195032e345ba8761ca9",
+      "testAssemblySha256": "a4b5c656cb66cfadf5691ce854b7e4e3c585ae74441976e5a6e4f082863d2495",
+      "selection": "FullyQualifiedName~Curved_source_boxes_form_physical_float_rectangles_before_rotation",
+      "exitCode": 1,
+      "seconds": 7.873227000003681,
+      "counters": {
+        "executed": "1",
+        "passed": "0",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Curved_source_boxes_form_physical_float_rectangles_before_rotation",
+          "message": "Assert.Equal() Failure: Collections differ\n                                                    \u2193 (pos 2)\nExpected: [91.888687133789062, -2.3015601634979248, 42.659896850585938, 40.186565399169922]\nActual:   [91.888687133789062, -2.3015601634979248, 42.659912109375, 40.186569213867188]\n                                                    \u2191 (pos 2)"
+        }
+      ]
+    },
+    {
+      "profile": "glibc243",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "2152d92140eba39fea5becbd07ed10291f9350f823623195032e345ba8761ca9",
+      "testAssemblySha256": "561e1922986beaa409c77dff76ac498a279adfe38807e013ee75a79bfcc3fb53",
+      "selection": "FullyQualifiedName~Source_rectangles_and_pattern_origins_retain_each_original_native_image",
+      "exitCode": 1,
+      "seconds": 7.714138499926776,
+      "counters": {
+        "executed": "5",
+        "passed": "4",
+        "failed": "1"
+      },
+      "failures": [
+        {
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-232-control\")",
+          "message": "spacing-paint-232-control"
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "focusedNet11": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "63914bab5772f1d269e029d7aad3ea0c2fdb4b06944cd6b95666ad1a62ae7613",
+        "testAssemblySha256": "a4b5c656cb66cfadf5691ce854b7e4e3c585ae74441976e5a6e4f082863d2495",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~Glyph_drawing_metadata_is_admitted",
+        "exitCode": 0,
+        "seconds": 9.706181099871174,
+        "counters": {
+          "executed": "178",
+          "passed": "178",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "63914bab5772f1d269e029d7aad3ea0c2fdb4b06944cd6b95666ad1a62ae7613",
+        "testAssemblySha256": "561e1922986beaa409c77dff76ac498a279adfe38807e013ee75a79bfcc3fb53",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 15.441108500119299,
+        "counters": {
+          "executed": "582",
+          "passed": "582",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "63914bab5772f1d269e029d7aad3ea0c2fdb4b06944cd6b95666ad1a62ae7613",
+        "testAssemblySha256": "a4b5c656cb66cfadf5691ce854b7e4e3c585ae74441976e5a6e4f082863d2495",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~Glyph_drawing_metadata_is_admitted",
+        "exitCode": 0,
+        "seconds": 15.191772399935871,
+        "counters": {
+          "executed": "178",
+          "passed": "178",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "63914bab5772f1d269e029d7aad3ea0c2fdb4b06944cd6b95666ad1a62ae7613",
+        "testAssemblySha256": "561e1922986beaa409c77dff76ac498a279adfe38807e013ee75a79bfcc3fb53",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 21.311216099886224,
+        "counters": {
+          "executed": "582",
+          "passed": "582",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "focusedNet10": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "43f2593a32b07e5432b06f472d70ea98f9708f10580edb2145d1d7866d5661e5",
+        "testAssemblySha256": "54eb0be352184bb754ad5f0cc09dbcab05d51dcb92c4a336269f328eaa4d2042",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~Glyph_drawing_metadata_is_admitted",
+        "exitCode": 0,
+        "seconds": 9.47626330005005,
+        "counters": {
+          "executed": "178",
+          "passed": "178",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "43f2593a32b07e5432b06f472d70ea98f9708f10580edb2145d1d7866d5661e5",
+        "testAssemblySha256": "593e60b63135d53c91db82b6b33c4424efc18e680d3854ae5639ded5dd5d3ccb",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 18.662481100065634,
+        "counters": {
+          "executed": "582",
+          "passed": "582",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "43f2593a32b07e5432b06f472d70ea98f9708f10580edb2145d1d7866d5661e5",
+        "testAssemblySha256": "54eb0be352184bb754ad5f0cc09dbcab05d51dcb92c4a336269f328eaa4d2042",
+        "selection": "FullyQualifiedName~Curved_glyph_fill_and_stroke_retain|FullyQualifiedName~SvgTextPaintMatrixTests|FullyQualifiedName~SvgTextPaintBoundsTests|FullyQualifiedName~SvgTextNodeMetricsTests|FullyQualifiedName~SvgTextStrokeTests|FullyQualifiedName~SvgTextPathTests|FullyQualifiedName~Glyph_drawing_metadata_is_admitted",
+        "exitCode": 0,
+        "seconds": 14.475848000030965,
+        "counters": {
+          "executed": "178",
+          "passed": "178",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "43f2593a32b07e5432b06f472d70ea98f9708f10580edb2145d1d7866d5661e5",
+        "testAssemblySha256": "593e60b63135d53c91db82b6b33c4424efc18e680d3854ae5639ded5dd5d3ccb",
+        "selection": "FullyQualifiedName~SvgTextPaintBoundsReferenceTests|FullyQualifiedName~SvgOriginalTextAcceptanceTests|FullyQualifiedName~RasterCaptureContractTests",
+        "exitCode": 0,
+        "seconds": 26.146250399993733,
+        "counters": {
+          "executed": "582",
+          "passed": "582",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "fullNet11": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "63914bab5772f1d269e029d7aad3ea0c2fdb4b06944cd6b95666ad1a62ae7613",
+        "testAssemblySha256": "a4b5c656cb66cfadf5691ce854b7e4e3c585ae74441976e5a6e4f082863d2495",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 54.98031149990857,
+        "counters": {
+          "executed": "47550",
+          "passed": "47550",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "63914bab5772f1d269e029d7aad3ea0c2fdb4b06944cd6b95666ad1a62ae7613",
+        "testAssemblySha256": "a4b5c656cb66cfadf5691ce854b7e4e3c585ae74441976e5a6e4f082863d2495",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 60.04668579995632,
+        "counters": {
+          "executed": "47550",
+          "passed": "47550",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "63914bab5772f1d269e029d7aad3ea0c2fdb4b06944cd6b95666ad1a62ae7613",
+        "testAssemblySha256": "561e1922986beaa409c77dff76ac498a279adfe38807e013ee75a79bfcc3fb53",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 61.74910519993864,
+        "counters": {
+          "executed": "46706",
+          "passed": "46705",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "profile": "glibc243",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "63914bab5772f1d269e029d7aad3ea0c2fdb4b06944cd6b95666ad1a62ae7613",
+        "testAssemblySha256": "561e1922986beaa409c77dff76ac498a279adfe38807e013ee75a79bfcc3fb53",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 171.6779354000464,
+        "counters": {
+          "executed": "46706",
+          "passed": "46706",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "testIdentityAudit": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "previousCases": 47549,
+      "currentCases": 47550,
+      "removedOrRenamedCases": 0,
+      "addedCases": [
+        {
+          "id": "7e7008c9-6b35-37d9-5555-20597795db08",
+          "name": "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Curved_source_boxes_form_physical_float_rectangles_before_rotation"
+        }
+      ]
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "previousCases": 46701,
+      "currentCases": 46706,
+      "removedOrRenamedCases": 0,
+      "addedCases": [
+        {
+          "id": "367c894e-7c7b-e4a8-4b7c-6d5a6225fc29",
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-232-candidate\")"
+        },
+        {
+          "id": "3b969bf4-b332-44b7-02b5-f2500afa373a",
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-232-control\")"
+        },
+        {
+          "id": "077cd2df-e2f9-0802-b499-5046b187932b",
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-233-candidate\")"
+        },
+        {
+          "id": "eef38998-13d7-fd5e-393f-5675a948d178",
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-233-control\")"
+        },
+        {
+          "id": "db8850d3-32d9-82e8-ffe1-a035fb3ceb8b",
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-224-control\")"
+        }
+      ]
+    },
+    {
+      "host": "glibc243",
+      "kind": "core",
+      "previousCases": 47549,
+      "currentCases": 47550,
+      "removedOrRenamedCases": 0,
+      "addedCases": [
+        {
+          "id": "7e7008c9-6b35-37d9-5555-20597795db08",
+          "name": "Lokad.Svg.Tests.SvgTextPaintBoundsTests.Curved_source_boxes_form_physical_float_rectangles_before_rotation"
+        }
+      ]
+    },
+    {
+      "host": "glibc243",
+      "kind": "visual",
+      "previousCases": 46701,
+      "currentCases": 46706,
+      "removedOrRenamedCases": 0,
+      "addedCases": [
+        {
+          "id": "eef38998-13d7-fd5e-393f-5675a948d178",
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-233-control\")"
+        },
+        {
+          "id": "077cd2df-e2f9-0802-b499-5046b187932b",
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-233-candidate\")"
+        },
+        {
+          "id": "367c894e-7c7b-e4a8-4b7c-6d5a6225fc29",
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-232-candidate\")"
+        },
+        {
+          "id": "db8850d3-32d9-82e8-ffe1-a035fb3ceb8b",
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-224-control\")"
+        },
+        {
+          "id": "3b969bf4-b332-44b7-02b5-f2500afa373a",
+          "name": "Lokad.Svg.VisualTests.SvgTextPaintBoundsReferenceTests.Source_rectangles_and_pattern_origins_retain_each_original_native_image(id: \"spacing-paint-232-control\")"
+        }
+      ]
+    }
+  ],
+  "originals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 102.19334560004063,
+    "librarySha256": "63914bab5772f1d269e029d7aad3ea0c2fdb4b06944cd6b95666ad1a62ae7613",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "outcomesOptionsDimensionsAndDiagnosticsUnchanged": true
+  },
+  "suppliedProgramContexts": {
+    "originals": 19,
+    "additionalNoto": 2,
+    "originalXmlNoto": 1,
+    "unchangedQualifiedPngsOnBothHosts": true
+  },
+  "declaredStaticDiagnostics": {
+    "cases": 13,
+    "exactOnBothHosts": true,
+    "seconds": 19.896596299950033
+  },
+  "referenceFilesChanged": 0,
+  "hostedSvgBodiesRetained": 0,
+  "rawSourceAttributeValuesRetained": 0,
+  "build": "Release solution and explicit .NET 10 test builds pass with zero warnings/errors. Benchmark project is compiled only.",
+  "timingScope": "Single functional validation observations; no renderer-performance or speedup claim. Broader text, shader and decoration review remains open.",
+  "solutionBuildLibrarySha256": {
+    "net11.0": "08c531d4cdf2c1a90faffc70fdf2e211b204240dae45402152d36c557c935835",
+    "net10.0": "6ce646d284508e89b604b635b54dadaae1894b344a6f1b2a2caaac3d91169331"
+  },
+  "buildIdentityNote": "ContinuousIntegrationBuild=true normalizes build paths and changes binary identity without source changes; matching committed-source packages are qualified separately.",
+  "upstreamObservations": [
+    {
+      "url": "https://www.w3.org/TR/SVG2/pservers.html#Patterns",
+      "purpose": "Pattern coordinate-system and origin composition semantics."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/layout/inline/fragment_item.cc",
+      "purpose": "Physical source rectangle before mapped corner bounds; existing source-box provenance is retained."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/layout/svg/layout_svg_resource_pattern.cc",
+      "sha256": "6a5e43914b085c7a613618c37dbf8d8371ff036f36f18cd41e3a7aca275c1cd1",
+      "purpose": "Observed tile-origin translation before float narrowing; standard affine composition implemented in the existing mapping path."
+    }
+  ]
+}
