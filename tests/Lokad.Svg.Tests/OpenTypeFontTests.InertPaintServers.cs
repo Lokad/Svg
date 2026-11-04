@@ -40,14 +40,14 @@ public sealed partial class OpenTypeFontTests
         => AssertInertPaintPrepared(SvgInertPaintTests.TemplateInput(server, fill, objectBox, consumer, forward, map, effects, "none"), SvgInertPaintTests.TemplateInput(server, fill, objectBox, consumer, forward, map, effects, "url(#e)"));
 
     [Theory]
-    [Trait("Layer", "Research")]
+    [Trait("Layer", "Contract")]
     [Trait("Category", "Research")]
     [MemberData(nameof(InertPaintServerContracts), true)]
     public Task Inert_paint_servers_extended_prepared_equivalence(string server, string shape, bool fill, string context, string paint)
         => AssertInertPaintPrepared(SvgInertPaintTests.PaintInput(server, shape, fill, context, paint, "none"), SvgInertPaintTests.PaintInput(server, shape, fill, context, paint, "url(#e)"));
 
     [Theory]
-    [Trait("Layer", "Research")]
+    [Trait("Layer", "Contract")]
     [Trait("Category", "Research")]
     [MemberData(nameof(InertTemplateContracts), true)]
     public Task Inert_template_paints_extended_prepared_equivalence(string server, bool fill, bool objectBox, string consumer, bool forward, string map, string effects)

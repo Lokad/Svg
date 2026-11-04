@@ -3,9 +3,10 @@
 Production admission changes retain their [contract map](parser-validation.md).
 The suite uses complementary layers; class names alone do not classify every case.
 Classified cases use `Mechanism`, `Contract`, `Rendering` and `Integrity`; former
-plural spellings are normalized without changing cases. The current metadata
-inventory still finds two legacy `Layer=Research` prepared-replay methods and
-unclassified methods; layer-only selection does not replace affected/full coverage.
+plural spellings are normalized without changing cases. The [selection qualification](test-selection.json)
+keeps Research on the separate category axis and the background native witness in
+the rendering class. Unclassified methods remain; layer-only selection does not
+replace affected/full coverage.
 The explicit `Category=Research` selection remains independent of the layer.
 
 | Responsibility | Retained coverage |
@@ -204,6 +205,11 @@ API/budget/codec checks pass on all runtime/host combinations. Both solution
 builds are warning-free; unchanged inputs/references and opaque/transparent
 controls preserve the existing rendering baseline.
 
+The full-canvas translucent-source witness belongs to
+[root rendering](../../Lokad.Svg.Tests/SvgRootRenderingTests.cs). Its method body,
+frozen pixel assertion and explicit .NET 10 CI selection are preserved; the
+[selection map](test-selection.json) records its former public-contract class.
+
 ## Core pixel helpers and allocation contracts
 
 The source before this pass is `e13932150`. The eight core clip/curve/mask/polygon/
@@ -284,6 +290,9 @@ rotated map, plus every map/effect on the direct object-box route. Thus shared
 preparation and resource replay stay covered without requiring the full product
 for every development check. Remaining combinations are ordinary individually
 discovered `Category=Research` cases; unfiltered qualification includes all of them.
+Both prepared subsets use `Layer=Contract`; the 2,658 extended cases retain their
+Research category, bodies and data providers. Fast layer checks explicitly exclude
+Research, including the 300 pattern contracts previously selected incidentally.
 The .NET 10 CI compatibility selection keeps the routine contracts, while full
 .NET 10 release checks also include research.
 

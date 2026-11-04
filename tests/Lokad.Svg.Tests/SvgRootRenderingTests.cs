@@ -9,6 +9,16 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgRootRenderingTests
 {
     [Fact]
+    public void Canvas_background_survives_a_full_canvas_translucent_source()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' style='background-color:red'><rect width='1' height='1' fill='rgba(0,0,255,.5)'/></svg>"u8.ToArray();
+        byte[] pixels = SvgRasterTestHelper.RenderPixels(input, SvgRenderOptions.Default, out int width, out int height);
+        Assert.Equal((1, 1), (width, height));
+        // Six fresh native captures: Research/svgweb/root-canvas-background.json.
+        Assert.Equal(new byte[] { 127, 0, 128, 255 }, pixels);
+    }
+
+    [Fact]
     public void Group_wrapped_definitions_convert_without_painting_their_content()
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g><defs><g><rect width='5' height='5' fill='red'/></g></defs></g></svg>"u8.ToArray();

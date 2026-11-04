@@ -32,6 +32,8 @@ shutdown and asynchronous output contracts to source and installed-package evide
 37 native rendering inputs from seven routine and 30 extended output matrices.
 [Raster ownership setup](raster-ownership.json) shares the parse-once lifetime
 across 28 contracts while retaining all 42 affected cases and distinct allowances.
+[Test selection](test-selection.json) separates Research from responsibility layers
+and preserves the relocated background witness, full cases and .NET 10 selection.
 [Blur image identity](blur-image-identity.json) shares one cutoff across bounds,
 aliases and playback while keeping copying pixel kernels distinct from image aliases.
 [Original R86 hairlines](r86-hairline-qualification.json) close 800 geometry and200

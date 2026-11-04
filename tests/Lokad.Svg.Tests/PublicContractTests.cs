@@ -649,17 +649,6 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    [Trait("Layer", "Rendering")]
-    public void Canvas_background_survives_a_full_canvas_translucent_source()
-    {
-        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' style='background-color:red'><rect width='1' height='1' fill='rgba(0,0,255,.5)'/></svg>"u8.ToArray();
-        byte[] pixels = SvgRasterTestHelper.RenderPixels(input, SvgRenderOptions.Default, out int width, out int height);
-        Assert.Equal((1, 1), (width, height));
-        // Six fresh native captures: Research/svgweb/root-canvas-background.json.
-        Assert.Equal(new byte[] { 127, 0, 128, 255 }, pixels);
-    }
-
-    [Fact]
     public void Empty_explicitly_sized_svg_returns_png_bytes()
     {
         ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);

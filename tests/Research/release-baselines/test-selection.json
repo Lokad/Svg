@@ -1,0 +1,84 @@
+{
+  "status": "Selection-axis correction and native-witness relocation locally qualified; source bodies, data providers, assertions and full case coverage remain unchanged.",
+  "baseCommit": "835940c6b",
+  "sourceLfSha256": {
+    "tests/Lokad.Svg.Tests/OpenTypeFontTests.InertPaintServers.cs": "b6c603ef6f094836ec2440c3eb5e9fb2c88b8bc0b8cb8d854180b2f8ddaa02db",
+    "tests/Lokad.Svg.Tests/PublicContractTests.cs": "32a1736acdc8624c4624122ee1bd1543a7f963176da003ff2bdd308969fc39fa",
+    "tests/Lokad.Svg.Tests/SvgRootRenderingTests.cs": "575d6ce45524b059caaf5df71688f5c263d48046b8545f861b64c5120b9c3839",
+    ".github/workflows/ci.yml": "fffbdf23ed34e8c5c314d55ba1316e131fb3b27c69091ccabc3cabb49c194280",
+    "tests/README.md": "61908b01a872dca54cd9a816e081d5139f855118849acc8adbc82482ac1fcb3c"
+  },
+  "runtimeQualification": "blur-image-identity.json",
+  "librarySha256": {
+    "net11.0": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+    "net10.0": "68ad89871daa75dbe1b5d48992885f3878e4a9499377cadc5b72b09cde60fe8a"
+  },
+  "coverage": {
+    "affectedCasesPerHostAndFramework": 7554,
+    "nativeBackgroundCasesPerHostAndFramework": 7,
+    "extendedPreparedContracts": {
+      "paint": 1818,
+      "template": 840,
+      "layer": "Contract",
+      "category": "Research",
+      "allBodiesAndDataProvidersUnchanged": true
+    },
+    "relocatedNativeWitness": {
+      "previous": "Lokad.Svg.Tests.PublicContractTests.Canvas_background_survives_a_full_canvas_translucent_source",
+      "current": "Lokad.Svg.Tests.SvgRootRenderingTests.Canvas_background_survives_a_full_canvas_translucent_source",
+      "methodBodyLfSha256": "7204624420306564243cfeb024932252b632887ddc857961191ec6b4068e5ca4",
+      "allAssertionsUnchanged": true,
+      "net10CiSelectionExplicitlyPreserved": true
+    },
+    "caseIdentities": [
+      {
+        "host": "windows",
+        "normalizedAffectedNamesLfSha256": "273e74a9339e1efd6726d344aca3b3e07daff9d0c77b031810f51eb2156b371a",
+        "fastNamesLfSha256": "b1f474bad18275eecb86fbd896920e3d323c86ad4382f0f6eb1bd69fda2768a3"
+      },
+      {
+        "host": "linux",
+        "normalizedAffectedNamesLfSha256": "273e74a9339e1efd6726d344aca3b3e07daff9d0c77b031810f51eb2156b371a",
+        "fastNamesLfSha256": "b8efa527f5a92f8372474550ab324e09bdd6b10d8f564daceef76bf43fbc38be"
+      }
+    ],
+    "testCasesRemoved": 0,
+    "productionChanges": 0,
+    "nativeTargetsChanged": 0
+  },
+  "fastDevelopment": {
+    "previousFilter": "Layer=Mechanism|Layer=Contract",
+    "currentFilter": "(Layer=Mechanism|Layer=Contract)&Category!=Research",
+    "previousCases": 19250,
+    "currentCases": 18949,
+    "previousResearchCasesNowExcluded": 300,
+    "nativeWitnessMovedToRendering": 1,
+    "fullQualificationIncludesAllCases": true
+  },
+  "timing": {
+    "protocol": "One fresh sequential .NET11 test process per host before/after, unchanged package assets; actual documented fast filters. Wall time includes discovery/host/TRX and excludes build. No other validation overlaps these observations.",
+    "observations": [
+      {
+        "host": "windows",
+        "beforeSeconds": 33.48974890005775,
+        "afterSeconds": 29.816979199880734
+      },
+      {
+        "host": "linux",
+        "beforeSeconds": 29.143503400031477,
+        "afterSeconds": 27.1389693999663
+      }
+    ],
+    "conclusion": "Small functional observations, not a reliable speedup or renderer/quiet-VM performance claim."
+  },
+  "inventory": {
+    "coreMethodDefinitions": 4644,
+    "visualMethodDefinitions": 430,
+    "coreWithoutLayer": 1955,
+    "visualWithoutLayer": 288,
+    "legacyLayerValues": 0,
+    "overlappingLayerValues": 0,
+    "scope": "Ordinary Fact/Theory method definitions; theory data is not expanded for metadata counts. Unclassified methods still require affected/full validation."
+  },
+  "next": "Continue measured classification and shared clip/mask/marker/text bounds review; this selection correction does not close P2 or broader correctness requirements."
+}

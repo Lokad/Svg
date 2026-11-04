@@ -20,7 +20,10 @@ fails qualification. Existing sources, references and assertions stay intact.
 | Contract | Distinct execution, allocation and ownership paths: the [96-case API matrix](Lokad.Svg.Tests/SvgConversionApiContractTests.cs), [shared admission](Lokad.Svg.Tests/OpenTypeFontTests.SharedMemory.cs), retained font/scene data, cancellation, refusal, cleanup and retry. |
 | Rendering | Each source/options/platform case keeps its independent native image. The [paint bank](Lokad.Svg.VisualTests/SvgPaintInputReferenceTests.cs) compares production capture pixels directly; selected complete PNG cases retain transport interactions. |
 | Integrity | Manifest identities, hashes, capture context, licensing, corpus partition and provenance. Existing combined fixtures retain these assertions until their responsibilities are separated. |
-| Research | Extended numerical-context products remain individually selectable with `Category=Research` and run in full qualification. Former failing interactions remain routine. |
+
+Research is a separate category, independent of layer. Extended numerical-context
+products remain individually selectable with `Category=Research` and run in full
+qualification; former failing interactions remain routine.
 
 Bank ownership cases can share [asset loading and lifecycle assertions](Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs)
 while retaining separate names, inputs and allocation paths. Add one representative
@@ -399,7 +402,7 @@ acceptance inputs without loading fonts. The [acceptance map](Research/release-b
 keeps their native, acquisition and explicit-exclusion responsibilities separate.
 The [case map](Research/release-baselines/test-responsibilities.md#pattern-source-and-target-selection)
 explains the routine prepared subset and extended `Category=Research` companions.
-Use `FullyQualifiedName~OpenTypeFontTests&Layer=Mechanism` for direct font work;
+Use `FullyQualifiedName~OpenTypeFontTests&Layer=Mechanism&Category!=Research` for direct font work;
 include contract/rendering siblings when changing shared font preparation or fixtures.
 `FullyQualifiedName~LatinLightHintingTests` selects direct light-fitting topology,
 alignment, rounding and scratch-lifetime checks. The
@@ -429,7 +432,7 @@ no check relies on implicit major-version roll-forward. After a Release build:
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgRootParserTests
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgAlphaBoundaryMechanismTests
 dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter FullyQualifiedName~SvgInertPaintTests
-dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter 'Layer=Mechanism|Layer=Contract'
+dotnet test tests/Lokad.Svg.Tests -c Release --no-build --filter '(Layer=Mechanism|Layer=Contract)&Category!=Research'
 dotnet test tests/Lokad.Svg.VisualTests -c Release --no-build --filter 'FullyQualifiedName~SvgPaintInputReferenceTests&Layer=Rendering&Category!=Research'
 ```
 
