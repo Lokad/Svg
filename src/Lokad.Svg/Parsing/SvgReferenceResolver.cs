@@ -8,6 +8,7 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgRecordedTransform? RecordingTransform { get; init; }
     internal SvgSourceContext? SourceContext { get; init; }
     internal SvgTextMetricScope TextMetrics { get; init; }
+    internal SvgTextPaintPurpose TextPurpose { get; init; }
     /// <summary>Retains a source-less effect owner; Id is unused and must never enter resource lookup.</summary>
     internal bool IsSourceAbsent { get; init; }
     /// <summary>Records the absence of an instance opacity layer, using the validated source value rather than its rounded alpha byte.</summary>

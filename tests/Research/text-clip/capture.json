@@ -1,0 +1,1202 @@
+{
+  "width": 80,
+  "height": 80,
+  "recipeRevision": 3,
+  "font": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "nativeRecipe": {
+    "browserVersion": "153.0.8010.52",
+    "driverRecipeRevision": 3,
+    "physicalViewport": [
+      80,
+      80
+    ],
+    "logicalViewport": [
+      80,
+      80
+    ],
+    "background": "transparent",
+    "nativeFontStyle": "@font-face{font-family:DiagnosticNoto;font-style:normal;font-weight:1 1000;src:url(data:font/ttf;base64,{fontBase64})}svg{font-synthesis:none}",
+    "fontInsertion": "Insert the style element immediately after the first <defs>; substitute the committed font bytes encoded as base64 with no line wrapping. Leave every non-font SVG node/attribute unchanged.",
+    "hosts": {
+      "windows": "Pinned Windows Chrome executable, one fresh default-sandbox process per capture.",
+      "linux": "Pinned Linux Chrome in the Ubuntu26 glibc2.43 bwrap overlay, /proc and /dev supplied, one fresh default-sandbox process per capture."
+    }
+  },
+  "cases": [
+    {
+      "id": "identity",
+      "input": "../mask-text-recording/clip-research/identity-clip.svg",
+      "inputSha256": "6769a8d81c84377f17e37826b97b1882ad0e342bd25ad168eee959240b01ce0a",
+      "nativeInputSha256": "bd546f4f54ab72b86d154e86d9d6141a30e9ed304c60ea84b66c0160464a5bb5",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/identity-clip.png",
+          "referenceSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1889,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2076,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2004,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/identity-clip.png",
+          "referenceSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6966,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5408,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5280,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fractional-origin",
+      "input": "../mask-text-recording/clip-research/fractional-origin-clip.svg",
+      "inputSha256": "c46f3cceb48af7d33d744b842e3fa2130d3582c2334ba95bba1eab26ffa67f19",
+      "nativeInputSha256": "ba63ef76f5eca7a142bab1fc6fcb121e1be0830c34b13a593d00f8fef06c7505",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/fractional-origin-clip.png",
+          "referenceSha256": "dce078f707e07c100b48e28f552acfcbb0a2e241f9df28003a9c153974c07860",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "dce078f707e07c100b48e28f552acfcbb0a2e241f9df28003a9c153974c07860",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1887,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "dce078f707e07c100b48e28f552acfcbb0a2e241f9df28003a9c153974c07860",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1981,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "dce078f707e07c100b48e28f552acfcbb0a2e241f9df28003a9c153974c07860",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1963,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/fractional-origin-clip.png",
+          "referenceSha256": "b3f6aaed0f018a8e98116690bfc4208dd5feac57e6a71c9e83d851587383b0d8",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "b3f6aaed0f018a8e98116690bfc4208dd5feac57e6a71c9e83d851587383b0d8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5696,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b3f6aaed0f018a8e98116690bfc4208dd5feac57e6a71c9e83d851587383b0d8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5788,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b3f6aaed0f018a8e98116690bfc4208dd5feac57e6a71c9e83d851587383b0d8",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4884,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "consumer-scale",
+      "input": "../mask-text-recording/clip-research/consumer-scale-clip.svg",
+      "inputSha256": "dcdaa7f919a53387d768b66e2da0ac3d8564312c4c5de6e04ff0ba50ecdd95ab",
+      "nativeInputSha256": "df67779c431d5c51f5da273f9e32124b487005cbf76bec25ba8c2109e97b40b4",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/consumer-scale-clip.png",
+          "referenceSha256": "b225cc7130b8c7e4301bbb78d137c6d79abc17b83235a70096ce281c16f4aba0",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "b225cc7130b8c7e4301bbb78d137c6d79abc17b83235a70096ce281c16f4aba0",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1858,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b225cc7130b8c7e4301bbb78d137c6d79abc17b83235a70096ce281c16f4aba0",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1861,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b225cc7130b8c7e4301bbb78d137c6d79abc17b83235a70096ce281c16f4aba0",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1863,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/consumer-scale-clip.png",
+          "referenceSha256": "57ac5f0aa453fb90f96b9951c6ebefe24ec334f1b933ae3d9a0cab444d7920b9",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "57ac5f0aa453fb90f96b9951c6ebefe24ec334f1b933ae3d9a0cab444d7920b9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6010,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "57ac5f0aa453fb90f96b9951c6ebefe24ec334f1b933ae3d9a0cab444d7920b9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5719,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "57ac5f0aa453fb90f96b9951c6ebefe24ec334f1b933ae3d9a0cab444d7920b9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4605,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "consumer-affine",
+      "input": "../mask-text-recording/clip-research/consumer-affine-clip.svg",
+      "inputSha256": "edbb1b1bbd5639aa23e58283ce3b8b0b4ab8f4cdda604f6040a9750bfa9f0126",
+      "nativeInputSha256": "3f6ab16ffa6e9e50ea7686a5b8a7f7b3c192cd6263fc9c3a773b2574f212f32f",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/consumer-affine-clip.png",
+          "referenceSha256": "58e6e5da5ac7d1cfe0b51d8ca9a05ddd34420a600d9e1cf3a1fbb30b15119236",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "58e6e5da5ac7d1cfe0b51d8ca9a05ddd34420a600d9e1cf3a1fbb30b15119236",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1884,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "58e6e5da5ac7d1cfe0b51d8ca9a05ddd34420a600d9e1cf3a1fbb30b15119236",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1849,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "58e6e5da5ac7d1cfe0b51d8ca9a05ddd34420a600d9e1cf3a1fbb30b15119236",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1861,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/consumer-affine-clip.png",
+          "referenceSha256": "651b92c053ca64e0f30d42a4e2bc1ddcdf6f5b943f3f389a611dac5b6924bb12",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "651b92c053ca64e0f30d42a4e2bc1ddcdf6f5b943f3f389a611dac5b6924bb12",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5649,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "651b92c053ca64e0f30d42a4e2bc1ddcdf6f5b943f3f389a611dac5b6924bb12",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5875,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "651b92c053ca64e0f30d42a4e2bc1ddcdf6f5b943f3f389a611dac5b6924bb12",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5519,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "child-affine",
+      "input": "../mask-text-recording/clip-research/child-affine-clip.svg",
+      "inputSha256": "5ed605786bfa5892615945c9f5222738811aba6520ad64ebc547c48e62c0a917",
+      "nativeInputSha256": "cd9a6618819e5f9b8ddf505b0c82b000f876095c606058c5de4de28a87830495",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/child-affine-clip.png",
+          "referenceSha256": "b02b0d9cfdd02e718306b1c3e016a8ef3dcfbf32c0f67c7438e49c2d4f02f142",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "b02b0d9cfdd02e718306b1c3e016a8ef3dcfbf32c0f67c7438e49c2d4f02f142",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2122,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b02b0d9cfdd02e718306b1c3e016a8ef3dcfbf32c0f67c7438e49c2d4f02f142",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2003,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b02b0d9cfdd02e718306b1c3e016a8ef3dcfbf32c0f67c7438e49c2d4f02f142",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2003,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/child-affine-clip.png",
+          "referenceSha256": "54e856f6832d186b97b7169cb2fd023a7bbe68715dafdcd81736607586e48b58",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "54e856f6832d186b97b7169cb2fd023a7bbe68715dafdcd81736607586e48b58",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5938,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "54e856f6832d186b97b7169cb2fd023a7bbe68715dafdcd81736607586e48b58",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5640,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "54e856f6832d186b97b7169cb2fd023a7bbe68715dafdcd81736607586e48b58",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5309,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "object-box",
+      "input": "../mask-text-recording/clip-research/object-box-clip.svg",
+      "inputSha256": "9e26511d6d3887be2aac36599b274cb525bd9872dfd1dc5ce284a739c71f6bcb",
+      "nativeInputSha256": "dc80fb3441ba2b4c18bf25f9ab5c5e793320ba6f9fb45f7affe74abcb96600a8",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/object-box-clip.png",
+          "referenceSha256": "11cb31cc71e76c4724e40bcc3b4764a3a4f304324ce908dede78290e0b3da6f2",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "11cb31cc71e76c4724e40bcc3b4764a3a4f304324ce908dede78290e0b3da6f2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1979,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "11cb31cc71e76c4724e40bcc3b4764a3a4f304324ce908dede78290e0b3da6f2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1877,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "11cb31cc71e76c4724e40bcc3b4764a3a4f304324ce908dede78290e0b3da6f2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2007,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/object-box-clip.png",
+          "referenceSha256": "73fdf4288fd1deaa0337c380f6cccffb66bb50881b43440a4e45d2c8e4fdb00f",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "73fdf4288fd1deaa0337c380f6cccffb66bb50881b43440a4e45d2c8e4fdb00f",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5854,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "73fdf4288fd1deaa0337c380f6cccffb66bb50881b43440a4e45d2c8e4fdb00f",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6196,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "73fdf4288fd1deaa0337c380f6cccffb66bb50881b43440a4e45d2c8e4fdb00f",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4152,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "nonzero-opacity",
+      "input": "../mask-text-recording/clip-research/nonzero-opacity-clip.svg",
+      "inputSha256": "e006b3b364dad9f1e3590bc4d6c74188600fd9ce3f623f42e28835757dd237f1",
+      "nativeInputSha256": "ae4a195ab935e7731544b28ca146041fa9fa61a65316d155d084864a4ab5cc11",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/nonzero-opacity-clip.png",
+          "referenceSha256": "fc6448eb69ea091f9bc4cf0f00b65a56acef5ff6bb604322bcff8cbd45916a61",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "fc6448eb69ea091f9bc4cf0f00b65a56acef5ff6bb604322bcff8cbd45916a61",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1893,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "fc6448eb69ea091f9bc4cf0f00b65a56acef5ff6bb604322bcff8cbd45916a61",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1971,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "fc6448eb69ea091f9bc4cf0f00b65a56acef5ff6bb604322bcff8cbd45916a61",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1914,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/nonzero-opacity-clip.png",
+          "referenceSha256": "b06db44c0a579b4ece5b86463f38f0b2363a345d25971e20fe8eed7861281f66",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "b06db44c0a579b4ece5b86463f38f0b2363a345d25971e20fe8eed7861281f66",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6099,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b06db44c0a579b4ece5b86463f38f0b2363a345d25971e20fe8eed7861281f66",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6164,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b06db44c0a579b4ece5b86463f38f0b2363a345d25971e20fe8eed7861281f66",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4536,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "span-paint",
+      "input": "../mask-text-recording/clip-research/span-paint-clip.svg",
+      "inputSha256": "e34c3e84cbd6c2fc97fb36dd666d7a8bbb4f8a17bca6318224313e251ae99225",
+      "nativeInputSha256": "302e11151401704e31e7a1b64982f01531ca9e52165f6048d2640ff2e5e553a5",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/span-paint-clip.png",
+          "referenceSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1926,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1882,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1914,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/span-paint-clip.png",
+          "referenceSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6051,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5653,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4365,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "positioned-span",
+      "input": "../mask-text-recording/clip-research/positioned-span-clip.svg",
+      "inputSha256": "cdc9099a38bf8795ae5623f83c8ce4a4df40f0bd6e412944dcfa54d2f06ce5e0",
+      "nativeInputSha256": "a6c15752da9c05b6a0e62933d2f00d4a61c6ba3f7a5725038469dbafa68854d2",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/positioned-span-clip.png",
+          "referenceSha256": "005238d19b75784eb2f2933766c5f0e7f87aa3ebf7c5ae8add1e5d5940ce429d",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "005238d19b75784eb2f2933766c5f0e7f87aa3ebf7c5ae8add1e5d5940ce429d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1799,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "005238d19b75784eb2f2933766c5f0e7f87aa3ebf7c5ae8add1e5d5940ce429d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1837,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "005238d19b75784eb2f2933766c5f0e7f87aa3ebf7c5ae8add1e5d5940ce429d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1817,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/positioned-span-clip.png",
+          "referenceSha256": "b887b61cf94dee3e7c82af42a8e4722d4709f4f169a2dc2b412e457937cd081b",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "b887b61cf94dee3e7c82af42a8e4722d4709f4f169a2dc2b412e457937cd081b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5490,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b887b61cf94dee3e7c82af42a8e4722d4709f4f169a2dc2b412e457937cd081b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5491,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "b887b61cf94dee3e7c82af42a8e4722d4709f4f169a2dc2b412e457937cd081b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4614,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "length-adjust",
+      "input": "../mask-text-recording/clip-research/length-adjust-clip.svg",
+      "inputSha256": "5857fc6b30fd3374a504fbba9f1afe14be2e5c8f092d20a1295571a5d9883ca7",
+      "nativeInputSha256": "33118a3a3eb5dc7c6f7e1ad52754cf17bc458f8931eb3d57b2c4fcd4a773ec45",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/length-adjust-clip.png",
+          "referenceSha256": "371445b1085dcb56a108e38087de73d01629ba1a4530cd0b9ea77867d242ade9",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "371445b1085dcb56a108e38087de73d01629ba1a4530cd0b9ea77867d242ade9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1847,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "371445b1085dcb56a108e38087de73d01629ba1a4530cd0b9ea77867d242ade9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1835,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "371445b1085dcb56a108e38087de73d01629ba1a4530cd0b9ea77867d242ade9",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1961,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/length-adjust-clip.png",
+          "referenceSha256": "ac5cd06af62fdecd10990665550cd5d5787dab8677c062334ea142ab12745da0",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "ac5cd06af62fdecd10990665550cd5d5787dab8677c062334ea142ab12745da0",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5889,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ac5cd06af62fdecd10990665550cd5d5787dab8677c062334ea142ab12745da0",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6225,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ac5cd06af62fdecd10990665550cd5d5787dab8677c062334ea142ab12745da0",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5581,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "mixed-children",
+      "input": "../mask-text-recording/clip-research/mixed-children-clip.svg",
+      "inputSha256": "63f79011bcab0abbe425e9ccfdb7b2dd8ef71b38e0285fe01df278733bef8b4e",
+      "nativeInputSha256": "eb39833d4caa75b4d05701ed6b10e8e7ab2c651b41041a76c99678c88676cad6",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/mixed-children-clip.png",
+          "referenceSha256": "e5c09338209872dd9f0c014089dc1a3753258b33242684df5321a7ecfc335a3a",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "e5c09338209872dd9f0c014089dc1a3753258b33242684df5321a7ecfc335a3a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1894,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e5c09338209872dd9f0c014089dc1a3753258b33242684df5321a7ecfc335a3a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1895,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "e5c09338209872dd9f0c014089dc1a3753258b33242684df5321a7ecfc335a3a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2104,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/mixed-children-clip.png",
+          "referenceSha256": "520943e4d4c4e38f6dbf2360e92d759ce9e3fc2b683e3eb1023665ad91a076e7",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "520943e4d4c4e38f6dbf2360e92d759ce9e3fc2b683e3eb1023665ad91a076e7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6243,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "520943e4d4c4e38f6dbf2360e92d759ce9e3fc2b683e3eb1023665ad91a076e7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2021,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "520943e4d4c4e38f6dbf2360e92d759ce9e3fc2b683e3eb1023665ad91a076e7",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2020,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "child-intersection",
+      "input": "../mask-text-recording/clip-research/child-intersection-clip.svg",
+      "inputSha256": "8d8741a7ca3e08fc82bf2b50c6807593bb3d9002892409c39db5451d2a68aec5",
+      "nativeInputSha256": "856be14071c7934b4a4107736f52343c10a8f480f9aa24043c91a54763df467c",
+      "platforms": {
+        "windows": {
+          "reference": "../mask-text-recording/clip-research/windows/child-intersection-clip.png",
+          "referenceSha256": "ff190b10e38908256b12a894b3835776362e60c9aa421e0999156a7ebb1677cb",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "ff190b10e38908256b12a894b3835776362e60c9aa421e0999156a7ebb1677cb",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2062,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ff190b10e38908256b12a894b3835776362e60c9aa421e0999156a7ebb1677cb",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2090,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "ff190b10e38908256b12a894b3835776362e60c9aa421e0999156a7ebb1677cb",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2180,
+              "terminalExitCode": 0
+            }
+          ]
+        },
+        "linux": {
+          "reference": "../mask-text-recording/clip-research/linux/child-intersection-clip.png",
+          "referenceSha256": "5fb9416b8c87a7892fd8f0027fc61b25630d26d44da126c4e0c9e3c7ff07286a",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "5fb9416b8c87a7892fd8f0027fc61b25630d26d44da126c4e0c9e3c7ff07286a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5030,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5fb9416b8c87a7892fd8f0027fc61b25630d26d44da126c4e0c9e3c7ff07286a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1986,
+              "terminalExitCode": 0
+            },
+            {
+              "pngSha256": "5fb9416b8c87a7892fd8f0027fc61b25630d26d44da126c4e0c9e3c7ff07286a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4425,
+              "terminalExitCode": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "inherited-font",
+      "input": "inherited-font.svg",
+      "inputSha256": "0f1475b030ce73077ca9e18f6bcca26911dce860e3d7c2f70b7c0e50c30a5c18",
+      "nativeInputSha256": "8561cf7e1727de4311a44ebb203019ba51148ce3cdc38d72317831ceb78b7777",
+      "platforms": {
+        "windows": {
+          "reference": "windows/inherited-font.png",
+          "referenceSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1876
+            },
+            {
+              "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1866
+            },
+            {
+              "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1905
+            }
+          ]
+        },
+        "linux": {
+          "reference": "linux/inherited-font.png",
+          "referenceSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5620
+            },
+            {
+              "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4133
+            },
+            {
+              "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4710
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "decorations",
+      "input": "decorations.svg",
+      "inputSha256": "af5ca133c95e0574327c138868b3a717180cb6de89371157361cae7c4485645e",
+      "nativeInputSha256": "9a4a517a83fe34666a9518f1b43370c30c771c88011d318b912d114d232fda54",
+      "platforms": {
+        "windows": {
+          "reference": "windows/decorations.png",
+          "referenceSha256": "e7e6ea0151e3d3d4ab4129fb42212a01082a35ee06b24eef3b0f222957ab8e87",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "e7e6ea0151e3d3d4ab4129fb42212a01082a35ee06b24eef3b0f222957ab8e87",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1876
+            },
+            {
+              "pngSha256": "e7e6ea0151e3d3d4ab4129fb42212a01082a35ee06b24eef3b0f222957ab8e87",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1817
+            },
+            {
+              "pngSha256": "e7e6ea0151e3d3d4ab4129fb42212a01082a35ee06b24eef3b0f222957ab8e87",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1872
+            }
+          ]
+        },
+        "linux": {
+          "reference": "linux/decorations.png",
+          "referenceSha256": "d3b3a4a9fb643aa66d5561f5e91d8a934d4bf836503d2aa38af60b3d32b0f44b",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "d3b3a4a9fb643aa66d5561f5e91d8a934d4bf836503d2aa38af60b3d32b0f44b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5692
+            },
+            {
+              "pngSha256": "d3b3a4a9fb643aa66d5561f5e91d8a934d4bf836503d2aa38af60b3d32b0f44b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4758
+            },
+            {
+              "pngSha256": "d3b3a4a9fb643aa66d5561f5e91d8a934d4bf836503d2aa38af60b3d32b0f44b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5161
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "referenced-opacity",
+      "input": "referenced-opacity.svg",
+      "inputSha256": "af74133a3f1e83922ab69ba58aa2ab6a9993d3cd335923c9ed4a9f67f8d75460",
+      "nativeInputSha256": "755cae7d015e33d8003f4f0286bf242ea2db03477a3c45196145c96ce3af4c22",
+      "platforms": {
+        "windows": {
+          "reference": "windows/referenced-opacity.png",
+          "referenceSha256": "c226bc8f8621320da5462c007b4410c9ee17bb8aa7f9fa0369f74e598b7acb0d",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "c226bc8f8621320da5462c007b4410c9ee17bb8aa7f9fa0369f74e598b7acb0d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1909
+            },
+            {
+              "pngSha256": "c226bc8f8621320da5462c007b4410c9ee17bb8aa7f9fa0369f74e598b7acb0d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1888
+            },
+            {
+              "pngSha256": "c226bc8f8621320da5462c007b4410c9ee17bb8aa7f9fa0369f74e598b7acb0d",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1853
+            }
+          ]
+        },
+        "linux": {
+          "reference": "linux/referenced-opacity.png",
+          "referenceSha256": "6bb917bf6d06ace34a64ea4cf53b4d5ab777bf4eef50a6ef04795776f9fda3da",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "6bb917bf6d06ace34a64ea4cf53b4d5ab777bf4eef50a6ef04795776f9fda3da",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5318
+            },
+            {
+              "pngSha256": "6bb917bf6d06ace34a64ea4cf53b4d5ab777bf4eef50a6ef04795776f9fda3da",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5067
+            },
+            {
+              "pngSha256": "6bb917bf6d06ace34a64ea4cf53b4d5ab777bf4eef50a6ef04795776f9fda3da",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4975
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "mixed-opacity",
+      "input": "mixed-opacity.svg",
+      "inputSha256": "deb2f394cd2c8aba1be77c9313e3291f0308c9dc00459477c4d899f47be14cf4",
+      "nativeInputSha256": "0aa33c2777e43d1e43d88c8c26f33e2b39b3132423a406a2902c167758f48def",
+      "platforms": {
+        "windows": {
+          "reference": "windows/mixed-opacity.png",
+          "referenceSha256": "6dd517f218de6239434d7774142799b0852885859d6148adfa9faa79adf6dcd2",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "6dd517f218de6239434d7774142799b0852885859d6148adfa9faa79adf6dcd2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1971
+            },
+            {
+              "pngSha256": "6dd517f218de6239434d7774142799b0852885859d6148adfa9faa79adf6dcd2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1860
+            },
+            {
+              "pngSha256": "6dd517f218de6239434d7774142799b0852885859d6148adfa9faa79adf6dcd2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1853
+            }
+          ]
+        },
+        "linux": {
+          "reference": "linux/mixed-opacity.png",
+          "referenceSha256": "6dd517f218de6239434d7774142799b0852885859d6148adfa9faa79adf6dcd2",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "6dd517f218de6239434d7774142799b0852885859d6148adfa9faa79adf6dcd2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5204
+            },
+            {
+              "pngSha256": "6dd517f218de6239434d7774142799b0852885859d6148adfa9faa79adf6dcd2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5798
+            },
+            {
+              "pngSha256": "6dd517f218de6239434d7774142799b0852885859d6148adfa9faa79adf6dcd2",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4723
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "mixed-opacity-affine",
+      "input": "mixed-opacity-affine.svg",
+      "inputSha256": "b7cc31c78f2059db1dd4f4c0fdd904e2e57c9873b53692da3989e6eebc7583b4",
+      "nativeInputSha256": "0328e528f3217756a90df51af0382db19c10dc99b300321e46caa3d7aa3acc10",
+      "platforms": {
+        "windows": {
+          "reference": "windows/mixed-opacity-affine.png",
+          "referenceSha256": "d36eb9c2bae11fb12b65f938cfe55435ee131f838b72bbabce683437f2732f8e",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "d36eb9c2bae11fb12b65f938cfe55435ee131f838b72bbabce683437f2732f8e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1930
+            },
+            {
+              "pngSha256": "d36eb9c2bae11fb12b65f938cfe55435ee131f838b72bbabce683437f2732f8e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2361
+            },
+            {
+              "pngSha256": "d36eb9c2bae11fb12b65f938cfe55435ee131f838b72bbabce683437f2732f8e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2403
+            }
+          ]
+        },
+        "linux": {
+          "reference": "linux/mixed-opacity-affine.png",
+          "referenceSha256": "d36eb9c2bae11fb12b65f938cfe55435ee131f838b72bbabce683437f2732f8e",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "d36eb9c2bae11fb12b65f938cfe55435ee131f838b72bbabce683437f2732f8e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 10230
+            },
+            {
+              "pngSha256": "d36eb9c2bae11fb12b65f938cfe55435ee131f838b72bbabce683437f2732f8e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6303
+            },
+            {
+              "pngSha256": "d36eb9c2bae11fb12b65f938cfe55435ee131f838b72bbabce683437f2732f8e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6840
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "group-consumer",
+      "input": "group-consumer.svg",
+      "inputSha256": "6bff19d8447d17b78bc059699200b0dca367f767aa8fc0abffafcf98781509c3",
+      "nativeInputSha256": "6f82df72c331dd0bba239c01ac5457ebd8b6676bb9d773645365b477d1266dac",
+      "platforms": {
+        "windows": {
+          "reference": "windows/group-consumer.png",
+          "referenceSha256": "0104443917ca783178d101eaaf853c77e66ec60f080b255974e7b0e1efdf0faf",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "0104443917ca783178d101eaaf853c77e66ec60f080b255974e7b0e1efdf0faf",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2249
+            },
+            {
+              "pngSha256": "0104443917ca783178d101eaaf853c77e66ec60f080b255974e7b0e1efdf0faf",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2231
+            },
+            {
+              "pngSha256": "0104443917ca783178d101eaaf853c77e66ec60f080b255974e7b0e1efdf0faf",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 2310
+            }
+          ]
+        },
+        "linux": {
+          "reference": "linux/group-consumer.png",
+          "referenceSha256": "9aaf613fd3b9a41c90ac7deeb7207f3c789eeb5e04fed83691ce7d799e13258a",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "9aaf613fd3b9a41c90ac7deeb7207f3c789eeb5e04fed83691ce7d799e13258a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 9396
+            },
+            {
+              "pngSha256": "9aaf613fd3b9a41c90ac7deeb7207f3c789eeb5e04fed83691ce7d799e13258a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 7791
+            },
+            {
+              "pngSha256": "9aaf613fd3b9a41c90ac7deeb7207f3c789eeb5e04fed83691ce7d799e13258a",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6225
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "referenced-geometry-opacity",
+      "input": "referenced-geometry-opacity.svg",
+      "inputSha256": "8926a6f32c4f8e543e8b11a8d4bba63a7c91c782441078653cc2a21342680493",
+      "nativeInputSha256": "72fd31ab89befd978a296da8b4fb8ab21496e0e830829da1d4ece4a1d382e3bd",
+      "platforms": {
+        "windows": {
+          "reference": "windows/referenced-geometry-opacity.png",
+          "referenceSha256": "82371ff1f3d409b557770e73d14985b54b6ca8294e2aa9d2278b0974c4fe767b",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "82371ff1f3d409b557770e73d14985b54b6ca8294e2aa9d2278b0974c4fe767b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1890
+            },
+            {
+              "pngSha256": "82371ff1f3d409b557770e73d14985b54b6ca8294e2aa9d2278b0974c4fe767b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1946
+            },
+            {
+              "pngSha256": "82371ff1f3d409b557770e73d14985b54b6ca8294e2aa9d2278b0974c4fe767b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 1952
+            }
+          ]
+        },
+        "linux": {
+          "reference": "linux/referenced-geometry-opacity.png",
+          "referenceSha256": "82371ff1f3d409b557770e73d14985b54b6ca8294e2aa9d2278b0974c4fe767b",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "82371ff1f3d409b557770e73d14985b54b6ca8294e2aa9d2278b0974c4fe767b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 6432
+            },
+            {
+              "pngSha256": "82371ff1f3d409b557770e73d14985b54b6ca8294e2aa9d2278b0974c4fe767b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 4606
+            },
+            {
+              "pngSha256": "82371ff1f3d409b557770e73d14985b54b6ca8294e2aa9d2278b0974c4fe767b",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "milliseconds": 5332
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

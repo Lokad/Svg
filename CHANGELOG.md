@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Support supplied text in clip paths through shared shaping and ordered mask
+  replay, preserving layout bounds, source opacity, intersections and group isolation.
 - Preserve native rectangle-call and coordinate-buffer boundaries when sampling
   embedded PNGs, including fractional edge rows and bitmap clips.
 - Construct culled dashes in their owning bitmap before thin-stroke or outline

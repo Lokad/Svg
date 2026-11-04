@@ -462,7 +462,7 @@ internal static class SvgLeafMaskComposition
                 }
                 if (operation.NativeClip is {} nativeClip && operation.ContentIndex < 0)
                 {
-                    if (!state.ClipPolygons.TryGetValue(nativeClip.Id, out SvgClipPolygon content))
+                    if (!state.ClipContents.TryGetValue(nativeClip.Id, out SvgClipContent content))
                         throw new InvalidOperationException("Retained native clip content is missing.");
                     if (operation.RegionKind == SvgLayerRegionKind.Mask && content.HasIntersections)
                     {

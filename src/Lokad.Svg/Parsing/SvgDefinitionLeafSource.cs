@@ -143,7 +143,7 @@ CancellationToken token, string? constructedFillRule, bool unconstructed, SvgSol
     /// <remarks>The result owns its geometry and borrows document strings. Visual bounds retain cascaded
     /// stroke presentation separately from opaque fill coverage; the caller applies visibility after geometry admission. Existing leaf lowerers share the document
     /// budget, cancellation and source operands; failure releases their partial owners. Replay is parser-thread confined.</remarks>
-    internal (SvgDefinition Definition, float BoundsInflation) LowerClip(SvgUseReference reference, SvgDocumentState state)
+    internal (SvgDefinition Definition, float BoundsInflation, SvgPaintOpacity SourceOpacity) LowerClip(SvgUseReference reference, SvgDocumentState state)
     {
         _attribute = -1;
         SvgComputedStyle visualStyle = reference.InheritedStroke.ApplyTo(_authored);
@@ -158,7 +158,7 @@ CancellationToken token, string? constructedFillRule, bool unconstructed, SvgSol
                 Opacity = "1", ComputedOpacity = null, Display = "inline", Visibility = "visible",
                 Filter = "none", MarkerStart = "none", MarkerMid = "none", MarkerEnd = "none" }
         };
-        return (SvgDefinitionParser.LowerInstanceSource(this, context, state, false), inflation);
+        return (SvgDefinitionParser.LowerInstanceSource(this, context, state, false), inflation, _authored.ResolveOpacity(reference.ElementParentOpacity).GetOpacity());
     }
 
     /// <summary>Replays a referenced image through ordinary decoding/placement with the complete instance map.</summary>

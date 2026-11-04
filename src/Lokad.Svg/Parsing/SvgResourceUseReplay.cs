@@ -59,15 +59,47 @@ internal static class SvgResourceUseReplay
                 token.ThrowIfCancellationRequested();
                 state.ClipIsObjectBoundingBox = definition.IsObjectBoundingBox;
                 state.ClipResourceClipId = definition.ResourceClipId;
+                bool hasText = false;
+                for (int index = definition.FirstSource; index < definition.FirstSource + definition.SourceCount; index++)
+                {
+                    token.ThrowIfCancellationRequested();
+                    SvgClipDefinitionSource source = sources[index];
+                    hasText |= source.Kind == SvgClipDefinitionSourceKind.Text && source.Text.Contributes
+                        || source.Kind == SvgClipDefinitionSourceKind.Use
+                            && SvgReferenceResolver.TryGetDefinition(source.Use.Reference, state.Definitions, out SvgDefinition target)
+                            && target.TextSource is not null && source.Use.Reference.IsDisplayed && target.SourceDisplayed
+                            && (target.SourceVisible ?? source.Use.Reference.IsVisible);
+                }
+                if (hasText)
+                {
+                    for (int index = definition.FirstSource; index < definition.FirstSource + definition.SourceCount; index++)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        SvgClipDefinitionSource source = sources[index];
+                        if (source.Kind != SvgClipDefinitionSourceKind.Use) continue;
+                        if (SvgReferenceResolver.TryGetDefinition(source.Use.Reference, state.Definitions, out SvgDefinition target)
+                            && target.TextSource is not null) continue;
+                        SvgClipContent? geometry = LowerReferencedClip(source.Use, state, token);
+                        sources[index] = geometry is {} value ? new(value) : default;
+                    }
+                    state.ClipContents.Replace(definition.Id, new([], [])
+                    {
+                        PictureSources = new(definition.Id, definition.FirstSource, definition.SourceCount),
+                        UsesMaskFallback = true, IsObjectBoundingBox = definition.IsObjectBoundingBox,
+                        ResourceClipId = definition.ResourceClipId
+                    });
+                    continue;
+                }
                 for (int index = definition.FirstSource; index < definition.FirstSource + definition.SourceCount; index++)
                 {
                     token.ThrowIfCancellationRequested();
                     SvgClipDefinitionSource source = sources[index];
                     sources[index] = default;
-                    SvgClipPolygon? child = source.Kind switch
+                    SvgClipContent? child = source.Kind switch
                     {
                         SvgClipDefinitionSourceKind.Geometry => source.Geometry,
                         SvgClipDefinitionSourceKind.Use => LowerReferencedClip(source.Use, state, token),
+                        SvgClipDefinitionSourceKind.Text => null,
                         _ => throw new InvalidOperationException("A deferred clip source was already consumed.")
                     };
                     if (child is {} geometry) SvgClipDefinitionStaging.AppendClipChild(geometry, 0, state, token);
@@ -81,8 +113,8 @@ internal static class SvgResourceUseReplay
                 }
                 else
                 {
-                    SvgClipPolygon polygon = SvgClipDefinitionStaging.Complete(state, token);
-                    state.ClipPolygons.Replace(definition.Id, polygon);
+                    SvgClipContent polygon = SvgClipDefinitionStaging.Complete(state, token);
+                    state.ClipContents.Replace(definition.Id, polygon);
                 }
                 // Registered dictionaries now own the completed path; the next
                 // definition starts with independent parser staging.
@@ -100,12 +132,13 @@ internal static class SvgResourceUseReplay
             state.ClipResourceClipId = previousResourceClip;
         }
 
-        static SvgClipPolygon? LowerReferencedClip(SvgResourceUse use, SvgDocumentState state, CancellationToken token)
+        static SvgClipContent? LowerReferencedClip(SvgResourceUse use, SvgDocumentState state, CancellationToken token)
         {
             if (state.GroupSnapshots.TryGetValue(use.Reference.Id, out _)
                 || state.RenderedGroupDefinitions.TryGetValue(use.Reference.Id, out _)) return null;
             if (!SvgReferenceResolver.TryGetDefinition(use.Reference, state.Definitions, out SvgDefinition source))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local geometry references in resource content are implemented.");
+            if (source.TextSource is not null) return null;
             if (source.StrokeContent is not null || source.SymbolContent is not null || source.RenderedGroupId is not null)
             {
                 // Container references contribute no clip contour, including a one-child group.
@@ -114,13 +147,15 @@ internal static class SvgResourceUseReplay
             SvgUseReference reference = use.Reference with
             {
                 FillOverride = new(new(new(255, 255, 255, 255), 1), true, SvgPaintOpacity.Opaque, new(new(255, 255, 255, 255), 1), false),
-                PaintServerId = null, PaintServerFill = null, StrokeOverride = null, Opacity = 255
+                PaintServerId = null, PaintServerFill = null, StrokeOverride = null, Opacity = 255, IsPainted = true
             };
             SvgGeometry[] mapped;
             float boundsInflation = 0;
+            SvgPaintOpacity sourceOpacity = SvgPaintOpacity.Opaque;
             if (source.LeafSource is {} leaf)
             {
-                (SvgDefinition silhouette, float inflation) = leaf.LowerClip(reference, state);
+                (SvgDefinition silhouette, float inflation, SvgPaintOpacity opacity) = leaf.LowerClip(reference, state);
+                sourceOpacity = opacity;
                 try { mapped = SvgReferenceResolver.Apply(silhouette, reference, null, state, token); }
                 finally { foreach (SvgGeometry geometry in silhouette.Geometries) geometry.Dispose(); }
                 boundsInflation = inflation;
@@ -153,7 +188,7 @@ internal static class SvgResourceUseReplay
                 state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry));
                 SvgDevicePoint[] copy = new SvgDevicePoint[points.Length];
                 for (int point = 0; point < points.Length; point++) { token.ThrowIfCancellationRequested(); copy[point] = points[point]; }
-                SvgClipPolygon polygon = new(copy, [copy.Length]) { IsEvenOdd = use.IsEvenOdd, IsObjectBoundingBox = state.ClipIsObjectBoundingBox,
+                SvgClipContent polygon = new(copy, [copy.Length]) { SourceOpacity = sourceOpacity, InstanceOpacity = use.Reference.SourceOpacity, IsEvenOdd = use.IsEvenOdd, IsObjectBoundingBox = state.ClipIsObjectBoundingBox,
                     ChildClip = use.ClipId is {} clipId ? new(clipId, SvgReferenceResolver.PlainInstancePlacement(reference, null)) : null };
                 SvgAuthoredPath? copied = path?.Copy(SvgAffineTransform.Identity, state.Budget, token);
                 // Referenced contours retain the same authored construction as

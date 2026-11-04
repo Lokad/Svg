@@ -106,9 +106,7 @@ internal static class SvgMaskSyntax
         string? reference = SvgLocalUrl.ReadReference(reader, "mask");
         if (reference is null) return null;
         string id = ParseMaskId(reference);
-        SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
-        if (!context.InheritedPresentation.IsDisplayed || style.GetDisplay() == SvgDisplay.None
-            || !HasPaintableTarget(reader, SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible), style.Filter)) return null;
+        if (!context.HasPaintableResourceTarget(reader)) return null;
         return IsDisabled(id, state) ? null : state.Strings.Copy(id);
     }
 
@@ -354,7 +352,7 @@ internal static class SvgMaskSyntax
                 bool scalar = state.Masks.TryGetValue(pending.MaskId, out byte value);
                 if (!scalar && !state.MaskContents.TryGetValue(pending.MaskId, out _))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-                if (!pending.HasOwnFilter && !HasSource(state, pending, cancellationToken))
+                if (!pending.HasOwnFilter && !SvgPaintRecording.HasPaintableSource(state, pending.FirstCommandIndex, pending.EndCommandIndex, cancellationToken))
                 {
                     RewriteGroupMaskScope(state, pending, cancellationToken, 0, null, -1);
                     continue;
@@ -405,39 +403,6 @@ internal static class SvgMaskSyntax
                 RewriteGroupMaskScope(state, pending, cancellationToken, value, maskRegion, -1);
             }
             finally { state.DefinitionReplayScene = previous; }
-        }
-
-        static bool HasSource(SvgDocumentState state, PendingGroupMask pending, CancellationToken token)
-        {
-            bool source = false, paint = false;
-            for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
-            {
-                token.ThrowIfCancellationRequested();
-                SvgDrawCommand command = state.Scene.CommandAt(index);
-                if (command.Kind == SvgDrawCommandKind.BeginGroup && command.RegionKind == SvgLayerRegionKind.Filter) paint = true;
-                if (command.Kind != SvgDrawCommandKind.Geometry) continue;
-                SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
-                if (geometry.Kind == SvgGeometryKind.Invalid) continue;
-                SvgRecordedPaintValue recorded = state.Scene.GetRecordedPaintValue(geometry.RecordedPaint);
-                source |= !recorded.IsEffectAnchor || recorded.ObjectBounds is not null;
-                paint |= !recorded.IsEffectAnchor && geometry.Kind switch
-                {
-                    SvgGeometryKind.Rectangle => geometry.Rectangle.HasFill || geometry.Rectangle.Stroke is not null,
-                    SvgGeometryKind.OrthogonalBand => geometry.Rectangle.HasFill,
-                    SvgGeometryKind.AxisAlignedLine => geometry.AxisAlignedLine.IsPainted,
-                    SvgGeometryKind.PolygonFill => geometry.Polygon.HasFill,
-                    SvgGeometryKind.GradientPolygon => geometry.GradientPolygon.HasFill,
-                    SvgGeometryKind.RadialPolygon => geometry.RadialPolygon.HasFill,
-                    SvgGeometryKind.PatternPolygon => geometry.PatternPolygon.HasFill,
-                    SvgGeometryKind.GradientFill => geometry.Gradient.Fill.HasFill || geometry.Gradient.Stroke is not null,
-                    SvgGeometryKind.RadialGradient => geometry.Radial.Fill.HasFill || geometry.Radial.Stroke is not null,
-                    SvgGeometryKind.PatternFill => geometry.Pattern.Fill.HasFill || geometry.Pattern.Fill.Stroke is not null,
-                    SvgGeometryKind.GradientStroke => geometry.GradientStroke.Fill.HasFill || geometry.GradientStroke.HasStroke,
-                    _ => true,
-                };
-                if (source && paint) return true;
-            }
-            return false;
         }
 
         static bool GroupCovered(SvgDocumentState state, PendingGroupMask pending, SvgClipBox content, CancellationToken cancellationToken)

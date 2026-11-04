@@ -98,21 +98,21 @@ internal struct SvgObjectBoundingClip
         return operation;
     }
 
-    internal SvgLeafMaskOperation Register(SvgClipPolygon content, SvgDocumentState state, CancellationToken token)
+    internal SvgLeafMaskOperation Register(SvgClipContent content, SvgDocumentState state, CancellationToken token)
         => Register(content, null, state, token);
 
     /// <summary>Retains the mapped native resource when source geometry may transfer to another scene.</summary>
     /// <remarks>A null id registers immediately in the active owner. Otherwise emission registers the
     /// borrowed document resource in the final geometry owner, avoiding scene-local content indices
     /// crossing a source transfer. Bounds, empty targets, work and cancellation use the same route.</remarks>
-    internal SvgLeafMaskOperation Register(SvgClipPolygon content, string? nativeId, SvgDocumentState state, CancellationToken token)
+    internal SvgLeafMaskOperation Register(SvgClipContent content, string? nativeId, SvgDocumentState state, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         if (content.HasIntersections)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box nested resource clips are not implemented.");
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Resolved = true;
-        if (!_hasGeometry || _right <= _left || _bottom <= _top || content.Points.Length == 0)
+        if (!_hasGeometry || _right <= _left || _bottom <= _top || content.IsEmpty)
         {
             operation.Value = 0;
             return operation;

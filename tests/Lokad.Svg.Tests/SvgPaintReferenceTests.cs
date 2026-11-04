@@ -49,7 +49,7 @@ public sealed class SvgPaintReferenceTests
             SvgPaintResourceSelection? resources = preparation.GetPaintResources();
             Assert.NotNull(resources);
             SvgTextPaintStyle parent = SvgTextPaintStyle.ResolveElement(default(SvgComputedStyle) with { Fill = "none" },
-                SvgPaint.Default, true, true, null, resources).ResolveResources(resources, true, false);
+                SvgPaint.Default, true, true, null, resources, SvgTextPaintPurpose.Paint).ResolveResources(resources, true, false);
             SvgTextPaintStyle span = SvgTextPaintStyle.ResolveSpan(default(SvgComputedStyle) with { Fill = "url(#g) blue" }, parent);
             Assert.True(span.GlyphPaint.HasFill);
             Assert.Equal("url(#g) blue", span.GlyphPaint.FillServer);

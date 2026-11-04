@@ -176,7 +176,7 @@ internal sealed class SvgFilterArena : IDisposable
             {
                 if (state.ObjectClips.TryGetValue(id, out SvgClipBox fractions))
                     clip = SvgLeafMaskComposition.NewBinding(state, TargetBounds().Register(fractions, state, _token), null);
-                else if (state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon) && polygon.IsObjectBoundingBox)
+                else if (state.ClipContents.TryGetValue(id, out SvgClipContent polygon) && polygon.IsObjectBoundingBox)
                     clip = SvgLeafMaskComposition.NewBinding(state, TargetBounds().Register(polygon, state, _token), null);
                 else clip = SvgClipPathSyntax.BindResourceClip(id, binding.Transform, null, state, _token);
             }

@@ -516,6 +516,54 @@ CancellationToken token)
             state.Scene.ChangeRecordedPaint(geometry.RecordedStrokePaint, state.Scene.GetRecordedPaintValue(geometry.RecordedStrokePaint) with { ElementOpacity = SvgPaintOpacity.Opaque });
     }
 
+    /// <summary>Inspects a borrowed scene range for source objects and paint without materializing its resources.</summary>
+    /// <remarks>Shared by deferred mask/clip admission. The scan preserves empty-source filter semantics,
+    /// ignores zero-opacity scopes, observes cancellation and retains no owner or mutable traversal state.</remarks>
+    internal static bool HasPaintableSource(SvgDocumentState state, int firstCommand, int endCommand, CancellationToken token)
+    {
+        bool source = false, paint = false;
+        int depth = 0, suppressedDepth = -1;
+        for (int index = firstCommand; index < endCommand; index++)
+        {
+            token.ThrowIfCancellationRequested();
+            SvgDrawCommand command = state.Scene.CommandAt(index);
+            if (command.Kind == SvgDrawCommandKind.BeginGroup)
+            {
+                depth++;
+                if (suppressedDepth < 0 && command.SourceOpacity.Value == 0) suppressedDepth = depth;
+            }
+            else if (command.Kind == SvgDrawCommandKind.EndGroup)
+            {
+                if (suppressedDepth == depth) suppressedDepth = -1;
+                depth--;
+            }
+            if (suppressedDepth >= 0) continue;
+            if (command.Kind == SvgDrawCommandKind.BeginGroup && command.RegionKind == SvgLayerRegionKind.Filter) paint = true;
+            if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+            SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
+            if (geometry.Kind == SvgGeometryKind.Invalid) continue;
+            SvgRecordedPaintValue recorded = state.Scene.GetRecordedPaintValue(geometry.RecordedPaint);
+            source |= !recorded.IsEffectAnchor || recorded.ObjectBounds is not null;
+            paint |= !recorded.IsEffectAnchor && geometry.Kind switch
+            {
+                SvgGeometryKind.Rectangle => geometry.Rectangle.HasFill || geometry.Rectangle.Stroke is not null,
+                SvgGeometryKind.OrthogonalBand => geometry.Rectangle.HasFill,
+                SvgGeometryKind.AxisAlignedLine => geometry.AxisAlignedLine.IsPainted,
+                SvgGeometryKind.PolygonFill => geometry.Polygon.HasFill,
+                SvgGeometryKind.GradientPolygon => geometry.GradientPolygon.HasFill,
+                SvgGeometryKind.RadialPolygon => geometry.RadialPolygon.HasFill,
+                SvgGeometryKind.PatternPolygon => geometry.PatternPolygon.HasFill,
+                SvgGeometryKind.GradientFill => geometry.Gradient.Fill.HasFill || geometry.Gradient.Stroke is not null,
+                SvgGeometryKind.RadialGradient => geometry.Radial.Fill.HasFill || geometry.Radial.Stroke is not null,
+                SvgGeometryKind.PatternFill => geometry.Pattern.Fill.HasFill || geometry.Pattern.Fill.Stroke is not null,
+                SvgGeometryKind.GradientStroke => geometry.GradientStroke.Fill.HasFill || geometry.GradientStroke.HasStroke,
+                _ => true,
+            };
+            if (source && paint) return true;
+        }
+        return false;
+    }
+
     internal static SvgGeometry[] WrapInstance(SvgGeometry[] geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgDocumentState state, CancellationToken token)
     {
         WrapInstance(geometries.AsSpan(), opacity, scope, state, token);

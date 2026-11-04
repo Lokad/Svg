@@ -223,13 +223,20 @@ visible alias may supply its own. An alias's own hidden display suppresses borro
 ### Clips, masks and composition
 
 Clip paths accept rectangles/rounded rectangles, paths, polygons/polylines, circles, ellipses,
-restricted uses, ordered child unions, compound winding, both resource units and
-affine maps. Group children contribute no clip silhouette; their IDs and descendant
+restricted uses, supplied text, ordered child unions, compound winding, both resource
+units and affine maps. Text uses the ordinary shaping, positioning, fitting and
+decoration pipeline with black fill and no stroke/filter. Ignored text paint servers
+need no resolution. Text selects ordered mask replay, retaining child opacity and
+visual bounds separately from geometric path coverage. See the
+[native text-clip controls](../tests/Research/text-clip/README.md).
+Group children contribute no clip silhouette; their IDs and descendant
 IDs remain available to independent drawing instances. A clip-resource `use` that
 targets a group also contributes no contour. The
 [child-role controls](../tests/Research/clip-child-roles/README.md) protect these
-distinct roles and selected text-font acquisition. Direct line/text children and XML
-transform/fill/opacity on `clipPath` reject. A geometric clip-resource `use` must reference
+distinct roles and selected text-font acquisition. Direct line children and
+`transform` on `clipPath` reject. Clip-resource paint does not paint a silhouette;
+typography, display, visibility and explicit opacity inheritance retain their roles.
+A geometric clip-resource `use` must reference
 one contour; plain rectangles and empty/compound sources through that use reject.
 Multiple uses and mixtures with direct children form an ordered union; local
 geometry may be defined later. Both resource units apply to referenced content;

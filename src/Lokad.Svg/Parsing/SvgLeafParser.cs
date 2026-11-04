@@ -736,7 +736,7 @@ internal static class SvgLeafParser
             foreach (PendingGroupClip pending in state.PendingGroupClips.AsSpan())
             {
                 context.CancellationToken.ThrowIfCancellationRequested();
-                if (pending.EndCommandIndex < 0 && (!state.ClipPolygons.TryGetValue(pending.ClipId, out SvgClipPolygon clip) || clip.IsObjectBoundingBox)) return true;
+                if (pending.EndCommandIndex < 0 && (!state.ClipContents.TryGetValue(pending.ClipId, out SvgClipContent clip) || clip.IsObjectBoundingBox)) return true;
             }
             return false;
         }

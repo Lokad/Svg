@@ -1,0 +1,83 @@
+{
+  "status": "Declared diagnostic only; original external images/fonts remain separate",
+  "seconds": 40.788553500082344,
+  "hostedSvgBodiesRetained": 0,
+  "sourceAttributeValuesRetained": 0,
+  "rows": [
+    {
+      "name": "masking-path-04-b.svg",
+      "sourceSha256": "cbc79d87c656da74497bb2169c23c9b2fe7ba7d16c595d232f63b92d78058b3c",
+      "diagnosticInputSha256": "254f228ce38a5a0b95ead459c3aea3ef45c48acdabc939dc7a45623dfd5269c5",
+      "nativeInputSha256": "a0852b414860938f894b15779f0e046c3614a69b1d692e78110a9376ccefd6a4",
+      "logicalViewport": [
+        300,
+        150
+      ],
+      "hosts": [
+        {
+          "host": "windows",
+          "librarySha256": "f276c4ed08d466e0e2405b721ce34990f63e692be73cb3cb87d3aaff40379e9f",
+          "libraryPngSha256": "2df347e1732aa74871f900e9fe889f39d10c563ef28221adab092a37d844e5f3",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "captures": [
+            {
+              "pngSha256": "68f9f6ca560d6330020bad121ba7a33420737f6eb8bb984537bb569dbfa5749e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0,
+              "milliseconds": 11381
+            },
+            {
+              "pngSha256": "68f9f6ca560d6330020bad121ba7a33420737f6eb8bb984537bb569dbfa5749e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0,
+              "milliseconds": 1852
+            },
+            {
+              "pngSha256": "68f9f6ca560d6330020bad121ba7a33420737f6eb8bb984537bb569dbfa5749e",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0,
+              "milliseconds": 1807
+            }
+          ],
+          "changedPixelsRgba": 0,
+          "reference": "original/windows/masking-path-04-b.png"
+        },
+        {
+          "host": "linux",
+          "librarySha256": "f276c4ed08d466e0e2405b721ce34990f63e692be73cb3cb87d3aaff40379e9f",
+          "libraryPngSha256": "807cd8586c848dba61e4dadae89175966deb9fcb6c5a88db55964e74ae5734b5",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "captures": [
+            {
+              "pngSha256": "93272bd8ac0baac031914f36596fe7adf53d527d65ad5e5378bfc7a65e157600",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0,
+              "milliseconds": 5176
+            },
+            {
+              "pngSha256": "93272bd8ac0baac031914f36596fe7adf53d527d65ad5e5378bfc7a65e157600",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0,
+              "milliseconds": 6267
+            },
+            {
+              "pngSha256": "93272bd8ac0baac031914f36596fe7adf53d527d65ad5e5378bfc7a65e157600",
+              "startupHealth": "healthy",
+              "profileCleaned": true,
+              "terminalExitCode": 0,
+              "milliseconds": 5525
+            }
+          ],
+          "changedPixelsRgba": 0,
+          "reference": "original/linux/masking-path-04-b.png"
+        }
+      ]
+    }
+  ],
+  "recipe": "Reuse the declared diagnostic projection and its authored PNG/Noto bindings in ../svgweb/remaining-static-gates.json; fetch, hash, parse and project the original in bounded memory, never retaining SVG source. Freeze the given diagnostic/native input hashes, logical and physical viewports (300 x 150), transparent background, recipe 3 and per-host Chrome hashes. Capture three fresh healthy cleaned processes."
+}

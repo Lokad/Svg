@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one direct leaf geometry range whose clip-path binding resolves at document end.</summary>
 /// <remarks>The conversion owns Scene through binding and emission; this range borrows its builder.</remarks>
-internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, SvgSceneBuilder Scene);
+internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, SvgSceneBuilder Scene, bool HasPaintableTarget);
 
 /// <summary>Retains a group command range and its referencing transform for clip resolution after use expansion.</summary>
 /// <remarks>The conversion owns Scene through binding; source-local suffixes resolve before parent transfer.</remarks>
@@ -14,6 +14,8 @@ internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame
 {
     /// <summary>Preserves glyph source rendering instead of lowering a clip into non-glyph geometry.</summary>
     internal bool UsesNativeClip { get; init; }
+    /// <summary>Identifies the consumer's own opacity scope independently of isolated descendants.</summary>
+    internal SvgRecordingScope? OwnOpacityScope { get; init; }
 }
 
 /// <summary>Parses the bounded clip-path reference syntax shared by clipped containers and leaves.</summary>
@@ -23,7 +25,7 @@ internal static class SvgClipPathSyntax
     private readonly record struct SceneScopeHead(SvgSceneBuilder Scene, int First);
 
     internal static bool IsDisabled(string id, SvgDocumentState state)
-        => state.ClipPolygons.TryGetValue(id, out SvgClipPolygon clip) && clip.IsDisabled;
+        => state.ClipContents.TryGetValue(id, out SvgClipContent clip) && clip.IsDisabled;
 
     internal static string ParseClipId(string? value)
     {
@@ -85,7 +87,7 @@ internal static class SvgClipPathSyntax
         SvgDocumentState state, CancellationToken token)
     {
         if (IsDisabled(id, state)) return inner;
-        if (!state.ClipPolygons.TryGetValue(id, out SvgClipPolygon first) || !first.HasIntersections && !first.UsesMaskFallback)
+        if (!state.ClipContents.TryGetValue(id, out SvgClipContent first) || !first.HasIntersections && !first.UsesMaskFallback)
             return BindSingle(id, map, inner, state, token);
         using BudgetedParserList<SvgClipDependency> dependencies = OrderDependencies(id, state, token);
         using BudgetedParserList<SvgNativeClipReference> chain = new(state.Budget, SvgMemoryCategory.Parser, token);
@@ -98,7 +100,7 @@ internal static class SvgClipPathSyntax
             pending.RemoveLast();
             if (IsDisabled(current.Id, state)) continue;
             chain.Add(current);
-            if (!state.ClipPolygons.TryGetValue(current.Id, out SvgClipPolygon content)) continue;
+            if (!state.ClipContents.TryGetValue(current.Id, out SvgClipContent content)) continue;
             if (content.UsesMaskFallback) continue; // Its parent clip participates while painting each child.
             if (content.ResourceClipId is {} resourceId) pending.Add(new(resourceId, current.Map, current.Map));
             if (content.ChildClip is {} child)
@@ -131,10 +133,10 @@ internal static class SvgClipPathSyntax
                     operation.RegionKind = SvgLayerRegionKind.AffineViewport;
                 }
             }
-            else if (state.ClipPolygons.TryGetValue(id, out SvgClipPolygon content))
+            else if (state.ClipContents.TryGetValue(id, out SvgClipContent content))
             {
                 if (content.IsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box clips on retained resource geometry are not implemented.");
-                if (content.Points.Length == 0) operation.Value = 0;
+                if (content.IsEmpty) operation.Value = 0;
                 else
                 {
                     operation.NativeClip = new(id, map, map);
@@ -172,8 +174,38 @@ internal static class SvgClipPathSyntax
                 }
                 colors.TryAdd(current, 1);
                 visits.Add((current, true));
-                if (!state.ClipPolygons.TryGetValue(current, out SvgClipPolygon polygon)) continue;
+                if (!state.ClipContents.TryGetValue(current, out SvgClipContent polygon)) continue;
                 if (polygon.ResourceClipId is {} resourceId) visits.Add((resourceId, false));
+                if (polygon.PictureSources is {} picture && state.ClipSources is {} sources)
+                    for (int sourceIndex = picture.First; sourceIndex < picture.First + picture.Count; sourceIndex++)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        SvgClipDefinitionSource source = sources[sourceIndex];
+                        if (source.Kind == SvgClipDefinitionSourceKind.Text && source.Text.Contributes && source.Text.ClipId is {} textClip)
+                            visits.Add((textClip, false));
+                        else if (source.Kind == SvgClipDefinitionSourceKind.Use)
+                        {
+                            if (source.Use.ClipId is {} useClip) visits.Add((useClip, false));
+                            if (SvgReferenceResolver.TryGetDefinition(source.Use.Reference, state.Definitions, out SvgDefinition target)
+                                && target.TextSource is {} text)
+                            {
+                                using SvgRetainedTextSource.Reader reader = text.OpenReader(0, token); reader.MoveToContent();
+                                if (SvgLocalUrl.ReadReference(reader, "clip-path") is {} value && SvgLocalUrl.TryParseId(value, out string sourceClipId))
+                                    visits.Add((sourceClipId, false));
+                            }
+                        }
+                        else if (source.Kind == SvgClipDefinitionSourceKind.Geometry)
+                        {
+                            SvgClipContent geometry = source.Geometry;
+                            if (geometry.ChildClip is {} clip) visits.Add((clip.Id, false));
+                            if (geometry.Children is {} childRange && state.ClipChildren is {} clipChildren)
+                                for (int childIndex = childRange.First; childIndex < childRange.First + childRange.Count; childIndex++)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (clipChildren[childIndex].Clip is {} nested) visits.Add((nested.Id, false));
+                                }
+                        }
+                    }
                 if (polygon.ChildClip is {} child) visits.Add((child.Id, false));
                 if (polygon.UsesMaskFallback && polygon.Children is {} range && state.ClipChildren is {} children)
                     for (int index = range.First; index < range.First + range.Count; index++)
@@ -196,7 +228,7 @@ internal static class SvgClipPathSyntax
     {
         if (IsDisabled(id, state)) return;
         bool rectangle = state.ObjectClips.TryGetValue(id, out SvgClipBox fractions);
-        bool hasPolygon = state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon);
+        bool hasPolygon = state.ClipContents.TryGetValue(id, out SvgClipContent polygon);
         if (!rectangle && !hasPolygon && !state.Clips.TryGetValue(id, out _))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clips on retained resource geometry are implemented.");
         SvgLeafMaskOperation? resourceClip = null;
@@ -294,6 +326,8 @@ internal static class SvgClipPathSyntax
             cancellationToken.ThrowIfCancellationRequested();
             PendingLeafClip pending = state.PendingLeafClips[pendingIndex];
             if (IsDisabled(pending.ClipId, state)) continue;
+            if (!pending.HasPaintableTarget && (state.Clips.TryGetValue(pending.ClipId, out _)
+                || state.ObjectClips.TryGetValue(pending.ClipId, out _) || state.ClipContents.TryGetValue(pending.ClipId, out _))) continue;
             SvgSceneBuilder? previous = state.DefinitionReplayScene;
             state.DefinitionReplayScene = pending.Scene;
             try
@@ -335,7 +369,7 @@ internal static class SvgClipPathSyntax
                     }
                     continue;
                 }
-                else if (state.ClipPolygons.TryGetValue(pending.ClipId, out SvgClipPolygon clipPolygon))
+                else if (state.ClipContents.TryGetValue(pending.ClipId, out SvgClipContent clipPolygon))
                 {
                     if (clipPolygon.IsObjectBoundingBox)
                     {
@@ -403,7 +437,7 @@ internal static class SvgClipPathSyntax
     // scene adopts its immutable replay owner. Native clips construct inside
     // the mask; target alpha-mask rounding remains separate. Existing owners
     // enforce cancellation, material reservations and cleanup.
-    internal static SvgClipRegistration RegisterNestedResourceMask(string id, SvgClipPolygon polygon,
+    internal static SvgClipRegistration RegisterNestedResourceMask(string id, SvgClipContent polygon,
         SvgAffineTransform map, SvgSceneBuilder owner, SvgDocumentState state, CancellationToken token)
     {
         if (polygon.UsesMaskFallback) return polygon.Register(map, map, true, state, owner, token);
@@ -453,6 +487,9 @@ internal static class SvgClipPathSyntax
             state.DefinitionReplayScene = pending.Scene;
             try
             {
+                if ((state.Clips.TryGetValue(pending.ClipId, out _) || state.ObjectClips.TryGetValue(pending.ClipId, out _)
+                    || state.ClipContents.TryGetValue(pending.ClipId, out _))
+                    && !SvgPaintRecording.HasPaintableSource(state, pending.FirstCommandIndex, pending.EndCommandIndex, cancellationToken)) continue;
                 SvgViewportFrame? parent = pending.Parent;
                 SvgClipBox clip;
                 if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
@@ -512,7 +549,7 @@ internal static class SvgClipPathSyntax
                     }
                     continue;
                 }
-                else if (state.ClipPolygons.TryGetValue(pending.ClipId, out SvgClipPolygon polygon))
+                else if (state.ClipContents.TryGetValue(pending.ClipId, out SvgClipContent polygon))
                 {
                     if (polygon.IsObjectBoundingBox)
                     {
@@ -538,7 +575,7 @@ internal static class SvgClipPathSyntax
                         }
                         continue;
                     }
-                    if (polygon.ContourEnds.Length != 1 && !polygon.UsesNativeReplay) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour polygon clip-paths on groups are implemented.");
+                    if (polygon.ContourEnds.Length != 1 && !polygon.UsesNativeReplay && !polygon.UsesMaskFallback) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour polygon clip-paths on groups are implemented.");
                     SvgAffineTransform map = pending.Transform;
                     if (parent is {} viewport)
                         map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
@@ -593,6 +630,15 @@ internal static class SvgClipPathSyntax
 
         void WrapOperation(PendingGroupClip pending, SvgLeafMaskOperation operation)
         {
+            // The group's own opacity restores after its clip. Descendant
+            // effects stay inside that clip; their isolation is independent.
+            if (operation.RegionKind == SvgLayerRegionKind.ClipMask && pending.OwnOpacityScope is {} scope
+                && pending.EndCommandIndex > pending.FirstCommandIndex + 1
+                && pending.Scene.CommandAt(pending.FirstCommandIndex) is { Kind: SvgDrawCommandKind.BeginGroup,
+                    MaskContentIndex: < 0, MaskRegion: null } own
+                && own.GeometryIndex == scope.Value && own.SourceOpacity.Value != 1
+                && pending.Scene.CommandAt(pending.EndCommandIndex - 1).Kind == SvgDrawCommandKind.EndGroup)
+                pending = pending with { FirstCommandIndex = pending.FirstCommandIndex + 1, EndCommandIndex = pending.EndCommandIndex - 1 };
             if (operation.AffineViewport is {} clip)
                 (operation.Region, operation.ContentIndex) = clip.Register(state, pending.Scene, cancellationToken);
             if (operation.EnclosingClip is {} enclosing)

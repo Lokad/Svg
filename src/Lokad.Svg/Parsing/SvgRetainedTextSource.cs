@@ -180,7 +180,7 @@ internal sealed class SvgRetainedTextSource
             SvgPaintableElementContext context = new(new(reference.FillOverride ?? reference.InheritedFill, reference.IsDisplayed, reference.IsVisible, placement)
                 { RecordingTransform = reference.RecordingTransform, TextMetrics = reference.TextMetrics, OwnOpacity = reference.ElementParentOpacity, ElementDisplay = reference.ElementParentDisplay, PaintOrder = reference.InheritedPaintOrder, Markers = reference.InheritedMarkers, PaintServerFill = reference.PaintServerFill },
                 reference.InheritedTextStyle, reference.InheritedStroke, reader.StyleSheet, SvgRootParser.CssNamedColors, token, state.OutputMagnification, reference.InheritedFillRule)
-            { StrokeHostMap = state.OutputMap.ComposeChecked(placement), LengthBases = reference.LengthBases, RecordingScope = reference.RecordingScope };
+            { StrokeHostMap = state.OutputMap.ComposeChecked(placement), LengthBases = reference.LengthBases, RecordingScope = reference.RecordingScope, TextPurpose = reference.TextPurpose };
             SvgRenderedLeafParser.ParseResolved(reader, context, environment.Root, state, environment.Limits, state.Budget, environment.Fonts, token);
             if (state.DeferredTextFailure is {} failure) throw failure;
             SvgTextPathLayout.Resolve(state, new(previousPaths, previousClips, previousMasks, previousPaints), environment.Limits, token);

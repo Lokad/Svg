@@ -150,7 +150,7 @@ public sealed class SvgClipUnionTests
     {
         // Independent native path-ops observation for the frozen mixed rectangle/path
         // control. The platform visual compares rendered pixels against Chrome separately.
-        SvgClipPolygon input = new(
+        SvgClipContent input = new(
             [new(16, 122), new(108, 122), new(108, 24), new(16, 24),
              new(90, 112), new(172, 136), new(212, 55), new(82, 38)], [4, 8]);
         SvgDevicePoint[] expected =
@@ -188,7 +188,7 @@ public sealed class SvgClipUnionTests
     [Fact]
     public void Disjoint_union_keeps_existing_normalization_and_releases_scratch()
     {
-        SvgClipPolygon input = new([new(0, 0), new(0, 4), new(4, 0), new(8, 0), new(8, 4), new(12, 0)], [3, 6]);
+        SvgClipContent input = new([new(0, 0), new(0, 4), new(4, 0), new(8, 0), new(8, 4), new(12, 0)], [3, 6]);
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         Assert.Null(SvgClipUnion.ResolveCrossings(input, budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

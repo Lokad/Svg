@@ -6,6 +6,7 @@ using Lokad.Svg.Rendering;
 internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplayed, bool IsVisible, string? Stroke, SvgPaintOpacity TextOpacity)
 {
     internal static SvgTextPaintStyle Default => new(SvgPaint.Default, true, true, null, SvgPaintOpacity.Opaque);
+    internal SvgTextPaintPurpose Purpose { get; init; }
     internal SvgDisplay ElementDisplay { get; init; }
     private SvgPaintResourceSelection? Resources { get; init; }
     private bool InactiveFill { get; init; }
@@ -49,24 +50,25 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
         }
     }
 
-    internal static SvgTextPaintStyle ResolveElement(SvgComputedStyle style, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisible, string? inheritedStroke, SvgPaintResourceSelection? resources)
+    internal static SvgTextPaintStyle ResolveElement(SvgComputedStyle style, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisible, string? inheritedStroke, SvgPaintResourceSelection? resources, SvgTextPaintPurpose purpose)
     {
+        style = SvgTextPaintPurposeSyntax.Resolve(style, purpose);
         style = style with { Stroke = style.Stroke ?? inheritedStroke };
         _ = SvgPaintResolver.ResolveFallbacks(ref style, resources, SvgRootParser.CssNamedColors, "text");
         ValidateStyle(style);
         SvgResolvedPresentation resolved = SvgPresentationResolver.Resolve(ForColorResolution(style), inheritedPaint, inheritedDisplayed, inheritedVisible, SvgRootParser.CssNamedColors);
         return new(resolved.Paint, resolved.IsDisplayed, resolved.IsVisible, style.Stroke ?? inheritedStroke, style.GetOpacity())
-        { Resources = resources, ElementDisplay = style.GetDisplay(), FillServer = IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
+        { Purpose = purpose, Resources = resources, ElementDisplay = style.GetDisplay(), FillServer = IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
     }
 
     internal static SvgTextPaintStyle ResolveSpan(SvgComputedStyle style, SvgTextPaintStyle inherited)
     {
-        style = style.ResolveDisplay(inherited.ElementDisplay);
+        style = SvgTextPaintPurposeSyntax.Resolve(style.ResolveDisplay(inherited.ElementDisplay), inherited.Purpose);
         _ = SvgPaintResolver.ResolveFallbacks(ref style, inherited.Resources, SvgRootParser.CssNamedColors, "tspan");
         ValidateStyle(style);
         SvgResolvedPresentation resolved = SvgPresentationResolver.Resolve(ForColorResolution(style), inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, SvgRootParser.CssNamedColors);
         SvgTextPaintStyle result = new(resolved.Paint, resolved.IsDisplayed, resolved.IsVisible, style.Stroke ?? inherited.Stroke, inherited.TextOpacity)
-        { ElementDisplay = style.GetDisplay(), FillServer = style.Fill is null ? inherited.FillServer : IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = inherited.StrokeStyle.ResolveChild(style), PaintOrder = style.PaintOrder ?? inherited.PaintOrder, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
+        { Purpose = inherited.Purpose, ElementDisplay = style.GetDisplay(), FillServer = style.Fill is null ? inherited.FillServer : IsLocalFill(style.Fill) ? style.Fill : null, StrokeStyle = inherited.StrokeStyle.ResolveChild(style), PaintOrder = style.PaintOrder ?? inherited.PaintOrder, NonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(style.VectorEffect) };
         return result.ResolveResources(inherited.Resources, inherited.PreserveBounds, inherited.SuppressFilter);
     }
 
@@ -146,7 +148,7 @@ internal readonly record struct SvgTextStrokePaint(SvgInheritedStrokeStyle Style
 /// <summary>Identifies a normalized UTF-16 interval with one effective glyph paint.</summary>
 internal readonly record struct SvgTextPaintSpan(int Start, int End, SvgTextGlyphPaint Paint);
 
-/// <summary>Preserves text metrics for an enclosing active filter even when inner paint is unavailable.</summary>
+/// <summary>Preserves text metrics for an active filter or clip picture even when inner paint is unavailable.</summary>
 /// <remarks>Value-only traversal state, reset at resource boundaries. Enter borrows preparation metadata,
 /// observes cancellation during resource lookup, and owns no storage. An outer unavailable
 /// filter suppresses inner filters too; an active outer filter still needs descendant source bounds.</remarks>

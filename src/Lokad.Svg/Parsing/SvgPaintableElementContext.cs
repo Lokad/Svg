@@ -11,6 +11,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgViewportLengthBases LengthBases { get; init; }
     internal bool DeferPaintOpacity { get; init; }
     internal SvgTextMetricScope TextMetrics { get; init; }
+    internal SvgTextPaintPurpose TextPurpose { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal bool RetainInstanceStrokePath { get; init; }
     internal bool RetainInstanceFillPath { get; init; }
@@ -73,10 +74,20 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgComputedStyle ResolveStyle(XmlReader reader, bool allowsDirectTextFontProperties)
     {
         SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, StyleSheet, CancellationToken, allowsDirectTextFontProperties));
+        style = SvgTextPaintPurposeSyntax.Resolve(style, TextPurpose);
         style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity).ResolveDisplay(InheritedPresentation.ElementDisplay) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         if (DeferPaintOpacity) style = style with { Opacity = null, ComputedOpacity = null };
         if (style.Fill is null && InheritedPresentation.PaintServerFill is string fill) style = style with { Fill = fill };
         return style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
+    }
+
+    /// <summary>Shares primitive/display/opacity target admission before resource content is materialized.</summary>
+    internal bool HasPaintableResourceTarget(XmlReader reader)
+    {
+        SvgComputedStyle style = ResolveStyle(reader, reader.LocalName == "text");
+        return InheritedPresentation.IsDisplayed && style.GetDisplay() != SvgDisplay.None && style.GetOpacity().Value != 0
+            && !TextMetrics.CanSuppress && SvgMaskSyntax.HasPaintableTarget(reader,
+                SvgPresentationResolver.ParseVisibility(style.Visibility, InheritedPresentation.IsVisible), style.Filter);
     }
 
     internal SvgAffineTransform ResolveTransform(XmlReader reader) => InheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, CancellationToken));
@@ -103,9 +114,11 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     {
         InlineStyle inline = SvgInlineStyleParser.Read(reader, CancellationToken, true);
         SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyle.Resolve(reader, inline, StyleSheet));
+        style = SvgTextPaintPurposeSyntax.Resolve(style, TextPurpose);
         style = style.ResolveVectorEffect(InheritedPresentation.NonScalingStroke).ResolveOpacity(InheritedPresentation.ElementOpacity).ResolveDisplay(InheritedPresentation.ElementDisplay) with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         SvgComputedStyle textStyle = style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
         if (textStyle.Fill is null && InheritedPresentation.PaintServerFill is string fill) textStyle = textStyle with { Fill = fill };
+        textStyle = SvgTextPaintPurposeSyntax.Resolve(textStyle, TextPurpose);
         _ = SvgPaintResolver.ResolveFallbacks(ref textStyle, resources, NamedColors, reader.LocalName);
         // Stroke is validated on emitted content after a child span can replace it.
         textStyle = textStyle with { Stroke = textStyle.Stroke ?? InheritedStroke.Stroke };

@@ -411,8 +411,11 @@ numerical cases separate from two canonical supplied-font rendering cases. The
 font producer and complete native numerical sheet remain optional research tools.
 The [mask text checks](Research/mask-text-recording/README.md) retain seven canonical
 native cases for resource versus consumer font construction and one separate
-scope/memory contract. Twelve broader clip experiments remain research; they do
-not multiply the API matrix or imply text-clip support.
+scope/memory contract. The [text-clip checks](Research/text-clip/README.md) reuse
+twelve of those independent references and add seven controls for inherited
+typography, decorations, invisible layout bounds, instance opacity and group
+isolation. They use one canonical conversion path; font selection and one
+prepared ownership/refusal/cancellation/retry case remain separate contracts.
 Historical document totals, percentage gates and exploratory quotas are not
 completion criteria. Retained cases keep their own contracts regardless of the
 collection name.

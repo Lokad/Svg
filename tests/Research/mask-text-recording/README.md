@@ -19,8 +19,7 @@ glyph placement remain shared. A separate contract test checks following text
 and complete release of the borrowed memory allowance. Existing font/mask
 refusal, cancellation and prepared-document tests retain those responsibilities.
 
-The [clip experiments](clip-research.json) are research, **not admitted text-clip
-support or additional routine rendering tests**. Twelve authored SVG pairs and
+The [clip experiments](clip-research.json) preserve twelve authored SVG pairs and
 their native PNGs distinguish paint purpose, source versus consumer maps, units,
 opacity, positioned spans, glyph stretching, geometry siblings and intersections.
 The library's ordinary black paint matches every native paint control. Native
@@ -34,7 +33,10 @@ Text clips require an ordered mask route in the pinned browser's
 The corresponding [mask recording](https://raw.githubusercontent.com/chromium/chromium/153.0.8010.52/third_party/blink/renderer/core/layout/svg/layout_svg_resource_masker.cc)
 is a separate operation. The observed opacity controls take precedence over the
 clip recorder's stale opacity comment. Remaining clip selection, replay and
-composition criteria are explicit in [qualification](qualification.json).
+composition observations are explicit in [qualification](qualification.json).
+The clip halves are also canonical regressions in the
+[text-clip bank](../text-clip/README.md), which owns their current admission and
+qualification. Their source and reference bytes are shared unchanged.
 
 Authored SVGs are CC0-1.0. The supplied Noto program is reused from
 [supplied-font-labels](../supplied-font-labels/fonts/OFL.txt), with its hash pinned

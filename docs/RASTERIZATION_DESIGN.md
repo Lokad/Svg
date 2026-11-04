@@ -378,6 +378,14 @@ More than 42 children use painted replay, preserving each child's authored paint
 kind and a separate enclosing clip. Ordinary masks composite children in source
 order before alpha/luminance conversion.
 Referenced clip children retain authored verbs and placement through registration.
+Text clips borrow retained text and the existing font dependency index. A live
+picture keeps ordered geometric/text sources, child intersections and measured
+visual bounds until target replay. Source geometry opacity and use-instance
+opacity remain separate; geometric path unions ignore paint opacity. A painted
+picture may need an invisible text child's layout bounds, while an entirely
+inactive picture needs no font. Deferred mask and clip admission share the scene
+source-presence scan. A group's own opacity restores after its clip, independently
+of descendant effect isolation.
 
 Mask text keeps font construction in the resource context, independently of the
 consumer's replay map. Its own child transform still selects the font scale;

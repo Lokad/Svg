@@ -23,7 +23,7 @@ internal sealed class SvgDocumentState : IDisposable
     private RenderBudget.BudgetReservation? _anonymousSymbolOwner;
     private static readonly int DefinitionStorageBytes = checked(64 + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgDefinition>());
     private const int ClipStorageBytes = 128;
-    private static readonly int ClipPolygonStorageBytes = checked(64 + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgClipPolygon>());
+    private static readonly int ClipPolygonStorageBytes = checked(64 + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgClipContent>());
     // The tile embeds nullable scene geometry. Include its actual value size,
     // plus conservative bucket/key/entry overhead, before dictionary growth.
     private static readonly int PatternStorageBytes = checked(64 + (int)ParserCollectionMemory.GetArrayByteCount<SvgPatternTile>(1));
@@ -57,7 +57,7 @@ internal sealed class SvgDocumentState : IDisposable
         CssAncestors = new(styleRules, budget, cancellationToken);
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         Clips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
-        ClipPolygons = new BudgetedParserDictionary<string, SvgClipPolygon>(budget, SvgMemoryCategory.Parser, ClipPolygonStorageBytes);
+        ClipContents = new BudgetedParserDictionary<string, SvgClipContent>(budget, SvgMemoryCategory.Parser, ClipPolygonStorageBytes);
         ObjectClips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Masks = new BudgetedParserDictionary<string, byte>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         MaskContents = new BudgetedParserDictionary<string, SvgMaskContent>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
@@ -175,7 +175,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserDictionary<string, SvgClipBox> ObjectClips { get; }
 
-    internal BudgetedParserDictionary<string, SvgClipPolygon> ClipPolygons { get; }
+    internal BudgetedParserDictionary<string, SvgClipContent> ClipContents { get; }
 
     /// <summary>Owns original multi-child clip paths until registered mask scenes have copied their sources.</summary>
     internal BudgetedParserList<SvgClipChild>? ClipChildren { get; set; }
@@ -357,8 +357,9 @@ internal sealed class SvgDocumentState : IDisposable
 
     /// <summary>Retains cascaded stroke presentation for resource visual bounds; clip coverage does not paint it.</summary>
     internal SvgInheritedStrokeStyle ClipInheritedStroke { get; set; }
+    internal SvgInheritedContainer ClipTextInheritance { get; set; }
 
-    internal SvgClipPolygon? ClipPolygon { get; set; }
+    internal SvgClipContent? ClipPolygon { get; set; }
 
     internal bool ClipIsObjectBoundingBox { get; set; }
     internal bool ClipIsEvenOdd { get; set; }
@@ -477,8 +478,8 @@ internal sealed class SvgDocumentState : IDisposable
         DefinitionReservations.Clear();
         Clips.Dispose();
         ClipPolygon?.SourcePath?.Dispose();
-        foreach (SvgClipPolygon clip in ClipPolygons.Values) clip.SourcePath?.Dispose();
-        ClipPolygons.Dispose();
+        foreach (SvgClipContent clip in ClipContents.Values) clip.SourcePath?.Dispose();
+        ClipContents.Dispose();
         if (ClipChildren is {} clipChildren)
             foreach (SvgClipChild child in clipChildren.AsSpan()) child.Path.Dispose();
         ClipChildren?.Dispose();

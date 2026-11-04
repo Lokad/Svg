@@ -323,11 +323,14 @@ internal static class SvgFontRequestDiscovery
                         else if (reader.LocalName == "symbol") SvgElementAttributePolicy.ValidateSymbol(reader, cancellationToken);
                         else if (reader.LocalName == "marker") ObserveMarkerDefinition(reader, style.Text, definitionResourcesDisplayed);
                     }
-                    InlineStyle styleSheet = isSvgElement && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use" or "mask") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, cancellationToken) : default;
+                    InlineStyle styleSheet = isSvgElement && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text" or "use" or "mask" or "clipPath") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, cancellationToken) : default;
                     if (!sterile && !insideDirectText && isSvgElement && reader.LocalName == "mask"
                         && (directChild || parentAllowsText && hasGroupAncestor || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1))
                         instanceFonts?.RegisterMask(reader, SourceContext(style), styleSheet, definitionResourcesDisplayed,
                             new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height));
+                    if (!sterile && !insideDirectText && isSvgElement && reader.LocalName == "clipPath"
+                        && (directChild || parentAllowsText && hasGroupAncestor || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1))
+                        instanceFonts?.RegisterClip(reader, SourceContext(style), styleSheet, definitionResourcesDisplayed);
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;
                     string? specifiedWhiteSpace = null;
                     // Reset definition-ancestor display before applying the resource's own declaration.
@@ -354,15 +357,16 @@ internal static class SvgFontRequestDiscovery
                     if (!sterile && !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
                     {
                         if (reader.LocalName == "use") instanceFonts?.AddUse(reader, SourceContext(style));
-                        if (instanceFonts is not null && SvgLocalUrl.ReadReference(reader, "mask") is not null)
+                        if (instanceFonts is not null && (SvgLocalUrl.ReadReference(reader, "mask") is not null || SvgLocalUrl.ReadReference(reader, "clip-path") is not null))
                         {
                             InlineStyle targetSheet = SvgStyleSheet.Resolve(reader, styleRules, ancestors, cancellationToken);
                             SvgComputedStyle target = SvgComputedStyleResolver.Resolve(reader, targetSheet, cancellationToken, true).ResolveDisplay(style.ElementDisplay);
                             SvgInheritedContainer maskContext = SourceContext(style);
                             maskContext = maskContext with { Presentation = maskContext.Presentation with
                             { IsDisplayed = style.IsDisplayed && (target.GetDisplay() != SvgDisplay.None),
-                                IsVisible = SvgPresentationResolver.ParseVisibility(target.Visibility, style.IsVisible) } };
-                            instanceFonts.AddMask(reader, maskContext, target.Filter);
+                                IsVisible = SvgPresentationResolver.ParseVisibility(target.Visibility, style.IsVisible),
+                                OwnOpacity = target.ResolveOpacity(maskContext.Presentation.ElementOpacity).GetOpacity() } };
+                            instanceFonts.AddResources(reader, maskContext, target.Filter);
                         }
                     }
                     if (!sterile && inertDepth < 0 && isSvgElement && (SvgStructuralVocabulary.IsInertContainer(reader.LocalName) || symbolDefinition) && !reader.IsEmptyElement) inertDepth = reader.Depth;

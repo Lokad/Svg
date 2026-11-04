@@ -20,7 +20,7 @@ internal static partial class SvgClipUnion
     /// <remarks>Input contours borrow staging and have the same direction. Scratch reserves before growth;
     /// pair, winding and linking visits observe cancellation token. An owned result transfers to the caller;
     /// null preserves the preceding route. Failure releases scratch and leaves input owners untouched.</remarks>
-    internal static SvgAuthoredPath? ResolveCrossings(SvgClipPolygon polygon, RenderBudget budget, CancellationToken token)
+    internal static SvgAuthoredPath? ResolveCrossings(SvgClipContent polygon, RenderBudget budget, CancellationToken token)
     {
         using BudgetedParserList<Edge> edges = new(budget, SvgMemoryCategory.Geometry, token);
         using BudgetedParserList<Cut> cuts = new(budget, SvgMemoryCategory.Geometry, token);

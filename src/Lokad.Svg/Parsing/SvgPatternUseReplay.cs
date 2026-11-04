@@ -202,7 +202,7 @@ internal static class SvgPatternUseReplay
         {
             if (clip.ClipId is not {} id || SvgClipPathSyntax.IsDisabled(id, state)) return null;
             bool rectangle = state.ObjectClips.TryGetValue(id, out SvgClipBox fractions);
-            state.ClipPolygons.TryGetValue(id, out SvgClipPolygon polygon);
+            state.ClipContents.TryGetValue(id, out SvgClipContent polygon);
             if (!rectangle && !polygon.IsObjectBoundingBox && !polygon.HasIntersections) return null;
             SvgSceneBuilder? previous = state.DefinitionReplayScene;
             state.DefinitionReplayScene = builder;

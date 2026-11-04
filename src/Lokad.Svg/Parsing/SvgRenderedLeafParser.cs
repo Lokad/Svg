@@ -236,7 +236,7 @@ CancellationToken cancellationToken)
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferRectClip && deferredRectClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene));
+                if (deferRectClip && deferredRectClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene, context.HasPaintableResourceTarget(reader)));
                 if (deferredRectMask is not null) SvgLeafMaskComposition.Retain(state, rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectMask, state.EffectiveFrame, context.ResolveTransform(reader), cancellationToken);
                 SvgPaintRecording.FinishScene(state, rectFirstGeometry, cancellationToken);
                 return true;
@@ -265,7 +265,7 @@ CancellationToken cancellationToken)
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferLineClip && deferredLineClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene));
+                if (deferLineClip && deferredLineClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene, context.HasPaintableResourceTarget(reader)));
                 if (deferredLineMask is not null) SvgLeafMaskComposition.Retain(state, lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineMask, state.EffectiveFrame, context.ResolveTransform(reader), cancellationToken);
                 SvgPaintRecording.FinishScene(state, lineFirstGeometry, cancellationToken);
                 return true;
@@ -294,7 +294,7 @@ CancellationToken cancellationToken)
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferCircleClip && deferredCircleClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene));
+                if (deferCircleClip && deferredCircleClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene, context.HasPaintableResourceTarget(reader)));
                 if (deferredCircleMask is not null) SvgLeafMaskComposition.Retain(state, circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleMask, state.EffectiveFrame, context.ResolveTransform(reader), cancellationToken);
                 SvgPaintRecording.FinishScene(state, circleFirstGeometry, cancellationToken);
                 return true;
@@ -323,7 +323,7 @@ CancellationToken cancellationToken)
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferEllipseClip && deferredEllipseClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene));
+                if (deferEllipseClip && deferredEllipseClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene, context.HasPaintableResourceTarget(reader)));
                 if (deferredEllipseMask is not null) SvgLeafMaskComposition.Retain(state, ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseMask, state.EffectiveFrame, context.ResolveTransform(reader), cancellationToken);
                 SvgPaintRecording.FinishScene(state, ellipseFirstGeometry, cancellationToken);
                 return true;
@@ -344,7 +344,7 @@ CancellationToken cancellationToken)
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferPathClip && deferredPathClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene));
+                if (deferPathClip && deferredPathClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene, context.HasPaintableResourceTarget(reader)));
                 if (deferredPathMask is not null) SvgLeafMaskComposition.Retain(state, pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathMask, state.EffectiveFrame, context.ResolveTransform(reader), cancellationToken);
                 SvgPaintRecording.FinishScene(state, pathFirstGeometry, cancellationToken);
                 return true;
@@ -365,7 +365,7 @@ CancellationToken cancellationToken)
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferPointListClip && deferredPointListClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene));
+                if (deferPointListClip && deferredPointListClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene, context.HasPaintableResourceTarget(reader)));
                 if (deferredPointListMask is not null) SvgLeafMaskComposition.Retain(state, pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListMask, state.EffectiveFrame, context.ResolveTransform(reader), cancellationToken);
                 SvgPaintRecording.FinishScene(state, pointListFirstGeometry, cancellationToken);
                 return true;
@@ -386,7 +386,7 @@ CancellationToken cancellationToken)
                     state.Scene.AddGeometry(image);
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferImageClip && deferredImageClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene));
+                if (deferImageClip && deferredImageClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageClip, state.EffectiveFrame, context.ResolveTransform(reader), state.Scene, context.HasPaintableResourceTarget(reader)));
                 if (deferredImageMask is not null) SvgLeafMaskComposition.Retain(state, imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageMask, state.EffectiveFrame, context.ResolveTransform(reader), cancellationToken);
                 SvgPaintRecording.FinishScene(state, imageFirstGeometry, cancellationToken);
                 return true;
@@ -402,7 +402,7 @@ CancellationToken cancellationToken)
                 SvgResolvedPaintableElement textElement = resolvedText.PaintableElement;
                 string? textClip = SvgClipPathSyntax.ResolveClipId(reader, state);
                 if (textClip is not null) textClip = state.Strings.Copy(textClip);
-                string? textMask = SvgMaskSyntax.PendingMaskId(reader, state, context);
+                string? textMask = context.TextPurpose == SvgTextPaintPurpose.ClipMask ? null : SvgMaskSyntax.PendingMaskId(reader, state, context);
                 SvgViewportFrame? resourceParent = state.EffectiveFrame;
                 int resourceStart = state.Scene.CommandCount;
                 SvgPaintOpacity textOpacity = textElement.Style.GetOpacity();
@@ -418,7 +418,7 @@ CancellationToken cancellationToken)
                 // ResolveTextShape validates fill-rule syntax; SVG text keeps glyph winding independent of that property.
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing, resolvedText.WordSpacing, resolvedText.TextAnchor, resolvedText.TextTransform);
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
-                SvgTextPaintStyle textPaint = SvgTextPaintStyle.ResolveElement(textElement.Style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.InheritedStroke.Stroke, state.PaintResources);
+                SvgTextPaintStyle textPaint = SvgTextPaintStyle.ResolveElement(textElement.Style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.InheritedStroke.Stroke, state.PaintResources, context.TextPurpose);
                 textPaint = textPaint with { TextOpacity = SvgPaintOpacity.Opaque, StrokeStyle = context.InheritedStroke.ResolveChild(textElement.Style), PaintOrder = textElement.Style.PaintOrder ?? context.InheritedPresentation.PaintOrder };
                 textPaint = textPaint with { Decoration = SvgTextDecorationSyntax.Resolve(resolvedText.TextDecoration ?? reader.GetAttribute("text-decoration"), context.InheritedTextStyle.Decoration, (textPaint with { IsDisplayed = true, IsVisible = true }).GlyphPaint) };
                 textPaint = textPaint.ResolveResources(state.PaintResources, context.TextMetrics.NeedsBounds, context.TextMetrics.CanSuppress);

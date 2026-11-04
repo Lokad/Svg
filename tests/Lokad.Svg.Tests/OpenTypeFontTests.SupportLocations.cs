@@ -83,14 +83,24 @@ public sealed partial class OpenTypeFontTests
         await AssertSupportAdmission(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + body + "</svg>"), false);
     }
 
-    [Theory]
-    [InlineData("transform='translate(0)'", "<rect width='16' height='16'/>")]
-    [InlineData("fill='red'", "<rect width='16' height='16'/>")]
-    [InlineData("opacity='.5'", "<rect width='16' height='16'/>")]
-    public async Task Clip_resource_attributes_keep_their_documented_restrictions(string attributes, string child)
+    [Fact]
+    public async Task Clip_resource_transform_keeps_its_documented_restriction()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c' " + attributes + ">" + child + "</clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/></svg>");
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c' transform='translate(0)'><rect width='16' height='16'/></clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/></svg>"u8.ToArray();
         await AssertSupportAdmission(input, false);
+    }
+
+    [Theory]
+    [Trait("Layer", "Mechanism")]
+    [InlineData("fill='red'")]
+    [InlineData("opacity='.5'")]
+    public void Clip_resource_paint_does_not_change_geometric_coverage(string attributes)
+    {
+        const string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c' ";
+        const string suffix = "><rect width='16' height='16'/></clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/></svg>";
+        byte[] expected = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(prefix + suffix), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] actual = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(prefix + attributes + suffix), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Assert.Equal(expected, actual);
     }
 
     [Fact]

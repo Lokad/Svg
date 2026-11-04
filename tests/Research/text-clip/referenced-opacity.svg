@@ -1,0 +1,1 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><defs><text id="label" x="8" y="48" font-family="DiagnosticNoto" font-size="40" fill="none" stroke="red">A</text><clipPath id="c"><use href="#label" x=".375" y=".625" opacity=".5"/></clipPath></defs><rect width="64" height="64" fill="#2080d0" clip-path="url(#c)"/></svg>

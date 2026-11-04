@@ -8,6 +8,15 @@ namespace Lokad.Svg.Parsing;
 /// storage before allocation; parser state and its borrowed ranges belong to one conversion thread.</remarks>
 internal static class SvgClipDefinitionStaging
 {
+    internal static void AppendText(SvgClipTextSource text, SvgDocumentState state, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        BudgetedParserList<SvgClipDefinitionSource> sources = state.ClipSources ??= new(state.Budget, SvgMemoryCategory.Parser, token);
+        if (state.ClipSourceStart < 0) state.ClipSourceStart = sources.Count;
+        RetainGeometry(state, sources, token);
+        sources.Add(new(text));
+    }
+
     internal static void AppendUse(SvgResourceUse use, SvgDocumentState state, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
@@ -24,7 +33,7 @@ internal static class SvgClipDefinitionStaging
         BudgetedParserList<SvgClipDefinitionSource> sources = state.ClipSources ?? throw new InvalidOperationException("Deferred clip sources are missing.");
         RetainGeometry(state, sources, token);
         string id = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip registration requires an identifier."));
-        if (state.Clips.TryGetValue(id, out _) || state.ObjectClips.TryGetValue(id, out _) || !state.ClipPolygons.TryAdd(id, new([], [])))
+        if (state.Clips.TryGetValue(id, out _) || state.ObjectClips.TryGetValue(id, out _) || !state.ClipContents.TryAdd(id, new([], [])))
             throw state.ClipPathIdSource.DuplicateId("SVG clip-path ids must be unique.");
         BudgetedParserList<SvgDeferredClipDefinition> definitions = state.DeferredClips ??= new(state.Budget, SvgMemoryCategory.Parser, token);
         definitions.Add(new(id, state.ClipSourceStart, sources.Count - state.ClipSourceStart, state.ClipIsObjectBoundingBox, state.ClipResourceClipId));
@@ -48,15 +57,15 @@ internal static class SvgClipDefinitionStaging
         if (state.ClipBox is null) return;
         if (state.ClipPolygon is null && state.ClipRectangleSource is {} source)
         {
-            SvgClipPolygon polygon = CreateClipRectangle(source.Geometry, state, token);
-            try { state.ClipPolygon = polygon.WithVisualBounds(source.BoundsInflation, token); }
+            SvgClipContent polygon = CreateClipRectangle(source.Geometry, state, token);
+            try { state.ClipPolygon = polygon.WithVisualBounds(source.BoundsInflation, token) with { SourceOpacity = source.SourceOpacity }; }
             catch { polygon.SourcePath?.Dispose(); throw; }
         }
         state.ClipRectangleSource = null;
         state.ClipBox = null;
     }
 
-    internal static SvgClipPolygon CreateClipRectangle(SvgAffineViewportClip source, SvgDocumentState state, CancellationToken token)
+    internal static SvgClipContent CreateClipRectangle(SvgAffineViewportClip source, SvgDocumentState state, CancellationToken token)
     {
         SvgClipBox box = source.Box;
         ReadOnlySpan<SvgDevicePoint> corners = stackalloc SvgDevicePoint[]
@@ -89,7 +98,7 @@ internal static class SvgClipDefinitionStaging
 
     // Rounded rectangles and ovals share one native source/staging owner.
     // Resource units and nested intersections bind later in the final scene.
-    internal static SvgClipPolygon CreateClipSource(OwnedParserArray<SvgAuthoredPathCommand> owned, SvgAffineTransform map,
+    internal static SvgClipContent CreateClipSource(OwnedParserArray<SvgAuthoredPathCommand> owned, SvgAffineTransform map,
         bool oval, string? nestedClip, SvgDocumentState state, CancellationToken token)
     {
         SvgAuthoredPath source;
@@ -112,7 +121,7 @@ internal static class SvgClipDefinitionStaging
 
     // Adopt each source once; union failure retains the first staging owner
     // and releases the incoming owner. Publish before cancellable classification.
-    internal static void AppendClipChild(SvgClipPolygon child, float boundsInflation, SvgDocumentState state, CancellationToken token)
+    internal static void AppendClipChild(SvgClipContent child, float boundsInflation, SvgDocumentState state, CancellationToken token)
     {
         try { child = child.WithVisualBounds(boundsInflation, token); }
         catch { child.SourcePath?.Dispose(); throw; }
@@ -131,7 +140,7 @@ internal static class SvgClipDefinitionStaging
         }
         if (state.ClipPolygon is {} first)
         {
-            SvgClipPolygon combined;
+            SvgClipContent combined;
             try { combined = CombineClipChildren(first, child, state, token); }
             finally { child.SourcePath?.Dispose(); }
             state.ClipPolygon = combined;
@@ -147,7 +156,7 @@ internal static class SvgClipDefinitionStaging
         // Retain original child owners and layout bounds. Containment keeps its
         // primitive route; other unions resolve once when the definition closes.
         // The child threshold selects painted replay before any boundary solver.
-        static SvgClipPolygon CombineClipChildren(SvgClipPolygon first, SvgClipPolygon next, SvgDocumentState state,
+        static SvgClipContent CombineClipChildren(SvgClipContent first, SvgClipContent next, SvgDocumentState state,
             CancellationToken token)
         {
             BudgetedParserList<SvgClipChild> originals = state.ClipChildren ??= new(state.Budget, SvgMemoryCategory.Scene, token);
@@ -158,11 +167,11 @@ internal static class SvgClipDefinitionStaging
             else
             {
                 range = new(originals.Count, 1);
-                Retain(first.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands."), first.IsEvenOdd, first.PaintKind, first.ChildClip, originals, state.Budget, token);
+                Retain(first.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands."), first.IsEvenOdd, first.PaintKind, first.ChildClip, first.SourceOpacity, first.InstanceOpacity, originals, state.Budget, token);
             }
             if (next.Children is {} nextRange) RetainRange(nextRange, originals, state.Budget, token);
             else Retain(next.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands."),
-                next.IsEvenOdd, next.PaintKind, next.ChildClip, originals, state.Budget, token);
+                next.IsEvenOdd, next.PaintKind, next.ChildClip, next.SourceOpacity, next.InstanceOpacity, originals, state.Budget, token);
             int childCount = checked(first.ChildCount + next.ChildCount);
             range = range with { Count = checked(range.Count + (next.Children?.Count ?? 1)) };
             if (childCount > 42 || first.UsesMaskFallback || next.UsesMaskFallback || first.ChildClip is not null || next.ChildClip is not null)
@@ -184,7 +193,7 @@ internal static class SvgClipDefinitionStaging
                 && TryGetAxisClipBox(first.Points, token, out SvgClipBox firstBox)
                 && TryGetAxisClipBox(next.Points, token, out SvgClipBox nextBox))
             {
-                SvgClipPolygon? outer = firstBox.Contains(nextBox.X, nextBox.Y, nextBox.Right, nextBox.Bottom) ? first
+                SvgClipContent? outer = firstBox.Contains(nextBox.X, nextBox.Y, nextBox.Right, nextBox.Bottom) ? first
                     : nextBox.Contains(firstBox.X, firstBox.Y, firstBox.Right, firstBox.Bottom) ? next : null;
                 if (outer is {} containing)
                 {
@@ -201,11 +210,11 @@ internal static class SvgClipDefinitionStaging
                 ResourceBounds = new(MathF.Min(firstBounds.Left, nextBounds.Left), MathF.Min(firstBounds.Top, nextBounds.Top),
                     MathF.Max(firstBounds.Right, nextBounds.Right), MathF.Max(firstBounds.Bottom, nextBounds.Bottom)) };
 
-            static void Retain(SvgAuthoredPath path, bool isEvenOdd, SvgClipPaintKind paintKind, SvgClipIntersection? clip, BudgetedParserList<SvgClipChild> originals,
+            static void Retain(SvgAuthoredPath path, bool isEvenOdd, SvgClipPaintKind paintKind, SvgClipIntersection? clip, SvgPaintOpacity sourceOpacity, SvgPaintOpacity instanceOpacity, BudgetedParserList<SvgClipChild> originals,
                 RenderBudget budget, CancellationToken token)
             {
                 SvgAuthoredPath copy = path.Copy(SvgAffineTransform.Identity, budget, token);
-                try { originals.Add(new(copy, isEvenOdd, paintKind, clip)); }
+                try { originals.Add(new(copy, isEvenOdd, paintKind, clip) { SourceOpacity = sourceOpacity, InstanceOpacity = instanceOpacity }); }
                 catch { copy.Dispose(); throw; }
             }
 
@@ -217,12 +226,12 @@ internal static class SvgClipDefinitionStaging
                 {
                     token.ThrowIfCancellationRequested();
                     SvgClipChild child = originals[index];
-                    Retain(child.Path, child.IsEvenOdd, child.PaintKind, child.Clip, originals, budget, token);
+                    Retain(child.Path, child.IsEvenOdd, child.PaintKind, child.Clip, child.SourceOpacity, child.InstanceOpacity, originals, budget, token);
                 }
                 return new(first, source.Count);
             }
 
-            static SvgPaintBounds ChildBounds(SvgClipPolygon polygon, SvgAuthoredPath? path, CancellationToken token)
+            static SvgPaintBounds ChildBounds(SvgClipContent polygon, SvgAuthoredPath? path, CancellationToken token)
             {
                 if (polygon.ResourceBounds is {} bounds) return bounds;
                 if (path is null) throw new InvalidOperationException("A clip union requires source bounds or commands.");
@@ -263,7 +272,7 @@ internal static class SvgClipDefinitionStaging
     internal static void ResolveIntersections(SvgDocumentState state, CancellationToken token)
     {
         using BudgetedParserList<SvgClipDependency> roots = new(state.Budget, SvgMemoryCategory.Parser, token);
-        foreach (KeyValuePair<string, SvgClipPolygon> entry in state.ClipPolygons.Entries)
+        foreach (KeyValuePair<string, SvgClipContent> entry in state.ClipContents.Entries)
             if (!entry.Value.IsDisabled && entry.Value.ResourceClipId is not null) roots.Add(new(entry.Key));
         foreach (SvgClipDependency root in roots.AsSpan())
         {
@@ -272,10 +281,10 @@ internal static class SvgClipDefinitionStaging
             {
                 token.ThrowIfCancellationRequested();
                 string id = dependency.Id;
-                if (!state.ClipPolygons.TryGetValue(id, out SvgClipPolygon body) || body.ResourceClipId is not {} parentId) continue;
+                if (!state.ClipContents.TryGetValue(id, out SvgClipContent body) || body.ResourceClipId is not {} parentId) continue;
                 if (SvgClipPathSyntax.IsDisabled(parentId, state))
                 {
-                    state.ClipPolygons.Replace(id, body with { ResourceClipId = null });
+                    state.ClipContents.Replace(id, body with { ResourceClipId = null });
                     continue;
                 }
                 if (body.ChildClip is not null || body.UsesMaskFallback || body.IsObjectBoundingBox || body.SourcePath is not {} source) continue;
@@ -285,7 +294,7 @@ internal static class SvgClipDefinitionStaging
                     SvgAuthoredPath parent;
                     bool parity = false;
                     if (state.Clips.TryGetValue(parentId, out SvgClipBox box)) parent = temporary = Rectangle(box, state.Budget, token);
-                    else if (state.ClipPolygons.TryGetValue(parentId, out SvgClipPolygon content))
+                    else if (state.ClipContents.TryGetValue(parentId, out SvgClipContent content))
                     {
                         if (content.HasIntersections || content.UsesMaskFallback || content.IsObjectBoundingBox) continue;
                         if (content.SourcePath is {} path) parent = path;
@@ -297,13 +306,13 @@ internal static class SvgClipDefinitionStaging
                     SvgAuthoredPath resolved = SvgClipUnion.ResolveNativeIntersection(source, body.IsEvenOdd, parent, parity, state.Budget, token);
                     try
                     {
-                        SvgClipPolygon replacement = CaptureBoundary(body, resolved, true, state, token) with
+                        SvgClipContent replacement = CaptureBoundary(body, resolved, true, state, token) with
                             { ResourceClipId = null, IsOval = false, PaintKind = SvgClipPaintKind.Path };
                         // Empty silhouettes use the same zero-box binding as
                         // empty direct/deferred definitions; they have no path
                         // to register with the native contour constructor.
                         if (replacement.Points.Length == 0) state.Clips.TryAdd(id, new(0, 0, 0, 0));
-                        state.ClipPolygons.Replace(id, replacement);
+                        state.ClipContents.Replace(id, replacement);
                         source.Dispose();
                     }
                     catch { resolved.Dispose(); throw; }
@@ -331,7 +340,7 @@ internal static class SvgClipDefinitionStaging
 
     // Borrows both the old value and incoming path. The caller publishes the
     // returned replacement before releasing the old owner, and owns failure cleanup.
-    internal static SvgClipPolygon CaptureBoundary(SvgClipPolygon polygon, SvgAuthoredPath source, bool parity,
+    internal static SvgClipContent CaptureBoundary(SvgClipContent polygon, SvgAuthoredPath source, bool parity,
         SvgDocumentState state, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
@@ -348,10 +357,10 @@ internal static class SvgClipDefinitionStaging
             IsResolvedUnion = true, DeferredUnion = false, UsesNativeReplay = true };
     }
 
-    internal static SvgClipPolygon Complete(SvgDocumentState state, CancellationToken cancellationToken)
+    internal static SvgClipContent Complete(SvgDocumentState state, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        SvgClipPolygon polygon = state.ClipPolygon ?? throw new InvalidOperationException("Clip polygon registration requires retained points.");
+        SvgClipContent polygon = state.ClipPolygon ?? throw new InvalidOperationException("Clip polygon registration requires retained points.");
         polygon = polygon with { IsDisabled = !state.ClipIsDisplayed, ResourceClipId = state.ClipResourceClipId };
         if (!polygon.IsDisabled && polygon.DeferredUnion && !polygon.UsesMaskFallback)
         {
@@ -382,7 +391,7 @@ internal static class SvgClipDefinitionStaging
         // Preserve the qualified contour ordering and cyclic starts. Same-directed
         // nonzero contours represent the union of overlapping convex children;
         // disjoint content retains its established parity replay.
-        static SvgAuthoredPath NormalizeUnion(SvgClipPolygon polygon, RenderBudget budget, CancellationToken token)
+        static SvgAuthoredPath NormalizeUnion(SvgClipContent polygon, RenderBudget budget, CancellationToken token)
         {
             if (SvgClipUnion.ResolveCrossings(polygon, budget, token) is {} resolved) return resolved;
             int count = polygon.ContourEnds.Length;
