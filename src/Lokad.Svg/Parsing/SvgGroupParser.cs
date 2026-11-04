@@ -56,8 +56,7 @@ internal static class SvgGroupParser
             opacityScope = state.NewRecordingScope();
         SvgRecordingScope contentScope = maskReference is null ? opacityScope : state.NewRecordingScope();
         string? clipId = SvgClipPathSyntax.ResolveClipId(reader, state);
-        if (hasScope && (state.PaintResources?.HasPaintServerReferences == true || state.FilterGroupDepth > 0 || filterId is not null)
-            && (clipId is not null || deferredMask is not null || filterId is not null || sourceOpacity.Value != 1))
+        if (hasScope && (clipId is not null || deferredMask is not null || filterId is not null || sourceOpacity.Value != 1))
         {
             resolved = resolved with { Presentation = resolved.Presentation with
             {

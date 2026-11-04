@@ -1,5 +1,5 @@
 {
-  "status": "Open correctness review. No production fix or reference change is promoted. The prototype is an investigation candidate, not a completed qualification.",
+  "status": "Historical failing-before investigation, closed by the symbol canvas qualification. Frozen baseline rows, source recipe, prototype evidence and native targets remain unchanged.",
   "sourceCommit": "f4623ba4b25fe5820a9d730c55c38acc2a74bd61",
   "sourceLfSha256": "f30e06d4adad7abff1d428db05c96863f7257cf225b96631c6ae0cac7c55b7e1",
   "scope": {
@@ -3382,5 +3382,6 @@
       "baselineExact": 16,
       "promoted": false
     }
-  ]
+  ],
+  "currentQualification": "../release-baselines/symbol-canvas-qualification.json"
 }

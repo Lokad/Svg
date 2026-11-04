@@ -30,9 +30,47 @@ public static partial class SvgConverter
         internal SvgDashPolygonSource? Dash { get; init; }
         public void Dispose() { Reservation?.Dispose(); Authored?.Dispose(); }
 
-        /// <summary>Gets bordered construction when complete mapped path/control bounds escape this bitmap or the SVG clip.</summary>
-        internal SvgAnalyticClipContext? GetConstructionClip(SvgCpuRasterContext context, SvgAnalyticClipBounds? contentClip)
-            => ClipContainsPath && CompleteBounds.IsContainedBy(GetBitmapClip(context, contentClip)) ? null : new(GetBitmapClip(context, contentClip), context.Origin);
+        /// <summary>Gets bordered construction when complete path/control bounds escape this bitmap or the SVG clip.</summary>
+        /// <remarks>Global bounds are only an initial containment check: moving translation into the
+        /// bitmap before mapping can put a retained point just outside an apparently touching edge.
+        /// The raw-operand check borrows source storage, allocates nothing and observes cancellation.</remarks>
+        internal SvgAnalyticClipContext? GetConstructionClip(SvgCpuRasterContext context, SvgAnalyticClipBounds? contentClip, CancellationToken token)
+        {
+            SvgAnalyticClipBounds clip = GetBitmapClip(context, contentClip);
+            bool contained = ClipContainsPath && CompleteBounds.IsContainedBy(clip);
+            SvgCpuBitmapOrigin origin = context.Origin;
+            if (contained && Authored is {} source && (origin.X != 0 || origin.Y != 0))
+            {
+                int quad = 0, cubic = 0;
+                for (int index = 0; index < source.Points.Length; index++)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!Contains(source.Points[index], AuthoredMap, origin, clip)) { contained = false; break; }
+                    // Retained curve endpoints and controls define native bounds. Interior
+                    // fallback samples are not operands of the source drawing.
+                    if (quad < source.QuadSpans.Length && source.QuadSpans[quad].StartIndex == index)
+                    {
+                        SvgQuadSpan span = source.QuadSpans[quad++];
+                        if (!Contains(span.Control, AuthoredMap, origin, clip)) { contained = false; break; }
+                        index = span.EndIndex - 1;
+                    }
+                    else if (cubic < source.CubicSpans.Length && source.CubicSpans[cubic].StartIndex == index)
+                    {
+                        SvgCubicSpan span = source.CubicSpans[cubic++];
+                        if (!Contains(span.FirstControl, AuthoredMap, origin, clip) || !Contains(span.SecondControl, AuthoredMap, origin, clip)) { contained = false; break; }
+                        index = span.EndIndex - 1;
+                    }
+                }
+            }
+            return contained ? null : new(clip, origin);
+
+            static bool Contains(SvgDevicePoint point, SvgAffineTransform map, SvgCpuBitmapOrigin origin, SvgAnalyticClipBounds clip)
+            {
+                SvgDevicePoint local = SvgAuthoredPath.MapPoint(map, point, origin);
+                return local.X >= (double)clip.Left - origin.X && local.X <= (double)clip.Right - origin.X
+                    && local.Y >= (double)clip.Top - origin.Y && local.Y <= (double)clip.Bottom - origin.Y;
+            }
+        }
 
         /// <summary>Keeps bitmap walking distinct from whole-path storage and exclusively owned painting.</summary>
         internal SvgAnalyticScanWindow GetScanWindow(SvgCpuRasterContext context, SvgAnalyticClipBounds? contentClip)
@@ -3568,6 +3606,20 @@ public static partial class SvgConverter
             cancellationToken.ThrowIfCancellationRequested();
             SvgAffineTransform recorded = activeViewport.DrawMap is {} viewport
                 ? viewport.Prepare(output, target) : output.ComposeChecked(target);
+            if (space == PathCoordinateSpace.User && frame is null && !collectingViewportClip && isolatedBitmapScope is not null
+                && !activePaint.IsPreparedDrawing && !activePaint.IsMarkerContent
+                && (activeViewport.DrawMap is not null || activePaint.RecordingTransform is not null))
+            {
+                // A retained canvas receives output placement before its recorded
+                // groups. Prepared text, markers and unrecorded source placement
+                // keep their complete maps; joining output to a retained first
+                // stage loses that float boundary.
+                recorded = output.ComposeNative(target);
+                if (activePaint.RecordingTransform is {} rootRecording
+                    && rootRecording.TryMapCanvas(SvgShaderMatrix.FromAffine(drawingMap.PlaceRecorded(output)),
+                        SvgAffineTransform.Identity, target, budget, cancellationToken, out SvgShaderMatrix rootDrawing))
+                    return new(rootDrawing.ScaleX, rootDrawing.SkewY, rootDrawing.SkewX, rootDrawing.ScaleY, rootDrawing.TranslateX, rootDrawing.TranslateY);
+            }
             // Fitted glyph outlines already contain complete destination placement.
             return space == PathCoordinateSpace.Device ? recorded : drawingMap.PlaceRecorded(recorded);
         }

@@ -251,6 +251,11 @@ samples cannot veto that classification. [Polygon traversal](../src/Lokad.Svg/Sv
 shares preparation, row work and scratch across paint kinds without merging their
 sampling/blend semantics.
 
+Global containment does not prove bitmap-local containment: subtracting the bitmap
+origin before source mapping can move a touching operand just outside the clip.
+Retained endpoints and controls establish that final check; flattened fallback
+samples do not define the source drawing's bounds.
+
 ## Coordinates and bounds
 
 | Domain | Invariant |
@@ -272,6 +277,15 @@ bind to the same compositor grid and active raster scope. A source content clip
 can narrow construction without moving the bitmap origin; owned interiors still
 limit writes. The [opacity-source evidence](../tests/Research/svgweb/opacity-source-scope.json)
 maps direct mechanisms, distinct leaf/group regressions and original consumers.
+
+Ordinary isolated draws with retained canvas stages apply output placement before
+the first recorded group. Unrecorded source placement and prepared text/marker
+drawing retain their complete maps; filter-device stages keep their own contracts. The
+[symbol canvas controls](../tests/Research/symbol-fractional-frames/README.md)
+retain independent image references and native command operands for both cases.
+Recording belongs to the isolated canvas independently of its solid or shader
+material. Prepared text/fragment drawing is an explicit paint role; it keeps its
+complete map while shader preparation retains its own ancestor stages.
 
 A fractional root image clipped by its integer viewport remaps the visible source
 rectangle before residual image scaling. Keep both float stages even when the

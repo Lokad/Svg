@@ -80,11 +80,11 @@ public static partial class SvgConverter
                 if (refiltered)
                     _analytic = SvgAnalyticCoverage.Prepare(ref tiledPreparation, _storageStartX, storageEndX,
                         raster.PathStartY, raster.PathEndY, raster.GetScanWindow(context, bitmapClip), context.Origin,
-                        raster.GetConstructionClip(context, bitmapClip), paintClip, budget, out analytic, token);
+                        raster.GetConstructionClip(context, bitmapClip, token), paintClip, budget, out analytic, token);
                 else
                     _analytic = SvgAnalyticCoverage.Prepare(ref preparation, _storageStartX, storageEndX,
                         raster.PathStartY, raster.PathEndY, raster.GetScanWindow(context, bitmapClip), context.Origin,
-                        raster.GetConstructionClip(context, bitmapClip), paintClip, budget, out analytic, token);
+                        raster.GetConstructionClip(context, bitmapClip, token), paintClip, budget, out analytic, token);
                 IsAnalytic = analytic;
                 StartX = analytic ? Math.Max(raster.StartX, paintArea.Left) : raster.StartX;
                 EndX = analytic ? Math.Min(raster.EndX, paintArea.Right) : raster.EndX;

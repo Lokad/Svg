@@ -1,0 +1,1401 @@
+{
+  "status": "Original symbol canvas screen and local platform/runtime qualification closed. Matching committed-source packages and CI remain pending; unchanged Windows DejaVu authority conflict remains open.",
+  "sourceBaseCommit": "0f7699fbcb5ca362a0c42eaf1d56f829614b2ea0",
+  "sourceLfSha256": {
+    ".github/workflows/ci.yml": "eaf50130477587b8ff06132405e9e6b386d135da1500300e636ed3b49d247f0f",
+    "src/Lokad.Svg/Parsing/SvgGroupParser.cs": "39c1954c6f35cc26656843c214a0db26a947da89d865fef77c3e2c402dea25a1",
+    "src/Lokad.Svg/Parsing/SvgPaintRecording.cs": "da4326d7ce39482d61ebd5947bbbdc062ed576da063b8507637f2afad1e5a73c",
+    "src/Lokad.Svg/Parsing/SvgReferenceResolver.cs": "61e5161134cef1d69069fc1b52a160b69d14125917b71517a87e162885419165",
+    "src/Lokad.Svg/Parsing/SvgTextPaintPreparation.cs": "0708cfa59c7c48acfc12aeef111d167e62cb70fbdf78ae48302fdc552424ee5e",
+    "src/Lokad.Svg/SvgConverter.PolygonRaster.cs": "4695d90d3f8823273a34a627d8dadc1d94fb970ada03bb9efc533c1ede97ae95",
+    "src/Lokad.Svg/SvgConverter.cs": "400aa126792444d5b96feaa4e15c69136f3869f15e5308585c881d77534426e5",
+    "tests/Lokad.Svg.Tests/SvgBitmapLocalLineTests.cs": "cf698c986fdfb023649ca3f2fc6e57c957c2dc37855ec1c0f1070cc699f10765",
+    "tests/Lokad.Svg.Tests/SvgCapturedCanvasCoordinatesTests.cs": "84765f4e58232b940fa918d582e15a20b5d928d6179ecd912495d06101042494",
+    "tests/Lokad.Svg.Tests/SvgUseInstanceTests.cs": "64439d6368fbda7f09ff05363987116123ac1ef2d3bb8d92e8a194fb008836ed",
+    "tests/Lokad.Svg.VisualTests/PaintReferenceBank.cs": "a65e2e942490e4ab230ef3e09d60dff23cbfe85b683138f73cc8eaaadc110169",
+    "tests/Lokad.Svg.VisualTests/SvgSymbolCanvasReferenceTests.cs": "04fee247047aaee981612f2addf59771302ec1d64816048ba98e090a1bdedbf9"
+  },
+  "manifest": "../symbol-fractional-frames/canvas-capture.json",
+  "manifestLfSha256": "3333b0c6372fbe63e02fd0f1b95a1bed6774dc020140e071b07c41695f16d9d4",
+  "nativeStageObservations": "../symbol-fractional-frames/canvas-stages.json",
+  "nativeStageObservationsLfSha256": "da53851250ff432d34d7bf29ca080218fa689890e6523f54893b7031b38fa42c",
+  "investigation": "../symbol-fractional-frames/canvas-review.json",
+  "scope": "Closes the original R86 symbol/nested-viewport screen and its obsolete nonuniform-source-command admission restriction. Broader R54/R55/R69/R85/R86 shader/composition findings remain separate.",
+  "originals": {
+    "pairs": 480,
+    "inputs": 960,
+    "sourceByteIdentities": 480,
+    "beforeAdmittedPerHost": 912,
+    "beforeExactPerHost": 874,
+    "beforeResidualsPerHost": 38,
+    "beforeRejectedPerHost": 48,
+    "afterAdmittedPerHost": 960,
+    "afterExactPerHost": 960,
+    "priorExactLosses": 0,
+    "admissionLosses": 0,
+    "bothSourceRolesRetained": true,
+    "sourceInputsSha256": "db747ee4fe2122db53fe47a5641b4e22cb803c1dcb741364df668799a5705a04",
+    "nativeTargetsSha256": "85911a6d56c1075bbfe16e5adc8bfa1507b9fc3d5ba9963e8915d5ce999e8570"
+  },
+  "closedGroups": [
+    {
+      "inputs": 24,
+      "behavior": "Straight rect/path/polygon offset-viewBox residuals"
+    },
+    {
+      "inputs": 14,
+      "behavior": "Ellipse drawing and bitmap-local clipping residuals"
+    },
+    {
+      "inputs": 48,
+      "behavior": "Nonuniform curved symbol strokes rejected by the obsolete orthogonal-source guard"
+    }
+  ],
+  "sharedCauses": {
+    "canvas": "Output placement precedes the first retained group stage; all isolated solid/shader canvases retain their stages.",
+    "construction": "Global path bounds are an initial gate. Retained raw endpoints/controls establish final bitmap-local containment; fallback samples do not.",
+    "drawingRoles": "Prepared text/fragment and marker drawings retain their already complete placement maps. No text layout, shaping or fitting change.",
+    "admission": "Existing retained source commands reconstruct fills/strokes after nonuniform placement; flattened-only contours remain unsupported.",
+    "ownership": "Existing scene-owned transform records and byte paint-role flags; no new pixel owner, cache, general coordinate framework or public API."
+  },
+  "references": {
+    "originalNativeComparisons": 5760,
+    "additionalNativeComparisons": 96,
+    "additionalInputs": 16,
+    "independentProcesses": 24,
+    "screenshotComparisons": 48,
+    "availableCommandLogs": 45,
+    "sourceTargetsUnchanged": true,
+    "authority": "Independent pinned Chrome original targets and command logs on both hosts, three fresh processes per capture kind. Missing command logs remain unavailable; no library-rendered goldens or tolerances."
+  },
+  "unchangedBoundaries": {
+    "explicitSymbolOverflowDiagnosticRejections": 5,
+    "textAndMarkerReferences": "Unchanged; full platform suites retain their distinct drawing-map paths."
+  },
+  "validation": {
+    "fullNet11": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+        "testAssemblySha256": "b86369d36c42de8955ecc9483977532d84fb831506810e9d6bde73c2e1a47fe1",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 50.64852189994417,
+        "counters": {
+          "executed": "47575",
+          "passed": "47575",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+        "testAssemblySha256": "b86369d36c42de8955ecc9483977532d84fb831506810e9d6bde73c2e1a47fe1",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 55.49880880001001,
+        "counters": {
+          "executed": "47575",
+          "passed": "47575",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+        "testAssemblySha256": "7b489c0750f3b5506a0b556bf8f64e24796ee93141be76d75e750e60aef676f3",
+        "selection": "Unfiltered",
+        "exitCode": 1,
+        "seconds": 70.6825864999555,
+        "counters": {
+          "executed": "70841",
+          "passed": "70840",
+          "failed": "1"
+        },
+        "failures": [
+          {
+            "name": "Lokad.Svg.VisualTests.SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ]
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+        "testAssemblySha256": "7b489c0750f3b5506a0b556bf8f64e24796ee93141be76d75e750e60aef676f3",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 171.88797929999419,
+        "counters": {
+          "executed": "70841",
+          "passed": "70841",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+        "testAssemblySha256": "8d3e77e21a138d3f72a9656fd2dc89c051abd9d38975b8c10ecd5d4bc8b796e5",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.3560865998733789,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net11.0",
+        "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+        "testAssemblySha256": "8d3e77e21a138d3f72a9656fd2dc89c051abd9d38975b8c10ecd5d4bc8b796e5",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.383223099866882,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "compatibilityNet10": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "eeb1824baf59959225d7525b4709f0b3694062c02de61b953482e911f37ae7cf",
+        "testAssemblySha256": "f66a6ad60e30dec0bfbb35eeb20cbbc2084bcaf3afe5017cf8f435d25a3b1bfb",
+        "selection": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgGlyphLcdCoverageTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgRasterScopeTests|FullyQualifiedName~SvgAnalyticStorageWindowTests|FullyQualifiedName~SvgFilterStoredImageBoundsTests|FullyQualifiedName~SvgFilterSourceHintTests|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 29.73377689998597,
+        "counters": {
+          "executed": "12830",
+          "passed": "12830",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "eeb1824baf59959225d7525b4709f0b3694062c02de61b953482e911f37ae7cf",
+        "testAssemblySha256": "f66a6ad60e30dec0bfbb35eeb20cbbc2084bcaf3afe5017cf8f435d25a3b1bfb",
+        "selection": "(FullyQualifiedName~PublicContractTests|FullyQualifiedName~SvgConversionApiContractTests|FullyQualifiedName~RenderBudgetTests|FullyQualifiedName~SvgContourEligibilityTests|FullyQualifiedName~OwnershipTests|FullyQualifiedName~SvgSceneTransferMemoryTests|FullyQualifiedName~SvgViewportContextStorageTests|FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~PngEncoderTests|FullyQualifiedName~SvgAlphaBoundaryMechanismTests|FullyQualifiedName~SvgFilterSpriteMechanismTests|FullyQualifiedName~SvgDashCullingTests|FullyQualifiedName~SvgRectangleBitmapSpanTests|FullyQualifiedName~SvgGlyphLcdCoverageTests|FullyQualifiedName~SvgDoctypeTests|FullyQualifiedName~SvgInternalEntityTests|FullyQualifiedName~SvgCpuRasterContextTests|FullyQualifiedName~SvgRasterScopeTests|FullyQualifiedName~SvgAnalyticStorageWindowTests|FullyQualifiedName~SvgFilterStoredImageBoundsTests|FullyQualifiedName~SvgFilterSourceHintTests|FullyQualifiedName~SvgCapturedCanvasCoordinatesTests|FullyQualifiedName~SvgBitmapLocalLineTests)&Category!=Research",
+        "exitCode": 0,
+        "seconds": 28.786858499981463,
+        "counters": {
+          "executed": "12830",
+          "passed": "12830",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "eeb1824baf59959225d7525b4709f0b3694062c02de61b953482e911f37ae7cf",
+        "testAssemblySha256": "c6ef4cae551d424382efc4243d09c6b9f1c06c3dc98f68a1a4ffe119b3559384",
+        "selection": "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgXmlEntityReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|(FullyQualifiedName~SvgShaderContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgFilterSourceContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgSymbolCanvasReferenceTests&Category!=Research)",
+        "exitCode": 0,
+        "seconds": 21.913322699954733,
+        "counters": {
+          "executed": "970",
+          "passed": "970",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net10.0",
+        "librarySha256": "eeb1824baf59959225d7525b4709f0b3694062c02de61b953482e911f37ae7cf",
+        "testAssemblySha256": "c6ef4cae551d424382efc4243d09c6b9f1c06c3dc98f68a1a4ffe119b3559384",
+        "selection": "FullyQualifiedName~FixtureManifestTests|FullyQualifiedName~SvgViewportRecordingReferenceTests|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~RasterCaptureContractTests|FullyQualifiedName~SvgBackgroundColorTests|FullyQualifiedName~Representative_complete_png_paths|FullyQualifiedName~SvgDashRasterWindowReferenceTests|FullyQualifiedName~SvgImageFitSamplingReferenceTests|FullyQualifiedName~SvgXmlEntityReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|(FullyQualifiedName~SvgShaderContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgFilterSourceContextReferenceTests&Category!=Research)|(FullyQualifiedName~SvgSymbolCanvasReferenceTests&Category!=Research)",
+        "exitCode": 0,
+        "seconds": 36.04062410001643,
+        "counters": {
+          "executed": "970",
+          "passed": "970",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "windows",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "eeb1824baf59959225d7525b4709f0b3694062c02de61b953482e911f37ae7cf",
+        "testAssemblySha256": "87b0a2648791f42cc16de145feda84676563f208692243a08fb35ad536d9e845",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.452419700101018,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "font",
+        "framework": "net10.0",
+        "librarySha256": "eeb1824baf59959225d7525b4709f0b3694062c02de61b953482e911f37ae7cf",
+        "testAssemblySha256": "87b0a2648791f42cc16de145feda84676563f208692243a08fb35ad536d9e845",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 1.2573349000886083,
+        "counters": {
+          "executed": "10",
+          "passed": "10",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "completeBank": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+        "testAssemblySha256": "7b489c0750f3b5506a0b556bf8f64e24796ee93141be76d75e750e60aef676f3",
+        "selection": "FullyQualifiedName~SvgSymbolCanvasReferenceTests",
+        "exitCode": 0,
+        "seconds": 12.568289899965748,
+        "counters": {
+          "executed": "977",
+          "passed": "977",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+        "testAssemblySha256": "7b489c0750f3b5506a0b556bf8f64e24796ee93141be76d75e750e60aef676f3",
+        "selection": "FullyQualifiedName~SvgSymbolCanvasReferenceTests",
+        "exitCode": 0,
+        "seconds": 13.904725600033998,
+        "counters": {
+          "executed": "977",
+          "passed": "977",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "routineBank": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+        "testAssemblySha256": "7b489c0750f3b5506a0b556bf8f64e24796ee93141be76d75e750e60aef676f3",
+        "selection": "FullyQualifiedName~SvgSymbolCanvasReferenceTests&Category!=Research",
+        "exitCode": 0,
+        "seconds": 10.900003000162542,
+        "counters": {
+          "executed": "50",
+          "passed": "50",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "host": "linux",
+        "kind": "visual",
+        "framework": "net11.0",
+        "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+        "testAssemblySha256": "7b489c0750f3b5506a0b556bf8f64e24796ee93141be76d75e750e60aef676f3",
+        "selection": "FullyQualifiedName~SvgSymbolCanvasReferenceTests&Category!=Research",
+        "exitCode": 0,
+        "seconds": 12.759754800004885,
+        "counters": {
+          "executed": "50",
+          "passed": "50",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "proportionalValidation": {
+    "routineImages": 50,
+    "extendedResearchImages": 926,
+    "integrityChecks": 1,
+    "canonicalPath": "Synchronous owned PNG; exact dimensions and full canonical RGBA digest.",
+    "contracts": "Existing direct/prepared/async/destination ownership, cancellation, memory refusal, cleanup and retry remain separate. They are not repeated across this rendering bank.",
+    "mechanisms": [
+      "Native output-before-first-group float boundary",
+      "Material-independent canvas recording",
+      "Global touching/local escaping source point",
+      "Retained nonuniform polygon commands and placement"
+    ],
+    "measuredSelectionSeconds": {
+      "windows": {
+        "completeBank": 12.568289899965748,
+        "routineBank": 10.900003000162542
+      },
+      "linux": {
+        "completeBank": 13.904725600033998,
+        "routineBank": 12.759754800004885
+      }
+    },
+    "timingLimit": "Single test-run samples include discovery/startup on an active workstation. This measures validation scope, not renderer performance or a quiet-VM speedup.",
+    "excludedValidation": "The first .NET 10 run used stale test assemblies and is excluded. The recorded compatibility run followed an explicit net10.0 solution build and includes all new routine tests."
+  },
+  "svgweb": {
+    "originals": {
+      "sourceSvgFilesRetained": 0,
+      "files": 204,
+      "seconds": 92.70186989987269,
+      "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+      "hosts": {
+        "windows": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        },
+        "linux": {
+          "outcomes": {
+            "UnsupportedFeature": 35,
+            "rendered": 168,
+            "MalformedInput": 1
+          },
+          "byteIdenticalPreviouslyRenderedPngs": 168,
+          "changedOriginals": []
+        }
+      }
+    },
+    "suppliedOriginalContexts": [
+      {
+        "name": "410.svg",
+        "sourceSha256": "5fba6c8c0d7da11542e4a8f9ad9754868000926a7436481115b820900eb0491b",
+        "nativeInputSha256": "24e95deaf6f02f6999354b907e16a061debe7e5a616bd5a6485ea00adab503de",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "a4a571580945e349969a0b8ca6b29385190dff43bd13cd3c22dda73235d76ed9",
+            "nativePngSha256": "02e3bace29f4057835dae153e1ca8746ef2d40cb702bd9c2c0b9412696ef0fe9",
+            "previousLibraryPngSha256": "a4a571580945e349969a0b8ca6b29385190dff43bd13cd3c22dda73235d76ed9",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "00446f6594ef1935fb0450b6cc60e71cb408d087ce8733e5b4e290b7fe9d516b",
+            "nativePngSha256": "cb71c8506fc6c1e397f45e45cc52d47440b26c3fbb62c5bb021d54700e712efd",
+            "previousLibraryPngSha256": "00446f6594ef1935fb0450b6cc60e71cb408d087ce8733e5b4e290b7fe9d516b",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSans-Bold.svg",
+        "sourceSha256": "b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed",
+        "nativeInputSha256": "ea03a2db026943cc1341d1cf19828363e8112af1d0221c3e219d147b4bcaff8b",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "1905506cbcab7313c6012c64d1f80f35f69e7e0cf89839a9ea45cfb1b9176092",
+            "nativePngSha256": "27a1d546b950ade8557671d56a5897eecefc5e1b3dba9e2c71da00009947a4cf",
+            "previousLibraryPngSha256": "1905506cbcab7313c6012c64d1f80f35f69e7e0cf89839a9ea45cfb1b9176092",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "4fe1f73355bb3cb3a1906ab580b5ac5c3e7505c850aced3e96c92460353da471",
+            "nativePngSha256": "1124f2c8a55ebb93844fb1ece7de2ca41332a79c965458fe93c668c873ae5a6f",
+            "previousLibraryPngSha256": "4fe1f73355bb3cb3a1906ab580b5ac5c3e7505c850aced3e96c92460353da471",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSans.svg",
+        "sourceSha256": "258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b",
+        "nativeInputSha256": "5aea5bc1bc3975fa4b286990e0484c7dc88d0cf191ff7de3ca822aab4fa2dd68",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "0dde9aecc62c64c6b363087a570988d5db9d8d6da9ff3d0e980cde42fc0f2714",
+            "nativePngSha256": "b626b2385dc37d3b796226305d5361b99b352183db0408045cc4e002001424bd",
+            "previousLibraryPngSha256": "0dde9aecc62c64c6b363087a570988d5db9d8d6da9ff3d0e980cde42fc0f2714",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "19e01136bfceba07813396f3d7d3fee9462aaf8b326e520302bdfd9f876c9744",
+            "nativePngSha256": "0f11d0e666dad4e603cc191828cb037678ce6d2e876e064ab20eb1309d9eb7ec",
+            "previousLibraryPngSha256": "19e01136bfceba07813396f3d7d3fee9462aaf8b326e520302bdfd9f876c9744",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSansMono.svg",
+        "sourceSha256": "c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d",
+        "nativeInputSha256": "81953bf52c7ec3e7e76996060ee380e7ba6eddef1c5ab3c1b210908d54b7366b",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "955dba989ccd56f1516eca8d7b9e2a583fd4d9392150da0a4476e64653dccbe5",
+            "nativePngSha256": "211001fc7ee02c8e6be4b893d5a1c11a50842b580bb1b2e06913c9ee0f940f8e",
+            "previousLibraryPngSha256": "955dba989ccd56f1516eca8d7b9e2a583fd4d9392150da0a4476e64653dccbe5",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "7c09529f0897833e02aa27e9485343d004660ac5f8a636dfc5f1fd8efa1cc756",
+            "nativePngSha256": "2a7959518fad187e60c60db53388c194a6626e73862447f94f778e10b41c622c",
+            "previousLibraryPngSha256": "7c09529f0897833e02aa27e9485343d004660ac5f8a636dfc5f1fd8efa1cc756",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSerif-Bold.svg",
+        "sourceSha256": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+        "nativeInputSha256": "d94d2d67b70689385feeb0e96b6ba168d98c602834b049e2dde88e37b89bdaa3",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "54e9d6ee0fc7c1dbe2b1d601b0170d3f53b370ea64e960e8902f888b63bd98b0",
+            "nativePngSha256": "ad877cd7fa6fb71f52a31749a3fb383611db2691a859cee71608fd462b3e55e1",
+            "previousLibraryPngSha256": "54e9d6ee0fc7c1dbe2b1d601b0170d3f53b370ea64e960e8902f888b63bd98b0",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "67f115097ea0555bc44b15481721ba4a1fab6f9be0ea34b0e4d659bafa9738c5",
+            "nativePngSha256": "7b1ecbd374dbb7c5c4094526005a6b3cd8c22b3d801f239ff746bb7f345dbf42",
+            "previousLibraryPngSha256": "67f115097ea0555bc44b15481721ba4a1fab6f9be0ea34b0e4d659bafa9738c5",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSerif-BoldItalic.svg",
+        "sourceSha256": "ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0f424f7f259",
+        "nativeInputSha256": "e3c283af2ad1dd014d5a4f9ba0b2e2ff070e9be8a89bea6a3b2b26c042b1b55c",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "b5f4a89dda303222f349d5387567fc236954cccdb459c6a59ddb87249066ade6",
+            "nativePngSha256": "2ac3c6f4c2c8624cf1e3bb8d6cd4bd777c09a97cc547c2b6e7f318a23f166a4e",
+            "previousLibraryPngSha256": "b5f4a89dda303222f349d5387567fc236954cccdb459c6a59ddb87249066ade6",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "b33d400df43a98950cf7e8645ced094f05f0911dfce92b2c36874625597007cd",
+            "nativePngSha256": "50accb21da1a53d3591c2336264f1b7083e8fcebdff1344217f541f62fc58870",
+            "previousLibraryPngSha256": "b33d400df43a98950cf7e8645ced094f05f0911dfce92b2c36874625597007cd",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSerif-Italic.svg",
+        "sourceSha256": "e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73",
+        "nativeInputSha256": "5cd70c7dfff94fb3d56280985f7c8475b4165f3cd2cf36cf34c6dafe0e3c8666",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "ab4f6e1c7dd352dbd1bcc9fd931bd3eebe9e784d8f2c3e31a02c99b166ce20ca",
+            "nativePngSha256": "c307b807a93f54ecb5abef13c2ccf30d283c9b01d672ff90a914a4e2208de5ab",
+            "previousLibraryPngSha256": "ab4f6e1c7dd352dbd1bcc9fd931bd3eebe9e784d8f2c3e31a02c99b166ce20ca",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "e6e126c3f66a586378e2a2d0842af88d4c003b6b2da7ac21bf75387d2720f90e",
+            "nativePngSha256": "ce345270482cfc5d8ed9d3c242ce97b178101c862faa0f876a7752437668552f",
+            "previousLibraryPngSha256": "e6e126c3f66a586378e2a2d0842af88d4c003b6b2da7ac21bf75387d2720f90e",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "DroidSerif-Regular.svg",
+        "sourceSha256": "451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3",
+        "nativeInputSha256": "087f1c8929e94e218140d375d9e027a39ecc015e0263a7d61323c33c1a2958cc",
+        "legacySvgFontTransport": true,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "662e61585560b1ca52f29e08ea7e6a6cc4b4652cb5cfdc69b8f6d63517549358",
+            "nativePngSha256": "77dbea065f37ca44e7cd9a0ee48dee7e33e53eb1df9f64c2681a749108014e49",
+            "previousLibraryPngSha256": "662e61585560b1ca52f29e08ea7e6a6cc4b4652cb5cfdc69b8f6d63517549358",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "eb358b6837ff38ddacb23b23a64c883110109c7554cf7fc75736568203e0a925",
+            "nativePngSha256": "9ab8766ee929db3a35c1b9aba6cb7b2d48880f0e5dc9fd4c2d4d886975807541",
+            "previousLibraryPngSha256": "eb358b6837ff38ddacb23b23a64c883110109c7554cf7fc75736568203e0a925",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "USStates.svg",
+        "sourceSha256": "615f7c8c43e4d7181969496643ed8f35d74fc29fea391c8d8dd219aa6547136b",
+        "nativeInputSha256": "f6b84f18d0445d7685833d1096030c1d5ae026e64146bec6336cfb8a74fcf645",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "200cb1a07f6dd6a1f5180094fbeeea8ff6cc9c9f80f4c472d277353987482f26",
+            "nativePngSha256": "7f061c4c35103313c3c5b309aecfa720a7db8fd5f98e4b21436b6c861e3e7f52",
+            "previousLibraryPngSha256": "200cb1a07f6dd6a1f5180094fbeeea8ff6cc9c9f80f4c472d277353987482f26",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "c7f02d8bf11098d0ec4939fa8830419904036be3644bff6bb17df37ee3c97dea",
+            "nativePngSha256": "87e5488c81f0f1af875c955a90b54a576727ebc13ec5f7741fdfab1f126caead",
+            "previousLibraryPngSha256": "c7f02d8bf11098d0ec4939fa8830419904036be3644bff6bb17df37ee3c97dea",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "blocks_game.svg",
+        "sourceSha256": "4594f838008d371765539a53e53b52706e6afec99bf5fc38347e2a3ee142817c",
+        "nativeInputSha256": "15f564887d50395604e0e2eea34bbc9d1134018bb07f02994f6654aa763c93cf",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "c7dbbec7236439215f95ba8ba01b96384ddfb12f571ffb9af64726183fb226d0",
+            "nativePngSha256": "a68663c41cf1fb3e9bb6e9e97763ae5f80ebd950f345a9ce12156728adb2530d",
+            "previousLibraryPngSha256": "ac652718dabd34678d11163c6f6c6930cc8036c0ae4ba20362814a94e7d022f6",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "a9a12ae61198f82db28d5041d8b8e3d1e2e801b5e2ec399b59a26f39f74dd3d6",
+            "nativePngSha256": "f94a08705f57ff62f7c8e53cf9c9c7f4111366e82a4501c8507ba84c61d1408f",
+            "previousLibraryPngSha256": "a9a12ae61198f82db28d5041d8b8e3d1e2e801b5e2ec399b59a26f39f74dd3d6",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "decimal.svg",
+        "sourceSha256": "d0aba26e5d909c9f3e359a21a0b55b1bdea7c13cb843127bb8ffb8f6fd2b096b",
+        "nativeInputSha256": "4aa8c8623c9fbd1cb5763dbc15f729b2eb826a8cb6414fc685dfd193339bc98e",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "f5ccd3e62719c1e03a005910227552c7b1d8dbdf7603c575b66172ae9cdb1760",
+            "nativePngSha256": "e9858bb333408526c86a8b7d8181a0059d33c12cb722e856a8703ce177ff571f",
+            "previousLibraryPngSha256": "f5ccd3e62719c1e03a005910227552c7b1d8dbdf7603c575b66172ae9cdb1760",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "2ce50e8aa6942b1e47786f221196babc452171fc4a7e94dbb37dc08113573b3e",
+            "nativePngSha256": "ddb24bd6c399049665ab424a989a2d6d44fc6b7af09dce32345d942b47328ae2",
+            "previousLibraryPngSha256": "2ce50e8aa6942b1e47786f221196babc452171fc4a7e94dbb37dc08113573b3e",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "helloworld.svg",
+        "sourceSha256": "7bef17011e3c570fa07f5fe8671917e1df854bb9c0b67d1efbd105773fd5eb08",
+        "nativeInputSha256": "fcea494ca34d2b04de18645cc9df273c35fb573c5caa8ffa9b7872e5b41305e2",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "c47fba77f7903d0a270c3bc810981e46cc310d8f9540a46e4bb615f4395b055b",
+            "nativePngSha256": "9c6d3c81592d84937a343b32e966b167d7819cc7b1ea763f61fab1935e698e28",
+            "previousLibraryPngSha256": "c47fba77f7903d0a270c3bc810981e46cc310d8f9540a46e4bb615f4395b055b",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "29886e6393765bbe0461c3ec23b08237ef06d285cc71a254370449b6e31c4bd9",
+            "nativePngSha256": "e191d9fa8023d03688a344099801c7f009f8db6ed82fcc20edb51476a9a550bc",
+            "previousLibraryPngSha256": "29886e6393765bbe0461c3ec23b08237ef06d285cc71a254370449b6e31c4bd9",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "mysvg.svg",
+        "sourceSha256": "3976da5079172c8ea5edea4f2b8a3628b366816361796544fc499b3f8bc2f688",
+        "nativeInputSha256": "372009173917528a6f8bd92723c1c9a59f3b557fb9a6b319be9d850fb05e8943",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "fd1677b35d7fca5d8fd721c6d4c635ef903c6e83c20044cd271112db31a39494",
+            "nativePngSha256": "6de51ed27388bfc9d0bfee4ec24ccb6dd98d32e2fd1f588f98a416641d12246b",
+            "previousLibraryPngSha256": "fd1677b35d7fca5d8fd721c6d4c635ef903c6e83c20044cd271112db31a39494",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "22e1aa2894cf91828e26380c9bc90fdf588306018fb97345492d459f404802f4",
+            "nativePngSha256": "f901e84834ab70e5e4d43592dc27b48678388cdc67e1d44722856e9d896700aa",
+            "previousLibraryPngSha256": "22e1aa2894cf91828e26380c9bc90fdf588306018fb97345492d459f404802f4",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "paths-data-08-t.svg",
+        "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+        "nativeInputSha256": "63650e105ca44df1842b0de671e3b82428eeaee406b838a6e8b9c4010874f2e9",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "544de067f389ce73e5fd3d564f41be77165436b3614bd6199019c192915c4e8a",
+            "nativePngSha256": "1123469440b13349c30e3a635d3fb655ce880054155b1d5a2314b0c912853bc6",
+            "previousLibraryPngSha256": "544de067f389ce73e5fd3d564f41be77165436b3614bd6199019c192915c4e8a",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "f3d10e8f839c27b34f6139874c4be4831486fe0702e4ff200ce018937c20a674",
+            "nativePngSha256": "94c0fc90bd255cc6ea2455ec5bc8860beb17186e1415a9ae494cce0367418f6e",
+            "previousLibraryPngSha256": "f3d10e8f839c27b34f6139874c4be4831486fe0702e4ff200ce018937c20a674",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "paths-data-09-t.svg",
+        "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+        "nativeInputSha256": "82c877eea252382c28bdff152d2b1a4ca0bdc4dbbbf9ebbffbb38b82b979f93b",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "5ffa18fbffafab7906c9a2bf85c1626bfda72dcd64d47c7656db306180548b02",
+            "nativePngSha256": "da6e7cc123747feb77eeb9033ca27a79f564454ff19a0e82e11b9e8164896385",
+            "previousLibraryPngSha256": "5ffa18fbffafab7906c9a2bf85c1626bfda72dcd64d47c7656db306180548b02",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "7b57716f920463ecbf68de915c2fada48964b96f8b5f0d02173b907fa21eba38",
+            "nativePngSha256": "3d8ba14ad160f4e755fe2a08500401a6e93c02d9ced292767040f76da564fddd",
+            "previousLibraryPngSha256": "7b57716f920463ecbf68de915c2fada48964b96f8b5f0d02173b907fa21eba38",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "pservers-grad-03-b.svg",
+        "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+        "nativeInputSha256": "842c1418fc4fa732b9a0709f49b98d25a61d6f19573723c00cae3e868da86bf3",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "08f5761245927cdf723a8e3034d07cbc968b92c374399f1c8498d16af897fc9e",
+            "nativePngSha256": "1dd3f4536e56755d0f3aae7b76acb8f746c2f978a2871d1ad09667aad67a70d0",
+            "previousLibraryPngSha256": "08f5761245927cdf723a8e3034d07cbc968b92c374399f1c8498d16af897fc9e",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "5543cce91e2999c0493ef99bf967514d494b1b801f2b9b4b060a01b823aca603",
+            "nativePngSha256": "665539c98f35d78a0c93ec22c987713525495435e6793f04a4096180cd68d070",
+            "previousLibraryPngSha256": "5543cce91e2999c0493ef99bf967514d494b1b801f2b9b4b060a01b823aca603",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "shapes-polygon-01-t.svg",
+        "sourceSha256": "ba00b071ec66e3b98ac2de924563f69d72e714ab02adbbe1dd1266b418ea144e",
+        "nativeInputSha256": "1e807f557c3523e821c2653fa91f48f5e60f8f223906d1926d9669b6406340bd",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "b1c797ae558ca8d910136295927bcd74c5adecdb65b8d3ed69ec46de35dbe89b",
+            "nativePngSha256": "e4352a45e3a733fcbf086286a6d8219772ed14c779eeee4b2dcf95f115f5955c",
+            "previousLibraryPngSha256": "b1c797ae558ca8d910136295927bcd74c5adecdb65b8d3ed69ec46de35dbe89b",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "2ead9b5847f6e9c1e775bab9375d07020568b6438e12ae74e5d0713f8a855cb2",
+            "nativePngSha256": "e616993f425d19ab66480e79128a34d6188d91a7e0eff607138ccaf9c109d9c4",
+            "previousLibraryPngSha256": "2ead9b5847f6e9c1e775bab9375d07020568b6438e12ae74e5d0713f8a855cb2",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "shapes-polyline-01-t.svg",
+        "sourceSha256": "3d636692e459edc01b768cc607b0b1b3fcd06c379616a3771a06ae8dfc8324ca",
+        "nativeInputSha256": "51943e1895758a88aa9615c184e876397e7446549d2aa7d5606f084f5229e260",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "262911d1961bdc29bd065ddc38bc7909f52f5e14856ed3f1fad3f8292c20ef2b",
+            "nativePngSha256": "df80ece6e1639b87fe37a1fba69c6c573ca3802b8c5974e3e9897ccf6f2b930a",
+            "previousLibraryPngSha256": "262911d1961bdc29bd065ddc38bc7909f52f5e14856ed3f1fad3f8292c20ef2b",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "7839cc6cb9aad965fa303420e23e4c948b68345f205c82ae023cf31fce906654",
+            "nativePngSha256": "e1c3e7d83be663b71a3c4dec5232cba0cd2c195fafb8deb41fa08cdefe3b1c8b",
+            "previousLibraryPngSha256": "7839cc6cb9aad965fa303420e23e4c948b68345f205c82ae023cf31fce906654",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      },
+      {
+        "name": "snake.svg",
+        "sourceSha256": "52ac4b0c97fdd51ec9a93a618389164f3ebe60bd2cc0caabe781a1e011343072",
+        "nativeInputSha256": "0c64fcffd07cb1a1be46daf41822a9b8ffa59a54a246194686ed65f1bebc7e5a",
+        "legacySvgFontTransport": false,
+        "hosts": [
+          {
+            "host": "windows",
+            "libraryPngSha256": "c21463335c53bb48f7309a7929fc77f07e38d53832b19a88e8b25ccd19293d2f",
+            "nativePngSha256": "3227cec10225f313b3adaee4431e8a1e35b1e5212f46b4743fd60700f5b7ee7d",
+            "previousLibraryPngSha256": "05eddfff09c24797aeb38d82580c9656dbdd88c9f2e09ad90435e77ac6417a5c",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          },
+          {
+            "host": "linux",
+            "libraryPngSha256": "fd5be42b8b8dcd215fc4705ee9e51639799cdef794a64e9ed6c0fef4ae1e775b",
+            "nativePngSha256": "9cce08a9a51e9efc53a552541258eb1805ed51ff8237f2510b226f0d68ac1fd9",
+            "previousLibraryPngSha256": "fd5be42b8b8dcd215fc4705ee9e51639799cdef794a64e9ed6c0fef4ae1e775b",
+            "dimensionsMatch": true,
+            "changedPixels": 0,
+            "maximumError": 0,
+            "alphaChangedPixels": 0,
+            "differenceBounds": null,
+            "unchangedQualifiedPng": true
+          }
+        ]
+      }
+    ],
+    "additionalSuppliedOriginals": {
+      "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "hostedSvgBodiesRetained": 0,
+      "sourceAttributeValuesRetained": 0,
+      "rows": [
+        {
+          "name": "Steps.svg",
+          "sourceSha256": "bb86d3eca3502649661d892cbfdb8ad604611b3cdf48b5f131461536476715af",
+          "hosts": [
+            {
+              "host": "windows",
+              "libraryPngSha256": "e3ae075e6f1a0cdc2fa1f4fc19bf9355b43a7f02e1d21a37f72ac3877753df85",
+              "unchangedQualifiedPng": true
+            },
+            {
+              "host": "linux",
+              "libraryPngSha256": "00852916c8868773b5d5bb5083aacd9bf726b5e5bc046301923d276c4dd70af6",
+              "unchangedQualifiedPng": true
+            }
+          ]
+        },
+        {
+          "name": "bloglines.svg",
+          "sourceSha256": "4bb1b6ee3347cd5dfe48f6755eb0504058dd59d3e78a653678d55271b3c85324",
+          "hosts": [
+            {
+              "host": "windows",
+              "libraryPngSha256": "70386d8aca86d100c6e12915ffafb63dc2c41441f598c415399cf9873f5fbc1d",
+              "unchangedQualifiedPng": true
+            },
+            {
+              "host": "linux",
+              "libraryPngSha256": "c270fdfa994da71d4b93ef14d6c0101fe23f46b0109b785343de7e3d2aa9af8e",
+              "unchangedQualifiedPng": true
+            }
+          ]
+        }
+      ]
+    },
+    "unchangedOriginalXmlNoto": {
+      "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+      "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+      "hostedSvgBodiesRetained": 0,
+      "sourceAttributeValuesRetained": 0,
+      "rows": [
+        {
+          "name": "preserveAspectRatio.svg",
+          "sourceSha256": "1a567ae0ddcfb78474a7313673960004ef67bade3d0b8eea9719bee934888dcd",
+          "hosts": [
+            {
+              "host": "windows",
+              "libraryPngSha256": "641ee5d3d7c5ea99bb250bdd37f089b3d74a983d796f8f3f2c7b887bd52dc37d",
+              "unchangedQualifiedPng": true
+            },
+            {
+              "host": "linux",
+              "libraryPngSha256": "d2c319886593b0e911c69f8f7ca321531f00a9c3304151cd32e82aa244f4daa6",
+              "unchangedQualifiedPng": true
+            }
+          ]
+        }
+      ]
+    },
+    "staticDiagnostics": {
+      "librarySha256": "2b9b6f5d9b264231278cba2b93d381b06668b84f8a2603fc9dae725e867de2d1",
+      "seconds": 27.084073799895123,
+      "hostedSvgBodiesRetained": 0,
+      "sourceAttributeValuesRetained": 0,
+      "rows": [
+        {
+          "name": "anim1.svg",
+          "inputSha256": "7942478aa2b6d43600b66d59ff0233bb8c3b968f8ac95cd328554689b8ba37ec",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "993fcf0ea8e9a2d342ef2bb19652a1f77f2589600a858801f8e44246807a4f02",
+              "nativePngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "435b865f90ab3d76a366181f6cf9361706ee9eb5a56ad45a66afc5aef6138ced",
+              "nativePngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288"
+            }
+          ]
+        },
+        {
+          "name": "anim2.svg",
+          "inputSha256": "7942478aa2b6d43600b66d59ff0233bb8c3b968f8ac95cd328554689b8ba37ec",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "993fcf0ea8e9a2d342ef2bb19652a1f77f2589600a858801f8e44246807a4f02",
+              "nativePngSha256": "399cbd071e91a56aabc630f357957b19ab3d5ff8fbd25d4359e9c04656fb47d7"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "435b865f90ab3d76a366181f6cf9361706ee9eb5a56ad45a66afc5aef6138ced",
+              "nativePngSha256": "cd12957a1d8525e43a4d4973cabba90a9a344b72ef158903fd40e408f42fe288"
+            }
+          ]
+        },
+        {
+          "name": "anim3.svg",
+          "inputSha256": "01d0fc4eb0736ab7a69911cf8e641d4d47148b5c6777768c468de3a649042fa3",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "c4e22d2c1310669c33a0d707656545ebc2e185c0f6af84c61458fd8149de2cfb",
+              "nativePngSha256": "34f9054fae52dce9bf6224cf48bd3e2388ea061b0a4061e8058f578e77a0a761"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "82c248ed136cff062458ec7b7e35cac1794d26d4870f2651f25772db82ad32f5",
+              "nativePngSha256": "a32ee0d4effc15e8a806848bf527017ed0d1f398f9b0395be9cd892293e58ebc"
+            }
+          ]
+        },
+        {
+          "name": "pservers-grad-03-b-anim.svg",
+          "inputSha256": "901cbcd0c88a9bfe6d3535156cd9c291fcb8f02c6f4fe42281cef13fa03f9ca5",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "1ce781a8367158c3e21db5acfe9870132531e369be4d8886dffb17fa9a2c2fab",
+              "nativePngSha256": "6ab7834804b2182923973cbbf1772dff0768ba2f96b6926b946c92dee516e3e8"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "8ddb43ea9413642aee25b14066695ee9376ae340f3e411ce4d357ca5b379a682",
+              "nativePngSha256": "2427b1dea2e7bd5addba981d19b38ffca77818969a1d71af7978da645ef82a75"
+            }
+          ]
+        },
+        {
+          "name": "scimitar-anim.svg",
+          "inputSha256": "5f84c4415144324bda6ddace3fb123bdea17cd0806cdd97a6c187cf88955716d",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "938d321b936997fc851fbe97a6d009a1fb2ba3faacb6ee4c8fc14b96d6a4d8ac",
+              "nativePngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "938d321b936997fc851fbe97a6d009a1fb2ba3faacb6ee4c8fc14b96d6a4d8ac",
+              "nativePngSha256": "031c1857d265d824a7348ea8f99e13259f3b1594cadba1161b54d95eb6263408"
+            }
+          ]
+        },
+        {
+          "name": "x11.svg",
+          "inputSha256": "3e8f6019ec6704ba591a22a77cc9d6c074d24f284f39acfed30aa6dc3367a764",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "69c534aadfa677011acf494c524d93d63df4a7b793cf7f6be748b39b076f0992",
+              "nativePngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "69c534aadfa677011acf494c524d93d63df4a7b793cf7f6be748b39b076f0992",
+              "nativePngSha256": "dc56934beb71f6ec624deedc09a497be505f343aa8b04927b71ae65b000451c1"
+            }
+          ]
+        },
+        {
+          "name": "video1.svg",
+          "inputSha256": "acbd75d5d0eb797c0cb376fa4cbb0ba2144913434b6def13169e44f6b7d19602",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "bda76c338abf09180cdc368d80b1abb7b950ccde26904aa41ef8f67c3ff99eea",
+              "nativePngSha256": "b97ecc46a3d59adb48e6544fc937b24afb172bdedac39d0054f1c4dd952a5725"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "e99b29665fdd6701b57dd2b1b3dad16e58c2eb4a880e3afc1fc087a58571b56d",
+              "nativePngSha256": "ef467d4beadcabd2bc1266f697e38ba8af836e45d51d7b6c75d706b9a911eac2"
+            }
+          ]
+        },
+        {
+          "name": "image.svg",
+          "inputSha256": "cf26f013032b40b4c4ac540c98af4fa35dde742398cab8e74247c713b6479e58",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "56dc8696b09b4057390551dfe0b95e11f3684abf4bab7673b85457f1dd7e3715",
+              "nativePngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "56dc8696b09b4057390551dfe0b95e11f3684abf4bab7673b85457f1dd7e3715",
+              "nativePngSha256": "b27def4cfcee9e578a55750efcb631057e49b624713e38ce9111108255cd8d44"
+            }
+          ]
+        },
+        {
+          "name": "masking-path-04-b.svg",
+          "inputSha256": "254f228ce38a5a0b95ead459c3aea3ef45c48acdabc939dc7a45623dfd5269c5",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": null,
+              "beforeOutcome": "UnsupportedFeature",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "2df347e1732aa74871f900e9fe889f39d10c563ef28221adab092a37d844e5f3",
+              "nativePngSha256": "68f9f6ca560d6330020bad121ba7a33420737f6eb8bb984537bb569dbfa5749e"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": null,
+              "beforeOutcome": "UnsupportedFeature",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "807cd8586c848dba61e4dadae89175966deb9fcb6c5a88db55964e74ae5734b5",
+              "nativePngSha256": "93272bd8ac0baac031914f36596fe7adf53d527d65ad5e5378bfc7a65e157600"
+            }
+          ]
+        },
+        {
+          "name": "oscon.svg",
+          "inputSha256": "89e05955e9800c33d5c53a82461cc64a6b12f0830b0088824ae866dbd7411a19",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 2,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "4a8d892bc4f4a9527f7d5e9edb65efd6b99c373b2d4064c042b38fd8300d59e0",
+              "nativePngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 2,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "4a8d892bc4f4a9527f7d5e9edb65efd6b99c373b2d4064c042b38fd8300d59e0",
+              "nativePngSha256": "1eeddf14ddbbfc4230a02c45999be7cefa8386ca4bbe400b5d709f34ec9517b4"
+            }
+          ]
+        },
+        {
+          "name": "gaussian1.svg",
+          "inputSha256": "5b6a23f654d8217924129ca25f6d66a9ce36fd277e0bb2435024bffad1579152",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "f51862edd26e7f7b15548315cd6ebd4ceea8f94addb91fbf51ea6de438425a3b",
+              "nativePngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "f51862edd26e7f7b15548315cd6ebd4ceea8f94addb91fbf51ea6de438425a3b",
+              "nativePngSha256": "1ae2f9ad7348c803d0d2dfb030bca8da2c5aa35c167414d77070cc8216a1c283"
+            }
+          ]
+        },
+        {
+          "name": "preserveAspectRatio.svg",
+          "inputSha256": "62a47bc4adf71c74c077a183888197ef2c0a695ae19bdbed4d57a8417efe53b2",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "641ee5d3d7c5ea99bb250bdd37f089b3d74a983d796f8f3f2c7b887bd52dc37d",
+              "nativePngSha256": "a648bf1fcf846d9fee98425008a9a73978c98ce8e4cf3ff9ba2656cf46d5981a"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "d2c319886593b0e911c69f8f7ca321531f00a9c3304151cd32e82aa244f4daa6",
+              "nativePngSha256": "232179316391a5376d83149b5b10adaa64ce7bae36e19185e7e1dda628fae235"
+            }
+          ]
+        },
+        {
+          "name": "smile.svg",
+          "inputSha256": "bc7e3c73c861478283e3d8d81553b971dea08fcb9f7b12a26feb94c8a30049bd",
+          "hosts": [
+            {
+              "host": "windows",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971",
+              "nativePngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a"
+            },
+            {
+              "host": "linux",
+              "outcome": "rendered",
+              "beforeChangedPixels": 0,
+              "beforeOutcome": "rendered",
+              "afterChangedPixels": 0,
+              "libraryPngSha256": "0875e112665906ec1360e67eeebeabbc8b3e098f4e3cf51b947c02c81e78d971",
+              "nativePngSha256": "691bee99565cc7b5fe3f4fed534aaf2d1db9c3450beee78dbe6f0243961f925a"
+            }
+          ]
+        }
+      ]
+    },
+    "hostedSvgBodiesRetained": 0,
+    "rawAttributeValuesRetained": 0,
+    "authority": "Re-fetch/hash in bounded RAM only. All default outcomes and 168 PNGs remain unchanged; 22 supplied-program contexts and 13 declared diagnostic projections remain exact. Separate source reviews retain their own evidence."
+  },
+  "promotion": {
+    "packages": "Pending matching clean-commit deterministic packages and installed consumers.",
+    "ci": "Pending matching production commit. Never repoll older terminal workflows.",
+    "published": false
+  }
+}

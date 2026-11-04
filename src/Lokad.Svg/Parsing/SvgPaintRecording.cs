@@ -13,7 +13,7 @@ internal readonly record struct SvgRecordedPaint(int Identity)
 internal readonly record struct SvgRecordingScope(int Value);
 internal readonly record struct SvgPaintOperationIdentity(int Value);
 [Flags]
-internal enum SvgRecordedPaintRole : byte { Fill = 0, Stroke = 1, MarkerContent = 2, EffectAnchor = 4 }
+internal enum SvgRecordedPaintRole : byte { Fill = 0, Stroke = 1, MarkerContent = 2, EffectAnchor = 4, PreparedDrawing = 8 }
 internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, SvgRecordedPaintRole Role, SvgPaintOrder PaintOrder, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
 {
     internal SvgRecordedTransform? RecordingTransform { get; init; }
@@ -24,6 +24,10 @@ internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity 
     internal bool IsMarkerContent { get => (Role & SvgRecordedPaintRole.MarkerContent) != 0; init => Role = value ? Role | SvgRecordedPaintRole.MarkerContent : Role & ~SvgRecordedPaintRole.MarkerContent; }
     /// <summary>Marks a non-painting target carrying effects; only real source bounds contribute to ancestors.</summary>
     internal bool IsEffectAnchor { get => (Role & SvgRecordedPaintRole.EffectAnchor) != 0; init => Role = value ? Role | SvgRecordedPaintRole.EffectAnchor : Role & ~SvgRecordedPaintRole.EffectAnchor; }
+    /// <summary>Marks drawing coordinates already prepared with their physical text/fragment placement.</summary>
+    /// <remarks>Output retains the complete prepared map; ancestor canvas stages still belong
+    /// to shader preparation. The marker owns no storage and survives scene/instance rebinding.</remarks>
+    internal bool IsPreparedDrawing { get => (Role & SvgRecordedPaintRole.PreparedDrawing) != 0; init => Role = value ? Role | SvgRecordedPaintRole.PreparedDrawing : Role & ~SvgRecordedPaintRole.PreparedDrawing; }
     /// <summary>Retains the previous constructor contract; source recording assigns the stroke role explicitly.</summary>
     internal SvgRecordedPaintValue(SvgPaintOperationIdentity identity, float alpha, bool foldable, SvgRecordingScope scope, SvgPaintOpacity elementOpacity, SvgRecordingScope opacityScope)
         : this(identity, alpha, foldable, SvgRecordedPaintRole.Fill, SvgPaintOrder.FillStrokeMarkers, scope, elementOpacity, opacityScope) { }

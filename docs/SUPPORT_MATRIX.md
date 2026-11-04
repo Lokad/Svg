@@ -119,7 +119,9 @@ miter/round/bevel joins, miter limits, finite dash arrays/offsets, `pathLength`,
 independent paints and ordinary/non-scaling widths. Dashed non-scaling line,
 circle and curved-path strokes reject rotation/shear; dashed gradient line
 strokes require uniform scaling. CSS/inherited vector effects are unsupported.
-Nonuniform symbol mapping of gradient/radial/pattern polygon strokes rejects.
+Nonuniform symbol viewBox maps preserve retained source fills and stroke outlines,
+including solid, gradient and pattern paints. Lowered polygons without retained
+source commands remain unsupported under nonuniform symbol scaling.
 
 Stroke widths, dash entries and offsets accept bare numbers and `px`, `in`, `cm`,
 `mm`, `pt`, `pc`, `q` lengths. Conversion precedes numeric range admission; zero

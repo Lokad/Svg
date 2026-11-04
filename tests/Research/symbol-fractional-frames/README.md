@@ -4,20 +4,31 @@ The [manifest](manifest.json) retains four focused regressions with their origin
 source, options and platform references. Font, resource and API ownership fixtures
 retain their separate contracts.
 
-The [open canvas review](canvas-review.json) records a separate authored screen:
-480 symbol/nested-viewport pairs, 960 inputs. Its compact source recipe reproduces
-every original byte; source and native target hashes bind the complete screen.
-Three healthy native processes per platform reproduce all targets independently.
-The current renderer admits 912 inputs: 874 exact and 38 with pixel differences.
-The other 48 retain the explicit nonuniform symbol-stroke admission boundary.
+The [canvas capture](canvas-capture.json) retains every original byte identity and
+native target from 480 symbol/nested-viewport pairs, plus 16 orthogonal controls.
+Both roles remain independent inputs even when their images agree. The
+[investigation record](canvas-review.json) preserves failing-before observations
+and the source recipe; its original image targets are unchanged.
 
-An unpromoted prototype reuses retained canvas stages in ordinary isolated groups.
-It corrects 28 inputs on Windows and Linux without losing an earlier exact result
-or changing admission. Ten ellipse inputs remain unresolved. This records evidence
-for investigation; it does not extend the renderer's support contract. Bounds and
-origin shortcuts that introduced losses remain rejected.
+The shared renderer preserves output placement before recorded group stages,
+retains those stages for solid and shader paints, and checks raw operand containment
+after bitmap-local mapping. Prepared text and marker drawings keep their complete
+placement.
+Retained source commands also support nonuniform symbol strokes without the old
+orthogonal-contour restriction. Explicit symbol-overflow attributes retain their
+separate documented boundary.
 
-Promotion requires closing the remaining discrepancies, preserving both source
-roles and all independent targets, focused mechanism/rendering witnesses and
-affected integration. Platform, runtime and package qualification belongs to the
-completed milestone. Existing references and exactness checks remain unchanged.
+[Native command observations](canvas-stages.json) retain numerical operands and
+48 screenshot comparisons against the frozen Blob/canvas targets. Three healthy
+processes per platform independently verify all original and additional targets.
+Missing command observations remain unavailable.
+
+The routine selection has 50 canonical owned-PNG rendering cases. All 926 remaining
+original inputs are separately discovered as `Category=Research`; provenance has
+one integrity check. Mechanisms cover native float stage order, material-independent
+recording and global/local containment. Existing text, API and ownership tests
+protect their separate execution, layout, refusal, cleanup and retry contracts.
+
+The [qualification](../release-baselines/symbol-canvas-qualification.json) records
+the original closure, platform/runtime results, SVGWeb replay and measured routine
+versus complete-bank validation time. Package and CI status remain explicit.

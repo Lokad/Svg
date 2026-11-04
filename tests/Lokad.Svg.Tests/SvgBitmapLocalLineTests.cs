@@ -5,6 +5,22 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgBitmapLocalLineTests
 {
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void A_globally_touching_source_point_can_escape_the_bitmap_after_local_mapping()
+    {
+        // Frozen native ellipse operands: the global top rounds to 12, but the
+        // actual bitmap-local top is negative and therefore needs edge clipping.
+        SvgAffineTransform map = new(1.0499999523162842, 0, 0, 1.0499999523162842,
+            7.200000286102295, 5.699999809265137);
+        SvgDevicePoint point = new(14, 6);
+        SvgDevicePoint global = SvgAuthoredPath.MapPoint(map, point, new(0, 0));
+        SvgDevicePoint local = SvgAuthoredPath.MapPoint(map, point, new(11, 12));
+        Assert.Equal(12, global.Y);
+        Assert.Equal(-1d / 2_097_152, local.Y);
+        Assert.NotEqual(global.Y - 12, local.Y);
+    }
+
     [Theory]
     [InlineData("bitmap-local-straight-clip.svg")]
     [InlineData("bitmap-local-compound-clip.svg")]

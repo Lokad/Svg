@@ -532,13 +532,14 @@ public sealed class SvgUseInstanceTests
 
     [Fact]
     [Trait("Layer", "Mechanism")]
-    public void Non_uniform_symbol_polygon_stays_unsupported()
+    public void Non_uniform_symbol_polygon_keeps_native_source_commands_and_placement()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4'><defs><symbol id='s' viewBox='0 0 4 4' preserveAspectRatio='none'><polygon points='0,0 4,0 0,4' fill='red'/></symbol></defs><use href='#s' width='8' height='4'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
+        Assert.Equal(SvgAffineTransform.FromScale(2, 1), source.SceneMap);
+        Assert.Equal(4, source.Commands.Length);
     }
 
     [Fact]

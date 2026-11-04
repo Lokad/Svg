@@ -7,6 +7,53 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgCapturedCanvasCoordinatesTests
 {
     [Theory]
+    [InlineData("red")]
+    [InlineData("url(#p)")]
+    [Trait("Layer", "Mechanism")]
+    public void Isolated_canvas_recording_is_independent_of_the_paint_server(string fill)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>"
+            + "<defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs>"
+            + "<g transform='rotate(15 16 16)' opacity='.5'><rect x='4' y='4' width='20' height='20' fill='" + fill + "'/></g></svg>");
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
+        {
+            SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(root.SceneStorage);
+            SvgGeometry geometry = Assert.Single(root.Geometries);
+            SvgRecordedTransform recording = Assert.IsType<SvgRecordedTransform>(storage.RecordedPaintValues[geometry.RecordedPaint.Identity - 1].RecordingTransform);
+            Assert.Equal(SvgShaderMatrix.FromAffine(SvgAffineTransform.FromRotationDegrees(15, 16, 16)), SvgShaderMatrix.FromAffine(recording.Map));
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    [Trait("Layer", "Mechanism")]
+    public void Isolated_output_placement_precedes_the_first_retained_canvas_stage()
+    {
+        // Independent LayerTree operands and replay are retained with the
+        // symbol canvas references. The SVG group is recorded before its viewBox.
+        SvgAffineTransform group = SvgAffineTransform.FromRotationDegrees(15, 16, 16);
+        SvgAffineTransform target = group.Compose(SvgAffineTransform.FromScaleOffset(.7, .7, 4.8, 3.8));
+        SvgAffineTransform output = SvgAffineTransform.FromScaleOffset(1.5, 1.5, 0, 0);
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgDocumentState state = new(budget, CancellationToken.None))
+        {
+            SvgRecordedTransform recording = Assert.IsType<SvgRecordedTransform>(
+                state.Scene.RetainRecordedTransform(null, group, null));
+            long retained = budget.Snapshot().CurrentBytes;
+            Assert.True(recording.TryMapCanvas(SvgShaderMatrix.FromAffine(output), SvgAffineTransform.Identity,
+                target, budget, CancellationToken.None, out SvgShaderMatrix actual));
+            Assert.Equal(new SvgShaderMatrix(1.0142221450805664f, -.2717599868774414f, 12.508835792541504f,
+                .2717599868774414f, 1.0142221450805664f, 1.9753974676132202f), actual);
+            Assert.True(recording.TryMapCanvas(SvgShaderMatrix.FromAffine(SvgAffineTransform.Identity), output,
+                target, budget, CancellationToken.None, out SvgShaderMatrix merged));
+            Assert.NotEqual(actual, merged);
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [Trait("Layer", "Mechanism")]
     [InlineData(64)]
     [InlineData(65)]

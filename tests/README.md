@@ -42,6 +42,8 @@ output-density and opacity companions retain distinct interactions. Separate own
 checks admit retained drawing stages before contour allocation and verify retry.
 The [full 960-input screen](Research/release-baselines/text-screen-qualification.json)
 remains `Category=Research`, with generated sources and exact native RGBA digests.
+The shared typed bank loader, catalog and immutable font bytes remove repeated
+setup; every snapshot and its lifetime stay independent.
 The [shader-context screen](Research/shader-contexts/README.md) keeps 42 routine
 stage witnesses and 12,924 individually discovered research inputs. Both original
 source roles remain, even when independently captured pixels agree; numerical
@@ -49,9 +51,11 @@ mechanisms and existing ownership contracts protect their separate responsibilit
 The [filter source contexts](Research/filter-source-contexts/README.md) retain
 39 routine stage witnesses and all 9,216 originals, including 1,110 naturally
 unequal native pairs. Extended inputs remain individually selectable as research.
-It retains all 39 routine PNG witnesses. The shared typed bank loader, catalog and
-immutable font bytes remove repeated setup; every snapshot and its lifetime stay
-independent.
+The [symbol canvas screen](Research/symbol-fractional-frames/README.md) retains
+all 960 original inputs and 16 authored stage controls. Its 50 routine images use
+one owned-PNG path; 926 inputs remain separate research cases. Direct mechanisms
+protect canvas rounding, material-independent recording and bitmap-local clip
+containment. Existing text and ownership contracts retain their distinct duties.
 
 The [alpha and gradient layer map](Research/release-baselines/alpha-gradient-responsibilities.json)
 keeps 35 numerical mechanisms independently selectable from nine storage, API and

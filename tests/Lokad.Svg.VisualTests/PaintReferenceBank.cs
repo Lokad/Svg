@@ -76,7 +76,7 @@ internal sealed class PaintReferenceBank
             }
         }
 
-        if (Name == "filter-source-contexts")
+        if (Name is "filter-source-contexts" or "symbol-fractional-frames")
         {
             using JsonDocument selection = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder, "routine-cases.json")));
             JsonElement selected = selection.RootElement.GetProperty("cases");

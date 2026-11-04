@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Preserve retained canvas stages and bitmap-local clip classification in isolated
+  symbol/nested-viewport draws. Support nonuniform symbol strokes backed by native
+  source commands, removing the obsolete orthogonal-contour restriction.
 - Preserve non-scaling stroke bounds and width rounding, isolated bitmap origins
   and transparent picture padding through gradient/pattern effect contexts.
 - Preserve recorded AA fringes and native viewport clip classification when filter

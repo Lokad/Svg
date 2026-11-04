@@ -786,35 +786,13 @@ internal static class SvgReferenceResolver
         catch { mappedReservation?.Dispose(); throw; }
     }
 
-    /// <summary>Rejects nonuniform shader-outline instances without native source strokes; retained native commands preserve source construction through placement.</summary>
-    /// <summary>Keeps nonuniform symbol placement limited to retained orthogonal source contours.</summary>
-    /// <remarks>Borrows immutable commands; no storage is retained. The parser-thread caller shares work and cancellation.</remarks>
-    private static void RequireAdmittedSymbolPolygonScale(SvgGeometry geometry, double scaleX, double scaleY, CancellationToken token)
+    /// <summary>Rejects nonuniform symbol placement without retained native source commands.</summary>
+    /// <remarks>Retained fills and stroke outlines reconstruct after placement; flattened
+    /// contours cannot establish their device tolerance. No storage is owned or allocated.</remarks>
+    private static void RequireSymbolSourceCommands(SvgGeometry geometry, double scaleX, double scaleY)
     {
-        if (scaleX == scaleY) return;
-        bool admitted = geometry.AuthoredPath is { SceneMap.IsAxisAligned: true };
-        if (admitted && geometry.AuthoredPath is {} path)
-        {
-            SvgDevicePoint current = default, first = default;
-            foreach (SvgAuthoredPathCommand command in path.Commands)
-            {
-                token.ThrowIfCancellationRequested();
-                switch (command.Verb)
-                {
-                    case SvgAuthoredPathVerb.Move: current = first = command.First; break;
-                    case SvgAuthoredPathVerb.Line:
-                        admitted = current.X == command.First.X || current.Y == command.First.Y;
-                        current = command.First; break;
-                    case SvgAuthoredPathVerb.Close:
-                    case SvgAuthoredPathVerb.End:
-                        admitted = current.X == first.X || current.Y == first.Y;
-                        current = first; break;
-                    default: admitted = false; break;
-                }
-                if (!admitted) break;
-            }
-        }
-        if (!admitted) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling requires retained orthogonal polygon commands.");
+        if (scaleX != scaleY && geometry.AuthoredPath is null)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling requires retained source commands.");
     }
 
     private static void RequireUniformOutlineScales(SvgDefinition definition, SvgUseReference reference)
@@ -904,7 +882,7 @@ internal static class SvgReferenceResolver
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
-            RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, cancellationToken);
+            RequireSymbolSourceCommands(geometry, scaleX, scaleY);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(source.Points, source.ContourEnds, source.Signs, source.QuadSpans, source.CubicSpans, document.Budget);
             try
@@ -1331,7 +1309,7 @@ internal static class SvgReferenceResolver
             SvgGeometryKind.PatternFill => geometry.Pattern.Opacity / 255f,
             _ => throw new InvalidOperationException("Unexpected instance paint-server geometry."),
         };
-        SvgRecordedPaint paint = state.Scene.RegisterRecordedPaint(new(state.NewPaintOperationIdentity(), alpha, original.Foldable, mapper.Map(original.Scope), SvgPaintOpacity.Opaque, mapper.Map(original.OpacityScope)) { RecordingTransform = recording, PaintOrder = original.PaintOrder });
+        SvgRecordedPaint paint = state.Scene.RegisterRecordedPaint(new(state.NewPaintOperationIdentity(), alpha, original.Foldable, mapper.Map(original.Scope), SvgPaintOpacity.Opaque, mapper.Map(original.OpacityScope)) { RecordingTransform = recording, PaintOrder = original.PaintOrder, IsPreparedDrawing = original.IsPreparedDrawing });
         return geometry with { RecordedPaint = paint };
     }
 
@@ -1439,7 +1417,7 @@ internal static class SvgReferenceResolver
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
-            RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, cancellationToken);
+            RequireSymbolSourceCommands(geometry, scaleX, scaleY);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(source.Points, source.ContourEnds, source.Signs, ReadOnlySpan<SvgQuadSpan>.Empty, ReadOnlySpan<SvgCubicSpan>.Empty, document.Budget);
             try
@@ -1551,7 +1529,7 @@ internal static class SvgReferenceResolver
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
-            RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, cancellationToken);
+            RequireSymbolSourceCommands(geometry, scaleX, scaleY);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(source.Points, source.ContourEnds, source.Signs, ReadOnlySpan<SvgQuadSpan>.Empty, ReadOnlySpan<SvgCubicSpan>.Empty, document.Budget);
             try
@@ -1603,7 +1581,7 @@ internal static class SvgReferenceResolver
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
-            RequireAdmittedSymbolPolygonScale(geometry, scaleX, scaleY, cancellationToken);
+            RequireSymbolSourceCommands(geometry, scaleX, scaleY);
             RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             if (viewportFrame is not null && viewportFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
             RenderBudget.BudgetReservation? mappedReservation = SvgPolygonContours.ReserveStorage(source.Points, source.ContourEnds, source.Signs, ReadOnlySpan<SvgQuadSpan>.Empty, ReadOnlySpan<SvgCubicSpan>.Empty, document.Budget);
