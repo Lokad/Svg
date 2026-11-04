@@ -1,0 +1,297 @@
+{
+  "status": "Closed named R85 composition collection: all 3,456 original inputs are native exact through the committed package and six fresh healthy browser processes. Wider shader/text review remains separate.",
+  "sourceCommit": "70d38675b3279748043a27449a7bdbe33f3b1508",
+  "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+  "package": {
+    "nupkgSha256": "aa44db65744d6ddec46048d6045d83eb7d9bc72a8a8197d35603103958617d73",
+    "identity": "singular-source-qualification.json"
+  },
+  "originalPairs": 1728,
+  "originalInputs": 3456,
+  "nativeComparisons": 20736,
+  "inputsSha256": "39dbd7d5c226da9b42361e74f0f91f5d17eaa6fc8c618d9d4484660c3f3c55a1",
+  "canonicalConversion": "One synchronous owned PNG per original, scale as recorded, transparent background, no fonts/resources. Both pair members are converted and compared independently.",
+  "oracle": {
+    "pins": [
+      "../../../tools/chrome-for-testing.json",
+      "../../../tools/chrome-for-testing.linux64.json"
+    ],
+    "method": "Fresh process per attempt; empty about:blank page; network URLs blocked; viewport 240x120, device scale 1. Each source is an SVG Blob decoded by Image and drawn to a transparent ceil(32*scale) square canvas, then exported as PNG.",
+    "attemptsPerHost": 3,
+    "frozenReferencesChanged": 0,
+    "unstableTargets": 0,
+    "platformTargetDifferences": 0,
+    "unequalNativePairs": 0,
+    "pairDuty": "Native equality does not establish redundancy. Direct, use, symbol, group-use, viewport, clip, mask and filter contexts retain separate source/options identities."
+  },
+  "sourceRecipe": {
+    "license": "MIT",
+    "reconstruction": "Iterate each cohort axes in insertion/nesting order, last axis fastest, numbering pairs from zero. Each pair emits candidate then control. Fill is url(#q) for width 2; otherwise none for alpha 1, otherwise green. identity is empty for shape and \" id='s'\" for identifiedShape. transform is empty for an empty pose, otherwise \" transform='{pose}'\". Substitute the shape template, then the consumer/role suffix. Concatenate root, mode paint, sharedDefinitions, suffix and closingRoot. UTF-8, no final newline.",
+    "digestRecipe": "For each input, retain {id,sourceSha256,scale}; native targets retain {id,width,height,rgbaSha256}. Sort records lexically by id and serialize JSON with sorted keys, ASCII escapes, no spaces, UTF-8 and no final newline; SHA256 those bytes.",
+    "root": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>",
+    "closingRoot": "</svg>",
+    "shape": "<rect x='4' y='4' width='20' height='20' fill='{fill}' stroke='url(#p)' stroke-width='{width}' stroke-opacity='.75'{identity}/>",
+    "paints": {
+      "linear-user": "<linearGradient id='p' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='32' y2='32'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient>",
+      "linear-box": "<linearGradient id='p' x2='1' y2='1'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient>",
+      "radial-user": "<radialGradient id='p' gradientUnits='userSpaceOnUse' cx='16' cy='16' r='16'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient>",
+      "radial-box": "<radialGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient>",
+      "pattern-user": "<pattern id='p' patternUnits='userSpaceOnUse' width='8' height='8'><rect width='4' height='8' fill='red'/><rect x='4' width='4' height='8' fill='blue'/></pattern>",
+      "pattern-box": "<pattern id='p' width='.25' height='.25' viewBox='0 0 8 8'><rect width='4' height='8' fill='red'/><rect x='4' width='4' height='8' fill='blue'/></pattern>"
+    },
+    "sharedDefinitions": "<linearGradient id='q'><stop stop-color='yellow'/><stop offset='1' stop-color='cyan'/></linearGradient><clipPath id='c'><rect x='2' y='2' width='26' height='26'/></clipPath><mask id='m' mask-type='alpha' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><rect width='32' height='32' fill='white' fill-opacity='.5'/></mask><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feOffset dx='1' dy='1'/></filter>",
+    "consumerSuffixes": {
+      "direct/candidate": "</defs><g{transform} opacity='{alpha}'>{shape}</g>",
+      "direct/control": "</defs><g{transform} opacity='{alpha}'>{shape}</g>",
+      "use/candidate": "{identifiedShape}</defs><g{transform} opacity='{alpha}'><use href='#s'/></g>",
+      "use/control": "</defs><g{transform} opacity='{alpha}'>{shape}</g>",
+      "symbol/candidate": "<symbol id='s' viewBox='0 0 32 32'>{shape}</symbol></defs><g{transform} opacity='{alpha}'><use href='#s' width='32' height='32'/></g>",
+      "symbol/control": "</defs><g{transform} opacity='{alpha}'><svg width='32' height='32' viewBox='0 0 32 32'>{shape}</svg></g>",
+      "group-use/candidate": "<g id='s'>{shape}</g></defs><g{transform} opacity='{alpha}'><use href='#s'/></g>",
+      "group-use/control": "</defs><g{transform} opacity='{alpha}'>{shape}</g>",
+      "viewport/candidate": "{identifiedShape}</defs><svg x='1' y='1' width='30' height='30' viewBox='0 0 32 32'><g{transform} opacity='{alpha}'><use href='#s'/></g></svg>",
+      "viewport/control": "</defs><svg x='1' y='1' width='30' height='30' viewBox='0 0 32 32'><g{transform} opacity='{alpha}'>{shape}</g></svg>",
+      "clip/candidate": "{identifiedShape}</defs><g clip-path='url(#c)'><g{transform} opacity='{alpha}'><use href='#s'/></g></g>",
+      "clip/control": "</defs><g clip-path='url(#c)'><g{transform} opacity='{alpha}'>{shape}</g></g>",
+      "mask/candidate": "{identifiedShape}</defs><g mask='url(#m)'><g{transform} opacity='{alpha}'><use href='#s'/></g></g>",
+      "mask/control": "</defs><g mask='url(#m)'><g{transform} opacity='{alpha}'>{shape}</g></g>",
+      "filter/candidate": "{identifiedShape}</defs><g filter='url(#f)'><g{transform} opacity='{alpha}'><use href='#s'/></g></g>",
+      "filter/control": "</defs><g filter='url(#f)'><g{transform} opacity='{alpha}'>{shape}</g></g>"
+    },
+    "cohorts": [
+      {
+        "prefix": "r85-extended",
+        "originalPairs": 1152,
+        "axesInNestingOrder": {
+          "mode": [
+            "linear-user",
+            "linear-box",
+            "radial-user",
+            "radial-box",
+            "pattern-user",
+            "pattern-box"
+          ],
+          "width": [
+            ".5",
+            "2",
+            "24"
+          ],
+          "pose": [
+            "translate(.5 .25)",
+            "scale(.75 1.1)"
+          ],
+          "consumer": [
+            "direct",
+            "use",
+            "symbol",
+            "group-use",
+            "viewport",
+            "clip",
+            "mask",
+            "filter"
+          ],
+          "scale": [
+            1,
+            1.5
+          ],
+          "alpha": [
+            "1",
+            ".5"
+          ]
+        },
+        "inputsSha256": "a3a19ec010bfaffef20108e361bd20b022078ddcb49d9cbfb08a979cca12655c"
+      },
+      {
+        "prefix": "r85-integer",
+        "originalPairs": 576,
+        "axesInNestingOrder": {
+          "mode": [
+            "linear-user",
+            "linear-box",
+            "radial-user",
+            "radial-box",
+            "pattern-user",
+            "pattern-box"
+          ],
+          "width": [
+            ".5",
+            "2",
+            "24"
+          ],
+          "pose": [
+            ""
+          ],
+          "consumer": [
+            "direct",
+            "use",
+            "symbol",
+            "group-use",
+            "viewport",
+            "clip",
+            "mask",
+            "filter"
+          ],
+          "scale": [
+            1,
+            1.5
+          ],
+          "alpha": [
+            "1",
+            ".5"
+          ]
+        },
+        "inputsSha256": "126e4264e2a54700492fc19df6bee6d259c7b0f1405c06a4c5d94ce655cf0e37"
+      }
+    ]
+  },
+  "results": [
+    {
+      "host": "windows",
+      "originalInputs": 3456,
+      "nativeExact": 3456,
+      "remainingAdmissions": 0,
+      "residuals": 0,
+      "nativeTargetsSha256": "a470346c9aaa8cb2fccb735ca99ea6e2b2c7c0092bcb7ed1f907de7e03f5b5fe",
+      "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "freshProcesses": [
+        {
+          "host": "windows",
+          "attempt": 1,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "seconds": 26.783571700099856,
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 26332,
+            "debuggerReadyMilliseconds": 409,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "windows",
+          "attempt": 2,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "seconds": 25.616422099992633,
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 25425,
+            "debuggerReadyMilliseconds": 143,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "windows",
+          "attempt": 3,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "seconds": 25.401285300031304,
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 25217,
+            "debuggerReadyMilliseconds": 136,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ],
+      "canonicalConversionSeconds": 5.7298146
+    },
+    {
+      "host": "linux",
+      "originalInputs": 3456,
+      "nativeExact": 3456,
+      "remainingAdmissions": 0,
+      "residuals": 0,
+      "nativeTargetsSha256": "a470346c9aaa8cb2fccb735ca99ea6e2b2c7c0092bcb7ed1f907de7e03f5b5fe",
+      "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "freshProcesses": [
+        {
+          "host": "linux",
+          "attempt": 1,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "seconds": 29.867084099911153,
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 23769,
+            "debuggerReadyMilliseconds": 3909,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "linux",
+          "attempt": 2,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "seconds": 26.8148759000469,
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 23525,
+            "debuggerReadyMilliseconds": 3381,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "linux",
+          "attempt": 3,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "seconds": 27.25118390005082,
+          "terminalExitCode": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 24411,
+            "debuggerReadyMilliseconds": 3406,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ],
+      "canonicalConversionSeconds": 5.0686145
+    }
+  ],
+  "retainedCoverage": {
+    "rendering": "../rectangle-paint-overlap/capture.json",
+    "geometryAndComposition": "../../Lokad.Svg.Tests/SvgRectanglePaintOverlapTests.cs",
+    "broaderContextQualification": [
+      "filter-source-context-qualification.json",
+      "shader-context-qualification.json",
+      "symbol-canvas-qualification.json"
+    ],
+    "role": "The original product remains optional qualification. Routine independent native cases and direct mechanisms protect the shared overlap/composition behavior; no API Cartesian product is added."
+  },
+  "changes": {
+    "productionCode": 0,
+    "originalSourcesRewritten": 0,
+    "originalTargetsRewritten": 0,
+    "tolerancesChanged": 0
+  }
+}

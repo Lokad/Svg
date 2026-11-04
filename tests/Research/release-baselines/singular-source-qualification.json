@@ -715,28 +715,8 @@
   },
   "followupReview": {
     "scope": "Original R85 nonconstant composition collection: 1,152 extended pairs and 576 integer pairs, both members compared independently.",
+    "qualification": "r85-composition-qualification.json",
     "sourceCommit": "70d38675b3279748043a27449a7bdbe33f3b1508",
-    "results": [
-      {
-        "host": "windows",
-        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
-        "originalInputs": 3456,
-        "originalPairs": 1728,
-        "nativeExact": 3456,
-        "errors": [],
-        "residuals": []
-      },
-      {
-        "host": "linux",
-        "librarySha256": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
-        "originalInputs": 3456,
-        "originalPairs": 1728,
-        "nativeExact": 3456,
-        "errors": [],
-        "residuals": []
-      }
-    ],
-    "status": "Current packaged canonical replay is exact against every frozen native target. Fresh healthy browser triples on both hosts remain before broader cohort closure.",
-    "originalSourcesAndTargetsRewritten": 0
+    "status": "Closed: packaged replay and three fresh healthy browser processes on each host are exact for all 3,456 originals; frozen references unchanged."
   }
 }

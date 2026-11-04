@@ -44,7 +44,14 @@ has been promoted. Extract any additional unresolved originals before deleting
 their generated research output. Existing failing-before regressions, unequal
 native companions, exclusions and licenses remain required coverage.
 
-The [R85 alias review](r85-alias-review.json) joins all 1,708 remaining frame and
-primitive pairs to independent platform targets. It isolates eight shared filter
-residuals and 92 transform admission boundaries; 448 font-image differences retain
-their distinct native Windows/Linux contexts.
+The [R85 alias review](r85-alias-review.json) preserves the historical observations
+for all 1,708 frame and primitive pairs. Its linked filter, affine-source and
+singular-source qualifications close every admission and residual: all 3,416 inputs
+are native exact. The 448 font-image differences retain independent platform targets.
+
+The [R85 composition qualification](r85-composition-qualification.json) closes its
+separate 1,728-pair collection: all 3,456 original inputs match the committed package
+and three fresh healthy browser processes per host. A compact source recipe
+reconstructs every original byte and option; aggregate hashes bind sources and
+native pixels. Existing routine overlap cases remain separate from this optional
+product. No source, reference, tolerance or production implementation changed.
