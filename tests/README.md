@@ -46,6 +46,9 @@ The [shader-context screen](Research/shader-contexts/README.md) keeps 42 routine
 stage witnesses and 12,924 individually discovered research inputs. Both original
 source roles remain, even when independently captured pixels agree; numerical
 mechanisms and existing ownership contracts protect their separate responsibilities.
+The [filter source contexts](Research/filter-source-contexts/README.md) retain
+39 routine stage witnesses and all 9,216 originals, including 1,110 naturally
+unequal native pairs. Extended inputs remain individually selectable as research.
 It retains all 39 routine PNG witnesses. The shared typed bank loader, catalog and
 immutable font bytes remove repeated setup; every snapshot and its lifetime stay
 independent.

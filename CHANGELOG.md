@@ -4,6 +4,8 @@
 
 - Preserve non-scaling stroke bounds and width rounding, isolated bitmap origins
   and transparent picture padding through gradient/pattern effect contexts.
+- Preserve recorded AA fringes and native viewport clip classification when filter
+  sources use cropped storage, retaining source aliases and deferred color filters.
 - Borrow retained scene command ranges during filter replay, removing per-capture
   subtree copies while preserving source ownership and rendering.
 

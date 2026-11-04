@@ -7,6 +7,40 @@ namespace Lokad.Svg.Tests;
 [Trait("Layer", "Mechanism")]
 public sealed class SvgFilterSourceHintTests
 {
+    [Fact]
+    public void Cropped_source_storage_does_not_erase_a_native_viewport_fringe()
+    {
+        SvgAnalyticClipBounds storage = new(1, 1, 29, 33), picture = new(-4, -7, 29, 42);
+        Assert.Equal(SvgAnalyticPaintClip.Binary,
+            SvgAnalyticRectangleClip.Classify(2, 2, 26, 37.2, storage, SvgClipAntialiasing.All));
+        Assert.Equal(SvgAnalyticPaintClip.Antialiased,
+            SvgAnalyticRectangleClip.Classify(2, 2, 26, 37.2, picture, SvgClipAntialiasing.All));
+    }
+
+    [Theory]
+    [InlineData("<feOffset dx='0' dy='0'/>", -1)]
+    [InlineData("<feGaussianBlur stdDeviation='.02'/>", -1)]
+    [InlineData("<feMerge><feMergeNode in='SourceAlpha'/></feMerge>", -2)]
+    [InlineData("<feOffset dx='.0001' dy='0'/>", 0)]
+    [InlineData("<feGaussianBlur stdDeviation='.03'/>", 0)]
+    [InlineData("<feOffset dx='1' result='a'/><feGaussianBlur in='a' stdDeviation='0'/>", 0)]
+    [InlineData("<feMerge><feMergeNode in='SourceGraphic'/><feMergeNode in='SourceGraphic'/></feMerge>", 0)]
+    [InlineData("<feColorMatrix type='saturate' values='1'/>", 0)]
+    public void Source_aliases_retain_paint_while_sampling_and_color_nodes_keep_image_boundaries(string graph, int expected)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>"
+            + "<defs><filter id='f'>" + graph + "</filter></defs><rect width='4' height='4' filter='url(#f)'/></svg>");
+        RenderBudget budget = new(new HostMemoryBudget(1_000_000));
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.FilterResources ?? throw new InvalidOperationException();
+            SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
+            SvgFilterInput source = SvgFilterPlayback.ResolvePaintSource(resource, new(1, 1), new(resource.Primitives.Items.Length - 1), CancellationToken.None);
+            Assert.Equal(expected, source.Index);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [InlineData("<path d='M10.25 12.75H18.5V21.25H10.25Z' fill='none' stroke='black' stroke-width='1'/>")]
     [InlineData("<defs><pattern id='p' width='.25' height='.25' patternContentUnits='objectBoundingBox'><rect width='.25' height='.25' fill='green'/></pattern></defs><polygon points='10.25,12.75 18.5,12.75 18.5,21.25 10.25,21.25' fill='url(#p)' stroke='black' stroke-width='1'/>")]

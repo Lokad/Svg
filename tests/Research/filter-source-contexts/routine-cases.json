@@ -1,0 +1,31 @@
+{
+  "purpose": "Representative source, instance, paint and clip paths. All other original inputs remain individually discovered research cases.",
+  "cases": [
+    "r86-extended-62",
+    "r86-extended-94",
+    "r86-extended-158",
+    "r86-extended-174",
+    "r86-extended-524",
+    "r86-extended-526",
+    "r86-extended-638",
+    "r86-extended-1230",
+    "r86-extended-1676",
+    "r86-extended-2366",
+    "r86-extended-2828",
+    "r86-extended-3518",
+    "r86-extended-3982",
+    "extended-62-candidate-offset-zero",
+    "extended-158-candidate-source-alias",
+    "extended-524-candidate-without-filter",
+    "extended-524-candidate-offset-zero",
+    "extended-524-candidate-stroke-only",
+    "extended-526-candidate-offset-pixel",
+    "extended-526-candidate-fill-only",
+    "extended-524-candidate-opaque-group",
+    "extended-524-candidate-matrix-identity",
+    "extended-526-candidate-matrix-identity",
+    "extended-524-candidate-blur-zero",
+    "extended-524-candidate-blur-alias",
+    "extended-524-candidate-blur-copy"
+  ]
+}

@@ -301,6 +301,9 @@ public static partial class SvgConverter
         internal SvgAnalyticClipBounds? ContentClip { get; init; }
         /// <summary>Retains the admitted geometry and clip-resource raster window independently of source layout and filter requests.</summary>
         internal SvgAnalyticClipBounds? RasterClip { get; init; }
+        /// <summary>Retains the source picture's clip-classification domain in this frame, independently of cropped storage.</summary>
+        /// <remarks>Borrowed metadata owns no pixels and can extend beyond their addresses. Identity source aliases retain their parent clip.</remarks>
+        internal SvgAnalyticClipBounds? NativeClipBounds { get; init; }
         // Keep the parent's rounded CTM before changing to the source device.
         internal SvgCpuBitmapOrigin? ParentOrigin { get; init; }
         internal SvgCpuBitmapOrigin CaptureOrigin { get; init; }
@@ -933,6 +936,7 @@ public static partial class SvgConverter
                 sourceRight = Math.Max(sourceRight, Math.Ceiling(nested.Right)); sourceBottom = Math.Max(sourceBottom, Math.Ceiling(nested.Bottom));
             }
             SvgPaintBounds sourceCaptureBounds = new((float)sourceLeft, (float)sourceTop, (float)sourceRight, (float)sourceBottom);
+            bool samplesSourcePicture = SamplesSourcePicture();
             bool ownsNativeSource = frame?.FilterBinding is {} nativeOwner && nativeOwner.Index == command.MaskContentIndex;
             SvgPaintBounds? ownCaptureHint = null;
             SvgPaintBounds? nativeCaptureBounds = frame?.NativeSourceBounds;
@@ -976,8 +980,10 @@ public static partial class SvgConverter
             {
                 SvgPaintBounds hint = ownCaptureHint ?? MapParameterSourceBounds(visual, SvgFilterBoundsKind.CaptureHint,
                     missingCaptureParameter ? null : captureParameterBounds);
-                sourceLeft = Math.Floor(hint.Left); sourceTop = Math.Floor(hint.Top);
-                sourceRight = Math.Ceiling(hint.Right); sourceBottom = Math.Ceiling(hint.Bottom);
+                // A graph hint cannot discard recorded AA fringes before the
+                // propagated request crops source ink. Object bounds stay separate.
+                sourceLeft = Math.Min(sourceCaptureBounds.Left, Math.Floor(hint.Left)); sourceTop = Math.Min(sourceCaptureBounds.Top, Math.Floor(hint.Top));
+                sourceRight = Math.Max(sourceCaptureBounds.Right, Math.Ceiling(hint.Right)); sourceBottom = Math.Max(sourceCaptureBounds.Bottom, Math.Ceiling(hint.Bottom));
             }
             double paddingX = 0, paddingY = 0;
             double offsetPaddingX = 0, offsetPaddingY = 0;
@@ -1104,7 +1110,7 @@ public static partial class SvgConverter
             NativeBitmapDevice capturedDevice = captureParent.InBitmap(parentDeviceOrigin)
                 .InBitmap(nativeCaptureOrigin).InCapture(nativeCaptureOrigin);
             RasterFrame captureFrame = new(sw + 2, sh + 2, drawingMap.InBitmap(new((int)left - 1, (int)top - 1)), captureRecording)
-            { SingleBitmap = true, ContentClip = sourceContentClip, RasterClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = destinationBitmap?.Origin ?? new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = nativeCaptureBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left - 1, (int)top - 1)), NativeDevice = capturedDevice };
+            { SingleBitmap = true, ContentClip = sourceContentClip, RasterClip = new(1, 1, sw + 1, sh + 1), NativeClipBounds = SourceClipBounds(new((int)left - 1, (int)top - 1)), ParentOrigin = destinationBitmap?.Origin ?? new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = nativeCaptureBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left - 1, (int)top - 1)), NativeDevice = capturedDevice };
             // Region coordinates belong to the padded filter bitmap; sampled
             // source-image transforms retain their separate capture domain.
             if (primitiveMap.Regions is {} nativeRegions)
@@ -2159,6 +2165,26 @@ public static partial class SvgConverter
                 return new(left, top, right, bottom);
             }
 
+            SvgAnalyticClipBounds? SourceClipBounds(SvgCpuBitmapOrigin origin)
+                => samplesSourcePicture ? new SvgDeviceBounds(sourceCaptureBounds.Left - origin.X, sourceCaptureBounds.Top - origin.Y,
+                    sourceCaptureBounds.Right - origin.X, sourceCaptureBounds.Bottom - origin.Y).RoundOutForDispatch() : null;
+
+            bool SamplesSourcePicture()
+            {
+                SvgFilterInput input = new(resource.Primitives.Items.Length - 1);
+                while (true)
+                {
+                    input = SvgFilterPlayback.ResolvePaintSource(resource, primitiveMap, input, cancellationToken);
+                    if (input.Index < 0) return false;
+                    SvgFilterPrimitive operation = resource.Primitives.Items[input.Index];
+                    // Deferred color filters retain paint's clip; spatial/image
+                    // consumers require the source picture's complete clip domain.
+                    if (operation.Kind != SvgFilterPrimitiveKind.ColorMatrix || operation.ColorMatrix.AffectsTransparentBlack) return true;
+                    if (operation.Input.Index >= input.Index) throw new SvgException(SvgErrorCode.MalformedInput, "Filter color inputs must refer to earlier results.");
+                    input = operation.Input;
+                }
+            }
+
             bool TryRenderOffsetSources()
             {
                 ReadOnlySpan<SvgFilterPrimitive> primitives = resource.Primitives.Items;
@@ -2282,7 +2308,7 @@ public static partial class SvgConverter
                     (NativeBitmapDevice captureDevice, SvgDrawingMap captureDrawing) = PrepareNativeBitmap(tile.Origin);
                     using RasterizedSurface captured = Rasterize(scene, captureOptions, budget, RasterSurfaceMode.PremultipliedFilter,
                         new RasterFrame((int)sourceWidth, (int)sourceHeight, drawingMap.InBitmap(new((int)left, (int)top)), captureDrawing)
-                        { SingleBitmap = true, ContentClip = sourceContentClip, ParentOrigin = tile.Origin, CaptureOrigin = new((int)left, (int)top), ImageShaderOrigin = sourceImageOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = nativeCaptureBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left, (int)top)), NativeDevice = captureDevice.InBitmap(tile.Origin).InBitmap(new((int)left, (int)top)).InCapture(new((int)left, (int)top)) }, cancellationToken);
+                        { SingleBitmap = true, ContentClip = sourceContentClip, NativeClipBounds = SourceClipBounds(new((int)left, (int)top)), ParentOrigin = tile.Origin, CaptureOrigin = new((int)left, (int)top), ImageShaderOrigin = sourceImageOrigin, SourcePlacement = sourcePlacement, NativeSourceBounds = nativeCaptureBounds, FilterSourceMap = frame?.FilterSourceMap, NativeCapturePlacement = PlaceNativeSource(new((int)left, (int)top)), NativeDevice = captureDevice.InBitmap(tile.Origin).InBitmap(new((int)left, (int)top)).InCapture(new((int)left, (int)top)) }, cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
                     int tw = tile.BitmapClip.Right - tile.BitmapClip.Left, th = tile.BitmapClip.Bottom - tile.BitmapClip.Top;
                     using RenderBudget.BudgetReservation tileOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(checked(tw * th * 4)), SvgMemoryCategory.Surface);
@@ -3060,6 +3086,9 @@ public static partial class SvgConverter
                                     int clipBottom = Math.Min(previousLayer.Bottom, ClampCeiling(regionBottom, outputHeight));
                                     var rectangleBounds = (Left: regionLeft, Top: regionTop, Right: regionRight, Bottom: regionBottom);
                                     SvgClipAntialiasing clipAntialiasing = command.MaskRegion.GetValueOrDefault().Antialiasing;
+                                    if (frame?.NativeClipBounds is {} logicalClip)
+                                        binaryClip = SvgAnalyticRectangleClip.Classify(regionLeft, regionTop, regionRight, regionBottom,
+                                            logicalClip, clipAntialiasing) == SvgAnalyticPaintClip.Binary;
                                     for (int y = clipTop; y < clipBottom; y++)
                                     {
                                         cancellationToken.ThrowIfCancellationRequested();
@@ -3417,7 +3446,7 @@ public static partial class SvgConverter
                     cancellationToken.ThrowIfCancellationRequested();
                     SvgAffineTransform clipMap = drawingMap.Recording;
                     if (sourcePlacement != SvgAffineTransform.Identity) clipMap = clipMap.Compose(sourcePlacement);
-                    binaryViewport = RoundsToBinaryRectangle(rectangle, MapSourceTransform(clipMap, rectangle.SceneMap, PathCoordinateSpace.User), contentBounds);
+                    binaryViewport = RoundsToBinaryRectangle(rectangle, MapSourceTransform(clipMap, rectangle.SceneMap, PathCoordinateSpace.User), frame?.NativeClipBounds ?? contentBounds);
                 }
                 byte[] boundsPixels = [];
                 if (content.BoundsClipContentIndex >= 0)
@@ -4252,11 +4281,13 @@ public static partial class SvgConverter
                 return SvgAnalyticPaintClip.Antialiased;
             SvgAnalyticPaintClip paintClip = raster.GetPaintClip(context);
             if (!activeViewport.HasMask || activeViewport.IsBinary) return paintClip;
-            SvgAnalyticClipBounds clip = context.BitmapClip;
+            SvgAnalyticClipBounds clip = frame?.NativeClipBounds ?? context.BitmapClip;
             // Coverage bounds belong to the bitmap's actual clip tape. The
             // allocation/request enclosure can omit its antialiased fringe.
-            if (ActiveClipBounds(context) is {} bounds)
+            if (frame?.NativeClipBounds is null && ActiveClipBounds(context) is {} bounds)
                 clip = new(Math.Max(clip.Left, bounds.Left), Math.Max(clip.Top, bounds.Top), Math.Min(clip.Right, bounds.Right), Math.Min(clip.Bottom, bounds.Bottom));
+            if (clip.Left < 0 || clip.Top < 0 || clip.Right > outputWidth || clip.Bottom > outputHeight)
+                return SvgAnalyticPaintClip.Antialiased;
             // Native raster clips collapse a wholly opaque rectangular bitmap
             // intersection to BW. Preserve its ordinary mask/run material routing.
             return activeViewport.Mask.IsOpaqueRectangle(clip, outputWidth, cancellationToken) ? paintClip : SvgAnalyticPaintClip.Antialiased;

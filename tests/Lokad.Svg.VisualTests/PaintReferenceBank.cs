@@ -76,6 +76,17 @@ internal sealed class PaintReferenceBank
             }
         }
 
+        if (Name == "filter-source-contexts")
+        {
+            using JsonDocument selection = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(Folder, "routine-cases.json")));
+            JsonElement selected = selection.RootElement.GetProperty("cases");
+            HashSet<string> routine = ReadIds(selected);
+            if (routine.Count != selected.GetArrayLength()) throw new InvalidDataException("Duplicate routine native case.");
+            foreach (string id in ordered)
+                if (!routine.Remove(id)) research.Add(id);
+            if (routine.Count != 0) throw new InvalidDataException("Routine selection names an unknown native case.");
+        }
+
         return new Selection(ordered.ToArray(), ids.ToFrozenSet(StringComparer.Ordinal), research.ToFrozenSet(StringComparer.Ordinal));
 
         void AddId(string id)

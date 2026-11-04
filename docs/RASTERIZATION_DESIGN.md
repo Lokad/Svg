@@ -449,6 +449,8 @@ using that enclosure changes source curve construction before filtering.
 Source construction retains image-hint
 padding independently of captured-content extents and nested filter requests;
 cancellation/refusal restores the enclosing invocation clip.
+Capture hints also retain recorded AA fringes before the propagated request crops
+source ink. A tighter SVG layout hint cannot discard those recorded pixels.
 Content clips limit painting without moving the source bitmap's shader coordinates
 or dither origin, including when compact capture omits part of its transparent border.
 Isolated children retain that logical bitmap origin independently of their storage
@@ -456,6 +458,11 @@ window and use the same scope for geometry and shader construction. The origin c
 lie outside compact storage; scan windows and owned interiors remain bounded.
 SourceGraphic's nearest shader retains picture padding separately from its result
 extent. SourceAlpha and stored graph results sample their materialized image views.
+Spatial consumers retain the source picture's complete clip-classification domain
+when compact storage omits a viewport fringe. Source aliases and deferred color
+filters retain their parent paint clip. Classification never indexes omitted pixels.
+The [source-context controls](../tests/Research/filter-source-contexts/README.md)
+protect thin rectangles and wide strokes in nested viewports through these stages.
 Affine image edges are constructed and walked against the bitmap clip; requested
 output bounds govern row storage and restoration separately.
 The RGBA8 clamp fast path rounds each bilinear product before accumulation. Generic

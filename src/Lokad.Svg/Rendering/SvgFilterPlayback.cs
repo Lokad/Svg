@@ -390,10 +390,10 @@ internal static class SvgFilterPlayback
         => primitive.OffsetX * map.ScaleX != Math.Truncate(primitive.OffsetX * map.ScaleX)
             || primitive.OffsetY * map.ScaleY != Math.Truncate(primitive.OffsetY * map.ScaleY);
 
-    // Effective-zero blurs and source aliases preserve paint through crops. Other
-    // identity pixel kernels materialize an image. Resources are borrowed; traversal
-    // allocates nothing, observes cancellation and rejects non-earlier aliases.
-    private static SvgFilterInput ResolvePaintSource(SvgFilterResource resource, SvgFilterDeviceMap map,
+    /// <summary>Resolves effective-zero blurs and source aliases without materializing their paint.</summary>
+    /// <remarks>Other identity pixel kernels remain images. Resources are borrowed; traversal
+    /// allocates nothing, observes cancellation and rejects non-earlier aliases.</remarks>
+    internal static SvgFilterInput ResolvePaintSource(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgFilterInput reference, CancellationToken token)
     {
         while (reference.Index >= 0)
