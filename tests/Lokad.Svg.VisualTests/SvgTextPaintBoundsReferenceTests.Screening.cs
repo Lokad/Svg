@@ -15,7 +15,7 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
     [Trait("Layer", "Rendering")]
     [Trait("Category", "Research")]
     public Task Full_text_paint_screen_preserves_each_original_native_target(string id)
-        => AssertNativeImage("precision-screening.json", id, false);
+        => AssertNativeImage("precision-screening.json", id);
 
     [Fact]
     [Trait("Layer", "Integrity")]

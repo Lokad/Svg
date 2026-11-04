@@ -108,6 +108,12 @@ Ten paint-pair inputs replace a zero-iteration work-counter loop with the existi
 real parser refusal/cancellation/retry helper. All 30 cases remain individually
 selectable as contracts; independent rendering and shared-allowance cases stay separate.
 
+The [text-paint replay map](text-paint-replay.json) separates all 242 original native
+cases from prepared-document replay. Its 63 routine contracts retain distinct
+material, font, path and retained-source interactions; the other 179 replays remain
+individually discovered research. Native comparison bodies, source/options, complete
+PNG replay equality, per-case snapshots and every platform target are preserved.
+
 Validation: all 41,335 paint/integrity checks pass on Windows and Linux under
 .NET 11. The normalized mechanism/contract selection passes 1,990 checks on each
 runtime/host combination. A .NET 10 rendering selection retains 619 text, clip and

@@ -27,6 +27,28 @@ the full platform and package gates at a coherent milestone. Older captures in
 this folder cover direct/path boxes, spacing, strikes and drawing enclosures.
 Shared shader bounds do not replace each fragment's local drawing enclosure.
 
+The 242 [paint-box images](image-capture.json) each keep one routine canonical
+conversion and their original platform references. Prepared replay is a separate
+contract: the [selection](prepared-replay.json) retains 63 routine material, font,
+path, filter, decoration and frame interactions. All 179 remaining inputs retain
+individual `Category=Research` replay checks. Every replay still compares complete
+raw/prepared PNG bytes with independent per-case font snapshots. Numerical variants
+and opacity companions remain native rendering regressions throughout.
+[Qualification](../release-baselines/text-paint-replay.json) records the unchanged
+identities, full replay partition and measured development/qualification costs.
+
+After a Release build, select paint-box rendering and routine replay separately:
+
+```powershell
+dotnet test tests/Lokad.Svg.VisualTests -c Release --no-build --filter "FullyQualifiedName~Text_paint_boxes_match_native_fill_stroke_and_user_space_controls"
+dotnet test tests/Lokad.Svg.VisualTests -c Release --no-build --filter "FullyQualifiedName~SvgTextPaintBoundsReferenceTests&Layer=Contract&Category!=Research"
+```
+
+The unfiltered `FullyQualifiedName~SvgTextPaintBoundsReferenceTests` selection runs
+all image banks, replay cases and integrity checks. To select a bank by its data
+arguments, use xUnit's `DisplayName`, for example `DisplayName~text-node-boundaries`;
+see the [filter contract](https://learn.microsoft.com/dotnet/core/tools/dotnet-test-vstest#filter-option-details).
+
 [Precision residuals](precision-residuals.json) retain 39 original paint/fitting
 inputs with independent images and exact font/capture bindings. Its observations
 preserve the original 31 Windows and 34 Linux differences. The

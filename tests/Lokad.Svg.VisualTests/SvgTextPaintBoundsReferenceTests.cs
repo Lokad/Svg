@@ -23,8 +23,9 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
 
     [Theory]
     [MemberData(nameof(Cases))]
+    [Trait("Layer", "Rendering")]
     public Task Text_paint_boxes_match_native_fill_stroke_and_user_space_controls(string id)
-        => AssertNativeImage("image-capture.json", id, true);
+        => AssertNativeImage("image-capture.json", id);
 
     public static IEnumerable<object[]> SharedLayoutCases()
         => CaptureCases("shared-layout-images.json");
@@ -33,7 +34,7 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
     [MemberData(nameof(SharedLayoutCases))]
     [Trait("Layer", "Rendering")]
     public Task Shared_layout_matches_each_native_source_image(string id)
-        => AssertNativeImage("shared-layout-images.json", id, false);
+        => AssertNativeImage("shared-layout-images.json", id);
 
     public static IEnumerable<object[]> FilterSourceCases()
         => CaptureCases("filter-source-images.json");
@@ -42,7 +43,7 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
     [MemberData(nameof(FilterSourceCases))]
     [Trait("Layer", "Rendering")]
     public Task Filter_source_recording_matches_each_native_source_image(string id)
-        => AssertNativeImage("filter-source-images.json", id, false);
+        => AssertNativeImage("filter-source-images.json", id);
 
     public static IEnumerable<object[]> PatternMatrixCases()
         => CaptureCases("precision-pattern-images.json");
@@ -51,7 +52,7 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
     [MemberData(nameof(PatternMatrixCases))]
     [Trait("Layer", "Rendering")]
     public Task Glyph_pattern_matrices_match_each_original_native_image(string id)
-        => AssertNativeImage("precision-pattern-images.json", id, false);
+        => AssertNativeImage("precision-pattern-images.json", id);
 
     public static IEnumerable<object[]> PaintStageCases() => CaptureCases("paint-stage-images.json");
 
@@ -59,7 +60,7 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
     [MemberData(nameof(PaintStageCases))]
     [Trait("Layer", "Rendering")]
     public Task Shared_paint_stages_match_each_native_image(string id)
-        => AssertNativeImage("paint-stage-images.json", id, false);
+        => AssertNativeImage("paint-stage-images.json", id);
 
     public static IEnumerable<object[]> StrokeDrawingCases() => CaptureCases("precision-stroke-images.json");
 
@@ -67,7 +68,7 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
     [MemberData(nameof(StrokeDrawingCases))]
     [Trait("Layer", "Rendering")]
     public Task Stroke_paints_retain_the_fragment_drawing_stage(string id)
-        => AssertNativeImage("precision-stroke-images.json", id, false);
+        => AssertNativeImage("precision-stroke-images.json", id);
 
     [Fact]
     [Trait("Layer", "Integrity")]
@@ -118,7 +119,7 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
     [MemberData(nameof(FragmentStageCases))]
     [Trait("Layer", "Rendering")]
     public Task Text_fragment_stage_controls_match_independent_vector_drawings(string id)
-        => AssertNativeImage("fragment-stages.json", id, false);
+        => AssertNativeImage("fragment-stages.json", id);
 
     public static IEnumerable<object[]> SourceRectangleCases() => CaptureCases("precision-source-images.json");
 
@@ -126,7 +127,7 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
     [MemberData(nameof(SourceRectangleCases))]
     [Trait("Layer", "Rendering")]
     public Task Source_rectangles_and_pattern_origins_retain_each_original_native_image(string id)
-        => AssertNativeImage("precision-source-images.json", id, false);
+        => AssertNativeImage("precision-source-images.json", id);
 
     private static IEnumerable<object[]> CaptureCases(string file)
     {
@@ -266,7 +267,7 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
     private static string Required(JsonElement value, string property)
         => value.GetProperty(property).GetString() ?? throw new InvalidDataException("Missing native capture value.");
 
-    private static async Task AssertNativeImage(string captureFile, string id, bool replayPrepared)
+    private static async Task AssertNativeImage(string captureFile, string id)
     {
         JsonElement row = Banks[captureFile].GetCase(id);
         JsonElement image = row.GetProperty("references").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux");
@@ -305,10 +306,6 @@ public sealed partial class SvgTextPaintBoundsReferenceTests
                 if (decoded.Pixels[offset + 3] == 0) decoded.Pixels.AsSpan(offset, 3).Clear();
             Assert.Equal(Required(image, "rgbaSha256"), Convert.ToHexStringLower(SHA256.HashData(decoded.Pixels)));
         }
-        if (!replayPrepared) return;
-        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider,
-            new(null, options.OutputScale, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None);
-        Assert.Equal(actual, document.ConvertToPng(CancellationToken.None).ToArray());
     }
 
     private static string Folder() => Path.Combine(ResearchCorpus.Root, "text-paint-bounds");

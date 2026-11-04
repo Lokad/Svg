@@ -1,0 +1,248 @@
+{
+  "status": "Text-paint rendering and prepared replay have separate responsibilities. All original images and complete prepared replay remain independently discovered; development retains representative replay contracts.",
+  "baseCommit": "8a431dfccd9236febbdc47375c58b9117e1c4c1c",
+  "productionSourceCommit": "70d38675b3279748043a27449a7bdbe33f3b1508",
+  "packageLibrariesSha256": {
+    "net11.0": "fe36d5f1c568c70ed251b6b593a9700ca05c8dd78651405500e8e4224aa9c4b8",
+    "net10.0": "79013d4707f8d3ac9924f5da10b29e4dd177f11420d934ad3d41364de9479c12"
+  },
+  "productionQualification": "singular-source-qualification.json",
+  "selection": "../text-paint-bounds/prepared-replay.json",
+  "selectionLfSha256": "298300b74766106c5b41657a1faa24ccb75d73644afa0451cfb7062ffa92d875",
+  "capture": "../text-paint-bounds/image-capture.json",
+  "captureLfSha256": "5f63394f609121d9066348a3ae6e917944fd8357352965ea281e758ddf7795cd",
+  "responsibilities": {
+    "nativeRendering": 242,
+    "routinePreparedReplay": 63,
+    "researchPreparedReplay": 179,
+    "partitionIntegrity": 1,
+    "nativeCaseIdsChanged": 0,
+    "preparedInputsRemoved": 0,
+    "rule": "Every native input stays routine. Replay selection follows material/units, font/layout, filter/deferred ownership, recorded drawing, decoration and frame interactions, not native image equality.",
+    "preserved": "Complete raw/prepared PNG-byte equality, source/options, borrowed program arrays, independent per-case snapshots, platform references, numerical exactness and every existing failing-before rendering case.",
+    "periodic": "The remaining 179 prepared inputs stay separate Category=Research cases. Full qualification executes all 242 replays; it performs additional canonical conversions as each contract owns its own input/font lifetime."
+  },
+  "canonicalNativeBodyLfSha256": "52aae1fd4f63fb54d9953388b929af7cba7fc3b707db98a15bb4226e102a85f6",
+  "canonicalNativeBodyUnchanged": true,
+  "screeningSourceAndAssertionsUnchanged": true,
+  "originalNativeTestIdsLfSha256": {
+    "windows": "b4daed3883d2b9f4299365a4ce280a899f62417b105fa0b3f19d93748867ee2d",
+    "linux": "b4daed3883d2b9f4299365a4ce280a899f62417b105fa0b3f19d93748867ee2d"
+  },
+  "sourceLfSha256": {
+    "SvgTextPaintBoundsReferenceTests.cs": "aca750458d6809b5a2e900f6b0e6147e1486164aa77abd7405612efbfe207fa7",
+    "SvgTextPaintBoundsReferenceTests.Screening.cs": "023568b041e1c16613cafc6e33ebbe39ad92db78a169b59155630b2bb47bceec",
+    "SvgTextPaintBoundsReferenceTests.Replay.cs": "4a239b02e9c7553eb779b85fe3d079c84228f37bf62dba90d72d968fcf761af4"
+  },
+  "validation": {
+    "affectedGates": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "coreCases": 522,
+        "textPaintAndOriginalIntegrity": 1780,
+        "textNodeNativeAndProvenance": 858,
+        "allPassed": true,
+        "coreTestAssemblySha256": "4c5e153c65f4978b9b74ff3f2b31d05e715fa934071db0d8edc4f595ac56bd61",
+        "visualTestAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "coreCases": 522,
+        "textPaintAndOriginalIntegrity": 1780,
+        "textNodeNativeAndProvenance": 858,
+        "allPassed": true,
+        "coreTestAssemblySha256": "4c5e153c65f4978b9b74ff3f2b31d05e715fa934071db0d8edc4f595ac56bd61",
+        "visualTestAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "coreCases": 522,
+        "textPaintAndOriginalIntegrity": 1780,
+        "textNodeNativeAndProvenance": 858,
+        "allPassed": true,
+        "coreTestAssemblySha256": "29be4256b635f8663fcb327bc8d4ca91462a90b1bf6f3a90d5e0c4d98d665576",
+        "visualTestAssemblySha256": "68b76e9509d36518d8892a486ffabea4258b8ead8fd747c7dbaac39766c56a63"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "coreCases": 522,
+        "textPaintAndOriginalIntegrity": 1780,
+        "textNodeNativeAndProvenance": 858,
+        "allPassed": true,
+        "coreTestAssemblySha256": "29be4256b635f8663fcb327bc8d4ca91462a90b1bf6f3a90d5e0c4d98d665576",
+        "visualTestAssemblySha256": "68b76e9509d36518d8892a486ffabea4258b8ead8fd747c7dbaac39766c56a63"
+      }
+    ],
+    "executionObservations": [
+      {
+        "host": "windows",
+        "before": {
+          "cases": 242,
+          "seconds": [
+            20.475385199999437,
+            20.198518499964848,
+            19.415345499990508
+          ],
+          "medianSeconds": 20.198518499964848,
+          "testAssemblySha256": "565d168302868ecd1a53471be4eeafce94e8c9fedf3977f774df23512bf966cc"
+        },
+        "canonical": {
+          "cases": 242,
+          "seconds": [
+            18.021590299904346,
+            16.609589400002733,
+            15.97919200011529
+          ],
+          "medianSeconds": 16.609589400002733,
+          "testAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+        },
+        "after": {
+          "cases": 305,
+          "seconds": [
+            18.96771080000326,
+            17.028436899883673,
+            17.4365650000982
+          ],
+          "medianSeconds": 17.4365650000982,
+          "testAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+        },
+        "fullReplay": {
+          "cases": 485,
+          "seconds": 20.698863299796358
+        }
+      },
+      {
+        "host": "linux",
+        "before": {
+          "cases": 242,
+          "seconds": [
+            18.73190650017932,
+            16.720290900208056,
+            14.790958300000057
+          ],
+          "medianSeconds": 16.720290900208056,
+          "testAssemblySha256": "565d168302868ecd1a53471be4eeafce94e8c9fedf3977f774df23512bf966cc"
+        },
+        "canonical": {
+          "cases": 242,
+          "seconds": [
+            18.41978060011752,
+            14.778734399937093,
+            14.058005600003526
+          ],
+          "medianSeconds": 14.778734399937093,
+          "testAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+        },
+        "after": {
+          "cases": 305,
+          "seconds": [
+            17.286113399779424,
+            15.284676399780437,
+            15.81474839989096
+          ],
+          "medianSeconds": 15.81474839989096,
+          "testAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+        },
+        "fullReplay": {
+          "cases": 485,
+          "seconds": 18.260752100031823
+        }
+      }
+    ],
+    "discoveryObservations": {
+      "before": [
+        {
+          "cases": 242,
+          "milliseconds": 22.845,
+          "allocatedBytes": 483576,
+          "identitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "canonicalIdentitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "testAssemblySha256": "565d168302868ecd1a53471be4eeafce94e8c9fedf3977f774df23512bf966cc"
+        },
+        {
+          "cases": 242,
+          "milliseconds": 22.5177,
+          "allocatedBytes": 493088,
+          "identitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "canonicalIdentitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "testAssemblySha256": "565d168302868ecd1a53471be4eeafce94e8c9fedf3977f774df23512bf966cc"
+        },
+        {
+          "cases": 242,
+          "milliseconds": 23.273,
+          "allocatedBytes": 483512,
+          "identitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "canonicalIdentitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "testAssemblySha256": "565d168302868ecd1a53471be4eeafce94e8c9fedf3977f774df23512bf966cc"
+        }
+      ],
+      "canonical": [
+        {
+          "cases": 242,
+          "milliseconds": 25.4601,
+          "allocatedBytes": 493216,
+          "identitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "canonicalIdentitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "testAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+        },
+        {
+          "cases": 242,
+          "milliseconds": 32.4338,
+          "allocatedBytes": 493216,
+          "identitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "canonicalIdentitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "testAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+        },
+        {
+          "cases": 242,
+          "milliseconds": 26.892,
+          "allocatedBytes": 493216,
+          "identitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "canonicalIdentitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "testAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+        }
+      ],
+      "after": [
+        {
+          "cases": 305,
+          "milliseconds": 30.234,
+          "allocatedBytes": 542320,
+          "identitySha256": "d951c556883ecbcdb91678625f66d91e733da3ba33a60ade45ed75044115b7ce",
+          "canonicalIdentitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "testAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+        },
+        {
+          "cases": 305,
+          "milliseconds": 23.8907,
+          "allocatedBytes": 529984,
+          "identitySha256": "d951c556883ecbcdb91678625f66d91e733da3ba33a60ade45ed75044115b7ce",
+          "canonicalIdentitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "testAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+        },
+        {
+          "cases": 305,
+          "milliseconds": 24.6841,
+          "allocatedBytes": 545080,
+          "identitySha256": "d951c556883ecbcdb91678625f66d91e733da3ba33a60ade45ed75044115b7ce",
+          "canonicalIdentitySha256": "dda08f4b6bc8d39ed8db08538de3e6e7beb868e820b61088531253bd0ecb4595",
+          "testAssemblySha256": "6a4854809ac9cdff6ede91b37c169cc3a0b2b082dcf252db523a91f535a1fc76"
+        }
+      ]
+    },
+    "scope": "Three fresh sequential invocations per host for each edit-loop selection, exact same packaged renderer. Windows and WSL Linux run concurrently; timings include whole-assembly discovery, host startup and TRX, excluding build. Full replay has one observation per host. Discovery probes enumerate public factories in three fresh Windows processes, excluding assembly load.",
+    "limits": "Functional workstation observations, not renderer benchmarks or statistically qualified speedups. Discovery has extra explicit contract rows and is slightly slower. Full replay does more work than the former combined fixture.",
+    "fixtureCopy": "No project copy target changes. Visual tests continue reading committed research in place; no output Research directory is created."
+  },
+  "changes": {
+    "productionCode": 0,
+    "sourceOrReferenceImages": 0,
+    "tolerances": 0,
+    "licenses": 0,
+    "newFrameworks": 0
+  },
+  "remaining": "P2 suite-wide inventory, font-document API products and alpha/filter context selection remain separate. Broader text/shader/decoration correctness is not closed by this test change."
+}

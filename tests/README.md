@@ -44,6 +44,10 @@ The [full 960-input screen](Research/release-baselines/text-screen-qualification
 remains `Category=Research`, with generated sources and exact native RGBA digests.
 The shared typed bank loader, catalog and immutable font bytes remove repeated
 setup; every snapshot and its lifetime stay independent.
+The [paint-box replay partition](Research/release-baselines/text-paint-replay.json)
+keeps all 242 native images routine, with 63 separate prepared contracts and 179
+extended replay cases. [Focused selections](Research/text-paint-bounds/README.md)
+separate rendering investigation from replay and broader qualification.
 The [shader-context screen](Research/shader-contexts/README.md) keeps 42 routine
 stage witnesses and 12,924 individually discovered research inputs. Both original
 source roles remain, even when independently captured pixels agree; numerical

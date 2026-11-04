@@ -1,0 +1,116 @@
+{
+  "purpose": "Routine prepared-document contracts by preparation/ownership interaction. The unchanged capture remains the complete native-rendering index.",
+  "capture": "image-capture.json",
+  "captureLfSha256": "5f63394f609121d9066348a3ae6e917944fd8357352965ea281e758ddf7795cd",
+  "originalCases": 242,
+  "routinePreparedCases": 63,
+  "extendedPreparedCases": 179,
+  "extendedDuty": "Every unselected original remains individually discovered as Category=Research prepared replay. It retains the complete numeric, opacity and drawing-frame product for periodic changes to preparation, retained bounds or font ownership. Native equality is not a redundancy criterion.",
+  "groups": [
+    {
+      "duty": "Paint construction",
+      "reason": "Each linear/radial/pattern material, object/user units and fill/stroke owner; two scaled multi-glyph controls retain output-density preparation.",
+      "cases": [
+        "linear-objectBoundingBox-fill-A-1",
+        "linear-objectBoundingBox-stroke-A-1",
+        "linear-userSpaceOnUse-fill-A-1",
+        "linear-userSpaceOnUse-stroke-A-1",
+        "radial-objectBoundingBox-fill-A-1",
+        "radial-objectBoundingBox-stroke-A-1",
+        "radial-userSpaceOnUse-fill-A-1",
+        "radial-userSpaceOnUse-stroke-A-1",
+        "pattern-objectBoundingBox-fill-A-1",
+        "pattern-objectBoundingBox-stroke-A-1",
+        "pattern-userSpaceOnUse-fill-A-1",
+        "pattern-userSpaceOnUse-stroke-A-1",
+        "pattern-userSpaceOnUse-stroke-AV-1.5",
+        "linear-objectBoundingBox-fill-AV-1.5"
+      ]
+    },
+    {
+      "duty": "Isolation and path sources",
+      "reason": "Opacity scope retention and direct/path source bounds through each paint material.",
+      "cases": [
+        "linear-userSpaceOnUse-fill-AV-1.5-.4-group-opacity",
+        "radial-objectBoundingBox-stroke-A-1-.4-group-opacity",
+        "path-linear-objectBoundingBox-1-opaque",
+        "path-radial-objectBoundingBox-1-group-opacity",
+        "path-pattern-objectBoundingBox-1-opaque"
+      ]
+    },
+    {
+      "duty": "Layout and font ownership",
+      "reason": "Separate font programs, signed drawing widths, spacing/glyph fitting and retained instance/mask consumers.",
+      "cases": [
+        "spacing-path-mixed-fonts-pattern-objectBoundingBox-stroke-1-opaque",
+        "spacing-path-negative-width-radial-userSpaceOnUse-stroke-1-group-opacity",
+        "spacing-path-spacing-pattern-objectBoundingBox-stroke-1.5-group-opacity",
+        "textlength-path-stretch-pattern-objectBoundingBox-fill-1-opaque",
+        "spacing-path-instance-1.5-opaque",
+        "spacing-path-mask-1.5-group-opacity"
+      ]
+    },
+    {
+      "duty": "Filter and deferred source owners",
+      "reason": "Direct/path text, gradient/pattern/stroke/decoration sources, and continuation layout through group/use/symbol/pattern/mask recording.",
+      "cases": [
+        "filter-direct-pattern-group-1.5",
+        "filter-direct-solid-use-1.5",
+        "filter-direct-solid-symbol-1.5",
+        "filter-path-solid-group-1.5",
+        "filter-path-solid-symbol-1.5",
+        "filter-path-solid-mask-1.5",
+        "filter-path-linear-mask-1.5",
+        "filter-path-pattern-symbol-1",
+        "filter-path-decorated-group-1",
+        "filter-path-decorated-symbol-1",
+        "filter-path-stroke-mask-1.5",
+        "filter-continuation-solid-use-1.5",
+        "filter-continuation-solid-symbol-1.5",
+        "filter-continuation-solid-pattern-1.5",
+        "filter-continuation-linear-mask-1.5"
+      ]
+    },
+    {
+      "duty": "Recorded drawing stages",
+      "reason": "Parent matrix versus glyph placement, quadratic/cubic strikes, nested/symbol viewport clips, horizontal source-origin and combined decoration drawing.",
+      "cases": [
+        "path-placement-horizontal-matrix-decoration-.1-1.5-group-opacity",
+        "path-placement-polyline-scaled-combined--.1-1.5-opaque",
+        "recorded-strike-quadratic-matrix-glyphs-.1-1-group-opacity",
+        "recorded-strike-cubic-larger-glyphs-.1-1-opaque",
+        "recorded-viewport-0-nested",
+        "recorded-viewport-16-symbol",
+        "horizontal-fragment-horizontal-matrix-combined--.1-1.5-group-opacity",
+        "horizontal-origin-103-opaque"
+      ]
+    },
+    {
+      "duty": "Decoration source bounds",
+      "reason": "Retain each original isolated decoration drawing witness and one opaque route; every original opaque companion remains a routine native rendering regression and an extended prepared contract.",
+      "cases": [
+        "decoration-drawing-20-isolated",
+        "decoration-drawing-21-isolated",
+        "decoration-drawing-27-isolated",
+        "decoration-drawing-39-isolated",
+        "decoration-drawing-50-isolated",
+        "decoration-drawing-51-isolated",
+        "decoration-drawing-80-isolated",
+        "decoration-drawing-81-isolated",
+        "decoration-drawing-0-isolated",
+        "decoration-drawing-4-isolated",
+        "decoration-drawing-20-opaque"
+      ]
+    },
+    {
+      "duty": "Enclosing frame bounds",
+      "reason": "Distinct text/mask/clip and retained symbol frame roles, including an original control graph.",
+      "cases": [
+        "frame-8-candidate",
+        "frame-24-candidate",
+        "frame-40-candidate",
+        "frame-16-control"
+      ]
+    }
+  ]
+}

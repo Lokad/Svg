@@ -286,5 +286,39 @@
     ],
     "timing": "One paired functional observation per host, same exact packaged renderer, 30 cases before/after. Includes host/discovery/TRX; excludes build. Workstation timing establishes no speedup or renderer-performance claim. The benefit is shared responsibility and meaningful refusal coverage."
   },
-  "remaining": "Suite-wide P2 classification, text-node responsibilities and numerical-context selection remain open; no full-suite simplification or correctness-review closure is claimed."
+  "remaining": "Suite-wide P2 classification, text-node responsibilities and numerical-context selection remain open; no full-suite simplification or correctness-review closure is claimed.",
+  "matchingCI": {
+    "runId": 41877527696,
+    "url": "https://github.com/Lokad/Svg/actions/runs/41877527696",
+    "sourceCommit": "cf67938320f4f6cfb7737c0ab11967511e8a4837",
+    "status": "Terminal CLOSED; never repoll.",
+    "conclusion": "failure",
+    "logSha256": "e4177151d365e5a8541147e67c79ebdf5dc1418eb3ba0a7d58facee2ec990b95",
+    "ubuntu": {
+      "conclusion": "success",
+      "net11": {
+        "core": 47610,
+        "visual": 71021,
+        "font": 10
+      },
+      "net10": {
+        "core": 12865,
+        "visual": 1150,
+        "font": 10
+      },
+      "packageAndInstalledConsumers": "Passed"
+    },
+    "windows": {
+      "conclusion": "failure",
+      "net11": {
+        "corePassed": 47610,
+        "visualPassed": 71020,
+        "visualFailed": 1,
+        "fontPassed": 10
+      },
+      "soleFailure": "SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "laterRuntimeAndPackageSteps": "Skipped; matching affected local checks pass."
+    },
+    "authority": "Unchanged Windows DejaVu reference question remains pending. This record changes no frozen target, assertion or tolerance."
+  }
 }
