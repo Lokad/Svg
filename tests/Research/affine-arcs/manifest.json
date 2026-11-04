@@ -108,7 +108,9 @@
       "height": 64,
       "background": "transparent",
       "role": "control",
-      "expectedError": "UnsupportedFeature"
+      "previousExpectedError": "UnsupportedFeature",
+      "currentOutcome": "rendered-exact",
+      "currentQualification": "../release-baselines/singular-source-qualification.json"
     },
     {
       "id": "shear-stroke",

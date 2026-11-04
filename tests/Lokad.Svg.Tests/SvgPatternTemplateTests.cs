@@ -154,7 +154,7 @@ public sealed class SvgPatternTemplateTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
-        Assert.Equal("Only nonsingular finite matrix() transforms are implemented.", error.Message);
+        Assert.Equal("Singular pattern transforms are not implemented.", error.Message);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

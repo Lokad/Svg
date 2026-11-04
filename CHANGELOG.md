@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Admit finite singular element transforms through shared source-bound retention,
+  preserving enclosing filter output and required text metrics without constructing
+  paint under a collapsed map.
 - Preserve native fill and stroke commands for affine use instances independently
   of source visibility and solid, gradient or pattern paint.
 - Preserve enclosing filter output when stroke-only children have zero element

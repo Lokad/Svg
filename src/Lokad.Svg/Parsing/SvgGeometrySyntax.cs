@@ -294,17 +294,14 @@ internal static class SvgGeometrySyntax
         {
             if (valueCount != 6) throw new SvgException(SvgErrorCode.MalformedInput, "matrix() requires six coordinates.");
             double scaleX = values[0]; double skewY = values[1]; double skewX = values[2]; double scaleY = values[3]; double offsetX = values[4]; double offsetY = values[5];
-            if (scaleX * scaleY - skewY * skewX == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonsingular finite matrix() transforms are implemented.");
             if (skewX == 0 && skewY == 0)
             {
-                if (scaleX == 0 || scaleY == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Matrix scale factors must be nonzero.");
                 return SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY);
             }
             return SvgAffineTransform.FromMatrix(scaleX, skewY, skewX, scaleY, offsetX, offsetY);
         }
         if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
         double first = values[0]; double second = valueCount == 2 ? values[1] : first;
-        if (first == 0 || second == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero finite scale() values are implemented.");
         return SvgAffineTransform.FromScaleOffset(first, second, 0, 0);
     }
 

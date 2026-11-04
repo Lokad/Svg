@@ -1671,11 +1671,11 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_zero_scale_values()
+    public void Parses_zero_scale_as_a_nonpainting_source()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' transform='scale(0)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' transform='scale(0)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.False(Assert.Single(root.Geometries).Rectangle.HasFill);
+        Assert.False(root.HasUnsupportedChild);
     }
 
     [Fact]
@@ -1906,11 +1906,16 @@ public sealed class SvgRootParserTests
     [InlineData("scale(0,1)")]
     [InlineData("scale(1,0)")]
     [InlineData("matrix(0,0,0,1,0,0)")]
-    public void Rejects_zero_geometry_transforms(string transform)
+    public void Zero_geometry_transforms_retain_nonpainting_source_bounds(string transform)
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect width='8' height='8' transform='" + transform + "'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect width='8' height='8' transform='" + transform + "'/></svg>"), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry source = Assert.Single(root.Geometries);
+        SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(root.SceneStorage);
+        SvgRecordedPaintValue paint = storage.RecordedPaintValues[source.RecordedPaint.Identity - 1];
+        Assert.True(paint.IsEffectAnchor);
+        Assert.False(paint.IsScopeAnchor);
+        SvgPaintBounds expected = new SvgPaintBounds(0, 0, 8, 8).Map(SvgGeometrySyntax.ParseTransform(transform, CancellationToken.None), CancellationToken.None);
+        Assert.Equal(expected, paint.ObjectBounds);
     }
 
     [Fact]

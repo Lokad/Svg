@@ -1,5 +1,5 @@
 {
-  "status": "Open singular geometry-map admission gap; independent controls for shared-model design. No references or runtime behavior changed.",
+  "status": "Captured baseline outcomes and unchanged native references; current singular-source qualification is linked separately.",
   "sourceCommit": "24ce76a65407f0ee4c9147110830e01b640ba3da",
   "developmentLibrarySha256": "ccee772d974331a3b5fbc6d2ca82f7f950764e7dea6c9168225d80d269bbd4ed",
   "originalAliasReview": "../release-baselines/r85-alias-review.json",
@@ -301,6 +301,981 @@
         "height": 32,
         "nontransparentPixels": 0
       }
+    },
+    {
+      "id": "bbox-zero-x-child",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><g filter='url(#f)'><rect x='8' y='8' width='8' height='8' fill='red'/><rect x='1' y='1' width='4' height='4' fill='red' transform='matrix(0 0 0 1 24 20)'/></g></svg>",
+      "sourceSha256": "bf9672171621538ad10643d08109666b9cd8122445a4588e6d82fed0763d4a96",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/a67699c588f7c862fa67dde76e7eb890f3e9d0913d2a5b60f21517d7d82b089f.png",
+        "pngSha256": "a67699c588f7c862fa67dde76e7eb890f3e9d0913d2a5b60f21517d7d82b089f",
+        "rgbaSha256": "4f0e2bdf14f3fb2c7d241088a3dd1142dfcc87e31fcbef8741ae7e17bad871c8",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 272
+      }
+    },
+    {
+      "id": "bbox-rank-one-child",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><g filter='url(#f)'><rect x='8' y='8' width='8' height='8' fill='red'/><rect x='1' y='1' width='4' height='4' fill='red' transform='matrix(1 1 1 1 20 20)'/></g></svg>",
+      "sourceSha256": "fa3c99e81d20e6b328ea46142a4102e3baae9478d41819556b442b253d3c7c30",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/2b1a3d1702c0ea9e1a9322df373c3c39bd449c4918ba873b617f840c66e2c1e0.png",
+        "pngSha256": "2b1a3d1702c0ea9e1a9322df373c3c39bd449c4918ba873b617f840c66e2c1e0",
+        "rgbaSha256": "3024b85c1da745e5731a2c39666620fb8b17bcb11a02845cdd3c6c102d3741b5",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 484
+      }
+    },
+    {
+      "id": "bbox-rank-one-group",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><g filter='url(#f)'><rect x='8' y='8' width='8' height='8' fill='red'/><g transform='matrix(1 1 1 1 20 20)'><rect x='1' y='1' width='4' height='4' fill='red'/></g></g></svg>",
+      "sourceSha256": "84891ae75d8c26267653e1163e23368e9aaae44fc4275d18a6343b783a693b8f",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/2b1a3d1702c0ea9e1a9322df373c3c39bd449c4918ba873b617f840c66e2c1e0.png",
+        "pngSha256": "2b1a3d1702c0ea9e1a9322df373c3c39bd449c4918ba873b617f840c66e2c1e0",
+        "rgbaSha256": "3024b85c1da745e5731a2c39666620fb8b17bcb11a02845cdd3c6c102d3741b5",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 484
+      }
+    },
+    {
+      "id": "bbox-rank-one-use",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><defs><rect x='1' y='1' width='4' height='4' fill='red' id='s'/></defs><g filter='url(#f)'><rect x='8' y='8' width='8' height='8' fill='red'/><use href='#s' transform='matrix(1 1 1 1 20 20)'/></g></svg>",
+      "sourceSha256": "17cbaab6d3fee03a7bc4f0ffb3869587dfe9a0a9e25cf0dc2273faee4240f01e",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/2b1a3d1702c0ea9e1a9322df373c3c39bd449c4918ba873b617f840c66e2c1e0.png",
+        "pngSha256": "2b1a3d1702c0ea9e1a9322df373c3c39bd449c4918ba873b617f840c66e2c1e0",
+        "rgbaSha256": "3024b85c1da745e5731a2c39666620fb8b17bcb11a02845cdd3c6c102d3741b5",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 484
+      }
+    },
+    {
+      "id": "bbox-whole-singular-group",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><g transform='matrix(1 1 1 1 20 20)' filter='url(#f)'><rect x='8' y='8' width='8' height='8' fill='red'/></g></svg>",
+      "sourceSha256": "288d570c163e3849ea34f961fa8f86336ec3ef1a41ae20c8dda8e7734b1e0978",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "visible-sibling-outside",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><g transform='scale(0)'><rect x='1' y='1' width='4' height='4' fill='red'/></g><rect x='8' y='8' width='8' height='8' fill='red'/></svg>",
+      "sourceSha256": "7b3e66e183a2bc5d261eacd9dedaa62a354cf788f004c896ff17082b60cb9886",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/c94e5e619a68d01bd3ceb4b2686c1343d4079f54a9b6181630d6b6a730a35672.png",
+        "pngSha256": "c94e5e619a68d01bd3ceb4b2686c1343d4079f54a9b6181630d6b6a730a35672",
+        "rgbaSha256": "b8adedbcc3ad2371ed6f7d225d01761106f3282d1cc5f10f23b4126211c1c880",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 64
+      }
+    },
+    {
+      "id": "named-leaf-under-singular-parent",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><g transform='scale(0)'><rect x='1' y='1' width='4' height='4' fill='red' id='s'/></g><use href='#s'/></svg>",
+      "sourceSha256": "ee2f96dc3a4dd76d81410255a793c9f79639f41992ec16b8a6bb78516e84fd41",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/4251788c452b3ec026ee26c4c3eea7c8ef1535bc0e4d58b011b62b4653100f6f.png",
+        "pngSha256": "4251788c452b3ec026ee26c4c3eea7c8ef1535bc0e4d58b011b62b4653100f6f",
+        "rgbaSha256": "30850dc613f8baae05a4cd37388a3ee20d16cfbaa2b19f31453fbe91219dff7e",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 16
+      }
+    },
+    {
+      "id": "named-group-under-singular-parent",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><g transform='scale(0)'><g id='s'><rect x='1' y='1' width='4' height='4' fill='red'/></g></g><use href='#s'/></svg>",
+      "sourceSha256": "e80cb54dd073c482fc3477de19aa5294f5542a6b7043eb2e547fca6bcde18592",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/4251788c452b3ec026ee26c4c3eea7c8ef1535bc0e4d58b011b62b4653100f6f.png",
+        "pngSha256": "4251788c452b3ec026ee26c4c3eea7c8ef1535bc0e4d58b011b62b4653100f6f",
+        "rgbaSha256": "30850dc613f8baae05a4cd37388a3ee20d16cfbaa2b19f31453fbe91219dff7e",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 16
+      }
+    },
+    {
+      "id": "marker-on-singular-line",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><path d='M4 4L24 24' fill='none' stroke='blue' stroke-width='2' marker-end='url(#m)' transform='scale(0 1)'/></svg>",
+      "sourceSha256": "a31d999130cefb57a80e3274b2f7867e4091fa737d381b34b3fb18f2458e3980",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "mask-visible-and-singular-child",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><defs><mask id='a' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><rect x='8' y='8' width='8' height='8' fill='white'/><rect x='1' y='1' width='4' height='4' fill='white' transform='matrix(1 1 1 1 20 20)'/></mask></defs><rect width='32' height='32' fill='blue' mask='url(#a)'/></svg>",
+      "sourceSha256": "efd75f20fc6ba61f5ab8b5aac43e7c0966b183cfa75d005bd50257931ea413e8",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/5c475387af775a5a25dd477c2697f93285566429646aa468b11ac2818b7b54d6.png",
+        "pngSha256": "5c475387af775a5a25dd477c2697f93285566429646aa468b11ac2818b7b54d6",
+        "rgbaSha256": "4714f84a8d83d457f3dd50f437b47cb067a6b992bb883a8e6eee12f77af951a7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 64
+      }
+    },
+    {
+      "id": "singular-nested-viewport",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><svg width='16' height='16' viewBox='0 0 32 32' transform='scale(0)'><rect x='1' y='1' width='4' height='4' fill='red'/></svg><rect x='8' y='8' width='8' height='8' fill='red'/></svg>",
+      "sourceSha256": "a8ff1857656ded86672c1cabe25b171bbf397e8128aab5d86da095466f4099e1",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/c94e5e619a68d01bd3ceb4b2686c1343d4079f54a9b6181630d6b6a730a35672.png",
+        "pngSha256": "c94e5e619a68d01bd3ceb4b2686c1343d4079f54a9b6181630d6b6a730a35672",
+        "rgbaSha256": "b8adedbcc3ad2371ed6f7d225d01761106f3282d1cc5f10f23b4126211c1c880",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 64
+      }
+    },
+    {
+      "id": "nested-singular-filter-scopes",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='f' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter><marker id='m' markerWidth='4' markerHeight='4' refX='2' refY='2' orient='auto'><rect width='4' height='4' fill='red'/></marker></defs><g filter='url(#u)'><g transform='scale(0)' filter='url(#u)'><rect x='1' y='1' width='4' height='4' fill='red'/></g></g></svg>",
+      "sourceSha256": "ed44c8619cea11ca379960b941040c2452e5795f7d075446119ee23e8d384c76",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb.png",
+        "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+        "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 1024
+      }
+    },
+    {
+      "id": "shader-rectangle-singular-stroke",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect x='4' y='4' width='16' height='16' fill='url(#p)' stroke='blue' stroke-width='2' transform='matrix(1 1 1 1 0 0)'/></svg>",
+      "sourceSha256": "6ed6bfccb2676cb9209327054f6b730662a4916c97a011b0c89e76d27041bd8d",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "circle-singular-stroke",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><circle cx='16' cy='16' r='10' fill='none' stroke='blue' stroke-width='2' transform='scale(0)'/></svg>",
+      "sourceSha256": "830a6c01fc3d35a151e8a182c23196a8c70fd25cb0e8358607f795d9a352a0be",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "ellipse-singular-non-scaling",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><ellipse cx='16' cy='16' rx='10' ry='5' fill='none' stroke='blue' stroke-width='2' vector-effect='non-scaling-stroke' transform='scale(0 1)'/></svg>",
+      "sourceSha256": "8d18a03bbfa39da282cff1fe16ca9c679d912faa3a728c3739e8b96b07eda700",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "path-singular-ordinary-stroke",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><path d='M4 4L24 24' fill='none' stroke='blue' stroke-width='2' transform='scale(0)'/></svg>",
+      "sourceSha256": "2a41f9a353f7e81564c9c5536327a7b8f3b7cce97a3da21428b66d5ed7a2e754",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "use-singular-non-scaling",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><path d='M4 4L24 24' fill='none' stroke='blue' stroke-width='2' vector-effect='non-scaling-stroke' id='s'/></defs><use href='#s' transform='scale(0 1)'/></svg>",
+      "sourceSha256": "c78851c8fdb7633903efd33dacaf13a71932021ec69c30fda2f958c26a5ee124",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "polyline-singular-stroke",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polyline points='4,4 24,4 14,24' fill='none' stroke='blue' stroke-width='2' transform='scale(0)'/></svg>",
+      "sourceSha256": "0edaf8ca0f2088ff200a4bd9d32729b07cae797019e98f2ce212170a157a8bc3",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "image-singular-axis",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><image x='4' y='4' width='16' height='16' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAOUlEQVR4AezXsQkAQAgDwPD77+y7gaUgF0gfrstLqjbbA7IaAwgQIECAAAECBAgQIECAwH2B6Xp/AAAA///jgXkBAAAABklEQVQDAAgKQAH5P7nEAAAAAElFTkSuQmCC' transform='scale(0)'/></svg>",
+      "sourceSha256": "5d8eb3695f7bd1c55d4ef68c5eefb3f0d2ebc8cd2333af8c9d98f157d793cf44",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "image-singular-rank-one",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><image x='4' y='4' width='16' height='16' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAOUlEQVR4AezXsQkAQAgDwPD77+y7gaUgF0gfrstLqjbbA7IaAwgQIECAAAECBAgQIECAwH2B6Xp/AAAA///jgXkBAAAABklEQVQDAAgKQAH5P7nEAAAAAElFTkSuQmCC' transform='matrix(1 1 1 1 0 0)'/></svg>",
+      "sourceSha256": "3c487d31a957d0597b0de89d793e8ffdf5db7f9ee5fa22825f6ff68fe820a2e1",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "text-singular-unused-font",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><text x='2' y='14' font-family='Example' font-size='12' transform='scale(0)'>Ag</text></svg>",
+      "sourceSha256": "d610b68af7a818c9f83c13c5ea195cf5c05cbbe5469df4e277011b6ad120361a",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "symbol-singular-placement",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 32 32'><path d='M4 4L24 24' fill='none' stroke='blue' stroke-width='2' vector-effect='non-scaling-stroke'/></symbol></defs><use href='#s' width='32' height='32' transform='scale(0)'/></svg>",
+      "sourceSha256": "820ee5ca75442476c7663d6820543bc6cfc47b1905c6737ae3d49efd5fd62571",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "symbol-singular-source",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 32 32' preserveAspectRatio='none'><g transform='scale(0)'><rect x='4' y='4' width='16' height='16' fill='blue'/></g></symbol></defs><use href='#s' width='16' height='32'/></svg>",
+      "sourceSha256": "2c78754fe9347421bb7b621c41a637e1d70d978a43addf69991ec1a4e06810d1",
+      "outputScale": 1,
+      "currentOutcome": "UnsupportedFeature",
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "r74-intrinsics-48-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><text x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text></pattern></defs><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/></svg>",
+      "sourceSha256": "144b58d349fa4b7a24a15095cd99a16fce6ab4ad0d97f30f73d574d3cc61f8fa",
+      "outputScale": 1,
+      "fontContext": true,
+      "currentOutcome": "UnsupportedFeature",
+      "metadata": {
+        "name": "r74-intrinsics-48",
+        "mode": "singular-target-map",
+        "content": "text",
+        "forward": false,
+        "font": true,
+        "scale": 1,
+        "group": "singular-target-map-text-False"
+      },
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "r74-intrinsics-49-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><text x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text></pattern></defs></svg>",
+      "sourceSha256": "1d72279e3d8428fa019515d8a4d3cd76e2078733755e3cb70dc4162c25b48e3e",
+      "outputScale": 1,
+      "fontContext": true,
+      "currentOutcome": "UnsupportedFeature",
+      "metadata": {
+        "name": "r74-intrinsics-49",
+        "mode": "singular-target-map",
+        "content": "text",
+        "forward": true,
+        "font": true,
+        "scale": 1,
+        "group": "singular-target-map-text-True"
+      },
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "r74-intrinsics-50-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><use href='#t'/></pattern></defs><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/></svg>",
+      "sourceSha256": "f264318951bf95df65c76bb8d091514eb3370c754b41341a6971c41f960b10dc",
+      "outputScale": 1,
+      "fontContext": true,
+      "currentOutcome": "UnsupportedFeature",
+      "metadata": {
+        "name": "r74-intrinsics-50",
+        "mode": "singular-target-map",
+        "content": "text-use",
+        "forward": false,
+        "font": true,
+        "scale": 1,
+        "group": "singular-target-map-text-use-False"
+      },
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "r74-intrinsics-51-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><use href='#t'/></pattern></defs></svg>",
+      "sourceSha256": "04362d59286c8911d42ebddc49e790052d955a87afb91776358531ae3848c0fb",
+      "outputScale": 1,
+      "fontContext": true,
+      "currentOutcome": "UnsupportedFeature",
+      "metadata": {
+        "name": "r74-intrinsics-51",
+        "mode": "singular-target-map",
+        "content": "text-use",
+        "forward": true,
+        "font": true,
+        "scale": 1,
+        "group": "singular-target-map-text-use-True"
+      },
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "r74-intrinsics-52-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><g><text x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text></g></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/></svg>",
+      "sourceSha256": "64c3a878cfc1238ecd745b8813d84b4ccf9a691c0f7466e026e9af1973ab11c5",
+      "outputScale": 1,
+      "fontContext": true,
+      "currentOutcome": "UnsupportedFeature",
+      "metadata": {
+        "name": "r74-intrinsics-52",
+        "mode": "singular-target-map",
+        "content": "mask-group",
+        "forward": false,
+        "font": true,
+        "scale": 1,
+        "group": "singular-target-map-mask-group-False"
+      },
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "r74-intrinsics-53-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><g><text x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text></g></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs></svg>",
+      "sourceSha256": "b528e253f0f4bcc7098a587d9707b5c6488c9d31facf23a9ed8ab70c5926c1fb",
+      "outputScale": 1,
+      "fontContext": true,
+      "currentOutcome": "UnsupportedFeature",
+      "metadata": {
+        "name": "r74-intrinsics-53",
+        "mode": "singular-target-map",
+        "content": "mask-group",
+        "forward": true,
+        "font": true,
+        "scale": 1,
+        "group": "singular-target-map-mask-group-True"
+      },
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "r74-intrinsics-54-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/></svg>",
+      "sourceSha256": "ec510bd98e408248bba0cab15a8285f58dbd705d200999198542ab26f0d7fa0a",
+      "outputScale": 1,
+      "fontContext": true,
+      "currentOutcome": "UnsupportedFeature",
+      "metadata": {
+        "name": "r74-intrinsics-54",
+        "mode": "singular-target-map",
+        "content": "mask-use",
+        "forward": false,
+        "font": true,
+        "scale": 1,
+        "group": "singular-target-map-mask-use-False"
+      },
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "r74-intrinsics-55-candidate",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs></svg>",
+      "sourceSha256": "37cdc923df21bc778d6e45feb0439e8c36b61b58e83e4b6594544b24664b6fcf",
+      "outputScale": 1,
+      "fontContext": true,
+      "currentOutcome": "UnsupportedFeature",
+      "metadata": {
+        "name": "r74-intrinsics-55",
+        "mode": "singular-target-map",
+        "content": "mask-use",
+        "forward": true,
+        "font": true,
+        "scale": 1,
+        "group": "singular-target-map-mask-use-True"
+      },
+      "native": {
+        "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+        "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+        "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+        "width": 32,
+        "height": 32,
+        "nontransparentPixels": 0
+      }
+    },
+    {
+      "id": "text-rank-one-parent-bounds",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='b' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#b)'><rect x='2' y='2' width='4' height='4' fill='red'/><text x='2' y='14' font-family='serif' font-size='12' transform='matrix(1 1 1 1 0 0)'>Ag</text></g></svg>",
+      "sourceSha256": "b1e8dd4e01efd5905ce8f50519dddf41abcadd51f35236b06c84a272d6f35085",
+      "outputScale": 1,
+      "fontContext": true,
+      "currentOutcome": "UnsupportedFeature",
+      "nativeByHost": {
+        "windows": {
+          "path": "references/b7d0b7adcb4535c66cb44dfb83f880bc232fddc32c1e5d4b280d206351c0c436.png",
+          "pngSha256": "b7d0b7adcb4535c66cb44dfb83f880bc232fddc32c1e5d4b280d206351c0c436",
+          "rgbaSha256": "c0151278443a5056885b4b4856cbceb171e4a3f77cbbafccf9f479d1c13dd498",
+          "width": 32,
+          "height": 32
+        },
+        "linux": {
+          "path": "references/b7d0b7adcb4535c66cb44dfb83f880bc232fddc32c1e5d4b280d206351c0c436.png",
+          "pngSha256": "b7d0b7adcb4535c66cb44dfb83f880bc232fddc32c1e5d4b280d206351c0c436",
+          "rgbaSha256": "c0151278443a5056885b4b4856cbceb171e4a3f77cbbafccf9f479d1c13dd498",
+          "width": 32,
+          "height": 32
+        }
+      },
+      "nativeSourceSha256": "083cf9804184d18be9ecabb7924c44dee461839ffa4cc1da2558145ca886b380"
+    },
+    {
+      "id": "text-non-scaling-parent-flood",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='b' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><g filter='url(#u)'><text x='2' y='14' font-family='serif' font-size='12' fill='none' stroke='blue' stroke-width='2' vector-effect='non-scaling-stroke' transform='scale(0 1)'>Ag</text></g></svg>",
+      "sourceSha256": "9eb8bef49f300b780134733af30abccfcc9088dc2c5ea0ea78159444765142a1",
+      "outputScale": 1,
+      "fontContext": true,
+      "currentOutcome": "UnsupportedFeature",
+      "nativeByHost": {
+        "windows": {
+          "path": "references/9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb.png",
+          "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+          "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+          "width": 32,
+          "height": 32
+        },
+        "linux": {
+          "path": "references/9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb.png",
+          "pngSha256": "9fbb2b43b1bf1006212e2c9530e3d8b7c12a7742c40d9cc8d15ba3ac100a2feb",
+          "rgbaSha256": "590d140f13d7c4fac61d0745e2ece4e5afc4ce50af80f4a8470f5fcf00495101",
+          "width": 32,
+          "height": 32
+        }
+      },
+      "nativeSourceSha256": "ec60c4f67b8a304cc1bd3045a9be717cfc537e9edda65543ef8665fe27156055"
+    },
+    {
+      "id": "text-use-non-scaling-parent-bounds",
+      "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><filter id='b' filterUnits='objectBoundingBox' x='0' y='0' width='1' height='1'><feFlood flood-color='blue'/></filter><filter id='u' filterUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><feFlood flood-color='blue'/></filter></defs><defs><text x='2' y='14' font-family='serif' font-size='12' id='s' fill='none' stroke='blue' stroke-width='2' vector-effect='non-scaling-stroke'>Ag</text></defs><g filter='url(#b)'><rect x='2' y='2' width='4' height='4' fill='red'/><use href='#s' transform='scale(0 1)'/></g></svg>",
+      "sourceSha256": "defb0874669eed9a824ea1796363f9bcfbe977f6b24599dc009504062c9a41a0",
+      "outputScale": 1,
+      "fontContext": true,
+      "currentOutcome": "UnsupportedFeature",
+      "nativeByHost": {
+        "windows": {
+          "path": "references/872b679c988e65148504a73be9ea752ac1f6d83c7554eee8bca0766a3032f457.png",
+          "pngSha256": "872b679c988e65148504a73be9ea752ac1f6d83c7554eee8bca0766a3032f457",
+          "rgbaSha256": "a6e0798e340aafa9150461383bb10032bb32bd9a2b8ec41012e3a081f0cd4b59",
+          "width": 32,
+          "height": 32
+        },
+        "linux": {
+          "path": "references/872b679c988e65148504a73be9ea752ac1f6d83c7554eee8bca0766a3032f457.png",
+          "pngSha256": "872b679c988e65148504a73be9ea752ac1f6d83c7554eee8bca0766a3032f457",
+          "rgbaSha256": "a6e0798e340aafa9150461383bb10032bb32bd9a2b8ec41012e3a081f0cd4b59",
+          "width": 32,
+          "height": 32
+        }
+      },
+      "nativeSourceSha256": "c337300bd037577619f4b95293b59e50edf7e2d7f8370c326ca73eccb54b9017"
     }
-  ]
+  ],
+  "nativeBoundsReview": {
+    "comparisons": 72,
+    "inputs": 12,
+    "sourceCommit": "24ce76a65407f0ee4c9147110830e01b640ba3da",
+    "launches": [
+      {
+        "host": "windows",
+        "attempt": 1,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 459,
+          "debuggerReadyMilliseconds": 139,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "windows",
+        "attempt": 2,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 487,
+          "debuggerReadyMilliseconds": 139,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "windows",
+        "attempt": 3,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 464,
+          "debuggerReadyMilliseconds": 160,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 1,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 4472,
+          "debuggerReadyMilliseconds": 3160,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 2,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 4645,
+          "debuggerReadyMilliseconds": 3289,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 3,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 4308,
+          "debuggerReadyMilliseconds": 2967,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      }
+    ]
+  },
+  "nativeConsumerReview": {
+    "comparisons": 72,
+    "inputs": 12,
+    "sourceCommit": "24ce76a65407f0ee4c9147110830e01b640ba3da",
+    "launches": [
+      {
+        "host": "windows",
+        "attempt": 1,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 522,
+          "debuggerReadyMilliseconds": 149,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "windows",
+        "attempt": 2,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 555,
+          "debuggerReadyMilliseconds": 137,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "windows",
+        "attempt": 3,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 491,
+          "debuggerReadyMilliseconds": 136,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 1,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 4716,
+          "debuggerReadyMilliseconds": 3326,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 2,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 4415,
+          "debuggerReadyMilliseconds": 3004,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 3,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 4731,
+          "debuggerReadyMilliseconds": 3307,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      }
+    ]
+  },
+  "declaredBoundaryDiagnostics": [
+    {
+      "reason": "Root transform attributes are outside the current root attribute contract, independently of matrix invertibility. Keep this native control and existing root-attribute admission tests; no runtime support claim.",
+      "case": {
+        "id": "root-singular-placement",
+        "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' transform='scale(0)'><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect x='4' y='4' width='16' height='16' fill='blue'/></svg>",
+        "sourceSha256": "e9418148e4db78828bf4e4680eda7cbc83406ef0b742cd1751341a56fc72d1e5",
+        "outputScale": 1,
+        "currentOutcome": "UnsupportedFeature",
+        "native": {
+          "path": "references/0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3.png",
+          "pngSha256": "0f4860d85f00a2384f4aac2d84db73403fade663842ae80a558d49a6e10815c3",
+          "rgbaSha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+          "width": 32,
+          "height": 32,
+          "nontransparentPixels": 0
+        }
+      }
+    }
+  ],
+  "originalProgramContext": {
+    "catalog": "../text-paint-bounds/font-pack.json",
+    "nativeCssSha256": "928249181b9dd961a7f32e9a6b2ec10a08da3bc983fc2ffe45321277ccaf6473",
+    "provider": "../../Lokad.Svg.VisualTests/NotoPaintPrograms.cs",
+    "currentSuppression": "Programs remain explicit caller inputs; collapsed paint does not acquire unused programs."
+  },
+  "nativeFontBoundsReview": {
+    "comparisons": 18,
+    "inputs": 3,
+    "nativeCssSha256": "928249181b9dd961a7f32e9a6b2ec10a08da3bc983fc2ffe45321277ccaf6473",
+    "launches": [
+      {
+        "host": "windows",
+        "attempt": 1,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 850,
+          "debuggerReadyMilliseconds": 163,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "windows",
+        "attempt": 2,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1752,
+          "debuggerReadyMilliseconds": 169,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "windows",
+        "attempt": 3,
+        "terminalExitCode": 0,
+        "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome.exe",
+          "elapsedMilliseconds": 1275,
+          "debuggerReadyMilliseconds": 142,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 1,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 5907,
+          "debuggerReadyMilliseconds": 4206,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 2,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 4548,
+          "debuggerReadyMilliseconds": 2901,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      },
+      {
+        "host": "linux",
+        "attempt": 3,
+        "terminalExitCode": 0,
+        "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+        "health": {
+          "schemaVersion": 1,
+          "executableName": "chrome",
+          "elapsedMilliseconds": 5220,
+          "debuggerReadyMilliseconds": 2958,
+          "sandboxAccessFailures": 0,
+          "networkServiceCrashes": 0,
+          "stderrTruncated": false,
+          "profileCleaned": true,
+          "startupHealth": "healthy"
+        }
+      }
+    ]
+  },
+  "baselineObservationField": "currentOutcome records the UnsupportedFeature observation at sourceCommit, before the current correction.",
+  "currentQualification": "../release-baselines/singular-source-qualification.json"
 }

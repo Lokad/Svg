@@ -4988,7 +4988,8 @@
       "role": "candidate",
       "sourceSha256": "144b58d349fa4b7a24a15095cd99a16fce6ab4ad0d97f30f73d574d3cc61f8fa",
       "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><text x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text></pattern></defs><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/></svg>",
-      "selection": "unsupported"
+      "selection": "none",
+      "previousSelection": "unsupported"
     },
     {
       "id": "r74-intrinsics-48-control",
@@ -5008,7 +5009,8 @@
       "role": "candidate",
       "sourceSha256": "1d72279e3d8428fa019515d8a4d3cd76e2078733755e3cb70dc4162c25b48e3e",
       "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><text x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text></pattern></defs></svg>",
-      "selection": "unsupported"
+      "selection": "none",
+      "previousSelection": "unsupported"
     },
     {
       "id": "r74-intrinsics-49-control",
@@ -5028,7 +5030,8 @@
       "role": "candidate",
       "sourceSha256": "f264318951bf95df65c76bb8d091514eb3370c754b41341a6971c41f960b10dc",
       "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><use href='#t'/></pattern></defs><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/></svg>",
-      "selection": "unsupported"
+      "selection": "none",
+      "previousSelection": "unsupported"
     },
     {
       "id": "r74-intrinsics-50-control",
@@ -5048,7 +5051,8 @@
       "role": "candidate",
       "sourceSha256": "04362d59286c8911d42ebddc49e790052d955a87afb91776358531ae3848c0fb",
       "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><use href='#t'/></pattern></defs></svg>",
-      "selection": "unsupported"
+      "selection": "none",
+      "previousSelection": "unsupported"
     },
     {
       "id": "r74-intrinsics-51-control",
@@ -5068,7 +5072,8 @@
       "role": "candidate",
       "sourceSha256": "64c3a878cfc1238ecd745b8813d84b4ccf9a691c0f7466e026e9af1973ab11c5",
       "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><g><text x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text></g></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/></svg>",
-      "selection": "unsupported"
+      "selection": "none",
+      "previousSelection": "unsupported"
     },
     {
       "id": "r74-intrinsics-52-control",
@@ -5088,7 +5093,8 @@
       "role": "candidate",
       "sourceSha256": "b528e253f0f4bcc7098a587d9707b5c6488c9d31facf23a9ed8ab70c5926c1fb",
       "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><g><text x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text></g></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs></svg>",
-      "selection": "unsupported"
+      "selection": "none",
+      "previousSelection": "unsupported"
     },
     {
       "id": "r74-intrinsics-53-control",
@@ -5108,7 +5114,8 @@
       "role": "candidate",
       "sourceSha256": "ec510bd98e408248bba0cab15a8285f58dbd705d200999198542ab26f0d7fa0a",
       "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/></svg>",
-      "selection": "unsupported"
+      "selection": "none",
+      "previousSelection": "unsupported"
     },
     {
       "id": "r74-intrinsics-54-control",
@@ -5128,7 +5135,8 @@
       "role": "candidate",
       "sourceSha256": "37cdc923df21bc778d6e45feb0439e8c36b61b58e83e4b6594544b24664b6fcf",
       "source": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><rect id='source' width='32' height='32' fill='url(#p)' transform='scale(0)'/></defs><use href='#source'/><defs><text id='t' x='2' y='14' font-family='serif' font-size='12' fill='blue'>Ag</text><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='32' height='32'><use href='#w'/></mask><text id='w' x='2' y='14' font-family='serif' font-size='12' fill='white'>Ag</text><pattern id='p' patternUnits='userSpaceOnUse' width='32' height='32'><rect width='32' height='32' fill='blue' mask='url(#m)'/></pattern></defs></svg>",
-      "selection": "unsupported"
+      "selection": "none",
+      "previousSelection": "unsupported"
     },
     {
       "id": "r74-intrinsics-55-control",

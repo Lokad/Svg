@@ -9,6 +9,7 @@ internal static class SvgLeafParser
     internal static SvgParsedGeometry ParseRectangle(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        if (SvgPaintRecording.RetainCollapsedSource(source, reader, context, frame, int.MaxValue, state) is {} collapsed) return collapsed;
         context = context with { DeferPaintOpacity = true };
         SvgParsedGeometry parsed = ParseRectangleCore(reader, context, frame, state);
         return SvgPaintRecording.Attach(parsed, source, reader.LocalName, state, context.CancellationToken);
@@ -402,6 +403,7 @@ internal static class SvgLeafParser
     internal static SvgParsedGeometry ParseCircle(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        if (SvgPaintRecording.RetainCollapsedSource(source, reader, context, frame, int.MaxValue, state) is {} collapsed) return collapsed;
         context = context with { DeferPaintOpacity = true };
         SvgParsedGeometry parsed = ParseCircleCore(reader, context, frame, state);
         return SvgPaintRecording.Attach(parsed, source, reader.LocalName, state, context.CancellationToken);
@@ -416,6 +418,7 @@ internal static class SvgLeafParser
     internal static SvgParsedGeometry ParseEllipse(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        if (SvgPaintRecording.RetainCollapsedSource(source, reader, context, frame, int.MaxValue, state) is {} collapsed) return collapsed;
         context = context with { DeferPaintOpacity = true };
         SvgParsedGeometry parsed = ParseEllipseCore(reader, context, frame, state);
         return SvgPaintRecording.Attach(parsed, source, reader.LocalName, state, context.CancellationToken);
@@ -646,6 +649,7 @@ internal static class SvgLeafParser
     internal static SvgParsedGeometry ParseLine(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        if (SvgPaintRecording.RetainCollapsedSource(source, reader, context, frame, int.MaxValue, state) is {} collapsed) return collapsed;
         SvgMarkerStyle markers = SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers);
         context = context with { DeferPaintOpacity = true };
         SvgParsedGeometry parsed = ParseLineCore(reader, context, frame, state);

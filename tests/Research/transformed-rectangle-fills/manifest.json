@@ -150,8 +150,10 @@
       "height": 48,
       "background": "transparent",
       "role": "admission-gate",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only nonsingular finite matrix() transforms are implemented."
+      "previousExpectedError": "UnsupportedFeature",
+      "previousObservedGate": "Only nonsingular finite matrix() transforms are implemented.",
+      "currentOutcome": "rendered-exact",
+      "currentQualification": "../release-baselines/singular-source-qualification.json"
     },
     {
       "id": "gradient-boundary",

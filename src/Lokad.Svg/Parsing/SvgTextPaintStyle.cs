@@ -155,6 +155,10 @@ internal readonly record struct SvgTextPaintSpan(int Start, int End, SvgTextGlyp
 internal readonly record struct SvgTextMetricScope(bool Suppressed, bool NeedsBounds)
 {
     internal bool CanSuppress => Suppressed && !NeedsBounds;
+
+    /// <summary>Suppresses painting under collapsed placement while preserving metrics required by an enclosing effect.</summary>
+    internal SvgTextMetricScope WithTransform(SvgAffineTransform transform) => new(Suppressed || transform.IsSingular, NeedsBounds);
+
     internal SvgTextMetricScope Enter(string? filter, SvgPaintResourceSelection? resources)
     {
         if (SvgLocalUrl.GetReference(filter) is null) return this;

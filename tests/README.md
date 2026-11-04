@@ -66,6 +66,13 @@ fills and strokes. Canonical owned-PNG rendering protects material, visibility,
 source ownership and definition order; direct mechanisms inspect retained commands
 and maps. Existing point-list/stroke ownership contracts keep their distinct duties.
 
+The [singular-map controls](Research/singular-source-maps/README.md) preserve eight
+original alias inputs and orthogonal geometry, ownership, instance, image and text
+routes through canonical owned-PNG conversion. Mechanisms protect finite parsing,
+aggregate command limits, source roles/bounds and font liveness; two representative
+contracts cover prepared font selection and shared-owner refusal/cancellation/retry.
+Historical singular arc/rectangle cases now assert exact unchanged native pixels.
+
 The [unpainted filter sources](Research/filter-empty-sources/README.md) retain
 eight originals and twelve independent controls through one owned-PNG path.
 Two mechanisms distinguish source/scope roles and command order; one shared-budget

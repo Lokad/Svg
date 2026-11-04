@@ -8,7 +8,7 @@ namespace Lokad.Svg.Tests;
 [Trait("Layer", "Mechanism")]
 public sealed class SvgPatternSelectionMechanismTests
 {
-    private enum Selection { None, Serif, Unsupported }
+    private enum Selection { None, Serif }
     private readonly record struct SelectionCase(string Source, string SourceSha256, Selection Expected);
 
     private static readonly Lazy<IReadOnlyDictionary<string, SelectionCase>> Inputs = new(static () =>
@@ -26,7 +26,6 @@ public sealed class SvgPatternSelectionMechanismTests
                 {
                     "none" => Selection.None,
                     "serif" => Selection.Serif,
-                    "unsupported" => Selection.Unsupported,
                     _ => throw new InvalidDataException("Unknown font-selection expectation.")
                 }), StringComparer.Ordinal);
     });
@@ -44,15 +43,9 @@ public sealed class SvgPatternSelectionMechanismTests
         byte[] source = TextEncoding.UTF8.GetBytes(input.Source);
         Assert.Equal(input.SourceSha256, Convert.ToHexStringLower(SHA256.HashData(source)));
 
-        if (input.Expected == Selection.Unsupported)
-            Assert.Equal(SvgErrorCode.UnsupportedFeature,
-                Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(source, CancellationToken.None)).ErrorCode);
-        else
-        {
-            SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(source, CancellationToken.None);
-            if (input.Expected == Selection.None) Assert.Empty(requests);
-            else Assert.Equal("serif", Assert.Single(requests).Family);
-        }
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(source, CancellationToken.None);
+        if (input.Expected == Selection.None) Assert.Empty(requests);
+        else Assert.Equal("serif", Assert.Single(requests).Family);
         Assert.Equal(input.SourceSha256, Convert.ToHexStringLower(SHA256.HashData(source)));
     }
 }

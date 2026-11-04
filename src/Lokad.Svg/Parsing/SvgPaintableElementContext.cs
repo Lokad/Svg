@@ -85,12 +85,15 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal bool HasPaintableResourceTarget(XmlReader reader)
     {
         SvgComputedStyle style = ResolveStyle(reader, reader.LocalName == "text");
-        return InheritedPresentation.IsDisplayed && style.GetDisplay() != SvgDisplay.None && style.GetOpacity().Value != 0
+        return !HasCollapsedPlacement(ResolveTransform(reader)) && InheritedPresentation.IsDisplayed && style.GetDisplay() != SvgDisplay.None && style.GetOpacity().Value != 0
             && !TextMetrics.CanSuppress && SvgMaskSyntax.HasPaintableTarget(reader,
                 SvgPresentationResolver.ParseVisibility(style.Visibility, InheritedPresentation.IsVisible), style.Filter);
     }
 
     internal SvgAffineTransform ResolveTransform(XmlReader reader) => InheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseElementTransform(reader, CancellationToken));
+
+    /// <summary>Tests complete drawing placement without changing retained source coordinates or requiring an inverse.</summary>
+    internal bool HasCollapsedPlacement(SvgAffineTransform geometryMap) => StrokeHostMap.Compose(geometryMap).IsSingular;
 
     internal SvgResolvedShapePresentation ResolvePresentation(SvgComputedStyle style, bool acceptsStroke)
         => SvgShapePresentationResolver.Resolve(style, InheritedPresentation.Paint, InheritedPresentation.IsDisplayed, InheritedPresentation.IsVisible, acceptsStroke, NamedColors);

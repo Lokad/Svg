@@ -174,7 +174,7 @@ internal static class SvgReferenceResolver
             // is unpainted; paint visibility does not decide replay geometry.
             if (source.LocalName == "rect" && (reference.DrawMap is not null || !strokePlacement.IsAxisAligned))
                 retention |= SvgSourceContourRetention.Fill;
-            if (source.AuthoredStyle.VectorEffect is not null || retention != SvgSourceContourRetention.None || state.FilterGroupDepth > 0 && definition.Geometries.Length == 0
+            if (source.AuthoredStyle.VectorEffect is not null || retention != SvgSourceContourRetention.None || strokePlacement.IsSingular || state.FilterGroupDepth > 0 && definition.Geometries.Length == 0
                 || source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers))
             {
                 foreach (SvgGeometry geometry in definition.Geometries)
@@ -232,7 +232,7 @@ internal static class SvgReferenceResolver
                 SvgGeometry authoredSource = sources[index] with { AuthoredPath = definition.Geometries[index].AuthoredPath };
                 switch (sources[index].Kind)
                 {
-                    case SvgGeometryKind.Rectangle when state.Scene.GetRecordedPaintValue(sources[index].RecordedPaint).IsEffectAnchor:
+                    case SvgGeometryKind.Rectangle when state.Scene.GetRecordedPaintValue(definition.Geometries[index].RecordedPaint).IsEffectAnchor:
                         // Anchors carry no drawable rectangle. Their retained source
                         // bounds receive the instance map with the paint record below.
                         AddInstanceGeometry(applied, SvgGeometry.FromRectangle(default));

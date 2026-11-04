@@ -124,11 +124,20 @@ public sealed class SvgDeferredPaintLeafTests
     }
 
     [Fact]
-    public void Singular_source_paint_placement_has_a_categorized_outcome_and_releases_owners()
+    public void Singular_source_paint_placement_retains_bounds_without_ink_and_releases_owners()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'><g transform='matrix(1,1,1,1,0,0)'><path d='M4 4L40 8L24 32Z' fill='url(#p)'/></g><defs><linearGradient id='p'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs></svg>"u8.ToArray();
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            SvgGeometry source = Assert.Single(root.Geometries);
+            SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(root.SceneStorage);
+            SvgRecordedPaintValue paint = storage.RecordedPaintValues[source.RecordedPaint.Identity - 1];
+            Assert.True(paint.IsEffectAnchor);
+            Assert.NotNull(paint.ObjectBounds);
+            using SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
+            Assert.All(raster.Pixels, value => Assert.Equal((byte)0, value));
+        }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

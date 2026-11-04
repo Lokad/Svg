@@ -117,6 +117,7 @@ internal static class SvgPaintRecording
     /// enclosing containers and instances can filter transparent child input.</remarks>
     internal static bool IsFilterSource(XmlReader reader, SvgPaintableElementContext context)
     {
+        if (context.HasCollapsedPlacement(context.ResolveTransform(reader))) return false;
         switch (reader.LocalName)
         {
             case "rect":
@@ -158,16 +159,39 @@ internal static class SvgPaintRecording
             return (style.NonScalingStroke || reader.LocalName is "polygon" or "polyline") && !SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers
                 ? SvgNativeVisualBounds.Apply(recorded, reader, context, source, frame, maximumCommands, state) : recorded;
         }
+        return RetainEmptySourceBounds(parsed, source, reader, context, frame, maximumCommands, state, false);
+    }
+
+    /// <summary>Retains collapsed source bounds without constructing paint, strokes, markers or source-local effects.</summary>
+    /// <remarks>Uses the ordinary bounded primitive/path parsers and existing nonpainting source role.
+    /// The returned batch owns its container; the document owns its paint metadata. Source bounds remain
+    /// available to enclosing effects and instance placement. All work shares the conversion budget and cancellation.</remarks>
+    internal static SvgParsedGeometry? RetainCollapsedSource(SvgRecordedPaintStyle source, XmlReader reader,
+        SvgPaintableElementContext context, SvgViewportFrame? frame, int maximumCommands, SvgDocumentState state)
+    {
+        SvgAffineTransform geometryMap = source.SourceObjectBox is not null ? source.SourceObjectMap : context.ResolveTransform(reader);
+        if (!context.HasCollapsedPlacement(geometryMap)) return null;
+        using BudgetedGeometryBuilder empty = new(state.Budget, SvgMemoryCategory.Geometry, context.CancellationToken);
+        return RetainEmptySourceBounds(new(empty.Detach(), 0), source, reader, context, frame, maximumCommands, state, true);
+    }
+
+    private static SvgParsedGeometry RetainEmptySourceBounds(SvgParsedGeometry parsed, SvgRecordedPaintStyle source, XmlReader reader,
+        SvgPaintableElementContext context, SvgViewportFrame? frame, int maximumCommands, SvgDocumentState state, bool retainSourceMap)
+    {
         try
         {
             SvgPaintBounds? bounds = source.ObjectBounds;
+            SvgPaintBounds? sourceBox = source.SourceObjectBox;
+            SvgAffineTransform sourceMap = source.SourceObjectMap;
+            int elementCount = parsed.ElementCount;
             if (bounds is null)
             {
                 SvgRectangle box;
                 if (reader.LocalName == "path")
                 {
                     using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumCommands, state.Budget, context.CancellationToken);
-                    if (data.Value.Length == 0) return parsed;
+                    if (retainSourceMap) elementCount = data.CommandCount + 1;
+                    if (data.Value.Length == 0) return parsed with { ElementCount = elementCount };
                     using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Parser, context.CancellationToken);
                     SvgPathDataParser.ParseCommands(data.Value, maximumCommands, context.CancellationToken, commands);
                     box = SvgPathBounds.Compute(commands.AsSpan(), context.CancellationToken);
@@ -176,7 +200,8 @@ internal static class SvgPaintRecording
                 {
                     using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(reader.GetAttribute("points") ?? string.Empty,
                         reader.LocalName, maximumCommands, state.Budget, context.CancellationToken, 0);
-                    if (points.Count == 0) return parsed;
+                    if (retainSourceMap) elementCount = points.Count + 1;
+                    if (points.Count == 0) return parsed with { ElementCount = elementCount };
                     float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
                     foreach (SvgFractionalPoint point in points.AsSpan())
                     {
@@ -187,15 +212,18 @@ internal static class SvgPaintRecording
                     box = new(left, top, right - left, bottom - top, default, false, null);
                 }
                 else return parsed;
-                bounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
-                    .Map(SvgViewportFrame.MapGeometry(context.ResolveTransform(reader), frame), context.CancellationToken);
+                sourceBox = new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height));
+                sourceMap = SvgViewportFrame.MapGeometry(context.ResolveTransform(reader), frame);
+                bounds = sourceBox.Value.Map(sourceMap, context.CancellationToken);
             }
+            if (retainSourceMap && source.IsSuppressedSource) return parsed with { ElementCount = elementCount };
             SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), 0, false, source.Scope, source.ElementOpacity, source.OpacityScope)
-            { IsEffectAnchor = true, ObjectBounds = bounds, VisualBounds = source.VisualBounds ?? bounds, PaintOrder = source.PaintOrder };
+            { IsEffectAnchor = true, ObjectBounds = bounds, VisualBounds = retainSourceMap ? null : source.VisualBounds ?? bounds,
+                SourceObjectBounds = retainSourceMap && sourceBox is {} raw ? new(raw, sourceMap) : null, PaintOrder = source.PaintOrder };
             using BudgetedGeometryBuilder anchor = new(state.Budget, SvgMemoryCategory.Geometry, context.CancellationToken);
             anchor.Add(SvgGeometry.FromRectangle(default) with { RecordedPaint = state.Scene.RegisterRecordedPaint(paint) });
             parsed.Dispose();
-            return new(anchor.Detach(), parsed.ElementCount);
+            return new(anchor.Detach(), elementCount);
         }
         catch { parsed.Discard(); throw; }
     }

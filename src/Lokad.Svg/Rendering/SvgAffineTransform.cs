@@ -117,6 +117,9 @@ internal readonly record struct SvgAffineTransform(double A, double B, double C,
     }
 
     /// <summary>Reports whether this transform maps axes to axes, keeping rectangles axis-aligned.</summary>
+    /// <summary>Reports a collapsed coordinate space independently of translation and paint visibility.</summary>
+    internal bool IsSingular => Determinant == 0;
+
     internal bool IsAxisAligned => B == 0 && C == 0;
 
     /// <summary>Reports whether rectangles stay axis-aligned, including maps that exchange their axes.</summary>

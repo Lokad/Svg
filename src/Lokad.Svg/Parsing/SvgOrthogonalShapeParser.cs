@@ -10,6 +10,7 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePath(XmlReader reader, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        if (SvgPaintRecording.RetainCollapsedSource(source, reader, context, frame, maximumGeometryElements, state) is {} collapsed) return collapsed;
         SvgMarkerStyle markers = SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers);
         context = context with { DeferPaintOpacity = true };
         SvgParsedGeometry parsed = ParsePathCore(reader, context, maximumGeometryElements, budget, frame, state);
@@ -258,6 +259,7 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePointList(XmlReader reader, string elementName, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        if (SvgPaintRecording.RetainCollapsedSource(source, reader, context, frame, maximumGeometryElements, state) is {} collapsed) return collapsed;
         SvgMarkerStyle markers = SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers);
         context = context with { DeferPaintOpacity = true };
         SvgParsedGeometry parsed = ParsePointListCore(reader, elementName, context, maximumGeometryElements, budget, frame, state);

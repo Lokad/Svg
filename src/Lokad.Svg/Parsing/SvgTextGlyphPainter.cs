@@ -77,6 +77,11 @@ internal static class SvgTextGlyphPainter
     {
         SvgTextPaintPreparation prepared = SvgTextPaintPreparation.Create(run, token);
         prepared.ObjectBox = objectBox;
+        if (state.OutputMap.Compose(placement).IsSingular)
+        {
+            Emit(run, placement, [], clip, fallback, state, maximumCommands, budget, recording, ref prepared, token);
+            return;
+        }
         SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, false, maximumCommands, budget, recording, ref prepared, token);
         Emit(run, placement, [], clip, fallback, state, maximumCommands, budget, recording, ref prepared, token);
         SvgTextDecorationRenderer.Emit(run, run.PaintFragments, placement, [], clip, state, fallback, true, maximumCommands, budget, recording, ref prepared, token);
@@ -98,6 +103,20 @@ internal static class SvgTextGlyphPainter
         SvgLeafMaskBinding? pathClip, SvgColor fallback, SvgDocumentState state, int maximumCommands, RenderBudget budget,         SvgRecordedTransform? recording, ref SvgTextPaintPreparation prepared, CancellationToken token)
     {
         if (!pathPlacements.IsEmpty && pathPlacements.Length != run.Glyphs.Length) throw new ArgumentException("Path placements must cover every source glyph.", nameof(pathPlacements));
+        if (state.OutputMap.Compose(placement).IsSingular)
+        {
+            // Layout remains authoritative for enclosing object bounds. Collapsed
+            // element placement creates no glyph paint, stroke or decoration.
+            SvgRectangle box = prepared.ObjectBox ?? (prepared.SourceBox ??= SvgTextLayoutBounds.Measure(run, pathPlacements, placement, state.TextBoundsMetrics, token));
+            SvgSourceObjectBounds objects = new(new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)), placement);
+            SvgRecordedPaintValue source = new(state.NewPaintOperationIdentity(), 0, false, new(1), SvgPaintOpacity.Opaque, new(1))
+            {
+                IsEffectAnchor = true, RecordingTransform = recording,
+                ObjectBounds = objects.Bounds.Map(placement, token), SourceObjectBounds = objects
+            };
+            state.Scene.AddGeometry(SvgGeometry.FromRectangle(default) with { RecordedPaint = state.Scene.RegisterRecordedPaint(source) });
+            return;
+        }
         if (run.PaintFragments.IsEmpty)
         {
             Fill(run, placement, pathPlacements, pathClip, fallback, 0, run.Glyphs.Length, state, budget, recording, ref prepared, token);

@@ -301,6 +301,15 @@ uses the same retention contract as solid geometry. The
 [affine source controls](../tests/Research/affine-source-retention/README.md)
 preserve the independent visibility, material and definition-order routes.
 
+Collapsed element placement retains a nonpainting source with mapped object bounds
+before inverse-dependent paint construction. Complete instance placement selects
+source reconstruction; recoloring preserves the original recorded ownership role.
+Enclosing effects can still use those bounds and generate output. Text retains its
+shaped layout bounds and required caller fonts while skipping glyph paint, strokes
+and decorations. Font discovery suppresses programs needed only by collapsed paint.
+The [singular-map controls](../tests/Research/singular-source-maps/README.md) keep
+these responsibilities separate from root-attribute and paint-server admission.
+
 An unpainted source keeps its own opacity/mask/clip bindings inside its parent
 effects. A synthetic empty-scope carrier keeps ancestor bindings around generated
 output. These are explicit paint roles; bounds and pixel emptiness do not establish

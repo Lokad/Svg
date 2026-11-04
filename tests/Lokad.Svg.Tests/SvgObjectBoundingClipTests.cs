@@ -64,12 +64,17 @@ public sealed class SvgObjectBoundingClipTests
     [InlineData("rotate(12)")]
     [InlineData("skewX(10)")]
     [InlineData("scale(0 1)")]
-    public void Referencing_maps_preserve_local_bounds_or_reject_singular_maps_and_release_sources(string transform)
+    public void Referencing_maps_preserve_local_bounds_or_suppress_collapsed_paint_and_release_sources(string transform)
     {
         byte[] input = Input("<defs><clipPath id='c' clipPathUnits='objectBoundingBox'><circle cx='.5' cy='.5' r='.4'/></clipPath></defs><g transform='" + transform + "' clip-path='url(#c)'><rect width='24' height='24'/></g>");
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         if (transform == "scale(0 1)")
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None)).ErrorCode);
+        {
+            using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);
+            Assert.NotEmpty(scene.Geometries.ToArray());
+            using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
+            Assert.All(surface.Pixels, value => Assert.Equal((byte)0, value));
+        }
         else
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);

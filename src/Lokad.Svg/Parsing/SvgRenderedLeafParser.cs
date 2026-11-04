@@ -84,7 +84,7 @@ CancellationToken cancellationToken)
     {
         context = context.PrepareStyle(reader);
         SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
-        context = context with { TextMetrics = context.InheritedPresentation.TextMetrics.Enter(style.Filter, state.PaintResources) };
+        context = context with { TextMetrics = context.InheritedPresentation.TextMetrics.WithTransform(context.StrokeHostMap.Compose(context.ResolveTransform(reader))).Enter(style.Filter, state.PaintResources) };
         if (style.Filter is not string filter || filter.Trim() == "none")
             return ParseContent(reader, context, root, state, limits, budget, fontSnapshot, cancellationToken);
         if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
