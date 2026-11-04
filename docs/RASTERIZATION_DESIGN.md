@@ -379,6 +379,13 @@ kind and a separate enclosing clip. Ordinary masks composite children in source
 order before alpha/luminance conversion.
 Referenced clip children retain authored verbs and placement through registration.
 
+Mask text keeps font construction in the resource context, independently of the
+consumer's replay map. Its own child transform still selects the font scale;
+geometry retains complete target construction. The parser scopes and restores
+this borrowed map through existing text preparation. The
+[mask text controls](../tests/Research/mask-text-recording/README.md) distinguish
+those placements from clip-mask coverage and protect following text context.
+
 [Filter playback](../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs) retains result
 dependencies, primitive regions, operating spaces and source placement. Requested
 output, native image hints, captured content, cropped storage and padded scratch

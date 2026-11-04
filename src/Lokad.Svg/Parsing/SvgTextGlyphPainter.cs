@@ -138,7 +138,7 @@ internal static class SvgTextGlyphPainter
                     }
                     SvgPositionedGlyph position = placed.Position;
                     SvgAffineTransform map = placed.Map;
-                    double screenScale = SvgGlyphDeviceMetrics.GetScreenScale(placement);
+                    double screenScale = SvgGlyphDeviceMetrics.GetScreenScale(state.TextFontTransform(placement));
                     // Native recording narrows the combined element/viewport scale
                     // before baking positions. Keep layout and tangent orientation
                     // at their existing precision; the cached font size alone does
@@ -189,7 +189,7 @@ internal static class SvgTextGlyphPainter
                 SvgGlyphFontStyle font = run.GetGlyphFont(index);
                 using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font.Font, placed.Position, font.FontSize, placed.Map, budget, token);
                 if (contours.Contours.Length == 0) continue;
-                stroke = stroke with { FontScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(placement) };
+                stroke = stroke with { FontScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(state.TextFontTransform(placement)) };
                 SvgGlyphGeometry glyph = SvgGlyphGeometry.CreateStroke(contours, stroke, font.Font, placed.Position, font.FontSize, placed.Map, budget);
                 glyph.Shader = shader;
                 try

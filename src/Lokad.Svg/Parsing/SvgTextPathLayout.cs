@@ -148,7 +148,7 @@ CancellationToken token)
     {
         SvgTextPathBaseline baseline = measured.Baseline;
         double pathScale = run.DeviceMetrics?.Scale ?? state.OutputTextScale;
-        double recordedFontScale = run.Style.Baseline == SvgTextBaseline.Alphabetic ? 1 : SvgGlyphDeviceMetrics.GetScreenScale(pending.Placement);
+        double recordedFontScale = run.Style.Baseline == SvgTextBaseline.Alphabetic ? 1 : SvgGlyphDeviceMetrics.GetScreenScale(state.TextFontTransform(pending.Placement));
         SvgGlyphMetricTarget metricTarget = run.DeviceMetrics?.Target ?? (OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux);
         SvgGlyphFontStyle baselineFont = default;
         bool hasBaselineFont = false;

@@ -409,6 +409,10 @@ cases; numeric-ampersand browser differences remain explicit research evidence.
 The [conic-center checks](Research/glyph-conic-centers/README.md) keep 21 direct
 numerical cases separate from two canonical supplied-font rendering cases. The
 font producer and complete native numerical sheet remain optional research tools.
+The [mask text checks](Research/mask-text-recording/README.md) retain seven canonical
+native cases for resource versus consumer font construction and one separate
+scope/memory contract. Twelve broader clip experiments remain research; they do
+not multiply the API matrix or imply text-clip support.
 Historical document totals, percentage gates and exploratory quotas are not
 completion criteria. Retained cases keep their own contracts regardless of the
 collection name.

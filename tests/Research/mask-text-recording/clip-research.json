@@ -1,0 +1,1784 @@
+{
+  "status": "RESEARCH; direct text clips remain unsupported",
+  "sourceBaseCommit": "bc35fa3e10ad27e461db2c8ef3c051153113997f",
+  "librarySha256": "320e07818dc00270211685fc683de29e7f78633cff62898cb4a9585696834c77",
+  "recipeRevision": 3,
+  "width": 80,
+  "height": 80,
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "hostedSvgBodiesRetained": 0,
+  "elapsedSeconds": 465.5590743999928,
+  "rows": [
+    {
+      "id": "identity",
+      "note": "Baseline fitted glyph coverage, black mask versus colored clipped target.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/identity-clip.svg",
+          "inputSha256": "6769a8d81c84377f17e37826b97b1882ad0e342bd25ad168eee959240b01ce0a",
+          "nativeInputSha256": "bd546f4f54ab72b86d154e86d9d6141a30e9ed304c60ea84b66c0160464a5bb5"
+        },
+        "paint": {
+          "input": "clip-research/identity-paint.svg",
+          "inputSha256": "1488d8ba6399b01a5a4f237f2f4986ef18187d05f1feea7e1f6fe445b350b91f",
+          "nativeInputSha256": "92acd4667a442cbdbaa6443f2e84e39bba3632891e6df240e10056cc9cc2ffd1"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/identity-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1889,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2076,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2004,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/identity-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2022,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2092,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1929,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 317
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/identity-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 6966,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5408,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5280,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/identity-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5399,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4918,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5453,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 298
+        }
+      ]
+    },
+    {
+      "id": "fractional-origin",
+      "note": "Font-origin phase without an element map.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/fractional-origin-clip.svg",
+          "inputSha256": "c46f3cceb48af7d33d744b842e3fa2130d3582c2334ba95bba1eab26ffa67f19",
+          "nativeInputSha256": "ba63ef76f5eca7a142bab1fc6fcb121e1be0830c34b13a593d00f8fef06c7505"
+        },
+        "paint": {
+          "input": "clip-research/fractional-origin-paint.svg",
+          "inputSha256": "f91f59186f5f00613969ba1d4b956de8f0e15d5118bee9c3749753e4207807b8",
+          "nativeInputSha256": "7a1a48a6f8f545c6d8921eccf39b137c9cd9728625b95bdf1adaf4366ec90d3b"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/fractional-origin-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "dce078f707e07c100b48e28f552acfcbb0a2e241f9df28003a9c153974c07860",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1887,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "dce078f707e07c100b48e28f552acfcbb0a2e241f9df28003a9c153974c07860",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1981,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "dce078f707e07c100b48e28f552acfcbb0a2e241f9df28003a9c153974c07860",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1963,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/fractional-origin-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "6bd5ff5dc312a76acf3233647b1009947f98d84a6af9aa17ccabe99a0eab8898",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1859,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "6bd5ff5dc312a76acf3233647b1009947f98d84a6af9aa17ccabe99a0eab8898",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1857,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "6bd5ff5dc312a76acf3233647b1009947f98d84a6af9aa17ccabe99a0eab8898",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1895,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 318
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/fractional-origin-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "b3f6aaed0f018a8e98116690bfc4208dd5feac57e6a71c9e83d851587383b0d8",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5696,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "b3f6aaed0f018a8e98116690bfc4208dd5feac57e6a71c9e83d851587383b0d8",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5788,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "b3f6aaed0f018a8e98116690bfc4208dd5feac57e6a71c9e83d851587383b0d8",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4884,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/fractional-origin-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "f80ae58e35445a5763dad7120860f545f30af3ef7e72156cdee05ba208e27ad0",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4965,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "f80ae58e35445a5763dad7120860f545f30af3ef7e72156cdee05ba208e27ad0",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5693,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "f80ae58e35445a5763dad7120860f545f30af3ef7e72156cdee05ba208e27ad0",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4945,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 296
+        }
+      ]
+    },
+    {
+      "id": "consumer-scale",
+      "note": "Resource placement from an axis-aligned referencing map.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/consumer-scale-clip.svg",
+          "inputSha256": "dcdaa7f919a53387d768b66e2da0ac3d8564312c4c5de6e04ff0ba50ecdd95ab",
+          "nativeInputSha256": "df67779c431d5c51f5da273f9e32124b487005cbf76bec25ba8c2109e97b40b4"
+        },
+        "paint": {
+          "input": "clip-research/consumer-scale-paint.svg",
+          "inputSha256": "b4fb722ebe464a1955c48b7963965adb223d0efbaf4ba15e78af565c4535a348",
+          "nativeInputSha256": "ca3df6c127a0402f8cb9cef6e80587b8c9b2268b4ac5fb87c8f208d1d4da1191"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/consumer-scale-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "b225cc7130b8c7e4301bbb78d137c6d79abc17b83235a70096ce281c16f4aba0",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1858,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "b225cc7130b8c7e4301bbb78d137c6d79abc17b83235a70096ce281c16f4aba0",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1861,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "b225cc7130b8c7e4301bbb78d137c6d79abc17b83235a70096ce281c16f4aba0",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1863,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/consumer-scale-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "bd5f08425e622b4644f64952ab1fe46520bfb600a2e5e3acad7dd91df7e95590",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1867,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "bd5f08425e622b4644f64952ab1fe46520bfb600a2e5e3acad7dd91df7e95590",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1852,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "bd5f08425e622b4644f64952ab1fe46520bfb600a2e5e3acad7dd91df7e95590",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1894,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 247
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/consumer-scale-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "57ac5f0aa453fb90f96b9951c6ebefe24ec334f1b933ae3d9a0cab444d7920b9",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 6010,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "57ac5f0aa453fb90f96b9951c6ebefe24ec334f1b933ae3d9a0cab444d7920b9",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5719,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "57ac5f0aa453fb90f96b9951c6ebefe24ec334f1b933ae3d9a0cab444d7920b9",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4605,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/consumer-scale-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "958a01a9488e318494fd164e0cd808220ce41e3030360d3659d00c2fb0635fc7",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4610,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "958a01a9488e318494fd164e0cd808220ce41e3030360d3659d00c2fb0635fc7",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4747,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "958a01a9488e318494fd164e0cd808220ce41e3030360d3659d00c2fb0635fc7",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4183,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 2,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 2,
+          "nativeClipVisiblePixels": 225
+        }
+      ]
+    },
+    {
+      "id": "consumer-affine",
+      "note": "Resource placement from a non-axis-aligned referencing map.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/consumer-affine-clip.svg",
+          "inputSha256": "edbb1b1bbd5639aa23e58283ce3b8b0b4ab8f4cdda604f6040a9750bfa9f0126",
+          "nativeInputSha256": "3f6ab16ffa6e9e50ea7686a5b8a7f7b3c192cd6263fc9c3a773b2574f212f32f"
+        },
+        "paint": {
+          "input": "clip-research/consumer-affine-paint.svg",
+          "inputSha256": "b468eb55a4e8d2cf4f545c072ce2b53026ecb83971edb7c897bb9ab90e9a5925",
+          "nativeInputSha256": "fc33de7cd78ef810108b9c08cde27b8e0f3691f6a4f469cde48ee50153abe9fa"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/consumer-affine-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "58e6e5da5ac7d1cfe0b51d8ca9a05ddd34420a600d9e1cf3a1fbb30b15119236",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1884,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "58e6e5da5ac7d1cfe0b51d8ca9a05ddd34420a600d9e1cf3a1fbb30b15119236",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1849,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "58e6e5da5ac7d1cfe0b51d8ca9a05ddd34420a600d9e1cf3a1fbb30b15119236",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1861,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/consumer-affine-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "ba5bc76538efbf67a067b3214c060bc7ba27de82c12221ba9dfca32cce49b4da",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1834,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "ba5bc76538efbf67a067b3214c060bc7ba27de82c12221ba9dfca32cce49b4da",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1844,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "ba5bc76538efbf67a067b3214c060bc7ba27de82c12221ba9dfca32cce49b4da",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1875,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 178,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 178,
+          "nativeClipVisiblePixels": 322
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/consumer-affine-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "651b92c053ca64e0f30d42a4e2bc1ddcdf6f5b943f3f389a611dac5b6924bb12",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5649,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "651b92c053ca64e0f30d42a4e2bc1ddcdf6f5b943f3f389a611dac5b6924bb12",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5875,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "651b92c053ca64e0f30d42a4e2bc1ddcdf6f5b943f3f389a611dac5b6924bb12",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5519,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/consumer-affine-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "0774faa1fa304ba9b45536606e239da42c387436f89d0d14608dce16d2618238",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4170,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "0774faa1fa304ba9b45536606e239da42c387436f89d0d14608dce16d2618238",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4282,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "0774faa1fa304ba9b45536606e239da42c387436f89d0d14608dce16d2618238",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 6001,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 168,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 168,
+          "nativeClipVisiblePixels": 300
+        }
+      ]
+    },
+    {
+      "id": "child-affine",
+      "note": "The same map on the glyph child, independently of consumer placement.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/child-affine-clip.svg",
+          "inputSha256": "5ed605786bfa5892615945c9f5222738811aba6520ad64ebc547c48e62c0a917",
+          "nativeInputSha256": "cd9a6618819e5f9b8ddf505b0c82b000f876095c606058c5de4de28a87830495"
+        },
+        "paint": {
+          "input": "clip-research/child-affine-paint.svg",
+          "inputSha256": "1de73b43740bce144744af8edfef8cbcaada08634609c2d20f4bb3d606619d64",
+          "nativeInputSha256": "a01ae4192ddb415ccd932089b9c1f92b2df09e1a7b334eb681ce0557ca0881eb"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/child-affine-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "b02b0d9cfdd02e718306b1c3e016a8ef3dcfbf32c0f67c7438e49c2d4f02f142",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2122,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "b02b0d9cfdd02e718306b1c3e016a8ef3dcfbf32c0f67c7438e49c2d4f02f142",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2003,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "b02b0d9cfdd02e718306b1c3e016a8ef3dcfbf32c0f67c7438e49c2d4f02f142",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2003,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/child-affine-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "ba5bc76538efbf67a067b3214c060bc7ba27de82c12221ba9dfca32cce49b4da",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2026,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "ba5bc76538efbf67a067b3214c060bc7ba27de82c12221ba9dfca32cce49b4da",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2030,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "ba5bc76538efbf67a067b3214c060bc7ba27de82c12221ba9dfca32cce49b4da",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2066,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 321
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/child-affine-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "54e856f6832d186b97b7169cb2fd023a7bbe68715dafdcd81736607586e48b58",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5938,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "54e856f6832d186b97b7169cb2fd023a7bbe68715dafdcd81736607586e48b58",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5640,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "54e856f6832d186b97b7169cb2fd023a7bbe68715dafdcd81736607586e48b58",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5309,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/child-affine-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "0774faa1fa304ba9b45536606e239da42c387436f89d0d14608dce16d2618238",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5033,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "0774faa1fa304ba9b45536606e239da42c387436f89d0d14608dce16d2618238",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5457,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "0774faa1fa304ba9b45536606e239da42c387436f89d0d14608dce16d2618238",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4803,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 297
+        }
+      ]
+    },
+    {
+      "id": "object-box",
+      "note": "Object-box normalization before text construction.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/object-box-clip.svg",
+          "inputSha256": "9e26511d6d3887be2aac36599b274cb525bd9872dfd1dc5ce284a739c71f6bcb",
+          "nativeInputSha256": "dc80fb3441ba2b4c18bf25f9ab5c5e793320ba6f9fb45f7affe74abcb96600a8"
+        },
+        "paint": {
+          "input": "clip-research/object-box-paint.svg",
+          "inputSha256": "960d0c42798dec62d3394c2f2d99329906d565eacb00d20f295b72e775a0ba2e",
+          "nativeInputSha256": "efdc5d55ed3d08ca9fd84d54de42d21501b61720f532ba6313a6d98d6c142a82"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/object-box-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "11cb31cc71e76c4724e40bcc3b4764a3a4f304324ce908dede78290e0b3da6f2",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1979,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "11cb31cc71e76c4724e40bcc3b4764a3a4f304324ce908dede78290e0b3da6f2",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1877,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "11cb31cc71e76c4724e40bcc3b4764a3a4f304324ce908dede78290e0b3da6f2",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2007,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/object-box-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2117,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2015,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1977,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 163,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 163,
+          "nativeClipVisiblePixels": 315
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/object-box-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "73fdf4288fd1deaa0337c380f6cccffb66bb50881b43440a4e45d2c8e4fdb00f",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5854,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "73fdf4288fd1deaa0337c380f6cccffb66bb50881b43440a4e45d2c8e4fdb00f",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 6196,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "73fdf4288fd1deaa0337c380f6cccffb66bb50881b43440a4e45d2c8e4fdb00f",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4152,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/object-box-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5023,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4567,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5763,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 133,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 133,
+          "nativeClipVisiblePixels": 292
+        }
+      ]
+    },
+    {
+      "id": "nonzero-opacity",
+      "note": "Determine whether nonzero authored text opacity scales clip coverage or merely admits the source.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/nonzero-opacity-clip.svg",
+          "inputSha256": "e006b3b364dad9f1e3590bc4d6c74188600fd9ce3f623f42e28835757dd237f1",
+          "nativeInputSha256": "ae4a195ab935e7731544b28ca146041fa9fa61a65316d155d084864a4ab5cc11"
+        },
+        "paint": {
+          "input": "clip-research/nonzero-opacity-paint.svg",
+          "inputSha256": "1488d8ba6399b01a5a4f237f2f4986ef18187d05f1feea7e1f6fe445b350b91f",
+          "nativeInputSha256": "92acd4667a442cbdbaa6443f2e84e39bba3632891e6df240e10056cc9cc2ffd1"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/nonzero-opacity-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "fc6448eb69ea091f9bc4cf0f00b65a56acef5ff6bb604322bcff8cbd45916a61",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1893,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "fc6448eb69ea091f9bc4cf0f00b65a56acef5ff6bb604322bcff8cbd45916a61",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1971,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "fc6448eb69ea091f9bc4cf0f00b65a56acef5ff6bb604322bcff8cbd45916a61",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1914,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/nonzero-opacity-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1928,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1960,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1976,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 317,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 317,
+          "nativeClipVisiblePixels": 309
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/nonzero-opacity-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "b06db44c0a579b4ece5b86463f38f0b2363a345d25971e20fe8eed7861281f66",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 6099,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "b06db44c0a579b4ece5b86463f38f0b2363a345d25971e20fe8eed7861281f66",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 6164,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "b06db44c0a579b4ece5b86463f38f0b2363a345d25971e20fe8eed7861281f66",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4536,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/nonzero-opacity-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5297,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5249,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5536,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 298,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 298,
+          "nativeClipVisiblePixels": 293
+        }
+      ]
+    },
+    {
+      "id": "span-paint",
+      "note": "Ignored element/span fill and stroke must not suppress clip font selection.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/span-paint-clip.svg",
+          "inputSha256": "e34c3e84cbd6c2fc97fb36dd666d7a8bbb4f8a17bca6318224313e251ae99225",
+          "nativeInputSha256": "302e11151401704e31e7a1b64982f01531ca9e52165f6048d2640ff2e5e553a5"
+        },
+        "paint": {
+          "input": "clip-research/span-paint-paint.svg",
+          "inputSha256": "c6e700e8b01481a9db26d6d7e73d90fbfc6fb34c125c864457d3ff50ac71b4d5",
+          "nativeInputSha256": "a164c5b6e1423264ae2e0095e1f67ff0ef18dd5ad2fd999bc8ffcd749a2a3a01"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/span-paint-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1926,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1882,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "01e78d86a78bb710613f8148a70049133d79b83f28a5a507b4af3e67ad075a34",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1914,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/span-paint-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1868,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1817,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "a8d2bbd988138210e9c6b4898bc03d36665ed89bfeca3eee9517ab23c56c1113",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1812,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 317
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/span-paint-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 6051,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5653,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "aa399c5fdba20649a3b7aaaf97b0e11d6448c3884c474608a8eae2bf58d36491",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4365,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/span-paint-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4407,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4485,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "64c7f92dbf3dc675ee70a3595e69572371cceb82d17bf225a31822cbcc9549ed",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5297,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 298
+        }
+      ]
+    },
+    {
+      "id": "positioned-span",
+      "note": "Existing character-position and rotation layout must replay through the mask route.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/positioned-span-clip.svg",
+          "inputSha256": "cdc9099a38bf8795ae5623f83c8ce4a4df40f0bd6e412944dcfa54d2f06ce5e0",
+          "nativeInputSha256": "a6c15752da9c05b6a0e62933d2f00d4a61c6ba3f7a5725038469dbafa68854d2"
+        },
+        "paint": {
+          "input": "clip-research/positioned-span-paint.svg",
+          "inputSha256": "d9fdf7ae513b6e529d6a9c66ae58d7442d70f42aad64f35bad5b4d18dc232903",
+          "nativeInputSha256": "92f2ec9b28323a31b791ad19cbaa7f683ad0210abb2d11830186ada0f011ebff"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/positioned-span-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "005238d19b75784eb2f2933766c5f0e7f87aa3ebf7c5ae8add1e5d5940ce429d",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1799,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "005238d19b75784eb2f2933766c5f0e7f87aa3ebf7c5ae8add1e5d5940ce429d",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1837,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "005238d19b75784eb2f2933766c5f0e7f87aa3ebf7c5ae8add1e5d5940ce429d",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1817,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/positioned-span-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "e6da8181e930cfe3415abdaadec4ccc56b595cb5db6e84884b0f59e4444ae9d3",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1887,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "e6da8181e930cfe3415abdaadec4ccc56b595cb5db6e84884b0f59e4444ae9d3",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1815,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "e6da8181e930cfe3415abdaadec4ccc56b595cb5db6e84884b0f59e4444ae9d3",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1862,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 650
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/positioned-span-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "b887b61cf94dee3e7c82af42a8e4722d4709f4f169a2dc2b412e457937cd081b",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5490,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "b887b61cf94dee3e7c82af42a8e4722d4709f4f169a2dc2b412e457937cd081b",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5491,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "b887b61cf94dee3e7c82af42a8e4722d4709f4f169a2dc2b412e457937cd081b",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4614,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/positioned-span-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "aade34ea6e99c0c9ca0b8d69aaca55cc0977f5faf1ea00fb5c2b76dbbede9c74",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4738,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "aade34ea6e99c0c9ca0b8d69aaca55cc0977f5faf1ea00fb5c2b76dbbede9c74",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4357,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "aade34ea6e99c0c9ca0b8d69aaca55cc0977f5faf1ea00fb5c2b76dbbede9c74",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4225,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 603
+        }
+      ]
+    },
+    {
+      "id": "length-adjust",
+      "note": "Glyph stretching remains in existing text layout.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/length-adjust-clip.svg",
+          "inputSha256": "5857fc6b30fd3374a504fbba9f1afe14be2e5c8f092d20a1295571a5d9883ca7",
+          "nativeInputSha256": "33118a3a3eb5dc7c6f7e1ad52754cf17bc458f8931eb3d57b2c4fcd4a773ec45"
+        },
+        "paint": {
+          "input": "clip-research/length-adjust-paint.svg",
+          "inputSha256": "4e594b0f22da1eb8aa4f1699725840b1d99171dbe24e0b3aed46d9c3e61002fd",
+          "nativeInputSha256": "e7ca092fc4899f194e544239168fd317d3bac55e70952d9f67921a97ffa5028b"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/length-adjust-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "371445b1085dcb56a108e38087de73d01629ba1a4530cd0b9ea77867d242ade9",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1847,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "371445b1085dcb56a108e38087de73d01629ba1a4530cd0b9ea77867d242ade9",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1835,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "371445b1085dcb56a108e38087de73d01629ba1a4530cd0b9ea77867d242ade9",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1961,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/length-adjust-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "e5b00bde1d1264730fa5b7f3bfcfe3bf6085d105a1a44122138fac37f7f63646",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1877,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "e5b00bde1d1264730fa5b7f3bfcfe3bf6085d105a1a44122138fac37f7f63646",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1821,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "e5b00bde1d1264730fa5b7f3bfcfe3bf6085d105a1a44122138fac37f7f63646",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1849,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 557
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/length-adjust-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "ac5cd06af62fdecd10990665550cd5d5787dab8677c062334ea142ab12745da0",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5889,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "ac5cd06af62fdecd10990665550cd5d5787dab8677c062334ea142ab12745da0",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 6225,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "ac5cd06af62fdecd10990665550cd5d5787dab8677c062334ea142ab12745da0",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5581,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/length-adjust-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "9800f409c32450e10d6e21d53356359711cf0bc4162e4f1e14f6bc8f8ceae743",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4863,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "9800f409c32450e10d6e21d53356359711cf0bc4162e4f1e14f6bc8f8ceae743",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5630,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "9800f409c32450e10d6e21d53356359711cf0bc4162e4f1e14f6bc8f8ceae743",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4649,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 511
+        }
+      ]
+    },
+    {
+      "id": "mixed-children",
+      "note": "A text child selects ordered mask paint for the whole resource, including geometric siblings.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/mixed-children-clip.svg",
+          "inputSha256": "63f79011bcab0abbe425e9ccfdb7b2dd8ef71b38e0285fe01df278733bef8b4e",
+          "nativeInputSha256": "eb39833d4caa75b4d05701ed6b10e8e7ab2c651b41041a76c99678c88676cad6"
+        },
+        "paint": {
+          "input": "clip-research/mixed-children-paint.svg",
+          "inputSha256": "0c2c1f3f95536a8f34292cbefdf1b4573e6f6cafeb3719c2722ad3d7420365a8",
+          "nativeInputSha256": "d11a842f8d16b28bb892a93d4591d670132ba8e9e665d25548d4d548bf3d9b09"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/mixed-children-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "e5c09338209872dd9f0c014089dc1a3753258b33242684df5321a7ecfc335a3a",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1894,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "e5c09338209872dd9f0c014089dc1a3753258b33242684df5321a7ecfc335a3a",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1895,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "e5c09338209872dd9f0c014089dc1a3753258b33242684df5321a7ecfc335a3a",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2104,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/mixed-children-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "1411b393e4631bcce37e78ac580bab4e435a05f30bcfe5a280843540696195f7",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 11818,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "1411b393e4631bcce37e78ac580bab4e435a05f30bcfe5a280843540696195f7",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1947,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "1411b393e4631bcce37e78ac580bab4e435a05f30bcfe5a280843540696195f7",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2023,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 422
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/mixed-children-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "520943e4d4c4e38f6dbf2360e92d759ce9e3fc2b683e3eb1023665ad91a076e7",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 6243,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "520943e4d4c4e38f6dbf2360e92d759ce9e3fc2b683e3eb1023665ad91a076e7",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2021,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "520943e4d4c4e38f6dbf2360e92d759ce9e3fc2b683e3eb1023665ad91a076e7",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2020,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/mixed-children-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "c90d614e6505075145a2eb8aac8f6f53339f661bd49e7e0ae09a9e5dbc87defe",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4695,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "c90d614e6505075145a2eb8aac8f6f53339f661bd49e7e0ae09a9e5dbc87defe",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4579,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "c90d614e6505075145a2eb8aac8f6f53339f661bd49e7e0ae09a9e5dbc87defe",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4188,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 413
+        }
+      ]
+    },
+    {
+      "id": "child-intersection",
+      "note": "A child clip retains its own effect context and fractional boundary.",
+      "variants": {
+        "clip": {
+          "input": "clip-research/child-intersection-clip.svg",
+          "inputSha256": "8d8741a7ca3e08fc82bf2b50c6807593bb3d9002892409c39db5451d2a68aec5",
+          "nativeInputSha256": "856be14071c7934b4a4107736f52343c10a8f480f9aa24043c91a54763df467c"
+        },
+        "paint": {
+          "input": "clip-research/child-intersection-paint.svg",
+          "inputSha256": "95e8702b751ba4e4ee70c5292270195025ea8c11250d9855dd1a7beff2dee786",
+          "nativeInputSha256": "3b4e0e1e2a6de9306df06f6c5d2d7c2c3e4295aa953816b3daf00a9f59bfc17b"
+        }
+      },
+      "hosts": [
+        {
+          "host": "windows",
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "native": {
+            "clip": {
+              "reference": "clip-research/windows/child-intersection-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "ff190b10e38908256b12a894b3835776362e60c9aa421e0999156a7ebb1677cb",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2062,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "ff190b10e38908256b12a894b3835776362e60c9aa421e0999156a7ebb1677cb",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2090,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "ff190b10e38908256b12a894b3835776362e60c9aa421e0999156a7ebb1677cb",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2180,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/windows/child-intersection-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "4a651f571a354ffa42b88adb0d3052d3739643ab779cba9862a9c4d4642cf373",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1978,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "4a651f571a354ffa42b88adb0d3052d3739643ab779cba9862a9c4d4642cf373",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1873,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "4a651f571a354ffa42b88adb0d3052d3739643ab779cba9862a9c4d4642cf373",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 2062,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 164
+        },
+        {
+          "host": "linux",
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "native": {
+            "clip": {
+              "reference": "clip-research/linux/child-intersection-clip.png",
+              "captures": [
+                {
+                  "pngSha256": "5fb9416b8c87a7892fd8f0027fc61b25630d26d44da126c4e0c9e3c7ff07286a",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 5030,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "5fb9416b8c87a7892fd8f0027fc61b25630d26d44da126c4e0c9e3c7ff07286a",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 1986,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "5fb9416b8c87a7892fd8f0027fc61b25630d26d44da126c4e0c9e3c7ff07286a",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4425,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "UnsupportedFeature"
+            },
+            "paint": {
+              "reference": "clip-research/linux/child-intersection-paint.png",
+              "captures": [
+                {
+                  "pngSha256": "7627d1e45b2b67dbff6b6cc82e2914a4f60d5ca0cd21ca737ba9bafb244c4016",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4258,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "7627d1e45b2b67dbff6b6cc82e2914a4f60d5ca0cd21ca737ba9bafb244c4016",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 3824,
+                  "terminalExitCode": 0
+                },
+                {
+                  "pngSha256": "7627d1e45b2b67dbff6b6cc82e2914a4f60d5ca0cd21ca737ba9bafb244c4016",
+                  "startupHealth": "healthy",
+                  "profileCleaned": true,
+                  "milliseconds": 4066,
+                  "terminalExitCode": 0
+                }
+              ],
+              "libraryOutcome": "rendered",
+              "libraryChangedPixelsRgba": 0
+            }
+          },
+          "nativeClipVersusNativeBlackPaintAlphaPixels": 0,
+          "nativeClipVersusLibraryBlackPaintAlphaPixels": 0,
+          "nativeClipVisiblePixels": 159
+        }
+      ]
+    }
+  ],
+  "nativeRecipe": {
+    "browserVersion": "153.0.8010.52",
+    "driverRecipeRevision": 3,
+    "physicalViewport": [
+      80,
+      80
+    ],
+    "logicalViewport": [
+      80,
+      80
+    ],
+    "background": "transparent",
+    "nativeFontStyle": "@font-face{font-family:DiagnosticNoto;font-style:normal;font-weight:1 1000;src:url(data:font/ttf;base64,{fontBase64})}svg{font-synthesis:none}",
+    "fontInsertion": "Insert the style element immediately after the first <defs>; substitute the committed font bytes encoded as base64 with no line wrapping. Leave every non-font SVG node/attribute unchanged.",
+    "hosts": {
+      "windows": "Pinned Windows Chrome executable, one fresh default-sandbox process per capture.",
+      "linux": "Pinned Linux Chrome in the Ubuntu26 glibc2.43 bwrap overlay, /proc and /dev supplied, one fresh default-sandbox process per capture."
+    }
+  }
+}

@@ -515,5 +515,18 @@
       }
     ],
     "interpretation": "Functional validation wall time, including runner startup. There are 21 additional core cases and two additional rendering cases. Cache/concurrency conditions vary; this is not controlled throughput evidence or a claim of test-suite simplification."
+  },
+  "ci": {
+    "runId": 41745638654,
+    "headSha": "bc35fa3e10ad27e461db2c8ef3c051153113997f",
+    "status": "TERMINAL FAILED/CLOSED; never repoll",
+    "ubuntu": "SUCCESS including full tests, runtime compatibility, tools and installed packages",
+    "windows": {
+      "corePassed": 47519,
+      "fontHostPassed": 10,
+      "renderingPassed": 46665,
+      "renderingFailed": 1,
+      "soleFailure": "Preserved DejaVu reference conflict; user authority remains pending. No assertion/reference changes."
+    }
   }
 }

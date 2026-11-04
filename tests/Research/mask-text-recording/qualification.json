@@ -1,0 +1,384 @@
+{
+  "status": "Shared mask text recording fix passes focused and affected Windows/Linux checks. Direct text clipping remains OPEN; complete cross-platform/package milestone is separate.",
+  "sourceBaseCommit": "bc35fa3e10ad27e461db2c8ef3c051153113997f",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgDocumentState.cs": "952297060c4e19c0a8e0e858aef1b17737bc3dbcc714db01a34577b842ab1a50",
+    "src/Lokad.Svg/Parsing/SvgMaskContentReplay.cs": "8b939f2655f5f6cac29e73df71014647c8674a0667cd8d204d0547d38ef4f6da",
+    "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs": "7029137423410f9fb50cd703f0da43e20727d437e813d67ca8dcaeaaf95abe89",
+    "src/Lokad.Svg/Parsing/SvgTextGlyphPainter.cs": "56b41d9a5fbe206a7ff3fe9957a1a6b2918a307bd076ec5cb8707ef23119daec",
+    "src/Lokad.Svg/Parsing/SvgTextPathLayout.cs": "3aeac880f97a1fc4c235f91f87583285da48064508ec321863259f5dabee4ffd"
+  },
+  "librarySha256": {
+    "net11.0": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+    "net10.0": "71aed8116b45d27f2dd03f5f1191a85fe54dfdba7a944cefc1d2db8eb10d17c0"
+  },
+  "assemblyIdentity": "Local worktree builds stamped from sourceBaseCommit; file LF hashes identify the changed production source independently of commit-derived assembly metadata.",
+  "finding": "Affine target placement reached text font-cache size, layout metrics and glyph construction. The native mask records in its resource font context, then replays through the consumer map. The same map authored on the text child is a different construction context.",
+  "change": "One scoped inverse replay map in existing parser state; shared text metrics, fill/stroke font construction and path baseline preparation use it. Final glyph placement and geometric constructors keep the complete map. Prior state restores on all exits; no new owner, snapshot, resolver or raster pipeline.",
+  "before": {
+    "librarySha256": "320e07818dc00270211685fc683de29e7f78633cff62898cb4a9585696834c77",
+    "windowsRenderingTestsPassed": 4,
+    "windowsRenderingTestsFailed": 3,
+    "changedPixels": {
+      "consumer-affine": {
+        "windows": 178,
+        "linux": 168
+      },
+      "consumer-affine-stroke": {
+        "windows": 447,
+        "linux": 327
+      },
+      "consumer-affine-path": {
+        "windows": 36,
+        "linux": 113
+      }
+    },
+    "windowsTestWallSeconds": 6.36958279996179,
+    "failingCases": [
+      "consumer-affine",
+      "consumer-affine-stroke",
+      "consumer-affine-path"
+    ]
+  },
+  "after": {
+    "canonicalCasesPerHost": 7,
+    "changedPixels": 0,
+    "followingTextAndBorrowedMemoryContract": "Affine_mask_replay_restores_following_text_font_context_and_borrowed_memory",
+    "referenceChanges": 0
+  },
+  "focused": [
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+      "testAssemblySha256": "4290d3ac78b93f2d20264886d8183ecc941afde008fe1559ceca48e34113b6aa",
+      "selection": "FullyQualifiedName~Affine_mask_replay_restores|FullyQualifiedName~Grouped_masks_inherit_the_resource_text_style",
+      "exitCode": 0,
+      "seconds": 7.704811600036919,
+      "counters": {
+        "executed": "97",
+        "passed": "97",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+      "testAssemblySha256": "4290d3ac78b93f2d20264886d8183ecc941afde008fe1559ceca48e34113b6aa",
+      "selection": "FullyQualifiedName~Affine_mask_replay_restores|FullyQualifiedName~Grouped_masks_inherit_the_resource_text_style",
+      "exitCode": 0,
+      "seconds": 13.39300679997541,
+      "counters": {
+        "executed": "97",
+        "passed": "97",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+      "testAssemblySha256": "2fd2246780b5d1125d48c004781ea8887b01a6e3913413bce80beec2d960e338",
+      "selection": "FullyQualifiedName~SvgMaskTextRecordingReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests",
+      "exitCode": 0,
+      "seconds": 6.258414999814704,
+      "counters": {
+        "executed": "9",
+        "passed": "9",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+      "testAssemblySha256": "2fd2246780b5d1125d48c004781ea8887b01a6e3913413bce80beec2d960e338",
+      "selection": "FullyQualifiedName~SvgMaskTextRecordingReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests",
+      "exitCode": 0,
+      "seconds": 8.867149700177833,
+      "counters": {
+        "executed": "9",
+        "passed": "9",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "affected": [
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+      "testAssemblySha256": "4290d3ac78b93f2d20264886d8183ecc941afde008fe1559ceca48e34113b6aa",
+      "selection": "(FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgGlyph|FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~SvgText|FullyQualifiedName~SvgMask|FullyQualifiedName~SvgResourceUse)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 27.389938599895686,
+      "counters": {
+        "executed": "13198",
+        "passed": "13198",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+      "testAssemblySha256": "4290d3ac78b93f2d20264886d8183ecc941afde008fe1559ceca48e34113b6aa",
+      "selection": "(FullyQualifiedName~OpenTypeFontTests|FullyQualifiedName~SvgGlyph|FullyQualifiedName~TrueTypeHintingTests|FullyQualifiedName~SvgText|FullyQualifiedName~SvgMask|FullyQualifiedName~SvgResourceUse)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 31.66338889999315,
+      "counters": {
+        "executed": "13198",
+        "passed": "13198",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+      "testAssemblySha256": "2fd2246780b5d1125d48c004781ea8887b01a6e3913413bce80beec2d960e338",
+      "selection": "(FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgMask|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgTextAnchorReferenceTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgCompositeMetricsTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests|FullyQualifiedName~SvgTextInstanceCompositionReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 15.226882999995723,
+      "counters": {
+        "executed": "1113",
+        "passed": "1113",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+      "testAssemblySha256": "2fd2246780b5d1125d48c004781ea8887b01a6e3913413bce80beec2d960e338",
+      "selection": "(FullyQualifiedName~SvgPublicFontQualificationTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgMask|FullyQualifiedName~SvgGlyphViewportClipTests|FullyQualifiedName~SvgTextAnchorReferenceTests|FullyQualifiedName~SvgCurvedFontDocumentTests|FullyQualifiedName~SvgCompositeMetricsTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests|FullyQualifiedName~SvgTextInstanceCompositionReferenceTests)&Category!=Research",
+      "exitCode": 0,
+      "seconds": 16.70610300009139,
+      "counters": {
+        "executed": "1113",
+        "passed": "1113",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "runtimeCompatibility": [
+    {
+      "profile": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "71aed8116b45d27f2dd03f5f1191a85fe54dfdba7a944cefc1d2db8eb10d17c0",
+      "testAssemblySha256": "dc84a757a8b2d7fc9a5dd2589380af7eb54ca928588e8958ccc7a32f38537c9d",
+      "selection": "FullyQualifiedName~Affine_mask_replay_restores|FullyQualifiedName~Grouped_masks_inherit_the_resource_text_style",
+      "exitCode": 0,
+      "seconds": 7.776705600088462,
+      "counters": {
+        "executed": "97",
+        "passed": "97",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "71aed8116b45d27f2dd03f5f1191a85fe54dfdba7a944cefc1d2db8eb10d17c0",
+      "testAssemblySha256": "dc84a757a8b2d7fc9a5dd2589380af7eb54ca928588e8958ccc7a32f38537c9d",
+      "selection": "FullyQualifiedName~Affine_mask_replay_restores|FullyQualifiedName~Grouped_masks_inherit_the_resource_text_style",
+      "exitCode": 0,
+      "seconds": 10.186183700105175,
+      "counters": {
+        "executed": "97",
+        "passed": "97",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "71aed8116b45d27f2dd03f5f1191a85fe54dfdba7a944cefc1d2db8eb10d17c0",
+      "testAssemblySha256": "e8fd1951703015bee58d107b92d8553fec26400358b566f81cba318f61a33c09",
+      "selection": "FullyQualifiedName~SvgMaskTextRecordingReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests",
+      "exitCode": 0,
+      "seconds": 6.690309799974784,
+      "counters": {
+        "executed": "9",
+        "passed": "9",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "71aed8116b45d27f2dd03f5f1191a85fe54dfdba7a944cefc1d2db8eb10d17c0",
+      "testAssemblySha256": "e8fd1951703015bee58d107b92d8553fec26400358b566f81cba318f61a33c09",
+      "selection": "FullyQualifiedName~SvgMaskTextRecordingReferenceTests|FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests",
+      "exitCode": 0,
+      "seconds": 8.335533500183374,
+      "counters": {
+        "executed": "9",
+        "passed": "9",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ],
+  "allOriginals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 126.79663300001994,
+    "librarySha256": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    }
+  },
+  "suppliedProgramContexts": {
+    "count": 21,
+    "hosts": [
+      "windows",
+      "linux"
+    ],
+    "allNativeExactOrQualifiedCompanionUnchanged": true,
+    "sourceBodiesRetained": 0,
+    "contexts19Seconds": 13.22734159999527,
+    "profile": "The 19 frozen supplied-program references retain their original Linux glibc2.39 context. Additional two original contexts and other checks use pinned glibc2.43."
+  },
+  "declaredStaticReplay": {
+    "count": 13,
+    "perHost": {
+      "nativeExact": 12,
+      "sameUnsupportedDirectTextClip": 1
+    },
+    "seconds": 19.702793800039217,
+    "sourceBodiesRetained": 0
+  },
+  "testResponsibilities": {
+    "rendering": "Seven independent cases, one canonical conversion each; fill/stroke/path affine consumer regressions fail before, four placement controls protect identity, axis scale, child-affine and object-box responsibilities.",
+    "contract": "One following-text scope/memory test; existing mask/font refusal, cancellation, prepared replay and ownership contracts remain in affected coverage.",
+    "sharedSetup": "The existing native-font fixture owns one validated program/snapshot setup helper for its original single-case callers and the conic/mask case banks. All47 selected helper-consumer cases pass on both runtimes/hosts; case/source/reference identities and exactness are retained.",
+    "research": "Twelve clip/paint pairs remain optional research. No fixture by API matrix or new testing framework.",
+    "broaderP2": "Open. No whole-suite simplification or speedup is claimed."
+  },
+  "timing": {
+    "interpretation": "Functional validation timings, including failing-before comparison where stated. Selected-case sums exclude runner startup; cache/concurrency differ. No controlled throughput, benchmark or suite simplification conclusion.",
+    "optionalNativeClipResearchSeconds": 465.5590743999928,
+    "optionalNativeMaskCaptureSeconds": 71.35199350002222,
+    "windowsSevenCanonicalCasesSumSeconds": {
+      "before": 0.558852,
+      "after": 0.538149
+    },
+    "optionalStrokePathNativeCaptureSeconds": 43.62972339987755
+  },
+  "remaining": [
+    "Direct clip font selection, retained source roles, ordered mask replay, clip-specific enclosure/composition and refusal/cancellation/cleanup/retry acceptance remain OPEN.",
+    "Native alpha-mask and clip consumer coverage can differ: axis-scale Linux2 pixels, affine Windows2/Linux3 pixels. Both operations retain independent references; do not substitute one or change references.",
+    "Text opacity .5 scales native clip alpha to128; the pinned clip recorder opacity comment is not an observed opacity contract.",
+    "All204 original outcomes remain168rendered/35Unsupported/1Malformed per host. Original fonts/resources/dynamic contexts and whole W1 acceptance remain separate.",
+    "Full host/runtime/tool/package CI will run at the pushed safe point. Preserve the existing independent Windows DejaVu conflict; no authority is inferred.",
+    "Quiet-VM performance remains unmeasured."
+  ],
+  "finalRenderingAndSharedHelperConsumers": [
+    {
+      "profile": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+      "testAssemblySha256": "13f8596b71fa3a194c7d2f6812b9872c8c1256b074a37abd80682bb354742493",
+      "selection": "FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgLegacyFontDeclarationReferenceTests|FullyQualifiedName~SvgLineHeightReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|FullyQualifiedName~SvgShapingIntervalReferenceTests|FullyQualifiedName~SvgTextAlignmentReferenceTests|FullyQualifiedName~SvgTextAnchorReferenceTests|FullyQualifiedName~SvgTextCaseReferenceTests|FullyQualifiedName~SvgTextMarkReferenceTests|FullyQualifiedName~SvgTextPathStyleReferenceTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests|FullyQualifiedName~SvgWindowsScanBoundaryTests",
+      "exitCode": 0,
+      "seconds": 7.961217700038105,
+      "counters": {
+        "executed": "47",
+        "passed": "47",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "f1c820a3ae07400c36cf7e23c8a286ccbb3667910c81a10a7616517013bd5983",
+      "testAssemblySha256": "13f8596b71fa3a194c7d2f6812b9872c8c1256b074a37abd80682bb354742493",
+      "selection": "FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgLegacyFontDeclarationReferenceTests|FullyQualifiedName~SvgLineHeightReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|FullyQualifiedName~SvgShapingIntervalReferenceTests|FullyQualifiedName~SvgTextAlignmentReferenceTests|FullyQualifiedName~SvgTextAnchorReferenceTests|FullyQualifiedName~SvgTextCaseReferenceTests|FullyQualifiedName~SvgTextMarkReferenceTests|FullyQualifiedName~SvgTextPathStyleReferenceTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests|FullyQualifiedName~SvgWindowsScanBoundaryTests",
+      "exitCode": 0,
+      "seconds": 13.241796300048009,
+      "counters": {
+        "executed": "47",
+        "passed": "47",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "71aed8116b45d27f2dd03f5f1191a85fe54dfdba7a944cefc1d2db8eb10d17c0",
+      "testAssemblySha256": "0fcc1f182d89f34c9e9dbad2a5db6b0b0919c77bc882fbbf4f59b3dabc69a898",
+      "selection": "FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgLegacyFontDeclarationReferenceTests|FullyQualifiedName~SvgLineHeightReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|FullyQualifiedName~SvgShapingIntervalReferenceTests|FullyQualifiedName~SvgTextAlignmentReferenceTests|FullyQualifiedName~SvgTextAnchorReferenceTests|FullyQualifiedName~SvgTextCaseReferenceTests|FullyQualifiedName~SvgTextMarkReferenceTests|FullyQualifiedName~SvgTextPathStyleReferenceTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests|FullyQualifiedName~SvgWindowsScanBoundaryTests",
+      "exitCode": 0,
+      "seconds": 7.807072600116953,
+      "counters": {
+        "executed": "47",
+        "passed": "47",
+        "failed": "0"
+      },
+      "failures": []
+    },
+    {
+      "profile": "glibc243",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "71aed8116b45d27f2dd03f5f1191a85fe54dfdba7a944cefc1d2db8eb10d17c0",
+      "testAssemblySha256": "0fcc1f182d89f34c9e9dbad2a5db6b0b0919c77bc882fbbf4f59b3dabc69a898",
+      "selection": "FullyQualifiedName~SvgGlyphConicCenterReferenceTests|FullyQualifiedName~SvgLegacyFontDeclarationReferenceTests|FullyQualifiedName~SvgLineHeightReferenceTests|FullyQualifiedName~SvgMaskTextRecordingReferenceTests|FullyQualifiedName~SvgShapingIntervalReferenceTests|FullyQualifiedName~SvgTextAlignmentReferenceTests|FullyQualifiedName~SvgTextAnchorReferenceTests|FullyQualifiedName~SvgTextCaseReferenceTests|FullyQualifiedName~SvgTextMarkReferenceTests|FullyQualifiedName~SvgTextPathStyleReferenceTests|FullyQualifiedName~SvgTextPositionLengthReferenceTests|FullyQualifiedName~SvgWindowsScanBoundaryTests",
+      "exitCode": 0,
+      "seconds": 10.87674989993684,
+      "counters": {
+        "executed": "47",
+        "passed": "47",
+        "failed": "0"
+      },
+      "failures": []
+    }
+  ]
+}

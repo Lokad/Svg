@@ -130,9 +130,14 @@ internal static class SvgMaskContentReplay
     {
         using SvgSceneBuilder builder = new(state.Budget, token);
         bool previousPicture = state.IsResourcePicture;
+        SvgAffineTransform previousTextRecordingMap = state.TextRecordingMap;
         state.IsResourcePicture = true;
+        // A cached mask records text in the resource's own font context. Native
+        // glyph replay sees the target map later; geometric constructors still
+        // receive that complete map. Singular targets keep their existing route.
         try
         {
+            state.TextRecordingMap = placement.TryInvert(out SvgAffineTransform inverse) ? inverse : SvgAffineTransform.Identity;
             for (int childIndex = range.FirstChild; childIndex < range.FirstChild + range.ChildCount; childIndex++)
             {
                 token.ThrowIfCancellationRequested();
@@ -186,7 +191,11 @@ internal static class SvgMaskContentReplay
             catch { content.Dispose(); throw; }
             return new([], 255, isAlpha) { VectorContent = content };
         }
-        finally { state.IsResourcePicture = previousPicture; }
+        finally
+        {
+            state.IsResourcePicture = previousPicture;
+            state.TextRecordingMap = previousTextRecordingMap;
+        }
     }
 
     /// <summary>Materializes a live mask and places its borrowed content through existing native replay.</summary>

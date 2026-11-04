@@ -140,6 +140,14 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgClipBox? OutputClip { get; set; }
     /// <summary>Identifies resource picture recording, whose display-item bounds do not cull replay.</summary>
     internal bool IsResourcePicture { get; set; }
+    /// <summary>Removes the active mask's replay placement from text font construction, independently of final glyph placement.</summary>
+    /// <remarks>Conversion-local value scoped by mask preparation and restored on every exit. Text replay
+    /// completes while this context is borrowed; no geometry or font owner transfers through it.</remarks>
+    internal SvgAffineTransform TextRecordingMap { get; set; } = SvgAffineTransform.Identity;
+
+    internal SvgAffineTransform TextFontTransform(SvgAffineTransform placement)
+        => TextRecordingMap == SvgAffineTransform.Identity ? placement : TextRecordingMap.ComposeChecked(placement);
+
     internal double OutputMagnification { get; set; } = 1.0;
 
     /// <summary>Logical picture font scale before the caller's raster-resolution transform.</summary>

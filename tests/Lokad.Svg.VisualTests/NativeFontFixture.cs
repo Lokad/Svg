@@ -13,12 +13,8 @@ internal static class NativeFontFixture
         using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "capture.json")));
         JsonElement recipe = capture.RootElement;
         byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(recipe, "input")));
-        byte[] program = File.ReadAllBytes(Path.Combine(directory, Required(recipe, "font")));
         Assert.Equal(Required(recipe, "inputSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
-        Assert.Equal(Required(recipe, "fontSha256"), Convert.ToHexStringLower(SHA256.HashData(program)));
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "font-pack.json")), packId);
-        SvgFontProgramResolution resolution = catalog.Bind(catalog.Resolve(new(family, 400, false)), new SvgMemoryFontProgramSource(bank, program));
-        using SvgFontSnapshot fonts = await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None);
+        using SvgFontSnapshot fonts = await CreateFontsAsync(bank, recipe, packId, new(family, 400, false));
         byte[] actual = SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts), CancellationToken.None).ToArray();
         JsonElement platform = recipe.GetProperty("platforms").GetProperty(OperatingSystem.IsWindows() ? "windows" : "linux");
         byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(platform, "reference")));
@@ -37,4 +33,26 @@ internal static class NativeFontFixture
 
         static string Required(JsonElement item, string name) => item.GetProperty(name).GetString() ?? throw new InvalidDataException(name);
     }
+
+    internal static async Task AssertCaseMatches(string bank, string identity, int expectedBankCases, SvgFontFaceRequest request)
+    {
+        string directory = Path.Combine(ResearchCorpus.Root, bank);
+        using JsonDocument capture = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "capture.json")));
+        using SvgFontSnapshot fonts = await CreateFontsAsync(bank, capture.RootElement, bank, request);
+        SvgNativeControlAssertions.MatchesCanonicalConversion(bank, identity, expectedBankCases, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fonts));
+    }
+
+    /// <summary>Validates the committed program and returns the snapshot each test must dispose.</summary>
+    private static ValueTask<SvgFontSnapshot> CreateFontsAsync(string bank, JsonElement recipe, string packId, SvgFontFaceRequest request)
+    {
+        string directory = Path.Combine(ResearchCorpus.Root, bank);
+        byte[] program = File.ReadAllBytes(Path.Combine(directory, Required("font")));
+        Assert.Equal(Required("fontSha256"), Convert.ToHexStringLower(SHA256.HashData(program)));
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "font-pack.json")), packId);
+        SvgFontProgramResolution resolution = catalog.Bind(catalog.Resolve(request), new SvgMemoryFontProgramSource(bank, program));
+        return SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None);
+
+        string Required(string name) => recipe.GetProperty(name).GetString() ?? throw new InvalidDataException(name);
+    }
+
 }

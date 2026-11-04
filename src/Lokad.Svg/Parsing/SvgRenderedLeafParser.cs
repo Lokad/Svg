@@ -441,7 +441,7 @@ CancellationToken cancellationToken)
                     if (sharedPathContext && (textRuns.Count > 1 || hasOrdinaryContinuation) && sharedPaint)
                     {
                         if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
-                        double sharedMetricScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(textPlacement);
+                        double sharedMetricScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(state.TextFontTransform(textPlacement));
                         SvgGlyphDeviceMetrics? sharedMetrics = OperatingSystem.IsWindows() ? new(sharedMetricScale, SvgGlyphMetricTarget.Windows, false)
                             : OperatingSystem.IsLinux() ? new(sharedMetricScale, SvgGlyphMetricTarget.Linux, false) : null;
                         RenderBudget.BudgetReservation sharedOwner = budget.Reserve(512, SvgMemoryCategory.Parser);
@@ -486,7 +486,7 @@ CancellationToken cancellationToken)
                         if (extracted.CharacterOffset != 0 || extracted.ResumeAfterPath is not null)
                             runStyle = runStyle with { X = 0, Y = 0, Dx = 0, Dy = 0,
                                 PositionLists = runStyle.PositionLists with { CharacterOffset = extracted.CharacterOffset } };
-                        double textMetricScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(textPlacement);
+                        double textMetricScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(state.TextFontTransform(textPlacement));
                         SvgGlyphDeviceMetrics? deviceMetrics = OperatingSystem.IsWindows() ? new(textMetricScale, SvgGlyphMetricTarget.Windows, textPath is not null)
                             : OperatingSystem.IsLinux() ? new(textMetricScale, SvgGlyphMetricTarget.Linux, textPath is not null) : null;
                         RenderBudget.BudgetReservation? pendingTextOwner = textPath is null && !hasServer ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
