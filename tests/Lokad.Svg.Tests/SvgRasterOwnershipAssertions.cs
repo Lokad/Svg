@@ -5,9 +5,53 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
-/// <summary>Checks raster scratch lifetime while borrowing an already parsed scene and its font/options owners.</summary>
+/// <summary>Checks separate or shared parsing/raster lifetimes while borrowing input, scene and font/options owners.</summary>
 internal static class SvgRasterOwnershipAssertions
 {
+    /// <summary>Checks parsing and rasterization under one allowance, retaining the full refusal sweep and retry path.</summary>
+    /// <remarks>Input/options/fonts stay borrowed. Each scene and surface is disposed before checking
+    /// the shared allowance. Parsing keeps identity construction scale and the explicit viewport;
+    /// rasterization uses the caller's options. The synchronous case owns its cancellation source,
+    /// budgets and expected pixel copy; independent calls share no mutable state.</remarks>
+    internal static void SharedBudgetReleasesAfterFailures(byte[] input, SvgRenderOptions options, long maximumBytes)
+    {
+        RenderBudget measured = new(new HostMemoryBudget(maximumBytes));
+        byte[] expected;
+        using (SvgRoot scene = Parse(measured, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, measured, CancellationToken.None))
+            expected = surface.Pixels.ToArray();
+        Assert.Equal(0, measured.Snapshot().CurrentBytes);
+        long peak = measured.Snapshot().PeakBytes;
+        for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
+        DenyMemory(peak - 1);
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+        RenderBudget canceled = new(new HostMemoryBudget(maximumBytes));
+        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => Parse(canceled, cancellation.Token)).CancellationToken);
+        Assert.Equal(0, canceled.Snapshot().CurrentBytes);
+        using (SvgRoot scene = Parse(canceled, CancellationToken.None))
+        {
+            Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(scene, options, canceled, cancellation.Token)).CancellationToken);
+            using SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(scene, options, canceled, CancellationToken.None);
+            Assert.Equal(expected, retry.Pixels);
+        }
+        Assert.Equal(0, canceled.Snapshot().CurrentBytes);
+
+        SvgRoot Parse(RenderBudget budget, CancellationToken token)
+            => SvgRootParser.Parse(input, options.Limits, budget, options.FontSnapshot, token, 1, 1, options.Viewport);
+
+        void DenyMemory(long limit)
+        {
+            RenderBudget budget = new(new HostMemoryBudget(limit));
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            {
+                using SvgRoot scene = Parse(budget, CancellationToken.None);
+                using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, budget, CancellationToken.None);
+            }).ErrorCode);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+    }
+
     internal static void ParsesBankCaseAndReleasesAfterFailures(string bank, string inputName, SvgRenderOptions options, long maximumBytes, int expectedGeometryCount)
     {
         string folder = Path.Combine(AppContext.BaseDirectory, "TestData", bank);

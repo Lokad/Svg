@@ -25,6 +25,10 @@ fails qualification. Existing sources, references and assertions stay intact.
 Bank ownership cases can share [asset loading and lifecycle assertions](Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs)
 while retaining separate names, inputs and allocation paths. Add one representative
 contract for a distinct path; rendering fixtures keep their canonical conversion.
+The [shared-budget contracts](Research/release-baselines/shared-budget-ownership.json)
+keep one allowance across parsing and rasterization, the complete refusal sweep,
+explicit viewports and exact retry pixels. Their 54 named cases use `Layer=Contract`;
+the existing separate-parser/raster lifetime checks remain independent.
 
 Core output copies the 24 selected text-node contract inputs and two separate
 API/ownership fixtures. The visual suite still reads the complete bank from the

@@ -22,6 +22,7 @@ public sealed class SvgContainerShaderInheritanceTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("linear-root-direct-transparent")]
     [InlineData("radial-group-direct-transparent")]
     [InlineData("pattern-symbol-fill-transparent")]
@@ -43,36 +44,6 @@ public sealed class SvgContainerShaderInheritanceTests
         RenderBudget discovery = new RenderBudget(new HostMemoryBudget(8_000_000));
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discovery, CancellationToken.None));
         Assert.Equal(0, discovery.Snapshot().CurrentBytes);
-        // Container URL storage, native source replay and tile scratch share the existing budget.
-        RenderBudget measured = new RenderBudget(new HostMemoryBudget(8_000_000));
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
-        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
-            {}
-        Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        long peak = measured.Snapshot().PeakBytes;
-        for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
-        DenyMemory(peak - 1);
-        using CancellationTokenSource cancellation = new();
-        cancellation.Cancel();
-        RenderBudget canceled = new RenderBudget(new HostMemoryBudget(8_000_000));
-        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, cancellation.Token)).CancellationToken);
-        Assert.Equal(0, canceled.Snapshot().CurrentBytes);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, CancellationToken.None))
-        {
-            Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, canceled, cancellation.Token)).CancellationToken);
-            using SvgConverter.RasterizedSurface retried = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, canceled, CancellationToken.None);
-        }
-        Assert.Equal(0, canceled.Snapshot().CurrentBytes);
-
-        void DenyMemory(long limit)
-        {
-            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            {
-                using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);
-                using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
-            }).ErrorCode);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        }
+        SvgRasterOwnershipAssertions.SharedBudgetReleasesAfterFailures(input, SvgRenderOptions.Default, 8_000_000);
     }
 }

@@ -1,0 +1,242 @@
+{
+  "status": "Five ownership classes share one purpose-specific helper; all 54 contract cases and eleven neighboring cases remain individually selectable.",
+  "sourceBaseCommit": "d709960a2285a4e6ced8da275ef9f0ff1c810a07",
+  "filesLfSha256": {
+    "SvgRasterOwnershipAssertions.cs": "4ece167889029b54c3c4d152da9593143ece29e6555f7b17bf225ead9f5ec843",
+    "SvgContainerShaderInheritanceTests.cs": "4adcff02d1034359d6fdf74c52acaff14c1b3f178eb7095db46d08da201eb0ab",
+    "SvgInstanceShaderOpacityTests.cs": "c9f13103852f153c7cce67c504a620544d40ade5a184642f830b02a0e9740780",
+    "SvgRenderedGroupStyleTests.cs": "02bbf50a19178ecd02a71f71075b300155b19fdefd90b7bdd807772d64f664c3",
+    "SvgUseStrokeStyleTests.cs": "762d351cfbffc3d04e58c72ac7633f6236ad48db41e299c81f4703e3e6a7710c",
+    "SvgViewportPercentageTests.cs": "34912a7cf8b54281f669cbaecc8dd7f8eade383126700d1d8446a8a973ab355c"
+  },
+  "helper": "../../Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs",
+  "callers": [
+    "../../Lokad.Svg.Tests/SvgContainerShaderInheritanceTests.cs",
+    "../../Lokad.Svg.Tests/SvgInstanceShaderOpacityTests.cs",
+    "../../Lokad.Svg.Tests/SvgRenderedGroupStyleTests.cs",
+    "../../Lokad.Svg.Tests/SvgUseStrokeStyleTests.cs",
+    "../../Lokad.Svg.Tests/SvgViewportPercentageTests.cs"
+  ],
+  "productionHashEvidence": "../text-clip/qualification.json",
+  "productionSourceUnchanged": true,
+  "contracts": {
+    "sharedAllowance": "One allowance spans parsing, scene retention and raster scratch. Existing separate-parser/raster helpers stay separate.",
+    "admission": "Keep limits 1, 4097, ... strictly below the measured peak plus peak-minus-one, with the same caller budget ceiling. Every refused operation returns to zero.",
+    "cancellation": "Preserve exact OperationCanceledException and caller token at parser and raster entry, with complete cleanup and later retry.",
+    "viewport": "The shared parse passes identity scales and the explicit viewport. The old default overload uses the same identity map and null viewport; no output map or font construction is changed.",
+    "discovery": "Container and viewport discovery checks retain their separate owners and assertions outside the helper.",
+    "pixels": "Group replay retains its exact retry comparison. The other 43 cases now compare complete retry RGBA with the first measurement too; all independent native rendering references remain unchanged."
+  },
+  "migratedContractCases": 54,
+  "affectedCases": 65,
+  "casesRemoved": 0,
+  "caseNamesChanged": 0,
+  "layerTraitAdded": "Layer=Contract on the 54 migrated cases",
+  "netLinesRemoved": 112,
+  "newFrameworks": 0,
+  "validation": {
+    "before": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "39dd4ece5da65ac82c1b443db8af0134060a55016495419b905c13de0ff52a8c",
+        "testAssemblySha256": "77def95c83cdaaf9f5ec1f9697e2fc21be63fc1e3c39d301d4c413f7f94b6a0b",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 8.008977899793535,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "39dd4ece5da65ac82c1b443db8af0134060a55016495419b905c13de0ff52a8c",
+        "testAssemblySha256": "77def95c83cdaaf9f5ec1f9697e2fc21be63fc1e3c39d301d4c413f7f94b6a0b",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 12.260036800056696,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "after": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c5db73b3a5f9abf3324dda0138b96912bd0d10303cce58be2038aa14cfda9735",
+        "testAssemblySha256": "1e8229b360a401e6801446014fe8a79c8e90501c995b19dda89fed1b2b84766a",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 7.58159160008654,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c5db73b3a5f9abf3324dda0138b96912bd0d10303cce58be2038aa14cfda9735",
+        "testAssemblySha256": "1e8229b360a401e6801446014fe8a79c8e90501c995b19dda89fed1b2b84766a",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 12.113952399929985,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "net10": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "eea8571ec6a7d687196912037f7fbc7bde03547d9582ee3953fff0c076a781be",
+        "testAssemblySha256": "e7b4a35432487146db4e46ee3e8eb580d16345ac8c3cc0684cf608798f3d58c9",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 7.806648000143468,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "eea8571ec6a7d687196912037f7fbc7bde03547d9582ee3953fff0c076a781be",
+        "testAssemblySha256": "e7b4a35432487146db4e46ee3e8eb580d16345ac8c3cc0684cf608798f3d58c9",
+        "selection": "FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests",
+        "exitCode": 0,
+        "seconds": 10.637955399928614,
+        "counters": {
+          "executed": "65",
+          "passed": "65",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "finalTraitSelection": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c5db73b3a5f9abf3324dda0138b96912bd0d10303cce58be2038aa14cfda9735",
+        "testAssemblySha256": "7b46a2fee7792f04f1399750b1ee43df04ef6b3ce11b02e1c8b6db00c61cc0b3",
+        "selection": "(FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests)&Layer=Contract",
+        "exitCode": 0,
+        "seconds": 7.5208224998787045,
+        "counters": {
+          "executed": "54",
+          "passed": "54",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c5db73b3a5f9abf3324dda0138b96912bd0d10303cce58be2038aa14cfda9735",
+        "testAssemblySha256": "7b46a2fee7792f04f1399750b1ee43df04ef6b3ce11b02e1c8b6db00c61cc0b3",
+        "selection": "(FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests)&Layer=Contract",
+        "exitCode": 0,
+        "seconds": 13.165740099968389,
+        "counters": {
+          "executed": "54",
+          "passed": "54",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "eea8571ec6a7d687196912037f7fbc7bde03547d9582ee3953fff0c076a781be",
+        "testAssemblySha256": "7c95c5236358d233e7355d8fb6437bd044b760d6f2f57154dd4a73d884966dcc",
+        "selection": "(FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests)&Layer=Contract",
+        "exitCode": 0,
+        "seconds": 6.79059199988842,
+        "counters": {
+          "executed": "54",
+          "passed": "54",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net10.0",
+        "librarySha256": "eea8571ec6a7d687196912037f7fbc7bde03547d9582ee3953fff0c076a781be",
+        "testAssemblySha256": "7c95c5236358d233e7355d8fb6437bd044b760d6f2f57154dd4a73d884966dcc",
+        "selection": "(FullyQualifiedName~SvgContainerShaderInheritanceTests|FullyQualifiedName~SvgInstanceShaderOpacityTests|FullyQualifiedName~SvgRenderedGroupStyleTests|FullyQualifiedName~SvgUseStrokeStyleTests|FullyQualifiedName~SvgViewportPercentageTests)&Layer=Contract",
+        "exitCode": 0,
+        "seconds": 10.946246800012887,
+        "counters": {
+          "executed": "54",
+          "passed": "54",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ],
+    "fullFreshCoreBeforeTraitLabels": [
+      {
+        "profile": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c5db73b3a5f9abf3324dda0138b96912bd0d10303cce58be2038aa14cfda9735",
+        "testAssemblySha256": "1e8229b360a401e6801446014fe8a79c8e90501c995b19dda89fed1b2b84766a",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 50.0995839999523,
+        "counters": {
+          "executed": "47545",
+          "passed": "47545",
+          "failed": "0"
+        },
+        "failures": []
+      },
+      {
+        "profile": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "librarySha256": "c5db73b3a5f9abf3324dda0138b96912bd0d10303cce58be2038aa14cfda9735",
+        "testAssemblySha256": "1e8229b360a401e6801446014fe8a79c8e90501c995b19dda89fed1b2b84766a",
+        "selection": "Unfiltered",
+        "exitCode": 0,
+        "seconds": 51.89449949981645,
+        "counters": {
+          "executed": "47545",
+          "passed": "47545",
+          "failed": "0"
+        },
+        "failures": []
+      }
+    ]
+  },
+  "timingInterpretation": "Same 65 .NET11 cases: Windows 8.01 to 7.58 seconds, Linux 12.26 to 12.11. Single shared-machine observations include process/discovery/WSL startup and do not establish a speed improvement. Full fresh core passes 47,545 cases per host; final 54-case trait selection passes on both runtimes/hosts. Native/platform and package gates remain milestone/CI duties."
+}
