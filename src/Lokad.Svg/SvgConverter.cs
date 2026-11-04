@@ -1000,13 +1000,31 @@ public static partial class SvgConverter
             }
             using RasterizedSurface captured = Rasterize(borrowed, sourceOptions, budget, RasterSurfaceMode.PremultipliedFilter, captureFrame, cancellationToken);
             int frameBytes = fw * fh * 4;
-            using RenderBudget.BudgetReservation frameOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(frameBytes), SvgMemoryCategory.Surface);
-            byte[] source = new byte[frameBytes];
             int px = (int)(left - frameLeft), py = (int)(top - frameTop);
-            for (int row = 0; row < sh; row++)
+            bool reuseCapture = fw == captured.Width && fh == captured.Height && px == 1 && py == 1;
+            using RenderBudget.BudgetReservation? frameOwner = reuseCapture ? null
+                : budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(frameBytes), SvgMemoryCategory.Surface);
+            byte[] source = reuseCapture ? captured.Pixels : new byte[frameBytes];
+            if (reuseCapture)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                captured.Pixels.AsSpan(((row + 1) * (sw + 2) + 1) * 4, sw * 4).CopyTo(source.AsSpan(((row + py) * fw + px) * 4, sw * 4));
+                // Playback borrows this owned capture through restoration. Match
+                // the copied grid's transparent guard without changing its interior.
+                source.AsSpan(0, fw * 4).Clear();
+                source.AsSpan((fh - 1) * fw * 4, fw * 4).Clear();
+                for (int row = 1; row < fh - 1; row++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    source.AsSpan(row * fw * 4, 4).Clear();
+                    source.AsSpan(((row + 1) * fw - 1) * 4, 4).Clear();
+                }
+            }
+            else
+            {
+                for (int row = 0; row < sh; row++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    captured.Pixels.AsSpan(((row + 1) * (sw + 2) + 1) * 4, sw * 4).CopyTo(source.AsSpan(((row + py) * fw + px) * 4, sw * 4));
+                }
             }
             using SvgFilterResult filtered = SvgFilterPlayback.Apply(source, fw, fh, resource, primitiveMap,
                 new((float)(requestedLeft - frameLeft), (float)(requestedTop - frameTop),

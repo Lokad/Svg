@@ -35,6 +35,11 @@ and terminal offset/merge replay share this rule; paths that rewrite commands
 retain their admitted arrays. [Ownership evidence](../tests/Research/release-baselines/command-view-qualification.json)
 protects fixed raster storage as the retained source grows.
 
+When capture dimensions and interior placement match the playback grid, the graph
+borrows the captured pixels with an explicitly transparent guard. The capture owner
+outlives playback and restoration. Expanded or shifted grids retain their separately
+admitted copy; image extents and sampling bounds do not depend on this storage choice.
+
 Clip contribution and ID selection are independent. A group inside a clip resource
 uses dormant ordered replay without adding its descendants to the clip silhouette.
 Its IDs remain ordinary instance targets. Font indexing treats the clip as a
