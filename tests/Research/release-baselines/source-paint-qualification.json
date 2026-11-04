@@ -1,5 +1,5 @@
 {
-  "status": "Source-rectangle and pattern-origin milestone passes local full and focused qualification. Matching committed-source packages and CI follow promotion.",
+  "status": "Source-rectangle/pattern-origin milestone passes local full/focused checks, matching committed-source packages and Ubuntu full CI. Windows retains only the unchanged DejaVu reference conflict.",
   "sourceBaseCommit": "98b5b6e4ff02e135e66473d981bc7af5dbfd0c73",
   "assemblyIdentity": "Worktree libraries carry sourceBaseCommit; LF source hashes bind the changed implementation.",
   "sourceLfSha256": {
@@ -589,5 +589,55 @@
       "sha256": "6a5e43914b085c7a613618c37dbf8d8371ff036f36f18cd41e3a7aca275c1cd1",
       "purpose": "Observed tile-origin translation before float narrowing; standard affine composition implemented in the existing mapping path."
     }
-  ]
+  ],
+  "committedPackage": {
+    "sourceCommit": "406bd2b395106f9ca836ff561277d2d04a8fdb17",
+    "files": [
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.nupkg",
+        "sha256": "6af9c926e8f927f09a21fd0818372c2841e6da9361dea9aff244106f182ae84f"
+      },
+      {
+        "name": "Lokad.Svg.0.4.0-dev.1.snupkg",
+        "sha256": "a6871db4c4703cd6f1514cb850f5b8973e82ff737ceb6597d788359d933399a3"
+      }
+    ],
+    "librarySha256": {
+      "net11.0": "45380129c02a8ce3c58172704d0e30f416904e923eeff780c8a1ac6ce6087756",
+      "net10.0": "f2af2114fd5cc3c70148c4f3a6d52cf4d24df1cd3145e27c5adc53c9b818cda4"
+    },
+    "repeatPackagesByteIdentical": true,
+    "noRuntimeDependencies": true,
+    "noSvgFixtures": true,
+    "seconds": 4.439039600081742,
+    "isolatedConsumers": [
+      {
+        "host": "windows",
+        "exitCode": 0,
+        "seconds": 6.1767124000471085
+      },
+      {
+        "host": "linux",
+        "exitCode": 0,
+        "seconds": 40.48769080010243
+      }
+    ]
+  },
+  "ci": {
+    "run": 41781670332,
+    "url": "https://github.com/Lokad/Svg/actions/runs/41781670332",
+    "headSha": "406bd2b395106f9ca836ff561277d2d04a8fdb17",
+    "status": "terminal CLOSED",
+    "conclusion": "failure",
+    "ubuntu": "Entire workflow passed: full tests, .NET10 compatibility, tools, runtime/symbol packages and installed consumers.",
+    "windows": {
+      "corePassed": 47550,
+      "fontHostPassed": 10,
+      "renderingPassed": 46705,
+      "renderingFailed": 1,
+      "soleFailure": "SvgStaticTrueTypeFontTests.Public_static_document_matches_frozen_pixels_through_direct_and_prepared_output(id: \"dejavu\")",
+      "laterRuntimeToolsAndPackageSteps": "skipped"
+    },
+    "authority": "The existing DejaVu reference conflict remains unchanged and pending. No reference/assertion changed; no whole-CI green claim."
+  }
 }

@@ -1513,9 +1513,9 @@
     "boundary": "Declared static/font contexts only; original animation and original-font qualification remain separate."
   },
   "nextActions": [
-    "Review shared internal-general-entity admission and reader ownership against the recorded criteria; both expanded geometry/font diagnostics are exact.",
-    "Review shared contour/font discovery and ownership before extending direct text clipping. Its authored-raster/supplied-font diagnostic still rejects at the documented clip child; no full-image acceptance is claimed.",
-    "Keep source bitmap span mechanisms and canonical image controls as regression duties. Original animation/media, duplicate IDs, original fonts and external image resources retain their individual outcomes."
+    "Preserve the closed internal-general-entity and direct text-clip contracts, including shared preparation/scene ownership, cancellation, refusal, cleanup and retry. Their qualifications are linked below; neither area remains an implementation gate.",
+    "Resolve original font, external-image and dynamic/media boundaries only in explicit reproducible contexts. Declared static diagnostics do not establish unchanged-original admission.",
+    "Keep source bitmap span mechanisms, canonical images and the 204-original source/hash partition current after shared changes. Historical row observations below are preserved."
   ],
   "hostedSvgBodiesRetained": 0,
   "hostedSourceAttributeValuesRetained": 0,
@@ -1547,16 +1547,12 @@
   "viewportCorrection": "The earlier rejected-input inventory fell back to 300x150 for the two internal-entity documents. Those exploratory comparisons are invalid. Current expanded diagnostics use declared 450x300 and 850x700 viewports respectively; both are exact. Existing original-inventory images are historical observations, not renderer references.",
   "rasterReplacementRecipe": "Each image is an authored 8x6 straight-RGBA PNG. For image ordinal i, at integer x=0..7,y=0..5: R=(31x+19y+37i)%256; G=(47x+11y+53i)%256; B=(13x+61y+71i)%256; A=[0,63,128,192,255][(x+2y+i)%5]. Existing image placement/fit/clip attributes remain unchanged. No original raster content is qualified.",
   "xmlAdmissionReview": {
-    "status": "OPEN feature work; expanded geometry/font contexts are exact",
+    "status": "CLOSED; current implementation and unchanged-original evidence are in entityQualification.",
+    "qualification": "../xml-entities/qualification.json",
     "sharedPolicy": "../../../src/Lokad.Svg/Parsing/SvgXmlReaderPolicy.cs",
     "sharedOwner": "../../../src/Lokad.Svg/Parsing/SvgDocumentPreparation.cs",
-    "currentContract": "One inert DOCTYPE, no external-subset loading, internal subsets rejected. One preparation owns ordinary reader workspace across stylesheet, font, structure and scene passes.",
-    "finding": "Enabling DtdProcessing.Parse alone adds declaration tables and expanded character work without a corresponding admission/storage contract. Keep the shared policy and owner; avoid a second XML/resolver pipeline.",
-    "closureCriteria": [
-      "Define bounded internal general-entity expansion using BCL grammar and existing structural/input limits; retain inert external-DTD semantics and explicit unsupported declaration kinds.",
-      "Admit declaration/expanded-reader storage before allocation; preserve cancellation, refusal, cleanup, retry and one shared preparation across discovery/lowering.",
-      "Preserve authored failing-before mechanisms, exact expanded controls and all existing prolog/encoding contracts; qualify both original contexts and replay all 204 sources after any shared change."
-    ]
+    "currentContract": "One inert DOCTYPE; no external-subset loading. The bounded shared BCL reader admits internal general entities and owns declaration/expansion workspace through preparation. Parameter/external entities and other declaration kinds remain malformed. No second XML/resolver pipeline.",
+    "regressionDuties": "Retain authored numerical/reference/encoding/structural mechanisms, shared refusal/cancellation/cleanup/retry, actual asynchronous font acquisition and canonical native original contexts. Replay all 204 original outcomes after shared changes."
   },
   "focusedXmlContractChecks": [
     {
@@ -1572,5 +1568,6 @@
   ],
   "currentStaticQualification": "../image-fit-sampling/qualification.json",
   "entityQualification": "../xml-entities/qualification.json",
-  "currentQualification": "../release-baselines/source-paint-qualification.json"
+  "currentQualification": "../release-baselines/source-paint-qualification.json",
+  "textClipQualification": "../text-clip/qualification.json"
 }

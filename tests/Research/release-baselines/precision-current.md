@@ -33,5 +33,8 @@ and hosts. Full .NET 11 passes 47,550 core cases per host and all 46,706 Linux
 rendering cases. Windows passes 46,705 and retains its unchanged DejaVu conflict.
 All 204 default outcomes/diagnostics and 168 rendered PNGs are unchanged;
 22 supplied-font contexts and 13 declared static diagnostics remain exact.
-Matching committed-source packages and CI are the remaining promotion gates.
+Matching committed-source runtime/symbol packages reproduce byte-for-byte and pass
+installed consumers on both runtimes and hosts. Matching CI passes the full Ubuntu
+workflow. Windows retains only DejaVu; its later steps are skipped. The run is
+terminal and closed.
 Validation timings in qualification are functional costs, not renderer benchmarks.

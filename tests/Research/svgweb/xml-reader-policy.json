@@ -1,5 +1,5 @@
 {
-  "status": "CLOSED diagnostic-policy alignment; internal-entity admission remains OPEN.",
+  "status": "CLOSED diagnostic-policy alignment. The original internal-entity gate was subsequently closed by entityQualification; validation below retains this milestone's original stage.",
   "sourceBaseCommit": "ebc253bafe4b1ca748a9588d517e2781aace5f00",
   "filesLfSha256": {
     "tools/Lokad.Svg.MemoryProbe/XmlReaderWorkspaceProbe.cs": "86ddef583676c88da7b1dd3b0b562e2f19ff33bc15cbfcad1f2a5e49fa9fb804",
@@ -87,5 +87,6 @@
   "rendererImplementationChanged": false,
   "productionEntityAdmissionChanged": false,
   "retainedHostedSvgBodies": 0,
-  "nextAction": "Review bounded internal-general-entity tables and expanded-reader storage under the existing shared preparation owner before enabling BCL DTD parsing. Preserve source diagnostics, cancellation/refusal/cleanup/retry and inert external-subset semantics."
+  "nextAction": "Preserve the completed entityQualification contracts and shared preparation owner, including source diagnostics, cancellation/refusal/cleanup/retry and inert external-subset semantics. The measurements above retain this earlier diagnostic-policy stage.",
+  "entityQualification": "../xml-entities/qualification.json"
 }
