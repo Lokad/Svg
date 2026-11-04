@@ -245,13 +245,37 @@
     <None Include="../Research/rendered-group-styles/nested-groups-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/rendered-group-styles/paint-server-ancestor-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/rendered-group-styles/thin-scaled-ellipse-transparent.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/use-stroke-opacity/*.svg" Link="TestData/use-stroke-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/use-paint-properties/*.svg" Link="TestData/use-paint-properties/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/symbol-viewport-opacity/*.svg" Link="TestData/symbol-viewport-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/symbol-content/*.svg" Link="TestData/symbol-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/symbol-presentation/*.svg" Link="TestData/symbol-presentation/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/symbol-locations/*.svg" Link="TestData/symbol-locations/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="../Research/symbol-instances/*.svg" Link="TestData/symbol-instances/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-opacity/direct-rectangle-transparent.svg" Link="TestData/use-stroke-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-opacity/nested-use-authored-transparent.svg" Link="TestData/use-stroke-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-opacity/new-use-curved-stroke-transparent.svg" Link="TestData/use-stroke-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-opacity/shader-fill-path-solid-stroke-transparent.svg" Link="TestData/use-stroke-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-stroke-opacity/shader-stroke-path-transparent.svg" Link="TestData/use-stroke-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-paint-properties/current-color-native-stroke-transparent.svg" Link="TestData/use-paint-properties/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-paint-properties/current-color-rectangle-stroke-transparent.svg" Link="TestData/use-paint-properties/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-paint-properties/direct-leaf-transparent.svg" Link="TestData/use-paint-properties/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-paint-properties/nested-local-use-transparent.svg" Link="TestData/use-paint-properties/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-paint-properties/paint-server-definition-opacity.svg" Link="TestData/use-paint-properties/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/use-paint-properties/rendered-group-use-paint.svg" Link="TestData/use-paint-properties/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-viewport-opacity/nested-scopes-transparent.svg" Link="TestData/symbol-viewport-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-viewport-opacity/right-bottom-transparent.svg" Link="TestData/symbol-viewport-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-viewport-opacity/translucent-content-transparent.svg" Link="TestData/symbol-viewport-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-content/forward-symbol-graph.svg" Link="TestData/symbol-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-content/group-alias-use.svg" Link="TestData/symbol-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-content/group-hidden-visible-child.svg" Link="TestData/symbol-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-content/nested-child-alias.svg" Link="TestData/symbol-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-content/ordered-nested-groups.svg" Link="TestData/symbol-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-content/unused-empty-groups.svg" Link="TestData/symbol-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-presentation/alias-current-color.svg" Link="TestData/symbol-presentation/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-presentation/current-color-opacity-scopes.svg" Link="TestData/symbol-presentation/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-presentation/display-none-inherited-circle.svg" Link="TestData/symbol-presentation/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-presentation/symbol-current-color.svg" Link="TestData/symbol-presentation/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-locations/anonymous-child-alias.svg" Link="TestData/symbol-locations/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-locations/group-definition-hidden.svg" Link="TestData/symbol-locations/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-locations/symbol-descriptions.svg" Link="TestData/symbol-locations/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-instances/child-alias.svg" Link="TestData/symbol-instances/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-instances/magnified-symbol-curves.svg" Link="TestData/symbol-instances/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-instances/mixed-leaves.svg" Link="TestData/symbol-instances/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/symbol-instances/stroked-fill-override.svg" Link="TestData/symbol-instances/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/native-stroke-source-ring-161.svg" Link="TestData/native-stroke-source-ring-161.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/native-stroke-source-clipped-cubic-161.svg" Link="TestData/native-stroke-source-clipped-cubic-161.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/stroke-duplicate-diagonal-16x16.svg" Link="TestData/stroke-duplicate-diagonal-16x16.svg" CopyToOutputDirectory="PreserveNewest" />

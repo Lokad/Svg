@@ -43,6 +43,11 @@ The [shader/group/viewport copy lists](Research/release-baselines/shader-viewpor
 likewise retain their 54 contract inputs while their complete visual banks remain
 in the repository. Pattern-source selection still needs every manifest source.
 
+The [curve/use ownership audit](Research/release-baselines/curve-ownership.md)
+retains 48 admission cases and five shared-budget stroke contracts. Its seven
+core asset banks copy their 31 selected inputs; complete native banks remain.
+The case mapping preserves input hashes while correcting stale rejection names.
+
 [Canonical shaping](Research/svgweb/text-canonical-shaping.json) separates Unicode,
 substitution, attachment and fitting mechanisms from two representative storage
 contracts. Complete Turkic/Lithuanian controls, a four-row mark control and one

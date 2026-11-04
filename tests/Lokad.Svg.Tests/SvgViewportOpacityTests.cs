@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgViewportOpacityTests
 {
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("translate(12 7)")]
     [InlineData("matrix(1 .25 -.3 .8 8 2)")]
     public void Nested_viewport_own_map_matches_an_enclosing_map_with_physical_clip_and_sibling(string transform)
@@ -31,6 +32,7 @@ public sealed class SvgViewportOpacityTests
     }
 
     [Fact]
+    [Trait("Layer", "Mechanism")]
     public void Inherited_viewport_clip_restores_the_group_once_and_leaves_source_ink_uncut()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "symbol-viewport-opacity", "right-bottom-transparent.svg"));

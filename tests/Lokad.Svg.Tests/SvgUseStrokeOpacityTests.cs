@@ -6,6 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgUseStrokeOpacityTests
 {
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [InlineData("", .375f, 96)]
     [InlineData("stroke-opacity='.625'", .625f, 159)]
     [InlineData("stroke-opacity='1'", 1f, 255)]
@@ -29,6 +30,7 @@ public sealed class SvgUseStrokeOpacityTests
     }
 
     [Theory]
+    [Trait("Layer", "Contract")]
     [InlineData("direct-rectangle-transparent")]
     [InlineData("nested-use-authored-transparent")]
     [InlineData("shader-stroke-path-transparent")]
@@ -37,35 +39,6 @@ public sealed class SvgUseStrokeOpacityTests
     public void Instance_opacity_and_unpainted_centerlines_release_all_owners_on_denial_and_cancellation(string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "use-stroke-opacity", identity + ".svg"));
-        RenderBudget measured = new RenderBudget(new HostMemoryBudget(1_000_000));
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
-        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, measured, CancellationToken.None))
-            {}
-        Assert.Equal(0, measured.Snapshot().CurrentBytes);
-        long peak = measured.Snapshot().PeakBytes;
-        for (long limit = 1; limit < peak; limit += 4096) DenyMemory(limit);
-        DenyMemory(peak - 1);
-        using CancellationTokenSource cancellation = new();
-        cancellation.Cancel();
-        RenderBudget canceled = new RenderBudget(new HostMemoryBudget(1_000_000));
-        Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, cancellation.Token)).CancellationToken);
-        Assert.Equal(0, canceled.Snapshot().CurrentBytes);
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, canceled, null, CancellationToken.None))
-        {
-            Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(scene, SvgRenderOptions.Default, canceled, cancellation.Token)).CancellationToken);
-            using SvgConverter.RasterizedSurface retried = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, canceled, CancellationToken.None);
-        }
-        Assert.Equal(0, canceled.Snapshot().CurrentBytes);
-
-        void DenyMemory(long limit)
-        {
-            RenderBudget budget = new RenderBudget(new HostMemoryBudget(limit));
-            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
-            {
-                using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None);
-                using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
-            }).ErrorCode);
-            Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        }
+        SvgRasterOwnershipAssertions.SharedBudgetReleasesAfterFailures(input, SvgRenderOptions.Default, 1_000_000);
     }
 }
