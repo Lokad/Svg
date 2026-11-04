@@ -1,5 +1,5 @@
 {
-  "status": "Runtime-aware discovery and compilation qualified on both hosts/frameworks. Generated workload execution and all timed performance measurements remain pending a quiet VM.",
+  "status": "Locked restore, ordinary compilation, runtime-aware discovery and all generated workloads compile on both hosts/frameworks. Benchmark workload execution and timed performance measurements remain pending a quiet VM.",
   "benchmarkDotNet": "0.16.0-preview.2",
   "lockFile": "../../../benchmarks/Lokad.Svg.Benchmarks/packages.lock.json",
   "lockFileLfSha256": "c48dade84fed91a0a9937b685a706fd268d7ca611994951c04b291e7f15e1c52",
@@ -91,6 +91,14 @@
     {
       "url": "https://www.nuget.org/packages/BenchmarkDotNet/0.16.0-preview.2",
       "purpose": "Exact package identity restored under the lock file."
+    },
+    {
+      "url": "https://github.com/dotnet/BenchmarkDotNet/blob/v0.16.0-preview.2/src/BenchmarkDotNet/Toolchains/BuilderBase.cs",
+      "purpose": "Pinned public builder generates and compiles without an executor."
+    },
+    {
+      "url": "https://github.com/dotnet/BenchmarkDotNet/blob/v0.16.0-preview.2/src/BenchmarkDotNet/Toolchains/CsProj/CsProjBuilder.cs",
+      "purpose": "Pinned builder location and project-resolution contracts; unchanged generation and compilation."
     }
   ],
   "validation": {
@@ -102,7 +110,152 @@
     "zeroWarningsAndErrors": true,
     "productionSourcesChanged": false,
     "libraryRuntimeDependenciesAdded": false,
-    "timedBenchmarkExecutions": 0
+    "timedBenchmarkExecutions": 0,
+    "allGeneratedWorkloadsCompileOnBothHostsAndRuntimes": true,
+    "ordinaryBenchmarkTargetNegotiationFixed": true
   },
-  "scope": "Discovery validates runtime selection and preserves all existing methods/parameters; it does not establish generated-workload validity, throughput or a speedup."
+  "scope": "Discovery and generated compilation preserve all existing methods/parameters and correctly select both target frameworks. Workload execution, throughput, statistical comparisons and quiet-VM performance remain separate.",
+  "generatedWorkloads": {
+    "sourceBaseCommit": "6102b71cefbe1ac1023badc937cff75020d518cc",
+    "benchmarkProject": "../../../benchmarks/Lokad.Svg.Benchmarks/Lokad.Svg.Benchmarks.csproj",
+    "benchmarkProjectLfSha256": "92bf5a99d1b118b5459b7424429698b7db90c5922fd56cb363e8fffd0db8c251",
+    "benchmarkMethodsChanged": false,
+    "rendererSourceTreeGitId": "921084460e39aa378f87a567480b3c6c09e59598",
+    "beforeNet10": {
+      "outcome": "Generated net10.0 workload cannot reference the benchmark project because it resolves as net11.0.",
+      "cause": "The root convenience TargetFramework hides the benchmark project TargetFrameworks during project-reference negotiation.",
+      "logLfSha256": "631ebcd53bcd82f9e8dd9564687a55e1b19756d8336ba8f3c997c0bb650116ec",
+      "generatedProjectLfSha256": "dc40c1ab73e1e564c5f08edde501f93ac0ff8dbec4f9ac38f617208e360b1aed"
+    },
+    "correction": "Clear the inherited convenience TargetFramework in the benchmark project, following the existing multi-targeted tool declarations. Project references can select either supported target; explicit dotnet run --framework remains required.",
+    "builderRecipe": [
+      "Create ManualConfig from DefaultConfig; select Job.Default with CoreRuntime.Core11_0 or CoreRuntime.Core10_0. Retain ordinary benchmark attributes and parameter expansion.",
+      "For every exported type declaring BenchmarkAttribute methods, call BenchmarkConverter.TypeToBenchmarks with that config; retain all 51 methods and 63 parameterized cases.",
+      "Use BenchmarkPartitioner.CreateForBuild with CompositeResolver(EnvironmentResolver.Instance, InfrastructureResolver.Instance). Each host/runtime produces one complete 63-case partition.",
+      "Use the runtime default CsProjBuilder settings and call BuildAsync directly. Two location-only overrides return the original project explicitly and place generated output in its ignored run directory; generation and compilation are inherited unchanged.",
+      "Assert build success, generated runtimeconfig target and every original method/parameter identity. Hash generated source, workload assembly and renderer asset. Never call the executor or BenchmarkRunner."
+    ],
+    "temporaryDriverLfSha256": "a7e89d3e28ec552b53b2440ed9bda3013a15f96f81498860740847bcc0c13433",
+    "originalMethodAndParameterIdentitiesRetained": true,
+    "caseIdentityEncoding": "Ordinally sorted full method names plus BDN ParameterInstances.DisplayInfo, LF-joined without terminal LF. Discovery fullName parentheses/colon-space normalize to brackets/equal. All63 identities agree exactly.",
+    "caseIdentitySha256": "4ad27dfcce4e42d500d5ea22b9472e486c5fa3c0886d5a50cc532831c2a566f2",
+    "casesPerRuntime": 63,
+    "builds": [
+      {
+        "host": "windows",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 10.877204600023106,
+        "cases": 63,
+        "identitySha256": "4ad27dfcce4e42d500d5ea22b9472e486c5fa3c0886d5a50cc532831c2a566f2",
+        "driverSha256": "9ccc8d1700058628df429bf0049062528c5407df32c76d7ba8d3a58804fede08",
+        "generated": [
+          {
+            "cases": 63,
+            "executableSha256": "704e993ab83c5b67fa8b5befb79934c759c531b5c90a51b9a52d9d99048a0524",
+            "generatedSourceSha256": "51136603fbe63fbef909e714f8c18757fe74603952b3e5907a75739655b7a086",
+            "librarySha256": "1592058b5e8d9ba1724d9ff558fe33de319f20464bef071bb86e63663ca69fc2"
+          }
+        ],
+        "runtimeConfigFramework": "net11.0",
+        "runtimeConfigVersion": "11.0.0-rc.3.26522.148"
+      },
+      {
+        "host": "windows",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 16.351472199894488,
+        "cases": 63,
+        "identitySha256": "4ad27dfcce4e42d500d5ea22b9472e486c5fa3c0886d5a50cc532831c2a566f2",
+        "driverSha256": "9ccc8d1700058628df429bf0049062528c5407df32c76d7ba8d3a58804fede08",
+        "generated": [
+          {
+            "cases": 63,
+            "executableSha256": "2884dc350873d856efffae245b4975d504fc1c29da9bf328ee157654d3e12033",
+            "generatedSourceSha256": "51136603fbe63fbef909e714f8c18757fe74603952b3e5907a75739655b7a086",
+            "librarySha256": "9b49c960d977813e2edbd98baf89daa0ee8883c11d0446584da6ad792ce105ac"
+          }
+        ],
+        "runtimeConfigFramework": "net10.0",
+        "runtimeConfigVersion": "10.0.0"
+      },
+      {
+        "host": "linux",
+        "framework": "net11.0",
+        "exitCode": 0,
+        "seconds": 75.77435989980586,
+        "cases": 63,
+        "identitySha256": "4ad27dfcce4e42d500d5ea22b9472e486c5fa3c0886d5a50cc532831c2a566f2",
+        "driverSha256": "9ccc8d1700058628df429bf0049062528c5407df32c76d7ba8d3a58804fede08",
+        "generated": [
+          {
+            "cases": 63,
+            "executableSha256": "0893f862651b545e47d925f7cac3138460699b5b6e98ac86eb03861124b4ee54",
+            "generatedSourceSha256": "bca3315c961968b2947a9451cabbe0121d088e06a5f1980e1f8c0466e9fc5547",
+            "librarySha256": "d1108d69781581f2b5302f0de5041a4c4fff01228356ca8e6682a114e96843f1"
+          }
+        ],
+        "runtimeConfigFramework": "net11.0",
+        "runtimeConfigVersion": "11.0.0-rc.3.26522.148"
+      },
+      {
+        "host": "linux",
+        "framework": "net10.0",
+        "exitCode": 0,
+        "seconds": 61.19829629990272,
+        "cases": 63,
+        "identitySha256": "4ad27dfcce4e42d500d5ea22b9472e486c5fa3c0886d5a50cc532831c2a566f2",
+        "driverSha256": "9ccc8d1700058628df429bf0049062528c5407df32c76d7ba8d3a58804fede08",
+        "generated": [
+          {
+            "cases": 63,
+            "executableSha256": "5dd193d8ead471925d77d27cfb437846462c592cf4c0757a03931fb783ad3c80",
+            "generatedSourceSha256": "bca3315c961968b2947a9451cabbe0121d088e06a5f1980e1f8c0466e9fc5547",
+            "librarySha256": "176005e11df7dbf437e40d57facbe40821c30744d9b3ea4724100cee1c16ad94"
+          }
+        ],
+        "runtimeConfigFramework": "net10.0",
+        "runtimeConfigVersion": "10.0.0"
+      }
+    ],
+    "ordinaryLockedBuilds": [
+      [
+        {
+          "host": "windows",
+          "project": "Lokad.Svg.slnx",
+          "operation": "restore",
+          "exitCode": 0,
+          "seconds": 1.1193582999985665
+        },
+        {
+          "host": "windows",
+          "project": "Lokad.Svg.slnx",
+          "operation": "build",
+          "exitCode": 0,
+          "seconds": 6.571393799968064
+        }
+      ],
+      [
+        {
+          "host": "linux",
+          "project": "benchmarks/Lokad.Svg.Benchmarks/Lokad.Svg.Benchmarks.csproj",
+          "operation": "restore",
+          "exitCode": 0,
+          "seconds": 11.092173299985006
+        },
+        {
+          "host": "linux",
+          "project": "benchmarks/Lokad.Svg.Benchmarks/Lokad.Svg.Benchmarks.csproj",
+          "operation": "build",
+          "exitCode": 0,
+          "seconds": 25.804715299978852
+        }
+      ]
+    ],
+    "generatedProjectsConfinedToIgnoredRun": true,
+    "normalGeneratedProjectDirectory": "The pinned CsProj builder uses the benchmark project .bdn directory; it is now explicitly ignored.",
+    "executorCalls": 0,
+    "timedBenchmarkExecutions": 0,
+    "scope": "These elapsed times measure compilation and harness startup only. No throughput, allocation, workload execution or speedup result is established; runtime-specific setup guards still need functional execution on the measurement host."
+  }
 }

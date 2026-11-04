@@ -6,7 +6,8 @@ from the [correctness qualification](../tests/README.md) and approximate
 
 BenchmarkDotNet `0.16.0-preview.2` is pinned for explicit .NET 11 runtime support.
 The [setup qualification](../tests/Research/release-baselines/benchmark-net11-qualification.json)
-checks locked restore, compilation and runtime-aware discovery on Windows/Linux.
+checks locked restore, runtime-aware discovery and compilation of all 63 generated
+workloads per runtime on Windows/Linux.
 It adds no renderer dependency or performance result.
 
 | Workload | Definition |
@@ -27,6 +28,9 @@ Run timed measurements on a dedicated quiet host. A warmed conversion sample:
 ```powershell
 dotnet run -c Release --framework net11.0 --project benchmarks/Lokad.Svg.Benchmarks -- --job Short --filter "*SvgCurveBenchmarks*" "*SvgSceneBenchmarks*" --exporters JSON --artifacts artifacts/benchmarks
 ```
+
+Reports use the selected artifacts directory. BenchmarkDotNet keeps generated
+projects in the benchmark project's ignored `.bdn/` directory.
 
 Input construction, option setup and font acquisition belong outside warmed
 conversion timing. Report the inputs/options, CPU/OS, .NET/runtime/GC, warmups,
