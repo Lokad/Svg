@@ -30,6 +30,8 @@ bindings from synthetic scope carriers and closes eight original filter residual
 shutdown and asynchronous output contracts to source and installed-package evidence.
 [Supplied-font test responsibilities](font-output-responsibilities.md) separate
 37 native rendering inputs from seven routine and 30 extended output matrices.
+[Raster ownership setup](raster-ownership.json) shares the parse-once lifetime
+across 28 contracts while retaining all 42 affected cases and distinct allowances.
 [Blur image identity](blur-image-identity.json) shares one cutoff across bounds,
 aliases and playback while keeping copying pixel kernels distinct from image aliases.
 [Original R86 hairlines](r86-hairline-qualification.json) close 800 geometry and200

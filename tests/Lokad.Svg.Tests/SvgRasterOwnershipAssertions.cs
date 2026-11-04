@@ -118,6 +118,18 @@ internal static class SvgRasterOwnershipAssertions
         Assert.Equal(unchanged, input);
     }
 
+    /// <summary>Parses once under a separate allowance, retaining that scene through raster refusal, cancellation and retry.</summary>
+    /// <remarks>Input and option fonts stay borrowed; callers retain their input-immutability checks and font owners.
+    /// The scene is disposed before checking parser cleanup. Parser refusal and shared-allowance paths remain separate.</remarks>
+    internal static void RasterizesInputAndReleasesAfterFailures(byte[] input, SvgRenderOptions options,
+        long parserMaximumBytes, long rasterMaximumBytes, string expectedRgbaSha256)
+    {
+        RenderBudget parser = new(new HostMemoryBudget(parserMaximumBytes));
+        using (SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parser, options.FontSnapshot, CancellationToken.None))
+            ReleasesAfterFailures(scene, options, rasterMaximumBytes, expectedRgbaSha256);
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
     internal static void ReleasesAfterFailures(SvgRoot scene, SvgRenderOptions options, long maximumBytes, string expectedRgbaSha256)
     {
         RenderBudget measured = new RenderBudget(new HostMemoryBudget(maximumBytes));

@@ -1,7 +1,5 @@
 using System.Text.Json;
 using Lokad.Svg.Fonts;
-using Lokad.Svg.Parsing;
-using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
@@ -32,12 +30,7 @@ public sealed class SvgSolidPaintOwnershipTests
             ? await SvgFontSnapshot.CreateAsync(input, SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(folder, "font-pack.json")), "public-noto-sans"), new FontProvider(fontBytes), CancellationToken.None)
             : null;
         SvgRenderOptions options = new(null, row.GetProperty("scale").GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default, fonts);
-        RenderBudget parser = new RenderBudget(new HostMemoryBudget(2_000_000));
-        using (SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parser, fonts, CancellationToken.None))
-        {
-            SvgRasterOwnershipAssertions.ReleasesAfterFailures(scene, options, 2_000_000, expected);
-        }
-        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+        SvgRasterOwnershipAssertions.RasterizesInputAndReleasesAfterFailures(input, options, 2_000_000, 2_000_000, expected);
         Assert.Equal(unchanged, input);
     }
 

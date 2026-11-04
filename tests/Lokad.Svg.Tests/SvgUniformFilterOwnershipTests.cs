@@ -1,6 +1,4 @@
 using System.Text.Json;
-using Lokad.Svg.Parsing;
-using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
@@ -21,11 +19,8 @@ public sealed class SvgUniformFilterOwnershipTests
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,
             "TestData", "filter-source-opacity", "isolated-source-bitmap.svg"));
-        RenderBudget parser = new(new HostMemoryBudget(64_000_000));
-        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
-            SvgRasterOwnershipAssertions.ReleasesAfterFailures(scene, SvgRenderOptions.Default, 64_000_000,
-                "f0f9e01e74d4ecd4769ef238b5fe14c97f81be50afec7462c31cffceb0fe329f");
-        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+        SvgRasterOwnershipAssertions.RasterizesInputAndReleasesAfterFailures(input, SvgRenderOptions.Default,
+            64_000_000, 64_000_000, "f0f9e01e74d4ecd4769ef238b5fe14c97f81be50afec7462c31cffceb0fe329f");
     }
 
     [Theory]
@@ -45,12 +40,7 @@ public sealed class SvgUniformFilterOwnershipTests
         byte[] input = File.ReadAllBytes(Path.Combine(folder, inputPath));
         byte[] unchanged = input.ToArray();
         SvgRenderOptions options = new(null, row.GetProperty("scale").GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default);
-        RenderBudget parser = new RenderBudget(new HostMemoryBudget(1_000_000));
-        using (SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parser, CancellationToken.None))
-        {
-            SvgRasterOwnershipAssertions.ReleasesAfterFailures(scene, options, 1_000_000, expected);
-        }
-        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+        SvgRasterOwnershipAssertions.RasterizesInputAndReleasesAfterFailures(input, options, 1_000_000, 1_000_000, expected);
         Assert.Equal(unchanged, input);
     }
 }

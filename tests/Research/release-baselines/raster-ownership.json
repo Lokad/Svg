@@ -1,0 +1,88 @@
+{
+  "status": "Focused raster-only ownership setup consolidation qualified; all42 affected identities and existing pixel/lifetime assertions remain.",
+  "baseCommit": "7299faa7c",
+  "sourceLfSha256": {
+    "tests/Lokad.Svg.Tests/SvgFilterBitmapOwnershipTests.cs": "fa3c42dccafcd72c83ebf9557021310adee7915157abc9439635033389762995",
+    "tests/Lokad.Svg.Tests/SvgSolidPaintOwnershipTests.cs": "ae915337fcbba0ac5a263de87f2ece6dfa824f217aa6af9cf94b315295961fee",
+    "tests/Lokad.Svg.Tests/SvgUniformFilterOwnershipTests.cs": "8b5cfa614c31888699d78cf64dec74e578eb57fd1edaf2cc9d081dd3959b99da",
+    "tests/Lokad.Svg.Tests/SvgRasterOwnershipAssertions.cs": "850a414c62c69701c6d10b330b650a614321062d963f3a3d1ea82c5b2c9801e7"
+  },
+  "runtimePackage": {
+    "sourceCommit": "ec8c8de7a1b9b4dac249bffd123f962f160f8b84",
+    "packageVersion": "0.4.0-dev.1",
+    "librarySha256": {
+      "net11.0": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+      "net10.0": "68ad89871daa75dbe1b5d48992885f3878e4a9499377cadc5b72b09cde60fe8a"
+    },
+    "repeatPackagesByteIdentical": true,
+    "nupkgSha256": "07461c5b5c94cd2b938ba4c862eb48506f3b5c8ec3a0d5ed16b36e9ba280fb29",
+    "snupkgSha256": "794f52ee89eb8440e429586797cfcfeeacad66b88493330ba8743e8b4e8feef0"
+  },
+  "responsibilities": {
+    "changedContracts": 28,
+    "affectedCases": 42,
+    "retainedSeparateCases": "Seven uniform-filter raster contracts, thirteen bitmap-scratch contracts and eight solid/text-paint raster contracts retain their source/options/native hashes. One recursive parser contract and thirteen prepared cancellation/destination contracts remain unchanged.",
+    "sharedSetup": "One existing helper class now owns the common parse-once, scene lifetime and parser-cleanup sequence. The unchanged raster helper owns native hashing, measured refusal, exact cancellation and byte-exact retry.",
+    "preserved": "Separate parser/raster allowances remain explicit, including1MB/256MB bitmap cases; no new parser refusal, shared-budget route, API form or fixture product is added. Input copies/assertions stay at their original call sites, including before font acquisition. Per-case font snapshots/providers stay with their owners.",
+    "testCasesRemoved": 0,
+    "referencesChanged": 0,
+    "productionChanges": 0,
+    "canonicalCaseNamesLfSha256": {
+      "windows": "59f23f6d6b1f04f27a893e94055ae300cde80f844afc7e01c020755e434aa661",
+      "linux": "59f23f6d6b1f04f27a893e94055ae300cde80f844afc7e01c020755e434aa661"
+    }
+  },
+  "validation": {
+    "affectedPerHostAndFramework": 42,
+    "integrationCorePerHostAndFramework": 103,
+    "integrationNativeAndCapturePerHostAndFramework": 288,
+    "frameworks": [
+      "net11.0",
+      "net10.0"
+    ],
+    "hosts": [
+      "windows",
+      "linux"
+    ],
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "selection": "Core integration:96 API forms,3 borrowed command-range lifetimes,1 bitmap replay,3 affine flood/offset contracts. Visual integration:255 independent stage targets,5 bitmap restoration,7 nested placement,15 source-opacity and6 capture contracts."
+  },
+  "localFunctionalTiming": {
+    "protocol": "Three fresh sequential .NET11 test processes per host before/after; identical packaged renderer,42 identical discovered test names, including discovery/test-host/TRX and excluding build. No other validation runs overlap these observations.",
+    "observations": [
+      {
+        "host": "windows",
+        "beforeSeconds": [
+          13.703811000101268,
+          9.6555908001028,
+          10.397124900016934
+        ],
+        "afterSeconds": [
+          10.904411399969831,
+          9.975587700027972,
+          9.763839000137523
+        ],
+        "beforeMedianSeconds": 10.397124900016934,
+        "afterMedianSeconds": 9.975587700027972
+      },
+      {
+        "host": "linux",
+        "beforeSeconds": [
+          15.807789100101218,
+          11.398714900016785,
+          12.779592799954116
+        ],
+        "afterSeconds": [
+          25.75558830006048,
+          10.266585800098255,
+          9.94551940006204
+        ],
+        "beforeMedianSeconds": 12.779592799954116,
+        "afterMedianSeconds": 10.266585800098255
+      }
+    ],
+    "conclusion": "Small setup refactor; no reliable validation speedup established. Startup and host noise dominate this local sample. This is not renderer throughput or quiet-VM performance."
+  },
+  "next": "Resume shared bounds/maps and remaining consumer/placement responsibility review. Whole P2 and broader historical correctness work remain open."
+}

@@ -108,6 +108,15 @@ Ten paint-pair inputs replace a zero-iteration work-counter loop with the existi
 real parser refusal/cancellation/retry helper. All 30 cases remain individually
 selectable as contracts; independent rendering and shared-allowance cases stay separate.
 
+The [raster-only ownership map](raster-ownership.json) keeps all 42 affected cases.
+Twenty-eight filter/bitmap/solid-paint cases share their parse-once scene lifetime;
+parser and raster allowances remain separate, including the bitmap 1 MB/256 MiB path.
+Caller input checks, font owners, native hashes, refusal, cancellation, retry and
+prepared destination contracts are unchanged. Local median validation time is
+10.40/9.98 s before/after on Windows and 12.78/10.27 s on Linux; this noisy sample
+does not establish a reliable speedup. Both runtimes/hosts retain affected and
+independent API, replay, native-stage and capture integration coverage.
+
 The [text-paint replay map](text-paint-replay.json) separates all 242 original native
 cases from prepared-document replay. Its 63 routine contracts retain distinct
 material, font, path and retained-source interactions; the other 179 replays remain
