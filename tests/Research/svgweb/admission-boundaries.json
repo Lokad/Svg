@@ -1,0 +1,285 @@
+{
+  "schemaVersion": 1,
+  "status": "All 36 non-rendering defaults join a precise current admission contract and reproducible declared context. This accounts for boundaries without claiming unchanged-original admission.",
+  "originals": "originals.json",
+  "defaultOutcomes": "default-outcomes.csv",
+  "currentReplayQualification": "../release-baselines/command-view-qualification.json",
+  "counts": {
+    "fontSnapshot": 22,
+    "externalImage": 3,
+    "animationOrMedia": 9,
+    "cssAdmission": 1,
+    "duplicateId": 1
+  },
+  "groups": {
+    "fontSnapshot": {
+      "contract": "../../../docs/SUPPORT_MATRIX.md#text-and-fonts",
+      "disposition": "Conversion requires explicit host-supplied font programs. Every declared supplied-program context is exact; seven transported TrueType contexts do not qualify original SVG-font outlines or ambient fonts.",
+      "legacyOriginalsStillUnqualified": [
+        "DroidSans-Bold.svg",
+        "DroidSans.svg",
+        "DroidSansMono.svg",
+        "DroidSerif-Bold.svg",
+        "DroidSerif-BoldItalic.svg",
+        "DroidSerif-Italic.svg",
+        "DroidSerif-Regular.svg"
+      ],
+      "cases": [
+        {
+          "name": "410.svg",
+          "sourceSha256": "5fba6c8c0d7da11542e4a8f9ad9754868000926a7436481115b820900eb0491b",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        },
+        {
+          "name": "DroidSans-Bold.svg",
+          "sourceSha256": "b83093e6b66f6c7b5cefa34acd349ac2b10b4aa8eea186b5aba3d2d41344beed",
+          "context": "supplied-original-contexts.json",
+          "mode": "transportedLegacyProgram"
+        },
+        {
+          "name": "DroidSans.svg",
+          "sourceSha256": "258cb419e419f9fa5a99cdf84ee1ea318007d46be81692e4eda21a29b32faa4b",
+          "context": "supplied-original-contexts.json",
+          "mode": "transportedLegacyProgram"
+        },
+        {
+          "name": "DroidSansMono.svg",
+          "sourceSha256": "c2220e0022d4fe30afabab8099e6edd0211c186f9c5714c9973693d9214a191d",
+          "context": "supplied-original-contexts.json",
+          "mode": "transportedLegacyProgram"
+        },
+        {
+          "name": "DroidSerif-Bold.svg",
+          "sourceSha256": "b61a2e96b159bdd27197c7fe9a17f596e19c2934d3439b288fc06740d9784cc2",
+          "context": "supplied-original-contexts.json",
+          "mode": "transportedLegacyProgram"
+        },
+        {
+          "name": "DroidSerif-BoldItalic.svg",
+          "sourceSha256": "ee46fe628064aedff418a847aa4c0e9b92edf24cf4f6d6e2de5ef0f424f7f259",
+          "context": "supplied-original-contexts.json",
+          "mode": "transportedLegacyProgram"
+        },
+        {
+          "name": "DroidSerif-Italic.svg",
+          "sourceSha256": "e9cd948b5571363f3dd66930d5cf00e2c43040cf3cc4e8e44a027e3a6fad3b73",
+          "context": "supplied-original-contexts.json",
+          "mode": "transportedLegacyProgram"
+        },
+        {
+          "name": "DroidSerif-Regular.svg",
+          "sourceSha256": "451898b81bcf7db25f18ff50f045b904782edd1c69c37478bb27dba1106335a3",
+          "context": "supplied-original-contexts.json",
+          "mode": "transportedLegacyProgram"
+        },
+        {
+          "name": "Steps.svg",
+          "sourceSha256": "bb86d3eca3502649661d892cbfdb8ad604611b3cdf48b5f131461536476715af",
+          "context": "supplied-original-contexts-additional.json",
+          "mode": "suppliedNotoProgram"
+        },
+        {
+          "name": "USStates.svg",
+          "sourceSha256": "615f7c8c43e4d7181969496643ed8f35d74fc29fea391c8d8dd219aa6547136b",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        },
+        {
+          "name": "blocks_game.svg",
+          "sourceSha256": "4594f838008d371765539a53e53b52706e6afec99bf5fc38347e2a3ee142817c",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        },
+        {
+          "name": "bloglines.svg",
+          "sourceSha256": "4bb1b6ee3347cd5dfe48f6755eb0504058dd59d3e78a653678d55271b3c85324",
+          "context": "supplied-original-contexts-additional.json",
+          "mode": "suppliedNotoProgram"
+        },
+        {
+          "name": "decimal.svg",
+          "sourceSha256": "d0aba26e5d909c9f3e359a21a0b55b1bdea7c13cb843127bb8ffb8f6fd2b096b",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        },
+        {
+          "name": "helloworld.svg",
+          "sourceSha256": "7bef17011e3c570fa07f5fe8671917e1df854bb9c0b67d1efbd105773fd5eb08",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        },
+        {
+          "name": "mysvg.svg",
+          "sourceSha256": "3976da5079172c8ea5edea4f2b8a3628b366816361796544fc499b3f8bc2f688",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        },
+        {
+          "name": "paths-data-08-t.svg",
+          "sourceSha256": "9ff07261f6b7e76a430de7c21bf8b253e701c77e3c4a7d35ad014c8633ee74f5",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        },
+        {
+          "name": "paths-data-09-t.svg",
+          "sourceSha256": "3a0a5da8dc81a7f3f683be497dd47c9a79463f61956055c338db689de5df8203",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        },
+        {
+          "name": "preserveAspectRatio.svg",
+          "sourceSha256": "1a567ae0ddcfb78474a7313673960004ef67bade3d0b8eea9719bee934888dcd",
+          "context": "../xml-entities/qualification.json",
+          "mode": "originalXmlWithSuppliedNoto"
+        },
+        {
+          "name": "pservers-grad-03-b.svg",
+          "sourceSha256": "3ec86d3eb7b489bc697e204bd4548f5cc64a56de8d5c0c228ad3a3eea1ecf8a4",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        },
+        {
+          "name": "shapes-polygon-01-t.svg",
+          "sourceSha256": "ba00b071ec66e3b98ac2de924563f69d72e714ab02adbbe1dd1266b418ea144e",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        },
+        {
+          "name": "shapes-polyline-01-t.svg",
+          "sourceSha256": "3d636692e459edc01b768cc607b0b1b3fcd06c379616a3771a06ae8dfc8324ca",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        },
+        {
+          "name": "snake.svg",
+          "sourceSha256": "52ac4b0c97fdd51ec9a93a618389164f3ebe60bd2cc0caabe781a1e011343072",
+          "context": "supplied-original-contexts.json",
+          "mode": "suppliedProgram"
+        }
+      ]
+    },
+    "externalImage": {
+      "contract": "../../../docs/SUPPORT_MATRIX.md#embedded-pngs",
+      "disposition": "External image bindings remain unsupported. Authored replacement rasters validate placement and composition only; original image content is unqualified.",
+      "cases": [
+        {
+          "name": "image.svg",
+          "sourceSha256": "6c183668da499d712611df9dfb85820f7d92e5b0813d2edc5927e93d4f4ac052",
+          "context": "remaining-static-gates.json",
+          "mode": "authoredReplacementRasterDiagnostic"
+        },
+        {
+          "name": "masking-path-04-b.svg",
+          "sourceSha256": "cbc79d87c656da74497bb2169c23c9b2fe7ba7d16c595d232f63b92d78058b3c",
+          "context": "remaining-static-gates.json",
+          "mode": "authoredReplacementRasterDiagnostic"
+        },
+        {
+          "name": "oscon.svg",
+          "sourceSha256": "e265238fd7c1eb1bb7272d2d4646f93bee75392edb4e01404a3136b19f673ee7",
+          "context": "remaining-static-gates.json",
+          "mode": "authoredReplacementRasterDiagnostic"
+        }
+      ]
+    },
+    "animationOrMedia": {
+      "contract": "../../../docs/SUPPORT_MATRIX.md#supported-svg-subset",
+      "disposition": "Animation, media and interaction remain outside static conversion. Exact declared disabled/removed base-state diagnostics do not qualify time-zero animation, playback, scripting or the unchanged original.",
+      "cases": [
+        {
+          "name": "anim1.svg",
+          "sourceSha256": "3bf2ce86dc2e904a95ecb7617fed044d694ff7c8ca2700dd42d69043e3e0475e",
+          "context": "remaining-static-gates.json",
+          "mode": "animationOrMediaSubtreeRemovedDiagnostic"
+        },
+        {
+          "name": "anim2.svg",
+          "sourceSha256": "b8d377c37778c3e8231ce916d3b01dcf430a0535ba002126aaa25d909a6e4bf9",
+          "context": "remaining-static-gates.json",
+          "mode": "animationOrMediaSubtreeRemovedDiagnostic"
+        },
+        {
+          "name": "anim3.svg",
+          "sourceSha256": "3c26307c866001375a1e6228f8e14a733db3e9446c98bc29bd6e5a11208be345",
+          "context": "remaining-static-gates.json",
+          "mode": "animationOrMediaSubtreeRemovedDiagnostic"
+        },
+        {
+          "name": "displayWebStats.svg",
+          "sourceSha256": "bd78273e2605d4d039c766f2d5a1c294e21df06a8261b4cca1a1e15b9b7c3869",
+          "context": "display-web-stats-static.json",
+          "mode": "animationDisabledIdRepairedSuppliedProgramDiagnostic"
+        },
+        {
+          "name": "pservers-grad-03-b-anim.svg",
+          "sourceSha256": "36726fb7ab5239ee321b72027eddc7dcf5dfedb0ee60250e64102a93f04816e2",
+          "context": "remaining-static-gates.json",
+          "mode": "animationOrMediaSubtreeRemovedDiagnostic"
+        },
+        {
+          "name": "scimitar-anim.svg",
+          "sourceSha256": "177834a4c8cb24612d33866ce0de51eb79c5c785d701609df71f7808d1ade572",
+          "context": "remaining-static-gates.json",
+          "mode": "animationOrMediaSubtreeRemovedDiagnostic"
+        },
+        {
+          "name": "svg2009.svg",
+          "sourceSha256": "40c89194c49c381098f0f1a7a0645506eb3c8a07530cd7837978c9328e429104",
+          "context": "svg2009-static-review.json",
+          "mode": "animationDisabledBaseStateSuppliedNotoDiagnostic"
+        },
+        {
+          "name": "video1.svg",
+          "sourceSha256": "e6941453371664e5d392af70aab97cc2d9d02ca0b406324553dcaaaf0e38fcff",
+          "context": "remaining-static-gates.json",
+          "mode": "animationOrMediaSubtreeRemovedDiagnostic"
+        },
+        {
+          "name": "x11.svg",
+          "sourceSha256": "3e84d54927b69c7177ea2b5162bbe55a0ff02bec0f843d0c047db5df0fa31d6f",
+          "context": "remaining-static-gates.json",
+          "mode": "animationOrMediaSubtreeRemovedDiagnostic"
+        }
+      ]
+    },
+    "cssAdmission": {
+      "contract": "../../../docs/SUPPORT_MATRIX.md#static-css",
+      "disposition": "Unknown or unimplemented active CSS declarations reject through the shared parser. The CSS-repaired/supplied-font diagnostic is exact; browser error recovery is outside the current admission contract.",
+      "cases": [
+        {
+          "name": "ny1.svg",
+          "sourceSha256": "195ffe176cab06b14d3e502e43541a89f27b17fb2f1cca4bc1e02cbe40e80e08",
+          "context": "ny1-static-review.json",
+          "mode": "repairedCssWithSuppliedNotoDiagnostic"
+        }
+      ]
+    },
+    "duplicateId": {
+      "contract": "../../../docs/SUPPORT_MATRIX.md#diagnostics",
+      "disposition": "Duplicate definition identifiers are malformed. The repaired diagnostic is exact; strict ordinary duplicate rejection remains required.",
+      "cases": [
+        {
+          "name": "gaussian1.svg",
+          "sourceSha256": "b42317c5ef25185d178126be853f02660b5300feab1bbcd1ae5a9e1d1e661395",
+          "context": "remaining-static-gates.json",
+          "mode": "unusedDuplicateIdRepairDiagnostic"
+        }
+      ]
+    }
+  },
+  "qualificationBoundary": "168 default originals are exact; the other 36 retain their original outcomes. Declared supplied programs, repaired sources, authored replacement rasters and disabled animation remain separate contexts.",
+  "hostedSvgBodiesRetained": 0,
+  "rawSourceAttributeValuesRetained": 0,
+  "liveIndexAudit": {
+    "indexHttpStatus": 200,
+    "liveDirectSvgFiles": 204,
+    "indexSha256": "56e802698c07836dd4ada8d3b233aee6c0b158620446d67400bd40eb5276dccc",
+    "indexHashUnchanged": true,
+    "newOrMissingOriginalNames": [],
+    "boundaryFiles": 36,
+    "allBoundaryNamesDistinct": true,
+    "contextSourceHashesMatch": true,
+    "hostedSvgBodiesRetained": 0
+  }
+}

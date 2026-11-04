@@ -17,6 +17,10 @@ each original; projected diagnostics retain their original admission limitations
 The default observations use transparent output without supplied fonts/resources.
 Exact default output does not qualify other font, resource or static-state contexts;
 whole-corpus acceptance remains open.
+The [admission map](admission-boundaries.json) joins all 36 other defaults to their
+current contract and declared context: 22 font snapshots, three external images,
+nine animation/media sources, one CSS boundary and one malformed duplicate ID.
+Seven transported font contexts retain their separate SVG-font limitation.
 
 The [remaining-gate review](remaining-static-gates.json) follows all thirteen
 parent/resource/XML cases beyond their first rejection. All thirteen declared static

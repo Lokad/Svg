@@ -10404,6 +10404,7 @@
       },
       "sourceBodiesRetained": 0,
       "rawAttributeValuesRetained": 0
-    }
+    },
+    "admissionBoundaries": "admission-boundaries.json"
   }
 }
