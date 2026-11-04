@@ -78,7 +78,7 @@ public sealed class SvgFilterLengthTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
-            SvgDrawCommand filter = Assert.Single(scene.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.RegionKind == SvgLayerRegionKind.Filter);
+            SvgDrawCommand filter = Assert.Single(scene.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.RegionKind == SvgLayerRegionKind.Filter);
             SvgFilterArena arena = scene.FilterResources ?? throw new InvalidOperationException();
             SvgFilterBinding binding = arena.BindingAt(filter.MaskContentIndex);
             Assert.Equal(binding.ObjectBounds.Left, binding.ObjectBounds.Right);

@@ -266,7 +266,7 @@ public sealed class SvgFilterPlaybackTests
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgFilterArena arena = root.SceneStorage?.Filters ?? throw new InvalidOperationException();
-            SvgDrawCommand command = root.Commands.First(c => c.Kind == SvgDrawCommandKind.BeginGroup && c.RegionKind == SvgLayerRegionKind.Filter);
+            SvgDrawCommand command = root.Commands.ToArray().First(c => c.Kind == SvgDrawCommandKind.BeginGroup && c.RegionKind == SvgLayerRegionKind.Filter);
             Assert.Equal(new SvgPaintBounds(1, 1, 3, 3), arena.BindingAt(command.MaskContentIndex).ObjectBounds);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -384,7 +384,7 @@ public sealed class SvgFilterPlaybackTests
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
-            SvgDrawCommand[] filters = scene.Commands.Where(c => c.Kind == SvgDrawCommandKind.BeginGroup && c.RegionKind == SvgLayerRegionKind.Filter).ToArray();
+            SvgDrawCommand[] filters = scene.Commands.ToArray().Where(c => c.Kind == SvgDrawCommandKind.BeginGroup && c.RegionKind == SvgLayerRegionKind.Filter).ToArray();
             Assert.Equal(2, filters.Length);
             foreach (SvgDrawCommand command in filters)
                 Assert.Equal(new SvgPaintBounds(0, 0, 4, 4), arena.BindingAt(command.MaskContentIndex).ObjectBounds);

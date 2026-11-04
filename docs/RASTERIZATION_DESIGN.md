@@ -22,6 +22,13 @@ and deferred opacity bind at replay. Resource references borrow their scene;
 sealed child scenes retain storage after parser staging ends. Partial construction
 and failure release owners deterministically.
 
+Filter source replay borrows a read-only command range from its retained scene.
+Geometry and resource indices still address that scene; nested ranges use local
+command indices. Captures finish before parent disposal. Ordinary filter capture
+and terminal offset/merge replay share this rule; paths that rewrite commands
+retain their admitted arrays. [Ownership evidence](../tests/Research/release-baselines/command-view-qualification.json)
+protects fixed raster storage as the retained source grows.
+
 Clip contribution and ID selection are independent. A group inside a clip resource
 uses dormant ordered replay without adding its descendants to the clip silhouette.
 Its IDs remain ordinary instance targets. Font indexing treats the clip as a

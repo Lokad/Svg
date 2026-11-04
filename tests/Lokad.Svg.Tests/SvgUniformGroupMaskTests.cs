@@ -21,7 +21,7 @@ public sealed class SvgUniformGroupMaskTests
                 new(SvgDrawCommandKind.Geometry, 1, 255, null, -1, 255),
                 new(SvgDrawCommandKind.BeginGroup, 1, 255, new(10.7, 9.1, 27.6, 22.8), -1, 192),
                 new(SvgDrawCommandKind.Geometry, 2, 255, null, -1, 255),
-                new(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255)], scene.Commands);
+                new(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255)], scene.Commands.ToArray());
             Assert.True(Assert.IsType<SvgAuthoredPath>(scene.Geometries[0].AuthoredPath).IsKnownConvex);
             Assert.Equal(3, scene.Geometries.Length);
             Assert.All(scene.Geometries, geometry => Assert.Equal(255, geometry.Kind == SvgGeometryKind.PolygonFill ? geometry.Polygon.Color.Alpha : geometry.Rectangle.Color.Alpha));

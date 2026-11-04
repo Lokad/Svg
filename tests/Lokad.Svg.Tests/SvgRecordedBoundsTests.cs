@@ -20,7 +20,7 @@ public sealed class SvgRecordedBoundsTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
-            SvgDrawCommand mask = Assert.Single(scene.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+            SvgDrawCommand mask = Assert.Single(scene.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
             SvgClipBox region = Assert.IsType<SvgClipBox>(mask.MaskRegion);
             Assert.Equal(12.8, region.X, 6);
             Assert.Equal(12.8, region.Y, 6);
@@ -66,7 +66,7 @@ public sealed class SvgRecordedBoundsTests
                 Assert.Equal(expectedVisual, paint.VisualBounds);
                 Assert.False(paint.Foldable);
             });
-            SvgDrawCommand opacity = Assert.Single(scene.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+            SvgDrawCommand opacity = Assert.Single(scene.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
             Assert.Equal(0.4375f, opacity.SourceOpacity.Value);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

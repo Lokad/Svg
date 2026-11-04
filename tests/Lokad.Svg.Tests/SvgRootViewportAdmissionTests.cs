@@ -20,7 +20,7 @@ public sealed class SvgRootViewportAdmissionTests
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             SvgRoot root = new(new(8, false), new(8, false),
                 new(0, 0, 4, 8, SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None),
-                [geometry], [new(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
+                [geometry], (SvgDrawCommand[])[new(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
             if (hasFill)
             {
                 SvgException error = Assert.Throws<SvgException>(() =>

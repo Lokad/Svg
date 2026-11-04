@@ -5,7 +5,7 @@ namespace Lokad.Svg.Tests;
 
 internal static class SvgLeafMaskAssertions
 {
-    internal static void CommandSequence(SvgDrawCommand[] expected, SvgDrawCommand[] actual)
+    internal static void CommandSequence(SvgDrawCommand[] expected, ReadOnlySpan<SvgDrawCommand> actual)
     {
         Assert.Equal(expected.Length, actual.Length);
         for (int index = 0; index < expected.Length; index++)

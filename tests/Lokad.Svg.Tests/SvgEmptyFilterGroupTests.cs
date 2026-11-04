@@ -160,7 +160,7 @@ public sealed class SvgEmptyFilterGroupTests
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, CancellationToken.None))
         {
             parserPeak = measured.Snapshot().PeakBytes;
-            Assert.Contains(root.Commands, command => command.RegionKind == SvgLayerRegionKind.Filter);
+            Assert.Contains(root.Commands.ToArray(), command => command.RegionKind == SvgLayerRegionKind.Filter);
             long retained = measured.Snapshot().CurrentBytes;
             using CancellationTokenSource cancellation = new(); cancellation.Cancel();
             Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, cancellation.Token));

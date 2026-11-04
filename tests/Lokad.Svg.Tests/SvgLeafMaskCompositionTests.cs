@@ -15,8 +15,8 @@ public sealed class SvgLeafMaskCompositionTests
         using (SvgRoot scene = SvgRootParser.Parse(Input(forward), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
             Assert.Equal(6, scene.Geometries.Length);
-            Assert.Equal(new byte[] { 64, 192, 64, 192 }, scene.Commands.Where(c => c.Kind == SvgDrawCommandKind.BeginGroup).Select(c => c.MaskAlpha));
-            Assert.Equal(new[] { 0, 1, 2, 3, 4, 5 }, scene.Commands.Where(c => c.Kind == SvgDrawCommandKind.Geometry).Select(c => c.GeometryIndex));
+            Assert.Equal(new byte[] { 64, 192, 64, 192 }, scene.Commands.ToArray().Where(c => c.Kind == SvgDrawCommandKind.BeginGroup).Select(c => c.MaskAlpha));
+            Assert.Equal(new[] { 0, 1, 2, 3, 4, 5 }, scene.Commands.ToArray().Where(c => c.Kind == SvgDrawCommandKind.Geometry).Select(c => c.GeometryIndex));
             Assert.Equal(14, scene.Commands.Length);
             Assert.Equal(SvgDrawCommandKind.Geometry, scene.Commands[1].Kind);
             Assert.Equal(SvgDrawCommandKind.Geometry, scene.Commands[2].Kind);
@@ -40,7 +40,7 @@ public sealed class SvgLeafMaskCompositionTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
-            SvgDrawCommand[] scopes = scene.Commands.Where(c => c.Kind == SvgDrawCommandKind.BeginGroup).ToArray();
+            SvgDrawCommand[] scopes = scene.Commands.ToArray().Where(c => c.Kind == SvgDrawCommandKind.BeginGroup).ToArray();
             Assert.Equal(2, scopes.Length);
             Assert.Equal(new SvgClipBox(9, 10, 17, 13), scopes[0].MaskRegion);
             Assert.Equal(new SvgClipBox(14, 14, 17, 13), scopes[1].MaskRegion);
@@ -125,8 +125,8 @@ public sealed class SvgLeafMaskCompositionTests
         {
             int scopes = (depth + 1) * (depth + 2) / 2;
             Assert.Equal(depth + 1, scene.Geometries.Length);
-            Assert.Equal(scopes, scene.Commands.Count(c => c.Kind == SvgDrawCommandKind.BeginGroup));
-            Assert.Equal(scopes, scene.Commands.Count(c => c.Kind == SvgDrawCommandKind.EndGroup));
+            Assert.Equal(scopes, scene.Commands.ToArray().Count(c => c.Kind == SvgDrawCommandKind.BeginGroup));
+            Assert.Equal(scopes, scene.Commands.ToArray().Count(c => c.Kind == SvgDrawCommandKind.EndGroup));
             Assert.All(scene.Geometries, geometry => Assert.Null(geometry.LeafMask));
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
         }

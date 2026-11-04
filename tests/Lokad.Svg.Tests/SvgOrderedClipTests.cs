@@ -97,7 +97,7 @@ public sealed class SvgOrderedClipTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(2_000_000));
         using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(input.ToString()), SvgRenderLimits.Default, budget, null, CancellationToken.None))
         {
-            SvgDrawCommand[] scopes = root.Commands.Where(command => command.Kind == SvgDrawCommandKind.BeginGroup).ToArray();
+            SvgDrawCommand[] scopes = root.Commands.ToArray().Where(command => command.Kind == SvgDrawCommandKind.BeginGroup).ToArray();
             int mask = Array.FindIndex(scopes, command => command.RegionKind == SvgLayerRegionKind.ClipMask);
             Assert.True(mask > 0);
             Assert.Equal(SvgLayerRegionKind.AffineViewport, scopes[mask - 1].RegionKind);

@@ -25,7 +25,7 @@ public sealed class SvgFilterRecordingTests
         RenderBudget budget = new(new HostMemoryBudget(1_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
-            SvgDrawCommand[] commands = scene.Commands.Where(item => item.Kind == SvgDrawCommandKind.BeginGroup
+            SvgDrawCommand[] commands = scene.Commands.ToArray().Where(item => item.Kind == SvgDrawCommandKind.BeginGroup
                 && item.RegionKind == SvgLayerRegionKind.Filter).ToArray();
             Assert.NotEmpty(commands);
             SvgFilterArena filters = Assert.IsType<SvgFilterArena>(scene.FilterResources);
@@ -37,7 +37,7 @@ public sealed class SvgFilterRecordingTests
                 Assert.Equal(new SvgShaderMatrix(1, 0, 4, 0, 1, 6), drawing);
             }
             SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(scene.SceneStorage);
-            SvgRecordedPaintValue[] paints = scene.Commands.Where(command => command.Kind == SvgDrawCommandKind.Geometry)
+            SvgRecordedPaintValue[] paints = scene.Commands.ToArray().Where(command => command.Kind == SvgDrawCommandKind.Geometry)
                 .Select(command => storage.RecordedPaintValues[scene.Geometries[command.GeometryIndex].RecordedPaint.Identity - 1])
                 .Where(paint => !paint.IsEffectAnchor).ToArray();
             Assert.NotEmpty(paints);

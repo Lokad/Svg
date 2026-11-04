@@ -29,7 +29,7 @@ internal static class SvgDocumentTraversal
         if (emptyRoot && (!root.BoxLayout.Border.HasPaint || !root.InheritedPresentation.IsVisible))
         {
             ValidateDocumentEnd(reader, cancellationToken);
-            return new SvgRoot(root.Width, root.Height, root.ViewBox, [], [], false, null) { CanvasBackground = root.CanvasBackground, BoxLayout = root.BoxLayout };
+            return new SvgRoot(root.Width, root.Height, root.ViewBox, [], ReadOnlyMemory<SvgDrawCommand>.Empty, false, null) { CanvasBackground = root.CanvasBackground, BoxLayout = root.BoxLayout };
         }
         int rootDepth = reader.Depth;
         root = root with { ContainingViewport = explicitViewport };

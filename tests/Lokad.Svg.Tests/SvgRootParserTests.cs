@@ -148,7 +148,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='4'><g id='o' opacity='.5'><rect width='4' height='4' fill='red'/><rect x='2' width='4' height='4' fill='blue'/></g><use href='#o' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         Assert.Equal(4, root.Geometries.Length);
-        Assert.Equal(2, root.Commands.Count(command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == .5));
+        Assert.Equal(2, root.Commands.ToArray().Count(command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == .5));
     }
 
     [Fact]
@@ -384,7 +384,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.NotEmpty(root.Geometries);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -394,7 +394,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.NotEmpty(root.Geometries);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -414,7 +414,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.NotEmpty(root.Geometries);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -424,7 +424,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.NotEmpty(root.Geometries);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
     [Fact]
     public void Renders_zero_length_square_capped_dashes()
@@ -626,7 +626,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.NotEmpty(root.Geometries);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -666,7 +666,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.NotEmpty(root.Geometries);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -762,7 +762,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.NotEmpty(root.Geometries);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -858,7 +858,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.NotEmpty(root.Geometries);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -1368,7 +1368,7 @@ public sealed class SvgRootParserTests
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
         Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.Gradient.Fill);
-        SvgDrawCommand clip = Assert.Single(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        SvgDrawCommand clip = Assert.Single(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
         Assert.Equal(SvgLayerRegionKind.AffineViewport, clip.RegionKind);
         Assert.Equal(new SvgClipBox(0, 0, 8, 8), clip.MaskRegion);
         Assert.True(clip.MaskContentIndex >= 0);
@@ -2541,7 +2541,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5'><rect width='1' height='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Commands,
+        Assert.Collection(root.Commands.ToArray(),
             command => SvgRecordedPaintAssertions.OpacityScope(command, new(128, 0.5f)),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command));
@@ -2553,7 +2553,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5'><rect width='1' height='1'/></g><g opacity='0.5'><rect width='1' height='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Commands,
+        Assert.Collection(root.Commands.ToArray(),
             command => SvgRecordedPaintAssertions.OpacityScope(command, new(128, 0.5f)),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command),
@@ -2567,7 +2567,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' opacity='0.5'><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Commands,
+        Assert.Collection(root.Commands.ToArray(),
             command => SvgRecordedPaintAssertions.OpacityScope(command, new(128, 0.5f)),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command));
@@ -2752,10 +2752,10 @@ public sealed class SvgRootParserTests
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
-        SvgDrawCommand begin = Assert.Single(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        SvgDrawCommand begin = Assert.Single(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
         Assert.Equal(255, begin.Opacity);
         Assert.Equal(128, begin.MaskAlpha);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.EndGroup);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.EndGroup);
     }
 
     [Fact]
@@ -2780,7 +2780,7 @@ public sealed class SvgRootParserTests
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5' mask='url(#later)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
-        SvgDrawCommand begin = Assert.Single(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        SvgDrawCommand begin = Assert.Single(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
         Assert.Equal(128, begin.Opacity);
         Assert.Equal(128, begin.MaskAlpha);
     }
@@ -2790,10 +2790,10 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><mask id='later' maskUnits='userSpaceOnUse' x='2' y='2' width='4' height='4'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgDrawCommand begin = Assert.Single(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        SvgDrawCommand begin = Assert.Single(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
         Assert.Equal(255, begin.Opacity);
         Assert.Equal(new SvgClipBox(2, 2, 4, 4), begin.MaskRegion);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.EndGroup);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.EndGroup);
     }
 
     [Fact]
@@ -2802,7 +2802,7 @@ public sealed class SvgRootParserTests
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#c)' mask='url(#m)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
-        Assert.Collection(root.Commands.Where(command => command.Kind == SvgDrawCommandKind.BeginGroup),
+        Assert.Collection(root.Commands.ToArray().Where(command => command.Kind == SvgDrawCommandKind.BeginGroup),
             clip =>
             {
                 Assert.Equal(SvgLayerRegionKind.AffineViewport, clip.RegionKind);
@@ -2817,7 +2817,7 @@ public sealed class SvgRootParserTests
                 Assert.Equal(255, mask.Opacity);
                 Assert.Equal(128, mask.MaskAlpha);
             });
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.EndGroup);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.EndGroup);
     }
 
     [Fact]
@@ -3599,7 +3599,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.NotEmpty(root.Geometries);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -3620,7 +3620,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.NotEmpty(root.Geometries);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -4988,11 +4988,11 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' x='0' y='0' width='1' height='1'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#window)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgDrawCommand begin = Assert.Single(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        SvgDrawCommand begin = Assert.Single(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
         Assert.Equal(255, begin.Opacity);
         Assert.Equal(128, begin.MaskAlpha);
         Assert.Equal(new SvgClipBox(0, 0, 8, 8), begin.MaskRegion);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.EndGroup);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.EndGroup);
     }
 
     [Fact]
@@ -5047,11 +5047,11 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1' width='2' height='2'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#window)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgDrawCommand begin = Assert.Single(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        SvgDrawCommand begin = Assert.Single(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
         Assert.Equal(255, begin.Opacity);
         Assert.Equal(128, begin.MaskAlpha);
         Assert.Equal(new SvgClipBox(1, 1, 2, 2), begin.MaskRegion);
-        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.EndGroup);
+        Assert.Contains(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.EndGroup);
     }
 
     [Fact]
@@ -5097,7 +5097,7 @@ public sealed class SvgRootParserTests
     {
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='48' height='48' fill='#808080'/></mask></defs><g opacity='0.5' mask='url(#fade)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Commands,
+        Assert.Collection(root.Commands.ToArray(),
             command =>
             {
                 Assert.Equal(SvgDrawCommandKind.BeginGroup, command.Kind);

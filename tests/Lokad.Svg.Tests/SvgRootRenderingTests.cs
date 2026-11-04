@@ -607,7 +607,7 @@ public sealed class SvgRootRenderingTests
         byte[] expected = "<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='4' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><g opacity='0.5'><svg width='8' height='8' viewBox='0 0 4 4'><rect width='4' height='4' fill='#ff0000' stroke='url(#g)' stroke-width='2'/></svg></g></svg>"u8.ToArray();
         Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
         using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
-        SvgDrawCommand opacityScope = Assert.Single(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value != 1);
+        SvgDrawCommand opacityScope = Assert.Single(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value != 1);
         SvgRecordedPaintAssertions.OpacityScope(opacityScope, new(128, 0.5f));
     }
     [Fact]
@@ -717,7 +717,7 @@ public sealed class SvgRootRenderingTests
         using SvgRoot first = SvgRootParser.Parse(faded, SvgRenderLimits.Default, CancellationToken.None);
         using SvgRoot second = SvgRootParser.Parse(baseline, SvgRenderLimits.Default, CancellationToken.None);
         SvgRecordedPaintAssertions.ShaderAlpha(first, 128 / 255f);
-        Assert.DoesNotContain(first.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        Assert.DoesNotContain(first.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
         SvgRecordedPaintAssertions.ShaderAlpha(second, 1);
         SvgRecordedPaintAssertions.ElementOpacity(second, new(128, 0.5f));
     }
@@ -755,7 +755,7 @@ public sealed class SvgRootRenderingTests
         using SvgRoot first = SvgRootParser.Parse(faded, SvgRenderLimits.Default, CancellationToken.None);
         using SvgRoot second = SvgRootParser.Parse(baseline, SvgRenderLimits.Default, CancellationToken.None);
         SvgRecordedPaintAssertions.ShaderAlpha(first, 128 / 255f);
-        Assert.DoesNotContain(first.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        Assert.DoesNotContain(first.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
         SvgRecordedPaintAssertions.ShaderAlpha(second, 1);
         SvgRecordedPaintAssertions.ElementOpacity(second, new(128, 0.5f));
     }

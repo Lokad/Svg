@@ -17,7 +17,7 @@ internal static class SvgRecordedPaintAssertions
 
     internal static void ElementOpacity(SvgRoot scene, SvgPaintOpacity opacity)
     {
-        SvgDrawCommand begin = Assert.Single(scene.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        SvgDrawCommand begin = Assert.Single(scene.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup);
         OpacityScope(begin, opacity);
     }
 

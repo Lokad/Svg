@@ -17,7 +17,7 @@ public sealed class SvgContourEligibilityTests
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
-            using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
+            using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], (SvgDrawCommand[])[new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
             SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
@@ -39,7 +39,7 @@ public sealed class SvgContourEligibilityTests
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
-            using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
+            using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], (SvgDrawCommand[])[new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
             SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
@@ -61,7 +61,7 @@ public sealed class SvgContourEligibilityTests
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
-            using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
+            using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], (SvgDrawCommand[])[new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
             SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
@@ -83,7 +83,7 @@ public sealed class SvgContourEligibilityTests
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
-            using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
+            using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], (SvgDrawCommand[])[new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
             SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
@@ -105,7 +105,7 @@ public sealed class SvgContourEligibilityTests
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
-            using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
+            using SvgRoot root = new(new SvgRootLength(16, false), new SvgRootLength(16, false), null, [geometry], (SvgDrawCommand[])[new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)], false, null);
             SvgRenderLimits limits = new(8_192, 16, 4_096, 4_096, 16, 16);
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);

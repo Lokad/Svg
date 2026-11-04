@@ -39,7 +39,7 @@ public sealed class SvgViewportOpacityTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(10_000_000));
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
-            SvgDrawCommand[] groups = scene.Commands.Where(command => command.Kind == SvgDrawCommandKind.BeginGroup).ToArray();
+            SvgDrawCommand[] groups = scene.Commands.ToArray().Where(command => command.Kind == SvgDrawCommandKind.BeginGroup).ToArray();
             Assert.Equal(2, groups.Length);
             Assert.Equal(SvgLayerRegionKind.AffineViewport, groups[0].RegionKind);
             Assert.Equal(1, groups[0].SourceOpacity.Value);

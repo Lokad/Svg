@@ -80,7 +80,7 @@ public sealed class SvgRootBorderLayoutTests
         Assert.Equal(new SvgClipBox(5, 3, 17, 11), map.ContentViewport);
         Assert.Equal(new SvgClipBox(0, 0, 27, 17), map.BoxPaintBounds);
         Assert.Equal(new SvgClipBox(2, 2, 23, 13), map.BorderInnerBounds);
-        Assert.Single(root.Commands, command => command.Kind == SvgDrawCommandKind.RootBorder);
+        Assert.Single(root.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.RootBorder);
         Assert.Empty(root.Geometries);
     }
 

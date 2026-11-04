@@ -11,8 +11,13 @@ using System.Runtime.CompilerServices;
 /// and disposal belong to the conversion thread. Disposal is uncancelable and
 /// releases scene storage and its reservations, leaving borrowed SVG/font inputs
 /// with their caller.</remarks>
-internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, SvgSceneStorage? SceneStorage) : IDisposable
+internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, ReadOnlyMemory<SvgDrawCommand> CommandMemory, bool HasUnsupportedChild, SvgSceneStorage? SceneStorage) : IDisposable
 {
+    /// <summary>Borrows the active command range from this scene's retained storage.</summary>
+    /// <remarks>A replay slice shares its scene owner and geometry/resource indices. Finish replay
+    /// before disposing that owner; slicing allocates no command storage or reservation.</remarks>
+    internal ReadOnlySpan<SvgDrawCommand> Commands => CommandMemory.Span;
+
     internal SvgSourceDiagnostic? UnsupportedDiagnostic { get; init; }
     /// <summary>Paints the image canvas independently of root element visibility and source opacity.</summary>
     internal SvgSolidPaint CanvasBackground { get; init; }

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Borrow retained scene command ranges during filter replay, removing per-capture
+  subtree copies while preserving source ownership and rendering.
+
 - Preserve fragment drawing coordinates and separate physical font/canvas stages
   for text gradients and patterns, fixing stroke repeat edges and transformed color
   differences while retaining glyph layout. Form physical source rectangles before

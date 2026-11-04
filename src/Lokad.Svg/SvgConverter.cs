@@ -1080,14 +1080,11 @@ public static partial class SvgConverter
             primitiveMap = primitiveMap with { Regions = new(primitiveCoordinates,
                 objectPrimitiveUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), gridRegion)
                 { DeferFinalColorTransfer = frame?.FilterSourceMap is not null && frame?.FilterBinding is {} colorBinding && colorBinding.Index == command.MaskContentIndex, PictureOutput = surfaceMode == RasterSurfaceMode.PremultipliedPattern, RasterPlacement = new(new((int)frameLeft, (int)frameTop), rasterGrid, layerBounds), SourceBounds = new((float)(sourceImageExtent.Left - frameLeft), (float)(sourceImageExtent.Top - frameTop), (float)(sourceImageExtent.Right - frameLeft), (float)(sourceImageExtent.Bottom - frameTop)), DeferFinalOffset = frame?.FilterBinding is {} deferredBinding && deferredBinding.Index == command.MaskContentIndex && frame?.FilterSourceMap is not null } };
-            using RenderBudget.BudgetReservation? commandsOwner = end > first
-                ? budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(end - first), SvgMemoryCategory.Scene) : null;
-            SvgDrawCommand[] sourceCommands = new SvgDrawCommand[end - first];
-            for (int index = first; index < end; index++) { cancellationToken.ThrowIfCancellationRequested(); sourceCommands[index - first] = root.Commands[index]; }
+            cancellationToken.ThrowIfCancellationRequested();
             SvgRenderLimits limits = options.Limits;
             SvgRenderLimits sourceLimits = limits;
             SvgRenderOptions sourceOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, sourceLimits, options.FontSnapshot);
-            SvgRoot borrowed = root with { Commands = sourceCommands};
+            SvgRoot borrowed = root with { CommandMemory = root.CommandMemory.Slice(first, end - first) };
             // Captured content governs image extents and nested filter requests;
             // construction separately retains the source image hint's padding.
             SvgAnalyticClipBounds sourceContentClip = SourceContentClip(sourceCaptureBounds, new((int)left - 1, (int)top - 1), sw + 2, sh + 2);
@@ -1532,7 +1529,7 @@ public static partial class SvgConverter
                     // its restored image misses this tile entirely.
                     if (restoreRight <= restoreLeft || restoreBottom <= restoreTop) return;
                     SvgRenderLimits layerLimits = limits;
-                    SvgRoot borrowed = root with { Geometries = geometries, Commands = commands};
+                    SvgRoot borrowed = root with { Geometries = geometries, CommandMemory = commands};
                     NativeBitmapDevice sourceParent = bitmapDevice.InBitmap(restoreBitmap.Origin);
                     SvgAffineTransform inverseDevice = InvertDevice(localRemainder);
                     SvgAffineTransform nativePlacement = inverseDevice.ComposeNative(sourceParent.FromGlobal);
@@ -2190,11 +2187,8 @@ public static partial class SvgConverter
                     filterSamplingColorFilter = placements.Count != 1 ? SvgFilterDeferredColorFilter.None
                         : placements[0].AlphaOnly ? SvgFilterDeferredColorFilter.SourceAlpha
                         : hasLinearTransfer ? SvgFilterDeferredColorFilter.LinearRgbRoundTrip : SvgFilterDeferredColorFilter.None;
-                using RenderBudget.BudgetReservation commandOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(end - first), SvgMemoryCategory.Scene);
-                SvgDrawCommand[] draws = new SvgDrawCommand[end - first];
                 cancellationToken.ThrowIfCancellationRequested();
-                for (int index = first; index < end; index++) draws[index - first] = root.Commands[index];
-                SvgRoot scene = root with { Commands = draws};
+                SvgRoot scene = root with { CommandMemory = root.CommandMemory.Slice(first, end - first) };
                 // The native saveLayer hint includes drawable source and filtered
                 // output bounds. A branch without source ink may still enlarge the
                 // shared capture; pruning it changes clipped curve construction.
@@ -3446,7 +3440,7 @@ public static partial class SvgConverter
                 if (content.VectorContent is {} vector)
                 {
                     SvgSceneStorage scene = vector.Scene;
-                    root = root with { Geometries = scene.Geometries, Commands = scene.Commands, SceneStorage = scene };
+                    root = root with { Geometries = scene.Geometries, CommandMemory = scene.Commands, SceneStorage = scene };
                     RenderCommands(0, destination, false);
                 }
                 else if (binaryViewport)

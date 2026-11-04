@@ -40,7 +40,7 @@ public sealed class SvgFilterSourceHintTests
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgFilterArena arena = scene.FilterResources ?? throw new InvalidOperationException();
-            SvgDrawCommand filter = Assert.Single(scene.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup
+            SvgDrawCommand filter = Assert.Single(scene.Commands.ToArray(), command => command.Kind == SvgDrawCommandKind.BeginGroup
                 && command.RegionKind == SvgLayerRegionKind.Filter);
             SvgFilterBinding binding = arena.BindingAt(filter.MaskContentIndex);
             SvgPaintBounds expected = new(10, 12, right, 21);
@@ -68,7 +68,7 @@ public sealed class SvgFilterSourceHintTests
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
             SvgFilterArena arena = scene.FilterResources ?? throw new InvalidOperationException();
-            SvgDrawCommand[] filters = scene.Commands.Where(command => command.Kind == SvgDrawCommandKind.BeginGroup
+            SvgDrawCommand[] filters = scene.Commands.ToArray().Where(command => command.Kind == SvgDrawCommandKind.BeginGroup
                 && command.RegionKind == SvgLayerRegionKind.Filter).ToArray();
             Assert.Equal(nested ? 2 : 1, filters.Length);
             SvgFilterBinding outer = arena.BindingAt(filters[0].MaskContentIndex);

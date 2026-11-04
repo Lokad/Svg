@@ -1,0 +1,496 @@
+{
+  "status": "Command-view milestone passes local full/platform and affected runtime checks; matching committed-source packages and CI follow promotion.",
+  "sourceBaseCommit": "d5924ddbc128912849646c0a320616d8be53b616",
+  "sourceLfSha256": {
+    "src/Lokad.Svg/Parsing/SvgRoot.cs": "3f24a26b7e19aabfa1ff265860bd5e43aef0954db83f1e9f75c733f37a8ce0e6",
+    "src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs": "a04e6495de63c0edd1de25882a8eb737b6c3153346492a6fbf8e0e3621d53759",
+    "src/Lokad.Svg/SvgConverter.cs": "14ac1326f29cdcb5b2b22348ed878d1cef2fd9e5aa8c71350095096fff2d0f6f"
+  },
+  "librarySha256": {
+    "net11.0": "89680ba79f8feeeca2ec6dc56c8002b0f42afdccfa29d076347f1cd11c7813d7",
+    "net10.0": "aae4f111ca4b7546ec57349fbea2fc9bc83269101fbc79d978a3ec9540bfc8da"
+  },
+  "change": "Retain read-only command memory in SvgRoot and expose a span for replay. Ordinary filter capture and terminal offset/merge replay borrow slices instead of allocating and copying unchanged subtrees. Generated/rebound commands and geometry arrays remain independently admitted.",
+  "ownership": "Borrowed views retain the same parent scene lifetime, geometry/resource indices and relative command indexing. They create no heap owner, scene reservation or command array. Recursive captures finish before parent disposal; genuine command rewrites retain their existing owner and cleanup. Bounds, maps, text layout, sampling and alpha stages are unchanged.",
+  "regression": "Three Contract cases compare one versus 64 identical opaque draws under offset, blur and offset/merge. The larger retained scene must rasterize under the first scene's measured raster allowance, then pass existing peak-minus-one refusal, exact cancellation/cleanup and retry checks. Equal pixels support the contract relation; independent native banks separately own rendering correctness.",
+  "failingBefore": {
+    "sourceCommit": "406bd2b395106f9ca836ff561277d2d04a8fdb17",
+    "librarySha256": "45380129c02a8ce3c58172704d0e30f416904e923eeff780c8a1ac6ce6087756",
+    "perHost": [
+      {
+        "host": "windows",
+        "failed": 3,
+        "passed": 0,
+        "reason": "Expected budget refusal while copying the larger source command range."
+      },
+      {
+        "host": "glibc243",
+        "failed": 3,
+        "passed": 0,
+        "reason": "Expected budget refusal while copying the larger source command range."
+      }
+    ]
+  },
+  "allocationObservations": [
+    {
+      "host": "windows",
+      "beforeLibrarySha256": "0ebfefdb8a16d769134938c2aa4b9e0c4ab6934c83c13616b420d2b47c40e56f",
+      "afterLibrarySha256": "89680ba79f8feeeca2ec6dc56c8002b0f42afdccfa29d076347f1cd11c7813d7",
+      "steadyObservationsPerInput": 3,
+      "inputs": [
+        {
+          "graph": "<feOffset dx='1'/>",
+          "sourceDraws": 1,
+          "retainedCommands": 3,
+          "sourceSha256": "de270c2d911092fc7c89776dc0bce75621451eda390659692241f6fc637bf391",
+          "rgbaSha256": "9759891b25b7fc33dde17561364541257bcf5ded8eb27ff0d63ee038b8fbd3a2",
+          "beforeAllocatedBytes": 3752,
+          "afterAllocatedBytes": 3608,
+          "beforeReservedPeak": 2544,
+          "afterReservedPeak": 2440
+        },
+        {
+          "graph": "<feOffset dx='1'/>",
+          "sourceDraws": 64,
+          "retainedCommands": 66,
+          "sourceSha256": "6cff023e81aab83019c5c96339ec919e75427cf6279f6e7d8771bcd1d76ee22f",
+          "rgbaSha256": "9759891b25b7fc33dde17561364541257bcf5ded8eb27ff0d63ee038b8fbd3a2",
+          "beforeAllocatedBytes": 8288,
+          "afterAllocatedBytes": 3608,
+          "beforeReservedPeak": 7080,
+          "afterReservedPeak": 2440
+        },
+        {
+          "graph": "<feGaussianBlur stdDeviation='.5'/>",
+          "sourceDraws": 1,
+          "retainedCommands": 3,
+          "sourceSha256": "6b92cf2378f6c916baf4a8602ac4cd8d2e8aa1f7ac715e325af49f9b4837b75b",
+          "rgbaSha256": "bc7556299fb9b9549dc6639475a5c6afaeb2649c755253e0cf82fbc7438348cb",
+          "beforeAllocatedBytes": 9112,
+          "afterAllocatedBytes": 8968,
+          "beforeReservedPeak": 7753,
+          "afterReservedPeak": 7649
+        },
+        {
+          "graph": "<feGaussianBlur stdDeviation='.5'/>",
+          "sourceDraws": 64,
+          "retainedCommands": 66,
+          "sourceSha256": "f53226f5cd642a028963891cc13f355ea401df5ab915cf59dde541df3e78b622",
+          "rgbaSha256": "bc7556299fb9b9549dc6639475a5c6afaeb2649c755253e0cf82fbc7438348cb",
+          "beforeAllocatedBytes": 13648,
+          "afterAllocatedBytes": 8968,
+          "beforeReservedPeak": 12289,
+          "afterReservedPeak": 7649
+        },
+        {
+          "graph": "<feOffset dx='1' result='a'/><feMerge><feMergeNode in='a'/><feMergeNode in='SourceGraphic'/></feMerge>",
+          "sourceDraws": 1,
+          "retainedCommands": 3,
+          "sourceSha256": "3b8ceb325024eac8cc669c9966e9cd958c8ebfebc45f7c37a5fa87ee0f8cced5",
+          "rgbaSha256": "f19493b0fab3684398ca67347ec121bd4530d79244a30504ef2c01053e776fb4",
+          "beforeAllocatedBytes": 3816,
+          "afterAllocatedBytes": 3672,
+          "beforeReservedPeak": 2544,
+          "afterReservedPeak": 2440
+        },
+        {
+          "graph": "<feOffset dx='1' result='a'/><feMerge><feMergeNode in='a'/><feMergeNode in='SourceGraphic'/></feMerge>",
+          "sourceDraws": 64,
+          "retainedCommands": 66,
+          "sourceSha256": "3244815a72f550d6837ecf09e9d31882537b92e68b3e5ccd40c8614fcd962906",
+          "rgbaSha256": "f19493b0fab3684398ca67347ec121bd4530d79244a30504ef2c01053e776fb4",
+          "beforeAllocatedBytes": 8352,
+          "afterAllocatedBytes": 3672,
+          "beforeReservedPeak": 7080,
+          "afterReservedPeak": 2440
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "beforeLibrarySha256": "0ebfefdb8a16d769134938c2aa4b9e0c4ab6934c83c13616b420d2b47c40e56f",
+      "afterLibrarySha256": "89680ba79f8feeeca2ec6dc56c8002b0f42afdccfa29d076347f1cd11c7813d7",
+      "steadyObservationsPerInput": 3,
+      "inputs": [
+        {
+          "graph": "<feOffset dx='1'/>",
+          "sourceDraws": 1,
+          "retainedCommands": 3,
+          "sourceSha256": "de270c2d911092fc7c89776dc0bce75621451eda390659692241f6fc637bf391",
+          "rgbaSha256": "9759891b25b7fc33dde17561364541257bcf5ded8eb27ff0d63ee038b8fbd3a2",
+          "beforeAllocatedBytes": 3752,
+          "afterAllocatedBytes": 3608,
+          "beforeReservedPeak": 2544,
+          "afterReservedPeak": 2440
+        },
+        {
+          "graph": "<feOffset dx='1'/>",
+          "sourceDraws": 64,
+          "retainedCommands": 66,
+          "sourceSha256": "6cff023e81aab83019c5c96339ec919e75427cf6279f6e7d8771bcd1d76ee22f",
+          "rgbaSha256": "9759891b25b7fc33dde17561364541257bcf5ded8eb27ff0d63ee038b8fbd3a2",
+          "beforeAllocatedBytes": 8288,
+          "afterAllocatedBytes": 3608,
+          "beforeReservedPeak": 7080,
+          "afterReservedPeak": 2440
+        },
+        {
+          "graph": "<feGaussianBlur stdDeviation='.5'/>",
+          "sourceDraws": 1,
+          "retainedCommands": 3,
+          "sourceSha256": "6b92cf2378f6c916baf4a8602ac4cd8d2e8aa1f7ac715e325af49f9b4837b75b",
+          "rgbaSha256": "bc7556299fb9b9549dc6639475a5c6afaeb2649c755253e0cf82fbc7438348cb",
+          "beforeAllocatedBytes": 9112,
+          "afterAllocatedBytes": 8968,
+          "beforeReservedPeak": 7753,
+          "afterReservedPeak": 7649
+        },
+        {
+          "graph": "<feGaussianBlur stdDeviation='.5'/>",
+          "sourceDraws": 64,
+          "retainedCommands": 66,
+          "sourceSha256": "f53226f5cd642a028963891cc13f355ea401df5ab915cf59dde541df3e78b622",
+          "rgbaSha256": "bc7556299fb9b9549dc6639475a5c6afaeb2649c755253e0cf82fbc7438348cb",
+          "beforeAllocatedBytes": 13648,
+          "afterAllocatedBytes": 8968,
+          "beforeReservedPeak": 12289,
+          "afterReservedPeak": 7649
+        },
+        {
+          "graph": "<feOffset dx='1' result='a'/><feMerge><feMergeNode in='a'/><feMergeNode in='SourceGraphic'/></feMerge>",
+          "sourceDraws": 1,
+          "retainedCommands": 3,
+          "sourceSha256": "3b8ceb325024eac8cc669c9966e9cd958c8ebfebc45f7c37a5fa87ee0f8cced5",
+          "rgbaSha256": "f19493b0fab3684398ca67347ec121bd4530d79244a30504ef2c01053e776fb4",
+          "beforeAllocatedBytes": 3816,
+          "afterAllocatedBytes": 3672,
+          "beforeReservedPeak": 2544,
+          "afterReservedPeak": 2440
+        },
+        {
+          "graph": "<feOffset dx='1' result='a'/><feMerge><feMergeNode in='a'/><feMergeNode in='SourceGraphic'/></feMerge>",
+          "sourceDraws": 64,
+          "retainedCommands": 66,
+          "sourceSha256": "3244815a72f550d6837ecf09e9d31882537b92e68b3e5ccd40c8614fcd962906",
+          "rgbaSha256": "f19493b0fab3684398ca67347ec121bd4530d79244a30504ef2c01053e776fb4",
+          "beforeAllocatedBytes": 8352,
+          "afterAllocatedBytes": 3672,
+          "beforeReservedPeak": 7080,
+          "afterReservedPeak": 2440
+        }
+      ]
+    }
+  ],
+  "allocationScope": "Three steady functional allocation/admission observations after one warm-up per input and host, excluding parsing. No wall-time benchmark, statistical speedup or quiet-VM renderer performance claim.",
+  "validation": {
+    "regressions": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 3,
+        "failed": 0,
+        "seconds": 7.119788599899039
+      },
+      {
+        "host": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 3,
+        "failed": 0,
+        "seconds": 11.167122900020331
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "passed": 3,
+        "failed": 0,
+        "seconds": 7.310191500000656
+      },
+      {
+        "host": "glibc243",
+        "kind": "core",
+        "framework": "net10.0",
+        "passed": 3,
+        "failed": 0,
+        "seconds": 8.99924229993485
+      }
+    ],
+    "focused": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 1320,
+        "failed": 0,
+        "seconds": 8.700776299927384
+      },
+      {
+        "host": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 1320,
+        "failed": 0,
+        "seconds": 12.314683699980378
+      },
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net10.0",
+        "passed": 1320,
+        "failed": 0,
+        "seconds": 8.232663300121203
+      },
+      {
+        "host": "glibc243",
+        "kind": "core",
+        "framework": "net10.0",
+        "passed": 1320,
+        "failed": 0,
+        "seconds": 13.555576500017196
+      }
+    ],
+    "full": [
+      {
+        "host": "windows",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 47553,
+        "failed": 0,
+        "seconds": 50.68334530014545
+      },
+      {
+        "host": "glibc243",
+        "kind": "core",
+        "framework": "net11.0",
+        "passed": 47553,
+        "failed": 0,
+        "seconds": 54.929633299820125
+      },
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net11.0",
+        "passed": 46705,
+        "failed": 1,
+        "seconds": 72.49162480002269
+      },
+      {
+        "host": "glibc243",
+        "kind": "visual",
+        "framework": "net11.0",
+        "passed": 46706,
+        "failed": 0,
+        "seconds": 175.08395270002075
+      }
+    ],
+    "visual10": [
+      {
+        "host": "windows",
+        "kind": "visual",
+        "framework": "net10.0",
+        "passed": 1415,
+        "failed": 0,
+        "seconds": 39.673147700028494
+      },
+      {
+        "host": "glibc243",
+        "kind": "visual",
+        "framework": "net10.0",
+        "passed": 1415,
+        "failed": 0,
+        "seconds": 39.648723599966615
+      }
+    ]
+  },
+  "testIdentityAudit": [
+    {
+      "host": "windows",
+      "kind": "core",
+      "previousCases": 47550,
+      "currentCases": 47553,
+      "removedOrRenamed": 0,
+      "addedNames": [
+        "Lokad.Svg.Tests.SvgFilterCommandViewTests.Retained_source_replay_does_not_copy_each_command_into_raster_storage(graph: \"<feGaussianBlur stdDeviation='.5'/>\")",
+        "Lokad.Svg.Tests.SvgFilterCommandViewTests.Retained_source_replay_does_not_copy_each_command_into_raster_storage(graph: \"<feOffset dx='1'/>\")",
+        "Lokad.Svg.Tests.SvgFilterCommandViewTests.Retained_source_replay_does_not_copy_each_command_into_raster_storage(graph: \"<feOffset dx='1' result='a'/><feMerge><feMergeNode\"\u00b7\u00b7\u00b7)"
+      ]
+    },
+    {
+      "host": "windows",
+      "kind": "visual",
+      "previousCases": 46706,
+      "currentCases": 46706,
+      "removedOrRenamed": 0,
+      "addedNames": []
+    },
+    {
+      "host": "glibc243",
+      "kind": "core",
+      "previousCases": 47550,
+      "currentCases": 47553,
+      "removedOrRenamed": 0,
+      "addedNames": [
+        "Lokad.Svg.Tests.SvgFilterCommandViewTests.Retained_source_replay_does_not_copy_each_command_into_raster_storage(graph: \"<feGaussianBlur stdDeviation='.5'/>\")",
+        "Lokad.Svg.Tests.SvgFilterCommandViewTests.Retained_source_replay_does_not_copy_each_command_into_raster_storage(graph: \"<feOffset dx='1' result='a'/><feMerge><feMergeNode\"\u00b7\u00b7\u00b7)",
+        "Lokad.Svg.Tests.SvgFilterCommandViewTests.Retained_source_replay_does_not_copy_each_command_into_raster_storage(graph: \"<feOffset dx='1'/>\")"
+      ]
+    },
+    {
+      "host": "glibc243",
+      "kind": "visual",
+      "previousCases": 46706,
+      "currentCases": 46706,
+      "removedOrRenamed": 0,
+      "addedNames": []
+    }
+  ],
+  "consumerMigration": {
+    "status": "Only explicit array targets, span assertion boundaries and the existing shared helper signature changed; all original assertions/data/case methods remain.",
+    "files": [
+      {
+        "file": "tests/Lokad.Svg.Tests/RenderBudgetTests.cs",
+        "beforeLfSha256": "1409a263288273323c35578259c4e65b933338400981677367989c37855cd6f3",
+        "afterLfSha256": "81960cd48d58a57388591255be19d3da9575744985256ea804e4b4913b4cbec7"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgContourEligibilityTests.cs",
+        "beforeLfSha256": "c2763be2336d5d50d9fb0cdb18e21e976a6c7f37dd7a36cfd00b9ff0932db053",
+        "afterLfSha256": "f041cbde53bd5c33819dda86b0683b69fd381631b392b787c53531608f318843"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgDeferredFilterSourceTests.cs",
+        "beforeLfSha256": "c7a97132f01c414423ba05a2cbfb611c22b55e0240a672ea64272c815f66b519",
+        "afterLfSha256": "3aed8e04e6cb67d5461ac0df40e40c460ca45e6bd5bccf6fad7faea228b888ec"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgDeferredPaintLeafTests.cs",
+        "beforeLfSha256": "1406ef9b3d400a8703f20922bb9518a29ab0786e5afafa2d8022fb56a62a0f57",
+        "afterLfSha256": "f0e5d321234099ec0828dcb4a288ec33fdf0d8e7deb7da9c68b4c1dcb422c49d"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgEmptyFilterGroupTests.cs",
+        "beforeLfSha256": "3af6c32f950cf0a6e7980ee58c6d460c6b2ad8f74f99a63aad3b0ec303beaa80",
+        "afterLfSha256": "3f35ba846fb77a1f84ae2beafc9f7fffebe16df56b856f7bda003559e3ca5a06"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgFilterLengthTests.cs",
+        "beforeLfSha256": "f7874b3691faced889a2490864c1dfb794918296bceb9a63b2689c6be5b0b753",
+        "afterLfSha256": "1971d8f8f92d556fd90ae5c5f1d1b086d441c40dcb90d19587137aa4c9b88e16"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgFilterPlaybackTests.cs",
+        "beforeLfSha256": "a319756a4e99a2e0796ba0749dd12b8fb3c3a599c449c49f1361df13bc66317a",
+        "afterLfSha256": "2e5db781ade7dce34eaa8e71b2e771e3305c5f0311f935c2e043bba37eda14d3"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgFilterRecordingTests.cs",
+        "beforeLfSha256": "f7a73c34d732b8e2254aa397311063f7b58a6e4d67230e4067505d865ac28615",
+        "afterLfSha256": "a586b7a7d2cf2daeec29fc26d7db6a87208a903bb08c8e149900890617160d70"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgFilterSourceHintTests.cs",
+        "beforeLfSha256": "85133199eaa6759686b96671241774778b6721d756fd29e1381720ea9221f041",
+        "afterLfSha256": "3b571bc71d2bde640930517d543dfb3d670e44a43f8090ebc961c8b0c18a46ab"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgLeafMaskAssertions.cs",
+        "beforeLfSha256": "e74b6f419de49484c49c69ff51f75a466035ecd2dbaa8d65414a7ef151199732",
+        "afterLfSha256": "440a47b5e4a00954571ef625989da5b18d634e8bddda5659dd7424f5b857ecf2"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgLeafMaskCompositionTests.cs",
+        "beforeLfSha256": "c04d76d49bc2275ecc7b5e47de9acb0991346137e0cd03ddb4a0cb957791197f",
+        "afterLfSha256": "ea71b8016bb258f1794525d1641b934d2f5976e3c5d4a0ee7026bb9d86572a1c"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgOrderedClipTests.cs",
+        "beforeLfSha256": "8c6b74a61897228c081b5f16c7a16616e00618d59e17b70b5c52b4297c333621",
+        "afterLfSha256": "de2cf3999f43e9bcf91733d48adac2338d24df01f685e66b1679192392230e1b"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgRecordedBoundsTests.cs",
+        "beforeLfSha256": "e83f8c3e282dd2524df26e28c3aee6fc1f5863f22476263e2e1b2f41f2d3fb04",
+        "afterLfSha256": "e7d866dd74defb34072274c55c7bd2a39d656a7faa557633eaf60ca844b5a4a4"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgRecordedPaintAssertions.cs",
+        "beforeLfSha256": "152706f5d357a4fccc9f0c626a0adab1e0b9d17d0ce4d106c20d68993fb369ed",
+        "afterLfSha256": "711eb781bbdb28a1cd9997cf1394d2ef34011bc1257ffc8fb6d211436c84eede"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgRootBorderLayoutTests.cs",
+        "beforeLfSha256": "c5ad617b712f5044e11e881c99b5dbe5e09a58f245bbdde4133e7a2fb77c88c5",
+        "afterLfSha256": "e9455f5608f644f9644d68735a956e5fd5617c9a41d76f65e6462adb635df74d"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgRootParserTests.cs",
+        "beforeLfSha256": "dcc4ce0b433ff697c90e5d59ee715ed2aa65dbbe640ebb73c75c7c2e6a46d1f7",
+        "afterLfSha256": "e76b5aa0c8ad57caa718ade307b6b0475c4777c50835713a2c92a2d4e5ab9581"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgRootRenderingTests.cs",
+        "beforeLfSha256": "090a4c86fbf1f466ed8857d2ecaa534febf1d7bb491b50a0d136c74e53471a99",
+        "afterLfSha256": "6d0d3b4785de03fb1db327229b84075a782e3590565e054977157abb2eebb03d"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgRootViewportAdmissionTests.cs",
+        "beforeLfSha256": "669e8b16a7b0106aef90f5c5e9c103026e683722a7617090f6bc721e00b66d10",
+        "afterLfSha256": "79741207429a61822f421c716b38df822109dbe2cc9e6a0bc72adaa996356590"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgUniformGroupMaskTests.cs",
+        "beforeLfSha256": "9d551c6716aa689a150fd435fc81808082f2eb10ec181705f0caeff52732a14f",
+        "afterLfSha256": "da71796fbb847a21f61729f1c94c4f338b713c36e36973b1f13359bd54701f58"
+      },
+      {
+        "file": "tests/Lokad.Svg.Tests/SvgViewportOpacityTests.cs",
+        "beforeLfSha256": "ee19da3a0dd9940fa82aa1bd63c6d927c91239334a7899f2e709f97fc155ec8f",
+        "afterLfSha256": "67c0fe1090ba9e79b9ab5ba0155582f385a237822fb05d50f39d434b1177abcb"
+      }
+    ]
+  },
+  "originals": {
+    "sourceSvgFilesRetained": 0,
+    "files": 204,
+    "seconds": 108.07445379998535,
+    "librarySha256": "89680ba79f8feeeca2ec6dc56c8002b0f42afdccfa29d076347f1cd11c7813d7",
+    "hosts": {
+      "windows": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      },
+      "linux": {
+        "outcomes": {
+          "UnsupportedFeature": 35,
+          "rendered": 168,
+          "MalformedInput": 1
+        },
+        "byteIdenticalPreviouslyRenderedPngs": 168,
+        "changedOriginals": []
+      }
+    },
+    "outcomesOptionsDimensionsAndDiagnosticsUnchanged": true
+  },
+  "suppliedProgramContexts": {
+    "originals": 19,
+    "additionalNoto": 2,
+    "originalXmlNoto": 1,
+    "exactAndUnchangedPngsOnBothHosts": true
+  },
+  "declaredStaticDiagnostics": {
+    "cases": 13,
+    "exactOnBothHosts": true
+  },
+  "referenceFilesChanged": 0,
+  "hostedSvgBodiesRetained": 0,
+  "rawSourceAttributeValuesRetained": 0,
+  "previousPrecisionCohort": "source-paint-qualification.json",
+  "build": "Release solution and explicit .NET10 core/visual builds pass with zero warnings/errors. Benchmark project is compiled only."
+}

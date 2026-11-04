@@ -116,7 +116,7 @@ public sealed class SvgDeferredPaintLeafTests
         RenderBudget budget = new RenderBudget(new HostMemoryBudget(1_000_000));
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
-            Assert.All(root.Commands, command => Assert.InRange(command.GeometryIndex, 0, root.Geometries.Length - 1));
+            Assert.All(root.Commands.ToArray(), command => Assert.InRange(command.GeometryIndex, 0, root.Geometries.Length - 1));
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
             Assert.All(surface.Pixels, value => Assert.Equal((byte)0, value));
         }
