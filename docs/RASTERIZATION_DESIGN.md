@@ -428,7 +428,7 @@ coordinate-buffer boundaries; equal coverage bytes can still cross such a bounda
 
 ## Resources and effects
 
-Element composition follows [filter → mask → clip → opacity](SUPPORT_MATRIX.md#clips-masks-and-composition).
+Element composition follows [filter â†’ mask â†’ clip â†’ opacity](SUPPORT_MATRIX.md#clips-masks-and-composition).
 Ancestor clips surround child filter output; source-local clips remain inside
 the filter. Group isolation/restore applies each clip and opacity once. Identity
 groups avoid unnecessary offscreen images; real opacity isolates.
@@ -455,143 +455,104 @@ this borrowed map through existing text preparation. The
 [mask text controls](../tests/Research/mask-text-recording/README.md) distinguish
 those placements from clip-mask coverage and protect following text context.
 
-[Filter playback](../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs) retains result
-dependencies, primitive regions, operating spaces and source placement. Requested
-output, native image hints, captured content, cropped storage and padded scratch
-are separate. Descendants inside nested filters retain their original paint bounds
-in the parent picture's image hint and dither origin; parent capture separately
-includes their filtered output. Rescaled kernels read the captured subset;
-offsets/aliases can retain deferred sampled images until a
-consumer requires pixels.
-Blur image aliases share the inclusive `0.03f` device-deviation cutoff in
-`SvgGaussianDeviation`. A copying pixel kernel above that cutoff still materializes
-an image and rounds its bounds; kernel identity does not authorize image aliasing.
-The [classification checks](../tests/Research/release-baselines/blur-image-identity.json)
-retain the exact float boundary and independent image/storage responsibilities.
-Deferred storage includes the input view needed before the offset as well as the
-final output. Request planning limits that view by primitive crops and possible
-image extents; planning and playback share alias resolution.
-[Storage regressions](../tests/Research/svgweb/filter-deferred-input-storage.json)
-protect those bounds without duplicating destination or ownership matrices.
-Source visuals are enclosed in parameter coordinates before graph expansion;
-capture and output image hints are enclosed there again before device placement.
-Path stroke layout visuals stay fractional through child placement and union;
-recorded painting separately encloses each draw before placement.
-[Fractional stroke controls](../tests/Research/svgweb/filter-fractional-stroke-layout.json)
-protect both stages, including rotated aliases.
-Affine replay reuses retained parameter visuals: inverting a scene enclosure
-inflates strokes and changes the source bitmap's shader/dither origin.
-[Gradient-stroke evidence](../tests/Research/svgweb/filter-stroke-source-bounds.json)
-protects this distinction even when alpha coverage is unchanged.
-Non-displayed instances contribute no object or visual bounds to enclosing
-effects; hidden visibility and zero opacity retain layout bounds. Source
-validation still runs. [Instance display controls](../tests/Research/svgweb/filter-instance-display-bounds.json)
-protect the recorded metadata and resulting gradient placement.
 An explicit rectangular mask clip can become fully opaque within a compositor
 bitmap. Polygon and hairline consumers share that opacity query; a hairline may
 escape the bitmap without retaining an AA clip wrapper. Partial intersections and
 clip construction retain their own dispatch. [Independent controls](../tests/Research/svgweb/mask-opaque-bitmap.json)
 protect source alpha and the later mask composition separately.
-Ordinary, nested and image-containing sources all capture the propagated sampling
-request; unrelated source ink must not enlarge that curve-construction window.
-Axis and transformed effects capture input for each bordered destination bitmap;
-its nonzero clip bounds govern the output request, and only its interior owns
-restored pixels. A canvas clip enclosure can be wider than one bitmap's coverage;
-using that enclosure changes source curve construction before filtering.
-Source construction retains image-hint
-padding independently of captured-content extents and nested filter requests;
-cancellation/refusal restores the enclosing invocation clip.
-Capture hints also retain recorded AA fringes before the propagated request crops
-source ink. A tighter SVG layout hint cannot discard those recorded pixels.
-Content clips limit painting without moving the source bitmap's shader coordinates
-or dither origin, including when compact capture omits part of its transparent border.
-Isolated children retain that logical bitmap origin independently of their storage
-window and use the same scope for geometry and shader construction. The origin can
-lie outside compact storage; scan windows and owned interiors remain bounded.
-SourceGraphic's nearest shader retains picture padding separately from its result
-extent. SourceAlpha and stored graph results sample their materialized image views.
-Spatial consumers retain the source picture's complete clip-classification domain
-when compact storage omits a viewport fringe. Source aliases and deferred color
-filters retain their parent paint clip. Classification never indexes omitted pixels.
-The [source-context controls](../tests/Research/filter-source-contexts/README.md)
-protect thin rectangles and wide strokes in nested viewports through these stages.
-Affine image edges are constructed and walked against the bitmap clip; requested
-output bounds govern row storage and restoration separately.
-The RGBA8 clamp fast path rounds each bilinear product before accumulation. Generic
-wrapped and picture/mipmap sampling retain fused accumulation, sharing preparation
-and storage rules.
-The bounds query distinguishes deferred paint, padded images and cropped images.
-Cropping invalidates transparent-padding knowledge. Affine restoration uses the
-active clip for edge construction and replays coverage with the sampled paint.
+### Filter bounds and placement
+
+[Filter playback](../src/Lokad.Svg/Rendering/SvgFilterPlayback.cs) retains graph
+dependencies, primitive regions and operating spaces through the existing scene
+and temporary-layer owners. Its bounds serve different purposes:
+
+| Domain | Contract |
+| --- | --- |
+| Object/layout | Resolve fixed lengths and translations in native CSS range, then compose object boxes into parameter space before float enclosure. Non-displayed instances contribute no bounds; hidden visibility and zero opacity retain layout. Validation still runs. |
+| Recording visual | Enclose each local font/stroke draw before placement; keep path layout visuals fractional through child placement and union. Reuse retained parameter visuals rather than inverting a scene enclosure. |
+| Capture/output hint | Enclose source visuals in parameter space before graph expansion; enclose capture/output hints there again before device placement. Retain recorded AA fringes, font recording enclosures and local stroke extents. Nested children contribute original paint bounds to the parent hint/dither origin and filtered output to its capture. |
+| Requested output | Propagate the sampling request to ordinary, nested and image-containing sources. Each bordered destination bitmap uses its nonzero clip bounds for capture; only its interior owns restored pixels. Unrelated ink or a wider canvas enclosure must not enlarge source construction. Empty destination areas return before capture/edge preparation. |
+| Stored image | Keep captured content, padded scratch and materialized views separate. Bounds queries distinguish deferred paint, transparent/initialized padding and cropped storage; cropping invalidates transparent-padding knowledge. Rescaled kernels read the captured subset. |
+| Sampling view | SourceGraphic retains its picture padding independently of result extent. SourceAlpha and stored graph results sample materialized views. Clip classification retains the complete picture domain without indexing omitted pixels; aliases and deferred color filters keep the parent paint clip. |
+
+Planning and playback share alias resolution. Deferred input storage includes the
+view needed before an offset, limited by primitive crops and possible image extents,
+as well as final output. Blur aliases use the inclusive `0.03f` device-deviation
+cutoff in `SvgGaussianDeviation`; a copying kernel above it still materializes and
+rounds an image. Kernel identity does not authorize image aliasing.
+
+Content clips narrow painting without moving shader coordinates or dither origins.
+The union of local recording bounds and parameter hints seeds the source image
+and dither origin. Geometry and shaders share the isolated child's logical bitmap
+origin, even outside compact storage; scan windows and owned interiors stay bounded. An existing
+compositor bitmap must still enter compact source storage before capture. Image-hint
+padding remains independent of captured content and nested requests; cancellation
+or refusal restores the enclosing invocation clip.
+
 Sampling subtracts the destination bitmap origin before concatenating the stored
-image origin. Geometry keeps its canvas placement. Materialized and deferred
-images share that map order; enclosing opacity stores covered, converted pixels
-before applying packed row alpha, as ordinary layers do.
-Packed and floating shader samplers retain their independent matrix arithmetic.
-Non-scaling strokes retain local visual bounds without enlarging object boxes;
-hairline width reduction keeps the native canvas/inverse product and its rounding.
-The [context controls](../tests/Research/shader-contexts/README.md) protect these
-stages through instances, symbols, clips, masks, filters and isolated opacity.
-An inverse tile enclosure can reach a source whose restored image misses the tile;
-empty destination areas return before capture or edge preparation.
-Zero-effect aliases retain their sampling color filter across ordinary and fast paths.
-Final restoration consumes that shader state; deferred source captures retain it
-for image sampling. Nonopaque restoration materializes it before packed paint alpha.
+image origin; materialized and deferred images share that order. Geometry retains
+canvas placement. Image edges are constructed against the active bitmap clip;
+requested bounds independently govern row storage/restoration. Restoration replays
+edge coverage with the sampled paint. Packed and floating samplers keep their own
+matrix arithmetic. RGBA8 clamp sampling rounds each
+bilinear product before accumulation; generic wrapped and picture/mipmap sampling
+retain fused accumulation.
 
-Fixed lengths and translate arguments resolve within native CSS layout range
-before placement. Object boxes compose into filter parameter space before float
-enclosure. Regions map through the padded bitmap; owning source draws use the
-recorded layer map. Clip geometry and fitted glyphs retain their own concatenation.
+Non-scaling stroke visuals do not enlarge object boxes. Hairline width reduction
+keeps the native canvas/inverse product and rounding. Filter capture retains both
+directions of the native bitmap axes: rounded skew can select pipeline alpha before
+clip coverage rather than packed row blending. Clip geometry and fitted glyphs keep
+their own concatenation; source draws use the recorded layer map.
 
-Uniform flood alpha stays at pipeline precision through graph evaluation.
-Operating color space travels with stored/deferred images; composing compatible
-transforms cannot erase a required transfer. Image drawing transfers color before
-edge coverage and uses destination clipping. Shader consumers retain separate
-sampling rules. Black RGB retains its color-conversion stage because shader
-restoration and packed bitmap restoration round differently over a backdrop.
-Enclosing opacity first materializes sampling/color/crop coverage,
-then applies bitmap alpha; its painted extent bounds restoration.
-Source construction keeps its recording bitmap; final sampling uses the opacity
-bitmap's origin. [Independent controls](../tests/Research/svgweb/filter-opacity-device.json)
-cover copying and nontrivial kernels, coloured strokes and gradient source paint.
-Filter capture retains both directions of the native bitmap axes. Their rounded
-product can retain skew, selecting pipeline alpha before clip coverage instead of
-packed row blending. [Native controls](../tests/Research/svgweb/group-opacity-stages.json)
-protect this selection without snapping coefficients or changing references.
-An existing compositor bitmap still enters compact source storage before capture;
-retaining its origin alone can displace or erase later-tile source drawings.
-[Source-origin controls](../tests/Research/filter-source-origins/README.md) cover
-compact storage, second-tile solid/gradient construction and tile crossings.
-Drawable recording bounds enclose locally before placement; filter-output hints
-enclose in parameter space. Their union seeds the source image and dither origin.
-[Gradient controls](../tests/Research/filter-gradient-sampling/README.md) protect
-both source aliases and a general color stage without rounding object bounds.
-Fractional offsets use the same per-bitmap filter path as other graph stages.
-Final transferred paint composes directly into its destination; an extra byte
-bitmap would consume floating colour and clip/opacity stages too early.
-[Destination controls](../tests/Research/filter-bitmap-restoration/README.md)
-cover operating space, bitmap size, opacity and clipping across a tile boundary.
-Terminal offsets retain compatible colour programs through image sampling and
-later destination coverage, including trailing zero-offset, zero-blur and single-input
-merge aliases. An immediately
-preceding matrix skips unused byte evaluation when that terminal draw is its sole
-consumer. Existing final sample storage preserves fractional lanes without a new
-replay or resource owner.
-[Coverage controls](../tests/Research/filter-color-program-coverage/README.md)
-protect rounding order and both operating spaces.
+### Filter color and restoration
 
-Color-matrix parameters are immutable values in the existing filter graph. A
-borrowed color program retains individual transfers and clamps until image sampling;
-it borrows scene coefficients and adds no resource owner or replay pipeline. Native
-unorm loads precede straight-channel evaluation and premultiplication. Matrix chains
-do not introduce byte images between compatible stages. Uniform inputs retain their
-original floating paint rather than reloading quantized flood pixels.
+Operating color space travels with stored and deferred images. Compatible
+transforms cannot erase required transfers, including black RGB. Uniform flood
+paint retains pipeline precision instead of reloading quantized pixels. Image draws
+transfer color before edge coverage and destination clipping; shader consumers keep
+their independent sampling rules. Enclosing opacity materializes sampling, color
+and crop coverage before packed bitmap alpha, bounded by its painted extent. Source
+construction retains its recording bitmap; final sampling uses the opacity bitmap.
 
-When another sampling operation consumes a pending draw, its placement operands,
-image map and finite source view remain distinct. A resolved view is not expanded
-as a capture-grid hint. Color operations precede image-edge coverage; alpha bias
-can extend output to the primitive region. [The matrix controls](../tests/Research/filter-color-matrix/README.md)
-protect these stages, including both orders of blur, composition, aliases and crops.
+Fractional offsets use the ordinary per-bitmap filter path. Final transferred paint
+composes directly into its destination; an extra byte image would consume floating
+color, clip and opacity too early. Zero-effect aliases preserve their sampling color
+filter through general and fast paths. Final restoration consumes that state;
+deferred source captures retain it, and nonopaque restoration materializes it before
+packed paint alpha.
+
+Color matrices remain immutable graph values. Borrowed programs retain individual
+transfers/clamps and scene coefficients through sampling, without another replay or
+resource owner. Native unorm loads precede straight-channel evaluation and
+premultiplication; compatible chains introduce no intermediate byte images.
+Terminal offsets retain these programs through sampling and later coverage,
+including trailing zero-offset, zero-blur and single-input merge aliases. An
+immediately preceding matrix skips unused byte evaluation only when that terminal
+draw is its sole consumer. A later sampling operation keeps placement operands,
+image map and finite source view separate; resolved views are not capture hints.
+Color operations precede image-edge coverage, and alpha bias can extend output to
+the primitive region.
+
+### Filter evidence
+
+The [image/kernel boundary](../tests/Research/release-baselines/blur-image-identity.json),
+[deferred storage](../tests/Research/svgweb/filter-deferred-input-storage.json),
+[fractional stroke layout](../tests/Research/svgweb/filter-fractional-stroke-layout.json),
+[retained stroke bounds](../tests/Research/svgweb/filter-stroke-source-bounds.json) and
+[instance display](../tests/Research/svgweb/filter-instance-display-bounds.json)
+checks protect the separate bounds roles. [Source contexts](../tests/Research/filter-source-contexts/README.md)
+and [shader contexts](../tests/Research/shader-contexts/README.md) retain independent
+instance, symbol, viewport, clip, mask, filter and opacity interactions.
+
+[Opacity-device](../tests/Research/svgweb/filter-opacity-device.json),
+[group-alpha](../tests/Research/svgweb/group-opacity-stages.json),
+[compact-source](../tests/Research/filter-source-origins/README.md) and
+[gradient-source](../tests/Research/filter-gradient-sampling/README.md) controls
+distinguish recording, storage and destination arithmetic.
+[Destination restoration](../tests/Research/filter-bitmap-restoration/README.md),
+[color-program coverage](../tests/Research/filter-color-program-coverage/README.md)
+and [matrix-stage controls](../tests/Research/filter-color-matrix/README.md) protect
+operating-space, crop, composition, alias and sampling order.
 
 ## Supplied fonts
 
