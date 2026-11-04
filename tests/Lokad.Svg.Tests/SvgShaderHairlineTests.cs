@@ -18,6 +18,7 @@ public sealed class SvgShaderHairlineTests
     }
 
     [Theory]
+    [Trait("Layer", "Mechanism")]
     [MemberData(nameof(NativeThinPaints))]
     public void Thin_shader_strokes_preserve_native_hairline_coverage_and_paint_alpha(string paint, string shape, string width, string alpha, string expectedAlpha, string fill)
     {

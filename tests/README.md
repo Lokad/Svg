@@ -389,6 +389,9 @@ a layer filter does not replace affected unclassified tests or full qualificatio
 The [supplied-font output map](Research/release-baselines/font-output-responsibilities.md)
 keeps all 37 native rendering inputs, seven routine API matrices and 30 extended
 matrices, with separate layout, acquisition and ownership regressions.
+The [original shader hairlines](Research/shader-hairlines/README.md) retain 2,000
+canonical native checks as optional research, separate from routine alpha/coverage,
+ownership and selected rendering witnesses.
 For pattern selection, `FullyQualifiedName~Pattern_child_content_selects_the_discovered_font`
 selects direct discovery; include the raster and prepared siblings for integration.
 `FullyQualifiedName~SvgPatternSelectionMechanismTests` selects the original resource

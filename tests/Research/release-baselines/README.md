@@ -32,6 +32,9 @@ shutdown and asynchronous output contracts to source and installed-package evide
 37 native rendering inputs from seven routine and 30 extended output matrices.
 [Blur image identity](blur-image-identity.json) shares one cutoff across bounds,
 aliases and playback while keeping copying pixel kernels distinct from image aliases.
+[Original R86 hairlines](r86-hairline-qualification.json) close 800 geometry and200
+alpha pairs through the packaged renderer and six fresh healthy browser processes;
+all2,000 source/target identities remain individual optional research checks.
 
 The outstanding review starts at these committed collections:
 

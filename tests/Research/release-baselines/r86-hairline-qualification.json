@@ -1,0 +1,578 @@
+{
+  "status": "The original800 hairline and200 alpha pairs are native exact through the qualified package and six fresh healthy browser processes. Other R86 cohorts remain separate.",
+  "sourceReviewBaseCommit": "e1fef7d05e239138c3260960b97aa62687b7682e",
+  "runtimePackage": {
+    "sourceCommit": "ec8c8de7a1b9b4dac249bffd123f962f160f8b84",
+    "packageVersion": "0.4.0-dev.1",
+    "librarySha256": {
+      "net11.0": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+      "net10.0": "68ad89871daa75dbe1b5d48992885f3878e4a9499377cadc5b72b09cde60fe8a"
+    },
+    "repeatPackagesByteIdentical": true,
+    "nupkgSha256": "07461c5b5c94cd2b938ba4c862eb48506f3b5c8ec3a0d5ed16b36e9ba280fb29",
+    "snupkgSha256": "794f52ee89eb8440e429586797cfcfeeacad66b88493330ba8743e8b4e8feef0"
+  },
+  "originalPairs": 1000,
+  "originalInputs": 2000,
+  "uniqueSourcesAndOptions": 1800,
+  "sourceIdentity": "f123ed398c9ae1219b3b30068468cc0a82c0011665c7e0b1ece1f2f9caec72f5",
+  "sourceRecipe": {
+    "license": "MIT",
+    "reconstruction": "Geometry axes iterate in insertion/nesting order, last fastest; number from zero. Each row emits candidate then control. Alpha rows filter that sequence to widths .25/.5 and translate(.5 .25), retaining order and renumbering. Sources are UTF-8 without BOM or final newline.",
+    "root": "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>",
+    "paints": {
+      "linear-flat": "<linearGradient id='p' gradientUnits='userSpaceOnUse' x2='32'><stop stop-color='blue'/><stop offset='1' stop-color='blue'/></linearGradient>",
+      "linear": "<linearGradient id='p' gradientUnits='userSpaceOnUse' x2='32'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient>",
+      "radial": "<radialGradient id='p' gradientUnits='userSpaceOnUse' cx='16' cy='16' r='20'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient>",
+      "pattern-flat": "<pattern id='p' patternUnits='userSpaceOnUse' width='16' height='16'><rect width='16' height='16' fill='blue'/></pattern>",
+      "pattern": "<pattern id='p' patternUnits='userSpaceOnUse' width='8' height='8'><rect width='4' height='8' fill='red'/><rect x='4' width='4' height='8' fill='blue'/></pattern>"
+    },
+    "shapes": {
+      "rect-path": "<path d='M4 4H24V24H4Z' {style}/>",
+      "line": "<line x1='4' y1='6' x2='26' y2='23' {style}/>",
+      "polyline": "<polyline points='4,24 4,4 24,4 24,24' {style}/>",
+      "quadratic": "<path d='M4 24Q4 4 24 4' {style}/>",
+      "cubic": "<path d='M4 24C4 4 24 4 24 24' {style}/>"
+    },
+    "geometryAxesInNestingOrder": {
+      "paint": [
+        "linear-flat",
+        "linear",
+        "radial",
+        "pattern-flat",
+        "pattern"
+      ],
+      "shape": [
+        "rect-path",
+        "line",
+        "polyline",
+        "quadratic",
+        "cubic"
+      ],
+      "width": [
+        ".25",
+        ".5",
+        "1",
+        "2"
+      ],
+      "pose": [
+        "translate(.5 .25)",
+        "rotate(15 16 16)"
+      ],
+      "alpha": [
+        "1",
+        ".75"
+      ],
+      "fill": [
+        "none",
+        "red"
+      ]
+    },
+    "style": "fill='{fill}' stroke='{paint}' stroke-width='{width}' stroke-opacity='{alpha}'",
+    "placement": "</defs><g transform='{pose}'>{shape}</g></svg>",
+    "geometryControlStroke": "blue",
+    "candidateStroke": "url(#p)",
+    "alphaControl": "Retain candidate shader/fill/placement, set stroke-width=1 and stroke-opacity=(byte(alpha)*floor(width*256)>>8)/255; byte(alpha) is255 or191.",
+    "convertedAlphaOpacity": {
+      ".25/1": "0.24705882352941178",
+      ".25/.75": "0.1843137254901961",
+      ".5/1": "0.4980392156862745",
+      ".5/.75": "0.37254901960784315"
+    }
+  },
+  "nativeReferences": {
+    "path": "../shader-hairlines/original-native.csv.gz",
+    "sha256": "3fa2b84720eafd0a138892cf61a9485bd594f32fc2f44357e6b33c8fbe277e99",
+    "rows": 2000,
+    "encoding": "UTF-8 CSV, LF rows, deterministic gzip; original ID/source SHA256 and separate Windows/Linux native RGBA SHA256. Normalize RGB at alpha zero per PixelComparison; assert32x32 dimensions separately."
+  },
+  "oracle": {
+    "pins": [
+      "../../../tools/chrome-for-testing.json",
+      "../../../tools/chrome-for-testing.linux64.json"
+    ],
+    "method": "Fresh process/clean profile per attempt; empty about:blank target, network URLs blocked, viewport240x120, deviceScaleFactor1. Each unchanged source is decoded by Image from an SVG Blob, drawn to its own transparent32x32 canvas, and exported as PNG. Every original role is compared independently to its old target and the packaged renderer.",
+    "nativeComparisons": 12000,
+    "healthyFreshProcesses": 6,
+    "oldTargetsChanged": 0,
+    "platformTargetDifferences": 0
+  },
+  "historicalFailingBefore": [
+    {
+      "bank": "r86-hairline-review",
+      "inputs": 1600,
+      "beforeExact": 1100,
+      "afterExact": 1600,
+      "failingBeforeIndexRangesByRole": {
+        "candidate": [
+          [
+            0,
+            19
+          ],
+          [
+            32,
+            51
+          ],
+          [
+            64,
+            83
+          ],
+          [
+            96,
+            115
+          ],
+          [
+            128,
+            147
+          ],
+          [
+            160,
+            179
+          ],
+          [
+            192,
+            211
+          ],
+          [
+            224,
+            243
+          ],
+          [
+            256,
+            275
+          ],
+          [
+            288,
+            307
+          ],
+          [
+            320,
+            339
+          ],
+          [
+            352,
+            371
+          ],
+          [
+            384,
+            403
+          ],
+          [
+            416,
+            435
+          ],
+          [
+            448,
+            467
+          ],
+          [
+            480,
+            499
+          ],
+          [
+            512,
+            531
+          ],
+          [
+            544,
+            563
+          ],
+          [
+            576,
+            595
+          ],
+          [
+            608,
+            627
+          ],
+          [
+            640,
+            659
+          ],
+          [
+            672,
+            691
+          ],
+          [
+            704,
+            723
+          ],
+          [
+            736,
+            755
+          ],
+          [
+            768,
+            787
+          ]
+        ],
+        "control": []
+      },
+      "failingBeforeInputIdsSha256": "c59d90a6a9c329a07bb8c3a7ea28aaf3bb4af00eac130aba37ab275d0db90428"
+    },
+    {
+      "bank": "r86-hairline-alpha",
+      "inputs": 400,
+      "beforeExact": 0,
+      "afterExact": 400,
+      "failingBeforeIndexRangesByRole": {
+        "candidate": [
+          [
+            0,
+            199
+          ]
+        ],
+        "control": [
+          [
+            0,
+            199
+          ]
+        ]
+      },
+      "failingBeforeInputIdsSha256": "a7782bc5fced1aa1a2746a7780a53bc3baa83288a64d007caee2be9896b6ce50"
+    }
+  ],
+  "results": [
+    {
+      "host": "windows",
+      "originalInputs": 2000,
+      "exactInputs": 2000,
+      "oldTargetsChanged": 0,
+      "nativeTargetsSha256": "f9aa8583092eee08e6c683c82843bdbd53d4bef49c217b6aecdf7186bf4b7271",
+      "launches": [
+        {
+          "host": "windows",
+          "attempt": 1,
+          "seconds": 12.270617400063202,
+          "terminalExitCode": 0,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "healthy": true,
+          "profileCleaned": true,
+          "inputs": 2000,
+          "oldTargetsChanged": 0,
+          "libraryResiduals": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 11982,
+            "debuggerReadyMilliseconds": 376,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "windows",
+          "attempt": 2,
+          "seconds": 13.230105799855664,
+          "terminalExitCode": 0,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "healthy": true,
+          "profileCleaned": true,
+          "inputs": 2000,
+          "oldTargetsChanged": 0,
+          "libraryResiduals": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 13094,
+            "debuggerReadyMilliseconds": 133,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "windows",
+          "attempt": 3,
+          "seconds": 15.009103199932724,
+          "terminalExitCode": 0,
+          "browserSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+          "healthy": true,
+          "profileCleaned": true,
+          "inputs": 2000,
+          "oldTargetsChanged": 0,
+          "libraryResiduals": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome.exe",
+            "elapsedMilliseconds": 14731,
+            "debuggerReadyMilliseconds": 159,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ]
+    },
+    {
+      "host": "linux",
+      "originalInputs": 2000,
+      "exactInputs": 2000,
+      "oldTargetsChanged": 0,
+      "nativeTargetsSha256": "f9aa8583092eee08e6c683c82843bdbd53d4bef49c217b6aecdf7186bf4b7271",
+      "launches": [
+        {
+          "host": "linux",
+          "attempt": 1,
+          "seconds": 33.666858799988404,
+          "terminalExitCode": 0,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "healthy": true,
+          "profileCleaned": true,
+          "inputs": 2000,
+          "oldTargetsChanged": 0,
+          "libraryResiduals": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 31015,
+            "debuggerReadyMilliseconds": 6375,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "linux",
+          "attempt": 2,
+          "seconds": 16.5724007000681,
+          "terminalExitCode": 0,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "healthy": true,
+          "profileCleaned": true,
+          "inputs": 2000,
+          "oldTargetsChanged": 0,
+          "libraryResiduals": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 13746,
+            "debuggerReadyMilliseconds": 2974,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        },
+        {
+          "host": "linux",
+          "attempt": 3,
+          "seconds": 17.16560130007565,
+          "terminalExitCode": 0,
+          "browserSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+          "healthy": true,
+          "profileCleaned": true,
+          "inputs": 2000,
+          "oldTargetsChanged": 0,
+          "libraryResiduals": 0,
+          "health": {
+            "schemaVersion": 1,
+            "executableName": "chrome",
+            "elapsedMilliseconds": 14689,
+            "debuggerReadyMilliseconds": 2391,
+            "sandboxAccessFailures": 0,
+            "networkServiceCrashes": 0,
+            "stderrTruncated": false,
+            "profileCleaned": true,
+            "startupHealth": "healthy"
+          }
+        }
+      ]
+    }
+  ],
+  "remaining": "The5520-row R86 lineage, non-scaling/effect composition and11468-row wide collection require their own source/context joins. Existing3416 alias/3456 composition qualifications stay closed.",
+  "testResponsibilities": {
+    "mechanismCases": 200,
+    "ownershipCases": 12,
+    "routineRenderingCases": 20,
+    "routineRenderingInputs": 40,
+    "extendedRenderingCases": 2000,
+    "additionalIntegrityCases": 1,
+    "canonicalConversionsPerExtendedCase": 1,
+    "preservedMechanismBodiesAndIdentities": true,
+    "preservedRoutineReferenceSourcesAndImages": true,
+    "productionSourceUnchanged": true,
+    "originalCaseDiscovery": "Every original bank/index/role is individually selectable;200 byte-identical alpha candidates retain their distinct original identities.",
+    "testSourceLfSha256": {
+      "tests/Lokad.Svg.Tests/SvgShaderHairlineTests.cs": "3d4e1a3f870975bb116ca7c7391bb8d1c80b72795caf7ca1eed946b4444bb496",
+      "tests/Lokad.Svg.VisualTests/SvgShaderHairlineOriginalTests.cs": "65b5286b67639e2b67da23b2275f95c7f7f54c5fa8174d8d2179956d155e30dc"
+    }
+  },
+  "localValidation": [
+    {
+      "stage": "compiled-net11",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+      "testAssemblySha256": "9e811a3097d81ecede4881335aea4dd2075fada980704f7a46230f081ae5e4a3",
+      "exitCode": 0,
+      "seconds": 10.31457669986412,
+      "counters": {
+        "executed": "212",
+        "passed": "212",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "compiled-net11",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net11.0",
+      "librarySha256": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+      "testAssemblySha256": "9e811a3097d81ecede4881335aea4dd2075fada980704f7a46230f081ae5e4a3",
+      "exitCode": 0,
+      "seconds": 11.529409399954602,
+      "counters": {
+        "executed": "212",
+        "passed": "212",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "compiled-net11",
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+      "testAssemblySha256": "904d156d4d6f77316fcbd2a85732bb4929ca1a9f1c932cc21660d1fec88682af",
+      "exitCode": 0,
+      "seconds": 14.509217499988154,
+      "counters": {
+        "executed": "2021",
+        "passed": "2021",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "compiled-net11",
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+      "testAssemblySha256": "904d156d4d6f77316fcbd2a85732bb4929ca1a9f1c932cc21660d1fec88682af",
+      "exitCode": 0,
+      "seconds": 12.168340899981558,
+      "counters": {
+        "executed": "2021",
+        "passed": "2021",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "compiled-net10",
+      "host": "windows",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "68ad89871daa75dbe1b5d48992885f3878e4a9499377cadc5b72b09cde60fe8a",
+      "testAssemblySha256": "cc195ca60a8fbcbd3324ab899e832622933d04f92a419c9a496b1bb89566e8ad",
+      "exitCode": 0,
+      "seconds": 11.610800599912181,
+      "counters": {
+        "executed": "212",
+        "passed": "212",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "compiled-net10",
+      "host": "linux",
+      "kind": "core",
+      "framework": "net10.0",
+      "librarySha256": "68ad89871daa75dbe1b5d48992885f3878e4a9499377cadc5b72b09cde60fe8a",
+      "testAssemblySha256": "cc195ca60a8fbcbd3324ab899e832622933d04f92a419c9a496b1bb89566e8ad",
+      "exitCode": 0,
+      "seconds": 37.42651199991815,
+      "counters": {
+        "executed": "212",
+        "passed": "212",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "compiled-net10",
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "68ad89871daa75dbe1b5d48992885f3878e4a9499377cadc5b72b09cde60fe8a",
+      "testAssemblySha256": "e78a51dd1167b99c83f7a7b8fef0dc2755227a78e2766fe6be9173a462b2fea5",
+      "exitCode": 0,
+      "seconds": 14.770815100055188,
+      "counters": {
+        "executed": "2021",
+        "passed": "2021",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "compiled-net10",
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net10.0",
+      "librarySha256": "68ad89871daa75dbe1b5d48992885f3878e4a9499377cadc5b72b09cde60fe8a",
+      "testAssemblySha256": "e78a51dd1167b99c83f7a7b8fef0dc2755227a78e2766fe6be9173a462b2fea5",
+      "exitCode": 0,
+      "seconds": 13.636904900195077,
+      "counters": {
+        "executed": "2021",
+        "passed": "2021",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "routine-net11",
+      "host": "windows",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+      "testAssemblySha256": "904d156d4d6f77316fcbd2a85732bb4929ca1a9f1c932cc21660d1fec88682af",
+      "exitCode": 0,
+      "seconds": 12.244817400118336,
+      "counters": {
+        "executed": "21",
+        "passed": "21",
+        "failed": "0"
+      }
+    },
+    {
+      "stage": "routine-net11",
+      "host": "linux",
+      "kind": "visual",
+      "framework": "net11.0",
+      "librarySha256": "cb2c421594e9721b23fa4f2dfbc429d614a73906e0ed3e4c2f69f233046010d0",
+      "testAssemblySha256": "904d156d4d6f77316fcbd2a85732bb4929ca1a9f1c932cc21660d1fec88682af",
+      "exitCode": 0,
+      "seconds": 11.675233699847013,
+      "counters": {
+        "executed": "21",
+        "passed": "21",
+        "failed": "0"
+      }
+    }
+  ],
+  "localCost": {
+    "protocol": "One fresh .NET11 VSTest process per host/selection, same packaged renderer and test assembly; includes startup/discovery/TRX, excludes build; functional costs, not renderer throughput or quiet-VM measurements.",
+    "observations": [
+      {
+        "host": "windows",
+        "full2021CasesSeconds": 14.509217499988154,
+        "routine21CasesSeconds": 12.244817400118336
+      },
+      {
+        "host": "linux",
+        "full2021CasesSeconds": 12.168340899981558,
+        "routine21CasesSeconds": 11.675233699847013
+      }
+    ]
+  }
+}
